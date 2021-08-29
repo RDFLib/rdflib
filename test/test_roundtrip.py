@@ -37,6 +37,15 @@ SKIP = [
     ("xml", "test/nt/qname-02.nt"),  # uses a property that cannot be qname'd
     ("trix", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
     ("xml", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
+    ("json-ld", "test/nt/keywords-04.nt"),  # known NT->JSONLD problem
+    ("json-ld", "test/n3/example-misc.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-16.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-11.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-28.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-26.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-28.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-22.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-21.n3"),  # known N3->JSONLD problem
 ]
 
 

@@ -1,0 +1,30 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "ex": "http://example.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "ex:locatedIn": {"@type": "@id"},
+    "ex:hasPopulaton": {"@type": "xsd:integer"},
+    "ex:hasReference": {"@type": "@id"}
+  },
+  "@graph": [
+    {
+      "@id": "http://example.org/ParisFact1",
+      "@type": "rdf:Graph",
+      "@graph": {
+        "@id": "http://example.org/location/Paris#this",
+        "ex:locatedIn": "http://example.org/location/France#this"
+      },
+      "ex:hasReference": ["http://www.britannica.com/", "http://www.wikipedia.org/", "http://www.brockhaus.de/"]
+    },
+    {
+      "@id": "http://example.org/ParisFact2",
+      "@type": "rdf:Graph",
+      "@graph": {
+        "@id": "http://example.org/location/Paris#this",
+        "ex:hasPopulation": 7000000
+      },
+      "ex:hasReference": "http://www.wikipedia.org/"
+    }
+  ]
+}

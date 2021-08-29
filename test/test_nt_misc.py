@@ -6,15 +6,23 @@ from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
 from urllib.request import urlopen
 
+from test import TEST_DIR
+
 log = logging.getLogger(__name__)
+
+NT_PATH = os.path.relpath(os.path.join(TEST_DIR, "nt"), os.curdir)
+
+
+def nt_file(fn):
+    return os.path.join(NT_PATH, fn)
 
 
 class NTTestCase(unittest.TestCase):
     def testIssue859(self):
         graphA = Graph()
         graphB = Graph()
-        graphA.parse("test/nt/quote-01.nt", format="ntriples")
-        graphB.parse("test/nt/quote-02.nt", format="ntriples")
+        graphA.parse(nt_file("quote-01.nt"), format="ntriples")
+        graphB.parse(nt_file("quote-02.nt"), format="ntriples")
         for subjectA, predicateA, objA in graphA:
             for subjectB, predicateB, objB in graphB:
                 self.assertEqual(subjectA, subjectB)
@@ -38,13 +46,12 @@ class NTTestCase(unittest.TestCase):
         fname = "test/nt/lists-02.nt"
         g1 = Graph()
         with open(fname, "r") as f:
-            g1.parse(f, format='nt')
+            g1.parse(f, format="nt")
         self.assertEqual(14, len(g1))
         g2 = Graph()
         with open(fname, "rb") as fb:
-            g2.parse(fb, format='nt')
+            g2.parse(fb, format="nt")
         self.assertEqual(14, len(g2))
-
 
     def testIssue1144_w3c(self):
         fname = "test/nt/lists-02.nt"
@@ -58,7 +65,6 @@ class NTTestCase(unittest.TestCase):
         with open(fname, "rb") as f:
             p2.parse(f)
         self.assertEqual(14, len(sink2.g))
-
 
     def test_sink(self):
         s = ntriples.DummySink()
@@ -104,7 +110,7 @@ class NTTestCase(unittest.TestCase):
         self.assertEqual(res, uniquot)
 
     def test_W3CNTriplesParser_fpath(self):
-        fpath = "test/nt/" + os.listdir("test/nt")[0]
+        fpath = os.path.join(nt_file(os.listdir(NT_PATH)[0]))
         p = ntriples.W3CNTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parse, fpath)
 
@@ -112,15 +118,14 @@ class NTTestCase(unittest.TestCase):
         p = ntriples.W3CNTriplesParser()
         data = 3
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
-        fname = "test/nt/lists-02.nt"
-        with open(fname, "r") as f:
+        with open(nt_file("lists-02.nt"), "r") as f:
             data = f.read()
         p = ntriples.W3CNTriplesParser()
         res = p.parsestring(data)
         self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
-        uri = "file:///" + os.getcwd() + "/test/nt/test.ntriples"
+        uri = "file://" + os.path.abspath(nt_file("test.ntriples"))
 
         parser = ntriples.W3CNTriplesParser()
         u = urlopen(uri)
@@ -161,28 +166,36 @@ class BNodeContextTestCase(unittest.TestCase):
         my_sink = FakeSink()
         bnode_context = dict()
         p = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-        ''')
+        """
+        )
 
         q = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
-        q.parsestring('''
+        q.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-        ''')
+        """
+        )
 
         self.assertEqual(len(my_sink.subs), 1)
 
     def test_bnode_distinct_across_instances(self):
         my_sink = FakeSink()
         p = ntriples.W3CNTriplesParser(my_sink)
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-        ''')
+        """
+        )
 
         q = ntriples.W3CNTriplesParser(my_sink)
-        q.parsestring('''
+        q.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-        ''')
+        """
+        )
 
         self.assertEqual(len(my_sink.subs), 2)
 
@@ -190,13 +203,19 @@ class BNodeContextTestCase(unittest.TestCase):
         my_sink = FakeSink()
         p = ntriples.W3CNTriplesParser(my_sink)
 
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-        ''', bnode_context=dict())
+        """,
+            bnode_context=dict(),
+        )
 
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-        ''', bnode_context=dict())
+        """,
+            bnode_context=dict(),
+        )
 
         self.assertEqual(len(my_sink.subs), 2)
 
@@ -204,13 +223,17 @@ class BNodeContextTestCase(unittest.TestCase):
         my_sink = FakeSink()
         p = ntriples.W3CNTriplesParser(my_sink)
 
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-        ''')
+        """
+        )
 
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-        ''')
+        """
+        )
 
         self.assertEqual(len(my_sink.subs), 1)
 
@@ -219,14 +242,20 @@ class BNodeContextTestCase(unittest.TestCase):
         bnode_ctx = dict()
 
         p = ntriples.W3CNTriplesParser(my_sink)
-        p.parsestring('''
+        p.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
-        ''', bnode_context=bnode_ctx)
+        """,
+            bnode_context=bnode_ctx,
+        )
 
         q = ntriples.W3CNTriplesParser(my_sink)
-        q.parsestring('''
+        q.parsestring(
+            """
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
-        ''', bnode_context=bnode_ctx)
+        """,
+            bnode_context=bnode_ctx,
+        )
 
         self.assertEqual(len(my_sink.subs), 1)
 

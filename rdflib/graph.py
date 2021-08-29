@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Type, cast, overload, Generator, Tuple
 import logging
 from warnings import warn
 import random
@@ -19,8 +19,9 @@ from rdflib.exceptions import ParserError
 import os
 import shutil
 import tempfile
+import pathlib
 
-from io import BytesIO
+from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
 
 assert Literal  # avoid warning
@@ -28,6 +29,9 @@ assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
 
+# Type aliases to make unpacking what's going on a little more human friendly
+ContextNode = Union[BNode, URIRef]
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
@@ -543,21 +547,24 @@ class Graph(Node):
 
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         self.addN((s, p, o, self) for s, p, o in other)
         return self
 
     def __isub__(self, other):
         """Subtract all triples in Graph other from Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         for triple in other:
             self.remove(triple)
         return self
 
     def __add__(self, other):
         """Set-theoretic union
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
@@ -568,8 +575,11 @@ class Graph(Node):
 
     def __mul__(self, other):
         """Set-theoretic intersection.
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in other:
             if x in self:
                 retval.add(x)
@@ -577,8 +587,11 @@ class Graph(Node):
 
     def __sub__(self, other):
         """Set-theoretic difference.
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in self:
             if x not in other:
                 retval.add(x)
@@ -586,7 +599,7 @@ class Graph(Node):
 
     def __xor__(self, other):
         """Set-theoretic XOR.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         return (self - other) + (other - self)
 
     __or__ = __add__
@@ -956,8 +969,82 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
+    # no destination and non-None positional encoding
+    @overload
     def serialize(
-        self, destination=None, format="turtle", base=None, encoding=None, **args
+        self, destination: None, format: str, base: Optional[str], encoding: str, **args
+    ) -> bytes:
+        ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: str,
+        **args,
+    ) -> bytes:
+        ...
+
+    # no destination and None positional encoding
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: None,
+        **args,
+    ) -> str:
+        ...
+
+    # no destination and None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = None,
+        **args,
+    ) -> str:
+        ...
+
+    # non-none destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args,
+    ) -> None:
+        ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ) -> Optional[Union[bytes, str]]:
+        ...
+
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
     ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
@@ -978,6 +1065,7 @@ class Graph(Node):
             base = self.base
 
         serializer = plugin.get(format, Serializer)(self)
+        stream: BufferedIOBase
         if destination is None:
             stream = BytesIO()
             if encoding is None:
@@ -987,16 +1075,19 @@ class Graph(Node):
                 serializer.serialize(stream, base=base, encoding=encoding, **args)
                 return stream.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
-            location = destination
+            if isinstance(destination, pathlib.PurePath):
+                location = str(destination)
+            else:
+                location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
                 print(
                     "WARNING: not saving as location" + "is not a local file reference"
                 )
-                return
+                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -1007,6 +1098,7 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
+        return None
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
@@ -1023,7 +1115,7 @@ class Graph(Node):
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse an RDF source adding the resulting triples to the Graph.
@@ -1146,12 +1238,12 @@ class Graph(Node):
     def query(
         self,
         query_object,
-        processor: str = "sparql",
-        result: str = "sparql",
+        processor: Union[str, query.Processor] = "sparql",
+        result: Union[str, Type[query.Result]] = "sparql",
         initNs=None,
         initBindings=None,
         use_store_provided: bool = True,
-        **kwargs
+        **kwargs,
     ) -> query.Result:
         """
         Query this graph.
@@ -1177,13 +1269,13 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
 
         if not isinstance(result, query.Result):
-            result = plugin.get(result, query.Result)
+            result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
@@ -1196,7 +1288,7 @@ class Graph(Node):
         initNs=None,
         initBindings=None,
         use_store_provided=True,
-        **kwargs
+        **kwargs,
     ):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
@@ -1209,7 +1301,7 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1220,11 +1312,17 @@ class Graph(Node):
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
-        """return an n3 identifier for the Graph"""
+        """Return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
 
     def __reduce__(self):
-        return (Graph, (self.store, self.identifier,))
+        return (
+            Graph,
+            (
+                self.store,
+                self.identifier,
+            ),
+        )
 
     def isomorphic(self, other):
         """
@@ -1574,11 +1672,11 @@ class ConjunctiveGraph(Graph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse source adding the resulting triples to its own context
@@ -1664,8 +1762,8 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.URIRef("http://example.org/y"),
      rdflib.term.Literal("bar"))
     >>>
-    >>> # querying quads return quads; the fourth argument can be unrestricted
-    >>> # or restricted to a graph
+    >>> # querying quads() return quads; the fourth argument can be unrestricted
+    >>> # (None) or restricted to a graph
     >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/a"),
@@ -1681,7 +1779,24 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
+    >>> # unrestricted looping is equivalent to iterating over the entire Dataset
+    >>> for q in ds:  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef("http://example.org/a"),
+     rdflib.term.URIRef("http://www.example.org/b"),
+     rdflib.term.Literal("foo"),
+     None)
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/y"),
+     rdflib.term.Literal("bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/z"),
+     rdflib.term.Literal("foo-bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    >>>
+    >>> # resticting iteration to a graph:
+    >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
      rdflib.term.URIRef("http://example.org/y"),
@@ -1758,11 +1873,11 @@ class Dataset(ConjunctiveGraph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
@@ -1800,6 +1915,11 @@ class Dataset(ConjunctiveGraph):
                 yield s, p, o, None
             else:
                 yield s, p, o, c.identifier
+
+    def __iter__(self) -> Generator[DatasetQuad, None, None]:
+        """Iterates over all quads in the store"""
+        return self.quads((None, None, None, None))
+
 
 
 class QuotedGraph(Graph):
@@ -2060,7 +2180,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format="xml", **args):
+    def parse(self, source, publicID=None, format=None, **args):
         raise ModificationException()
 
     def n3(self):
@@ -2078,21 +2198,20 @@ def _assertnode(*terms):
 
 class BatchAddGraph(object):
     """
-    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
-    into calls to :meth:`~rdflib.graph.Graph.addN`.
+    Wrapper around graph that turns batches of calls to Graph's add
+    (and optionally, addN) into calls to batched calls to addN`.
 
     :Parameters:
 
-      - `graph`: The graph to wrap
-      - `batch_size`: The maximum number of triples to buffer before passing to
-        `graph`'s `addN`
-      - `batch_addn`: If True, then even calls to `addN` will be batched according to
-        `batch_size`
+      - graph: The graph to wrap
+      - batch_size: The maximum number of triples to buffer before passing to
+        Graph's addN
+      - batch_addn: If True, then even calls to `addN` will be batched according to
+        batch_size
 
-    :ivar graph: The wrapped graph
-    :ivar count: The number of triples buffered since initaialization or the last call
-                 to :meth:`reset`
-    :ivar batch: The current buffer of triples
+    graph: The wrapped graph
+    count: The number of triples buffered since initialization or the last call to reset
+    batch: The current buffer of triples
 
     """
 

@@ -105,6 +105,7 @@ class W3CNTriplesParser(object):
     """An N-Triples Parser.
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
+
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
 
@@ -307,7 +308,7 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    __slots__ = set()
+    __slots__ = ()
 
     @classmethod
     def parse(cls, source, sink, **kwargs):

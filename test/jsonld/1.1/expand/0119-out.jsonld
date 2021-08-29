@@ -1,0 +1,4 @@
+[{
+  "http://example.org/vocab/at": [{"@value": "allowed"}],
+  "http://example.org/vocab/foo.bar": [{"@value": "allowed"}]
+}]

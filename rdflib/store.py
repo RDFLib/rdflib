@@ -231,7 +231,7 @@ class Store(object):
             self.add((s, p, o), c)
 
     def remove(self, triple, context=None):
-        """ Remove the set of triples matching the pattern from the store """
+        """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):

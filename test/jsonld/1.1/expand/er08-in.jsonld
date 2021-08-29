@@ -1,0 +1,4 @@
+{
+  "@context": {"@vocab": true},
+  "@id": "http://example/test#example"
+}

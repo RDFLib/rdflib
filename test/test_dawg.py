@@ -1,32 +1,24 @@
+from __future__ import print_function
+
+import os
 import sys
 
 # Needed to pass
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
+from test import TEST_DIR
+from test.earl import report, add_test
+from test.manifest import nose_tests, UP, MF
+
 sys.setrecursionlimit(6000)  # default is 1000
 
 
-try:
-    from collections import Counter
-except:
-
-    # cheap Counter impl for py 2.5
-    # not a complete implementation - only good enough for the use here!
-    from collections import defaultdict
-    from operator import itemgetter
-
-    class Counter(defaultdict):
-        def __init__(self):
-            defaultdict.__init__(self, int)
-
-        def most_common(self, N):
-            return [
-                x[0] for x in sorted(self.items(), key=itemgetter(1), reverse=True)[:10]
-            ]
+from collections import Counter
 
 
 import datetime
 import isodate
+import typing
 
 
 from rdflib import Dataset, Graph, URIRef, BNode
@@ -45,10 +37,6 @@ from io import BytesIO
 
 from nose.tools import nottest, eq_
 from nose import SkipTest
-
-
-from .manifest import nose_tests, MF, UP
-from .earl import report, add_test
 
 
 def eq(a, b, msg):
@@ -101,8 +89,8 @@ DETAILEDASSERT = True
 
 NAME = None
 
-fails = Counter()
-errors = Counter()
+fails: typing.Counter[str] = Counter()
+errors: typing.Counter[str] = Counter()
 
 failed_tests = []
 error_tests = []
@@ -122,7 +110,7 @@ try:
             ]
         )
 except IOError:
-    skiptests = set()
+    skiptests = dict()
 
 
 def _fmt(f):
@@ -439,16 +427,11 @@ def query_test(t):
                     set(res2.vars),
                     "Vars do not match: %r != %r" % (set(res.vars), set(res2.vars)),
                 )
-                assert bindingsCompatible(set(res), set(res2)), (
-                    "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s"
-                    % (
-                        res.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                        res2.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                    )
+                assert bindingsCompatible(
+                    set(res), set(res2)
+                ), "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s" % (
+                    res.serialize(format="txt", namespace_manager=g.namespace_manager),
+                    res2.serialize(format="txt", namespace_manager=g.namespace_manager),
                 )
             elif res.type == "ASK":
                 eq(
@@ -606,8 +589,8 @@ if __name__ == "__main__":
 
     print("Most common fails:")
     for failed in fails.most_common(10):
-        failed = str(failed)
-        print(failed[:450] + (failed[450:] and "..."))
+        failed_str = str(failed)
+        print(failed_str[:450] + (failed_str[450:] and "..."))
 
     print("\n----------------------------------------------------\n")
 
@@ -642,8 +625,13 @@ if __name__ == "__main__":
                 % (now, i, success, f_sum, e_sum, skip, 100.0 * success / i)
             )
 
-        earl_report = "test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
+        earl_report = os.path.join(
+            TEST_DIR, "../test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
+        )
 
         report.serialize(earl_report, format="n3")
-        report.serialize("test_reports/rdflib_sparql-latest.ttl", format="n3")
+        report.serialize(
+            os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-latest.ttl"),
+            format="n3",
+        )
         print("Wrote EARL-report to '%s'" % earl_report)

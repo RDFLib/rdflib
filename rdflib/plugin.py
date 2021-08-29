@@ -36,6 +36,7 @@ from rdflib.query import (
     UpdateProcessor,
 )
 from rdflib.exceptions import Error
+from typing import Type, TypeVar
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
@@ -85,7 +86,7 @@ class PKGPlugin(Plugin):
         return self._class
 
 
-def register(name, kind, module_path, class_name):
+def register(name: str, kind, module_path, class_name):
     """
     Register the plugin for (name, kind). The module_path and
     class_name should be the path to a plugin class.
@@ -94,7 +95,10 @@ def register(name, kind, module_path, class_name):
     _plugins[(name, kind)] = p
 
 
-def get(name, kind):
+PluginT = TypeVar("PluginT")
+
+
+def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
     """
     Return the class for the specified (name, kind). Raises a
     PluginException if unable to do so.
@@ -134,7 +138,7 @@ register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
 register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("Sleepycat", Store, "rdflib.plugins.stores.sleepycat", "Sleepycat")
+register("BerkeleyDB", Store, "rdflib.plugins.stores.berkeleydb", "BerkeleyDB")
 register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
 register(
     "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"
@@ -164,6 +168,13 @@ register(
 register("ntriples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt11", Serializer, "rdflib.plugins.serializers.nt", "NT11Serializer")
+register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
+register(
+    "application/ld+json",
+    Serializer,
+    "rdflib.plugins.serializers.jsonld",
+    "JsonLDSerializer",
+)
 
 # Register Quad Serializers
 register(
@@ -194,6 +205,9 @@ register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NT
 register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("application/ld+json", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+
 
 # Register Quad Parsers
 register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")

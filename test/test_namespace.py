@@ -1,8 +1,91 @@
 import unittest
+from unittest.case import expectedFailure
 
+from warnings import warn
+
+from rdflib import DCTERMS
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH
+from rdflib.namespace import (
+    FOAF,
+    RDF,
+    RDFS,
+    SH,
+    DefinedNamespaceMeta,
+    Namespace,
+    ClosedNamespace,
+    URIPattern,
+)
 from rdflib.term import URIRef
+
+
+class NamespaceTest(unittest.TestCase):
+    def setUp(self):
+        self.ns_str = "http://example.com/name/space/"
+        self.ns = Namespace(self.ns_str)
+
+    def test_repr(self):
+        # NOTE: this assumes ns_str has no characthers that need escaping
+        self.assertIn(self.ns_str, f"{self.ns!r}")
+        self.assertEqual(self.ns, eval(f"{self.ns!r}"))
+
+    def test_str(self):
+        self.assertEqual(self.ns_str, f"{self.ns}")
+
+    def test_member(self):
+        self.assertEqual(f"{self.ns_str}a", f"{self.ns.a}")
+
+    def test_dcterms_title(self):
+        self.assertEqual(DCTERMS.title, URIRef(DCTERMS + "title"))
+
+    def test_iri(self):
+        prefix = "http://jörn.loves.encoding.problems/"
+        ns = Namespace(prefix)
+        self.assertEqual(ns, str(prefix))
+        self.assert_(ns["jörn"].startswith(ns))
+
+
+class ClosedNamespaceTest(unittest.TestCase):
+    def setUp(self):
+        self.ns_str = "http://example.com/name/space/"
+        self.ns = ClosedNamespace(self.ns_str, ["a", "b", "c"])
+
+    def test_repr(self):
+        # NOTE: this assumes ns_str has no characthers that need escaping
+        self.assertIn(self.ns_str, f"{self.ns!r}")
+
+    @expectedFailure
+    def test_repr_ef(self):
+        """
+        This fails because ClosedNamespace repr does not represent the second argument
+        """
+        self.assertEqual(self.ns, eval(f"{self.ns!r}"))
+
+    def test_str(self):
+        self.assertEqual(self.ns_str, f"{self.ns}")
+
+    def test_member(self):
+        self.assertEqual(f"{self.ns_str}a", f"{self.ns.a}")
+
+    def test_missing_member(self):
+        with self.assertRaises(AttributeError) as context:
+            f"{self.ns.missing}"
+        self.assertIn("missing", f"{context.exception}")
+
+
+class URIPatternTest(unittest.TestCase):
+    def setUp(self):
+        self.pattern_str = "http://example.org/%s/%d/resource"
+        self.pattern = URIPattern(self.pattern_str)
+
+    def test_repr(self):
+        # NOTE: this assumes pattern_str has no characthers that need escaping
+        self.assertIn(self.pattern_str, f"{self.pattern!r}")
+        self.assertEqual(self.pattern, eval(f"{self.pattern!r}"))
+
+    def test_format(self):
+        self.assertEqual(
+            "http://example.org/foo/100/resource", str(self.pattern % ("foo", 100))
+        )
 
 
 class NamespacePrefixTest(unittest.TestCase):
@@ -89,7 +172,7 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3", encoding='latin-1')
+        n3 = g.serialize(format="n3", encoding="latin-1")
         # Gunnar disagrees that this is right:
         # self.assertTrue("<http://example.com/foo> ns1:bar <http://example.com/baz> ." in n3)
         # as this is much prettier, and ns1 is already defined:
@@ -108,36 +191,57 @@ class NamespacePrefixTest(unittest.TestCase):
         n3 = g.serialize(format="n3", encoding="latin-1")
 
         self.assertTrue(
-            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ."
-            in n3
+            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ." in n3
         )
 
     def test_closed_namespace(self):
         """Tests terms both in an out of the ClosedNamespace FOAF"""
 
         def add_not_in_namespace(s):
-            return FOAF[s]
+            with self.assertRaises(AttributeError):
+                return FOAF[s]
 
         # a non-existent FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "blah")
+        add_not_in_namespace("blah")
+
+        # a deprecated FOAF property
+        # add_not_in_namespace('firstName')
+        self.assertEqual(
+            FOAF["firstName"],
+            URIRef("http://xmlns.com/foaf/0.1/firstName"),
+        )
+        warn("DefinedNamespace does not address deprecated properties")
 
         # a property name within the FOAF namespace
         self.assertEqual(
-            add_not_in_namespace("givenName"),
+            FOAF.givenName,
             URIRef("http://xmlns.com/foaf/0.1/givenName"),
         )
+
+        # namescape can be used as str
+        self.assertTrue(FOAF.givenName.startswith(FOAF))
 
     def test_contains_method(self):
         """Tests for Namespace.__contains__() methods."""
 
-        ref = URIRef('http://www.w3.org/ns/shacl#example')
-        self.assertTrue(type(SH) == Namespace, "SH no longer a Namespace, update test.")
-        self.assertTrue(ref in SH, "sh:example not in SH")
+        ref = URIRef("http://www.w3.org/ns/shacl#Info")
+        self.assertTrue(
+            type(SH) == DefinedNamespaceMeta,
+            f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test.",
+        )
+        self.assertTrue(ref in SH, "sh:Info not in SH")
 
-        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
-        self.assertTrue(ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label")
-        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#example')
-        self.assertFalse(ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example")
+        ref = URIRef("http://www.w3.org/2000/01/rdf-schema#label")
+        self.assertTrue(
+            ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label"
+        )
+        ref = URIRef("http://www.w3.org/2000/01/rdf-schema#example")
+        self.assertFalse(
+            ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        )
 
-        ref = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-        self.assertTrue(ref in RDF, "_RDFNamespace does not include rdf:type")
+        ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+        self.assertTrue(ref in RDF, "RDF does not include rdf:type")
+
+        ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1")
+        self.assertTrue(ref in RDF, "RDF does not include rdf:_1")

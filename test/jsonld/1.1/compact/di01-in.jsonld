@@ -1,0 +1,6 @@
+{
+  "http://example.com/term": [
+    "v5",
+    {"@value": "plain literal"}
+  ]
+}

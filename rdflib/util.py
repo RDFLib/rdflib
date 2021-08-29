@@ -137,7 +137,7 @@ def to_term(s, default=None):
         raise Exception(msg)
 
 
-def from_n3(s, default=None, backend=None, nsm=None):
+def from_n3(s: str, default=None, backend=None, nsm=None):
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
@@ -193,6 +193,9 @@ def from_n3(s, default=None, backend=None, nsm=None):
                 language = rest[1:]  # strip leading at sign
 
         value = value.replace(r"\"", '"')
+        # unicode-escape interprets \xhh as an escape sequence,
+        # but n3 does not define it as such.
+        value = value.replace(r"\x", r"\\x")
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
@@ -226,19 +229,19 @@ def check_context(c):
 
 
 def check_subject(s):
-    """ Test that s is a valid subject identifier."""
+    """Test that s is a valid subject identifier."""
     if not (isinstance(s, URIRef) or isinstance(s, BNode)):
         raise SubjectTypeError(s)
 
 
 def check_predicate(p):
-    """ Test that p is a valid predicate identifier."""
+    """Test that p is a valid predicate identifier."""
     if not isinstance(p, URIRef):
         raise PredicateTypeError(p)
 
 
 def check_object(o):
-    """ Test that o is a valid object identifier."""
+    """Test that o is a valid object identifier."""
     if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
         raise ObjectTypeError(o)
 

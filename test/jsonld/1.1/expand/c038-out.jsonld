@@ -1,0 +1,12 @@
+[{
+  "@id": "http://example.org/base/book/one",
+  "@type": ["http://purl.org/ontology/bibo/Book"],
+  "http://purl.org/dc/terms/creator": [{
+    "http://www.w3.org/2000/01/rdf-schema#label": [{"@value": "Some Body"}]
+  }],
+  "http://purl.org/ontology/bibo/isbn": [{"@value": "1234567890"}],
+  "http://purl.org/dc/terms/published": [{"@value": "1999"}],
+  "http://purl.org/dc/terms/publisher": [{
+    "http://www.w3.org/2000/01/rdf-schema#label": [{"@value": "PubCorp"}]
+  }]
+}]

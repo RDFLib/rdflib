@@ -1,0 +1,6 @@
+{
+  "http://www.w3.org/2000/01/rdf-schema#label": {
+    "@value": "A plain literal with a lang tag.",
+    "@language": "en-us"
+  }
+}

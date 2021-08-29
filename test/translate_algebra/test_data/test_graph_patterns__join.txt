@@ -1,0 +1,11 @@
+PREFIX ex: <http://people.example/>
+SELECT ?select ?minName
+WHERE {
+    ex:alice ex:knows ?select .
+    {
+        SELECT (MIN(?name) AS ?minName) ?select
+        WHERE {
+            ?select ex:name ?name .
+        } GROUP BY ?select
+    }
+}

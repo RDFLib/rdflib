@@ -1,5 +1,7 @@
+import os
 import unittest
 from rdflib import ConjunctiveGraph, URIRef, Namespace
+from test import TEST_DIR
 
 TEST_BASE = "test/nquads.rdflib"
 
@@ -7,7 +9,10 @@ TEST_BASE = "test/nquads.rdflib"
 class NQuadsParserTest(unittest.TestCase):
     def _load_example(self):
         g = ConjunctiveGraph()
-        with open("test/nquads.rdflib/example.nquads", "rb") as data:
+        nq_path = os.path.relpath(
+            os.path.join(TEST_DIR, "nquads.rdflib/example.nquads"), os.curdir
+        )
+        with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
         return g
 
@@ -36,7 +41,10 @@ class NQuadsParserTest(unittest.TestCase):
 
     def test_context_is_optional(self):
         g = ConjunctiveGraph()
-        with open("test/nquads.rdflib/test6.nq", "rb") as data:
+        nq_path = os.path.relpath(
+            os.path.join(TEST_DIR, "nquads.rdflib/test6.nq"), os.curdir
+        )
+        with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
         assert len(g) > 0
 
@@ -53,9 +61,7 @@ class NQuadsParserTest(unittest.TestCase):
         g.get_context(uri2).add((bob, likes, pizza))
 
         s = g.serialize(format="nquads", encoding="latin-1")
-        self.assertEqual(
-            len([x for x in s.split(b"\n") if x.strip()]), 2
-        )
+        self.assertEqual(len([x for x in s.split(b"\n") if x.strip()]), 2)
 
         g2 = ConjunctiveGraph()
         g2.parse(data=s, format="nquads")
@@ -70,7 +76,9 @@ class NQuadsParserTest(unittest.TestCase):
 class BnodeContextTest(unittest.TestCase):
     def setUp(self):
         self.data = open("test/nquads.rdflib/bnode_context.nquads", "rb")
-        self.data_obnodes = open("test/nquads.rdflib/bnode_context_obj_bnodes.nquads", "rb")
+        self.data_obnodes = open(
+            "test/nquads.rdflib/bnode_context_obj_bnodes.nquads", "rb"
+        )
 
     def tearDown(self):
         self.data.close()

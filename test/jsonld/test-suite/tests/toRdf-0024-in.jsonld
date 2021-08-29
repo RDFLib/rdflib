@@ -1,0 +1,4 @@
+{
+  "@context": { "sensor": "http://example/sensor#"},
+  "sensor:active": true
+}

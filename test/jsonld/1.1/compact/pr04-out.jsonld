@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.com/",
+    "protected": {"@protected": true},
+    "unprotected": {
+      "@context": {"protected": {"@language": "en"}}
+    }
+  },
+  "protected": "p === http://example.com/protected",
+  "unprotected": {
+    "protected": "p === http://example.com/protected"
+  }
+}

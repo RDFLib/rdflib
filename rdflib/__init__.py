@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "6.0.0-alpha"
-__date__ = "2021-03-22"
+__version__ = "6.0.1a0"
+__date__ = "2021-07-21"
 
 __all__ = [
     "URIRef",
@@ -82,6 +82,38 @@ __all__ = [
     "XSD",
     "util",
 ]
+
+import sys
+import logging
+
+logger = logging.getLogger(__name__)
+_interactive_mode = False
+try:
+    import __main__
+
+    if (
+        not hasattr(__main__, "__file__")
+        and sys.stdout is not None
+        and sys.stderr.isatty()
+    ):
+        # show log messages in interactive mode
+        _interactive_mode = True
+        logger.setLevel(logging.INFO)
+        logger.addHandler(logging.StreamHandler())
+    del __main__
+except ImportError:
+    # Main already imported from elsewhere
+    import warnings
+
+    warnings.warn("__main__ already imported", ImportWarning)
+    del warnings
+
+if _interactive_mode:
+    logger.info("RDFLib Version: %s" % __version__)
+else:
+    logger.debug("RDFLib Version: %s" % __version__)
+del _interactive_mode
+del sys
 
 
 NORMALIZE_LITERALS = True
@@ -129,9 +161,10 @@ Literal work, eq, __neq__, __lt__, etc.
 
 from rdflib.term import URIRef, BNode, Literal, Variable
 
-from rdflib.namespace import Namespace
-
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
+
+from rdflib import plugin
+from rdflib import query
 
 from rdflib.namespace import (
     CSVW,
@@ -157,10 +190,8 @@ from rdflib.namespace import (
     VOID,
     XMLNS,
     XSD,
+    Namespace,
 )
-
-from rdflib import plugin
-from rdflib import query
 
 # tedious sop to flake8
 assert plugin
@@ -168,4 +199,4 @@ assert query
 
 from rdflib import util
 
-from .container import *
+from rdflib.container import *

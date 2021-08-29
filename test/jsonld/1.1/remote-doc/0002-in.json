@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@vocab": "http://example/vocab#"
+  },
+  "@id": "",
+  "term": "object"
+}

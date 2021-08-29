@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "foo_ltr": {"@id": "http://example.com/foo", "@container": "@list", "@direction": "ltr"},
+    "foo_rtl": {"@id": "http://example.com/foo", "@container": "@list", "@direction": "rtl"}
+  },
+  "foo_ltr": ["en"],
+  "foo_rtl": ["ar"]
+}

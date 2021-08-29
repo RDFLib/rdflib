@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "protected1": "ex:protected1",
+    "protected2": {
+      "@id": "ex:protected2",
+      "@context": null
+    }
+  },
+  "protected1": "p === ex:protected1",
+  "protected2": {
+    "@context": {
+      "protected1": "ex:protected3"
+    },
+    "protected1": "p === ex:protected3"
+  }
+}

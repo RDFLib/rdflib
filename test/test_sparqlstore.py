@@ -1,30 +1,40 @@
 from rdflib import Graph, URIRef, Literal
-from urllib.request import urlopen
-from urllib.error import HTTPError
 import unittest
-from nose import SkipTest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import socket
 from threading import Thread
+from unittest.mock import patch
+from rdflib.namespace import RDF, XSD, XMLNS, FOAF, RDFS
+from rdflib.plugins.stores.sparqlstore import SPARQLConnector
+from typing import ClassVar
 
 from . import helper
+from .testutils import (
+    MockHTTPResponse,
+    ServedSimpleHTTPMock,
+)
 
 
-try:
-    assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
-except:
-    raise SkipTest("No HTTP connection.")
-
-
-class SPARQLStoreDBPediaTestCase(unittest.TestCase):
+class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
     store_name = "SPARQLStore"
-    path = "http://dbpedia.org/sparql"
-    storetest = True
-    create = False
+    path: ClassVar[str]
+    httpmock: ClassVar[ServedSimpleHTTPMock]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.httpmock = ServedSimpleHTTPMock()
+        cls.path = f"{cls.httpmock.url}/sparql"
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        super().tearDownClass()
+        cls.httpmock.stop()
 
     def setUp(self):
+        self.httpmock.reset()
         self.graph = Graph(store="SPARQLStore")
-        self.graph.open(self.path, create=self.create)
+        self.graph.open(self.path, create=True)
         ns = list(self.graph.namespaces())
         assert len(ns) > 0, ns
 
@@ -33,27 +43,135 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
 
     def test_Query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
-        res = helper.query_with_retry(self.graph, query, initNs={})
-        for i in res:
-            assert type(i[0]) == URIRef, i[0].n3()
+        _query = SPARQLConnector.query
+        self.httpmock.do_get_responses.append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                b"""\
+<sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+ <head>
+  <variable name="Concept"/>
+ </head>
+ <results distinct="false" ordered="true">
+  <result>
+   <binding name="Concept"><uri>http://www.w3.org/2000/01/rdf-schema#Datatype</uri></binding>
+  </result>
+ </results>
+</sparql>""",
+                {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
+            )
+        )
+        with patch("rdflib.plugins.stores.sparqlstore.SPARQLConnector.query") as mock:
+            SPARQLConnector.query.side_effect = lambda *args, **kwargs: _query(
+                self.graph.store, *args, **kwargs
+            )
+            res = self.graph.query(query, initNs={})
+            count = 0
+            for i in res:
+                count += 1
+                assert type(i[0]) == URIRef, i[0].n3()
+            assert count > 0
+            mock.assert_called_once()
+            args, kwargs = mock.call_args
+
+            def unpacker(query, default_graph=None, named_graph=None):
+                return query, default_graph, named_graph
+
+            (mquery, _, _) = unpacker(*args, *kwargs)
+            for _, uri in self.graph.namespaces():
+                assert mquery.count(f"<{uri}>") == 1
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
+        req = self.httpmock.do_get_requests.pop(0)
+        self.assertRegex(req.path, r"^/sparql")
+        self.assertIn(query, req.path_query["query"][0])
 
     def test_initNs(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        res = helper.query_with_retry(self.graph,
+        self.httpmock.do_get_responses.append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                """\
+<sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+ <head>
+  <variable name="label"/>
+ </head>
+ <results distinct="false" ordered="true">
+  <result>
+   <binding name="label"><literal xml:lang="en">189</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Scottish Football League</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 United States collegiate men&#39;s ice hockey season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Western Conference men&#39;s basketball season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 collegiate men&#39;s basketball independents season in the United States</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football cups</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football leagues</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by league</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by team</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
+  </result>
+ </results>
+</sparql>""".encode(
+                    "utf8"
+                ),
+                {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
+            )
+        )
+        res = self.graph.query(
             query, initNs={"xyzzy": "http://www.w3.org/2004/02/skos/core#"}
         )
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
+
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
+        req = self.httpmock.do_get_requests.pop(0)
+        self.assertRegex(req.path, r"^/sparql")
+        self.assertIn(query, req.path_query["query"][0])
 
     def test_noinitNs(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.assertRaises(ValueError, self.graph.query, query)
+        self.httpmock.do_get_responses.append(
+            MockHTTPResponse(
+                400,
+                "Bad Request",
+                b"""\
+Virtuoso 37000 Error SP030: SPARQL compiler, line 1: Undefined namespace prefix in prefix:localpart notation at 'xyzzy:Concept' before ';'
+
+SPARQL query:
+SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""",
+                {"Content-Type": ["text/plain"]},
+            )
+        )
+        with self.assertRaises(ValueError):
+            self.graph.query(query)
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
+        req = self.httpmock.do_get_requests.pop(0)
+        self.assertRegex(req.path, r"^/sparql")
+        self.assertIn(query, req.path_query["query"][0])
 
     def test_query_with_added_prolog(self):
         prologue = """\
@@ -63,9 +181,60 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
+        self.httpmock.do_get_responses.append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                """\
+<sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+ <head>
+  <variable name="label"/>
+ </head>
+ <results distinct="false" ordered="true">
+  <result>
+   <binding name="label"><literal xml:lang="en">189</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Scottish Football League</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 United States collegiate men&#39;s ice hockey season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Western Conference men&#39;s basketball season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 collegiate men&#39;s basketball independents season in the United States</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football cups</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football leagues</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by league</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by team</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
+  </result>
+ </results>
+</sparql>""".encode(
+                    "utf8"
+                ),
+                {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
+            )
+        )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
+        req = self.httpmock.do_get_requests.pop(0)
+        self.assertRegex(req.path, r"^/sparql")
+        self.assertIn(query, req.path_query["query"][0])
 
     def test_query_with_added_rdf_prolog(self):
         prologue = """\
@@ -76,9 +245,60 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
+        self.httpmock.do_get_responses.append(
+            MockHTTPResponse(
+                200,
+                "OK",
+                """\
+<sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+ <head>
+  <variable name="label"/>
+ </head>
+ <results distinct="false" ordered="true">
+  <result>
+   <binding name="label"><literal xml:lang="en">189</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Scottish Football League</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 United States collegiate men&#39;s ice hockey season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 Western Conference men&#39;s basketball season</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 collegiate men&#39;s basketball independents season in the United States</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football cups</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 domestic association football leagues</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by league</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in American ice hockey by team</literal></binding>
+  </result>
+  <result>
+   <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
+  </result>
+ </results>
+</sparql>""".encode(
+                    "utf8"
+                ),
+                {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
+            )
+        )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
+        req = self.httpmock.do_get_requests.pop(0)
+        self.assertRegex(req.path, r"^/sparql")
+        self.assertIn(query, req.path_query["query"][0])
 
     def test_counting_graph_and_store_queries(self):
         query = """
@@ -91,20 +311,61 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         g = Graph("SPARQLStore")
         g.open(self.path)
         count = 0
-        result = helper.query_with_retry(g, query)
+        response = MockHTTPResponse(
+            200,
+            "OK",
+            """\
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+        <head>
+        <variable name="s"/>
+        </head>
+        <results distinct="false" ordered="true">
+        <result>
+        <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid</uri></binding>
+        </result>
+        <result>
+        <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-nullable</uri></binding>
+        </result>
+        <result>
+        <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-blank</uri></binding>
+        </result>
+        <result>
+        <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-blank-nullable</uri></binding>
+        </result>
+        <result>
+        <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-nonblank</uri></binding>
+        </result>
+        </results>
+        </sparql>""".encode(
+                "utf8"
+            ),
+            {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
+        )
+
+        self.httpmock.do_get_responses.append(response)
+
+        result = g.query(query)
         for _ in result:
             count += 1
 
-        assert count == 5, "Graph(\"SPARQLStore\") didn't return 5 records"
+        assert count == 5, 'Graph("SPARQLStore") didn\'t return 5 records'
 
         from rdflib.plugins.stores.sparqlstore import SPARQLStore
+
         st = SPARQLStore(query_endpoint=self.path)
         count = 0
-        result = helper.query_with_retry(st, query)
+        self.httpmock.do_get_responses.append(response)
+        result = st.query(query)
         for _ in result:
             count += 1
 
         assert count == 5, "SPARQLStore() didn't return 5 records"
+
+        self.assertEqual(self.httpmock.do_get_mock.call_count, 2)
+        for _ in range(2):
+            req = self.httpmock.do_get_requests.pop(0)
+            self.assertRegex(req.path, r"^/sparql")
+            self.assertIn(query, req.path_query["query"][0])
 
 
 class SPARQLStoreUpdateTestCase(unittest.TestCase):
@@ -194,6 +455,49 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         self.send_response(200, "OK")
         self.end_headers()
         return
+
+
+class SPARQLMockTests(unittest.TestCase):
+    def test_query(self):
+        triples = {
+            (RDFS.Resource, RDF.type, RDFS.Class),
+            (RDFS.Resource, RDFS.isDefinedBy, URIRef(RDFS)),
+            (RDFS.Resource, RDFS.label, Literal("Resource")),
+            (RDFS.Resource, RDFS.comment, Literal("The class resource, everything.")),
+        }
+        rows = "\n".join([f'"{s}","{p}","{o}"' for s, p, o in triples])
+        response_body = f"s,p,o\n{rows}".encode()
+        response = MockHTTPResponse(
+            200, "OK", response_body, {"Content-Type": ["text/csv; charset=utf-8"]}
+        )
+
+        graph = Graph(store="SPARQLStore", identifier="http://example.com")
+        graph.bind("xsd", XSD)
+        graph.bind("xml", XMLNS)
+        graph.bind("foaf", FOAF)
+        graph.bind("rdf", RDF)
+
+        assert len(list(graph.namespaces())) >= 4
+
+        with ServedSimpleHTTPMock() as httpmock:
+            httpmock.do_get_responses.append(response)
+            url = f"{httpmock.url}/query"
+            graph.open(url)
+            query_result = graph.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o }")
+
+        rows = set(query_result)
+        assert len(rows) == len(triples)
+        for triple in triples:
+            assert triple in rows
+
+        httpmock.do_get_mock.assert_called_once()
+        assert len(httpmock.do_get_requests) == 1
+        request = httpmock.do_get_requests.pop()
+        assert len(request.path_query["query"]) == 1
+        query = request.path_query["query"][0]
+
+        for _, uri in graph.namespaces():
+            assert query.count(f"<{uri}>") == 1
 
 
 if __name__ == "__main__":

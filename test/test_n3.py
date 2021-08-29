@@ -1,9 +1,13 @@
+import os
+
 from rdflib.graph import Graph, ConjunctiveGraph
 import unittest
 from rdflib.term import Literal, URIRef
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 import itertools
 from urllib.error import URLError
+
+from test import TEST_DIR
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -161,7 +165,8 @@ foo-bar:Ex foo-bar:name "Test" . """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        g.parse("test/n3/issue156.n3", format="n3")
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "n3/issue156.n3", os.curdir))
+        g.parse(n3_path, format="n3")
 
     def testIssue999(self):
         """

@@ -1,0 +1,4 @@
+{
+  "@context": {"direction": "@direction"},
+  "http://example.org/foo": {"@value": "bar", "direction": "ltr"}
+}

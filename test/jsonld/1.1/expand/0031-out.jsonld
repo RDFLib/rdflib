@@ -1,0 +1,17 @@
+[
+  {
+    "@id": "http://example.org/test#example1",
+    "http://example.org/vocab#integer": [ {
+      "@value": 1,
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    } ],
+    "http://example.org/vocab#double": [ {
+      "@value": 123.45,
+      "@type": "http://www.w3.org/2001/XMLSchema#double"
+    } ],
+    "http://example.org/vocab#boolean": [ {
+      "@value": true,
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    } ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "knows": "http://xmlns.com/foaf/0.1/knows"
+  },
+  "@id": "http://example.com/people/markus",
+  "name": "Markus Lanthaler",
+  "@reverse": {
+    "knows": {
+      "@id": "http://example.com/people/dave",
+      "name": "Dave Longley"
+    },
+    "relative-iri": {
+      "@id": "relative-node",
+      "name": "Keys that are not mapped to an IRI in a reverse-map are dropped"
+    }
+  }
+}

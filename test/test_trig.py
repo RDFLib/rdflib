@@ -80,7 +80,7 @@ class TestTrig(unittest.TestCase):
     def testBlankGraphIdentifier(self):
         g = rdflib.ConjunctiveGraph()
         g.add(TRIPLE + (rdflib.BNode(),))
-        out = g.serialize(format="trig", encoding='latin-1')
+        out = g.serialize(format="trig", encoding="latin-1")
         graph_label_line = out.splitlines()[-4]
 
         self.assertTrue(re.match(br"^_:[a-zA-Z0-9]+ \{", graph_label_line))
@@ -118,9 +118,10 @@ class TestTrig(unittest.TestCase):
         g.parse(data=data, format="trig")
         self.assertEqual(len(list(g.contexts())), 2)
 
+    @unittest.skipIf(
+        True, "Iterative serialization currently produces 16 copies of everything"
+    )
     def testRoundTrips(self):
-
-        raise SkipTest("skipped until 5.0")
 
         data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
@@ -134,7 +135,7 @@ class TestTrig(unittest.TestCase):
         g = rdflib.ConjunctiveGraph()
         for i in range(5):
             g.parse(data=data, format="trig")
-            data = g.serialize(format="trig")
+            data = g.serialize(format="trig").decode()
 
         # output should only contain 1 mention of each resource/graph name
         self.assertEqual(data.count("thing_a"), 1)
@@ -175,6 +176,6 @@ class TestTrig(unittest.TestCase):
         cg.parse(data=data, format="trig")
         data = cg.serialize(format="trig", encoding="latin-1")
 
-        self.assertTrue(b"ns2: <http://ex.org/docs/" in data)
-        self.assertTrue(b"<ns2:document1>" not in data)
-        self.assertTrue(b"ns2:document1" in data)
+        self.assertTrue("ns2: <http://ex.org/docs/".encode("latin-1") in data, data)
+        self.assertTrue("<ns2:document1>".encode("latin-1") not in data, data)
+        self.assertTrue("ns2:document1".encode("latin-1") in data, data)

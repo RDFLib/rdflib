@@ -19,8 +19,8 @@ class TestIssue733(unittest.TestCase):
         g.add((example.S, example.P, example.O2))
         q = """
         prefix ex:<http://example.org/>
-        select ?st ?ot ?gt where {
-          {SELECT (count(*) as ?st) where {
+        select ?lexical_or_value ?ot ?gt where {
+          {SELECT (count(*) as ?lexical_or_value) where {
             ?s ?p ?o .
               FILTER (?s=ex:S)
           }}
@@ -48,8 +48,8 @@ class TestIssue733(unittest.TestCase):
         g.add((example.S, example.P, example.O2))
         q = """
                 prefix ex:<http://example.org/>
-                select ?st where {
-                  {SELECT (count(*) as ?st) where {
+                select ?lexical_or_value where {
+                  {SELECT (count(*) as ?lexical_or_value) where {
                     ?s ?p ?o .
                       FILTER (?s=ex:S)
                   }}
@@ -61,8 +61,8 @@ class TestIssue733(unittest.TestCase):
         assert results[0][0] == 2
         q = """
                prefix ex:<http://example.org/>
-               select ?st where {
-                 {SELECT (count(*) as ?st) where {
+               select ?lexical_or_value where {
+                 {SELECT (count(*) as ?lexical_or_value) where {
                    ?s ?p ?o .
                      FILTER (?o=ex:O1)
                  }}

@@ -14,7 +14,7 @@ def test_reading_from_path_object():
 
     with tempfile.TemporaryDirectory() as td:
         sample_file = Path(td) / "sample.xml"
-        open(str(sample_file), 'w').write(xml_sample)
+        open(str(sample_file), "w").write(xml_sample)
 
         g = rdflib.Graph()
         g.parse(sample_file, publicID="")

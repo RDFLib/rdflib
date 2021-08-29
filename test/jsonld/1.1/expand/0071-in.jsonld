@@ -1,0 +1,15 @@
+{
+  "@context": [
+    {
+      "v": "http://example.com/vocab#",
+      "v:term": "v:somethingElse",
+      "v:termId": { "@id": "v:somethingElseId" }
+    },
+    {
+      "v:term": "v:term",
+      "v:termId": { "@id": "v:termId" }
+    }
+  ],
+  "v:term": "value of v:term",
+  "v:termId": "value of v:termId"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "@id": "http://example.com/nodeA",
+    "http://example.com/property": [
+      { "@value": "1" },
+      {
+        "@value": "2",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      { "@id": "http://example.com/nodeB" }
+    ],
+    "@type": [ "http://example.com/TypeA" ]
+  }
+]

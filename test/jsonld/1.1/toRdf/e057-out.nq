@@ -1,0 +1,1 @@
+_:b0 <http://example.org/term> <https://w3c.github.io/json-ld-api/tests/toRdf/not-a-term-thus-a-relative-IRI> .

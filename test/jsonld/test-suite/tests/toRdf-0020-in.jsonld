@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "created": {"@id": "http://purl.org/dc/terms/created", "@type": "xsd:date"}
+  },
+  "@id":  "http://greggkellogg.net/foaf#me",
+  "created":  "1957-02-27"
+}

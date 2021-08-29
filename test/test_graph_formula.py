@@ -133,7 +133,12 @@ def testFormulaStores():
             pluginname = sys.argv[1]
 
     for s in plugin.plugins(pluginname, plugin.Store):
-        if s.name in ("Auditable", "Concurrent", "SPARQLStore", "SPARQLUpdateStore",):
+        if s.name in (
+            "Auditable",
+            "Concurrent",
+            "SPARQLStore",
+            "SPARQLUpdateStore",
+        ):
             continue
         if not s.getClass().formula_aware:
             continue
