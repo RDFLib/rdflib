@@ -1,0 +1,6 @@
+PREFIX citing: <https://github.com/GreenfishK/DataCitation/citing/>
+
+select ?s ?p ?o {
+	?s ?p ?o .
+    filter not exists {?s citing:valid_from ?valid_from} .
+}

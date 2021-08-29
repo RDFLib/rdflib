@@ -10,7 +10,7 @@ from nose.exc import SkipTest
 
 
 class ContextTestCase(unittest.TestCase):
-    store = 'default'
+    store = "default"
     slow = True
     tmppath = None
 
@@ -18,24 +18,22 @@ class ContextTestCase(unittest.TestCase):
         try:
             self.graph = ConjunctiveGraph(store=self.store)
         except ImportError:
-            raise SkipTest(
-                "Dependencies for store '%s' not available!" % self.store)
+            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
-            _, self.tmppath = mkstemp(
-                prefix='test', dir='/tmp', suffix='.sqlite')
+            _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         else:
             self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)
-        self.michel = URIRef(u'michel')
-        self.tarek = URIRef(u'tarek')
-        self.bob = URIRef(u'bob')
-        self.likes = URIRef(u'likes')
-        self.hates = URIRef(u'hates')
-        self.pizza = URIRef(u'pizza')
-        self.cheese = URIRef(u'cheese')
+        self.michel = URIRef("michel")
+        self.tarek = URIRef("tarek")
+        self.bob = URIRef("bob")
+        self.likes = URIRef("likes")
+        self.hates = URIRef("hates")
+        self.pizza = URIRef("pizza")
+        self.cheese = URIRef("cheese")
 
-        self.c1 = URIRef(u'context-1')
-        self.c2 = URIRef(u'context-2')
+        self.c1 = URIRef("context-1")
+        self.c2 = URIRef("context-2")
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
@@ -176,12 +174,13 @@ class ContextTestCase(unittest.TestCase):
 
         def cid(c):
             return c.identifier
+
         self.assertTrue(self.c1 in map(cid, self.graph.contexts()))
         self.assertTrue(self.c2 in map(cid, self.graph.contexts()))
 
-        contextList = map(cid, list(self.graph.contexts(triple)))
-        self.assertTrue(self.c1 in contextList)
-        self.assertTrue(self.c2 in contextList)
+        contextList = list(map(cid, list(self.graph.contexts(triple))))
+        self.assertTrue(self.c1 in contextList, (self.c1, contextList))
+        self.assertTrue(self.c2 in contextList, (self.c2, contextList))
 
     def testRemoveContext(self):
         c1 = self.c1
@@ -305,60 +304,87 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.predicates(bob, pizza)), set([hates]))
             asserte(set(c.predicates(bob, michel)), set([hates]))
 
-            asserte(set(
-                c.subject_objects(hates)), set([(bob, pizza), (bob, michel)]))
+            asserte(set(c.subject_objects(hates)), set([(bob, pizza), (bob, michel)]))
             asserte(
-                set(c.subject_objects(likes)), set(
-                    [(tarek, cheese), (michel, cheese),
-                     (michel, pizza), (bob, cheese),
-                     (tarek, pizza)]))
+                set(c.subject_objects(likes)),
+                set(
+                    [
+                        (tarek, cheese),
+                        (michel, cheese),
+                        (michel, pizza),
+                        (bob, cheese),
+                        (tarek, pizza),
+                    ]
+                ),
+            )
 
-            asserte(set(c.predicate_objects(
-                michel)), set([(likes, cheese), (likes, pizza)]))
-            asserte(set(c.predicate_objects(bob)), set([(likes,
-                    cheese), (hates, pizza), (hates, michel)]))
-            asserte(set(c.predicate_objects(
-                tarek)), set([(likes, cheese), (likes, pizza)]))
+            asserte(
+                set(c.predicate_objects(michel)), set([(likes, cheese), (likes, pizza)])
+            )
+            asserte(
+                set(c.predicate_objects(bob)),
+                set([(likes, cheese), (hates, pizza), (hates, michel)]),
+            )
+            asserte(
+                set(c.predicate_objects(tarek)), set([(likes, cheese), (likes, pizza)])
+            )
 
-            asserte(set(c.subject_predicates(
-                pizza)), set([(bob, hates), (tarek, likes), (michel, likes)]))
-            asserte(set(c.subject_predicates(cheese)), set([(
-                bob, likes), (tarek, likes), (michel, likes)]))
+            asserte(
+                set(c.subject_predicates(pizza)),
+                set([(bob, hates), (tarek, likes), (michel, likes)]),
+            )
+            asserte(
+                set(c.subject_predicates(cheese)),
+                set([(bob, likes), (tarek, likes), (michel, likes)]),
+            )
             asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
 
-            asserte(set(c), set(
-                [(bob, hates, michel), (bob, likes, cheese),
-                 (tarek, likes, pizza), (michel, likes, pizza),
-                 (michel, likes, cheese), (bob, hates, pizza),
-                 (tarek, likes, cheese)]))
+            asserte(
+                set(c),
+                set(
+                    [
+                        (bob, hates, michel),
+                        (bob, likes, cheese),
+                        (tarek, likes, pizza),
+                        (michel, likes, pizza),
+                        (michel, likes, cheese),
+                        (bob, hates, pizza),
+                        (tarek, likes, cheese),
+                    ]
+                ),
+            )
 
         # remove stuff and make sure the graph is empty again
         self.removeStuff()
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-        
-
 
 # dynamically create classes for each registered Store
-
 pluginname = None
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) > 1:
         pluginname = sys.argv[1]
 
 tests = 0
 for s in plugin.plugins(pluginname, plugin.Store):
-    if s.name in ('default', 'IOMemory', 'Auditable',
-                  'Concurrent', 'SPARQLStore', 'SPARQLUpdateStore'):
+    if s.name in (
+        "default",
+        "Memory",
+        "Auditable",
+        "Concurrent",
+        "SPARQLStore",
+        "SPARQLUpdateStore",
+    ):
         continue  # these are tested by default
     if not s.getClass().context_aware:
         continue
 
-    locals()["t%d" % tests] = type("%sContextTestCase" % s.name, (
-        ContextTestCase,), {"store": s.name})
+    locals()["t%d" % tests] = type(
+        "%sContextTestCase" % s.name, (ContextTestCase,), {"store": s.name}
+    )
     tests += 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

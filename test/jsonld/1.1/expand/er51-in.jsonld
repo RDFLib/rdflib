@@ -1,0 +1,4 @@
+{
+  "@context": {"value": "@value"},
+  "http://example/prop": {"value": ["foo"]}
+}

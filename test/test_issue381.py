@@ -3,6 +3,7 @@ from rdflib.compare import isomorphic
 
 NS = Namespace("http://example.org/")
 
+
 def test_no_spurious_semicolon():
     sparql = """
       PREFIX : <http://example.org/>
@@ -11,12 +12,16 @@ def test_no_spurious_semicolon():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_one_spurious_semicolon():
     sparql = """
@@ -26,12 +31,16 @@ def test_one_spurious_semicolon():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_one_spurious_semicolon_no_perdiod():
     sparql = """
@@ -41,12 +50,16 @@ def test_one_spurious_semicolon_no_perdiod():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_two_spurious_semicolons_no_period():
     sparql = """
@@ -56,12 +69,16 @@ def test_two_spurious_semicolons_no_period():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_one_spurious_semicolons_bnode():
     sparql = """
@@ -71,12 +88,16 @@ def test_one_spurious_semicolons_bnode():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (BNode("a"), NS.b, NS.c),
-        (BNode("a"), NS.d, NS.e),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (BNode("a"), NS.b, NS.c),
+            (BNode("a"), NS.d, NS.e),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_pathological():
     """
@@ -92,13 +113,17 @@ def test_pathological():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-        (NS.a, NS.f, NS.g),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+            (NS.a, NS.f, NS.g),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
+
 
 def test_mixing_spurious_semicolons_and_commas():
     sparql = """
@@ -109,11 +134,13 @@ def test_mixing_spurious_semicolons_and_commas():
       } WHERE {}
     """
     expected = Graph()
-    expected.addN( t+(expected,) for t in [
-        (NS.a, NS.b, NS.c),
-        (NS.a, NS.d, NS.e),
-        (NS.a, NS.d, NS.f),
-    ])
+    expected.addN(
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+            (NS.a, NS.d, NS.f),
+        ]
+    )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
-

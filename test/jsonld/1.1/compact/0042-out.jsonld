@@ -1,0 +1,13 @@
+{
+    "@context": {
+       "listAlias": "@list",
+       "indexAlias": "@index"
+    },
+    "@id": "http://example.com/node",
+    "http://example.com/property": {
+        "listAlias": [
+            "one item"
+        ],
+        "indexAlias": "an index"
+    }
+}

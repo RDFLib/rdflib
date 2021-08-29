@@ -1,4 +1,3 @@
-
 """
 Code for tying SPARQL Engine into RDFLib
 
@@ -32,12 +31,12 @@ def processUpdate(graph, updateString, initBindings={}, initNs={}, base=None):
     Process a SPARQL Update Request
     returns Nothing on success or raises Exceptions on error
     """
-    evalUpdate(graph, translateUpdate(
-        parseUpdate(updateString), base, initNs), initBindings)
+    evalUpdate(
+        graph, translateUpdate(parseUpdate(updateString), base, initNs), initBindings
+    )
 
 
 class SPARQLResult(Result):
-
     def __init__(self, res):
         Result.__init__(self, res["type_"])
         self.vars = res.get("vars_")
@@ -45,25 +44,23 @@ class SPARQLResult(Result):
         self.askAnswer = res.get("askAnswer")
         self.graph = res.get("graph")
 
+
 class SPARQLUpdateProcessor(UpdateProcessor):
     def __init__(self, graph):
         self.graph = graph
 
     def update(self, strOrQuery, initBindings={}, initNs={}):
-        if isinstance(strOrQuery, basestring):
-            strOrQuery=translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
+        if isinstance(strOrQuery, str):
+            strOrQuery = translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
 
         return evalUpdate(self.graph, strOrQuery, initBindings)
 
 
 class SPARQLProcessor(Processor):
-
     def __init__(self, graph):
         self.graph = graph
 
-    def query(
-            self, strOrQuery, initBindings={},
-            initNs={}, base=None, DEBUG=False):
+    def query(self, strOrQuery, initBindings={}, initNs={}, base=None, DEBUG=False):
         """
         Evaluate a query with the given initial bindings, and initial
         namespaces. The given base is used to resolve relative URIs in
@@ -75,5 +72,4 @@ class SPARQLProcessor(Processor):
             query = translateQuery(parsetree, base, initNs)
         else:
             query = strOrQuery
-
         return evalQuery(self.graph, query, initBindings, base)

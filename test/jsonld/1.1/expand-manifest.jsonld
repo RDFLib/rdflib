@@ -1,0 +1,2944 @@
+{
+  "@context": ["context.jsonld", {"@base": "expand-manifest"}],
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "Expansion",
+  "description": "These tests implement the requirements for the JSON-LD [Expansion Algorithm](https://www.w3.org/TR/json-ld11-api/#expansion-algorithm).",
+  "baseIri": "https://w3c.github.io/json-ld-api/tests/",
+  "sequence": [
+    {
+      "@id": "#t0001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "drop free-floating nodes",
+      "purpose": "Expand drops unreferenced nodes having only @id",
+      "input": "expand/0001-in.jsonld",
+      "expect": "expand/0001-out.jsonld"
+    }, {
+      "@id": "#t0002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "basic",
+      "purpose": "Expanding terms with different types of values",
+      "input": "expand/0002-in.jsonld",
+      "expect": "expand/0002-out.jsonld"
+    }, {
+      "@id": "#t0003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "drop null and unmapped properties",
+      "purpose": "Verifies that null values and unmapped properties are removed from expanded output",
+      "input": "expand/0003-in.jsonld",
+      "expect": "expand/0003-out.jsonld"
+    }, {
+      "@id": "#t0004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "optimize @set, keep empty arrays",
+      "purpose": "Uses of @set are removed in expansion; values of @set, or just plain values which are empty arrays are retained",
+      "input": "expand/0004-in.jsonld",
+      "expect": "expand/0004-out.jsonld"
+    }, {
+      "@id": "#t0005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "do not expand aliased @id/@type",
+      "purpose": "If a keyword is aliased, it is not used when expanding",
+      "input": "expand/0005-in.jsonld",
+      "expect": "expand/0005-out.jsonld"
+    }, {
+      "@id": "#t0006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "alias keywords",
+      "purpose": "Aliased keywords expand in resulting document",
+      "input": "expand/0006-in.jsonld",
+      "expect": "expand/0006-out.jsonld"
+    }, {
+      "@id": "#t0007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "date type-coercion",
+      "purpose": "Expand strings to expanded value with @type: xsd:dateTime",
+      "input": "expand/0007-in.jsonld",
+      "expect": "expand/0007-out.jsonld"
+    }, {
+      "@id": "#t0008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@value with @language",
+      "purpose": "Keep expanded values with @language, drop non-conforming value objects containing just @language",
+      "input": "expand/0008-in.jsonld",
+      "expect": "expand/0008-out.jsonld"
+    }, {
+      "@id": "#t0009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@graph with terms",
+      "purpose": "Use of @graph to contain multiple nodes within array",
+      "input": "expand/0009-in.jsonld",
+      "expect": "expand/0009-out.jsonld"
+    }, {
+      "@id": "#t0010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "native types",
+      "purpose": "Expanding native scalar retains native scalar within expanded value",
+      "input": "expand/0010-in.jsonld",
+      "expect": "expand/0010-out.jsonld"
+    }, {
+      "@id": "#t0011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @id",
+      "purpose": "A value of a property with @type: @id coercion expands to a node reference",
+      "input": "expand/0011-in.jsonld",
+      "expect": "expand/0011-out.jsonld"
+    }, {
+      "@id": "#t0012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@graph with embed",
+      "purpose": "Use of @graph to contain multiple nodes within array",
+      "input": "expand/0012-in.jsonld",
+      "expect": "expand/0012-out.jsonld"
+    }, {
+      "@id": "#t0013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand already expanded",
+      "purpose": "Expand does not mess up already expanded document",
+      "input": "expand/0013-in.jsonld",
+      "expect": "expand/0013-out.jsonld"
+    }, {
+      "@id": "#t0014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@set of @value objects with keyword aliases",
+      "purpose": "Expanding aliased @set and @value",
+      "input": "expand/0014-in.jsonld",
+      "expect": "expand/0014-out.jsonld"
+    }, {
+      "@id": "#t0015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "collapse set of sets, keep empty lists",
+      "purpose": "An array of multiple @set nodes are collapsed into a single array",
+      "input": "expand/0015-in.jsonld",
+      "expect": "expand/0015-out.jsonld"
+    }, {
+      "@id": "#t0016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "context reset",
+      "purpose": "Setting @context to null within an embedded object resets back to initial context state",
+      "input": "expand/0016-in.jsonld",
+      "expect": "expand/0016-out.jsonld"
+    }, {
+      "@id": "#t0017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@graph and @id aliased",
+      "purpose": "Expanding with @graph and @id aliases",
+      "input": "expand/0017-in.jsonld",
+      "expect": "expand/0017-out.jsonld"
+    }, {
+      "@id": "#t0018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "override default @language",
+      "purpose": "override default @language in terms; only language-tag strings",
+      "input": "expand/0018-in.jsonld",
+      "expect": "expand/0018-out.jsonld"
+    }, {
+      "@id": "#t0019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "remove @value = null",
+      "purpose": "Expanding a value of null removes the value",
+      "input": "expand/0019-in.jsonld",
+      "expect": "expand/0019-out.jsonld"
+    }, {
+      "@id": "#t0020",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "do not remove @graph if not at top-level",
+      "purpose": "@graph used under a node is retained",
+      "input": "expand/0020-in.jsonld",
+      "expect": "expand/0020-out.jsonld"
+    }, {
+      "@id": "#t0021",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "do not remove @graph at top-level if not only property",
+      "purpose": "@graph used at the top level is retained if there are other properties",
+      "input": "expand/0021-in.jsonld",
+      "expect": "expand/0021-out.jsonld"
+    }, {
+      "@id": "#t0022",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand value with default language",
+      "purpose": "Expanding with a default language applies that language to string values",
+      "input": "expand/0022-in.jsonld",
+      "expect": "expand/0022-out.jsonld"
+    }, {
+      "@id": "#t0023",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expanding list/set with coercion",
+      "purpose": "Expanding lists and sets with properties having coercion coerces list/set values",
+      "input": "expand/0023-in.jsonld",
+      "expect": "expand/0023-out.jsonld"
+    }, {
+      "@id": "#t0024",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Multiple contexts",
+      "purpose": "Tests that contexts in an array are merged",
+      "input": "expand/0024-in.jsonld",
+      "expect": "expand/0024-out.jsonld"
+    }, {
+      "@id": "#t0025",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Problematic IRI expansion tests",
+      "purpose": "Expanding different kinds of terms and Compact IRIs",
+      "input": "expand/0025-in.jsonld",
+      "expect": "expand/0025-out.jsonld"
+    }, {
+      "@id": "#t0026",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Term definition with @id: @type",
+      "purpose": "Expanding term mapping to @type uses @type syntax",
+      "input": "expand/0026-in.jsonld",
+      "expect": "expand/0026-out.jsonld",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0027",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Duplicate values in @list and @set",
+      "purpose": "Duplicate values in @list and @set are not merged",
+      "input": "expand/0027-in.jsonld",
+      "expect": "expand/0027-out.jsonld"
+    }, {
+      "@id": "#t0028",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Use @vocab in properties and @type but not in @id",
+      "purpose": "@vocab is used to compact properties and @type, but is not used for @id",
+      "input": "expand/0028-in.jsonld",
+      "expect": "expand/0028-out.jsonld"
+    }, {
+      "@id": "#t0029",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Relative IRIs",
+      "purpose": "@base is used to compact @id; test with different relative IRIs",
+      "input": "expand/0029-in.jsonld",
+      "expect": "expand/0029-out.jsonld"
+    }, {
+      "@id": "#t0030",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Language maps",
+      "purpose": "Language Maps expand values to include @language",
+      "input": "expand/0030-in.jsonld",
+      "expect": "expand/0030-out.jsonld"
+    }, {
+      "@id": "#t0031",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-coercion of native types",
+      "purpose": "Expanding native types with type coercion adds the coerced type to an expanded value representation and retains the native value representation",
+      "input": "expand/0031-in.jsonld",
+      "expect": "expand/0031-out.jsonld"
+    }, {
+      "@id": "#t0032",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Null term and @vocab",
+      "purpose": "Mapping a term to null decouples it from @vocab",
+      "input": "expand/0032-in.jsonld",
+      "expect": "expand/0032-out.jsonld"
+    }, {
+      "@id": "#t0033",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Using @vocab with with type-coercion",
+      "purpose": "Verifies that terms can be defined using @vocab",
+      "input": "expand/0033-in.jsonld",
+      "expect": "expand/0033-out.jsonld"
+    }, {
+      "@id": "#t0034",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Multiple properties expanding to the same IRI",
+      "purpose": "Verifies multiple values from separate terms are deterministically made multiple values of the IRI associated with the terms",
+      "input": "expand/0034-in.jsonld",
+      "expect": "expand/0034-out.jsonld"
+    }, {
+      "@id": "#t0035",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Language maps with @vocab, default language, and colliding property",
+      "purpose": "Pathological tests of language maps",
+      "input": "expand/0035-in.jsonld",
+      "expect": "expand/0035-out.jsonld"
+    }, {
+      "@id": "#t0036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expanding @index",
+      "purpose": "Expanding index maps for terms defined with @container: @index",
+      "input": "expand/0036-in.jsonld",
+      "expect": "expand/0036-out.jsonld"
+    }, {
+      "@id": "#t0037",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expanding @reverse",
+      "purpose": "Expanding @reverse keeps @reverse",
+      "input": "expand/0037-in.jsonld",
+      "expect": "expand/0037-out.jsonld"
+    }, {
+      "@id": "#t0038",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expanding blank node labels",
+      "purpose": "Blank nodes are not relabeled during expansion",
+      "option": {"specVersion": "json-ld-1.0"},
+      "input": "expand/0038-in.jsonld",
+      "expect": "expand/0038-out.jsonld"
+    }, {
+      "@id": "#t0039",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Using terms in a reverse-maps",
+      "purpose": "Terms within @reverse are expanded",
+      "input": "expand/0039-in.jsonld",
+      "expect": "expand/0039-out.jsonld"
+    }, {
+      "@id": "#t0040",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "language and index expansion on non-objects",
+      "purpose": "Only invoke language and index map expansion if the value is a JSON object",
+      "input": "expand/0040-in.jsonld",
+      "expect": "expand/0040-out.jsonld"
+    }, {
+      "@id": "#t0041",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@language: null resets the default language",
+      "input": "expand/0041-in.jsonld",
+      "expect": "expand/0041-out.jsonld"
+    }, {
+      "@id": "#t0042",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Reverse properties",
+      "purpose": "Expanding terms defined as reverse properties uses @reverse in expanded document",
+      "input": "expand/0042-in.jsonld",
+      "expect": "expand/0042-out.jsonld"
+    }, {
+      "@id": "#t0043",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Using reverse properties inside a @reverse-container",
+      "purpose": "Expanding a reverse property within a @reverse undoes both reversals",
+      "input": "expand/0043-in.jsonld",
+      "expect": "expand/0043-out.jsonld"
+    }, {
+      "@id": "#t0044",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Index maps with language mappings",
+      "purpose": "Ensure index maps use language mapping",
+      "input": "expand/0044-in.jsonld",
+      "expect": "expand/0044-out.jsonld"
+    }, {
+      "@id": "#t0045",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Top-level value objects",
+      "purpose": "Expanding top-level value objects causes them to be removed",
+      "input": "expand/0045-in.jsonld",
+      "expect": "expand/0045-out.jsonld"
+    }, {
+      "@id": "#t0046",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Free-floating nodes",
+      "purpose": "Expanding free-floating nodes causes them to be removed",
+      "input": "expand/0046-in.jsonld",
+      "expect": "expand/0046-out.jsonld"
+    }, {
+      "@id": "#t0047",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Free-floating values in sets and free-floating lists",
+      "purpose": "Free-floating values in sets are removed, free-floating lists are removed completely",
+      "input": "expand/0047-in.jsonld",
+      "expect": "expand/0047-out.jsonld"
+    }, {
+      "@id": "#t0048",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Terms are ignored in @id",
+      "purpose": "Values of @id are not expanded as terms",
+      "input": "expand/0048-in.jsonld",
+      "expect": "expand/0048-out.jsonld"
+    }, {
+      "@id": "#t0049",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "String values of reverse properties",
+      "purpose": "String values of a reverse property with @type: @id are treated as IRIs",
+      "input": "expand/0049-in.jsonld",
+      "expect": "expand/0049-out.jsonld"
+    }, {
+      "@id": "#t0050",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Term definitions with prefix separate from prefix definitions",
+      "purpose": "Term definitions using compact IRIs don't inherit the definitions of the prefix",
+      "input": "expand/0050-in.jsonld",
+      "expect": "expand/0050-out.jsonld"
+    }, {
+      "@id": "#t0051",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expansion of keyword aliases in term definitions",
+      "purpose": "Expanding terms which are keyword aliases",
+      "input": "expand/0051-in.jsonld",
+      "expect": "expand/0051-out.jsonld"
+    }, {
+      "@id": "#t0052",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@vocab-relative IRIs in term definitions",
+      "purpose": "If @vocab is defined, term definitions are expanded relative to @vocab",
+      "input": "expand/0052-in.jsonld",
+      "expect": "expand/0052-out.jsonld"
+    }, {
+      "@id": "#t0053",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand absolute IRI with @type: @vocab",
+      "purpose": "Expanding values of properties of @type: @vocab does not further expand absolute IRIs",
+      "input": "expand/0053-in.jsonld",
+      "expect": "expand/0053-out.jsonld"
+    }, {
+      "@id": "#t0054",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand term with @type: @vocab",
+      "purpose": "Expanding values of properties of @type: @vocab does not expand term values",
+      "input": "expand/0054-in.jsonld",
+      "expect": "expand/0054-out.jsonld"
+    }, {
+      "@id": "#t0055",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand @vocab-relative term with @type: @vocab",
+      "purpose": "Expanding values of properties of @type: @vocab expands relative IRIs using @vocab",
+      "input": "expand/0055-in.jsonld",
+      "expect": "expand/0055-out.jsonld"
+    }, {
+      "@id": "#t0056",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Use terms with @type: @vocab but not with @type: @id",
+      "purpose": "Checks that expansion uses appropriate base depending on term definition having @type @id or @vocab",
+      "input": "expand/0056-in.jsonld",
+      "expect": "expand/0056-out.jsonld"
+    }, {
+      "@id": "#t0057",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand relative IRI with @type: @vocab",
+      "purpose": "Relative values of terms with @type: @vocab expand relative to @vocab",
+      "input": "expand/0057-in.jsonld",
+      "expect": "expand/0057-out.jsonld"
+    }, {
+      "@id": "#t0058",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand compact IRI with @type: @vocab",
+      "purpose": "Compact IRIs are expanded normally even if term has @type: @vocab",
+      "input": "expand/0058-in.jsonld",
+      "expect": "expand/0058-out.jsonld"
+    }, {
+      "@id": "#t0059",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Reset @vocab by setting it to null",
+      "purpose": "Setting @vocab to null removes a previous definition",
+      "input": "expand/0059-in.jsonld",
+      "expect": "expand/0059-out.jsonld"
+    }, {
+      "@id": "#t0060",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Overwrite document base with @base and reset it again",
+      "purpose": "Setting @base to an IRI and then resetting it to nil",
+      "input": "expand/0060-in.jsonld",
+      "expect": "expand/0060-out.jsonld"
+    }, {
+      "@id": "#t0061",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Coercing native types to arbitrary datatypes",
+      "purpose": "Expanding native types when coercing to arbitrary datatypes",
+      "input": "expand/0061-in.jsonld",
+      "expect": "expand/0061-out.jsonld"
+    }, {
+      "@id": "#t0062",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Various relative IRIs with with @base",
+      "purpose": "Pathological relative IRIs",
+      "input": "expand/0062-in.jsonld",
+      "expect": "expand/0062-out.jsonld"
+    }, {
+      "@id": "#t0063",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Reverse property and index container",
+      "purpose": "Expaning reverse properties with an index-container",
+      "input": "expand/0063-in.jsonld",
+      "expect": "expand/0063-out.jsonld"
+    }, {
+      "@id": "#t0064",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "bnode values of reverse properties",
+      "purpose": "Expand reverse property whose values are unlabeled blank nodes",
+      "input": "expand/0064-in.jsonld",
+      "expect": "expand/0064-out.jsonld"
+    }, {
+      "@id": "#t0065",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Drop unmapped keys in reverse map",
+      "purpose": "Keys that are not mapped to an IRI in a reverse-map are dropped",
+      "input": "expand/0065-in.jsonld",
+      "expect": "expand/0065-out.jsonld"
+    }, {
+      "@id": "#t0066",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Reverse-map keys with @vocab",
+      "purpose": "Expand uses @vocab to expand keys in reverse-maps",
+      "input": "expand/0066-in.jsonld",
+      "expect": "expand/0066-out.jsonld"
+    }, {
+      "@id": "#t0067",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "prefix://suffix not a compact IRI",
+      "purpose": "prefix:suffix values are not interpreted as compact IRIs if suffix begins with two slashes",
+      "input": "expand/0067-in.jsonld",
+      "expect": "expand/0067-out.jsonld"
+    }, {
+      "@id": "#t0068",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "_:suffix values are not a compact IRI",
+      "purpose": "prefix:suffix values are not interpreted as compact IRIs if prefix is an underscore",
+      "input": "expand/0068-in.jsonld",
+      "expect": "expand/0068-out.jsonld"
+    }, {
+      "@id": "#t0069",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Compact IRI as term with type mapping",
+      "purpose": "Redefine compact IRI to define type mapping using the compact IRI itself as value of @id",
+      "input": "expand/0069-in.jsonld",
+      "expect": "expand/0069-out.jsonld"
+    }, {
+      "@id": "#t0070",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Compact IRI as term defined using equivalent compact IRI",
+      "purpose": "Redefine compact IRI to define type mapping using the compact IRI itself as string value",
+      "input": "expand/0070-in.jsonld",
+      "expect": "expand/0070-out.jsonld"
+    }, {
+      "@id": "#t0071",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Redefine terms looking like compact IRIs",
+      "purpose": "Term definitions may look like compact IRIs",
+      "input": "expand/0071-in.jsonld",
+      "expect": "expand/0071-out.jsonld",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0072",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Redefine term using @vocab, not itself",
+      "purpose": "Redefining a term as itself when @vocab is defined uses @vocab, not previous term definition",
+      "input": "expand/0072-in.jsonld",
+      "expect": "expand/0072-out.jsonld"
+    }, {
+      "@id": "#t0073",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@context not first property",
+      "purpose": "Objects are unordered, so serialized node definition containing @context may have @context at the end of the node definition",
+      "input": "expand/0073-in.jsonld",
+      "expect": "expand/0073-out.jsonld"
+    }, {
+      "@id": "#t0074",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@id not first property",
+      "purpose": "Objects are unordered, so serialized node definition containing @id may have @id at the end of the node definition",
+      "input": "expand/0074-in.jsonld",
+      "expect": "expand/0074-out.jsonld"
+    }, {
+      "@id": "#t0075",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@vocab as blank node identifier",
+      "purpose": "Use @vocab to map all properties to blank node identifiers",
+      "option": {"processingMode": "json-ld-1.0"},
+      "input": "expand/0075-in.jsonld",
+      "expect": "expand/0075-out.jsonld"
+    }, {
+      "@id": "#t0076",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "base option overrides document location",
+      "purpose": "Use of the base option overrides the document location",
+      "option": {
+        "base": "http://example/base/"
+      },
+      "input": "expand/0076-in.jsonld",
+      "expect": "expand/0076-out.jsonld"
+    }, {
+      "@id": "#t0077",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expandContext option",
+      "purpose": "Use of the expandContext option to expand the input document",
+      "option": {
+        "expandContext": "expand/0077-context.jsonld"
+      },
+      "input": "expand/0077-in.jsonld",
+      "expect": "expand/0077-out.jsonld"
+    }, {
+      "@id": "#t0078",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "multiple reverse properties",
+      "purpose": "Use of multiple reverse properties",
+      "input": "expand/0078-in.jsonld",
+      "expect": "expand/0078-out.jsonld"
+    }, {
+      "@id": "#t0079",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand @graph container",
+      "purpose": "Use of @graph containers",
+      "input": "expand/0079-in.jsonld",
+      "expect": "expand/0079-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0080",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @set] container",
+      "purpose": "Use of [@graph, @set] containers",
+      "input": "expand/0080-in.jsonld",
+      "expect": "expand/0080-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0081",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Creates an @graph container if value is a graph",
+      "purpose": "Don't double-expand an already expanded graph",
+      "input": "expand/0081-in.jsonld",
+      "expect": "expand/0081-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0082",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @index] container",
+      "purpose": "Use of @graph containers with @index",
+      "input": "expand/0082-in.jsonld",
+      "expect": "expand/0082-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0083",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @index, @set] container",
+      "purpose": "Use of @graph containers with @index and @set",
+      "input": "expand/0083-in.jsonld",
+      "expect": "expand/0083-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0084",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @index] container if value is a graph",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0084-in.jsonld",
+      "expect": "expand/0084-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0085",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @id] container",
+      "purpose": "Use of @graph containers with @id",
+      "input": "expand/0085-in.jsonld",
+      "expect": "expand/0085-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0086",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @id, @set] container",
+      "purpose": "Use of @graph containers with @id and @set",
+      "input": "expand/0086-in.jsonld",
+      "expect": "expand/0086-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0087",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @id] container if value is a graph",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0087-in.jsonld",
+      "expect": "expand/0087-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0088",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand native values to IRIs",
+      "purpose": "Value Expansion does not expand native values, such as booleans, to a node object",
+      "input": "expand/0088-in.jsonld",
+      "expect": "expand/0088-out.jsonld"
+    }, {
+      "@id": "#t0089",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "empty @base applied to the base option",
+      "purpose": "Use of an empty @base is applied to the base option",
+      "option": {
+        "base": "http://example/base/"
+      },
+      "input": "expand/0089-in.jsonld",
+      "expect": "expand/0089-out.jsonld"
+    }, {
+      "@id": "#t0090",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "relative @base overrides base option and document location",
+      "purpose": "Use of a relative @base overrides base option and document location",
+      "option": {
+        "base": "http://example/base/"
+      },
+      "input": "expand/0090-in.jsonld",
+      "expect": "expand/0090-out.jsonld"
+    }, {
+      "@id": "#t0091",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "relative and absolute @base overrides base option and document location",
+      "purpose": "Use of a relative and absolute @base overrides base option and document location",
+      "option": {
+        "base": "http://example/base/"
+      },
+      "input": "expand/0091-in.jsonld",
+      "expect": "expand/0091-out.jsonld"
+    }, {
+      "@id": "#t0092",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Various relative IRIs as properties with with @vocab: ''",
+      "purpose": "Pathological relative property IRIs",
+      "input": "expand/0092-in.jsonld",
+      "expect": "expand/0092-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0093",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand @graph container (multiple objects)",
+      "purpose": "Use of @graph containers",
+      "input": "expand/0093-in.jsonld",
+      "expect": "expand/0093-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0094",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @set] container (multiple objects)",
+      "purpose": "Use of [@graph, @set] containers",
+      "input": "expand/0094-in.jsonld",
+      "expect": "expand/0094-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0095",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Creates an @graph container if value is a graph (multiple objects)",
+      "purpose": "Double-expand an already expanded graph",
+      "input": "expand/0095-in.jsonld",
+      "expect": "expand/0095-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0096",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @index] container (multiple indexed objects)",
+      "purpose": "Use of @graph containers with @index",
+      "input": "expand/0096-in.jsonld",
+      "expect": "expand/0096-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0097",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @index, @set] container (multiple objects)",
+      "purpose": "Use of @graph containers with @index and @set",
+      "input": "expand/0097-in.jsonld",
+      "expect": "expand/0097-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0098",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @index] container if value is a graph (multiple objects)",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0098-in.jsonld",
+      "expect": "expand/0098-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0099",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @id] container (multiple objects)",
+      "purpose": "Use of @graph containers with @id",
+      "input": "expand/0099-in.jsonld",
+      "expect": "expand/0099-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0100",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @id, @set] container (multiple objects)",
+      "purpose": "Use of @graph containers with @id and @set",
+      "input": "expand/0100-in.jsonld",
+      "expect": "expand/0100-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0101",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @id] container if value is a graph (multiple objects)",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0101-in.jsonld",
+      "expect": "expand/0101-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0102",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand @graph container if value is a graph (multiple objects)",
+      "purpose": "Creates a new graph object if indexed value is already a graph object",
+      "input": "expand/0102-in.jsonld",
+      "expect": "expand/0102-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0103",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand @graph container if value is a graph (multiple graphs)",
+      "purpose": "Creates a new graph object if indexed value is already a graph object",
+      "input": "expand/0103-in.jsonld",
+      "expect": "expand/0103-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0104",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Creates an @graph container if value is a graph (mixed graph and object)",
+      "purpose": "Double-expand an already expanded graph",
+      "input": "expand/0104-in.jsonld",
+      "expect": "expand/0104-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0105",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @index] container if value is a graph (mixed graph and object)",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0105-in.jsonld",
+      "expect": "expand/0105-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0106",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not expand [@graph, @id] container if value is a graph (mixed graph and object)",
+      "purpose": "Does not create a new graph object if indexed value is already a graph object",
+      "input": "expand/0106-in.jsonld",
+      "expect": "expand/0106-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0107",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @index] container (indexes with multiple objects)",
+      "purpose": "Use of @graph containers with @index",
+      "input": "expand/0107-in.jsonld",
+      "expect": "expand/0107-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0108",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "expand [@graph, @id] container (multiple ids and objects)",
+      "purpose": "Use of @graph containers with @id",
+      "input": "expand/0108-in.jsonld",
+      "expect": "expand/0108-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0109",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "IRI expansion of fragments including ':'",
+      "purpose": "Do not treat as absolute IRIs values that look like compact IRIs if they're not absolute",
+      "input": "expand/0109-in.jsonld",
+      "expect": "expand/0109-out.jsonld"
+    }, {
+      "@id": "#t0110",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Various relative IRIs as properties with with relative @vocab",
+      "purpose": "Pathological relative property IRIs",
+      "input": "expand/0110-in.jsonld",
+      "expect": "expand/0110-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0111",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Various relative IRIs as properties with with relative @vocab itself relative to an existing vocabulary base",
+      "purpose": "Pathological relative property IRIs",
+      "input": "expand/0111-in.jsonld",
+      "expect": "expand/0111-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0112",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Various relative IRIs as properties with with relative @vocab relative to another relative vocabulary base",
+      "purpose": "Pathological relative property IRIs",
+      "input": "expand/0112-in.jsonld",
+      "expect": "expand/0112-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0113",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "context with JavaScript Object property names",
+      "purpose": "Expand with context including JavaScript Object property names",
+      "input": "expand/0113-in.jsonld",
+      "expect": "expand/0113-out.jsonld"
+    }, {
+      "@id": "#t0114",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expansion allows multiple properties expanding to @type",
+      "purpose": "An exception for the colliding keywords error is made for @type",
+      "input": "expand/0114-in.jsonld",
+      "expect": "expand/0114-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0115",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Verifies that relative IRIs as properties with @vocab: '' in 1.0 generate an error",
+      "purpose": "Relative property IRIs with relative @vocab in 1.0",
+      "input": "expand/0115-in.jsonld",
+      "expectErrorCode": "invalid vocab mapping",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0116",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Verifies that relative IRIs as properties with relative @vocab in 1.0 generate an error",
+      "purpose": "Relative property IRIs with relative @vocab in 1.0",
+      "input": "expand/0116-in.jsonld",
+      "expectErrorCode": "invalid vocab mapping",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0117",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "A term starting with a colon can expand to a different IRI",
+      "purpose": "Terms may begin with a colon and not be treated as IRIs.",
+      "input": "expand/0117-in.jsonld",
+      "expect": "expand/0117-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0118",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expanding a value staring with a colon does not treat that value as an IRI",
+      "purpose": "Terms may begin with a colon and not be treated as IRIs.",
+      "input": "expand/0118-in.jsonld",
+      "expect": "expand/0118-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0119",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignore some terms with @, allow others.",
+      "purpose": "Processors SHOULD generate a warning and MUST ignore terms having the form of a keyword.",
+      "input": "expand/0119-in.jsonld",
+      "expect": "expand/0119-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0120",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignore some values of @id with @, allow others.",
+      "purpose": "Processors SHOULD generate a warning and MUST ignore values of @id having the form of a keyword.",
+      "input": "expand/0120-in.jsonld",
+      "expect": "expand/0120-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0121",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignore some values of @reverse with @, allow others.",
+      "purpose": "Processors SHOULD generate a warning and MUST ignore values of @reverse having the form of a keyword.",
+      "input": "expand/0121-in.jsonld",
+      "expect": "expand/0121-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0122",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignore some IRIs when that start with @ when expanding.",
+      "purpose": "Processors SHOULD generate a warning and MUST ignore IRIs having the form of a keyword. (Note: the resulting document will not be valid JSON-LD, due to the `null` value for `@id`)",
+      "input": "expand/0122-in.jsonld",
+      "expect": "expand/0122-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1", "normative": false}
+    }, {
+      "@id": "#t0123",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Value objects including invalid literal datatype IRIs are rejected",
+      "purpose": "Processors MUST validate datatype IRIs.",
+      "input": "expand/0123-in.jsonld",
+      "expectErrorCode": "invalid typed value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0124",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "compact IRI as @vocab",
+      "purpose": "Verifies that @vocab defined as a compact IRI expands properly",
+      "input": "expand/0124-in.jsonld",
+      "expect": "expand/0124-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0125",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "term as @vocab",
+      "purpose": "Verifies that @vocab defined as a term expands properly",
+      "input": "expand/0125-in.jsonld",
+      "expect": "expand/0125-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0126",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "A scoped context may include itself recursively (direct)",
+      "purpose": "Verifies that no exception is raised on expansion when processing a scoped context referencing itself directly",
+      "input": "expand/0126-in.jsonld",
+      "expect": "expand/0126-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0127",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "A scoped context may include itself recursively (indirect)",
+      "purpose": "Verifies that no exception is raised on expansion when processing a scoped context referencing itself indirectly",
+      "input": "expand/0127-in.jsonld",
+      "expect": "expand/0127-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0128",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "Two scoped context may include a shared context",
+      "purpose": "Verifies that no exception is raised on expansion when processing two scoped contexts referencing a shared context",
+      "input": "expand/0128-in.jsonld",
+      "expect": "expand/0128-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#t0129",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Base without trailing slash, without path",
+      "purpose": "Verify URI resolution relative to base (without trailing slash, without path) according to RFC 3986",
+      "input": "expand/0129-in.jsonld",
+      "expect": "expand/0129-out.jsonld"
+    }, {
+      "@id": "#t0130",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Base without trailing slash, with path",
+      "purpose": "Verify URI resolution relative to base (without trailing slash, with path) according to RFC 3986",
+      "input": "expand/0130-in.jsonld",
+      "expect": "expand/0130-out.jsonld"
+    }, {
+      "@id": "#tc001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "adding new term",
+      "purpose": "Expansion using a scoped context uses term scope for selecting proper term",
+      "input": "expand/c001-in.jsonld",
+      "expect": "expand/c001-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "overriding a term",
+      "purpose": "Expansion using a scoped context uses term scope for selecting proper term",
+      "input": "expand/c002-in.jsonld",
+      "expect": "expand/c002-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property and value with different terms mapping to the same expanded property",
+      "purpose": "Expansion using a scoped context uses term scope for selecting proper term",
+      "input": "expand/c003-in.jsonld",
+      "expect": "expand/c003-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "deep @context affects nested nodes",
+      "purpose": "Expansion using a scoped context uses term scope for selecting proper term",
+      "input": "expand/c004-in.jsonld",
+      "expect": "expand/c004-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "scoped context layers on intemediate contexts",
+      "purpose": "Expansion using a scoped context uses term scope for selecting proper term",
+      "input": "expand/c005-in.jsonld",
+      "expect": "expand/c005-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "adding new term",
+      "purpose": "scoped context on @type",
+      "input": "expand/c006-in.jsonld",
+      "expect": "expand/c006-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "overriding a term",
+      "purpose": "scoped context on @type",
+      "input": "expand/c007-in.jsonld",
+      "expect": "expand/c007-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "alias of @type",
+      "purpose": "scoped context on @type",
+      "input": "expand/c008-in.jsonld",
+      "expect": "expand/c008-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "deep @type-scoped @context does NOT affect nested nodes",
+      "purpose": "scoped context on @type",
+      "input": "expand/c009-in.jsonld",
+      "expect": "expand/c009-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "scoped context layers on intemediate contexts",
+      "purpose": "scoped context on @type",
+      "input": "expand/c010-in.jsonld",
+      "expect": "expand/c010-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "orders @type terms when applying scoped contexts",
+      "purpose": "scoped context on @type",
+      "input": "expand/c011-in.jsonld",
+      "expect": "expand/c011-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "deep property-term scoped @context in @type-scoped @context affects nested nodes",
+      "purpose": "scoped context on @type",
+      "input": "expand/c012-in.jsonld",
+      "expect": "expand/c012-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type maps use scoped context from type index and not scoped context from containing",
+      "purpose": "scoped context on @type",
+      "input": "expand/c013-in.jsonld",
+      "expect": "expand/c013-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped context nullification",
+      "purpose": "type-scoped context nullification",
+      "input": "expand/c014-in.jsonld",
+      "expect": "expand/c014-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped base",
+      "purpose": "type-scoped base",
+      "input": "expand/c015-in.jsonld",
+      "expect": "expand/c015-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped vocab",
+      "purpose": "type-scoped vocab",
+      "input": "expand/c016-in.jsonld",
+      "expect": "expand/c016-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "multiple type-scoped contexts are properly reverted",
+      "purpose": "multiple type-scoped contexts are property reverted",
+      "input": "expand/c017-in.jsonld",
+      "expect": "expand/c017-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "multiple type-scoped types resolved against previous context",
+      "purpose": "multiple type-scoped types resolved against previous context",
+      "input": "expand/c018-in.jsonld",
+      "expect": "expand/c018-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped context with multiple property scoped terms",
+      "purpose": "type-scoped context with multiple property scoped terms",
+      "input": "expand/c019-in.jsonld",
+      "expect": "expand/c019-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc020",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped value",
+      "purpose": "type-scoped value",
+      "input": "expand/c020-in.jsonld",
+      "expect": "expand/c020-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc021",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped value mix",
+      "purpose": "type-scoped value mix",
+      "input": "expand/c021-in.jsonld",
+      "expect": "expand/c021-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc022",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped property-scoped contexts including @type:@vocab",
+      "purpose": "type-scoped property-scoped contexts including @type:@vocab",
+      "input": "expand/c022-in.jsonld",
+      "expect": "expand/c022-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc023",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "composed type-scoped property-scoped contexts including @type:@vocab",
+      "purpose": "composed type-scoped property-scoped contexts including @type:@vocab",
+      "input": "expand/c023-in.jsonld",
+      "expect": "expand/c023-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc024",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped + property-scoped + values evaluates against previous context",
+      "purpose": "type-scoped + property-scoped + values evaluates against previous context",
+      "input": "expand/c024-in.jsonld",
+      "expect": "expand/c024-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc025",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type-scoped + graph container",
+      "purpose": "type-scoped + graph container",
+      "input": "expand/c025-in.jsonld",
+      "expect": "expand/c025-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc026",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate: true on type-scoped context",
+      "purpose": "type-scoped context with @propagate: true survive node-objects",
+      "input": "expand/c026-in.jsonld",
+      "expect": "expand/c026-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc027",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate: false on property-scoped context",
+      "purpose": "property-scoped context with @propagate: false do not survive node-objects",
+      "input": "expand/c027-in.jsonld",
+      "expect": "expand/c027-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc028",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate: false on embedded context",
+      "purpose": "embedded context with @propagate: false do not survive node-objects",
+      "input": "expand/c028-in.jsonld",
+      "expect": "expand/c028-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc029",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate is invalid in 1.0",
+      "purpose": "@propagate is invalid in 1.0",
+      "input": "expand/c029-in.jsonld",
+      "expectErrorCode": "invalid context entry",
+      "option": {"specVersion": "json-ld-1.1", "processingMode": "json-ld-1.0"}
+    }, {
+      "@id": "#tc030",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate must be boolean valued",
+      "purpose": "@propagate must be boolean valued",
+      "input": "expand/c030-in.jsonld",
+      "expectErrorCode": "invalid @propagate value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc031",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@context resolutions respects relative URLs.",
+      "purpose": "URL resolution follows RFC3986",
+      "input": "expand/c031-in.jsonld",
+      "expect": "expand/c031-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc032",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Unused embedded context with error.",
+      "purpose": "An embedded context which is never used should still be checked.",
+      "input": "expand/c032-in.jsonld",
+      "expectErrorCode": "invalid scoped context",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc033",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Unused context with an embedded context error.",
+      "purpose": "An unused context with an embedded context should still be checked.",
+      "input": "expand/c033-in.jsonld",
+      "expectErrorCode": "invalid scoped context",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc034",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Remote scoped context.",
+      "purpose": "Scoped contexts may be externally loaded.",
+      "input": "expand/c034-in.jsonld",
+      "expect": "expand/c034-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc035",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Term scoping with embedded contexts.",
+      "purpose": "Terms should make use of @vocab relative to the scope in which the term was defined.",
+      "input": "expand/c035-in.jsonld",
+      "expect": "expand/c035-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expansion with empty property-scoped context.",
+      "purpose": "Adding a minimal/empty property-scoped context should not affect expansion of terms defined in the outer scope.",
+      "input": "expand/c036-in.jsonld",
+      "expect": "expand/c036-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc037",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-scoped contexts which are alias of @nest",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "expand/c037-in.jsonld",
+      "expect": "expand/c037-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tc038",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Bibframe example (poor-mans inferrence)",
+      "purpose": "Nesting terms may have property-scoped contexts defined.",
+      "input": "expand/c038-in.jsonld",
+      "expect": "expand/c038-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tdi01",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "Expand string using default and term directions",
+      "purpose": "Strings are coerced to have @direction based on default and term direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di01-in.jsonld",
+      "expect": "expand/di01-out.jsonld"
+    }, {
+      "@id": "#tdi02",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "Expand string using default and term directions and languages",
+      "purpose": "Strings are coerced to have @direction based on default and term direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di02-in.jsonld",
+      "expect": "expand/di02-out.jsonld"
+    }, {
+      "@id": "#tdi03",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "expand list values with @direction",
+      "purpose": "List values where the term has @direction are used in expansion.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di03-in.jsonld",
+      "expect": "expand/di03-out.jsonld"
+    }, {
+      "@id": "#tdi04",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "simple language map with term direction",
+      "purpose": "Term selection with language maps and @direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di04-in.jsonld",
+      "expect": "expand/di04-out.jsonld"
+    }, {
+      "@id": "#tdi05",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "simple language mapwith overriding term direction",
+      "purpose": "Term selection with language maps and @direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di05-in.jsonld",
+      "expect": "expand/di05-out.jsonld"
+    }, {
+      "@id": "#tdi06",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "simple language mapwith overriding null direction",
+      "purpose": "Term selection with language maps and @direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di06-in.jsonld",
+      "expect": "expand/di06-out.jsonld"
+    }, {
+      "@id": "#tdi07",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:ExpandTest" ],
+      "name": "simple language map with mismatching term direction",
+      "purpose": "Term selection with language maps and @direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di07-in.jsonld",
+      "expect": "expand/di07-out.jsonld"
+    }, {
+      "@id": "#tdi08",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@direction must be one of ltr or rtl",
+      "purpose": "Generate an error if @direction has illegal value.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di08-in.jsonld",
+      "expectErrorCode": "invalid base direction"
+    }, {
+      "@id": "#tdi09",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@direction is incompatible with @type",
+      "purpose": "Value objects can have either @type but not @language or @direction.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/di09-in.jsonld",
+      "expectErrorCode": "invalid value object"
+    }, {
+      "@id": "#tec01",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid keyword in term definition",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid term definition is found",
+      "input": "expand/ec01-in.jsonld",
+      "expectErrorCode": "invalid term definition",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tec02",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Term definition on @type with empty map",
+      "purpose": "Verifies that an exception is raised if @type is defined as a term with an empty map",
+      "input": "expand/ec02-in.jsonld",
+      "expectErrorCode": "keyword redefinition",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tem01",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid container mapping",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid container mapping is found",
+      "input": "expand/em01-in.jsonld",
+      "expectErrorCode": "invalid container mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten01",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@nest MUST NOT have a string value",
+      "purpose": "container: @nest",
+      "input": "expand/en01-in.jsonld",
+      "expectErrorCode": "invalid @nest value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten02",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@nest MUST NOT have a boolen value",
+      "purpose": "Transparent Nesting",
+      "input": "expand/en02-in.jsonld",
+      "expectErrorCode": "invalid @nest value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten03",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@nest MUST NOT have a numeric value",
+      "purpose": "Transparent Nesting",
+      "input": "expand/en03-in.jsonld",
+      "expectErrorCode": "invalid @nest value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten04",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "@nest MUST NOT have a value object value",
+      "purpose": "Transparent Nesting",
+      "input": "expand/en04-in.jsonld",
+      "expectErrorCode": "invalid @nest value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten05",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "does not allow a keyword other than @nest for the value of @nest",
+      "purpose": "Transparent Nesting",
+      "input": "expand/en05-in.jsonld",
+      "expectErrorCode": "invalid @nest value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ten06",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "does not allow @nest with @reverse",
+      "purpose": "Transparent Nesting",
+      "input": "expand/en06-in.jsonld",
+      "expectErrorCode": "invalid reverse property",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tep02",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "processingMode json-ld-1.0 conflicts with @version: 1.1",
+      "purpose": "If processingMode is explicitly json-ld-1.0, it will conflict with 1.1 features.",
+      "input": "expand/ep02-in.jsonld",
+      "expectErrorCode": "processing mode conflict",
+      "option": {"processingMode": "json-ld-1.0", "specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tep03",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@version must be 1.1",
+      "purpose": "If @version is specified, it must be 1.1",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/ep03-in.jsonld",
+      "expectErrorCode": "invalid @version value"
+    }, {
+      "@id": "#ter01",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Keywords cannot be aliased to other keywords",
+      "purpose": "Verifies that an exception is raised on expansion when processing an invalid context aliasing a keyword to another keyword",
+      "input": "expand/er01-in.jsonld",
+      "expectErrorCode": "keyword redefinition"
+    }, {
+      "@id": "#ter02",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "A context may not include itself recursively (direct)",
+      "purpose": "Verifies that an exception is raised on expansion when processing a context referencing itself",
+      "input": "expand/er02-in.jsonld",
+      "expectErrorCode": "recursive context inclusion",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#ter03",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "A context may not include itself recursively (indirect)",
+      "purpose": "Verifies that an exception is raised on expansion when processing a context referencing itself indirectly",
+      "input": "expand/er03-in.jsonld",
+      "expectErrorCode": "recursive context inclusion",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#ter04",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Error dereferencing a remote context",
+      "purpose": "Verifies that an exception is raised on expansion when a context dereference results in an error",
+      "input": "expand/er04-in.jsonld",
+      "expectErrorCode": "loading remote context failed"
+    }, {
+      "@id": "#ter05",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid remote context",
+      "purpose": "Verifies that an exception is raised on expansion when a remote context is not an object containing @context",
+      "input": "expand/er05-in.jsonld",
+      "expectErrorCode": "invalid remote context",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter06",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid local context",
+      "purpose": "Verifies that an exception is raised on expansion when a context is not a string or object",
+      "input": "expand/er06-in.jsonld",
+      "expectErrorCode": "invalid local context"
+    }, {
+      "@id": "#ter07",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid base IRI",
+      "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @base",
+      "input": "expand/er07-in.jsonld",
+      "expectErrorCode": "invalid base IRI"
+    }, {
+      "@id": "#ter08",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid vocab mapping",
+      "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @vocab mapping",
+      "input": "expand/er08-in.jsonld",
+      "expectErrorCode": "invalid vocab mapping"
+    }, {
+      "@id": "#ter09",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid default language",
+      "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @language",
+      "input": "expand/er09-in.jsonld",
+      "expectErrorCode": "invalid default language"
+    }, {
+      "@id": "#ter10",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Cyclic IRI mapping",
+      "purpose": "Verifies that an exception is raised on expansion when a cyclic IRI mapping is found",
+      "input": "expand/er10-in.jsonld",
+      "expectErrorCode": "cyclic IRI mapping"
+    }, {
+      "@id": "#ter11",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid term definition",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid term definition is found",
+      "input": "expand/er11-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#ter12",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid type mapping (not a string)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid type mapping is found",
+      "input": "expand/er12-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ter13",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid type mapping (not absolute IRI)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid type mapping is found",
+      "input": "expand/er13-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ter14",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse property (contains @id)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid reverse property is found",
+      "input": "expand/er14-in.jsonld",
+      "expectErrorCode": "invalid reverse property"
+    }, {
+      "@id": "#ter15",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid IRI mapping (@reverse not a string)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid IRI mapping is found",
+      "input": "expand/er15-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping"
+    }, {
+      "@id": "#ter17",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse property (invalid @container)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid reverse property is found",
+      "input": "expand/er17-in.jsonld",
+      "expectErrorCode": "invalid reverse property"
+    }, {
+      "@id": "#ter18",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid IRI mapping (@id not a string)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid IRI mapping is found",
+      "input": "expand/er18-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping"
+    }, {
+      "@id": "#ter19",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid keyword alias (@context)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid keyword alias is found",
+      "input": "expand/er19-in.jsonld",
+      "expectErrorCode": "invalid keyword alias"
+    }, {
+      "@id": "#ter20",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid IRI mapping (no vocab mapping)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid IRI mapping is found",
+      "input": "expand/er20-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping"
+    }, {
+      "@id": "#ter21",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid container mapping",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid container mapping is found",
+      "input": "expand/er21-in.jsonld",
+      "expectErrorCode": "invalid container mapping",
+      "option": {"processingMode": "json-ld-1.0", "specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter22",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid language mapping",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid language mapping is found",
+      "input": "expand/er22-in.jsonld",
+      "expectErrorCode": "invalid language mapping"
+    }, {
+      "@id": "#ter23",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid IRI mapping (relative IRI in @type)",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid type mapping is found",
+      "input": "expand/er23-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ter24",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "List of lists (from array)",
+      "purpose": "Verifies that an exception is raised in Expansion when a list of lists is found",
+      "input": "expand/er24-in.jsonld",
+      "expectErrorCode": "list of lists",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#ter25",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse property map",
+      "purpose": "Verifies that an exception is raised in Expansion when a invalid reverse property map is found",
+      "input": "expand/er25-in.jsonld",
+      "expectErrorCode": "invalid reverse property map"
+    }, {
+      "@id": "#ter26",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Colliding keywords",
+      "purpose": "Verifies that an exception is raised in Expansion when colliding keywords are found",
+      "input": "expand/er26-in.jsonld",
+      "expectErrorCode": "colliding keywords"
+    }, {
+      "@id": "#ter27",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid @id value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid @id value is found",
+      "input": "expand/er27-in.jsonld",
+      "expectErrorCode": "invalid @id value"
+    }, {
+      "@id": "#ter28",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid type value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid type value is found",
+      "input": "expand/er28-in.jsonld",
+      "expectErrorCode": "invalid type value"
+    }, {
+      "@id": "#ter29",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid value object value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid value object value is found",
+      "input": "expand/er29-in.jsonld",
+      "expectErrorCode": "invalid value object value"
+    }, {
+      "@id": "#ter30",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid language-tagged string",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid language-tagged string value is found",
+      "input": "expand/er30-in.jsonld",
+      "expectErrorCode": "invalid language-tagged string"
+    }, {
+      "@id": "#ter31",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid @index value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid @index value value is found",
+      "input": "expand/er31-in.jsonld",
+      "expectErrorCode": "invalid @index value"
+    }, {
+      "@id": "#ter32",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "List of lists (from array)",
+      "purpose": "Verifies that an exception is raised in Expansion when a list of lists is found",
+      "input": "expand/er32-in.jsonld",
+      "expectErrorCode": "list of lists",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#ter33",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid @reverse value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid @reverse value is found",
+      "input": "expand/er33-in.jsonld",
+      "expectErrorCode": "invalid @reverse value"
+    }, {
+      "@id": "#ter34",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse property value (in @reverse)",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid reverse property value is found",
+      "input": "expand/er34-in.jsonld",
+      "expectErrorCode": "invalid reverse property value"
+    }, {
+      "@id": "#ter35",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid language map value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid language map value is found",
+      "input": "expand/er35-in.jsonld",
+      "expectErrorCode": "invalid language map value"
+    }, {
+      "@id": "#ter36",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse property value (through coercion)",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid reverse property value is found",
+      "input": "expand/er36-in.jsonld",
+      "expectErrorCode": "invalid reverse property value"
+    }, {
+      "@id": "#ter37",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid value object (unexpected keyword)",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid value object is found",
+      "input": "expand/er37-in.jsonld",
+      "expectErrorCode": "invalid value object"
+    }, {
+      "@id": "#ter38",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid value object (@type and @language)",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid value object is found",
+      "input": "expand/er38-in.jsonld",
+      "expectErrorCode": "invalid value object"
+    }, {
+      "@id": "#ter39",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid language-tagged value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid language-tagged value is found",
+      "input": "expand/er39-in.jsonld",
+      "expectErrorCode": "invalid language-tagged value"
+    }, {
+      "@id": "#ter40",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid typed value",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid typed value is found",
+      "input": "expand/er40-in.jsonld",
+      "expectErrorCode": "invalid typed value"
+    }, {
+      "@id": "#ter41",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid set or list object",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid set or list object is found",
+      "input": "expand/er41-in.jsonld",
+      "expectErrorCode": "invalid set or list object"
+   }, {
+      "@id": "#ter42",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Keywords may not be redefined in 1.0",
+      "purpose": "Verifies that an exception is raised on expansion when processing an invalid context attempting to define @container on a keyword",
+      "option": {"specVersion": "json-ld-1.1", "processingMode": "json-ld-1.0"},
+      "input": "expand/er42-in.jsonld",
+      "expectErrorCode": "keyword redefinition"
+    }, {
+      "@id": "#ter43",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Term definition with @id: @type",
+      "purpose": "Expanding term mapping to @type uses @type syntax now illegal",
+      "input": "expand/er43-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter44",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Redefine terms looking like compact IRIs",
+      "purpose": "Term definitions may look like compact IRIs, but must be consistent.",
+      "input": "expand/er44-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter48",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Invalid term as relative IRI",
+      "purpose": "Verifies that a relative IRI cannot be used as a term.",
+      "input": "expand/er48-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter49",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "A relative IRI cannot be used as a prefix",
+      "purpose": "Verifies that a relative IRI cannot be used as a term.",
+      "input": "expand/er49-in.jsonld",
+      "expectErrorCode": "invalid term definition",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#ter50",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid reverse id",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid IRI is used for @reverse.",
+      "input": "expand/er50-in.jsonld",
+      "expectErrorCode": "invalid IRI mapping"
+    }, {
+      "@id": "#ter51",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Invalid value object value using a value alias",
+      "purpose": "Verifies that an exception is raised in Expansion when an invalid value object value is found using a value alias",
+      "input": "expand/er51-in.jsonld",
+      "expectErrorCode": "invalid value object value"
+     }, {
+      "@id": "#ter52",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+      "name": "Definition for the empty term",
+      "purpose": "Verifies that an exception is raised on expansion when a context contains a definition for the empty term",
+      "input": "expand/er52-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+     "@id": "#ter53",
+     "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+     "name": "Invalid prefix value",
+     "purpose": "Verifies that an exception is raised on expansion when a context contains an invalid @prefix value",
+     "input": "expand/er53-in.jsonld",
+     "expectErrorCode": "invalid @prefix value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+     "@id": "#ter54",
+     "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+     "name": "Invalid value object, multiple values for @type.",
+     "purpose": "The value of @type in a value object MUST be a string or null.",
+     "input": "expand/er54-in.jsonld",
+     "expectErrorCode": "invalid typed value"
+    }, {
+     "@id": "#ter55",
+     "@type": [ "jld:NegativeEvaluationTest", "jld:ExpandTest" ],
+     "name": "Invalid term definition, multiple values for @type.",
+     "purpose": "The value of @type in an expanded term definition object MUST be a string or null.",
+     "input": "expand/er55-in.jsonld",
+     "expectErrorCode": "invalid type mapping"
+   }, {
+      "@id": "#tes01",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Using an array value for @context is illegal in JSON-LD 1.0",
+      "purpose": "Verifies that an exception is raised on expansion when a invalid container mapping is found",
+      "input": "expand/es01-in.jsonld",
+      "expectErrorCode": "invalid container mapping",
+      "option": {"processingMode": "json-ld-1.0", "specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tes02",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Mapping @container: [@list, @set] is invalid",
+      "purpose": "Testing legal combinations of @set with other container values",
+      "input": "expand/es02-in.jsonld",
+      "expectErrorCode": "invalid container mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin01",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Basic Included array",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in01-in.jsonld",
+      "expect": "expand/in01-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Basic Included object",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in02-in.jsonld",
+      "expect": "expand/in02-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin03",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Multiple properties mapping to @included are folded together",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in03-in.jsonld",
+      "expect": "expand/in03-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin04",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Included containing @included",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in04-in.jsonld",
+      "expect": "expand/in04-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin05",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Property value with @included",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in05-in.jsonld",
+      "expect": "expand/in05-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "json.api example",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in06-in.jsonld",
+      "expect": "expand/in06-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin07",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Error if @included value is a string",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in07-in.jsonld",
+      "expectErrorCode": "invalid @included value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin08",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Error if @included value is a value object",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in08-in.jsonld",
+      "expectErrorCode": "invalid @included value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin09",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Error if @included value is a list object",
+      "purpose": "Tests included blocks.",
+      "input": "expand/in09-in.jsonld",
+      "expectErrorCode": "invalid @included value",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs01",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (boolean true)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (boolean true).",
+      "input": "expand/js01-in.jsonld",
+      "expect": "expand/js01-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (boolean false)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (boolean false).",
+      "input": "expand/js02-in.jsonld",
+      "expect": "expand/js02-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs03",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (double)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (double).",
+      "input": "expand/js03-in.jsonld",
+      "expect": "expand/js03-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs04",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (double-zero)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (double-zero).",
+      "input": "expand/js04-in.jsonld",
+      "expect": "expand/js04-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs05",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (integer)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (integer).",
+      "input": "expand/js05-in.jsonld",
+      "expect": "expand/js05-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (object)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (object).",
+      "input": "expand/js06-in.jsonld",
+      "expect": "expand/js06-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs07",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (array)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (array).",
+      "input": "expand/js07-in.jsonld",
+      "expect": "expand/js07-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs08",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with array canonicalization",
+      "purpose": "Tests expanding JSON literal with array canonicalization.",
+      "input": "expand/js08-in.jsonld",
+      "expect": "expand/js08-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs09",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Transform JSON literal with string canonicalization",
+      "purpose": "Tests expanding JSON literal with string canonicalization.",
+      "input": "expand/js09-in.jsonld",
+      "expect": "expand/js09-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs10",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with structural canonicalization",
+      "purpose": "Tests expanding JSON literal with structural canonicalization.",
+      "input": "expand/js10-in.jsonld",
+      "expect": "expand/js10-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs11",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with unicode canonicalization",
+      "purpose": "Tests expanding JSON literal with unicode canonicalization.",
+      "input": "expand/js11-in.jsonld",
+      "expect": "expand/js11-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs12",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with value canonicalization",
+      "purpose": "Tests expanding JSON literal with value canonicalization.",
+      "input": "expand/js12-in.jsonld",
+      "expect": "expand/js12-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs13",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with wierd canonicalization",
+      "purpose": "Tests expanding JSON literal with wierd canonicalization.",
+      "input": "expand/js13-in.jsonld",
+      "expect": "expand/js13-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs14",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal without expanding contents",
+      "purpose": "Tests expanding JSON literal does not expand terms inside json.",
+      "input": "expand/js14-in.jsonld",
+      "expect": "expand/js14-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs15",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal aleady in expanded form",
+      "purpose": "Tests expanding JSON literal in expanded form.",
+      "input": "expand/js15-in.jsonld",
+      "expect": "expand/js15-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs16",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal aleady in expanded form with aliased keys",
+      "purpose": "Tests expanding JSON literal in expanded form with aliased keys in value object.",
+      "input": "expand/js16-in.jsonld",
+      "expect": "expand/js16-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs17",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (string)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (string).",
+      "input": "expand/js17-in.jsonld",
+      "expect": "expand/js17-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs18",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (null)",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (null).",
+      "input": "expand/js18-in.jsonld",
+      "expect": "expand/js18-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs19",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with aliased @type",
+      "purpose": "Tests expanding JSON literal with aliased @type.",
+      "input": "expand/js19-in.jsonld",
+      "expect": "expand/js19-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs20",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with aliased @value",
+      "purpose": "Tests expanding JSON literal with aliased @value.",
+      "input": "expand/js20-in.jsonld",
+      "expect": "expand/js20-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs21",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal with @context",
+      "purpose": "Tests expanding JSON literal with a @context.",
+      "input": "expand/js21-in.jsonld",
+      "expect": "expand/js21-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs22",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (null) aleady in expanded form.",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (null).",
+      "input": "expand/js22-in.jsonld",
+      "expect": "expand/js22-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tjs23",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expand JSON literal (empty array).",
+      "purpose": "Tests expanding property with @type @json to a JSON literal (empty array).",
+      "input": "expand/js23-in.jsonld",
+      "expect": "expand/js23-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tl001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Language map with null value",
+      "purpose": "A language map may have a null value, which is ignored",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/l001-in.jsonld",
+      "expect": "expand/l001-out.jsonld"
+    }, {
+      "@id": "#tli01",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@list containing @list",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li01-in.jsonld",
+      "expect": "expand/li01-out.jsonld"
+    }, {
+      "@id": "#tli02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@list containing empty @list",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li02-in.jsonld",
+      "expect": "expand/li02-out.jsonld"
+    }, {
+      "@id": "#tli03",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@list containing @list (with coercion)",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li03-in.jsonld",
+      "expect": "expand/li03-out.jsonld"
+    }, {
+      "@id": "#tli04",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@list containing empty @list (with coercion)",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li04-in.jsonld",
+      "expect": "expand/li04-out.jsonld"
+    }, {
+      "@id": "#tli05",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing an array",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li05-in.jsonld",
+      "expect": "expand/li05-out.jsonld"
+    }, {
+      "@id": "#tli06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing an empty array",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li06-in.jsonld",
+      "expect": "expand/li06-out.jsonld"
+    }, {
+      "@id": "#tli07",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing deep arrays",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li07-in.jsonld",
+      "expect": "expand/li07-out.jsonld"
+    }, {
+      "@id": "#tli08",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing deep empty arrays",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li08-in.jsonld",
+      "expect": "expand/li08-out.jsonld"
+    }, {
+      "@id": "#tli09",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing multiple lists",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li09-in.jsonld",
+      "expect": "expand/li09-out.jsonld"
+    }, {
+      "@id": "#tli10",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "coerced @list containing mixed list values",
+      "purpose": "List of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/li10-in.jsonld",
+      "expect": "expand/li10-out.jsonld"
+    }, {
+      "@id": "#tm001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Adds @id to object not having an @id",
+      "purpose": "Expansion using @container: @id",
+      "input": "expand/m001-in.jsonld",
+      "expect": "expand/m001-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Retains @id in object already having an @id",
+      "purpose": "Expansion using @container: @id",
+      "input": "expand/m002-in.jsonld",
+      "expect": "expand/m002-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Adds @type to object not having an @type",
+      "purpose": "Expansion using @container: @type",
+      "input": "expand/m003-in.jsonld",
+      "expect": "expand/m003-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Prepends @type in object already having an @type",
+      "purpose": "Expansion using @container: @type",
+      "input": "expand/m004-in.jsonld",
+      "expect": "expand/m004-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Adds expanded @id to object",
+      "purpose": "Expansion using @container: @id",
+      "input": "expand/m005-in.jsonld",
+      "expect": "expand/m005-out.jsonld",
+      "option": {"base": "http://example.org/", "specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Adds vocabulary expanded @type to object",
+      "purpose": "Expansion using @container: @type",
+      "input": "expand/m006-in.jsonld",
+      "expect": "expand/m006-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Adds document expanded @type to object",
+      "purpose": "Expansion using @container: @type",
+      "input": "expand/m007-in.jsonld",
+      "expect": "expand/m007-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "When type is in a type map",
+      "purpose": "scoped context on @type",
+      "input": "expand/m008-in.jsonld",
+      "expect": "expand/m008-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "language map with @none",
+      "purpose": "index on @language",
+      "input": "expand/m009-in.jsonld",
+      "expect": "expand/m009-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "language map with alias of @none",
+      "purpose": "index on @language",
+      "input": "expand/m010-in.jsonld",
+      "expect": "expand/m010-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "id map with @none",
+      "purpose": "index on @id",
+      "input": "expand/m011-in.jsonld",
+      "expect": "expand/m011-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "type map with alias of @none",
+      "purpose": "index on @type",
+      "input": "expand/m012-in.jsonld",
+      "expect": "expand/m012-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "graph index map with @none",
+      "purpose": "index on @graph and @index",
+      "input": "expand/m013-in.jsonld",
+      "expect": "expand/m013-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "graph index map with alias @none",
+      "purpose": "index on @graph and @index",
+      "input": "expand/m014-in.jsonld",
+      "expect": "expand/m014-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "graph id index map with aliased @none",
+      "purpose": "index on @graph and @id with @none",
+      "input": "expand/m015-in.jsonld",
+      "expect": "expand/m015-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "graph id index map with aliased @none",
+      "purpose": "index on @graph and @id with @none",
+      "input": "expand/m016-in.jsonld",
+      "expect": "expand/m016-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "string value of type map expands to node reference",
+      "purpose": "index on @type",
+      "input": "expand/m017-in.jsonld",
+      "expect": "expand/m017-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "string value of type map expands to node reference with @type: @id",
+      "purpose": "index on @type",
+      "input": "expand/m018-in.jsonld",
+      "expect": "expand/m018-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "string value of type map expands to node reference with @type: @vocab",
+      "purpose": "index on @type",
+      "input": "expand/m019-in.jsonld",
+      "expect": "expand/m019-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tm020",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "string value of type map must not be a literal",
+      "purpose": "index on @type",
+      "input": "expand/m020-in.jsonld",
+      "expectErrorCode": "invalid type mapping",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expands input using @nest",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n001-in.jsonld",
+      "expect": "expand/n001-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Expands input using aliased @nest",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n002-in.jsonld",
+      "expect": "expand/n002-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Appends nested values when property at base and nested",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n003-in.jsonld",
+      "expect": "expand/n003-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Appends nested values from all @nest aliases",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n004-in.jsonld",
+      "expect": "expand/n004-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Nested nested containers",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n005-in.jsonld",
+      "expect": "expand/n005-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Arrays of nested values",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n006-in.jsonld",
+      "expect": "expand/n006-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "A nest of arrays",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n007-in.jsonld",
+      "expect": "expand/n007-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tn008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Multiple keys may mapping to @type when nesting",
+      "purpose": "Expansion using @nest",
+      "input": "expand/n008-in.jsonld",
+      "expect": "expand/n008-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tp001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@version may be specified after first context",
+      "purpose": "If processing mode is not set through API, it is set by the first context containing @version.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/p001-in.jsonld",
+      "expect": "expand/p001-out.jsonld"
+    }, {
+      "@id": "#tp002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@version setting [1.0, 1.1, 1.0]",
+      "purpose": "If processing mode is not set through API, it is set by the first context containing @version.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/p002-in.jsonld",
+      "expect": "expand/p002-out.jsonld"
+    }, {
+      "@id": "#tp003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@version setting [1.1, 1.0]",
+      "purpose": "If processing mode is not set through API, it is set by the first context containing @version.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/p003-in.jsonld",
+      "expect": "expand/p003-out.jsonld"
+    }, {
+      "@id": "#tp004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@version setting [1.1, 1.0, 1.1]",
+      "purpose": "If processing mode is not set through API, it is set by the first context containing @version.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/p004-in.jsonld",
+      "expect": "expand/p004-out.jsonld"
+    }, {
+      "@id": "#tpi01",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "error if @version is json-ld-1.0 for property-valued index",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1", "processingMode": "json-ld-1.0"},
+      "input": "expand/pi01-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#tpi02",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "error if @container does not include @index for property-valued index",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi02-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#tpi03",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "error if @index is a keyword for property-valued index",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi03-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#tpi04",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "error if @index is not a string for property-valued index",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi04-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#tpi05",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "error if attempting to add property to value object for property-valued index",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi05-in.jsonld",
+      "expectErrorCode": "invalid value object"
+    }, {
+      "@id": "#tpi06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index expands to property value, instead of @index (value)",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi06-in.jsonld",
+      "expect": "expand/pi06-out.jsonld"
+    }, {
+      "@id": "#tpi07",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index appends to property value, instead of @index (value)",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi07-in.jsonld",
+      "expect": "expand/pi07-out.jsonld"
+    }, {
+      "@id": "#tpi08",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index expands to property value, instead of @index (node)",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi08-in.jsonld",
+      "expect": "expand/pi08-out.jsonld"
+    }, {
+      "@id": "#tpi09",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index appends to property value, instead of @index (node)",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi09-in.jsonld",
+      "expect": "expand/pi09-out.jsonld"
+    }, {
+      "@id": "#tpi10",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index does not output property for @none",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi10-in.jsonld",
+      "expect": "expand/pi10-out.jsonld"
+    }, {
+      "@id": "#tpi11",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "property-valued index adds property to graph object",
+      "purpose": "Expanding index maps where index is a property.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pi11-in.jsonld",
+      "expect": "expand/pi11-out.jsonld"
+    }, {
+      "@id": "#tpr01",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protect a term",
+      "purpose": "Check error when overriding a protected term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr01-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Set a term to not be protected",
+      "purpose": "A term with @protected: false is not protected.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr02-in.jsonld",
+      "expect": "expand/pr02-out.jsonld"
+    }, {
+      "@id": "#tpr03",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protect all terms in context",
+      "purpose": "A protected context protects all term definitions.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr03-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr04",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Do not protect term with @protected: false",
+      "purpose": "A protected context does not protect terms with @protected: false.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr04-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr05",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Clear active context with protected terms from an embedded context",
+      "purpose": "The Active context be set to null from an embedded context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr05-in.jsonld",
+      "expectErrorCode": "invalid context nullification"
+    }, {
+      "@id": "#tpr06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Clear active context of protected terms from a term.",
+      "purpose": "The Active context may be set to null from a scoped context of a term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr06-in.jsonld",
+      "expect": "expand/pr06-out.jsonld"
+    }, {
+      "@id": "#tpr08",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Term with protected scoped context.",
+      "purpose": "A scoped context can protect terms.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr08-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr09",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Attempt to redefine term in other protected context.",
+      "purpose": "A protected term cannot redefine another protected term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr09-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr10",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Simple protected and unprotected terms.",
+      "purpose": "Simple protected and unprotected terms.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr10-in.jsonld",
+      "expect": "expand/pr10-out.jsonld"
+    }, {
+      "@id": "#tpr11",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail to override protected term.",
+      "purpose": "Fail to override protected term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr11-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr12",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Scoped context fail to override protected term.",
+      "purpose": "Scoped context fail to override protected term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr12-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr13",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Override unprotected term.",
+      "purpose": "Override unprotected term.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr13-in.jsonld",
+      "expect": "expand/pr13-out.jsonld"
+    }, {
+      "@id": "#tpr14",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Clear protection with null context.",
+      "purpose": "Clear protection with null context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr14-in.jsonld",
+      "expect": "expand/pr14-out.jsonld"
+    }, {
+      "@id": "#tpr15",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Clear protection with array with null context",
+      "purpose": "Clear protection with array with null context",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr15-in.jsonld",
+      "expect": "expand/pr15-out.jsonld"
+    }, {
+      "@id": "#tpr16",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Override protected terms after null.",
+      "purpose": "Override protected terms after null.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr16-in.jsonld",
+      "expect": "expand/pr16-out.jsonld"
+    }, {
+      "@id": "#tpr17",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail to override protected terms with type.",
+      "purpose": "Fail to override protected terms with type.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr17-in.jsonld",
+      "expectErrorCode": "invalid context nullification"
+    }, {
+      "@id": "#tpr18",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail to override protected terms with type+null+ctx.",
+      "purpose": "Fail to override protected terms with type+null+ctx.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr18-in.jsonld",
+      "expectErrorCode": "invalid context nullification"
+    }, {
+      "@id": "#tpr19",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Mix of protected and unprotected terms.",
+      "purpose": "Mix of protected and unprotected terms.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr19-in.jsonld",
+      "expect": "expand/pr19-out.jsonld"
+    }, {
+      "@id": "#tpr20",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail with mix of protected and unprotected terms with type+null+ctx.",
+      "purpose": "Fail with mix of protected and unprotected terms with type+null+ctx.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr20-in.jsonld",
+      "expectErrorCode": "invalid context nullification"
+    }, {
+      "@id": "#tpr21",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fail with mix of protected and unprotected terms with type+null.",
+      "purpose": "Fail with mix of protected and unprotected terms with type+null.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr21-in.jsonld",
+      "expectErrorCode": "invalid context nullification"
+    }, {
+      "@id": "#tpr22",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Check legal overriding of type-scoped protected term from nested node.",
+      "purpose": "Check legal overriding of type-scoped protected term from nested node.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr22-in.jsonld",
+      "expect": "expand/pr22-out.jsonld"
+    }, {
+      "@id": "#tpr23",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Allows redefinition of protected alias term with same definition.",
+      "purpose": "Allows redefinition of protected alias term with same definition.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr23-in.jsonld",
+      "expect": "expand/pr23-out.jsonld"
+    }, {
+      "@id": "#tpr24",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Allows redefinition of protected prefix term with same definition.",
+      "purpose": "Allows redefinition of protected prefix term with same definition.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr24-in.jsonld",
+      "expect": "expand/pr24-out.jsonld"
+    }, {
+      "@id": "#tpr25",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Allows redefinition of terms with scoped contexts using same definitions.",
+      "purpose": "Allows redefinition of terms with scoped contexts using same definitions.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr25-in.jsonld",
+      "expect": "expand/pr25-out.jsonld"
+    }, {
+      "@id": "#tpr26",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fails on redefinition of terms with scoped contexts using different definitions.",
+      "purpose": "Fails on redefinition of terms with scoped contexts using different definitions.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr26-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr27",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Allows redefinition of protected alias term with same definition modulo protected flag.",
+      "purpose": "Allows redefinition of protected alias term with same definition modulo protected flag.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr27-in.jsonld",
+      "expect": "expand/pr27-out.jsonld"
+    }, {
+      "@id": "#tpr28",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fails if trying to redefine a protected null term.",
+      "purpose": "A protected term with a null IRI mapping cannot be redefined.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr28-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr29",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Does not expand a Compact IRI using a non-prefix term.",
+      "purpose": "Expansion of Compact IRIs considers if the term can be used as a prefix.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr29-in.jsonld",
+      "expect": "expand/pr29-out.jsonld"
+    }, {
+      "@id": "#tpr30",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Keywords may be protected.",
+      "purpose": "Keywords may not be redefined other than to protect them.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr30-in.jsonld",
+      "expect": "expand/pr30-out.jsonld"
+    }, {
+      "@id": "#tpr31",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protected keyword aliases cannot be overridden.",
+      "purpose": "Keywords may not be redefined other than to protect them.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr31-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr32",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protected @type cannot be overridden.",
+      "purpose": "Keywords may not be redefined other than to protect them.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr32-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tpr33",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Fails if trying to declare a keyword alias as prefix.",
+      "purpose": "Keyword aliases can not be used as prefixes.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr33-in.jsonld",
+      "expectErrorCode": "invalid term definition"
+    }, {
+      "@id": "#tpr34",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a non-keyword term starting with '@'",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr34-in.jsonld",
+      "expect": "expand/pr34-out.jsonld"
+    }, {
+      "@id": "#tpr35",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a non-keyword term starting with '@' (with @vocab)",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr35-in.jsonld",
+      "expect": "expand/pr35-out.jsonld"
+    }, {
+      "@id": "#tpr36",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a term mapping to a value in the form of a keyword.",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr36-in.jsonld",
+      "expect": "expand/pr36-out.jsonld"
+    }, {
+      "@id": "#tpr37",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a term mapping to a value in the form of a keyword (with @vocab).",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr37-in.jsonld",
+      "expect": "expand/pr37-out.jsonld"
+    }, {
+      "@id": "#tpr38",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a term mapping to a value in the form of a keyword (@reverse).",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr38-in.jsonld",
+      "expect": "expand/pr38-out.jsonld"
+    }, {
+      "@id": "#tpr39",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Ignores a term mapping to a value in the form of a keyword (@reverse with @vocab).",
+      "purpose": "Terms in the form of a keyword, which are not keywords, are ignored.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr39-in.jsonld",
+      "expect": "expand/pr39-out.jsonld"
+    }, {
+      "@id": "#tpr40",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Protected terms and property-scoped contexts",
+      "purpose": "Check overriding of protected term from property-scoped context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/pr40-in.jsonld",
+      "expect": "expand/pr40-out.jsonld"
+    }, {
+      "@id": "#tso01",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@import is invalid in 1.0.",
+      "purpose": "@import is invalid in 1.0.",
+      "option": {"specVersion": "json-ld-1.1", "processingMode": "json-ld-1.0"},
+      "input": "expand/so01-in.jsonld",
+      "expectErrorCode": "invalid context entry"
+    }, {
+      "@id": "#tso02",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@import must be a string",
+      "purpose": "@import must be a string.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so02-in.jsonld",
+      "expectErrorCode": "invalid @import value"
+    }, {
+      "@id": "#tso03",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@import overflow",
+      "purpose": "Processors must detect source contexts that include @import.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so03-in.jsonld",
+      "expectErrorCode": "invalid context entry"
+    }, {
+      "@id": "#tso05",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate: true on type-scoped context with @import",
+      "purpose": "type-scoped context with @propagate: true survive node-objects (with @import)",
+      "input": "expand/so05-in.jsonld",
+      "expect": "expand/so05-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tso06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@propagate: false on property-scoped context with @import",
+      "purpose": "property-scoped context with @propagate: false do not survive node-objects (with @import)",
+      "input": "expand/so06-in.jsonld",
+      "expect": "expand/so06-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tso07",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protect all terms in sourced context",
+      "purpose": "A protected context protects all term definitions.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so07-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tso08",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Override term defined in sourced context",
+      "purpose": "The containing context is merged into the source context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so08-in.jsonld",
+      "expect": "expand/so08-out.jsonld"
+    }, {
+      "@id": "#tso09",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Override @vocab defined in sourced context",
+      "purpose": "The containing context is merged into the source context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so09-in.jsonld",
+      "expect": "expand/so09-out.jsonld"
+    }, {
+      "@id": "#tso10",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "Protect terms in sourced context",
+      "purpose": "The containing context is merged into the source context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so10-in.jsonld",
+      "expectErrorCode": "protected term redefinition"
+    }, {
+      "@id": "#tso11",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "Override protected terms in sourced context",
+      "purpose": "The containing context is merged into the source context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so11-in.jsonld",
+      "expect": "expand/so11-out.jsonld"
+    }, {
+      "@id": "#tso12",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@import may not be used in an imported context.",
+      "purpose": "@import only valid within a term definition.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so12-in.jsonld",
+      "expectErrorCode": "invalid context entry"
+    }, {
+      "@id": "#tso13",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@import can only reference a single context",
+      "purpose": "@import can only reference a single context.",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/so13-in.jsonld",
+      "expectErrorCode": "invalid remote context"
+    }, {
+      "@id": "#ttn01",
+      "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest"],
+      "name": "@type: @none is illegal in 1.0.",
+      "purpose": "@type: @none is illegal in json-ld-1.0.",
+      "option": {"specVersion": "json-ld-1.1", "processingMode": "json-ld-1.0"},
+      "input": "expand/tn01-in.jsonld",
+      "expectErrorCode": "invalid type mapping"
+    }, {
+      "@id": "#ttn02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest"],
+      "name": "@type: @none expands strings as value objects",
+      "purpose": "@type: @none leaves inputs other than strings alone",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "expand/tn02-in.jsonld",
+      "expect": "expand/tn02-out.jsonld"
+    }
+  ]
+}

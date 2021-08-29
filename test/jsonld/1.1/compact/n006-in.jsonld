@@ -1,0 +1,6 @@
+[{
+  "http://example.org/index": [
+    {"@value": "a", "@index": "A"},
+    {"@value": "b", "@index": "B"}
+  ]
+}]

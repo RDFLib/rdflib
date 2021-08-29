@@ -1,0 +1,16 @@
+[{
+  "@id": "http://example/base-base#base-id",
+  "http://example/p": [{
+    "@id": "http://example/typed-base#typed-id",
+    "@type": ["http://example/Type"],
+    "http://example/subjectReference": [{
+      "@id": "http://example/typed-base#subject-reference-id"
+    }],
+    "http://example/nestedNode": [{
+      "@id": "http://example/base-base#nested-id",
+      "http://example/foo": [{
+        "@value": "bar"
+      }]
+    }]
+  }]
+}]

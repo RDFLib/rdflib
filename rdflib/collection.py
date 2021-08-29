@@ -1,20 +1,20 @@
 from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.py3compat import format_doctest_out
 
-__all__ = ['Collection']
+
+__all__ = ["Collection"]
 
 
 class Collection(object):
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
     >>> listName = BNode()
-    >>> g = Graph('IOMemory')
+    >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
     >>> g.add((listName, RDF.first, Literal(1)))
@@ -25,9 +25,9 @@ class Collection(object):
     >>> g.add((listItem2, RDF.first, Literal(3)))
     >>> c = Collection(g,listName)
     >>> pprint([term.n3() for term in c])
-    [%(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
+    [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
 
     >>> Literal(1) in c
     True
@@ -37,7 +37,7 @@ class Collection(object):
     True
     >>> c.index(Literal(2)) == 1
     True
-    """)
+    """
 
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph
@@ -48,7 +48,7 @@ class Collection(object):
         """
         >>> from rdflib.graph import Graph
         >>> listName = BNode()
-        >>> g = Graph('IOMemory')
+        >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
         >>> g.add((listName, RDF.first, Literal(1)))
@@ -63,7 +63,7 @@ class Collection(object):
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
           "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
-        return "( %s )" % (' '.join([i.n3() for i in self]))
+        return "( %s )" % (" ".join([i.n3() for i in self]))
 
     def _get_container(self, index):
         """Gets the first, rest holding node at index."""
@@ -99,8 +99,7 @@ class Collection(object):
                 elif not newLink:
                     raise Exception("Malformed RDF Collection: %s" % self.uri)
                 else:
-                    assert len(newLink) == 1, \
-                        "Malformed RDF Collection: %s" % self.uri
+                    assert len(newLink) == 1, "Malformed RDF Collection: %s" % self.uri
                     listName = newLink[0]
 
     def __getitem__(self, key):
@@ -187,7 +186,7 @@ class Collection(object):
         container = self.uri
         while True:
             rest = self.graph.value(container, RDF.rest)
-            if rest == None or rest == RDF.nil:
+            if rest is None or rest == RDF.nil:
                 return container
             else:
                 container = rest
@@ -228,7 +227,6 @@ class Collection(object):
 
             self.graph.add((end, RDF.first, item))
 
-
         self.graph.add((end, RDF.rest, RDF.nil))
 
     def clear(self):
@@ -243,20 +241,22 @@ class Collection(object):
 
 def test():
     import doctest
+
     doctest.testmod()
+
 
 if __name__ == "__main__":
     test()
 
     from rdflib import Graph
+
     g = Graph()
 
     c = Collection(g, BNode())
 
     assert len(c) == 0
 
-    c = Collection(
-        g, BNode(), [Literal("1"), Literal("2"), Literal("3"), Literal("4")])
+    c = Collection(g, BNode(), [Literal("1"), Literal("2"), Literal("3"), Literal("4")])
 
     assert len(c) == 4
 
@@ -268,7 +268,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError, i:
+    except IndexError:
         pass
 
     c.append(Literal("5"))

@@ -1,3 +1,7 @@
+from io import BytesIO
+import pickle
+from rdflib.events import Dispatcher, Event
+
 """
 ============
 rdflib.store
@@ -25,16 +29,25 @@ RDF operations performed on it.
 ------
 """
 
+
 # Constants representing the state of a Store (returned by the open method)
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
 UNKNOWN = None
 
-from rdflib.events import Dispatcher, Event
 
-__all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent',
-           'NodePickler', 'Store']
+Pickler = pickle.Pickler
+Unpickler = pickle.Unpickler
+UnpicklingError = pickle.UnpicklingError
+
+__all__ = [
+    "StoreCreatedEvent",
+    "TripleAddedEvent",
+    "TripleRemovedEvent",
+    "NodePickler",
+    "Store",
+]
 
 
 class StoreCreatedEvent(Event):
@@ -68,13 +81,6 @@ class TripleRemovedEvent(Event):
       - the ``graph`` from which the triple was removed
     """
 
-from cPickle import Pickler, Unpickler, UnpicklingError
-try:
-    from io import BytesIO
-    assert BytesIO
-except ImportError:
-    from cStringIO import StringIO as BytesIO
-
 
 class NodePickler(object):
     def __init__(self):
@@ -97,7 +103,7 @@ class NodePickler(object):
         up.persistent_load = self._get_object
         try:
             return up.load()
-        except KeyError, e:
+        except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
     def dumps(self, obj, protocol=None, bin=None):
@@ -109,11 +115,10 @@ class NodePickler(object):
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        del state['_get_object']
-        state.update({
-            '_ids': tuple(self._ids.items()),
-            '_objects': tuple(self._objects.items())
-            })
+        del state["_get_object"]
+        state.update(
+            {"_ids": tuple(self._ids.items()), "_objects": tuple(self._objects.items())}
+        )
         return state
 
     def __setstate__(self, state):
@@ -149,6 +154,7 @@ class Store(object):
             from rdflib.graph import Graph, QuotedGraph
             from rdflib.term import Variable
             from rdflib.term import Statement
+
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")
             np.register(URIRef, "U")
@@ -159,12 +165,12 @@ class Store(object):
             np.register(Variable, "V")
             np.register(Statement, "s")
         return self.__node_pickler
+
     node_pickler = property(__get_node_pickler)
 
     # Database management methods
     def create(self, configuration):
-        self.dispatcher.dispatch(
-            StoreCreatedEvent(configuration=configuration))
+        self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
     def open(self, configuration, create=False):
         """
@@ -198,7 +204,7 @@ class Store(object):
         pass
 
     # RDF APIs
-    def add(self, (subject, predicate, object), context, quoted=False):
+    def add(self, triple, context, quoted=False):
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -207,9 +213,7 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
-        self.dispatcher.dispatch(
-            TripleAddedEvent(
-                triple=(subject, predicate, object), context=context))
+        self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads):
         """
@@ -219,62 +223,64 @@ class Store(object):
         is a redirect to add
         """
         for s, p, o, c in quads:
-            assert c is not None, \
-                "Context associated with %s %s %s is None!" % (s, p, o)
+            assert c is not None, "Context associated with %s %s %s is None!" % (
+                s,
+                p,
+                o,
+            )
             self.add((s, p, o), c)
 
-    def remove(self, (subject, predicate, object), context=None):
-        """ Remove the set of triples matching the pattern from the store """
-        self.dispatcher.dispatch(
-            TripleRemovedEvent(
-                triple=(subject, predicate, object), context=context))
+    def remove(self, triple, context=None):
+        """Remove the set of triples matching the pattern from the store"""
+        self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple, context=None):
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
+        subject, predicate, object_ = triple
         if isinstance(object_, list):
-            assert not isinstance(
-                subject, list), "object_ / subject are both lists"
-            assert not isinstance(
-                predicate, list), "object_ / predicate are both lists"
+            assert not isinstance(subject, list), "object_ / subject are both lists"
+            assert not isinstance(predicate, list), "object_ / predicate are both lists"
             if object_:
                 for obj in object_:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, predicate, obj), context):
+                        (subject, predicate, obj), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (subject, predicate, None), context):
+                    (subject, predicate, None), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(subject, list):
-            assert not isinstance(
-                predicate, list), "subject / predicate are both lists"
+            assert not isinstance(predicate, list), "subject / predicate are both lists"
             if subject:
                 for subj in subject:
                     for (s1, p1, o1), cg in self.triples(
-                            (subj, predicate, object_), context):
+                        (subj, predicate, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (None, predicate, object_), context):
+                    (None, predicate, object_), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(predicate, list):
-            assert not isinstance(
-                subject, list), "predicate / subject are both lists"
+            assert not isinstance(subject, list), "predicate / subject are both lists"
             if predicate:
                 for pred in predicate:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, pred, object_), context):
+                        (subject, pred, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
-                for (s1, p1, o1), cg in self.triples(
-                        (subject, None, object_), context):
+                for (s1, p1, o1), cg in self.triples((subject, None, object_), context):
                     yield (s1, p1, o1), cg
 
     def triples(self, triple_pattern, context=None):
@@ -285,8 +291,8 @@ class Store(object):
         QuotedGraph, Date? DateRange?
 
         :param context: A conjunctive query can be indicated by either
-        providing a value of None, or a specific context can be
-        queries by passing a Graph instance (if store is context aware).
+                        providing a value of None, or a specific context can be
+                        queries by passing a Graph instance (if store is context aware).
         """
         subject, predicate, object = triple_pattern
 

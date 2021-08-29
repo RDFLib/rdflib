@@ -1,0 +1,29 @@
+[
+  {
+    "@id": "http://example.org/test#chapter",
+    "http://purl.org/dc/elements/1.1/description": [{"@value": "Fun"}],
+    "http://purl.org/dc/elements/1.1/title": [{"@value": "Chapter One"}]
+  },
+  {
+    "@id": "http://example.org/test#jane",
+    "http://example.org/vocab#authored": [{
+      "@id": "http://example.org/test#chapter"
+    }],
+    "http://xmlns.com/foaf/0.1/name": [{"@value": "Jane"}]
+  },
+  {
+    "@id": "http://example.org/test#john",
+    "http://xmlns.com/foaf/0.1/name": [{"@value": "John"}]
+  },
+  {
+    "@id": "http://example.org/test#library",
+    "http://example.org/vocab#contains": [{
+      "@id": "http://example.org/test#book",
+      "http://example.org/vocab#contains": [{
+        "@id": "http://example.org/test#chapter"
+      }],
+      "http://purl.org/dc/elements/1.1/contributor": [{"@value": "Writer"}],
+      "http://purl.org/dc/elements/1.1/title": [{"@value": "My Book"}]
+    }]
+  }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "@id": "_:b0",
+        "@type": [
+            "http://example.com/foo/",
+            "http://example.com/foo/bar",
+            "http://example.com/underscore/"
+        ]
+    }
+]

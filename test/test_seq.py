@@ -22,15 +22,14 @@ s = """\
 """
 
 
-
 class SeqTestCase(unittest.TestCase):
-    backend = 'default'
-    path = 'store'
+    backend = "default"
+    path = "store"
 
     def setUp(self):
-        store = self.store = Graph(store=self.backend)
-        store.open(self.path)
-        store.parse(data=s)
+        self.store = Graph(store=self.backend)
+        self.store.open(self.path)
+        self.store.parse(data=s, format="xml")
 
     def tearDown(self):
         self.store.close()
@@ -43,9 +42,10 @@ class SeqTestCase(unittest.TestCase):
         # just make sure we can serialize
         self.store.serialize()
 
+
 def test_suite():
     return unittest.makeSuite(SeqTestCase)
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
 
+if __name__ == "__main__":
+    unittest.main(defaultTest="test_suite")

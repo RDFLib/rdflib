@@ -1,0 +1,9 @@
+[
+  {
+    "@id": "http://example.com/vocab#id",
+    "@type": [ "http://www.example.org/vocab#Class" ],
+    "http://www.example.org/vocab#foo": [
+      { "@value": "bar"}
+    ]
+  }
+]

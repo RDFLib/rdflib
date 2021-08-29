@@ -4,16 +4,17 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 """
 
 from collections import defaultdict
+from functools import cmp_to_key
 
-from rdflib.compat import cmp_to_key
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
 
-__all__ = ['RecursiveSerializer', 'TurtleSerializer']
+__all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
-def _object_comparator(a,b):
+
+def _object_comparator(a, b):
     """
     for nice clean output we sort the objects of triples,
     some of them are literals,
@@ -23,13 +24,15 @@ def _object_comparator(a,b):
     """
 
     try:
-        if a>b: return 1
-        if a<b: return -1
+        if a > b:
+            return 1
+        if a < b:
+            return -1
         return 0
 
     except TypeError:
-        a = unicode(a)
-        b = unicode(b)
+        a = str(a)
+        b = str(b)
         return (a > b) - (a < b)
 
 
@@ -38,7 +41,8 @@ class RecursiveSerializer(Serializer):
     topClasses = [RDFS.Class]
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
-    indentString = u"  "
+    indentString = "  "
+    roundtrip_prefixes = ()
 
     def __init__(self, store):
 
@@ -47,17 +51,21 @@ class RecursiveSerializer(Serializer):
         self.reset()
 
     def addNamespace(self, prefix, uri):
-        if prefix in self.namespaces and self.namespaces[prefix]!=uri:
-            raise Exception("Trying to override namespace prefix %s => %s, but it's already bound to %s"%(prefix, uri, self.namespaces[prefix]))
+        if prefix in self.namespaces and self.namespaces[prefix] != uri:
+            raise Exception(
+                "Trying to override namespace prefix %s => %s, but it's already bound to %s"
+                % (prefix, uri, self.namespaces[prefix])
+            )
         self.namespaces[prefix] = uri
 
     def checkSubject(self, subject):
         """Check to see if the subject should be serialized yet"""
-        if ((self.isDone(subject))
+        if (
+            (self.isDone(subject))
             or (subject not in self._subjects)
             or ((subject in self._topLevels) and (self.depth > 1))
-            or (isinstance(subject, URIRef)
-                and (self.depth >= self.maxDepth))):
+            or (isinstance(subject, URIRef) and (self.depth >= self.maxDepth))
+        ):
             return False
         return True
 
@@ -73,15 +81,16 @@ class RecursiveSerializer(Serializer):
             members = list(self.store.subjects(RDF.type, classURI))
             members.sort()
 
+            subjects.extend(members)
             for member in members:
-                subjects.append(member)
                 self._topLevels[member] = True
                 seen[member] = True
 
         recursable = [
-            (isinstance(subject, BNode),
-             self._references[subject], subject)
-            for subject in self._subjects if subject not in seen]
+            (isinstance(subject, BNode), self._references[subject], subject)
+            for subject in self._subjects
+            if subject not in seen
+        ]
 
         recursable.sort()
         subjects.extend([subject for (isbnode, refs, subject) in recursable])
@@ -92,8 +101,9 @@ class RecursiveSerializer(Serializer):
         for triple in self.store.triples((None, None, None)):
             self.preprocessTriple(triple)
 
-    def preprocessTriple(self, (s, p, o)):
-        self._references[o]+=1
+    def preprocessTriple(self, spo):
+        s, p, o = spo
+        self._references[o] += 1
         self._subjects[s] = True
 
     def reset(self):
@@ -105,8 +115,14 @@ class RecursiveSerializer(Serializer):
         self._subjects = {}
         self._topLevels = {}
 
-        for prefix, ns in self.store.namespaces():
-            self.addNamespace(prefix, ns)
+        if self.roundtrip_prefixes:
+            if hasattr(self.roundtrip_prefixes, "__iter__"):
+                for prefix, ns in self.store.namespaces():
+                    if prefix in self.roundtrip_prefixes:
+                        self.addNamespace(prefix, ns)
+            else:
+                for prefix, ns in self.store.namespaces():
+                    self.addNamespace(prefix, ns)
 
     def buildPredicateHash(self, subject):
         """
@@ -122,7 +138,7 @@ class RecursiveSerializer(Serializer):
 
     def sortProperties(self, properties):
         """Take a hash from predicate uris to lists of values.
-           Sort the lists of values.  Return a sorted list of properties."""
+        Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
             objects.sort(key=cmp_to_key(_object_comparator))
@@ -134,7 +150,7 @@ class RecursiveSerializer(Serializer):
             if (prop in properties) and (prop not in seen):
                 propList.append(prop)
                 seen[prop] = True
-        props = properties.keys()
+        props = list(properties.keys())
         props.sort()
         for prop in props:
             if prop not in seen:
@@ -152,7 +168,7 @@ class RecursiveSerializer(Serializer):
 
     def write(self, text):
         """Write text in given encoding."""
-        self.stream.write(text.encode(self.encoding, 'replace'))
+        self.stream.write(text.encode(self.encoding, "replace"))
 
 
 SUBJECT = 0
@@ -166,14 +182,12 @@ _SPACIOUS_OUTPUT = False
 class TurtleSerializer(RecursiveSerializer):
 
     short_name = "turtle"
-    indentString = '    '
+    indentString = "    "
 
     def __init__(self, store):
         self._ns_rewrite = {}
         super(TurtleSerializer, self).__init__(store)
-        self.keywords = {
-            RDF.type: 'a'
-        }
+        self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
         self._spacious = _SPACIOUS_OUTPUT
@@ -188,8 +202,9 @@ class TurtleSerializer(RecursiveSerializer):
 
         # so we need to keep track of ns rewrites we made so far.
 
-        if (prefix > '' and prefix[0] == '_') \
-                or self.namespaces.get(prefix, namespace) != namespace:
+        if (prefix > "" and prefix[0] == "_") or self.namespaces.get(
+            prefix, namespace
+        ) != namespace:
 
             if prefix not in self._ns_rewrite:
                 p = "p" + prefix
@@ -208,11 +223,14 @@ class TurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None,
-                  spacious=None, **args):
+    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
         self.reset()
         self.stream = stream
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
 
         if spacious is not None:
             self._spacious = spacious
@@ -229,10 +247,12 @@ class TurtleSerializer(RecursiveSerializer):
             if firstTime:
                 firstTime = False
             if self.statement(subject) and not firstTime:
-                self.write('\n')
+                self.write("\n")
 
         self.endDocument()
-        stream.write(u"\n".encode('ascii'))
+        stream.write("\n".encode("latin-1"))
+
+        self.base = None
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
@@ -244,8 +264,8 @@ class TurtleSerializer(RecursiveSerializer):
             if isinstance(node, Literal) and node.datatype:
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
-        if isinstance(p, BNode): # hmm - when is P ever a bnode?
-            self._references[p]+=1
+        if isinstance(p, BNode):  # hmm - when is P ever a bnode?
+            self._references[p] += 1
 
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
@@ -261,7 +281,7 @@ class TurtleSerializer(RecursiveSerializer):
             pfx = self.store.store.prefix(uri)
 
             if pfx is not None:
-                parts = (pfx, uri, '')
+                parts = (pfx, uri, "")
             else:
                 # nothing worked
                 return None
@@ -269,123 +289,130 @@ class TurtleSerializer(RecursiveSerializer):
         prefix, namespace, local = parts
 
         # QName cannot end with .
-        if local.endswith("."): return None
+        if local.endswith("."):
+            return None
 
         prefix = self.addNamespace(prefix, namespace)
 
-        return u'%s:%s' % (prefix, local)
+        return "%s:%s" % (prefix, local)
 
     def startDocument(self):
         self._started = True
         ns_list = sorted(self.namespaces.items())
+
+        if self.base:
+            self.write(self.indent() + "@base <%s> .\n" % self.base)
         for prefix, uri in ns_list:
-            self.write(self.indent() + '@prefix %s: <%s> .\n' % (prefix, uri))
+            self.write(self.indent() + "@prefix %s: <%s> .\n" % (prefix, uri))
         if ns_list and self._spacious:
-            self.write('\n')
+            self.write("\n")
 
     def endDocument(self):
         if self._spacious:
-            self.write('\n')
+            self.write("\n")
 
     def statement(self, subject):
         self.subjectDone(subject)
         return self.s_squared(subject) or self.s_default(subject)
 
     def s_default(self, subject):
-        self.write('\n' + self.indent())
+        self.write("\n" + self.indent())
         self.path(subject, SUBJECT)
         self.predicateList(subject)
-        self.write(' .')
+        self.write(" .")
         return True
 
     def s_squared(self, subject):
         if (self._references[subject] > 0) or not isinstance(subject, BNode):
             return False
-        self.write('\n' + self.indent() + '[]')
+        self.write("\n" + self.indent() + "[]")
         self.predicateList(subject)
-        self.write(' .')
+        self.write(" .")
         return True
 
     def path(self, node, position, newline=False):
-        if not (self.p_squared(node, position, newline)
-                or self.p_default(node, position, newline)):
-            raise Error("Cannot serialize node '%s'" % (node, ))
+        if not (
+            self.p_squared(node, position, newline)
+            or self.p_default(node, position, newline)
+        ):
+            raise Error("Cannot serialize node '%s'" % (node,))
 
     def p_default(self, node, position, newline=False):
         if position != SUBJECT and not newline:
-            self.write(' ')
+            self.write(" ")
         self.write(self.label(node, position))
         return True
 
     def label(self, node, position):
         if node == RDF.nil:
-            return '()'
+            return "()"
         if position is VERB and node in self.keywords:
             return self.keywords[node]
         if isinstance(node, Literal):
             return node._literal_n3(
                 use_plain=True,
-                qname_callback=lambda dt: self.getQName(
-                    dt, _GEN_QNAME_FOR_DT))
+                qname_callback=lambda dt: self.getQName(dt, _GEN_QNAME_FOR_DT),
+            )
         else:
             node = self.relativize(node)
 
             return self.getQName(node, position == VERB) or node.n3()
 
     def p_squared(self, node, position, newline=False):
-        if (not isinstance(node, BNode)
-                or node in self._serialized
-                or self._references[node] > 1
-                or position == SUBJECT):
+        if (
+            not isinstance(node, BNode)
+            or node in self._serialized
+            or self._references[node] > 1
+            or position == SUBJECT
+        ):
             return False
 
         if not newline:
-            self.write(' ')
+            self.write(" ")
 
         if self.isValidList(node):
             # this is a list
-            self.write('(')
+            self.write("(")
             self.depth += 1  # 2
             self.doList(node)
             self.depth -= 1  # 2
-            self.write(' )')
+            self.write(" )")
         else:
             self.subjectDone(node)
             self.depth += 2
             # self.write('[\n' + self.indent())
-            self.write('[')
+            self.write("[")
             self.depth -= 1
             # self.predicateList(node, newline=True)
             self.predicateList(node, newline=False)
             # self.write('\n' + self.indent() + ']')
-            self.write(' ]')
+            self.write(" ]")
             self.depth -= 1
 
         return True
 
-    def isValidList(self, l):
+    def isValidList(self, l_):
         """
         Checks if l is a valid RDF list, i.e. no nodes have other properties.
         """
         try:
-            if self.store.value(l, RDF.first) is None:
+            if self.store.value(l_, RDF.first) is None:
                 return False
         except:
             return False
-        while l:
-            if l != RDF.nil and len(
-                    list(self.store.predicate_objects(l))) != 2:
+        while l_:
+            if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:
                 return False
-            l = self.store.value(l, RDF.rest)
+            l_ = self.store.value(l_, RDF.rest)
         return True
 
-    def doList(self, l):
-        while l:
-            item = self.store.value(l, RDF.first)
+    def doList(self, l_):
+        while l_:
+            item = self.store.value(l_, RDF.first)
             if item is not None:
                 self.path(item, OBJECT)
-                self.subjectDone(l)
-            l = self.store.value(l, RDF.rest)
+                self.subjectDone(l_)
+            l_ = self.store.value(l_, RDF.rest)
 
     def predicateList(self, subject, newline=False):
         properties = self.buildPredicateHash(subject)
@@ -395,7 +422,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.verb(propList[0], newline=newline)
         self.objectList(properties[propList[0]])
         for predicate in propList[1:]:
-            self.write(' ;\n' + self.indent(1))
+            self.write(" ;\n" + self.indent(1))
             self.verb(predicate, newline=True)
             self.objectList(properties[predicate])
 
@@ -410,6 +437,6 @@ class TurtleSerializer(RecursiveSerializer):
         self.depth += depthmod
         self.path(objects[0], OBJECT)
         for obj in objects[1:]:
-            self.write(',\n' + self.indent(1))
+            self.write(",\n" + self.indent(1))
             self.path(obj, OBJECT, newline=True)
         self.depth -= depthmod

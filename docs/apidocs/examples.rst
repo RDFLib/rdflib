@@ -32,8 +32,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
 
 .. automodule:: examples.film
     :members:
-    :undoc-members:
-    :show-inheritance:
+
 
 :mod:`foafpaths` Module
 -----------------------
@@ -51,34 +50,18 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
-:mod:`resource` Module
-----------------------
+:mod:`resource_example` Module
+------------------------------
 
-.. automodule:: examples.resource
+.. automodule:: examples.resource_example
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`rdfa_example` Module
-----------------------
+:mod:`berkeleydb_example` Module
+--------------------------------
 
-.. automodule:: examples.rdfa_example
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`simple_example` Module
-----------------------------
-
-.. automodule:: examples.simple_example
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`sleepycat_example` Module
------------------------------------
-
-.. automodule:: examples.sleepycat_example
+.. automodule:: examples.berkeleydb_example
     :members:
     :undoc-members:
     :show-inheritance:
@@ -92,7 +75,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :show-inheritance:
 
 :mod:`smushing` Module
--------------------
+----------------------
 
 .. automodule:: examples.smushing
     :members:

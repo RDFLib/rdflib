@@ -32,6 +32,15 @@
     :subqueryagg1
     :subqueryagg2
 
+    :bnode-ppath-mix-a
+    :bnode-ppath-mix-b
+    :bnode-ppath-mix-c
+    :bnode-ppath-mix-d
+    :bnode-ppath-mix-e
+    :bnode-ppath-mix-f
+    :bnode-ppath-mix-g
+    :bnode-ppath-mix-h
+
 	) .
 
 
@@ -245,4 +254,112 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
          [ qt:query <subqueryagg.rq> ;
            qt:data <subqueryagg.ttl> ] ;
     mf:result  <subqueryagg.tsv>
+    .
+
+:bnode-ppath-mix-a rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-a";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-a.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-b rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-b";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-b.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-c rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-c";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-c.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+:bnode-ppath-mix-d rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-d";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-d.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+
+:bnode-ppath-mix-e rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-e";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-e.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+
+:bnode-ppath-mix-f rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-f";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-f.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-g rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-g";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-g.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
+    .
+
+:bnode-ppath-mix-h rdf:type mf:QueryEvaluationTest ;
+    mf:name "bnode-ppath-mix-h";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/714, contributed by https://github.com/tiko-tiko
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <bnode-ppath-mix-h.rq> ;
+           qt:data <bnode-ppath-mix.ttl> ] ;
+    mf:result  <bnode-ppath-mix.srx>
     .

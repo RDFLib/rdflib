@@ -5,14 +5,13 @@ Code for carrying out Update Operations
 """
 
 from rdflib import Graph, Variable
-
 from rdflib.plugins.sparql.sparql import QueryContext
 from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
 
 
 def _graphOrDefault(ctx, g):
-    if g == 'DEFAULT':
+    if g == "DEFAULT":
         return ctx.graph
     else:
         return ctx.dataset.get_context(g)
@@ -22,12 +21,13 @@ def _graphAll(ctx, g):
     """
     return a list of graphs
     """
-    if g == 'DEFAULT':
+    if g == "DEFAULT":
         return [ctx.graph]
-    elif g == 'NAMED':
-        return [c for c in ctx.dataset.contexts()
-                if c.identifier != ctx.graph.identifier]
-    elif g == 'ALL':
+    elif g == "NAMED":
+        return [
+            c for c in ctx.dataset.contexts() if c.identifier != ctx.graph.identifier
+        ]
+    elif g == "ALL":
         return list(ctx.dataset.contexts())
     else:
         return [ctx.dataset.get_context(g)]
@@ -48,7 +48,7 @@ def evalCreate(ctx, u):
     """
     http://www.w3.org/TR/sparql11-update/#create
     """
-    g = ctx.datset.get_context(u.graphiri)
+    g = ctx.dataset.get_context(u.graphiri)
     if len(g) > 0:
         raise Exception("Graph %s already exists." % g.identifier)
     raise Exception("Create not implemented!")
@@ -61,6 +61,7 @@ def evalClear(ctx, u):
 
     for g in _graphAll(ctx, u.graphiri):
         g.remove((None, None, None))
+
 
 def evalDrop(ctx, u):
     """
@@ -172,14 +173,14 @@ def evalModify(ctx, u):
         if u.delete:
             dg -= _fillTemplate(u.delete.triples, c)
 
-            for g, q in u.delete.quads.iteritems():
+            for g, q in u.delete.quads.items():
                 cg = ctx.dataset.get_context(c.get(g))
                 cg -= _fillTemplate(q, c)
 
         if u.insert:
             dg += _fillTemplate(u.insert.triples, c)
 
-            for g, q in u.insert.quads.iteritems():
+            for g, q in u.insert.quads.items():
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 
@@ -274,37 +275,36 @@ def evalUpdate(graph, update, initBindings={}):
 
     for u in update:
 
-        initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+        initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
 
-
         try:
-            if u.name == 'Load':
+            if u.name == "Load":
                 evalLoad(ctx, u)
-            elif u.name == 'Clear':
+            elif u.name == "Clear":
                 evalClear(ctx, u)
-            elif u.name == 'Drop':
+            elif u.name == "Drop":
                 evalDrop(ctx, u)
-            elif u.name == 'Create':
+            elif u.name == "Create":
                 evalCreate(ctx, u)
-            elif u.name == 'Add':
+            elif u.name == "Add":
                 evalAdd(ctx, u)
-            elif u.name == 'Move':
+            elif u.name == "Move":
                 evalMove(ctx, u)
-            elif u.name == 'Copy':
+            elif u.name == "Copy":
                 evalCopy(ctx, u)
-            elif u.name == 'InsertData':
+            elif u.name == "InsertData":
                 evalInsertData(ctx, u)
-            elif u.name == 'DeleteData':
+            elif u.name == "DeleteData":
                 evalDeleteData(ctx, u)
-            elif u.name == 'DeleteWhere':
+            elif u.name == "DeleteWhere":
                 evalDeleteWhere(ctx, u)
-            elif u.name == 'Modify':
+            elif u.name == "Modify":
                 evalModify(ctx, u)
             else:
-                raise Exception('Unknown update operation: %s' % (u,))
+                raise Exception("Unknown update operation: %s" % (u,))
         except:
             if not u.silent:
                 raise

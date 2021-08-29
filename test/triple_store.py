@@ -6,8 +6,8 @@ from rdflib.graph import Graph
 
 
 class GraphTest(unittest.TestCase):
-    backend = 'default'
-    path = 'store'
+    backend = "default"
+    path = "store"
 
     def setUp(self):
         self.store = Graph(store=self.backend)
@@ -30,7 +30,6 @@ class GraphTest(unittest.TestCase):
         for s, p, o in self.store:
             pass
 
+
 if __name__ == "__main__":
     unittest.main()
-
-

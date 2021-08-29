@@ -1,0 +1,2 @@
+<http://example.org/foo> <http://example/label> "Object with @id <foo>" .
+_:b0 <http://example/idmap> <http://example.org/foo> .

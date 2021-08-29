@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "e": {"@id": "http://example.org/vocab#c14n", "@type": "@json"}
+  },
+  "e": {
+    "peach": "This sorting order",
+    "péché": "is wrong according to French",
+    "pêche": "but canonicalization MUST",
+    "sin":   "ignore locale"
+  }
+}

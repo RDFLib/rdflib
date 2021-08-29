@@ -13,7 +13,7 @@
 
 <tag:eve@example:foafUri> 
     foaf:mbox   <mailto:eve@example.net> ;
-    foaf:firstName   "Eve" .
+    foaf:givenName   "Eve" .
 
 <tag:john@example:foafUri>
     foaf:mbox   <mailto:john@example.net> ;

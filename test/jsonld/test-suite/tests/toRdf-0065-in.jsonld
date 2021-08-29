@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "foo": "http://example.com/foo/",
+    "foo:bar": "http://example.com/bar",
+    "bar": {"@id": "foo:bar", "@type": "@id"},
+    "_": "http://example.com/underscore/"
+  },
+  "@type": [ "foo", "foo:bar", "_" ]
+}

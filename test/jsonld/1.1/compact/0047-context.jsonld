@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "@base": "http://example.com/",
+    "link": { "@id": "http://example.com/link", "@type": "@id" }
+  }
+}

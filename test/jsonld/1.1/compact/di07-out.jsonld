@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "vocab": "http://example.com/vocab/",
+    "label": {
+      "@id": "vocab:label",
+      "@direction": "rtl",
+      "@container": "@language"
+    }
+  },
+  "@id": "http://example.com/queen",
+  "label": {
+    "en": "The Queen"
+  },
+  "vocab:label": [
+    {"@value": "Die Königin", "@language": "de"},
+    {"@value": "Ihre Majestät", "@language": "de", "@direction": "ltr"}
+  ]
+}

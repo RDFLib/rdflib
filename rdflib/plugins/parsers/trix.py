@@ -5,15 +5,16 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
+
 
 from xml.sax.saxutils import handler
 from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
 
-__all__ = ['create_parser', 'TriXHandler', 'TriXParser']
+__all__ = ["create_parser", "TriXHandler", "TriXParser"]
 
 
 TRIXNS = Namespace("http://www.w3.org/2004/03/trix/trix-1/")
@@ -55,7 +56,8 @@ class TriXHandler(handler.ContentHandler):
         if name[0] != str(TRIXNS):
             self.error(
                 "Only elements in the TriX namespace are allowed. %s!=%s"
-                % (name[0], TRIXNS))
+                % (name[0], TRIXNS)
+            )
 
         if name[1] == "TriX":
             if self.state == 0:
@@ -97,12 +99,12 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype = None
 
                 try:
-                    self.lang = attrs.getValue((unicode(XMLNS), u"lang"))
+                    self.lang = attrs.getValue((str(XMLNS), "lang"))
                 except:
                     # language not required - ignore
                     pass
                 try:
-                    self.datatype = attrs.getValueByQName(u"datatype")
+                    self.datatype = attrs.getValueByQName("datatype")
                 except KeyError:
                     self.error("No required attribute 'datatype'")
             else:
@@ -114,7 +116,7 @@ class TriXHandler(handler.ContentHandler):
                 self.lang = None
                 self.datatype = None
                 try:
-                    self.lang = attrs.getValue((unicode(XMLNS), u"lang"))
+                    self.lang = attrs.getValue((str(XMLNS), "lang"))
                 except:
                     # language not required - ignore
                     pass
@@ -142,46 +144,55 @@ class TriXHandler(handler.ContentHandler):
         if name[0] != str(TRIXNS):
             self.error(
                 "Only elements in the TriX namespace are allowed. %s!=%s"
-                % (name[0], TRIXNS))
+                % (name[0], TRIXNS)
+            )
 
         if name[1] == "uri":
             if self.state == 3:
-                self.graph = Graph(store=self.store,
-                                   identifier=URIRef(self.chars.strip()))
+                self.graph = Graph(
+                    store=self.store, identifier=URIRef(self.chars.strip())
+                )
                 self.state = 2
             elif self.state == 4:
                 self.triple += [URIRef(self.chars.strip())]
             else:
                 self.error(
-                    "Illegal internal self.state - This should never " +
-                    "happen if the SAX parser ensures XML syntax correctness")
+                    "Illegal internal self.state - This should never "
+                    + "happen if the SAX parser ensures XML syntax correctness"
+                )
 
         elif name[1] == "id":
             if self.state == 3:
-                self.graph = Graph(self.store, identifier=self.get_bnode(
-                    self.chars.strip()))
+                self.graph = Graph(
+                    self.store, identifier=self.get_bnode(self.chars.strip())
+                )
                 self.state = 2
             elif self.state == 4:
                 self.triple += [self.get_bnode(self.chars.strip())]
             else:
                 self.error(
-                    "Illegal internal self.state - This should never " +
-                    "happen if the SAX parser ensures XML syntax correctness")
+                    "Illegal internal self.state - This should never "
+                    + "happen if the SAX parser ensures XML syntax correctness"
+                )
 
         elif name[1] == "plainLiteral" or name[1] == "typedLiteral":
             if self.state == 4:
-                self.triple += [Literal(
-                    self.chars, lang=self.lang, datatype=self.datatype)]
+                self.triple += [
+                    Literal(self.chars, lang=self.lang, datatype=self.datatype)
+                ]
             else:
                 self.error(
-                    "This should never happen if the SAX parser " +
-                    "ensures XML syntax correctness")
+                    "This should never happen if the SAX parser "
+                    + "ensures XML syntax correctness"
+                )
 
         elif name[1] == "triple":
             if self.state == 4:
                 if len(self.triple) != 3:
-                    self.error("Triple has wrong length, got %d elements: %s" %
-                               (len(self.triple), self.triple))
+                    self.error(
+                        "Triple has wrong length, got %d elements: %s"
+                        % (len(self.triple), self.triple)
+                    )
 
                 self.graph.add(self.triple)
                 # self.store.store.add(self.triple,context=self.graph)
@@ -189,8 +200,9 @@ class TriXHandler(handler.ContentHandler):
                 self.state = 2
             else:
                 self.error(
-                    "This should never happen if the SAX parser " +
-                    "ensures XML syntax correctness")
+                    "This should never happen if the SAX parser "
+                    + "ensures XML syntax correctness"
+                )
 
         elif name[1] == "graph":
             self.graph = None
@@ -227,7 +239,8 @@ class TriXHandler(handler.ContentHandler):
         info = "%s:%s:%s: " % (
             locator.getSystemId(),
             locator.getLineNumber(),
-            locator.getColumnNumber())
+            locator.getColumnNumber(),
+        )
         raise ParserError(info + message)
 
 
@@ -236,8 +249,7 @@ def create_parser(store):
     try:
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
-        parser.start_namespace_decl(
-            "xml", "http://www.w3.org/XML/1998/namespace")
+        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
@@ -254,8 +266,9 @@ class TriXParser(Parser):
         pass
 
     def parse(self, source, sink, **args):
-        assert sink.store.context_aware, (
-            "TriXParser must be given a context aware store.")
+        assert (
+            sink.store.context_aware
+        ), "TriXParser must be given a context aware store."
 
         self._parser = create_parser(sink.store)
         content_handler = self._parser.getContentHandler()

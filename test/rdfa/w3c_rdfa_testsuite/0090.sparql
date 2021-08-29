@@ -1,3 +1,0 @@
-ASK WHERE {
- <http://example.org/example.png> <http://www.w3.org/1999/xhtml/vocab#license> <http://creativecommons.org/licenses/by-nc-sa/2.0/> .
-}

@@ -1,0 +1,14 @@
+[{
+  "http://example.com/notype": [
+    {"@value": "string"},
+    {"@value": true},
+    {"@value": false},
+    {"@value": 1},
+    {"@value": 10.0},
+    {"@value": "plain"},
+    {"@value": true, "@type": "http://www.w3.org/2001/XMLSchema#boolean"},
+    {"@value": "english", "@language": "en"},
+    {"@value": "2018-02-17", "@type": "http://www.w3.org/2001/XMLSchema#date"},
+    {"@id": "http://example.com/iri"}
+  ]
+}]

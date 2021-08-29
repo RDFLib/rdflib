@@ -1,10 +1,8 @@
 import rdflib
-from nose.exc import SkipTest
 import unittest
 
 
 class TestSerialization(unittest.TestCase):
-
     def test_issue_248(self):
         """
         Ed Summers Thu, 24 May 2007 12:21:17 -0700
@@ -64,31 +62,23 @@ class TestSerialization(unittest.TestCase):
 
         """
         graph = rdflib.Graph()
-        DC = rdflib.Namespace('http://purl.org/dc/terms/')
-        SKOS = rdflib.Namespace('http://www.w3.org/2004/02/skos/core#')
-        LCCO = rdflib.Namespace('http://loc.gov/catdir/cpso/lcco/')
+        DC = rdflib.Namespace("http://purl.org/dc/terms/")
+        SKOS = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
+        LCCO = rdflib.Namespace("http://loc.gov/catdir/cpso/lcco/")
 
-        graph.bind('dc', DC)
-        graph.bind('skos', SKOS)
-        graph.bind('lcco', LCCO)
+        graph.bind("dc", DC)
+        graph.bind("skos", SKOS)
+        graph.bind("lcco", LCCO)
 
-        concept = rdflib.URIRef(LCCO['1'])
-        graph.add(
-            (concept,
-             rdflib.RDF.type,
-             SKOS['Concept']))
-        graph.add(
-            (concept,
-             SKOS['prefLabel'],
-             rdflib.Literal('Scrapbooks')))
-        graph.add(
-            (concept,
-             DC['LCC'],
-             rdflib.Literal('AC999.0999 - AC999999.Z9999')))
-        sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
+        concept = rdflib.URIRef(LCCO["1"])
+        graph.add((concept, rdflib.RDF.type, SKOS["Concept"]))
+        graph.add((concept, SKOS["prefLabel"], rdflib.Literal("Scrapbooks")))
+        graph.add((concept, DC["LCC"], rdflib.Literal("AC999.0999 - AC999999.Z9999")))
+        sg = graph.serialize(format="n3", base=LCCO)
         # See issue 248
         # Actual test should be the inverse of the below ...
-        self.assertTrue('<1> a skos:Concept ;' in sg, sg)
+        self.assertTrue("<1> a skos:Concept ;" in sg, sg)
+
 
 if __name__ == "__main__":
     unittest.main()

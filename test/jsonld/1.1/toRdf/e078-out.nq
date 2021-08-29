@@ -1,0 +1,9 @@
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#bart> <http://example.com/vocab#name> "Bart" .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#bart> <http://example.com/vocab#parent> <https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#homer> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#lisa> <http://example.com/vocab#name> "Lisa" .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#lisa> <http://example.com/vocab#parent> <https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#homer> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#santas-little-helper> <http://example.com/vocab#name> "Santa's Little Helper" .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#santas-little-helper> <http://example.com/vocab#owner> <https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#homer> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#snowball-ii> <http://example.com/vocab#name> "Snowball II" .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#snowball-ii> <http://example.com/vocab#owner> <https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#homer> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/e078-in.jsonld#homer> <http://example.com/vocab#name> "Homer" .

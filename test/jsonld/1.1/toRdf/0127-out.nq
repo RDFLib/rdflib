@@ -1,0 +1,6 @@
+<urn:ex:s295> <urn:ex:p> <http://abc/def/> .
+<urn:ex:s296> <urn:ex:p> <http://abc/def/?a=b> .
+<urn:ex:s297> <urn:ex:p> <http://abc/def/#a=b> .
+<urn:ex:s298> <urn:ex:p> <http://abc/> .
+<urn:ex:s299> <urn:ex:p> <http://abc/?a=b> .
+<urn:ex:s300> <urn:ex:p> <http://abc/#a=b> .

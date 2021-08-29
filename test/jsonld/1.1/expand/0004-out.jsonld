@@ -1,0 +1,15 @@
+[{
+  "@id": "http://example.org/id",
+  "http://example.com/mylist1": [ { "@list": [ ] } ],
+  "http://example.com/mylist2": [ { "@list": [ {"@value": "one item"} ] } ],
+  "http://example.com/myset2": [ ],
+  "http://example.com/myset3": [ {"@value": "v1"} ],
+  "http://example.org/list1": [ { "@list": [ ] } ],
+  "http://example.org/list2": [ { "@list": [ ] } ],
+  "http://example.org/set1": [ ],
+  "http://example.org/set2": [ ],
+  "http://example.org/set3": [ ],
+  "http://example.org/set4": [ ],
+  "http://example.org/set5": [ {"@value": "one item"} ],
+  "http://example.org/property": [ { "@list": [ {"@value": "one item"} ] } ]
+}]

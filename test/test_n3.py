@@ -1,8 +1,13 @@
-from rdflib.term import Literal, URIRef
-from rdflib.namespace import Namespace
-from rdflib.plugins.parsers.notation3 import BadSyntax
+import os
 
-from rdflib.py3compat import b
+from rdflib.graph import Graph, ConjunctiveGraph
+import unittest
+from rdflib.term import Literal, URIRef
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+import itertools
+from urllib.error import URLError
+
+from test import TEST_DIR
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -59,20 +64,12 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 """
 
 
-import unittest
-from urllib2 import URLError
-
-from rdflib.graph import Graph, ConjunctiveGraph
-
-
 class TestN3Case(unittest.TestCase):
-
     def setUp(self):
         pass
 
     def tearDown(self):
         pass
-
 
     def testBaseCumulative(self):
         """
@@ -97,13 +94,11 @@ class TestN3Case(unittest.TestCase):
 """
         g = Graph()
         g.parse(data=input, format="n3")
-        print list(g)
-        self.assertTrue((None, None, Literal('Foo')) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/bar'), None, None) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/doc2/bing'), None, None) in g)
-        self.assertTrue((URIRef('http://test.com/bong'), None, None) in g)
+        print(list(g))
+        self.assertTrue((None, None, Literal("Foo")) in g)
+        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
+        self.assertTrue((URIRef("http://example.com/doc/doc2/bing"), None, None) in g)
+        self.assertTrue((URIRef("http://test.com/bong"), None, None) in g)
 
     def testBaseExplicit(self):
         """
@@ -120,31 +115,34 @@ class TestN3Case(unittest.TestCase):
 <bar> :name "Bar" .
 """
         g = Graph()
-        g.parse(data=input, publicID='http://blah.com/', format="n3")
-        print list(g)
-        self.assertTrue(
-            (URIRef('http://blah.com/foo'), None, Literal('Foo')) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/bar'), None, None) in g)
+        g.parse(data=input, publicID="http://blah.com/", format="n3")
+        print(list(g))
+        self.assertTrue((URIRef("http://blah.com/foo"), None, Literal("Foo")) in g)
+        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
 
     def testBaseSerialize(self):
         g = Graph()
-        g.add((URIRef('http://example.com/people/Bob'), URIRef(
-            'urn:knows'), URIRef('http://example.com/people/Linda')))
-        s = g.serialize(base='http://example.com/', format='n3')
-        self.assertTrue(b('<people/Bob>') in s)
+        g.add(
+            (
+                URIRef("http://example.com/people/Bob"),
+                URIRef("urn:knows"),
+                URIRef("http://example.com/people/Linda"),
+            )
+        )
+        s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
+        self.assertTrue(b"<people/Bob>" in s)
         g2 = ConjunctiveGraph()
-        g2.parse(data=s, publicID='http://example.com/', format='n3')
+        g2.parse(data=s, publicID="http://example.com/", format="n3")
         self.assertEqual(list(g), list(g2))
 
     def testIssue23(self):
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201Cquotes\u201D"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201Cquotes\\u201D"."""
 
         g = Graph()
         g.parse(data=input, format="n3")
 
         # Note difference in case of hex code, cwm allows lower-case
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201cquotes\u201d"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201cquotes\\u201d"."""
 
         g.parse(data=input, format="n3")
 
@@ -167,13 +165,40 @@ foo-bar:Ex foo-bar:name "Test" . """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        g.parse("test/n3/issue156.n3", format="n3")
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "n3/issue156.n3", os.curdir))
+        g.parse(n3_path, format="n3")
+
+    def testIssue999(self):
+        """
+        Make sure the n3 parser does recognize exponent and leading dot in ".171e-11"
+        """
+        data = """
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://qudt.org/vocab/unit/MilliM-PER-YR>
+  a <http://qudt.org/schema/qudt/Unit> ;
+  <http://qudt.org/schema/qudt/conversionMultiplier> .171e-11 ;
+  <http://qudt.org/schema/qudt/conversionOffset> 0e+00 ;
+  <http://qudt.org/schema/qudt/description> "0.001-fold of the SI base unit metre divided by the unit year" ;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://qudt.org/vocab/quantitykind/Velocity> ;
+  <http://qudt.org/schema/qudt/iec61360Code> "0112/2///62720#UAA868" ;
+  <http://qudt.org/schema/qudt/uneceCommonCode> "H66" ;
+  rdfs:isDefinedBy <http://qudt.org/2.1/vocab/unit> ;
+  rdfs:isDefinedBy <http://qudt.org/vocab/unit> ;
+  rdfs:label "MilliM PER YR" ;
+  <http://www.w3.org/2004/02/skos/core#prefLabel> "millimetre per year" ;
+.
+        """
+        g = Graph()
+        g.parse(data=data, format="n3")
+        g.parse(data=data, format="turtle")
 
     def testDotInPrefix(self):
         g = Graph()
         g.parse(
             data="@prefix a.1: <http://example.org/> .\n a.1:cake <urn:x> <urn:y> . \n",
-            format='n3')
+            format="n3",
+        )
 
     def testModel(self):
         g = ConjunctiveGraph()
@@ -196,38 +221,74 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = ConjunctiveGraph()
         try:
             g.parse(
-                "http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
+                "http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3",
+                format="n3",
+            )
         except URLError:
             from nose import SkipTest
-            raise SkipTest(
-                'No network to retrieve the information, skipping test')
+
+            raise SkipTest("No network to retrieve the information, skipping test")
 
     def testSingleQuotedLiterals(self):
-        test_data = ["""@prefix : <#> . :s :p 'o' .""",
-                     """@prefix : <#> . :s :p '''o''' ."""]
+        test_data = [
+            """@prefix : <#> . :s :p 'o' .""",
+            """@prefix : <#> . :s :p '''o''' .""",
+        ]
 
         for data in test_data:
             # N3 doesn't accept single quotes around string literals
             g = ConjunctiveGraph()
-            self.assertRaises(BadSyntax, g.parse,
-                              data=data, format='n3')
+            self.assertRaises(BadSyntax, g.parse, data=data, format="n3")
 
             g = ConjunctiveGraph()
-            g.parse(data=data, format='turtle')
+            g.parse(data=data, format="turtle")
             self.assertEqual(len(g), 1)
             for _, _, o in g:
-                self.assertEqual(o, Literal('o'))
+                self.assertEqual(o, Literal("o"))
 
     def testEmptyPrefix(self):
 
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
-        g1.parse(data = ":a :b :c .", format='n3')
+        g1.parse(data=":a :b :c .", format="n3")
 
         g2 = Graph()
-        g2.parse(data = "@prefix : <#> . :a :b :c .", format='n3')
+        g2.parse(data="@prefix : <#> . :a :b :c .", format="n3")
 
-        assert set(g1) == set(g2), 'Document with declared empty prefix must match default #'
+        assert set(g1) == set(
+            g2
+        ), "Document with declared empty prefix must match default #"
 
-if __name__ == '__main__':
+
+class TestRegularExpressions(unittest.TestCase):
+    def testExponents(self):
+        signs = ("", "+", "-")
+        mantissas = (
+            "1",
+            "1.",
+            ".1",
+            "12",
+            "12.",
+            "1.2",
+            ".12",
+            "123",
+            "123.",
+            "12.3",
+            "1.23",
+            ".123",
+        )
+        es = "eE"
+        exps = ("1", "12", "+1", "-1", "+12", "-12")
+        for parts in itertools.product(signs, mantissas, es, exps):
+            expstring = "".join(parts)
+            self.assertTrue(exponent_syntax.match(expstring))
+
+    def testInvalidExponents(self):
+        # Add test cases as needed
+        invalid = (".e1",)
+        for expstring in invalid:
+            self.assertFalse(exponent_syntax.match(expstring))
+
+
+if __name__ == "__main__":
     unittest.main()

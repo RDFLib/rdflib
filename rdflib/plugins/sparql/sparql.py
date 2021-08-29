@@ -2,14 +2,16 @@ import collections
 import itertools
 import datetime
 
+import isodate
+
+from rdflib.compat import Mapping, MutableMapping
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
 from rdflib.term import Node
 
-from parserutils import CompValue
+from rdflib.plugins.sparql.parserutils import CompValue
 
 import rdflib.plugins.sparql
-from rdflib.plugins.sparql.compat import Mapping, MutableMapping
 
 
 class SPARQLError(Exception):
@@ -24,6 +26,7 @@ class NotBoundError(SPARQLError):
 
 class AlreadyBound(SPARQLError):
     """Raised when trying to bind a variable that is already bound!"""
+
     def __init__(self):
         SPARQLError.__init__(self)
 
@@ -49,12 +52,12 @@ class Bindings(MutableMapping):
         self.outer = outer
 
     def __getitem__(self, key):
-        try:
+        if key in self._d:
             return self._d[key]
-        except KeyError:
-            if not self.outer:
-                raise
-            return self.outer[key]
+
+        if not self.outer:
+            raise KeyError()
+        return self.outer[key]
 
     def __contains__(self, key):
         try:
@@ -69,24 +72,25 @@ class Bindings(MutableMapping):
     def __delitem__(self, key):
         raise Exception("DelItem is not implemented!")
 
-    def __len__(self):
+    def __len__(self) -> int:
         i = 0
-        for x in self:
-            i += 1
+        d = self
+        while d is not None:
+            i += len(d._d)
+            d = d.outer
         return i
 
     def __iter__(self):
         d = self
         while d is not None:
-            for i in dict.__iter__(d._d):
-                yield i
+            yield from d._d
             d = d.outer
 
     def __str__(self):
-        return "Bindings({"+", ".join((k, self[k]) for k in self)+"})"
+        return "Bindings({" + ", ".join((k, self[k]) for k in self) + "})"
 
     def __repr__(self):
-        return unicode(self)
+        return str(self)
 
 
 class FrozenDict(Mapping):
@@ -96,6 +100,7 @@ class FrozenDict(Mapping):
     Taken from http://stackoverflow.com/a/2704866/81121
 
     """
+
     def __init__(self, *args, **kwargs):
         self._d = dict(*args, **kwargs)
         self._hash = None
@@ -111,20 +116,19 @@ class FrozenDict(Mapping):
 
     def __hash__(self):
         # It would have been simpler and maybe more obvious to
-        # use hash(tuple(sorted(self._d.iteritems()))) from this discussion
+        # use hash(tuple(sorted(self._d.items()))) from this discussion
         # so far, but this solution is O(n). I don't know what kind of
         # n we are going to run into, but sometimes it's hard to resist the
         # urge to optimize when it will gain improved algorithmic performance.
         if self._hash is None:
             self._hash = 0
-            for key, value in self.iteritems():
+            for key, value in self.items():
                 self._hash ^= hash(key)
                 self._hash ^= hash(value)
         return self._hash
 
     def project(self, vars):
-        return FrozenDict(
-            (x for x in self.iteritems() if x[0] in vars))
+        return FrozenDict((x for x in self.items() if x[0] in vars))
 
     def disjointDomain(self, other):
         return not bool(set(self).intersection(other))
@@ -140,8 +144,7 @@ class FrozenDict(Mapping):
         return True
 
     def merge(self, other):
-        res = FrozenDict(
-            itertools.chain(self.iteritems(), other.iteritems()))
+        res = FrozenDict(itertools.chain(self.items(), other.items()))
 
         return res
 
@@ -153,7 +156,6 @@ class FrozenDict(Mapping):
 
 
 class FrozenBindings(FrozenDict):
-
     def __init__(self, ctx, *args, **kwargs):
         FrozenDict.__init__(self, *args, **kwargs)
         self.ctx = ctx
@@ -163,52 +165,63 @@ class FrozenBindings(FrozenDict):
         if not isinstance(key, Node):
             key = Variable(key)
 
-        if not type(key) in (BNode, Variable):
+        if not isinstance(key, (BNode, Variable)):
             return key
 
-        return self._d[key]
+        if key not in self._d:
+            return self.ctx.initBindings[key]
+        else:
+            return self._d[key]
 
     def project(self, vars):
-        return FrozenBindings(
-            self.ctx, (x for x in self.iteritems() if x[0] in vars))
+        return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in vars))
 
     def merge(self, other):
-        res = FrozenBindings(
-            self.ctx, itertools.chain(self.iteritems(), other.iteritems()))
-
+        res = FrozenBindings(self.ctx, itertools.chain(self.items(), other.items()))
         return res
 
-    def _now(self):
+    @property
+    def now(self):
         return self.ctx.now
 
-    def _bnodes(self):
+    @property
+    def bnodes(self):
         return self.ctx.bnodes
 
-    def _prologue(self):
+    @property
+    def prologue(self):
         return self.ctx.prologue
-
-    prologue = property(_prologue)
-    bnodes = property(_bnodes)
-    now = property(_now)
 
     def forget(self, before, _except=None):
         """
         return a frozen dict only of bindings made in self
         since before
         """
-        if not _except : _except = []
+        if not _except:
+            _except = []
+
         # bindings from initBindings are newer forgotten
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in _except or x[0] in self.ctx.initBindings or before[x[0]] is None))
+        return FrozenBindings(
+            self.ctx,
+            (
+                x
+                for x in self.items()
+                if (
+                    x[0] in _except
+                    or x[0] in self.ctx.initBindings
+                    or before[x[0]] is None
+                )
+            ),
+        )
 
     def remember(self, these):
         """
         return a frozen dict only of bindings in these
         """
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in these))
+        return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
 class QueryContext(object):
-
     """
     Query context - passed along when evaluating the query
     """
@@ -216,7 +229,8 @@ class QueryContext(object):
     def __init__(self, graph=None, bindings=None, initBindings=None):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
-        if initBindings: self.bindings.update(initBindings)
+        if initBindings:
+            self.bindings.update(initBindings)
 
         if isinstance(graph, ConjunctiveGraph):
             self._dataset = graph
@@ -229,45 +243,58 @@ class QueryContext(object):
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now()
+        self._now = None
 
         self.bnodes = collections.defaultdict(BNode)
 
+    @property
+    def now(self) -> datetime.datetime:
+        if self._now is None:
+            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+        return self._now
+
     def clone(self, bindings=None):
         r = QueryContext(
-            self._dataset if self._dataset is not None else self.graph, bindings or self.bindings, initBindings=self.initBindings)
+            self._dataset if self._dataset is not None else self.graph,
+            bindings or self.bindings,
+            initBindings=self.initBindings,
+        )
         r.prologue = self.prologue
         r.graph = self.graph
         r.bnodes = self.bnodes
         return r
 
-    def _get_dataset(self):
+    @property
+    def dataset(self):
+        """ "current dataset"""
         if self._dataset is None:
             raise Exception(
-                'You performed a query operation requiring ' +
-                'a dataset (i.e. ConjunctiveGraph), but ' +
-                'operating currently on a single graph.')
+                "You performed a query operation requiring "
+                + "a dataset (i.e. ConjunctiveGraph), but "
+                + "operating currently on a single graph."
+            )
         return self._dataset
 
-    dataset = property(_get_dataset, doc="current dataset")
-
     def load(self, source, default=False, **kwargs):
-
         def _load(graph, source):
             try:
-                return graph.load(source, **kwargs)
-            except:
+                return graph.parse(source, format="turtle", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format='n3', **kwargs)
-            except:
+                return graph.parse(source, format="xml", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format='nt', **kwargs)
-            except:
+                return graph.parse(source, format="n3", **kwargs)
+            except Exception:
+                pass
+            try:
+                return graph.parse(source, format="nt", **kwargs)
+            except Exception:
                 raise Exception(
-                    "Could not load %s as either RDF/XML, N3 or NTriples" % (
-                    source))
+                    "Could not load %s as either RDF/XML, N3 or NTriples" % source
+                )
 
         if not rdflib.plugins.sparql.SPARQL_LOAD_GRAPHS:
             # we are not loading - if we already know the graph
@@ -283,7 +310,7 @@ class QueryContext(object):
 
     def __getitem__(self, key):
         # in SPARQL BNodes are just labels
-        if not type(key) in (BNode, Variable):
+        if not isinstance(key, (BNode, Variable)):
             return key
         try:
             return self.bindings[key]
@@ -302,11 +329,10 @@ class QueryContext(object):
         """
         if vars:
             return FrozenBindings(
-                self, ((k, v)
-                       for k, v in self.bindings.iteritems()
-                       if k in vars))
+                self, ((k, v) for k, v in self.bindings.items() if k in vars)
+            )
         else:
-            return FrozenBindings(self, self.bindings.iteritems())
+            return FrozenBindings(self, self.bindings.items())
 
     def __setitem__(self, key, value):
         if key in self.bindings and self.bindings[key] != value:
@@ -326,11 +352,6 @@ class QueryContext(object):
     def clean(self):
         return self.clone([])
 
-    # def pop(self):
-    #     self.bindings = self.bindings.outer
-    #     if self.bindings is None:
-    #         raise Exception("We've bottomed out of the bindings stack!")
-
     def thaw(self, frozenbindings):
         """
         Create a new read/write query context from the given solution
@@ -340,28 +361,25 @@ class QueryContext(object):
         return c
 
 
-class Prologue(object):
-
+class Prologue:
     """
     A class for holding prefixing bindings and base URI information
     """
 
     def __init__(self):
         self.base = None
-        self.namespace_manager = NamespaceManager(
-            Graph())  # ns man needs a store
+        self.namespace_manager = NamespaceManager(Graph())  # ns man needs a store
 
     def resolvePName(self, prefix, localname):
         ns = self.namespace_manager.store.namespace(prefix or "")
         if ns is None:
-            raise Exception('Unknown namespace prefix : %s' % prefix)
+            raise Exception("Unknown namespace prefix : %s" % prefix)
         return URIRef(ns + (localname or ""))
 
     def bind(self, prefix, uri):
         self.namespace_manager.bind(prefix, uri, replace=True)
 
     def absolutize(self, iri):
-
         """
         Apply BASE / PREFIXes to URIs
         (and to datatypes in Literals)
@@ -370,19 +388,19 @@ class Prologue(object):
         """
 
         if isinstance(iri, CompValue):
-            if iri.name == 'pname':
+            if iri.name == "pname":
                 return self.resolvePName(iri.prefix, iri.localname)
-            if iri.name == 'literal':
+            if iri.name == "literal":
                 return Literal(
-                    iri.string, lang=iri.lang,
-                    datatype=self.absolutize(iri.datatype))
-        elif isinstance(iri, URIRef) and not ':' in iri:
+                    iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)
+                )
+        elif isinstance(iri, URIRef) and not ":" in iri:
             return URIRef(iri, base=self.base)
 
         return iri
 
 
-class Query(object):
+class Query:
     """
     A parsed and translated query
     """

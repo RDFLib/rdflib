@@ -93,10 +93,8 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
         res.add((part, VOID.distinctSubjects, Literal(len(classes[c]))))
 
         if distinctForPartitions:
-            res.add(
-                (part, VOID.properties, Literal(len(classProps[c]))))
-            res.add((part, VOID.distinctObjects,
-                    Literal(len(classObjects[c]))))
+            res.add((part, VOID.properties, Literal(len(classProps[c]))))
+            res.add((part, VOID.distinctObjects, Literal(len(classObjects[c]))))
 
     for i, p in enumerate(properties):
         part = URIRef(dataset + "_property%d" % i)
@@ -121,9 +119,7 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
             res.add((part, VOID.entities, Literal(entities)))
             res.add((part, VOID.classes, Literal(len(propClasses))))
 
-            res.add((part, VOID.distinctSubjects,
-                    Literal(len(propSubjects[p]))))
-            res.add((part, VOID.distinctObjects,
-                    Literal(len(propObjects[p]))))
+            res.add((part, VOID.distinctSubjects, Literal(len(propSubjects[p]))))
+            res.add((part, VOID.distinctObjects, Literal(len(propObjects[p]))))
 
     return res, dataset

@@ -1,0 +1,3 @@
+_:b0 <http://example.com/nested> _:b1 .
+_:b0 <http://example.com/property> "this is English"@en .
+_:b1 <http://example.com/property> "and this is a plain string" .

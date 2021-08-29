@@ -1,0 +1,12 @@
+{
+  "@graph": [
+    {
+      "@id": "http://me.markus-lanthaler.com/",
+      "http://xmlns.com/foaf/0.1/name": "Markus Lanthaler"
+    },
+    {
+      "@id": "http://greggkellogg.net/foaf#me",
+      "http://xmlns.com/foaf/0.1/name": "Gregg Kellogg"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-__doc__ = """
+#!/usr/bin/env python3
+
+__doc__ = """\
 N-Triples Parser
 License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
@@ -11,58 +12,53 @@ import codecs
 from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
+from rdflib.compat import decodeUnicodeEscape
+from rdflib.exceptions import ParserError as ParseError
+from rdflib.parser import Parser
 
-from rdflib.py3compat import cast_bytes, decodeUnicodeEscape
+from io import StringIO, TextIOBase, BytesIO
 
-__all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
+__all__ = ["unquote", "uriquote", "W3CNTriplesParser", "NTGraphSink", "NTParser"]
 
-uriref = r'<([^:]+:[^\s"<>]+)>'
+uriref = r'<([^:]+:[^\s"<>]*)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
+litinfo = r"(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^" + uriref + r")?"
 
-r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
-r_wspace = re.compile(r'[ \t]*')
-r_wspaces = re.compile(r'[ \t]+')
-r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
+r_line = re.compile(r"([^\r\n]*)(?:\r\n|\r|\n)")
+r_wspace = re.compile(r"[ \t]*")
+r_wspaces = re.compile(r"[ \t]+")
+r_tail = re.compile(r"[ \t]*\.[ \t]*(#.*)?")
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
+r_nodeid = re.compile(r"_:([A-Za-z0-9_:]([-A-Za-z0-9_:\.]*[-A-Za-z0-9_:])?)")
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
 validate = False
 
 
-class Node(unicode):
-    pass
-
-
-class ParseError(Exception):
-    pass
-
-
-class Sink(object):
+class DummySink(object):
     def __init__(self):
         self.length = 0
 
     def triple(self, s, p, o):
         self.length += 1
-        print (s, p, o)
+        print(s, p, o)
 
-quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
-        u'\\'}
-r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
+
+quot = {"t": "\t", "n": "\n", "r": "\r", '"': '"', "\\": "\\"}
+r_safe = re.compile(r"([\x20\x21\x23-\x5B\x5D-\x7E]+)")
 r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})')
+r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 
 
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, unicode): # nquads
+        if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
-            s = s.decode('unicode-escape')
+            s = s.decode("unicode-escape")
 
         return s
     else:
@@ -70,7 +66,7 @@ def unquote(s):
         while s:
             m = r_safe.match(s)
             if m:
-                s = s[m.end():]
+                s = s[m.end() :]
                 result.append(m.group(1))
                 continue
 
@@ -82,80 +78,101 @@ def unquote(s):
 
             m = r_uniquot.match(s)
             if m:
-                s = s[m.end():]
+                s = s[m.end() :]
                 u, U = m.groups()
                 codepoint = int(u or U, 16)
                 if codepoint > 0x10FFFF:
                     raise ParseError("Disallowed codepoint: %08X" % codepoint)
-                result.append(unichr(codepoint))
-            elif s.startswith('\\'):
+                result.append(chr(codepoint))
+            elif s.startswith("\\"):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else:
                 raise ParseError("Illegal literal character: %r" % s[0])
-        return u''.join(result)
+        return "".join(result)
 
-r_hibyte = re.compile(ur'([\x80-\xFF])')
+
+r_hibyte = re.compile(r"([\x80-\xFF])")
 
 
 def uriquote(uri):
     if not validate:
         return uri
     else:
-        return r_hibyte.sub(
-            lambda m: '%%%02X' % ord(m.group(1)), uri)
+        return r_hibyte.sub(lambda m: "%%%02X" % ord(m.group(1)), uri)
 
 
-class NTriplesParser(object):
+class W3CNTriplesParser(object):
     """An N-Triples Parser.
-
+    This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
 
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
+
+    To define a context in which blank node identifiers refer to the same blank node
+    across instances of NTriplesParser, pass the same dict as `bnode_context` to each
+    instance. By default, a new blank node context is created for each instance of
+    `NTriplesParser`.
     """
 
-    _bnode_ids = {}
+    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
 
-    def __init__(self, sink=None):
+    def __init__(self, sink=None, bnode_context=None):
+        if bnode_context is not None:
+            self._bnode_ids = bnode_context
+        else:
+            self._bnode_ids = {}
+
         if sink is not None:
             self.sink = sink
         else:
-            self.sink = Sink()
+            self.sink = DummySink()
 
-    def parse(self, f):
-        """Parse f as an N-Triples file."""
-        if not hasattr(f, 'read'):
+        self.buffer = None
+        self.file = None
+        self.line = ""
+
+    def parse(self, f, bnode_context=None):
+        """
+        Parse f as an N-Triples file.
+
+        :type f: :term:`file object`
+        :param f: the N-Triples source
+        :type bnode_context: `dict`, optional
+        :param bnode_context: a dict mapping blank node identifiers (e.g., ``a`` in ``_:a``)
+                              to `~rdflib.term.BNode` instances. An empty dict can be
+                              passed in to define a distinct context for a given call to
+                              `parse`.
+        """
+
+        if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        # since N-Triples 1.1 files can and should be utf-8 encoded
-        f = codecs.getreader('utf-8')(f)
+        if not hasattr(f, "encoding") and not hasattr(f, "charbuffer"):
+            # someone still using a bytestream here?
+            f = codecs.getreader("utf-8")(f)
 
         self.file = f
-        self.buffer = ''
+        self.buffer = ""
         while True:
             self.line = self.readline()
             if self.line is None:
                 break
             try:
-                self.parseline()
+                self.parseline(bnode_context=bnode_context)
             except ParseError:
-                raise ParseError("Invalid line: %r" % self.line)
+                raise ParseError("Invalid line: {}".format(self.line))
         return self.sink
 
-    def parsestring(self, s):
+    def parsestring(self, s, **kwargs):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, basestring):
+        if not isinstance(s, (str, bytes, bytearray)):
             raise ParseError("Item to parse must be a string instance.")
-        try:
-            from io import BytesIO
-            assert BytesIO
-        except ImportError:
-            from cStringIO import StringIO as BytesIO
-            assert BytesIO
-        f = BytesIO()
-        f.write(cast_bytes(s))
-        f.seek(0)
-        self.parse(f)
+        if isinstance(s, (bytes, bytearray)):
+            f = codecs.getreader("utf-8")(BytesIO(s))
+        else:
+            f = StringIO(s)
+        self.parse(f, **kwargs)
 
     def readline(self):
         """Read an N-Triples line from buffered input."""
@@ -170,7 +187,7 @@ class NTriplesParser(object):
         while True:
             m = r_line.match(self.buffer)
             if m:  # the more likely prospect
-                self.buffer = self.buffer[m.end():]
+                self.buffer = self.buffer[m.end() :]
                 return m.group(1)
             else:
                 buffer = self.file.read(bufsiz)
@@ -181,23 +198,23 @@ class NTriplesParser(object):
                     return None
                 self.buffer += buffer
 
-    def parseline(self):
+    def parseline(self, bnode_context=None):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith('#'):
+        if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
 
-        subject = self.subject()
+        subject = self.subject(bnode_context)
         self.eat(r_wspaces)
 
         predicate = self.predicate()
         self.eat(r_wspaces)
 
-        object = self.object()
+        object_ = self.object(bnode_context)
         self.eat(r_tail)
 
         if self.line:
-            raise ParseError("Trailing garbage")
-        self.sink.triple(subject, predicate, object)
+            raise ParseError("Trailing garbage: {}".format(self.line))
+        self.sink.triple(subject, predicate, object_)
 
     def peek(self, token):
         return self.line.startswith(token)
@@ -208,12 +225,12 @@ class NTriplesParser(object):
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
             raise ParseError("Failed to eat %s at %s" % (pattern.pattern, self.line))
-        self.line = self.line[m.end():]
+        self.line = self.line[m.end() :]
         return m
 
-    def subject(self):
+    def subject(self, bnode_context=None):
         # @@ Consider using dictionary cases
-        subj = self.uriref() or self.nodeid()
+        subj = self.uriref() or self.nodeid(bnode_context)
         if not subj:
             raise ParseError("Subject must be uriref or nodeID")
         return subj
@@ -224,25 +241,27 @@ class NTriplesParser(object):
             raise ParseError("Predicate must be uriref")
         return pred
 
-    def object(self):
-        objt = self.uriref() or self.nodeid() or self.literal()
+    def object(self, bnode_context=None):
+        objt = self.uriref() or self.nodeid(bnode_context) or self.literal()
         if objt is False:
             raise ParseError("Unrecognised object type")
         return objt
 
     def uriref(self):
-        if self.peek('<'):
+        if self.peek("<"):
             uri = self.eat(r_uriref).group(1)
             uri = unquote(uri)
             uri = uriquote(uri)
             return URI(uri)
         return False
 
-    def nodeid(self):
-        if self.peek('_'):
+    def nodeid(self, bnode_context=None):
+        if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
+            if bnode_context is None:
+                bnode_context = self._bnode_ids
             bnode_id = self.eat(r_nodeid).group(1)
-            new_id = self._bnode_ids.get(bnode_id, None)
+            new_id = bnode_context.get(bnode_id, None)
             if new_id is not None:
                 # Re-map to id specfic to this doc
                 return bNode(new_id)
@@ -250,7 +269,7 @@ class NTriplesParser(object):
                 # Replace with freshly-generated document-specific BNode id
                 bnode = bNode()
                 # Store the mapping
-                self._bnode_ids[bnode_id] = bnode
+                bnode_context[bnode_id] = bnode
                 return bnode
         return False
 
@@ -262,7 +281,9 @@ class NTriplesParser(object):
             else:
                 lang = None
             if dtype:
-                dtype = dtype
+                dtype = unquote(dtype)
+                dtype = uriquote(dtype)
+                dtype = URI(dtype)
             else:
                 dtype = None
             if lang and dtype:
@@ -271,13 +292,45 @@ class NTriplesParser(object):
             return Literal(lit, lang, dtype)
         return False
 
-# # Obsolete, unused
-# def parseURI(uri):
-#     import urllib
-#     parser = NTriplesParser()
-#     u = urllib.urlopen(uri)
-#     sink = parser.parse(u)
-#     u.close()
-#     # for triple in sink:
-#     #     print triple
-#     print 'Length of input:', sink.length
+
+class NTGraphSink(object):
+    __slots__ = ("g",)
+
+    def __init__(self, graph):
+        self.g = graph
+
+    def triple(self, s, p, o):
+        self.g.add((s, p, o))
+
+
+class NTParser(Parser):
+    """parser for the ntriples format, often stored with the .nt extension
+
+    See http://www.w3.org/TR/rdf-testcases/#ntriples"""
+
+    __slots__ = ()
+
+    @classmethod
+    def parse(cls, source, sink, **kwargs):
+        """
+        Parse the NT format
+
+        :type source: `rdflib.parser.InputSource`
+        :param source: the source of NT-formatted data
+        :type sink: `rdflib.graph.Graph`
+        :param sink: where to send parsed triples
+        :param kwargs: Additional arguments to pass to `.NTriplesParser.parse`
+        """
+        f = source.getCharacterStream()
+        if not f:
+            b = source.getByteStream()
+            # TextIOBase includes: StringIO and TextIOWrapper
+            if isinstance(b, TextIOBase):
+                # f is not really a ByteStream, but a CharacterStream
+                f = b
+            else:
+                # since N-Triples 1.1 files can and should be utf-8 encoded
+                f = codecs.getreader("utf-8")(b)
+        parser = W3CNTriplesParser(NTGraphSink(sink))
+        parser.parse(f, **kwargs)
+        f.close()

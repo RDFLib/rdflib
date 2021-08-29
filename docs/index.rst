@@ -1,23 +1,34 @@
 .. rdflib documentation documentation master file
-   
+
 ================
 rdflib |release|
 ================
 
-RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains most things you need to work with RDF, including: 
+RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. It contains:
 
-* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
+* **Parsers & Serializers**
 
-* a Graph interface which can be backed by any one of a number of Store implementations. 
+  * for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, JSON-LD, RDFa and Microdata
 
-* store implementations for in memory storage and persistent storage on top of the Berkeley DB. 
 
-* a SPARQL 1.1 implementation - supporting SPARQL 1.1 Queries and Update statements. 
+* **Store implementations**
+
+  * for in-memory and persistent RDF storage, including remote SPARQL endpoints
+
+* **Graph interface**
+
+  * to a single graph
+  * or a conjunctive graph (multiple Named Graphs)
+  * or a dataset of graphs
+
+* **SPARQL 1.1 implementation**
+
+  * both Queries and Updates are supported
+
 
 Getting started
 ---------------
-
-If you never used RDFLib, click through these
+If you have never used RDFLib, the following will help get you started:
 
 .. toctree::
    :maxdepth: 1
@@ -27,15 +38,13 @@ If you never used RDFLib, click through these
    intro_to_creating_rdf
    intro_to_graphs
    intro_to_sparql
-
    utilities
+   Examples <apidocs/examples>
 
-   RDFLib examples <apidocs/examples>
 
 In depth
 --------
-
-If you already worked with RDF and need to know the peculiarities of RDFLib, these are for you. 
+If you are familiar with RDF and are looking for details on how RDFLib handles it, these are for you:
 
 .. toctree::
    :maxdepth: 1
@@ -44,81 +53,82 @@ If you already worked with RDF and need to know the peculiarities of RDFLib, the
    namespaces_and_bindings
    persistence
    merging
+   upgrade5to6
+   upgrade4to5
 
-   upgrade3to4
-   upgrade2to3
-
-   faq
-   
 
 Reference
 ---------
-
 The nitty-gritty details of everything.
 
-.. toctree:: 
-   :maxdepth: 2
-			  
-   plugins
+API reference:
 
 .. toctree::
    :maxdepth: 1
 
    apidocs/modules
 
-* :ref:`genindex`
-* :ref:`modindex`
+.. toctree::
+   :maxdepth: 2
 
+   plugins
 
+.. * :ref:`genindex`
+.. * :ref:`modindex`
 
 
 For developers
 --------------
-
 .. toctree::
    :maxdepth: 1
 
    developers
    docs
-   univrdfstore
    persisting_n3_terms
 
+Source Code
+-----------
+The rdflib source code is hosted on GitHub at `<https://github.com/RDFLib/rdflib>`__ where you can lodge Issues and
+create Pull Requests to help improve this community project!
+
+The RDFlib organisation on GitHub at `<https://github.com/RDFLib>`__ maintains this package and a number of other RDF
+and RDFlib-related packaged that you might also find useful.
+
+
+Further help & Contact
+----------------------
+
+If you would like more help with using rdflib, rather than developing it, please post a question on StackOverflow using
+the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept there at:
+
+* `<https://stackoverflow.com/questions/tagged/rdflib>`__
+
+You might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
+
+The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via matrix `#RDFLib_rdflib:gitter.im <https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.
 
 
 
-Indices and tables
-------------------
+Glossary
+--------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Here are a few RDF and Python terms referred to in this documentation. They are linked to wherever they occur.
 
 .. glossary::
 
-   functional properties 
-      
-        A functional property is a property that can
-        have only one (unique) value y for each instance x, i.e. there
-        cannot be two distinct values y1 and y2 such that the pairs
-        (x,y1) and (x,y2) are both instances of this 
-		property. -- http://www.w3.org/TR/owl-ref/#FunctionalProperty-def
+    functional property
+        Properties than can only occur once for a resource, i.e. for any relation (triple, in RDF) ``x p y``,
+        if ``p`` is functional, for any individual ``x``, there can be at most one individual ``y``.
 
-   graph
-        An RDF graph is a set of RDF triples. The set of nodes of an RDF graph
-        is the set of subjects and objects of triples in the graph.
-    
-   named graph
-        Named Graphs is the idea that having multiple RDF graphs in a single
-        document/repository and naming them with URIs provides useful
-        additional functionality. -- http://www.w3.org/2004/03/trix/
+    OWL
+        The OWL 2 Web Ontology Language, informally OWL 2 or just OWL, is an ontology language for the Semantic Web
+        with formally defined meaning. OWL 2 ontologies provide classes, properties, individuals, and data values and
+        are stored as Semantic Web documents. OWL 2 ontologies can be used along with information written in RDF, and
+        OWL 2 ontologies themselves are primarily exchanged as RDF documents. See the `RDF 1.1 Concepts and Abstract
+        Syntax <https://www.w3.org/TR/rdf11-concepts/>`_ for more info.
 
-   transitivity 
-        A property is transitive: 
-            
-            if whenever an element ``a`` is related to an element
-            ``b``, and ``b`` is in turn related to an element ``c``,
-            then ``a`` is also related to ``c``.  --
-            http://en.wikipedia.org/wiki/Transitive_relation
-		
-        Standard examples include ``rdfs:subClassOf`` or greater-than
-   
+    RDF
+        The Resource Description Framework (RDF) is a framework for representing information in the Web. RDF data is
+        stored in graphs that are sets of subject-predicate-object triples, where the elements may be IRIs, blank nodes,
+        or datatyped literals. See the `OWL 2 Web Ontology Language
+        Document Overview <http://www.w3.org/TR/owl-overview/>`_ for more info.

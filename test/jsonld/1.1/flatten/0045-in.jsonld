@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "foo": "http://example.org/foo",
+    "bar": { "@reverse": "http://example.org/bar", "@type": "@id" }
+  },
+  "foo": "Foo",
+  "bar": [ "http://example.org/origin", "_:b0" ]
+}

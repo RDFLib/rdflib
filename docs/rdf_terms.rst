@@ -4,43 +4,24 @@
 RDF terms in rdflib
 ===================
 
-Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an :rfc:`3066` language tag.
+Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <https://www.w3.org/TR/xmlschema-2/#built-in-datatypes>`_ or an :rfc:`3066` language tag.
 
 All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class.
 
 Nodes are a subset of the Terms that the underlying store actually persists.
 The set of such Terms depends on whether or not the store is formula-aware. 
-Stores that aren't formula-aware would only persist those terms core to the 
-RDF Model, and those that are formula-aware would be able to persist the N3 
-extensions as well. However, utility terms that only serve the purpose for 
-matching nodes by term-patterns probably will only be terms and not nodes.
+Stores that aren't formula-aware only persist those terms core to the
+RDF Model but those that are formula-aware also persist the N3
+extensions. However, utility terms that only serve the purpose of
+matching nodes by term-patterns will probably only be terms and not nodes.
 
-
-
-BNodes
-======
-
-    In RDF, a blank node (also called BNode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. By RDF standard a blank node can only be used as subject or object in an RDF triple, although in some syntaxes like Notation 3 [1] it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labelled in all RDF serializations), it is limited in scope to a serialization of a particular RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
-
-
-.. __: http://en.wikipedia.org/wiki/Blank_node
-
-.. autoclass:: rdflib.term.BNode
-    :noindex:
-
-.. code-block:: python
-
-    >>> from rdflib import BNode
-    >>> anode = BNode()
-    >>> anode
-    rdflib.term.BNode('AFwALAKU0')
-    >>> anode.n3()
-    u'_:AFwALAKU0'
 
 URIRefs
 =======
 
-    A URI reference within an RDF graph is a Unicode string that does not contain any control characters ( #x00 - #x1F, #x7F-#x9F) and would produce a valid URI character sequence representing an absolute URI with optional fragment identifier -- `W3 RDF Concepts`__
+A *URI reference* within an RDF graph is a Unicode string that does not contain any control characters ( #x00 - #x1F, #x7F-#x9F)
+and would produce a valid URI character sequence representing an absolute URI with optional fragment
+identifier -- `W3 RDF Concepts`__
 
 .. __: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
 
@@ -50,18 +31,18 @@ URIRefs
 .. code-block:: python
 
     >>> from rdflib import URIRef
-    >>> aref = URIRef()
+    >>> uri = URIRef()
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-    TypeError: __new__() takes at least 2 arguments (1 given)
-    >>> aref = URIRef('')
-    >>> aref
-    rdflib.term.URIRef(u'')
-    >>> aref = URIRef('http://example.com')
-    >>> aref
-    rdflib.term.URIRef(u'http://example.com')
-    >>> aref.n3()
-    u'<http://example.com>'
+    TypeError: __new__() missing 1 required positional argument: 'value'
+    >>> uri = URIRef('')
+    >>> uri
+    rdflib.term.URIRef('')
+    >>> uri = URIRef('http://example.com')
+    >>> uri
+    rdflib.term.URIRef('http://example.com')
+    >>> uri.n3()
+    '<http://example.com>'
 
 
 .. _rdflibliterals:
@@ -69,7 +50,7 @@ URIRefs
 Literals
 ========
 
-Literals are the attribute values in RDF, for instance, a person's name, the date of birth, height, etc. Literals can have a data-type (i.e. this is a double) or a language tag (this label is in English).
+Literals are attribute values in RDF, for instance, a person's name, the date of birth, height, etc. Literals can have a datatype (i.e. this is a *double*) or a language tag (this label is in *English*).
 
 .. autoclass:: rdflib.term.Literal
     :noindex:
@@ -89,6 +70,27 @@ Literals are the attribute values in RDF, for instance, a person's name, the dat
 
 
 .. __: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
+
+BNodes
+======
+
+In RDF, a blank node (also called BNode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. According to the RDF standard, a blank node can only be used as subject or object in a triple, although in some syntaxes like Notation 3 it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labelled in all RDF serializations), it is limited in scope to a particular serialization of the RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
+
+
+.. __: http://en.wikipedia.org/wiki/Blank_node
+
+.. autoclass:: rdflib.term.BNode
+    :noindex:
+
+.. code-block:: python
+
+    >>> from rdflib import BNode
+    >>> bn = BNode()
+    >>> bn
+    rdflib.term.BNode('AFwALAKU0')
+    >>> bn.n3()
+    '_:AFwALAKU0'
+
 
 Python support
 --------------
@@ -158,5 +160,4 @@ and the other direction with
 All this happens automatically when creating ``Literal`` objects by passing Python objects to the constructor, and you never have to do this manually. 
 
 You can add custom data-types with :func:`rdflib.term.bind`, see also :mod:`examples.custom_datatype`
-
 

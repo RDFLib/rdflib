@@ -1,5 +1,4 @@
 from rdflib import Literal, XSD
-
 from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
 from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.datatypes import type_promotion
@@ -12,8 +11,9 @@ from decimal import Decimal
 Aggregation functions
 """
 
+
 class Accumulator(object):
-    """abstract base class for different aggregation functions """
+    """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation):
         self.var = aggregation.res
@@ -26,11 +26,11 @@ class Accumulator(object):
             self.seen = set()
 
     def dont_care(self, row):
-        """skips distinct test """
+        """skips distinct test"""
         return True
 
     def use_row(self, row):
-        """tests distinct with set """
+        """tests distinct with set"""
         return _eval(self.expr, row) not in self.seen
 
     def set_value(self, bindings):
@@ -39,7 +39,6 @@ class Accumulator(object):
 
 
 class Counter(Accumulator):
-
     def __init__(self, aggregation):
         super(Counter, self).__init__(aggregation)
         self.value = 0
@@ -71,14 +70,14 @@ class Counter(Accumulator):
 
 
 def type_safe_numbers(*args):
-    types = map(type, args)
-    if float in types and Decimal in types:
+    if any(isinstance(arg, float) for arg in args) and any(
+        isinstance(arg, Decimal) for arg in args
+    ):
         return map(float, args)
     return args
 
 
 class Sum(Accumulator):
-
     def __init__(self, aggregation):
         super(Sum, self).__init__(aggregation)
         self.value = 0
@@ -103,8 +102,8 @@ class Sum(Accumulator):
     def get_value(self):
         return Literal(self.value, datatype=self.datatype)
 
-class Average(Accumulator):
 
+class Average(Accumulator):
     def __init__(self, aggregation):
         super(Average, self).__init__(aggregation)
         self.counter = 0
@@ -168,13 +167,11 @@ class Extremum(Accumulator):
 
 
 class Minimum(Extremum):
-
     def compare(self, val1, val2):
         return min(val1, val2, key=_val)
 
 
 class Maximum(Extremum):
-
     def compare(self, val1, val2):
         return max(val1, val2, key=_val)
 
@@ -190,7 +187,7 @@ class Sample(Accumulator):
     def update(self, row, aggregator):
         try:
             # set the value now
-            aggregator.bindings[self.var] =  _eval(self.expr, row)
+            aggregator.bindings[self.var] = _eval(self.expr, row)
             # and skip this accumulator for future rows
             del aggregator.accumulators[self.var]
         except NotBoundError:
@@ -200,8 +197,8 @@ class Sample(Accumulator):
         # set None if no value was set
         return None
 
-class GroupConcat(Accumulator):
 
+class GroupConcat(Accumulator):
     def __init__(self, aggregation):
         super(GroupConcat, self).__init__(aggregation)
         # only GROUPCONCAT needs to have a list as accumlator
@@ -219,7 +216,7 @@ class GroupConcat(Accumulator):
             pass
 
     def get_value(self):
-        return Literal(self.separator.join(unicode(v) for v in self.value))
+        return Literal(self.separator.join(str(v) for v in self.value))
 
 
 class Aggregator(object):
@@ -249,12 +246,12 @@ class Aggregator(object):
         # SAMPLE accumulators may delete themselves
         # => iterate over list not generator
 
-        for acc in self.accumulators.values():
+        for acc in list(self.accumulators.values()):
             if acc.use_row(row):
                 acc.update(row, self)
 
     def get_bindings(self):
         """calculate and set last values"""
-        for acc in self.accumulators.itervalues():
+        for acc in self.accumulators.values():
             acc.set_value(self.bindings)
         return self.bindings

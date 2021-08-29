@@ -1,11 +1,8 @@
-from rdflib.query import (
-    Result, ResultException, ResultSerializer, ResultParser)
+import json
+
+from rdflib.query import Result, ResultException, ResultSerializer, ResultParser
 from rdflib import Literal, URIRef, BNode, Variable
 
-from rdflib.py3compat import bytestype
-
-
-import jsonlayer
 
 """A Serializer for SPARQL results in JSON:
 
@@ -20,23 +17,21 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 
 class JSONResultParser(ResultParser):
-
-    def parse(self, source):
+    def parse(self, source, content_type=None):
         inp = source.read()
-        if isinstance(inp, bytestype):
-            inp = inp.decode('utf-8')
-        return JSONResult(jsonlayer.decode(inp))
+        if isinstance(inp, bytes):
+            inp = inp.decode("utf-8")
+        return JSONResult(json.loads(inp))
 
 
 class JSONResultSerializer(ResultSerializer):
-
     def __init__(self, result):
         ResultSerializer.__init__(self, result)
 
     def serialize(self, stream, encoding=None):
 
         res = {}
-        if self.result.type == 'ASK':
+        if self.result.type == "ASK":
             res["head"] = {}
             res["boolean"] = self.result.askAnswer
         else:
@@ -44,10 +39,11 @@ class JSONResultSerializer(ResultSerializer):
             res["results"] = {}
             res["head"] = {}
             res["head"]["vars"] = self.result.vars
-            res["results"]["bindings"] = [self._bindingToJSON(
-                x) for x in self.result.bindings]
+            res["results"]["bindings"] = [
+                self._bindingToJSON(x) for x in self.result.bindings
+            ]
 
-        r = jsonlayer.encode(res)
+        r = json.dumps(res, allow_nan=False, ensure_ascii=False)
         if encoding is not None:
             stream.write(r.encode(encoding))
         else:
@@ -63,27 +59,26 @@ class JSONResultSerializer(ResultSerializer):
 
 
 class JSONResult(Result):
-
     def __init__(self, json):
         self.json = json
         if "boolean" in json:
-            type_ = 'ASK'
+            type_ = "ASK"
         elif "results" in json:
-            type_ = 'SELECT'
+            type_ = "SELECT"
         else:
-            raise ResultException('No boolean or results in json!')
+            raise ResultException("No boolean or results in json!")
 
         Result.__init__(self, type_)
 
-        if type_ == 'ASK':
-            self.askAnswer = bool(json['boolean'])
+        if type_ == "ASK":
+            self.askAnswer = bool(json["boolean"])
         else:
             self.bindings = self._get_bindings()
             self.vars = [Variable(x) for x in json["head"]["vars"]]
 
     def _get_bindings(self):
         ret = []
-        for row in self.json['results']['bindings']:
+        for row in self.json["results"]["bindings"]:
             outRow = {}
             for k, v in row.items():
                 outRow[Variable(k)] = parseJsonTerm(v)
@@ -99,40 +94,34 @@ def parseJsonTerm(d):
       { 'type': 'literal', 'value': 'drewp' }
     """
 
-    t = d['type']
-    if t == 'uri':
-        return URIRef(d['value'])
-    elif t == 'literal':
-        if 'xml:lang' in d:
-            return Literal(d['value'], lang=d['xml:lang'])
-        return Literal(d['value'])
-    elif t == 'typed-literal':
-        return Literal(d['value'], datatype=URIRef(d['datatype']))
-    elif t == 'bnode':
-        return BNode(d['value'])
+    t = d["type"]
+    if t == "uri":
+        return URIRef(d["value"])
+    elif t == "literal":
+        return Literal(d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang"))
+    elif t == "typed-literal":
+        return Literal(d["value"], datatype=URIRef(d["datatype"]))
+    elif t == "bnode":
+        return BNode(d["value"])
     else:
         raise NotImplementedError("json term type %r" % t)
 
 
 def termToJSON(self, term):
     if isinstance(term, URIRef):
-        return {'type': 'uri', 'value': unicode(term)}
+        return {"type": "uri", "value": str(term)}
     elif isinstance(term, Literal):
+        r = {"type": "literal", "value": str(term)}
+
         if term.datatype is not None:
-            return {'type': 'typed-literal',
-                    'value': unicode(term),
-                    'datatype': unicode(term.datatype)}
-        else:
-            r = {'type': 'literal',
-                 'value': unicode(term)}
-            if term.language is not None:
-                r['xml:lang'] = term.language
-            return r
+            r["datatype"] = str(term.datatype)
+        if term.language is not None:
+            r["xml:lang"] = term.language
+        return r
 
     elif isinstance(term, BNode):
-        return {'type': 'bnode', 'value': str(term)}
+        return {"type": "bnode", "value": str(term)}
     elif term is None:
         return None
     else:
-        raise ResultException(
-            'Unknown term type: %s (%s)' % (term, type(term)))
+        raise ResultException("Unknown term type: %s (%s)" % (term, type(term)))

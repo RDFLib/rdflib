@@ -5,17 +5,16 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from collections import defaultdict
 
-from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
+from rdflib.plugins.serializers.turtle import TurtleSerializer
+from rdflib.term import BNode
 
-from rdflib.term import BNode, Literal
-
-__all__ = ['TrigSerializer']
+__all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
 
     short_name = "trig"
-    indentString = 4 * u' '
+    indentString = 4 * " "
 
     def __init__(self, store):
         if store.context_aware:
@@ -39,17 +38,24 @@ class TrigSerializer(TurtleSerializer):
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context]=(self.orderSubjects(), self._subjects, self._references)
+            self._contexts[context] = (
+                self.orderSubjects(),
+                self._subjects,
+                self._references,
+            )
 
     def reset(self):
         super(TrigSerializer, self).reset()
         self._contexts = {}
 
-    def serialize(self, stream, base=None, encoding=None,
-                  spacious=None, **args):
+    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
         self.reset()
         self.stream = stream
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
 
         if spacious is not None:
             self._spacious = spacious
@@ -60,15 +66,16 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for store, (ordered_subjects, subjects, ref) in self._contexts.items():
-            if not ordered_subjects: continue
+            if not ordered_subjects:
+                continue
 
             self._references = ref
             self._serialized = {}
             self.store = store
             self._subjects = subjects
 
-            if self.default_context and store.identifier==self.default_context:
-                self.write(self.indent() + '\n{')
+            if self.default_context and store.identifier == self.default_context:
+                self.write(self.indent() + "\n{")
             else:
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
@@ -76,7 +83,7 @@ class TrigSerializer(TurtleSerializer):
                     iri = self.getQName(store.identifier)
                     if iri is None:
                         iri = store.identifier.n3()
-                self.write(self.indent() + '\n%s {' % iri)
+                self.write(self.indent() + "\n%s {" % iri)
 
             self.depth += 1
             for subject in ordered_subjects:
@@ -85,9 +92,9 @@ class TrigSerializer(TurtleSerializer):
                 if firstTime:
                     firstTime = False
                 if self.statement(subject) and not firstTime:
-                    self.write('\n')
+                    self.write("\n")
             self.depth -= 1
-            self.write('}\n')
+            self.write("}\n")
 
         self.endDocument()
-        stream.write(u"\n".encode('ascii'))
+        stream.write("\n".encode("latin-1"))

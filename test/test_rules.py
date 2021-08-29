@@ -19,11 +19,11 @@ try:
     def _convert(node):
         if isinstance(node, Variable):
             return terms.Variable(node)
-            #return node
+            # return node
         elif isinstance(node, BNode):
             return terms.Exivar(node)
         elif isinstance(node, URIRef):
-            #return terms.URI(node)
+            # return terms.URI(node)
             return node
         elif isinstance(node, Literal):
             return node
@@ -36,12 +36,17 @@ try:
 
     def facts(g):
         for s, p, o in g:
-            if p!=LOG.implies and not isinstance(s, BNode) and not isinstance(o, BNode):
+            if (
+                p != LOG.implies
+                and not isinstance(s, BNode)
+                and not isinstance(o, BNode)
+            ):
                 yield terms.Fact(_convert(s), _convert(p), _convert(o))
 
     class PychinkoTestCase(unittest.TestCase):
-        backend = 'default'
+        backend = "default"
         tmppath = None
+
         def setUp(self):
             self.g = Graph(store=self.backend)
             self.tmppath = mkdtemp()
@@ -65,9 +70,8 @@ try:
             source = self.g
             interp.addFacts(set(facts(source)), initialSet=True)
             interp.run()
-            #_logger.debug("inferred facts: %s" % interp.inferredFacts)
-
-except ImportError, e:
-    print "Could not test Pychinko: %s" % e
+            # _logger.debug("inferred facts: %s" % interp.inferredFacts)
 
 
+except ImportError as e:
+    print("Could not test Pychinko: %s" % e)
