@@ -6,4 +6,4 @@ coverage
 flake8
 doctest-ignore-unicode==0.1.2
 berkeleydb
-black==21.7b0
+black==21.8b0
