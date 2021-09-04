@@ -108,10 +108,6 @@ except ImportError:
     warnings.warn("__main__ already imported", ImportWarning)
     del warnings
 
-if _interactive_mode:
-    logger.info("RDFLib Version: %s" % __version__)
-else:
-    logger.debug("RDFLib Version: %s" % __version__)
 del _interactive_mode
 del sys
 
