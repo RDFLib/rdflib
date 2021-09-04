@@ -213,6 +213,7 @@ class Collection(object):
 
         self.graph.add((end, RDF.first, item))
         self.graph.add((end, RDF.rest, RDF.nil))
+        return self
 
     def __iadd__(self, other):
 
@@ -228,6 +229,7 @@ class Collection(object):
             self.graph.add((end, RDF.first, item))
 
         self.graph.add((end, RDF.rest, RDF.nil))
+        return self
 
     def clear(self):
         container = self.uri
@@ -237,6 +239,7 @@ class Collection(object):
             graph.remove((container, RDF.first, None))
             graph.remove((container, RDF.rest, None))
             container = rest
+        return self
 
 
 def test():
