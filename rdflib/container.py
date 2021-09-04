@@ -28,7 +28,8 @@ class Container(object):
         Two
 
         >>> # add a new item
-        >>> b.append(Literal("Hello"))
+        >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
+        <rdflib.container.Bag object at ...>
         >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>

@@ -17,12 +17,18 @@ class Collection(object):
     >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
-    >>> g.add((listName, RDF.first, Literal(1)))
-    >>> g.add((listName, RDF.rest, listItem1))
-    >>> g.add((listItem1, RDF.first, Literal(2)))
-    >>> g.add((listItem1, RDF.rest, listItem2))
-    >>> g.add((listItem2, RDF.rest, RDF.nil))
-    >>> g.add((listItem2, RDF.first, Literal(3)))
+    >>> g.add((listName, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listName, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem1, RDF.rest, listItem2)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem2, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> c = Collection(g,listName)
     >>> pprint([term.n3() for term in c])
     [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
@@ -51,12 +57,18 @@ class Collection(object):
         >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
-        >>> g.add((listName, RDF.first, Literal(1)))
-        >>> g.add((listName, RDF.rest, listItem1))
-        >>> g.add((listItem1, RDF.first, Literal(2)))
-        >>> g.add((listItem1, RDF.rest, listItem2))
-        >>> g.add((listItem2, RDF.rest, RDF.nil))
-        >>> g.add((listItem2, RDF.first, Literal(3)))
+        >>> g.add((listName, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listName, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem1, RDF.rest, listItem2)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem2, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> c = Collection(g, listName)
         >>> print(c.n3()) #doctest: +NORMALIZE_WHITESPACE
         ( "1"^^<http://www.w3.org/2001/XMLSchema#integer>
@@ -131,12 +143,18 @@ class Collection(object):
         >>> a = BNode('foo')
         >>> b = BNode('bar')
         >>> c = BNode('baz')
-        >>> g.add((a, RDF.first, RDF.type))
-        >>> g.add((a, RDF.rest, b))
-        >>> g.add((b, RDF.first, RDFS.label))
-        >>> g.add((b, RDF.rest, c))
-        >>> g.add((c, RDF.first, RDFS.comment))
-        >>> g.add((c, RDF.rest, RDF.nil))
+        >>> g.add((a, RDF.first, RDF.type)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((a, RDF.rest, b)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b, RDF.first, RDFS.label)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b, RDF.rest, c)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c, RDF.first, RDFS.comment)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c, RDF.rest, RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> len(g)
         6
         >>> def listAncestry(node, graph):

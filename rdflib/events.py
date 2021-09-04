@@ -13,7 +13,8 @@ to handle Event events.  A handler is a simple function or method that
 accepts the event as an argument:
 
   >>> def handler1(event): print(repr(event))
-  >>> d.subscribe(Event, handler1)
+  >>> d.subscribe(Event, handler1) # doctest: +ELLIPSIS
+  <rdflib.events.Dispatcher object at ...>
 
 Now dispatch a new event into the dispatcher, and see handler1 get
 fired:
