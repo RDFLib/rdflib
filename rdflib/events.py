@@ -56,6 +56,7 @@ class Dispatcher(object):
 
     def set_map(self, amap):
         self._dispatch_map = amap
+        return self
 
     def get_map(self):
         return self._dispatch_map
@@ -72,6 +73,7 @@ class Dispatcher(object):
         else:
             lst.append(handler)
         self._dispatch_map[event_type] = lst
+        return self
 
     def dispatch(self, event):
         """Dispatch the given event to the subscribed handlers for
