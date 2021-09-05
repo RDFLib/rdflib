@@ -99,7 +99,6 @@ try:
         # show log messages in interactive mode        
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
-        logger.info("RDFLib Version: %s" % __version__)
     del __main__
 except ImportError:
     # Main already imported from elsewhere
