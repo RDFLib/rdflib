@@ -87,7 +87,7 @@ import sys
 import logging
 
 logger = logging.getLogger(__name__)
-_interactive_mode = False
+
 try:
     import __main__
 
@@ -96,10 +96,10 @@ try:
         and sys.stdout is not None
         and sys.stderr.isatty()
     ):
-        # show log messages in interactive mode
-        _interactive_mode = True
+        # show log messages in interactive mode        
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
+        logger.info("RDFLib Version: %s" % __version__)
     del __main__
 except ImportError:
     # Main already imported from elsewhere
@@ -108,7 +108,6 @@ except ImportError:
     warnings.warn("__main__ already imported", ImportWarning)
     del warnings
 
-del _interactive_mode
 del sys
 
 
