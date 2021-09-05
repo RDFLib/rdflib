@@ -132,11 +132,15 @@ via triple pattern:
     >>> statementId = BNode()
     >>> print(len(g))
     0
-    >>> g.add((statementId, RDF.type, RDF.Statement))
+    >>> g.add((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((statementId, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
-    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label))
-    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
+    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph"))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph"))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> print(len(g))
     4
     >>> for s, p, o in g:
@@ -151,7 +155,8 @@ via triple pattern:
     ...     print(o)
     ...
     Conjunctive Graph
-    >>> g.remove((statementId, RDF.type, RDF.Statement))
+    >>> g.remove((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> print(len(g))
     3
 
@@ -171,10 +176,14 @@ by RDFLib they are UUIDs and unique.
     >>> g1 = Graph()
     >>> g2 = Graph()
     >>> u = URIRef("http://example.com/foo")
-    >>> g1.add([u, namespace.RDFS.label, Literal("foo")])
-    >>> g1.add([u, namespace.RDFS.label, Literal("bar")])
-    >>> g2.add([u, namespace.RDFS.label, Literal("foo")])
-    >>> g2.add([u, namespace.RDFS.label, Literal("bing")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add([u, namespace.RDFS.label, Literal("bing")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> len(g1 + g2)  # adds bing as label
     3
     >>> len(g1 - g2)  # removes foo
@@ -194,23 +203,35 @@ the same store:
     >>> stmt1 = BNode()
     >>> stmt2 = BNode()
     >>> stmt3 = BNode()
-    >>> g1.add((stmt1, RDF.type, RDF.Statement))
+    >>> g1.add((stmt1, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label))
-    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph')))
-    >>> g2.add((stmt2, RDF.type, RDF.Statement))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g2.add((stmt2, RDF.predicate, RDF.type))
-    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class))
-    >>> g3.add((stmt3, RDF.type, RDF.Statement))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.predicate, RDF.type)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g3.add((stmt3, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.object, Literal(
     ...     'The top-level aggregate graph - The sum ' +
-    ...     'of all named graphs within a Store')))
+    ...     'of all named graphs within a Store'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
     3
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(
@@ -354,15 +375,18 @@ class Graph(Node):
     def destroy(self, configuration):
         """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
+        return self
 
     # Transactional interfaces (optional)
     def commit(self):
         """Commits active transactions"""
         self.__store.commit()
+        return self
 
     def rollback(self):
         """Rollback active transactions"""
         self.__store.rollback()
+        return self
 
     def open(self, configuration, create=False):
         """Open the graph store
@@ -378,7 +402,7 @@ class Graph(Node):
         Might be necessary for stores that require closing a connection to a
         database or releasing some resource.
         """
-        self.__store.close(commit_pending_transaction=commit_pending_transaction)
+        return self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
     def add(self, triple):
         """Add a triple with self as context"""
@@ -387,6 +411,7 @@ class Graph(Node):
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -398,6 +423,7 @@ class Graph(Node):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -406,6 +432,7 @@ class Graph(Node):
         from all contexts.
         """
         self.__store.remove(triple, context=self)
+        return self
 
     def triples(self, triple):
         """Generator over the triple store
@@ -430,7 +457,8 @@ class Graph(Node):
 
         >>> import rdflib
         >>> g = rdflib.Graph()
-        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob")))
+        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob"))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 
         >>> list(g[rdflib.URIRef("urn:bob")]) # all triples about bob
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal('Bob'))]
@@ -622,6 +650,7 @@ class Graph(Node):
         ), "p can't be None in .set([s,p,o]), as it would remove (s, *, *)"
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
+        return self
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
@@ -755,18 +784,22 @@ class Graph(Node):
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
         >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, namespace.RDFS.label, Literal("foo")])
-        >>> g.add([u, namespace.RDFS.label, Literal("bar")])
+        >>> g.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
+        >>> g.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> pprint(sorted(g.preferredLabel(u)))
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('bar')),
          (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('foo'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> pprint(g.preferredLabel(u))
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla')),
@@ -851,12 +884,18 @@ class Graph(Node):
         >>> a=BNode("foo")
         >>> b=BNode("bar")
         >>> c=BNode("baz")
-        >>> g.add((a,RDF.first,RDF.type))
-        >>> g.add((a,RDF.rest,b))
-        >>> g.add((b,RDF.first,namespace.RDFS.label))
-        >>> g.add((b,RDF.rest,c))
-        >>> g.add((c,RDF.first,namespace.RDFS.comment))
-        >>> g.add((c,RDF.rest,RDF.nil))
+        >>> g.add((a,RDF.first,RDF.type)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((a,RDF.rest,b)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b,RDF.first,namespace.RDFS.label)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b,RDF.rest,c)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c,RDF.first,namespace.RDFS.comment)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c,RDF.rest,RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> def topList(node,g):
         ...    for s in g.subjects(RDF.rest, node):
         ...       yield s
@@ -1098,7 +1137,7 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
-        return None
+        return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
@@ -1233,7 +1272,7 @@ class Graph(Node):
                 "Please use graph.parse() instead."
             )
         )
-        self.parse(source, publicID, format)
+        return self.parse(source, publicID, format)
 
     def query(
         self,
@@ -1551,6 +1590,7 @@ class ConjunctiveGraph(Graph):
         _assertnode(s, p, o)
 
         self.store.add((s, p, o), context=c, quoted=False)
+        return self
 
     def _graph(self, c):
         if c is None:
@@ -1566,6 +1606,7 @@ class ConjunctiveGraph(Graph):
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple_or_quad):
         """
@@ -1579,6 +1620,7 @@ class ConjunctiveGraph(Graph):
         s, p, o, c = self._spoc(triple_or_quad)
 
         self.store.remove((s, p, o), context=c)
+        return self
 
     def triples(self, triple_or_quad, context=None):
         """
@@ -1731,7 +1773,8 @@ class Dataset(ConjunctiveGraph):
     >>> # simple triples goes to default graph
     >>> ds.add((URIRef("http://example.org/a"),
     ...    URIRef("http://www.example.org/b"),
-    ...    Literal("foo")))
+    ...    Literal("foo")))  # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
@@ -1742,12 +1785,14 @@ class Dataset(ConjunctiveGraph):
     >>> g.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/y"),
-    ...     Literal("bar")) )
+    ...     Literal("bar")) ) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> # alternatively: add a quad to the dataset -> goes to the graph
     >>> ds.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/z"),
-    ...     Literal("foo-bar"),g) )
+    ...     Literal("foo-bar"),g) ) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -1898,6 +1943,7 @@ class Dataset(ConjunctiveGraph):
             # default graph cannot be removed
             # only triples deleted, so add it back in
             self.store.add_graph(self.default_context)
+        return self
 
     def contexts(self, triple=None):
         default = False
@@ -1941,6 +1987,7 @@ class QuotedGraph(Graph):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
 
         self.store.add((s, p, o), self, quoted=True)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -1952,6 +1999,7 @@ class QuotedGraph(Graph):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -2230,6 +2278,7 @@ class BatchAddGraph(object):
         """
         self.batch = []
         self.count = 0
+        return self
 
     def add(self, triple_or_quad):
         """
@@ -2245,6 +2294,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad + self.__graph_tuple)
         else:
             self.batch.append(triple_or_quad)
+        return self
 
     def addN(self, quads):
         if self.__batch_addn:
@@ -2252,6 +2302,7 @@ class BatchAddGraph(object):
                 self.add(q)
         else:
             self.graph.addN(quads)
+        return self
 
     def __enter__(self):
         self.reset()

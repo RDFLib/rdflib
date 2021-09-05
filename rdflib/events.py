@@ -13,7 +13,8 @@ to handle Event events.  A handler is a simple function or method that
 accepts the event as an argument:
 
   >>> def handler1(event): print(repr(event))
-  >>> d.subscribe(Event, handler1)
+  >>> d.subscribe(Event, handler1) # doctest: +ELLIPSIS
+  <rdflib.events.Dispatcher object at ...>
 
 Now dispatch a new event into the dispatcher, and see handler1 get
 fired:
@@ -56,6 +57,7 @@ class Dispatcher(object):
 
     def set_map(self, amap):
         self._dispatch_map = amap
+        return self
 
     def get_map(self):
         return self._dispatch_map
@@ -72,6 +74,7 @@ class Dispatcher(object):
         else:
             lst.append(handler)
         self._dispatch_map[event_type] = lst
+        return self
 
     def dispatch(self, event):
         """Dispatch the given event to the subscribed handlers for
