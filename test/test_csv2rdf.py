@@ -1,5 +1,6 @@
 import subprocess
 import unittest
+import sys
 from os import remove
 from tempfile import mkstemp
 from pathlib import Path
@@ -11,7 +12,12 @@ class CSV2RDFTest(unittest.TestCase):
 
     def test_csv2rdf_cli(self):
         completed = subprocess.run(
-            ["csv2rdf", str(self.REALESTATE_FILE_PATH)],
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.csv2rdf",
+                str(self.REALESTATE_FILE_PATH),
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True,
@@ -25,7 +31,14 @@ class CSV2RDFTest(unittest.TestCase):
     def test_csv2rdf_cli_fileout(self):
         _, fname = mkstemp()
         completed = subprocess.run(
-            ["csv2rdf", "-o", fname, str(self.REALESTATE_FILE_PATH)],
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.csv2rdf",
+                "-o",
+                fname,
+                str(self.REALESTATE_FILE_PATH),
+            ],
         )
         self.assertEqual(completed.returncode, 0)
         with open(fname) as f:

@@ -7,3 +7,6 @@ flake8
 doctest-ignore-unicode==0.1.2
 berkeleydb
 black==21.6b0
+flake8-black
+mypy
+types-setuptools

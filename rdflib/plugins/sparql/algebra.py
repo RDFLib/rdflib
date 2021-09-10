@@ -801,7 +801,7 @@ class ExpressionNotCoveredException(Exception):
     pass
 
 
-def translateAlgebra(query_algebra: Query = None):
+def translateAlgebra(query_algebra: Query):
     """
 
     :param query_algebra: An algebra returned by the function call algebra.translateQuery(parse_tree).

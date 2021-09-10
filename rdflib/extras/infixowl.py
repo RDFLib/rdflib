@@ -331,9 +331,6 @@ def manchesterSyntax(thing, store, boolean=None, transientList=False):
             if isinstance(thing, BNode):
                 return thing.n3()
             return "<" + thing + ">"
-            logger.debug(list(store.objects(subject=thing, predicate=RDF.type)))
-            raise
-            return "[]"  # +thing._id.encode('utf-8')+'</em>'
         label = first(Class(thing, graph=store).label)
         if label:
             return label

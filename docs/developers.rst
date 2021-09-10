@@ -15,6 +15,9 @@ Code should be formatted using `black <https://github.com/psf/black>`_.
 While not yet mandatory, it will be required in the future  (6.0.0+).1
 Use Black v21.6b1, with the black.toml config file provided.
 
+Code should also pass `flake8 <https://github.com/psf/black>`_ linting
+and `mypy <http://mypy-lang.org/>`_ type checking.
+
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
 that currently does not have any doc tests or unit tests. And all the
@@ -28,7 +31,7 @@ Running tests
 -------------
 Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
 
-.. code-block: bash
+.. code-block:: bash
 
    $ pip install nose
    $ python run_tests.py
@@ -42,10 +45,31 @@ Specific tests can either be run by module name or file name. For example::
   $ python run_tests.py --tests rdflib.graph
   $ python run_tests.py --tests test/test_graph.py
 
+Running static checks
+---------------------
+
+Check formatting with `black <https://github.com/psf/black>`_:
+
+.. code-block:: bash
+
+    python -m black --config black.toml --check ./rdflib
+
+Check style and conventions with `flake8 <https://github.com/psf/black>`_:
+
+.. code-block:: bash
+
+    python -m flake8 rdflib
+
+Check types with `mypy <http://mypy-lang.org/>`_:
+
+.. code-block:: bash
+
+    python -m mypy --show-error-context --show-error-codes rdflib
+
 Writing documentation
 ---------------------
 
-We use sphinx for generating HTML docs, see :ref:`docs`
+We use sphinx for generating HTML docs, see :ref:`docs`.
 
 Continuous Integration
 ----------------------
