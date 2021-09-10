@@ -364,6 +364,8 @@ SUFFIX_FORMAT_MAP = {
     "svg": "rdfa",
     "nq": "nquads",
     "trig": "trig",
+    "json": "json-ld",
+    "jsonld": "json-ld",
 }
 
 
@@ -378,6 +380,8 @@ def guess_format(fpath, fmap=None):
         'xml'
         >>> guess_format('path/to/file.ttl')
         'turtle'
+        >>> guess_format('path/to/file.json')
+        'json-ld'
         >>> guess_format('path/to/file.xhtml')
         'rdfa'
         >>> guess_format('path/to/file.svg')
