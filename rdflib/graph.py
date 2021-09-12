@@ -1123,10 +1123,9 @@ class Graph(Node):
                 location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
-                logger.warning(
-                    "WARNING: not saving as location" + "is not a local file reference"
+                raise ValueError(
+                    f"destination {destination} is not a local file reference"
                 )
-                return self
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)

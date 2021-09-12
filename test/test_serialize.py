@@ -38,6 +38,23 @@ class TestSerialize(unittest.TestCase):
 
         self.assertEqual(self.triple, next(iter(graph_check)))
 
+    def test_serialize_to_neturl(self):
+        with self.assertRaises(ValueError) as raised:
+            self.graph.serialize(destination="http://example.com/", format="nt")
+        self.assertIn("destination", f"{raised.exception}")
+
+    def test_serialize_to_fileurl(self):
+        with TemporaryDirectory() as td:
+            tfpath = Path(td) / "out.nt"
+            tfurl = tfpath.as_uri()
+            self.assertRegex(tfurl, r"^file:")
+            self.assertFalse(tfpath.exists())
+            self.graph.serialize(destination=tfurl, format="nt")
+            self.assertTrue(tfpath.exists())
+            graph_check = Graph()
+            graph_check.parse(source=tfpath, format="nt")
+        self.assertEqual(self.triple, next(iter(graph_check)))
+
 
 if __name__ == "__main__":
     unittest.main()
