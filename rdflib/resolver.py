@@ -1,3 +1,54 @@
+"""
+RDFLib's document resolution framework and implementation.
+
+This module implements an extensible resolver mechanism that can be used by parsers to
+dereference documents referred to in the process of parsing.
+
+This functionality comes into play with the JSON-LD parser, and is used when resolving
+a document's `@context` document.
+
+A resolver instance can be passed to :meth:`~rdflib.Graph:parse`:
+
+    >>> import io
+    >>>
+    >>> from rdflib import Graph
+    >>>
+    >>>
+    >>> graph.parse(
+    >>>     io.BytesIO(b"<a> <b> <c> ."),
+    >>>     format="application/n-triples",
+    >>>     parser=PermissiveResolver(),
+    >>> )
+
+If no resolver is specified when calling `parse()`, RDFLib falls back to the
+interpreter-wide default resolver. A default resolver instance can be set in code using
+:func:`set_default_resolver`, or via the `RDFLIB_DEFAULT_RESOLVER_CLASS` environment
+variable using a colon-delimited style (i.e. `"path.to.module:ClassName"`). The current
+default resolver instance can be retrieved using :func:`get_default_resolver`.
+
+If the default resolver is not explicitly set, the default resolver will be an instance
+of :class:`DefaultResolver`, which is implements a default-deny policy. This policy can
+be altered using the `RDFLIB_RESOLVABLE_URL_SCHEMES` and
+`RDFLIB_RESOLVABLE_URL_ALLOWLIST` environment variables. The first should be a
+whitespace-delimited list of URL schemes (e.g. `"file https"`) and the second should be a
+whitespace-delimited list of allowed URLs.
+
+Custom resolvers should subclass :class:`Resolver`, e.g.:
+
+    >>> class LocalResolver(Resolver):
+    >>>     documents = {}
+    >>>
+    >>>     def is_resolution_allowed(self, scheme: str, url: str) -> bool:
+    >>>         return url in documents or super().is_resolution_allowed(scheme, url)
+    >>>
+    >>>     @url_resolver(schemes={"http", "https"})
+    >>>     def resolve_http(self, url: str, format: str, scheme: str) -> InputSource:
+    >>>         return self.documents[url]
+
+To replicate the permissive behaviour of older releases, you can set
+:class:`PermissiveResolver` as your default resolver.
+"""
+
 import functools
 import importlib
 import os
