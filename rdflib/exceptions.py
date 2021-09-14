@@ -10,6 +10,8 @@ __all__ = [
     "ObjectTypeError",
     "ContextTypeError",
     "ParserError",
+    "ResolutionError",
+    "ResolutionForbiddenError",
 ]
 
 
@@ -104,12 +106,12 @@ class ResolutionError(Error):
 class ResolutionForbiddenError(Error):
     """Resolution of the given URL is not allowed."""
 
-    def __init__(self, location):
+    def __init__(self, url):
         Error.__init__(self, self.__doc__)
-        self.location = location
+        self.url = url
 
     def __str__(self):
-        return f"Resolution of '{self.location}' is not allowed."
+        return f"Resolution of '{self.url}' is not allowed."
 
 
 class UniquenessError(Error):
