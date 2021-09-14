@@ -99,19 +99,19 @@ class Resolver:
 
         base = pathlib.Path.cwd().as_uri()
 
-        absolute_location = URIRef(location, base=base)
+        url = str(URIRef(location, base=base))
 
-        scheme = urlparse(absolute_location).scheme
+        scheme = urlparse(url).scheme
         resolver_func = self._get_resolver_for_scheme(scheme)
         if not resolver_func:
             raise ResolutionError(
                 f"Resolution of URLs with scheme {scheme} is not supported."
             )
 
-        if not trust and not self.is_resolution_allowed(scheme, absolute_location):
-            raise ResolutionForbiddenError(absolute_location)
+        if not trust and not self.is_resolution_allowed(scheme, url):
+            raise ResolutionForbiddenError(url)
 
-        input_source = resolver_func(absolute_location, format, scheme)
+        input_source = resolver_func(url, format, scheme)
 
         assert input_source.getSystemId()
 
@@ -128,7 +128,7 @@ class Resolver:
     def _get_resolver_for_scheme(self, scheme: str):
         return self._get_url_resolvers().get(scheme)
 
-    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+    def is_resolution_allowed(self, scheme: str, url: str) -> bool:
         """Used to test whether a location should be resolved.
 
         Subclasses should override this method and defer up the superclass chain with
@@ -136,13 +136,13 @@ class Resolver:
         return False
 
     @url_resolver(schemes={"file"})
-    def resolve_file(self, url: URIRef, format: str, scheme: str) -> InputSource:
+    def resolve_file(self, url: str, format: str, scheme: str) -> InputSource:
         filename = url2pathname(url.replace("file:///", "/"))
         file = open(filename, "rb")
         return FileInputSource(file)
 
     @url_resolver(schemes={"http", "https"})
-    def resolve_http(self, url: URIRef, format: str, scheme: str) -> InputSource:
+    def resolve_http(self, url: str, format: str, scheme: str) -> InputSource:
         return URLInputSource(url, format)
 
 
@@ -171,9 +171,9 @@ class DefaultResolver(Resolver):
             self.resolvable_url_allowlist = resolvable_url_allowlist
         super().__init__(**kwargs)
 
-    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+    def is_resolution_allowed(self, scheme: str, url: str) -> bool:
         return (
-            str(location) in self.resolvable_url_allowlist
+            url in self.resolvable_url_allowlist
             or scheme in self.resolvable_url_schemes
         )
 
@@ -189,7 +189,7 @@ class PermissiveResolver(Resolver):
     `set_default_resolver(PermissiveResolver())`.
     """
 
-    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+    def is_resolution_allowed(self, scheme: str, url: str) -> bool:
         return True
 
 
