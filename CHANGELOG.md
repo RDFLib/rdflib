@@ -1,3 +1,26 @@
+2021/09/17 RELEASE 6.0.1
+========================
+Minor release to fix a few small errors, in particular with JSON-LD parsing & serializing integration from rdflib-jsonld. Also, a few other niceties, such as allowing graph `add()`, `remove()` etc. to be chainable.
+
+* Add test for adding JSON-LD to guess_format()
+  [PR #1408](https://github.com/RDFLib/rdflib/pull/1408)
+* Add JSON-LD to guess_format()
+  [PR #1403](https://github.com/RDFLib/rdflib/pull/1403)
+* add dateTimeStamp, fundamental & constraining facets, 7-prop data model
+  [PR #1399](https://github.com/RDFLib/rdflib/pull/1399)
+* fix: remove log message on import
+  [PR #1398](https://github.com/RDFLib/rdflib/pull/1398)
+* Make graph and other methods chainable
+  [PR #1394](https://github.com/RDFLib/rdflib/pull/1394)
+* fix: use correct name for json-ld
+  [PR #1388](https://github.com/RDFLib/rdflib/pull/1388)
+* Allowing Container Membership Properties in RDF namespace (#873)
+  [PR #1386](https://github.com/RDFLib/rdflib/pull/1386)
+* Update intro_to_sparql.rst
+  [PR #1386](https://github.com/RDFLib/rdflib/pull/1384)
+* Iterate over dataset return quads
+  [PR #1382](https://github.com/RDFLib/rdflib/pull/1382)
+
 2021/07/20 RELEASE 6.0.0
 ========================
 6.0.0 is a major stable release that drops support for Python 2 and Python 3 < 3.7. Type hinting is now present in much

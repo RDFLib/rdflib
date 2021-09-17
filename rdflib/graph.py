@@ -1967,7 +1967,6 @@ class Dataset(ConjunctiveGraph):
         return self.quads((None, None, None, None))
 
 
-
 class QuotedGraph(Graph):
     """
     Quoted Graphs are intended to implement Notation 3 formulae. They are

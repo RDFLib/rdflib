@@ -177,8 +177,9 @@ class DatasetTestCase(unittest.TestCase):
 
         d.add_graph(URIRef("https://example.com/g1"))
         d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g1")))
-        d.add((uri_a, uri_b, uri_c, URIRef(
-            "https://example.com/g1")))  # pointless addition: duplicates above
+        d.add(
+            (uri_a, uri_b, uri_c, URIRef("https://example.com/g1"))
+        )  # pointless addition: duplicates above
 
         d.add_graph(URIRef("https://example.com/g2"))
         d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g2")))
@@ -195,8 +196,8 @@ class DatasetTestCase(unittest.TestCase):
             i_new += 1
 
         self.assertEqual(i_new, i_trad)  # both should be 3
-        
-        
+
+
 # dynamically create classes for each registered Store
 
 pluginname = None
