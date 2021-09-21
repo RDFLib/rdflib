@@ -6,7 +6,8 @@ Implementation of the JSON-LD Context structure. See:
 
 """
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
-
+import contextlib
+import json
 from collections import namedtuple
 from rdflib.namespace import RDF
 
@@ -35,7 +36,7 @@ from .keys import (
     VOCAB,
 )
 from .errors import INVALID_REMOTE_CONTEXT, RECURSIVE_CONTEXT_INCLUSION
-from .util import source_to_json, urljoin, urlsplit, split_iri, norm_url
+from .util import urljoin, urlsplit, split_iri, norm_url
 
 
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
@@ -52,7 +53,7 @@ URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
 
 class Context(object):
-    def __init__(self, source=None, base=None, version=None):
+    def __init__(self, source=None, base=None, version=None, *, resolver=None):
         self.version = version or 1.0
         self.language = None
         self.vocab = None
@@ -67,6 +68,7 @@ class Context(object):
         self.parent = None
         self.propagate = True
         self._context_cache = {}
+        self.resolver = resolver
         if source:
             self.load(source)
 
@@ -93,7 +95,7 @@ class Context(object):
         return parent._subcontext(source, propagate)
 
     def _subcontext(self, source, propagate):
-        ctx = Context(version=self.version)
+        ctx = Context(version=self.version, resolver=self.resolver)
         ctx.propagate = propagate
         ctx.parent = self
         ctx.language = self.language
@@ -406,7 +408,9 @@ class Context(object):
         if source_url in self._context_cache:
             return self._context_cache[source_url]
 
-        source = source_to_json(source_url)
+        input_source = self.resolver.resolve(source_url, format="json-ld")
+        with contextlib.closing(input_source.getByteStream()) as stream:
+            source = json.load(stream)
         if source and CONTEXT not in source:
             raise INVALID_REMOTE_CONTEXT
         self._context_cache[source_url] = source

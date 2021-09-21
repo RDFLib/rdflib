@@ -119,7 +119,7 @@ def from_rdf(
         context = context_data
         context_data = context.to_dict()
     else:
-        context = Context(context_data, base=base)
+        context = Context(context_data, base=base, resolver=None)
 
     converter = Converter(context, use_native_types, use_rdf_type)
     result = converter.convert(graph)

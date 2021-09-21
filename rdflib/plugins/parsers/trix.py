@@ -262,9 +262,6 @@ def create_parser(store):
 class TriXParser(Parser):
     """A parser for TriX. See http://sw.nokia.com/trix/"""
 
-    def __init__(self):
-        pass
-
     def parse(self, source, sink, **args):
         assert (
             sink.store.context_aware

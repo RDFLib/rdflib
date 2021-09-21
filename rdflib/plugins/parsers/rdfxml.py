@@ -593,9 +593,6 @@ def create_parser(target, store):
 
 
 class RDFXMLParser(Parser):
-    def __init__(self):
-        pass
-
     def parse(self, source, sink, **args):
         self._parser = create_parser(source, sink)
         content_handler = self._parser.getContentHandler()

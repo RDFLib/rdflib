@@ -125,9 +125,6 @@ class TrigParser(Parser):
 
     """
 
-    def __init__(self):
-        pass
-
     def parse(self, source, graph, encoding="utf-8"):
 
         if encoding not in [None, "utf-8"]:

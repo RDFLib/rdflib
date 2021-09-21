@@ -18,8 +18,6 @@ import sys
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
 from urllib.request import Request
-from urllib.request import url2pathname
-from urllib.parse import urljoin
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
@@ -39,10 +37,16 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = ()
+    __slots__ = ("_resolver",)
 
-    def __init__(self):
-        pass
+    def __init__(self, *, resolver=None):
+        self._resolver = resolver
+
+    @property
+    def resolver(self):
+        from .resolver import get_default_resolver
+
+        return self._resolver or get_default_resolver()
 
     def parse(self, source, sink):
         pass
@@ -307,23 +311,14 @@ def create_input_source(
 
 
 def _create_input_source_from_location(file, format, input_source, location):
-    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-    path = pathlib.Path(location)
-    if path.exists():
-        location = path.absolute().as_uri()
+    from .resolver import get_default_resolver
 
-    base = pathlib.Path.cwd().as_uri()
+    input_source = get_default_resolver().resolve(
+        format=format,
+        location=location,
+        trust=True,
+    )
 
-    absolute_location = URIRef(location, base=base)
+    file = input_source.file if isinstance(input_source, FileInputSource) else file
 
-    if absolute_location.startswith("file:///"):
-        filename = url2pathname(absolute_location.replace("file:///", "/"))
-        file = open(filename, "rb")
-    else:
-        input_source = URLInputSource(absolute_location, format)
-
-    auto_close = True
-    # publicID = publicID or absolute_location  # Further to fix
-    # for issue 130
-
-    return absolute_location, auto_close, file, input_source
+    return input_source.getSystemId(), True, file, input_source

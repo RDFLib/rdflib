@@ -18,17 +18,6 @@ from rdflib.parser import create_input_source
 from io import StringIO
 
 
-def source_to_json(source):
-    # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
-    source = create_input_source(source, format="json-ld")
-
-    stream = source.getByteStream()
-    try:
-        return json.load(StringIO(stream.read().decode("utf-8")))
-    finally:
-        stream.close()
-
-
 VOCAB_DELIMS = ("#", "/", ":")
 
 

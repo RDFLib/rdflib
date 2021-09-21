@@ -1899,9 +1899,6 @@ class TurtleParser(Parser):
     See http://www.w3.org/TR/turtle/
     """
 
-    def __init__(self):
-        pass
-
     def parse(self, source, graph, encoding="utf-8", turtle=True):
 
         if encoding not in [None, "utf-8"]:
@@ -1932,9 +1929,6 @@ class N3Parser(TurtleParser):
     See http://www.w3.org/DesignIssues/Notation3.html
 
     """
-
-    def __init__(self):
-        pass
 
     def parse(self, source, graph, encoding="utf-8"):
         # we're currently being handed a Graph, not a ConjunctiveGraph
