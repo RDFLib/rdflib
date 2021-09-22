@@ -46,6 +46,7 @@ Importable namespaces
 
 The following namespaces are available by directly importing from rdflib:
 
+* BRICK
 * CSVW
 * DC
 * DCMITYPE
@@ -696,6 +697,7 @@ def get_longest_namespace(trie, value):
     return None
 
 
+from rdflib.namespace._BRICK import BRICK
 from rdflib.namespace._CSVW import CSVW
 from rdflib.namespace._DC import DC
 from rdflib.namespace._DCAT import DCAT
