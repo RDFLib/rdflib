@@ -3,8 +3,11 @@ from rdflib.namespace import DefinedNamespace, Namespace
 
 class BRICK(DefinedNamespace):
     """
+    Brick Ontology classes, properties and entity properties. See https://brickschema.org/
+    for more information.
+
     Generated from: https://github.com/BrickSchema/Brick/releases/download/nightly/Brick.ttl
-    Date: 2021-09-22T14:27:08
+    Date: 2021-09-22T14:32:56
     """
 
     # http://www.w3.org/2002/07/owl#Class
@@ -517,7 +520,7 @@ class BRICK(DefinedNamespace):
     Hot_Water_Discharge_Flow_Sensor: URIRef  # Measures the rate of flow of hot discharge water
     Hot_Water_Discharge_Flow_Setpoint: URIRef  # Sets the target flow rate of hot discharge water
     Hot_Water_Discharge_Temperature_Load_Shed_Status: URIRef
-    Hot_Water_Flow_Sensor: URIRef  # Measures the rate of flow of hot water
+    Hot_Water_Flow_Sensor: URIRef  # Measures the rate of flow in a hot water circuit
     Hot_Water_Flow_Setpoint: URIRef  # Sets the target flow rate of hot water
     Hot_Water_Loop: URIRef  # A collection of equipment that transport and regulate hot water among each other
     Hot_Water_Meter: URIRef  # A meter that measures the usage or consumption of hot water
