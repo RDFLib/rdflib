@@ -78,7 +78,7 @@ class Bindings(MutableMapping):
         while d is not None:
             i += len(d._d)
             d = d.outer
-        return i
+        return i  # type: ignore[unreachable]
 
     def __iter__(self):
         d = self

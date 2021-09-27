@@ -1168,7 +1168,7 @@ class SinkParser:
             pfx, ln = qn[0]
             if pfx is None:
                 assert 0, "not used?"
-                ns = self._baseURI + ADDED_HASH
+                ns = self._baseURI + ADDED_HASH  # type: ignore[unreachable]
             else:
                 try:
                     ns = self._bindings[pfx]

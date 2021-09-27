@@ -1057,34 +1057,34 @@ class Graph(Node):
     @overload
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase],
+        destination: Union[str, BufferedIOBase, pathlib.PurePath],
         format: str = ...,
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
         **args,
-    ) -> None:
+    ) -> "Graph":
         ...
 
     # fallback
     @overload
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase, None] = None,
+        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         **args,
-    ) -> Optional[Union[bytes, str]]:
+    ) -> Union[bytes, str, "Graph"]:
         ...
 
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase, None] = None,
+        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         **args,
-    ) -> Optional[Union[bytes, str]]:
+    ) -> Union[bytes, str, "Graph"]:
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as
@@ -1123,10 +1123,9 @@ class Graph(Node):
                 location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
-                print(
-                    "WARNING: not saving as location" + "is not a local file reference"
+                raise ValueError(
+                    f"destination {destination} is not a local file reference"
                 )
-                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)

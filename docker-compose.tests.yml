@@ -14,3 +14,11 @@ services:
     volumes:
       - .:/rdflib
     command: ["/rdflib/run_tests_with_coverage_report.sh"]
+
+  check-types:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    volumes:
+      - .:/rdflib
+    command: ["python", "-m", "mypy", "--show-error-context", "--show-error-codes" ,"/rdflib/rdflib"]
