@@ -1,3 +1,5 @@
+# tests for the turtle2 serializer
+
 from rdflib import Graph
 
 
@@ -199,3 +201,7 @@ ex:c
 """
 
     assert s == expected_s
+
+    # re-parse test
+    g2 = Graph().parse(data=s)  # turtle
+    assert len(g2) == len(g)
