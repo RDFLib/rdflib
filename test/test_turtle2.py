@@ -1,18 +1,17 @@
-from rdflib import Graph, Namespace, Literal
-from rdflib.namespace import RDF, RDFS, XSD
+from rdflib import Graph
 
-EX = Namespace("https://example.com/")
 
 def test_turtle2():
     g = Graph()
 
-    g.parse(data="""
-        @prefix ex: <http://example.org/> .
-        @prefix ex2: <http://example2.org/> .
+    g.parse(
+        data="""
+        @prefix ex: <https://example.org/> .
+        @prefix ex2: <https://example2.org/> .
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <http://something.com/a>
+        <https://something.com/a>
             a ex:Thing , ex:OtherThing ;
             ex:name "Thing", "Other Thing"@en , "もの"@ja , "rzecz"@pl ;
             ex:singleValueProp "propval" ;
@@ -82,24 +81,31 @@ def test_turtle2():
                     ex:six
                 ) ;
             ] .
-        """, format="turtle")
-    str = g.serialize(format="turtle2")
-    lines = str.split("\n")
+        """,
+        format="turtle",
+    )
+    s = g.serialize(format="turtle2")
+    lines = s.split("\n")
 
     assert "ex:b" in lines
     assert "    a ex:Thing ;" in lines
-    assert """    ex2:name "B" ;
-.""" in str
-    assert """                (
+    assert (
+        """    ex2:name "B" ;
+."""
+        in s
+    )
+    assert (
+        """                (
                     ex:one
                     ex:two
                     ex:three
-                ) ,""" in str
+                ) ,"""
+        in s
+    )
     assert '    ex:singleValueProp "propval" ;' in lines
 
-
-    expected_str = """PREFIX ex: <http://example.org/>
-PREFIX ex2: <http://example2.org/>
+    expected_s = """PREFIX ex: <https://example.org/>
+PREFIX ex2: <https://example2.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 ex:b
@@ -142,7 +148,7 @@ ex:c
     ex:name "C" ;
 .
 
-<http://something.com/a>
+<https://something.com/a>
     a
         ex:OtherThing ,
         ex:Thing ;
@@ -192,5 +198,4 @@ ex:c
 
 """
 
-    assert str == expected_str
-
+    assert s == expected_s

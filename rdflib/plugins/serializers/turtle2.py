@@ -49,6 +49,7 @@ def _object_comparator(a, b):
         b = str(b)
         return (a > b) - (a < b)
 
+
 SUBJECT = 0
 VERB = 1
 OBJECT = 2
