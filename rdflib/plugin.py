@@ -161,6 +161,7 @@ register(
     "text/turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer"
 )
 register("turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
+register("turtle2", Serializer, "rdflib.plugins.serializers.turtle2", "TurtleSerializer2")
 register("ttl", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
 register(
     "application/n-triples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer"
