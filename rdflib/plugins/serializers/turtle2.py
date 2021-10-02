@@ -3,52 +3,25 @@ Turtle2 RDF graph serializer for RDFLib.
 See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 
 This variant, turtle2 as opposed to just turtle, makes some small format changes
-to turtle - the original turtle serializer - which are:
+to turtle - the original turtle serializer. It:
 
-* using PREFIX instead of @prefix
-* using BASE instead of @base
-* adding a new line at RDF.type, or 'a'
-* adding newline and an indent for all triples with more than one object (object list)
-* adding a new line and ';' for the last triple in a set with '.'
+* uses PREFIX instead of @prefix
+* uses BASE instead of @base
+* adds a new line at RDF.type, or 'a'
+* adds a newline and an indent for all triples with more than one object (object list)
+* adds a new line and ';' for the last triple in a set with '.'
     on the start of the next line
-* default encoding (encode()) is used instead of "latin-1"
+* uses default encoding (encode()) is used instead of "latin-1"
 
 - Nicholas Car, 2021
 """
 
-from collections import defaultdict
-from functools import cmp_to_key
-
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
-from rdflib.serializer import Serializer
 from .turtle import RecursiveSerializer
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace import RDF
 
-__all__ = ["RecursiveSerializer", "TurtleSerializer2"]
-
-
-def _object_comparator(a, b):
-    """
-    for nice clean output we sort the objects of triples,
-    some of them are literals,
-    these are sorted according to the sort order of the underlying python objects
-    in py3 not all things are comparable.
-    This falls back on comparing string representations when not.
-    """
-
-    try:
-        if a > b:
-            return 1
-        if a < b:
-            return -1
-        return 0
-
-    except TypeError:
-        a = str(a)
-        b = str(b)
-        return (a > b) - (a < b)
-
+__all__ = ["TurtleSerializer2"]
 
 SUBJECT = 0
 VERB = 1
