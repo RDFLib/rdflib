@@ -7,6 +7,7 @@ from rdflib import DCTERMS
 from rdflib.graph import Graph
 from rdflib.namespace import (
     FOAF,
+    OWL,
     RDF,
     RDFS,
     SH,
@@ -245,3 +246,9 @@ class NamespacePrefixTest(unittest.TestCase):
 
         ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1")
         self.assertTrue(ref in RDF, "RDF does not include rdf:_1")
+
+        ref = URIRef("http://www.w3.org/2002/07/owl#rational")
+        self.assertTrue(ref in OWL, "OWL does not include owl:rational")
+
+        ref = URIRef("http://www.w3.org/2002/07/owl#real")
+        self.assertTrue(ref in OWL, "OWL does not include owl:real")
