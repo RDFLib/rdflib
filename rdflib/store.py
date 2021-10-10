@@ -364,6 +364,11 @@ class Store(object):
 
     def namespaces(self):
         """ """
+        # This is here so that the function becomes an empty generator.
+        # See https://stackoverflow.com/q/13243766 and
+        # https://www.python.org/dev/peps/pep-0255/#why-a-new-keyword-for-yield-why-not-a-builtin-function-instead
+        if False:
+            yield None  # type: ignore[unreachable]
 
     # Optional Transactional methods
 
