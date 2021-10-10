@@ -13,7 +13,7 @@ kwargs["tests_require"] = [
     "nose==1.3.7",
     "nose-timer",
     "coverage",
-    "black==21.6b0",
+    "black==21.9b0",
     "flake8",
     "doctest-ignore-unicode==0.1.2",
 ]

@@ -13,7 +13,7 @@ Please be as Pythonic as possible (:pep:`8`).
 
 Code should be formatted using `black <https://github.com/psf/black>`_.
 While not yet mandatory, it will be required in the future  (6.0.0+).1
-Use Black v21.6b1, with the black.toml config file provided.
+Use Black v21.9b0, with the black.toml config file provided.
 
 Code should also pass `flake8 <https://github.com/psf/black>`_ linting
 and `mypy <http://mypy-lang.org/>`_ type checking.
