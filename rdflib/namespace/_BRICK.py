@@ -1,6 +1,7 @@
 from rdflib.term import URIRef
 from rdflib.namespace import DefinedNamespace, Namespace
 
+
 class BRICK(DefinedNamespace):
     """
     Brick Ontology classes, properties and entity properties. See https://brickschema.org/

@@ -10,6 +10,7 @@ Tools to assist with RDFlib releases, like extracting all merged PRs from GitHub
 3. black everything 
    * use the config, e.g. `black --config black.toml .` in main dir
 4. build docs - check for errors/warnings there
+   * `python setup.py build_sphinx`
 5. alter version & date in rdflib/__init__.py
 6. update:
     * CHANGELOG.md

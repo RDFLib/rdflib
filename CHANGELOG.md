@@ -1,3 +1,26 @@
+2021/09/17 RELEASE 6.0.2
+========================
+Minor release to add OWL.rational & OWL.real which are needed to allow the OWL-RL pachage to use only rdflib namespaces, not it's own versions.
+
+* Add owl:rational and owl:real to match standard.
+  [PR #1428](https://github.com/RDFLib/rdflib/pull/1428)
+
+A few other small things have been added, see the following merged PRs list:
+
+* rename arg LOVE to ns in rdfpipe
+  [PR #1426](https://github.com/RDFLib/rdflib/pull/1426)
+* Remove Tox reference to Python 3.6
+  [PR #1422](https://github.com/RDFLib/rdflib/pull/1422)
+* Add Brick DefinedNamespace
+  [PR #1419](https://github.com/RDFLib/rdflib/pull/1419)
+* Use setName on TokenConverter to set the name property
+  [PR #1409](https://github.com/RDFLib/rdflib/pull/1409)
+* Add test for adding JSON-LD to guess_format()
+  [PR #1408](https://github.com/RDFLib/rdflib/pull/1408)
+* Fix mypy type errors and add mypy to .drone.yml
+  [PR #1407](https://github.com/RDFLib/rdflib/pull/1407)
+
+
 2021/09/17 RELEASE 6.0.1
 ========================
 Minor release to fix a few small errors, in particular with JSON-LD parsing & serializing integration from rdflib-jsonld. Also, a few other niceties, such as allowing graph `add()`, `remove()` etc. to be chainable.
