@@ -45,7 +45,7 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "6.0.2"
+__version__ = "6.03a"
 __date__ = "2021-10-10"
 
 __all__ = [
@@ -57,9 +57,11 @@ __all__ = [
     "Dataset",
     "Graph",
     "ConjunctiveGraph",
+    "BRICK",
     "CSVW",
     "DC",
     "DCAT",
+    "DCMITYPE",
     "DCTERMS",
     "DOAP",
     "FOAF",
@@ -77,8 +79,8 @@ __all__ = [
     "SOSA",
     "SSN",
     "TIME",
+    "VANN",
     "VOID",
-    "XMLNS",
     "XSD",
     "util",
 ]
@@ -161,6 +163,7 @@ from rdflib import plugin
 from rdflib import query
 
 from rdflib.namespace import (
+    BRICK,
     CSVW,
     DC,
     DCAT,
@@ -181,6 +184,7 @@ from rdflib.namespace import (
     SOSA,
     SSN,
     TIME,
+    VANN,
     VOID,
     XMLNS,
     XSD,

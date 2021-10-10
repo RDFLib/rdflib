@@ -25,10 +25,13 @@ Tools to assist with RDFlib releases, like extracting all merged PRs from GitHub
     * `python3 setup.py bdist_wheel sdist`
     * `twine upload ./dist/*`
 9. Make GitHub release
+    * `git tag <new-version>`
+    * `git push --tags`
     * go to the tagged version, e.g. https://github.com/RDFLib/rdflib/releases/tag/6.0.0
     * edit the release' notes there (likely copy from CHANGELOG)
-10. Build readthedocs docco
+11. Build readthedocs docco
     * `latest` and `stable` need to be built at least
     * best to make sure the previous (outgoing) release has a number-pegged version, e.g. 5.0.0
-11. update the rdflib.dev website page
-12. update the master version to this version + 1
+12. update the rdflib.dev website page
+14. Update the GitHub master version
+    * e.g. for release 6.0.2, change version to 6.0.3a and push to GitHub
