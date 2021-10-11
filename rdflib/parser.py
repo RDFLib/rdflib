@@ -14,8 +14,10 @@ import codecs
 import os
 import pathlib
 import sys
+from http.client import HTTPMessage, HTTPResponse
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
+from typing import Optional
 
 from urllib.request import Request
 from urllib.request import url2pathname
@@ -135,6 +137,45 @@ class URLInputSource(InputSource):
     TODO:
     """
 
+    @classmethod
+    def getallmatchingheaders(cls, message: HTTPMessage, name):
+        # This is reimplemented here, because the method
+        # getallmatchingheaders from HTTPMessage is broken since Python 3.0
+        name = name.lower()
+        lst = []
+        for key, val in message.items():
+            if key.lower() == name:
+                lst.append(val)
+        return lst
+
+    @classmethod
+    def get_links(cls, response: HTTPResponse):
+        linkslines = cls.getallmatchingheaders(response.headers, "Link")
+        retarray = []
+        for linksline in linkslines:
+            links = [l.strip() for l in linksline.split(",")]
+            for link in links:
+                retarray.append(link)
+        return retarray
+
+    def get_alternates(self, type_: Optional[str] = None):
+        if type_:
+            typestr: Optional[str] = f"type=\"{type_}\""
+        else:
+            typestr = None
+        relstr = "rel=\"alternate\""
+        alts = []
+        for link in self.links:
+            parts = [p.strip() for p in link.split(";")]
+            if relstr not in parts:
+                continue
+            if typestr:
+                if typestr in parts:
+                    alts.append(parts[0].strip("<>"))
+            else:
+                alts.append(parts[0].strip("<>"))
+        return alts
+
     def __init__(self, system_id=None, format=None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
@@ -175,16 +216,26 @@ class URLInputSource(InputSource):
                 else:
                     raise
 
-        file = _urlopen(req)
-        # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
-        self.url = file.geturl()  # in case redirections took place
+        response = _urlopen(req)
+        self.url = response.geturl()  # in case redirections took place
+        self.links = self.get_links(response)
+        if format in ("json-ld", "application/ld+json"):
+            alts = self.get_alternates(type_="application/ld+json")
+            for link in alts:
+                full_link = urljoin(self.url, link)
+                if full_link != self.url and full_link != system_id:
+                    response = _urlopen(full_link)
+                    self.url = response.geturl()  # in case redirections took place
+                    break
+
         self.setPublicId(self.url)
-        self.content_type = file.info().get("content-type")
+        content_types = self.getallmatchingheaders(response.headers, "content-type")
+        self.content_type = content_types[0] if content_types else None
         if self.content_type is not None:
             self.content_type = self.content_type.split(";", 1)[0]
-        self.setByteStream(file)
+        self.setByteStream(response)
         # TODO: self.setEncoding(encoding)
-        self.response_info = file.info()  # a mimetools.Message instance
+        self.response_info = response.info()  # a mimetools.Message instance
 
     def __repr__(self):
         return self.url

@@ -102,7 +102,7 @@ class JsonLDParser(rdflib.parser.Parser):
         )
 
         context_data = kwargs.get("context")
-        if not context_data and isinstance(source, URLInputSource):
+        if not context_data and hasattr(source, "url") and hasattr(source, "links"):
             context_data = context_from_urlinputsource(source)
 
         try:
@@ -196,7 +196,9 @@ class Parser(object):
         id_val = context.get_id(node)
 
         if id_val is None:
-            id_val = self._get_nested_id(context, node)
+            nested_id = self._get_nested_id(context, node)
+            if nested_id is not None and len(nested_id) > 0:
+                id_val = nested_id
 
         if isinstance(id_val, str):
             subj = self._to_rdf_id(context, id_val)

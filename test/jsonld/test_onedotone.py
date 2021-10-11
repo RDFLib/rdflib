@@ -10,10 +10,7 @@ testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "1.1")
 
 
 unsupported_tests = ("frame", "normalize")
-unsupported_tests += (
-    "error",
-    "remote",
-)
+unsupported_tests += ('error',) #("error", "remote")
 unsupported_tests += ("flatten", "compact", "expand")
 unsupported_tests += ("html",)
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
@@ -130,6 +127,13 @@ known_bugs = (
     "toRdf/tn02-in",
     # TODO: Rdflib should silently reject bad predicate URIs
     "toRdf/wf02-in",
+    # TODO: we don't extract context or json-ld that's embedded in HTML
+    "remote-doc/0013-in",
+    "remote-doc/la01-in",
+    "remote-doc/la02-in",
+    "remote-doc/la03-in",
+    "remote-doc/la04-in",
+    "remote-doc/la05-in",
 )
 
 TC_BASE = "https://w3c.github.io/json-ld-api/tests/"
@@ -199,7 +203,7 @@ def test_suite():
                 ):
                     # Skip the JSON v1.0 tests
                     continue
-            if inputpath.endswith(".jsonld"):  # toRdf
+            if inputpath.endswith(".jsonld") or inputpath.endswith(".json") or inputpath.endswith(".jldt"):  # toRdf
                 if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
                     func = runner.do_test_json
                 else:  # toRdf

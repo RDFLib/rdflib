@@ -1,8 +1,10 @@
 # -*- coding: UTF-8 -*-
 import json
+from functools import partial
 from rdflib import ConjunctiveGraph
 from rdflib.compare import isomorphic
-from rdflib.plugins.parsers.jsonld import to_rdf
+from rdflib.parser import InputSource
+from rdflib.plugins.parsers.jsonld import to_rdf, JsonLDParser
 from rdflib.plugins.serializers.jsonld import from_rdf
 from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
 
@@ -16,26 +18,69 @@ def _preserving_nodeid(self, bnode_context=None):
     return bNode(self.eat(r_nodeid).group(1))
 
 
+
+
 DEFAULT_PARSER_VERSION = 1.0
 
 
+def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}):
+    local_url = input_uri.replace("https://w3c.github.io/json-ld-api/tests/", "./")
+    try:
+        f = open(local_url, "rb")
+    except FileNotFoundError:
+        f = None
+    source = InputSource(input_uri)
+    source.setPublicId(input_uri)
+    source.setByteStream(f)
+    source.url = input_uri
+    source.links = []
+    if local_url.endswith(".jsonld") or local_url.endswith(".jldt"):
+        source.content_type = "application/ld+json"
+    else:
+        source.content_type = "application/json"
+    source.format = format
+    if options:
+        if "httpLink" in options:
+            source.links.append(options["httpLink"])
+        if "contentType" in options:
+            source.content_type = options['contentType']
+        if "redirectTo" in options:
+            redir = suite_base + options['redirectTo']
+            local_redirect = redir.replace("https://w3c.github.io/json-ld-api/tests/", "./")
+            if f:
+                f.close()
+            try:
+                f = open(local_redirect, "rb")
+            except FileNotFoundError:
+                f = None
+            source.setByteStream(f)
+            source.url = redir
+            source.setPublicId(redir)
+            source.setSystemId(redir)
+    return source
+
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
-    input_obj = _load_json(inputpath)
     input_graph = ConjunctiveGraph()
-    to_rdf(
-        input_obj,
-        input_graph,
-        base=input_uri,
-        context_data=context,
-        generalized_rdf=True,
-    )
+    if cat == "remote-doc":
+        input_src = make_fake_urlinputsource(input_uri, format="json-ld", suite_base=suite_base, options=options)
+        p = JsonLDParser()
+        p.parse(input_src, input_graph, base=input_src.getPublicId(), context_data=context, generalized_rdf=True)
+    else:
+        input_obj = _load_json(inputpath)
+        to_rdf(
+            input_obj,
+            input_graph,
+            base=input_uri,
+            context_data=context,
+            generalized_rdf=True,
+        )
     expected_json = _load_json(expectedpath)
     use_native_types = True  # CONTEXT in input_obj
     result_json = from_rdf(
         input_graph,
         context,
-        base=input_uri,
+        base="./",  # deliberately set base different to the input base
         use_native_types=options.get("useNativeTypes", use_native_types),
         use_rdf_type=options.get("useRdfType", False),
     )
@@ -72,14 +117,19 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
             version = 1.1
         elif requested_version == "json-ld-1.0":
             version = 1.0
-    to_rdf(
-        input_obj,
-        result_graph,
-        context_data=context,
-        base=options.get("base", input_uri),
-        version=version,
-        generalized_rdf=options.get("produceGeneralizedRdf", False),
-    )
+    if cat == "remote-doc":
+        input_src = make_fake_urlinputsource(input_uri, format="json-ld", options=options)
+        p = JsonLDParser()
+        p.parse(input_src, result_graph, base=input_uri, context_data=context, generalized_rdf=True)
+    else:
+        to_rdf(
+            input_obj,
+            result_graph,
+            context_data=context,
+            base=options.get("base", input_uri),
+            version=version,
+            generalized_rdf=options.get("produceGeneralizedRdf", False),
+        )
     assert isomorphic(result_graph, expected_graph), "Expected:\n%s\nGot:\n%s" % (
         expected_graph.serialize(),
         result_graph.serialize(),
