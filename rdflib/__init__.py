@@ -167,6 +167,7 @@ from rdflib.namespace import (
     CSVW,
     DC,
     DCAT,
+    DCMITYPE,
     DCTERMS,
     DOAP,
     FOAF,
