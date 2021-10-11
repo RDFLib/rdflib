@@ -701,6 +701,7 @@ from rdflib.namespace._BRICK import BRICK
 from rdflib.namespace._CSVW import CSVW
 from rdflib.namespace._DC import DC
 from rdflib.namespace._DCAT import DCAT
+from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
