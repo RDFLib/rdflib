@@ -307,10 +307,13 @@ def create_input_source(
 
 
 def _create_input_source_from_location(file, format, input_source, location):
-    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-    path = pathlib.Path(location)
-    if path.exists():
-        location = path.absolute().as_uri()
+    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
+    # https://github.com/RDFLib/rdflib/issues/1430
+    # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
+    # valid path. However os.path.exists() returns false for a URL on windows
+    # which is why it is being used instead.
+    if os.path.exists(location):
+        location = pathlib.Path(location).absolute().as_uri()
 
     base = pathlib.Path.cwd().as_uri()
 

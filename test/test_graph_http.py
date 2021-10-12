@@ -63,7 +63,7 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
 
 
 class TestGraphHTTP(unittest.TestCase):
-    def content_negotiation(self) -> None:
+    def test_content_negotiation(self) -> None:
         EG = Namespace("http://example.org/")
         expected = Graph()
         expected.add((EG["a"], EG["b"], EG["c"]))
@@ -76,6 +76,29 @@ class TestGraphHTTP(unittest.TestCase):
                 graph = Graph()
                 graph.parse(url, format=format)
                 self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+
+    def test_source(self) -> None:
+        EG = Namespace("http://example.org/")
+        expected = Graph()
+        expected.add((EG["a"], EG["b"], EG["c"]))
+        expected_triples = GraphHelper.triple_set(expected)
+
+        httpmock = SimpleHTTPMock()
+        with ctx_http_server(httpmock.Handler) as server:
+            (host, port) = server.server_address
+            url = f"http://{host}:{port}/"
+
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(
+                    200,
+                    "OK",
+                    f"<{EG['a']}> <{EG['b']}> <{EG['c']}>.".encode(),
+                    {"Content-Type": ["text/turtle"]},
+                )
+            )
+            graph = Graph()
+            graph.parse(source=url)
+            self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
 
     def test_3xx(self) -> None:
         EG = Namespace("http://example.com/")
