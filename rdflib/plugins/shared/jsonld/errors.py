@@ -5,5 +5,6 @@ class JSONLDException(ValueError):
 
 
 # http://www.w3.org/TR/json-ld-api/#idl-def-JsonLdErrorCode.{code-message}
-RECURSIVE_CONTEXT_INCLUSION = JSONLDException("recursive context inclusion")
+INVALID_CONTEXT_ENTRY = JSONLDException("invalid context entry")
 INVALID_REMOTE_CONTEXT = JSONLDException("invalid remote context")
+RECURSIVE_CONTEXT_INCLUSION = JSONLDException("recursive context inclusion")
