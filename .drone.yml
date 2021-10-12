@@ -27,7 +27,11 @@ steps:
   - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
   - python setup.py install
   - black --config black.toml --check ./rdflib || true
-  - flake8 --exit-zero rdflib
+  # Two flake8 commands: 1) Just /rdflib, 2) The whole repo
+  - flake8 --ignore=E203,E266,E402,E713,E722,E741,F401,F402,F403,F811,F821,F841,W503
+           --max-complexity=41 --max-line-length=1656 --show-source --statistics rdflib
+  - flake8 --ignore=E101,E126,E203,E265,E266,E303,E402,E711,E712,E713,E722,E731,E741,F401,F402,F403,F405,F523,F541,F811,F821,F841,W191,W291,W293,W503
+           --max-complexity=41 --max-line-length=1653 --show-source --statistics .
   - mypy --show-error-context --show-error-codes rdflib
   - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
   - coverage report --skip-covered
@@ -50,7 +54,11 @@ steps:
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
   - black --config black.toml --check ./rdflib | true
-  - flake8 --exit-zero rdflib
+  # Two flake8 commands: 1) Just /rdflib, 2) The whole repo
+  - flake8 --ignore=E203,E266,E402,E713,E722,E741,F401,F402,F403,F811,F821,F841,W503
+           --max-complexity=41 --max-line-length=1656 --show-source --statistics rdflib
+  - flake8 --ignore=E101,E126,E203,E265,E266,E303,E402,E711,E712,E713,E722,E731,E741,F401,F402,F403,F405,F523,F541,F811,F821,F841,W191,W291,W293,W503
+           --max-complexity=41 --max-line-length=1653 --show-source --statistics .
   - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
 
 ---
@@ -70,5 +78,9 @@ steps:
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
   - black --config black.toml --check ./rdflib | true
-  - flake8 --exit-zero rdflib
+  # Two flake8 commands: 1) Just /rdflib, 2) The whole repo
+  - flake8 --ignore=E203,E266,E402,E713,E722,E741,F401,F402,F403,F811,F821,F841,W503
+           --max-complexity=41 --max-line-length=1656 --show-source --statistics rdflib
+  - flake8 --ignore=E101,E126,E203,E265,E266,E303,E402,E711,E712,E713,E722,E731,E741,F401,F402,F403,F405,F523,F541,F811,F821,F841,W191,W291,W293,W503
+           --max-complexity=41 --max-line-length=1653 --show-source --statistics .
   - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
