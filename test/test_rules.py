@@ -55,7 +55,7 @@ try:
 
         def tearDown(self):
             self.g.close()
-            shutil.rmtree(tmppath)
+            shutil.rmtree(self.tmppath)
 
         def testPychinko(self):
             rules = []
