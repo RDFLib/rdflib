@@ -10,11 +10,10 @@ want to do so through the Graph class parse method.
 
 """
 
+from typing import TYPE_CHECKING
 import codecs
-import os
 import pathlib
 import sys
-from http.client import HTTPMessage, HTTPResponse
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 from typing import Optional
@@ -30,6 +29,9 @@ from xml.sax import xmlreader
 from rdflib import __version__
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
+
+if TYPE_CHECKING:
+    from http.client import HTTPMessage, HTTPResponse
 
 __all__ = [
     "Parser",
@@ -138,7 +140,7 @@ class URLInputSource(InputSource):
     """
 
     @classmethod
-    def getallmatchingheaders(cls, message: HTTPMessage, name):
+    def getallmatchingheaders(cls, message: 'HTTPMessage', name):
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
@@ -149,7 +151,7 @@ class URLInputSource(InputSource):
         return lst
 
     @classmethod
-    def get_links(cls, response: HTTPResponse):
+    def get_links(cls, response: 'HTTPResponse'):
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
         retarray = []
         for linksline in linkslines:
