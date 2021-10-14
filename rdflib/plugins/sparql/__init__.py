@@ -41,9 +41,15 @@ assert operators
 assert parserutils
 
 try:
-    from pkg_resources import iter_entry_points
+    from importlib.metadata import entry_points
 except ImportError:
-    pass  # TODO: log a message
+    from importlib_metadata import entry_points
+
+all_entry_points = entry_points()
+if isinstance(all_entry_points, dict):
+    # Prior to Python 3.10, this returns a dict instead of the selection interface
+    for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
+        CUSTOM_EVALS[ep.name] = ep.load()
 else:
-    for ep in iter_entry_points(PLUGIN_ENTRY_POINT):
+    for ep in all_entry_points.select(group=PLUGIN_ENTRY_POINT):
         CUSTOM_EVALS[ep.name] = ep.load()

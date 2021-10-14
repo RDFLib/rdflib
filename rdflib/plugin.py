@@ -40,7 +40,7 @@ from typing import Type, TypeVar
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
-entry_points = {
+rdflib_entry_points = {
     "rdf.plugins.store": Store,
     "rdf.plugins.serializer": Serializer,
     "rdf.plugins.parser": Parser,
@@ -111,13 +111,19 @@ def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
 
 
 try:
-    from pkg_resources import iter_entry_points
+    from importlib.metadata import entry_points
 except ImportError:
-    pass  # TODO: log a message
+    from importlib_metadata import entry_points
+
+all_entry_points = entry_points()
+if hasattr(all_entry_points, "select"):
+    for entry_point, kind in rdflib_entry_points.items():
+        for ep in all_entry_points.select(group=entry_point):
+            _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 else:
-    # add the plugins specified via pkg_resources' EntryPoints.
-    for entry_point, kind in entry_points.items():
-        for ep in iter_entry_points(entry_point):
+    # Prior to Python 3.10, this returns a dict instead of the selection interface, which is slightly slower
+    for entry_point, kind in rdflib_entry_points.items():
+        for ep in all_entry_points.get(entry_point, []):
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
 
