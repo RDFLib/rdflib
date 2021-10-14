@@ -46,7 +46,7 @@ class ODRL2(DefinedNamespace):
     informingParty: URIRef  # The Party who provides the inform use data.
     inheritAllowed: URIRef  # Indicates if the Policy entity can be inherited.
     inheritFrom: URIRef  # Relates a (child) policy to another (parent) policy from which terms are inherited.
-    inheritRelation: URIRef  # Indentifies the type of inheritance.
+    inheritRelation: URIRef  # Identifies the type of inheritance.
     leftOperand: URIRef  # The left operand in a constraint expression.
     obligation: URIRef  # Relates an individual Duty to a Policy.
     operand: URIRef  # Operand is an abstract property for a logical relationship.
@@ -73,7 +73,7 @@ class ODRL2(DefinedNamespace):
     uid: URIRef  # An unambiguous identifier
     undefined: URIRef  # Relates the strategy used for handling undefined actions to a Policy.
     unit: URIRef  # The unit of measurement of the value of the rightOperand or rightOperandReference of a Constraint.
-    xone: URIRef  # The relation is satisfied when only one, and not more, of the Constaints is satisfied
+    xone: URIRef  # The relation is satisfied when only one, and not more, of the Constraints is satisfied
 
     # http://www.w3.org/2002/07/owl#NamedIndividual
     All: URIRef  # Specifies that the scope of the relationship is all of the collective individuals within a context.

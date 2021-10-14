@@ -16,7 +16,7 @@ class RDFS(DefinedNamespace):
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     comment: URIRef  # A description of the subject resource.
     domain: URIRef  # A domain of the subject property.
-    isDefinedBy: URIRef  # The defininition of the subject resource.
+    isDefinedBy: URIRef  # The definition of the subject resource.
     label: URIRef  # A human-readable name for the subject.
     member: URIRef  # A member of the subject resource.
     range: URIRef  # A range of the subject property.

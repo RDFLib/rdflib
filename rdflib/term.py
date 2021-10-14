@@ -364,7 +364,7 @@ class RDFLibGenid(Genid):
 
 def _unique_id():
     # Used to read: """Create a (hopefully) unique prefix"""
-    # now retained merely to leave interal API unchanged.
+    # now retained merely to leave internal API unchanged.
     # From BNode.__new__() below ...
     #
     # acceptable bnode value range for RDF/XML needs to be

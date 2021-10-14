@@ -49,7 +49,7 @@ class QB(DefinedNamespace):
     DataSet: URIRef  # Represents a collection of observations, possibly organized into various slices, conforming to some common dimensional structure.
     DataStructureDefinition: URIRef  # Defines the structure of a DataSet or slice
     DimensionProperty: URIRef  # The class of components which represent the dimensions of the cube
-    HierarchicalCodeList: URIRef  # Represents a generalized hierarchy of concepts which can be used for coding. The hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to thier child concept .  The same concepts may be members of multiple hierarchies provided that different qb:parentChildProperty values are used for each hierarchy.
+    HierarchicalCodeList: URIRef  # Represents a generalized hierarchy of concepts which can be used for coding. The hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to their child concept .  The same concepts may be members of multiple hierarchies provided that different qb:parentChildProperty values are used for each hierarchy.
     MeasureProperty: URIRef  # The class of components which represent the measured value of the phenomenon being observed
     Observation: URIRef  # A single observation in the cube, may have one or more associated measured values
     ObservationGroup: URIRef  # A, possibly arbitrary, group of observations.
