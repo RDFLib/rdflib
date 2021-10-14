@@ -34,61 +34,30 @@ steps:
   - coveralls
 
 ---
-kind: pipeline
-name: python-3-8
-type: docker
-platform:
-  os: linux
-  arch: amd64
+local Pipeline(name, image) = {
+  kind: pipeline
+  name: name
+  type: docker
+  platform:
+    os: linux
+    arch: amd64
 
-steps:
-- name: test
-  image: python:3.8
-  commands:
-  - bash .travis.fuseki_install_optional.sh
-  - pip install --default-timeout 60 -r requirements.txt
-  - pip install --default-timeout 60 -r requirements.dev.txt
-  - python setup.py install
-  - black --config black.toml --check ./rdflib | true
-  - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+  steps:
+  - name: test
+    image: image
+    commands:
+    - bash .travis.fuseki_install_optional.sh
+    - pip install --default-timeout 60 -r requirements.txt
+    - pip install --default-timeout 60 -r requirements.dev.txt
+    - python setup.py install
+    - black --config black.toml --check ./rdflib | true
+    - flake8 --exit-zero rdflib
+    - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+};
 
----
-kind: pipeline
-name: python-3-9
-type: docker
-platform:
-  os: linux
-  arch: amd64
 
-steps:
-- name: test
-  image: python:3.9
-  commands:
-  - bash .travis.fuseki_install_optional.sh
-  - pip install --default-timeout 60 -r requirements.txt
-  - pip install --default-timeout 60 -r requirements.dev.txt
-  - python setup.py install
-  - black --config black.toml --check ./rdflib | true
-  - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
-
----
-kind: pipeline
-name: python-3-10
-type: docker
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: test
-  image: python:3.10
-  commands:
-  - bash .travis.fuseki_install_optional.sh
-  - pip install --default-timeout 60 -r requirements.txt
-  - pip install --default-timeout 60 -r requirements.dev.txt
-  - python setup.py install
-  - black --config black.toml --check ./rdflib | true
-  - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+[
+  Pipeline("python-3-8",  "python:3.8"),
+  Pipeline("python-3-9",  "python:3.9"),
+  Pipeline("python-3-10", "python:3.10"),
+]
