@@ -143,7 +143,7 @@ def _testNegative(uri, manifest):
     if isinstance(inDoc, BNode):
         inDoc = first(manifest.objects(inDoc, RDFVOC.about))
     if verbose:
-        write(u"TESTING: %s" % inDoc)
+        write("TESTING: %s" % inDoc)
     store = Graph()
 
     test = BNode()
