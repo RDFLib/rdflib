@@ -19,7 +19,6 @@ exclude = '''
     | htmlcov
     | benchmarks
     | examples       # No need to Black examples
-    | test           # Tests are a mess, don't black them
     | test_reports
     | rdflib.egg-info
     | buck-out
