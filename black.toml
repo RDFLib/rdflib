@@ -1,4 +1,23 @@
 [tool.black]
-include = '\.pyi?$'
 required-version = "21.9b0"
 target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | _build
+    | benchmarks
+    | build
+    | dist
+    | htmlcov
+    | venv
+  )/
+)
+'''
