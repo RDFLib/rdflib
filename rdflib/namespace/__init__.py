@@ -49,8 +49,8 @@ The following namespaces are available by directly importing from rdflib:
 * BRICK
 * CSVW
 * DC
-* DCMITYPE
 * DCAT
+* DCMITYPE
 * DCTERMS
 * DCAM
 * DOAP
@@ -69,9 +69,9 @@ The following namespaces are available by directly importing from rdflib:
 * SOSA
 * SSN
 * TIME
+* VANN
 * VOID
 * XSD
-* VANN
 
 .. code-block:: pycon
     >>> from rdflib.namespace import RDFS
@@ -701,6 +701,7 @@ from rdflib.namespace._BRICK import BRICK
 from rdflib.namespace._CSVW import CSVW
 from rdflib.namespace._DC import DC
 from rdflib.namespace._DCAT import DCAT
+from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
@@ -718,5 +719,6 @@ from rdflib.namespace._SKOS import SKOS
 from rdflib.namespace._SOSA import SOSA
 from rdflib.namespace._SSN import SSN
 from rdflib.namespace._TIME import TIME
+from rdflib.namespace._VANN import VANN
 from rdflib.namespace._VOID import VOID
 from rdflib.namespace._XSD import XSD

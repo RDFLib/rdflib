@@ -115,4 +115,10 @@ class OWL(DefinedNamespace):
     imports: URIRef  # The property that is used for importing other ontologies into a given ontology.
     versionIRI: URIRef  # The property that identifies the version IRI of an ontology.
 
+    # http://www.w3.org/2000/01/rdf-schema#Datatype
+    # NOTE: the following two elements don't appear in the OWL RDF documents but are defined in the OWL2 Recommentation
+    # at https://www.w3.org/TR/owl2-syntax/#Datatype_Maps
+    rational: URIRef  # The value space is the set of all rational numbers. The lexical form is numerator '/' denominator, where both are integers.
+    real: URIRef  # The value space is the set of all real numbers. Does not directly provide any lexical forms.
+
     _NS = Namespace("http://www.w3.org/2002/07/owl#")

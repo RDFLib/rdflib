@@ -177,7 +177,7 @@ class Maximum(Extremum):
 
 
 class Sample(Accumulator):
-    """takes the first eligable value"""
+    """takes the first eligible value"""
 
     def __init__(self, aggregation):
         super(Sample, self).__init__(aggregation)
@@ -201,7 +201,7 @@ class Sample(Accumulator):
 class GroupConcat(Accumulator):
     def __init__(self, aggregation):
         super(GroupConcat, self).__init__(aggregation)
-        # only GROUPCONCAT needs to have a list as accumlator
+        # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
         self.separator = aggregation.separator or " "
 

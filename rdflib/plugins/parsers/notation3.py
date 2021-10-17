@@ -183,7 +183,7 @@ def join(here, there):
 def base():
     """The base URI for this process - the Web equiv of cwd
 
-    Relative or abolute unix-standard filenames parsed relative to
+    Relative or absolute unix-standard filenames parsed relative to
     this yield the URI of the file.
     If we had a reliable way of getting a computer name,
     we should put it in the hostname just to prevent ambiguity
@@ -301,7 +301,7 @@ option_noregen = 0  # If set, do not regenerate genids on output
 
 # @@ I18n - the notname chars need extending for well known unicode non-text
 # characters. The XML spec switched to assuming unknown things were name
-# characaters.
+# characters.
 # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
 _notQNameChars = set("\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~")  # else valid qname :-/
 _notKeywordsChars = _notQNameChars | {"."}
@@ -325,7 +325,7 @@ unicodeEscape4 = re.compile(r"\\u([0-9a-fA-F]{4})")
 unicodeEscape8 = re.compile(r"\\U([0-9a-fA-F]{8})")
 
 
-N3CommentCharacter = "#"  # For unix script  # ! compatabilty
+N3CommentCharacter = "#"  # For unix script  # ! compatibility
 
 ########################################## Parse string to sink
 #
@@ -372,7 +372,7 @@ class SinkParser:
         self.startOfLine = 0  # For calculating character number
         self._genPrefix = genPrefix
         self.keywords = ["a", "this", "bind", "has", "is", "of", "true", "false"]
-        self.keywordsSet = 0  # Then only can others be considerd qnames
+        self.keywordsSet = 0  # Then only can others be considered qnames
         self._anonymousNodes = {}
         # Dict of anon nodes already declared ln: Term
         self._variables = {}
@@ -421,7 +421,7 @@ class SinkParser:
     def here(self, i):
         """String generated from position in file
 
-        This is for repeatability when refering people to bnodes in a document.
+        This is for repeatability when referring people to bnodes in a document.
         This has diagnostic uses less formally, as it should point one to which
         bnode the arbitrary identifier actually is. It gives the
         line and character number of the '[' charcacter or path character
@@ -445,7 +445,7 @@ class SinkParser:
         return self.endDoc()  # self._formula
 
     def feed(self, octets):
-        """Feed an octet stream tothe parser
+        """Feed an octet stream to the parser
 
         if BadSyntax is raised, the string
         passed in the exception object is the
@@ -524,7 +524,7 @@ class SinkParser:
     def sparqlTok(self, tok, argstr, i):
         """Check for SPARQL keyword.  Space must have been stripped on entry
         and we must not be at end of file.
-        Case insensitive and not preceeded by @
+        Case insensitive and not preceded by @
         """
 
         assert tok[0] not in _notNameChars  # not for punctuation
@@ -874,7 +874,7 @@ class SinkParser:
     def node(self, argstr, i, res, subjectAlready=None):
         """Parse the <node> production.
         Space is now skipped once at the beginning
-        instead of in multipe calls to self.skipSpace().
+        instead of in multiple calls to self.skipSpace().
         """
         subj = subjectAlready
 
@@ -1191,7 +1191,7 @@ class SinkParser:
         if argstr[i] == "?":
             v = []
             j = self.variable(argstr, i, v)
-            if j > 0:  # Forget varibles as a class, only in context.
+            if j > 0:  # Forget variables as a class, only in context.
                 res.append(v[0])
                 return j
             return -1
@@ -1223,7 +1223,7 @@ class SinkParser:
             v = []
             j = self.bareWord(argstr, i, v)
             if j < 0:
-                return -1  # Forget varibles as a class, only in context.
+                return -1  # Forget variables as a class, only in context.
             if v[0] in self.keywords:
                 self.BadSyntax(argstr, i, 'Keyword "%s" not allowed here.' % v[0])
             res.append(self._store.newSymbol(self._bindings[""] + v[0]))
@@ -1272,7 +1272,7 @@ class SinkParser:
         j += 1
         i = j
         if argstr[j] in numberChars:
-            self.BadSyntax(argstr, j, "Varible name can't start with '%s'" % argstr[j])
+            self.BadSyntax(argstr, j, "Variable name can't start with '%s'" % argstr[j])
         len_argstr = len(argstr)
         while i < len_argstr and argstr[i] not in _notKeywordsChars:
             i += 1

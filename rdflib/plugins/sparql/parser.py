@@ -585,10 +585,10 @@ TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + PropertyLi
 TriplesSameSubject.setParseAction(expandTriples)
 
 # [52] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )?
-# NOTE: pyparsing.py handling of recursive rules is limited by python's recusion
+# NOTE: pyparsing.py handling of recursive rules is limited by python's recursion
 # limit.
 # (https://docs.python.org/3/library/sys.html#sys.setrecursionlimit)
-# To accomodate aribtrary amounts of triples this rule is rewritten to not be
+# To accommodate arbitrary amounts of triples this rule is rewritten to not be
 # recursive:
 # [52*] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesSameSubject? )*
 TriplesTemplate = ParamList("triples", TriplesSameSubject) + ZeroOrMore(
@@ -1443,7 +1443,7 @@ SelectQuery = Comp(
 )
 
 # [10] ConstructQuery ::= 'CONSTRUCT' ( ConstructTemplate DatasetClause* WhereClause SolutionModifier | DatasetClause* 'WHERE' '{' TriplesTemplate? '}' SolutionModifier )
-# NOTE: The CONSTRUCT WHERE alternative has unnescessarily many Comp/Param pairs
+# NOTE: The CONSTRUCT WHERE alternative has unnecessarily many Comp/Param pairs
 # to allow it to through the same algebra translation process
 ConstructQuery = Comp(
     "ConstructQuery",
@@ -1503,7 +1503,7 @@ Update <<= ParamList("prologue", Prologue) + Optional(
 # [2] Query ::= Prologue
 # ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 # ValuesClause
-# NOTE: ValuesClause was moved to invidual queries
+# NOTE: ValuesClause was moved to individual queries
 Query = Prologue + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)
 
 # [3] UpdateUnit ::= Update

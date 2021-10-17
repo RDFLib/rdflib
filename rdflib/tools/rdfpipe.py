@@ -187,8 +187,8 @@ def main():
     logging.basicConfig(level=loglevel)
 
     ns_bindings = {}
-    if opts.LOVE:
-        for ns_kw in opts.LOVE:
+    if opts.ns:
+        for ns_kw in opts.ns:
             pfx, uri = ns_kw.split("=")
             ns_bindings[pfx] = uri
 

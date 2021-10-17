@@ -41,7 +41,7 @@ class DCAT(DefinedNamespace):
     # http://www.w3.org/2000/01/rdf-schema#Class
     Catalog: URIRef  # A curated collection of metadata about resources (e.g., datasets and data services in the context of a data catalog).
     CatalogRecord: URIRef  # A record in a data catalog, describing the registration of a single dataset or data service.
-    Dataset: URIRef  # A collection of data, published or curated by a single source, and available for access or download in one or more represenations.
+    Dataset: URIRef  # A collection of data, published or curated by a single source, and available for access or download in one or more representations.
     Distribution: URIRef  # A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above).
 
     # http://www.w3.org/2002/07/owl#Class
