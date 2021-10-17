@@ -16,6 +16,7 @@ import pathlib
 import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
+from typing import Optional, Union
 
 from urllib.request import Request
 from urllib.request import url2pathname
@@ -214,7 +215,12 @@ class FileInputSource(InputSource):
 
 
 def create_input_source(
-    source=None, publicID=None, location=None, file=None, data=None, format=None
+    source=None,
+    publicID=None,
+    location=None,
+    file=None,
+    data: Optional[Union[str, bytes, bytearray]] = None,
+    format=None,
 ):
     """
     Return an appropriate InputSource instance for the given

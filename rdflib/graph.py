@@ -1,4 +1,15 @@
-from typing import Optional, Union, Type, cast, overload, Generator, Tuple
+from typing import (
+    IO,
+    Any,
+    Iterable,
+    Optional,
+    Union,
+    Type,
+    cast,
+    overload,
+    Generator,
+    Tuple,
+)
 import logging
 from warnings import warn
 import random
@@ -21,7 +32,7 @@ import shutil
 import tempfile
 import pathlib
 
-from io import BytesIO, BufferedIOBase
+from io import BytesIO
 from urllib.parse import urlparse
 
 assert Literal  # avoid warning
@@ -313,15 +324,19 @@ class Graph(Node):
     """
 
     def __init__(
-        self, store="default", identifier=None, namespace_manager=None, base=None
+        self,
+        store: Union[Store, str] = "default",
+        identifier: Optional[Union[Node, str]] = None,
+        namespace_manager: Optional[NamespaceManager] = None,
+        base: Optional[str] = None,
     ):
         super(Graph, self).__init__()
         self.base = base
-        self.__identifier = identifier or BNode()
-
+        self.__identifier: Node
+        self.__identifier = identifier or BNode()  # type: ignore[assignment]
         if not isinstance(self.__identifier, Node):
-            self.__identifier = URIRef(self.__identifier)
-
+            self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
+        self.__store: Store
         if not isinstance(store, Store):
             # TODO: error handling
             self.__store = store = plugin.get(store, Store)()
@@ -404,7 +419,7 @@ class Graph(Node):
         """
         return self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
-    def add(self, triple):
+    def add(self, triple: Tuple[Node, Node, Node]):
         """Add a triple with self as context"""
         s, p, o = triple
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
@@ -413,7 +428,7 @@ class Graph(Node):
         self.__store.add((s, p, o), self, quoted=False)
         return self
 
-    def addN(self, quads):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
         """Add a sequence of triple with context"""
 
         self.__store.addN(
@@ -434,7 +449,9 @@ class Graph(Node):
         self.__store.remove(triple, context=self)
         return self
 
-    def triples(self, triple):
+    def triples(
+        self, triple: Tuple[Optional[Node], Union[None, Path, Node], Optional[Node]]
+    ):
         """Generator over the triple store
 
         Returns triples that match the given triple pattern. If triple pattern
@@ -652,17 +669,17 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate=None, object=None):
+    def subjects(self, predicate=None, object=None) -> Iterable[Node]:
         """A generator of subjects with the given predicate and object"""
         for s, p, o in self.triples((None, predicate, object)):
             yield s
 
-    def predicates(self, subject=None, object=None):
+    def predicates(self, subject=None, object=None) -> Iterable[Node]:
         """A generator of predicates with the given subject and object"""
         for s, p, o in self.triples((subject, None, object)):
             yield p
 
-    def objects(self, subject=None, predicate=None):
+    def objects(self, subject=None, predicate=None) -> Iterable[Node]:
         """A generator of objects with the given subject and predicate"""
         for s, p, o in self.triples((subject, predicate, None)):
             yield o
@@ -1019,45 +1036,32 @@ class Graph(Node):
     @overload
     def serialize(
         self,
-        *,
         destination: None = ...,
         format: str = ...,
         base: Optional[str] = ...,
+        *,
         encoding: str,
         **args,
     ) -> bytes:
         ...
 
-    # no destination and None positional encoding
+    # no destination and None encoding
     @overload
     def serialize(
         self,
-        destination: None,
-        format: str,
-        base: Optional[str],
-        encoding: None,
-        **args,
-    ) -> str:
-        ...
-
-    # no destination and None keyword encoding
-    @overload
-    def serialize(
-        self,
-        *,
         destination: None = ...,
         format: str = ...,
         base: Optional[str] = ...,
-        encoding: None = None,
+        encoding: None = ...,
         **args,
     ) -> str:
         ...
 
-    # non-none destination
+    # non-None destination
     @overload
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase, pathlib.PurePath],
+        destination: Union[str, pathlib.PurePath, IO[bytes]],
         format: str = ...,
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
@@ -1069,21 +1073,21 @@ class Graph(Node):
     @overload
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
-        format: str = "turtle",
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
         **args,
     ) -> Union[bytes, str, "Graph"]:
         ...
 
     def serialize(
         self,
-        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = None,
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args,
+        **args: Any,
     ) -> Union[bytes, str, "Graph"]:
         """Serialize the Graph to destination
 
@@ -1104,7 +1108,7 @@ class Graph(Node):
             base = self.base
 
         serializer = plugin.get(format, Serializer)(self)
-        stream: BufferedIOBase
+        stream: IO[bytes]
         if destination is None:
             stream = BytesIO()
             if encoding is None:
@@ -1114,7 +1118,7 @@ class Graph(Node):
                 serializer.serialize(stream, base=base, encoding=encoding, **args)
                 return stream.getvalue()
         if hasattr(destination, "write"):
-            stream = cast(BufferedIOBase, destination)
+            stream = cast(IO[bytes], destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
             if isinstance(destination, pathlib.PurePath):
@@ -1149,10 +1153,10 @@ class Graph(Node):
         self,
         source=None,
         publicID=None,
-        format=None,
+        format: Optional[str] = None,
         location=None,
         file=None,
-        data=None,
+        data: Optional[Union[str, bytes, bytearray]] = None,
         **args,
     ):
         """
@@ -1249,7 +1253,8 @@ class Graph(Node):
                 could_not_guess_format = True
         parser = plugin.get(format, Parser)()
         try:
-            parser.parse(source, self, **args)
+            # TODO FIXME: Parser.parse should have **kwargs argument.
+            parser.parse(source, self, **args)  # type: ignore[call-arg]
         except SyntaxError as se:
             if could_not_guess_format:
                 raise ParserError(
@@ -1537,7 +1542,12 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    def __init__(self, store="default", identifier=None, default_graph_base=None):
+    def __init__(
+        self,
+        store: Union[Store, str] = "default",
+        identifier: Optional[Union[Node, str]] = None,
+        default_graph_base: Optional[str] = None,
+    ):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
         assert self.store.context_aware, (
             "ConjunctiveGraph must be backed by" " a context aware store."
@@ -1555,7 +1565,31 @@ class ConjunctiveGraph(Graph):
         )
         return pattern % self.store.__class__.__name__
 
-    def _spoc(self, triple_or_quad, default=False):
+    @overload
+    def _spoc(
+        self,
+        triple_or_quad: Union[
+            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
+        ],
+        default: bool = False,
+    ) -> Tuple[Node, Node, Node, Optional[Graph]]:
+        ...
+
+    @overload
+    def _spoc(
+        self,
+        triple_or_quad: None,
+        default: bool = False,
+    ) -> Tuple[None, None, None, Optional[Graph]]:
+        ...
+
+    def _spoc(
+        self,
+        triple_or_quad: Optional[
+            Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]
+        ],
+        default: bool = False,
+    ) -> Tuple[Optional[Node], Optional[Node], Optional[Node], Optional[Graph]]:
         """
         helper method for having methods that support
         either triples or quads
@@ -1564,9 +1598,9 @@ class ConjunctiveGraph(Graph):
             return (None, None, None, self.default_context if default else None)
         if len(triple_or_quad) == 3:
             c = self.default_context if default else None
-            (s, p, o) = triple_or_quad
+            (s, p, o) = triple_or_quad  # type: ignore[misc]
         elif len(triple_or_quad) == 4:
-            (s, p, o, c) = triple_or_quad
+            (s, p, o, c) = triple_or_quad  # type: ignore[misc]
             c = self._graph(c)
         return s, p, o, c
 
@@ -1577,7 +1611,7 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
-    def add(self, triple_or_quad):
+    def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
         """
         Add a triple or quad to the store.
 
@@ -1591,7 +1625,15 @@ class ConjunctiveGraph(Graph):
         self.store.add((s, p, o), context=c, quoted=False)
         return self
 
-    def _graph(self, c):
+    @overload
+    def _graph(self, c: Union[Graph, Node, str]) -> Graph:
+        ...
+
+    @overload
+    def _graph(self, c: None) -> None:
+        ...
+
+    def _graph(self, c: Optional[Union[Graph, Node, str]]) -> Optional[Graph]:
         if c is None:
             return None
         if not isinstance(c, Graph):
@@ -1599,7 +1641,7 @@ class ConjunctiveGraph(Graph):
         else:
             return c
 
-    def addN(self, quads):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
         """Add a sequence of triples with context"""
 
         self.store.addN(
@@ -1689,13 +1731,19 @@ class ConjunctiveGraph(Graph):
             else:
                 yield self.get_context(context)
 
-    def get_context(self, identifier, quoted=False, base=None):
+    def get_context(
+        self,
+        identifier: Optional[Union[Node, str]],
+        quoted: bool = False,
+        base: Optional[str] = None,
+    ) -> Graph:
         """Return a context graph for the given identifier
 
         identifier must be a URIRef or BNode.
         """
+        # TODO: FIXME - why is ConjunctiveGraph passed as namespace_manager?
         return Graph(
-            store=self.store, identifier=identifier, namespace_manager=self, base=base
+            store=self.store, identifier=identifier, namespace_manager=self, base=base  # type: ignore[arg-type]
         )
 
     def remove_context(self, context):
@@ -1747,6 +1795,7 @@ class ConjunctiveGraph(Graph):
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))  # hmm ?
         context.parse(source, publicID=publicID, format=format, **args)
+        # TODO: FIXME: This should not return context, but self.
         return context
 
     def __reduce__(self):
@@ -1977,7 +2026,7 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, triple):
+    def add(self, triple: Tuple[Node, Node, Node]):
         """Add a triple with self as context"""
         s, p, o = triple
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
@@ -1987,7 +2036,7 @@ class QuotedGraph(Graph):
         self.store.add((s, p, o), self, quoted=True)
         return self
 
-    def addN(self, quads):
+    def addN(self, quads: Tuple[Node, Node, Node, Any]) -> "QuotedGraph":  # type: ignore[override]
         """Add a sequence of triple with context"""
 
         self.store.addN(
@@ -2261,7 +2310,7 @@ class BatchAddGraph(object):
 
     """
 
-    def __init__(self, graph, batch_size=1000, batch_addn=False):
+    def __init__(self, graph: Graph, batch_size: int = 1000, batch_addn: bool = False):
         if not batch_size or batch_size < 2:
             raise ValueError("batch_size must be a positive number")
         self.graph = graph
@@ -2278,7 +2327,10 @@ class BatchAddGraph(object):
         self.count = 0
         return self
 
-    def add(self, triple_or_quad):
+    def add(
+        self,
+        triple_or_quad: Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Any]],
+    ) -> "BatchAddGraph":
         """
         Add a triple to the buffer
 
@@ -2294,7 +2346,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad)
         return self
 
-    def addN(self, quads):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
         if self.__batch_addn:
             for q in quads:
                 self.add(q)
