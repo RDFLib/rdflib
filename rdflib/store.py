@@ -138,7 +138,7 @@ class Store(object):
     def __init__(self, configuration=None, identifier=None):
         """
         identifier: URIRef of the Store. Defaults to CWD
-        configuration: string containing infomation open can use to
+        configuration: string containing information open can use to
         connect to datastore.
         """
         self.__node_pickler = None
@@ -390,7 +390,7 @@ class Store(object):
 
     def remove_graph(self, graph):
         """
-        Remove a graph from the store, this shoud also remove all
+        Remove a graph from the store, this should also remove all
         triples in the graph
 
         :param graphid: a Graph instance

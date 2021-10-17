@@ -232,7 +232,7 @@ class BRICK(DefinedNamespace):
     Detention_Room: URIRef  # A space for the temporary involuntary confinement of people
     Dew_Point_Setpoint: URIRef  # Sets dew point
     Dewpoint_Sensor: URIRef  # Senses the dewpoint temperature . Dew point is the temperature to which air must be cooled to become saturated with water vapor
-    Differential_Air_Temperature_Setpoint: URIRef  # Sets temperature of diffrential air
+    Differential_Air_Temperature_Setpoint: URIRef  # Sets temperature of differential air
     Differential_Pressure_Bypass_Valve: URIRef  # A 2-way, self contained proportional valve with an integral differential pressure adjustment setting.
     Differential_Pressure_Deadband_Setpoint: URIRef  # Sets the size of a deadband of differential pressure
     Differential_Pressure_Integral_Time_Parameter: URIRef
@@ -249,7 +249,7 @@ class BRICK(DefinedNamespace):
     Direct_Expansion_Cooling_Coil: URIRef
     Direct_Expansion_Heating_Coil: URIRef
     Direction_Command: URIRef  # Commands that affect the direction of some phenomenon
-    Direction_Sensor: URIRef  # Measures the direction in degrees in which a phenomenon is occuring
+    Direction_Sensor: URIRef  # Measures the direction in degrees in which a phenomenon is occurring
     Direction_Status: URIRef  # Indicates which direction a device is operating in
     Disable_Command: URIRef  # Commands that disable functionality
     Disable_Differential_Enthalpy_Command: URIRef  # Disables the use of differential enthalpy control
@@ -338,7 +338,7 @@ class BRICK(DefinedNamespace):
     Electrical_System: URIRef  # Devices that serve or are part of the electrical subsystem in the building
     Elevator: URIRef  # A device that provides vertical transportation between floors, levels or decks of a building, vessel or other structure
     Elevator_Shaft: URIRef  # The vertical space in which an elevator ascends and descends
-    Elevator_Space: URIRef  # The vertical space in whcih an elevator ascends and descends
+    Elevator_Space: URIRef  # The vertical space in which an elevator ascends and descends
     Embedded_Surface_System_Panel: URIRef  # Radiant panel heating and cooling system where the energy heat source or sink is embedded in a radiant layer which is thermally insulated from the building structure.
     Embedded_Temperature_Sensor: URIRef  # Measures the internal temperature of the radiant layer of the radiant heating and cooling HVAC system.
     Embedded_Temperature_Setpoint: URIRef  # Sets temperature for the internal material, e.g. concrete slab, of the radiant panel.
@@ -354,7 +354,7 @@ class BRICK(DefinedNamespace):
     Emergency_Power_Off_System_Status: URIRef
     Emergency_Push_Button_Status: URIRef  # Indicates if an emergency button has been pushed
     Emergency_Wash_Station: URIRef
-    Employee_Entrance_Lobby: URIRef  # An open space near an entrance that is typicaly only used for employees
+    Employee_Entrance_Lobby: URIRef  # An open space near an entrance that is typically only used for employees
     Enable_Command: URIRef  # Commands that enable functionality
     Enable_Differential_Enthalpy_Command: URIRef  # Enables the use of differential enthalpy control
     Enable_Differential_Temperature_Command: URIRef  # Enables the use of differential temperature control
@@ -550,7 +550,7 @@ class BRICK(DefinedNamespace):
     Humidity_Sensor: URIRef  # Measures the concentration of water vapor in air
     Humidity_Setpoint: URIRef  # Sets humidity
     Humidity_Tolerance_Parameter: URIRef  # A parameter determining the difference between upper and lower limits of humidity.
-    IDF: URIRef  # An room for an intermediate distribution frame, where cables carrying signals from the main distrubtion frame terminate and then feed out to endpoints
+    IDF: URIRef  # An room for an intermediate distribution frame, where cables carrying signals from the main distribution frame terminate and then feed out to endpoints
     Ice: URIRef  # Water in its solid form
     Ice_Tank_Leaving_Water_Temperature_Sensor: URIRef  # Measures the temperature of water leaving an ice tank
     Illuminance_Sensor: URIRef  # Measures the total luminous flux incident on a surface, per unit area
@@ -576,7 +576,7 @@ class BRICK(DefinedNamespace):
     Lead_Lag_Command: URIRef  # Enables lead/lag operation
     Lead_Lag_Status: URIRef  # Indicates if lead/lag operation is enabled
     Lead_On_Off_Command: URIRef  # Controls the active/inactive status of the "lead" part of a lead/lag system
-    Leak_Alarm: URIRef  # An alarm that indicates leaks occured in systems containing fluids
+    Leak_Alarm: URIRef  # An alarm that indicates leaks occurred in systems containing fluids
     Leaving_Water: URIRef  # Water that is leaving a piece of equipment or system
     Leaving_Water_Flow_Sensor: URIRef  # Measures the rate of flow of water that is leaving a piece of equipment or system
     Leaving_Water_Flow_Setpoint: URIRef  # Sets the target flow rate of leaving water
@@ -626,10 +626,10 @@ class BRICK(DefinedNamespace):
     Luminance_Setpoint: URIRef  # Sets luminance
     MAU: URIRef  # See Makeup_Air_Unit
     MDF: URIRef  # A room for the Main Distribution Frame, the central place of a building where cables carrying signals meet and connect to the outside world
-    Mail_Room: URIRef  # A room where mail is recieved and sorted for distribution to the rest of the building
+    Mail_Room: URIRef  # A room where mail is received and sorted for distribution to the rest of the building
     Maintenance_Mode_Command: URIRef  # Controls whether or not a device or controller is operating in "Maintenance" mode
     Maintenance_Required_Alarm: URIRef  # An alarm that indicates that repair/maintenance is required on an associated device or equipment
-    Majlis: URIRef  # In Arab countries, an Majlis is a private lounge where visitors are recieved and entertained
+    Majlis: URIRef  # In Arab countries, an Majlis is a private lounge where visitors are received and entertained
     Makeup_Air_Unit: URIRef  # A device designed to condition ventilation air introduced into a space or to replace air exhausted from a process or general area exhaust. The device may be used to prevent negative pressure within buildings or to reduce airborne contaminants in a space.
     Makeup_Water: URIRef  # Water used used to makeup water loss through leaks, evaporation, or blowdown
     Makeup_Water_Valve: URIRef  # A valve regulating the flow of makeup water into a water holding tank, e.g. a cooling tower, hot water tank
@@ -758,7 +758,7 @@ class BRICK(DefinedNamespace):
     Off_Command: URIRef  # An Off Command controls or reports the binary 'off' status of a control loop, relay or equipment activity. It can only be used to stop/deactivate an associated equipment or process, or determine that the related entity is 'off'
     Off_Status: URIRef  # Indicates if a control loop, relay or equipment is off
     Office: URIRef  # A class of rooms dedicated for work or study
-    Office_Kitchen: URIRef  # A common space, usually near or in a breakroom, where minor food preperation occurs
+    Office_Kitchen: URIRef  # A common space, usually near or in a breakroom, where minor food preparation occurs
     Oil: URIRef  # a viscous liquid derived from petroleum, especially for use as a fuel or lubricant.
     On_Command: URIRef  # An On Command controls or reports the binary 'on' status of a control loop, relay or equipment activity. It can only be used to start/activate an associated equipment or process, or determine that the related entity is 'on'
     On_Off_Command: URIRef  # An On/Off Command controls or reports the binary status of a control loop, relay or equipment activity
@@ -767,7 +767,7 @@ class BRICK(DefinedNamespace):
     On_Timer_Sensor: URIRef  # Measures the duration for which a device was in an active or "on" state
     Open_Close_Status: URIRef  # Indicates the open/close status of a device such as a damper or valve
     Open_Heating_Valve_Outside_Air_Temperature_Setpoint: URIRef
-    Open_Office: URIRef  # An open space used for work or study by mulitple people. Usuaully subdivided into cubicles or desks
+    Open_Office: URIRef  # An open space used for work or study by multiple people. Usuaully subdivided into cubicles or desks
     Operating_Mode_Status: URIRef  # Indicates the current operating mode of a system, device or control loop
     Outdoor_Area: URIRef  # A class of spaces that exist outside of a building
     Output_Frequency_Sensor: URIRef
@@ -803,7 +803,7 @@ class BRICK(DefinedNamespace):
     Ozone_Level_Sensor: URIRef  # Measures the concentration of ozone in air
     PAU: URIRef  # A type of AHU, use to pre-treat the outdoor air before feed to AHU
     PID_Parameter: URIRef
-    PIR_Sensor: URIRef  # Detects the presense of motion in some area using the differential change in infrared intensity between two or more receptors
+    PIR_Sensor: URIRef  # Detects the presence of motion in some area using the differential change in infrared intensity between two or more receptors
     PM10_Level_Sensor: URIRef  # Detects level of particulates of size 10 microns
     PM10_Sensor: URIRef  # Detects matter of size 10 microns
     PM1_Level_Sensor: URIRef  # Detects level of particulates of size 1 microns
@@ -871,7 +871,7 @@ class BRICK(DefinedNamespace):
     Rated_Speed_Setpoint: URIRef  # Sets rated speed
     Reactive_Power_Sensor: URIRef  # Measures the portion of power that, averaged over a complete cycle of the AC waveform, is due to stored energy which returns to the source in each cycle
     Reception: URIRef  # A space, usually in a lobby, where visitors to a building or space can go to after arriving at a building and inform building staff that they have arrived
-    Region: URIRef  # A unit of geographic space, usually contigious or somehow related to a geopolitical feature
+    Region: URIRef  # A unit of geographic space, usually contiguous or somehow related to a geopolitical feature
     Reheat_Hot_Water_System: URIRef
     Reheat_Valve: URIRef  # A valve that controls air temperature by modulating the amount of hot water flowing through a reheat coil
     Relative_Humidity_Sensor: URIRef  # Measures the present state of absolute humidity relative to a maximum humidity given the same temperature

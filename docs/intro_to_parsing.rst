@@ -86,7 +86,7 @@ To store a graph in a file, use the :func:`rdflib.Graph.serialize` function:
 This parses data from http://www.w3.org/People/Berners-Lee/card and stores it in a file ``tbl.ttl`` in this directory
 using the turtle format as a default.
 
-To read the same data and to save it in a varable ``v`` a string in the RDF/XML format, do this:
+To read the same data and to save it in a variable ``v`` a string in the RDF/XML format, do this:
 
 .. code-block:: python
 

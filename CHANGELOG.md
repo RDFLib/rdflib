@@ -1,6 +1,6 @@
 2021/09/17 RELEASE 6.0.2
 ========================
-Minor release to add OWL.rational & OWL.real which are needed to allow the OWL-RL pachage to use only rdflib namespaces, not it's own versions.
+Minor release to add OWL.rational & OWL.real which are needed to allow the OWL-RL package to use only rdflib namespaces, not it's own versions.
 
 * Add owl:rational and owl:real to match standard.
   [PR #1428](https://github.com/RDFLib/rdflib/pull/1428)
@@ -193,7 +193,7 @@ _**All PRs merged since 5.0.0:**_
   [PR #1220](https://github.com/RDFLib/rdflib/pull/1220)
 * add GeoSPARQL ClosedNamespace
   [PR #1221](https://github.com/RDFLib/rdflib/pull/1221)
-* docs: fix simple typo, yeild -> yield
+* docs: fix simple typo, -> yield
   [PR #1223](https://github.com/RDFLib/rdflib/pull/1223)
 * do not use current time in sparql TIMEZONE
   [PR #1193](https://github.com/RDFLib/rdflib/pull/1193)
@@ -766,7 +766,7 @@ Doc improvements:
   [#584](https://github.com/RDFLib/rdflib/pull/584)
 * docs: clarify the use of an identifier when persisting a triplestore
   [#654](https://github.com/RDFLib/rdflib/pull/654)
-* DOC: unamed -> unnamed, typos
+* DOC: fix simple typo, -> unnamed
   [#562](https://github.com/RDFLib/rdflib/pull/562)
 
 
@@ -1028,7 +1028,7 @@ Following RDFLib tradition, some bugs snuck into the 4.0 release.
 This is a bug-fixing release:
 
 * the new URI validation caused lots of problems, but is
-  nescessary to avoid ''RDF injection'' vulnerabilities. In the
+  necessary to avoid ''RDF injection'' vulnerabilities. In the
   spirit of ''be liberal in what you accept, but conservative in
   what you produce", we moved validation to serialisation time.
 
@@ -1079,9 +1079,9 @@ This release includes several major changes:
 
 * Handled of Literal equality was split into lexical comparison
   (for normal ```==``` operator) and value space (using new ```Node.eq```
-  methods). This introduces some slight backwards incomaptible
+  methods). This introduces some slight backwards incompatible
   changes, but was necessary, as the old version had
-  inconsisten hash and equality methods that could lead the
+  inconsistent hash and equality methods that could lead the
   literals not working correctly in dicts/sets.
   The new way is more in line with how SPARQL 1.1 works.
   For the full details, see:
@@ -1144,7 +1144,7 @@ This release includes a lot of admin maintentance - correct
 dependencies for different python versions, etc.  Several py3 bugs
 were also fixed.
 
-This release drops python 2.4 compatability - it was just getting
+This release drops python 2.4 compatibility - it was just getting
 too expensive for us to maintain. It should however be compatible
 with any cpython from 2.5 through 3.3.
 
@@ -1225,7 +1225,7 @@ Major changes:
   Fixed many minor issues:
     * http://code.google.com/p/rdflib/issues/detail?id=177
   http://code.google.com/p/rdflib/issues/detail?id=129
-      Restored compatability with Python 2.4
+      Restored compatibility with Python 2.4
     * http://code.google.com/p/rdflib/issues/detail?id=158
   Reworking of Query result handling
     * http://code.google.com/p/rdflib/issues/detail?id=193
@@ -1337,7 +1337,7 @@ they are stable.
 
 Fixed datatype for Literal(True).
 
-Fixed Literal to enforce contraint of having either a language
+Fixed Literal to enforce constraint of having either a language
 or datatype but not both.
 
 Fixed Literal's repr.
@@ -1350,7 +1350,7 @@ Upgraded N3 parser to the one from CWM.
 
 Fixed unicode encoding issue involving N3Parser.
 
-N3 serializer improvments.
+N3 serializer improvements.
 
 Fixed HTTP content-negotiation
 
@@ -1392,7 +1392,7 @@ as first class objects in the SPARQL evaluation engine.
 Added support for session bnodes re: sparql
 
 Fixed prolog reduce/reduce conflict.  Added Py_None IncRefs
-where they were being passed into Python method invokations
+where they were being passed into Python method invocations
 (per drewp's patch)
 
 Fixed sparql queries involving empty namespace prefix.
@@ -1608,7 +1608,7 @@ Fixed literal quoting in N3 serializer.
 
 Fixed RDF/XML serializer to skip over N3 bits.
 
-Changed Literal and URIRef instanciation to catch
+Changed Literal and URIRef instantiation to catch
 UnicodeDecodeErrors - which were being thrown when the default
 decoding method (ascii) was hitting certain characters.
 
@@ -1687,7 +1687,7 @@ to the store) and whittles out results that don't match the
 given REGEX term expression(s).
 
 Store-agnostic 'fallback' implementation of transactional
-rollbacks (also inefficient but provides the capablity to
+rollbacks (also inefficient but provides the capability to
 stores that don't support it natively). Implemented as a
 wrapper that tracks a 'thread-safe' list of reversal
 operations (for every add, track the remove call that reverts
@@ -1896,7 +1896,7 @@ needed to run on Python2.2.
 
 Added alternative to shlib.move() if it isn't present.
 
-Fixed bug that occured when specifying a backend to
+Fixed bug that occurred when specifying a backend to
 InformationStore's constructor.
 
 Fixed bug recently introduced into InformationStore's remove
@@ -2042,7 +2042,7 @@ BNode prefix is now composed of ascii_letters instead of letters.
 
 Added a bsddb backed InformationStore.
 
-Added an asyncronous load method, methods for scheduling context
+Added an asynchronous load method, methods for scheduling context
 updates, and a run method.
 
 

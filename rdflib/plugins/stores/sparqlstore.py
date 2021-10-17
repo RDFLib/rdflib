@@ -793,7 +793,7 @@ class SPARQLUpdateStore(SPARQLStore):
                     ):
                         # In this case, adding graph_block_start and
                         # graph_block_end results in an empty GRAPH block. Some
-                        # enpoints (e.g. TDB) can not handle this. Therefore
+                        # endpoints (e.g. TDB) can not handle this. Therefore
                         # remove the previously added block_start.
                         modified_query.pop()
                         modified_query.append(since_previous_pos)

@@ -21,7 +21,7 @@ class VOID(DefinedNamespace):
 
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     classPartition: URIRef  # A subset of a void:Dataset that contains only the entities of a certain rdfs:Class.
-    classes: URIRef  # The total number of distinct classes in a void:Dataset. In other words, the number of distinct resources occuring as objects of rdf:type triples in the dataset.
+    classes: URIRef  # The total number of distinct classes in a void:Dataset. In other words, the number of distinct resources occurring as objects of rdf:type triples in the dataset.
     dataDump: URIRef  # An RDF dump, partial or complete, of a void:Dataset.
     distinctObjects: URIRef  # The total number of distinct objects in a void:Dataset. In other words, the number of distinct resources that occur in the object position of triples in the dataset. Literals are included in this count.
     distinctSubjects: URIRef  # The total number of distinct subjects in a void:Dataset. In other words, the number of distinct resources that occur in the subject position of triples in the dataset.

@@ -22,7 +22,7 @@ For example:
 BaseDecl = Comp('Base', Keyword('BASE') + Param('iri',IRIREF))
 
 After parsing, this gives you back an CompValue object,
-which is a dict/object with the paramters specified.
+which is a dict/object with the parameters specified.
 So you can access the parameters are attributes or as keys:
 
 baseDecl.iri
@@ -134,7 +134,7 @@ class CompValue(OrderedDict):
 
     """
     The result of parsing a Comp
-    Any included Params are avaiable as Dict keys
+    Any included Params are available as Dict keys
     or as attributes
 
     """
