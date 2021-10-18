@@ -6,7 +6,7 @@ import codecs
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs["install_requires"] = ["isodate", "pyparsing", "setuptools"]
+kwargs["install_requires"] = ["isodate", "pyparsing", "setuptools", "importlib-metadata; python_version < '3.8.0'"]
 kwargs["tests_require"] = [
     "html5lib",
     "networkx",
