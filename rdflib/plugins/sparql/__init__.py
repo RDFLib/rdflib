@@ -30,6 +30,7 @@ NotImplementedError if they cannot handle a certain part
 
 PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
+import sys
 from . import parser
 from . import operators
 from . import parserutils
@@ -40,10 +41,10 @@ assert parser
 assert operators
 assert parserutils
 
-try:
-    from importlib.metadata import entry_points
-except ImportError:
+if sys.version_info < (3, 8):
     from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 all_entry_points = entry_points()
 if isinstance(all_entry_points, dict):

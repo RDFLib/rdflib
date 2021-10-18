@@ -37,6 +37,7 @@ from rdflib.query import (
 )
 from rdflib.exceptions import Error
 from typing import Type, TypeVar
+import sys
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
@@ -110,10 +111,10 @@ def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
     return p.getClass()
 
 
-try:
-    from importlib.metadata import entry_points
-except ImportError:
+if sys.version_info < (3, 8):
     from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 all_entry_points = entry_points()
 if hasattr(all_entry_points, "select"):
@@ -123,7 +124,7 @@ if hasattr(all_entry_points, "select"):
 else:
     # Prior to Python 3.10, this returns a dict instead of the selection interface, which is slightly slower
     for entry_point, kind in rdflib_entry_points.items():
-        for ep in all_entry_points.get(entry_point, []):
+        for ep in all_entry_points.get(entry_point, []):  # type: ignore[union-attr]
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
 
