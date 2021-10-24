@@ -1,4 +1,5 @@
-import sys
+import pytest
+
 import rdflib
 import rdflib.compare
 
@@ -87,7 +88,7 @@ def roundtrip(e, verbose=False):
 formats = None
 
 
-def test_cases():
+def get_cases():
     global formats
     if not formats:
         serializers = set(
@@ -101,10 +102,15 @@ def test_cases():
             continue  # skip double testing
         for f, infmt in all_nt_files():
             if (testfmt, f) not in SKIP:
-                roundtrip((infmt, testfmt, f))
+                yield roundtrip, (infmt, testfmt, f)
 
 
-def test_n3():
+@pytest.mark.parametrize("checker, args", get_cases())
+def test_cases(checker, args):
+    checker(args)
+
+
+def get_n3_test():
     global formats
     if not formats:
         serializers = set(
@@ -118,18 +124,9 @@ def test_n3():
             continue  # skip double testing
         for f, infmt in all_n3_files():
             if (testfmt, f) not in SKIP:
-                roundtrip((infmt, testfmt, f))
+                yield roundtrip, (infmt, testfmt, f)
 
 
-if __name__ == "__main__":
-    import nose
-
-    if len(sys.argv) == 1:
-        nose.main(defaultTest=sys.argv[0])
-    elif len(sys.argv) == 2:
-        import test.test_roundtrip
-
-        test.test_roundtrip.formats = [sys.argv[1]]
-        nose.main(defaultTest=sys.argv[0], argv=sys.argv[:1])
-    else:
-        roundtrip((sys.argv[2], sys.argv[1], sys.argv[3]), verbose=True)
+@pytest.mark.parametrize("checker, args", get_n3_test())
+def test_n3(checker, args):
+    checker(args)

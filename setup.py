@@ -6,18 +6,20 @@ import codecs
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs["install_requires"] = ["isodate", "pyparsing", "setuptools", "importlib-metadata; python_version < '3.8.0'"]
+kwargs["install_requires"] = [
+    "isodate",
+    "pyparsing",
+    "setuptools",
+    "importlib-metadata; python_version < '3.8.0'",
+]
 kwargs["tests_require"] = [
+    "berkeleydb",
     "html5lib",
     "networkx",
-    "nose==1.3.7",
-    "nose-timer",
-    "coverage",
-    "black==21.9b0",
-    "flake8",
-    "doctest-ignore-unicode==0.1.2",
+    "pytest",
+    "pytest-cov",
+    "pytest-subtests",
 ]
-kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],

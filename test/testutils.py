@@ -29,7 +29,6 @@ from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import email.message
 from nose import SkipTest
-from .earl import add_test, report
 import unittest
 
 from rdflib import BNode, Graph, ConjunctiveGraph
@@ -45,7 +44,6 @@ if TYPE_CHECKING:
 # TODO: make an introspective version (like this one) of
 # rdflib.graphutils.isomorphic and use instead.
 from test import TEST_DIR
-from test.earl import add_test, report
 
 
 def crapCompare(g1, g2):
@@ -459,3 +457,15 @@ class ServedSimpleHTTPMockTests(unittest.TestCase):
             httpmock.do_get_responses.append(
                 MockHTTPResponse(200, "OK", b"here it is", {})
             )
+
+
+def eq_(lhs, rhs, msg=None):
+    """
+    This function mimicks the similar function from nosetest. Ideally nothing
+    should use it but there is a lot of code that still does and it's fairly
+    simple to just keep this small pollyfill here for now.
+    """
+    if msg:
+        assert lhs == rhs, msg
+    else:
+        assert lhs == rhs

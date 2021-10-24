@@ -1,8 +1,8 @@
-from nose.exc import SkipTest
-from nose.tools import nottest
 import sys
 import os
 from tempfile import mkdtemp, mkstemp
+
+import pytest
 from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
@@ -20,12 +20,11 @@ _:foo a rdfs:Class.
 # Thorough test suite for formula-aware store
 
 
-@nottest  # do not run on its own - only as part of generator
-def testFormulaStore(store="default", configString=None):
+def checkFormulaStore(store="default", configString=None):
     try:
         g = ConjunctiveGraph(store=store)
     except ImportError:
-        raise SkipTest("Dependencies for store '%s' not available!" % store)
+        pytest.skip("Dependencies for store '%s' not available!" % store)
 
     if configString:
         g.destroy(configString)
@@ -126,11 +125,8 @@ def testFormulaStore(store="default", configString=None):
         raise
 
 
-def testFormulaStores():
+def get_formula_stores_tests():
     pluginname = None
-    if __name__ == "__main__":
-        if len(sys.argv) > 1:
-            pluginname = sys.argv[1]
 
     for s in plugin.plugins(pluginname, plugin.Store):
         if s.name in (
@@ -142,10 +138,8 @@ def testFormulaStores():
             continue
         if not s.getClass().formula_aware:
             continue
-        testFormulaStore(s.name)
+        yield checkFormulaStore, s.name
 
-
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=sys.argv[0])
+@pytest.mark.parametrize("checker, name", get_formula_stores_tests())
+def test_formula_stores(checker, name) -> None:
+    checker(name)

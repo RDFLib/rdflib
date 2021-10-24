@@ -1,3 +1,4 @@
+import pytest
 from rdflib import Graph, Literal, Variable
 
 query_tpl = """
@@ -23,14 +24,19 @@ def template_tst(agg_func, first, second):
     assert results[1][1] == second, (results[1][1], second)
 
 
-def test_aggregates():
-    template_tst("SUM", Literal(0), Literal(42))
-    template_tst("MIN", None, Literal(42))
-    template_tst("MAX", None, Literal(42))
-    # template_tst('AVG', Literal(0), Literal(42))
-    template_tst("SAMPLE", None, Literal(42))
-    template_tst("COUNT", Literal(0), Literal(1))
-    template_tst("GROUP_CONCAT", Literal(""), Literal("42"))
+def get_aggregates_tests():
+    yield template_tst, "SUM", Literal(0), Literal(42)
+    yield template_tst, "MIN", None, Literal(42)
+    yield template_tst, "MAX", None, Literal(42)
+    # yield template_tst, 'AVG', Literal(0), Literal(42)
+    yield template_tst, "SAMPLE", None, Literal(42)
+    yield template_tst, "COUNT", Literal(0), Literal(1)
+    yield template_tst, "GROUP_CONCAT", Literal(""), Literal("42")
+
+
+@pytest.mark.parametrize("checker, agg_func, first, second", get_aggregates_tests())
+def test_aggregates(checker, agg_func, first, second) -> None:
+    checker(agg_func, first, second)
 
 
 def test_group_by_null():

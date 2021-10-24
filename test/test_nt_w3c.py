@@ -1,12 +1,14 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
 import os
+from typing import Callable, Dict
 
 from rdflib import Graph
+from rdflib.term import Node, URIRef
 from test import TEST_DIR
-from test.manifest import nose_tests, RDFT
+from test.manifest import RDFT, RDFTest, read_manifest
 
-from test.testutils import nose_tst_earl_report
+import pytest
 
 verbose = False
 
@@ -23,24 +25,15 @@ def nt(test):
             raise
 
 
-testers = {RDFT.TestNTriplesPositiveSyntax: nt, RDFT.TestNTriplesNegativeSyntax: nt}
+testers: Dict[Node, Callable[[RDFTest], None]] = {
+    RDFT.TestNTriplesPositiveSyntax: nt,
+    RDFT.TestNTriplesNegativeSyntax: nt,
+}
 
 
-def test_nt(tests=None):
-    manifest_file = os.path.join(TEST_DIR, "w3c/nt/manifest.ttl")
-    for t in nose_tests(testers, manifest_file, legacy=True):
-        if tests:
-            for test in tests:
-                if test in t[1].uri:
-                    break
-            else:
-                continue
-        test_method = t[0]
-        test_arguments = t[1]
-        test_method(test_arguments)
-
-
-if __name__ == "__main__":
-    verbose = True
-
-    nose_tst_earl_report(test_nt, "rdflib_nt")
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test",
+    read_manifest(os.path.join(TEST_DIR, "w3c/nt/manifest.ttl"), legacy=True),
+)
+def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)

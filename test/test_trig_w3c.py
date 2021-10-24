@@ -2,12 +2,14 @@
 
 """
 
+from typing import Callable, Dict
 from rdflib import ConjunctiveGraph
 from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
+from rdflib.term import Node, URIRef
 
-from test.manifest import nose_tests, RDFT
-from test.testutils import nose_tst_earl_report
+from test.manifest import RDFT, RDFTest, read_manifest
+import pytest
 
 verbose = False
 
@@ -59,7 +61,7 @@ def trig(test):
             raise
 
 
-testers = {
+testers: Dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTrigPositiveSyntax: trig,
     RDFT.TestTrigNegativeSyntax: trig,
     RDFT.TestTrigEval: trig,
@@ -67,20 +69,9 @@ testers = {
 }
 
 
-def test_trig(tests=None):
-    for t in nose_tests(testers, "test/w3c/trig/manifest.ttl"):
-        if tests:
-            for test in tests:
-                if test in t[1].uri:
-                    break
-            else:
-                continue
-        test_method = t[0]
-        test_arguments = t[1]
-        test_method(test_arguments)
-
-
-if __name__ == "__main__":
-    verbose = True
-
-    nose_tst_earl_report(test_trig, "rdflib_trig")
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test",
+    read_manifest("test/w3c/trig/manifest.ttl"),
+)
+def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)

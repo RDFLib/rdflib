@@ -36,8 +36,7 @@ before_script:
     - flake8 --exit-zero rdflib
 
 script:
-    - coverage run -m pytest
-    - coverage report
+    - pytest --cov
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi

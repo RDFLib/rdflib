@@ -29,8 +29,7 @@ steps:
   - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
   - mypy --show-error-context --show-error-codes rdflib
-  - coverage run -m pytest
-  - coverage report --skip-covered
+  - pytest --cov
   - coveralls
 
 ---
@@ -51,8 +50,7 @@ steps:
   - python setup.py install
   - black --config black.toml --check ./rdflib | true
   - flake8 --exit-zero rdflib
-  - coverage run -m pytest
-  - coverage report
+  - pytest
 
 ---
 kind: pipeline
@@ -72,5 +70,4 @@ steps:
   - python setup.py install
   - black --config black.toml --check ./rdflib | true
   - flake8 --exit-zero rdflib
-  - coverage run -m pytest
-  - coverage report
+  - pytest

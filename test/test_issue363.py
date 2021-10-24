@@ -1,5 +1,5 @@
+import pytest
 import rdflib
-from nose.tools import assert_raises
 
 data = """<?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -30,11 +30,8 @@ data2 = """<?xml version="1.0" encoding="utf-8"?>
 
 
 def test_broken_rdfxml():
-    # import ipdb; ipdb.set_trace()
-    def p():
+    with pytest.raises(Exception):
         rdflib.Graph().parse(data=data)
-
-    assert_raises(Exception, p)
 
 
 def test_parsetype_resource():
