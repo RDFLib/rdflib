@@ -104,7 +104,11 @@ class EarlReport:
                 project,
                 DOAP.description,
                 Literal(
-                    "RDFLib is a pure Python package for working with RDF.", lang="en"
+                    (
+                        "RDFLib is a Python library for working with RDF, "
+                        "a simple yet powerful language for representing information."
+                    ),
+                    lang="en",
                 ),
             )
         )

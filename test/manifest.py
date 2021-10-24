@@ -1,7 +1,5 @@
 from typing import Iterable, List, NamedTuple, Optional, Tuple
 
-from pytest_subtests import SubTests
-
 from rdflib import RDF, RDFS, Graph, Namespace
 from rdflib.namespace import DefinedNamespace
 from rdflib.term import Node, URIRef

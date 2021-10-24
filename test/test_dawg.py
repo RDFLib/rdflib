@@ -8,7 +8,6 @@ import sys
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
 from test.manifest import UP, MF, RDFTest, read_manifest
-from pytest_subtests import SubTests
 import pytest
 
 sys.setrecursionlimit(6000)  # default is 1000
