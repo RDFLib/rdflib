@@ -22,7 +22,7 @@ __all__ = ["Serializer"]
 class Serializer:
     def __init__(self, store: "Graph"):
         self.store: "Graph" = store
-        self.encoding: str = "UTF-8"
+        self.encoding: str = "utf-8"
         self.base: Optional[str] = None
 
     def serialize(
