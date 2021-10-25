@@ -1,3 +1,6 @@
+"""
+PYTEST_DONT_REWRITE
+"""
 import enum
 import logging
 from datetime import datetime
