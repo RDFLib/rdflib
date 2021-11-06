@@ -71,6 +71,16 @@ class URLTests(unittest.TestCase):
                 "",
                 "git+ssh://example.com:1231/some/thing",
             ),
+            TestSpec(
+                "http://example.com/RDFLib/rdflib",
+                "http://example.org",
+                "http://example.org",
+            ),
+            TestSpec(
+                "http://example.com/RDFLib/rdflib",
+                "http://example.org/",
+                "http://example.org/",
+            ),
         ]
 
         for test in tests:
