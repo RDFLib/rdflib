@@ -2,10 +2,13 @@ import unittest
 from tempfile import mktemp
 from rdflib import ConjunctiveGraph, URIRef
 from rdflib.store import VALID_STORE
+from rdflib.plugins.stores.berkeleydb import has_bsddb
 
 
 class BerkeleyDBTestCase(unittest.TestCase):
     def setUp(self):
+        if not has_bsddb:
+            self.skipTest("skipping as berkleydb is missing")
         self.store_name = "BerkeleyDB"
         self.path = mktemp()
         self.g = ConjunctiveGraph(store=self.store_name)
@@ -32,7 +35,7 @@ class BerkeleyDBTestCase(unittest.TestCase):
         ), "There must be three triples in the graph after the first data chunk parse"
         data2 = """
                 PREFIX : <https://example.org/>
-                
+
                 :d :i :j .
                 """
         self.g.parse(data=data2, format="ttl")
@@ -41,7 +44,7 @@ class BerkeleyDBTestCase(unittest.TestCase):
         ), "There must be four triples in the graph after the second data chunk parse"
         data3 = """
                 PREFIX : <https://example.org/>
-                
+
                 :d :i :j .
                 """
         self.g.parse(data=data3, format="ttl")
@@ -61,9 +64,9 @@ class BerkeleyDBTestCase(unittest.TestCase):
     def test_sparql_query(self):
         q = """
             PREFIX : <https://example.org/>
-            
+
             SELECT (COUNT(*) AS ?c)
-            WHERE { 
+            WHERE {
                 :d ?p ?o .
             }"""
 
@@ -75,7 +78,7 @@ class BerkeleyDBTestCase(unittest.TestCase):
     def test_sparql_insert(self):
         q = """
             PREFIX : <https://example.org/>
-            
+
             INSERT DATA {
                 :x :y :z .
             }"""
@@ -93,7 +96,7 @@ class BerkeleyDBTestCase(unittest.TestCase):
                 }
                 GRAPH :n {
                     :x :y :z .
-                }                
+                }
             }"""
 
         self.g.update(q)
@@ -104,7 +107,7 @@ class BerkeleyDBTestCase(unittest.TestCase):
                 SELECT DISTINCT ?g
                 WHERE {
                     GRAPH ?g {
-                        ?s ?p ?o 
+                        ?s ?p ?o
                     }
                 }
             }
