@@ -48,7 +48,7 @@ steps:
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
-  - black --config black.toml --check ./rdflib | true
+  - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
   - pytest
 
@@ -68,6 +68,6 @@ steps:
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
-  - black --config black.toml --check ./rdflib | true
+  - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
   - pytest
