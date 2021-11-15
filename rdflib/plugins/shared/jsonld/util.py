@@ -17,18 +17,25 @@ from os.path import normpath
 
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
-from rdflib.parser import create_input_source
+from rdflib.parser import create_input_source, PythonInputSource
 
 from io import StringIO
 
 
 def source_to_json(source):
+
+    if isinstance(source, PythonInputSource):
+        print(source.data)
+        return source.data
+
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
 
     stream = source.getByteStream()
     try:
-        return json.load(StringIO(stream.read().decode("utf-8")))
+        rv = json.load(StringIO(stream.read().decode("utf-8")))
+        print(rv)
+        return rv
     finally:
         stream.close()
 

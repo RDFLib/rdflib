@@ -104,6 +104,35 @@ class InputSource(xmlreader.InputSource, object):
                 pass
 
 
+class PythonInputSource(InputSource):
+    """
+    TODO:
+    """
+
+    def __init__(self, data, system_id=None):
+        self.content_type = None
+        self.auto_close = False  # see Graph.parse(), true if opened by us
+        self.public_id = None
+        self.system_id = system_id
+        self.data = data
+
+    def getPublicId(self):
+        return self.public_id
+
+    def setPublicId(self, public_id):
+        self.public_id = public_id
+
+    def getSystemId(self):
+        return self.system_id
+
+    def setSystemId(self, system_id):
+        self.system_id = system_id
+
+    def close(self):
+        self.data = None
+
+
+
 class StringInputSource(InputSource):
     """
     Constructs an RDFLib Parser InputSource from a Python String or Bytes
@@ -289,10 +318,15 @@ def create_input_source(
         input_source = FileInputSource(file)
 
     if data is not None:
-        if not isinstance(data, (str, bytes, bytearray)):
-            raise RuntimeError("parse data can only str, or bytes.")
-        input_source = StringInputSource(data)
-        auto_close = True
+        if isinstance(data, dict):
+            input_source = PythonInputSource(data)
+            auto_close = True
+        elif isinstance(data, (str, bytes, bytearray)):
+            input_source = StringInputSource(data)
+            auto_close = True
+        else:
+            raise RuntimeError(
+                f"parse data can only str, or bytes. not: {type(data)}")
 
     if input_source is None:
         raise Exception("could not create InputSource")
