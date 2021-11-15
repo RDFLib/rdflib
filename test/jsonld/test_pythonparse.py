@@ -1,5 +1,4 @@
 from rdflib import Graph
-import pytest
 import json
 
 
