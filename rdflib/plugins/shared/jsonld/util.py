@@ -25,7 +25,6 @@ from io import StringIO
 def source_to_json(source):
 
     if isinstance(source, PythonInputSource):
-        print(source.data)
         return source.data
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
@@ -33,9 +32,7 @@ def source_to_json(source):
 
     stream = source.getByteStream()
     try:
-        rv = json.load(StringIO(stream.read().decode("utf-8")))
-        print(rv)
-        return rv
+        return json.load(StringIO(stream.read().decode("utf-8")))
     finally:
         stream.close()
 
