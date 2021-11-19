@@ -1,5 +1,4 @@
-from nose.tools import assert_raises
-from nose.tools import eq_
+from .testutils import eq_
 from unittest import TestCase
 
 from rdflib import BNode, Graph, Literal, Namespace, RDFS, XSD
@@ -181,14 +180,14 @@ class TestCustom(TestCase):
         unregister_custom_function(EX.f, self.f)
 
     def test_register_twice_fail(self):
-        with assert_raises(ValueError):
+        with self.assertRaises(ValueError):
             register_custom_function(EX.f, self.f)
 
     def test_register_override(self):
         register_custom_function(EX.f, self.f, override=True)
 
     def test_wrong_unregister_fails(self):
-        with assert_raises(ValueError):
+        with self.assertRaises(ValueError):
             unregister_custom_function(EX.f, lambda x, y: None)
 
     def test_f(self):

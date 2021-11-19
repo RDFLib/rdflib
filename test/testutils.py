@@ -29,7 +29,6 @@ from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import email.message
 from nose import SkipTest
-from .earl import add_test, report
 import unittest
 
 from rdflib import BNode, Graph, ConjunctiveGraph
@@ -45,7 +44,6 @@ if TYPE_CHECKING:
 # TODO: make an introspective version (like this one) of
 # rdflib.graphutils.isomorphic and use instead.
 from test import TEST_DIR
-from test.earl import add_test, report
 
 
 def crapCompare(g1, g2):
@@ -160,8 +158,9 @@ def get_random_ip(parts: List[str] = None) -> str:
 
 
 @contextmanager
-def ctx_http_server(handler: Type[BaseHTTPRequestHandler]) -> Iterator[HTTPServer]:
-    host = get_random_ip()
+def ctx_http_server(
+    handler: Type[BaseHTTPRequestHandler], host: str = "127.0.0.1"
+) -> Iterator[HTTPServer]:
     server = HTTPServer((host, 0), handler)
     server_thread = Thread(target=server.serve_forever)
     server_thread.daemon = True
@@ -393,9 +392,8 @@ class ServedSimpleHTTPMock(SimpleHTTPMock, AbstractContextManager):
     ...    assert req.path == "/bad/path"
     """
 
-    def __init__(self):
+    def __init__(self, host: str = "127.0.0.1"):
         super().__init__()
-        host = get_random_ip()
         self.server = HTTPServer((host, 0), self.Handler)
         self.server_thread = Thread(target=self.server.serve_forever)
         self.server_thread.daemon = True
@@ -459,3 +457,15 @@ class ServedSimpleHTTPMockTests(unittest.TestCase):
             httpmock.do_get_responses.append(
                 MockHTTPResponse(200, "OK", b"here it is", {})
             )
+
+
+def eq_(lhs, rhs, msg=None):
+    """
+    This function mimicks the similar function from nosetest. Ideally nothing
+    should use it but there is a lot of code that still does and it's fairly
+    simple to just keep this small pollyfill here for now.
+    """
+    if msg:
+        assert lhs == rhs, msg
+    else:
+        assert lhs == rhs

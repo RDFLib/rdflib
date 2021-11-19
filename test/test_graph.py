@@ -6,12 +6,12 @@ from tempfile import mkdtemp, mkstemp
 import shutil
 from urllib.error import URLError, HTTPError
 
+import pytest
+
 from rdflib import URIRef, Graph, plugin
 from rdflib.exceptions import ParserError
 from rdflib.plugin import PluginException
 from rdflib.namespace import Namespace
-
-from nose.exc import SkipTest
 
 from pathlib import Path
 
@@ -26,7 +26,7 @@ class GraphTestCase(unittest.TestCase):
         try:
             self.graph = Graph(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         else:
@@ -304,7 +304,7 @@ class GraphTestCase(unittest.TestCase):
     </ns1:r>
     <ns1:p rdf:resource="http://example.org/q"/>
   </rdf:Description>
-</rdf:RDF>        
+</rdf:RDF>
         """
         self.graph.parse(data=rdf, format="xml")
 

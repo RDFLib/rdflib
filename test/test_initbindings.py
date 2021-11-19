@@ -1,5 +1,3 @@
-from nose import SkipTest
-
 from rdflib.plugins.sparql import prepareQuery
 
 
@@ -345,12 +343,3 @@ def testFilter():
         )
     )
     assert len(results) == 1, results
-
-
-if __name__ == "__main__":
-
-    import sys
-    import nose
-
-    if len(sys.argv) == 1:
-        nose.main(defaultTest=sys.argv[0])

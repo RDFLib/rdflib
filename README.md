@@ -165,19 +165,17 @@ Multiple other projects are contained within the RDFlib "family", see <https://g
 
 ### Running the tests on the host
 
-Run the test suite with `nose`.
+Run the test suite with `pytest`.
 ```shell
-nosetests
+pytest
 ```
 
 ### Running test coverage on the host with coverage report
 
-Run the test suite and generate a HTML coverage report with `nose` and `coverage`.
+Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
-nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+pytest --cov
 ```
-
-There is also a script, `run_tests.py` to run everything.
 
 ### Running the tests in a Docker container
 
@@ -199,7 +197,8 @@ make coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
 ```shell
-python -m http.server --directory=cover
+pytest --cov --cov-report term --cov-report html
+python -m http.server --directory=htmlcov
 ```
 
 ## Contributing

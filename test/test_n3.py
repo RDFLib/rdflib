@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from rdflib.graph import Graph, ConjunctiveGraph
 import unittest
 from rdflib.term import Literal, URIRef
@@ -225,9 +227,7 @@ foo-bar:Ex foo-bar:name "Test" . """
                 format="n3",
             )
         except URLError:
-            from nose import SkipTest
-
-            raise SkipTest("No network to retrieve the information, skipping test")
+            pytest.skip("No network to retrieve the information, skipping test")
 
     def testSingleQuotedLiterals(self):
         test_data = [

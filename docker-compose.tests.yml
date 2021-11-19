@@ -5,7 +5,8 @@ services:
       dockerfile: test/Dockerfile
     volumes:
       - .:/rdflib
-    command: ["/rdflib/run_tests.sh"]
+    working_dir: /rdflib
+    command: ["pytest"]
 
   test-runner-coverage:
     build:
@@ -13,7 +14,8 @@ services:
       dockerfile: test/Dockerfile
     volumes:
       - .:/rdflib
-    command: ["/rdflib/run_tests_with_coverage_report.sh"]
+    working_dir: /rdflib
+    command: ["pytest", "--cov"]
 
   check-types:
     build:
@@ -21,4 +23,5 @@ services:
       dockerfile: test/Dockerfile
     volumes:
       - .:/rdflib
-    command: ["python", "-m", "mypy", "--show-error-context", "--show-error-codes" ,"/rdflib/rdflib"]
+    working_dir: /rdflib
+    command: ["python", "-m", "mypy", "--show-error-context", "--show-error-codes" ,"rdflib"]

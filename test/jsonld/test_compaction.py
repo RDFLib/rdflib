@@ -3,6 +3,8 @@
 import re
 import json
 import itertools
+
+import pytest
 from rdflib import Graph
 from rdflib.plugin import register, Serializer
 
@@ -252,6 +254,6 @@ def sort_graph(data):
         data["@graph"].sort(key=lambda node: node.get("@id"))
 
 
-def test_cases():
-    for data, expected in cases:
-        yield run, data, expected
+@pytest.mark.parametrize("data, expected", cases)
+def test_cases(data, expected):
+    run(data, expected)

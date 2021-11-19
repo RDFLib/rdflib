@@ -4,11 +4,10 @@ import unittest
 
 from tempfile import mkdtemp, mkstemp
 import shutil
+
+import pytest
 from rdflib import Dataset, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-
-from nose.exc import SkipTest
-
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -35,7 +34,7 @@ class DatasetTestCase(unittest.TestCase):
         try:
             self.graph = Dataset(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         elif self.store == "SPARQLUpdateStore":

@@ -1,11 +1,9 @@
 import datetime
 
-import nose.tools
-
 import rdflib
 from rdflib.plugins.sparql import operators
 from rdflib.plugins.sparql import sparql
-
+import pytest
 
 def test_date_cast():
     now = datetime.datetime.now()
@@ -30,7 +28,7 @@ def test_datetime_cast():
     assert result == now
 
 
-@nose.tools.raises(sparql.SPARQLError)
 def test_datetime_cast_type_error():
     literal = rdflib.Literal("2020-01-02")
-    operators.date(literal)
+    with pytest.raises(sparql.SPARQLError):
+        operators.date(literal)
