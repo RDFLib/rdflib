@@ -157,10 +157,7 @@ class URLInputSource(InputSource):
         return retarray
 
     def get_alternates(self, type_: Optional[str] = None):
-        if type_:
-            typestr: Optional[str] = f"type=\"{type_}\""
-        else:
-            typestr = None
+        typestr: Optional[str] = f"type=\"{type_}\"" if type_ else None
         relstr = "rel=\"alternate\""
         alts = []
         for link in self.links:
