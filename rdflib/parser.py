@@ -144,11 +144,7 @@ class URLInputSource(InputSource):
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
-        lst = []
-        for key, val in message.items():
-            if key.lower() == name:
-                lst.append(val)
-        return lst
+        return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
     def get_links(cls, response: 'HTTPResponse'):
