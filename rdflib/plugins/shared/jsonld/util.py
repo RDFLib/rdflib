@@ -59,6 +59,8 @@ def norm_url(base, url):
     >>> norm_url('http://example.org/', 'http://example.org//one')
     'http://example.org//one'
     """
+    if "://" in url:
+        return url
     parts = urlsplit(urljoin(base, url))
     path = normpath(parts[2])
     if sep != "/":
