@@ -2,7 +2,7 @@ from rdflib import Graph, URIRef, Literal, BNode, XSD
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 import rdflib
-from nose.tools import eq_
+from .testutils import eq_
 from pprint import pprint
 import io
 
@@ -23,11 +23,11 @@ def test_dateTime_dateTime_subs_issue():
     :C a rdfs:Class.
 
     :start a rdf:Property;
-        rdfs:domain :C; 
+        rdfs:domain :C;
         rdfs:range xsd:dateTime.
 
     :end a rdf:Property;
-        rdfs:domain :C; 
+        rdfs:domain :C;
         rdfs:range xsd:dateTime.
 
     :c1 a :C;
@@ -274,9 +274,3 @@ def test_dateTime_dateTime_subs():
 
     eq_(list(result1)[0][0], expected1)
     eq_(list(result1)[1][0], expected2)
-
-
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=__name__)

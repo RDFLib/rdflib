@@ -72,7 +72,7 @@ class FOAF(DefinedNamespace):
     Document: URIRef  # A document.
     Group: URIRef  # A class of Agents.
     Image: URIRef  # An image.
-    LabelProperty: URIRef  # A foaf:LabelProperty is any RDF property with texual values that serve as labels.
+    LabelProperty: URIRef  # A foaf:LabelProperty is any RDF property with textual values that serve as labels.
     OnlineAccount: URIRef  # An online account.
     OnlineChatAccount: URIRef  # An online chat account.
     OnlineEcommerceAccount: URIRef  # An online e-commerce account.

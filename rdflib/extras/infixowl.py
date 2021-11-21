@@ -39,7 +39,7 @@ We can then access the rdfs:subClassOf relationships
 
 This can also be used against already populated graphs:
 
->>> owlGraph = Graph().parse(OWL) #doctest: +SKIP
+>>> owlGraph = Graph().parse(str(OWL)) #doctest: +SKIP
 >>> namespace_manager.bind('owl', OWL, override=False) #doctest: +SKIP
 >>> owlGraph.namespace_manager = namespace_manager #doctest: +SKIP
 >>> list(Class(OWL.Class, graph=owlGraph).subClassOf) #doctest: +SKIP
@@ -846,9 +846,9 @@ def CastClass(c, graph=None):
                     else:
                         if p not in Restriction.restrictionKinds:
                             continue
-                        kwArgs[str(p.split(OWL)[-1])] = o
+                        kwArgs[str(p.split(str(OWL))[-1])] = o
             if not set(
-                [str(i.split(OWL)[-1]) for i in Restriction.restrictionKinds]
+                [str(i.split(str(OWL))[-1]) for i in Restriction.restrictionKinds]
             ).intersection(kwArgs):
                 raise MalformedClass("Malformed owl:Restriction")
             return Restriction(**kwArgs)

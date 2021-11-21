@@ -94,7 +94,7 @@ uris = {}
 
 def toProperty(label):
     """
-    CamelCase + lowercase inital a string
+    CamelCase + lowercase initial a string
 
 
     FIRST_NM => firstNm

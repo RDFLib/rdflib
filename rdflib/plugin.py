@@ -37,10 +37,11 @@ from rdflib.query import (
 )
 from rdflib.exceptions import Error
 from typing import Type, TypeVar
+import sys
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
-entry_points = {
+rdflib_entry_points = {
     "rdf.plugins.store": Store,
     "rdf.plugins.serializer": Serializer,
     "rdf.plugins.parser": Parser,
@@ -110,14 +111,20 @@ def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
     return p.getClass()
 
 
-try:
-    from pkg_resources import iter_entry_points
-except ImportError:
-    pass  # TODO: log a message
+if sys.version_info < (3, 8):
+    from importlib_metadata import entry_points
 else:
-    # add the plugins specified via pkg_resources' EntryPoints.
-    for entry_point, kind in entry_points.items():
-        for ep in iter_entry_points(entry_point):
+    from importlib.metadata import entry_points
+
+all_entry_points = entry_points()
+if hasattr(all_entry_points, "select"):
+    for entry_point, kind in rdflib_entry_points.items():
+        for ep in all_entry_points.select(group=entry_point):
+            _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
+else:
+    # Prior to Python 3.10, this returns a dict instead of the selection interface, which is slightly slower
+    for entry_point, kind in rdflib_entry_points.items():
+        for ep in all_entry_points.get(entry_point, []):  # type: ignore[union-attr]
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
 
@@ -161,6 +168,7 @@ register(
     "text/turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer"
 )
 register("turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
+register("turtle2", Serializer, "rdflib.plugins.serializers.turtle2", "TurtleSerializer2")
 register("ttl", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
 register(
     "application/n-triples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer"

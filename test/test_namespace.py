@@ -42,7 +42,7 @@ class NamespaceTest(unittest.TestCase):
         prefix = "http://jörn.loves.encoding.problems/"
         ns = Namespace(prefix)
         self.assertEqual(ns, str(prefix))
-        self.assert_(ns["jörn"].startswith(ns))
+        self.assertTrue(ns["jörn"].startswith(ns))
 
 
 class ClosedNamespaceTest(unittest.TestCase):

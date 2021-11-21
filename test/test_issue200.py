@@ -3,14 +3,16 @@
 import os
 import rdflib
 import unittest
+import pytest
+
 
 try:
     from os import fork
     from os import pipe
 except ImportError:
-    from nose import SkipTest
-
-    raise SkipTest("No os.fork() and/or os.pipe() on this platform, skipping")
+    pytestmark = pytest.mark.skip(
+        reason="No os.fork() and/or os.pipe() on this platform, skipping"
+    )
 
 
 class TestRandomSeedInFork(unittest.TestCase):

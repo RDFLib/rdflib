@@ -306,7 +306,7 @@ class _TripleCanonicalizer(object):
     def _initial_color(self) -> List[Color]:
         """Finds an initial color for the graph.
 
-        Finds an initial color fo the graph by finding all blank nodes and
+        Finds an initial color of the graph by finding all blank nodes and
         non-blank nodes that are adjacent. Nodes that are not adjacent to blank
         nodes are not included, as they are a) already colored (by URI or literal)
         and b) do not factor into the color of any blank node.

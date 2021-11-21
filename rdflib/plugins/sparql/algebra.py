@@ -808,6 +808,7 @@ def translateAlgebra(query_algebra: Query):
     :return: The query form generated from the SPARQL 1.1 algebra tree for select queries.
 
     """
+    import os
 
     def overwrite(text):
         file = open("query.txt", "w+")

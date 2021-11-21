@@ -117,7 +117,7 @@ class PROV(DefinedNamespace):
     ActivityInfluence: URIRef  # ActivityInfluence provides additional descriptions of an Activity's binary influence upon any other kind of resource. Instances of ActivityInfluence use the prov:activity property to cite the influencing Activity.
     Agent: URIRef  # Agent
     AgentInfluence: URIRef  # AgentInfluence provides additional descriptions of an Agent's binary influence upon any other kind of resource. Instances of AgentInfluence use the prov:agent property to cite the influencing Agent.
-    Association: URIRef  # An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsiblity for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ].
+    Association: URIRef  # An instance of prov:Association provides additional descriptions about the binary prov:wasAssociatedWith relation from an prov:Activity to some prov:Agent that had some responsibility for it. For example, :baking prov:wasAssociatedWith :baker; prov:qualifiedAssociation [ a prov:Association; prov:agent :baker; :foo :bar ].
     Attribution: URIRef  # An instance of prov:Attribution provides additional descriptions about the binary prov:wasAttributedTo relation from an prov:Entity to some prov:Agent that had some responsible for it. For example, :cake prov:wasAttributedTo :baker; prov:qualifiedAttribution [ a prov:Attribution; prov:entity :baker; :foo :bar ].
     Bundle: URIRef  # Note that there are kinds of bundles (e.g. handwritten letters, audio recordings, etc.) that are not expressed in PROV-O, but can be still be described by PROV-O.
     Collection: URIRef  # Collection
@@ -207,7 +207,7 @@ class PROV(DefinedNamespace):
     influencer: URIRef  # Subproperties of prov:influencer are used to cite the object of an unqualified PROV-O triple whose predicate is a subproperty of prov:wasInfluencedBy (e.g. prov:used, prov:wasGeneratedBy). prov:influencer is used much like rdf:object is used.
     insertedKeyEntityPair: URIRef  # insertedKeyEntityPair
     invalidated: URIRef  # invalidated
-    mentionOf: URIRef  # prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjuction with prov:asInBundle.  prov:asInBundle is used to cite the Bundle in which the generalization was mentioned.
+    mentionOf: URIRef  # prov:mentionOf is used to specialize an entity as described in another bundle. It is to be used in conjunction with prov:asInBundle.  prov:asInBundle is used to cite the Bundle in which the generalization was mentioned.
     pingback: URIRef  # Relates a resource to a provenance pingback service that may receive additional provenance links about the resource.
     qualifiedAssociation: URIRef  # If this Activity prov:wasAssociatedWith Agent :ag, then it can qualify the Association using prov:qualifiedAssociation [ a prov:Association;  prov:agent :ag; :foo :bar ].
     qualifiedAttribution: URIRef  # If this Entity prov:wasAttributedTo Agent :ag, then it can qualify how it was influenced using prov:qualifiedAttribution [ a prov:Attribution;  prov:agent :ag; :foo :bar ].

@@ -1,12 +1,11 @@
-from nose import SkipTest
 from rdflib import Graph, URIRef, Literal
-
+import pytest
 
 def test_rdflib_to_networkx():
     try:
         import networkx
     except ImportError:
-        raise SkipTest("couldn't find networkx")
+        pytest.skip("couldn't find networkx")
     from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
     from rdflib.extras.external_graph_libs import rdflib_to_networkx_digraph
     from rdflib.extras.external_graph_libs import rdflib_to_networkx_graph
@@ -55,7 +54,7 @@ def test_rdflib_to_graphtool():
     try:
         from graph_tool import util as gt_util
     except ImportError:
-        raise SkipTest("couldn't find graph_tool")
+        pytest.skip("couldn't find graph_tool")
     from rdflib.extras.external_graph_libs import rdflib_to_graphtool
 
     g = Graph()
@@ -84,10 +83,3 @@ def test_rdflib_to_graphtool():
     epterm = mdg.edge_properties["name"]
     assert len(list(gt_util.find_edge(mdg, epterm, str(p)))) == 3
     assert len(list(gt_util.find_edge(mdg, epterm, str(q)))) == 1
-
-
-if __name__ == "__main__":
-    import sys
-    import nose
-
-    nose.main(defaultTest=sys.argv[0])

@@ -4,7 +4,7 @@ from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.compare import isomorphic
 from rdflib.term import Variable
 
-from nose.tools import eq_
+from .testutils import eq_
 
 
 def test_graph_prefix():
@@ -245,9 +245,3 @@ def test_txtresult():
     assert len(lines) == 3
     vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
     assert vars_check == vars
-
-
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=__name__)
