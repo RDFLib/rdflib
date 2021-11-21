@@ -5,10 +5,10 @@ import re
 import sys
 import codecs
 import importlib
-from distutils.core import setup
+from setuptools import setup
 from setuptools import find_packages
 from setuptools.command.build_ext import build_ext
-from distutils.command.clean import clean
+from setuptools._distutils.command.clean import clean
 
 # See https://gist.github.com/ctokheim/6c34dc1d672afca0676a for more details.
 try:
@@ -23,9 +23,7 @@ if '--with-cython' in sys.argv:
     if cythonize:
         USE_CYTHON = True
     else:
-        print("cython is not installed")
-        print("Please install cython first. (https://cython.org/)")
-        exit(1)
+        raise Exception("Please install cython first. (https://cython.org/)")
 else:
     USE_CYTHON = False
 
@@ -128,7 +126,6 @@ def _cythonizable_source_files():
         "events.py",
         "exceptions.py",
         "graph.py",
-        "namespace.py",
         "parser.py",
         "paths.py",
         "plugin.py",
@@ -151,7 +148,7 @@ def _cythonizable_source_files():
 
 class CleanCommand(clean):
     """
-    Clean build including iniplace built extensions.
+    Clean build including inplace built extensions.
     """
 
     description = 'Clean build including in-place built extensions.'
