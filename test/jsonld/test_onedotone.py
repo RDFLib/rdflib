@@ -14,7 +14,7 @@ testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "1.1")
 
 
 unsupported_tests = ("frame", "normalize")
-unsupported_tests += ('error',) #("error", "remote")
+unsupported_tests += ('error',)  # ("error", "remote")
 unsupported_tests += ("flatten", "compact", "expand")
 unsupported_tests += ("html",)
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
