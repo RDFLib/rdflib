@@ -2,8 +2,6 @@ import unittest
 import rdflib
 import re
 
-from nose import SkipTest
-
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),
     rdflib.RDFS.label,

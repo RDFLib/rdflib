@@ -1,22 +1,60 @@
-from collections import namedtuple
-from nose.tools import nottest
+from typing import Iterable, List, NamedTuple, Optional, Tuple
 
-from rdflib import Graph, RDF, RDFS, Namespace
+from rdflib import RDF, RDFS, Graph, Namespace
+from rdflib.namespace import DefinedNamespace
+from rdflib.term import Node, URIRef
 
 MF = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")
 QT = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#")
 UP = Namespace("http://www.w3.org/2009/sparql/tests/test-update#")
-RDFT = Namespace("http://www.w3.org/ns/rdftest#")
+
+
+class RDFT(DefinedNamespace):
+    _fail = True
+    _NS = Namespace("http://www.w3.org/ns/rdftest#")
+
+    approval: URIRef  # Approval status of a test.
+    Approval: URIRef  # The superclass of all test approval statuses.
+    Approved: URIRef  # Indicates that a test is approved.
+    Proposed: URIRef  # Indicates that a test is proposed, but not approved.
+    Rejected: URIRef  # Indicates that a test is not approved.
+    TestEval: URIRef  # Superclass of all RDF Evaluation Tests.
+    TestNQuadsNegativeSyntax: URIRef  # A negative N-Quads syntax test.
+    TestNQuadsPositiveSyntax: URIRef  # A positive N-Quads syntax test.
+    TestNTriplesNegativeSyntax: URIRef  # A negative N-Triples syntax test.
+    TestNTriplesPositiveSyntax: URIRef  # A positive N-Triples syntax test.
+    TestSyntax: URIRef  # Superclass of all RDF Syntax Tests.
+    TestTrigEval: URIRef  # A positive TriG evaluation test.
+    TestTrigNegativeEval: URIRef  # A negative TriG evaluation test.
+    TestTriGNegativeSyntax: URIRef  # A negative TriG syntax test.
+    TestTriGPositiveSyntax: URIRef  # A positive TriG syntax test.
+    TestTurtleEval: URIRef  # A positive Turtle evaluation test.
+    TestTurtleNegativeEval: URIRef  # A negative Turtle evaluation test.
+    TestTurtleNegativeSyntax: URIRef  # A negative Turtle syntax test.
+    TestTurtlePositiveSyntax: URIRef  # A positive Turtle syntax test.
+    Test: URIRef  # Superclass of all RDF Tests.
+    TestXMLNegativeSyntax: URIRef  # A negative RDF/XML syntax test.
+    XMLEval: URIRef  # A positive RDF/XML evaluation test.
+
+    TestTrigPositiveSyntax: URIRef
+    TestTrigNegativeSyntax: URIRef
+
 
 DAWG = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#")
 
-RDFTest = namedtuple(
-    "RDFTest",
-    ["uri", "name", "comment", "data", "graphdata", "action", "result", "syntax"],
-)
+
+class RDFTest(NamedTuple):
+    uri: URIRef
+    name: str
+    comment: str
+    data: Node
+    graphdata: Optional[List[Node]]
+    action: Node
+    result: Optional[Node]
+    syntax: bool
 
 
-def read_manifest(f, base=None, legacy=False):
+def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RDFTest]]:
     def _str(x):
         if x is not None:
             return str(x)
@@ -33,6 +71,7 @@ def read_manifest(f, base=None, legacy=False):
                     yield x
 
         for col in g.objects(m, MF.entries):
+            e: URIRef
             for e in g.items(col):
 
                 approved = (
@@ -137,7 +176,7 @@ def read_manifest(f, base=None, legacy=False):
                     print("I dont know DAWG Test Type %s" % _type)
                     continue
 
-                yield _type, RDFTest(
+                yield e, _type, RDFTest(
                     e,
                     _str(name),
                     _str(comment),
@@ -147,10 +186,3 @@ def read_manifest(f, base=None, legacy=False):
                     res,
                     syntax,
                 )
-
-
-@nottest
-def nose_tests(testers, manifest, base=None, legacy=False):
-    for _type, test in read_manifest(manifest, base, legacy):
-        if _type in testers:
-            yield testers[_type], test

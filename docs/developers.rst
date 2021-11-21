@@ -29,21 +29,19 @@ If you add a new cool feature, consider also adding an example in ``./examples``
 
 Running tests
 -------------
-Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
+Run tests with `pytest <https://docs.pytest.org/en/latest/>`_:
 
 .. code-block:: bash
 
-   $ pip install nose
-   $ python run_tests.py
-   $ python run_tests.py --attr known_issue # override attr in setup.cfg to run only tests marked with "known_issue"
-   $ python run_tests.py --attr \!known_issue # runs all tests (including "slow" and "non_core") except those with known issues
-   $ python run_tests.py --attr slow,!known_issue  # comma separate if you want to specify more than one attr
-   $ python run_tests.py --attr known_issue=None # use =None instead of \! if you keep forgetting to escape the ! in shell commands ;)
+   $ pip install -r requirements.txt -r requirements.dev.txt
+   $ pytest
 
-Specific tests can either be run by module name or file name. For example::
 
-  $ python run_tests.py --tests rdflib.graph
-  $ python run_tests.py --tests test/test_graph.py
+Specific tests can be run by file name. For example:
+
+.. code-block:: bash
+
+  $ pytest test/test_graph.py
 
 Running static checks
 ---------------------
