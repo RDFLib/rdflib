@@ -234,7 +234,7 @@ def global_state():
                 ):
                     # Skip the JSON v1.0 tests
                     continue
-            if inputpath.endswith(".jsonld") or inputpath.endswith(".json") or inputpath.endswith(".jldt"):  # toRdf
+            if inputpath.endswith((".jldt", ".json", ".jsonld")):  # toRdf
                 if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
                     func = runner.do_test_json
                 else:  # toRdf
