@@ -145,7 +145,7 @@ class AuditableStore(Store):
         self.reverseOps = []
 
     def rollback(self):
-        # Aquire Rollback lock and apply reverse operations in the forward
+        # Acquire Rollback lock and apply reverse operations in the forward
         # order
         with self.rollbackLock:
             for subject, predicate, obj, context, op in self.reverseOps:

@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "prop": {
+      "@id": "ex:prop", 
+      "@type": ["ex:a", "ex:b"]
+    }
+  },
+  "prop": "value"
+}

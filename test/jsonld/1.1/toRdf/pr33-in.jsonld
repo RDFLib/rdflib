@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "foo": {
+      "@id": "@type",
+      "@prefix": true
+    }
+  },
+  "foo:bar": "http://example.org/baz"
+}

@@ -1,0 +1,4 @@
+[{
+ "@id": "http://example.org/vocab#id",
+ "http://example.org/vocab#double": [{"@value": 0, "@type": "@json"}]
+}]

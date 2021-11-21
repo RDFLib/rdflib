@@ -1,4 +1,5 @@
-import sys
+import pytest
+
 import rdflib
 import rdflib.compare
 
@@ -37,6 +38,15 @@ SKIP = [
     ("xml", "test/nt/qname-02.nt"),  # uses a property that cannot be qname'd
     ("trix", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
     ("xml", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
+    ("json-ld", "test/nt/keywords-04.nt"),  # known NT->JSONLD problem
+    ("json-ld", "test/n3/example-misc.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-16.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-11.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-28.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-26.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-28.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/n3-writer-test-22.n3"),  # known N3->JSONLD problem
+    ("json-ld", "test/n3/rdf-test-21.n3"),  # known N3->JSONLD problem
 ]
 
 
@@ -78,7 +88,7 @@ def roundtrip(e, verbose=False):
 formats = None
 
 
-def test_cases():
+def get_cases():
     global formats
     if not formats:
         serializers = set(
@@ -95,7 +105,12 @@ def test_cases():
                 yield roundtrip, (infmt, testfmt, f)
 
 
-def test_n3():
+@pytest.mark.parametrize("checker, args", get_cases())
+def test_cases(checker, args):
+    checker(args)
+
+
+def get_n3_test():
     global formats
     if not formats:
         serializers = set(
@@ -112,15 +127,6 @@ def test_n3():
                 yield roundtrip, (infmt, testfmt, f)
 
 
-if __name__ == "__main__":
-    import nose
-
-    if len(sys.argv) == 1:
-        nose.main(defaultTest=sys.argv[0])
-    elif len(sys.argv) == 2:
-        import test.test_roundtrip
-
-        test.test_roundtrip.formats = [sys.argv[1]]
-        nose.main(defaultTest=sys.argv[0], argv=sys.argv[:1])
-    else:
-        roundtrip((sys.argv[2], sys.argv[1], sys.argv[3]), verbose=True)
+@pytest.mark.parametrize("checker, args", get_n3_test())
+def test_n3(checker, args):
+    checker(args)

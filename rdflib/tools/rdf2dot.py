@@ -153,7 +153,10 @@ def rdf2dot(g, stream, opts={}):
             + "<font point-size='10' color='#6666ff'>%s</font></td>"
             + "</tr>%s</table> > ] \n"
         )
-        stream.write(opstr % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f)))
+        stream.write(
+            opstr
+            % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f))
+        )
 
     stream.write("}\n")
 

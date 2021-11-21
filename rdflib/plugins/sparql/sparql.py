@@ -54,7 +54,7 @@ class Bindings(MutableMapping):
     def __getitem__(self, key):
         if key in self._d:
             return self._d[key]
-        
+
         if not self.outer:
             raise KeyError()
         return self.outer[key]
@@ -78,7 +78,7 @@ class Bindings(MutableMapping):
         while d is not None:
             i += len(d._d)
             d = d.outer
-        return i
+        return i  # type: ignore[unreachable]
 
     def __iter__(self):
         d = self
@@ -266,7 +266,7 @@ class QueryContext(object):
 
     @property
     def dataset(self):
-        """"current dataset"""
+        """ "current dataset"""
         if self._dataset is None:
             raise Exception(
                 "You performed a query operation requiring "

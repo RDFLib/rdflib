@@ -1,0 +1,23 @@
+<http://example.org/base/1> <http://example.org/vocab#author> <http://example.org/base/9> .
+<http://example.org/base/1> <http://example.org/vocab#comments> _:b0 .
+<http://example.org/base/1> <http://example.org/vocab#self> <http://example.com/articles/1> .
+<http://example.org/base/1> <http://example.org/vocab#title> "JSON:API paints my bikeshed!" .
+<http://example.org/base/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#articles> .
+<http://example.org/base/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#people> .
+<http://example.org/base/5> <http://example.org/vocab#author> <http://example.org/base/2> .
+<http://example.org/base/5> <http://example.org/vocab#body> "First!" .
+<http://example.org/base/5> <http://example.org/vocab#self> <http://example.com/comments/5> .
+<http://example.org/base/5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#comments> .
+<http://example.org/base/9> <http://example.org/vocab#first-name> "Dan" .
+<http://example.org/base/9> <http://example.org/vocab#last-name> "Gebhardt" .
+<http://example.org/base/9> <http://example.org/vocab#related> <http://example.com/articles/1/author> .
+<http://example.org/base/9> <http://example.org/vocab#self> <http://example.com/articles/1/relationships/author> .
+<http://example.org/base/9> <http://example.org/vocab#self> <http://example.com/people/9> .
+<http://example.org/base/9> <http://example.org/vocab#twitter> "dgeb" .
+<http://example.org/base/9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#people> .
+<http://example.org/base/12> <http://example.org/vocab#author> <http://example.org/base/9> .
+<http://example.org/base/12> <http://example.org/vocab#body> "I like XML better" .
+<http://example.org/base/12> <http://example.org/vocab#self> <http://example.com/comments/12> .
+<http://example.org/base/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#comments> .
+_:b0 <http://example.org/vocab#related> <http://example.com/articles/1/comments> .
+_:b0 <http://example.org/vocab#self> <http://example.com/articles/1/relationships/comments> .

@@ -81,6 +81,7 @@ def test_turtle_namespace():
     graph.bind("RO", "http://purl.obolibrary.org/obo/RO_")
     graph.bind("RO_has_phenotype", "http://purl.obolibrary.org/obo/RO_0002200")
     graph.bind("SERIAL", "urn:ISSN:")
+    graph.bind("EX", "http://example.org/")
     graph.add(
         (
             URIRef("http://example.org"),
@@ -93,7 +94,13 @@ def test_turtle_namespace():
             URIRef("urn:ISSN:0167-6423"),
             RDFS.label,
             Literal("Science of Computer Programming"),
-
+        )
+    )
+    graph.add(
+        (
+            URIRef("http://example.org/name_with_(parenthesis)"),
+            RDFS.label,
+            Literal("URI with parenthesis"),
         )
     )
     output = [
@@ -105,10 +112,4 @@ def test_turtle_namespace():
     assert "RO_has_phenotype:" in output
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
-
-
-if __name__ == "__main__":
-    import nose
-    import sys
-
-    nose.main(defaultTest=sys.argv[0])
+    assert "EX:name_with_(parenthesis)" in output

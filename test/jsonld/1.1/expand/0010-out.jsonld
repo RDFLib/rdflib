@@ -1,0 +1,5 @@
+[{
+  "@id": "http://example.org/test",
+  "http://example.org/vocab#bool": [{"@value": true}],
+  "http://example.org/vocab#int": [{"@value": 123}]
+}]

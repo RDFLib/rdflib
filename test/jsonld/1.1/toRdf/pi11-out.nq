@@ -1,0 +1,3 @@
+_:b1 <http://example.org/prop> "g1" .
+_:b0 <http://example.org/input> _:b1 .
+_:b2 <http://example.org/value> "x" _:b1 .

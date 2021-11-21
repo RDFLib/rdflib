@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#",
+    "ex:date": {"@type": "xsd:dateTime"},
+    "ex:parent": {"@type": "@id"},
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "mylist1": {"@id": "http://example.com/mylist1", "@container": "@list"},
+    "mylist2": {"@id": "http://example.com/mylist2", "@container": "@list"},
+    "myset1": {"@id": "http://example.com/myset1", "@container": "@set" },
+    "myset2": {"@id": "http://example.com/myset2", "@container": "@set" },
+    "myset3": {"@id": "http://example.com/myset3", "@container": "@set" }
+  },
+  "@id": "http://example.org/id",
+  "mylist1": [],
+  "myset1": { "@set": [] },
+  "myset2": [ { "@set": [] }, [], { "@set": [ null ] }, [ null ] ],
+  "myset3": [ { "@set": [ "hello", "this" ] }, "will", { "@set": [ "be", "collapsed" ] } ]
+}

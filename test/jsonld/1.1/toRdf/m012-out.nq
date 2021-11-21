@@ -1,0 +1,4 @@
+_:b1 <http://example/label> "Object with no @type" .
+_:b2 <http://example/label> "Another object with no @type" .
+_:b0 <http://example/typemap> _:b1 .
+_:b0 <http://example/typemap> _:b2 .

@@ -1,0 +1,16 @@
+[
+    {
+        "@id": "http://example.org/test",
+        "http://example.org/vocab#keep-full-value": [
+            {
+                "@value": "only value"
+            }
+        ],
+        "http://example.org/vocab#test": [
+            {
+                "@language": "en",
+                "@value": "test"
+            }
+        ]
+    }
+]

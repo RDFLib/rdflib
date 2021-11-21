@@ -1,0 +1,14 @@
+[
+  {
+    "http://example.org/ns/tag/": [
+      {
+        "@value": "tricky"
+      }
+    ],
+    "tag:champin.net,2019:prop": [
+      {
+        "@value": "This is not treated as a Compact IRI"
+      }
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "@context": { "chem": "http://example/chem#"},
+  "chem:protons": 12
+}

@@ -18,11 +18,11 @@ import re
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
-from urllib.request import pathname2url
 from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.parse import urljoin
 from urllib.request import urlopen
+from urllib.error import HTTPError
 
 from xml.sax import xmlreader
 
@@ -40,7 +40,7 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = set()
+    __slots__ = ()
 
     def __init__(self):
         pass
@@ -213,14 +213,14 @@ class URLInputSource(InputSource):
             )
 
         req = Request(system_id, None, myheaders)
-        file = urlopen(req)
+        
         # Check for Link header
         _link = file.getheader("Link", None)
         if not _link is None:
-            #Parse the link header
+            # Parse the link header
             link_url = None
             parsed_links = parse_link_header(_link)                        
-            #Any "alternate" entries match the media_type?
+            # Any "alternate" entries match the media_type?
             alt_links = parsed_links.get("alternate", [])
             for alt_link in alt_links:
                 pref = -1
@@ -235,13 +235,27 @@ class URLInputSource(InputSource):
                 if pref == 0:
                     # First preference media type was found
                     break
-                #otherwise continue checking for higher priority match
-            #Follow target if one found
+                # otherwise continue checking for higher priority match
+            # Follow target if one found
             if not link_url is None:
                 link_url = urljoin(self.url, link_url)
                 req = Request(link_url, None, myheaders)
-                file = urlopen(req)
 
+        def _urlopen(req: Request):
+            try:
+                return urlopen(req)
+            except HTTPError as ex:
+                # 308 (Permanent Redirect) is not supported by current python version(s)
+                # See https://bugs.python.org/issue40321
+                # This custom error handling should be removed once all
+                # supported versions of python support 308.
+                if ex.code == 308:
+                    req.full_url = ex.headers.get("Location")
+                    return _urlopen(req)
+                else:
+                    raise
+
+        file = _urlopen(req)
         # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
         self.url = file.geturl()  # in case redirections took place
         self.setPublicId(self.url)
@@ -258,8 +272,8 @@ class URLInputSource(InputSource):
 
 class FileInputSource(InputSource):
     def __init__(self, file):
-        base = urljoin("file:", pathname2url(os.getcwd()))
-        system_id = URIRef(urljoin("file:", pathname2url(file.name)), base=base)
+        base = pathlib.Path.cwd().as_uri()
+        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -289,11 +303,16 @@ def create_input_source(
 
     # test that exactly one of source, location, file, and data is not None.
     non_empty_arguments = list(
-        filter(lambda v: v is not None, [source, location, file, data],)
+        filter(
+            lambda v: v is not None,
+            [source, location, file, data],
+        )
     )
 
     if len(non_empty_arguments) != 1:
-        raise ValueError("exactly one of source, location, file or data must be given",)
+        raise ValueError(
+            "exactly one of source, location, file or data must be given",
+        )
 
     input_source = None
 
@@ -303,7 +322,7 @@ def create_input_source(
         else:
             if isinstance(source, str):
                 location = source
-            elif isinstance(source, pathlib.Path):
+            elif isinstance(source, pathlib.PurePath):
                 location = str(source)
             elif isinstance(source, bytes):
                 data = source
@@ -340,7 +359,10 @@ def create_input_source(
             file,
             input_source,
         ) = _create_input_source_from_location(
-            file=file, format=format, input_source=input_source, location=location,
+            file=file,
+            format=format,
+            input_source=input_source,
+            location=location,
         )
 
     if file is not None:
@@ -365,11 +387,15 @@ def create_input_source(
 
 
 def _create_input_source_from_location(file, format, input_source, location):
-    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
+    # https://github.com/RDFLib/rdflib/issues/1430
+    # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
+    # valid path. However os.path.exists() returns false for a URL on windows
+    # which is why it is being used instead.
     if os.path.exists(location):
-        location = pathname2url(location)
+        location = pathlib.Path(location).absolute().as_uri()
 
-    base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
+    base = pathlib.Path.cwd().as_uri()
 
     absolute_location = URIRef(location, base=base)
 

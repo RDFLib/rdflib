@@ -25,6 +25,6 @@ class EntityTest(TestCase):
         g = ConjunctiveGraph()
         g.parse(data=turtle, format="turtle")
         # Shouldn't have got to here
-        s = g.serialize(format="turtle", encoding='latin-1')
+        s = g.serialize(format="turtle", encoding="latin-1")
 
         self.assertTrue(b"@prefix _9" not in s)

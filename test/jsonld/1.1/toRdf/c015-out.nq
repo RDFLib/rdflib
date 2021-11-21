@@ -1,0 +1,5 @@
+<http://example/base-base#base-id> <http://example/p> <http://example/typed-base#typed-id> .
+<http://example/base-base#nested-id> <http://example/foo> "bar" .
+<http://example/typed-base#typed-id> <http://example/subjectReference> <http://example/typed-base#subject-reference-id> .
+<http://example/typed-base#typed-id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Type> .
+<http://example/typed-base#typed-id> <http://example/nestedNode> <http://example/base-base#nested-id> .

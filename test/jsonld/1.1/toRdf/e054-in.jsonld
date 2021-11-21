@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "term": {"@id": "http://example.org/term", "@type": "@vocab"},
+    "enum": {"@id": "http://example.org/enum"}
+  },
+  "term": "enum"
+}

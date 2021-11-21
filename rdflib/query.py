@@ -4,9 +4,9 @@ import shutil
 import tempfile
 import warnings
 import types
-from typing import Optional
+from typing import Optional, Union, cast
 
-from io import BytesIO
+from io import BytesIO, BufferedIOBase
 
 from urllib.parse import urlparse
 
@@ -207,11 +207,11 @@ class Result(object):
         return parser.parse(source, content_type=content_type, **kwargs)
 
     def serialize(
-            self,
-            destination: Optional[str] = None,
-            encoding: str = "utf-8",
-            format: str = "xml",
-            **args,
+        self,
+        destination: Optional[Union[str, BufferedIOBase]] = None,
+        encoding: str = "utf-8",
+        format: str = "xml",
+        **args,
     ) -> Optional[bytes]:
         """
         Serialize the query result.
@@ -223,7 +223,7 @@ class Result(object):
         - txt: :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
         - xml: :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
 
-        :param destination: Path of file output.
+        :param destination: Path of file output or BufferedIOBase object to write the output to.
         :param encoding: Encoding of output.
         :param format: One of ['csv', 'json', 'txt', xml']
         :param args:
@@ -239,21 +239,21 @@ class Result(object):
 
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
-            stream = BytesIO()
-            stream2 = EncodeOnlyUnicode(stream)
+            streamb: BytesIO = BytesIO()
+            stream2 = EncodeOnlyUnicode(streamb)
             serializer.serialize(stream2, encoding=encoding, **args)
-            return stream.getvalue()
+            return streamb.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, encoding=encoding, **args)
         else:
-            location = destination
+            location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
             if netloc != "":
                 print(
                     "WARNING: not saving as location" + "is not a local file reference"
                 )
-                return
+                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, encoding=encoding, **args)
@@ -263,6 +263,7 @@ class Result(object):
             else:
                 shutil.copy(name, path)
                 os.remove(name)
+        return None
 
     def __len__(self):
         if self.type == "ASK":

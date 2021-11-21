@@ -1,12 +1,14 @@
 """This runs the turtle tests for the W3C RDF Working Group's N-Quads
 test suite."""
 
+from typing import Callable, Dict
 from rdflib import Graph
 from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
+from rdflib.term import Node, URIRef
 
-from .manifest import nose_tests, RDFT
-from .testutils import nose_tst_earl_report
+from test.manifest import RDFT, RDFTest, read_manifest
+import pytest
 
 verbose = False
 
@@ -48,7 +50,7 @@ def turtle(test):
             raise
 
 
-testers = {
+testers: Dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTurtlePositiveSyntax: turtle,
     RDFT.TestTurtleNegativeSyntax: turtle,
     RDFT.TestTurtleEval: turtle,
@@ -56,20 +58,9 @@ testers = {
 }
 
 
-def test_turtle(tests=None):
-    for t in nose_tests(testers, "test/w3c/turtle/manifest.ttl"):
-        if tests:
-            for test in tests:
-                if test in t[1].uri:
-                    break
-            else:
-                continue
-
-        yield t
-
-
-if __name__ == "__main__":
-
-    verbose = True
-
-    nose_tst_earl_report(test_turtle, "rdflib_turtle")
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test",
+    read_manifest("test/w3c/turtle/manifest.ttl"),
+)
+def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)

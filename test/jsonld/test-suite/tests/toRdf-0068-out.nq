@@ -1,0 +1,4 @@
+<http://json-ld.org/test-suite/tests/example1> <http://example.org/vocab#date> "2011-01-25T00:00:00Z"^^<http://example.org/vocab#dateTime> .
+<http://json-ld.org/test-suite/tests/example1> <http://example.org/vocab#embed> <http://json-ld.org/test-suite/tests/example2> .
+<http://json-ld.org/test-suite/tests/example1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#test> .
+<http://json-ld.org/test-suite/tests/example2> <http://example.org/vocab#expandedDate> "2012-08-01T00:00:00Z"^^<http://example.org/vocab#dateTime> .

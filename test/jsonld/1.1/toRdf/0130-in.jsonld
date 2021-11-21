@@ -1,0 +1,6 @@
+{
+  "@context": {"@base": "tag:example", "urn:ex:p": {"@type": "@id"}},
+  "@graph": [
+    {"@id": "urn:ex:s307", "urn:ex:p": "a"}
+  ]
+}

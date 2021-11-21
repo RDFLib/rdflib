@@ -1,0 +1,2 @@
+_:b0 <http://example.com/vocab#term> "value of v:term" .
+_:b0 <http://example.com/vocab#termId> "value of v:termId" .

@@ -1,0 +1,27 @@
+[
+  {
+    "@id": "http://data.wikipedia.org/snaks/Assertions",
+    "@type": ["http://data.wikipedia.org/vocab#SnakSet"],
+    "http://data.wikipedia.org/vocab#assertedBy": [{"@value": "http://gregkellogg.net/foaf#me"}
+    ],
+    "@graph": [
+      {
+        "@id": "http://data.wikipedia.org/snaks/BerlinFact",
+        "@type": ["http://data.wikipedia.org/vocab#Snak"],
+        "http://data.wikipedia.org/vocab#assertedBy": [{"@value": "http://www.statistik-berlin-brandenburg.de/"}]
+      }
+    ]
+  },
+  {
+    "@id": "http://data.wikipedia.org/snaks/BerlinFact",
+    "@graph": [
+      {
+        "@id": "http://en.wikipedia.org/wiki/Berlin",
+        "http://data.wikipedia.org/vocab#population": [{
+          "@value": "3499879",
+          "@type": "http://www.w3.org/2001/XMLSchema#integer"
+        }]
+      }
+    ]
+  }
+]

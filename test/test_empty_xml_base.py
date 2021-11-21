@@ -7,13 +7,11 @@ and RDF/XML dependence on it
 
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
-from rdflib.namespace import Namespace
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF, FOAF
 from io import StringIO
 
 import unittest
 
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 test_data = """
 <rdf:RDF
@@ -43,11 +41,11 @@ baseUri2 = URIRef("http://example.com/foo/bar")
 class TestEmptyBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data), publicID=baseUri)
+        self.graph.parse(StringIO(test_data), publicID=baseUri, format="xml")
 
     def test_base_ref(self):
         self.assertTrue(
-            len(self.graph) == 1, "There should be at least one statement in the graph"
+            len(list(self.graph)), "There should be at least one statement in the graph"
         )
         self.assertTrue(
             (baseUri, RDF.type, FOAF.Document) in self.graph,
@@ -58,11 +56,11 @@ class TestEmptyBase(unittest.TestCase):
 class TestRelativeBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data2), publicID=baseUri2)
+        self.graph.parse(StringIO(test_data2), publicID=baseUri2, format="xml")
 
     def test_base_ref(self):
         self.assertTrue(
-            len(self.graph) == 1, "There should be at least one statement in the graph"
+            len(self.graph), "There should be at least one statement in the graph"
         )
         resolvedBase = URIRef("http://example.com/baz")
         self.assertTrue(

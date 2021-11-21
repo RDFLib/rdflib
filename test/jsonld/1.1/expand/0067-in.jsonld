@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "http": "http://example.com/this-prefix-would-overwrite-all-http-iris"
+  },
+  "@id": "http://example.org/node1",
+  "@type": "http://example.org/type",
+  "http://example.org/property": "all these IRIs remain unchanged because they are interpreted as absolute IRIs"
+}

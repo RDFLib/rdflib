@@ -1,0 +1,4 @@
+<http://example.com/compact-iris-are-considered> <http://example.com/property> "@id supports the following values: relative, absolute, and compact IRIs" .
+<http://json-ld.org/test-suite/parent-node> <http://example.com/property> "relative IRIs get resolved against the document's base IRI" .
+<http://json-ld.org/test-suite/tests/term> <http://example.com/property> <http://example.com/compact-iris-are-considered> .
+<http://json-ld.org/test-suite/tests/term> <http://example.com/property> <http://json-ld.org/test-suite/parent-node> .

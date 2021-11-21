@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from nose import SkipTest
+import unittest
+
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import StringInputSource
 import textwrap
+import pytest
 
 prefix = textwrap.dedent(
     """\
@@ -40,6 +42,7 @@ test_string1 = """\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """
 
 
+@pytest.mark.xfail(reason="Known issue with newlines in text")
 def test1():
     meta1 = meta.encode("utf-8") % test_string1.encode("utf-8")
     graph = ConjunctiveGraph()
@@ -56,12 +59,10 @@ WICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!
 """
 
 
+@pytest.mark.xfail(reason="Known issue with newlines in text")
 def test2():
     meta2 = meta.encode("utf-8") % test_string2.encode("utf-8")
     graph = ConjunctiveGraph()
     graph.parse(
         StringInputSource(prefix + "<http://example.org/>" + meta2), format="n3"
     )
-
-
-raise SkipTest("Known issue, with newlines in text")

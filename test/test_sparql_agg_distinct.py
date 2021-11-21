@@ -20,7 +20,10 @@ def test_group_concat_distinct():
     assert results[0][2] == "1", results[0][2]
 
     # still check the whole result, to be on the safe side
-    assert results == [["x1", 10, "1"], ["x2", 20, "2"],], results
+    assert results == [
+        ["x1", 10, "1"],
+        ["x2", 20, "2"],
+    ], results
 
 
 def test_sum_distinct():
@@ -32,7 +35,10 @@ def test_sum_distinct():
     assert results[0][2] == 1, results[0][2]
 
     # still check the whole result, to be on the safe side
-    assert results == [["x1", 10, 1], ["x2", 20, 2],], results
+    assert results == [
+        ["x1", 10, 1],
+        ["x2", 20, 2],
+    ], results
 
 
 def test_avg_distinct():
@@ -55,7 +61,10 @@ def test_avg_distinct():
     assert results[0][2] == 2, results[0][2]
 
     # still check the whole result, to be on the safe side
-    assert results == [["x1", 10, 2], ["x2", 20, 2],], results
+    assert results == [
+        ["x1", 10, 2],
+        ["x2", 20, 2],
+    ], results
 
 
 def test_count_distinct():

@@ -1,0 +1,35 @@
+[
+  {
+    "@id": "http://example.com/some/deep/directory/and/relativeIris",
+    "@type": [
+        "http://example.com/some/deep/directory/and/link",
+        "http://example.com/some/deep/directory/and/file#fragment-works",
+        "http://example.com/some/deep/directory/and/file?query=works",
+        "http://example.com/some/deep/directory/and/",
+        "http://example.com/some/deep/directory/",
+        "http://example.com/some/deep/directory/parent",
+        "http://example.com/some/deep/parent-parent-eq-root",
+        "http://example.com/still-root",
+        "http://example.com/too-many-dots",
+        "http://example.com/absolute",
+        "http://example.org/scheme-relative"
+    ],
+    "http://www.example.com/link": [ {
+      "@list": [
+        { "@id": "http://example.com/some/deep/directory/and/link" },
+        { "@id": "http://example.com/some/deep/directory/and/file#fragment-works" },
+        { "@id": "http://example.com/some/deep/directory/and/file?query=works" },
+        { "@id": "http://example.com/some/deep/directory/and/" },
+        { "@id": "http://example.com/some/deep/directory/" },
+        { "@id": "http://example.com/some/deep/directory/parent" },
+        { "@id": "http://example.com/some/deep/parent-parent-eq-root" },
+        { "@id": "http://example.com/still-root" },
+        { "@id": "http://example.com/too-many-dots" },
+        { "@id": "http://example.com/absolute" },
+        { "@id": "http://example.org/scheme-relative" },
+        { "@id": "http://example.org/scheme-relative" },
+        { "@id": "http://example.org/scheme-relative" }
+      ]
+    } ]
+  }
+]

@@ -318,9 +318,17 @@ def evalServiceQuery(ctx, part):
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = urlopen(Request(service_url + "?" + urlencode(query_settings), headers=headers))
+            response = urlopen(
+                Request(service_url + "?" + urlencode(query_settings), headers=headers)
+            )
         else:
-            response = urlopen(Request(service_url, data=urlencode(query_settings).encode(), headers=headers))
+            response = urlopen(
+                Request(
+                    service_url,
+                    data=urlencode(query_settings).encode(),
+                    headers=headers,
+                )
+            )
         if response.status == 200:
             json = j.loads(response.read())
             variables = res["vars_"] = json["head"]["vars"]

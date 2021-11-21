@@ -1,0 +1,32 @@
+{
+  "@context": {
+    "links": { "@id": "http://www.example.com/link", "@type": "@id", "@container": "@list" }
+  },
+  "@id": "relativeIris",
+  "@type": [
+    "link",
+    "#fragment-works",
+    "?query=works",
+    "./",
+    "../",
+    "../parent",
+    "../../parent-parent-eq-root",
+    "../../../../../still-root",
+    "../.././.././../../too-many-dots",
+    "/absolute",
+    "//example.org/scheme-relative"
+  ],
+  "links": [
+    "link",
+    "#fragment-works",
+    "?query=works",
+    "./",
+    "../",
+    "../parent",
+    "../../parent-parent-eq-root",
+    "./../../../useless/../../../still-root",
+    "../.././.././../../too-many-dots",
+    "/absolute",
+    "//example.org/scheme-relative"
+  ]
+}

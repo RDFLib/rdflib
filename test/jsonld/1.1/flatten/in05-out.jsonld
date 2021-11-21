@@ -1,0 +1,10 @@
+[{
+  "@id": "_:b0",
+  "http://example.org/prop": [{"@id": "_:b1"}]
+}, {
+  "@id": "_:b1",
+  "@type": ["http://example.org/Foo"]
+}, {
+  "@id": "_:b2",
+  "@type": ["http://example.org/Bar"]
+}]

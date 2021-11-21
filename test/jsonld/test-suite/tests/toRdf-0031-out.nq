@@ -1,0 +1,3 @@
+<http://example.com/vocab#property> <http://www.w3.org/2000/01/rdf-schema#definedBy> <http://example.com/vocab> .
+<http://example.com/vocab#property> <http://www.w3.org/2000/01/rdf-schema#label> "A property" .
+<http://example.com/vocab> <http://www.w3.org/2000/01/rdf-schema#label> "My vocabulary" .

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Type, cast, overload, Generator, Tuple
 import logging
 from warnings import warn
 import random
@@ -19,8 +19,9 @@ from rdflib.exceptions import ParserError
 import os
 import shutil
 import tempfile
+import pathlib
 
-from io import BytesIO
+from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
 
 assert Literal  # avoid warning
@@ -28,6 +29,9 @@ assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
 
+# Type aliases to make unpacking what's going on a little more human friendly
+ContextNode = Union[BNode, URIRef]
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
@@ -128,11 +132,15 @@ via triple pattern:
     >>> statementId = BNode()
     >>> print(len(g))
     0
-    >>> g.add((statementId, RDF.type, RDF.Statement))
+    >>> g.add((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((statementId, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
-    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label))
-    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
+    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph"))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph"))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> print(len(g))
     4
     >>> for s, p, o in g:
@@ -147,7 +155,8 @@ via triple pattern:
     ...     print(o)
     ...
     Conjunctive Graph
-    >>> g.remove((statementId, RDF.type, RDF.Statement))
+    >>> g.remove((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> print(len(g))
     3
 
@@ -167,10 +176,14 @@ by RDFLib they are UUIDs and unique.
     >>> g1 = Graph()
     >>> g2 = Graph()
     >>> u = URIRef("http://example.com/foo")
-    >>> g1.add([u, namespace.RDFS.label, Literal("foo")])
-    >>> g1.add([u, namespace.RDFS.label, Literal("bar")])
-    >>> g2.add([u, namespace.RDFS.label, Literal("foo")])
-    >>> g2.add([u, namespace.RDFS.label, Literal("bing")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add([u, namespace.RDFS.label, Literal("bing")]) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> len(g1 + g2)  # adds bing as label
     3
     >>> len(g1 - g2)  # removes foo
@@ -190,23 +203,35 @@ the same store:
     >>> stmt1 = BNode()
     >>> stmt2 = BNode()
     >>> stmt3 = BNode()
-    >>> g1.add((stmt1, RDF.type, RDF.Statement))
+    >>> g1.add((stmt1, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label))
-    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph')))
-    >>> g2.add((stmt2, RDF.type, RDF.Statement))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g2.add((stmt2, RDF.predicate, RDF.type))
-    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class))
-    >>> g3.add((stmt3, RDF.type, RDF.Statement))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.predicate, RDF.type)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g3.add((stmt3, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment)) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.object, Literal(
     ...     'The top-level aggregate graph - The sum ' +
-    ...     'of all named graphs within a Store')))
+    ...     'of all named graphs within a Store'))) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
     3
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(
@@ -350,15 +375,18 @@ class Graph(Node):
     def destroy(self, configuration):
         """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
+        return self
 
     # Transactional interfaces (optional)
     def commit(self):
         """Commits active transactions"""
         self.__store.commit()
+        return self
 
     def rollback(self):
         """Rollback active transactions"""
         self.__store.rollback()
+        return self
 
     def open(self, configuration, create=False):
         """Open the graph store
@@ -374,7 +402,7 @@ class Graph(Node):
         Might be necessary for stores that require closing a connection to a
         database or releasing some resource.
         """
-        self.__store.close(commit_pending_transaction=commit_pending_transaction)
+        return self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
     def add(self, triple):
         """Add a triple with self as context"""
@@ -383,6 +411,7 @@ class Graph(Node):
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -394,6 +423,7 @@ class Graph(Node):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -402,6 +432,7 @@ class Graph(Node):
         from all contexts.
         """
         self.__store.remove(triple, context=self)
+        return self
 
     def triples(self, triple):
         """Generator over the triple store
@@ -426,7 +457,8 @@ class Graph(Node):
 
         >>> import rdflib
         >>> g = rdflib.Graph()
-        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob")))
+        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob"))) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 
         >>> list(g[rdflib.URIRef("urn:bob")]) # all triples about bob
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal('Bob'))]
@@ -543,21 +575,24 @@ class Graph(Node):
 
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         self.addN((s, p, o, self) for s, p, o in other)
         return self
 
     def __isub__(self, other):
         """Subtract all triples in Graph other from Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         for triple in other:
             self.remove(triple)
         return self
 
     def __add__(self, other):
         """Set-theoretic union
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
@@ -568,8 +603,11 @@ class Graph(Node):
 
     def __mul__(self, other):
         """Set-theoretic intersection.
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in other:
             if x in self:
                 retval.add(x)
@@ -577,8 +615,11 @@ class Graph(Node):
 
     def __sub__(self, other):
         """Set-theoretic difference.
-           BNode IDs are not changed."""
-        retval = Graph()
+        BNode IDs are not changed."""
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in self:
             if x not in other:
                 retval.add(x)
@@ -586,7 +627,7 @@ class Graph(Node):
 
     def __xor__(self, other):
         """Set-theoretic XOR.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         return (self - other) + (other - self)
 
     __or__ = __add__
@@ -609,6 +650,7 @@ class Graph(Node):
         ), "p can't be None in .set([s,p,o]), as it would remove (s, *, *)"
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
+        return self
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
@@ -742,18 +784,22 @@ class Graph(Node):
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
         >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, namespace.RDFS.label, Literal("foo")])
-        >>> g.add([u, namespace.RDFS.label, Literal("bar")])
+        >>> g.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
+        >>> g.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> pprint(sorted(g.preferredLabel(u)))
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('bar')),
          (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('foo'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> pprint(g.preferredLabel(u))
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")]) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla')),
@@ -838,12 +884,18 @@ class Graph(Node):
         >>> a=BNode("foo")
         >>> b=BNode("bar")
         >>> c=BNode("baz")
-        >>> g.add((a,RDF.first,RDF.type))
-        >>> g.add((a,RDF.rest,b))
-        >>> g.add((b,RDF.first,namespace.RDFS.label))
-        >>> g.add((b,RDF.rest,c))
-        >>> g.add((c,RDF.first,namespace.RDFS.comment))
-        >>> g.add((c,RDF.rest,RDF.nil))
+        >>> g.add((a,RDF.first,RDF.type)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((a,RDF.rest,b)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b,RDF.first,namespace.RDFS.label)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((b,RDF.rest,c)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c,RDF.first,namespace.RDFS.comment)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+        >>> g.add((c,RDF.rest,RDF.nil)) # doctest: +ELLIPSIS
+        <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> def topList(node,g):
         ...    for s in g.subjects(RDF.rest, node):
         ...       yield s
@@ -879,11 +931,11 @@ class Graph(Node):
             for rt_2 in self.transitiveClosure(func, rt, seen):
                 yield rt_2
 
-    def transitive_objects(self, subject, property, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+    def transitive_objects(self, subject, predicate, remember=None):
+        """Transitively generate objects for the ``predicate`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        ``predicate`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -891,15 +943,15 @@ class Graph(Node):
             return
         remember[subject] = 1
         yield subject
-        for object in self.objects(subject, property):
-            for o in self.transitive_objects(object, property, remember):
+        for object in self.objects(subject, predicate):
+            for o in self.transitive_objects(object, predicate, remember):
                 yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+        """Transitively generate subjects for the ``predicate`` relationship
 
-        Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        Generated subjects belong to the depth first transitive closure of the
+        ``predicate`` relationship starting at ``object``.
         """
         if remember is None:
             remember = {}
@@ -956,9 +1008,83 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
+    # no destination and non-None positional encoding
+    @overload
     def serialize(
-        self, destination=None, format="turtle", base=None, encoding=None, **args
-    ) -> Optional[Union[bytes, str]]:
+        self, destination: None, format: str, base: Optional[str], encoding: str, **args
+    ) -> bytes:
+        ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: str,
+        **args,
+    ) -> bytes:
+        ...
+
+    # no destination and None positional encoding
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: None,
+        **args,
+    ) -> str:
+        ...
+
+    # no destination and None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = None,
+        **args,
+    ) -> str:
+        ...
+
+    # non-none destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, pathlib.PurePath],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args,
+    ) -> "Graph":
+        ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ) -> Union[bytes, str, "Graph"]:
+        ...
+
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, pathlib.PurePath, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ) -> Union[bytes, str, "Graph"]:
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as
@@ -978,6 +1104,7 @@ class Graph(Node):
             base = self.base
 
         serializer = plugin.get(format, Serializer)(self)
+        stream: BufferedIOBase
         if destination is None:
             stream = BytesIO()
             if encoding is None:
@@ -987,16 +1114,18 @@ class Graph(Node):
                 serializer.serialize(stream, base=base, encoding=encoding, **args)
                 return stream.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
-            location = destination
+            if isinstance(destination, pathlib.PurePath):
+                location = str(destination)
+            else:
+                location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
-                print(
-                    "WARNING: not saving as location" + "is not a local file reference"
+                raise ValueError(
+                    f"destination {destination} is not a local file reference"
                 )
-                return
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -1007,6 +1136,7 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
+        return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
@@ -1023,7 +1153,7 @@ class Graph(Node):
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse an RDF source adding the resulting triples to the Graph.
@@ -1141,17 +1271,17 @@ class Graph(Node):
                 "Please use graph.parse() instead."
             )
         )
-        self.parse(source, publicID, format)
+        return self.parse(source, publicID, format)
 
     def query(
         self,
         query_object,
-        processor: str = "sparql",
-        result: str = "sparql",
+        processor: Union[str, query.Processor] = "sparql",
+        result: Union[str, Type[query.Result]] = "sparql",
         initNs=None,
         initBindings=None,
         use_store_provided: bool = True,
-        **kwargs
+        **kwargs,
     ) -> query.Result:
         """
         Query this graph.
@@ -1177,13 +1307,13 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
 
         if not isinstance(result, query.Result):
-            result = plugin.get(result, query.Result)
+            result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
@@ -1196,7 +1326,7 @@ class Graph(Node):
         initNs=None,
         initBindings=None,
         use_store_provided=True,
-        **kwargs
+        **kwargs,
     ):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
@@ -1209,7 +1339,7 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1220,11 +1350,17 @@ class Graph(Node):
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
-        """return an n3 identifier for the Graph"""
+        """Return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
 
     def __reduce__(self):
-        return (Graph, (self.store, self.identifier,))
+        return (
+            Graph,
+            (
+                self.store,
+                self.identifier,
+            ),
+        )
 
     def isomorphic(self, other):
         """
@@ -1453,6 +1589,7 @@ class ConjunctiveGraph(Graph):
         _assertnode(s, p, o)
 
         self.store.add((s, p, o), context=c, quoted=False)
+        return self
 
     def _graph(self, c):
         if c is None:
@@ -1468,6 +1605,7 @@ class ConjunctiveGraph(Graph):
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple_or_quad):
         """
@@ -1481,6 +1619,7 @@ class ConjunctiveGraph(Graph):
         s, p, o, c = self._spoc(triple_or_quad)
 
         self.store.remove((s, p, o), context=c)
+        return self
 
     def triples(self, triple_or_quad, context=None):
         """
@@ -1574,11 +1713,11 @@ class ConjunctiveGraph(Graph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse source adding the resulting triples to its own context
@@ -1633,7 +1772,8 @@ class Dataset(ConjunctiveGraph):
     >>> # simple triples goes to default graph
     >>> ds.add((URIRef("http://example.org/a"),
     ...    URIRef("http://www.example.org/b"),
-    ...    Literal("foo")))
+    ...    Literal("foo")))  # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
@@ -1644,12 +1784,14 @@ class Dataset(ConjunctiveGraph):
     >>> g.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/y"),
-    ...     Literal("bar")) )
+    ...     Literal("bar")) ) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> # alternatively: add a quad to the dataset -> goes to the graph
     >>> ds.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/z"),
-    ...     Literal("foo-bar"),g) )
+    ...     Literal("foo-bar"),g) ) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -1664,8 +1806,8 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.URIRef("http://example.org/y"),
      rdflib.term.Literal("bar"))
     >>>
-    >>> # querying quads return quads; the fourth argument can be unrestricted
-    >>> # or restricted to a graph
+    >>> # querying quads() return quads; the fourth argument can be unrestricted
+    >>> # (None) or restricted to a graph
     >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/a"),
@@ -1681,7 +1823,24 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
+    >>> # unrestricted looping is equivalent to iterating over the entire Dataset
+    >>> for q in ds:  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef("http://example.org/a"),
+     rdflib.term.URIRef("http://www.example.org/b"),
+     rdflib.term.Literal("foo"),
+     None)
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/y"),
+     rdflib.term.Literal("bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/z"),
+     rdflib.term.Literal("foo-bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    >>>
+    >>> # resticting iteration to a graph:
+    >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
      rdflib.term.URIRef("http://example.org/y"),
@@ -1758,11 +1917,11 @@ class Dataset(ConjunctiveGraph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
@@ -1783,6 +1942,7 @@ class Dataset(ConjunctiveGraph):
             # default graph cannot be removed
             # only triples deleted, so add it back in
             self.store.add_graph(self.default_context)
+        return self
 
     def contexts(self, triple=None):
         default = False
@@ -1800,6 +1960,10 @@ class Dataset(ConjunctiveGraph):
                 yield s, p, o, None
             else:
                 yield s, p, o, c.identifier
+
+    def __iter__(self) -> Generator[DatasetQuad, None, None]:
+        """Iterates over all quads in the store"""
+        return self.quads((None, None, None, None))
 
 
 class QuotedGraph(Graph):
@@ -1821,6 +1985,7 @@ class QuotedGraph(Graph):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
 
         self.store.add((s, p, o), self, quoted=True)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -1832,6 +1997,7 @@ class QuotedGraph(Graph):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -2060,7 +2226,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format="xml", **args):
+    def parse(self, source, publicID=None, format=None, **args):
         raise ModificationException()
 
     def n3(self):
@@ -2078,21 +2244,20 @@ def _assertnode(*terms):
 
 class BatchAddGraph(object):
     """
-    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
-    into calls to :meth:`~rdflib.graph.Graph.addN`.
+    Wrapper around graph that turns batches of calls to Graph's add
+    (and optionally, addN) into calls to batched calls to addN`.
 
     :Parameters:
 
-      - `graph`: The graph to wrap
-      - `batch_size`: The maximum number of triples to buffer before passing to
-        `graph`'s `addN`
-      - `batch_addn`: If True, then even calls to `addN` will be batched according to
-        `batch_size`
+      - graph: The graph to wrap
+      - batch_size: The maximum number of triples to buffer before passing to
+        Graph's addN
+      - batch_addn: If True, then even calls to `addN` will be batched according to
+        batch_size
 
-    :ivar graph: The wrapped graph
-    :ivar count: The number of triples buffered since initaialization or the last call
-                 to :meth:`reset`
-    :ivar batch: The current buffer of triples
+    graph: The wrapped graph
+    count: The number of triples buffered since initialization or the last call to reset
+    batch: The current buffer of triples
 
     """
 
@@ -2111,6 +2276,7 @@ class BatchAddGraph(object):
         """
         self.batch = []
         self.count = 0
+        return self
 
     def add(self, triple_or_quad):
         """
@@ -2126,6 +2292,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad + self.__graph_tuple)
         else:
             self.batch.append(triple_or_quad)
+        return self
 
     def addN(self, quads):
         if self.__batch_addn:
@@ -2133,6 +2300,7 @@ class BatchAddGraph(object):
                 self.add(q)
         else:
             self.graph.addN(quads)
+        return self
 
     def __enter__(self):
         self.reset()

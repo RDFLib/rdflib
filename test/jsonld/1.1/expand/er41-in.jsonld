@@ -1,0 +1,3 @@
+{
+  "http://example/prop": {"@list": ["foo"], "@id": "http://example/bar"}
+}

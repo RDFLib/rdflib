@@ -1,0 +1,5 @@
+[
+  {"http://example.com/foo": [{"@list": [{"@value": "bar"}]}]},
+  {"http://example.com/foo": [{"@value": "foo"}]},
+  {"http://example.com/bar": [{"@value": "bar"}]}
+]

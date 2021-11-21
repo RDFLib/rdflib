@@ -1,0 +1,6 @@
+_:b0 <http://example/a> _:b1 .
+_:b0 <http://example/c> "C in example" .
+_:b1 <http://example.com/c> "C in example.com" .
+_:b1 <http://example/b> _:b2 .
+_:b2 <http://example.com/a> "A in example.com" .
+_:b2 <http://example.org/c> "C in example.org" .

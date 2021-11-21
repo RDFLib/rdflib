@@ -1,0 +1,16 @@
+[{
+  "http://example.org/foo": [{
+    "@value": "org"
+  }],
+  "http://example.org/p": [{
+    "@type": ["http://example.org/Type"],
+    "http://example.com/foo": [{
+      "@value": "com"
+    }],
+    "http://example.com/nested": [{
+      "http://example.org/nested-prop": [{
+        "@value": "org"
+      }]
+    }]
+  }]
+}]

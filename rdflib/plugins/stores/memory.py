@@ -82,7 +82,7 @@ class SimpleMemory(Store):
             del self.__osp[object][subject][predicate]
 
     def triples(self, triple_pattern, context=None):
-        """A generator over all the triples matching """
+        """A generator over all the triples matching"""
         subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
             spo = self.__spo
@@ -222,7 +222,6 @@ class Memory(Store):
         if context is not None:
             self.__all_contexts.add(context)
         subject, predicate, object_ = triple
-        self.__add_triple_context(triple, context, quoted)
 
         spo = self.__spo
         try:
@@ -233,7 +232,19 @@ class Memory(Store):
             o = po[predicate]
         except LookupError:
             o = po[predicate] = {}
-        o[object_] = 1
+
+        try:
+            _ = o[object_]
+            # This cannot be reached if (s, p, o) was not inserted before.
+            triple_exists = True
+        except KeyError:
+            o[object_] = 1
+            triple_exists = False
+        self.__add_triple_context(triple, triple_exists, context, quoted)
+
+        if triple_exists:
+            # No need to insert twice this triple.
+            return
 
         pos = self.__pos
         try:
@@ -292,7 +303,7 @@ class Memory(Store):
             self.__all_contexts.remove(context)
 
     def triples(self, triple_pattern, context=None):
-        """A generator over all the triples matching """
+        """A generator over all the triples matching"""
         req_ctx = self.__ctx_to_str(context)
         subject, predicate, object_ = triple_pattern
 
@@ -436,32 +447,35 @@ class Memory(Store):
                 pass  # we didn't know this graph, no problem
 
     # internal utility methods below
-    def __add_triple_context(self, triple, context, quoted):
+    def __add_triple_context(self, triple, triple_exists, context, quoted):
         """add the given context to the set of contexts for the triple"""
         ctx = self.__ctx_to_str(context)
         quoted = bool(quoted)
-        try:
-            subj, pred, obj = triple
-            _ = self.__spo[subj][pred][obj]
+        if triple_exists:
             # we know the triple exists somewhere in the store
             try:
                 triple_context = self.__tripleContexts[triple]
             except KeyError:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
-                triple_context = self.__tripleContexts[triple] = self.__defaultContexts.copy()
+                triple_context = self.__tripleContexts[
+                    triple
+                ] = self.__defaultContexts.copy()
 
             triple_context[ctx] = quoted
 
             if not quoted:
                 triple_context[None] = quoted
 
-        except KeyError:
+        else:
             # the triple didn't exist before in the store
             if quoted:  # this context only
                 triple_context = self.__tripleContexts[triple] = {ctx: quoted}
             else:  # default context as well
-                triple_context = self.__tripleContexts[triple] = {ctx: quoted, None: quoted}
+                triple_context = self.__tripleContexts[triple] = {
+                    ctx: quoted,
+                    None: quoted,
+                }
 
         # if the triple is not quoted add it to the default context
         if not quoted:
@@ -481,7 +495,7 @@ class Memory(Store):
 
     def __get_context_for_triple(self, triple, skipQuoted=False):
         """return a list of contexts (str) for the triple, skipping
-           quoted contexts if skipQuoted==True"""
+        quoted contexts if skipQuoted==True"""
 
         ctxs = self.__tripleContexts.get(triple, self.__defaultContexts)
 
@@ -509,15 +523,13 @@ class Memory(Store):
             return None
         try:
             # ctx could be a graph. In that case, use its identifier
-            ctx_str = "{}:{}".format(
-                str(ctx.identifier.__class__.__name__), str(ctx.identifier)
-            )
+            ctx_str = "{}:{}".format(ctx.identifier.__class__.__name__, ctx.identifier)
             self.__context_obj_map[ctx_str] = ctx
             return ctx_str
         except AttributeError:
             # otherwise, ctx should be a URIRef or BNode or str
             if isinstance(ctx, str):
-                ctx_str = "{}:{}".format(str(ctx.__class__.__name__), str(ctx))
+                ctx_str = "{}:{}".format(ctx.__class__.__name__, ctx)
                 if ctx_str in self.__context_obj_map:
                     return ctx_str
                 self.__context_obj_map[ctx_str] = ctx
@@ -526,7 +538,7 @@ class Memory(Store):
 
     def __contexts(self, triple):
         """return a generator for all the non-quoted contexts
-           (dereferenced) the encoded triple appears in"""
+        (dereferenced) the encoded triple appears in"""
         return (
             self.__context_obj_map.get(ctx_str, ctx_str)
             for ctx_str in self.__get_context_for_triple(triple, skipQuoted=True)
