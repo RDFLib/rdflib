@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "6.0.0-alpha"
-__date__ = "2021-03-22"
+__version__ = "6.03a"
+__date__ = "2021-10-10"
 
 __all__ = [
     "URIRef",
@@ -57,9 +57,11 @@ __all__ = [
     "Dataset",
     "Graph",
     "ConjunctiveGraph",
+    "BRICK",
     "CSVW",
     "DC",
     "DCAT",
+    "DCMITYPE",
     "DCTERMS",
     "DOAP",
     "FOAF",
@@ -77,8 +79,8 @@ __all__ = [
     "SOSA",
     "SSN",
     "TIME",
+    "VANN",
     "VOID",
-    "XMLNS",
     "XSD",
     "util",
 ]
@@ -87,13 +89,16 @@ import sys
 import logging
 
 logger = logging.getLogger(__name__)
-_interactive_mode = False
+
 try:
     import __main__
 
-    if not hasattr(__main__, "__file__") and sys.stdout is not None and sys.stderr.isatty():
+    if (
+        not hasattr(__main__, "__file__")
+        and sys.stdout is not None
+        and sys.stderr.isatty()
+    ):
         # show log messages in interactive mode
-        _interactive_mode = True
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
     del __main__
@@ -104,11 +109,6 @@ except ImportError:
     warnings.warn("__main__ already imported", ImportWarning)
     del warnings
 
-if _interactive_mode:
-    logger.info("RDFLib Version: %s" % __version__)
-else:
-    logger.debug("RDFLib Version: %s" % __version__)
-del _interactive_mode
 del sys
 
 
@@ -163,9 +163,11 @@ from rdflib import plugin
 from rdflib import query
 
 from rdflib.namespace import (
+    BRICK,
     CSVW,
     DC,
     DCAT,
+    DCMITYPE,
     DCTERMS,
     DOAP,
     FOAF,
@@ -183,10 +185,11 @@ from rdflib.namespace import (
     SOSA,
     SSN,
     TIME,
+    VANN,
     VOID,
     XMLNS,
     XSD,
-    Namespace
+    Namespace,
 )
 
 # tedious sop to flake8

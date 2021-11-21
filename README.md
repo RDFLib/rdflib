@@ -10,10 +10,11 @@ RDFLib
 
 RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). RDFLib contains most things you need to work with RDF, including:
 
-* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, Trig and JSON-LD (via a plugin).
+* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, Trig and JSON-LD
 * a Graph interface which can be backed by any one of a number of Store implementations
-* store implementations for in-memory storage and persistent storage on top of the Berkeley DB
+* store implementations for in-memory, persistent on disk (Berkeley DB) and remote SPARQL endpoints
 * a SPARQL 1.1 implementation - supporting SPARQL 1.1 Queries and Update statements
+* SPARQL function extension mechanisms
 
 ## RDFlib Family of packages
 The RDFlib community maintains many RDF-related Python code repositories with different purposes. For example:
@@ -21,42 +22,48 @@ The RDFlib community maintains many RDF-related Python code repositories with di
 * [rdflib](https://github.com/RDFLib/rdflib) - the RDFLib core
 * [sparqlwrapper](https://github.com/RDFLib/sparqlwrapper) - a simple Python wrapper around a SPARQL service to remotely execute your queries
 * [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE.
-* [rdflib-jsonld](https://github.com/RDFLib/rdflib-jsonld) - an RDFLib plugin that is an implementation of JSON-LD
 
 Please see the list for all packages/repositories here:
 
 * <https://github.com/RDFLib>
 
+## Versions & Releases
 
-## Versions
+* `6.0.1-alpha` current `master` branch
+* `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+* `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
- * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html). Only bug fixes will be applied.
- * `6.x.y` is the next major release which will support Python 3.6+. (Current master branch)
+See <https://rdflib.dev> for the release schedule.
 
+## Documentation
+See <https://rdflib.readthedocs.io> for our documentation built from the code. Note that there are `latest`, `stable` `5.0.0` and `4.2.2` documentation versions, matching releases.
 
 ## Installation
-RDFLib may be installed with Python's package management tool *pip*:
+The stable release of RDFLib may be installed with Python's package management tool *pip*:
 
     $ pip install rdflib
 
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 5.0.0, see the ``CHANGELOG.md``
-file for what's new in this release.
+The current version of RDFLib is 6.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current master branch (for developers)
 
 With *pip* you can also install rdflib from the git repository with one of the following options:
 
     $ pip install git+https://github.com/rdflib/rdflib@master
-    # or
+
+or
+
     $ pip install -e git+https://github.com/rdflib/rdflib@master#egg=rdflib
 
 or from your locally cloned repository you can install it with one of the following options:
 
     $ python setup.py install
-    # or
+
+or
+
     $ pip install -e .
 
 ## Getting Started
@@ -66,9 +73,9 @@ of RDF *Subject, Predicate, Object* Triples:
 To create graph and load it with RDF data from DBPedia then print the results:
 
 ```python
-import rdflib
-g = rdflib.Graph()
-g.load('http://dbpedia.org/resource/Semantic_Web')
+from rdflib import Graph
+g = Graph()
+g.parse('http://dbpedia.org/resource/Semantic_Web')
 
 for s, p, o in g:
     print(s, p, o)
@@ -76,8 +83,7 @@ for s, p, o in g:
 The components of the triples are URIs (resources) or Literals
 (values).
 
-URIs are grouped together by *namespace*, common namespaces are
-included in RDFLib:
+URIs are grouped together by *namespace*, common namespaces are included in RDFLib:
 
 ```python
 from rdflib.namespace import DC, DCTERMS, DOAP, FOAF, SKOS, OWL, RDF, RDFS, VOID, XMLNS, XSD
@@ -86,24 +92,26 @@ from rdflib.namespace import DC, DCTERMS, DOAP, FOAF, SKOS, OWL, RDF, RDFS, VOID
 You can use them like this:
 
 ```python
-semweb = rdflib.URIRef('http://dbpedia.org/resource/Semantic_Web')
-type = g.value(semweb, rdflib.RDFS.label)
+from rdflib import Graph, URIRef, Literal
+from rdflib.namespace import RDFS
+
+g = Graph()
+semweb = URIRef('http://dbpedia.org/resource/Semantic_Web')
+type = g.value(semweb, RDFS.label)
 ```
-Where `rdflib.RDFS` is the RDFS Namespace, `graph.value` returns an
-object of the triple-pattern given (or an arbitrary one if more
-exist).
+Where `RDFS` is the RDFS Namespace, `g.value` returns an object of the triple-pattern given (or an arbitrary one if more exist).
 
 Or like this, adding a triple to a graph `g`:
 
 ```python
 g.add((
-    rdflib.URIRef("http://example.com/person/nick"),
+    URIRef("http://example.com/person/nick"),
     FOAF.givenName,
-    rdflib.Literal("Nick", datatype=XSD.string)
+    Literal("Nick", datatype=XSD.string)
 ))
 ```
-The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .` 
-is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the 
+The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .`
+is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
 URI `<http://www.w3.org/2001/XMLSchema#string>`.
 
 You can bind namespaces to prefixes to shorten the URIs for RDF/XML, Turtle, N3, TriG, TriX & JSON-LD serializations:
@@ -128,7 +136,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 New Namespaces can also be defined:
 
 ```python
-dbpedia = rdflib.Namespace('http://dbpedia.org/ontology/')
+dbpedia = Namespace('http://dbpedia.org/ontology/')
 
 abstracts = list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language=='en')
 ```
@@ -153,49 +161,20 @@ are listed on [PyPI](https://pypi.python.org/pypi/rdflib/)
 
 Multiple other projects are contained within the RDFlib "family", see <https://github.com/RDFLib/>.
 
-
-## Documentation
-See <https://rdflib.readthedocs.io> for our documentation built from the code.
-
-
-## Support
-For general "how do I..." queries, please use https://stackoverflow.com and tag your question with `rdflib`. 
-Existing questions:
-
-* <https://stackoverflow.com/questions/tagged/rdflib>
-
-
-## Releases
-See <https://rdflib.dev> for the release schedule.
-
-
-## Contributing
-
-RDFLib survives and grows via user contributions!
-Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
-Please consider lodging Pull Requests here:
-
-* <https://github.com/RDFLib/rdflib/pulls>
-
-You can also raise issues here:
-
-* <https://github.com/RDFLib/rdflib/issues>
-
-
 ## Running tests
 
 ### Running the tests on the host
 
-Run the test suite with `nose`.
+Run the test suite with `pytest`.
 ```shell
-nosetests
+pytest
 ```
 
 ### Running test coverage on the host with coverage report
 
-Run the test suite and generate a HTML coverage report with `nose` and `coverage`.
+Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
-nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+pytest --cov
 ```
 
 ### Running the tests in a Docker container
@@ -218,11 +197,29 @@ make coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
 ```shell
-python -m http.server --directory=cover
+pytest --cov --cov-report term --cov-report html
+python -m http.server --directory=htmlcov
 ```
 
+## Contributing
 
-## Contacts
-If you want to contact the rdflib maintainers, please do so via the rdflib-dev mailing list:
+RDFLib survives and grows via user contributions!
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
+Please consider lodging Pull Requests here:
 
-* <https://groups.google.com/group/rdflib-dev>
+* <https://github.com/RDFLib/rdflib/pulls>
+
+You can also raise issues here:
+
+* <https://github.com/RDFLib/rdflib/issues>
+
+## Support & Contacts
+For general "how do I..." queries, please use https://stackoverflow.com and tag your question with `rdflib`.
+Existing questions:
+
+* <https://stackoverflow.com/questions/tagged/rdflib>
+
+If you want to contact the rdflib maintainers, please do so via:
+
+* the rdflib-dev mailing list: <https://groups.google.com/group/rdflib-dev>
+* the chat, which is available at [gitter](https://gitter.im/RDFLib/rdflib) or via matrix [#RDFLib_rdflib:gitter.im](https://matrix.to/#/#RDFLib_rdflib:gitter.im)

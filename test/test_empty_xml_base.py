@@ -44,10 +44,13 @@ class TestEmptyBase(unittest.TestCase):
         self.graph.parse(StringIO(test_data), publicID=baseUri, format="xml")
 
     def test_base_ref(self):
-        self.assertTrue(len(list(self.graph)),
-                        "There should be at least one statement in the graph")
-        self.assertTrue((baseUri, RDF.type, FOAF.Document) in self.graph,
-                        "There should be a triple with %s as the subject" % baseUri)
+        self.assertTrue(
+            len(list(self.graph)), "There should be at least one statement in the graph"
+        )
+        self.assertTrue(
+            (baseUri, RDF.type, FOAF.Document) in self.graph,
+            "There should be a triple with %s as the subject" % baseUri,
+        )
 
 
 class TestRelativeBase(unittest.TestCase):
@@ -56,11 +59,14 @@ class TestRelativeBase(unittest.TestCase):
         self.graph.parse(StringIO(test_data2), publicID=baseUri2, format="xml")
 
     def test_base_ref(self):
-        self.assertTrue(len(self.graph),
-                        "There should be at least one statement in the graph")
-        resolvedBase = URIRef('http://example.com/baz')
-        self.assertTrue((resolvedBase, RDF.type, FOAF.Document) in self.graph,
-                        "There should be a triple with %s as the subject" % resolvedBase)
+        self.assertTrue(
+            len(self.graph), "There should be at least one statement in the graph"
+        )
+        resolvedBase = URIRef("http://example.com/baz")
+        self.assertTrue(
+            (resolvedBase, RDF.type, FOAF.Document) in self.graph,
+            "There should be a triple with %s as the subject" % resolvedBase,
+        )
 
 
 if __name__ == "__main__":

@@ -4,11 +4,10 @@ import unittest
 
 from tempfile import mkdtemp, mkstemp
 import shutil
+
+import pytest
 from rdflib import Dataset, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-
-from nose.exc import SkipTest
-
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -35,7 +34,7 @@ class DatasetTestCase(unittest.TestCase):
         try:
             self.graph = Dataset(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         elif self.store == "SPARQLUpdateStore":
@@ -166,6 +165,36 @@ class DatasetTestCase(unittest.TestCase):
 
         self.assertEqual(list(self.graph.objects(self.tarek, None)), [])
         self.assertEqual(list(g1.objects(self.tarek, None)), [self.pizza])
+
+    def testIter(self):
+        """PR 1382: adds __iter__ to Dataset"""
+        d = Dataset()
+        uri_a = URIRef("https://example.com/a")
+        uri_b = URIRef("https://example.com/b")
+        uri_c = URIRef("https://example.com/c")
+        uri_d = URIRef("https://example.com/d")
+
+        d.add_graph(URIRef("https://example.com/g1"))
+        d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g1")))
+        d.add(
+            (uri_a, uri_b, uri_c, URIRef("https://example.com/g1"))
+        )  # pointless addition: duplicates above
+
+        d.add_graph(URIRef("https://example.com/g2"))
+        d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g2")))
+        d.add((uri_a, uri_b, uri_d, URIRef("https://example.com/g1")))  # new, uri_d
+
+        # traditional iterator
+        i_trad = 0
+        for t in d.quads((None, None, None)):
+            i_trad += 1
+
+        # new Dataset.__iter__ iterator
+        i_new = 0
+        for t in d:
+            i_new += 1
+
+        self.assertEqual(i_new, i_trad)  # both should be 3
 
 
 # dynamically create classes for each registered Store

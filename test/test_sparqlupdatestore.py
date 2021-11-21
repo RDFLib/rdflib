@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from nose import SkipTest
 
 import unittest
 import re

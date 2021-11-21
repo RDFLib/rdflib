@@ -57,6 +57,7 @@ class BerkeleyDB(Store):
     You may need to install BerkeleyDB Python wrapper like this:
     `YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1 pip install berkeleydb`
     """
+
     context_aware = True
     formula_aware = True
     transaction_aware = False
@@ -125,8 +126,12 @@ class BerkeleyDB(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies = [None,] * 3
-        self.__indicies_info = [None,] * 3
+        self.__indicies = [
+            None,
+        ] * 3
+        self.__indicies_info = [
+            None,
+        ] * 3
         for i in range(0, 3):
             index_name = to_key_func(i)(
                 ("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")),
@@ -295,12 +300,15 @@ class BerkeleyDB(Store):
     def __remove(self, spo, c, quoted=False, txn=None):
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
-        contexts_value = cspo.get(
-            "^".encode("latin-1").join(
-                ["".encode("latin-1"), s, p, o, "".encode("latin-1")]
-            ),
-            txn=txn,
-        ) or "".encode("latin-1")
+        contexts_value = (
+            cspo.get(
+                "^".encode("latin-1").join(
+                    ["".encode("latin-1"), s, p, o, "".encode("latin-1")]
+                ),
+                txn=txn,
+            )
+            or "".encode("latin-1")
+        )
         contexts = set(contexts_value.split("^".encode("latin-1")))
         contexts.discard(c)
         contexts_value = "^".encode("latin-1").join(contexts)
@@ -399,7 +407,7 @@ class BerkeleyDB(Store):
             self.__needs_sync = needs_sync
 
     def triples(self, spo, context=None, txn=None):
-        """A generator over all the triples matching """
+        """A generator over all the triples matching"""
         assert self.__open, "The Store must be open."
 
         subject, predicate, object = spo

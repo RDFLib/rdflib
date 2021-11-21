@@ -24,14 +24,5 @@ def testFinalNewline():
         if b"\n" not in v or (lines[-1] != b""):
             failed.add(p.name)
     # JSON-LD does not require a final newline (because JSON doesn't)
-    failed = failed.difference({'json-ld', 'application/ld+json'})
+    failed = failed.difference({"json-ld", "application/ld+json"})
     assert len(failed) == 0, "No final newline for formats: '%s'" % failed
-
-
-if __name__ == "__main__":
-
-    import sys
-    import nose
-
-    if len(sys.argv) == 1:
-        nose.main(defaultTest=sys.argv[0])

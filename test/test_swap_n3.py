@@ -1,7 +1,8 @@
-from nose.exc import SkipTest
 import os
 import sys
 import unittest
+
+import pytest
 
 maketrans = str.maketrans
 import rdflib
@@ -71,7 +72,7 @@ class Envelope(object):
 def generictest(e):
     """Documentation"""
     if e.skip:
-        raise SkipTest("%s skipped, known issue" % e.name)
+        pytest.skip("%s skipped, known issue" % e.name)
     g = rdflib.Graph()
     for i in [rdf, rdfs, xsd, owl, test, n3test, rdft, triage, mf, qt]:
         g.bind(str(i), i)
@@ -95,7 +96,7 @@ def dir_to_uri(directory, sep=os.path.sep):
     return "file:///%s" % (path,)
 
 
-def test_cases():
+def get_cases():
     from copy import deepcopy
 
     g = rdflib.Graph()
@@ -134,6 +135,6 @@ def test_cases():
         yield gt, e
 
 
-if __name__ == "__main__":
-    test_cases()
-    # unittest.main()
+@pytest.mark.parametrize("gt, envelope", get_cases())
+def test_cases(gt, envelope):
+    gt(envelope)

@@ -1,5 +1,9 @@
 from os import environ, chdir, getcwd, path as p
 import json
+
+import pytest
+
+from rdflib.term import URIRef
 from . import runner
 
 
@@ -34,7 +38,9 @@ known_bugs = (
     # TODO: RDFLib collapses http://ab//de to http://ab/de
     "toRdf/0128-in",
     # TODO: RDFLib does not allow arbitrary "urn:ex:s307" as a URI in predicate place
-    "toRdf/0130-in", "toRdf/0131-in", "toRdf/0132-in",
+    "toRdf/0130-in",
+    "toRdf/0131-in",
+    "toRdf/0132-in",
     # TODO: Odd context lookup bug with scoped context (v1.1 bug)
     "toRdf/c013-in",
     # Type with @context of null should fall back to @vocab (I think), not baseuri
@@ -46,9 +52,13 @@ known_bugs = (
     # TODO: Bug with resolving relative context url from top-level context which is not doc_root
     "toRdf/c031-in",
     # TODO: Nested Contexts don't quite work properly yet
-    "toRdf/c037-in", "toRdf/c038-in",
+    "toRdf/c037-in",
+    "toRdf/c038-in",
     # TODO: @direction doesn't quite work properly in this implementation
-    "toRdf/di09-in", "toRdf/di10-in", "toRdf/di11-in", "toRdf/di12-in",
+    "toRdf/di09-in",
+    "toRdf/di10-in",
+    "toRdf/di11-in",
+    "toRdf/di12-in",
     # TODO: empty list inside a list is represented wrong?
     "toRdf/e004-in",
     # Same problem as 0002-in
@@ -58,17 +68,34 @@ known_bugs = (
     # @id and @vocab in literal datatype expansion doesn't work
     "toRdf/e088-in",
     # TODO: relative-iri keeps . on end of IRI?
-    "toRdf/e076-in", "toRdf/e089-in", "toRdf/e090-in", "toRdf/e091-in", "toRdf/e110-in", "toRdf/e129-in", "toRdf/e130-in",
+    "toRdf/e076-in",
+    "toRdf/e089-in",
+    "toRdf/e090-in",
+    "toRdf/e091-in",
+    "toRdf/e110-in",
+    "toRdf/e129-in",
+    "toRdf/e130-in",
     # TODO: Just broken expansion...
-    "toRdf/e080-in", "toRdf/e092-in", "toRdf/e093-in", "toRdf/e094-in", "toRdf/e104-in", "toRdf/e108-in",
+    "toRdf/e080-in",
+    "toRdf/e092-in",
+    "toRdf/e093-in",
+    "toRdf/e094-in",
+    "toRdf/e104-in",
+    "toRdf/e108-in",
     # TODO: Odd result in list expansion
-    "toRdf/e105-in", "toRdf/e107-in",
+    "toRdf/e105-in",
+    "toRdf/e107-in",
     # no expandContent option?
     "toRdf/e077-in",
     # TODO: Investigate:
-    "toRdf/e111-in", "toRdf/e112-in", "toRdf/e119-in", "toRdf/e120-in", "toRdf/e122-in",
+    "toRdf/e111-in",
+    "toRdf/e112-in",
+    "toRdf/e119-in",
+    "toRdf/e120-in",
+    "toRdf/e122-in",
     # RDFLib cannot keep a colon on the end of a prefix uri
-    "toRdf/e117-in", "toRdf/e118-in",
+    "toRdf/e117-in",
+    "toRdf/e118-in",
     # <ex:ns/> doesn't expand to <http://example.org/ns/>
     "toRdf/e124-in",
     # Similar to above?
@@ -76,17 +103,29 @@ known_bugs = (
     # Recursive Inclusion triggered!
     "toRdf/e128-in",
     # JSON-native double representation
-    "toRdf/js04-in", "toRdf/js10-in",
+    "toRdf/js04-in",
+    "toRdf/js10-in",
     # JSON character escaping
-    "toRdf/js12-in", "toRdf/js13-in",
+    "toRdf/js12-in",
+    "toRdf/js13-in",
     # Broken list comprehension
-    "toRdf/li05-in", "toRdf/li06-in", "toRdf/li07-in", "toRdf/li08-in", "toRdf/li09-in", "toRdf/li10-in", "toRdf/li11-in", "toRdf/li14-in",
+    "toRdf/li05-in",
+    "toRdf/li06-in",
+    "toRdf/li07-in",
+    "toRdf/li08-in",
+    "toRdf/li09-in",
+    "toRdf/li10-in",
+    "toRdf/li11-in",
+    "toRdf/li14-in",
     # Bad URI?
     "toRdf/li12-in",
     # cannot use property-index to add property to graph object?
-    "toRdf/pi11-in", "toRdf/pr25-in",
+    "toRdf/pi11-in",
+    "toRdf/pr25-in",
     # Investigate property issues:
-    "toRdf/pr38-in", "toRdf/pr39-in", "toRdf/pr40-in",
+    "toRdf/pr38-in",
+    "toRdf/pr39-in",
+    "toRdf/pr40-in",
     # Negative zero representation?
     "toRdf/rt01-in",
     # Property scope with @propagate not working
@@ -145,26 +184,47 @@ def read_manifest(skiptests):
                 if expectedpath:
                     yield category, testnum, inputpath, expectedpath, context, options
 
-def test_suite():
+
+def get_test_suite_cases():
     skiptests = unsupported_tests
     if SKIP_KNOWN_BUGS:
         skiptests += known_bugs
+
+    for cat, num, inputpath, expectedpath, context, options in read_manifest(
+        skiptests
+    ):
+        if options:
+            if (
+                SKIP_1_0_TESTS
+                and "specVersion" in options
+                and str(options["specVersion"]).lower() == "json-ld-1.0"
+            ):
+                # Skip the JSON v1.0 tests
+                continue
+        if inputpath.endswith(".jsonld"):  # toRdf
+            if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
+                func = runner.do_test_json
+            else:  # toRdf
+                func = runner.do_test_parser
+        else:  # fromRdf
+            func = runner.do_test_serializer
+        rdf_test_uri = URIRef("{0}{1}-manifest#t{2}".format(
+            TC_BASE, cat, num
+        ))
+        yield rdf_test_uri, func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+
+
+@pytest.fixture(scope="module", autouse=True)
+def global_state():
     old_cwd = getcwd()
     chdir(test_dir)
-    try:
-        for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
-            if options:
-                if SKIP_1_0_TESTS and "specVersion" in options and str(options["specVersion"]).lower() == "json-ld-1.0":
-                    # Skip the JSON v1.0 tests
-                    continue
-            if inputpath.endswith(".jsonld"):  # toRdf
-                if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
-                    func = runner.do_test_json
-                else:  # toRdf
-                    func = runner.do_test_parser
-            else:  # fromRdf
-                func = runner.do_test_serializer
-            yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
-    finally:
-        chdir(old_cwd)
+    yield
+    chdir(old_cwd)
 
+
+@pytest.mark.parametrize(
+    "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
+    get_test_suite_cases(),
+)
+def test_suite(rdf_test_uri: URIRef, func, suite_base, cat, num, inputpath, expectedpath, context, options):
+    func(suite_base, cat, num, inputpath, expectedpath, context, options)

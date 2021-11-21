@@ -4,7 +4,7 @@ from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.compare import isomorphic
 from rdflib.term import Variable
 
-from nose.tools import eq_
+from .testutils import eq_
 
 
 def test_graph_prefix():
@@ -118,7 +118,6 @@ def test_bindings():
     layer_0 = sparql.Bindings(d={"v": 1, "bar": 2})
     layer_1 = sparql.Bindings(outer=layer_0, d={"v": 3})
 
-
     assert layer_0["v"] == 1
     assert layer_1["v"] == 3
     assert layer_1["bar"] == 2
@@ -131,36 +130,84 @@ def test_bindings():
     #     but is kept for compatibility for now.
     assert len(layer_1) == 3
 
-    
+
 def test_named_filter_graph_query():
     g = ConjunctiveGraph()
-    g.namespace_manager.bind('rdf', RDF)
-    g.namespace_manager.bind('rdfs', RDFS)
-    ex = Namespace('https://ex.com/')
-    g.namespace_manager.bind('ex', ex)
-    g.get_context(ex.g1).parse(format="turtle", data=f"""
+    g.namespace_manager.bind("rdf", RDF)
+    g.namespace_manager.bind("rdfs", RDFS)
+    ex = Namespace("https://ex.com/")
+    g.namespace_manager.bind("ex", ex)
+    g.get_context(ex.g1).parse(
+        format="turtle",
+        data=f"""
     PREFIX ex: <{str(ex)}>
     PREFIX rdfs: <{str(RDFS)}>
     ex:Boris rdfs:label "Boris" .
     ex:Susan rdfs:label "Susan" .
-    """)
-    g.get_context(ex.g2).parse(format="turtle", data=f"""
+    """,
+    )
+    g.get_context(ex.g2).parse(
+        format="turtle",
+        data=f"""
     PREFIX ex: <{str(ex)}>
     ex:Boris a ex:Person .
-    """)
+    """,
+    )
 
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Susan'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Susan'),)]
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Susan"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Susan"),)]
+    )
 
 
 def test_txtresult():
@@ -198,9 +245,3 @@ def test_txtresult():
     assert len(lines) == 3
     vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
     assert vars_check == vars
-
-
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=__name__)

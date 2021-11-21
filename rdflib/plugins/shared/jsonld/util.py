@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/util.py
+import typing as t
 
-try:
+if t.TYPE_CHECKING:
     import json
+else:
+    try:
+        import json
 
-    assert json  # workaround for pyflakes issue #13
-except ImportError:
-    import simplejson as json
+        assert json  # workaround for pyflakes issue #13
+    except ImportError:
+        import simplejson as json
 
 from os import sep
 from os.path import normpath

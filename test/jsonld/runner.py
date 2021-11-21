@@ -19,8 +19,6 @@ def _preserving_nodeid(self, bnode_context=None):
 DEFAULT_PARSER_VERSION = 1.0
 
 
-
-
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
     input_obj = _load_json(inputpath)

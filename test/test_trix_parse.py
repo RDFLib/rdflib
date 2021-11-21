@@ -18,7 +18,9 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        trix_path = os.path.relpath(os.path.join(TEST_DIR, 'trix/aperture.trix'), os.curdir)
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/aperture.trix"), os.curdir
+        )
         g.parse(trix_path, format="trix")
         c = list(g.contexts())
 
@@ -34,7 +36,9 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        trix_path = os.path.relpath(os.path.join(TEST_DIR, 'trix/nokia_example.trix'), os.curdir)
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/nokia_example.trix"), os.curdir
+        )
         g.parse(trix_path, format="trix")
 
         # print "Parsed %d triples"%len(g)
@@ -43,7 +47,9 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        trix_path = os.path.relpath(os.path.join(TEST_DIR, 'trix/ng4jtest.trix'), os.curdir)
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/ng4jtest.trix"), os.curdir
+        )
         g.parse(trix_path, format="trix")
 
         # print "Parsed %d triples"%len(g)

@@ -39,7 +39,7 @@ We can then access the rdfs:subClassOf relationships
 
 This can also be used against already populated graphs:
 
->>> owlGraph = Graph().parse(OWL) #doctest: +SKIP
+>>> owlGraph = Graph().parse(str(OWL)) #doctest: +SKIP
 >>> namespace_manager.bind('owl', OWL, override=False) #doctest: +SKIP
 >>> owlGraph.namespace_manager = namespace_manager #doctest: +SKIP
 >>> list(Class(OWL.Class, graph=owlGraph).subClassOf) #doctest: +SKIP
@@ -331,9 +331,6 @@ def manchesterSyntax(thing, store, boolean=None, transientList=False):
             if isinstance(thing, BNode):
                 return thing.n3()
             return "<" + thing + ">"
-            logger.debug(list(store.objects(subject=thing, predicate=RDF.type)))
-            raise
-            return "[]"  # +thing._id.encode('utf-8')+'</em>'
         label = first(Class(thing, graph=store).label)
         if label:
             return label
@@ -609,7 +606,7 @@ class AnnotatableTerms(Individual):
 
 
 class Ontology(AnnotatableTerms):
-    """ The owl ontology metadata"""
+    """The owl ontology metadata"""
 
     def __init__(self, identifier=None, imports=None, comment=None, graph=None):
         super(Ontology, self).__init__(identifier, graph)
@@ -693,7 +690,9 @@ class ClassNamespaceFactory(Namespace):
             return self.term(name)
 
 
-CLASS_RELATIONS = set(Namespace("http://www.w3.org/2002/07/owl#resourceProperties")).difference(
+CLASS_RELATIONS = set(
+    Namespace("http://www.w3.org/2002/07/owl#resourceProperties")
+).difference(
     [
         OWL.onProperty,
         OWL.allValuesFrom,
@@ -847,9 +846,9 @@ def CastClass(c, graph=None):
                     else:
                         if p not in Restriction.restrictionKinds:
                             continue
-                        kwArgs[str(p.split(OWL)[-1])] = o
+                        kwArgs[str(p.split(str(OWL))[-1])] = o
             if not set(
-                [str(i.split(OWL)[-1]) for i in Restriction.restrictionKinds]
+                [str(i.split(str(OWL))[-1]) for i in Restriction.restrictionKinds]
             ).intersection(kwArgs):
                 raise MalformedClass("Malformed owl:Restriction")
             return Restriction(**kwArgs)
@@ -1183,9 +1182,7 @@ class Class(AnnotatableTerms):
             for disjCls in self.factoryGraph.subjects(OWL.unionOf, collectionHead):
                 if isinstance(disjCls, URIRef):
                     yield Class(disjCls, skipOWLClassMembership=True)
-        for rdfList in self.factoryGraph.objects(
-            self.identifier, OWL.intersectionOf
-        ):
+        for rdfList in self.factoryGraph.objects(self.identifier, OWL.intersectionOf):
             for member in OWLRDFListProxy([rdfList], graph=self.factoryGraph):
                 if isinstance(member, URIRef):
                     yield Class(member, skipOWLClassMembership=True)
@@ -1417,9 +1414,7 @@ class EnumeratedClass(OWLRDFListProxy, Class):
     def __init__(self, identifier=None, members=None, graph=None):
         Class.__init__(self, identifier, graph=graph)
         members = members and members or []
-        rdfList = list(
-            self.graph.objects(predicate=OWL.oneOf, subject=self.identifier)
-        )
+        rdfList = list(self.graph.objects(predicate=OWL.oneOf, subject=self.identifier))
         OWLRDFListProxy.__init__(self, rdfList, members)
 
     def __repr__(self):
@@ -1518,9 +1513,10 @@ class BooleanClass(OWLRDFListProxy, Class):
         assert operator in [OWL.intersectionOf, OWL.unionOf], str(operator)
         self._operator = operator
         rdfList = list(self.graph.objects(predicate=operator, subject=self.identifier))
-        assert not members or not rdfList, (
-            "This is a previous boolean class description!"
-            + repr(Collection(self.graph, rdfList[0]).n3())
+        assert (
+            not members or not rdfList
+        ), "This is a previous boolean class description!" + repr(
+            Collection(self.graph, rdfList[0]).n3()
         )
         OWLRDFListProxy.__init__(self, rdfList, members)
 
@@ -1809,9 +1805,7 @@ class Restriction(Class):
     hasValue = property(_get_hasValue, _set_hasValue, _del_hasValue)
 
     def _get_cardinality(self):
-        for i in self.graph.objects(
-            subject=self.identifier, predicate=OWL.cardinality
-        ):
+        for i in self.graph.objects(subject=self.identifier, predicate=OWL.cardinality):
             return Class(i, graph=self.graph)
         return None
 
@@ -2114,9 +2108,7 @@ class Property(AnnotatableTerms):
     subPropertyOf = property(_get_subPropertyOf, _set_subPropertyOf, _del_subPropertyOf)
 
     def _get_inverseOf(self):
-        for anc in self.graph.objects(
-            subject=self.identifier, predicate=OWL.inverseOf
-        ):
+        for anc in self.graph.objects(subject=self.identifier, predicate=OWL.inverseOf):
             yield Property(anc, graph=self.graph, baseType=None)
 
     def _set_inverseOf(self, other):

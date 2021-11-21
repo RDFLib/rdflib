@@ -7,7 +7,7 @@ from rdflib.plugins.sparql.operators import simplify
 
 from rdflib import Variable, Literal
 
-from nose.tools import eq_ as eq
+from .testutils import eq_ as eq
 
 
 def _eval(e, ctx=None):
@@ -150,10 +150,3 @@ def test_and_or():
         bool(_eval(_translate((p.Expression.parseString("(2>1 || 3>2) && 3>4")[0])))),
         False,
     )
-
-
-if __name__ == "__main__":
-    import nose
-    import sys
-
-    nose.main(defaultTest=sys.argv[0])

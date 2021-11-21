@@ -1,5 +1,5 @@
 .. rdflib documentation documentation master file
-   
+
 ================
 rdflib |release|
 ================
@@ -55,7 +55,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
    merging
    upgrade5to6
    upgrade4to5
-   
+
 
 Reference
 ---------
@@ -68,9 +68,9 @@ API reference:
 
    apidocs/modules
 
-.. toctree:: 
+.. toctree::
    :maxdepth: 2
-			  
+
    plugins
 
 .. * :ref:`genindex`
@@ -86,9 +86,6 @@ For developers
    docs
    persisting_n3_terms
 
-Developers might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
-
-
 Source Code
 -----------
 The rdflib source code is hosted on GitHub at `<https://github.com/RDFLib/rdflib>`__ where you can lodge Issues and
@@ -98,14 +95,19 @@ The RDFlib organisation on GitHub at `<https://github.com/RDFLib>`__ maintains t
 and RDFlib-related packaged that you might also find useful.
 
 
-Further help
-------------
-For asynchronous chat support, try our gitter channel at `<https://gitter.im/RDFLib/rdflib>`__
+Further help & Contact
+----------------------
 
 If you would like more help with using rdflib, rather than developing it, please post a question on StackOverflow using
 the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept there at:
 
 * `<https://stackoverflow.com/questions/tagged/rdflib>`__
+
+You might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
+
+The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via matrix `#RDFLib_rdflib:gitter.im <https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.
+
+
 
 Glossary
 --------

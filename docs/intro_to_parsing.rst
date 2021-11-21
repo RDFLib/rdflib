@@ -84,9 +84,9 @@ To store a graph in a file, use the :func:`rdflib.Graph.serialize` function:
     g.serialize(destination="tbl.ttl")
 
 This parses data from http://www.w3.org/People/Berners-Lee/card and stores it in a file ``tbl.ttl`` in this directory
-using the turtle format as a default.
+using the turtle format, which is the default RDF serialization (as of rdflib 6.0.0).
 
-To read the same data and to save it in a varable ``v`` a string in the RDF/XML format, do this:
+To read the same data and to save it as an RDF/XML format string in the variable ``v``, do this:
 
 .. code-block:: python
 
@@ -96,6 +96,21 @@ To read the same data and to save it in a varable ``v`` a string in the RDF/XML 
     g.parse("http://www.w3.org/People/Berners-Lee/card")
     v = g.serialize(format="xml")
 
+
+The following table lists the RDF formats you can serialize data to with rdflib, out of the box, and the ``format=KEYWORD`` keyword used to reference them within ``serialize()``:
+
+.. csv-table::
+   :header: "RDF Format", "Keyword", "Notes"
+
+   "Turtle",    "turtle, ttl or turtle2",     "turtle2 is just turtle with more spacing & linebreaks"
+   "RDF/XML",   "xml or pretty-xml",     "Was the default format, rdflib < 6.0.0"
+   "JSON-LD",   "json-ld",     "There are further options for compact syntax and other JSON-LD variants"   
+   "N-Triples", "ntriples, nt or nt11",     "nt11 is exactly like nt, only utf8 encoded"
+   "Notation-3","n3",     "N3 is a superset of Turtle that also caters for rules and a few other things"
+   
+    "Trig",     "trig",     "Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs"
+    "Trix",     "trix",     "RDF/XML-like format for RDF quads"
+"N-Quads",   "nquads",     "N-Triples-like format for RDF quads"
 
 Working with multi-graphs
 -------------------------

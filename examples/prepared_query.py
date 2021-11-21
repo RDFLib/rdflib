@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     q = prepareQuery(
         "SELECT ?name WHERE { ?person foaf:knows/foaf:name ?name . }",
-        initNs={"foaf": FOAF}
+        initNs={"foaf": FOAF},
     )
 
     g = rdflib.Graph()

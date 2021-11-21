@@ -82,7 +82,7 @@ class SimpleMemory(Store):
             del self.__osp[object][subject][predicate]
 
     def triples(self, triple_pattern, context=None):
-        """A generator over all the triples matching """
+        """A generator over all the triples matching"""
         subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
             spo = self.__spo
@@ -303,7 +303,7 @@ class Memory(Store):
             self.__all_contexts.remove(context)
 
     def triples(self, triple_pattern, context=None):
-        """A generator over all the triples matching """
+        """A generator over all the triples matching"""
         req_ctx = self.__ctx_to_str(context)
         subject, predicate, object_ = triple_pattern
 
@@ -458,7 +458,9 @@ class Memory(Store):
             except KeyError:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
-                triple_context = self.__tripleContexts[triple] = self.__defaultContexts.copy()
+                triple_context = self.__tripleContexts[
+                    triple
+                ] = self.__defaultContexts.copy()
 
             triple_context[ctx] = quoted
 
@@ -470,7 +472,10 @@ class Memory(Store):
             if quoted:  # this context only
                 triple_context = self.__tripleContexts[triple] = {ctx: quoted}
             else:  # default context as well
-                triple_context = self.__tripleContexts[triple] = {ctx: quoted, None: quoted}
+                triple_context = self.__tripleContexts[triple] = {
+                    ctx: quoted,
+                    None: quoted,
+                }
 
         # if the triple is not quoted add it to the default context
         if not quoted:
@@ -490,7 +495,7 @@ class Memory(Store):
 
     def __get_context_for_triple(self, triple, skipQuoted=False):
         """return a list of contexts (str) for the triple, skipping
-           quoted contexts if skipQuoted==True"""
+        quoted contexts if skipQuoted==True"""
 
         ctxs = self.__tripleContexts.get(triple, self.__defaultContexts)
 
@@ -533,7 +538,7 @@ class Memory(Store):
 
     def __contexts(self, triple):
         """return a generator for all the non-quoted contexts
-           (dereferenced) the encoded triple appears in"""
+        (dereferenced) the encoded triple appears in"""
         return (
             self.__context_obj_map.get(ctx_str, ctx_str)
             for ctx_str in self.__get_context_for_triple(triple, skipQuoted=True)

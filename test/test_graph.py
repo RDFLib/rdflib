@@ -6,11 +6,16 @@ from tempfile import mkdtemp, mkstemp
 import shutil
 from urllib.error import URLError, HTTPError
 
+import pytest
+
 from rdflib import URIRef, Graph, plugin
 from rdflib.exceptions import ParserError
 from rdflib.plugin import PluginException
+from rdflib.namespace import Namespace
 
-from nose.exc import SkipTest
+from pathlib import Path
+
+from test.testutils import GraphHelper
 
 
 class GraphTestCase(unittest.TestCase):
@@ -21,7 +26,7 @@ class GraphTestCase(unittest.TestCase):
         try:
             self.graph = Graph(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         else:
@@ -272,10 +277,15 @@ class GraphTestCase(unittest.TestCase):
             self.graph.parse(data="rubbish")
 
         # Turtle - default
-        self.graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+        self.graph.parse(
+            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> ."
+        )
 
         # Turtle - format given
-        self.graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .", format="turtle")
+        self.graph.parse(
+            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .",
+            format="turtle",
+        )
 
         # RDF/XML - format given
         rdf = """<rdf:RDF
@@ -294,7 +304,7 @@ class GraphTestCase(unittest.TestCase):
     </ns1:r>
     <ns1:p rdf:resource="http://example.org/q"/>
   </rdf:Description>
-</rdf:RDF>        
+</rdf:RDF>
         """
         self.graph.parse(data=rdf, format="xml")
 
@@ -309,15 +319,31 @@ class GraphTestCase(unittest.TestCase):
             self.graph.parse(location="http://www.w3.org/ns/adms.ttl")
             self.graph.parse(location="http://www.w3.org/ns/adms.rdf")
         except (URLError, HTTPError):
-            #this endpoint is currently not available, ignore this test.
+            # this endpoint is currently not available, ignore this test.
             pass
 
         try:
             # persistent Australian Government online RDF resource without a file-like ending
-            self.graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
+            self.graph.parse(
+                location="https://linked.data.gov.au/def/agrif?_format=text/turtle"
+            )
         except (URLError, HTTPError):
             # this endpoint is currently not available, ignore this test.
             pass
+
+    def test_parse_file_uri(self):
+        EG = Namespace("http://example.org/#")
+        g = Graph()
+        g.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
+        triple_set = GraphHelper.triple_set(g)
+        self.assertEqual(
+            triple_set,
+            {
+                (EG["Subject"], EG["predicate"], EG["ObjectP"]),
+                (EG["Subject"], EG["predicate"], EG["ObjectQ"]),
+                (EG["Subject"], EG["predicate"], EG["ObjectR"]),
+            },
+        )
 
     def testTransitive(self):
         person = URIRef("ex:person")

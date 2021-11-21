@@ -372,7 +372,7 @@ class MulPath(Path):
                 # (even literals)
                 # we cannot do this without going through ALL triples
                 # unless we keep an index of all terms somehow
-                # but lets just hope this query doesnt happen very often...
+                # but let's just hope this query doesn't happen very often...
                 for s, o in graph.subject_objects(None):
                     if s not in seen1:
                         seen1.add(s)

@@ -23,7 +23,7 @@ def query_with_retry(graph: rdflib.Graph, query: str, **kwargs) -> rdflib.query.
     As fast feedback is important the retry should be done quickly.
     Therefor the first retry is done after 100ms. But if the issue is
     outside the server running the tests it we need to be good
-    citizenship of the internet and not hit servers of others at 
+    citizenship of the internet and not hit servers of others at
     a constant rate. (Also it might get us banned)
 
     Therefor this function implements a backoff mechanism.
@@ -41,13 +41,15 @@ def query_with_retry(graph: rdflib.Graph, query: str, **kwargs) -> rdflib.query.
     for i in range(MAX_RETRY):
         try:
             result = graph.query(query, **kwargs)
-            result.bindings # access bindings to ensure no lazy loading
+            result.bindings  # access bindings to ensure no lazy loading
             return result
         except urllib.error.URLError as e:
-            if i == MAX_RETRY -1:
-              raise e
+            if i == MAX_RETRY - 1:
+                raise e
 
             backoff_s = (BACKOFF_FACTOR ** backoff) / 10
-            print(f"Network error {e} during query, waiting for {backoff_s:.2f}s and retrying")
+            print(
+                f"Network error {e} during query, waiting for {backoff_s:.2f}s and retrying"
+            )
             time.sleep(backoff_s)
             backoff += 1

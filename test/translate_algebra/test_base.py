@@ -27,9 +27,14 @@ def format_text(comment, max_line_length):
 
 
 class Test:
-
-    def __init__(self, tc_desc: str, expected_result: str = None, actual_result: str = None, test_number: int = None,
-                 test_name: str = None):
+    def __init__(
+        self,
+        tc_desc: str,
+        expected_result: str = None,
+        actual_result: str = None,
+        test_number: int = None,
+        test_name: str = None,
+    ):
         self.test_number = test_number
         self.test_name = test_name
         self.tc_desc = tc_desc
@@ -49,7 +54,6 @@ class Test:
 
 
 class TestExecution:
-
     def __init__(self, annotated_tests: bool = False):
         """
 
@@ -100,13 +104,17 @@ class TestExecution:
         :return:
         """
         print("Executing tests ...")
-        logging.getLogger().setLevel(int(self.test_config.get('TEST', 'log_level')))
+        logging.getLogger().setLevel(int(self.test_config.get("TEST", "log_level")))
 
         self.before_all_tests()
-        test_prefix = 'test_'
+        test_prefix = "test_"
         if self.annotated_tests:
-            test_prefix = 'x_test_'
-        test_functions = [func for func in dir(self) if callable(getattr(self, func)) and func.startswith(test_prefix)]
+            test_prefix = "x_test_"
+        test_functions = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and func.startswith(test_prefix)
+        ]
         try:
             test_number = 1
             for func in test_functions:
@@ -130,21 +138,38 @@ class TestExecution:
         :return:
         """
 
-        tests_df = pd.DataFrame(columns=['test_number', 'test_passed', 'test_name', 'test_case_description',
-                                         'expected_result', 'actual_result'])
+        tests_df = pd.DataFrame(
+            columns=[
+                "test_number",
+                "test_passed",
+                "test_name",
+                "test_case_description",
+                "expected_result",
+                "actual_result",
+            ]
+        )
         for test in self.tests:
             if isinstance(test, Test):
                 formatted_tc_desc = format_text(test.tc_desc, 100)
                 formatted_expected_result = format_text(test.expected_result, 50)
                 formatted_actual_result = format_text(test.actual_result, 50)
 
-                tests_df = tests_df.append({'test_number': test.test_number,
-                                            'test_passed': test.yn_passed,
-                                            'test_name': test.test_name,
-                                            'test_case_description': formatted_tc_desc,
-                                            'expected_result': formatted_expected_result,
-                                            'actual_result': formatted_actual_result}, ignore_index=True)
+                tests_df = tests_df.append(
+                    {
+                        "test_number": test.test_number,
+                        "test_passed": test.yn_passed,
+                        "test_name": test.test_name,
+                        "test_case_description": formatted_tc_desc,
+                        "expected_result": formatted_expected_result,
+                        "actual_result": formatted_actual_result,
+                    },
+                    ignore_index=True,
+                )
 
-        tests_df.sort_values('test_number', inplace=True)
-        pdtabulate = lambda df: tabulate(df, headers='keys', tablefmt='grid', )
+        tests_df.sort_values("test_number", inplace=True)
+        pdtabulate = lambda df: tabulate(
+            df,
+            headers="keys",
+            tablefmt="grid",
+        )
         print(pdtabulate(tests_df))

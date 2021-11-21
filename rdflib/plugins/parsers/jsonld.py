@@ -35,7 +35,8 @@ Example usage::
 
 import warnings
 from rdflib.graph import ConjunctiveGraph
-from rdflib.parser import Parser, URLInputSource
+from rdflib.parser import URLInputSource
+import rdflib.parser
 from rdflib.namespace import RDF, XSD
 from rdflib.term import URIRef, BNode, Literal
 
@@ -78,12 +79,12 @@ except ImportError:
     pass
 
 
-TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)
+TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
 
 
-class JsonLDParser(Parser):
+class JsonLDParser(rdflib.parser.Parser):
     def __init__(self):
         super(JsonLDParser, self).__init__()
 

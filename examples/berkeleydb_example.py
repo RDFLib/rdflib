@@ -22,8 +22,7 @@ from tempfile import mktemp
 
 
 def example_1():
-    """Creates a ConjunctiveGraph and performs some BerkeleyDB tasks with it
-    """
+    """Creates a ConjunctiveGraph and performs some BerkeleyDB tasks with it"""
     path = mktemp()
 
     # Declare we are using a BerkeleyDB Store
@@ -115,13 +114,13 @@ def example_2():
         return e.code, str(e), None
 
     data = res.read()
-    encoding = res.info().get_content_charset('utf-8')
+    encoding = res.info().get_content_charset("utf-8")
     j = json.loads(data.decode(encoding))
     for v in j["tree"]:
         # process the element in GitHub result if it's a Turtle file
         if v["path"].endswith(".ttl"):
             # for each file, call it by URL, decode it and parse it into the graph
-            r = urlopen(v['url'])
+            r = urlopen(v["url"])
             content = json.loads(r.read().decode())["content"]
             g.parse(data=base64.b64decode(content).decode(), format="turtle")
             print(len(g))

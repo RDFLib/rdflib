@@ -263,7 +263,7 @@ class W3CNTriplesParser(object):
             bnode_id = self.eat(r_nodeid).group(1)
             new_id = bnode_context.get(bnode_id, None)
             if new_id is not None:
-                # Re-map to id specfic to this doc
+                # Re-map to id specific to this doc
                 return bNode(new_id)
             else:
                 # Replace with freshly-generated document-specific BNode id

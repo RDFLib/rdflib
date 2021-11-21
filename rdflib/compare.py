@@ -306,7 +306,7 @@ class _TripleCanonicalizer(object):
     def _initial_color(self) -> List[Color]:
         """Finds an initial color for the graph.
 
-        Finds an initial color fo the graph by finding all blank nodes and
+        Finds an initial color of the graph by finding all blank nodes and
         non-blank nodes that are adjacent. Nodes that are not adjacent to blank
         nodes are not included, as they are a) already colored (by URI or literal)
         and b) do not factor into the color of any blank node.
@@ -454,15 +454,15 @@ class _TripleCanonicalizer(object):
             experimental = self._experimental_path(coloring_copy)
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
-                generator = self._create_generator(
+                generator = self._create_generator(  # type: ignore[unreachable]
                     [last_coloring, experimental], generator
                 )
             last_coloring = experimental
-            if best_score is None or best_score < color_score:
+            if best_score is None or best_score < color_score:  # type: ignore[unreachable]
                 best = [refined_coloring]
                 best_score = color_score
                 best_experimental_score = experimental_score
-            elif best_score > color_score:
+            elif best_score > color_score:  # type: ignore[unreachable]
                 # prune this branch.
                 if stats is not None:
                     stats["prunings"] += 1
@@ -480,7 +480,7 @@ class _TripleCanonicalizer(object):
                 d = [depth[0]]
                 new_color = self._traces(coloring, stats=stats, depth=d)
                 color_score = tuple([c.key() for c in refined_coloring])
-                if best_score is None or color_score > best_score:
+                if best_score is None or color_score > best_score:  # type: ignore[unreachable]
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]

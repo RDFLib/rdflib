@@ -26,10 +26,10 @@ steps:
   - pip install --default-timeout 60 -r requirements.dev.txt
   - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
   - python setup.py install
-  - black --config black.toml --check ./rdflib | true
+  - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
-  - coverage report --skip-covered
+  - mypy --show-error-context --show-error-codes rdflib
+  - pytest --cov
   - coveralls
 
 ---
@@ -48,9 +48,9 @@ steps:
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
-  - black --config black.toml --check ./rdflib | true
+  - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+  - pytest
 
 ---
 kind: pipeline
@@ -68,6 +68,6 @@ steps:
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
-  - black --config black.toml --check ./rdflib | true
+  - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+  - pytest

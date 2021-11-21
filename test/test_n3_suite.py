@@ -2,12 +2,11 @@ import os
 import sys
 import logging
 
+import pytest
+
 log = logging.getLogger(__name__)
 
-try:
-    from .testutils import check_serialize_parse
-except:
-    from test.testutils import check_serialize_parse
+from .testutils import check_serialize_parse
 
 
 def _get_test_files_formats():
@@ -32,16 +31,9 @@ def all_n3_files():
             yield fpath, fmt
 
 
-def test_n3_writing():
-    for fpath, fmt in _get_test_files_formats():
-        yield check_serialize_parse, fpath, fmt, "n3"
-
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        check_serialize_parse(sys.argv[1], "n3", "n3", True)
-        sys.exit()
-    else:
-        import nose
-
-        nose.main(defaultTest=__name__)
+@pytest.mark.parametrize(
+    "fpath,fmt",
+    _get_test_files_formats(),
+)
+def test_n3_writing(fpath, fmt):
+    check_serialize_parse(fpath, fmt, "n3")

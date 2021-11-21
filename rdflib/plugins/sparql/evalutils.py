@@ -109,7 +109,7 @@ def _fillTemplate(template, solution):
 
 
 def _val(v):
-    """ utilitity for ordering things"""
+    """utilitity for ordering things"""
     if isinstance(v, Variable):
         return (0, v)
     elif isinstance(v, BNode):

@@ -13,7 +13,7 @@ Aggregation functions
 
 
 class Accumulator(object):
-    """abstract base class for different aggregation functions """
+    """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation):
         self.var = aggregation.res
@@ -26,11 +26,11 @@ class Accumulator(object):
             self.seen = set()
 
     def dont_care(self, row):
-        """skips distinct test """
+        """skips distinct test"""
         return True
 
     def use_row(self, row):
-        """tests distinct with set """
+        """tests distinct with set"""
         return _eval(self.expr, row) not in self.seen
 
     def set_value(self, bindings):
@@ -177,7 +177,7 @@ class Maximum(Extremum):
 
 
 class Sample(Accumulator):
-    """takes the first eligable value"""
+    """takes the first eligible value"""
 
     def __init__(self, aggregation):
         super(Sample, self).__init__(aggregation)
@@ -201,7 +201,7 @@ class Sample(Accumulator):
 class GroupConcat(Accumulator):
     def __init__(self, aggregation):
         super(GroupConcat, self).__init__(aggregation)
-        # only GROUPCONCAT needs to have a list as accumlator
+        # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
         self.separator = aggregation.separator or " "
 

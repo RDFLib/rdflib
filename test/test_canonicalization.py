@@ -1,6 +1,8 @@
 from collections import Counter
 from typing import Set, Tuple
 from unittest.case import expectedFailure
+
+import pytest
 from rdflib.term import Node
 from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Literal
 from rdflib.namespace import FOAF
@@ -202,6 +204,11 @@ def negative_graph_match_test():
 
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]
+
+
+@pytest.mark.parametrize("fn, rdf1, rdf2, identical", negative_graph_match_test())
+def test_negative_graph_match(fn, rdf1, rdf2, identical):
+    fn(rdf1, rdf2, identical)
 
 
 def test_issue494_collapsing_bnodes():

@@ -138,7 +138,7 @@ class Store(object):
     def __init__(self, configuration=None, identifier=None):
         """
         identifier: URIRef of the Store. Defaults to CWD
-        configuration: string containing infomation open can use to
+        configuration: string containing information open can use to
         connect to datastore.
         """
         self.__node_pickler = None
@@ -231,7 +231,7 @@ class Store(object):
             self.add((s, p, o), c)
 
     def remove(self, triple, context=None):
-        """ Remove the set of triples matching the pattern from the store """
+        """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):
@@ -364,8 +364,11 @@ class Store(object):
 
     def namespaces(self):
         """ """
+        # This is here so that the function becomes an empty generator.
+        # See https://stackoverflow.com/q/13243766 and
+        # https://www.python.org/dev/peps/pep-0255/#why-a-new-keyword-for-yield-why-not-a-builtin-function-instead
         if False:
-            yield None
+            yield None  # type: ignore[unreachable]
 
     # Optional Transactional methods
 
@@ -387,7 +390,7 @@ class Store(object):
 
     def remove_graph(self, graph):
         """
-        Remove a graph from the store, this shoud also remove all
+        Remove a graph from the store, this should also remove all
         triples in the graph
 
         :param graphid: a Graph instance

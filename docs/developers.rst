@@ -13,7 +13,10 @@ Please be as Pythonic as possible (:pep:`8`).
 
 Code should be formatted using `black <https://github.com/psf/black>`_.
 While not yet mandatory, it will be required in the future  (6.0.0+).1
-Use Black v21.6b1, with the black.toml config file provided. 
+Use Black v21.9b0, with the black.toml config file provided.
+
+Code should also pass `flake8 <https://github.com/psf/black>`_ linting
+and `mypy <http://mypy-lang.org/>`_ type checking.
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -26,26 +29,45 @@ If you add a new cool feature, consider also adding an example in ``./examples``
 
 Running tests
 -------------
-Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
+Run tests with `pytest <https://docs.pytest.org/en/latest/>`_:
 
-.. code-block: bash
+.. code-block:: bash
 
-   $ pip install nose
-   $ python run_tests.py
-   $ python run_tests.py --attr known_issue # override attr in setup.cfg to run only tests marked with "known_issue"
-   $ python run_tests.py --attr \!known_issue # runs all tests (including "slow" and "non_core") except those with known issues
-   $ python run_tests.py --attr slow,!known_issue  # comma separate if you want to specify more than one attr
-   $ python run_tests.py --attr known_issue=None # use =None instead of \! if you keep forgetting to escape the ! in shell commands ;)
+   $ pip install -r requirements.txt -r requirements.dev.txt
+   $ pytest
 
-Specific tests can either be run by module name or file name. For example::
 
-  $ python run_tests.py --tests rdflib.graph
-  $ python run_tests.py --tests test/test_graph.py
+Specific tests can be run by file name. For example:
+
+.. code-block:: bash
+
+  $ pytest test/test_graph.py
+
+Running static checks
+---------------------
+
+Check formatting with `black <https://github.com/psf/black>`_:
+
+.. code-block:: bash
+
+    python -m black --config black.toml --check ./rdflib
+
+Check style and conventions with `flake8 <https://github.com/psf/black>`_:
+
+.. code-block:: bash
+
+    python -m flake8 rdflib
+
+Check types with `mypy <http://mypy-lang.org/>`_:
+
+.. code-block:: bash
+
+    python -m mypy --show-error-context --show-error-codes rdflib
 
 Writing documentation
 ---------------------
 
-We use sphinx for generating HTML docs, see :ref:`docs`
+We use sphinx for generating HTML docs, see :ref:`docs`.
 
 Continuous Integration
 ----------------------
@@ -110,6 +132,4 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
 
 Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
 
-Tweet, email mailing list and update the topic of #rdflib on freenode irc::
-
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 5.0.0 | docs: http://rdflib.readthedocs.org
+Tweet, email mailing list and inform members in the chat.

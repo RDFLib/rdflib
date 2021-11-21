@@ -2,7 +2,7 @@
 An RDF/XML parser for RDFLib
 """
 
-from xml.sax import make_parser, handler
+from xml.sax import make_parser, handler, xmlreader
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import quoteattr, escape
 
@@ -52,10 +52,22 @@ OLD_TERMS = [
     URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#bagID"),
 ]
 
-NODE_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDFVOC.li, ] + OLD_TERMS
+NODE_ELEMENT_EXCEPTIONS = (
+    CORE_SYNTAX_TERMS
+    + [
+        RDFVOC.li,
+    ]
+    + OLD_TERMS
+)
 NODE_ELEMENT_ATTRIBUTES = [RDFVOC.ID, RDFVOC.nodeID, RDFVOC.about]
 
-PROPERTY_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDFVOC.Description, ] + OLD_TERMS
+PROPERTY_ELEMENT_EXCEPTIONS = (
+    CORE_SYNTAX_TERMS
+    + [
+        RDFVOC.Description,
+    ]
+    + OLD_TERMS
+)
 PROPERTY_ATTRIBUTE_EXCEPTIONS = (
     CORE_SYNTAX_TERMS + [RDFVOC.Description, RDFVOC.li] + OLD_TERMS
 )
@@ -254,7 +266,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 pass
             elif att in UNQUALIFIED:
                 # if not RDFNS[att] in atts:
-                atts[RDFNS[att]] = v
+                atts[RDFNS[att]] = v  # type: ignore[misc]
             else:
                 atts[URIRef(att)] = v
         return name, atts
@@ -462,7 +474,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     o = URIRef(atts[att])
                 else:
                     if datatype is not None:
-                        language = None
+                        language = None  # type: ignore[unreachable]
                     o = Literal(atts[att], language, datatype)
 
                 if object is None:
@@ -563,12 +575,12 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
-def create_parser(target, store):
+def create_parser(target, store) -> xmlreader.XMLReader:
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
-        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
+        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")  # type: ignore[attr-defined]
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
