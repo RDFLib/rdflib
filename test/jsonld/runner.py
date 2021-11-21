@@ -34,7 +34,7 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
     source.setByteStream(f)
     source.url = input_uri
     source.links = []
-    if local_url.endswith(".jsonld") or local_url.endswith(".jldt"):
+    if local_url.endswith((".jsonld", ".jldt")):
         source.content_type = "application/ld+json"
     else:
         source.content_type = "application/json"
