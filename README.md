@@ -2,7 +2,7 @@
 
 RDFLib
 ======
-[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
+[![Build Status](https://drone.rdflib.ashs.dev/api/badges/RDFLib/rdflib/status.svg?ref=refs/heads/master)](https://drone.rdflib.ashs.dev/RDFLib/rdflib/branches)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
 [![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
 [![PyPI](https://img.shields.io/pypi/v/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
