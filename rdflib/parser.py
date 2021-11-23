@@ -35,6 +35,7 @@ __all__ = [
     "StringInputSource",
     "URLInputSource",
     "FileInputSource",
+    "PythonInputSource",
 ]
 
 
@@ -106,7 +107,8 @@ class InputSource(xmlreader.InputSource, object):
 
 class PythonInputSource(InputSource):
     """
-    TODO:
+    Constructs an RDFLib Parser InputSource from a Python data structure
+    loaded from JSON with json.load or json.loads.
     """
 
     def __init__(self, data, system_id=None):
