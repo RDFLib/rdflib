@@ -19,7 +19,6 @@ from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
 from urllib.request import Request
 from urllib.request import url2pathname
-from urllib.parse import urljoin
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
@@ -132,7 +131,6 @@ class PythonInputSource(InputSource):
 
     def close(self):
         self.data = None
-
 
 
 class StringInputSource(InputSource):

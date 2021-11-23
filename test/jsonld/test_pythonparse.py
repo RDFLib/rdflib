@@ -37,7 +37,7 @@ def test_wrap():
     # Current workaround
     data = json.loads(_data)
     data = walk(data)
-    data = json.dumps(data)  ## wasteful
+    data = json.dumps(data)  # wasteful
     g1 = Graph()
     g1.parse(data=data, format="json-ld")
 
