@@ -1,4 +1,5 @@
 from rdflib import Graph
+from rdflib.compare import isomorphic
 import json
 
 
@@ -9,7 +10,7 @@ def test_wrap():
     lists in the shacl graph.
     """
 
-    data = """
+    _data = """
     {
         "@context" : {
             "ngff" : "http://example.com/ns#"
@@ -33,18 +34,20 @@ def test_wrap():
     }
     """
 
-
     # Current workaround
-    data = json.loads(data)
+    data = json.loads(_data)
     data = walk(data)
     data = json.dumps(data)  ## wasteful
-    Graph().parse(data=data, format="json-ld")
+    g1 = Graph()
+    g1.parse(data=data, format="json-ld")
 
     # Desired behavior
-    data = json.loads(data)
+    data = json.loads(_data)
     data = walk(data)
-    Graph().parse(data=data, format="json-ld")
+    g2 = Graph()
+    g2.parse(data=data, format="json-ld")
 
+    assert isomorphic(g1, g2)
 
 def walk(data, path=None):
     """
