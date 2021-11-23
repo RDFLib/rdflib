@@ -49,6 +49,7 @@ def test_wrap():
 
     assert isomorphic(g1, g2)
 
+
 def walk(data, path=None):
     """
     Some arbitrary operation on a Python data structure.
@@ -67,10 +68,7 @@ def walk(data, path=None):
             if path[-1] == "@graph":
                 replacement.append(walk(item, path))
             else:
-                wrapper = {
-                    "@type": "ListItemWrapper",
-                    "ngff:position": idx
-                }
+                wrapper = {"@type": "ListItemWrapper", "ngff:position": idx}
                 wrapper["ngff:item"] = walk(item, path + [idx])
                 replacement.append(wrapper)
         data = replacement
