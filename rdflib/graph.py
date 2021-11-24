@@ -23,6 +23,7 @@ import pathlib
 
 from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
@@ -1130,7 +1131,7 @@ class Graph(Node):
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
-            dest = path if scheme == "file" else location
+            dest = url2pathname(path) if scheme == "file" else location
             if hasattr(shutil, "move"):
                 shutil.move(name, dest)
             else:

@@ -9,6 +9,7 @@ import random
 
 from contextlib import AbstractContextManager, contextmanager
 from typing import (
+    Callable,
     Iterable,
     List,
     Optional,
@@ -23,7 +24,7 @@ from typing import (
     cast,
     NamedTuple,
 )
-from urllib.parse import ParseResult, urlparse, parse_qs
+from urllib.parse import ParseResult, unquote, urlparse, parse_qs
 from traceback import print_exc
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
@@ -36,6 +37,8 @@ from rdflib.term import Node
 from unittest.mock import MagicMock, Mock
 from urllib.error import HTTPError
 from urllib.request import urlopen
+from pathlib import PurePath, PureWindowsPath
+from nturl2path import url2pathname as nt_url2pathname
 
 if TYPE_CHECKING:
     import typing_extensions as te
@@ -469,3 +472,33 @@ def eq_(lhs, rhs, msg=None):
         assert lhs == rhs, msg
     else:
         assert lhs == rhs
+
+
+PurePathT = TypeVar("PurePathT", bound=PurePath)
+
+
+def file_uri_to_path(
+    file_uri: str,
+    path_class: Type[PurePathT] = PurePath,  # type: ignore[assignment]
+    url2pathname: Optional[Callable[[str], str]] = None,
+) -> PurePathT:
+    """
+    This function returns a pathlib.PurePath object for the supplied file URI.
+
+    :param str file_uri: The file URI ...
+    :param class path_class: The type of path in the file_uri. By default it uses
+        the system specific path pathlib.PurePath, to force a specific type of path
+        pass pathlib.PureWindowsPath or pathlib.PurePosixPath
+    :returns: the pathlib.PurePath object
+    :rtype: pathlib.PurePath
+    """
+    is_windows_path = isinstance(path_class(), PureWindowsPath)
+    file_uri_parsed = urlparse(file_uri)
+    if url2pathname is None:
+        if is_windows_path:
+            url2pathname = nt_url2pathname
+        else:
+            url2pathname = unquote
+    pathname = url2pathname(file_uri_parsed.path)
+    result = path_class(pathname)
+    return result

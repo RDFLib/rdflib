@@ -12,8 +12,8 @@ else:
     except ImportError:
         import simplejson as json
 
-from os import sep
-from os.path import normpath
+from posixpath import sep
+from posixpath import normpath
 
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
