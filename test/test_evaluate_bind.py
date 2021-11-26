@@ -2,10 +2,12 @@
 Verify evaluation of BIND expressions of different types. See
 <http://www.w3.org/TR/sparql11-query/#rExpression>.
 """
+import pytest
+
 from rdflib import Graph, URIRef, Literal, Variable
 
 
-def test_bind():
+def get_bind_tests():
     base = "http://example.org/"
     g = Graph()
     g.add((URIRef(base + "thing"), URIRef(base + "ns#comment"), Literal("anything")))
@@ -34,3 +36,7 @@ def test_bind():
         "type",
         URIRef("http://example.org/ns#Thing"),
     )
+
+@pytest.mark.parametrize("checker, expr, var, obj", get_bind_tests())
+def test_bind(checker, expr, var, obj) -> None:
+    checker(expr, var, obj)

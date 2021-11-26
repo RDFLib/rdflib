@@ -20,10 +20,12 @@ def testPythonRoundtrip():
     assert l1.eq(l4)
 
     rdflib.NORMALIZE_LITERALS = False
-    l4 = Literal("<msg >hello</msg>", datatype=RDF.XMLLiteral)
-    assert l1 != l4
-    assert l1.eq(l4)
-    rdflib.NORMALIZE_LITERALS = True
+    try:
+        l4 = Literal("<msg >hello</msg>", datatype=RDF.XMLLiteral)
+        assert l1 != l4
+        assert l1.eq(l4)
+    finally:
+        rdflib.NORMALIZE_LITERALS = True
 
 
 def testRDFXMLParse():

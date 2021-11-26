@@ -113,10 +113,3 @@ def test_turtle_namespace():
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
     assert "EX:name_with_(parenthesis)" in output
-
-
-if __name__ == "__main__":
-    import nose
-    import sys
-
-    nose.main(defaultTest=sys.argv[0])

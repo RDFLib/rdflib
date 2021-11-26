@@ -1877,7 +1877,7 @@ def hexify(ustr):
     corresponding to the given UTF8 string
 
     >>> hexify("http://example/a b")
-    %(b)s'http://example/a%%20b'
+    b'http://example/a%20b'
 
     """
     # s1=ustr.encode('utf-8')

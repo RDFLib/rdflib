@@ -145,8 +145,6 @@ def test_service_with_implicit_select_and_allcaps():
 
 
 if __name__ == "__main__":
-    # import nose
-    # nose.main(defaultTest=__name__)
     test_service()
     test_service_with_bind()
     test_service_with_values()
