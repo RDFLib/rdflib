@@ -106,8 +106,18 @@ class InputSource(xmlreader.InputSource, object):
 
 class PythonInputSource(InputSource):
     """
-    Constructs an RDFLib Parser InputSource from a Python data structure
-    loaded from JSON with json.load or json.loads.
+    Constructs an RDFLib Parser InputSource from a Python data structure,
+    for example, loaded from JSON with json.load or json.loads:
+
+    >>> import json
+    >>> as_string = \"\"\"{
+    ...   "@context" : {"ex" : "http://example.com/ns#"},
+    ...   "@graph": [{"@type": "ex:item", "@id": "#example"}]
+    ... }\"\"\"
+    >>> as_python = json.loads(as_string)
+    >>> source = create_input_source(data=as_python)
+    >>> isinstance(source, PythonInputSource)
+    True
     """
 
     def __init__(self, data, system_id=None):
