@@ -205,7 +205,7 @@ def get_test_suite_cases():
             ):
                 # Skip the JSON v1.0 tests
                 continue
-        if inputpath.endswith(".jsonld"):  # toRdf
+        if inputpath.endswith((".jldt", ".json", ".jsonld")):  # toRdf
             if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
                 func = runner.do_test_json
             else:  # toRdf
@@ -222,28 +222,8 @@ def get_test_suite_cases():
 def global_state():
     old_cwd = getcwd()
     chdir(test_dir)
-    try:
-        for cat, num, inputpath, expectedpath, context, options in read_manifest(
-            skiptests
-        ):
-            if options:
-                if (
-                    SKIP_1_0_TESTS
-                    and "specVersion" in options
-                    and str(options["specVersion"]).lower() == "json-ld-1.0"
-                ):
-                    # Skip the JSON v1.0 tests
-                    continue
-            if inputpath.endswith((".jldt", ".json", ".jsonld")):  # toRdf
-                if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
-                    func = runner.do_test_json
-                else:  # toRdf
-                    func = runner.do_test_parser
-            else:  # fromRdf
-                func = runner.do_test_serializer
-            yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
-    finally:
-        chdir(old_cwd)
+    yield
+    chdir(old_cwd)
 
 
 @pytest.mark.parametrize(

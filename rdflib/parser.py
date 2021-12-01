@@ -12,6 +12,7 @@ want to do so through the Graph class parse method.
 
 from typing import TYPE_CHECKING
 import codecs
+import os
 import pathlib
 import sys
 
