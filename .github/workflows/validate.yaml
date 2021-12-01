@@ -1,0 +1,77 @@
+name: Validate
+
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  FORCE_COLOR: 1
+  XDG_CACHE_HOME: ${{ github.workspace }}/cache
+
+jobs:
+  validate:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Get pip cache dir
+        id: pip-cache
+        shell: bash
+        run: |
+          python -m ensurepip --upgrade
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
+            hashFiles('**/setup.py', '**/requirements*.txt') }}
+          restore-keys: |
+            ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-
+      - name: Cache xdg
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.XDG_CACHE_HOME }}
+          key: ${{ matrix.os }}-xdg-v1-${{ hashFiles('**/with-fuseki.sh') }}
+          restore-keys: |
+            ${{ matrix.os }}-xdg-v1-
+      - name: Install dependencies
+        shell: bash
+        run: |
+          # bash .travis.fuseki_install_optional.sh
+          pip install --default-timeout 60 -r requirements.txt
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]
+          then
+              sudo apt-get install -y libdb-dev
+          elif [ "${{ matrix.os }}" == "macos-latest" ]
+          then
+              brew install berkeley-db@4
+              export BERKELEYDB_DIR=$(brew --prefix berkeley-db@4)
+          fi
+          pip install --default-timeout 60 -r requirements.dev.txt
+          pip install networkx
+          python setup.py install
+      - name: Validate
+        shell: bash
+        run: |
+          black --config black.toml --check ./rdflib || true
+          flake8 --exit-zero rdflib
+          if [ "${{ matrix.os }}" == "windows-latest" ]
+          then
+            pytest -ra --cov
+          else
+            ./with-fuseki.sh pytest -ra --cov
+          fi
