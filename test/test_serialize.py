@@ -1,6 +1,6 @@
 import unittest
 from rdflib import Graph, URIRef
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+from tempfile import TemporaryDirectory
 from pathlib import Path, PurePath
 
 
@@ -30,8 +30,8 @@ class TestSerialize(unittest.TestCase):
         self.assertEqual(self.triple, next(iter(graph_check)))
 
     def test_serialize_to_path(self):
-        with NamedTemporaryFile() as tf:
-            tfpath = Path(tf.name)
+        with TemporaryDirectory() as td:
+            tfpath = Path(td) / "out.nt"
             self.graph.serialize(destination=tfpath, format="nt")
             graph_check = Graph()
             graph_check.parse(source=tfpath, format="nt")

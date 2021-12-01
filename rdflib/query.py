@@ -4,13 +4,17 @@ import shutil
 import tempfile
 import warnings
 import types
-from typing import Optional, Union, cast
+from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 
 from io import BytesIO, BufferedIOBase
 
 from urllib.parse import urlparse
 
 __all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.term import Variable
 
 
 class Processor(object):
@@ -161,17 +165,17 @@ class Result(object):
 
     """
 
-    def __init__(self, type_):
+    def __init__(self, type_: str):
 
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
-        self.vars = None
+        self.vars: Optional[List["Variable"]] = None
         self._bindings = None
         self._genbindings = None
-        self.askAnswer = None
-        self.graph = None
+        self.askAnswer: bool = None  # type: ignore[assignment]
+        self.graph: "Graph" = None  # type: ignore[assignment]
 
     def _get_bindings(self):
         if self._genbindings:
@@ -192,7 +196,12 @@ class Result(object):
     )
 
     @staticmethod
-    def parse(source=None, format=None, content_type=None, **kwargs):
+    def parse(
+        source=None,
+        format: Optional[str] = None,
+        content_type: Optional[str] = None,
+        **kwargs,
+    ):
         from rdflib import plugin
 
         if format:
@@ -208,7 +217,7 @@ class Result(object):
 
     def serialize(
         self,
-        destination: Optional[Union[str, BufferedIOBase]] = None,
+        destination: Optional[Union[str, IO]] = None,
         encoding: str = "utf-8",
         format: str = "xml",
         **args,
@@ -230,7 +239,7 @@ class Result(object):
         :return: bytes
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
-            return self.graph.serialize(
+            return self.graph.serialize(  # type: ignore[return-value]
                 destination, encoding=encoding, format=format, **args
             )
 
@@ -241,10 +250,10 @@ class Result(object):
         if destination is None:
             streamb: BytesIO = BytesIO()
             stream2 = EncodeOnlyUnicode(streamb)
-            serializer.serialize(stream2, encoding=encoding, **args)
+            serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore
             return streamb.getvalue()
         if hasattr(destination, "write"):
-            stream = cast(BufferedIOBase, destination)
+            stream = cast(IO[bytes], destination)
             serializer.serialize(stream, encoding=encoding, **args)
         else:
             location = cast(str, destination)
@@ -339,9 +348,9 @@ class ResultParser(object):
 
 
 class ResultSerializer(object):
-    def __init__(self, result):
+    def __init__(self, result: Result):
         self.result = result
 
-    def serialize(self, stream, encoding="utf-8", **kwargs):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
         """return a string properly serialized"""
         pass  # abstract

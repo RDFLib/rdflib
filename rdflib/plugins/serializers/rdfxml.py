@@ -1,9 +1,11 @@
+from typing import IO, Dict, Optional, Set, cast
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 
-from rdflib.term import URIRef, Literal, BNode
+from rdflib.graph import Graph
+from rdflib.term import Identifier, URIRef, Literal, BNode
 from rdflib.util import first, more_than
 from rdflib.collection import Collection
 from rdflib.serializer import Serializer
@@ -17,7 +19,7 @@ __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
 
 
 class XMLSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
     def __bindings(self):
@@ -39,14 +41,20 @@ class XMLSerializer(Serializer):
         for prefix, namespace in bindings.items():
             yield prefix, namespace
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ):
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
-        self.__serialized = {}
+        self.__serialized: Dict[Identifier, int] = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
 
@@ -154,12 +162,18 @@ def fix(val):
 
 
 class PrettyXMLSerializer(Serializer):
-    def __init__(self, store, max_depth=3):
+    def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout = set()
+        self.forceRDFAbout: Set[URIRef] = set()
 
-    def serialize(self, stream, base=None, encoding=None, **args):
-        self.__serialized = {}
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ):
+        self.__serialized: Dict[Identifier, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -190,8 +204,9 @@ class PrettyXMLSerializer(Serializer):
 
         writer.namespaces(namespaces.items())
 
+        subject: Identifier
         # Write out subjects that can not be inline
-        for subject in store.subjects():
+        for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -202,7 +217,7 @@ class PrettyXMLSerializer(Serializer):
         # write out BNodes last (to ensure they can be inlined where possible)
         bnodes = set()
 
-        for subject in store.subjects():
+        for subject in store.subjects():  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue
@@ -217,9 +232,9 @@ class PrettyXMLSerializer(Serializer):
         stream.write("\n".encode("latin-1"))
 
         # Set to None so that the memory can get garbage collected.
-        self.__serialized = None
+        self.__serialized = None  # type: ignore[assignment]
 
-    def subject(self, subject, depth=1):
+    def subject(self, subject: Identifier, depth: int = 1):
         store = self.store
         writer = self.writer
 
@@ -227,7 +242,7 @@ class PrettyXMLSerializer(Serializer):
             writer.push(RDFVOC.Description)
             writer.attribute(RDFVOC.about, self.relativize(subject))
             writer.pop(RDFVOC.Description)
-            self.forceRDFAbout.remove(subject)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
         elif subject not in self.__serialized:
             self.__serialized[subject] = 1
@@ -264,10 +279,11 @@ class PrettyXMLSerializer(Serializer):
             writer.pop(element)
 
         elif subject in self.forceRDFAbout:
+            # TODO FIXME?: this looks like a duplicate of first condition
             writer.push(RDFVOC.Description)
             writer.attribute(RDFVOC.about, self.relativize(subject))
             writer.pop(RDFVOC.Description)
-            self.forceRDFAbout.remove(subject)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
     def predicate(self, predicate, object, depth=1):
         writer = self.writer

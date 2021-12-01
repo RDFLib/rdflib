@@ -1,6 +1,11 @@
 from io import BytesIO
 import pickle
 from rdflib.events import Dispatcher, Event
+from typing import Tuple, TYPE_CHECKING, Iterable, Optional
+
+if TYPE_CHECKING:
+    from rdflib.term import Node
+    from rdflib.graph import Graph
 
 """
 ============
@@ -172,7 +177,7 @@ class Store(object):
     def create(self, configuration):
         self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
-    def open(self, configuration, create=False):
+    def open(self, configuration, create: bool = False):
         """
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
@@ -204,7 +209,12 @@ class Store(object):
         pass
 
     # RDF APIs
-    def add(self, triple, context, quoted=False):
+    def add(
+        self,
+        triple: Tuple["Node", "Node", "Node"],
+        context: Optional["Graph"],
+        quoted: bool = False,
+    ):
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -215,7 +225,7 @@ class Store(object):
         """
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
-    def addN(self, quads):
+    def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
         """
         Adds each item in the list of statements to a specific context. The
         quoted argument is interpreted by formula-aware stores to indicate this
@@ -283,7 +293,11 @@ class Store(object):
                 for (s1, p1, o1), cg in self.triples((subject, None, object_), context):
                     yield (s1, p1, o1), cg
 
-    def triples(self, triple_pattern, context=None):
+    def triples(
+        self,
+        triple_pattern: Tuple[Optional["Node"], Optional["Node"], Optional["Node"]],
+        context=None,
+    ):
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,

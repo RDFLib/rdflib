@@ -17,11 +17,10 @@ import pathlib
 import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
-from typing import Optional
+from typing import Optional, Union
 
 from urllib.request import Request
 from urllib.request import url2pathname
-from urllib.parse import urljoin
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
@@ -40,6 +39,7 @@ __all__ = [
     "StringInputSource",
     "URLInputSource",
     "FileInputSource",
+    "PythonInputSource",
 ]
 
 
@@ -107,6 +107,45 @@ class InputSource(xmlreader.InputSource, object):
                 f.close()
             except Exception:
                 pass
+
+
+class PythonInputSource(InputSource):
+    """
+    Constructs an RDFLib Parser InputSource from a Python data structure,
+    for example, loaded from JSON with json.load or json.loads:
+
+    >>> import json
+    >>> as_string = \"\"\"{
+    ...   "@context" : {"ex" : "http://example.com/ns#"},
+    ...   "@graph": [{"@type": "ex:item", "@id": "#example"}]
+    ... }\"\"\"
+    >>> as_python = json.loads(as_string)
+    >>> source = create_input_source(data=as_python)
+    >>> isinstance(source, PythonInputSource)
+    True
+    """
+
+    def __init__(self, data, system_id=None):
+        self.content_type = None
+        self.auto_close = False  # see Graph.parse(), true if opened by us
+        self.public_id = None
+        self.system_id = system_id
+        self.data = data
+
+    def getPublicId(self):
+        return self.public_id
+
+    def setPublicId(self, public_id):
+        self.public_id = public_id
+
+    def getSystemId(self):
+        return self.system_id
+
+    def setSystemId(self, system_id):
+        self.system_id = system_id
+
+    def close(self):
+        self.data = None
 
 
 class StringInputSource(InputSource):
@@ -261,7 +300,12 @@ class FileInputSource(InputSource):
 
 
 def create_input_source(
-    source=None, publicID=None, location=None, file=None, data=None, format=None
+    source=None,
+    publicID=None,
+    location=None,
+    file=None,
+    data: Optional[Union[str, bytes, bytearray]] = None,
+    format=None,
 ):
     """
     Return an appropriate InputSource instance for the given
@@ -336,10 +380,15 @@ def create_input_source(
         input_source = FileInputSource(file)
 
     if data is not None:
-        if not isinstance(data, (str, bytes, bytearray)):
-            raise RuntimeError("parse data can only str, or bytes.")
-        input_source = StringInputSource(data)
-        auto_close = True
+        if isinstance(data, dict):
+            input_source = PythonInputSource(data)
+            auto_close = True
+        elif isinstance(data, (str, bytes, bytearray)):
+            input_source = StringInputSource(data)
+            auto_close = True
+        else:
+            raise RuntimeError(
+                f"parse data can only str, or bytes. not: {type(data)}")
 
     if input_source is None:
         raise Exception("could not create InputSource")

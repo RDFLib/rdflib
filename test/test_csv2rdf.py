@@ -1,7 +1,7 @@
 import subprocess
 import unittest
 import sys
-from os import remove
+from os import remove, close
 from tempfile import mkstemp
 from pathlib import Path
 
@@ -29,7 +29,7 @@ class CSV2RDFTest(unittest.TestCase):
         self.assertIn("<http://example.org/props/zip>", completed.stdout)
 
     def test_csv2rdf_cli_fileout(self):
-        _, fname = mkstemp()
+        fh, fname = mkstemp()
         completed = subprocess.run(
             [
                 sys.executable,
@@ -43,4 +43,5 @@ class CSV2RDFTest(unittest.TestCase):
         self.assertEqual(completed.returncode, 0)
         with open(fname) as f:
             self.assertGreater(len(f.readlines()), 0)
+        close(fh)
         remove(fname)

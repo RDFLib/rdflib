@@ -12,17 +12,20 @@ else:
     except ImportError:
         import simplejson as json
 
-from os import sep
-from os.path import normpath
+from posixpath import sep
+from posixpath import normpath
 
 from urllib.parse import urljoin, urlsplit, urlunsplit
-
-from rdflib.parser import create_input_source, BytesIOWrapper
+from rdflib.parser import create_input_source, BytesIOWrapper, PythonInputSource
 
 from io import TextIOWrapper
 
 
 def source_to_json(source):
+    if isinstance(source, PythonInputSource):
+        return source.data
+
+    # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
     stream = source.getByteStream()
     try:

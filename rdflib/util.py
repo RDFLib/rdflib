@@ -366,6 +366,7 @@ SUFFIX_FORMAT_MAP = {
     "trig": "trig",
     "json": "json-ld",
     "jsonld": "json-ld",
+    "json-ld": "json-ld",
 }
 
 
