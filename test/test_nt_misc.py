@@ -5,6 +5,7 @@ import re
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
 from urllib.request import urlopen
+from pathlib import Path
 
 from test import TEST_DIR
 
@@ -125,7 +126,7 @@ class NTTestCase(unittest.TestCase):
         self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
-        uri = "file://" + os.path.abspath(nt_file("test.ntriples"))
+        uri = Path(nt_file("test.ntriples")).absolute().as_uri()
 
         parser = ntriples.W3CNTriplesParser()
         u = urlopen(uri)
