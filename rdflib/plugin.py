@@ -348,6 +348,12 @@ register(
     "rdflib.plugins.serializers.trig",
     "TrigSerializer",
 )
+register(
+    "hext",
+    Serializer,
+    "rdflib.plugins.serializers.hext",
+    "HextuplesSerializer",
+)
 
 # Register Triple Parsers
 register(
