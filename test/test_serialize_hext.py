@@ -24,7 +24,19 @@ def test_hext_graph():
 
     g.parse(data=turtle_data, format="turtle")
     out = g.serialize(format="hext")
-    print(out)
+    testing_lines = [
+        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p3", Object 3, "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p5", 42, "http://www.w3.org/2001/XMLSchema#integer", ""'],
+        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", thingy, "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p4", 2021-12-03, "http://www.w3.org/2001/XMLSchema#date", ""']
+    ]
+    for line in out.splitlines():
+        for test in testing_lines:
+            if test[1] in line:
+                test[0] = True
+
+    assert all([x[0] for x in testing_lines])
 
 
 def test_hext_dataset():
