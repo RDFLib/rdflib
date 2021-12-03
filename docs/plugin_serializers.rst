@@ -20,6 +20,7 @@ json-ld    :class:`~rdflib.plugins.serializers.jsonld.JsonLDSerializer`
 n3         :class:`~rdflib.plugins.serializers.n3.N3Serializer`
 nquads     :class:`~rdflib.plugins.serializers.nquads.NQuadsSerializer`
 nt         :class:`~rdflib.plugins.serializers.nt.NTSerializer`
+hext       :class:`~rdflib.plugins.serializers.hext.HextuplesSerializer`
 pretty-xml :class:`~rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer`
 trig       :class:`~rdflib.plugins.serializers.trig.TrigSerializer`
 trix       :class:`~rdflib.plugins.serializers.trix.TriXSerializer`
@@ -27,3 +28,12 @@ turtle     :class:`~rdflib.plugins.serializers.turtle.TurtleSerializer`
 longturtle :class:`~rdflib.plugins.serializers.turtle.LongTurtleSerializer`
 xml        :class:`~rdflib.plugins.serializers.rdfxml.XMLSerializer`
 ========== ===============================================================
+
+
+JSON-LD
+-------
+JSON-LD - 'json-ld' - has been incorprated in rdflib since v6.0.0.
+
+HexTuples
+---------
+The HexTuples Serializer - 'hext' - uses the HexTuples format defined at https://github.com/ontola/hextuples
