@@ -1,4 +1,5 @@
 from rdflib import Dataset, Graph
+import json
 
 
 def test_hext_graph():
@@ -92,3 +93,43 @@ def test_hext_dataset():
                 test[0] = True
 
     assert all([x[0] for x in testing_lines])
+
+
+def test_hext_json_representation():
+    d = Dataset()
+    trig_data = """
+            PREFIX ex: <http://example.com/>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+            ex:g1 {
+                ex:s1
+                    ex:p1 ex:o1 , ex:o2 ;
+                    ex:p2 [
+                        a owl:Thing ;
+                        rdf:value "thingy" ;
+                    ] ;
+                    ex:p3 "Object 3" , "Object 4 - English"@en ;
+                    ex:p4 "2021-12-03"^^xsd:date ;
+                    ex:p5 42 ;
+                    ex:p6 "42" ;
+                .
+            }
+
+            ex:g2 {
+                ex:s1
+                    ex:p1 ex:o1 , ex:o2 ;
+                .
+                ex:s11 ex:p11 ex:o11 , ex:o12 .
+            }
+
+            # default graph triples
+            ex:s1 ex:p1 ex:o1 , ex:o2 .
+            ex:s21 ex:p21 ex:o21 , ex:o22 .
+           """
+    d.parse(data=trig_data, format="trig")
+    out = d.serialize(format="hext")
+    for line in out.splitlines():
+        j = json.loads(line)
+        assert type(j, list)
