@@ -15,7 +15,7 @@ except:
     from test.test_n3_suite import all_n3_files
 
 """
-Test round-tripping by all serializers/parser that are registerd.
+Test round-tripping by all serializers/parser that are registered.
 This means, you may test more than just core rdflib!
 
 run with no arguments to test all formats + all files

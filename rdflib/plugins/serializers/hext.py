@@ -6,6 +6,7 @@ from typing import IO, TYPE_CHECKING, Optional, Union
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import Literal, URIRef, Node
 from rdflib.serializer import Serializer
+import warnings
 
 __all__ = ["HextuplesSerializer"]
 
@@ -29,7 +30,6 @@ class HextuplesSerializer(Serializer):
             self.default_context = None
 
         Serializer.__init__(self, store)
-        self.encoding = "utf-8"
 
     def serialize(
         self,
@@ -38,13 +38,17 @@ class HextuplesSerializer(Serializer):
         encoding: Optional[str] = None,
         **args
     ):
-        self.encoding = encoding
+        if base is not None:
+            warnings.warn("HextuplesSerializer does not support base.")
+        if encoding != "utf-8":
+            warnings.warn("NTSerializer always uses UTF-8 encoding.")
+
         for context in self.contexts:
             for triple in context:
                 stream.write(
-                    _hex_line(triple, context.identifier).encode(self.encoding)
+                    _hex_line(triple, context.identifier).encode()
                 )
-        stream.write("\n".encode(self.encoding))
+        stream.write("\n".encode())
 
 
 def _hex_line(triple, context):
