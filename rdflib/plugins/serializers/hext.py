@@ -48,7 +48,6 @@ class HextuplesSerializer(Serializer):
                 stream.write(
                     _hex_line(triple, context.identifier).encode()
                 )
-        stream.write("\n".encode())
 
 
 def _hex_line(triple, context):

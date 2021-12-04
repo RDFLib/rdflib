@@ -132,4 +132,4 @@ def test_hext_json_representation():
     out = d.serialize(format="hext")
     for line in out.splitlines():
         j = json.loads(line)
-        assert type(j, list)
+        assert isinstance(j, list)
