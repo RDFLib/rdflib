@@ -55,7 +55,7 @@ def _hex_line(triple, context):
     return "[%s, %s, %s, %s, %s, %s]\n" % (
         _iri_or_bn(triple[0]),
         _iri_or_bn(triple[1]),
-        triple[2] if type(triple[2]) == Literal else _iri_or_bn(triple[2]),
+        _literal(triple[2]) if type(triple[2]) == Literal else _iri_or_bn(triple[2]),
         (f'"{triple[2].datatype}"' if triple[2].datatype is not None else '""') if type(triple[2]) == Literal else '""',
         (f'"{triple[2].language}"' if triple[2].language is not None else '""') if type(triple[2]) == Literal else '""',
         _iri_or_bn(context)
@@ -67,3 +67,35 @@ def _iri_or_bn(i_):
         return f"\"{i_}\""
     else:
         return f"\"{i_.n3()}\""
+
+
+def _literal(i_):
+    raw_datatype = [
+        "http://www.w3.org/2001/XMLSchema#integer",
+        "http://www.w3.org/2001/XMLSchema#long",
+        "http://www.w3.org/2001/XMLSchema#int",
+        "http://www.w3.org/2001/XMLSchema#short",
+        "http://www.w3.org/2001/XMLSchema#positiveInteger",
+        "http://www.w3.org/2001/XMLSchema#negativeInteger",
+        "http://www.w3.org/2001/XMLSchema#nonPositiveInteger",
+        "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+        "http://www.w3.org/2001/XMLSchema#unsignedLong",
+        "http://www.w3.org/2001/XMLSchema#unsignedInt",
+        "http://www.w3.org/2001/XMLSchema#unsignedShort",
+
+        "http://www.w3.org/2001/XMLSchema#float",
+        "http://www.w3.org/2001/XMLSchema#double",
+        "http://www.w3.org/2001/XMLSchema#decimal",
+
+        "http://www.w3.org/2001/XMLSchema#boolean"
+    ]
+    if hasattr(i_, "datatype"):
+        if str(i_.datatype) in raw_datatype:
+            return f"{i_}"
+        else:
+            return f"\"{i_}\""
+    else:
+        if str(i_) in ["true", "false"]:
+            return f"{i_}"
+        else:
+            return f"\"{i_}\""

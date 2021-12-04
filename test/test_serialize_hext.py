@@ -19,6 +19,8 @@ def test_hext_graph():
                 ex:p4 "2021-12-03"^^xsd:date ;
                 ex:p5 42 ;
                 ex:p6 "42" ;
+                ex:p7 true ;
+                ex:p8 "false"^^xsd:boolean ;
             .
             """
 
@@ -26,10 +28,13 @@ def test_hext_graph():
     out = g.serialize(format="hext")
     testing_lines = [
         [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "", ""'],
-        [False, '["http://example.com/s1", "http://example.com/p3", Object 3, "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "", ""'],
         [False, '["http://example.com/s1", "http://example.com/p5", 42, "http://www.w3.org/2001/XMLSchema#integer", ""'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", thingy, "", ""'],
-        [False, '["http://example.com/s1", "http://example.com/p4", 2021-12-03, "http://www.w3.org/2001/XMLSchema#date", ""']
+        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p6", "42", "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p7", true, "http://www.w3.org/2001/XMLSchema#boolean", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p8", false, "http://www.w3.org/2001/XMLSchema#boolean", ""'],
     ]
     for line in out.splitlines():
         for test in testing_lines:
@@ -71,16 +76,15 @@ def test_hext_dataset():
             # default graph triples
             ex:s1 ex:p1 ex:o1 , ex:o2 .
             ex:s21 ex:p21 ex:o21 , ex:o22 .
-
            """
     d.parse(data=trig_data, format="trig")
     out = d.serialize(format="hext")
     testing_lines = [
         [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", Object 3, "", "", "http://example.com/g1"]'],
+        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "", "", "http://example.com/g1"]'],
         [False, '["http://example.com/s1", "http://example.com/p5", 42, "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", thingy, "", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p4", 2021-12-03, "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]']
+        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "", "", "http://example.com/g1"]'],
+        [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]']
     ]
     for line in out.splitlines():
         for test in testing_lines:
