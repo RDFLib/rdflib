@@ -472,6 +472,12 @@ register(
     "rdflib.plugins.parsers.trig",
     "TrigParser",
 )
+register(
+    "hext",
+    Parser,
+    "rdflib.plugins.parsers.hext",
+    "HextuplesParser",
+)
 
 # Register SPARQL Processors
 register(
