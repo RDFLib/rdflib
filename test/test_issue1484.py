@@ -31,5 +31,35 @@ class TestIssue1484_json(unittest.TestCase):
         assert (n.s, n.p, n.o) in g
 
 
+class TestIssue1484_str(unittest.TestCase):
+    def test_issue_1484_str(self):
+        """
+        Test JSON-LD parsing of result from string (used by round tripping tests)
+
+        (Previously passes, but broken by earlier fix for above.)
+        """
+        n = Namespace("http://example.org/")
+        jsonstr = """
+            {
+              "@id": "http://example.org/s",
+              "@type": [
+                "http://example.org/t"
+              ],
+              "http://example.org/p": {
+                "@id": "http://example.org/o"
+              }
+            }
+        """
+
+        b = n.base
+        g = Graph()
+        g.bind("rdf", RDF)
+        g.bind("rdfs", RDFS)
+        g.parse(data=jsonstr, publicID=b, format="json-ld")
+
+        assert((n.s, RDF.type, n.t) in g)
+        assert((n.s, n.p, n.o) in g)
+
+
 if __name__ == "__main__":
     unittest.main()
