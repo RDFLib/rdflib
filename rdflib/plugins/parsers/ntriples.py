@@ -54,7 +54,6 @@ r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
-
         if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
@@ -187,7 +186,7 @@ class W3CNTriplesParser(object):
         while True:
             m = r_line.match(self.buffer)
             if m:  # the more likely prospect
-                self.buffer = self.buffer[m.end() :]
+                self.buffer = self.buffer[m.end():]
                 return m.group(1)
             else:
                 buffer = self.file.read(bufsiz)
