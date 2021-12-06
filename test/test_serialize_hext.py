@@ -139,6 +139,16 @@ def test_hext_json_representation():
         assert isinstance(j, list)
 
 
+def test_roundtrip():
+    d = Dataset().parse(Path(__file__).parent / "test_parser_hext_01.ndjson", format="hext")
+    with open(str(Path(__file__).parent / "test_parser_hext_01.ndjson")) as i:
+        ordered_input = "".join(sorted(i.readlines())).strip()
+
+    ordered_output = "\n".join(sorted(d.serialize(format="hext").split("\n"))).strip()
+
+    assert ordered_output == ordered_input
+
+
 # def _make_large_graph():
 #     import random
 #
@@ -162,6 +172,6 @@ def test_hext_json_representation():
 #     g.serialize(destination="large.ndjson", format="hext")
 #
 #
-# if __name__ == "__main__":
-#     import cProfile
-#     cProfile.run("test_hext_scaling()", sort=1)
+if __name__ == "__main__":
+    test_roundtrip()
+

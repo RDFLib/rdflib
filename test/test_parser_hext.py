@@ -10,7 +10,7 @@ def test_small_string():
         ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/2001/XMLSchema#string", "en", ""]
         ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
         ["http://example.com/s01", "http://example.com/creationDate", "2021-12-01", "http://www.w3.org/2001/XMLSchema#date", "", ""]
-        ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
+        ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13:00", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
         ["http://example.com/s01", "http://example.com/age", 42, "http://www.w3.org/2001/XMLSchema#integer", "", ""]
         ["http://example.com/s01", "http://example.com/trueFalse", false, "http://www.w3.org/2001/XMLSchema#boolean", "", ""]
         ["http://example.com/s01", "http://example.com/op1", "http://example.com/o1", "", "", ""]
@@ -23,7 +23,6 @@ def test_small_string():
 
 def test_small_file():
     d = Dataset().parse(Path(__file__).parent / "test_parser_hext_01.ndjson", format="hext")
-    print(d.serialize())
     assert len(d) == 10
 
 

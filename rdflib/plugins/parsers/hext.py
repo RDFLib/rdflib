@@ -68,6 +68,7 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
+        # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
             with open(source.file.name) as fp:
                 for l in fp:

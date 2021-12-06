@@ -60,7 +60,7 @@ def _hex_line(triple, context):
         _literal(triple[2]) if type(triple[2]) == Literal else _iri_or_bn(triple[2]),
         (f'"{triple[2].datatype}"' if triple[2].datatype is not None else '"http://www.w3.org/2001/XMLSchema#string"') if type(triple[2]) == Literal else '""',
         (f'"{triple[2].language}"' if triple[2].language is not None else '""') if type(triple[2]) == Literal else '""',
-        _iri_or_bn(context)
+        _iri_or_bn(context) if not str(context).startswith(("_", "file://")) else '""'
     )
 
 
