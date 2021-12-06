@@ -1,4 +1,7 @@
-from rdflib import Dataset, Graph
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.absolute()))
+from rdflib import Dataset, Graph, Namespace, Literal
 import json
 
 
@@ -29,11 +32,11 @@ def test_hext_graph():
     out = g.serialize(format="hext")
     testing_lines = [
         [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "", ""'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", ""'],
         [False, '["http://example.com/s1", "http://example.com/p5", 42, "http://www.w3.org/2001/XMLSchema#integer", ""'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "", ""'],
+        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", ""'],
         [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", ""'],
-        [False, '["http://example.com/s1", "http://example.com/p6", "42", "", ""'],
+        [False, '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", ""'],
         [False, '["http://example.com/s1", "http://example.com/p7", true, "http://www.w3.org/2001/XMLSchema#boolean", ""'],
         [False, '["http://example.com/s1", "http://example.com/p8", false, "http://www.w3.org/2001/XMLSchema#boolean", ""'],
     ]
@@ -82,9 +85,10 @@ def test_hext_dataset():
     out = d.serialize(format="hext")
     testing_lines = [
         [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "", "", "http://example.com/g1"]'],
+        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
+        [False, '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/2001/XMLSchema#string", "en", "http://example.com/g1"]'],
         [False, '["http://example.com/s1", "http://example.com/p5", 42, "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "", "", "http://example.com/g1"]'],
+        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
         [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]']
     ]
     for line in out.splitlines():
@@ -133,3 +137,31 @@ def test_hext_json_representation():
     for line in out.splitlines():
         j = json.loads(line)
         assert isinstance(j, list)
+
+
+# def _make_large_graph():
+#     import random
+#
+#     EX = Namespace("http://example.com/")
+#     g = Graph()
+#
+#     for i in range(1000):
+#         s = EX["s" + str(random.randint(1, 10000)).zfill(5)]
+#         p = EX["p" + str(random.randint(1, 10000)).zfill(5)]
+#         o_r = random.randint(1, 10000)
+#         if o_r > 5000:
+#             o = EX["p" + str(o_r).zfill(5)]
+#         else:
+#             o = Literal("p" + str(o_r).zfill(5))
+#         g.add((s, p, o))
+#     return g
+#
+#
+# def test_hext_scaling():
+#     g = _make_large_graph()
+#     g.serialize(destination="large.ndjson", format="hext")
+#
+#
+# if __name__ == "__main__":
+#     import cProfile
+#     cProfile.run("test_hext_scaling()", sort=1)

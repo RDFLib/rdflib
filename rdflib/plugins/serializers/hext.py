@@ -35,13 +35,16 @@ class HextuplesSerializer(Serializer):
         self,
         stream: IO[bytes],
         base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        **args
+        **kwargs
     ):
         if base is not None:
             warnings.warn("HextuplesSerializer does not support base.")
-        if encoding != "utf-8":
-            warnings.warn("NTSerializer always uses UTF-8 encoding.")
+        if kwargs.get("encoding") not in [None, "utf-8"]:
+            warnings.warn(
+                f"Hextuples files are always utf-8 encoded. "
+                f"I was passed: {kwargs.get('encoding')}, "
+                "but I'm still going to use utf-8 anyway!"
+            )
 
         for context in self.contexts:
             for triple in context:
@@ -55,7 +58,7 @@ def _hex_line(triple, context):
         _iri_or_bn(triple[0]),
         _iri_or_bn(triple[1]),
         _literal(triple[2]) if type(triple[2]) == Literal else _iri_or_bn(triple[2]),
-        (f'"{triple[2].datatype}"' if triple[2].datatype is not None else '""') if type(triple[2]) == Literal else '""',
+        (f'"{triple[2].datatype}"' if triple[2].datatype is not None else '"http://www.w3.org/2001/XMLSchema#string"') if type(triple[2]) == Literal else '""',
         (f'"{triple[2].language}"' if triple[2].language is not None else '""') if type(triple[2]) == Literal else '""',
         _iri_or_bn(context)
     )
