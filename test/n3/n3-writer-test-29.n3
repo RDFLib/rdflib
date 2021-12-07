@@ -16,7 +16,7 @@
 #@prefix 1:      <http://example.org/1#> .
 :x <http://example.org/1#1> "1" .
 
-# Numberic localname is allowed.
+# Numeric localname is allowed.
 :x ex:1 "2" .
 
 # As is _1

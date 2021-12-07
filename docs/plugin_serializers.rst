@@ -36,4 +36,10 @@ JSON-LD - 'json-ld' - has been incorprated in rdflib since v6.0.0.
 
 HexTuples
 ---------
-The HexTuples Serializer - 'hext' - uses the HexTuples format defined at https://github.com/ontola/hextuples
+The HexTuples Serializer - 'hext' - uses the HexTuples format defined at https://github.com/ontola/hextuples.
+
+For serialization of non-context-aware data sources, e.g. a single ``Graph``, the 'graph' field (6th variable in the 
+Hextuple) will be an empty string.
+
+For context-aware (multi-graph) serialization, the 'graph' field of the default graph will be an empty string and 
+the values for other graphs will be Blank Node IDs or IRIs.

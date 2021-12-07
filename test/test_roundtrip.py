@@ -5,10 +5,9 @@ import rdflib.compare
 
 try:
     from .test_nt_suite import all_nt_files
-
     assert all_nt_files
-    from .test_n3_suite import all_n3_files
 
+    from .test_n3_suite import all_n3_files
     assert all_n3_files
 except:
     from test.test_nt_suite import all_nt_files
@@ -27,17 +26,22 @@ python test/test_roundtrip.py xml nt test/nt/literals-02.nt
 
 tests roundtripping through rdf/xml with only the literals-02 file
 
+HexTuples format, "hext", cannot be used in all roundtrips due to its
+addition of xsd:string to literals of no declared type as this breaks
+(rdflib) graph isomorphism, and given that its JSON serialization is
+simple (lacking), so hext has been excluded from roundtripping here
+but provides some roundtrip test functions of its own (see test_parser_hext.py
+& test_serializer_hext.py)
+
 """
 
 
 SKIP = [
-    (
-        "xml",
-        "test/n3/n3-writer-test-29.n3",
-    ),  # has predicates that cannot be shortened to strict qnames
+    ("xml", "test/n3/n3-writer-test-29.n3"),
+    # has predicates that cannot be shortened to strict qnames
     ("xml", "test/nt/qname-02.nt"),  # uses a property that cannot be qname'd
-    ("trix", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
-    ("xml", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
+    ("trix", "test/n3/strquot.n3"),  # contains characters forbidden by the xml spec
+    ("xml", "test/n3/strquot.n3"),  # contains characters forbidden by the xml spec
     ("json-ld", "test/nt/keywords-04.nt"),  # known NT->JSONLD problem
     ("json-ld", "test/n3/example-misc.n3"),  # known N3->JSONLD problem
     ("json-ld", "test/n3/n3-writer-test-16.n3"),  # known N3->JSONLD problem
@@ -98,11 +102,12 @@ def get_cases():
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
-        if "/" in testfmt:
-            continue  # skip double testing
-        for f, infmt in all_nt_files():
-            if (testfmt, f) not in SKIP:
-                yield roundtrip, (infmt, testfmt, f)
+        if testfmt != "hext":
+            if "/" in testfmt:
+                continue  # skip double testing
+            for f, infmt in all_nt_files():
+                if (testfmt, f) not in SKIP:
+                    yield roundtrip, (infmt, testfmt, f)
 
 
 @pytest.mark.parametrize("checker, args", get_cases())
@@ -120,13 +125,18 @@ def get_n3_test():
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
-        if "/" in testfmt:
-            continue  # skip double testing
-        for f, infmt in all_n3_files():
-            if (testfmt, f) not in SKIP:
-                yield roundtrip, (infmt, testfmt, f)
+        if testfmt != "hext":
+            if "/" in testfmt:
+                continue  # skip double testing
+            for f, infmt in all_n3_files():
+                if (testfmt, f) not in SKIP:
+                    yield roundtrip, (infmt, testfmt, f)
 
 
 @pytest.mark.parametrize("checker, args", get_n3_test())
 def test_n3(checker, args):
     checker(args)
+
+
+if __name__ == "__main__":
+    print("hi")

@@ -28,7 +28,7 @@ class HextuplesParser(Parser):
     def _parse_hextuple(self, cg: ConjunctiveGraph, tup: [str]):
         # 1 - subject
         if tup[0].startswith("_"):
-            s = BNode(value=tup[0])
+            s = BNode(value=tup[0].replace("_:", ""))
         else:
             s = URIRef(tup[0])
 
@@ -36,12 +36,11 @@ class HextuplesParser(Parser):
         p = URIRef(tup[1])
 
         # 3 - value
-        if tup[3] is None:
-            if tup[0].startswith("_"):
-                o = BNode(value=tup[2])
-            else:
-                o = URIRef(tup[2])
-        else:
+        if tup[3] == "globalId":
+            o = URIRef(tup[2])
+        elif tup[3] == "localId":
+            o = BNode(value=tup[2].replace("_:", ""))
+        else:  # literal
             if tup[4] is None:
                 o = Literal(tup[2], datatype=URIRef(tup[3]))
             else:

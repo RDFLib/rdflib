@@ -4,8 +4,9 @@ See <https://github.com/ontola/hextuples> for details about the format.
 """
 from typing import IO, TYPE_CHECKING, Optional, Union
 from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.term import Literal, URIRef, Node
+from rdflib.term import Literal, URIRef, Node, BNode
 from rdflib.serializer import Serializer
+from rdflib.namespace import RDF, XSD
 import warnings
 
 __all__ = ["HextuplesSerializer"]
@@ -19,12 +20,12 @@ class HextuplesSerializer(Serializer):
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
         self.default_context: Optional[Node]
         if store.context_aware:
-            if TYPE_CHECKING:
-                assert isinstance(store, ConjunctiveGraph)
             self.contexts = list(store.contexts())
-            self.default_context = store.default_context.identifier
             if store.default_context:
+                self.default_context = store.default_context
                 self.contexts.append(store.default_context)
+            else:
+                self.default_context = None
         else:
             self.contexts = [store]
             self.default_context = None
@@ -34,11 +35,8 @@ class HextuplesSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
         **kwargs
     ):
-        if base is not None:
-            warnings.warn("HextuplesSerializer does not support base.")
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded. "
@@ -46,58 +44,76 @@ class HextuplesSerializer(Serializer):
                 "but I'm still going to use utf-8 anyway!"
             )
 
+        if self.store.formula_aware is True:
+            raise Exception(
+                "Hextuple serialization can't (yet) handle formula-aware stores"
+            )
+
         for context in self.contexts:
             for triple in context:
-                stream.write(
-                    _hex_line(triple, context.identifier).encode()
-                )
+                hl = self._hex_line(triple, context)
+                if hl is not None:
+                    stream.write(hl.encode())
 
+    def _hex_line(self, triple, context):
+        if type(triple[0]) in [URIRef, BNode]:  # exclude QuotedGraph and other objects
+            # value
+            value = triple[2] \
+                if type(triple[2]) == Literal \
+                else self._iri_or_bn(triple[2])
 
-def _hex_line(triple, context):
-    return "[%s, %s, %s, %s, %s, %s]\n" % (
-        _iri_or_bn(triple[0]),
-        _iri_or_bn(triple[1]),
-        _literal(triple[2]) if type(triple[2]) == Literal else _iri_or_bn(triple[2]),
-        (f'"{triple[2].datatype}"' if triple[2].datatype is not None else '"http://www.w3.org/2001/XMLSchema#string"') if type(triple[2]) == Literal else '""',
-        (f'"{triple[2].language}"' if triple[2].language is not None else '""') if type(triple[2]) == Literal else '""',
-        _iri_or_bn(context) if not str(context).startswith(("_", "file://")) else '""'
-    )
+            # datatype
+            if type(triple[2]) == URIRef:
+                # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#namedNode"
+                datatype = "globalId"
+            elif type(triple[2]) == BNode:
+                # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#blankNode"
+                datatype = "localId"
+            elif type(triple[2]) == Literal:
+                if triple[2].datatype is not None:
+                    datatype = f"{triple[2].datatype}"
+                else:
+                    if triple[2].language is not None:  # language
+                        datatype = RDF.langString
+                    else:
+                        datatype = XSD.string
+            else:
+                return None  # can't handle non URI, BN or Literal Object (QuotedGraph)
 
+            # language
+            if type(triple[2]) == Literal:
+                if triple[2].language is not None:
+                    language = f"{triple[2].language}"
+                else:
+                    language = ""
+            else:
+                language = ""
 
-def _iri_or_bn(i_):
-    if type(i_) == URIRef:
-        return f"\"{i_}\""
-    else:
-        return f"\"{i_.n3()}\""
+            return '["%s", "%s", "%s", "%s", "%s", "%s"]\n' % (
+                self._iri_or_bn(triple[0]),
+                triple[1],
+                value,
+                datatype,
+                language,
+                self._context(context)
+            )
+        else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
+            return None
 
-
-def _literal(i_):
-    raw_datatype = [
-        "http://www.w3.org/2001/XMLSchema#integer",
-        "http://www.w3.org/2001/XMLSchema#long",
-        "http://www.w3.org/2001/XMLSchema#int",
-        "http://www.w3.org/2001/XMLSchema#short",
-        "http://www.w3.org/2001/XMLSchema#positiveInteger",
-        "http://www.w3.org/2001/XMLSchema#negativeInteger",
-        "http://www.w3.org/2001/XMLSchema#nonPositiveInteger",
-        "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-        "http://www.w3.org/2001/XMLSchema#unsignedLong",
-        "http://www.w3.org/2001/XMLSchema#unsignedInt",
-        "http://www.w3.org/2001/XMLSchema#unsignedShort",
-
-        "http://www.w3.org/2001/XMLSchema#float",
-        "http://www.w3.org/2001/XMLSchema#double",
-        "http://www.w3.org/2001/XMLSchema#decimal",
-
-        "http://www.w3.org/2001/XMLSchema#boolean"
-    ]
-    if hasattr(i_, "datatype"):
-        if str(i_.datatype) in raw_datatype:
+    def _iri_or_bn(self, i_):
+        if type(i_) == URIRef:
             return f"{i_}"
+        elif type(i_) == BNode:
+            return f"{i_.n3()}"
         else:
-            return f"\"{i_}\""
-    else:
-        if str(i_) in ["true", "false"]:
-            return f"{i_}"
-        else:
-            return f"\"{i_}\""
+            return None
+
+    def _context(self, context):
+        if self.default_context is None:
+            return ""
+        if context.identifier == "urn:x-rdflib:default":
+            return ""
+        elif context is not None and self.default_context is not None:
+            if context.identifier == self.default_context.identifier:
+                return ""
+        return context.identifier
