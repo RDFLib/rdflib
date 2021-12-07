@@ -81,7 +81,6 @@ The following namespaces are available by directly importing from rdflib:
 
 __all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "NamespaceManager"]
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -192,7 +191,7 @@ class DefinedNamespaceMeta(type):
         name = str(name)
         if str(name).startswith("__"):
             return super().__getitem__(name, default)
-        if (cls._warn or cls._fail) and not name in cls:
+        if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
             else:
@@ -220,7 +219,7 @@ class DefinedNamespaceMeta(type):
         if item_str.startswith("__"):
             return super().__contains__(item)
         if item_str.startswith(str(cls._NS)):
-            item_str = item_str[len(str(cls._NS)) :]
+            item_str = item_str[len(str(cls._NS)):]
         return any(
             item_str in c.__annotations__
             or item_str in c._extras
@@ -419,7 +418,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace) :]
+                    name = uri[len(namespace):]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
