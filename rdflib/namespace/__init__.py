@@ -348,7 +348,7 @@ class NamespaceManager(object):
         self.bind("owl", OWL)
         self.bind("prof", PROF)
         self.bind("prov", PROV)
-        self.bind("QB", QB)
+        self.bind("qb", QB)
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("schema", SDO)
