@@ -1,4 +1,4 @@
-from typing import IO, Dict, Optional, Set, cast
+from typing import IO, Dict, Optional, Set
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri

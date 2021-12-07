@@ -315,7 +315,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid):])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:

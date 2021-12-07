@@ -95,7 +95,7 @@ def _nt_unicode_error_resolver(err):
         fmt = "\\u%04X" if c <= 0xFFFF else "\\U%08X"
         return fmt % c
 
-    string = err.object[err.start : err.end]
+    string = err.object[err.start: err.end]
     return "".join(_replace_single(c) for c in string), err.end
 
 

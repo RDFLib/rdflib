@@ -366,7 +366,7 @@ class _TripleCanonicalizer(object):
                     coloring.extend(colors)
                     try:
                         si = sequence.index(c)
-                        sequence = sequence[:si] + colors + sequence[si + 1 :]
+                        sequence = sequence[:si] + colors + sequence[si + 1:]
                     except ValueError:
                         sequence = colors[1:] + sequence
         combined_colors: List[Color] = []
@@ -428,7 +428,6 @@ class _TripleCanonicalizer(object):
         candidates = self._get_candidates(coloring)
         best: List[List[Color]] = []
         best_score = None
-        best_experimental = None
         best_experimental_score = None
         last_coloring = None
         generator: Dict[Node, Set[Node]] = defaultdict(set)

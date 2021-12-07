@@ -41,8 +41,8 @@ class HextuplesSerializer(Serializer):
     ):
         if base is not None:
             warnings.warn(
-                f"base has no meaning for Hextuples serialization. "
-                f"I will ignore this value"
+                "base has no meaning for Hextuples serialization. "
+                "I will ignore this value"
             )
 
         if encoding not in [None, "utf-8"]:
