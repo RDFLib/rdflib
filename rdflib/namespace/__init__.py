@@ -334,6 +334,7 @@ class NamespaceManager(object):
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
 
+        # DefinedNamespace bindings.
         self.bind("brick", BRICK)
         self.bind("csvw", CSVW)
         self.bind("dc", DC)
@@ -361,7 +362,7 @@ class NamespaceManager(object):
         self.bind("void", VOID)
         self.bind("xsd", XSD)
 
-        # TODO: XMLNS is not a DefinedNamespace.
+        # Namespace bindings.
         self.bind("xml", XMLNS)
 
     def __contains__(self, ref):
