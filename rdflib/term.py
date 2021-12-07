@@ -64,7 +64,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
-from typing import TYPE_CHECKING, Dict, Callable, Union, Type
+from typing import TYPE_CHECKING, Dict, Callable, Optional, Union, Type
 
 if TYPE_CHECKING:
     from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
@@ -231,10 +231,10 @@ class URIRef(Identifier):
     __neg__: Callable[["URIRef"], "NegatedPath"]
     __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
 
-    def __new__(cls, value, base=None):
+    def __new__(cls, value: str, base: Optional[str] = None):
         if base is not None:
             ends_in_hash = value.endswith("#")
-            value = urljoin(base, value, allow_fragments=1)
+            value = urljoin(base, value, allow_fragments=1)  # type: ignore[arg-type]
             if ends_in_hash:
                 if not value.endswith("#"):
                     value += "#"
@@ -248,7 +248,7 @@ class URIRef(Identifier):
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
     def toPython(self):

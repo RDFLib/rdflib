@@ -1,3 +1,4 @@
+from typing import IO, Optional
 from rdflib.serializer import Serializer
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
@@ -15,14 +16,20 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 
 class TriXSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(TriXSerializer, self).__init__(store)
         if not store.context_aware:
             raise Exception(
                 "TriX serialization only makes sense for context-aware stores"
             )
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ):
 
         nm = self.store.namespace_manager
 

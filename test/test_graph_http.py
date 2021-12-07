@@ -7,7 +7,7 @@ import unittest
 
 
 """
-Test that correct content negoation headers are passed
+Test that correct content negotiation headers are passed
 by graph.parse
 """
 
