@@ -142,7 +142,7 @@ def join(here, there):
             "colon - with relative '%s'." % (here, there)
         )
 
-    if here[bcolonl + 1: bcolonl + 3] == "//":
+    if here[bcolonl + 1 : bcolonl + 3] == "//":
         bpath = here.find("/", bcolonl + 3)
     else:
         bpath = bcolonl + 1
@@ -529,7 +529,7 @@ class SinkParser:
         assert tok[0] not in _notNameChars  # not for punctuation
 
         len_tok = len(tok)
-        if argstr[i: i + len_tok].lower() == tok.lower() and (
+        if argstr[i : i + len_tok].lower() == tok.lower() and (
             argstr[i + len_tok] in _notQNameChars
         ):
             i += len_tok
@@ -794,7 +794,7 @@ class SinkParser:
             res.append(("->", RDF_type))
             return j
 
-        if argstr[i: i + 2] == "<=":
+        if argstr[i : i + 2] == "<=":
             if self.turtle:
                 self.BadSyntax(argstr, i, "Found '<=' in Turtle mode. ")
 
@@ -810,7 +810,7 @@ class SinkParser:
             res.append(("->", DAML_sameAs))
             return i + 1
 
-        if argstr[i: i + 2] == ":=":
+        if argstr[i : i + 2] == ":=":
             if self.turtle:
                 self.BadSyntax(argstr, i, "Found ':=' in Turtle mode")
 
@@ -823,7 +823,7 @@ class SinkParser:
             res.append(("->", r[0]))
             return j
 
-        if argstr[i: i + 2] == ">-" or argstr[i: i + 2] == "<-":
+        if argstr[i : i + 2] == ">-" or argstr[i : i + 2] == "<-":
             self.BadSyntax(argstr, j, ">- ... -> syntax is obsolete.")
 
         return -1
@@ -941,7 +941,7 @@ class SinkParser:
                     i = self.skipSpace(argstr, j)
                     if i < 0:
                         self.BadSyntax(argstr, i, "needed '$}', found end.")
-                    if argstr[i: i + 2] == "$}":
+                    if argstr[i : i + 2] == "$}":
                         j = i + 2
                         break
 
@@ -1064,7 +1064,7 @@ class SinkParser:
                     break
                 i = j + 1
 
-            if argstr[j: j + 2] == ":-":
+            if argstr[j : j + 2] == ":-":
                 if self.turtle:
                     self.BadSyntax(argstr, j, "Found in ':-' in Turtle mode")
                 i = j + 2
@@ -1424,7 +1424,7 @@ class SinkParser:
             ch = argstr[i]
             if ch in self.string_delimiters:
                 ch_three = ch * 3
-                if argstr[i: i + 3] == ch_three:
+                if argstr[i : i + 3] == ch_three:
                     delim = ch_three
                     i += 3
                 else:
@@ -1474,7 +1474,7 @@ class SinkParser:
 
             ch_three = ch * 3
             if ch in self.string_delimiters:
-                if argstr[i: i + 3] == ch_three:
+                if argstr[i : i + 3] == ch_three:
                     delim = ch_three
                     i += 3
                 else:
@@ -1495,9 +1495,9 @@ class SinkParser:
                             "Bad language code syntax on string " + "literal, after @",
                         )
                     i = m.end()
-                    lang = argstr[j + 1: i]
+                    lang = argstr[j + 1 : i]
                     j = i
-                if argstr[j: j + 2] == "^^":
+                if argstr[j : j + 2] == "^^":
                     res2 = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
                     dt = res2[0]
@@ -1531,15 +1531,15 @@ class SinkParser:
                 if (
                     delim == delim3
                 ):  # done when delim is """ or ''' and, respectively ...
-                    if argstr[j: j + 5] == delim5:  # ... we have "" or '' before
+                    if argstr[j : j + 5] == delim5:  # ... we have "" or '' before
                         i = j + 5
                         ustr += delim2
                         return i, ustr
-                    if argstr[j: j + 4] == delim4:  # ... we have " or ' before
+                    if argstr[j : j + 4] == delim4:  # ... we have " or ' before
                         i = j + 4
                         ustr += delim1
                         return i, ustr
-                    if argstr[j: j + 3] == delim3:  # current " or ' is part of delim
+                    if argstr[j : j + 3] == delim3:  # current " or ' is part of delim
                         i = j + 3
                         return i, ustr
 
@@ -1551,8 +1551,8 @@ class SinkParser:
             m = interesting.search(argstr, j)  # was argstr[j:].
             # Note for pos param to work, MUST be compiled  ... re bug?
             assert m, "Quote expected in string at ^ in %s^%s" % (
-                argstr[j - 20: j],
-                argstr[j: j + 20],
+                argstr[j - 20 : j],
+                argstr[j : j + 20],
             )  # at least need a quote
 
             i = m.start()
@@ -1629,14 +1629,14 @@ class SinkParser:
                 self._thisDoc, startline, argstr, i, "unterminated string literal(3)"
             )
         try:
-            return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i: i + n])
+            return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
         except:
             raise BadSyntax(
                 self._thisDoc,
                 startline,
                 argstr,
                 i,
-                "bad string literal hex escape: " + argstr[i: i + n],
+                "bad string literal hex escape: " + argstr[i : i + n],
             )
 
     def uEscape(self, argstr, i, startline):
@@ -1681,7 +1681,7 @@ class BadSyntax(SyntaxError):
             self._why,
             pre,
             argstr[st:i],
-            argstr[i: i + 60],
+            argstr[i : i + 60],
             post,
         )
 

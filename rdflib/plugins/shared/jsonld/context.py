@@ -329,7 +329,7 @@ class Context(object):
             if str(iri) == self._base:
                 return ""
             elif iri.startswith(self._basedomain):
-                return iri[len(self._basedomain):]
+                return iri[len(self._basedomain) :]
         return iri
 
     def to_symbol(self, iri):

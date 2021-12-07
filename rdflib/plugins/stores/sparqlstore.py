@@ -782,12 +782,12 @@ class SPARQLUpdateStore(SPARQLStore):
             if match.group("block_start") is not None:
                 level += 1
                 if level == 1:
-                    modified_query.append(query[pos: match.end()])
+                    modified_query.append(query[pos : match.end()])
                     modified_query.append(graph_block_open)
                     pos = match.end()
             elif match.group("block_end") is not None:
                 if level == 1:
-                    since_previous_pos = query[pos: match.start()]
+                    since_previous_pos = query[pos : match.start()]
                     if modified_query[-1] is graph_block_open and (
                         since_previous_pos == "" or since_previous_pos.isspace()
                     ):
