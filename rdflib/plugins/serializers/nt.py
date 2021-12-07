@@ -33,7 +33,10 @@ class NTSerializer(Serializer):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
         if encoding != "utf-8":
-            warnings.warn("NTSerializer always uses UTF-8 encoding.")
+            warnings.warn(
+                "NTSerializer always uses UTF-8 encoding."
+                + "Given encoding was: %s" % encoding
+            )
 
         for triple in self.store:
             stream.write(_nt_row(triple).encode())

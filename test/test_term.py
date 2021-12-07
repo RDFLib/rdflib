@@ -74,16 +74,16 @@ class TestLiteral(unittest.TestCase):
             sorted(literals)
             orderable = True
         except TypeError as e:
-            for l in literals:
-                print(repr(l), repr(l.value))
+            for l_ in literals:
+                print(repr(l_), repr(l_.value))
             print(e)
             orderable = False
         self.assertTrue(orderable)
 
         # also make sure that within a datetime things are still ordered:
         l1 = [
-            Literal(l, datatype=XSD.dateTime)
-            for l in [
+            Literal(l_, datatype=XSD.dateTime)
+            for l_ in [
                 "2001-01-01T00:00:00",
                 "2001-01-01T01:00:00",
                 "2001-01-01T01:00:01",
