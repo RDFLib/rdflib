@@ -5,6 +5,7 @@ handle contexts, i.e. multiple graphs.
 """
 import json
 
+from typing import List
 from rdflib.parser import Parser
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
@@ -25,7 +26,7 @@ class HextuplesParser(Parser):
     def _load_json_line(self, line: str):
         return [x if x != "" else None for x in json.loads(line)]
 
-    def _parse_hextuple(self, cg: ConjunctiveGraph, tup: [str]):
+    def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[str]):
         # 1 - subject
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))

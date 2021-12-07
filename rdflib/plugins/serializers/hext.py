@@ -19,7 +19,7 @@ class HextuplesSerializer(Serializer):
 
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
         self.default_context: Optional[Node]
-        if store.context_aware:
+        if type(store) != Graph:
             self.contexts = list(store.contexts())
             if store.default_context:
                 self.default_context = store.default_context
@@ -35,12 +35,20 @@ class HextuplesSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = "utf-8",
         **kwargs
     ):
-        if kwargs.get("encoding") not in [None, "utf-8"]:
+        if base is not None:
+            warnings.warn(
+                f"base has no meaning for Hextuples serialization. "
+                f"I will ignore this value"
+            )
+
+        if encoding not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded. "
-                f"I was passed: {kwargs.get('encoding')}, "
+                f"I was passed: {encoding}, "
                 "but I'm still going to use utf-8 anyway!"
             )
 
