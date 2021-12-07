@@ -333,10 +333,36 @@ class NamespaceManager(object):
         self.__trie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
-        self.bind("xml", XMLNS)
+
+        self.bind("brick", BRICK)
+        self.bind("csvw", CSVW)
+        self.bind("dc", DC)
+        self.bind("dcat", DCAT)
+        self.bind("dcmitype", DCMITYPE)
+        self.bind("dcterms", DCTERMS)
+        self.bind("dcam", DCAM)
+        self.bind("doap", DOAP)
+        self.bind("foaf", FOAF)
+        self.bind("odrl", ODRL2)
+        self.bind("org", ORG)
+        self.bind("owl", OWL)
+        self.bind("prof", PROF)
+        self.bind("prov", PROV)
+        self.bind("QB", QB)
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
+        self.bind("schema", SDO)
+        self.bind("sh", SH)
+        self.bind("skos", SKOS)
+        self.bind("sosa", SOSA)
+        self.bind("ssn", SSN)
+        self.bind("time", TIME)
+        self.bind("vann", VANN)
+        self.bind("void", VOID)
         self.bind("xsd", XSD)
+
+        # TODO: XMLNS is not a DefinedNamespace.
+        self.bind("xml", XMLNS)
 
     def __contains__(self, ref):
         # checks if a reference is in any of the managed namespaces with syntax
@@ -703,6 +729,7 @@ from rdflib.namespace._DC import DC
 from rdflib.namespace._DCAT import DCAT
 from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
+from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
 from rdflib.namespace._ODRL2 import ODRL2
