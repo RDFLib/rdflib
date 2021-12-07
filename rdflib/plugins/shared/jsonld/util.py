@@ -12,26 +12,37 @@ else:
     except ImportError:
         import simplejson as json
 
-from os import sep
-from os.path import normpath
+from posixpath import sep
+from posixpath import normpath
 
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
-from rdflib.parser import create_input_source
+from rdflib.parser import create_input_source, PythonInputSource, StringInputSource
 
-from io import StringIO
+from io import TextIOBase, TextIOWrapper
 
 
 def source_to_json(source):
+
+    if isinstance(source, PythonInputSource):
+        return source.data
+
+    if isinstance(source, StringInputSource):
+        return json.load(source.getCharacterStream())
+
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
 
     stream = source.getByteStream()
     try:
-        return json.load(StringIO(stream.read().decode("utf-8")))
+        # Use character stream as-is, or interpret byte stream as UTF-8
+        if isinstance(stream, TextIOBase):
+            use_stream = stream
+        else:
+            use_stream = TextIOWrapper(stream, encoding='utf-8')
+        return json.load(use_stream)
     finally:
         stream.close()
-
 
 VOCAB_DELIMS = ("#", "/", ":")
 

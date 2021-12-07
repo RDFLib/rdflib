@@ -1,5 +1,7 @@
+from typing import IO, Optional
 import warnings
 
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.term import Literal
 from rdflib.serializer import Serializer
 
@@ -9,15 +11,22 @@ __all__ = ["NQuadsSerializer"]
 
 
 class NQuadsSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         if not store.context_aware:
             raise Exception(
                 "NQuads serialization only makes " "sense for context-aware stores!"
             )
 
         super(NQuadsSerializer, self).__init__(store)
+        self.store: ConjunctiveGraph
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ):
         if base is not None:
             warnings.warn("NQuadsSerializer does not support base.")
         if encoding is not None and encoding.lower() != self.encoding.lower():
