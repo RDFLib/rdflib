@@ -88,4 +88,4 @@ def context_from_urlinputsource(source):
             if ' rel="http://www.w3.org/ns/json-ld#context"' in link:
                 i, j = link.index("<"), link.index(">")
                 if i > -1 and j > -1:
-                    return urljoin(source.url, link[i + 1: j])
+                    return urljoin(source.url, link[i + 1 : j])
