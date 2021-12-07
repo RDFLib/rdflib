@@ -28,7 +28,7 @@ class NTSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
-        **args
+        **args,
     ):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")

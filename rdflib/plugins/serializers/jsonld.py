@@ -62,7 +62,7 @@ class JsonLDSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         # TODO: docstring w. args and return value
         encoding = encoding or "utf-8"

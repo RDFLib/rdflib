@@ -37,7 +37,7 @@ class HextuplesSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
-        **kwargs
+        **kwargs,
     ):
         if base is not None:
             warnings.warn(
@@ -64,11 +64,15 @@ class HextuplesSerializer(Serializer):
                     stream.write(hl.encode())
 
     def _hex_line(self, triple, context):
-        if isinstance(triple[0], (URIRef, BNode)):  # exclude QuotedGraph and other objects
+        if isinstance(
+            triple[0], (URIRef, BNode)
+        ):  # exclude QuotedGraph and other objects
             # value
-            value = triple[2] \
-                if isinstance(triple[2], Literal) \
+            value = (
+                triple[2]
+                if isinstance(triple[2], Literal)
                 else self._iri_or_bn(triple[2])
+            )
 
             # datatype
             if isinstance(triple[2], URIRef):
@@ -103,7 +107,7 @@ class HextuplesSerializer(Serializer):
                 value,
                 datatype,
                 language,
-                self._context(context)
+                self._context(context),
             )
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None

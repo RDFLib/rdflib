@@ -46,7 +46,7 @@ class XMLSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ):
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -171,7 +171,7 @@ class PrettyXMLSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ):
         self.__serialized: Dict[Identifier, int] = {}
         store = self.store

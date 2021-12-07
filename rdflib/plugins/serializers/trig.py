@@ -60,7 +60,7 @@ class TrigSerializer(TurtleSerializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         spacious: Optional[bool] = None,
-        **args
+        **args,
     ):
         self.reset()
         self.stream = stream

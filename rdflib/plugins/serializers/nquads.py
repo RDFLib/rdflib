@@ -25,7 +25,7 @@ class NQuadsSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ):
         if base is not None:
             warnings.warn("NQuadsSerializer does not support base.")

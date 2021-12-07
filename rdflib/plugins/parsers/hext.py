@@ -62,8 +62,9 @@ class HextuplesParser(Parser):
                 "but I'm still going to use utf-8"
             )
 
-        assert graph.store.context_aware, \
-            "Hextuples Parser needs a context-aware store!"
+        assert (
+            graph.store.context_aware
+        ), "Hextuples Parser needs a context-aware store!"
 
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
