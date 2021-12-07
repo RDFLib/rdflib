@@ -2,7 +2,7 @@
 HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
-from typing import IO, TYPE_CHECKING, Optional, Union
+from typing import IO, Optional, Union
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import Literal, URIRef, Node, BNode
 from rdflib.serializer import Serializer
@@ -56,20 +56,20 @@ class HextuplesSerializer(Serializer):
                     stream.write(hl.encode())
 
     def _hex_line(self, triple, context):
-        if type(triple[0]) in [URIRef, BNode]:  # exclude QuotedGraph and other objects
+        if isinstance(triple[0], (URIRef, BNode)):  # exclude QuotedGraph and other objects
             # value
             value = triple[2] \
-                if type(triple[2]) == Literal \
+                if isinstance(triple[2], Literal) \
                 else self._iri_or_bn(triple[2])
 
             # datatype
-            if type(triple[2]) == URIRef:
+            if isinstance(triple[2], URIRef):
                 # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#namedNode"
                 datatype = "globalId"
-            elif type(triple[2]) == BNode:
+            elif isinstance(triple[2], BNode):
                 # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#blankNode"
                 datatype = "localId"
-            elif type(triple[2]) == Literal:
+            elif isinstance(triple[2], Literal):
                 if triple[2].datatype is not None:
                     datatype = f"{triple[2].datatype}"
                 else:
@@ -81,7 +81,7 @@ class HextuplesSerializer(Serializer):
                 return None  # can't handle non URI, BN or Literal Object (QuotedGraph)
 
             # language
-            if type(triple[2]) == Literal:
+            if isinstance(triple[2], Literal):
                 if triple[2].language is not None:
                     language = f"{triple[2].language}"
                 else:
@@ -101,9 +101,9 @@ class HextuplesSerializer(Serializer):
             return None
 
     def _iri_or_bn(self, i_):
-        if type(i_) == URIRef:
+        if isinstance(i_, URIRef):
             return f"{i_}"
-        elif type(i_) == BNode:
+        elif isinstance(i_, BNode):
             return f"{i_.n3()}"
         else:
             return None
