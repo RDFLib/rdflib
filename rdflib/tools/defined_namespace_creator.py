@@ -17,23 +17,9 @@ import datetime
 
 sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
 
-from rdflib import Graph, util
+from rdflib import Graph
 from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
-
-
-def get_input_format(file_path):
-    input_format = util.guess_format(str(file_path))
-    if input_format is None:
-        str_path = str(file_path)
-        if str_path.endswith("json-ld") or str_path.endswith("jsonld"):
-            input_format = "json-ld"
-        else:
-            raise Exception(
-                "ERROR: Cannot guess the RDF format of input file {}".format(
-                    file_path)
-            )
-
-    return input_format
+from rdflib.util import guess_format
 
 
 def validate_namespace(namespace):
@@ -47,32 +33,37 @@ def validate_object_id(object_id):
             raise ValueError("The supplied object_id must be an all-capitals string")
 
 
-def get_classes(g, target_namespace):
-    namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
-    q = """
-        SELECT DISTINCT ?x ?def
-        WHERE {
-            # anything that is an instance of owl:Class or rdfs:Class
-            # or any subclass of them
-            VALUES ?c { owl:Class rdfs:Class }
-            ?x rdfs:subClassOf*/a ?c .
-
-            # get any definitions, if they have one
-            OPTIONAL {
-                ?x rdfs:comment|dcterms:description|skos:definition ?def
-            }
-
-            # only get results for the targetted namespace (supplied by user)
-            FILTER STRSTARTS(STR(?x), "xxx")
-        }
-        """.replace("xxx", target_namespace)
-    classes = []
-    for r in g.query(q, initNs=namespaces):
-        classes.append((str(r[0]), str(r[1])))
-
-    classes.sort(key=lambda tup: tup[1])
-
-    return classes
+# This function is not used: it was originally written to get classes and to be used
+# alongside a method to get properties, but then it was decided that a single function
+# to get everything in the namespace, get_target_namespace_elements(), was both simper
+# and better covered all namespace elements, so that function is used instead.
+#
+# def get_classes(g, target_namespace):
+#     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
+#     q = """
+#         SELECT DISTINCT ?x ?def
+#         WHERE {
+#             # anything that is an instance of owl:Class or rdfs:Class
+#             # or any subclass of them
+#             VALUES ?c { owl:Class rdfs:Class }
+#             ?x rdfs:subClassOf*/a ?c .
+#
+#             # get any definitions, if they have one
+#             OPTIONAL {
+#                 ?x rdfs:comment|dcterms:description|skos:definition ?def
+#             }
+#
+#             # only get results for the targetted namespace (supplied by user)
+#             FILTER STRSTARTS(STR(?x), "xxx")
+#         }
+#         """.replace("xxx", target_namespace)
+#     classes = []
+#     for r in g.query(q, initNs=namespaces):
+#         classes.append((str(r[0]), str(r[1])))
+#
+#     classes.sort(key=lambda tup: tup[1])
+#
+#     return classes
 
 
 def get_target_namespace_elements(g, target_namespace):
@@ -142,7 +133,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "target_namespace",
         type=str,
-        help="The namespace within the ontology that you want to create a DefinedNamespace for.",
+        help="The namespace within the ontology that you want to create a "
+             "DefinedNamespace for.",
     )
 
     parser.add_argument(
@@ -155,20 +147,26 @@ if __name__ == "__main__":
         '-f', "--fail",
         dest='fail',
         action='store_true',
-        help="Whether (true) or not (false) to mimic ClosedNamespace and fail on non-element use"
+        help="Whether (true) or not (false) to mimic ClosedNamespace and fail on "
+             "non-element use"
     )
     parser.add_argument('--no-fail', dest='fail', action='store_false')
     parser.set_defaults(feature=False)
 
     args = parser.parse_args()
 
-    g = Graph().parse(args.ontology_file, format=get_input_format(args.ontology_file))
+    fmt = guess_format(args.ontology_file)
+    if fmt is None:
+        print("The format of the file you've supplied is unknown.")
+        exit(1)
+    g = Graph().parse(args.ontology_file, format=fmt)
 
     validate_namespace(args.target_namespace)
 
     validate_object_id(args.object_id)
 
-    print(f"Creating DefinedNamespace file {args.object_id} for {args.target_namespace}...")
+    print(f"Creating DefinedNamespace file {args.object_id} "
+          f"for {args.target_namespace}...")
     print(f"Ontology with {len(g)} triples loaded...")
 
     print("Getting all namespace elements...")
@@ -176,7 +174,13 @@ if __name__ == "__main__":
 
     output_file_name = Path().cwd() / f"_{args.object_id}.py"
     print(f"Creating DefinedNamespace Python file {output_file_name}")
-    make_dn_file(output_file_name, args.target_namespace, elements[1], args.object_id, args.fail)
+    make_dn_file(
+        output_file_name,
+        args.target_namespace,
+        elements[1],
+        args.object_id,
+        args.fail
+    )
 
 
 
