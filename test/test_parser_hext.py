@@ -111,4 +111,4 @@ def test_roundtrip():
 
 
 if __name__ == "__main__":
-    test_roundtrip()
+    test_small_file_multigraph()
