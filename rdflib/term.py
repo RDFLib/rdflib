@@ -547,7 +547,7 @@ class Literal(Identifier):
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
             )
 
-        if lang and not _is_valid_langtag(lang):
+        if lang is not None and not _is_valid_langtag(lang):
             raise ValueError("'%s' is not a valid language tag!" % lang)
 
         if datatype:
