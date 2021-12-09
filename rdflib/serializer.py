@@ -30,7 +30,7 @@ class Serializer:
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ) -> None:
         """Abstract method"""
 

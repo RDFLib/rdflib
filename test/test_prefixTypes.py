@@ -25,10 +25,9 @@ class PrefixTypesTest(unittest.TestCase):
     """
 
     def test(self):
-        s = graph.serialize(format="n3", encoding="latin-1")
-        print(s)
-        self.assertTrue(b"foaf:Document" in s)
-        self.assertTrue(b"xsd:date" in s)
+        s = graph.serialize(format="n3")
+        self.assertTrue("foaf:Document" in s)
+        self.assertTrue("xsd:date" in s)
 
 
 if __name__ == "__main__":

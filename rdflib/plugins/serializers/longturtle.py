@@ -1,8 +1,8 @@
 """
-Turtle2 RDF graph serializer for RDFLib.
+LongTurtle RDF graph serializer for RDFLib.
 See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 
-This variant, turtle2 as opposed to just turtle, makes some small format changes
+This variant, longturtle as opposed to just turtle, makes some small format changes
 to turtle - the original turtle serializer. It:
 
 * uses PREFIX instead of @prefix
@@ -21,7 +21,7 @@ from rdflib.exceptions import Error
 from .turtle import RecursiveSerializer
 from rdflib.namespace import RDF
 
-__all__ = ["TurtleSerializer2"]
+__all__ = ["LongTurtleSerializer"]
 
 SUBJECT = 0
 VERB = 1
@@ -31,14 +31,14 @@ _GEN_QNAME_FOR_DT = False
 _SPACIOUS_OUTPUT = False
 
 
-class TurtleSerializer2(RecursiveSerializer):
+class LongTurtleSerializer(RecursiveSerializer):
 
-    short_name = "turtle2"
+    short_name = "longturtle"
     indentString = "    "
 
     def __init__(self, store):
         self._ns_rewrite = {}
-        super(TurtleSerializer2, self).__init__(store)
+        super(LongTurtleSerializer, self).__init__(store)
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
@@ -66,11 +66,11 @@ class TurtleSerializer2(RecursiveSerializer):
 
             prefix = self._ns_rewrite.get(prefix, prefix)
 
-        super(TurtleSerializer2, self).addNamespace(prefix, namespace)
+        super(LongTurtleSerializer, self).addNamespace(prefix, namespace)
         return prefix
 
     def reset(self):
-        super(TurtleSerializer2, self).reset()
+        super(LongTurtleSerializer, self).reset()
         self._shortNames = {}
         self._started = False
         self._ns_rewrite = {}
@@ -78,7 +78,7 @@ class TurtleSerializer2(RecursiveSerializer):
     def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
         self.reset()
         self.stream = stream
-        # if base is given here, use that, if not and a base is set for the graph use that
+        # if base is given here, use, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
         elif self.store.base is not None:
@@ -107,7 +107,7 @@ class TurtleSerializer2(RecursiveSerializer):
         self.base = None
 
     def preprocessTriple(self, triple):
-        super(TurtleSerializer2, self).preprocessTriple(triple)
+        super(LongTurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
             if node in self.keywords:
                 continue
@@ -123,12 +123,9 @@ class TurtleSerializer2(RecursiveSerializer):
         if not isinstance(uri, URIRef):
             return None
 
-        parts = None
-
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
         except:
-
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 

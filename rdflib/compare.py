@@ -428,7 +428,6 @@ class _TripleCanonicalizer(object):
         candidates = self._get_candidates(coloring)
         best: List[List[Color]] = []
         best_score = None
-        best_experimental = None
         best_experimental_score = None
         last_coloring = None
         generator: Dict[Node, Set[Node]] = defaultdict(set)

@@ -81,7 +81,6 @@ The following namespaces are available by directly importing from rdflib:
 
 __all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "NamespaceManager"]
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -192,7 +191,7 @@ class DefinedNamespaceMeta(type):
         name = str(name)
         if str(name).startswith("__"):
             return super().__getitem__(name, default)
-        if (cls._warn or cls._fail) and not name in cls:
+        if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
             else:
