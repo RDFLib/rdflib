@@ -27,7 +27,14 @@ class HextuplesParser(Parser):
         return [x if x != "" else None for x in json.loads(line)]
 
     def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
+        # all values check
+        # subject, predicate, value, datatype cannot be None
+        # language and graph may be None
+        if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
+            raise ValueError("subject, predicate, value, datatype cannot be None")
+
         # 1 - subject
+        s: Union[URIRef, BNode]
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
         else:
@@ -37,6 +44,7 @@ class HextuplesParser(Parser):
         p = URIRef(tup[1])
 
         # 3 - value
+        o: Union[URIRef, BNode, Literal]
         if tup[3] == "globalId":
             o = URIRef(tup[2])
         elif tup[3] == "localId":
