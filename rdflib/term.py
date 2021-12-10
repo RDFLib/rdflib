@@ -446,7 +446,7 @@ class BNode(Identifier):
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
-        return URIRef(urljoin(authority, skolem))
+        return RDFLibGenid(urljoin(authority, skolem))
 
 
 class Literal(Identifier):
