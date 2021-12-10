@@ -32,7 +32,6 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
-    "Statement",
 ]
 
 import logging
@@ -1737,24 +1736,6 @@ class Variable(Identifier):
 
     def __reduce__(self):
         return (Variable, (str(self),))
-
-
-class Statement(Node, tuple):
-    def __new__(cls, triple, context):
-        subject, predicate, object = triple
-        warnings.warn(
-            "Class Statement is deprecated, and will be removed in "
-            + "the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return tuple.__new__(cls, ((subject, predicate, object), context))
-
-    def __reduce__(self):
-        return (Statement, (self[0], self[1]))
-
-    def toPython(self):
-        return (self[0], self[1])
 
 
 # Nodes are ordered like this
