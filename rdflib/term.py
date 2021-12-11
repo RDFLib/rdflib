@@ -63,7 +63,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
-from typing import TYPE_CHECKING, Dict, Callable, Optional, Union, Type
+from typing import TYPE_CHECKING, Any, Dict, Callable, Optional, Union, Type
 
 if TYPE_CHECKING:
     from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
@@ -532,14 +532,16 @@ class Literal(Identifier):
 
     """
 
+    _value: Any
+
     __slots__ = ("_language", "_datatype", "_value")
 
     def __new__(
         cls,
-        lexical_or_value,
+        lexical_or_value: Any,
         lang: Optional[str] = None,
-        datatype=None,
-        normalize=None,
+        datatype: Optional[str] = None,
+        normalize: Optional[bool] = None,
     ):
 
         if lang == "":
@@ -602,7 +604,7 @@ class Literal(Identifier):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
-            inst = str.__new__(cls, lexical_or_value)
+            inst: Literal = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
