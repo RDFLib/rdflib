@@ -87,7 +87,7 @@ def _is_valid_uri(uri):
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
-def _is_valid_langtag(tag):
+def _is_valid_langtag(tag: str):
     return bool(_lang_tag_regex.match(tag))
 
 
@@ -534,7 +534,13 @@ class Literal(Identifier):
 
     __slots__ = ("_language", "_datatype", "_value")
 
-    def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
+    def __new__(
+        cls,
+        lexical_or_value,
+        lang: Optional[str] = None,
+        datatype=None,
+        normalize=None,
+    ):
 
         if lang == "":
             lang = None  # no empty lang-tags in RDF
@@ -630,7 +636,7 @@ class Literal(Identifier):
         return self._value
 
     @property
-    def language(self):
+    def language(self) -> Optional[str]:
         return self._language
 
     @property
