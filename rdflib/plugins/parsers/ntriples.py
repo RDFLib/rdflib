@@ -54,7 +54,6 @@ r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
-
         if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:

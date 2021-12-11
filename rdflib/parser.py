@@ -341,8 +341,7 @@ def create_input_source(
             input_source = StringInputSource(data)
             auto_close = True
         else:
-            raise RuntimeError(
-                f"parse data can only str, or bytes. not: {type(data)}")
+            raise RuntimeError(f"parse data can only str, or bytes. not: {type(data)}")
 
     if input_source is None:
         raise Exception("could not create InputSource")

@@ -6,7 +6,7 @@ import warnings
 import types
 from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 
-from io import BytesIO, BufferedIOBase
+from io import BytesIO
 
 from urllib.parse import urlparse
 
@@ -333,7 +333,6 @@ class Result(object):
                 return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-
         except:
             return False
 
