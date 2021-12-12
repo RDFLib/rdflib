@@ -1948,6 +1948,15 @@ class Dataset(ConjunctiveGraph):
         )
         return pattern % self.store.__class__.__name__
 
+    def __reduce__(self):
+        return (type(self), (self.store, self.default_union))
+
+    def __getstate__(self):
+        return self.store, self.identifier, self.default_context, self.default_union
+
+    def __setstate__(self, state):
+        self.store, self.identifier, self.default_context, self.default_union = state
+
     def graph(self, identifier=None, base=None):
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
