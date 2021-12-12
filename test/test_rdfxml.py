@@ -184,7 +184,8 @@ class ParserTestCase(unittest.TestCase):
         self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
         manifest.parse(
-            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
+            format="xml",
         )
 
     def tearDown(self):
@@ -243,7 +244,8 @@ results.add((system, RDFS.comment, Literal("")))
 if __name__ == "__main__":
     manifest = Graph()
     manifest.parse(
-        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
+        format="xml",
     )
     import sys
     import getopt
