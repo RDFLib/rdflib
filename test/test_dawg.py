@@ -230,11 +230,11 @@ def update_test(t: RDFTest):
 
         # read input graphs
         if data:
-            g.default_context.load(data, format=_fmt(data))
+            g.default_context.parse(data, format=_fmt(data))
 
         if graphdata:
             for x, l in graphdata:
-                g.load(x, publicID=URIRef(l), format=_fmt(x))
+                g.parse(x, publicID=URIRef(l), format=_fmt(x))
 
         with bopen(query_path) as f:
             req = translateUpdate(parseUpdate(f))
@@ -243,11 +243,11 @@ def update_test(t: RDFTest):
         # read expected results
         resg = Dataset()
         if resdata:
-            resg.default_context.load(resdata, format=_fmt(resdata))
+            resg.default_context.parse(resdata, format=_fmt(resdata))
 
         if resgraphdata:
             for x, l in resgraphdata:
-                resg.load(x, publicID=URIRef(l), format=_fmt(x))
+                resg.parse(x, publicID=URIRef(l), format=_fmt(x))
 
         eq(
             set(x.identifier for x in g.contexts() if x != g.default_context),
@@ -355,11 +355,11 @@ def query_test(t: RDFTest):
     try:
         g = Dataset()
         if data:
-            g.default_context.load(data, format=_fmt(data))
+            g.default_context.parse(data, format=_fmt(data))
 
         if graphdata:
             for x in graphdata:
-                g.load(x, format=_fmt(x))
+                g.parse(x, format=_fmt(x))
 
         if not resfile:
             # no result - syntax test
@@ -386,11 +386,11 @@ def query_test(t: RDFTest):
 
         if resfile.endswith("ttl"):
             resg = Graph()
-            resg.load(resfile, format="turtle", publicID=resfile)
+            resg.parse(resfile, format="turtle", publicID=resfile)
             res = RDFResultParser().parse(resg)
         elif resfile.endswith("rdf"):
             resg = Graph()
-            resg.load(resfile, publicID=resfile)
+            resg.parse(resfile, publicID=resfile)
             res = RDFResultParser().parse(resg)
         else:
             with bopen(resfile_path) as f:

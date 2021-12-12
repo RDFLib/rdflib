@@ -16,7 +16,7 @@ import rdflib
 if __name__ == "__main__":
 
     g = rdflib.Graph()
-    g.load("foaf.n3", format="n3")
+    g.parse("foaf.n3", format="n3")
 
     # The QueryProcessor knows the FOAF prefix from the graph
     # which in turn knows it from reading the N3 RDF file

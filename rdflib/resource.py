@@ -103,13 +103,9 @@ Follow relations and get more data from their Resources as well::
     >>> for pic in person.objects(FOAF.depiction):
     ...     print(pic.identifier)
     ...     print(pic.value(RDF.type).qname())
-    ...     print(pic.label())
-    ...     print(pic.comment())
     ...     print(pic.value(FOAF.thumbnail).identifier)
     http://example.org/images/person/some1.jpg
     foaf:Image
-    some 1
-    Just an image
     http://example.org/images/person/some1-thumb.jpg
 
     >>> for cv in person.subjects(CV.aboutPerson):
@@ -141,18 +137,6 @@ This is useful for e.g. inspection::
     ...     print(o.qname())
     rdf:type
     foaf:Image
-
-Similarly, adding, setting and removing data is easy::
-
-    >>> thumb.add(RDFS.label, Literal("thumb"))
-    >>> print(thumb.label())
-    thumb
-    >>> thumb.set(RDFS.label, Literal("thumbnail"))
-    >>> print(thumb.label())
-    thumbnail
-    >>> thumb.remove(RDFS.label)
-    >>> list(thumb.objects(RDFS.label))
-    []
 
 
 Schema Example
@@ -199,12 +183,6 @@ Get items from the Choice::
 
     >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    [u'v:One', u'v:Other']
-
-And the sequence of Stuff::
-
-    >>> stuff = Resource(graph, URIRef("http://example.org/def/v#Stuff"))
-    >>> [it.qname() for it in stuff.seq()]
     [u'v:One', u'v:Other']
 
 On add, other resources are auto-unboxed:
