@@ -378,12 +378,6 @@ class Resource(object):
 
         return self._cast(self._graph.value(self._identifier, p, o, default, any))
 
-    def label(self):
-        return self._graph.label(self._identifier)
-
-    def comment(self):
-        return self._graph.comment(self._identifier)
-
     def items(self):
         return self._resources(self._graph.items(self._identifier))
 
@@ -396,9 +390,6 @@ class Resource(object):
         return self._resources(
             self._graph.transitive_subjects(predicate, self._identifier, remember)
         )
-
-    def seq(self):
-        return self._resources(self._graph.seq(self._identifier))
 
     def qname(self):
         return self._graph.qname(self._identifier)
