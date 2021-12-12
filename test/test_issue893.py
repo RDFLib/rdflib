@@ -29,4 +29,5 @@ def test_issue893_ds_unpickle():
         for new_triple, triple in zip(
             new_graph.triples((None, None, None)), graph.triples((None, None, None))
         ):
-            assert new_triple == triple
+            assert new_triple in graph.triples((None, None, None))
+            assert triple in new_graph.triples((None, None, None))
