@@ -1,0 +1,6 @@
+@prefix schema: <http://schema.org/> .
+
+<http://www.lo.pikula> a <http://example.org/NewType>,
+        schema:MusicPlaylist ;
+    schema:additionalType <http://example.org/NewType> ;
+    schema:numTracks "2" .

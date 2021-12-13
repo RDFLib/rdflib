@@ -1,0 +1,4 @@
+@prefix ns1: <http://n.whatwg.org/> .
+
+[] a ns1:work ;
+    ns1:bar [ ns1:baz "Baz" ] .

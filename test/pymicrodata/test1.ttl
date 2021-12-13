@@ -1,0 +1,8 @@
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+[] a vcard:Term ;
+    vcard:locNote "foo" ;
+    vcard:translate "false" ;
+    vcard:value "bar" .
+
+

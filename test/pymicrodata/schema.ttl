@@ -1,0 +1,20 @@
+@prefix schema: <https://schema.org/> .
+
+<http://www.a.b> a schema:MusicPlaylist ;
+    schema:byArtist "AC/DC",
+        "Lynard Skynard" ;
+    schema:name "Classic Rock Playlist" ;
+    schema:numTracks "2" ;
+    schema:tracks <http://ez.van>,
+        <http://na.mi.van> .
+
+<http://ez.van> a schema:MusicRecording ;
+    schema:additionalType <http://www.example.org/NewType> ;
+    schema:byArtist "AC/DC" ;
+    schema:name "Shook you all Night Long" ;
+    schema:url <http://example.org/shook-you-all-night-long> .
+
+<http://na.mi.van> a schema:MusicRecording ;
+    schema:byArtist "Lynard Skynard" ;
+    schema:name "Sweet Home Alabama" ;
+    schema:url <http://example.org/sweet-home-alabama> .
