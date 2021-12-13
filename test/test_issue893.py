@@ -1,9 +1,6 @@
 import pickle
-from pprint import pformat
-from rdflib import logger
 from rdflib.graph import Dataset
 from rdflib.namespace import Namespace
-from rdflib.compare import to_isomorphic
 
 
 def test_issue893_ds_unpickle():
