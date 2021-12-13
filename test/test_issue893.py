@@ -27,6 +27,9 @@ def test_issue893_ds_unpickle():
     ds1graphs = list(ds1.graphs())
     ds2graphs = list(ds2.graphs())
 
+    ds1graphs.sort()
+    ds2graphs.sort()
+
     for new_graph, graph in zip(ds2graphs, ds1graphs):
         assert new_graph.identifier == graph.identifier
         for new_triple, triple in zip(
