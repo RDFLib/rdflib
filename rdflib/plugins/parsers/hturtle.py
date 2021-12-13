@@ -16,10 +16,10 @@ Copyright: W3C
 """
 
 from rdflib.parser import Parser
-from pyRdfa import pyRdfa
-from pyRdfa.options import Options
-from pyRdfa.state import ExecutionContext
-from pyRdfa.embeddedRDF import handle_embeddedRDF
+from .pyRdfa import pyRdfa
+from .pyRdfa.options import Options
+from .pyRdfa.state import ExecutionContext
+from .pyRdfa.embeddedRDF import handle_embeddedRDF
 from .structureddata import _get_orig_source, _check_error
 
 try:
