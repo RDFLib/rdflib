@@ -1,6 +1,9 @@
 import pickle
+from pprint import pformat
+from rdflib import logger
 from rdflib.graph import Dataset
 from rdflib.namespace import Namespace
+from rdflib.compare import to_isomorphic
 
 
 def test_issue893_ds_unpickle():
@@ -24,7 +27,10 @@ def test_issue893_ds_unpickle():
     picklestring = pickle.dumps(ds1)
     ds2 = pickle.loads(picklestring)
 
-    for new_graph, graph in zip(ds2.graphs(), ds1.graphs()):
+    ds1graphs = list(ds1.graphs())
+    ds2graphs = list(ds2.graphs())
+
+    for new_graph, graph in zip(ds2graphs, ds1graphs):
         assert new_graph.identifier == graph.identifier
         for new_triple, triple in zip(
             new_graph.triples((None, None, None)), graph.triples((None, None, None))
