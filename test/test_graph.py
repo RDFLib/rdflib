@@ -311,9 +311,11 @@ class GraphTestCase(unittest.TestCase):
         # URI
         self.graph = Graph()
 
-        # only getting HTML
-        with self.assertRaises(PluginException):
+        try:
+            # getting HTML
             self.graph.parse(location="https://www.google.com")
+        except (URLError, HTTPError):
+            pass
 
         try:
             self.graph.parse(location="http://www.w3.org/ns/adms.ttl")
