@@ -169,16 +169,54 @@ def plugins(
             yield p
 
 
-# Register Store Plugins
-register("default", Store, "rdflib.plugins.stores.memory", "Memory")
-register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
-register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
-register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
-register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("BerkeleyDB", Store, "rdflib.plugins.stores.berkeleydb", "BerkeleyDB")
-register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
+# Register Stores
 register(
-    "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"
+    "default",
+    Store,
+    "rdflib.plugins.stores.memory",
+    "Memory",
+)
+register(
+    "Memory",
+    Store,
+    "rdflib.plugins.stores.memory",
+    "Memory",
+)
+register(
+    "SimpleMemory",
+    Store,
+    "rdflib.plugins.stores.memory",
+    "SimpleMemory",
+)
+register(
+    "Auditable",
+    Store,
+    "rdflib.plugins.stores.auditable",
+    "AuditableStore",
+)
+register(
+    "Concurrent",
+    Store,
+    "rdflib.plugins.stores.concurrent",
+    "ConcurrentStore",
+)
+register(
+    "BerkeleyDB",
+    Store,
+    "rdflib.plugins.stores.berkeleydb",
+    "BerkeleyDB",
+)
+register(
+    "SPARQLStore",
+    Store,
+    "rdflib.plugins.stores.sparqlstore",
+    "SPARQLStore",
+)
+register(
+    "SPARQLUpdateStore",
+    Store,
+    "rdflib.plugins.stores.sparqlstore",
+    "SPARQLUpdateStore",
 )
 
 # Register Triple Serializers
@@ -188,25 +226,84 @@ register(
     "rdflib.plugins.serializers.rdfxml",
     "XMLSerializer",
 )
-register("xml", Serializer, "rdflib.plugins.serializers.rdfxml", "XMLSerializer")
 register(
-    "pretty-xml", Serializer, "rdflib.plugins.serializers.rdfxml", "PrettyXMLSerializer"
+    "xml",
+    Serializer,
+    "rdflib.plugins.serializers.rdfxml",
+    "XMLSerializer",
 )
-register("text/n3", Serializer, "rdflib.plugins.serializers.n3", "N3Serializer")
-register("n3", Serializer, "rdflib.plugins.serializers.n3", "N3Serializer")
 register(
-    "text/turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer"
+    "pretty-xml",
+    Serializer,
+    "rdflib.plugins.serializers.rdfxml",
+    "PrettyXMLSerializer",
 )
-register("turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
-register("turtle2", Serializer, "rdflib.plugins.serializers.turtle2", "TurtleSerializer2")
-register("ttl", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
 register(
-    "application/n-triples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer"
+    "text/n3",
+    Serializer,
+    "rdflib.plugins.serializers.n3",
+    "N3Serializer",
 )
-register("ntriples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
-register("nt", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
-register("nt11", Serializer, "rdflib.plugins.serializers.nt", "NT11Serializer")
-register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
+register(
+    "n3",
+    Serializer,
+    "rdflib.plugins.serializers.n3",
+    "N3Serializer",
+)
+register(
+    "text/turtle",
+    Serializer,
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "turtle",
+    Serializer,
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "ttl",
+    Serializer,
+    "rdflib.plugins.serializers.turtle",
+    "TurtleSerializer",
+)
+register(
+    "longturtle",
+    Serializer,
+    "rdflib.plugins.serializers.longturtle",
+    "LongTurtleSerializer",
+)
+register(
+    "application/n-triples",
+    Serializer,
+    "rdflib.plugins.serializers.nt",
+    "NTSerializer",
+)
+register(
+    "ntriples",
+    Serializer,
+    "rdflib.plugins.serializers.nt",
+    "NTSerializer",
+)
+register(
+    "nt",
+    Serializer,
+    "rdflib.plugins.serializers.nt",
+    "NTSerializer",
+)
+register(
+    "nt11",
+    Serializer,
+    "rdflib.plugins.serializers.nt",
+    "NT11Serializer",
+)
+register(
+    "json-ld",
+    Serializer,
+    "rdflib.plugins.serializers.jsonld",
+    "JsonLDSerializer",
+)
 register(
     "application/ld+json",
     Serializer,
@@ -221,43 +318,180 @@ register(
     "rdflib.plugins.serializers.nquads",
     "NQuadsSerializer",
 )
-register("nquads", Serializer, "rdflib.plugins.serializers.nquads", "NQuadsSerializer")
 register(
-    "application/trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer"
+    "nquads",
+    Serializer,
+    "rdflib.plugins.serializers.nquads",
+    "NQuadsSerializer",
 )
-register("trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer")
 register(
-    "application/trig", Serializer, "rdflib.plugins.serializers.trig", "TrigSerializer"
+    "application/trix",
+    Serializer,
+    "rdflib.plugins.serializers.trix",
+    "TriXSerializer",
 )
-register("trig", Serializer, "rdflib.plugins.serializers.trig", "TrigSerializer")
+register(
+    "trix",
+    Serializer,
+    "rdflib.plugins.serializers.trix",
+    "TriXSerializer",
+)
+register(
+    "application/trig",
+    Serializer,
+    "rdflib.plugins.serializers.trig",
+    "TrigSerializer",
+)
+register(
+    "trig",
+    Serializer,
+    "rdflib.plugins.serializers.trig",
+    "TrigSerializer",
+)
+register(
+    "hext",
+    Serializer,
+    "rdflib.plugins.serializers.hext",
+    "HextuplesSerializer",
+)
 
 # Register Triple Parsers
-register("application/rdf+xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
-register("xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
-register("text/n3", Parser, "rdflib.plugins.parsers.notation3", "N3Parser")
-register("n3", Parser, "rdflib.plugins.parsers.notation3", "N3Parser")
-register("text/turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
-register("turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
-register("ttl", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
-register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
-register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
-register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
-register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
-register("application/ld+json", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
-register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
-
+register(
+    "application/rdf+xml",
+    Parser,
+    "rdflib.plugins.parsers.rdfxml",
+    "RDFXMLParser",
+)
+register(
+    "xml",
+    Parser,
+    "rdflib.plugins.parsers.rdfxml",
+    "RDFXMLParser",
+)
+register(
+    "text/n3",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "N3Parser",
+)
+register(
+    "n3",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "N3Parser",
+)
+register(
+    "text/turtle",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "TurtleParser",
+)
+register(
+    "turtle",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "TurtleParser",
+)
+register(
+    "ttl",
+    Parser,
+    "rdflib.plugins.parsers.notation3",
+    "TurtleParser",
+)
+register(
+    "application/n-triples",
+    Parser,
+    "rdflib.plugins.parsers.ntriples",
+    "NTParser",
+)
+register(
+    "ntriples",
+    Parser,
+    "rdflib.plugins.parsers.ntriples",
+    "NTParser",
+)
+register(
+    "nt",
+    Parser,
+    "rdflib.plugins.parsers.ntriples",
+    "NTParser",
+)
+register(
+    "nt11",
+    Parser,
+    "rdflib.plugins.parsers.ntriples",
+    "NTParser",
+)
+register(
+    "application/ld+json",
+    Parser,
+    "rdflib.plugins.parsers.jsonld",
+    "JsonLDParser",
+)
+register(
+    "json-ld",
+    Parser,
+    "rdflib.plugins.parsers.jsonld",
+    "JsonLDParser",
+)
 
 # Register Quad Parsers
-register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
-register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
-register("application/trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")
-register("trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")
-register("application/trig", Parser, "rdflib.plugins.parsers.trig", "TrigParser")
-register("trig", Parser, "rdflib.plugins.parsers.trig", "TrigParser")
+register(
+    "application/n-quads",
+    Parser,
+    "rdflib.plugins.parsers.nquads",
+    "NQuadsParser",
+)
+register(
+    "nquads",
+    Parser,
+    "rdflib.plugins.parsers.nquads",
+    "NQuadsParser",
+)
+register(
+    "application/trix",
+    Parser,
+    "rdflib.plugins.parsers.trix",
+    "TriXParser",
+)
+register(
+    "trix",
+    Parser,
+    "rdflib.plugins.parsers.trix",
+    "TriXParser",
+)
+register(
+    "application/trig",
+    Parser,
+    "rdflib.plugins.parsers.trig",
+    "TrigParser",
+)
+register(
+    "trig",
+    Parser,
+    "rdflib.plugins.parsers.trig",
+    "TrigParser",
+)
+register(
+    "hext",
+    Parser,
+    "rdflib.plugins.parsers.hext",
+    "HextuplesParser",
+)
 
 # Register SPARQL Processors
-register("sparql", Result, "rdflib.plugins.sparql.processor", "SPARQLResult")
-register("sparql", Processor, "rdflib.plugins.sparql.processor", "SPARQLProcessor")
+register(
+    "sparql",
+    Result,
+    "rdflib.plugins.sparql.processor",
+    "SPARQLResult",
+)
+register(
+    "sparql",
+    Processor,
+    "rdflib.plugins.sparql.processor",
+    "SPARQLProcessor",
+)
 register(
     "sparql",
     UpdateProcessor,
@@ -311,7 +545,10 @@ register(
 
 # Register SPARQL Result Parsers
 register(
-    "xml", ResultParser, "rdflib.plugins.sparql.results.xmlresults", "XMLResultParser"
+    "xml",
+    ResultParser,
+    "rdflib.plugins.sparql.results.xmlresults",
+    "XMLResultParser",
 )
 register(
     "application/sparql-results+xml",
@@ -344,7 +581,10 @@ register(
     "JSONResultParser",
 )
 register(
-    "csv", ResultParser, "rdflib.plugins.sparql.results.csvresults", "CSVResultParser"
+    "csv",
+    ResultParser,
+    "rdflib.plugins.sparql.results.csvresults",
+    "CSVResultParser",
 )
 register(
     "text/csv",
@@ -353,7 +593,10 @@ register(
     "CSVResultParser",
 )
 register(
-    "tsv", ResultParser, "rdflib.plugins.sparql.results.tsvresults", "TSVResultParser"
+    "tsv",
+    ResultParser,
+    "rdflib.plugins.sparql.results.tsvresults",
+    "TSVResultParser",
 )
 register(
     "text/tab-separated-values",

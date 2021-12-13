@@ -43,7 +43,6 @@ from rdflib.exceptions import ParserError
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
-from rdflib.compat import narrow_build
 
 __all__ = [
     "BadSyntax",
@@ -327,7 +326,7 @@ unicodeEscape8 = re.compile(r"\\U([0-9a-fA-F]{8})")
 
 N3CommentCharacter = "#"  # For unix script  # ! compatibility
 
-########################################## Parse string to sink
+# Parse string to sink
 #
 # Regular expressions:
 eol = re.compile(r"[ \t]*(#[^\n]*)?\r?\n")  # end  of line, poss. w/comment
@@ -604,10 +603,7 @@ class SinkParser:
                 self.BadSyntax(
                     argstr,
                     j,
-                    "With no base URI, cannot use "
-                    + "relative URI in @prefix <"
-                    + ns
-                    + ">",
+                    f"With no base URI, cannot use relative URI in @prefix <{ns}>",
                 )
             assert ":" in ns  # must be absolute
             self._bindings[t[0][0]] = ns

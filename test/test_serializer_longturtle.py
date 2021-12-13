@@ -1,9 +1,9 @@
-# tests for the turtle2 serializer
+# tests for the longturtle Serializer
 
 from rdflib import Graph
 
 
-def test_turtle2():
+def test_longturtle():
     g = Graph()
 
     g.parse(
@@ -86,7 +86,7 @@ def test_turtle2():
         """,
         format="turtle",
     )
-    s = g.serialize(format="turtle2")
+    s = g.serialize(format="longturtle")
     lines = s.split("\n")
 
     assert "ex:b" in lines
