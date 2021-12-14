@@ -1,5 +1,6 @@
 import pytest
 import os
+import sys
 import shutil
 from tempfile import gettempdir
 from pprint import pformat
@@ -231,20 +232,16 @@ def test_iter_pr1382_add_iter_to_ds(get_dataset):
     logger.debug(f"""{i_new} {i_trad}""")
 
 
-# @pytest.mark.skip
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test__issue_758_sparqlstore_is_incorrectly_readonly(get_dataset):
 
     # STATUS: FIXME Remains an issue
 
     #  Cannot enumerate dataset graphs #758
-    import urllib.request
 
     dataset = Dataset(store="SPARQLStore")
 
-    try:
-        dataset.open("http://localhost:3030/db/query")
-    except urllib.error.URLError:
-        pytest.skip("test requires connection to localhost SPARQL server")
+    dataset.open("http://localhost:3030/db/query")
 
     # Incorrectly raises TypeError: SPARQL Store is read only
     try:
