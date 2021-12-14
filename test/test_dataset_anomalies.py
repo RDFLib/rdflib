@@ -396,7 +396,7 @@ def test_issue167_clarify_context_element_needs_final_clarification(
     # [(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]
 
 
-# @pytest.mark.skip
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_issue_167_sparqlupdatestore_compatibility(get_dataset):
 
     # STATUS: FIXED no longer an issue
