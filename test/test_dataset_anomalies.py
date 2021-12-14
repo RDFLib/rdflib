@@ -237,10 +237,14 @@ def test__issue_758_sparqlstore_is_incorrectly_readonly(get_dataset):
     # STATUS: FIXME Remains an issue
 
     #  Cannot enumerate dataset graphs #758
+    import urllib.request
 
     dataset = Dataset(store="SPARQLStore")
 
-    dataset.open("http://localhost:3030/db/query")
+    try:
+        dataset.open("http://localhost:3030/db/query")
+    except urllib.error.URLError:
+        pytest.skip("test requires connection to localhost SPARQL server")
 
     # Incorrectly raises TypeError: SPARQL Store is read only
     try:
