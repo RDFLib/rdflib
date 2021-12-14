@@ -7,7 +7,7 @@ graphs that can be used and queried. The store that backs the graph
 >>> g = ConjunctiveGraph()
 >>> data = open("test/nquads.rdflib/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
-<Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+<Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
 >>> assert len(g.store) == 449
 >>> # There should be 16 separate contexts
 >>> assert len([x for x in g.store.contexts()]) == 16

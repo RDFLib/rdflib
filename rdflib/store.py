@@ -7,6 +7,8 @@ if TYPE_CHECKING:
     from rdflib.term import Node
     from rdflib.graph import Graph
 
+from rdflib.term import Identifier
+
 """
 ============
 rdflib.store
@@ -156,7 +158,7 @@ class Store(object):
             from rdflib.term import URIRef
             from rdflib.term import BNode
             from rdflib.term import Literal
-            from rdflib.graph import Graph, QuotedGraph
+            from rdflib.graph import QuotedGraph
             from rdflib.term import Variable
 
             self.__node_pickler = np = NodePickler()
@@ -164,7 +166,6 @@ class Store(object):
             np.register(URIRef, "U")
             np.register(BNode, "B")
             np.register(Literal, "L")
-            np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
         return self.__node_pickler
@@ -213,6 +214,10 @@ class Store(object):
         context: Optional["Graph"],
         quoted: bool = False,
     ):
+        # DOCNOTE: in “to a specific context or to the model”, the term
+        # “model” assumes some widely-understood distinction between context
+        # and model which isn't the case and it needs to be rewritten so that
+        # it is terminologically clear.
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -221,6 +226,23 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
+
+        # DEVNOTE: Introduced in:
+        # https://github.com/RDFLib/rdflib/blob/ad23b33edd.../rdflib/store.py#L209
+        # but marked as an ereor by mypy because it is unreachable:
+        # “Subclass of "Graph" and "Identifier" cannot exist,
+        # would have incompatible method structure.”
+        # Likely that this addition is superfluous in the current type-checked context
+        # and commenting it out doesn't cause any test failures
+
+        # if not isinstance(context, Identifier):
+        #     raise Exception(
+        #         "Trying to add to a context that isn't an identifier: %s" % context
+        #     )
+
+        # DEVNOTE: Correspondingly marked as an error by mypy, Statement is unreachable.
+        # but not marked as error my mypy when above check is commented out
+
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
@@ -238,8 +260,27 @@ class Store(object):
             )
             self.add((s, p, o), c)
 
-    def remove(self, triple, context=None):
+    # DEVNOTE: added type-checking, following the pattern exemplified in `add` above
+    def remove(
+        self,
+        triple: Tuple["Node", "Node", "Node"],
+        context: Optional["Graph"],
+    ):
         """Remove the set of triples matching the pattern from the store"""
+
+        # DEVNOTE: Introduced in:
+        # https://github.com/RDFLib/rdflib/blob/ad23b33edd.../rdflib/store.py#L229
+        # but marked as an ereor by mypy because it is unreachable:
+        # “Subclass of "Graph" and "Identifier" cannot exist,
+        # would have incompatible method structure.”
+        # Likely that this addition is superfluous in the current type-checked context
+        # and commenting it out doesn't cause any test failures
+
+        # if context is not None and not isinstance(context, Identifier):
+        #     raise Exception(
+        #         "Trying to remove from a context that isn't an identifier: %s" % context
+        #     )
+
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):

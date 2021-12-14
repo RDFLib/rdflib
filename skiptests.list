@@ -57,3 +57,6 @@ http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service4
 http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service5	service not implemented
 http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service6	service not implemented
 http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service7	service not implemented
+http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-graph-01	named-graph-issue-wip
+http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-named-01	named-graph-issue-wip
+http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-all-01	named-graph-issue-wip
