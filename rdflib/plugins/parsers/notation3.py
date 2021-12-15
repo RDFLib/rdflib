@@ -1899,8 +1899,7 @@ class TurtleParser(Parser):
 
         if encoding not in [None, "utf-8"]:
             raise ParserError(
-                "N3/Turtle files are always utf-8 encoded, I was passed: %s"
-                % encoding
+                "N3/Turtle files are always utf-8 encoded, I was passed: %s" % encoding
             )
 
         sink = RDFSink(graph)

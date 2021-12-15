@@ -37,7 +37,7 @@ from .keys import (
 from .errors import (
     INVALID_REMOTE_CONTEXT,
     RECURSIVE_CONTEXT_INCLUSION,
-    INVALID_CONTEXT_ENTRY
+    INVALID_CONTEXT_ENTRY,
 )
 from .util import source_to_json, urljoin, urlsplit, split_iri, norm_url
 
