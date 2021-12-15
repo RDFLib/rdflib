@@ -68,8 +68,7 @@ class JsonLDSerializer(Serializer):
         encoding = encoding or "utf-8"
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. "
-                + "Given encoding was: %s" % encoding
+                "JSON should be encoded as unicode. " f"Given encoding was: {encoding}"
             )
 
         context_data = kwargs.get("context")
