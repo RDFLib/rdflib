@@ -34,8 +34,8 @@ class NTSerializer(Serializer):
             warnings.warn("NTSerializer does not support base.")
         if encoding != "utf-8":
             warnings.warn(
-                "NTSerializer always uses UTF-8 encoding."
-                + "Given encoding was: %s" % encoding
+                "NTSerializer always uses UTF-8 encoding. "
+                f"Given encoding was: {encoding}"
             )
 
         for triple in self.store:
