@@ -22,6 +22,7 @@ from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.request import urlopen
 from urllib.error import HTTPError
+import urllib.parse
 
 from xml.sax import xmlreader
 
@@ -37,6 +38,54 @@ __all__ = [
     "FileInputSource",
     "PythonInputSource",
 ]
+
+
+def _iri2uri(iri):
+    """
+    Convert an IRI to a URI (Python 3).
+    https://stackoverflow.com/a/42309027
+
+    https://stackoverflow.com/a/40654295
+
+    netloc should be encoded using IDNA;
+    non-ascii URL path should be encoded to UTF-8 and then percent-escaped;
+    non-ascii query parameters should be encoded to the encoding of a page
+    URL was extracted from (or to the encoding server uses), then
+    percent-escaped.
+
+    >>> _iri2uri("https://dbpedia.org/resource/Almería")
+    'https://dbpedia.org/resource/Almer%C3%ADa'
+    """
+
+    uri = ""
+
+    if isinstance(iri, str):
+        (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(iri)
+        # Just support http/https, otherwise return the iri unmolested
+        if scheme not in ["http", "https"]:
+            return iri
+        scheme = urllib.parse.quote(scheme)
+        netloc = netloc.encode("idna").decode("utf-8")
+        path = urllib.parse.quote(path)
+        # query = urllib.parse.quote(query)
+
+        # ^^^^^ The encoding of "=" as "%3D" causes the failure of
+        # test/test_graph.py::GraphTestCase::testGuessFormatForParse
+        # in that https://linked.data.gov.au/def/agrif?_format=text/turtle
+        # becomes https://linked.data.gov.au/def/agrif?_format%3dtext/turtle
+        # which yields a text/html mimetype, triggering a "no plugin found"
+        # Exception. So, either decode the "%3D" or skip the conversion of
+        # query params altogether.
+        query = urllib.parse.unquote(urllib.parse.quote(query))
+
+        fragment = urllib.parse.quote(fragment)
+        uri = urllib.parse.urlunsplit((scheme, netloc, path, query, fragment))
+
+    # urllib omits the empty fragment identifier, so it has to be explicitly restored
+    if iri.endswith("#") and not uri.endswith("#"):
+        uri += "#"
+
+    return uri
 
 
 class Parser(object):
@@ -366,6 +415,7 @@ def _create_input_source_from_location(file, format, input_source, location):
 
     base = pathlib.Path.cwd().as_uri()
 
+    location = _iri2uri(location)
     absolute_location = URIRef(location, base=base)
 
     if absolute_location.startswith("file:///"):
