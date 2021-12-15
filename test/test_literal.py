@@ -48,6 +48,11 @@ class TestNew(unittest.TestCase):
             TypeError, Literal, "foo", lang="en", datatype=URIRef("http://example.com/")
         )
 
+    def testCantPassInvalidLang(self):
+        self.assertRaises(
+            ValueError, Literal, "foo", lang="999"
+        )
+
     def testFromOtherLiteral(self):
         l = Literal(1)
         l2 = Literal(l)

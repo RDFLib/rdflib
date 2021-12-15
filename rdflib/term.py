@@ -548,7 +548,7 @@ class Literal(Identifier):
             )
 
         if lang and not _is_valid_langtag(lang):
-            raise Exception("'%s' is not a valid language tag!" % lang)
+            raise ValueError("'%s' is not a valid language tag!" % lang)
 
         if datatype:
             datatype = URIRef(datatype)
