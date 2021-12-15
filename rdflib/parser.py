@@ -62,7 +62,7 @@ def _iri2uri(iri):
     if isinstance(iri, str):
         (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(iri)
         # Just support http/https, otherwise return the iri unmolested
-        if netloc not in ["http", "https"]:
+        if scheme not in ["http", "https"]:
             return iri
         scheme = urllib.parse.quote(scheme)
         netloc = netloc.encode("idna").decode("utf-8")
