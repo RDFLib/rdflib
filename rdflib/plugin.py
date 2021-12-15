@@ -435,8 +435,6 @@ register(
     "JsonLDParser",
 )
 
-# The basic parsers: RDFa (by default, 1.1),
-# microdata, and embedded turtle (a.k.a. hturtle)
 register(
     "hturtle",
     Parser,
@@ -504,6 +502,7 @@ register(
     "rdflib.plugins.parsers.structureddata",
     "StructuredDataParser",
 )
+
 
 # Register Quad Parsers
 register(

@@ -52,8 +52,8 @@ def _get_orig_source(source):
 
 
 def _check_error(graph):
-    from .pyRdfa import RDFA_Error, ns_rdf
-    from .pyRdfa.options import ns_dc
+    from pyRdfa import RDFA_Error, ns_rdf
+    from pyRdfa.options import ns_dc
 
     for (s, p, o) in graph.triples((None, ns_rdf["type"], RDFA_Error)):
         for (x, y, msg) in graph.triples((s, ns_dc["description"], None)):
@@ -172,8 +172,8 @@ class RDFaParser(Parser):
         refresh_vocab_cache=False,
         check_lite=False,
     ):
-        from .pyRdfa import pyRdfa
-        from .pyRdfa.options import Options
+        from pyRdfa import pyRdfa
+        from pyRdfa.options import Options
         from rdflib import Graph
 
         processor_graph = pgraph if pgraph is not None else Graph()
