@@ -61,6 +61,9 @@ def _iri2uri(iri):
 
     if isinstance(iri, str):
         (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(iri)
+        # If iri is filesystem resource, just return it unconverted
+        if netloc == "":
+            return iri
         scheme = urllib.parse.quote(scheme)
         netloc = netloc.encode("idna").decode("utf-8")
         path = urllib.parse.quote(path)
