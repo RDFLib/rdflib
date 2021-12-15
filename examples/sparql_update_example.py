@@ -7,7 +7,7 @@ import rdflib
 if __name__ == "__main__":
 
     g = rdflib.Graph()
-    g.load("foaf.n3", format="n3")
+    g.parse("foaf.n3", format="n3")
 
     print(f"Initially there are {len(g)} triples in the graph")
 

@@ -766,117 +766,6 @@ class Graph(Node):
                     pass
         return retval
 
-    def label(self, subject, default=""):
-        """Query for the RDFS.label of the subject
-
-        Return default if no label exists or any label if multiple exist.
-        """
-        warn(
-            DeprecationWarning(
-                "graph.label() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if subject is None:
-            return default
-        return self.value(subject, namespace.RDFS.label, default=default, any=True)
-
-    def preferredLabel(
-        self,
-        subject,
-        lang=None,
-        default=None,
-        labelProperties=(namespace.SKOS.prefLabel, namespace.RDFS.label),
-    ):
-        """
-        Find the preferred label for subject.
-
-        By default prefers skos:prefLabels over rdfs:labels. In case at least
-        one prefLabel is found returns those, else returns labels. In case a
-        language string (e.g., "en", "de" or even "" for no lang-tagged
-        literals) is given, only such labels will be considered.
-
-        Return a list of (labelProp, label) pairs, where labelProp is either
-        skos:prefLabel or rdfs:label.
-
-        >>> from rdflib import ConjunctiveGraph, URIRef, Literal, namespace
-        >>> from pprint import pprint
-        >>> g = ConjunctiveGraph()
-        >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> g.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('bar')),
-         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('foo'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla')),
-          (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en'))]
-        >>> g.preferredLabel(u, lang="") #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> pprint(g.preferredLabel(u, lang="en"))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en'))]
-        """
-        warn(
-            DeprecationWarning(
-                "graph.preferredLabel() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if default is None:
-            default = []
-
-        # setup the language filtering
-        if lang is not None:
-            if lang == "":  # we only want not language-tagged literals
-
-                def langfilter(l_):
-                    return l_.language is None
-
-            else:
-
-                def langfilter(l_):
-                    return l_.language == lang
-
-        else:  # we don't care about language tags
-
-            def langfilter(l_):
-                return True
-
-        for labelProp in labelProperties:
-            labels = list(filter(langfilter, self.objects(subject, labelProp)))
-            if len(labels) == 0:
-                continue
-            else:
-                return [(labelProp, l_) for l_ in labels]
-        return default
-
-    def comment(self, subject, default=""):
-        """Query for the RDFS.comment of the subject
-
-        Return default if no comment exists
-        """
-        warn(
-            DeprecationWarning(
-                "graph.comment() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if subject is None:
-            return default
-        return self.value(subject, namespace.RDFS.comment, default=default, any=True)
-
     def items(self, list):
         """Generator over all items in the resource specified by list
 
@@ -980,21 +869,6 @@ class Graph(Node):
         for subject in self.subjects(predicate, object):
             for s in self.transitive_subjects(predicate, subject, remember):
                 yield s
-
-    def seq(self, subject):
-        """Check if subject is an rdf:Seq
-
-        If yes, it returns a Seq class instance, None otherwise.
-        """
-        warn(
-            DeprecationWarning(
-                "graph.seq() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if (subject, RDF.type, RDF.Seq) in self:
-            return Seq(self, subject)
-        else:
-            return None
 
     def qname(self, uri):
         return self.namespace_manager.qname(uri)
@@ -1269,15 +1143,6 @@ class Graph(Node):
             if source.auto_close:
                 source.close()
         return self
-
-    def load(self, source, publicID=None, format="xml"):
-        warn(
-            DeprecationWarning(
-                "graph.load() is deprecated, it will be removed in rdflib 6.0.0. "
-                "Please use graph.parse() instead."
-            )
-        )
-        return self.parse(source, publicID, format)
 
     def query(
         self,

@@ -61,7 +61,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
         return None
 
     g = Graph()
-    g.load(f, publicID=base, format="turtle")
+    g.parse(f, publicID=base, format="turtle")
 
     for m in g.subjects(RDF.type, MF.Manifest):
 

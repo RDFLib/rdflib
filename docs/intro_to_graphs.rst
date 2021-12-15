@@ -73,7 +73,7 @@ For example:
 
 .. code-block:: python
 
-    g.load("some_foaf.ttl")
+    g.parse("some_foaf.ttl")
     # find all subjects (s) of type (rdf:type) person (foaf:Person)
     for s, p, o in g.triples((None, RDF.type, FOAF.Person)):
         print(f"{s} is a person")
