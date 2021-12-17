@@ -64,6 +64,30 @@ Check types with `mypy <http://mypy-lang.org/>`_:
 
     python -m mypy --show-error-context --show-error-codes rdflib
 
+Using tox
+---------------------
+
+RDFLib has a `tox <https://tox.wiki/en/latest/index.html>`_ config file that
+makes it easier to run validation on all supported python versions.
+
+.. code-block:: bash
+
+    # install tox
+    pip install tox
+
+    # list tox environments that run by default
+    tox -e
+
+    # list all tox environments
+    tox -a
+
+    # run default environment for all python versions
+    tox
+
+    # run a specific environment
+    tox -e py37 # default environment with py37
+    tox -e py39-mypy # mypy environment with py39
+
 Writing documentation
 ---------------------
 
