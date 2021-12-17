@@ -258,9 +258,9 @@ class TestXsdLiterals(unittest.TestCase):
 
     def check_make_literals(self, inputs):
         for literal_pair in inputs:
-            (lexical, type, value_cls) = literal_pair
+            (lexical, _type, value_cls) = literal_pair
             with self.subTest(f"testing {literal_pair}"):
-                literal = Literal(lexical, datatype=type)
+                literal = Literal(lexical, datatype=_type)
                 if value_cls is not None:
                     self.assertIsInstance(literal.value, value_cls)
                 else:
