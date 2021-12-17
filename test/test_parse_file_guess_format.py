@@ -7,9 +7,13 @@ from tempfile import TemporaryDirectory
 from rdflib.exceptions import ParserError
 
 from rdflib import Graph
+from rdflib.util import guess_format
 
 
 class FileParserGuessFormatTest(unittest.TestCase):
+    def test_guess_format(self):
+        self.assertEqual(guess_format("example.trix"), "trix")
+
     def test_jsonld(self):
         g = Graph()
         self.assertIsInstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
