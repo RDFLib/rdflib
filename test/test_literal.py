@@ -4,7 +4,7 @@ import datetime
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
-from rdflib.namespace import XSD
+from rdflib import XSD
 
 
 class TestLiteral(unittest.TestCase):
