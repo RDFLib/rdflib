@@ -86,7 +86,7 @@ def rdfs2dot(g, stream, opts={}):
         return nodes[nd]
 
     def label(xx, grf):
-        lbl = g.value(xx, RDFS.label)
+        lbl = grf.value(xx, RDFS.label)
         if lbl is None:
             try:
                 lbl = grf.namespace_manager.compute_qname(xx)[2]
