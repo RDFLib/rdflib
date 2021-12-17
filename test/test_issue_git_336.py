@@ -18,7 +18,7 @@ from rdflib.plugins.parsers.notation3 import BadSyntax
 """
 
 
-def test_ns_localname_roundtrip():
+def test_ns_localname_roundtrip() -> None:
 
     XNS = rdflib.Namespace("http://example.net/fs")
 
