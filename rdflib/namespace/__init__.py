@@ -521,7 +521,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def bind(self, prefix, namespace, override=True, replace=False):
+    def bind(self, prefix, namespace, override=True, replace=False) -> None:
         """bind a given namespace to the prefix
 
         if override, rebind, even if the given namespace is already
