@@ -74,7 +74,7 @@ jobs:
           black --config black.toml --check ./rdflib || true
           flake8 --exit-zero rdflib
           mypy --show-error-context --show-error-codes rdflib
-          mypy --show-error-context --show-error-codes --strict test/test_issue1447.py
+          mypy --show-error-context --show-error-codes --strict test/test_issue1447.py test/test_literal.py
           if [ "${{ matrix.os }}" == "windows-latest" ]
           then
             pytest -ra --cov

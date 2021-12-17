@@ -1,6 +1,7 @@
 from decimal import Decimal
 import unittest
 import datetime
+import typing
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
@@ -8,20 +9,20 @@ from rdflib import XSD
 
 
 class TestLiteral(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def test_repr_apostrophe(self):
+    def test_repr_apostrophe(self) -> None:
         a = rdflib.Literal("'")
         b = eval(repr(a))
         self.assertEqual(a, b)
 
-    def test_repr_quote(self):
+    def test_repr_quote(self) -> None:
         a = rdflib.Literal('"')
         b = eval(repr(a))
         self.assertEqual(a, b)
 
-    def test_backslash(self):
+    def test_backslash(self) -> None:
         d = r"""
 <rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -37,23 +38,23 @@ class TestLiteral(unittest.TestCase):
         b = list(g.objects())[0]
         self.assertEqual(a, b)
 
-    def test_literal_from_bool(self):
+    def test_literal_from_bool(self) -> None:
         l = rdflib.Literal(True)
         self.assertEqual(l.datatype, rdflib.XSD["boolean"])
 
 
 class TestNew(unittest.TestCase):
-    def testCantPassLangAndDatatype(self):
+    def testCantPassLangAndDatatype(self) -> None:
         self.assertRaises(
             TypeError, Literal, "foo", lang="en", datatype=URIRef("http://example.com/")
         )
 
-    def testCantPassInvalidLang(self):
+    def testCantPassInvalidLang(self) -> None:
         self.assertRaises(
             ValueError, Literal, "foo", lang="999"
         )
 
-    def testFromOtherLiteral(self):
+    def testFromOtherLiteral(self) -> None:
         l = Literal(1)
         l2 = Literal(l)
         self.assertTrue(isinstance(l.value, int))
@@ -64,7 +65,7 @@ class TestNew(unittest.TestCase):
         l2 = Literal(l, datatype=rdflib.XSD.integer)
         self.assertTrue(isinstance(l2.value, int))
 
-    def testDatatypeGetsAutoURIRefConversion(self):
+    def testDatatypeGetsAutoURIRefConversion(self) -> None:
         # drewp disapproves of this behavior, but it should be
         # represented in the tests
         x = Literal("foo", datatype="http://example.com/")
@@ -75,22 +76,22 @@ class TestNew(unittest.TestCase):
 
 
 class TestRepr(unittest.TestCase):
-    def testOmitsMissingDatatypeAndLang(self):
+    def testOmitsMissingDatatypeAndLang(self) -> None:
         self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal('foo')")
 
-    def testOmitsMissingDatatype(self):
+    def testOmitsMissingDatatype(self) -> None:
         self.assertEqual(
             repr(Literal("foo", lang="en")),
             "rdflib.term.Literal('foo', lang='en')",
         )
 
-    def testOmitsMissingLang(self):
+    def testOmitsMissingLang(self) -> None:
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef("http://example.com/"))),
             "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))",
         )
 
-    def testSubclassNameAppearsInRepr(self):
+    def testSubclassNameAppearsInRepr(self) -> None:
         class MyLiteral(Literal):
             pass
 
@@ -99,7 +100,7 @@ class TestRepr(unittest.TestCase):
 
 
 class TestDoubleOutput(unittest.TestCase):
-    def testNoDanglingPoint(self):
+    def testNoDanglingPoint(self) -> None:
         """confirms the fix for https://github.com/RDFLib/rdflib/issues/237"""
         vv = Literal("0.88", datatype=_XSD_DOUBLE)
         out = vv._literal_n3(use_plain=True)
@@ -109,19 +110,19 @@ class TestDoubleOutput(unittest.TestCase):
 class TestParseBoolean(unittest.TestCase):
     """confirms the fix for https://github.com/RDFLib/rdflib/issues/913"""
 
-    def testTrueBoolean(self):
+    def testTrueBoolean(self) -> None:
         test_value = Literal("tRue", datatype=_XSD_BOOLEAN)
         self.assertTrue(test_value.value)
         test_value = Literal("1", datatype=_XSD_BOOLEAN)
         self.assertTrue(test_value.value)
 
-    def testFalseBoolean(self):
+    def testFalseBoolean(self) -> None:
         test_value = Literal("falsE", datatype=_XSD_BOOLEAN)
         self.assertFalse(test_value.value)
         test_value = Literal("0", datatype=_XSD_BOOLEAN)
         self.assertFalse(test_value.value)
 
-    def testNonFalseBoolean(self):
+    def testNonFalseBoolean(self) -> None:
         test_value = Literal("abcd", datatype=_XSD_BOOLEAN)
         self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
@@ -131,12 +132,12 @@ class TestParseBoolean(unittest.TestCase):
 
 
 class TestBindings(unittest.TestCase):
-    def testBinding(self):
+    def testBinding(self) -> None:
         class a:
-            def __init__(self, v):
+            def __init__(self, v: str) -> None:
                 self.v = v[3:-3]
 
-            def __str__(self):
+            def __str__(self) -> str:
                 return "<<<%s>>>" % self.v
 
         dtA = rdflib.URIRef("urn:dt:a")
@@ -152,10 +153,10 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(la2.value.v, va.v)
 
         class b:
-            def __init__(self, v):
+            def __init__(self, v: str) -> None:
                 self.v = v[3:-3]
 
-            def __str__(self):
+            def __str__(self) -> str:
                 return "B%s" % self.v
 
         dtB = rdflib.URIRef("urn:dt:b")
@@ -166,11 +167,11 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(lb.value, vb)
         self.assertEqual(lb.datatype, dtB)
 
-    def testSpecificBinding(self):
-        def lexify(s):
+    def testSpecificBinding(self) -> None:
+        def lexify(s: str) -> str:
             return "--%s--" % s
 
-        def unlexify(s):
+        def unlexify(s: str) -> str:
             return s[2:-2]
 
         datatype = rdflib.URIRef("urn:dt:mystring")
@@ -191,7 +192,7 @@ class TestBindings(unittest.TestCase):
 
 
 class TestXsdLiterals(unittest.TestCase):
-    def test_make_literals(self):
+    def test_make_literals(self) -> None:
         """
         Tests literal construction.
         """
@@ -239,7 +240,7 @@ class TestXsdLiterals(unittest.TestCase):
         self.check_make_literals(inputs)
 
     @unittest.expectedFailure
-    def test_make_literals_ki(self):
+    def test_make_literals_ki(self) -> None:
         """
         Known issues with literal construction.
         """
@@ -257,7 +258,7 @@ class TestXsdLiterals(unittest.TestCase):
         ]
         self.check_make_literals(inputs)
 
-    def check_make_literals(self, inputs):
+    def check_make_literals(self, inputs: typing.Sequence[typing.Tuple[str, URIRef, typing.Optional[type]]]) -> None:
         for literal_pair in inputs:
             (lexical, _type, value_cls) = literal_pair
             with self.subTest(f"testing {literal_pair}"):
