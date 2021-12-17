@@ -227,6 +227,7 @@ class TestXsdLiterals(unittest.TestCase):
             ("2002", XSD.gYear, datetime.date),
             ("1921-05-01T00:00:00+00:30", XSD.dateTime, datetime.datetime),
             ("1921-05-01T00:00:00-00:30", XSD.dateTime, datetime.datetime),
+            ("true", XSD.boolean, bool),
             ("abcdef0123", XSD.hexBinary, bytes),
             ("", XSD.hexBinary, bytes),
             ("UkRGTGli", XSD.base64Binary, bytes),
