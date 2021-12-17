@@ -1,10 +1,13 @@
 from decimal import Decimal
+from typing import Any, Optional, Type
 import unittest
 import datetime
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from rdflib.namespace import XSD
+
+import pytest
 
 
 class TestLiteral(unittest.TestCase):
@@ -42,15 +45,39 @@ class TestLiteral(unittest.TestCase):
         self.assertEqual(l.datatype, rdflib.XSD["boolean"])
 
 
+class TestNewPT:
+    # NOTE: TestNewPT is written for pytest so that pytest features like
+    # parametrize can be used.
+    # New tests should be added here instead of in TestNew.
+    @pytest.mark.parametrize(
+        "lang, exception_type",
+        [
+            ({}, TypeError),
+            ([], TypeError),
+            (1, TypeError),
+            (b"en", TypeError),
+            ("999", ValueError),
+            ("-", ValueError),
+        ],
+    )
+    def test_cant_pass_invalid_lang(
+        self,
+        lang: Any,
+        exception_type: Type[Exception],
+    ):
+        """
+        Construction of Literal fails if the language tag is invalid.
+        """
+        with pytest.raises(exception_type):
+            Literal("foo", lang=lang)
+
+
 class TestNew(unittest.TestCase):
+    # NOTE: Please use TestNewPT for new tests instead of this which is written
+    # for unittest.
     def testCantPassLangAndDatatype(self):
         self.assertRaises(
             TypeError, Literal, "foo", lang="en", datatype=URIRef("http://example.com/")
-        )
-
-    def testCantPassInvalidLang(self):
-        self.assertRaises(
-            ValueError, Literal, "foo", lang="999"
         )
 
     def testFromOtherLiteral(self):
