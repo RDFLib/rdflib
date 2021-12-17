@@ -44,6 +44,7 @@ def source_to_json(source):
     finally:
         stream.close()
 
+
 VOCAB_DELIMS = ("#", "/", ":")
 
 
