@@ -11,25 +11,25 @@ from rdflib.util import guess_format
 
 
 class FileParserGuessFormatTest(unittest.TestCase):
-    def test_guess_format(self):
+    def test_guess_format(self) -> None:
         self.assertEqual(guess_format("example.trix"), "trix")
 
-    def test_jsonld(self):
+    def test_jsonld(self) -> None:
         g = Graph()
         self.assertIsInstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
         self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json"), Graph)
         self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json-ld"), Graph)
         self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.jsonld"), Graph)
 
-    def test_ttl(self):
+    def test_ttl(self) -> None:
         g = Graph()
         self.assertIsInstance(g.parse("test/w3c/turtle/IRI_subject.ttl"), Graph)
 
-    def test_n3(self):
+    def test_n3(self) -> None:
         g = Graph()
         self.assertIsInstance(g.parse("test/n3/example-lots_of_graphs.n3"), Graph)
 
-    def test_warning(self):
+    def test_warning(self) -> None:
         g = Graph()
         graph_logger = logging.getLogger("rdflib")
 
