@@ -101,6 +101,9 @@ class Namespace(str):
     False
     """
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__()
+
     def __new__(cls, value):
         try:
             rt = str.__new__(cls, value)
