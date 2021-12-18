@@ -26,22 +26,46 @@ did not break anything.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
 
+Tests
+-----
+
+RDFLib uses the `pytest <https://docs.pytest.org/en/latest/>`_ testing framework.
 
 Running tests
--------------
-Run tests with `pytest <https://docs.pytest.org/en/latest/>`_:
+~~~~~~~~~~~~~
+
+To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
 .. code-block:: bash
 
    $ pip install -r requirements.txt -r requirements.dev.txt
    $ pytest
 
-
 Specific tests can be run by file name. For example:
 
 .. code-block:: bash
 
   $ pytest test/test_graph.py
+
+Writing tests
+~~~~~~~~~~~~~
+
+New tests should be written for `pytest <https://docs.pytest.org/en/latest/>`_
+instead of for python's built-in `unittest` module as pytest provides advanced
+features such as parameterization and more flexibility in writing expected
+failure tests than `unittest`.
+
+A primer on how to write tests for pytest can be found `here
+<https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test>`_.
+
+The existing test that use `unittest` work well with pytest, but they should
+ideally be updated to the pytest test-style when they are touched.
+
+Test should go into the ``test/`` directory, either into an existing test file
+with a name that is applicable to the test being written, or into a new test
+file with a name that is descriptive of the tests placed in it. Test files
+should be named `test_*.py` so that `pytest can discover them
+<https://docs.pytest.org/en/latest/explanation/goodpractices.html#conventions-for-python-test-discovery>`_.
 
 Running static checks
 ---------------------
