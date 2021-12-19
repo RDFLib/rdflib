@@ -1,0 +1,5 @@
+{
+  "@context": {
+    "foo": {"@id": "http://example/foo", "@prefix": true}
+  }
+}

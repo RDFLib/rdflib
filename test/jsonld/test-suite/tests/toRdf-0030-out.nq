@@ -1,0 +1,7 @@
+<http://example.org/linked-data-graph> <http://example.org/asOf> "2012-04-09"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://greggkellogg.net/foaf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <foaf:Person> <http://example.org/linked-data-graph> .
+<http://greggkellogg.net/foaf#me> <http://xmlns.com/foaf/0.1/knows> "http://manu.sporny.org/i/public" <http://example.org/linked-data-graph> .
+<http://greggkellogg.net/foaf#me> <http://xmlns.com/foaf/0.1/name> "Gregg Kellogg" <http://example.org/linked-data-graph> .
+<http://manu.sporny.org/i/public> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <foaf:Person> <http://example.org/linked-data-graph> .
+<http://manu.sporny.org/i/public> <http://xmlns.com/foaf/0.1/knows> "http://greggkellogg.net/foaf#me" <http://example.org/linked-data-graph> .
+<http://manu.sporny.org/i/public> <http://xmlns.com/foaf/0.1/name> "Manu Sporny" <http://example.org/linked-data-graph> .

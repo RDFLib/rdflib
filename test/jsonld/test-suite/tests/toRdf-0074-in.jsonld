@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/vocab/",
+    "colliding": "http://example.com/vocab/collidingTerm"
+  },
+  "@id": "http://example.com/IriCollissions",
+  "colliding": [
+    "value 1",
+    2
+  ],
+  "collidingTerm": [
+    3,
+    "four"
+  ],
+  "http://example.com/vocab/collidingTerm": 5
+}

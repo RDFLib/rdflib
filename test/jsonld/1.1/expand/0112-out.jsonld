@@ -1,0 +1,16 @@
+[
+  {
+    "@id": "http://example.com/some/deep/directory/and/file/relativePropertyIris",
+    "http://example.com/rel1./rel2##fragment-works": [{"@value": "#fragment-works"}],
+    "http://example.com/rel1./rel2#../": [{"@value": "../"}],
+    "http://example.com/rel1./rel2#../../../../../still-root": [{"@value": "../../../../../still-root"}],
+    "http://example.com/rel1./rel2#../.././.././../../too-many-dots": [{"@value": "../.././.././../../too-many-dots"}],
+    "http://example.com/rel1./rel2#../../parent-parent-eq-root": [{"@value": "../../parent-parent-eq-root"}],
+    "http://example.com/rel1./rel2#../parent": [{"@value": "../parent"}],
+    "http://example.com/rel1./rel2#./": [{"@value": "./"}],
+    "http://example.com/rel1./rel2#//example.org/scheme-relative": [{"@value": "//example.org/scheme-relative"}],
+    "http://example.com/rel1./rel2#/absolute": [{"@value": "/absolute"}],
+    "http://example.com/rel1./rel2#?query=works": [{"@value": "?query=works"}],
+    "http://example.com/rel1./rel2#link": [{"@value": "link"}]
+  }
+]

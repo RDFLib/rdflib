@@ -1,0 +1,7 @@
+{
+  "@id": "http://example.com/",
+  "ex:prop1": {
+    "@list": [ { "@id": "_:x1" }, { "@id": "_:x2" } ]
+  },
+  "ex:prop2": { "@id": "_:x3" }
+}

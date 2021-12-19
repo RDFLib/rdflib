@@ -62,7 +62,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "rdflib"
-copyright = "2009 - 2020, RDFLib Team"
+copyright = "2009 - 2021, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -102,7 +102,7 @@ version = re.sub("[0-9]+\\.[0-9]\\..*", "\1", release)
 exclude_trees = ["_build", "draft"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
-default_role = 'py:obj'
+default_role = "py:obj"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -210,9 +210,9 @@ htmlhelp_basename = "rdflibdoc"
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-    ("index", "rdflib.tex", "rdflib Documentation", "RDFLib Team", "manual"),
-]
+# latex_documents = [
+#     ("index", "rdflib.tex", "rdflib Documentation", "RDFLib Team", "manual"),
+# ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -239,4 +239,4 @@ intersphinx_mapping = {
 
 html_experimental_html5_writer = True
 
-needs_sphinx = "2.4"
+needs_sphinx = "4.1.2"

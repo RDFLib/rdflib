@@ -1,0 +1,13 @@
+{
+  "@context": [{
+    "@version": 1.1,
+    "id": {"@id": "@id", "@protected": true},
+    "type": {"@id" : "@type", "@container": "@set", "@protected" : true},
+    "@type": {"@container": "@set", "@protected": true}
+  }, {
+    "@version": 1.1,
+    "@type": {"@protected": true}
+  }],
+  "id": "http://example.com/1",
+  "type": ["http://example.org/ns/Foo"]
+}

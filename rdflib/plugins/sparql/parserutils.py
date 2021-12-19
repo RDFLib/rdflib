@@ -6,11 +6,6 @@ from pyparsing import TokenConverter, ParseResults, originalTextFor
 
 from rdflib import BNode, Variable
 
-DEBUG = True
-DEBUG = False
-if DEBUG:
-    import traceback
-
 """
 
 NOTE: PyParsing setResultName/__call__ provides a very similar solution to this
@@ -27,7 +22,7 @@ For example:
 BaseDecl = Comp('Base', Keyword('BASE') + Param('iri',IRIREF))
 
 After parsing, this gives you back an CompValue object,
-which is a dict/object with the paramters specified.
+which is a dict/object with the parameters specified.
 So you can access the parameters are attributes or as keys:
 
 baseDecl.iri
@@ -111,9 +106,9 @@ class Param(TokenConverter):
     """
 
     def __init__(self, name, expr, isList=False):
-        self.name = name
         self.isList = isList
         TokenConverter.__init__(self, expr)
+        self.setName(name)
         self.addParseAction(self.postParse2)
 
     def postParse2(self, tokenList):
@@ -139,7 +134,7 @@ class CompValue(OrderedDict):
 
     """
     The result of parsing a Comp
-    Any included Params are avaiable as Dict keys
+    Any included Params are available as Dict keys
     or as attributes
 
     """
@@ -173,7 +168,7 @@ class CompValue(OrderedDict):
     def __getattr__(self, a):
         # Hack hack: OrderedDict relies on this
         if a in ("_OrderedDict__root", "_OrderedDict__end"):
-            raise AttributeError
+            raise AttributeError()
         try:
             return self[a]
         except KeyError:
@@ -215,7 +210,7 @@ class Comp(TokenConverter):
     def __init__(self, name, expr):
         self.expr = expr
         TokenConverter.__init__(self, expr)
-        self.name = name
+        self.setName(name)
         self.evalfn = None
 
     def postParse(self, instring, loc, tokenList):

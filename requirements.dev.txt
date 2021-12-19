@@ -1,3 +1,14 @@
+berkeleydb; platform_system != "Windows"
+black==21.9b0
+coverage
+doctest-ignore-unicode==0.1.2
+flake8
+flake8-black
+html5lib
+mypy
+pytest
+pytest-cov
+pytest-subtests
 sphinx
 sphinxcontrib-apidoc
-black
+types-setuptools

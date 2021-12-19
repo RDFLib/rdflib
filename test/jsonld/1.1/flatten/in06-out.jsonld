@@ -1,0 +1,40 @@
+[{
+  "@id": "_:b0",
+  "http://example.org/vocab#self": [{"@id": "http://example.com/articles/1/relationships/comments"}
+  ],
+  "http://example.org/vocab#related": [{"@id": "http://example.com/articles/1/comments"}]
+  }, {
+  "@id": "http://example.org/base/1",
+  "@type": ["http://example.org/vocab#articles"],
+  "http://example.org/vocab#title": [{"@value": "JSON:API paints my bikeshed!"}],
+  "http://example.org/vocab#self": [{"@id": "http://example.com/articles/1"}],
+  "http://example.org/vocab#author": [{"@id": "http://example.org/base/9"}],
+  "http://example.org/vocab#comments": [{"@id": "_:b0"}]
+}, {
+  "@id": "http://example.org/base/12",
+  "@type": ["http://example.org/vocab#comments"],
+  "http://example.org/vocab#body": [{"@value": "I like XML better"}],
+  "http://example.org/vocab#author": [{"@id": "http://example.org/base/9"}],
+  "http://example.org/vocab#self": [{"@id": "http://example.com/comments/12"}]
+}, {
+  "@id": "http://example.org/base/2",
+  "@type": ["http://example.org/vocab#people"]
+}, {
+  "@id": "http://example.org/base/5",
+  "@type": ["http://example.org/vocab#comments"],
+  "http://example.org/vocab#body": [{"@value": "First!"}
+  ],
+  "http://example.org/vocab#author": [{"@id": "http://example.org/base/2"}],
+  "http://example.org/vocab#self": [{"@id": "http://example.com/comments/5"}]
+}, {
+  "@id": "http://example.org/base/9",
+  "@type": ["http://example.org/vocab#people"],
+  "http://example.org/vocab#first-name": [{"@value": "Dan"}],
+  "http://example.org/vocab#last-name": [{"@value": "Gebhardt"}],
+  "http://example.org/vocab#twitter": [{"@value": "dgeb"}],
+  "http://example.org/vocab#self": [
+    {"@id": "http://example.com/people/9"},
+    {"@id": "http://example.com/articles/1/relationships/author"}
+  ],
+  "http://example.org/vocab#related": [{"@id": "http://example.com/articles/1/author"}]
+}]

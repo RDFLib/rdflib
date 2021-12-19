@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@": "http://example.org/vocab/at",
+    "@foo.bar": "http://example.org/vocab/foo.bar",
+    "@ignoreMe": "http://example.org/vocab/ignoreMe"
+  },
+  "@": "allowed",
+  "@foo.bar": "allowed",
+  "@ignoreMe": "ignored"
+}

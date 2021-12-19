@@ -1,0 +1,20 @@
+{
+  "@context": {
+    "homepage": {
+      "@id": "http://xmlns.com/foaf/0.1/homepage",
+      "@type": "@id"
+    },
+    "name": "http://xmlns.com/foaf/0.1/name"
+  },
+  "@graph": [
+    {
+      "@id": "http://example.com/john",
+      "homepage": "http://john.doe.org/",
+      "name": "John Doe"
+    },
+    {
+      "@id": "http://example.com/jane",
+      "name": "Jane Doe"
+    }
+  ]
+}

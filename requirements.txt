@@ -1,6 +1,3 @@
-flake8
 html5lib
 isodate
 pyparsing
-requests
-doctest-ignore-unicode

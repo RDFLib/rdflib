@@ -1,0 +1,6 @@
+[{
+  "http://example.org/list": [{"@list": [
+    {"@value": "a"},
+    {"@value": "b"}
+  ]}]
+}]

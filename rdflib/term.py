@@ -20,6 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
+import re
 
 from fractions import Fraction
 
@@ -31,14 +32,12 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
-    "Statement",
 ]
 
 import logging
 import warnings
 import math
 
-import base64
 import xml.dom.minidom
 
 from datetime import date, time, datetime, timedelta
@@ -53,6 +52,7 @@ from isodate import (
     parse_duration,
     duration_isoformat,
 )
+from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
 import rdflib
@@ -63,24 +63,31 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
+from typing import TYPE_CHECKING, Any, Dict, Callable, Optional, Union, Type
+
+if TYPE_CHECKING:
+    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems = {}
+skolems: Dict[str, "BNode"] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all([ord(c) > 256 or not c in _invalid_uri_chars for c in uri])
+    for c in _invalid_uri_chars:
+        if c in uri:
+            return False
+    return True
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
-def _is_valid_langtag(tag):
+def _is_valid_langtag(tag: str):
     return bool(_lang_tag_regex.match(tag))
 
 
@@ -201,6 +208,9 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
             return True
         return self == other
 
+    def startswith(self, prefix, start=..., end=...) -> bool:
+        return str(self).startswith(str(prefix))
+
     # use parent's hash for efficiency reasons
     # clashes of 'foo', URIRef('foo') and Literal('foo') are typically so rare
     # that they don't justify additional overhead. Notice that even in case of
@@ -215,10 +225,15 @@ class URIRef(Identifier):
 
     __slots__ = ()
 
-    def __new__(cls, value, base=None):
+    __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["URIRef"], "InvPath"]
+    __neg__: Callable[["URIRef"], "NegatedPath"]
+    __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
+
+    def __new__(cls, value: str, base: Optional[str] = None):
         if base is not None:
             ends_in_hash = value.endswith("#")
-            value = urljoin(base, value, allow_fragments=1)
+            value = urljoin(base, value, allow_fragments=1)  # type: ignore[arg-type]
             if ends_in_hash:
                 if not value.endswith("#"):
                     value += "#"
@@ -232,13 +247,13 @@ class URIRef(Identifier):
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
     def toPython(self):
         return str(self)
 
-    def n3(self, namespace_manager=None):
+    def n3(self, namespace_manager=None) -> str:
         """
         This will do a limited check for valid URIs,
         essentially just making sure that the string includes no illegal
@@ -290,7 +305,7 @@ class URIRef(Identifier):
         return self.__class__(str(self) % other)
 
     def de_skolemize(self):
-        """ Create a Blank Node from a skolem URI, in accordance
+        """Create a Blank Node from a skolem URI, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
         This function accepts only rdflib type skolemization, to provide
         a round-tripping within the system.
@@ -348,7 +363,7 @@ class RDFLibGenid(Genid):
 
 def _unique_id():
     # Used to read: """Create a (hopefully) unique prefix"""
-    # now retained merely to leave interal API unchanged.
+    # now retained merely to leave internal API unchanged.
     # From BNode.__new__() below ...
     #
     # acceptable bnode value range for RDF/XML needs to be
@@ -420,7 +435,7 @@ class BNode(Identifier):
         return """%s('%s')""" % (clsName, str(self))
 
     def skolemize(self, authority=None, basepath=None):
-        """ Create a URIRef "skolem" representation of the BNode, in accordance
+        """Create a URIRef "skolem" representation of the BNode, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
 
         .. versionadded:: 4.0
@@ -430,14 +445,14 @@ class BNode(Identifier):
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
-        return URIRef(urljoin(authority, skolem))
+        return RDFLibGenid(urljoin(authority, skolem))
 
 
 class Literal(Identifier):
     __doc__ = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    The lexical value of the literal is the unicode object
+    The lexical value of the literal is the unicode object.
     The interpreted, datatyped value is available from .value
 
     Language tags must be valid according to :rfc:5646
@@ -450,17 +465,17 @@ class Literal(Identifier):
 
     >>> from rdflib.namespace import XSD
 
-    >>> Literal('01')!=Literal('1') # clear - strings differ
+    >>> Literal('01') != Literal('1')  # clear - strings differ
     True
 
     but with data-type they get normalized:
 
-    >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer) != Literal('1', datatype=XSD.integer)
     False
 
     unless disabled:
 
-    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer, normalize=False) != Literal('1', datatype=XSD.integer)
     True
 
 
@@ -517,9 +532,17 @@ class Literal(Identifier):
 
     """
 
+    _value: Any
+
     __slots__ = ("_language", "_datatype", "_value")
 
-    def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
+    def __new__(
+        cls,
+        lexical_or_value: Any,
+        lang: Optional[str] = None,
+        datatype: Optional[str] = None,
+        normalize: Optional[bool] = None,
+    ):
 
         if lang == "":
             lang = None  # no empty lang-tags in RDF
@@ -532,8 +555,8 @@ class Literal(Identifier):
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
             )
 
-        if lang and not _is_valid_langtag(lang):
-            raise Exception("'%s' is not a valid language tag!" % lang)
+        if lang is not None and not _is_valid_langtag(lang):
+            raise ValueError("'%s' is not a valid language tag!" % lang)
 
         if datatype:
             datatype = URIRef(datatype)
@@ -574,14 +597,21 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
 
+        if datatype in (_XSD_NORMALISED_STRING, _XSD_TOKEN):
+            lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
+
+        if datatype in (_XSD_TOKEN,):
+            lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
+
         try:
-            inst = str.__new__(cls, lexical_or_value)
+            inst: Literal = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
+
         return inst
 
     def normalize(self):
@@ -608,7 +638,7 @@ class Literal(Identifier):
         return self._value
 
     @property
-    def language(self):
+    def language(self) -> Optional[str]:
         return self._language
 
     @property
@@ -962,10 +992,11 @@ class Literal(Identifier):
         """
         # don't use super()... for efficiency reasons, see Identifier.__hash__
         res = str.__hash__(self)
-        if self.language:
-            res ^= hash(self.language.lower())
-        if self.datatype:
-            res ^= hash(self.datatype)
+        # Directly accessing the member is faster than the property.
+        if self._language:
+            res ^= hash(self._language.lower())
+        if self._datatype:
+            res ^= hash(self._datatype)
         return res
 
     def __eq__(self, other):
@@ -1007,11 +1038,14 @@ class Literal(Identifier):
         if self is other:
             return True
 
+          if other is None:
+            return False
+        # Directly accessing the member is faster than the property.
         if isinstance(other, Literal):
             return (
-                self.datatype == other.datatype
-                and (self.language.lower() if self.language else None)
-                == (other.language.lower() if other.language else None)
+                self._datatype == other._datatype
+                and (self._language.lower() if self._language else None)
+                == (other._language.lower() if other._language else None)
                 and str.__eq__(self, other)
             )
 
@@ -1254,10 +1288,9 @@ class Literal(Identifier):
                     return sub("\\.?0*e", "e", "%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
-                    if "." not in s:
+                    if "." not in s and "e" not in s and "E" not in s:
                         s += ".0"
                     return s
-
                 elif self.datatype == _XSD_BOOLEAN:
                     return ("%s" % self).lower()
                 else:
@@ -1413,6 +1446,8 @@ _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
+_XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
+_XSD_TOKEN = URIRef(_XSD_PFX + "token")
 
 _XSD_FLOAT = URIRef(_XSD_PFX + "float")
 _XSD_DOUBLE = URIRef(_XSD_PFX + "double")
@@ -1428,8 +1463,11 @@ _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + "dayTimeDuration")
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 
 _OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
+_XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
-# TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
+_XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
+# TODO: gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1534,7 +1572,7 @@ _GenericPythonToXSDRules = [
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
+    (Decimal, (lambda i: f"{i:f}", _XSD_DECIMAL)),
     (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i: i.isoformat(), _XSD_DATE)),
     (time, (lambda i: i.isoformat(), _XSD_TIME)),
@@ -1550,8 +1588,12 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
+    ((str, _XSD_B64BINARY), b64encode),
+    ((bytes, _XSD_B64BINARY), b64encode),
 ]
 
 XSDToPython = {
@@ -1586,7 +1628,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + "unsignedByte"): int,
     URIRef(_XSD_PFX + "float"): float,
     URIRef(_XSD_PFX + "double"): float,
-    URIRef(_XSD_PFX + "base64Binary"): lambda s: base64.b64decode(s),
+    URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML,
@@ -1618,6 +1660,22 @@ def _castLexicalToPython(lexical, datatype):
     else:
         # no convFunc - unknown data-type
         return None
+
+
+def _normalise_XSD_STRING(lexical_or_value):
+    """
+    Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
+    """
+    if isinstance(lexical_or_value, str):
+        return lexical_or_value.replace("\t", " ").replace("\n", " ").replace("\r", " ")
+    return lexical_or_value
+
+
+def _strip_and_collapse_whitespace(lexical_or_value):
+    if isinstance(lexical_or_value, str):
+        # Use regex to substitute contiguous whitespace into a single whitespace. Strip trailing whitespace.
+        return re.sub(" +", " ", lexical_or_value.strip())
+    return lexical_or_value
 
 
 def bind(
@@ -1685,29 +1743,11 @@ class Variable(Identifier):
         return (Variable, (str(self),))
 
 
-class Statement(Node, tuple):
-    def __new__(cls, triple, context):
-        subject, predicate, object = triple
-        warnings.warn(
-            "Class Statement is deprecated, and will be removed in "
-            + "the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return tuple.__new__(cls, ((subject, predicate, object), context))
-
-    def __reduce__(self):
-        return (Statement, (self[0], self[1]))
-
-    def toPython(self):
-        return (self[0], self[1])
-
-
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
-_ORDERING = defaultdict(int)
+_ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 

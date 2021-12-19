@@ -1,9 +1,15 @@
+import os
+
+import pytest
+
 from rdflib.graph import Graph, ConjunctiveGraph
 import unittest
 from rdflib.term import Literal, URIRef
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 import itertools
 from urllib.error import URLError
+
+from test import TEST_DIR
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -125,8 +131,8 @@ class TestN3Case(unittest.TestCase):
                 URIRef("http://example.com/people/Linda"),
             )
         )
-        s = g.serialize(base="http://example.com/", format="n3")
-        self.assertTrue("<people/Bob>".encode("latin-1") in s)
+        s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
+        self.assertTrue(b"<people/Bob>" in s)
         g2 = ConjunctiveGraph()
         g2.parse(data=s, publicID="http://example.com/", format="n3")
         self.assertEqual(list(g), list(g2))
@@ -161,7 +167,8 @@ foo-bar:Ex foo-bar:name "Test" . """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        g.parse("test/n3/issue156.n3", format="n3")
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "n3/issue156.n3", os.curdir))
+        g.parse(n3_path, format="n3")
 
     def testIssue999(self):
         """
@@ -220,9 +227,7 @@ foo-bar:Ex foo-bar:name "Test" . """
                 format="n3",
             )
         except URLError:
-            from nose import SkipTest
-
-            raise SkipTest("No network to retrieve the information, skipping test")
+            pytest.skip("No network to retrieve the information, skipping test")
 
     def testSingleQuotedLiterals(self):
         test_data = [

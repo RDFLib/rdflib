@@ -1,14 +1,14 @@
 import sys
 import os
+from typing import Optional
 import unittest
 
 from tempfile import mkdtemp, mkstemp
 import shutil
+
+import pytest
 from rdflib import Dataset, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-
-from nose.exc import SkipTest
-
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -28,14 +28,17 @@ DB = "/db/"
 
 class DatasetTestCase(unittest.TestCase):
     store = "default"
+    skip_reason = None
     slow = True
     tmppath = None
 
     def setUp(self):
+        if self.skip_reason is not None:
+            self.skipTest(skip_reason)
         try:
             self.graph = Dataset(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         elif self.store == "SPARQLUpdateStore":
@@ -167,6 +170,36 @@ class DatasetTestCase(unittest.TestCase):
         self.assertEqual(list(self.graph.objects(self.tarek, None)), [])
         self.assertEqual(list(g1.objects(self.tarek, None)), [self.pizza])
 
+    def testIter(self):
+        """PR 1382: adds __iter__ to Dataset"""
+        d = Dataset()
+        uri_a = URIRef("https://example.com/a")
+        uri_b = URIRef("https://example.com/b")
+        uri_c = URIRef("https://example.com/c")
+        uri_d = URIRef("https://example.com/d")
+
+        d.add_graph(URIRef("https://example.com/g1"))
+        d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g1")))
+        d.add(
+            (uri_a, uri_b, uri_c, URIRef("https://example.com/g1"))
+        )  # pointless addition: duplicates above
+
+        d.add_graph(URIRef("https://example.com/g2"))
+        d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g2")))
+        d.add((uri_a, uri_b, uri_d, URIRef("https://example.com/g1")))  # new, uri_d
+
+        # traditional iterator
+        i_trad = 0
+        for t in d.quads((None, None, None)):
+            i_trad += 1
+
+        # new Dataset.__iter__ iterator
+        i_new = 0
+        for t in d:
+            i_new += 1
+
+        self.assertEqual(i_new, i_trad)  # both should be 3
+
 
 # dynamically create classes for each registered Store
 
@@ -178,6 +211,7 @@ if __name__ == "__main__":
 tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
+    skip_reason: Optional[str] = None
     if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
@@ -189,12 +223,14 @@ for s in plugin.plugins(pluginname, plugin.Store):
 
         try:
             assert len(urlopen(HOST).read()) > 0
-        except:
-            sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
-            continue
+        except BaseException:
+            skip_reason = "No SPARQL endpoint for %s (tests skipped)\n" % s.name
+            sys.stderr.write(skip_reason)
 
     locals()["t%d" % tests] = type(
-        "%sContextTestCase" % s.name, (DatasetTestCase,), {"store": s.name}
+        "%sContextTestCase" % s.name,
+        (DatasetTestCase,),
+        {"store": s.name, "skip_reason": skip_reason},
     )
     tests += 1
 

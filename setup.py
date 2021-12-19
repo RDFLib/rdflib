@@ -2,23 +2,28 @@
 
 import os
 import re
+import codecs
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs["install_requires"] = ["isodate", "pyparsing"]
+kwargs["install_requires"] = [
+    "isodate",
+    "pyparsing",
+    "setuptools",
+    "importlib-metadata; python_version < '3.8.0'",
+]
 kwargs["tests_require"] = [
+    "berkeleydb",
     "html5lib",
     "networkx",
-    "nose",
-    "doctest-ignore-unicode",
-    "requests",
+    "pytest",
+    "pytest-cov",
+    "pytest-subtests",
 ]
-kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
     "html": ["html5lib"],
-    "sparql": ["requests"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 4", "sphinxcontrib-apidoc"],
+    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
 }
 
 
@@ -29,6 +34,14 @@ def find_version(filename):
         if version_match:
             return version_match.group(1)
 
+
+def open_local(paths, mode="r", encoding="utf8"):
+    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), *paths)
+    return codecs.open(path, mode, encoding)
+
+
+with open_local(["README.md"], encoding="utf-8") as readme:
+    long_description = readme.read()
 
 version = find_version("rdflib/__init__.py")
 
@@ -47,47 +60,24 @@ setup(
     author="Daniel 'eikeon' Krech",
     author_email="eikeon@eikeon.com",
     maintainer="RDFLib Team",
-    maintainer_email="rdflib-dev@google.com",
+    maintainer_email="rdflib-dev@googlegroups.com",
     url="https://github.com/RDFLib/rdflib",
-    license="BSD-3-Clause",
+    license="bsd-3-clause",
     platforms=["any"],
-    python_requires=">=3.5",
+    python_requires=">=3.7",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent",
         "Natural Language :: English",
     ],
-    long_description="""\
-RDFLib is a Python library for working with
-RDF, a simple yet powerful language for representing information.
-
-The library contains parsers and serializers for RDF/XML, N3,
-NTriples, Turtle, TriX, RDFa and Microdata . The library presents
-a Graph interface which can be backed by any one of a number of
-Store implementations. The core rdflib includes store
-implementations for in memory storage, persistent storage on top
-of the Berkeley DB, and a wrapper for remote SPARQL endpoints.
-
-A SPARQL 1.1 engine is also included.
-
-If you have recently reported a bug marked as fixed, or have a craving for
-the very latest, you may want the development version instead:
-
-   pip install git+https://github.com/rdflib/rdflib
-
-
-Read the docs at:
-
-   http://rdflib.readthedocs.io
-
-    """,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=packages,
     entry_points={
         "console_scripts": [
@@ -98,5 +88,5 @@ Read the docs at:
             "rdfgraphisomorphism = rdflib.tools.graphisomorphism:main",
         ],
     },
-    **kwargs
+    **kwargs,
 )

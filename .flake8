@@ -1,0 +1,8 @@
+# https://flake8.pycqa.org/en/latest/user/configuration.html
+[flake8]
+extend-ignore =
+    # E501: line too long
+    # Disabled so that black can control line length.
+    E501,
+    # Ignored since this is soon not going to be considered an error, see https://www.flake8rules.com/rules/W503.html
+    W503,

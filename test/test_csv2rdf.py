@@ -1,13 +1,23 @@
 import subprocess
 import unittest
-from os import remove
+import sys
+from os import remove, close
 from tempfile import mkstemp
+from pathlib import Path
 
 
 class CSV2RDFTest(unittest.TestCase):
+    def setUp(self):
+        self.REALESTATE_FILE_PATH = Path(__file__).parent / "csv" / "realestate.csv"
+
     def test_csv2rdf_cli(self):
         completed = subprocess.run(
-            ["csv2rdf", "test/csv/realestate.csv"],
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.csv2rdf",
+                str(self.REALESTATE_FILE_PATH),
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True,
@@ -19,9 +29,19 @@ class CSV2RDFTest(unittest.TestCase):
         self.assertIn("<http://example.org/props/zip>", completed.stdout)
 
     def test_csv2rdf_cli_fileout(self):
-        _, fname = mkstemp()
-        completed = subprocess.run(["csv2rdf", "-o", fname, "test/csv/realestate.csv"],)
+        fh, fname = mkstemp()
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rdflib.tools.csv2rdf",
+                "-o",
+                fname,
+                str(self.REALESTATE_FILE_PATH),
+            ],
+        )
         self.assertEqual(completed.returncode, 0)
         with open(fname) as f:
             self.assertGreater(len(f.readlines()), 0)
+        close(fh)
         remove(fname)

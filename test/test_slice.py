@@ -5,10 +5,10 @@ import unittest
 class GraphSlice(unittest.TestCase):
     def testSlice(self):
         """
-         We pervert the slice object, 
-         and use start, stop, step as subject, predicate, object
+        We pervert the slice object,
+        and use start, stop, step as subject, predicate, object
 
-         all operations return generators over full triples 
+        all operations return generators over full triples
         """
 
         def sl(x, y):

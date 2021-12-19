@@ -1,0 +1,10 @@
+[{
+   "@id": "http://example.com/article",
+   "http://example.com/vocab/author": [{
+      "@id": "http://example.org/person/1",
+      "@index": "regular"
+   }, {
+      "@id": "http://example.org/guest/cd24f329aa",
+      "@index": "guest"
+   }]
+}]

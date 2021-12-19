@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "double": {
+      "@id": "http://example.com/double",
+      "@type": "http://www.w3.org/2001/XMLSchema#double"
+    },
+    "integer": {
+      "@id": "http://example.com/integer",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    }
+  },
+  "double": [1, 2.2 ],
+  "integer": [8, 9.9 ]
+}

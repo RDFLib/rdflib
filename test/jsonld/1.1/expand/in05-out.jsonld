@@ -1,0 +1,8 @@
+[{
+  "http://example.org/prop": [{
+    "@type": ["http://example.org/Foo"],
+    "@included": [{
+      "@type": ["http://example.org/Bar"]
+    }]
+  }]
+}]

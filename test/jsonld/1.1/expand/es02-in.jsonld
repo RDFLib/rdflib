@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "term": {"@id": "http://example/term", "@container": ["@list", "@set"]}
+  },
+  "@id": "http://example/test#example",
+  "term": "foo"
+}

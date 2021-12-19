@@ -1,0 +1,10 @@
+PREFIX : <http://books.example/>
+SELECT (SUM(?lprice) AS ?totalPrice)
+WHERE {
+  ?org :affiliates ?auth .
+  ?auth :writesBook ?book .
+  ?book :price ?lprice .
+  filter(?lprice < 5)
+}
+GROUP BY ?org
+HAVING (SUM(?lprice) > 10)

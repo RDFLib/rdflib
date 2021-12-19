@@ -1,0 +1,5 @@
+<http://example/A> <http://example.com/foo> _:l1 .
+_:l1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:l2 .
+_:l1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:l2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "baz" .
+_:l2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .

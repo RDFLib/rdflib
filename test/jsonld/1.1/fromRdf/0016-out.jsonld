@@ -1,0 +1,20 @@
+[
+  {
+    "@id": "http://example.com/",
+    "http://example.com/list": [
+      {
+        "@list": [
+          {
+            "@value": "A"
+          },
+          {
+            "@value": "B"
+          },
+          {
+            "@value": "C"
+          }
+        ]
+      }
+    ]
+  }
+]

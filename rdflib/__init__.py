@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "5.0.0"
-__date__ = "2020-04-18"
+__version__ = "6.0.3"
+__date__ = "2021-10-10"
 
 __all__ = [
     "URIRef",
@@ -57,9 +57,11 @@ __all__ = [
     "Dataset",
     "Graph",
     "ConjunctiveGraph",
+    "BRICK",
     "CSVW",
     "DC",
     "DCAT",
+    "DCMITYPE",
     "DCTERMS",
     "DOAP",
     "FOAF",
@@ -77,18 +79,17 @@ __all__ = [
     "SOSA",
     "SSN",
     "TIME",
+    "VANN",
     "VOID",
-    "XMLNS",
     "XSD",
     "util",
 ]
 
 import sys
-
 import logging
 
 logger = logging.getLogger(__name__)
-_interactive_mode = False
+
 try:
     import __main__
 
@@ -98,7 +99,6 @@ try:
         and sys.stderr.isatty()
     ):
         # show log messages in interactive mode
-        _interactive_mode = True
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
     del __main__
@@ -109,11 +109,6 @@ except ImportError:
     warnings.warn("__main__ already imported", ImportWarning)
     del warnings
 
-if _interactive_mode:
-    logger.info("RDFLib Version: %s" % __version__)
-else:
-    logger.debug("RDFLib Version: %s" % __version__)
-del _interactive_mode
 del sys
 
 
@@ -162,14 +157,17 @@ Literal work, eq, __neq__, __lt__, etc.
 
 from rdflib.term import URIRef, BNode, Literal, Variable
 
-from rdflib.namespace import Namespace
-
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
+from rdflib import plugin
+from rdflib import query
+
 from rdflib.namespace import (
+    BRICK,
     CSVW,
     DC,
     DCAT,
+    DCMITYPE,
     DCTERMS,
     DOAP,
     FOAF,
@@ -187,13 +185,12 @@ from rdflib.namespace import (
     SOSA,
     SSN,
     TIME,
+    VANN,
     VOID,
     XMLNS,
     XSD,
+    Namespace,
 )
-
-from rdflib import plugin
-from rdflib import query
 
 # tedious sop to flake8
 assert plugin
@@ -201,4 +198,4 @@ assert query
 
 from rdflib import util
 
-from .container import *
+from rdflib.container import *

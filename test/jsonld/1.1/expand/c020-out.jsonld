@@ -1,0 +1,7 @@
+[{
+  "@type": ["http://example/Type"],
+  "http://example/v": [{
+    "@type": "http://example/value-type",
+    "@value": "value"
+  }]
+}]

@@ -1,8 +1,6 @@
 import rdflib
 from rdflib.plugins.parsers.notation3 import BadSyntax
 
-import nose.tools
-
 # Test for https://github.com/RDFLib/rdflib/issues/336
 # and https://github.com/RDFLib/rdflib/issues/345
 
@@ -33,17 +31,8 @@ def test_ns_localname_roundtrip():
             rdflib.Literal("Junk"),
         )
     )
-    turtledump = g.serialize(format="turtle").decode("utf-8")
-    xmldump = g.serialize().decode("utf-8")
+    turtledump = g.serialize(format="turtle")
+    xmldump = g.serialize(format="xml")
     g1 = rdflib.Graph()
-
     g1.parse(data=xmldump, format="xml")
-
     g1.parse(data=turtledump, format="turtle")
-
-
-if __name__ == "__main__":
-    import nose
-    import sys
-
-    nose.main(defaultTest=sys.argv[0])

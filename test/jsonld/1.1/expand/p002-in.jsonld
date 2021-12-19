@@ -1,0 +1,9 @@
+{
+  "@context": [
+    {"@vocab": "http://example/"},
+    {"@version": 1.1, "a": {"@type": "@id"}},
+    {"b": {"@type": "@id"}}
+  ],
+  "a": "http://example.org/foo",
+  "b": "http://example.org/bar"
+}

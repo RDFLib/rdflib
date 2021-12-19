@@ -1,0 +1,15 @@
+[
+  {
+    "@id": "ex:test",
+    "http://example.org/valueOf": [
+      {
+        "@value": "first"
+      }
+    ],
+    "http://example.org/toString": [
+      {
+        "@value": "second"
+      }
+    ]
+  }
+]

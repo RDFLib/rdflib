@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "sec": "http://purl.org/security#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "sec:signer": {"@type": "@id"},
+    "dcterms:created": {"@type": "xsd:dateTime"}
+  },
+  "@id": "http://example.org/sig1",
+  "@type": ["rdf:Graph", "sec:SignedGraph"],
+  "dcterms:created": "2011-09-23T20:21:34Z",
+  "sec:signer": "http://payswarm.example.com/i/john/keys/5",
+  "sec:signatureValue": "OGQzNGVkMzVm4NTIyZTkZDYMmMzQzNmExMgoYzI43Q3ODIyOWM32NjI=",
+  "@graph": {
+    "@id": "http://example.org/fact1",
+    "dcterms:title": "Hello World!"
+  }
+}
