@@ -10,6 +10,13 @@ from rdflib import Graph
 
 
 class FileParserGuessFormatTest(unittest.TestCase):
+    def test_jsonld(self):
+        g = Graph()
+        self.assertIsInstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
+        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json"), Graph)
+        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json-ld"), Graph)
+        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.jsonld"), Graph)
+
     def test_ttl(self):
         g = Graph()
         self.assertIsInstance(g.parse("test/w3c/turtle/IRI_subject.ttl"), Graph)
@@ -30,5 +37,5 @@ class FileParserGuessFormatTest(unittest.TestCase):
                     g.parse(str(newpath))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

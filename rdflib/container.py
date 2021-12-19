@@ -1,6 +1,5 @@
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib import URIRef
+from rdflib.term import BNode, URIRef
 from random import randint
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
@@ -29,7 +28,8 @@ class Container(object):
         Two
 
         >>> # add a new item
-        >>> b.append(Literal("Hello"))
+        >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
+        <rdflib.container.Bag object at ...>
         >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>
@@ -184,6 +184,8 @@ class Container(object):
         self.graph.add((container, URIRef(elem_uri), item))
         self._len += 1
 
+        return self
+
     def append_multiple(self, other):
         """Adding multiple elements to the container to the end which are in python list other"""
 
@@ -196,6 +198,8 @@ class Container(object):
             self._len += 1
             elem_uri = str(RDF) + "_" + str(end)
             self.graph.add((container, URIRef(elem_uri), item))
+
+        return self
 
     def clear(self):
         """Removing all elements from the container"""
@@ -211,6 +215,7 @@ class Container(object):
             else:
                 break
         self._len = 0
+        return self
 
 
 class Bag(Container):
@@ -255,6 +260,7 @@ class Seq(Container):
             elem_uri_pos = str(RDF) + "_" + str(pos)
             self.graph.add((container, URIRef(elem_uri_pos), item))
             self._len += 1
+        return self
 
 
 class NoElementException(Exception):

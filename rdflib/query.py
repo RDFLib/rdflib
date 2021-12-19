@@ -4,13 +4,17 @@ import shutil
 import tempfile
 import warnings
 import types
-from typing import Optional
+from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 
 from io import BytesIO
 
 from urllib.parse import urlparse
 
 __all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.term import Variable
 
 
 class Processor(object):
@@ -161,17 +165,17 @@ class Result(object):
 
     """
 
-    def __init__(self, type_):
+    def __init__(self, type_: str):
 
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
-        self.vars = None
+        self.vars: Optional[List["Variable"]] = None
         self._bindings = None
         self._genbindings = None
-        self.askAnswer = None
-        self.graph = None
+        self.askAnswer: bool = None  # type: ignore[assignment]
+        self.graph: "Graph" = None  # type: ignore[assignment]
 
     def _get_bindings(self):
         if self._genbindings:
@@ -192,7 +196,12 @@ class Result(object):
     )
 
     @staticmethod
-    def parse(source=None, format=None, content_type=None, **kwargs):
+    def parse(
+        source=None,
+        format: Optional[str] = None,
+        content_type: Optional[str] = None,
+        **kwargs,
+    ):
         from rdflib import plugin
 
         if format:
@@ -207,11 +216,11 @@ class Result(object):
         return parser.parse(source, content_type=content_type, **kwargs)
 
     def serialize(
-            self,
-            destination: Optional[str] = None,
-            encoding: str = "utf-8",
-            format: str = "xml",
-            **args,
+        self,
+        destination: Optional[Union[str, IO]] = None,
+        encoding: str = "utf-8",
+        format: str = "xml",
+        **args,
     ) -> Optional[bytes]:
         """
         Serialize the query result.
@@ -223,14 +232,14 @@ class Result(object):
         - txt: :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
         - xml: :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
 
-        :param destination: Path of file output.
+        :param destination: Path of file output or BufferedIOBase object to write the output to.
         :param encoding: Encoding of output.
         :param format: One of ['csv', 'json', 'txt', xml']
         :param args:
         :return: bytes
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
-            return self.graph.serialize(
+            return self.graph.serialize(  # type: ignore[return-value]
                 destination, encoding=encoding, format=format, **args
             )
 
@@ -239,21 +248,21 @@ class Result(object):
 
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
-            stream = BytesIO()
-            stream2 = EncodeOnlyUnicode(stream)
-            serializer.serialize(stream2, encoding=encoding, **args)
-            return stream.getvalue()
+            streamb: BytesIO = BytesIO()
+            stream2 = EncodeOnlyUnicode(streamb)
+            serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore
+            return streamb.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(IO[bytes], destination)
             serializer.serialize(stream, encoding=encoding, **args)
         else:
-            location = destination
+            location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
             if netloc != "":
                 print(
                     "WARNING: not saving as location" + "is not a local file reference"
                 )
-                return
+                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, encoding=encoding, **args)
@@ -263,6 +272,7 @@ class Result(object):
             else:
                 shutil.copy(name, path)
                 os.remove(name)
+        return None
 
     def __len__(self):
         if self.type == "ASK":
@@ -323,7 +333,6 @@ class Result(object):
                 return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-
         except:
             return False
 
@@ -338,9 +347,9 @@ class ResultParser(object):
 
 
 class ResultSerializer(object):
-    def __init__(self, result):
+    def __init__(self, result: Result):
         self.result = result
 
-    def serialize(self, stream, encoding="utf-8", **kwargs):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
         """return a string properly serialized"""
         pass  # abstract

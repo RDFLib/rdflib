@@ -1,0 +1,25 @@
+[
+    {
+        "@id": "http://example.com/speakers#Alice",
+        "http://www.w3.org/2002/12/cal/ical#location": [
+            {
+                "@value": "Lyon Convention Centre, Lyon, France"
+            }
+        ],
+        "http://www.w3.org/2002/12/cal/ical#summary": [
+            {
+                "@value": "Alice Talk"
+            }
+        ],
+        "http://xmlns.com/foaf/0.1/homepage": [
+            {
+                "@id": "http://xkcd.com/177/"
+            }
+        ],
+        "http://xmlns.com/foaf/0.1/name": [
+            {
+                "@value": "Alice"
+            }
+        ]
+    }
+]

@@ -9,6 +9,7 @@ class TestIssue1141(unittest.TestCase):
     """
     Tests is Turtle and TriG parsing works with a store with or without formula support
     """
+
     def test_issue_1141_1(self):
         file = b"@prefix : <http://example.com/> . :s :p :o ."
 

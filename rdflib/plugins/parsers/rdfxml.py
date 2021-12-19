@@ -2,13 +2,15 @@
 An RDF/XML parser for RDFLib
 """
 
-from xml.sax import make_parser
+from xml.sax import make_parser, handler, xmlreader
 from xml.sax.handler import ErrorHandler
-from xml.sax.saxutils import handler, quoteattr, escape
+from xml.sax.saxutils import quoteattr, escape
 
 
 from urllib.parse import urldefrag, urljoin
-from rdflib.namespace import RDF, is_ncname
+from rdflib.namespace import is_ncname
+from rdflib.namespace import RDF
+from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
@@ -17,31 +19,31 @@ from rdflib.parser import Parser
 
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 
-RDFNS = RDF
+RDFNS = RDFVOC
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
 # A mapping from unqualified terms to their qualified version.
 UNQUALIFIED = {
-    "about": RDF.about,
-    "ID": RDF.ID,
-    "type": RDF.type,
-    "resource": RDF.resource,
-    "parseType": RDF.parseType,
+    "about": RDFVOC.about,
+    "ID": RDFVOC.ID,
+    "type": RDFVOC.type,
+    "resource": RDFVOC.resource,
+    "parseType": RDFVOC.parseType,
 }
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#coreSyntaxTerms
 CORE_SYNTAX_TERMS = [
-    RDF.RDF,
-    RDF.ID,
-    RDF.about,
-    RDF.parseType,
-    RDF.resource,
-    RDF.nodeID,
-    RDF.datatype,
+    RDFVOC.RDF,
+    RDFVOC.ID,
+    RDFVOC.about,
+    RDFVOC.parseType,
+    RDFVOC.resource,
+    RDFVOC.nodeID,
+    RDFVOC.datatype,
 ]
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#syntaxTerms
-SYNTAX_TERMS = CORE_SYNTAX_TERMS + [RDF.Description, RDF.li]
+SYNTAX_TERMS = CORE_SYNTAX_TERMS + [RDFVOC.Description, RDFVOC.li]
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#oldTerms
 OLD_TERMS = [
@@ -50,14 +52,26 @@ OLD_TERMS = [
     URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#bagID"),
 ]
 
-NODE_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.li,] + OLD_TERMS
-NODE_ELEMENT_ATTRIBUTES = [RDF.ID, RDF.nodeID, RDF.about]
-
-PROPERTY_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.Description,] + OLD_TERMS
-PROPERTY_ATTRIBUTE_EXCEPTIONS = (
-    CORE_SYNTAX_TERMS + [RDF.Description, RDF.li] + OLD_TERMS
+NODE_ELEMENT_EXCEPTIONS = (
+    CORE_SYNTAX_TERMS
+    + [
+        RDFVOC.li,
+    ]
+    + OLD_TERMS
 )
-PROPERTY_ELEMENT_ATTRIBUTES = [RDF.ID, RDF.resource, RDF.nodeID]
+NODE_ELEMENT_ATTRIBUTES = [RDFVOC.ID, RDFVOC.nodeID, RDFVOC.about]
+
+PROPERTY_ELEMENT_EXCEPTIONS = (
+    CORE_SYNTAX_TERMS
+    + [
+        RDFVOC.Description,
+    ]
+    + OLD_TERMS
+)
+PROPERTY_ATTRIBUTE_EXCEPTIONS = (
+    CORE_SYNTAX_TERMS + [RDFVOC.Description, RDFVOC.li] + OLD_TERMS
+)
+PROPERTY_ELEMENT_ATTRIBUTES = [RDFVOC.ID, RDFVOC.resource, RDFVOC.nodeID]
 
 XMLNS = "http://www.w3.org/XML/1998/namespace"
 BASE = (XMLNS, "base")
@@ -111,7 +125,7 @@ class ElementHandler(object):
 
     def next_li(self):
         self.li += 1
-        return RDFNS["_%s" % self.li]
+        return RDFVOC["_%s" % self.li]
 
 
 class RDFXMLHandler(handler.ContentHandler):
@@ -252,13 +266,13 @@ class RDFXMLHandler(handler.ContentHandler):
                 pass
             elif att in UNQUALIFIED:
                 # if not RDFNS[att] in atts:
-                atts[RDFNS[att]] = v
+                atts[RDFNS[att]] = v  # type: ignore[misc]
             else:
                 atts[URIRef(att)] = v
         return name, atts
 
     def document_element_start(self, name, qname, attrs):
-        if name[0] and URIRef("".join(name)) == RDF.RDF:
+        if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
             # Cheap hack so 2to3 doesn't turn it into __next__
             next = getattr(self, "next")
             next.start = self.node_element_start
@@ -282,21 +296,21 @@ class RDFXMLHandler(handler.ContentHandler):
         if name in NODE_ELEMENT_EXCEPTIONS:
             self.error("Invalid node element URI: %s" % name)
 
-        if RDF.ID in atts:
-            if RDF.about in atts or RDF.nodeID in atts:
+        if RDFVOC.ID in atts:
+            if RDFVOC.about in atts or RDFVOC.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
 
-            id = atts[RDF.ID]
+            id = atts[RDFVOC.ID]
             if not is_ncname(id):
                 self.error("rdf:ID value is not a valid NCName: %s" % id)
             subject = absolutize("#%s" % id)
             if subject in self.ids:
                 self.error("two elements cannot use the same ID: '%s'" % subject)
             self.ids[subject] = 1  # IDs can only appear once within a document
-        elif RDF.nodeID in atts:
-            if RDF.ID in atts or RDF.about in atts:
+        elif RDFVOC.nodeID in atts:
+            if RDFVOC.ID in atts or RDFVOC.about in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
-            nodeID = atts[RDF.nodeID]
+            nodeID = atts[RDFVOC.nodeID]
             if not is_ncname(nodeID):
                 self.error("rdf:nodeID value is not a valid NCName: %s" % nodeID)
             if self.preserve_bnode_ids is False:
@@ -307,14 +321,14 @@ class RDFXMLHandler(handler.ContentHandler):
                     self.bnode[nodeID] = subject
             else:
                 subject = BNode(nodeID)
-        elif RDF.about in atts:
-            if RDF.ID in atts or RDF.nodeID in atts:
+        elif RDFVOC.about in atts:
+            if RDFVOC.ID in atts or RDFVOC.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
-            subject = absolutize(atts[RDF.about])
+            subject = absolutize(atts[RDFVOC.about])
         else:
             subject = BNode()
 
-        if name != RDF.Description:  # S1
+        if name != RDFVOC.Description:  # S1
             self.store.add((subject, RDF.type, absolutize(name)))
 
         language = current.language
@@ -368,14 +382,14 @@ class RDFXMLHandler(handler.ContentHandler):
 
         if not name.startswith(str(RDFNS)):
             current.predicate = absolutize(name)
-        elif name == RDF.li:
+        elif name == RDFVOC.li:
             current.predicate = current.next_li()
         elif name in PROPERTY_ELEMENT_EXCEPTIONS:
             self.error("Invalid property element URI: %s" % name)
         else:
             current.predicate = absolutize(name)
 
-        id = atts.get(RDF.ID, None)
+        id = atts.get(RDFVOC.ID, None)
         if id is not None:
             if not is_ncname(id):
                 self.error("rdf:ID value is not a value NCName: %s" % id)
@@ -383,9 +397,9 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             current.id = None
 
-        resource = atts.get(RDF.resource, None)
-        nodeID = atts.get(RDF.nodeID, None)
-        parse_type = atts.get(RDF.parseType, None)
+        resource = atts.get(RDFVOC.resource, None)
+        nodeID = atts.get(RDFVOC.nodeID, None)
+        parse_type = atts.get(RDFVOC.parseType, None)
         if resource is not None and nodeID is not None:
             self.error("Property element cannot have both rdf:nodeID and rdf:resource")
         if resource is not None:
@@ -409,7 +423,7 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             if parse_type is not None:
                 for att in atts:
-                    if att != RDF.parseType and att != RDF.ID:
+                    if att != RDFVOC.parseType and att != RDFVOC.ID:
                         self.error("Property attr '%s' now allowed here" % att)
                 if parse_type == "Resource":
                     current.subject = object = BNode()
@@ -426,7 +440,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     # All other values are treated as Literal
                     # See: http://www.w3.org/TR/rdf-syntax-grammar/
                     # parseTypeOtherPropertyElt
-                    object = Literal("", datatype=RDF.XMLLiteral)
+                    object = Literal("", datatype=RDFVOC.XMLLiteral)
                     current.char = self.literal_element_char
                     current.declared = {XMLNS: "xml"}
                     next.start = self.literal_element_start
@@ -440,7 +454,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 next.start = self.node_element_start
                 next.end = self.node_element_end
 
-        datatype = current.datatype = atts.get(RDF.datatype, None)
+        datatype = current.datatype = atts.get(RDFVOC.datatype, None)
         language = current.language
         if datatype is not None:
             # TODO: check that there are no atts other than datatype and id
@@ -460,7 +474,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     o = URIRef(atts[att])
                 else:
                     if datatype is not None:
-                        language = None
+                        language = None  # type: ignore[unreachable]
                     o = Literal(atts[att], language, datatype)
 
                 if object is None:
@@ -561,12 +575,12 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
-def create_parser(target, store):
+def create_parser(target, store) -> xmlreader.XMLReader:
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
-        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
+        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")  # type: ignore[attr-defined]
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)

@@ -1,0 +1,9 @@
+{
+  "http://example.com/foo": "Use term with IRI ending in '/'",
+  "http://example.org/:foo": "Use term with IRI ending in ':'",
+  "http://example.org/?foo": "Use term with IRI ending in '?'",
+  "http://example.org/#foo": "Use term with IRI ending in '#'",
+  "http://example.org/[foo": "Use term with IRI ending in '['",
+  "http://example.org/]foo": "Use term with IRI ending in ']'",
+  "http://example.org/@foo": "Use term with IRI ending in '@'"
+}

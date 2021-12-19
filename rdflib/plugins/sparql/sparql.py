@@ -52,12 +52,12 @@ class Bindings(MutableMapping):
         self.outer = outer
 
     def __getitem__(self, key):
-        try:
+        if key in self._d:
             return self._d[key]
-        except KeyError:
-            if not self.outer:
-                raise
-            return self.outer[key]
+
+        if not self.outer:
+            raise KeyError()
+        return self.outer[key]
 
     def __contains__(self, key):
         try:
@@ -72,17 +72,18 @@ class Bindings(MutableMapping):
     def __delitem__(self, key):
         raise Exception("DelItem is not implemented!")
 
-    def __len__(self):
+    def __len__(self) -> int:
         i = 0
-        for x in self:
-            i += 1
-        return i
+        d = self
+        while d is not None:
+            i += len(d._d)
+            d = d.outer
+        return i  # type: ignore[unreachable]
 
     def __iter__(self):
         d = self
         while d is not None:
-            for i in dict.__iter__(d._d):
-                yield i
+            yield from d._d
             d = d.outer
 
     def __str__(self):
@@ -265,7 +266,7 @@ class QueryContext(object):
 
     @property
     def dataset(self):
-        """"current dataset"""
+        """ "current dataset"""
         if self._dataset is None:
             raise Exception(
                 "You performed a query operation requiring "

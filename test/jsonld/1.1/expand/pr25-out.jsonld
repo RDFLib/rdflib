@@ -1,0 +1,23 @@
+[
+  {
+    "@type": [
+      "http://example/Bar"
+    ],
+    "http://example/foo": [{
+      "@graph": [{
+        "http://example/bar": [{
+          "@id": "http://example/"
+        }]
+      }]
+    }],
+    "http://example/bar-1": [{
+      "http://example/bar-2": [{
+        "@type": ["http://example/Foo"],
+        "http://example/bar-2": [{
+          "@value": "bar-2"
+        }]
+      }]
+    }]
+  }
+]
+

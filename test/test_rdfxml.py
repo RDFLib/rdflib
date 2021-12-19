@@ -5,11 +5,13 @@ import unittest
 
 import os
 import os.path
+from io import StringIO
 
 from urllib.request import url2pathname, urlopen
 
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
+from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.util import first
 
 
@@ -20,12 +22,8 @@ _logger = logging.getLogger("parser_rdfcore")
 verbose = 0
 
 
-sw = StreamWriter(sys.stdout)
-
-
 def write(msg):
     _logger.info(msg + "\n")
-    # sw.write(msg+"\n")
 
 
 class TestStore(Graph):
@@ -86,7 +84,7 @@ RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
 
 
 def relative(url):
-    return url[len(RDFCOREBASE) :]
+    return url[len(RDFCOREBASE):]
 
 
 def resolve(rel):
@@ -142,10 +140,14 @@ def _testNegative(uri, manifest):
         write("TESTING: %s" % uri)
     result = 0  # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
+    if isinstance(inDoc, BNode):
+        inDoc = first(manifest.objects(inDoc, RDFVOC.about))
+    if verbose:
+        write(u"TESTING: %s" % inDoc)
     store = Graph()
 
     test = BNode()
-    results.add((test, RESULT["test"], uri))
+    results.add((test, RESULT["test"], inDoc))
     results.add((test, RESULT["system"], system))
 
     try:
@@ -158,7 +160,7 @@ def _testNegative(uri, manifest):
         results.add((test, RDF.type, RESULT["PassingRun"]))
         # pass
     else:
-        write("""Failed: '%s'""" % uri)
+        write("""Failed: '%s'""" % inDoc)
         results.add((test, RDF.type, RESULT["FailingRun"]))
         result = 1
     return result
@@ -168,6 +170,15 @@ class ParserTestCase(unittest.TestCase):
     store = "default"
     path = "store"
     slow = True
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.RDF_setting = RDF._fail
+        RDF._fail = True
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        RDF._fail = cls.RDF_setting
 
     def setUp(self):
         self.manifest = manifest = Graph(store=self.store)

@@ -42,7 +42,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = "  "
-    roundtrip_prefixes = tuple()
+    roundtrip_prefixes = ()
 
     def __init__(self, store):
 
@@ -138,7 +138,7 @@ class RecursiveSerializer(Serializer):
 
     def sortProperties(self, properties):
         """Take a hash from predicate uris to lists of values.
-           Sort the lists of values.  Return a sorted list of properties."""
+        Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
             objects.sort(key=cmp_to_key(_object_comparator))

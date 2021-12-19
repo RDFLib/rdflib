@@ -1,0 +1,6 @@
+{
+  "@context": {"foo": {"@id": "http://example.com/foo", "@container": "@list"}},
+  "foo": [
+    [{"@id": "http://example/a", "@type": "http://example/Bar"}],
+    {"@id": "http://example/b", "@type": "http://example/Baz"}]
+}

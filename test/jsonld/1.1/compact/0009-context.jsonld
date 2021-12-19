@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "ex": "http://example.org/vocab#",
+    "ex:contains": {"@type": "@id"}
+  }
+}

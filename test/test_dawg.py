@@ -1,35 +1,33 @@
+from __future__ import print_function
+
+import os
+from pathlib import PurePath
 import sys
+from io import TextIOWrapper
 
 # Needed to pass
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
+from test import TEST_DIR
+from test.manifest import UP, MF, RDFTest, read_manifest
+import pytest
+
+from test.testutils import file_uri_to_path
+
 sys.setrecursionlimit(6000)  # default is 1000
 
 
-try:
-    from collections import Counter
-except:
-
-    # cheap Counter impl for py 2.5
-    # not a complete implementation - only good enough for the use here!
-    from collections import defaultdict
-    from operator import itemgetter
-
-    class Counter(defaultdict):
-        def __init__(self):
-            defaultdict.__init__(self, int)
-
-        def most_common(self, N):
-            return [
-                x[0] for x in sorted(self.items(), key=itemgetter(1), reverse=True)[:10]
-            ]
+from collections import Counter
 
 
 import datetime
 import isodate
+import typing
+from typing import Dict, Callable
 
 
 from rdflib import Dataset, Graph, URIRef, BNode
+from rdflib.term import Node
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -43,16 +41,10 @@ from rdflib.compat import decodeStringEscape, bopen
 from urllib.parse import urljoin
 from io import BytesIO
 
-from nose.tools import nottest, eq_
-from nose import SkipTest
-
-
-from .manifest import nose_tests, MF, UP
-from .earl import report, add_test
-
 
 def eq(a, b, msg):
-    return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
+    # return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
+    assert a == b, msg + ": (%r!=%r)" % (a, b)
 
 
 def setFlags():
@@ -101,8 +93,8 @@ DETAILEDASSERT = True
 
 NAME = None
 
-fails = Counter()
-errors = Counter()
+fails: typing.Counter[str] = Counter()
+errors: typing.Counter[str] = Counter()
 
 failed_tests = []
 error_tests = []
@@ -122,7 +114,7 @@ try:
             ]
         )
 except IOError:
-    skiptests = set()
+    skiptests = dict()
 
 
 def _fmt(f):
@@ -206,27 +198,28 @@ def pp_binding(solutions):
     )
 
 
-@nottest
-def update_test(t):
+def update_test(t: RDFTest):
 
     # the update-eval tests refer to graphs on http://example.org
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = False
 
     uri, name, comment, data, graphdata, query, res, syntax = t
 
+    query_path: PurePath = file_uri_to_path(query)
+
     if uri in skiptests:
-        raise SkipTest()
+        pytest.skip()
 
     try:
         g = Dataset()
 
         if not res:
             if syntax:
-                with bopen(query[7:]) as f:
+                with bopen(query_path) as f:
                     translateUpdate(parseUpdate(f))
             else:
                 try:
-                    with bopen(query[7:]) as f:
+                    with bopen(query_path) as f:
                         translateUpdate(parseUpdate(f))
                     raise AssertionError("Query shouldn't have parsed!")
                 except:
@@ -243,7 +236,7 @@ def update_test(t):
             for x, l in graphdata:
                 g.load(x, publicID=URIRef(l), format=_fmt(x))
 
-        with bopen(query[7:]) as f:
+        with bopen(query_path) as f:
             req = translateUpdate(parseUpdate(f))
         evalUpdate(g, req)
 
@@ -296,33 +289,37 @@ def update_test(t):
             if data:
                 print("----------------- DATA --------------------")
                 print(">>>", data)
-                print(bopen_read_close(data[7:]))
+                data_path: PurePath = file_uri_to_path(data)
+                print(bopen_read_close(data_path))
             if graphdata:
                 print("----------------- GRAPHDATA --------------------")
                 for x, l in graphdata:
                     print(">>>", x, l)
-                    print(bopen_read_close(x[7:]))
+                    x_path: PurePath = file_uri_to_path(x)
+                    print(bopen_read_close(x_path))
 
             print("----------------- Request -------------------")
             print(">>>", query)
-            print(bopen_read_close(query[7:]))
+            print(bopen_read_close(query_path))
 
             if res:
                 if resdata:
                     print("----------------- RES DATA --------------------")
                     print(">>>", resdata)
-                    print(bopen_read_close(resdata[7:]))
+                    resdata_path: PurePath = file_uri_to_path(resdata)
+                    print(bopen_read_close(resdata_path))
                 if resgraphdata:
                     print("----------------- RES GRAPHDATA -------------------")
                     for x, l in resgraphdata:
                         print(">>>", x, l)
-                        print(bopen_read_close(x[7:]))
+                        x_path = file_uri_to_path(x)
+                        print(bopen_read_close(x_path))
 
             print("------------- MY RESULT ----------")
             print(g.serialize(format="trig"))
 
             try:
-                pq = translateUpdate(parseUpdate(bopen_read_close(query[7:])))
+                pq = translateUpdate(parseUpdate(bopen_read_close(query_path)))
                 print("----------------- Parsed ------------------")
                 pprintAlgebra(pq)
                 # print pq
@@ -337,15 +334,18 @@ def update_test(t):
         raise
 
 
-@nottest  # gets called by generator
-def query_test(t):
+def query_test(t: RDFTest):
     uri, name, comment, data, graphdata, query, resfile, syntax = t
 
     # the query-eval tests refer to graphs to load by resolvable filenames
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = True
 
+    query_path: PurePath = file_uri_to_path(query)
+
+    resfile_path = file_uri_to_path(resfile) if resfile else None
+
     if uri in skiptests:
-        raise SkipTest()
+        pytest.skip()
 
     def skip(reason="(none)"):
         print("Skipping %s from now on." % uri)
@@ -366,13 +366,13 @@ def query_test(t):
 
             if syntax:
                 translateQuery(
-                    parseQuery(bopen_read_close(query[7:])), base=urljoin(query, ".")
+                    parseQuery(bopen_read_close(query_path)), base=urljoin(query, ".")
                 )
             else:
                 # negative syntax test
                 try:
                     translateQuery(
-                        parseQuery(bopen_read_close(query[7:])),
+                        parseQuery(bopen_read_close(query_path)),
                         base=urljoin(query, "."),
                     )
 
@@ -382,7 +382,7 @@ def query_test(t):
             return
 
         # eval test - carry out query
-        res2 = g.query(bopen_read_close(query[7:]), base=urljoin(query, "."))
+        res2 = g.query(bopen_read_close(query_path), base=urljoin(query, "."))
 
         if resfile.endswith("ttl"):
             resg = Graph()
@@ -393,11 +393,11 @@ def query_test(t):
             resg.load(resfile, publicID=resfile)
             res = RDFResultParser().parse(resg)
         else:
-            with bopen(resfile[7:]) as f:
+            with bopen(resfile_path) as f:
                 if resfile.endswith("srj"):
                     res = Result.parse(f, format="json")
                 elif resfile.endswith("tsv"):
-                    res = Result.parse(f, format="tsv")
+                    res = Result.parse(TextIOWrapper(f), format="tsv")
 
                 elif resfile.endswith("csv"):
                     res = Result.parse(f, format="csv")
@@ -439,16 +439,11 @@ def query_test(t):
                     set(res2.vars),
                     "Vars do not match: %r != %r" % (set(res.vars), set(res2.vars)),
                 )
-                assert bindingsCompatible(set(res), set(res2)), (
-                    "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s"
-                    % (
-                        res.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                        res2.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                    )
+                assert bindingsCompatible(
+                    set(res), set(res2)
+                ), "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s" % (
+                    res.serialize(format="txt", namespace_manager=g.namespace_manager),
+                    res2.serialize(format="txt", namespace_manager=g.namespace_manager),
                 )
             elif res.type == "ASK":
                 eq(
@@ -486,23 +481,25 @@ def query_test(t):
             if data:
                 print("----------------- DATA --------------------")
                 print(">>>", data)
-                print(bopen_read_close(data[7:]))
+                data_path: PurePath = file_uri_to_path(data)
+                print(bopen_read_close(data_path))
             if graphdata:
                 print("----------------- GRAPHDATA --------------------")
                 for x in graphdata:
                     print(">>>", x)
-                    print(bopen_read_close(x[7:]))
+                    x_path: PurePath = file_uri_to_path(x)
+                    print(bopen_read_close(x_path))
 
             print("----------------- Query -------------------")
             print(">>>", query)
-            print(bopen_read_close(query[7:]))
+            print(bopen_read_close(query_path))
             if resfile:
                 print("----------------- Res -------------------")
                 print(">>>", resfile)
-                print(bopen_read_close(resfile[7:]))
+                print(bopen_read_close(resfile_path))
 
             try:
-                pq = parseQuery(bopen_read_close(query[7:]))
+                pq = parseQuery(bopen_read_close(query_path))
                 print("----------------- Parsed ------------------")
                 pprintAlgebra(translateQuery(pq, base=urljoin(query, ".")))
             except:
@@ -513,12 +510,10 @@ def query_test(t):
             import pdb
 
             pdb.post_mortem(sys.exc_info()[2])
-            # pdb.set_trace()
-            # nose.tools.set_trace()
         raise
 
 
-testers = {
+testers: Dict[Node, Callable[[RDFTest], None]] = {
     UP.UpdateEvaluationTest: update_test,
     MF.UpdateEvaluationTest: update_test,
     MF.PositiveUpdateSyntaxTest11: update_test,
@@ -530,120 +525,31 @@ testers = {
 }
 
 
-def test_dawg():
-
+@pytest.fixture(scope="module", autouse=True)
+def handle_flags():
     setFlags()
-
-    if SPARQL10Tests:
-        for t in nose_tests(testers, "test/DAWG/data-r2/manifest-evaluation.ttl"):
-            yield t
-
-    if SPARQL11Tests:
-        for t in nose_tests(testers, "test/DAWG/data-sparql11/manifest-all.ttl"):
-            yield t
-
-    if RDFLibTests:
-        for t in nose_tests(testers, "test/DAWG/rdflib/manifest.ttl"):
-            yield t
-
+    yield
     resetFlags()
 
 
-if __name__ == "__main__":
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test",
+    read_manifest("test/DAWG/data-r2/manifest-evaluation.ttl"),
+)
+def test_dawg_data_sparql10(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)
 
-    import sys
-    import time
 
-    start = time.time()
-    if len(sys.argv) > 1:
-        NAME = sys.argv[1]
-        DEBUG_FAIL = True
-    i = 0
-    success = 0
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test",
+    read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"),
+)
+def test_dawg_data_sparql11(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)
 
-    skip = 0
 
-    for _type, t in test_dawg():
-
-        if NAME and not str(t[0]).startswith(NAME):
-            continue
-        i += 1
-        try:
-
-            _type(t)
-
-            add_test(t[0], "passed")
-            success += 1
-
-        except SkipTest as e:
-            msg = skiptests.get(t[0], e.args)
-            add_test(t[0], "untested", msg)
-            print("skipping %s - %s" % (t[0], msg))
-            skip += 1
-
-        except KeyboardInterrupt:
-            raise
-        except AssertionError:
-            add_test(t[0], "failed")
-        except:
-            add_test(t[0], "failed", "error")
-            import traceback
-
-            traceback.print_exc()
-            sys.stderr.write("%s\n" % t[0])
-
-    print("\n----------------------------------------------------\n")
-    print("Failed tests:")
-    for failed in failed_tests:
-        print(failed)
-
-    print("\n----------------------------------------------------\n")
-    print("Error tests:")
-    for error in error_tests:
-        print(error)
-
-    print("\n----------------------------------------------------\n")
-
-    print("Most common fails:")
-    for failed in fails.most_common(10):
-        failed = str(failed)
-        print(failed[:450] + (failed[450:] and "..."))
-
-    print("\n----------------------------------------------------\n")
-
-    if errors:
-        print("Most common errors:")
-        for error in errors.most_common(10):
-            print(error)
-    else:
-        print("(no errors!)")
-
-    f_sum = sum(fails.values())
-    e_sum = sum(errors.values())
-
-    if success + f_sum + e_sum + skip != i:
-        print("(Something is wrong, %d!=%d)" % (success + f_sum + e_sum + skip, i))
-
-    print(
-        "\n%d tests, %d passed, %d failed, %d errors, \
-          %d skipped (%.2f%% success)"
-        % (i, success, f_sum, e_sum, skip, 100.0 * success / i)
-    )
-    print("Took %.2fs" % (time.time() - start))
-
-    if not NAME:
-
-        now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-
-        with open("testruns.txt", "a") as tf:
-            tf.write(
-                "%s\n%d tests, %d passed, %d failed, %d errors, %d "
-                "skipped (%.2f%% success)\n\n"
-                % (now, i, success, f_sum, e_sum, skip, 100.0 * success / i)
-            )
-
-        earl_report = "test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
-
-        report.serialize(earl_report, format="n3")
-        report.serialize("test_reports/rdflib_sparql-latest.ttl", format="n3")
-        print("Wrote EARL-report to '%s'" % earl_report)
+@pytest.mark.parametrize(
+    "rdf_test_uri, type, rdf_test", read_manifest("test/DAWG/rdflib/manifest.ttl")
+)
+def test_dawg_rdflib(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    testers[type](rdf_test)

@@ -4,29 +4,13 @@
 Merging graphs
 ==============
 
-	A merge of a set of RDF graphs is defined as follows. If the graphs in
-	the set have no blank nodes in common, then the union of the graphs is
-	a merge; if they do share blank nodes, then it is the union of a set
-	of graphs that is obtained by replacing the graphs in the set by
-	equivalent graphs that share no blank nodes. This is often described
-	by saying that the blank nodes have been 'standardized apart'. It is
-	easy to see that any two merges are equivalent, so we will refer to
-	the merge, following the convention on equivalent graphs. Using the
-	convention on equivalent graphs and identity, any graph in the
-	original set is considered to be a subgraph of the merge.
+ Graphs share blank nodes only if they are derived from graphs described by documents or other structures (such as an RDF dataset) that explicitly provide for the sharing of blank nodes between different RDF graphs. Simply downloading a web document does not mean that the blank nodes in a resulting RDF graph are the same as the blank nodes coming from other downloads of the same document or from the same RDF source.
 
-	One does not, in general, obtain the merge of a set of graphs by
-	concatenating their corresponding N-Triples documents and constructing
-	the graph described by the merged document. If some of the documents
-	use the same node identifiers, the merged document will describe a
-	graph in which some of the blank nodes have been 'accidentally'
-	identified. To merge N-Triples documents it is necessary to check if
-	the same nodeID is used in two or more documents, and to replace it
-	with a distinct nodeID in each of them, before merging the
-	documents. Similar cautions apply to merging graphs described by
-	RDF/XML documents which contain nodeIDs
+RDF applications which manipulate concrete syntaxes for RDF which use blank node identifiers should take care to keep track of the identity of the blank nodes they identify. Blank node identifiers often have a local scope, so when RDF from different sources is combined, identifiers may have to be changed in order to avoid accidental conflation of distinct blank nodes.
 
-*(copied directly from http://www.w3.org/TR/rdf-mt/#graphdefs)*
+For example, two documents may both use the blank node identifier "_:x" to identify a blank node, but unless these documents are in a shared identifier scope or are derived from a common source, the occurrences of "_:x" in one document will identify a different blank node than the one in the graph described by the other document. When graphs are formed by combining RDF from multiple sources, it may be necessary to standardize apart the blank node identifiers by replacing them by others which do not occur in the other document(s).
+
+*(copied directly from https://www.w3.org/TR/rdf11-mt/#shared-blank-nodes-unions-and-merges)*
 
 
 In RDFLib, blank nodes are given unique IDs when parsing, so graph merging can be done by simply reading several files into the same graph:: 

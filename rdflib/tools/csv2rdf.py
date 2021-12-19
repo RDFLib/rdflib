@@ -1,5 +1,7 @@
 """
-A commandline tool for semi-automatically converting CSV to RDF
+A commandline tool for semi-automatically converting CSV to RDF.
+
+See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 
 try: ``csv2rdf --help``
 
@@ -92,7 +94,7 @@ uris = {}
 
 def toProperty(label):
     """
-    CamelCase + lowercase inital a string
+    CamelCase + lowercase initial a string
 
 
     FIRST_NM => firstNm
@@ -100,7 +102,7 @@ def toProperty(label):
     firstNm => firstNm
 
     """
-    label = re.sub("[^\\w]", " ", label)
+    label = re.sub(r"[^\w]", " ", label)
     label = re.sub("([a-z])([A-Z])", "\\1 \\2", label)
     label = label.split(" ")
     return "".join([label[0].lower()] + [x.capitalize() for x in label[1:]])

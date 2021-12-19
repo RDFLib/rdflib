@@ -1,11 +1,20 @@
 from collections import Counter
+from typing import Set, Tuple
+from unittest.case import expectedFailure
+
+import pytest
+from rdflib.term import Node
 from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Literal
+from rdflib.namespace import FOAF
 from rdflib.compare import to_isomorphic, to_canonical_graph
 
 import rdflib
 from rdflib.plugins.stores.memory import Memory
 
 from io import StringIO
+import unittest
+
+from .testutils import GraphHelper
 
 
 def get_digest_value(rdf, mimetype):
@@ -195,6 +204,11 @@ def negative_graph_match_test():
 
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]
+
+
+@pytest.mark.parametrize("fn, rdf1, rdf2, identical", negative_graph_match_test())
+def test_negative_graph_match(fn, rdf1, rdf2, identical):
+    fn(rdf1, rdf2, identical)
 
 
 def test_issue494_collapsing_bnodes():
@@ -503,3 +517,56 @@ def test_issue725_collapsing_bnodes_2():
     assert (
         g_count_signature == cg_count_signature
     ), "canonicalization changed node position counts"
+
+
+_Triple = Tuple[Node, Node, Node]
+_TripleSet = Set[_Triple]
+
+
+class TestConsistency(unittest.TestCase):
+    @expectedFailure
+    def test_consistent_ids(self) -> None:
+        """
+        This test verifies that `to_canonical_graph` creates consistent
+        identifiers for blank nodes even when the graph changes.
+
+        It does this by creating two triple sets `g0_ts` and `g1_ts`
+        and then first creating a canonical graph with only the first
+        triple set (cg0), and then a canonical graph with both triple
+        sets (cg1), and then confirming the triples in cg0 is a subset
+        of cg1.
+
+        This will fail if the `to_canonical_graph` does not generate
+        consistent identifiers for blank nodes when the graph changes.
+
+        This property is essential for `to_canonical_graph` to
+        be useful for diffing graphs.
+        """
+        bnode = BNode()
+        g0_ts: _TripleSet = {
+            (bnode, FOAF.name, Literal("Golan Trevize")),
+            (bnode, RDF.type, FOAF.Person),
+        }
+        bnode = BNode()
+        g1_ts: _TripleSet = {
+            (bnode, FOAF.name, Literal("Janov Pelorat")),
+            (bnode, RDF.type, FOAF.Person),
+        }
+
+        g0 = Graph()
+        g0 += g0_ts
+        cg0 = to_canonical_graph(g0)
+        cg0_ts = GraphHelper.triple_set(cg0)
+
+        g1 = Graph()
+        g1 += g1_ts
+        cg1 = to_canonical_graph(g1)
+        cg1_ts = GraphHelper.triple_set(cg1)
+
+        assert cg0_ts.issubset(
+            cg1_ts
+        ), "canonical triple set cg0_ts should be a subset of canonical triple set cg1_ts"
+
+
+if __name__ == "__main__":
+    unittest.main()

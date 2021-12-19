@@ -6,7 +6,6 @@ include ez_setup.py
 include skiptests.list
 recursive-include rdflib *.py
 recursive-include examples *.py
-include run_tests.py
 graft test
 graft docs
 prune docs/_build

@@ -1,0 +1,150 @@
+{
+  "@context": "http://json-ld.org/test-suite/context.jsonld",
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "Transform RDF to JSON-LD",
+  "description": "Transform RDF to JSON-LD tests take N-Quads input and use object comparison.",
+  "baseIri": "http://json-ld.org/test-suite/tests/",
+  "sequence": [
+    {
+      "@id": "#t0001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Object Lists",
+      "purpose": "Tests generation using different types of objects.",
+      "input": "fromRdf-0001-in.nq",
+      "expect": "fromRdf-0001-out.jsonld"
+    }, {
+      "@id": "#t0002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Native Types",
+      "purpose": "Do not use native datatypes for xsd:boolean, xsd:integer, and xsd:double by default.",
+      "input": "fromRdf-0002-in.nq",
+      "expect": "fromRdf-0002-out.jsonld"
+    }, {
+      "@id": "#t0003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "BNodes and references",
+      "purpose": "BNode name generation and references between resources.",
+      "input": "fromRdf-0003-in.nq",
+      "expect": "fromRdf-0003-out.jsonld"
+    }, {
+      "@id": "#t0004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Lists",
+      "purpose": "Multiple lists with different types of element.",
+      "input": "fromRdf-0004-in.nq",
+      "expect": "fromRdf-0004-out.jsonld"
+    }, {
+      "@id": "#t0005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Document with list",
+      "purpose": "Uses a named graph containing a list.",
+      "input": "fromRdf-0005-in.nq",
+      "expect": "fromRdf-0005-out.jsonld"
+    }, {
+      "@id": "#t0006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Two graphs having same subject but different values",
+      "purpose": "Ensure that properties and list elements aren't confused between graphs.",
+      "input": "fromRdf-0006-in.nq",
+      "expect": "fromRdf-0006-out.jsonld"
+    }, {
+      "@id": "#t0007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Graph with multiple named graphs",
+      "purpose": "Testing @graph recursion.",
+      "input": "fromRdf-0007-in.nq",
+      "expect": "fromRdf-0007-out.jsonld"
+    }, {
+      "@id": "#t0008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List conversion",
+      "purpose": "Conversion of lists of lists (the triples in the input are only partially ordered on purpose",
+      "input": "fromRdf-0008-in.nq",
+      "expect": "fromRdf-0008-out.jsonld"
+    }, {
+      "@id": "#t0009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List conversion with IRI nodes",
+      "purpose": "Preserve IRI list nodes (i.e., not blank nodes) when converting to @list",
+      "input": "fromRdf-0009-in.nq",
+      "expect": "fromRdf-0009-out.jsonld"
+    }, {
+      "@id": "#t0010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern without rdf:nil",
+      "purpose": "Do not convert lists that are not terminated by rdf:nil to @list.",
+      "input": "fromRdf-0010-in.nq",
+      "expect": "fromRdf-0010-out.jsonld"
+    }, {
+      "@id": "#t0011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with extra properties",
+      "purpose": "If additional properties are associated to a list node, the list is only partially converted to @list.",
+      "input": "fromRdf-0011-in.nq",
+      "expect": "fromRdf-0011-out.jsonld"
+    }, {
+      "@id": "#t0012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with cycles",
+      "purpose": "Detect lists containing cycles and do not convert them to @list.",
+      "input": "fromRdf-0012-in.nq",
+      "expect": "fromRdf-0012-out.jsonld"
+    }, {
+      "@id": "#t0013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with multiple values of rdf:first",
+      "purpose": "Do not convert list nodes to @list if nodes contain more than one value for rdf:first.",
+      "input": "fromRdf-0013-in.nq",
+      "expect": "fromRdf-0013-out.jsonld"
+    }, {
+      "@id": "#t0014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with multiple values of rdf:rest",
+      "purpose": "Do not convert list nodes to @list if nodes contain more than one value for rdf:rest.",
+      "input": "fromRdf-0014-in.nq",
+      "expect": "fromRdf-0014-out.jsonld"
+    }, {
+      "@id": "#t0015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with IRI rdf:rest",
+      "purpose": "Do not convert lists to @list if a list node's rdf:rest is an IRI.",
+      "input": "fromRdf-0015-in.nq",
+      "expect": "fromRdf-0015-out.jsonld"
+    }, {
+      "@id": "#t0016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "List pattern with type rdf:List",
+      "purpose": "List nodes may have a rdf:type rdf:List.",
+      "input": "fromRdf-0016-in.nq",
+      "expect": "fromRdf-0016-out.jsonld"
+    }, {
+      "@id": "#t0017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Remove duplicate triples",
+      "purpose": "Equivalent triples are used only once",
+      "input": "fromRdf-0017-in.nq",
+      "expect": "fromRdf-0017-out.jsonld"
+    }, {
+      "@id": "#t0018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "use native types flag set to true",
+      "purpose": "Literals with datatype xsd:boolean, xsd:integer, and xsd:double are serialized using native scalar values",
+      "option": {
+        "useNativeTypes": true
+      },
+      "input": "fromRdf-0018-in.nq",
+      "expect": "fromRdf-0018-out.jsonld"
+    }, {
+      "@id": "#t0019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "use rdf:type flag set to false",
+      "purpose": "Setting useRdfType to true causes an rdf:type predicate to be treated like a normal property, not @type",
+      "option": {
+        "useRdfType": true
+      },
+      "input": "fromRdf-0019-in.nq",
+      "expect": "fromRdf-0019-out.jsonld"
+    }
+  ]
+}

@@ -1,9 +1,10 @@
+from rdflib.plugins.sparql import sparql, prepareQuery
 from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
 from rdflib.namespace import Namespace, RDF, RDFS
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
+from rdflib.term import Variable
 
-from nose.tools import eq_
+from .testutils import eq_
 
 
 def test_graph_prefix():
@@ -113,38 +114,134 @@ def test_sparql_update_with_bnode_serialize_parse():
     assert not raised
 
 
+def test_bindings():
+    layer_0 = sparql.Bindings(d={"v": 1, "bar": 2})
+    layer_1 = sparql.Bindings(outer=layer_0, d={"v": 3})
+
+    assert layer_0["v"] == 1
+    assert layer_1["v"] == 3
+    assert layer_1["bar"] == 2
+
+    assert "foo" not in layer_0
+    assert "v" in layer_0
+    assert "bar" in layer_1
+
+    # XXX This might not be intendet behaviour
+    #     but is kept for compatibility for now.
+    assert len(layer_1) == 3
+
+
 def test_named_filter_graph_query():
     g = ConjunctiveGraph()
-    g.namespace_manager.bind('rdf', RDF)
-    g.namespace_manager.bind('rdfs', RDFS)
-    ex = Namespace('https://ex.com/')
-    g.namespace_manager.bind('ex', ex)
-    g.get_context(ex.g1).parse(format="turtle", data=f"""
+    g.namespace_manager.bind("rdf", RDF)
+    g.namespace_manager.bind("rdfs", RDFS)
+    ex = Namespace("https://ex.com/")
+    g.namespace_manager.bind("ex", ex)
+    g.get_context(ex.g1).parse(
+        format="turtle",
+        data=f"""
     PREFIX ex: <{str(ex)}>
     PREFIX rdfs: <{str(RDFS)}>
     ex:Boris rdfs:label "Boris" .
     ex:Susan rdfs:label "Susan" .
-    """)
-    g.get_context(ex.g2).parse(format="turtle", data=f"""
+    """,
+    )
+    g.get_context(ex.g2).parse(
+        format="turtle",
+        data=f"""
     PREFIX ex: <{str(ex)}>
     ex:Boris a ex:Person .
-    """)
+    """,
+    )
 
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Susan'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Boris'),)]
-    assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                        initNs={'ex': ex})) == [(Literal('Susan'),)]
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Susan"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Boris"),)]
+    )
+    assert (
+        list(
+            g.query(
+                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+                initNs={"ex": ex},
+            )
+        )
+        == [(Literal("Susan"),)]
+    )
 
 
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=__name__)
+def test_txtresult():
+    data = f"""\
+    @prefix rdfs: <{str(RDFS)}> .
+    rdfs:Class a rdfs:Class ;
+        rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#> ;
+        rdfs:label "Class" ;
+        rdfs:comment "The class of classes." ;
+        rdfs:subClassOf rdfs:Resource .
+    """
+    graph = Graph()
+    graph.parse(data=data, format="turtle")
+    result = graph.query(
+        """\
+    SELECT ?class ?superClass ?label ?comment WHERE {
+        ?class rdf:type rdfs:Class.
+        ?class rdfs:label ?label.
+        ?class rdfs:comment ?comment.
+        ?class rdfs:subClassOf ?superClass.
+    }
+    """
+    )
+    vars = [
+        Variable("class"),
+        Variable("superClass"),
+        Variable("label"),
+        Variable("comment"),
+    ]
+    assert result.type == "SELECT"
+    assert len(result) == 1
+    assert result.vars == vars
+    txtresult = result.serialize(format="txt")
+    lines = txtresult.decode().splitlines()
+    assert len(lines) == 3
+    vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
+    assert vars_check == vars

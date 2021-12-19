@@ -1,0 +1,22 @@
+[
+    {
+        "@id": "http://example.com/IriCollissions",
+        "http://example.com/vocab/collidingTerm": [
+            {
+                "@value": "value 1"
+            },
+            {
+                "@value": 2
+            },
+            {
+                "@value": 3
+            },
+            {
+                "@value": "four"
+            },
+            {
+                "@value": 5
+            }
+        ]
+    }
+]

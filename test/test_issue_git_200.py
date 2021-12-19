@@ -1,17 +1,11 @@
 import rdflib
-
-import nose.tools
+import pytest
 
 
 def test_broken_add():
 
     g = rdflib.Graph()
-    nose.tools.assert_raises(AssertionError, lambda: g.add((1, 2, 3)))
-    nose.tools.assert_raises(AssertionError, lambda: g.addN([(1, 2, 3, g)]))
-
-
-if __name__ == "__main__":
-    import nose
-    import sys
-
-    nose.main(defaultTest=sys.argv[0])
+    with pytest.raises(AssertionError):
+        g.add((1, 2, 3))
+    with pytest.raises(AssertionError):
+        g.addN([(1, 2, 3, g)])

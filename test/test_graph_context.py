@@ -4,10 +4,9 @@ import unittest
 
 from tempfile import mkdtemp, mkstemp
 import shutil
+
+import pytest
 from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
-
-from nose.exc import SkipTest
-
 
 class ContextTestCase(unittest.TestCase):
     store = "default"
@@ -18,7 +17,7 @@ class ContextTestCase(unittest.TestCase):
         try:
             self.graph = ConjunctiveGraph(store=self.store)
         except ImportError:
-            raise SkipTest("Dependencies for store '%s' not available!" % self.store)
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
         else:
@@ -99,7 +98,7 @@ class ContextTestCase(unittest.TestCase):
 
     def testConjunction(self):
         if self.store == "SQLite":
-            raise SkipTest("Skipping known issue with __len__")
+            pytest.skip("Skipping known issue with __len__")
         self.addStuffInMultipleContexts()
         triple = (self.pizza, self.likes, self.pizza)
         # add to context 1
@@ -132,7 +131,7 @@ class ContextTestCase(unittest.TestCase):
 
     def testLenInMultipleContexts(self):
         if self.store == "SQLite":
-            raise SkipTest("Skipping known issue with __len__")
+            pytest.skip("Skipping known issue with __len__")
         oldLen = len(self.graph)
         self.addStuffInMultipleContexts()
 

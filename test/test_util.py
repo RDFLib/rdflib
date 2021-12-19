@@ -2,6 +2,7 @@
 
 import unittest
 import time
+from unittest.case import expectedFailure
 from rdflib.graph import Graph
 from rdflib.graph import QuotedGraph
 from rdflib.graph import ConjunctiveGraph
@@ -243,22 +244,22 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in (
-            '<http://ex.com/foo>',
+            "<http://ex.com/foo>",
             '"foo"@de',
-            '<http://ex.com/漢字>',
-            '<http://ex.com/a#あ>',
+            "<http://ex.com/漢字>",
+            "<http://ex.com/a#あ>",
             # '"\\""', # exception as '\\"' --> '"' by orig parser as well
             '"""multi\n"line"\nstring"""@en',
         ):
             self.assertEqual(
-                util.from_n3(n3).n3(), 
+                util.from_n3(n3).n3(),
                 n3,
-                'from_n3(%(n3e)r).n3() != %(n3e)r' % {'n3e': n3},
+                "from_n3(%(n3e)r).n3() != %(n3e)r" % {"n3e": n3},
             )
 
     def test_util_from_n3_expectsameasn3parser(self):
         def parse_n3(term_n3):
-            """ Disclaimer: Quick and dirty hack using the n3 parser. """
+            """Disclaimer: Quick and dirty hack using the n3 parser."""
             prepstr = (
                 "@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
                 "<urn:no_use> <urn:no_use> %s.\n" % term_n3
@@ -300,6 +301,47 @@ class TestUtilTermConvert(unittest.TestCase):
         s = "[<http://example.com/schema>]"
         res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, Graph))
+
+    def test_util_from_n3_escapes(self) -> None:
+        pairs = [
+            ("\\t", "\t"),
+            ("\\b", "\b"),
+            ("\\n", "\n"),
+            ("\\r", "\r"),
+            ("\\f", "\f"),
+            ('\\"', '"'),
+            ("\\'", "'"),
+            ("\\\\", "\\"),
+            ("\\u00F6", "ö"),
+            ("\\U000000F6", "ö"),
+        ]
+        for escaped, raw in pairs:
+            with self.subTest(f"{escaped} => {raw}"):
+                literal_str = str(util.from_n3(f'"{escaped}"'))
+                self.assertEqual(literal_str, f"{raw}")
+
+    def test_util_from_n3_not_escapes(self) -> None:
+        strings = [
+            "jörn",
+            "j\\xf6rn",
+        ]
+        for string in strings:
+            with self.subTest(f"{string}"):
+                literal_str = str(util.from_n3(f'"{string}"'))
+                self.assertEqual(literal_str, f"{string}")
+
+    @expectedFailure
+    def test_util_from_n3_not_escapes_xf(self) -> None:
+        strings = [
+            f"j\\366rn",
+            f"\\",
+            f"\\0",
+            f"\\I",
+        ]
+        for string in strings:
+            with self.subTest(f"{string}"):
+                literal_str = str(util.from_n3(f'"{string}"'))
+                self.assertEqual(literal_str, f"{string}")
 
 
 class TestUtilCheckers(unittest.TestCase):

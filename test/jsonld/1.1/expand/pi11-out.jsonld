@@ -1,0 +1,8 @@
+[{
+  "http://example.org/input": [{
+    "http://example.org/prop": [{"@value": "g1"}],
+    "@graph": [{
+      "http://example.org/value": [{"@value": "x"}]
+    }]
+  }]
+}]

@@ -5,11 +5,11 @@ Writing RDFLib Documentation
 ================================
 
 
-The docs are generated with Sphinx.
+These docs are generated with Sphinx.
 
 Sphinx makes it very easy to pull in doc-strings from modules,
 classes, methods, etc.  When writing doc-strings, special reST fields
-can be used to annotate parameters, return-types, etc. This make for
+can be used to annotate parameters, return-types, etc. This makes for
 pretty API docs:
 
 http://sphinx-doc.org/domains.html?highlight=param#info-field-lists
@@ -17,19 +17,21 @@ http://sphinx-doc.org/domains.html?highlight=param#info-field-lists
 Building
 --------
 
-To build you must have the `sphinx` package installed:
+To build you must have the ``sphinx`` package installed:
 
 .. code-block:: bash
 
   pip install sphinx
 
-Then you can do:
+See the documentation's full set of requirements in the ``sphinx-require,ens.txt`` file within the :file:`docs/` directory.
+
+ Once you have all the requirements installed you can run this command in the rdflib root directory:
 
 .. code-block:: bash
 
   python setup.py build_sphinx
 
-The docs will be generated in :file:`build/sphinx/html/`
+Docs will be generated in :file:`build/sphinx/html/` and API documentation, generated from doc-strings, will be placed in :file:`docs/apidocs/`.
 
 API Docs
 --------
@@ -40,8 +42,8 @@ API Docs are automatically generated with ``sphinx-apidoc``:
 
    sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib examples
 
-(then ``rdflib.rst`` was tweaked manually to not include all
-convenience imports that are directly in the ``rdflib/__init__.py``)
+Note that ``rdflib.rst`` was manually tweaked so as to not include all
+ imports in ``rdflib/__init__.py``.
 
 Tables
 ------

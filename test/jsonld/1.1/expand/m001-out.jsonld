@@ -1,0 +1,6 @@
+[{
+  "http://example/idmap": [
+    {"http://example/label": [{"@value": "Object with @id _:bar"}], "@id": "_:bar"},
+    {"http://example/label": [{"@value": "Object with @id <foo>"}], "@id": "http://example.org/foo"}
+  ]
+}]

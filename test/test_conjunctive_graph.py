@@ -2,6 +2,8 @@
 Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
+import pytest
+
 from rdflib import ConjunctiveGraph, Graph
 from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource
@@ -46,7 +48,7 @@ def test_quad_contexts():
         assert isinstance(q[3], Graph)
 
 
-def test_graph_ids():
+def get_graph_ids_tests():
     def check(kws):
         cg = ConjunctiveGraph()
         cg.parse(**kws)
@@ -62,7 +64,6 @@ def test_graph_ids():
     yield check, dict(source=source, format="turtle")
 
 
-if __name__ == "__main__":
-    import nose
-
-    nose.main(defaultTest=__name__)
+@pytest.mark.parametrize("checker, kws", get_graph_ids_tests())
+def test_graph_ids(checker, kws):
+    checker(kws)

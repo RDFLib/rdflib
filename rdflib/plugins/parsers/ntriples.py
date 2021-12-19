@@ -54,7 +54,6 @@ r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
-
         if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
@@ -105,6 +104,7 @@ class W3CNTriplesParser(object):
     """An N-Triples Parser.
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
+
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
 
@@ -262,7 +262,7 @@ class W3CNTriplesParser(object):
             bnode_id = self.eat(r_nodeid).group(1)
             new_id = bnode_context.get(bnode_id, None)
             if new_id is not None:
-                # Re-map to id specfic to this doc
+                # Re-map to id specific to this doc
                 return bNode(new_id)
             else:
                 # Replace with freshly-generated document-specific BNode id
@@ -307,7 +307,7 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    __slots__ = set()
+    __slots__ = ()
 
     @classmethod
     def parse(cls, source, sink, **kwargs):

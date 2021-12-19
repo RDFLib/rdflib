@@ -1,0 +1,6 @@
+_:b0 <http://example/base-foo> "base-foo" .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Outer> .
+_:b0 <http://example/outer-prop> _:b1 .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Inner> .
+_:b1 <http://example/prop> <http://example/inner-with-index> .
+<http://example/inner-with-index> <http://example/inner-foo> "inner-foo" .

@@ -1,4 +1,5 @@
 import logging
+from typing import Optional, TYPE_CHECKING, Tuple
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
@@ -10,6 +11,9 @@ from rdflib.query import Result
 from rdflib import BNode
 
 log = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    import typing_extensions as te
 
 
 class SPARQLConnectorException(Exception):
@@ -33,12 +37,12 @@ class SPARQLConnector(object):
 
     def __init__(
         self,
-        query_endpoint=None,
-        update_endpoint=None,
-        returnFormat="xml",
-        method="GET",
-        auth=None,
-        **kwargs
+        query_endpoint: Optional[str] = None,
+        update_endpoint: Optional[str] = None,
+        returnFormat: str = "xml",
+        method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
+        auth: Optional[Tuple[str, str]] = None,
+        **kwargs,
     ):
         """
         auth, if present, must be a tuple of (username, password) used for Basic Authentication
@@ -56,9 +60,11 @@ class SPARQLConnector(object):
                 raise SPARQLConnectorException("auth must be a tuple")
             if len(auth) != 2:
                 raise SPARQLConnectorException("auth must be a tuple (user, password)")
-            base64string = base64.b64encode(bytes('%s:%s' % auth, 'ascii'))
+            base64string = base64.b64encode(bytes("%s:%s" % auth, "ascii"))
             self.kwargs.setdefault("headers", {})
-            self.kwargs["headers"].update({"Authorization": "Basic %s" % base64string.decode('utf-8')})
+            self.kwargs["headers"].update(
+                {"Authorization": "Basic %s" % base64string.decode("utf-8")}
+            )
 
     @property
     def method(self):
@@ -67,7 +73,9 @@ class SPARQLConnector(object):
     @method.setter
     def method(self, method):
         if method not in ("GET", "POST", "POST_FORM"):
-            raise SPARQLConnectorException('Method must be "GET", "POST", or "POST_FORM"')
+            raise SPARQLConnectorException(
+                'Method must be "GET", "POST", or "POST_FORM"'
+            )
 
         self._method = method
 
@@ -95,21 +103,37 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
-                res = urlopen(Request(self.query_endpoint + qsa, headers=args["headers"]))
+                res = urlopen(
+                    Request(self.query_endpoint + qsa, headers=args["headers"])
+                )
             except Exception as e:
-                raise ValueError("You did something wrong formulating either the URI or your SPARQL query")
+                raise ValueError(
+                    "You did something wrong formulating either the URI or your SPARQL query"
+                )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
             qsa = "?" + urlencode(params)
             try:
-                res = urlopen(Request(self.query_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+                res = urlopen(
+                    Request(
+                        self.query_endpoint + qsa,
+                        data=query.encode(),
+                        headers=args["headers"],
+                    )
+                )
             except HTTPError as e:
                 return e.code, str(e), None
         elif self.method == "POST_FORM":
             params["query"] = query
             args["params"].update(params)
             try:
-                res = urlopen(Request(self.query_endpoint, data=urlencode(args["params"]).encode(), headers=args["headers"]))
+                res = urlopen(
+                    Request(
+                        self.query_endpoint,
+                        data=urlencode(args["params"]).encode(),
+                        headers=args["headers"],
+                    )
+                )
             except HTTPError as e:
                 return e.code, str(e), None
         else:
@@ -118,7 +142,12 @@ class SPARQLConnector(object):
             BytesIO(res.read()), content_type=res.headers["Content-Type"].split(";")[0]
         )
 
-    def update(self, query, default_graph: str = None, named_graph: str = None):
+    def update(
+        self,
+        query,
+        default_graph: Optional[str] = None,
+        named_graph: Optional[str] = None,
+    ):
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
@@ -128,7 +157,7 @@ class SPARQLConnector(object):
             params["using-graph-uri"] = default_graph
 
         if named_graph is not None:
-            params["using-named-graph-uri"] = default_graph
+            params["using-named-graph-uri"] = named_graph
 
         headers = {
             "Accept": _response_mime_types[self.returnFormat],
@@ -143,4 +172,8 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(Request(self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+        res = urlopen(
+            Request(
+                self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
+            )
+        )

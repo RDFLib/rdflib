@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-
+import os
 
 from rdflib.graph import ConjunctiveGraph
 import unittest
+
+from test import TEST_DIR
 
 
 class TestTrixParse(unittest.TestCase):
@@ -16,7 +18,10 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        g.parse("test/trix/aperture.trix", format="trix")
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/aperture.trix"), os.curdir
+        )
+        g.parse(trix_path, format="trix")
         c = list(g.contexts())
 
         # print list(g.contexts())
@@ -31,7 +36,10 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        g.parse("test/trix/nokia_example.trix", format="trix")
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/nokia_example.trix"), os.curdir
+        )
+        g.parse(trix_path, format="trix")
 
         # print "Parsed %d triples"%len(g)
 
@@ -39,7 +47,10 @@ class TestTrixParse(unittest.TestCase):
 
         g = ConjunctiveGraph()
 
-        g.parse("test/trix/ng4jtest.trix", format="trix")
+        trix_path = os.path.relpath(
+            os.path.join(TEST_DIR, "trix/ng4jtest.trix"), os.curdir
+        )
+        g.parse(trix_path, format="trix")
 
         # print "Parsed %d triples"%len(g)
 

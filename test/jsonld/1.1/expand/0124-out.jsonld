@@ -1,0 +1,9 @@
+[
+  {
+    "http://example.org/ns/foo": [
+      {
+        "@value": "bar"
+      }
+    ]
+  }
+]

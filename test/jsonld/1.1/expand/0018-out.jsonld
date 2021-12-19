@@ -1,0 +1,8 @@
+[
+  {
+    "@id": "http://example.org/test",
+    "http://example.org/vocab#test-default": [ { "@value": "hello", "@language": "en" }, { "@value": 1 }, { "@value": true } ],
+    "http://example.org/vocab#german": [ { "@value": "hallo", "@language": "de" }, { "@value": 2 }, { "@value": true } ],
+    "http://example.org/vocab#nolang": [ {"@value": "no language"}, { "@value": 3 }, { "@value": false } ]
+  }
+]

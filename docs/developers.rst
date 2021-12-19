@@ -9,58 +9,142 @@ Introduction
 This document describes the process and conventions to follow when
 developing RDFLib code.
 
-Please be as Pythonic as possible (:pep:`8`).
-
-Code should be formatted using `black <https://github.com/psf/black>`_.
-While not yet mandatory it will be required in the future.
-
-Any new functionality being added to RDFLib should have doc tests and
-unit tests. Tests should be added for any functionality being changed
-that currently does not have any doc tests or unit tests. And all the
-tests should be run before committing changes to make sure the changes
-did not break anything.
+* Please be as Pythonic as possible (:pep:`8`).
+* Code should be formatted using `black <https://github.com/psf/black>`_
+and we use Black v21.9b0, with the black.toml config file provided.
+* Code should also pass `flake8 <https://github.com/psf/black>`_ linting
+and `mypy <http://mypy-lang.org/>`_ type checking.
+* You must supply tests for new code
 
 If you add a new cool feature, consider also adding an example in ``./examples``
 
+Tests
+-----
+Any new functionality being added to RDFLib _must_ have unit tests and
+should have doc tests supplied. 
+
+Typically, you should add your functionality and new tests to a branch of 
+RDFlib and and run all tests locally and see them pass. There are currently 
+close to 4,000 tests with a few extra expected failures and skipped tests.
+We won't allow Pull Requests that break any of the existing tests.
+
+Tests that you add should show how your new feature or bug fix is doing what
+you say it is doing: if you remove your enhancement, your new tests should fail!
+
+Finally, please consider adding simple and more complex tests. It's good to see
+the basic functionality of your feature tests and then also any tricky bits or
+edg cases.
+
+Testing framework
+~~~~~~~~~~~~~~~~~
+RDFLib uses the `pytest <https://docs.pytest.org/en/latest/>`_ testing framework.
+
 Running tests
--------------
-Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
+~~~~~~~~~~~~~
 
-.. code-block: bash
+To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
-   $ pip install nose
-   $ python run_tests.py
-   $ python run_tests.py --attr known_issue # override attr in setup.cfg to run only tests marked with "known_issue"
-   $ python run_tests.py --attr \!known_issue # runs all tests (including "slow" and "non_core") except those with known issues
-   $ python run_tests.py --attr slow,!known_issue  # comma separate if you want to specify more than one attr
-   $ python run_tests.py --attr known_issue=None # use =None instead of \! if you keep forgetting to escape the ! in shell commands ;)
+.. code-block:: bash
 
-Specific tests can either be run by module name or file name. For example::
+   $ pip install -r requirements.txt -r requirements.dev.txt
+   $ pytest
 
-  $ python run_tests.py --tests rdflib.graph
-  $ python run_tests.py --tests test/test_graph.py
+Specific tests can be run by file name. For example:
+
+.. code-block:: bash
+
+  $ pytest test/test_graph.py
+
+Writing tests
+~~~~~~~~~~~~~
+
+New tests should be written for `pytest <https://docs.pytest.org/en/latest/>`_
+instead of for python's built-in `unittest` module as pytest provides advanced
+features such as parameterization and more flexibility in writing expected
+failure tests than `unittest`.
+
+A primer on how to write tests for pytest can be found `here
+<https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test>`_.
+
+The existing test that use `unittest` work well with pytest, but they should
+ideally be updated to the pytest test-style when they are touched.
+
+Test should go into the ``test/`` directory, either into an existing test file
+with a name that is applicable to the test being written, or into a new test
+file with a name that is descriptive of the tests placed in it. Test files
+should be named `test_*.py` so that `pytest can discover them
+<https://docs.pytest.org/en/latest/explanation/goodpractices.html#conventions-for-python-test-discovery>`_.
+
+Running static checks
+---------------------
+
+Check formatting with `black <https://github.com/psf/black>`_, making sure you use 
+our black.toml config file:
+
+.. code-block:: bash
+
+    python -m black --config black.toml --check ./rdflib
+
+Check style and conventions with `flake8 <https://github.com/psf/black>`_:
+
+.. code-block:: bash
+
+    python -m flake8 rdflib
+
+Check types with `mypy <http://mypy-lang.org/>`_:
+
+.. code-block:: bash
+
+    python -m mypy --show-error-context --show-error-codes rdflib
+
+Using tox
+---------------------
+
+RDFLib has a `tox <https://tox.wiki/en/latest/index.html>`_ config file that
+makes it easier to run validation on all supported python versions.
+
+.. code-block:: bash
+
+    # install tox
+    pip install tox
+
+    # list tox environments that run by default
+    tox -e
+
+    # list all tox environments
+    tox -a
+
+    # run default environment for all python versions
+    tox
+
+    # run a specific environment
+    tox -e py37 # default environment with py37
+    tox -e py39-mypy # mypy environment with py39
 
 Writing documentation
 ---------------------
 
-We use sphinx for generating HTML docs, see :ref:`docs`
+We use sphinx for generating HTML docs, see :ref:`docs`.
 
-Continous Integration
----------------------
+Continuous Integration
+----------------------
 
-We used Travis for CI, see:
+We used Drone for CI, see:
 
-  https://travis-ci.org/RDFLib/rdflib
+  https://drone.rdflib.ashs.dev/RDFLib/rdflib
 
-If you make a pull-request to RDFLib on GitHub, travis will automatically test you code.
+If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
+passing all tests.
+
+Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
+flag them as expecting to fail.
 
 Compatibility
 -------------
 
-RDFLib 5.x.y tries to be compatible with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
+RDFlib 6.0.0 release and later only support Python 3.7 and newer.
 
-The current master branch (which will be released as 6.0.0) will only support Python 3.6 and newer.
-
+RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
 Releasing
 ---------
@@ -82,7 +166,7 @@ If for whatever reason you don't want to take this approach, the old one is::
 
     Tagging the release commit with::
 
-      git tag -a -m 'tagged version' X.X.X
+      git tag -am 'tagged version' X.X.X
 
     When pushing, remember to do::
 
@@ -104,6 +188,4 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
 
 Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
 
-Tweet, email mailing list and update the topic of #rdflib on freenode irc::
-
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
+Tweet, email mailing list and inform members in the chat.

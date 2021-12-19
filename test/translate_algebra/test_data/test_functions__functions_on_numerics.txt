@@ -1,0 +1,3 @@
+select (abs(1.6) as ?abs) (round(5.5) as ?round) (ceil(5.5) as ?ceil) (floor(5.5) as ?floor) (rand() as ?rand)  where {
+	?s ?p ?o .
+} limit 1

@@ -3,14 +3,16 @@
 import os
 import rdflib
 import unittest
+import pytest
+
 
 try:
-    import os.fork
-    import os.pipe
+    from os import fork
+    from os import pipe
 except ImportError:
-    from nose import SkipTest
-
-    raise SkipTest("No os.fork() and/or os.pipe() on this platform, skipping")
+    pytestmark = pytest.mark.skip(
+        reason="No os.fork() and/or os.pipe() on this platform, skipping"
+    )
 
 
 class TestRandomSeedInFork(unittest.TestCase):
@@ -26,6 +28,7 @@ class TestRandomSeedInFork(unittest.TestCase):
             r = os.fdopen(r)  # turn r into a file object
             txt = r.read()
             os.waitpid(pid, 0)  # make sure the child process gets cleaned up
+            r.close()
         else:
             os.close(r)
             w = os.fdopen(w, "w")
@@ -33,9 +36,11 @@ class TestRandomSeedInFork(unittest.TestCase):
             w.write(cb)
             w.close()
             os._exit(0)
-        assert txt != str(pb1), (
-            "Parent process BNode id: "
-            + "%s, child process BNode id: %s" % (txt, str(pb1))
+        assert txt != str(
+            pb1
+        ), "Parent process BNode id: " + "%s, child process BNode id: %s" % (
+            txt,
+            str(pb1),
         )
 
 

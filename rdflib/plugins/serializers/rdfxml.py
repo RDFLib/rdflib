@@ -1,8 +1,11 @@
+from typing import IO, Dict, Optional, Set
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
+from rdflib.plugins.parsers.RDFVOC import RDFVOC
 
-from rdflib.term import URIRef, Literal, BNode
+from rdflib.graph import Graph
+from rdflib.term import Identifier, URIRef, Literal, BNode
 from rdflib.util import first, more_than
 from rdflib.collection import Collection
 from rdflib.serializer import Serializer
@@ -16,7 +19,7 @@ __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
 
 
 class XMLSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
     def __bindings(self):
@@ -38,14 +41,20 @@ class XMLSerializer(Serializer):
         for prefix, namespace in bindings.items():
             yield prefix, namespace
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ):
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
-        self.__serialized = {}
+        self.__serialized: Dict[Identifier, int] = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni)
 
@@ -153,12 +162,18 @@ def fix(val):
 
 
 class PrettyXMLSerializer(Serializer):
-    def __init__(self, store, max_depth=3):
+    def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout = set()
+        self.forceRDFAbout: Set[URIRef] = set()
 
-    def serialize(self, stream, base=None, encoding=None, **args):
-        self.__serialized = {}
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ):
+        self.__serialized: Dict[Identifier, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -180,7 +195,7 @@ class PrettyXMLSerializer(Serializer):
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
-        writer.push(RDF.RDF)
+        writer.push(RDFVOC.RDF)
 
         if "xml_base" in args:
             writer.attribute(XMLBASE, args["xml_base"])
@@ -189,8 +204,9 @@ class PrettyXMLSerializer(Serializer):
 
         writer.namespaces(namespaces.items())
 
+        subject: Identifier
         # Write out subjects that can not be inline
-        for subject in store.subjects():
+        for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -201,7 +217,7 @@ class PrettyXMLSerializer(Serializer):
         # write out BNodes last (to ensure they can be inlined where possible)
         bnodes = set()
 
-        for subject in store.subjects():
+        for subject in store.subjects():  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue
@@ -212,21 +228,21 @@ class PrettyXMLSerializer(Serializer):
             if bnode not in self.__serialized:
                 self.subject(subject, 1)
 
-        writer.pop(RDF.RDF)
-        stream.write("\n")
+        writer.pop(RDFVOC.RDF)
+        stream.write("\n".encode("latin-1"))
 
         # Set to None so that the memory can get garbage collected.
-        self.__serialized = None
+        self.__serialized = None  # type: ignore[assignment]
 
-    def subject(self, subject, depth=1):
+    def subject(self, subject: Identifier, depth: int = 1):
         store = self.store
         writer = self.writer
 
         if subject in self.forceRDFAbout:
-            writer.push(RDF.Description)
-            writer.attribute(RDF.about, self.relativize(subject))
-            writer.pop(RDF.Description)
-            self.forceRDFAbout.remove(subject)
+            writer.push(RDFVOC.Description)
+            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.pop(RDFVOC.Description)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
         elif subject not in self.__serialized:
             self.__serialized[subject] = 1
@@ -237,7 +253,7 @@ class PrettyXMLSerializer(Serializer):
             except:
                 type = None
 
-            element = type or RDF.Description
+            element = type or RDFVOC.Description
             writer.push(element)
 
             if isinstance(subject, BNode):
@@ -250,10 +266,10 @@ class PrettyXMLSerializer(Serializer):
                 # more than once (this reduces the use of redundant BNode
                 # identifiers)
                 if subj_as_obj_more_than(1):
-                    writer.attribute(RDF.nodeID, fix(subject))
+                    writer.attribute(RDFVOC.nodeID, fix(subject))
 
             else:
-                writer.attribute(RDF.about, self.relativize(subject))
+                writer.attribute(RDFVOC.about, self.relativize(subject))
 
             if (subject, None, None) in store:
                 for predicate, object in store.predicate_objects(subject):
@@ -263,10 +279,11 @@ class PrettyXMLSerializer(Serializer):
             writer.pop(element)
 
         elif subject in self.forceRDFAbout:
-            writer.push(RDF.Description)
-            writer.attribute(RDF.about, self.relativize(subject))
-            writer.pop(RDF.Description)
-            self.forceRDFAbout.remove(subject)
+            # TODO FIXME?: this looks like a duplicate of first condition
+            writer.push(RDFVOC.Description)
+            writer.attribute(RDFVOC.about, self.relativize(subject))
+            writer.pop(RDFVOC.Description)
+            self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
     def predicate(self, predicate, object, depth=1):
         writer = self.writer
@@ -280,21 +297,21 @@ class PrettyXMLSerializer(Serializer):
             if object.datatype == RDF.XMLLiteral and isinstance(
                 object.value, xml.dom.minidom.Document
             ):
-                writer.attribute(RDF.parseType, "Literal")
+                writer.attribute(RDFVOC.parseType, "Literal")
                 writer.text("")
                 writer.stream.write(object)
             else:
                 if object.datatype:
-                    writer.attribute(RDF.datatype, object.datatype)
+                    writer.attribute(RDFVOC.datatype, object.datatype)
                 writer.text(object)
 
         elif object in self.__serialized or not (object, None, None) in store:
 
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
-                    writer.attribute(RDF.nodeID, fix(object))
+                    writer.attribute(RDFVOC.nodeID, fix(object))
             else:
-                writer.attribute(RDF.resource, self.relativize(object))
+                writer.attribute(RDFVOC.resource, self.relativize(object))
 
         else:
             if first(store.objects(object, RDF.first)):  # may not have type
@@ -312,7 +329,7 @@ class PrettyXMLSerializer(Serializer):
                     UserWarning,
                     stacklevel=2,
                 )
-                writer.attribute(RDF.parseType, "Collection")
+                writer.attribute(RDFVOC.parseType, "Collection")
 
                 col = Collection(store, object)
 
@@ -330,7 +347,7 @@ class PrettyXMLSerializer(Serializer):
                         (object, RDF.type, [OWL_NS.Class, RDFS.Class])
                     )
                 ) and isinstance(object, URIRef):
-                    writer.attribute(RDF.resource, self.relativize(object))
+                    writer.attribute(RDFVOC.resource, self.relativize(object))
 
                 elif depth <= self.max_depth:
                     self.subject(object, depth + 1)
@@ -346,9 +363,9 @@ class PrettyXMLSerializer(Serializer):
                         # and are only referenced once (regardless of depth)
                         self.subject(object, depth + 1)
                     else:
-                        writer.attribute(RDF.nodeID, fix(object))
+                        writer.attribute(RDFVOC.nodeID, fix(object))
 
                 else:
-                    writer.attribute(RDF.resource, self.relativize(object))
+                    writer.attribute(RDFVOC.resource, self.relativize(object))
 
         writer.pop(predicate)

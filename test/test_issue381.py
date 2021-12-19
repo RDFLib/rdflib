@@ -13,7 +13,11 @@ def test_no_spurious_semicolon():
     """
     expected = Graph()
     expected.addN(
-        t + (expected,) for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e),]
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -28,7 +32,11 @@ def test_one_spurious_semicolon():
     """
     expected = Graph()
     expected.addN(
-        t + (expected,) for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e),]
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -43,7 +51,11 @@ def test_one_spurious_semicolon_no_perdiod():
     """
     expected = Graph()
     expected.addN(
-        t + (expected,) for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e),]
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -58,7 +70,11 @@ def test_two_spurious_semicolons_no_period():
     """
     expected = Graph()
     expected.addN(
-        t + (expected,) for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e),]
+        t + (expected,)
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -73,7 +89,11 @@ def test_one_spurious_semicolons_bnode():
     """
     expected = Graph()
     expected.addN(
-        t + (expected,) for t in [(BNode("a"), NS.b, NS.c), (BNode("a"), NS.d, NS.e),]
+        t + (expected,)
+        for t in [
+            (BNode("a"), NS.b, NS.c),
+            (BNode("a"), NS.d, NS.e),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -95,7 +115,11 @@ def test_pathological():
     expected = Graph()
     expected.addN(
         t + (expected,)
-        for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e), (NS.a, NS.f, NS.g),]
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+            (NS.a, NS.f, NS.g),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")
@@ -112,7 +136,11 @@ def test_mixing_spurious_semicolons_and_commas():
     expected = Graph()
     expected.addN(
         t + (expected,)
-        for t in [(NS.a, NS.b, NS.c), (NS.a, NS.d, NS.e), (NS.a, NS.d, NS.f),]
+        for t in [
+            (NS.a, NS.b, NS.c),
+            (NS.a, NS.d, NS.e),
+            (NS.a, NS.d, NS.f),
+        ]
     )
     got = Graph().query(sparql).graph
     assert isomorphic(got, expected), got.serialize(format="turtle")

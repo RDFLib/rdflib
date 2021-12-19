@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "term": {"@id": "http://example/term", "@type": true}
+  },
+  "@id": "http://example/test#example"
+}

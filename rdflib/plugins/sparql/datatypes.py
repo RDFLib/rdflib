@@ -31,13 +31,9 @@ XSD_DTs = set(
 
 ### adding dateTime datatypes
 
-XSD_DateTime_DTs = set(
-    (XSD.dateTime, XSD.date, XSD.time)
-)
+XSD_DateTime_DTs = set((XSD.dateTime, XSD.date, XSD.time))
 
-XSD_Duration_DTs = set(
-    (XSD.duration, XSD.dayTimeDuration, XSD.yearMonthDuration)
-)
+XSD_Duration_DTs = set((XSD.duration, XSD.dayTimeDuration, XSD.yearMonthDuration))
 
 _sub_types = {
     XSD.integer: [

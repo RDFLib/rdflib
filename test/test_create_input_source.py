@@ -16,8 +16,8 @@ class ParserTestCase(unittest.TestCase):
         self.assertRaises(
             ValueError,
             create_input_source,
-            source='a',
-            location='b',
+            source="a",
+            location="b",
         )
 
 

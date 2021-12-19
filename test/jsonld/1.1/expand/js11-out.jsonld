@@ -1,0 +1,12 @@
+[
+  {
+    "http://example.org/vocab#c14n": [
+      {
+        "@type": "@json",
+        "@value": {
+          "Unnormalized Unicode":"A\u030a"
+        }
+      }
+    ]
+  }
+]

@@ -3,8 +3,7 @@ from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
 import unittest
-from nose.tools import eq_
-
+from .testutils import eq_
 
 class TestConstructInitBindings(unittest.TestCase):
     def test_construct_init_bindings(self):

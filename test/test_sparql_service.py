@@ -7,18 +7,20 @@ from . import helper
 
 def test_service():
     g = Graph()
-    q = """select ?dbpHypernym ?dbpComment
+    q = """select ?sameAs ?dbpComment
     where
     { service <http://DBpedia.org/sparql>
     { select ?dbpHypernym ?dbpComment
     where
     {
     <http://dbpedia.org/resource/John_Lilburne>
-        <http://purl.org/linguistics/gold/hypernym> ?dbpHypernym ;
+        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
     } }  } limit 2"""
     results = helper.query_with_retry(g, q)
+    print(results.vars)
+    print(results.bindings)
     assert len(results) == 2
 
     for r in results:
@@ -27,17 +29,17 @@ def test_service():
 
 def test_service_with_bind():
     g = Graph()
-    q = """select ?dbpHypernym ?dbpComment ?dbpDeathPlace
+    q = """select ?sameAs ?dbpComment ?subject
     where
-    { bind (<http://dbpedia.org/resource/Eltham> as ?dbpDeathPlace)
+    { bind (<http://dbpedia.org/resource/Category:1614_births> as ?subject)
       service <http://DBpedia.org/sparql>
-    { select ?dbpHypernym ?dbpComment ?dbpDeathPlace
+    { select ?sameAs ?dbpComment ?subject
     where
     {
     <http://dbpedia.org/resource/John_Lilburne>
-        <http://purl.org/linguistics/gold/hypernym> ?dbpHypernym ;
+        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
-        <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
+        <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
     results = helper.query_with_retry(g, q)
@@ -49,17 +51,17 @@ def test_service_with_bind():
 
 def test_service_with_values():
     g = Graph()
-    q = """select ?dbpHypernym ?dbpComment ?dbpDeathPlace
+    q = """select ?sameAs ?dbpComment ?subject
     where
-    { values (?dbpHypernym ?dbpDeathPlace) {(<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/London>) (<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/Eltham>)}
+    { values (?sameAs ?subject) {(<http://de.dbpedia.org/resource/John_Lilburne> <http://dbpedia.org/resource/Category:1614_births>) (<https://global.dbpedia.org/id/4t6Fk> <http://dbpedia.org/resource/Category:Levellers>)}
       service <http://DBpedia.org/sparql>
-    { select ?dbpHypernym ?dbpComment ?dbpDeathPlace
+    { select ?sameAs ?dbpComment ?subject
     where
     {
     <http://dbpedia.org/resource/John_Lilburne>
-        <http://purl.org/linguistics/gold/hypernym> ?dbpHypernym ;
+        <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
-        <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
+        <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
     results = helper.query_with_retry(g, q)
@@ -74,7 +76,7 @@ def test_service_with_implicit_select():
     q = """select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
@@ -91,7 +93,7 @@ def test_service_with_implicit_select_and_prefix():
     select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
@@ -108,7 +110,7 @@ def test_service_with_implicit_select_and_base():
     select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
@@ -124,9 +126,9 @@ def test_service_with_implicit_select_and_allcaps():
     q = """SELECT ?s
     WHERE
     {
-      SERVICE <http://dbpedia.org/sparql>
+      SERVICE <https://dbpedia.org/sparql>
       {
-        ?s <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Leveller> .
+        ?s <http://www.w3.org/2002/07/owl#sameAs> ?sameAs .
       }
     } LIMIT 3"""
     results = helper.query_with_retry(g, q)
@@ -143,8 +145,6 @@ def test_service_with_implicit_select_and_allcaps():
 
 
 if __name__ == "__main__":
-    # import nose
-    # nose.main(defaultTest=__name__)
     test_service()
     test_service_with_bind()
     test_service_with_values()

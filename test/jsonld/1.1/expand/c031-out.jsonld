@@ -1,0 +1,9 @@
+[
+  {
+    "http://a.example/out": [{
+      "http://a.example/in": [{
+        "@value":"ab"
+      }]
+    }]
+  }
+]
