@@ -9,26 +9,34 @@ Introduction
 This document describes the process and conventions to follow when
 developing RDFLib code.
 
-Please be as Pythonic as possible (:pep:`8`).
-
-Code should be formatted using `black <https://github.com/psf/black>`_.
-While not yet mandatory, it will be required in the future  (6.0.0+).1
-Use Black v21.9b0, with the black.toml config file provided.
-
-Code should also pass `flake8 <https://github.com/psf/black>`_ linting
+* Please be as Pythonic as possible (:pep:`8`).
+* Code should be formatted using `black <https://github.com/psf/black>`_
+and we use Black v21.9b0, with the black.toml config file provided.
+* Code should also pass `flake8 <https://github.com/psf/black>`_ linting
 and `mypy <http://mypy-lang.org/>`_ type checking.
-
-Any new functionality being added to RDFLib should have doc tests and
-unit tests. Tests should be added for any functionality being changed
-that currently does not have any doc tests or unit tests. And all the
-tests should be run before committing changes to make sure the changes
-did not break anything.
+* You must supply tests for new code
 
 If you add a new cool feature, consider also adding an example in ``./examples``
 
 Tests
 -----
+Any new functionality being added to RDFLib _must_ have unit tests and
+should have doc tests supplied. 
 
+Typically, you should add your functionality and new tests to a branch of 
+RDFlib and and run all tests locally and see them pass. There are currently 
+close to 4,000 tests with a few extra expected failures and skipped tests.
+We won't allow Pull Requests that break any of the existing tests.
+
+Tests that you add should show how your new feature or bug fix is doing what
+you say it is doing: if you remove your enhancement, your new tests should fail!
+
+Finally, please consider adding simple and more complex tests. It's good to see
+the basic functionality of your feature tests and then also any tricky bits or
+edg cases.
+
+Testing framework
+~~~~~~~~~~~~~~~~~
 RDFLib uses the `pytest <https://docs.pytest.org/en/latest/>`_ testing framework.
 
 Running tests
@@ -70,7 +78,8 @@ should be named `test_*.py` so that `pytest can discover them
 Running static checks
 ---------------------
 
-Check formatting with `black <https://github.com/psf/black>`_:
+Check formatting with `black <https://github.com/psf/black>`_, making sure you use 
+our black.toml config file:
 
 .. code-block:: bash
 
@@ -109,10 +118,9 @@ flag them as expecting to fail.
 Compatibility
 -------------
 
-RDFLib 5.0.0 maintained compatibility with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
+RDFlib 6.0.0 release and later only support Python 3.7 and newer.
 
-The latest 6.0.0 release and subsequent will only support Python 3.7 and newer.
-
+RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
 Releasing
 ---------
