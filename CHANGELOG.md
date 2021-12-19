@@ -1,4 +1,4 @@
-2021-12-20 RELEASE 6.1.0
+2021-12-20 RELEASE 6.1.1
 ========================
 Better testing and tidier code.
 
@@ -107,6 +107,10 @@ PRs merged since last release:
   [PR #1432](https://github.com/RDFLib/rdflib/pull/1432)
 * Export DCMITYPE
   [PR #1433](https://github.com/RDFLib/rdflib/pull/1433)
+
+2021-12-20 RELEASE 6.1.0
+========================
+A slightly messed-up release of what is now 6.1.1. Do not use!
 
 2021-10-10 RELEASE 6.0.2
 ========================
