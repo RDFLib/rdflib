@@ -28,7 +28,7 @@ steps:
   - python setup.py install
   - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - mypy --show-error-context --show-error-codes rdflib
+  - mypy --show-error-context --show-error-codes
   - ./with-fuseki.sh pytest -ra --cov
   - coveralls
 
