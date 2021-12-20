@@ -686,7 +686,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
         """A generator of unique predicates with the given subject and object"""
@@ -704,7 +704,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
         """A generator of unique objects with the given subject and predicate"""
@@ -722,7 +722,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def subject_predicates(
         self, object=None, unique=False
@@ -743,7 +743,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def subject_objects(
         self, predicate=None, unique=False
@@ -763,7 +763,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def predicate_objects(
         self, subject=None, unique=False
@@ -783,7 +783,7 @@ class Graph(Node):
                         logger.error(
                             f"{e}. Consider not setting parameter 'unique' to True"
                         )
-                        raise MemoryError(e)
+                        raise
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
