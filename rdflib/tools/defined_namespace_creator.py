@@ -82,7 +82,9 @@ def get_target_namespace_elements(g, target_namespace):
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
         }
-        """.replace("xxx", target_namespace)
+        """.replace(
+        "xxx", target_namespace
+    )
     elements = []
     for r in g.query(q, initNs=namespaces):
         elements.append((str(r[0]), str(r[1])))
@@ -92,7 +94,9 @@ def get_target_namespace_elements(g, target_namespace):
     elements_strs = []
     for e in elements:
         desc = e[1].replace('\n', ' ')
-        elements_strs.append(f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n")
+        elements_strs.append(
+            f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
+        )
 
     return elements, elements_strs
 
@@ -134,7 +138,7 @@ if __name__ == "__main__":
         "target_namespace",
         type=str,
         help="The namespace within the ontology that you want to create a "
-             "DefinedNamespace for.",
+        "DefinedNamespace for.",
     )
 
     parser.add_argument(
@@ -144,11 +148,12 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        '-f', "--fail",
+        '-f',
+        "--fail",
         dest='fail',
         action='store_true',
         help="Whether (true) or not (false) to mimic ClosedNamespace and fail on "
-             "non-element use"
+        "non-element use",
     )
     parser.add_argument('--no-fail', dest='fail', action='store_false')
     parser.set_defaults(feature=False)
@@ -165,8 +170,10 @@ if __name__ == "__main__":
 
     validate_object_id(args.object_id)
 
-    print(f"Creating DefinedNamespace file {args.object_id} "
-          f"for {args.target_namespace}...")
+    print(
+        f"Creating DefinedNamespace file {args.object_id} "
+        f"for {args.target_namespace}..."
+    )
     print(f"Ontology with {len(g)} triples loaded...")
 
     print("Getting all namespace elements...")
@@ -175,12 +182,5 @@ if __name__ == "__main__":
     output_file_name = Path().cwd() / f"_{args.object_id}.py"
     print(f"Creating DefinedNamespace Python file {output_file_name}")
     make_dn_file(
-        output_file_name,
-        args.target_namespace,
-        elements[1],
-        args.object_id,
-        args.fail
+        output_file_name, args.target_namespace, elements[1], args.object_id, args.fail
     )
-
-
-

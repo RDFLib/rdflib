@@ -7,7 +7,7 @@ script_dirname="$( dirname -- "${0}" )"
 set -eo pipefail
 
 wait_http_okay() {
-    local timeout=15
+    local timeout=30
     for var in "${@}"
     do
         eval "local ${var}"
@@ -20,13 +20,13 @@ wait_http_okay() {
             return 0
         }
         kill -0 "${pid}" 2>/dev/null 1>&2 || {
-            1>&2 echo "ERROR: pid ${pid} (${label}) not running anymore ..."
+            1>&2 echo "ERROR: pid ${pid} (${label}) not running anymore, see log dump below for the possible cause."
             return 1
         }
         1>&2 echo "INFO: url ${url} (${label}) not okay, waiting ..."
         sleep 2
     done
-    1>&2 echo "ERROR: timed out trying to load ${url} (${label})"
+    1>&2 echo "ERROR: timed out trying to load ${url} (${label}), see log dump below for the possible cause."
     return 1
 }
 
@@ -37,7 +37,7 @@ assert_pid_running() {
     done
 
     kill -0 "${pid}" 2>/dev/null 1>&2 || {
-        1>&2 echo "ERROR: pid ${pid} (${label}) not running anymore ..."
+        1>&2 echo "ERROR: pid ${pid} (${label}) not running anymore, see log dump below for the possible cause."
         return 1
     }
     1>&2 echo "INFO: pid ${pid} (${label}) running"
@@ -87,12 +87,20 @@ exit_handler() {
         1>&2 echo "WARNING: not killing fuseki fuseki_pid_normal=${fuseki_pid_normal} fuseki_pid_tdb=${fuseki_pid_tdb}"
     fi
 
+    local -a dump_cmd
+    if [ -n "${FUSEKI_DUMP_FULL_LOGS}" ]
+    then
+        dump_cmd=(cat)
+    else
+        dump_cmd=(tail -15)
+    fi
+
     if [ -n "${FUSEKI_DUMP_LOGS}" ] || [ "${xrc}" != "0" ]
     then
         1>&2 echo "dumping fuseki_log_normal=${fuseki_log_normal}"
-        cat "${fuseki_log_normal}" || :
+        "${dump_cmd[@]}" "${fuseki_log_normal}" || :
         1>&2 echo "dumping fuseki_log_tdb=${fuseki_log_tdb}"
-        cat "${fuseki_log_tdb}" || :
+        "${dump_cmd[@]}"  "${fuseki_log_tdb}" || :
     fi
 }
 
