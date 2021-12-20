@@ -682,135 +682,35 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    # def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
-    #     """A generator of subjects with the given predicate and object"""
-    #     for s, p, o in self.triples((None, predicate, object)):
-    #         yield s
+    def subjects(self, predicate=None, object=None) -> Iterable[Node]:
+        """A generator of subjects with the given predicate and object"""
+        for s, p, o in self.triples((None, predicate, object)):
+            yield s
 
-    # Recovered from https://github.com/RDFLib/rdflib/pull/1068
-    def subjects(self, predicate=None, object=None, unique=False):
-        """A generator of unique subjects with the given predicate and object"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((None, predicate, object)):
-                yield s
-        else:
-            subs = set()
-            for s, p, o in self.triples((None, predicate, object)):
-                if s not in subs:
-                    yield s
-                    try:
-                        subs.add(s)
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+    def predicates(self, subject=None, object=None) -> Iterable[Node]:
+        """A generator of predicates with the given subject and object"""
+        for s, p, o in self.triples((subject, None, object)):
+            yield p
 
-    # def predicates(self, subject=None, object=None) -> Iterable[Node]:
-    #     """A generator of predicates with the given subject and object"""
-    #     logger.debug(f"issparqlstore {self.issparqlstore()}")
-    #     for s, p, o in self.triples((subject, None, object)):
-    #         yield p
+    def objects(self, subject=None, predicate=None) -> Iterable[Node]:
+        """A generator of objects with the given subject and predicate"""
+        for s, p, o in self.triples((subject, predicate, None)):
+            yield o
 
-    def predicates(self, subject=None, object=None, unique=False):
-        """A generator of unique predicates with the given subject and object"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((subject, None, object)):
-                yield p
-        else:
-            preds = set()
-            for s, p, o in self.triples((subject, None, object)):
-                if p not in preds:
-                    yield p
-                    try:
-                        preds.add(p)
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
-
-    # def objects(self, subject=None, predicate=None) -> Iterable[Node]:
-    #     """A generator of objects with the given subject and predicate"""
-    #     logger.debug(f"issparqlstore {self.issparqlstore()}")
-    #     for s, p, o in self.triples((subject, predicate, None)):
-    #         yield o
-
-    def objects(self, subject=None, predicate=None, unique=False):
-        """A generator of unique objects with the given subject and predicate"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((subject, predicate, None)):
-                yield o
-        else:
-            objs = set()
-            for s, p, o in self.triples((subject, predicate, None)):
-                if o not in objs:
-                    yield o
-                    try:
-                        objs.add(o)
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
-
-    # def subject_predicates(self, object=None):
-    #     """A generator of (subject, predicate) tuples for the given object"""
-    #     for s, p, o in self.triples((None, None, object)):
-    #         yield s, p
-
-    def subject_predicates(self, object=None, unique=False):
+    def subject_predicates(self, object=None):
         """A generator of (subject, predicate) tuples for the given object"""
-        if not unique or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((None, None, object)):
-                yield s, p
-        else:
-            subj_preds = set()
-            for s, p, o in self.triples((None, None, object)):
-                if (s, p) not in subj_preds:
-                    # logger.debug(f"YIELDING {s, p} ")
-                    yield s, p
-                    try:
-                        subj_preds.add((s, p))
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+        for s, p, o in self.triples((None, None, object)):
+            yield s, p
 
-    # def subject_objects(self, predicate=None):
-    #     """A generator of (subject, object) tuples for the given predicate"""
-    #     for s, p, o in self.triples((None, predicate, None)):
-    #         yield s, o
-
-    def subject_objects(self, predicate=None, unique=False):
+    def subject_objects(self, predicate=None):
         """A generator of (subject, object) tuples for the given predicate"""
-        if not unique or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((None, predicate, None)):
-                yield s, o
-        else:
-            subj_objs = set()
-            for s, p, o in self.triples((None, predicate, None)):
-                if (s, o) not in subj_objs:
-                    yield s, o
-                    try:
-                        subj_objs.add((s, o))
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+        for s, p, o in self.triples((None, predicate, None)):
+            yield s, o
 
-    # def predicate_objects(self, subject=None):
-    #     """A generator of (predicate, object) tuples for the given subject"""
-    #     for s, p, o in self.triples((subject, None, None)):
-    #         yield p, o
-
-    def predicate_objects(self, subject=None, unique=False):
+    def predicate_objects(self, subject=None):
         """A generator of (predicate, object) tuples for the given subject"""
-        if not unique or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((subject, None, None)):
-                yield p, o
-        else:
-            pred_objs = set()
-            for s, p, o in self.triples((subject, None, None)):
-                if (p, o) not in pred_objs:
-                    yield p, o
-                    try:
-                        pred_objs.add((p, o))
-                    except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+        for s, p, o in self.triples((subject, None, None)):
+            yield p, o
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
@@ -1812,69 +1712,12 @@ class ConjunctiveGraph(Graph):
             c = self._graph(c)
         return s, p, o, c
 
-    # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
-
     def __contains__(self, triple_or_quad):
         """Support for 'triple/quad in graph' syntax"""
         s, p, o, c = self._spoc(triple_or_quad)
         for t in self.triples((s, p, o), context=c):
             return True
         return False
-
-    def __sub__(self, other):
-        """Set-theoretic difference.
-        BNode IDs are not changed."""
-        # logger.debug(
-        #     f"CONJUNCTIVEGRAPH__SUB__ self {self.identifier} {type(self)} other {other.identifier if isinstance(other, Graph) else other} {type(other)}"
-        # )
-        try:
-            retval = type(self)()
-        except TypeError:
-            retval = Graph()
-        for x in self:
-            if x not in other:
-                retval.add(x)
-        return retval
-
-    def __iadd__(self, other):
-        """Add all triples in ConjunctiveGraph other to this Graph.
-        BNode IDs are not changed."""
-        if isinstance(other, ConjunctiveGraph):
-            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 0  {type(other)}")
-            self.addN(other.quads((None, None, None)))
-        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
-        elif isinstance(other, list):
-            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 1  {type(other)}")
-            self.addN((s, p, o, self.identifier) for s, p, o in other)
-        else:
-            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 2  {type(other)}")
-            self.addN((s, p, o, other.identifier) for s, p, o in other)
-        return self
-
-    def __isub__(self, other):
-        """Subtract all triples in Graph other from Graph.
-        BNode IDs are not changed."""
-        if isinstance(other, ConjunctiveGraph):
-            # logger.debug(
-            #     f"CONJUNCTIVEGRAPH__ISUB__ quads {type(other)} {list(other.quads((None, None, None)))}"
-            # )
-            for s, p, o, c in other.quads((None, None, None)):
-                self.store.remove((s, p, o), c)
-        else:
-            for triple in other:
-                self.remove(triple)
-        return self
-
-    def __add__(self, other):
-        """Set-theoretic union
-        BNode IDs are not changed."""
-        retval = ConjunctiveGraph()
-        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
-            retval.bind(prefix, uri)
-        retval += self
-        retval += other
-
-        return retval
 
     def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
         """
@@ -2006,7 +1849,7 @@ class ConjunctiveGraph(Graph):
                     import warnings
 
                     warnings.warn(
-                        f"Got a Graph {context_identifier} should be a URIRef, passed by "
+                        f"Got a Graph {context} should be a URIRef, passed by "
                         f"{inspect.stack()[1].function} in {inspect.stack()[2].function} "
                         f"in {inspect.stack()[3].function}"
                     )
@@ -2270,27 +2113,6 @@ class Dataset(ConjunctiveGraph):
 
     def __setstate__(self, state):
         self.store, self.identifier, self.default_context, self.default_union = state
-
-    def __iadd__(self, other):
-        """Add all triples in ConjunctiveGraph other to this Graph.
-        BNode IDs are not changed."""
-
-        # logger.debug(f"__IADD__  {type(other)}")
-
-        if isinstance(other, Dataset):
-            logger.debug(f"DATASET__IADD__ADDN 0  {type(other)}")
-            self.addN(other.quads((None, None, None)))
-        elif isinstance(other, ConjunctiveGraph):
-            logger.debug(f"DATASET__IADD__ADDN 1  {type(other)}")
-            self.addN(other.quads((None, None, None)))
-        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
-        elif isinstance(other, list):
-            logger.debug(f"DATASET__IADD__ADDN 2  {type(other)}")
-            self.addN((s, p, o, self.identifier) for s, p, o in other)
-        else:
-            logger.debug(f"DATASET__IADD__ADDN 3  {type(other)}")
-            self.addN((s, p, o, other.identifier) for s, p, o in other)
-        return self
 
     def graph(self, identifier=None, base=None):
         graph = None

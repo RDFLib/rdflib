@@ -754,10 +754,14 @@ def test_issue1188_with_two_conjunctivegraphs(get_conjunctivegraph):
     # assert len(g1) == 3
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue837_memory():
     mgraph = Graph()
-    mgraph.parse("https://www.w3.org/People/Berners-Lee/card")
+    timblcardn3 = open(
+        os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
+    ).read()
+
+    mgraph.parse(data=timblcardn3, format="n3")
     g = mgraph.skolemize()
     assert len(list(g.subjects())) > 0
     triples = list(g.triples((None, None, None)))
@@ -772,6 +776,31 @@ def test_issue837_memory():
     )
     qgraph.open(configuration="http://localhost:3030/db/sparql")
     logger.debug(f"{pformat(list(qgraph.subjects(unique=True)))}")
+
+
+@pytest.mark.skip
+def test_issue837_sparql():
+    # mgraph = Graph()
+    timblcardn3 = open(
+        os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
+    ).read()
+
+    # mgraph.parse(data=timblcardn3, format="n3")
+    # g = mgraph.skolemize()
+    # assert len(list(g.subjects())) > 0
+    # triples = list(g.triples((None, None, None)))
+
+    sgraph = ConjunctiveGraph(store="SPARQLUpdateStore", identifier=URIRef("context0"))
+    sgraph.open(configuration="http://localhost:3030/db/update")
+    sgraph.parse(data=timblcardn3, format="n3")
+    # for triple in triples:
+    #     sgraph.add(triple)
+
+    # qgraph = Graph(
+    #     store="SPARQLStore", identifier=URIRef("http://server/unset-base/context0")
+    # )
+    # qgraph.open(configuration="http://localhost:3030/db/sparql")
+    # logger.debug(f"{pformat(list(qgraph.subjects(unique=True)))}")
 
 
 # if __name__ == "__main__":

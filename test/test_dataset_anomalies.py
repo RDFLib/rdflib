@@ -144,7 +144,7 @@ def get_conjunctivegraph(request):
             pass
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue167_clarify_context_element_needs_final_clarification(
     get_conjunctivegraph,
 ):
@@ -253,7 +253,7 @@ def test_issue167_clarify_context_element_needs_final_clarification(
     # [(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue1275_clear_default(get_conjunctivegraph):
 
     # STATUS: FIXME Remains an issue
@@ -283,7 +283,7 @@ def test_issue1275_clear_default(get_conjunctivegraph):
     assert list(graph) == []
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue353_nquads_default_graph(get_conjunctivegraph):
 
     # STATUS: FIXME remains an issue
@@ -305,7 +305,7 @@ def test_issue353_nquads_default_graph(get_conjunctivegraph):
         )
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue319_add_graph_as_dataset_default(get_dataset):
 
     # STATUS: FIXME remains an issue
@@ -368,7 +368,7 @@ def test_issue319_add_graph_as_dataset_default(get_dataset):
         )
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue319_add_graph_as_conjunctivegraph_default(get_conjunctivegraph):
 
     # STATUS: FIXME remains an issue
@@ -380,7 +380,7 @@ def test_issue319_add_graph_as_conjunctivegraph_default(get_conjunctivegraph):
     assert len(list(cg.contexts())) == 1
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue811_using_from_and_from_named_on_conjunctivegraph_behaves_not_standard_conform(
     get_conjunctivegraph,
 ):
@@ -554,7 +554,7 @@ def test_issue371_default_parse_fails():
     """
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue371_default_add_fails():
     g = Graph(store="SPARQLUpdateStore")
     g.open(configuration="http://localhost:3030/db/update")
@@ -602,27 +602,35 @@ def get_graphnames():
     return res
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue371_graph_name_doesnt_match_specified_identifier():
-    g = Graph(store="SPARQLUpdateStore", identifier=URIRef("context-0"))
-    g.open(configuration="http://localhost:3030/db/update")
+    sg = Graph(store="SPARQLUpdateStore", identifier=URIRef("context-0"))
+    sg.open(configuration="http://localhost:3030/db/update")
+    sg.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
 
-    g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
-
-    assert g.identifier == URIRef("context-0")
+    assert sg.identifier == URIRef("context-0")
 
     graphnames = list(get_graphnames())
+    assert sg.identifier != graphnames[0][0]
 
-    assert g.identifier != graphnames[0][0]
+    # qg = Graph(store="SPARQLStore", identifier=URIRef("context-0"))
+    qg = Graph(
+        store="SPARQLStore",
+        # identifier=URIRef("context-0"),
+        identifier=URIRef("http://server/unset-base/context-0"),
+    )
+    qg.open(configuration="http://localhost:3030/db/sparql")
+    res = qg.query("SELECT * {{?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }} LIMIT 25")
 
-    # logger.debug(f"{graphnames}")
-    # Need to change later when issue with CLEAR is fixed
-    assert graphnames[1][0] == URIRef("http://server/unset-base/context-0")
+    assert len(list(res)) == 1
 
-    g.update("CLEAR ALL")
+    graphnames = list(get_graphnames())
+    assert graphnames[0][0] == URIRef("http://server/unset-base/context-0")
+
+    sg.update("CLEAR ALL")
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():
     """
     I've found that `Graph.addN()` method with `SPARQLUpdateStore` doesn't work as
@@ -647,23 +655,25 @@ def test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():
 
     """
 
-    g = Graph(store="SPARQLUpdateStore", identifier=DATASET_DEFAULT_GRAPH_ID)
-    g.open(configuration="http://localhost:3030/db/update")
+    sg = ConjunctiveGraph(
+        store="SPARQLUpdateStore", identifier=DATASET_DEFAULT_GRAPH_ID
+    )
+    sg.open(configuration="http://localhost:3030/db/update")
 
-    g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
+    sg.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
 
-    g.add((tarek, likes, pizza))
-    g.add((tarek, likes, cheese))
+    sg.add((tarek, likes, pizza))
+    sg.add((tarek, likes, cheese))
 
-    g.addN(list_of_nquads)
+    # sg.addN(list_of_nquads)
 
     # res = get_graphnames()
     # logger.debug(f"\n\n{pformat(list(res))}")
 
-    g.update("CLEAR DEFAULT")
+    sg.update("CLEAR ALL")
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_issue1277_clear_named(get_conjunctivegraph):
     """Test @base directive with no slash after colon."""
     graph = get_conjunctivegraph

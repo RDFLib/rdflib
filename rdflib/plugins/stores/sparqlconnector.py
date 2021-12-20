@@ -104,13 +104,12 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
-                # logger.debug(f"Querying {self.query_endpoint} with {qsa}")
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )
             except Exception as e:
                 raise ValueError(
-                    f"Endpoint reports {e}. You did something wrong formulating either the URI or your SPARQL query"
+                    f"Endpoint eror: {e}. Check for a malformed URI or SPARQL query."
                 )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})

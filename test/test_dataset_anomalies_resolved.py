@@ -1011,12 +1011,12 @@ def test__issue_758_sparqlstore_is_incorrectly_readonly(get_dataset):
     # Incorrectly raises TypeError: SPARQL Store is read only
 
     # DEVNOTE FIXME: *this* is the appopriate pytest idiom
-    # with pytest.raises(TypeError):
-    #     for g in dataset.graphs():
-    #         print(g)
-    for g in dataset.graphs():
-        # logger.debug(f"SPARQLStore: {g}")
-        print(g)
+    with pytest.raises(TypeError):
+        for g in dataset.graphs():
+            print(g)
+    # for g in dataset.graphs():
+    #     # logger.debug(f"SPARQLStore: {g}")
+    #     print(g)
 
     # """TypeError('The SPARQL store is read only')"""
 

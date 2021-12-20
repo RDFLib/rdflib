@@ -247,7 +247,7 @@ for s in plugin.plugins(pluginname, plugin.Store):
         "LevelDB",
         "SQLiteLSM",
     ):
-        continue  # these are tested elsewhere by default
+        continue  # these are tested by default
 
     if not s.getClass().graph_aware:
         continue
