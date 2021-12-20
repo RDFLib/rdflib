@@ -670,35 +670,108 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate=None, object=None) -> Iterable[Node]:
-        """A generator of subjects with the given predicate and object"""
-        for s, p, o in self.triples((None, predicate, object)):
-            yield s
+    def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
+        """A generator of unique subjects with the given predicate and object"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, predicate, object)):
+                yield s
+        else:
+            subs = set()
+            for s, p, o in self.triples((None, predicate, object)):
+                if s not in subs:
+                    yield s
+                    try:
+                        subs.add(s)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def predicates(self, subject=None, object=None) -> Iterable[Node]:
-        """A generator of predicates with the given subject and object"""
-        for s, p, o in self.triples((subject, None, object)):
-            yield p
+    def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
+        """A generator of unique predicates with the given subject and object"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, None, object)):
+                yield p
+        else:
+            preds = set()
+            for s, p, o in self.triples((subject, None, object)):
+                if p not in preds:
+                    yield p
+                    try:
+                        preds.add(p)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def objects(self, subject=None, predicate=None) -> Iterable[Node]:
-        """A generator of objects with the given subject and predicate"""
-        for s, p, o in self.triples((subject, predicate, None)):
-            yield o
+    def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
+        """A generator of unique objects with the given subject and predicate"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, predicate, None)):
+                yield o
+        else:
+            objs = set()
+            for s, p, o in self.triples((subject, predicate, None)):
+                if o not in objs:
+                    yield o
+                    try:
+                        objs.add(o)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def subject_predicates(self, object=None):
+    def subject_predicates(
+        self, object=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
         """A generator of (subject, predicate) tuples for the given object"""
-        for s, p, o in self.triples((None, None, object)):
-            yield s, p
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, None, object)):
+                yield s, p
+        else:
+            subj_preds = set()
+            for s, p, o in self.triples((None, None, object)):
+                if (s, p) not in subj_preds:
+                    # logger.debug(f"YIELDING {s, p} ")
+                    yield s, p
+                    try:
+                        subj_preds.add((s, p))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def subject_objects(self, predicate=None):
+    def subject_objects(
+        self, predicate=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
         """A generator of (subject, object) tuples for the given predicate"""
-        for s, p, o in self.triples((None, predicate, None)):
-            yield s, o
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, predicate, None)):
+                yield s, o
+        else:
+            subj_objs = set()
+            for s, p, o in self.triples((None, predicate, None)):
+                if (s, o) not in subj_objs:
+                    yield s, o
+                    try:
+                        subj_objs.add((s, o))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def predicate_objects(self, subject=None):
+    def predicate_objects(
+        self, subject=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
         """A generator of (predicate, object) tuples for the given subject"""
-        for s, p, o in self.triples((subject, None, None)):
-            yield p, o
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, None, None)):
+                yield p, o
+        else:
+            pred_objs = set()
+            for s, p, o in self.triples((subject, None, None)):
+                if (p, o) not in pred_objs:
+                    yield p, o
+                    try:
+                        pred_objs.add((p, o))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
