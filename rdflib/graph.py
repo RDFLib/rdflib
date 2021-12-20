@@ -672,7 +672,7 @@ class Graph(Node):
 
     def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
         """A generator of unique subjects with the given predicate and object"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
+        if not unique:
             for s, p, o in self.triples((None, predicate, object)):
                 yield s
         else:
@@ -688,7 +688,7 @@ class Graph(Node):
 
     def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
         """A generator of unique predicates with the given subject and object"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
+        if not unique:
             for s, p, o in self.triples((subject, None, object)):
                 yield p
         else:
@@ -704,7 +704,7 @@ class Graph(Node):
 
     def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
         """A generator of unique objects with the given subject and predicate"""
-        if not unique:  # or not hasattr(self.store, "identifier"):
+        if not unique:
             for s, p, o in self.triples((subject, predicate, None)):
                 yield o
         else:
