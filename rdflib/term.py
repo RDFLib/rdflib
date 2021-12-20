@@ -63,7 +63,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
-from typing import TYPE_CHECKING, Dict, Callable, Optional, Union, Type
+from typing import TYPE_CHECKING, Any, Dict, Callable, Optional, Union, Type
 
 if TYPE_CHECKING:
     from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
@@ -87,7 +87,7 @@ def _is_valid_uri(uri):
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
-def _is_valid_langtag(tag):
+def _is_valid_langtag(tag: str):
     return bool(_lang_tag_regex.match(tag))
 
 
@@ -532,9 +532,17 @@ class Literal(Identifier):
 
     """
 
+    _value: Any
+
     __slots__ = ("_language", "_datatype", "_value")
 
-    def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
+    def __new__(
+        cls,
+        lexical_or_value: Any,
+        lang: Optional[str] = None,
+        datatype: Optional[str] = None,
+        normalize: Optional[bool] = None,
+    ):
 
         if lang == "":
             lang = None  # no empty lang-tags in RDF
@@ -547,8 +555,8 @@ class Literal(Identifier):
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
             )
 
-        if lang and not _is_valid_langtag(lang):
-            raise Exception("'%s' is not a valid language tag!" % lang)
+        if lang is not None and not _is_valid_langtag(lang):
+            raise ValueError("'%s' is not a valid language tag!" % lang)
 
         if datatype:
             datatype = URIRef(datatype)
@@ -596,7 +604,7 @@ class Literal(Identifier):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
-            inst = str.__new__(cls, lexical_or_value)
+            inst: Literal = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
@@ -630,7 +638,7 @@ class Literal(Identifier):
         return self._value
 
     @property
-    def language(self):
+    def language(self) -> Optional[str]:
         return self._language
 
     @property

@@ -29,11 +29,12 @@ Please see the list for all packages/repositories here:
 
 ## Versions & Releases
 
-* `6.0.1-alpha` current `master` branch
+* `6.2.0-alpha` current `master` branch
 * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+    * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
-See <https://rdflib.dev> for the release schedule.
+See <https://rdflib.dev> for the release overview.
 
 ## Documentation
 See <https://rdflib.readthedocs.io> for our documentation built from the code. Note that there are `latest`, `stable` `5.0.0` and `4.2.2` documentation versions, matching releases.
@@ -46,7 +47,7 @@ The stable release of RDFLib may be installed with Python's package management t
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 6.1.1, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current master branch (for developers)
 
