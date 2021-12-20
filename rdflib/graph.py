@@ -1719,6 +1719,63 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
+    # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
+
+    # def __sub__(self, other):
+    #     """Set-theoretic difference.
+    #     BNode IDs are not changed."""
+    #     # logger.debug(
+    #     #     f"CONJUNCTIVEGRAPH__SUB__ self {self.identifier} {type(self)} other {other.identifier if isinstance(other, Graph) else other} {type(other)}"
+    #     # )
+    #     try:
+    #         retval = type(self)()
+    #     except TypeError:
+    #         retval = Graph()
+    #     for x in self:
+    #         if x not in other:
+    #             retval.add(x)
+    #     return retval
+
+    # def __iadd__(self, other):
+    #     """Add all triples in ConjunctiveGraph other to this Graph.
+    #     BNode IDs are not changed."""
+    #     if isinstance(other, ConjunctiveGraph):
+    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 0  {type(other)}")
+    #         self.addN(other.quads((None, None, None)))
+    #     # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+    #     elif isinstance(other, list):
+    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 1  {type(other)}")
+    #         self.addN((s, p, o, self.identifier) for s, p, o in other)
+    #     else:
+    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 2  {type(other)}")
+    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
+    #     return self
+
+    # def __isub__(self, other):
+    #     """Subtract all triples in Graph other from Graph.
+    #     BNode IDs are not changed."""
+    #     if isinstance(other, ConjunctiveGraph):
+    #         # logger.debug(
+    #         #     f"CONJUNCTIVEGRAPH__ISUB__ quads {type(other)} {list(other.quads((None, None, None)))}"
+    #         # )
+    #         for s, p, o, c in other.quads((None, None, None)):
+    #             self.store.remove((s, p, o), c)
+    #     else:
+    #         for triple in other:
+    #             self.remove(triple)
+    #     return self
+
+    # def __add__(self, other):
+    #     """Set-theoretic union
+    #     BNode IDs are not changed."""
+    #     retval = ConjunctiveGraph()
+    #     for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+    #         retval.bind(prefix, uri)
+    #     retval += self
+    #     retval += other
+
+    #     return retval
+
     def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
         """
         Add a triple or quad to the store.
@@ -2113,6 +2170,29 @@ class Dataset(ConjunctiveGraph):
 
     def __setstate__(self, state):
         self.store, self.identifier, self.default_context, self.default_union = state
+
+    # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
+
+    def __iadd__(self, other):
+        """Add all triples in ConjunctiveGraph other to this Graph.
+        BNode IDs are not changed."""
+
+        # logger.debug(f"__IADD__  {type(other)}")
+
+        if isinstance(other, Dataset):
+            logger.debug(f"DATASET__IADD__ADDN 0  {type(other)}")
+            self.addN(other.quads((None, None, None)))
+        elif isinstance(other, ConjunctiveGraph):
+            logger.debug(f"DATASET__IADD__ADDN 1  {type(other)}")
+            self.addN(other.quads((None, None, None)))
+        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+        elif isinstance(other, list):
+            logger.debug(f"DATASET__IADD__ADDN 2  {type(other)}")
+            self.addN((s, p, o, self.identifier) for s, p, o in other)
+        else:
+            logger.debug(f"DATASET__IADD__ADDN 3  {type(other)}")
+            self.addN((s, p, o, other.identifier) for s, p, o in other)
+        return self
 
     def graph(self, identifier=None, base=None):
         graph = None

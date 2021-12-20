@@ -393,9 +393,11 @@ def test_ds_capable_parse(get_dataset):
     # STATUS: FIXED no longer an issue
 
     ds = get_dataset
-    trigfile = os.path.join(os.path.dirname(__file__), "nquads.rdflib", "test7.trig")
+    trigfile = os.path.join(
+        os.path.dirname(__file__), "consistent_test_data", "testdata01.trig"
+    )
     ds.parse(location=trigfile)  # RDF file type worked out by guess_format()
-    assert len(ds.serialize(format="trig")) == 305
+    assert len(list(ds.quads((None, None, None, None)))) == 2
 
 
 trig_example = """
@@ -462,7 +464,7 @@ def test_issue1244_inconsistent_default_parse_format_dataset(get_dataset):
     ds.parse(data=trig_example)
 
     # Trig default
-    ds.parse(Path("./test/nquads.rdflib/test7.trig").absolute().as_uri())
+    ds.parse(Path("./test/consistent_test_data/testdata02.trig").absolute().as_uri())
 
     # Parse nquads file
     ds.parse(Path("./test/nquads.rdflib/example.nquads").absolute().as_uri())
@@ -545,7 +547,7 @@ def test_issue1244_inconsistent_default_parse_format_conjunctivegraph(
     cg.parse(data=trig_example)
 
     # Trig default
-    cg.parse(Path("./test/nquads.rdflib/test7.trig").absolute().as_uri())
+    cg.parse(Path("./test/consistent_test_data/testdata01.trig").absolute().as_uri())
 
     # Parse nquads file
     cg.parse(Path("./test/nquads.rdflib/example.nquads").absolute().as_uri())
