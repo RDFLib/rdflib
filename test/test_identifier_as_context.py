@@ -219,18 +219,18 @@ def test_namedgraph(get_conjunctivegraph):
     assert len(graph) == 0
 
     graph.parse(data=trig_example1, format="trig")
-    logger.debug(f"""Named graph example 1\n{graph.serialize(format="trig")}""")
+    # logger.debug(f"""Named graph example 1\n{graph.serialize(format="trig")}""")
     graph.remove((None, None, None))
     assert len(graph) == 0
 
     graph.parse(data=trig_example2, format="trig")
-    logger.debug(f"""Named graph example 2\n{graph.serialize(format="trig")}""")
-    logger.debug(f"""Named graph 2\n{graph.serialize(format="xml")}""")
+    # logger.debug(f"""Named graph example 2\n{graph.serialize(format="trig")}""")
+    # logger.debug(f"""Named graph 2\n{graph.serialize(format="xml")}""")
     graph.remove((None, None, None))
     assert len(graph) == 0
 
     graph.parse(data=trig_example3, format="trig")
-    logger.debug(f"""Named graph example 3\n{graph.serialize(format="trig")}""")
+    # logger.debug(f"""Named graph example 3\n{graph.serialize(format="trig")}""")
     graph.remove((None, None, None))
     assert len(graph) == 0
 
@@ -241,18 +241,18 @@ def test_dataset(get_dataset):
     assert len(ds) == 0
 
     ds.parse(data=trig_example1, format="trig")
-    logger.debug(f"""Dataset example 1\n{ds.serialize(format="trig")}""")
+    # logger.debug(f"""Dataset example 1\n{ds.serialize(format="trig")}""")
     ds.remove((None, None, None))
     assert len(ds) == 0
 
     ds.parse(data=trig_example2, format="trig")
-    logger.debug(f"""Dataset example 2\n{ds.serialize(format="ttl")}""")
-    logger.debug(f"""Dataset example 2\n{ds.serialize(format="xml")}""")
+    # logger.debug(f"""Dataset example 2\n{ds.serialize(format="ttl")}""")
+    # logger.debug(f"""Dataset example 2\n{ds.serialize(format="xml")}""")
     ds.remove((None, None, None))
     assert len(ds) == 0
 
     ds.parse(data=trig_example3, format="trig")
-    logger.debug(f"""Dataset example 3\n{ds.serialize(format="trig")}""")
+    # logger.debug(f"""Dataset example 3\n{ds.serialize(format="trig")}""")
     ds.remove((None, None, None))
     assert len(ds) == 0
 
@@ -271,15 +271,15 @@ def test_contexts(get_dataset):
 
     # Initialisation
 
-    logger.debug(f"ds contexts on initialisation:\n{ds_contexts}")
+    # logger.debug(f"ds contexts on initialisation:\n{ds_contexts}")
     assert (
         repr(ds_contexts)
         == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
     )
 
-    logger.debug(
-        f"ds default context identifier:\n{pformat(next(ds.contexts()).identifier)}"
-    )
+    # logger.debug(
+    #     f"ds default context identifier:\n{pformat(next(ds.contexts()).identifier)}"
+    # )
     assert next(ds.contexts()).identifier == default_context
 
     # simple triples goes to default graph
@@ -316,7 +316,7 @@ def test_contexts(get_dataset):
             )
 
     res = next(ds.contexts())
-    logger.debug(f"res: “{res}” {len(res)} {type(res)}\n“{res.serialize(format='n3')}”")
+    # logger.debug(f"res: “{res}” {len(res)} {type(res)}\n“{res.serialize(format='n3')}”")
 
     assert (
         res.serialize(format="n3")
@@ -327,7 +327,7 @@ def test_contexts(get_dataset):
 
     # querying triples return them all regardless of the graph/context
     triples = list(ds.store.triples((None, None, None)))
-    logger.debug(f"store triples = {len(triples)}")
+    # logger.debug(f"store triples = {len(triples)}")
     assert len(triples) == 1
 
     # Iterating over the Dataset, returns every triple in every context as quads
@@ -335,7 +335,7 @@ def test_contexts(get_dataset):
     logger.debug(f"quads = {len(quads)}")
 
     triples = list(ds.store.triples((None, None, None), context=default_context))
-    logger.debug(f"store triples = {len(triples)}")
+    # logger.debug(f"store triples = {len(triples)}")
     assert len(triples) == 1
 
     g = ds.graph(URIRef("http://www.example.com/gr"))
@@ -351,7 +351,7 @@ def test_contexts(get_dataset):
 
     # querying triples return them all regardless of the graph/context
     triples = list(ds.store.triples((None, None, None)))
-    logger.debug(f"store triples = {len(triples)}")
+    # logger.debug(f"store triples = {len(triples)}")
     assert len(triples) == 2
 
     # for context in ds.contexts():
@@ -368,12 +368,12 @@ def test_contexts(get_dataset):
 
     # querying triples return them all regardless of the graph/context
     triples = list(ds.store.triples((None, None, None)))
-    logger.debug(f"store triples = {len(triples)}")
+    # logger.debug(f"store triples = {len(triples)}")
     assert len(triples) == 3
 
     # Iterating over the Dataset, returns every triple in every context as quads
     quads = list(ds)
-    logger.debug(f"quads = {len(quads)}")
+    # logger.debug(f"quads = {len(quads)}")
 
     # Create a graph in the dataset, if the graph name has already been
     # used, the corresponding graph will be returned
@@ -402,34 +402,38 @@ def test_contexts(get_dataset):
 
     # querying triples return them all regardless of the graph/context
     triples = list(ds.store.triples((None, None, None)))
-    logger.debug(f"store triples = {len(triples)}")
+    # logger.debug(f"store triples = {len(triples)}")
     assert len(triples) == 3
 
     # Iterating over the Dataset, returns every triple in every context as quads
     quads = list(ds)
-    logger.debug(f"quads = {len(quads)}")
+    # logger.debug(f"quads = {len(quads)}")
 
     # for context in ds.contexts():
     #     logger.debug(f"\n{context.identifier}\n{context.serialize(format='ttl')}")
 
     # # querying quads() return quads; the fourth argument can be unrestricted
     # # (None) or restricted to a graph
-    for q in ds.quads((None, None, None, None)):
-        logger.debug(f"\n{pformat(q, width=240)}")
+
+    # for q in ds.quads((None, None, None, None)):
+    #     logger.debug(f"\n{pformat(q, width=240)}")
 
     # # querying quads() return quads; the fourth argument can be unrestricted
     # # (None) or restricted to a graph
-    logger.debug(
-        f"\n{pformat(list(ds.quads((None, None, None, default_context))), width=240)}"
-    )
+
+    # logger.debug(
+    #     f"\n{pformat(list(ds.quads((None, None, None, default_context))), width=240)}"
+    # )
 
     # # querying quads() return quads; the fourth argument can be unrestricted
     # # (None) or restricted to a graph
-    logger.debug(f"\n{pformat(list(ds), width=240)}")
+
+    # logger.debug(f"\n{pformat(list(ds), width=240)}")
 
     # graph names in the dataset can be queried:
-    for c in ds.graphs():
-        logger.debug(f"\n{pformat(c, width=120)}")
+
+    # for c in ds.graphs():
+    #     logger.debug(f"\n{pformat(c, width=120)}")
 
     # <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>
     # <Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>
@@ -442,8 +446,9 @@ def test_contexts(get_dataset):
     # rdflib.term.URIRef('urn:x-rdflib:default')
 
     # restricting iteration to a graph:
-    for q in ds.quads((None, None, None, g)):
-        logger.debug(f"\n{pformat(q, width=240)}")
+
+    # for q in ds.quads((None, None, None, g)):
+    #     logger.debug(f"\n{pformat(q, width=240)}")
 
     # for context in ds.contexts():
     #     logger.debug(f"\n{context.identifier}\n{context.serialize(format='ttl')}")
@@ -492,7 +497,9 @@ def test_read_quads_into_dataset(get_dataset):
         [[context.identifier.n3(), len(context)] for context in list(ds.contexts())],
         width=80,
     )
-    logger.debug(f"ds contexts\n{ctxlist}")
+    assert ctxlist
+    # logger.debug(f"ds contexts\n{ctxlist}")
+
     # [['<http://example.org/graph/students>', 4],
     #  ['_:N328d847194364096a4aada33bcfeade5', 0],
     #  ['<http://example.org/graph/practise>', 1],
@@ -506,44 +513,52 @@ def test_read_list_of_quads_into_dataset(get_dataset):
     for quad in list_of_nquads:
         ds.add(quad)
 
-    # logger.debug(f"ds contexts\n{pformat(list(ds.contexts()))}")
+    # logger.debug(f"ds contexts\n{pformat(list(ds.contexts()), width=240)}")
 
-    # [<Graph identifier=N21945f30f9a64062aed1465b45cdd9d4 (<class 'rdflib.graph.Graph'>)>,
-    #  <Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>,
+    # [<Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/practise (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/students (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
+
+    assert len(list(ds.contexts())) == 4
 
     ctxlist = pformat(
         [[context.identifier.n3(), len(context)] for context in list(ds.contexts())],
         width=80,
     )
-    logger.debug(f"ds contexts\n{ctxlist}")
-    # [['<http://example.org/graph/students>', 4],
-    #  ['_:N328d847194364096a4aada33bcfeade5', 0],
+    assert len(ctxlist) > 0
+
+    # logger.debug(f"ds contexts\n{ctxlist}")
+
+    # [['<urn:x-rdflib:default>', 0],
     #  ['<http://example.org/graph/practise>', 1],
-    #  ['<http://example.org/graph/sports>', 2],
-    #  ['<urn:x-rdflib:default>', 0]]
+    #  ['<http://example.org/graph/students>', 4],
+    #  ['<http://example.org/graph/sports>', 2]]
 
 
 # @pytest.mark.skip
 def test_read_quads_into_conjunctivegraph(get_conjunctivegraph):
-    cj = get_conjunctivegraph
-    cj.parse(data=nquads, format="nquads")
+    cg = get_conjunctivegraph
+    cg.parse(data=nquads, format="nquads")
 
     #  <Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/practise (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/students (<class 'rdflib.graph.Graph'>)>,
 
     ctxlist = pformat(
-        [[context.identifier.n3(), len(context)] for context in list(cj.contexts())],
+        [[context.identifier.n3(), len(context)] for context in list(cg.contexts())],
         width=80,
     )
+    assert len(ctxlist) > 0
+    # logger.debug(f"cj contexts\n{ctxlist}")
 
-    logger.debug(f"cj contexts\n{ctxlist}")
     # [['<http://example.org/graph/students>', 4],
     #  ['<http://example.org/graph/practise>', 1],
     #  ['<http://example.org/graph/sports>', 2],
+
+    assert len(cg.get_context("http://example.org/graph/students")) == 4
+    assert len(cg.get_context("http://example.org/graph/practise")) == 1
+    assert len(cg.get_context("http://example.org/graph/sports")) == 2
 
 
 # @pytest.mark.skip
@@ -608,13 +623,19 @@ def test_read_triple_into_dataset(get_dataset):
     ]
 
     # querying triples return them all regardless of the graph
-    # FAIL
-    for t in ds.triples((None, None, None)):
-        print(t)
-        logger.debug(f"triple {t}")
+    # PASS
+
+    # for t in ds.triples((None, None, None)):
+    #     logger.debug(f"triple {t}")
 
     triples = [t for t in ds.triples((None, None, None))]
-    assert triples == []
+    assert triples == [
+        (
+            URIRef("http://example.org/a"),
+            URIRef("http://www.example.org/b"),
+            Literal("foo"),
+        )
+    ]
 
     # querying the store's triples return them all regardless of the graph/context
     # PASS
@@ -634,18 +655,19 @@ def test_read_triple_into_dataset(get_dataset):
     # restricting iteration to a graph:
     quads = [q for q in ds.quads((None, None, None, g))]
     assert len(quads) == 2
-    logger.debug(f"quads\n{pformat(quads, width=80)}")
+
+    # logger.debug(f"quads\n{pformat(quads, width=80)}")
 
     # Note that in the call above -
     # ds.quads((None,None,None,"http://www.example.com/gr"))
     # would have been accepted, too
     quads = [q for q in ds.quads((None, None, None, "http://www.example.com/gr"))]
     assert len(quads) == 2
-    logger.debug(f"quads\n{pformat(quads, width=80)}")
+    # logger.debug(f"quads\n{pformat(quads, width=80)}")
 
     # graph names in the dataset can be queried:
     gnames = [c for c in ds.graphs()]
-    logger.debug(f"graph names\n{pformat(gnames, width=80)}")
+    # logger.debug(f"graph names\n{pformat(gnames, width=80)}")
     assert str(gnames) in [
         "[<Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]",
         "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>, <Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>]",
@@ -656,7 +678,7 @@ def test_read_triple_into_dataset(get_dataset):
     h = ds.graph()
     assert h is not None
     gnames = [c for c in ds.graphs()]
-    logger.debug(f"graph names\n{pformat(gnames, width=80)}")
+    # logger.debug(f"graph names\n{pformat(gnames, width=80)}")
     assert len(gnames) == 3
 
     # Note that the Dataset.graphs() call returns names of empty graphs,
@@ -667,14 +689,14 @@ def test_read_triple_into_dataset(get_dataset):
     # a graph can also be removed from a dataset via ds.remove_graph(g)
     ds.remove_graph(h.identifier)
     gnames = [c for c in ds.graphs()]
-    logger.debug(f"graph names\n{pformat(gnames, width=80)}")
+    # logger.debug(f"graph names\n{pformat(gnames, width=80)}")
     assert len(gnames) == 2
 
     # a graph can also be removed from a dataset via ds.remove_graph(g)
     h = ds.graph()
     ds.remove_graph(h)
     gnames = [c for c in ds.graphs()]
-    logger.debug(f"graph names\n{pformat(gnames, width=80)}")
+    # logger.debug(f"graph names\n{pformat(gnames, width=80)}")
     assert len(gnames) == 2
 
     # logger.debug(f"cj contexts\n{ctxlist}")

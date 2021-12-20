@@ -203,6 +203,8 @@ by RDFLib they are UUIDs and unique.
     >>> len(g1 * g2)  # only foo
     1
     >>> g1 += g2  # now g1 contains everything
+    >>> len(g1)
+    3
 
 
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
@@ -426,19 +428,27 @@ class Graph(Node):
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
+        # logger.debug(f"GRAPH add self.identifier {self.identifier}")
         self.__store.add((s, p, o), self.identifier, quoted=False)
         return self
 
     def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
         """Add a sequence of triple with context"""
-
+        # See https://github.com/RDFLib/rdflib/issues/371
         self.__store.addN(
-            (s, p, o, c.identifier)
+            (s, p, o, c.identifier if isinstance(c, Graph) else c)
             for s, p, o, c in quads
-            if isinstance(c, Graph)
-            and c.identifier is self.identifier
-            and _assertnode(s, p, o)
+            if (isinstance(c, Graph) and c.identifier is self.identifier)
+            # See https://github.com/RDFLib/rdflib/issues/371
+            or isinstance(c, URIRef) and _assertnode(s, p, o)
         )
+
+        # self.__store.addN(
+        #     (s, p, o, c)
+        #     for s, p, o, c in quads
+        #     if isinstance(c, URIRef) and _assertnode(s, p, o)
+        # )
+
         return self
 
     def remove(self, triple):
@@ -672,35 +682,135 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate=None, object=None) -> Iterable[Node]:
-        """A generator of subjects with the given predicate and object"""
-        for s, p, o in self.triples((None, predicate, object)):
-            yield s
+    # def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
+    #     """A generator of subjects with the given predicate and object"""
+    #     for s, p, o in self.triples((None, predicate, object)):
+    #         yield s
 
-    def predicates(self, subject=None, object=None) -> Iterable[Node]:
-        """A generator of predicates with the given subject and object"""
-        for s, p, o in self.triples((subject, None, object)):
-            yield p
+    # Recovered from https://github.com/RDFLib/rdflib/pull/1068
+    def subjects(self, predicate=None, object=None, unique=False):
+        """A generator of unique subjects with the given predicate and object"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, predicate, object)):
+                yield s
+        else:
+            subs = set()
+            for s, p, o in self.triples((None, predicate, object)):
+                if s not in subs:
+                    yield s
+                    try:
+                        subs.add(s)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def objects(self, subject=None, predicate=None) -> Iterable[Node]:
-        """A generator of objects with the given subject and predicate"""
-        for s, p, o in self.triples((subject, predicate, None)):
-            yield o
+    # def predicates(self, subject=None, object=None) -> Iterable[Node]:
+    #     """A generator of predicates with the given subject and object"""
+    #     logger.debug(f"issparqlstore {self.issparqlstore()}")
+    #     for s, p, o in self.triples((subject, None, object)):
+    #         yield p
 
-    def subject_predicates(self, object=None):
+    def predicates(self, subject=None, object=None, unique=False):
+        """A generator of unique predicates with the given subject and object"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, None, object)):
+                yield p
+        else:
+            preds = set()
+            for s, p, o in self.triples((subject, None, object)):
+                if p not in preds:
+                    yield p
+                    try:
+                        preds.add(p)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
+
+    # def objects(self, subject=None, predicate=None) -> Iterable[Node]:
+    #     """A generator of objects with the given subject and predicate"""
+    #     logger.debug(f"issparqlstore {self.issparqlstore()}")
+    #     for s, p, o in self.triples((subject, predicate, None)):
+    #         yield o
+
+    def objects(self, subject=None, predicate=None, unique=False):
+        """A generator of unique objects with the given subject and predicate"""
+        if not unique:  # or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, predicate, None)):
+                yield o
+        else:
+            objs = set()
+            for s, p, o in self.triples((subject, predicate, None)):
+                if o not in objs:
+                    yield o
+                    try:
+                        objs.add(o)
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
+
+    # def subject_predicates(self, object=None):
+    #     """A generator of (subject, predicate) tuples for the given object"""
+    #     for s, p, o in self.triples((None, None, object)):
+    #         yield s, p
+
+    def subject_predicates(self, object=None, unique=False):
         """A generator of (subject, predicate) tuples for the given object"""
-        for s, p, o in self.triples((None, None, object)):
-            yield s, p
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, None, object)):
+                yield s, p
+        else:
+            subj_preds = set()
+            for s, p, o in self.triples((None, None, object)):
+                if (s, p) not in subj_preds:
+                    # logger.debug(f"YIELDING {s, p} ")
+                    yield s, p
+                    try:
+                        subj_preds.add((s, p))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def subject_objects(self, predicate=None):
+    # def subject_objects(self, predicate=None):
+    #     """A generator of (subject, object) tuples for the given predicate"""
+    #     for s, p, o in self.triples((None, predicate, None)):
+    #         yield s, o
+
+    def subject_objects(self, predicate=None, unique=False):
         """A generator of (subject, object) tuples for the given predicate"""
-        for s, p, o in self.triples((None, predicate, None)):
-            yield s, o
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((None, predicate, None)):
+                yield s, o
+        else:
+            subj_objs = set()
+            for s, p, o in self.triples((None, predicate, None)):
+                if (s, o) not in subj_objs:
+                    yield s, o
+                    try:
+                        subj_objs.add((s, o))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
-    def predicate_objects(self, subject=None):
+    # def predicate_objects(self, subject=None):
+    #     """A generator of (predicate, object) tuples for the given subject"""
+    #     for s, p, o in self.triples((subject, None, None)):
+    #         yield p, o
+
+    def predicate_objects(self, subject=None, unique=False):
         """A generator of (predicate, object) tuples for the given subject"""
-        for s, p, o in self.triples((subject, None, None)):
-            yield p, o
+        if not unique or not hasattr(self.store, "identifier"):
+            for s, p, o in self.triples((subject, None, None)):
+                yield p, o
+        else:
+            pred_objs = set()
+            for s, p, o in self.triples((subject, None, None)):
+                if (p, o) not in pred_objs:
+                    yield p, o
+                    try:
+                        pred_objs.add((p, o))
+                    except MemoryError as e:
+                        print(f"{e}. Consider not setting parameter 'unique' to True")
+                        break
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
@@ -1263,6 +1373,8 @@ class Graph(Node):
                 and isinstance(source.file.name, str)
             ):
                 format = rdflib.util.guess_format(source.file.name)
+            elif self.identifier.startswith("file:///"):
+                format = rdflib.util.guess_format(self.identifier.split("/")[-1])
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True
@@ -1320,8 +1432,14 @@ class Graph(Node):
         initBindings = initBindings or {}
         initNs = initNs or dict(self.namespaces())
 
+        # logger.debug(
+        #     f"store has query {hasattr(self.store, 'query')} and use_store_provided {use_store_provided}"
+        # )
         if hasattr(self.store, "query") and use_store_provided:
             try:
+                # logger.debug(
+                #     f"\n\nGraph: query:: store.query {query_object} initNs {len(initNs)} initBindings {initBindings} queryGraph {self.default_union and '__UNION__' or self.identifier} kwargs {kwargs} "
+                # )
                 return self.store.query(
                     query_object,
                     initNs,
@@ -1330,6 +1448,7 @@ class Graph(Node):
                     **kwargs,
                 )
             except NotImplementedError:
+                # logger.debug("However, NotImplementedError so passing the buck")
                 pass  # store has no own implementation
 
         if not isinstance(result, query.Result):
@@ -1337,6 +1456,13 @@ class Graph(Node):
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
+        # logger.debug(
+        #     f"\n\nGraph: query:: processor.graph.identifier {processor.graph.identifier}"
+        # )
+
+        # logger.debug(
+        #     f"\n\nGraph: query:: processor.query {processor} {query_object} initBindings {initBindings} initNs {len(initNs)} kwargs {kwargs} "
+        # )
         return result(processor.query(query_object, initBindings, initNs, **kwargs))
 
     def update(
@@ -1351,9 +1477,15 @@ class Graph(Node):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
         initNs = initNs or dict(self.namespaces())
+        # logger.debug(
+        #     f"store has update {hasattr(self.store, 'update')} and use_store_provided {use_store_provided}"
+        # )
 
         if hasattr(self.store, "update") and use_store_provided:
             try:
+                # logger.debug(
+                #     f"\n\nGraph: update:: store.update {update_object} initNs {len(initNs)} initBindings {initBindings} queryGraph {self.default_union and '__UNION__' or self.identifier} kwargs {kwargs} "
+                # )
                 return self.store.update(
                     update_object,
                     initNs,
@@ -1362,11 +1494,19 @@ class Graph(Node):
                     **kwargs,
                 )
             except NotImplementedError:
+                # logger.debug("However, NotImplementedError so passing the buck")
                 pass  # store has no own implementation
 
         if not isinstance(processor, query.UpdateProcessor):
             processor = plugin.get(processor, query.UpdateProcessor)(self)
 
+        # logger.debug(
+        #     f"\n\nGraph: update:: processor.graph.identifier {processor.graph.identifier}"
+        # )
+
+        # logger.debug(
+        #     f"\n\nGraph: update:: processor.update {processor} {update_object} initBindings {initBindings} initNs {len(initNs)} kwargs {kwargs} "
+        # )
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
@@ -1672,12 +1812,69 @@ class ConjunctiveGraph(Graph):
             c = self._graph(c)
         return s, p, o, c
 
+    # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
+
     def __contains__(self, triple_or_quad):
         """Support for 'triple/quad in graph' syntax"""
         s, p, o, c = self._spoc(triple_or_quad)
         for t in self.triples((s, p, o), context=c):
             return True
         return False
+
+    def __sub__(self, other):
+        """Set-theoretic difference.
+        BNode IDs are not changed."""
+        # logger.debug(
+        #     f"CONJUNCTIVEGRAPH__SUB__ self {self.identifier} {type(self)} other {other.identifier if isinstance(other, Graph) else other} {type(other)}"
+        # )
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
+        for x in self:
+            if x not in other:
+                retval.add(x)
+        return retval
+
+    def __iadd__(self, other):
+        """Add all triples in ConjunctiveGraph other to this Graph.
+        BNode IDs are not changed."""
+        if isinstance(other, ConjunctiveGraph):
+            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 0  {type(other)}")
+            self.addN(other.quads((None, None, None)))
+        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+        elif isinstance(other, list):
+            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 1  {type(other)}")
+            self.addN((s, p, o, self.identifier) for s, p, o in other)
+        else:
+            # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 2  {type(other)}")
+            self.addN((s, p, o, other.identifier) for s, p, o in other)
+        return self
+
+    def __isub__(self, other):
+        """Subtract all triples in Graph other from Graph.
+        BNode IDs are not changed."""
+        if isinstance(other, ConjunctiveGraph):
+            # logger.debug(
+            #     f"CONJUNCTIVEGRAPH__ISUB__ quads {type(other)} {list(other.quads((None, None, None)))}"
+            # )
+            for s, p, o, c in other.quads((None, None, None)):
+                self.store.remove((s, p, o), c)
+        else:
+            for triple in other:
+                self.remove(triple)
+        return self
+
+    def __add__(self, other):
+        """Set-theoretic union
+        BNode IDs are not changed."""
+        retval = ConjunctiveGraph()
+        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+            retval.bind(prefix, uri)
+        retval += self
+        retval += other
+
+        return retval
 
     def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
         """
@@ -1800,18 +1997,10 @@ class ConjunctiveGraph(Graph):
 
         If triple is specified, iterate over all contexts the triple is in.
         """
-        for context_identifier in self.store.contexts(triple):
-            if isinstance(context_identifier, Graph):
-                # DEVNOTE: added in
-                # https://github.com/RDFLib/rdflib/blob/ad23b33edd405b991cebe7c264e3cb7ac7487b8a/rdflib/graph.py#L1435
-
-                # raise Exception("Got graph object as context, not Identifier!")
-
-                # DEVNOTE: above is insufficiently discriminatory, an exception is inevitable
-                # because one of the results of self.store.contexts(triple) is the Store itself
-
-                if hasattr(context_identifier, "store") and not isinstance(
-                    context_identifier.store, rdflib.store.Store
+        for context in self.store.contexts(triple):
+            if isinstance(context, Graph):
+                if hasattr(context, "store") and not isinstance(
+                    context.store, rdflib.store.Store
                 ):
                     import inspect
                     import warnings
@@ -1821,13 +2010,8 @@ class ConjunctiveGraph(Graph):
                         f"{inspect.stack()[1].function} in {inspect.stack()[2].function} "
                         f"in {inspect.stack()[3].function}"
                     )
-
-                # DEVNOTE:
-                # yielding a context identifier here means incorrectly including the Store as a context
-                # yield self.get_context(context_identifier)  # Try it and tests of ds.len will fail
-
             else:
-                yield self.get_context(context_identifier)
+                yield self.get_context(context)
 
     def get_context(
         self,
@@ -1893,10 +2077,42 @@ class ConjunctiveGraph(Graph):
         if not isinstance(g_id, Node):
             g_id = URIRef(g_id)
 
-        context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None))  # hmm ?
-        context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
+        if format is None:
+            format = source.content_type
+        could_not_guess_format = False
+        if format is None:
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
+                format = rdflib.util.guess_format(source.file.name)
+            if format is None:
+                format = "trig"
+                could_not_guess_format = True
+
+        # parser = plugin.get(format, Parser)()
+
+        try:
+            context = Graph(store=self.store, identifier=g_id)
+            context.remove((None, None, None))  # hmm ?
+            context.parse(source, publicID=publicID, format=format, **args)
+
+            # parser.parse(source, self, **args)
+
+        except SyntaxError as se:
+            if could_not_guess_format:
+                raise ParserError(
+                    "Could not guess RDF format for %r from file extension so tried Trig but failed. "
+                    "You can explicitly specify format using the format argument."
+                    % source
+                )
+            else:
+                raise se
+        finally:
+            if source.auto_close:
+                source.close()
+
         return self
 
     def __reduce__(self):
@@ -2027,7 +2243,7 @@ class Dataset(ConjunctiveGraph):
     """
 
     def __init__(self, store="default", default_union=False, default_graph_base=None):
-        super(Dataset, self).__init__(store=store, identifier=None)
+        super(Dataset, self).__init__(store=store, identifier=DATASET_DEFAULT_GRAPH_ID)
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
@@ -2055,7 +2271,29 @@ class Dataset(ConjunctiveGraph):
     def __setstate__(self, state):
         self.store, self.identifier, self.default_context, self.default_union = state
 
+    def __iadd__(self, other):
+        """Add all triples in ConjunctiveGraph other to this Graph.
+        BNode IDs are not changed."""
+
+        # logger.debug(f"__IADD__  {type(other)}")
+
+        if isinstance(other, Dataset):
+            logger.debug(f"DATASET__IADD__ADDN 0  {type(other)}")
+            self.addN(other.quads((None, None, None)))
+        elif isinstance(other, ConjunctiveGraph):
+            logger.debug(f"DATASET__IADD__ADDN 1  {type(other)}")
+            self.addN(other.quads((None, None, None)))
+        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+        elif isinstance(other, list):
+            logger.debug(f"DATASET__IADD__ADDN 2  {type(other)}")
+            self.addN((s, p, o, self.identifier) for s, p, o in other)
+        else:
+            logger.debug(f"DATASET__IADD__ADDN 3  {type(other)}")
+            self.addN((s, p, o, other.identifier) for s, p, o in other)
+        return self
+
     def graph(self, identifier=None, base=None):
+        graph = None
         if isinstance(identifier, (Graph, ConjunctiveGraph)):
             import inspect
             import warnings
@@ -2063,6 +2301,10 @@ class Dataset(ConjunctiveGraph):
             warnings.warn(
                 f"Got a Graph {identifier}, should be a URIRef, passed by {inspect.stack()[1].function} in {inspect.stack()[2].function}  in {inspect.stack()[3].function}"
             )
+
+            graph = identifier
+            identifier = graph.identifier
+
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
 
@@ -2074,6 +2316,13 @@ class Dataset(ConjunctiveGraph):
         g = self._graph(identifier)
         g.base = base
 
+        if graph is not None and type(graph) is Graph and len(graph) > 0:
+            g += graph
+
+        # Register the graph object and identifier?
+        # DEVNOTE: if uncommented, causes
+        # if identifier != DATASET_DEFAULT_GRAPH_ID:
+        #     self.store.add_graph(identifier)
         self.store.add_graph(identifier)
         return g
 
@@ -2088,14 +2337,23 @@ class Dataset(ConjunctiveGraph):
         **args,
     ):
         c = ConjunctiveGraph.parse(
-            self, source, publicID, format, location, file, data, **args
+            self,
+            source,
+            publicID,
+            format,
+            location,
+            file,
+            data,
+            **args,
         )
-        self.graph(c)
+
+        self.graph(c.identifier)
+
         return c
 
     def add_graph(self, g):
         """alias of graph for consistency"""
-        return self.graph(g.identifier if isinstance(g, Graph) else g)
+        return self.graph(g)
 
     def remove_graph(self, g):
         if isinstance(g, Graph):
@@ -2380,12 +2638,12 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def namespaces(self):
         if hasattr(self, "namespace_manager"):
-            for prefix, namespace in self.namespace_manager.namespaces():
-                yield prefix, namespace
+            for prefix, _namespace in self.namespace_manager.namespaces():
+                yield prefix, _namespace
         else:
             for graph in self.graphs:
-                for prefix, namespace in graph.namespaces():
-                    yield prefix, namespace
+                for prefix, _namespace in graph.namespaces():
+                    yield prefix, _namespace
 
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()

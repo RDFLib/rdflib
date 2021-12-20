@@ -3,6 +3,7 @@ from typing import Optional, TYPE_CHECKING, Tuple
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
+from rdflib import logger
 import base64
 
 from io import BytesIO
@@ -103,12 +104,13 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
+                # logger.debug(f"Querying {self.query_endpoint} with {qsa}")
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )
             except Exception as e:
                 raise ValueError(
-                    "You did something wrong formulating either the URI or your SPARQL query"
+                    f"Endpoint reports {e}. You did something wrong formulating either the URI or your SPARQL query"
                 )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})

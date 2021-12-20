@@ -1,11 +1,14 @@
 import pytest
 import os
 import shutil
-from tempfile import gettempdir
+import tempfile
 from pprint import pformat
 import rdflib
-from rdflib import logger, Literal, ConjunctiveGraph, Dataset, URIRef
+from rdflib import logger, Literal, Graph, ConjunctiveGraph, Dataset, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from pathlib import Path
+from urllib.error import URLError, HTTPError
+
 
 michel = URIRef("urn:michel")
 tarek = URIRef("urn:tarek")
@@ -86,7 +89,7 @@ list_of_nquads = [
 )
 def get_dataset(request):
     store = request.param
-    tmppath = os.path.join(gettempdir(), f"test_{store.lower()}")
+    tmppath = os.path.join(tempfile.gettempdir(), f"test_{store.lower()}")
     graph = Dataset(store=store)
     graph.open(tmppath, create=True)
     # tmppath = mkdtemp()
@@ -117,7 +120,7 @@ def get_dataset(request):
 )
 def get_conjunctivegraph(request):
     store = request.param
-    tmppath = os.path.join(gettempdir(), f"test_{store.lower()}")
+    tmppath = os.path.join(tempfile.gettempdir(), f"test_{store.lower()}")
     graph = ConjunctiveGraph(store=store)
     graph.open(tmppath, create=True)
     # tmppath = mkdtemp()
@@ -139,111 +142,3 @@ def get_conjunctivegraph(request):
             os.remove(tmppath)
         except Exception:
             pass
-
-
-# @pytest.mark.skip
-def test_dataset(get_dataset):
-    ds = get_dataset
-
-    logger.debug(
-        f"""\nLength of ds contexts on initialisation: {len(list(ds.contexts()))}\n"""
-    )
-    assert len(list(ds.contexts())) == 1
-
-    logger.debug(f"""\nds contexts on initialisation: {list(ds.contexts())}\n""")
-
-    ds.add((tarek, likes, pizza))
-
-    logger.debug(
-        f"""\nLength of ds after one triple added to default graph: {len(ds)}\n"""
-    )
-    assert len(ds) == 1
-
-    logger.debug(
-        f"""\nLength of ds contexts after one triple added to default graph: {len(list(ds.contexts()))}\n"""
-    )
-    assert len(list(ds.contexts())) == 1
-
-    for fmt in [
-        "xml",
-        "n3",
-        "turtle",
-        "longturtle",
-        "ntriples",
-        "json-ld",
-        "nquads",
-        "trix",
-        "trig",
-        "hext",
-    ]:
-        logger.debug(
-            f"""\nDataset serialised as {fmt}:\n“{ds.serialize(format=fmt)}”\n"""
-        )
-
-    logger.debug("\n\n>>>> ADDING 7 TRIPLES IN 3 CONTEXTS <<<<\n")
-
-    # DEVNOTE
-
-    ds.parse(data=nquads, format="nquads")
-
-    # raises a warning:
-    #  ,,,/rdflib/graph.py:1992: UserWarning: Got a Graph
-    # [a rdflib:Dataset;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']],
-    # should be a URIRef, passed by parse in test_dataset in pytest_pyfunc_call
-
-    # DEVNOTE
-
-    # ds.addN(list_of_nquads)
-
-    # Doesn't raise a warning
-
-    logger.debug(
-        f"""\nLength of ds after 7 triples added to three contexts: {len(ds)}\n"""
-    )
-    assert len(ds) == 8
-
-    logger.debug(
-        f"""\nLength of ds contexts after 7 triples added to three contexts: {len(list(ds.contexts()))}\n"""
-    )
-
-    logger.debug(
-        f"""\nContents of ds contexts after 7 triples added to three contexts:\n\n{pformat(list(ds.contexts()))}\n\n"""
-    )
-
-    assert len(list(ds.contexts())) == 4
-
-    for fmt in [
-        "xml",
-        "n3",
-        "turtle",
-        "longturtle",
-        "ntriples",
-        "json-ld",
-        "nquads",
-        "trix",
-        "trig",
-        "hext",
-    ]:
-        logger.debug(
-            f"""\n\nDataset serialized as {fmt}\n{ds.serialize(format=fmt)}\n\n"""
-        )
-
-    for p in [
-        "xml",
-        "n3",
-        "turtle",
-        "longturtle",
-        "ntriples",
-        "json-ld",
-        # "nquads",
-        # "trix",
-        "trig",
-        "hext",
-    ]:
-        for c in ds.contexts():
-            logger.debug(
-                f"""\nContext {c.identifier} serialized as {p}\n{c.serialize(format=p)}\n"""
-            )
-
-    # logger.debug(f"""Dataset serialized as {[]}\n{ds.serialize(format=p)}\n""")
-    # logger.debug(f"""Dataset example 2\n{ds.serialize(format="xml")}""")

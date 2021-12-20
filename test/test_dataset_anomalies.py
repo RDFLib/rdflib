@@ -3,9 +3,12 @@ import os
 import sys
 import shutil
 from tempfile import gettempdir
+import warnings
 from pprint import pformat
-from rdflib import logger, Literal, ConjunctiveGraph, Graph, Dataset, URIRef
+from rdflib import logger, Literal, ConjunctiveGraph, Graph, Dataset, RDFS, SDO, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from pathlib import Path
+from urllib.error import URLError, HTTPError
 
 michel = URIRef("urn:michel")
 tarek = URIRef("urn:tarek")
@@ -142,154 +145,6 @@ def get_conjunctivegraph(request):
 
 
 # @pytest.mark.skip
-def test_firstreport():
-
-    # STATUS: FIXME Remains an issue
-
-    from rdflib import Dataset, URIRef
-
-    d = Dataset()
-    g = d.parse(data="<a:a> <b:b> <c:c> .", format="turtle", publicID=URIRef("g:g"))
-    logger.debug("After parse:")
-    for h in d.graphs():
-        logger.debug(f"\n{pformat(h, width=120)}")
-    if g.identifier not in d.graphs():
-        logger.debug("g has not been added to Dataset")
-
-
-# @pytest.mark.skip
-def test__issue_713_query_on_ds_yields_no_results():
-
-    # STATUS: FIXME Remains an issue
-
-    data = """
-    <http://data.yyx.me/jack> <http://onto.yyx.me/work_for> <http://data.yyx.me/company_a> .
-    <http://data.yyx.me/david> <http://onto.yyx.me/work_for> <http://data.yyx.me/company_b> .
-    """
-
-    ds = Dataset()
-    g = Graph(identifier="subgraph")
-    g.parse(data=data, format="n3")
-    ds.add_graph(g)
-
-    # yields 0 results from this query
-    assert (
-        len(list(ds.query("""SELECT ?s ?p ?o WHERE {GRAPH <subgraph> { ?s ?p ?o }}""")))
-        == 0  # noqa: W503
-    )
-
-    # yields 2 results from this query
-    # assert (
-    #     len(list(ds.query("""SELECT ?g ?s ?p ?o WHERE { GRAPH ?g { ?s ?p ?o }}""")))
-    #     == 2  # noqa: W503
-    # )
-
-    # FIXME: no, it doesn't, it yields 0
-    assert (
-        len(list(ds.query("""SELECT ?g ?s ?p ?o WHERE { GRAPH ?g { ?s ?p ?o }}""")))
-        == 0  # noqa: W503
-    )
-
-
-# @pytest.mark.skip
-def test_iter_pr1382_add_iter_to_ds(get_dataset):
-    d = get_dataset
-
-    # STATUS: FIXED not an issue
-
-    """
-    PR 1382: adds __iter__ to Dataset
-    Test assumes PR chnages have been applied
-    """
-
-    uri_a = URIRef("https://example.com/a")
-    uri_b = URIRef("https://example.com/b")
-    uri_c = URIRef("https://example.com/c")
-    uri_d = URIRef("https://example.com/d")
-
-    d.add_graph(URIRef("https://example.com/g1"))
-    d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g1")))
-    d.add(
-        (uri_a, uri_b, uri_c, URIRef("https://example.com/g1"))
-    )  # pointless addition: duplicates above
-
-    d.add_graph(URIRef("https://example.com/g2"))
-    d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g2")))
-    d.add((uri_a, uri_b, uri_d, URIRef("https://example.com/g1")))  # new, uri_d
-
-    # traditional iterator
-    i_trad = 0
-    for t in d.quads((None, None, None)):
-        i_trad += 1
-
-    # new Dataset.__iter__ iterator
-    i_new = 0
-    for t in d:
-        i_new += 1
-
-    assert i_new == i_trad  # both should be 3
-    logger.debug(f"""len(d) {len(d)}""")
-    logger.debug(f"""{i_new} {i_trad}""")
-
-
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
-def test__issue_758_sparqlstore_is_incorrectly_readonly(get_dataset):
-
-    # STATUS: FIXME Remains an issue
-
-    #  Cannot enumerate dataset graphs #758
-
-    dataset = Dataset(store="SPARQLStore")
-
-    dataset.open("http://localhost:3030/db/query")
-
-    # Incorrectly raises TypeError: SPARQL Store is read only
-    try:
-        for g in dataset.graphs():
-            print(g)
-    except TypeError as e:
-        assert repr(e) == """TypeError('The SPARQL store is read only')"""
-
-
-# @pytest.mark.skip
-def test_issue939_parse_return_inconsistent_type():
-
-    # STATUS: FIXED Not an issue
-
-    # The parse function of ConjunctiveGraph modify in place the
-    # ConjunctiveGraph but return a Graph object. This is a minor issue but
-    # it can create issues down the road if the parse methode is called like
-    # so g = g.parse(source="test.ttl", format='turtle')
-
-    # Demonstration:
-
-    # from rdflib import Graph, ConjunctiveGraph
-
-    # g = ConjunctiveGraph()
-    # g.parse(source="test.ttl", format='turtle')
-    # print(type(g)) # <class 'rdflib.graph.ConjunctiveGraph'>
-
-    # g = ConjunctiveGraph()
-    # g = g.parse(source="test.ttl", format='turtle')
-    # print(type(g)) # <class 'rdflib.graph.Graph'>
-
-    test_ttl = """@base <http://purl.org/linkedpolitics/MembersOfParliament_background> .
-    @prefix lpv: <vocabulary/> .
-    <EUmember_1026>
-        a lpv:MemberOfParliament ."""
-    g = ConjunctiveGraph()
-
-    g.parse(data=test_ttl, format="turtle")
-    assert type(g) is ConjunctiveGraph  # <class 'rdflib.graph.ConjunctiveGraph'>
-
-    g = ConjunctiveGraph()
-    x = g.parse(data=test_ttl, format="turtle")
-
-    # The reported would like x to be the ConjunctiveGraph or that type
-    assert type(x) is ConjunctiveGraph
-
-
-# @pytest.mark.skip
 def test_issue167_clarify_context_element_needs_final_clarification(
     get_conjunctivegraph,
 ):
@@ -382,53 +237,20 @@ def test_issue167_clarify_context_element_needs_final_clarification(
     # *********** What was Gromgull expecting? ******************
 
     ctx = list(g1.contexts())[0]
-    logger.debug(f"cj contexts\n{ctx}")
-    # OLD <Graph identifier=urn:a (<class 'rdflib.graph.Graph'>)>
-    # NEW <urn:a> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
+    assert repr(ctx) == "<Graph identifier=urn:a (<class 'rdflib.graph.Graph'>)>"
 
     ctx = list(list(g1.contexts())[0])
-    logger.debug(f"cj contexts\n{ctx}")
-    # OLD [(rdflib.term.BNode('Nae2ff5ac0056427e852347e0a58ff925'), rdflib.term.BNode('N7c8cbd571a51409e8a92c2870a30eddd'), rdflib.term.BNode('Nbc486ecd9a5b46d5913dafdc4458fc3f'))]
-    # NEW [(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]
+    assert (
+        repr(ctx)
+        == "[(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]"
+    )
 
     ctx = list(g1.get_context("urn:a"))
-    logger.debug(f"cj contexts\n{ctx}")
+    assert (
+        repr(ctx)
+        == "[(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]"
+    )
     # [(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]
-
-
-@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
-def test_issue_167_sparqlupdatestore_compatibility(get_dataset):
-
-    # STATUS: FIXED no longer an issue
-
-    # https://github.com/RDFLib/rdflib/issues/167#issuecomment-873620457
-
-    # Note that this is also observed when using Dataset instances. In particular,
-
-    from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
-
-    ds = Dataset()
-    for quad in list_of_nquads:
-        ds.add(quad)
-    quads = ds.quads((None, None, None, None))  # Fourth term is identifier
-
-    store = SPARQLUpdateStore()
-    store.open("http://localhost:3030/db/update")
-    store.addN(quads)  # Expects four term to be graph
-
-    # Used to be the case but no longer - fixes
-
-    # Data from fuseki (urn:context-1 from previous update)
-
-    # Dataset size
-
-    # graph name:                           triples:
-
-    # default graph                         0
-    # urn:context-1                         1
-    # http://example.org/graph/practise     1
-    # http://example.org/graph/sports       2
-    # http://example.org/graph/students     4
 
 
 # @pytest.mark.skip
@@ -457,126 +279,8 @@ def test_issue1275_clear_default(get_conjunctivegraph):
 
     graph.update("CLEAR DEFAULT")
 
-    logger.debug(f"list(graph)\n{pformat(list(graph), width=80)}")
-
-    # assert list(graph)  # Here is where the test fails
-
-
-# @pytest.mark.skip
-def test_issue679_trig_export(get_dataset):
-
-    # STATUS: FIXED? no longer an issue
-
-    #  trig export of multiple graphs assigns wrong prefixes to prefixedNames #679
-    ds = get_dataset
-    graphs = [(URIRef("urn:tg1"), "A"), (URIRef("urn:tg2"), "B")]
-
-    for i, n in graphs:
-        # g = Graph(identifier=i)
-        g = ds.get_context(i)
-        a = URIRef("urn:{}#S".format(n))
-        b = URIRef("urn:{}#p".format(n))
-        c = Literal(chr(0xF23F1))
-        d = Literal(chr(0x66))
-        e = Literal(chr(0x23F2))
-        g.add((a, b, c))
-        g.add((a, b, d))
-        g.add((a, b, e))
-        # ds.graph(g)
-
-    for n, k in [
-        ("json-ld", "jsonld"),
-        ("nquads", "nq"),
-        ("trix", "trix"),
-        ("trig", "trig"),
-    ]:
-        logger.debug(f"{k}\n{ds.serialize(format=n)}")
-
-    # Output is conformant and as expected
-
-    logger.debug(f"trig\n{ds.serialize(format='trig')}")
-
-    # DEBUG    rdflib:test_dataset_anomalies.py:1190 trig
-    # @prefix ns1: <urn:> .
-    # @prefix ns2: <urn:A#> .
-    # @prefix ns3: <urn:B#> .
-    # @prefix ns4: <urn:x-rdflib:> .
-
-    # ns1:tg1 {
-    #     ns2:S ns2:p "f",
-    #             "⏲",
-    #             "󲏱" .
-    # }
-
-    # ns1:tg2 {
-    #     ns3:S ns3:p "f",
-    #             "⏲",
-    #             "󲏱" .
-    # }
-
-    logger.debug(f"trig\n{ds.serialize(format='trig')}")
-
-    # DEBUG    rdflib:test_dataset_anomalies.py:1191 trig
-    # @prefix ns1: <urn:> .
-    # @prefix ns2: <urn:A#> .
-    # @prefix ns3: <urn:B#> .
-    # @prefix ns4: <urn:x-rdflib:> .
-
-    # ns1:tg1 {
-    #     ns2:S ns2:p "f",
-    #             "⏲",
-    #             "󲏱" .
-    # }
-
-    # ns1:tg2 {
-    #     ns3:S ns3:p "f",
-    #             "⏲",
-    #             "󲏱" .
-    # }
-
-
-# @pytest.mark.skip
-def test_trig_export_reopen(get_dataset):
-    #  trig export of multiple graphs assigns wrong prefixes to prefixedNames #679
-
-    # I wanted to add that I see this behavior even in the case of parsing a dataset
-    # with a single graph in nquads format and serializing as trig with no special characters.
-
-    # STATUS: FIXED? no longer an issue
-
-    ds = get_dataset
-    ds.parse(data=nquads, format="nquads")
-    logger.debug(f"trig\n{ds.serialize(format='trig')}")
-
-
-# @pytest.mark.skip
-def test_cg_parse_of_datasets_with_default_graph(get_conjunctivegraph):
-
-    # STATUS: FIXME remains an issue
-
-    cg = get_conjunctivegraph
-    cg.parse(
-        format="nquads",
-        data="""
-    <http://example.org/a> <http://example.org/ns#label> "A" .
-    <http://example.org/b> <http://example.org/ns#label> "B" <http://example.org/b/> .
-    """,
-    )
-
-    # assert len(cg.default_context) == 1  # fails
-    assert len(cg.default_context) == 0  # incorrectly passes
-
-    logger.debug(f"trig\n{cg.serialize(format='trig')}")
-
-    # @prefix ns1: <http://example.org/ns#> .
-
-    # <http://example.org/b/> {
-    #     <http://example.org/b> ns1:label "B" .
-    # }
-
-    # {
-    #     <http://example.org/a> ns1:label "A" .
-    # }
+    # Incorrect, should not be empty
+    assert list(graph) == []
 
 
 # @pytest.mark.skip
@@ -584,102 +288,27 @@ def test_issue353_nquads_default_graph(get_conjunctivegraph):
 
     # STATUS: FIXME remains an issue
 
-    cg = get_conjunctivegraph
-
     data = """
     <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
     <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .
     <http://example.org/s3> <http://example.org/p3> <http://example.org/o3> <http://example.org/g3> .
     """
-
     publicID = URIRef("http://example.org/g0")
 
+    cg = get_conjunctivegraph
     cg.parse(data=data, format="nquads", publicID=publicID)
 
-    quads = [q for q in cg.quads((None, None, None, None))]
-
-    # Should only be 2 quads in default graph but all three are returned
-
-    # assert len(quads) == 2  # incorrectly fails
-    assert len(quads) == 3  # incorrectly passes
-
-    logger.debug(f"quads\n{pformat(quads, width=80)}")
-
-    logger.debug(f"nquads_default\n{cg.serialize(format='nquads')}")
-
-    assert len(cg) == 3, len(cg)
-    assert len(list(cg.contexts())) == 2, len(list(cg.contexts()))
-    assert len(cg.get_context(publicID)) == 2, len(cg.get_context(publicID))
-
-
-# @pytest.mark.skip
-def test_ds_capable_parse(get_dataset):
-
-    # STATUS: FIXED no longer an issue
-
-    ds = get_dataset
-    trigfile = os.path.join(os.path.dirname(__file__), "nquads.rdflib", "test7.trig")
-    ds.parse(location=trigfile)  # RDF file type worked out by guess_format()
-    logger.debug(f"trig\n{ds.serialize(format='trig')}")
-
-
-# @pytest.mark.skip
-def test_issue_698_len_ds():
-    """
-
-    # STATUS: FIXME remains an issue
-
-    Dataset.graph should not allow adding random graphs to the store #698
-    gromgull commented on 24 Jan 2017
-
-    You can pass an existing graph into the dataset. This will then be
-    added directly.
-
-    But there is no guarantee this new graph has the same store, and the
-    triples will not be copied over.
-
-    """
-    from rdflib import Graph
-    from rdflib.namespace import FOAF
-
-    # Create dissociated graph
-    foaf = Graph(identifier=FOAF)
-    foaf.parse("http://xmlns.com/foaf/spec/index.rdf", format="xml")
-
-    ds = Dataset()
-
-    ds.add_graph(foaf)
-
-    assert len(list(ds.contexts())) == 2
-    assert len(foaf) == 631
-    assert len(ds) == 0  # incorrect, should be 631
-
-
-# @pytest.mark.skip
-def test_issue_301_dataset_does_not_parse(get_dataset):
-
-    # STATUS: FIXED no longer an issue
-
-    from rdflib import URIRef
-
-    d = get_dataset
-
-    g = d.parse(data="<a:a> <b:b> <c:c> .", format="turtle", publicID=URIRef("g:g"))
-
-    logger.debug("After parse:")
-    for h in d.contexts():
-        logger.debug(h)
-    if g not in d.contexts():
-        logger.debug("g not in contexts")
-    for h in d.contexts():
-        logger.debug(h in d.contexts())
+    with pytest.raises(AssertionError):
+        assert len([q for q in cg.quads((None, None, None, None))]) == 2
+        warnings.warn(
+            "test_dataset_anomalies::test_issue353_nquads_default_graph - Should only be 2 quads in default graph but all three are returned"
+        )
 
 
 # @pytest.mark.skip
 def test_issue319_add_graph_as_dataset_default(get_dataset):
 
     # STATUS: FIXME remains an issue
-
     """
     Given a Graph, can it be used as default graph for a Dataset? #319
 
@@ -723,31 +352,20 @@ def test_issue319_add_graph_as_dataset_default(get_dataset):
     gromgull ...
     The biggest problem I see is that the dataset has no way of persisting the
     list of graphs that exist. The dataset as implemented now both allows empty
-    graphs to exist, and allows the store to contain triples in graphs that do
+    graphs to exist, and allows the store t o contain triples in graphs that do
     not exist. This extra knowledge must be stored somewhere. The CG doesn't
     have this problem as it simply exposes the quads saved in the store.
     """
 
     ds = get_dataset
+    assert len(list(ds.contexts())) == 1
 
-    logger.debug(f"\n####### contexts on initialisation: {list(ds.contexts())}")
-
-    ds.parse(data="<a> <b> <c>.", format="turtle")
-
-    logger.debug(f"\n####### contexts after parse: {list(ds.contexts())}")
-
-    logger.debug(ds.serialize(format="turtle"))
-
-    logger.debug(f"quads:\n{list(ds.quads((None, None, None, None)))}")
-
-    for c in ds.contexts():
-        logger.debug(f"\n>>>>> {c.identifier}:\n{c.serialize(format='xml')}")
-
-    # default_graph = ds.get_context(URIRef("urn:x-rdflib:default"))
-    # logger.debug(f"default_graph: {default_graph}")
-
-    # [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']].
-    # <urn:x-rdflib:default> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory'].
+    ds.parse(data="<a> <b> <c> .", format="ttl")
+    with pytest.raises(AssertionError):
+        assert len(list(ds.contexts())) == 1
+        warnings.warn(
+            "test_issue319_add_graph_as_dataset_default, length of dataset contexts should be "
+        )
 
 
 # @pytest.mark.skip
@@ -756,12 +374,321 @@ def test_issue319_add_graph_as_conjunctivegraph_default(get_conjunctivegraph):
     # STATUS: FIXME remains an issue
 
     cg = get_conjunctivegraph
+    assert len(list(cg.contexts())) == 0
+
     cg.parse(data="<a> <b> <c>.", format="turtle")
-    logger.debug(cg.serialize(format="turtle"))
+    assert len(list(cg.contexts())) == 1
 
-    logger.debug(f"len ds contexts {len(list(cg.contexts()))}")
-    for c in cg.contexts():
-        logger.debug(f"c {c.identifier}")
 
-    # [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']].
-    # <urn:x-rdflib:default> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory'].
+# @pytest.mark.skip
+def test_issue811_using_from_and_from_named_on_conjunctivegraph_behaves_not_standard_conform(
+    get_conjunctivegraph,
+):
+    # STATUS: FIXME remains an issue
+    """
+    I want to use `FROM` and `FROM NAMED` in a SPARQL query to select the default
+    graph resp. named graphs to execute the query on. But the RDFlib
+    implementation does not act as it is described in the SPARQL 1.1
+    specification especially the section "13.2 Specifying RDF Datasets"
+    (https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#specifyingDataset)
+
+    To demonstrate this behavior, I've created an MWE:
+
+    ```
+    #!/usr/bin/env python3
+
+    import rdflib.plugins.sparql
+    from rdflib import ConjunctiveGraph
+
+    data = '''
+    <urn:a> <urn:a> <urn:a> <urn:a> .
+    <urn:b> <urn:b> <urn:b> <urn:b> .
+    <urn:c> <urn:c> <urn:c> <urn:c> .
+    '''
+
+    if __name__ == "__main__":
+        rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = False  # Line A
+        rdflib.plugins.sparql.SPARQL_LOAD_GRAPHS = False
+        graph = ConjunctiveGraph()
+        graph.parse(data=data, format='nquads')
+        result = graph.query("SELECT * {?s ?p ?o}")               # Line B
+        for resrow in result:
+            print(resrow)
+    ```
+
+    Running this code behaves as expected, while I will show derived examples in
+    the following, by altering Line A and Line B:
+
+    **1. Replacing the Default Graph**
+
+        rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = True       # Line A
+        result = graph.query("SELECT * FROM <urn:b> {?s ?p ?o}")      # Line B
+
+    - What I see: returns all three statements.
+    - What I expect: Only the statement `<urn:b> <urn:b> <urn:b>` as result
+    - Why is the actual result not correct?:
+
+    > A SPARQL query may specify the dataset to be used for matching by using the
+      FROM clause and the FROM NAMED clause to describe the RDF dataset. If a
+      query provides such a dataset description, then it is used in place of any
+      dataset that the query service would use if no dataset description is
+      provided in a query.
+
+    > (https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#specifyingDataset)
+
+    **2. Specifying a Named Graph but Querying the Default Gaph**
+
+        rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = True         # Line A
+        result = graph.query("SELECT * FROM NAMED <urn:b> { ?s ?p ?o}") # Line B
+
+    - What I see: returns all three statements.
+    - What I expect: no result
+    - Why is the actual result not correct?:
+
+    > If there is no FROM clause, but there is one or more FROM NAMED clauses,
+      then the dataset includes an empty graph for the default graph.
+
+    > (https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#specifyingDataset)
+
+
+    **3. Specifying a Named Graph**
+
+        rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = False                   # Line A
+        result = graph.query("SELECT * FROM NAMED <urn:b> { GRAPH ?g {?s ?p ?o}}") # Line B
+
+    - What I see: returns all three statements.
+    - What I expect: Only the statement `<urn:b> <urn:b> <urn:b> <urn:b>` as result
+    - Why is the actual result not correct?: Because this is the idea of `NAMED
+      GRAPH` to specify a named graph to query.
+
+    > A query can supply IRIs for the named graphs in the RDF Dataset using the
+      FROM NAMED clause. Each IRI is used to provide one named graph in the RDF
+      Dataset.
+
+    > (https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#specifyingDataset)
+
+    Because I think all of these three cases are related to each other I've put
+    them into one issue, but sure they could also be split into three issues.
+
+    """
+
+    import rdflib.plugins.sparql
+
+    data = """
+    <urn:a> <urn:a> <urn:a> <urn:a> .
+    <urn:b> <urn:b> <urn:b> <urn:b> .
+    <urn:c> <urn:c> <urn:c> <urn:c> .
+    """
+
+    rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = False  # Line A
+    rdflib.plugins.sparql.SPARQL_LOAD_GRAPHS = False
+
+    graph = get_conjunctivegraph
+    graph.parse(data=data, format="nquads")
+    assert len(graph) > 0
+    # logger.debug(f"graph: {graph.serialize(format='trig')}")
+
+    results = graph.query("SELECT * {?s ?p ?o .}")  # Line B
+    assert len(results) == 0
+
+    # Set default graph as UNION, INCORRECT resulta
+    rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = True  # Line A
+
+    results = graph.query("SELECT * {?s ?p ?o .}")  # Line B
+    assert len(results) == 3
+
+    results = graph.query("SELECT * FROM <urn:b> {?s ?p ?o}")  # Line B
+    assert len(results) == 3, "should be 1 triple"
+    # logger.debug(f"results:\n\n{pformat(list(results), width=120)}")
+
+    # Set default graph as NON-UNION, CORRECT resulta
+    rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION = False  # Line A
+    results = graph.query("SELECT * FROM <urn:b> {?s ?p ?o}")  # Line B
+    assert len(results) == 1, "should be one triple"
+
+    # logger.debug(f"results:\n\n{pformat(list(results), width=120)}")
+
+
+@pytest.mark.skip
+def test_issue371_default_parse_fails():
+    # g1 = Graph(store="SPARQLUpdateStore", identifier=DATASET_DEFAULT_GRAPH_ID)
+
+    g = Graph(store="SPARQLUpdateStore")
+    g.open(configuration="http://localhost:3030/db/update")
+    with pytest.raises(Exception):
+        g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
+    """
+    rdflib/graph.py:430: in add
+        self.__store.add((s, p, o), self.identifier, quoted=False)
+            o          = rdflib.term.URIRef('urn:michel')
+            p          = rdflib.term.URIRef('urn:likes')
+            s          = rdflib.term.URIRef('urn:tarek')
+            self       = <Graph identifier=Ne40ad6edbf2d4e77b455e93e4afc247f (<class 'rdflib.graph.Graph'>)>
+            triple     = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:michel'))
+    rdflib/plugins/stores/sparqlstore.py:632: in add
+        q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context), triple)
+            context    = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
+            nts        = <function _node_to_sparql at 0x7f7e647d90d0>
+            obj        = rdflib.term.URIRef('urn:michel')
+            predicate  = rdflib.term.URIRef('urn:likes')
+            quoted     = False
+            self       = <rdflib.plugins.stores.sparqlstore.SPARQdef test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():LUpdateStore object at 0x7f7e647a91f0>
+            spo        = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:michel'))
+            subject    = rdflib.term.URIRef('urn:tarek')
+            triple     = '<urn:tarek> <urn:likes> <urn:michel> .'
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    node = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
+
+        def _node_to_sparql(node) -> str:
+            if isinstance(node, BNode):
+    >           raise Exception(
+                    "SPARQLStore does not support BNodes! "
+                    "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
+                )
+    E           Exception: SPARQLStore does not support BNodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+
+    node       = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
+
+    rdflib/plugins/stores/sparqlstore.py:33: Exception
+    """
+
+
+# @pytest.mark.skip
+def test_issue371_default_add_fails():
+    g = Graph(store="SPARQLUpdateStore")
+    g.open(configuration="http://localhost:3030/db/update")
+    with pytest.raises(Exception):
+        g.add((tarek, likes, pizza))
+    """
+    rdflib/graph.py:430: in add
+        self.__store.add((s, p, o), self.identifier, quoted=False)
+            o          = rdflib.term.URIRef('urn:pizza')
+            p          = rdflib.term.URIRef('urn:likes')
+            s          = rdflib.term.URIRef('urn:tarek')
+            self       = <Graph identifier=Nbd8634401091472eacd82cc48a827ad2 (<class 'rdflib.graph.Graph'>)>
+            triple     = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))
+    rdflib/plugins/stores/sparqlstore.py:632: in add
+        q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context), triple)
+            context    = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
+            nts        = <function _node_to_sparql at 0x7f2879ea4700>
+            obj        = rdflib.term.URIRef('urn:pizza')
+            predicate  = rdflib.term.URIRef('urn:likes')
+            quoted     = False
+            self       = <rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore object at 0x7f2879ec4fd0>
+            spo        = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))
+            subject    = rdflib.term.URIRef('urn:tarek')
+            triple     = '<urn:tarek> <urn:likes> <urn:pizza> .'
+    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    node = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
+
+        def _node_to_sparql(node) -> str:
+            if isinstance(node, BNode):
+    >           raise Exception(
+                    "SPARQLStore does not support BNodes! "
+                    "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
+                )
+    E           Exception: SPARQLStore does not support BNodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+
+    node       = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
+    """
+
+
+def get_graphnames():
+    g = Graph(store="SPARQLStore")
+    g.open(configuration="http://localhost:3030/db/sparql")
+    res = g.query("SELECT DISTINCT ?NAME { GRAPH ?NAME { ?s ?p ?o } }")
+    return res
+
+
+# @pytest.mark.skip
+def test_issue371_graph_name_doesnt_match_specified_identifier():
+    g = Graph(store="SPARQLUpdateStore", identifier=URIRef("context-0"))
+    g.open(configuration="http://localhost:3030/db/update")
+
+    g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
+
+    assert g.identifier == URIRef("context-0")
+
+    graphnames = list(get_graphnames())
+
+    assert g.identifier != graphnames[0][0]
+
+    # logger.debug(f"{graphnames}")
+    # Need to change later when issue with CLEAR is fixed
+    assert graphnames[1][0] == URIRef("http://server/unset-base/context-0")
+
+    g.update("CLEAR ALL")
+
+
+# @pytest.mark.skip
+def test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():
+    """
+    I've found that `Graph.addN()` method with `SPARQLUpdateStore` doesn't work as
+    expected. A quad is a set of subject, predicate, object and context and,
+    according to the spec [1], context should be an IRI. But as I see from the
+    code [2], context should be an instance of the Graph which is wrong.
+
+    So if we set context as a URIRef `Graph.addN()` ignores the quad and if we set
+    context as an instance of the Graph then it sends a malformed query:
+
+    INSERT DATA {
+        GRAPH <[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'SPARQLUpdateStore']].>
+        {
+            <http://example.com/resource/1>
+            <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+            <http://xmlns.com/foaf/0.1/Agent> .
+        }
+    }
+
+    [1] https://www.w3.org/TR/sparql11-query
+    [2] https://github.com/RDFLib/rdflib/blob/eaa353fe7c403c81a519991b87fc71a7ee7b436a/rdflib/graph.py#L432
+
+    """
+
+    g = Graph(store="SPARQLUpdateStore", identifier=DATASET_DEFAULT_GRAPH_ID)
+    g.open(configuration="http://localhost:3030/db/update")
+
+    g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
+
+    g.add((tarek, likes, pizza))
+    g.add((tarek, likes, cheese))
+
+    g.addN(list_of_nquads)
+
+    # res = get_graphnames()
+    # logger.debug(f"\n\n{pformat(list(res))}")
+
+    g.update("CLEAR DEFAULT")
+
+
+# @pytest.mark.skip
+def test_issue1277_clear_named(get_conjunctivegraph):
+    """Test @base directive with no slash after colon."""
+    graph = get_conjunctivegraph
+
+    graph.add(
+        (
+            SDO.title,
+            RDFS.subPropertyOf,
+            RDFS.label,
+            URIRef("https://example.org"),
+        )
+    )
+
+    assert list(graph)
+
+    # Fails:
+    #     raise ParseException(instring, loc, self.errmsg, self)
+    #     E   pyparsing.ParseException: Expected end of text, found 'C'
+    #         (at char 0), (line:1, col:1)
+
+    import pyparsing
+
+    with pytest.raises(pyparsing.ParseException):
+        graph.update(
+            r"CLEAR GRAPH ?g", initBindings={"g": URIRef("https://example.org")}
+        )
+
+    # assert not list(graph)  # should be successful

@@ -237,7 +237,16 @@ tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
     skip_reason: Optional[str] = None
-    if s.name in ("default", "SimpleMemory", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
+    if s.name in (
+        "default",
+        "SimpleMemory",
+        "Memory",
+        "Auditable",
+        "Concurrent",
+        "SPARQLStore",
+        "LevelDB",
+        "SQLiteLSM",
+    ):
         continue  # these are tested elsewhere by default
 
     if not s.getClass().graph_aware:

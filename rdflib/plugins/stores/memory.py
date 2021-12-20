@@ -1,5 +1,7 @@
 #
 #
+from rdflib import logger
+from pprint import pformat
 from rdflib.store import Store
 
 __all__ = ["SimpleMemory", "Memory"]
@@ -305,14 +307,24 @@ class Memory(Store):
     def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching"""
         req_ctx = self.__ctx_to_str(context)
+        # logger.debug(f"triples: req_ctx {req_ctx} context {context}")
         subject, predicate, object_ = triple_pattern
 
         # all triples case (no triple parts given as pattern)
         if subject is None and predicate is None and object_ is None:
             # Just dump all known triples from the given graph
             if req_ctx not in self.__contextTriples:
+                # logger.debug(
+                #     f"triples: req_ctx {req_ctx} not in self.__contextTriples {pformat(self.__contextTriples)}"
+                # )
                 return
+            # logger.debug(
+            #     f"triples: req_ctx {req_ctx} in self.__contextTriples[req_ctx]\n{pformat(self.__contextTriples)}"
+            # )
             for triple in self.__contextTriples[req_ctx].copy():
+                # logger.debug(
+                #     f"triples: yielding {triple} context:\n“{pformat(list(self.__contexts(triple)))}”"
+                # )
                 yield triple, self.__contexts(triple)
 
         # optimize "triple in graph" case (all parts given)
@@ -506,6 +518,10 @@ class Memory(Store):
 
     def __triple_has_context(self, triple, ctx):
         """return True if the triple exists in the given context"""
+        # logger.debug(f"__triple_has_context ctx: {ctx}")
+        # logger.debug(
+        #     f"self.__defaultContexts {self.__defaultContexts} __tripleContexts {self.__tripleContexts}"
+        # )
         return ctx in self.__tripleContexts.get(triple, self.__defaultContexts)
 
     def __remove_triple_context(self, triple, ctx):
@@ -531,6 +547,7 @@ class Memory(Store):
             if isinstance(ctx, str):
                 ctx_str = "{}:{}".format(ctx.__class__.__name__, ctx)
                 if ctx_str in self.__context_obj_map:
+                    # logger.debug(f"__ctx_to_str returning {ctx_str}")
                     return ctx_str
                 self.__context_obj_map[ctx_str] = ctx
                 return ctx_str

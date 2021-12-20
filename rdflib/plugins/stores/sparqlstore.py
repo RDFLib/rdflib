@@ -390,15 +390,13 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         # DEVNOTE: Resolve discrepancy with rebased PR
 
         # Original was unchanged but test_dataset::testDefaultGraph fails
-        # unless there's a check for graph == DATASET_DEFAULT_GRAPH_ID is made
+        # unless a check is performed for graph == DATASET_DEFAULT_GRAPH_ID
 
         # if isinstance(graph, str) and not graph == DATASET_DEFAULT_GRAPH_ID:
         #     return graph != "__UNION__"
 
-
         if isinstance(graph, str):
             return graph != "__UNION__"
-
         else:
             return graph != DATASET_DEFAULT_GRAPH_ID
 
