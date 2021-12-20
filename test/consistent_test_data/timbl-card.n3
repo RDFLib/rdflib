@@ -1,15 +1,3 @@
-# Recovered from https://github.com/RDFLib/rdflib/pull/1068
-from rdflib import ConjunctiveGraph, Dataset, Graph, URIRef
-
-michel = URIRef("urn:michel")
-tarek = URIRef("urn:tarek")
-bob = URIRef("urn:bob")
-likes = URIRef("urn:likes")
-hates = URIRef("urn:hates")
-pizza = URIRef("urn:pizza")
-cheese = URIRef("urn:cheese")
-
-timblcardn3 = """
 # N3
 # Personal information in machine-readable form
 #
@@ -51,7 +39,7 @@ timblcardn3 = """
 
     <>   a foaf:PersonalProfileDocument;
          cc:license <http://creativecommons.org/licenses/by-nc/3.0/>;
-     dc:title "Tim Berners-Lee's FOAF file";
+	 dc:title "Tim Berners-Lee's FOAF file";
          foaf:maker card:i;
          foaf:primaryTopic card:i.
 
@@ -105,7 +93,7 @@ w3c:W3C foaf:member card:i.
 <http://dig.csail.mit.edu/data#DIG> foaf:member card:i.
 
 card:i
-    s:label     "Tim Berners-Lee";   # For generic user interfaces etc
+    s:label  	"Tim Berners-Lee";   # For generic user interfaces etc
 
     # Using VCARD vocabulary:
 
@@ -123,18 +111,18 @@ card:i
     a :Male;
 
     :office [
-        geo:location [geo:lat "42.361860"; geo:long "-71.091840"];
-        :address [
-            :street "32 Vassar Street";
-            :street2 "MIT CSAIL Building 32";
-            :city "Cambridge";
-            :postalCode "02139";
-            :country "USA"
-    ]
+    	geo:location [geo:lat "42.361860"; geo:long "-71.091840"];
+    	:address [
+    		:street "32 Vassar Street";
+    		:street2 "MIT CSAIL Building 32";
+    		:city "Cambridge";
+    		:postalCode "02139";
+    		:country "USA"
+	]
     ];
     :publicHomePage <../Berners-Lee/>;
     :homePage <../Berners-Lee/>;     # hack - follows by RDFS from line above
-                # The W3C structure data uses this as an IFP
+			    # The W3C structure data uses this as an IFP
 #    is foaf:member of w3c:W3C;    # SYNTAX NOT IN TURTLE :-(
     :assistant card:amy;
 
@@ -161,7 +149,7 @@ card:i
 card:i
     foaf:homepage <https://www.w3.org/People/Berners-Lee/>;
      foaf:mbox <mailto:timbl@w3.org>;
-    #    foaf:mbox_sha1sum "1839a1cc2e719a85ea7d9007f587b2899cd94064";
+    #	 foaf:mbox_sha1sum "1839a1cc2e719a85ea7d9007f587b2899cd94064";
      foaf:name "Timothy Berners-Lee";
      foaf:nick "TimBL", "timbl";
     #         foaf:schoolHomepage <https://www.w3.org/People/Berners-Lee>;
@@ -250,7 +238,7 @@ card:i is doap:developer of <http://www.w3.org/2000/10/swap/data#Cwm>,
 
 # BBC Catalogue links:   # Clumsy .. need to give people URIs. Now offline :-(
 # card:i foaf:homepage <http://open.bbc.co.uk/catalogue/infax/contributor/169456>;
-#   s:seeAlso <http://open.bbc.co.uk/catalogue/xml/contributor/169456>.
+#	s:seeAlso <http://open.bbc.co.uk/catalogue/xml/contributor/169456>.
 
 
 #  Advogato is geek social networking site (2008 - 2018)
@@ -291,11 +279,11 @@ card:i is doap:developer of <http://www.w3.org/2000/10/swap/data#Cwm>,
     foaf:maker card:i.
 
 <http://www.ecs.soton.ac.uk/~dt2/dlstuff/www2006_data#panel-panelk01>
-    s:label  "The Next Wave of the Web (Plenary Panel)";
-    :participant card:i.
+	s:label  "The Next Wave of the Web (Plenary Panel)";
+	:participant card:i.
 
 <http://wiki.ontoworld.org/index.php/_IRW2006>
-    :participant card:i.
+	:participant card:i.
 
 <http://wiki.ontoworld.org/index.php/_IRW2006>
     dc:title "Identity, Reference and the Web workshop 2006".
@@ -312,122 +300,3 @@ card:i foaf:weblog
     foaf:maker card:i.
 
 #ends
-"""
-
-
-def add_stuff(graph):
-    graph.add((tarek, likes, pizza))
-    graph.add((tarek, likes, cheese))
-    graph.add((tarek, likes, bob))
-    graph.add((tarek, likes, michel))
-    graph.add((michel, likes, pizza))
-    graph.add((michel, likes, cheese))
-    graph.add((michel, likes, tarek))
-    graph.add((bob, likes, cheese))
-    graph.add((bob, hates, pizza))
-    graph.add((bob, hates, michel))
-    graph.add((bob, likes, tarek))
-
-
-def test_issue837_unique_subjects():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([sub for sub in graph.subjects()]) == 11
-    assert len([sub for sub in graph.subjects(unique=True)]) == 3
-
-
-def test_issue837_unique_predicates():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([pred for pred in graph.predicates()]) == 11
-    assert len([pred for pred in graph.predicates(unique=True)]) == 2
-
-
-def test_issue837_unique_objects():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([obj for obj in graph.objects()]) == 11
-    assert len([obj for obj in graph.objects(unique=True)]) == 5
-
-
-def test_issue837_unique_subject_predicates():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([sub for sub in graph.subject_predicates()]) == 11
-    assert len([sub for sub in graph.subject_predicates(unique=True)]) == 4
-
-
-def test_issue837_unique_predicate_objects():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([pred for pred in graph.predicate_objects()]) == 11
-    assert len([pred for pred in graph.predicate_objects(unique=True)]) == 7
-
-
-def test_issue837_unique_subject_objects():
-    graph = Graph()
-    add_stuff(graph)
-    assert len([obj for obj in graph.subject_objects()]) == 11
-    assert len([obj for obj in graph.subject_objects(unique=True)]) == 11
-
-
-no_of_statements_in_card = 86
-no_of_unique_subjects = 20
-no_of_unique_predicates = 58
-no_of_unique_objects = 62
-
-
-def test_issue837_parse_berners_lee_card_into_graph():
-    graph = Graph()
-    graph.parse(data=timblcardn3, format="n3")
-    assert len(list(graph.subjects())) == no_of_statements_in_card
-    assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
-    assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
-    assert len(list(graph.objects(unique=True))) == no_of_unique_objects
-
-
-def test_issue837_parse_berners_lee_card_into_conjunctivegraph_default():
-    graph = ConjunctiveGraph()
-    graph.parse(data=timblcardn3, format="n3")
-    assert len(list(graph.subjects())) == no_of_statements_in_card
-    assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
-    assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
-    assert len(list(graph.objects(unique=True))) == no_of_unique_objects
-
-
-def test_issue837_parse_berners_lee_card_into_named_graph():
-    graph = ConjunctiveGraph(identifier=URIRef("context-1"))
-    graph.parse(data=timblcardn3, format="n3")
-    assert len(list(graph.subjects())) == no_of_statements_in_card
-    assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
-    assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
-    assert len(list(graph.objects(unique=True))) == no_of_unique_objects
-
-
-def test_issue837_parse_berners_lee_card_into_dataset_default():
-
-    # Workaround pending completion of identifier-as-context work
-    # current W-I-P allows parsing direct to Dataset default context
-    # and doesn't require the dubious creation of a graph with the
-    # same context identifier as the Dataset default context.
-
-    # graph = Dataset()
-
-    g = Dataset()
-    graph = g.graph(URIRef("urn:x-rdflib:default"))
-
-    graph.parse(data=timblcardn3, format="n3")
-    assert len(list(graph.subjects())) == no_of_statements_in_card
-    assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
-    assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
-    assert len(list(graph.objects(unique=True))) == no_of_unique_objects
-
-
-def test_issue837_parse_berners_lee_card_into_dataset_context():
-    g = Dataset()
-    graph = g.graph()
-    graph.parse(data=timblcardn3, format="n3")
-    assert len(list(graph.subjects())) == no_of_statements_in_card
-    assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
-    assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
-    assert len(list(graph.objects(unique=True))) == no_of_unique_objects

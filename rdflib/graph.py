@@ -683,8 +683,10 @@ class Graph(Node):
                     try:
                         subs.add(s)
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
         """A generator of unique predicates with the given subject and object"""
@@ -699,8 +701,10 @@ class Graph(Node):
                     try:
                         preds.add(p)
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
         """A generator of unique objects with the given subject and predicate"""
@@ -715,8 +719,10 @@ class Graph(Node):
                     try:
                         objs.add(o)
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def subject_predicates(
         self, object=None, unique=False
@@ -734,8 +740,10 @@ class Graph(Node):
                     try:
                         subj_preds.add((s, p))
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def subject_objects(
         self, predicate=None, unique=False
@@ -752,8 +760,10 @@ class Graph(Node):
                     try:
                         subj_objs.add((s, o))
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def predicate_objects(
         self, subject=None, unique=False
@@ -770,8 +780,10 @@ class Graph(Node):
                     try:
                         pred_objs.add((p, o))
                     except MemoryError as e:
-                        print(f"{e}. Consider not setting parameter 'unique' to True")
-                        break
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise MemoryError(e)
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
