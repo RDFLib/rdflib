@@ -539,6 +539,7 @@ class Literal(Identifier):
     _value: Any
 
     __slots__ = ("_language", "_datatype", "_value")
+
     def __new__(
         cls,
         lexical_or_value: Any,
