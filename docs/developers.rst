@@ -21,10 +21,10 @@ If you add a new cool feature, consider also adding an example in ``./examples``
 Tests
 -----
 Any new functionality being added to RDFLib _must_ have unit tests and
-should have doc tests supplied. 
+should have doc tests supplied.
 
-Typically, you should add your functionality and new tests to a branch of 
-RDFlib and and run all tests locally and see them pass. There are currently 
+Typically, you should add your functionality and new tests to a branch of
+RDFlib and and run all tests locally and see them pass. There are currently
 close to 4,000 tests with a few extra expected failures and skipped tests.
 We won't allow Pull Requests that break any of the existing tests.
 
@@ -78,7 +78,7 @@ should be named `test_*.py` so that `pytest can discover them
 Running static checks
 ---------------------
 
-Check formatting with `black <https://github.com/psf/black>`_, making sure you use 
+Check formatting with `black <https://github.com/psf/black>`_, making sure you use
 our black.toml config file:
 
 .. code-block:: bash
