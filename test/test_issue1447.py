@@ -11,6 +11,15 @@
 #
 # We would appreciate acknowledgement if the software is used.
 
+# NOTE: The config below enables strict mode for mypy.
+# mypy: no_ignore_errors
+# mypy: warn_unused_configs, disallow_any_generics
+# mypy: disallow_subclassing_any, disallow_untyped_calls
+# mypy: disallow_untyped_defs, disallow_incomplete_defs
+# mypy: check_untyped_defs, disallow_untyped_decorators
+# mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
+# mypy: warn_return_any, no_implicit_reexport, strict_equality
+
 import typing
 
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
@@ -48,12 +57,10 @@ def test_rdflib_query_exercise() -> None:
     graph.add((kb_https_uriref, predicate_q, literal_two))
     graph.add((kb_bnode, predicate_p, literal_one))
 
-    expected_nodes_using_predicate_q: typing.Set[
-        example_BlankNodeOrIRI
-    ] = {kb_https_uriref}
-    computed_nodes_using_predicate_q: typing.Set[
-        example_BlankNodeOrIRI
-    ] = set()
+    expected_nodes_using_predicate_q: typing.Set[example_BlankNodeOrIRI] = {
+        kb_https_uriref
+    }
+    computed_nodes_using_predicate_q: typing.Set[example_BlankNodeOrIRI] = set()
     for triple in graph.triples((None, predicate_q, None)):
         computed_nodes_using_predicate_q.add(triple[0])
     assert expected_nodes_using_predicate_q == computed_nodes_using_predicate_q
@@ -109,9 +116,7 @@ WHERE {
     prepared_one_usage_query = rdflib.plugins.sparql.processor.prepareQuery(
         one_usage_query, initNs=nsdict
     )
-    computed_one_usage_from_prepared_query: typing.Set[
-        example_BlankNodeOrIRI
-    ] = set()
+    computed_one_usage_from_prepared_query: typing.Set[example_BlankNodeOrIRI] = set()
     for prepared_one_usage_result in graph.query(prepared_one_usage_query):
         computed_one_usage_from_prepared_query.add(prepared_one_usage_result[0])
     assert expected_one_usage == computed_one_usage_from_prepared_query

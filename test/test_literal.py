@@ -1,3 +1,12 @@
+# NOTE: The config below enables strict mode for mypy.
+# mypy: no_ignore_errors
+# mypy: warn_unused_configs, disallow_any_generics
+# mypy: disallow_subclassing_any, disallow_untyped_calls
+# mypy: disallow_untyped_defs, disallow_incomplete_defs
+# mypy: check_untyped_defs, disallow_untyped_decorators
+# mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
+# mypy: warn_return_any, no_implicit_reexport, strict_equality
+
 from decimal import Decimal
 from typing import Any, Optional, Type
 import unittest
@@ -82,9 +91,7 @@ class TestNew(unittest.TestCase):
         )
 
     def testCantPassInvalidLang(self) -> None:
-        self.assertRaises(
-            ValueError, Literal, "foo", lang="999"
-        )
+        self.assertRaises(ValueError, Literal, "foo", lang="999")
 
     def testFromOtherLiteral(self) -> None:
         l = Literal(1)
@@ -290,7 +297,9 @@ class TestXsdLiterals(unittest.TestCase):
         ]
         self.check_make_literals(inputs)
 
-    def check_make_literals(self, inputs: typing.Sequence[typing.Tuple[str, URIRef, typing.Optional[type]]]) -> None:
+    def check_make_literals(
+        self, inputs: typing.Sequence[typing.Tuple[str, URIRef, typing.Optional[type]]]
+    ) -> None:
         for literal_pair in inputs:
             (lexical, _type, value_cls) = literal_pair
             with self.subTest(f"testing {literal_pair}"):
