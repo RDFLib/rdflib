@@ -27,13 +27,10 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
-
-# Python standard libraries
 import sys
 import os
 import re
 import codecs
-import warnings
 
 from decimal import Decimal
 
@@ -1902,8 +1899,7 @@ class TurtleParser(Parser):
 
         if encoding not in [None, "utf-8"]:
             raise ParserError(
-                ("N3/Turtle files are always utf-8 encoded, I was passed: %s")
-                % encoding
+                "N3/Turtle files are always utf-8 encoded, I was passed: %s" % encoding
             )
 
         sink = RDFSink(graph)
@@ -1957,10 +1953,6 @@ def _test():  # pragma: no cover
     doctest.testmod()
 
 
-# if __name__ == '__main__':
-#    _test()
-
-
 def main():  # pragma: no cover
     g = ConjunctiveGraph()
 
@@ -1984,5 +1976,3 @@ def main():  # pragma: no cover
 
 if __name__ == "__main__":
     main()
-
-# ends

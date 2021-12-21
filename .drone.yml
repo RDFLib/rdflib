@@ -71,3 +71,23 @@ steps:
   - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
   - ./with-fuseki.sh pytest -ra
+
+---
+kind: pipeline
+name: python-3-10
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.10
+  commands:
+  - apt-get update && apt-get install -y openjdk-11-jdk-headless
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - python setup.py install
+  - black --config black.toml --check ./rdflib | true
+  - flake8 --exit-zero rdflib
+  - ./with-fuseki.sh pytest -ra

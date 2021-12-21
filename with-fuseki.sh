@@ -7,7 +7,7 @@ script_dirname="$( dirname -- "${0}" )"
 set -eo pipefail
 
 wait_http_okay() {
-    local timeout=15
+    local timeout=30
     for var in "${@}"
     do
         eval "local ${var}"
