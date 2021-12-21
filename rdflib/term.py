@@ -21,7 +21,6 @@ underlying Graph:
 
 """
 import re
-import typing
 
 from fractions import Fraction
 
@@ -1373,7 +1372,7 @@ class Literal(Identifier):
             clsName = self.__class__.__name__
         return """%s(%s)""" % (clsName, ", ".join(args))
 
-    def toPython(self) -> typing.Any:
+    def toPython(self) -> Any:
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
