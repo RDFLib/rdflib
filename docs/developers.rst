@@ -33,7 +33,7 @@ you say it is doing: if you remove your enhancement, your new tests should fail!
 
 Finally, please consider adding simple and more complex tests. It's good to see
 the basic functionality of your feature tests and then also any tricky bits or
-edg cases.
+edge cases.
 
 Testing framework
 ~~~~~~~~~~~~~~~~~
@@ -66,7 +66,7 @@ failure tests than `unittest`.
 A primer on how to write tests for pytest can be found `here
 <https://docs.pytest.org/en/latest/getting-started.html#create-your-first-test>`_.
 
-The existing test that use `unittest` work well with pytest, but they should
+The existing tests that use `unittest` work well with pytest, but they should
 ideally be updated to the pytest test-style when they are touched.
 
 Test should go into the ``test/`` directory, either into an existing test file
