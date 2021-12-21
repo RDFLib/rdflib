@@ -260,7 +260,7 @@ def test_issue939_parse_return_inconsistent_type():
     assert type(g) is ConjunctiveGraph
 
 
-# @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_issue_167_sparqlupdatestore_compatibility(get_dataset):
 
     # STATUS: FIXED no longer an issue
