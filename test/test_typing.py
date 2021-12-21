@@ -20,7 +20,7 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-import typing
+from typing import Set, Tuple, Union
 
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
 # test is run, but mypy can't tell the symbol is exposed.
@@ -29,7 +29,9 @@ import rdflib.plugins.sparql.processor
 
 # TODO Question - is there a usable type name or class name for
 # 'typing.Union[rdflib.BNode, rdflib.URIRef]'?
-example_BlankNodeOrIRI = typing.Union[rdflib.BNode, rdflib.URIRef]
+# Conversation to resolve:
+# https://github.com/RDFLib/rdflib/issues/1526
+example_BlankNodeOrIRI = Union[rdflib.BNode, rdflib.URIRef]
 
 
 def test_rdflib_query_exercise() -> None:
@@ -61,10 +63,10 @@ def test_rdflib_query_exercise() -> None:
     graph.add((kb_https_uriref, predicate_q, literal_two))
     graph.add((kb_bnode, predicate_p, literal_one))
 
-    expected_nodes_using_predicate_q: typing.Set[example_BlankNodeOrIRI] = {
+    expected_nodes_using_predicate_q: Set[example_BlankNodeOrIRI] = {
         kb_https_uriref
     }
-    computed_nodes_using_predicate_q: typing.Set[example_BlankNodeOrIRI] = set()
+    computed_nodes_using_predicate_q: Set[example_BlankNodeOrIRI] = set()
     for triple in graph.triples((None, predicate_q, None)):
         computed_nodes_using_predicate_q.add(triple[0])
     assert expected_nodes_using_predicate_q == computed_nodes_using_predicate_q
@@ -76,13 +78,13 @@ WHERE {
 }
 """
 
-    expected_one_usage: typing.Set[example_BlankNodeOrIRI] = {
+    expected_one_usage: Set[example_BlankNodeOrIRI] = {
         kb_bnode,
         kb_http_uriref,
         kb_https_uriref,
         kb_urn_uriref,
     }
-    computed_one_usage: typing.Set[example_BlankNodeOrIRI] = set()
+    computed_one_usage: Set[example_BlankNodeOrIRI] = set()
     for one_usage_result in graph.query(one_usage_query):
         computed_one_usage.add(one_usage_result[0])
     assert expected_one_usage == computed_one_usage
@@ -99,14 +101,14 @@ WHERE {
 }
 """
 
-    expected_two_usage: typing.Set[
-        typing.Tuple[
+    expected_two_usage: Set[
+        Tuple[
             example_BlankNodeOrIRI,
             example_BlankNodeOrIRI,
         ]
     ] = {(kb_https_uriref, predicate_p), (kb_https_uriref, predicate_q)}
-    computed_two_usage: typing.Set[
-        typing.Tuple[
+    computed_two_usage: Set[
+        Tuple[
             example_BlankNodeOrIRI,
             example_BlankNodeOrIRI,
         ]
@@ -120,7 +122,7 @@ WHERE {
     prepared_one_usage_query = rdflib.plugins.sparql.processor.prepareQuery(
         one_usage_query, initNs=nsdict
     )
-    computed_one_usage_from_prepared_query: typing.Set[example_BlankNodeOrIRI] = set()
+    computed_one_usage_from_prepared_query: Set[example_BlankNodeOrIRI] = set()
     for prepared_one_usage_result in graph.query(prepared_one_usage_query):
         computed_one_usage_from_prepared_query.add(prepared_one_usage_result[0])
     assert expected_one_usage == computed_one_usage_from_prepared_query
