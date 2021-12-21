@@ -999,7 +999,7 @@ def test_issue1396_store_query_and_update_methods_querygraph_parameter_does_not_
     """
 
 
-# @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test__issue_758_sparqlstore_is_incorrectly_readonly(get_dataset):
 
     # STATUS: FIXME Remains an issue
