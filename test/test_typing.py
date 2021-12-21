@@ -33,6 +33,10 @@ example_BlankNodeOrIRI = typing.Union[rdflib.BNode, rdflib.URIRef]
 
 
 def test_rdflib_query_exercise() -> None:
+    """
+    The purpose of this test is to exercise a selection of rdflib features under "mypy --strict" review.
+    """
+
     graph = rdflib.Graph()
 
     literal_one = rdflib.Literal("1", datatype=rdflib.XSD.integer)
