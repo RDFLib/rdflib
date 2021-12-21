@@ -8,10 +8,9 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
 from decimal import Decimal
-from typing import Any, Optional, Type
+from typing import Any, Optional, Sequence, Tuple, Type
 import unittest
 import datetime
-import typing
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
@@ -298,7 +297,7 @@ class TestXsdLiterals(unittest.TestCase):
         self.check_make_literals(inputs)
 
     def check_make_literals(
-        self, inputs: typing.Sequence[typing.Tuple[str, URIRef, typing.Optional[type]]]
+        self, inputs: Sequence[Tuple[str, URIRef, Optional[type]]]
     ) -> None:
         for literal_pair in inputs:
             (lexical, _type, value_cls) = literal_pair
