@@ -74,7 +74,7 @@ class TestNewPT:
         self,
         lang: Any,
         exception_type: Type[Exception],
-    ):
+    ) -> None:
         """
         Construction of Literal fails if the language tag is invalid.
         """

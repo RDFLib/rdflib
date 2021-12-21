@@ -129,10 +129,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-    def __new__(cls, value):
+    def __new__(cls, value: str) -> "Identifier":
         return str.__new__(cls, value)
 
     def eq(self, other):
@@ -401,12 +398,12 @@ class BNode(Identifier):
 
     __slots__ = ()
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
     def __new__(
-        cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
-    ):
+        cls,
+        value: Optional[str] = None,
+        _sn_gen: Callable[[], str] = _serial_number_generator(),
+        _prefix: str = _unique_id(),
+    ) -> "BNode":
         """
         # only store implementations should pass in a value
         """
@@ -423,7 +420,7 @@ class BNode(Identifier):
             pass  # assert is_ncname(str(value)), "BNode identifiers
             # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
             # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
-        return Identifier.__new__(cls, value)
+        return Identifier.__new__(cls, value)  # type: ignore[return-value]
 
     def toPython(self) -> str:
         return str(self)
@@ -545,10 +542,6 @@ class Literal(Identifier):
     _value: Any
 
     __slots__ = ("_language", "_datatype", "_value")
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
     def __new__(
         cls,
         lexical_or_value: Any,

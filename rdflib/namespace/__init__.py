@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import List
+from typing import TYPE_CHECKING, List, Union
 from unicodedata import category
 
 from pathlib import Path
@@ -101,14 +101,11 @@ class Namespace(str):
     False
     """
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__()
-
-    def __new__(cls, value):
+    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
     @property
