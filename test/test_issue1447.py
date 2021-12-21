@@ -135,11 +135,3 @@ WHERE {
 
     python_iri: str = kb_https_uriref.toPython()
     assert python_iri == "https://example.org/kb/y"
-
-
-def main() -> None:
-    test_rdflib_query_exercise()
-
-
-if __name__ == "__main__":
-    main()
