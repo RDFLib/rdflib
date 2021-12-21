@@ -117,9 +117,6 @@ class Node(object):
 
     __slots__ = ()
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__()
-
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     """
