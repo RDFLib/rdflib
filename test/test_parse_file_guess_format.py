@@ -22,6 +22,10 @@ from rdflib.util import guess_format
 class FileParserGuessFormatTest(unittest.TestCase):
     def test_guess_format(self) -> None:
         self.assertEqual(guess_format("example.trix"), "trix")
+        self.assertEqual(guess_format("local-file.jsonld"), "json-ld")
+        self.assertEqual(guess_format("local-file.json-ld"), "json-ld")
+        self.assertEqual(guess_format("/some/place/on/disk/example.json"), "json-ld")
+        self.assertEqual(guess_format("../../relative/place/on/disk/example.json"), "json-ld")
 
     def test_jsonld(self) -> None:
         g = Graph()
