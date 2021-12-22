@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import List
+from typing import TYPE_CHECKING, List, Union
 from unicodedata import category
 
 from pathlib import Path
@@ -101,11 +101,11 @@ class Namespace(str):
     False
     """
 
-    def __new__(cls, value):
+    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
     @property
@@ -445,7 +445,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -521,7 +521,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def bind(self, prefix, namespace, override=True, replace=False):
+    def bind(self, prefix, namespace, override=True, replace=False) -> None:
         """bind a given namespace to the prefix
 
         if override, rebind, even if the given namespace is already

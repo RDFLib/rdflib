@@ -12,3 +12,4 @@ pytest-subtests
 sphinx
 sphinxcontrib-apidoc
 types-setuptools
+types-tabulate

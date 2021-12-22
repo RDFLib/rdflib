@@ -26,18 +26,18 @@ A tiny example:
     >>> s = g.serialize(format='nt')
     >>>
     >>> sorted(g) == [
-    ...  (URIRef(u'http://meetings.example.com/cal#m1'),
-    ...   URIRef(u'http://www.example.org/meeting_organization#homePage'),
-    ...   URIRef(u'http://meetings.example.com/m1/hp')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/meeting_organization#attending'),
-    ...   URIRef(u'http://meetings.example.com/cal#m1')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/personal_details#GivenName'),
-    ...   Literal(u'Fred')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/personal_details#hasEmail'),
-    ...   URIRef(u'mailto:fred@example.com'))
+    ...  (URIRef("http://meetings.example.com/cal#m1"),
+    ...   URIRef("http://www.example.org/meeting_organization#homePage"),
+    ...   URIRef("http://meetings.example.com/m1/hp")),
+    ...  (URIRef("http://www.example.org/people#fred"),
+    ...   URIRef("http://www.example.org/meeting_organization#attending"),
+    ...   URIRef("http://meetings.example.com/cal#m1")),
+    ...  (URIRef("http://www.example.org/people#fred"),
+    ...   URIRef("http://www.example.org/personal_details#GivenName"),
+    ...   Literal("Fred")),
+    ...  (URIRef("http://www.example.org/people#fred"),
+    ...   URIRef("http://www.example.org/personal_details#hasEmail"),
+    ...   URIRef("mailto:fred@example.com"))
     ... ]
     True
 
@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "6.0.3"
-__date__ = "2021-10-10"
+__version__ = "6.2.0-alpha"
+__date__ = "2021-12-20"
 
 __all__ = [
     "URIRef",
@@ -125,7 +125,7 @@ For example:
 
 >>> from rdflib import Literal,XSD
 >>> Literal("01", datatype=XSD.int)
-rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+rdflib.term.Literal("1", datatype=rdflib.term.URIRef("http://www.w3.org/2001/XMLSchema#integer"))
 
 This flag may be changed at any time, but will only affect literals
 created after that time, previously created literals will remain
