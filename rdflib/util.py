@@ -31,6 +31,7 @@ Statement and component type checkers
 
 from calendar import timegm
 from time import altzone
+from typing import Optional
 
 # from time import daylight
 from time import gmtime
@@ -371,7 +372,7 @@ SUFFIX_FORMAT_MAP = {
 }
 
 
-def guess_format(fpath, fmap=None):
+def guess_format(fpath, fmap=None) -> Optional[str]:
     """
     Guess RDF serialization based on file suffix. Uses
     ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:

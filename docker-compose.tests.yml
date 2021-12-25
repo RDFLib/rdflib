@@ -24,4 +24,4 @@ services:
     volumes:
       - .:/rdflib
     working_dir: /rdflib
-    command: ["python", "-m", "mypy", "--show-error-context", "--show-error-codes" ,"rdflib"]
+    command: ["python", "-m", "mypy", "--show-error-context", "--show-error-codes"]
