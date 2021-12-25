@@ -1,7 +1,8 @@
 import logging
+from pprint import pformat
 from typing import Optional, TYPE_CHECKING, Tuple
 from urllib.request import urlopen, Request
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qsl
 from urllib.error import HTTPError, URLError
 from rdflib import logger
 import base64
@@ -104,6 +105,9 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
+                logger.debug(
+                    f"Querying {self.query_endpoint} with\n{pformat(parse_qsl(qsa))}"
+                )
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )

@@ -16,6 +16,7 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.exceptions import ParserError, Error
 from rdflib.parser import Parser
+from warnings import warn
 
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 
@@ -368,6 +369,20 @@ class RDFXMLHandler(handler.ContentHandler):
         # at at top-level
 
         if self.parent.object and self.current != self.stack[2]:
+
+            # XML element parsing with no namespace can lead to exceptions
+            # https://github.com/RDFLib/rdflib/issues/748
+
+            # parsing elements with no namespace leads to a malformed Exception:
+            # TypeError: sequence item 0: expected str instance, NoneType found exception.
+
+            # That's because the end element handler doesn't handle the
+            # (None, element_name) tuple that is passed in in that case. You can't
+            # just use ''.join() there, you need to handle the namespace correctly:
+
+            ns, name = name
+            if ns is not None:
+                name = "{}:{}".format(ns, name)
 
             self.error(
                 "Repeat node-elements inside property elements: %s" % "".join(name)

@@ -22,66 +22,6 @@ c1 = URIRef("urn:context-1")
 c2 = URIRef("urn:context-2")
 
 
-# store = "BerkeleyDB"
-# store = "SQLiteLSM"
-# store = "LevelDB"
-
-nquads = """\
-<http://example.com/resource/student_10> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Student> <http://example.org/graph/students> .
-<http://example.com/resource/student_10> <http://xmlns.com/foaf/0.1/name> "Venus Williams"                                       <http://example.org/graph/students> .
-<http://example.com/resource/student_20> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Student> <http://example.org/graph/students> .
-<http://example.com/resource/student_20> <http://xmlns.com/foaf/0.1/name> "Demi Moore"                                           <http://example.org/graph/students> .
-<http://example.com/resource/sport_100> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Sport>    <http://example.org/graph/sports> .
-<http://example.com/resource/sport_100> <http://www.w3.org/2000/01/rdf-schema#label> "Tennis"                                    <http://example.org/graph/sports> .
-<http://example.com/resource/student_10> <http://example.com/ontology/practises> <http://example.com/resource/sport_100>         <http://example.org/graph/practise> .
-"""
-
-list_of_nquads = [
-    (
-        URIRef("http://example.com/resource/student_10"),
-        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-        URIRef("http://example.com/ontology/Student"),
-        URIRef("http://example.org/graph/students"),
-    ),
-    (
-        URIRef("http://example.com/resource/student_10"),
-        URIRef("http://xmlns.com/foaf/0.1/name"),
-        Literal("Venus Williams"),
-        URIRef("http://example.org/graph/students"),
-    ),
-    (
-        URIRef("http://example.com/resource/student_20"),
-        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-        URIRef("http://example.com/ontology/Student"),
-        URIRef("http://example.org/graph/students"),
-    ),
-    (
-        URIRef("http://example.com/resource/student_20"),
-        URIRef("http://xmlns.com/foaf/0.1/name"),
-        Literal("Demi Moore"),
-        URIRef("http://example.org/graph/students"),
-    ),
-    (
-        URIRef("http://example.com/resource/sport_100"),
-        URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-        URIRef("http://example.com/ontology/Sport"),
-        URIRef("http://example.org/graph/sports"),
-    ),
-    (
-        URIRef("http://example.com/resource/sport_100"),
-        URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-        Literal("Tennis"),
-        URIRef("http://example.org/graph/sports"),
-    ),
-    (
-        URIRef("http://example.com/resource/student_10"),
-        URIRef("http://example.com/ontology/practises"),
-        URIRef("http://example.com/resource/sport_100"),
-        URIRef("http://example.org/graph/practise"),
-    ),
-]
-
-
 @pytest.fixture(
     # scope="function", params=["default", "BerkeleyDB", "SQLiteLSM", "LevelDB", "SQLAlchemy"]
     scope="function",
@@ -123,6 +63,7 @@ def get_conjunctivegraph(request):
     tmppath = os.path.join(gettempdir(), f"test_{store.lower()}")
     graph = ConjunctiveGraph(store=store)
     graph.open(tmppath, create=True)
+
     # tmppath = mkdtemp()
     if store != "default" and graph.store.is_open():
         # delete the graph for each test!
@@ -253,12 +194,12 @@ def test_issue167_clarify_context_element_needs_final_clarification(
     # [(rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))]
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_issue1275_clear_default(get_conjunctivegraph):
 
     # STATUS: FIXME Remains an issue
 
-    #  CLEAR DEFAULT statement erases named graphs #1275
+    # CLEAR DEFAULT statement erases named graphs #1275
     # DEFAULT graph is the default unnamed graph, so the triple we store
     # in the named graph before should not be removed, but it apparently is.
 
@@ -305,7 +246,7 @@ def test_issue353_nquads_default_graph(get_conjunctivegraph):
         )
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_issue319_add_graph_as_dataset_default(get_dataset):
 
     # STATUS: FIXME remains an issue
@@ -358,17 +299,18 @@ def test_issue319_add_graph_as_dataset_default(get_dataset):
     """
 
     ds = get_dataset
+    logger.debug(f"list(ds.contexts()) {list(ds.contexts())}")
     assert len(list(ds.contexts())) == 1
 
     ds.parse(data="<a> <b> <c> .", format="ttl")
     with pytest.raises(AssertionError):
         assert len(list(ds.contexts())) == 1
         warnings.warn(
-            "test_issue319_add_graph_as_dataset_default, length of dataset contexts should be "
+            "test_issue319_add_graph_as_dataset_default, length of dataset contexts should be 1"
         )
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_issue319_add_graph_as_conjunctivegraph_default(get_conjunctivegraph):
 
     # STATUS: FIXME remains an issue
@@ -377,6 +319,7 @@ def test_issue319_add_graph_as_conjunctivegraph_default(get_conjunctivegraph):
     assert len(list(cg.contexts())) == 0
 
     cg.parse(data="<a> <b> <c>.", format="turtle")
+    logger.debug(f"list(cg.contexts()) {list(cg.contexts())}")
     assert len(list(cg.contexts())) == 1
 
 
@@ -510,126 +453,22 @@ def test_issue811_using_from_and_from_named_on_conjunctivegraph_behaves_not_stan
 
 
 @pytest.mark.skip
-def test_issue371_default_parse_fails():
-    # g1 = Graph(store="SPARQLUpdateStore", identifier=DATASET_DEFAULT_GRAPH_ID)
-
+def test_issue371_graph_default_parse_fails():
+    # STATUS fixed with change to Graph.__init__
     g = Graph(store="SPARQLUpdateStore")
     g.open(configuration="http://localhost:3030/db/update")
-    with pytest.raises(Exception):
-        g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
-    """
-    rdflib/graph.py:430: in add
-        self.__store.add((s, p, o), self.identifier, quoted=False)
-            o          = rdflib.term.URIRef('urn:michel')
-            p          = rdflib.term.URIRef('urn:likes')
-            s          = rdflib.term.URIRef('urn:tarek')
-            self       = <Graph identifier=Ne40ad6edbf2d4e77b455e93e4afc247f (<class 'rdflib.graph.Graph'>)>
-            triple     = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:michel'))
-    rdflib/plugins/stores/sparqlstore.py:632: in add
-        q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context), triple)
-            context    = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
-            nts        = <function _node_to_sparql at 0x7f7e647d90d0>
-            obj        = rdflib.term.URIRef('urn:michel')
-            predicate  = rdflib.term.URIRef('urn:likes')
-            quoted     = False
-            self       = <rdflib.plugins.stores.sparqlstore.SPARQdef test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():LUpdateStore object at 0x7f7e647a91f0>
-            spo        = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:michel'))
-            subject    = rdflib.term.URIRef('urn:tarek')
-            triple     = '<urn:tarek> <urn:likes> <urn:michel> .'
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-    node = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
-
-        def _node_to_sparql(node) -> str:
-            if isinstance(node, BNode):
-    >           raise Exception(
-                    "SPARQLStore does not support BNodes! "
-                    "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
-                )
-    E           Exception: SPARQLStore does not support BNodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
-
-    node       = rdflib.term.BNode('Ne40ad6edbf2d4e77b455e93e4afc247f')
-
-    rdflib/plugins/stores/sparqlstore.py:33: Exception
-    """
+    g.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
 
 
 @pytest.mark.skip
-def test_issue371_default_add_fails():
+def test_issue371_graph_default_add_fails():
+    # STATUS fixed with change to Graph.__init__
     g = Graph(store="SPARQLUpdateStore")
     g.open(configuration="http://localhost:3030/db/update")
-    with pytest.raises(Exception):
-        g.add((tarek, likes, pizza))
-    """
-    rdflib/graph.py:430: in add
-        self.__store.add((s, p, o), self.identifier, quoted=False)
-            o          = rdflib.term.URIRef('urn:pizza')
-            p          = rdflib.term.URIRef('urn:likes')
-            s          = rdflib.term.URIRef('urn:tarek')
-            self       = <Graph identifier=Nbd8634401091472eacd82cc48a827ad2 (<class 'rdflib.graph.Graph'>)>
-            triple     = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))
-    rdflib/plugins/stores/sparqlstore.py:632: in add
-        q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context), triple)
-            context    = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
-            nts        = <function _node_to_sparql at 0x7f2879ea4700>
-            obj        = rdflib.term.URIRef('urn:pizza')
-            predicate  = rdflib.term.URIRef('urn:likes')
-            quoted     = False
-            self       = <rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore object at 0x7f2879ec4fd0>
-            spo        = (rdflib.term.URIRef('urn:tarek'), rdflib.term.URIRef('urn:likes'), rdflib.term.URIRef('urn:pizza'))
-            subject    = rdflib.term.URIRef('urn:tarek')
-            triple     = '<urn:tarek> <urn:likes> <urn:pizza> .'
-    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-    node = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
-
-        def _node_to_sparql(node) -> str:
-            if isinstance(node, BNode):
-    >           raise Exception(
-                    "SPARQLStore does not support BNodes! "
-                    "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
-                )
-    E           Exception: SPARQLStore does not support BNodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
-
-    node       = rdflib.term.BNode('Nbd8634401091472eacd82cc48a827ad2')
-    """
+    g.add((tarek, likes, pizza))
 
 
-def get_graphnames():
-    g = Graph(store="SPARQLStore")
-    g.open(configuration="http://localhost:3030/db/sparql")
-    res = g.query("SELECT DISTINCT ?NAME { GRAPH ?NAME { ?s ?p ?o } }")
-    return res
-
-
-@pytest.mark.skip
-def test_issue371_graph_name_doesnt_match_specified_identifier():
-    sg = Graph(store="SPARQLUpdateStore", identifier=URIRef("context-0"))
-    sg.open(configuration="http://localhost:3030/db/update")
-    sg.parse(data="""<urn:tarek> <urn:likes> <urn:michel> .""", format="turtle")
-
-    assert sg.identifier == URIRef("context-0")
-
-    graphnames = list(get_graphnames())
-    assert sg.identifier != graphnames[0][0]
-
-    # qg = Graph(store="SPARQLStore", identifier=URIRef("context-0"))
-    qg = Graph(
-        store="SPARQLStore",
-        # identifier=URIRef("context-0"),
-        identifier=URIRef("http://server/unset-base/context-0"),
-    )
-    qg.open(configuration="http://localhost:3030/db/sparql")
-    res = qg.query("SELECT * {{?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }} LIMIT 25")
-
-    assert len(list(res)) == 1
-
-    graphnames = list(get_graphnames())
-    assert graphnames[0][0] == URIRef("http://server/unset-base/context-0")
-
-    sg.update("CLEAR ALL")
-
-
+# Fails with Exception: SPARQLStore does not support BNodes!
 @pytest.mark.skip
 def test_issue371_validation_of_quads_at_graph_addn_doesnt_work_as_expected():
     """

@@ -259,7 +259,7 @@ def test_dataset(get_dataset):
 
 # @pytest.mark.skip
 def test_contexts(get_dataset):
-    default_context = URIRef("urn:x-rdflib:default")
+    default_context = URIRef("urn:x-rdflib-default")
 
     # Create a new Dataset
     ds = get_dataset
@@ -274,7 +274,7 @@ def test_contexts(get_dataset):
     # logger.debug(f"ds contexts on initialisation:\n{ds_contexts}")
     assert (
         repr(ds_contexts)
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # logger.debug(
@@ -435,7 +435,7 @@ def test_contexts(get_dataset):
     # for c in ds.graphs():
     #     logger.debug(f"\n{pformat(c, width=120)}")
 
-    # <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>
+    # <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>
     # <Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>
 
     # graph names in the dataset can be queried:
@@ -443,7 +443,7 @@ def test_contexts(get_dataset):
     #     logger.debug(f"\n{pformat(c.identifier, width=120)}")
 
     # rdflib.term.URIRef('http://www.example.com/gr')
-    # rdflib.term.URIRef('urn:x-rdflib:default')
+    # rdflib.term.URIRef('urn:x-rdflib-default')
 
     # restricting iteration to a graph:
 
@@ -491,7 +491,7 @@ def test_read_quads_into_dataset(get_dataset):
     #  <Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/practise (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/students (<class 'rdflib.graph.Graph'>)>,
-    #  <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
+    #  <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]
 
     ctxlist = pformat(
         [[context.identifier.n3(), len(context)] for context in list(ds.contexts())],
@@ -504,7 +504,7 @@ def test_read_quads_into_dataset(get_dataset):
     #  ['_:N328d847194364096a4aada33bcfeade5', 0],
     #  ['<http://example.org/graph/practise>', 1],
     #  ['<http://example.org/graph/sports>', 2],
-    #  ['<urn:x-rdflib:default>', 0]]
+    #  ['<urn:x-rdflib-default>', 0]]
 
 
 # @pytest.mark.skip
@@ -518,7 +518,7 @@ def test_read_list_of_quads_into_dataset(get_dataset):
     # [<Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/practise (<class 'rdflib.graph.Graph'>)>,
     #  <Graph identifier=http://example.org/graph/students (<class 'rdflib.graph.Graph'>)>,
-    #  <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
+    #  <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]
 
     assert len(list(ds.contexts())) == 4
 
@@ -530,7 +530,7 @@ def test_read_list_of_quads_into_dataset(get_dataset):
 
     # logger.debug(f"ds contexts\n{ctxlist}")
 
-    # [['<urn:x-rdflib:default>', 0],
+    # [['<urn:x-rdflib-default>', 0],
     #  ['<http://example.org/graph/practise>', 1],
     #  ['<http://example.org/graph/students>', 4],
     #  ['<http://example.org/graph/sports>', 2]]
@@ -577,7 +577,7 @@ def test_read_triple_into_dataset(get_dataset):
         [[context.identifier.n3(), len(context)] for context in list(ds.contexts())],
         width=80,
     )
-    assert str(ctxlist) == "[['<urn:x-rdflib:default>', 1]]"
+    assert str(ctxlist) == "[['<urn:x-rdflib-default>', 1]]"
 
     # Create a graph in the dataset, if the graph name has already been
     # used, the corresponding graph will be returned
@@ -601,8 +601,8 @@ def test_read_triple_into_dataset(get_dataset):
         width=80,
     )
     assert str(ctxlist) in [
-        "[['<http://www.example.com/gr>', 1], ['<urn:x-rdflib:default>', 1]]",
-        "[['<urn:x-rdflib:default>', 1], ['<http://www.example.com/gr>', 1]]",
+        "[['<http://www.example.com/gr>', 1], ['<urn:x-rdflib-default>', 1]]",
+        "[['<urn:x-rdflib-default>', 1], ['<http://www.example.com/gr>', 1]]",
     ]
     # alternatively: add a quad to the dataset -> goes to the graph
     ds.add(
@@ -618,8 +618,8 @@ def test_read_triple_into_dataset(get_dataset):
         width=80,
     )
     assert str(ctxlist) in [
-        "[['<http://www.example.com/gr>', 2], ['<urn:x-rdflib:default>', 1]]",
-        "[['<urn:x-rdflib:default>', 1], ['<http://www.example.com/gr>', 2]]",
+        "[['<http://www.example.com/gr>', 2], ['<urn:x-rdflib-default>', 1]]",
+        "[['<urn:x-rdflib-default>', 1], ['<http://www.example.com/gr>', 2]]",
     ]
 
     # querying triples return them all regardless of the graph
@@ -669,8 +669,8 @@ def test_read_triple_into_dataset(get_dataset):
     gnames = [c for c in ds.graphs()]
     # logger.debug(f"graph names\n{pformat(gnames, width=80)}")
     assert str(gnames) in [
-        "[<Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]",
-        "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>, <Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>]",
+        "[<Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]",
+        "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>, <Graph identifier=http://www.example.com/gr (<class 'rdflib.graph.Graph'>)>]",
     ]
 
     # A graph can be created without specifying a name; a skolemized genid

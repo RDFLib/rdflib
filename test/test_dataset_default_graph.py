@@ -157,7 +157,7 @@ def test_simple_dataset_default_graph_and_contexts_programmatic_modelling(get_da
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
         repr(list(ds.contexts()))
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
@@ -167,7 +167,7 @@ def test_simple_dataset_default_graph_and_contexts_programmatic_modelling(get_da
     # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{repr(dataset_default_graph)}")
     assert (
         repr(dataset_default_graph)
-        == "<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>"
+        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
     )
 
     # logger.debug(f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}")
@@ -188,9 +188,7 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
     # Serialization of the empty dataset is sane
 
     # logger.debug(f"\n\nTRIG serialization\n{ds.serialize(format='trig')}")
-    assert repr(ds.serialize(format="trig")) == repr(
-        "@prefix ns1: <urn:x-rdflib:> .\n\n"
-    )
+    assert repr(ds.serialize(format="trig")) == repr("@prefix ns1: <urn:> .\n\n")
 
     # logger.debug(f"\n\nNQUADS serialization\n{ds.serialize(format='nquads')}")
     assert repr(ds.serialize(format="nquads")) == repr("\n")
@@ -231,11 +229,11 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
         '  xmlns:void="http://rdfs.org/ns/void#"\n'
         '  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"\n'
         '  xmlns:xml="http://www.w3.org/XML/1998/namespace"\n'
-        '  xmlns:ns1="urn:x-rdflib:"\n'
+        '  xmlns:ns1="urn:"\n'
         '  xmlns="http://www.w3.org/2004/03/trix/trix-1/"\n>'
         "\n"
         "  <graph>\n"
-        "    <uri>urn:x-rdflib:default</uri>\n"
+        "    <uri>urn:x-rdflib-default</uri>\n"
         "  </graph>\n</TriX>\n"
     )
 
@@ -252,29 +250,27 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
         repr(list(ds.contexts()))
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
     assert repr(ds.serialize(format="trig")) in [
-        repr(
-            "@prefix ns1: <urn:x-rdflib:> .\n@prefix ns2: <urn:> .\n\n{\n    ns2:tarek ns2:likes ns2:pizza .\n}\n\n"
-        ),
+        repr("@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"),
     ]
 
     dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
 
-    # logger.debug(
-    #     f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}"
-    # )
+    logger.debug(
+        f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}"
+    )
     assert repr(dataset_default_graph.serialize(format="xml")) == repr(
         '<?xml version="1.0" encoding="utf-8"?>\n'
         "<rdf:RDF\n"
-        '   xmlns:ns2="urn:"\n'
+        '   xmlns:ns1="urn:"\n'
         '   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n'
         ">\n"
         '  <rdf:Description rdf:about="urn:tarek">\n'
-        '    <ns2:likes rdf:resource="urn:pizza"/>\n'
+        '    <ns1:likes rdf:resource="urn:pizza"/>\n'
         "  </rdf:Description>\n"
         "</rdf:RDF>"
         "\n"
@@ -285,7 +281,7 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
     #     f"\n\nTURTLE serialization\n{repr(dataset_default_graph.serialize(format='ttl'))}"
     # )
     assert repr(dataset_default_graph.serialize(format="ttl")) == repr(
-        "@prefix ns2: <urn:> .\n\nns2:tarek ns2:likes ns2:pizza .\n\n"
+        "@prefix ns1: <urn:> .\n\nns1:tarek ns1:likes ns1:pizza .\n\n"
     )
 
     # logger.debug(
@@ -304,7 +300,7 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
         "        ]\n"
         "      }\n"
         "    ],\n"
-        '    "@id": "urn:x-rdflib:default"\n'
+        '    "@id": "urn:x-rdflib-default"\n'
         "  }\n"
         "]"
     )
@@ -314,7 +310,7 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
     #     f"\n\nTRIG serializes ns1 as <urn:x-rdflib:> and uses id for default graph\n{repr(ds.serialize(format='trig'))}"
     # )
     assert repr(ds.serialize(format="trig")) == repr(
-        "@prefix ns1: <urn:x-rdflib:> .\n@prefix ns2: <urn:> .\n\n{\n    ns2:tarek ns2:likes ns2:pizza .\n}\n\n"
+        "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
     )
 
 
@@ -359,7 +355,7 @@ def test_simple_dataset_default_graph_and_contexts_sparql_modelling(get_dataset)
 
     # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
     assert repr(ds.serialize(format="trig")) == repr(
-        "@prefix ns1: <urn:x-rdflib:> .\n@prefix ns2: <urn:> .\n\n{\n    ns2:tarek ns2:likes ns2:pizza .\n}\n\n"
+        "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
     )
 
 
@@ -433,17 +429,12 @@ def test_simple_dataset_contexts_sparql_modelling(get_dataset):
 
     # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
 
-    assert repr(ds.serialize(format="trig")) in [
-        repr(
-            "@prefix ns1: <urn:> .\n@prefix ns2: <urn:x-rdflib:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
-        ),
-        repr(
-            "@prefix ns1: <urn:x-rdflib:> .\n@prefix ns2: <urn:> .\n\n{\n    ns2:tarek ns2:likes ns2:pizza .\n}\n\n"
-        ),
-    ]
+    assert repr(ds.serialize(format="trig")) == repr(
+        "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
+    )
 
     ds.update(
-        "INSERT DATA { GRAPH <urn:x-rdflib:default> { <urn:tarek> <urn:likes> <urn:cheese> . } }"
+        "INSERT DATA { GRAPH <urn:x-rdflib-default> { <urn:tarek> <urn:likes> <urn:cheese> . } }"
     )
 
     r = ds.query("SELECT * WHERE { ?s <urn:likes> <urn:cheese> . }")

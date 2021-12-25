@@ -271,14 +271,24 @@ def test_issue_167_sparqlupdatestore_compatibility(get_dataset):
 
     from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
-    ds = Dataset()
-    for quad in list_of_nquads:
-        ds.add(quad)
-    quads = ds.quads((None, None, None, None))  # Fourth term is identifier
+    store = SPARQLUpdateStore(
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
+    )
 
-    store = SPARQLUpdateStore()
-    store.open("http://localhost:3030/db/update")
-    store.addN(quads)  # Expects four term to be graph
+    ds = Dataset(store=store)
+    # ds.parse(data=sportquadsnq, format="nquads")
+
+    ds.update("CLEAR ALL")
+
+    ds.addN(list_of_nquads)
+
+    # assert (
+    #     repr(list(ds.contexts()))
+    #     == "[<Graph identifier=http://example.org/graph/students (<class 'rdflib.graph.Graph'>)>, <Graph identifier=http://example.org/graph/practise (<class 'rdflib.graph.Graph'>)>, <Graph identifier=http://example.org/graph/sports (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
+    # )
+
+    assert len(list(ds.contexts())) == 4
 
     # Used to be the case but no longer - fixes
 
@@ -730,7 +740,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
         repr(list(ds.contexts()))
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
@@ -740,7 +750,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
     # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{repr(dataset_default_graph)}")
     assert (
         repr(dataset_default_graph)
-        == "<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>"
+        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
     )
 
     ds.update("INSERT DATA { <urn:tarek> <urn:hates> <urn:pizza> . }")
@@ -750,7 +760,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
         repr(list(ds.contexts()))
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # There is one triple in the context, so dataset length == 1
@@ -774,7 +784,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
         repr(list(ds.contexts()))
-        == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
+        == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
     # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
@@ -784,7 +794,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
     # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{repr(dataset_default_graph)}")
     assert (
         repr(dataset_default_graph)
-        == "<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>"
+        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
     )
 
     # INSERT into NAMED GRAPH
@@ -797,8 +807,8 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
 
     # Only the default graph exists and is yielded by ds.contexts()
     assert repr(list(ds.contexts())) in [
-        "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:context1 (<class 'rdflib.graph.Graph'>)>]",
-        "[<Graph identifier=urn:context1 (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]",
+        "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:context1 (<class 'rdflib.graph.Graph'>)>]",
+        "[<Graph identifier=urn:context1 (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]",
     ]
 
     # There is one triple in the context, so dataset length == 1
@@ -826,7 +836,7 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
 
     assert (
         repr(dataset_default_graph)
-        #        == "<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>"
+        #        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
     )
 
     cg.update("INSERT DATA { <urn:tarek> <urn:hates> <urn:pizza> . }")
@@ -897,26 +907,26 @@ def test_issue1396_store_query_and_update_methods_querygraph_parameter_does_not_
     `Dataset(store="MyCustomStore").update("INSERT DATA {}")` will call the
     underlying `MyCustomStore` with the parameter `queryGraph=BNode
     ("abcde")` with `BNode("abcde")` the dataset `identifier` instead of
-    `queryGraph=URI("urn:x-rdflib:default")` that identifies the default graph
+    `queryGraph=URI("urn:x-rdflib-default")` that identifies the default graph
     and is used by the basic triple insertion and deletion method.
 
     With this parameter the `Store` query evaluator will query the `_:abcde` graph
     even if the triples are by default added in the default graph identified by
-    `<urn:x-rdflib:default>`.
+    `<urn:x-rdflib-default>`.
 
     3. With `update` and `Dataset`.
 
     Similarly to the `query` method the `queryGraph` parameter is set to the
-    Dataset `identifier` and not `URI("urn:x-rdflib:default")` so the update is
+    Dataset `identifier` and not `URI("urn:x-rdflib-default")` so the update is
     evaluated against the `_:abcde` graph even if triples are by default added to
-    the default graph(`<urn:x-rdflib:default>`) by the `add` method.
+    the default graph(`<urn:x-rdflib-default>`) by the `add` method.
 
     """
     ds = get_dataset
     # logger.debug(f"DS contexts {list(ds.contexts())}")
     # logger.debug(f"DS default context {ds.default_context.identifier}")
-    # DS contexts [<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
-    # DS default context urn:x-rdflib:default
+    # DS contexts [<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]
+    # DS default context urn:x-rdflib-default
 
     ds.update("INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .}")
     # logger.debug(f"DS contexts {list(ds.contexts())}")
@@ -931,21 +941,21 @@ def test_issue1396_store_query_and_update_methods_querygraph_parameter_does_not_
     -------------------------------- live log setup --------------------------------
     DEBUG    rdflib:test_dataset_graph_ops.py:113 Using store <rdflib.plugins.stores.memory.Memory object at 0x7fa0407bf640>
     -------------------------------- live log call ---------------------------------
-    DEBUG    rdflib:test_dataset_graph_ops.py:440 DS contexts [<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
-    DEBUG    rdflib:test_dataset_graph_ops.py:441 DS default context urn:x-rdflib:default
+    DEBUG    rdflib:test_dataset_graph_ops.py:440 DS contexts [<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]
+    DEBUG    rdflib:test_dataset_graph_ops.py:441 DS default context urn:x-rdflib-default
     DEBUG    rdflib.graph:graph.py:1370 store has update True and use_store_provided True
-    DEBUG    rdflib.graph:graph.py:1376 Graph: update:: store.update INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .} initNs 27 initBindings {} queryGraph urn:x-rdflib:default kwargs {}
-    DEBUG    rdflib:memory.py:559 Memory: update:: update INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .} initNs 27 initBindings {} queryGraph urn:x-rdflib:default kwargs {}
+    DEBUG    rdflib.graph:graph.py:1376 Graph: update:: store.update INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .} initNs 27 initBindings {} queryGraph urn:x-rdflib-default kwargs {}
+    DEBUG    rdflib:memory.py:559 Memory: update:: update INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .} initNs 27 initBindings {} queryGraph urn:x-rdflib-default kwargs {}
     DEBUG    rdflib.graph:graph.py:1387 However, NotImplementedError so passing the buck
-    DEBUG    rdflib.graph:graph.py:1393 Graph: update:: processor.graph.identifier urn:x-rdflib:default
+    DEBUG    rdflib.graph:graph.py:1393 Graph: update:: processor.graph.identifier urn:x-rdflib-default
     DEBUG    rdflib.graph:graph.py:1397 Graph: update:: processor.update <rdflib.plugins.sparql.processor.SPARQLUpdateProcessor object at 0x7fa0407b8df0> INSERT DATA {<urn:tarek> <urn:likes> <urn:pizza> .} initBindings {} initNs 27 kwargs {}
-    DEBUG    rdflib:test_dataset_graph_ops.py:444 DS contexts [<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]
-    DEBUG    rdflib:test_dataset_graph_ops.py:445 DS default context urn:x-rdflib:default
+    DEBUG    rdflib:test_dataset_graph_ops.py:444 DS contexts [<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]
+    DEBUG    rdflib:test_dataset_graph_ops.py:445 DS default context urn:x-rdflib-default
     DEBUG    rdflib.graph:graph.py:1325 store has query True and use_store_provided True
-    DEBUG    rdflib.graph:graph.py:1330 Graph: query:: store.query SELECT * {?s ?p ?o .} initNs 27 initBindings {} queryGraph urn:x-rdflib:default kwargs {}
-    DEBUG    rdflib:memory.py:553 Memory: query:: update SELECT * {?s ?p ?o .} initNs 27 initBindings {} queryGraph urn:x-rdflib:default kwargs {}
+    DEBUG    rdflib.graph:graph.py:1330 Graph: query:: store.query SELECT * {?s ?p ?o .} initNs 27 initBindings {} queryGraph urn:x-rdflib-default kwargs {}
+    DEBUG    rdflib:memory.py:553 Memory: query:: update SELECT * {?s ?p ?o .} initNs 27 initBindings {} queryGraph urn:x-rdflib-default kwargs {}
     DEBUG    rdflib.graph:graph.py:1341 However, NotImplementedError so passing the buck
-    DEBUG    rdflib.graph:graph.py:1349 Graph: query:: processor.graph.identifier urn:x-rdflib:default
+    DEBUG    rdflib.graph:graph.py:1349 Graph: query:: processor.graph.identifier urn:x-rdflib-default
     DEBUG    rdflib.graph:graph.py:1353 Graph: query:: processor.query <rdflib.plugins.sparql.processor.SPARQLProcessor object at 0x7fa040599940> SELECT * {?s ?p ?o .} initBindings {} initNs 27 kwargs {}
     PASSED                                                                   [ 66%]
     """
@@ -1059,3 +1069,94 @@ def test_issue1188_with_conjunctivegraph_and_graph(get_conjunctivegraph):
 
     g1 += g2  # now g1 contains everything
     assert len(g1) == 3
+
+
+# @pytest.mark.skip
+def test_issue_371_validation_of_quads_at_graph_addn_doesnt_work_as_expected_sparqlstore():
+
+    # STATUS: FIXED no longer an issue
+
+    from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+
+    store = SPARQLUpdateStore(
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
+    )
+
+    store.addN(list_of_nquads)
+
+    triples = store.triples(
+        (None, None, None), context=URIRef("http://example.org/graph/students")
+    )
+
+    ntriples = [triple for triple in triples]
+
+    assert len(ntriples) == 4
+
+    tquad = (
+        (
+            URIRef("http://example.com/resource/student_10"),
+            URIRef("http://xmlns.com/foaf/0.1/name"),
+            Literal("Venus Williams"),
+        ),
+        None,
+    )
+
+    assert tquad in ntriples
+
+    store.update("CLEAR ALL")
+
+
+# @pytest.mark.skip
+def test_issue_371_validation_of_quads_at_graph_addn_doesnt_work_as_expected_ds():
+
+    # STATUS: FIXED no longer an issue
+
+    ds = Dataset()
+    ds.addN(list_of_nquads)
+
+    quads = list(
+        ds.quads((None, None, None, URIRef("http://example.org/graph/students")))
+    )
+
+    assert len(quads) == 4
+
+    tquad = (
+        URIRef("http://example.com/resource/student_10"),
+        URIRef("http://xmlns.com/foaf/0.1/name"),
+        Literal("Venus Williams"),
+        URIRef("http://example.org/graph/students"),
+    )
+
+    assert tquad in quads
+
+
+@pytest.mark.skip
+def test_issue167_clarify_context_element_needs_final_clarification_repo():
+
+    # Works as expected these days
+
+    g1 = ConjunctiveGraph()
+    g2 = ConjunctiveGraph()
+
+    g1.get_context("urn:a").add((tarek, likes, cheese))
+    g2.addN([(michel, likes, pizza, g1.get_context("urn:a"))])
+
+    assert g2.store == g2.get_context("urn:a").store
+
+    assert (
+        repr(list(g1.contexts())[0])
+        == "<Graph identifier=urn:a (<class 'rdflib.graph.Graph'>)>"
+    )
+
+    assert list(list(g1.contexts())[0]) == [
+        (URIRef("urn:tarek"), URIRef("urn:likes"), URIRef("urn:cheese"))
+    ]
+
+    assert list(g1.get_context("urn:a")) == [
+        (
+            URIRef("urn:tarek"),
+            URIRef("urn:likes"),
+            URIRef("urn:cheese"),
+        )
+    ]

@@ -324,6 +324,28 @@ class Graph(Node):
     identifier.
 
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
+
+    Wherein a Named Graph is described as:
+
+    “a set of triples named by an URI. This URI can then be used outside
+    or within the graph to refer to it.”
+
+    Assigning a BNode as identifier is thus a questionable choice, especially
+    when inherited by ConjunctiveGraph and nonsensical as a default for
+    SPARQL-backed Stores.
+
+    Chris Bizer chose a BNode-exclusive approach in NG4J:
+
+    public interface NamedGraph extends Graph {
+
+        /**
+         * Returns the URI of the named graph. The returned Node
+         * instance is always an URI and cannot be a blank node
+         * or literal.
+         */
+        public Node getGraphName();
+    }
+
     """
 
     def __init__(
@@ -349,6 +371,8 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
+        if "SPARQL" in repr(self.__store) and isinstance(self.__identifier, BNode):
+            self.__identifier = DATASET_DEFAULT_GRAPH_ID
 
     def __get_store(self):
         return self.__store
@@ -442,12 +466,6 @@ class Graph(Node):
             # See https://github.com/RDFLib/rdflib/issues/371
             or isinstance(c, URIRef) and _assertnode(s, p, o)
         )
-
-        # self.__store.addN(
-        #     (s, p, o, c)
-        #     for s, p, o, c in quads
-        #     if isinstance(c, URIRef) and _assertnode(s, p, o)
-        # )
 
         return self
 
@@ -619,6 +637,7 @@ class Graph(Node):
     def __add__(self, other):
         """Set-theoretic union
         BNode IDs are not changed."""
+        warn(f"Graph.__add__ other {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -634,6 +653,7 @@ class Graph(Node):
     def __mul__(self, other):
         """Set-theoretic intersection.
         BNode IDs are not changed."""
+        warn(f"Graph.__mul__ other: {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -646,6 +666,7 @@ class Graph(Node):
     def __sub__(self, other):
         """Set-theoretic difference.
         BNode IDs are not changed."""
+        warn(f"Graph.__sub__ other {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -1026,7 +1047,7 @@ class Graph(Node):
     def compute_qname_strict(self, uri, generate=True):
         return self.namespace_manager.compute_qname_strict(uri, generate)
 
-    def bind(self, prefix, namespace, override=True, replace=False):
+    def bind(self, prefix, namespace, override=True, replace=False) -> None:
         """Bind prefix to namespace
 
         If override is True will bind namespace to given prefix even
@@ -1721,12 +1742,39 @@ class ConjunctiveGraph(Graph):
 
     # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
 
+    # def __add__(self, other):
+    #     """
+    #     Set-theoretic union BNode IDs are not changed.
+    #     """
+    #     warn(f"ConjunctiveGraph.__add__ other={type(other)}")
+    #     try:
+    #         retval = type(self)()
+    #     except:
+    #         retval = ConjunctiveGraph()
+    #     for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+    #         retval.bind(prefix, uri)
+    #     for x in self:
+    #         retval.add(x)
+    #     for y in other:
+    #         retval.add(y)
+    #     return retval
+
+    # # Gromgull original, fails
+    # def __add__(self, other):
+    #     """Set-theoretic union
+    #     BNode IDs are not changed."""
+    #     retval = ConjunctiveGraph()
+    #     for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+    #         retval.bind(prefix, uri)
+    #     retval += self
+    #     retval += other
+
+    #     return retval
+
     # def __sub__(self, other):
     #     """Set-theoretic difference.
     #     BNode IDs are not changed."""
-    #     # logger.debug(
-    #     #     f"CONJUNCTIVEGRAPH__SUB__ self {self.identifier} {type(self)} other {other.identifier if isinstance(other, Graph) else other} {type(other)}"
-    #     # )
+    #     warn(f"ConjunctiveGraph.__sub__ other={type(other)}")
     #     try:
     #         retval = type(self)()
     #     except TypeError:
@@ -1736,18 +1784,50 @@ class ConjunctiveGraph(Graph):
     #             retval.add(x)
     #     return retval
 
+    # def __mul__(self, other):
+    #     """Set-theoretic intersection.
+    #     BNode IDs are not changed."""
+    #     warn(f"ConjunctiveGraph.__mul__ other={type(other)}")
+    #     try:
+    #         retval = type(self)()
+    #     except:
+    #         retval = Graph()
+    #     for x in other:
+    #         if x in self:
+    #             retval.add(x)
+    #     return retval
+
+    # def __xor__(self, other):
+    #     """Set-theoretic XOR.
+    #     BNode IDs are not changed."""
+    #     return (self - other) + (other - self)
+
+    # __or__ = __add__
+    # __and__ = __mul__
+
+    # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
+
+    # def __iadd__(self, other):
+    #     """Add all triples in ConjunctiveGraph other to this Graph.
+    #     BNode IDs are not changed."""
+    #     if isinstance(other, (ConjunctiveGraph, list)):
+    #         self.addN(other.quads((None, None, None)))
+    #     else:
+    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
+    #     return self
+
     # def __iadd__(self, other):
     #     """Add all triples in ConjunctiveGraph other to this Graph.
     #     BNode IDs are not changed."""
     #     if isinstance(other, ConjunctiveGraph):
-    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 0  {type(other)}")
+    #         # warn(f"CONJUNCTIVEGRAPH__IADD__ADDN 0  {type(other)}")
     #         self.addN(other.quads((None, None, None)))
     #     # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
     #     elif isinstance(other, list):
-    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 1  {type(other)}")
+    #         # warn(f"CONJUNCTIVEGRAPH__IADD__ADDN 1  {type(other)}")
     #         self.addN((s, p, o, self.identifier) for s, p, o in other)
     #     else:
-    #         # logger.debug(f"CONJUNCTIVEGRAPH__IADD__ADDN 2  {type(other)}")
+    #         # warn(f"CONJUNCTIVEGRAPH__IADD__ADDN 2  {type(other)}")
     #         self.addN((s, p, o, other.identifier) for s, p, o in other)
     #     return self
 
@@ -1755,7 +1835,7 @@ class ConjunctiveGraph(Graph):
     #     """Subtract all triples in Graph other from Graph.
     #     BNode IDs are not changed."""
     #     if isinstance(other, ConjunctiveGraph):
-    #         # logger.debug(
+    #         # warn(
     #         #     f"CONJUNCTIVEGRAPH__ISUB__ quads {type(other)} {list(other.quads((None, None, None)))}"
     #         # )
     #         for s, p, o, c in other.quads((None, None, None)):
@@ -2019,7 +2099,7 @@ class ConjunctiveGraph(Graph):
         return ConjunctiveGraph, (self.store, self.identifier)
 
 
-DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib:default")
+DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib-default")
 
 
 class Dataset(ConjunctiveGraph):
@@ -2173,6 +2253,23 @@ class Dataset(ConjunctiveGraph):
 
     # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
 
+    # def __add__(self, other):
+    #     """
+    #     Set-theoretic union BNode IDs are not changed.
+    #     """
+    #     warn(f"Dataset.__add__ other={type(other)}")
+    #     try:
+    #         retval = type(self)()
+    #     except:
+    #         retval = Dataset()
+    #     for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+    #         retval.bind(prefix, uri)
+    #     for x in self:
+    #         retval.add(x)
+    #     for y in other:
+    #         retval.add(y)
+    #     return retval
+
     def __iadd__(self, other):
         """Add all triples in ConjunctiveGraph other to this Graph.
         BNode IDs are not changed."""
@@ -2193,6 +2290,62 @@ class Dataset(ConjunctiveGraph):
             logger.debug(f"DATASET__IADD__ADDN 3  {type(other)}")
             self.addN((s, p, o, other.identifier) for s, p, o in other)
         return self
+
+    # def __isub__(self, other):
+    #     """Subtract all triples in Graph other from Graph.
+    #     BNode IDs are not changed."""
+    #     if isinstance(other, ConjunctiveGraph):
+    #         for s, p, o, c in other.quads((None, None, None)):
+    #             self.store.remove((s, p, o), c)
+    #     else:
+    #         for triple in other:
+    #             self.remove(triple)
+    #     return self
+
+    # def __iadd__(self, other):
+    #     """Add all triples in ConjunctiveGraph other to this Graph. BNode IDs are not changed."""
+    #     if isinstance(other, ConjunctiveGraph):
+    #         self.addN(other.quads((None, None, None)))
+    #     elif isinstance(other, list) and other != []:
+    #         import inspect
+
+    #         warn(
+    #             f"Got a list if {len(other)} statements: {other} passed by {inspect.stack()[1].function} in {inspect.stack()[2].function} in {inspect.stack()[3].function} in {inspect.stack()[4].function}  in {inspect.stack()[5].function}"
+    #         )
+
+    #         if len(other[0]) == 4:
+    #             self.addN((s, p, o, c) for s, p, o, c in other)
+    #         else:
+    #             self.addN((s, p, o, self.identifier) for s, p, o in other)
+    #     else:
+    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
+    #     return self
+
+    # def __iadd__(self, other):
+    #     """Add all triples in ConjunctiveGraph other to this Graph.
+    #     BNode IDs are not changed."""
+    #     # warn(f"Dataset.__iadd__ other = {type(other)}")
+
+    #     if isinstance(other, Dataset):
+    #         warn(f"Dataset.__iadd__ADDN 0 (Dataset)")
+    #         self.addN(other.quads((None, None, None)))
+    #     elif isinstance(other, ConjunctiveGraph):
+    #         warn(f"DATASET__IADD__ADDN 1 (ConjunctiveGraph)")
+    #         self.addN(other.quads((None, None, None)))
+    #     # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+    #     elif isinstance(other, list):
+    #         import inspect
+
+    #         warn(
+    #             f"Got a list {other} passed by {inspect.stack()[1].function} in {inspect.stack()[2].function} in {inspect.stack()[3].function} in {inspect.stack()[4].function}  in {inspect.stack()[5].function}"
+    #         )
+
+    #         warn(f"DATASET__IADD__ADDN 2 (list) “{list}”")
+    #         self.addN((s, p, o, self.identifier) for s, p, o in other)
+    #     else:
+    #         warn(f"DATASET__IADD__ADDN 3 (else)")
+    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
+    #     return self
 
     def graph(self, identifier=None, base=None):
         graph = None

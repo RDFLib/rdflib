@@ -13,7 +13,7 @@ from .sparqlconnector import SPARQLConnector
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
-from rdflib import Variable, BNode
+from rdflib import logger, Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 from typing import Any, Callable, Dict, Optional, Union, Tuple
@@ -46,7 +46,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
     For ConjunctiveGraphs, reading is done from the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
     simple way to query the union of all graphs as it would be expected for a
-    ConjuntiveGraph. This is why we recommend using Dataset instead, which is
+    ConjunctiveGraph. This is why we recommend using Dataset instead, which is
     motivated by the SPARQL 1.1.
 
     Fuseki/TDB has a flag for specifying that the default graph
