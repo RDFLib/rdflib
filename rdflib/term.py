@@ -125,7 +125,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __new__(cls, value):
+    def __new__(cls, value: str) -> "Identifier":
         return str.__new__(cls, value)
 
     def eq(self, other):
@@ -250,7 +250,7 @@ class URIRef(Identifier):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
-    def toPython(self):
+    def toPython(self) -> str:
         return str(self)
 
     def n3(self, namespace_manager=None) -> str:
@@ -395,8 +395,11 @@ class BNode(Identifier):
     __slots__ = ()
 
     def __new__(
-        cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
-    ):
+        cls,
+        value: Optional[str] = None,
+        _sn_gen: Callable[[], str] = _serial_number_generator(),
+        _prefix: str = _unique_id(),
+    ) -> "BNode":
         """
         # only store implementations should pass in a value
         """
@@ -413,9 +416,9 @@ class BNode(Identifier):
             pass  # assert is_ncname(str(value)), "BNode identifiers
             # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
             # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
-        return Identifier.__new__(cls, value)
+        return Identifier.__new__(cls, value)  # type: ignore[return-value]
 
-    def toPython(self):
+    def toPython(self) -> str:
         return str(self)
 
     def n3(self, namespace_manager=None):
@@ -1227,7 +1230,7 @@ class Literal(Identifier):
         else:
             return self._literal_n3()
 
-    def _literal_n3(self, use_plain=False, qname_callback=None):
+    def _literal_n3(self, use_plain=False, qname_callback=None) -> str:
         """
         Using plain literal (shorthand) output::
             >>> from rdflib.namespace import XSD
@@ -1369,7 +1372,7 @@ class Literal(Identifier):
             clsName = self.__class__.__name__
         return """%s(%s)""" % (clsName, ", ".join(args))
 
-    def toPython(self):
+    def toPython(self) -> Any:
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
@@ -1683,7 +1686,7 @@ def _strip_and_collapse_whitespace(lexical_or_value):
 
 def bind(
     datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False
-):
+) -> None:
     """
     register a new datatype<->pythontype binding
 
@@ -1736,7 +1739,7 @@ class Variable(Identifier):
 
         return """%s(%s)""" % (clsName, super(Variable, self).__repr__())
 
-    def toPython(self):
+    def toPython(self) -> str:
         return "?%s" % self
 
     def n3(self, namespace_manager=None):
