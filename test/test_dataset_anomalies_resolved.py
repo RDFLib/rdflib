@@ -1071,7 +1071,7 @@ def test_issue1188_with_conjunctivegraph_and_graph(get_conjunctivegraph):
     assert len(g1) == 3
 
 
-# @pytest.mark.skip
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_issue_371_validation_of_quads_at_graph_addn_doesnt_work_as_expected_sparqlstore():
 
     # STATUS: FIXED no longer an issue
