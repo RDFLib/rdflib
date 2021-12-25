@@ -26,6 +26,15 @@ def prepareQuery(queryString, initNs={}, base=None):
     return ret
 
 
+def prepareUpdate(updateString, initNs={}, base=None):
+    """
+    Parse and translate a SPARQL Update
+    """
+    ret = translateUpdate(parseUpdate(updateString), base, initNs)
+    ret._original_args = (updateString, initNs, base)
+    return ret
+
+
 def processUpdate(graph, updateString, initBindings={}, initNs={}, base=None):
     """
     Process a SPARQL Update Request
