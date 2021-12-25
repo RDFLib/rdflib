@@ -39,26 +39,26 @@ We can then access the rdfs:subClassOf relationships
 
 This can also be used against already populated graphs:
 
->>> owlGraph = Graph().parse(str(OWL)) #doctest: +SKIP
->>> namespace_manager.bind('owl', OWL, override=False) #doctest: +SKIP
->>> owlGraph.namespace_manager = namespace_manager #doctest: +SKIP
->>> list(Class(OWL.Class, graph=owlGraph).subClassOf) #doctest: +SKIP
+>>> owlGraph = Graph().parse(str(OWL))
+>>> namespace_manager.bind('owl', OWL, override=False)
+>>> owlGraph.namespace_manager = namespace_manager
+>>> list(Class(OWL.Class, graph=owlGraph).subClassOf)
 [Class: rdfs:Class ]
 
 Operators are also available. For instance we can add ex:Opera to the extension
 of the ex:CreativeWork class via the '+=' operator
 
->>> a #doctest: +SKIP
+>>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
 >>> b = Class(exNs.CreativeWork, graph=g)
 >>> b += a
->>> print(sorted(a.subClassOf, key=lambda c:c.identifier)) #doctest: +SKIP
+>>> print(sorted(a.subClassOf, key=lambda c:c.identifier))
 [Class: ex:CreativeWork , Class: ex:MusicalWork ]
 
 And we can then remove it from the extension as well
 
 >>> b -= a
->>> a #doctest: +SKIP
+>>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
 
 Boolean class constructions can also  be created with Python operators.
@@ -66,21 +66,21 @@ For example, The | operator can be used to construct a class consisting of a
 owl:unionOf the operands:
 
 >>> c =  a | b | Class(exNs.Work, graph=g)
->>> c #doctest: +SKIP
+>>> c
 ( ex:Opera OR ex:CreativeWork OR ex:Work )
 
 Boolean class expressions can also be operated as lists (using python list
 operators)
 
 >>> del c[c.index(Class(exNs.Work, graph=g))]
->>> c #doctest: +SKIP
+>>> c
 ( ex:Opera OR ex:CreativeWork )
 
 The '&' operator can be used to construct class intersection:
 
 >>> woman = Class(exNs.Female, graph=g) & Class(exNs.Human, graph=g)
 >>> woman.identifier = exNs.Woman
->>> woman #doctest: +SKIP
+>>> woman
 ( ex:Female AND ex:Human )
 >>> len(woman)
 2
@@ -88,20 +88,20 @@ The '&' operator can be used to construct class intersection:
 Enumerated classes can also be manipulated
 
 >>> contList = [Class(exNs.Africa, graph=g), Class(exNs.NorthAmerica, graph=g)]
->>> EnumeratedClass(members=contList, graph=g) #doctest: +SKIP
+>>> EnumeratedClass(members=contList, graph=g)
 { ex:Africa ex:NorthAmerica }
 
 owl:Restrictions can also be instantiated:
 
->>> Restriction(exNs.hasParent, graph=g, allValuesFrom=exNs.Human) #doctest: +SKIP
+>>> Restriction(exNs.hasParent, graph=g, allValuesFrom=exNs.Human)
 ( ex:hasParent ONLY ex:Human )
 
 Restrictions can also be created using Manchester OWL syntax in 'colloquial'
 Python
->>> exNs.hasParent | some | Class(exNs.Physician, graph=g) #doctest: +SKIP
+>>> exNs.hasParent << some >> Class(exNs.Physician, graph=g)
 ( ex:hasParent SOME ex:Physician )
 
->>> Property(exNs.hasParent,graph=g) | max | Literal(1) #doctest: +SKIP
+>>> Property(exNs.hasParent,graph=g) << max >> Literal(1)
 ( ex:hasParent MAX 1 )
 
 >>> print(g.serialize(format='pretty-xml')) #doctest: +SKIP
@@ -161,6 +161,7 @@ __all__ = [
     "generateQName",
     "GetIdentifiedClasses",
     "Individual",
+    "Infix",
     "MalformedClass",
     "manchesterSyntax",
     "Ontology",
@@ -422,7 +423,7 @@ class Individual(object):
         """
         >>> g = Graph()
         >>> b=Individual(OWL.Restriction,g)
-        >>> b.type = RDF.Resource
+        >>> b.type = RDFS.Resource
         >>> len(list(b.type))
         1
         >>> del b.type
@@ -773,32 +774,32 @@ def DeepClassClear(classToPrune):
     >>> classD = Class(EX.D)
     >>> classE = Class(EX.E)
     >>> classF = Class(EX.F)
-    >>> anonClass = EX.someProp | some | classD #doctest: +SKIP
-    >>> classF += anonClass #doctest: +SKIP
-    >>> list(anonClass.subClassOf) #doctest: +SKIP
+    >>> anonClass = EX.someProp << some >> classD
+    >>> classF += anonClass
+    >>> list(anonClass.subClassOf)
     [Class: ex:F ]
-    >>> classA = classE | classF | anonClass #doctest: +SKIP
-    >>> classB += classA #doctest: +SKIP
-    >>> classA.equivalentClass = [Class()] #doctest: +SKIP
-    >>> classB.subClassOf = [EX.someProp | some | classC] #doctest: +SKIP
-    >>> classA #doctest: +SKIP
+    >>> classA = classE | classF | anonClass
+    >>> classB += classA
+    >>> classA.equivalentClass = [Class()]
+    >>> classB.subClassOf = [EX.someProp << some >> classC]
+    >>> classA
     ( ex:E OR ex:F OR ( ex:someProp SOME ex:D ) )
-    >>> DeepClassClear(classA) #doctest: +SKIP
-    >>> classA #doctest: +SKIP
+    >>> DeepClassClear(classA)
+    >>> classA
     (  )
-    >>> list(anonClass.subClassOf) #doctest: +SKIP
+    >>> list(anonClass.subClassOf)
     []
-    >>> classB #doctest: +SKIP
+    >>> classB
     Class: ex:B SubClassOf: ( ex:someProp SOME ex:C )
 
-    >>> otherClass = classD | anonClass #doctest: +SKIP
-    >>> otherClass #doctest: +SKIP
+    >>> otherClass = classD | anonClass
+    >>> otherClass
     ( ex:D OR ( ex:someProp SOME ex:D ) )
-    >>> DeepClassClear(otherClass) #doctest: +SKIP
-    >>> otherClass #doctest: +SKIP
+    >>> DeepClassClear(otherClass)
+    >>> otherClass
     (  )
-    >>> otherClass.delete() #doctest: +SKIP
-    >>> list(g.triples((otherClass.identifier, None, None))) #doctest: +SKIP
+    >>> otherClass.delete()
+    >>> list(g.triples((otherClass.identifier, None, None)))
     []
     """
 
@@ -1157,15 +1158,15 @@ class Class(AnnotatableTerms):
         >>> sister = Class(exNs.Sister)
         >>> sibling = brother | sister
         >>> sibling.identifier = exNs.Sibling
-        >>> sibling #doctest: +SKIP
+        >>> sibling
         ( ex:Brother OR ex:Sister )
-        >>> first(brother.parents) #doctest: +SKIP
+        >>> first(brother.parents)
         Class: ex:Sibling EquivalentTo: ( ex:Brother OR ex:Sister )
         >>> parent = Class(exNs.Parent)
         >>> male = Class(exNs.Male)
         >>> father = parent & male
         >>> father.identifier = exNs.Father
-        >>> list(father.parents) #doctest: +SKIP
+        >>> list(father.parents)
         [Class: ex:Parent , Class: ex:Male ]
 
         """
@@ -1393,8 +1394,8 @@ class EnumeratedClass(OWLRDFListProxy, Class):
     { ex:chime ex:uche ex:ejike }
     >>> col = Collection(g, first(
     ...    g.objects(predicate=OWL.oneOf, subject=ogbujiBros.identifier)))
-    >>> [g.qname(item) for item in col]
-    [u'ex:chime', u'ex:uche', u'ex:ejike']
+    >>> sorted([g.qname(item) for item in col])
+    ['ex:chime', 'ex:ejike', 'ex:uche']
     >>> print(g.serialize(format='n3')) #doctest: +SKIP
     @prefix ex: <http://example.com/> .
     @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -1649,7 +1650,7 @@ class Restriction(Class):
             (maxCardinality, OWL.maxCardinality),
             (minCardinality, OWL.minCardinality),
         ]
-        validRestrProps = [(i, oTerm) for (i, oTerm) in restrTypes if i]
+        validRestrProps = [(i, oTerm) for (i, oTerm) in restrTypes if i is not None]
         assert len(validRestrProps)
         restrictionRange, restrictionType = validRestrProps.pop()
         self.restrictionType = restrictionType
@@ -1681,7 +1682,7 @@ class Restriction(Class):
         >>> prop = Property(EX.someProp, baseType=OWL.DatatypeProperty)
         >>> restr1 = (Property(
         ...    EX.someProp,
-        ...    baseType=OWL.DatatypeProperty)) | some | (Class(EX.Foo))
+        ...    baseType=OWL.DatatypeProperty)) << some >> (Class(EX.Foo))
         >>> restr1 #doctest: +SKIP
         ( ex:someProp SOME ex:Foo )
         >>> restr1.serialize(g2)
@@ -2087,7 +2088,7 @@ class Property(AnnotatableTerms):
         )
         rt = "\n".join([expr for expr in rt if expr])
         rt += "\n)"
-        return str(rt).encode("utf-8")
+        return rt
 
     def _get_subPropertyOf(self):
         for anc in self.graph.objects(
