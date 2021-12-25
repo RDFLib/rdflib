@@ -1,3 +1,12 @@
+# NOTE: The config below enables strict mode for mypy.
+# mypy: no_ignore_errors
+# mypy: warn_unused_configs, disallow_any_generics
+# mypy: disallow_subclassing_any, disallow_untyped_calls
+# mypy: disallow_untyped_defs, disallow_incomplete_defs
+# mypy: check_untyped_defs, disallow_untyped_decorators
+# mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
+# mypy: warn_return_any, no_implicit_reexport, strict_equality
+
 import rdflib
 from rdflib.plugins.parsers.notation3 import BadSyntax
 
@@ -18,7 +27,7 @@ from rdflib.plugins.parsers.notation3 import BadSyntax
 """
 
 
-def test_ns_localname_roundtrip():
+def test_ns_localname_roundtrip() -> None:
 
     XNS = rdflib.Namespace("http://example.net/fs")
 
