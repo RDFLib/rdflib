@@ -176,20 +176,14 @@ class RDFXMLHandler(handler.ContentHandler):
             if parent and parent.base:
                 base = urljoin(parent.base, base)
             else:
-                # systemId = self.locator.getPublicId() or self.locator.getSystemId()
-                systemId = self.locator.getPublicId()
-                if not isinstance(systemId, str):
-                    systemId = self.locator.getSystemId()
+                systemId = self.locator.getPublicId() or self.locator.getSystemId()
                 if systemId:
                     base = urljoin(systemId, base)
         else:
             if parent:
                 base = parent.base
             if base is None:
-                # systemId = self.locator.getPublicId() or self.locator.getSystemId()
-                systemId = self.locator.getPublicId()
-                if not isinstance(systemId, str):
-                    systemId = self.locator.getSystemId()
+                systemId = self.locator.getPublicId() or self.locator.getSystemId()
                 if systemId:
                     base, frag = urldefrag(systemId)
         current.base = base
@@ -369,20 +363,6 @@ class RDFXMLHandler(handler.ContentHandler):
         # at at top-level
 
         if self.parent.object and self.current != self.stack[2]:
-
-            # XML element parsing with no namespace can lead to exceptions
-            # https://github.com/RDFLib/rdflib/issues/748
-
-            # parsing elements with no namespace leads to a malformed Exception:
-            # TypeError: sequence item 0: expected str instance, NoneType found exception.
-
-            # That's because the end element handler doesn't handle the
-            # (None, element_name) tuple that is passed in in that case. You can't
-            # just use ''.join() there, you need to handle the namespace correctly:
-
-            ns, name = name
-            if ns is not None:
-                name = "{}:{}".format(ns, name)
 
             self.error(
                 "Repeat node-elements inside property elements: %s" % "".join(name)
