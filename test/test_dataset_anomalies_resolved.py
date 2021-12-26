@@ -665,64 +665,6 @@ def test_issue_698_len_ds():
     # )
 
 
-# @pytest.mark.skip
-def test_empty_string_for_publicID_when_loading_an_rdfxml_file():
-    """Tests that we can pass in an empty string to publicID when
-    parsing from an RDF/XML file name. since '' is falsy, it could be
-    treated as None (e.g. if not publicID)."""
-    import tempfile
-
-    xml_sample = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns:cim="http://iec.ch/TC57/2013/CIM-schema-cim16#"
-         xmlns:cyme="http://www.cyme.com/CIM/1.0.2#"
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-    <cim:SwitchInfo rdf:ID="_AB16765A-B19E-4454-A58F-868D23C6CD26" />
-</rdf:RDF>"""
-
-    g = Graph()
-    with tempfile.TemporaryDirectory() as td:
-        sample_file = str(Path(td) / "sample.xml")
-        open(sample_file, "w").write(xml_sample)
-
-        g.parse(sample_file, publicID="")
-
-    subject, predicate, object = next(iter(g))
-
-    assert subject == URIRef("#_AB16765A-B19E-4454-A58F-868D23C6CD26")
-    assert predicate == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    assert object == URIRef("http://iec.ch/TC57/2013/CIM-schema-cim16#SwitchInfo")
-
-
-# @pytest.mark.skip
-def test_empty_string_for_publicID_when_loading_a_ttl_file():
-    """Tests that we can pass in an empty string to publicID when
-    parsing from a turtle file name. since '' is falsy, it could be
-    treated as None (e.g. if not publicID)."""
-    import tempfile
-
-    ttl_sample = """\
-    <#_AB16765A-B19E-4454-A58F-868D23C6CD26> a
-    <http://iec.ch/TC57/2013/CIM-schema-cim16#SwitchInfo> .
-    """
-
-    g = Graph()
-    with tempfile.TemporaryDirectory() as td:
-        sample_file = str(Path(td) / "sample.ttl")
-        open(sample_file, "w").write(ttl_sample)
-
-        g.parse(sample_file, publicID="")
-
-    subject, predicate, object = next(iter(g))
-    # logger.debug(
-    #     f"\n\tSubject:\t{subject};\n\tPredicate:\t{predicate};\n\tObject:\t\t{object};"
-    # )
-
-    # assert subject == URIRef("#_AB16765A-B19E-4454-A58F-868D23C6CD26")
-    assert predicate == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    assert object == URIRef("http://iec.ch/TC57/2013/CIM-schema-cim16#SwitchInfo")
-
-
 # # @pytest.mark.skip
 def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_support_conjunctivegraph_and_dataset_dataset(
     get_dataset,
