@@ -133,7 +133,7 @@ def join(here, there):
         return here + frag
 
     # join('mid:foo@example', '../foo') bzzt
-    if here[bcolonl + 1] != "/":
+    if here[bcolonl + 1 : bcolonl + 2] != "/":
         raise ValueError(
             "Base <%s> has no slash after "
             "colon - with relative '%s'." % (here, there)
