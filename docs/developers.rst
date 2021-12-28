@@ -44,16 +44,27 @@ Running tests
 
 To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ pip install -r requirements.txt -r requirements.dev.txt
    $ pytest
 
 Specific tests can be run by file name. For example:
 
-.. code-block:: bash
+.. code-block:: console
 
   $ pytest test/test_graph.py
+
+For more extensive tests, including tests for the `berkleydb
+<https://www.oracle.com/database/technologies/related/berkeleydb.html>`_
+backend, install the requirements from ``requirements.dev-extra.txt`` before
+executing the tests.
+
+.. code-block:: console
+
+   $ pip install -r requirements.txt -r requirements.dev.txt
+   $ pip install -r requirements.dev-extra.txt
+   $ pytest
 
 Writing tests
 ~~~~~~~~~~~~~
