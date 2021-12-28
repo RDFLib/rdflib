@@ -1,5 +1,6 @@
 import logging
 import warnings
+from collections import Iterable
 from typing import TYPE_CHECKING, List, Union
 from unicodedata import category
 
@@ -227,6 +228,10 @@ class DefinedNamespaceMeta(type):
             for c in cls.mro()
             if issubclass(c, DefinedNamespace)
         )
+
+    def __dir__(cls) -> Iterable[str]:
+        values = {cls[str(x)] for x in cls.__annotations__}
+        return values
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
