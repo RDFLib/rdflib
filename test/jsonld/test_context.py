@@ -3,6 +3,7 @@ JSON-LD Context Spec
 """
 
 from functools import wraps
+from typing import Any, Dict
 from rdflib.plugins.shared.jsonld.context import Context, Term
 from rdflib.plugins.shared.jsonld import context
 from rdflib.plugins.shared.jsonld import errors
@@ -129,7 +130,7 @@ def test_prefix_like_vocab():
 
 
 # Mock external sources loading
-SOURCES = {}
+SOURCES: Dict[str, Dict[str, Any]] = {}
 _source_to_json = context.source_to_json
 
 

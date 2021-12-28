@@ -9,7 +9,7 @@ from io import TextIOWrapper
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
-from test.manifest import UP, MF, RDFTest, read_manifest
+from test.manifest import UP, MF, RDFTest, ResultType, read_manifest
 import pytest
 
 from test.testutils import file_uri_to_path
@@ -23,11 +23,11 @@ from collections import Counter
 import datetime
 import isodate
 import typing
-from typing import Dict, Callable
+from typing import Dict, Callable, List, Optional, Tuple, cast
 
 
 from rdflib import Dataset, Graph, URIRef, BNode
-from rdflib.term import Node
+from rdflib.term import Identifier, Node
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -204,6 +204,10 @@ def update_test(t: RDFTest):
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = False
 
     uri, name, comment, data, graphdata, query, res, syntax = t
+    # These casts are here because the RDFTest type is not sufficently
+    # expressive to capture the two different flavors of tests.
+    res = cast(Optional[ResultType], res)
+    graphdata = cast(Optional[List[Tuple[Identifier, Identifier]]], graphdata)
 
     query_path: PurePath = file_uri_to_path(query)
 
@@ -226,7 +230,10 @@ def update_test(t: RDFTest):
                     pass  # negative syntax test
             return
 
-        resdata, resgraphdata = res
+        res = cast(ResultType, res)
+        resdata: Identifier
+        resgraphdata: List[Tuple[Identifier, Identifier]]
+        resdata, resgraphdata = res  # type: ignore[assignment]
 
         # read input graphs
         if data:
@@ -250,19 +257,21 @@ def update_test(t: RDFTest):
                 resg.load(x, publicID=URIRef(l), format=_fmt(x))
 
         eq(
-            set(x.identifier for x in g.contexts() if x != g.default_context),
-            set(x.identifier for x in resg.contexts() if x != resg.default_context),
+            set(ctx.identifier for ctx in g.contexts() if ctx != g.default_context),
+            set(
+                ctx.identifier for ctx in resg.contexts() if ctx != resg.default_context
+            ),
             "named graphs in datasets do not match",
         )
         assert isomorphic(
             g.default_context, resg.default_context
         ), "Default graphs are not isomorphic"
 
-        for x in g.contexts():
-            if x == g.default_context:
+        for ctx in g.contexts():
+            if ctx == g.default_context:
                 continue
-            assert isomorphic(x, resg.get_context(x.identifier)), (
-                "Graphs with ID %s are not isomorphic" % x.identifier
+            assert isomorphic(ctx, resg.get_context(ctx.identifier)), (
+                "Graphs with ID %s are not isomorphic" % ctx.identifier
             )
 
     except Exception as e:
@@ -336,6 +345,11 @@ def update_test(t: RDFTest):
 
 def query_test(t: RDFTest):
     uri, name, comment, data, graphdata, query, resfile, syntax = t
+
+    # These casts are here because the RDFTest type is not sufficently
+    # expressive to capture the two different flavors of tests.
+    graphdata = cast(Optional[List[Identifier]], graphdata)
+    resfile = cast(Optional[Identifier], resfile)
 
     # the query-eval tests refer to graphs to load by resolvable filenames
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = True
@@ -418,6 +432,7 @@ def query_test(t: RDFTest):
         if not DETAILEDASSERT:
             eq(res.type, res2.type, "Types do not match")
             if res.type == "SELECT":
+                assert res2.vars is not None
                 eq(set(res.vars), set(res2.vars), "Vars do not match")
                 comp = bindingsCompatible(set(res), set(res2))
                 assert comp, "Bindings do not match"
@@ -434,6 +449,7 @@ def query_test(t: RDFTest):
                 "Types do not match: %r != %r" % (res.type, res2.type),
             )
             if res.type == "SELECT":
+                assert res2.vars is not None
                 eq(
                     set(res.vars),
                     set(res2.vars),
@@ -441,7 +457,7 @@ def query_test(t: RDFTest):
                 )
                 assert bindingsCompatible(
                     set(res), set(res2)
-                ), "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s" % (
+                ), "Bindings do not match: \nexpected:\n%r\n!=\ngot:\n%r" % (
                     res.serialize(format="txt", namespace_manager=g.namespace_manager),
                     res2.serialize(format="txt", namespace_manager=g.namespace_manager),
                 )
