@@ -1,7 +1,6 @@
 import logging
 import warnings
-from collections import Iterable
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Union, Iterable
 from unicodedata import category
 
 from pathlib import Path
