@@ -1362,7 +1362,7 @@ class SinkParser:
                         if c not in escapeChars:
                             raise BadSyntax(
                                 self._thisDoc,
-                                self.line,
+                                self.lines,
                                 argstr,
                                 i,
                                 "illegal escape " + c,
@@ -1374,7 +1374,7 @@ class SinkParser:
                         ):
                             raise BadSyntax(
                                 self._thisDoc,
-                                self.line,
+                                self.lines,
                                 argstr,
                                 i,
                                 "illegal hex escape " + c,
@@ -1386,7 +1386,7 @@ class SinkParser:
 
             if lastslash:
                 raise BadSyntax(
-                    self._thisDoc, self.line, argstr, i, "qname cannot end with \\"
+                    self._thisDoc, self.lines, argstr, i, "qname cannot end with \\"
                 )
 
             if argstr[i - 1] == ".":
