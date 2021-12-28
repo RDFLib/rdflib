@@ -104,13 +104,13 @@ The following table lists the RDF formats you can serialize data to with rdflib,
 
    "Turtle",    "turtle, ttl or turtle2",     "turtle2 is just turtle with more spacing & linebreaks"
    "RDF/XML",   "xml or pretty-xml",     "Was the default format, rdflib < 6.0.0"
-   "JSON-LD",   "json-ld",     "There are further options for compact syntax and other JSON-LD variants"   
+   "JSON-LD",   "json-ld",     "There are further options for compact syntax and other JSON-LD variants"
    "N-Triples", "ntriples, nt or nt11",     "nt11 is exactly like nt, only utf8 encoded"
    "Notation-3","n3",     "N3 is a superset of Turtle that also caters for rules and a few other things"
-   
-    "Trig",     "trig",     "Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs"
-    "Trix",     "trix",     "RDF/XML-like format for RDF quads"
-"N-Quads",   "nquads",     "N-Triples-like format for RDF quads"
+
+   "Trig",     "trig",     "Turtle-like format for RDF triples + context (RDF quads) and thus multiple graphs"
+   "Trix",     "trix",     "RDF/XML-like format for RDF quads"
+   "N-Quads",   "nquads",     "N-Triples-like format for RDF quads"
 
 Working with multi-graphs
 -------------------------

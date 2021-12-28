@@ -74,6 +74,7 @@ The following namespaces are available by directly importing from rdflib:
 * XSD
 
 .. code-block:: pycon
+
     >>> from rdflib.namespace import RDFS
     >>> RDFS.seeAlso
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
