@@ -24,6 +24,7 @@ steps:
   - apt-get update && apt-get install -y openjdk-11-jdk-headless
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
+  - pip install --default-timeout 60 -r requirements.dev-extra.txt
   - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
   - python setup.py install
   - black --config black.toml --check ./rdflib || true
@@ -44,13 +45,12 @@ steps:
 - name: test
   image: python:3.8
   commands:
-  - apt-get update && apt-get install -y openjdk-11-jdk-headless
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
   - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - ./with-fuseki.sh pytest -ra
+  - pytest -ra
 
 ---
 kind: pipeline
@@ -64,13 +64,12 @@ steps:
 - name: test
   image: python:3.9
   commands:
-  - apt-get update && apt-get install -y openjdk-11-jdk-headless
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
   - black --config black.toml --check ./rdflib || true
   - flake8 --exit-zero rdflib
-  - ./with-fuseki.sh pytest -ra
+  - pytest -ra
 
 ---
 kind: pipeline
@@ -84,10 +83,9 @@ steps:
 - name: test
   image: python:3.10
   commands:
-  - apt-get update && apt-get install -y openjdk-11-jdk-headless
   - pip install --default-timeout 60 -r requirements.txt
   - pip install --default-timeout 60 -r requirements.dev.txt
   - python setup.py install
   - black --config black.toml --check ./rdflib | true
   - flake8 --exit-zero rdflib
-  - ./with-fuseki.sh pytest -ra
+  - pytest -ra
