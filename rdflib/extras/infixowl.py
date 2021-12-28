@@ -196,6 +196,12 @@ class Infix:
     def __rshift__(self, other):
         return self.function(other)
 
+    def __rmatmul__(self, other):
+        return Infix(lambda x, self=self, other=other: self.function(other, x))
+
+    def __matmul__(self, other):
+        return self.function(other)
+
     def __call__(self, value1, value2):
         return self.function(value1, value2)
 
