@@ -1,5 +1,6 @@
 from os import environ, chdir, getcwd, path as p
 import json
+from typing import Tuple
 
 import pytest
 import rdflib
@@ -8,7 +9,7 @@ from rdflib.term import URIRef
 from . import runner
 
 
-unsupported_tests = ("frame", "normalize")
+unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
     "error",
     "remote",
