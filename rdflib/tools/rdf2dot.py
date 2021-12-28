@@ -94,12 +94,10 @@ def rdf2dot(g, stream, opts={}):
         return nodes[x]
 
     def label(x, g):
-
         for labelProp in LABEL_PROPERTIES:
-            l = g.value(x, labelProp)
-            if l:
-                return l
-
+            l_ = g.value(x, labelProp)
+            if l_:
+                return l_
         try:
             return g.namespace_manager.compute_qname(x)[2]
         except:

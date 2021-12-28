@@ -27,13 +27,10 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
-
-# Python standard libraries
 import sys
 import os
 import re
 import codecs
-import warnings
 
 from decimal import Decimal
 
@@ -43,7 +40,6 @@ from rdflib.exceptions import ParserError
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
-from rdflib.compat import narrow_build
 
 __all__ = [
     "BadSyntax",
@@ -327,7 +323,7 @@ unicodeEscape8 = re.compile(r"\\U([0-9a-fA-F]{8})")
 
 N3CommentCharacter = "#"  # For unix script  # ! compatibility
 
-########################################## Parse string to sink
+# Parse string to sink
 #
 # Regular expressions:
 eol = re.compile(r"[ \t]*(#[^\n]*)?\r?\n")  # end  of line, poss. w/comment
@@ -604,10 +600,7 @@ class SinkParser:
                 self.BadSyntax(
                     argstr,
                     j,
-                    "With no base URI, cannot use "
-                    + "relative URI in @prefix <"
-                    + ns
-                    + ">",
+                    f"With no base URI, cannot use relative URI in @prefix <{ns}>",
                 )
             assert ":" in ns  # must be absolute
             self._bindings[t[0][0]] = ns
@@ -1906,8 +1899,7 @@ class TurtleParser(Parser):
 
         if encoding not in [None, "utf-8"]:
             raise ParserError(
-                ("N3/Turtle files are always utf-8 encoded, I was passed: %s")
-                % encoding
+                "N3/Turtle files are always utf-8 encoded, I was passed: %s" % encoding
             )
 
         sink = RDFSink(graph)
@@ -1961,10 +1953,6 @@ def _test():  # pragma: no cover
     doctest.testmod()
 
 
-# if __name__ == '__main__':
-#    _test()
-
-
 def main():  # pragma: no cover
     g = ConjunctiveGraph()
 
@@ -1988,5 +1976,3 @@ def main():  # pragma: no cover
 
 if __name__ == "__main__":
     main()
-
-# ends

@@ -18,20 +18,30 @@ from posixpath import normpath
 from urllib.parse import urljoin, urlsplit, urlunsplit
 from rdflib.parser import create_input_source, BytesIOWrapper, PythonInputSource
 
-from io import TextIOWrapper
+from rdflib.parser import create_input_source, PythonInputSource, StringInputSource
+
+from io import TextIOBase, TextIOWrapper
 
 
 def source_to_json(source):
     if isinstance(source, PythonInputSource):
         return source.data
 
+    if isinstance(source, StringInputSource):
+        return json.load(source.getCharacterStream())
+
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
     stream = source.getByteStream()
     try:
         if isinstance(stream, BytesIOWrapper):
-            return json.loads(stream.wrapped)
-        return json.load(TextIOWrapper(stream))
+            stream = stream.wrapped
+        # Use character stream as-is, or interpret byte stream as UTF-8
+        if isinstance(stream, TextIOBase):
+            use_stream = stream
+        else:
+            use_stream = TextIOWrapper(stream, encoding='utf-8')
+        return json.load(use_stream)
     finally:
         stream.close()
 

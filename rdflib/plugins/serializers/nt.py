@@ -22,23 +22,25 @@ class NTSerializer(Serializer):
 
     def __init__(self, store: Graph):
         Serializer.__init__(self, store)
-        self.encoding = "ascii"  # n-triples are ascii encoded
 
     def serialize(
         self,
         stream: IO[bytes],
         base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        **args
+        encoding: Optional[str] = "utf-8",
+        **args,
     ):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
-        if encoding is not None and encoding.lower() != self.encoding.lower():
-            warnings.warn("NTSerializer does not use custom encoding.")
-        encoding = self.encoding
+        if encoding != "utf-8":
+            warnings.warn(
+                "NTSerializer always uses UTF-8 encoding. "
+                f"Given encoding was: {encoding}"
+            )
+
         for triple in self.store:
-            stream.write(_nt_row(triple).encode(self.encoding, "_rdflib_nt_escape"))
-        stream.write("\n".encode("latin-1"))
+            stream.write(_nt_row(triple).encode())
+        stream.write("\n".encode())
 
 
 class NT11Serializer(NTSerializer):

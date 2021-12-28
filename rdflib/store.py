@@ -158,7 +158,6 @@ class Store(object):
             from rdflib.term import Literal
             from rdflib.graph import Graph, QuotedGraph
             from rdflib.term import Variable
-            from rdflib.term import Statement
 
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")
@@ -168,7 +167,6 @@ class Store(object):
             np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
-            np.register(Statement, "s")
         return self.__node_pickler
 
     node_pickler = property(__get_node_pickler)

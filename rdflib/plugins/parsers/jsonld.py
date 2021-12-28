@@ -94,7 +94,7 @@ class JsonLDParser(rdflib.parser.Parser):
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
                 "JSON should be encoded as unicode. "
-                + "Given encoding was: %s" % encoding
+                "Given encoding was: %s" % encoding
             )
 
         base = kwargs.get("base") or sink.absolutize(

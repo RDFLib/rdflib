@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import List
+from typing import TYPE_CHECKING, List, Union
 from unicodedata import category
 
 from pathlib import Path
@@ -81,7 +81,6 @@ The following namespaces are available by directly importing from rdflib:
 
 __all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "NamespaceManager"]
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -102,11 +101,11 @@ class Namespace(str):
     False
     """
 
-    def __new__(cls, value):
+    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
     @property
@@ -192,7 +191,7 @@ class DefinedNamespaceMeta(type):
         name = str(name)
         if str(name).startswith("__"):
             return super().__getitem__(name, default)
-        if (cls._warn or cls._fail) and not name in cls:
+        if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
             else:
@@ -333,10 +332,37 @@ class NamespaceManager(object):
         self.__trie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
-        self.bind("xml", XMLNS)
+
+        # DefinedNamespace bindings.
+        self.bind("brick", BRICK)
+        self.bind("csvw", CSVW)
+        self.bind("dc", DC)
+        self.bind("dcat", DCAT)
+        self.bind("dcmitype", DCMITYPE)
+        self.bind("dcterms", DCTERMS)
+        self.bind("dcam", DCAM)
+        self.bind("doap", DOAP)
+        self.bind("foaf", FOAF)
+        self.bind("odrl", ODRL2)
+        self.bind("org", ORG)
+        self.bind("owl", OWL)
+        self.bind("prof", PROF)
+        self.bind("prov", PROV)
+        self.bind("qb", QB)
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
+        self.bind("schema", SDO)
+        self.bind("sh", SH)
+        self.bind("skos", SKOS)
+        self.bind("sosa", SOSA)
+        self.bind("ssn", SSN)
+        self.bind("time", TIME)
+        self.bind("vann", VANN)
+        self.bind("void", VOID)
         self.bind("xsd", XSD)
+
+        # Namespace bindings.
+        self.bind("xml", XMLNS)
 
     def __contains__(self, ref):
         # checks if a reference is in any of the managed namespaces with syntax
@@ -495,7 +521,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def bind(self, prefix, namespace, override=True, replace=False):
+    def bind(self, prefix, namespace, override=True, replace=False) -> None:
         """bind a given namespace to the prefix
 
         if override, rebind, even if the given namespace is already
@@ -703,6 +729,7 @@ from rdflib.namespace._DC import DC
 from rdflib.namespace._DCAT import DCAT
 from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
+from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
 from rdflib.namespace._ODRL2 import ODRL2

@@ -17,7 +17,7 @@ from rdflib.plugins.sparql.evaluate import evalQuery
 from rdflib.plugins.sparql.update import evalUpdate
 
 
-def prepareQuery(queryString, initNs={}, base=None):
+def prepareQuery(queryString, initNs={}, base=None) -> Query:
     """
     Parse and translate a SPARQL Query
     """

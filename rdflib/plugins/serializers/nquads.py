@@ -25,12 +25,15 @@ class NQuadsSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ):
         if base is not None:
             warnings.warn("NQuadsSerializer does not support base.")
         if encoding is not None and encoding.lower() != self.encoding.lower():
-            warnings.warn("NQuadsSerializer does not use custom encoding.")
+            warnings.warn(
+                "NQuadsSerializer does not use custom encoding. "
+                f"Given encoding was: {encoding}"
+            )
         encoding = self.encoding
         for context in self.store.contexts():
             for triple in context:

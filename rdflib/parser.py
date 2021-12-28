@@ -17,7 +17,7 @@ import pathlib
 import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from urllib.request import Request
 from urllib.request import url2pathname
@@ -304,7 +304,7 @@ def create_input_source(
     publicID=None,
     location=None,
     file=None,
-    data: Optional[Union[str, bytes, bytearray]] = None,
+    data: Optional[Union[str, bytes, bytearray, Dict[Any, Any]]] = None,
     format=None,
 ):
     """
@@ -387,8 +387,7 @@ def create_input_source(
             input_source = StringInputSource(data)
             auto_close = True
         else:
-            raise RuntimeError(
-                f"parse data can only str, or bytes. not: {type(data)}")
+            raise RuntimeError(f"parse data can only str, or bytes. not: {type(data)}")
 
     if input_source is None:
         raise Exception("could not create InputSource")

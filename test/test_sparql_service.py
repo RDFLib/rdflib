@@ -76,7 +76,7 @@ def test_service_with_implicit_select():
     q = """select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
@@ -93,7 +93,7 @@ def test_service_with_implicit_select_and_prefix():
     select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
@@ -110,7 +110,7 @@ def test_service_with_implicit_select_and_base():
     select ?s ?p ?o
     where
     {
-      service <http://DBpedia.org/sparql>
+      service <https://DBpedia.org/sparql>
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
@@ -126,7 +126,7 @@ def test_service_with_implicit_select_and_allcaps():
     q = """SELECT ?s
     WHERE
     {
-      SERVICE <http://dbpedia.org/sparql>
+      SERVICE <https://dbpedia.org/sparql>
       {
         ?s <http://www.w3.org/2002/07/owl#sameAs> ?sameAs .
       }

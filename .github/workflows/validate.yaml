@@ -1,6 +1,10 @@
 name: Validate
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+  workflow_dispatch:
 
 env:
   FORCE_COLOR: 1
@@ -69,6 +73,7 @@ jobs:
         run: |
           black --config black.toml --check ./rdflib || true
           flake8 --exit-zero rdflib
+          mypy --show-error-context --show-error-codes
           if [ "${{ matrix.os }}" == "windows-latest" ]
           then
             pytest -ra --cov

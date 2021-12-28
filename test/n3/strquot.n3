@@ -1,5 +1,5 @@
-    @prefix : <#> .
-    
+@prefix : <#> .
+
     <>     <http://purl.org/dc/elements/1.1/description> """testing string parsing in N3.
 Hmm... how much of this is in the primer?
 How much should be there?
@@ -9,14 +9,14 @@ in python is sufficiently deployed
 nor does pythonwin on TimBL's laptop).
 
 """ .
-    
+
     :martin     :familyName "D\u00FCrst" .
-    
+
     :x     :prop "simple string" .
-    
+
     :y     :prop """triple quoted
 string with newlines in it.""" .
-    
+
     :z     :prop """string with " escaped quote marks""" .
 
    :zz     :escapes "\\\"\a\b\f\r\t\v" .
