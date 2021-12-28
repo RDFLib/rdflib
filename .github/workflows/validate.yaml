@@ -16,17 +16,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
         os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - {
+              python-version: "3.7",
+              os: ubuntu-latest,
+              extensive-tests: true,
+            }
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
       - uses: actions/setup-java@v2
+        if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
           java-version: "17"
@@ -55,8 +61,13 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          # bash .travis.fuseki_install_optional.sh
           pip install --default-timeout 60 -r requirements.txt
+          pip install --default-timeout 60 -r requirements.dev.txt
+          python setup.py install
+      - name: Install extra dev dependencies
+        if: ${{ matrix.extensive-tests }}
+        shell: bash
+        run: |
           if [ "${{ matrix.os }}" == "ubuntu-latest" ]
           then
               sudo apt-get install -y libdb-dev
@@ -65,18 +76,17 @@ jobs:
               brew install berkeley-db@4
               export BERKELEYDB_DIR=$(brew --prefix berkeley-db@4)
           fi
-          pip install --default-timeout 60 -r requirements.dev.txt
-          pip install networkx
-          python setup.py install
+          pip install --default-timeout 60 -r requirements.dev-extra.txt
       - name: Validate
         shell: bash
         run: |
+          test_harness=()
+          if "${{ matrix.extensive-tests || false }}" && [ "${{ matrix.os }}" != "windows-latest" ]
+          then
+            1>&2 echo "Running with fuseki"
+            test_harness+="./with-fuseki.sh"
+          fi
           black --config black.toml --check ./rdflib || true
           flake8 --exit-zero rdflib
           mypy --show-error-context --show-error-codes
-          if [ "${{ matrix.os }}" == "windows-latest" ]
-          then
-            pytest -ra --cov
-          else
-            ./with-fuseki.sh pytest -ra --cov
-          fi
+          "${test_harness[@]}" pytest -ra --cov
