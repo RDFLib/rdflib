@@ -1,4 +1,3 @@
-berkeleydb; platform_system != "Windows"
 black==21.9b0
 coverage
 doctest-ignore-unicode==0.1.2
