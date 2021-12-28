@@ -22,6 +22,7 @@ from typing import Any, Dict, Optional, Union
 from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.request import urlopen
+from urllib.parse import urljoin
 from urllib.error import HTTPError
 
 from xml.sax import xmlreader
