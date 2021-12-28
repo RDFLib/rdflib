@@ -2140,12 +2140,22 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    def quads(self, triple):
+    def quads(self, triple_or_quad):
         """Iterate over all the quads in the entire aggregate graph"""
-        s, p, o = triple
-        for graph in self.graphs:
-            for s1, p1, o1 in graph.triples((s, p, o)):
-                yield s1, p1, o1, graph
+        c = None
+        if len(triple_or_quad) == 4:
+            s, p, o, c = triple_or_quad
+        else:
+            s, p, o = triple_or_quad
+
+        if c is not None:
+            for graph in [g for g in self.graphs if g == c]:
+                for s1, p1, o1 in graph.triples((s, p, o)):
+                    yield s1, p1, o1, graph
+        else:
+            for graph in self.graphs:
+                for s1, p1, o1 in graph.triples((s, p, o)):
+                    yield s1, p1, o1, graph
 
     def __len__(self):
         return sum(len(g) for g in self.graphs)

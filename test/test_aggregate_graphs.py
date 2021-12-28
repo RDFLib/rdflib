@@ -1,12 +1,10 @@
-import unittest
 from rdflib.namespace import RDF, RDFS
-from rdflib import plugin
+from rdflib import logger, plugin
 from io import StringIO
 from rdflib.term import URIRef
 from rdflib.store import Store
-from rdflib.graph import Graph
-from rdflib.graph import ReadOnlyGraphAggregate
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
+
 
 testGraph1N3 = """
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -58,73 +56,73 @@ SELECT ?n3Doc
 WHERE {?n3Doc a log:N3Document }"""
 
 
-class GraphAggregates1(unittest.TestCase):
-    def setUp(self):
-        memStore = plugin.get("Memory", Store)()
-        self.graph1 = Graph(memStore)
-        self.graph2 = Graph(memStore)
-        self.graph3 = Graph(memStore)
+def test_aggregate_raw():
+    memStore = plugin.get("Memory", Store)()
+    graph1 = Graph(memStore)
+    graph2 = Graph(memStore)
+    graph3 = Graph(memStore)
 
-        for n3Str, graph in [
-            (testGraph1N3, self.graph1),
-            (testGraph2N3, self.graph2),
-            (testGraph3N3, self.graph3),
-        ]:
-            graph.parse(StringIO(n3Str), format="n3")
+    for n3Str, graph in [
+        (testGraph1N3, graph1),
+        (testGraph2N3, graph2),
+        (testGraph3N3, graph3),
+    ]:
+        graph.parse(StringIO(n3Str), format="n3")
 
-        self.G = ReadOnlyGraphAggregate([self.graph1, self.graph2, self.graph3])
+    G = ReadOnlyGraphAggregate([graph1, graph2, graph3])
 
-    def testAggregateRaw(self):
-        # Test triples
-        assert len(list(self.G.triples((None, RDF.type, None)))) == 4
-        assert len(list(self.G.triples((URIRef("http://test/bar"), None, None)))) == 2
-        assert len(list(self.G.triples((None, URIRef("http://test/d"), None)))) == 3
+    # Test triples
+    assert len(list(G.triples((None, RDF.type, None)))) == 4
+    assert len(list(G.triples((URIRef("http://test/bar"), None, None)))) == 2
+    assert len(list(G.triples((None, URIRef("http://test/d"), None)))) == 3
 
-        # Test __len__
-        assert len(self.G) == 8
+    # Test __len__
+    assert len(G) == 8
 
-        # assert context iteration
-        for g in self.G.contexts():
-            assert isinstance(g, Graph)
+    # assert context iteration
+    for g in G.contexts():
+        assert isinstance(g, Graph)
 
-        # Test __contains__
-        assert (URIRef("http://test/foo"), RDF.type, RDFS.Resource) in self.G
+    # Test __contains__
+    assert (URIRef("http://test/foo"), RDF.type, RDFS.Resource) in G
 
-        barPredicates = [URIRef("http://test/d"), RDFS.isDefinedBy]
-        assert (
-            len(
-                list(
-                    self.G.triples_choices(
-                        (URIRef("http://test/bar"), barPredicates, None)
-                    )
+    barPredicates = [URIRef("http://test/d"), RDFS.isDefinedBy]
+    assert (
+        len(list(G.triples_choices((URIRef("http://test/bar"), barPredicates, None))))
+        == 2
+    )
+
+
+def test_aggregate2():
+    memStore = plugin.get("Memory", Store)()
+    graph1 = Graph(memStore, URIRef("http://example.com/graph1"))
+    graph2 = Graph(memStore, URIRef("http://example.com/graph2"))
+    graph3 = Graph(memStore, URIRef("http://example.com/graph3"))
+
+    for n3Str, graph in [
+        (testGraph1N3, graph1),
+        (testGraph2N3, graph2),
+        (testGraph3N3, graph3),
+    ]:
+        graph.parse(StringIO(n3Str), format="n3")
+
+    graph4 = Graph(memStore, RDFS)
+    graph4.parse(data=testGraph1N3, format="n3")
+    g = ConjunctiveGraph(memStore)
+    assert g is not None
+    assert len(list(g.quads((None, None, None, None)))) == 11
+    assert len(list(g.contexts())) == 4
+    logger.debug(list(g.contexts()))
+    assert (
+        len(list(g.quads((None, None, None, URIRef("http://example.com/graph2"))))) == 4
+    )
+    assert (
+        len(
+            list(
+                g.quads(
+                    (None, None, None, URIRef("http://www.w3.org/2000/01/rdf-schema#"))
                 )
             )
-            == 2
         )
-
-
-class GraphAggregates2(unittest.TestCase):
-
-    known_issue = True
-    sparql = True
-
-    def setUp(self):
-        memStore = plugin.get("Memory", Store)()
-        self.graph1 = Graph(memStore, URIRef("http://example.com/graph1"))
-        self.graph2 = Graph(memStore, URIRef("http://example.com/graph2"))
-        self.graph3 = Graph(memStore, URIRef("http://example.com/graph3"))
-
-        for n3Str, graph in [
-            (testGraph1N3, self.graph1),
-            (testGraph2N3, self.graph2),
-            (testGraph3N3, self.graph3),
-        ]:
-            graph.parse(StringIO(n3Str), format="n3")
-
-        self.graph4 = Graph(memStore, RDFS)
-        self.graph4.parse(RDFS.uri)
-        self.G = ConjunctiveGraph(memStore)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        == 6
+    )
