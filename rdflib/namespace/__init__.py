@@ -344,6 +344,7 @@ class NamespaceManager(object):
         self.bind("doap", DOAP)
         self.bind("foaf", FOAF)
         self.bind("odrl", ODRL2)
+        self.bind("geo", GEO)
         self.bind("org", ORG)
         self.bind("owl", OWL)
         self.bind("prof", PROF)
@@ -732,6 +733,7 @@ from rdflib.namespace._DCTERMS import DCTERMS
 from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
+from rdflib.namespace._GEO import GEO
 from rdflib.namespace._ODRL2 import ODRL2
 from rdflib.namespace._ORG import ORG
 from rdflib.namespace._OWL import OWL
