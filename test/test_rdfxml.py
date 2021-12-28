@@ -1,5 +1,6 @@
 import sys
 from encodings.utf_8 import StreamWriter
+from typing import ClassVar
 
 import unittest
 
@@ -170,6 +171,8 @@ class ParserTestCase(unittest.TestCase):
     store = "default"
     path = "store"
     slow = True
+
+    RDF_setting: ClassVar[bool]
 
     @classmethod
     def setUpClass(cls) -> None:

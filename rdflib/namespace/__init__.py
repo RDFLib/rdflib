@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List, Union, Iterable
 from unicodedata import category
 
 from pathlib import Path
@@ -74,6 +74,7 @@ The following namespaces are available by directly importing from rdflib:
 * XSD
 
 .. code-block:: pycon
+
     >>> from rdflib.namespace import RDFS
     >>> RDFS.seeAlso
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
@@ -228,6 +229,10 @@ class DefinedNamespaceMeta(type):
             if issubclass(c, DefinedNamespace)
         )
 
+    def __dir__(cls) -> Iterable[str]:
+        values = {cls[str(x)] for x in cls.__annotations__}
+        return values
+
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     """
@@ -344,6 +349,7 @@ class NamespaceManager(object):
         self.bind("doap", DOAP)
         self.bind("foaf", FOAF)
         self.bind("odrl", ODRL2)
+        self.bind("geo", GEO)
         self.bind("org", ORG)
         self.bind("owl", OWL)
         self.bind("prof", PROF)
@@ -732,6 +738,7 @@ from rdflib.namespace._DCTERMS import DCTERMS
 from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
+from rdflib.namespace._GEO import GEO
 from rdflib.namespace._ODRL2 import ODRL2
 from rdflib.namespace._ORG import ORG
 from rdflib.namespace._OWL import OWL
