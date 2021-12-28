@@ -15,7 +15,7 @@ from rdflib.namespace import FOAF
 if __name__ == "__main__":
 
     graph = Graph()
-    graph.load("foaf.n3", format="n3")
+    graph.parse("foaf.n3", format="n3")
 
     for person in graph[: RDF.type : FOAF.Person]:
         friends = list(graph[person : FOAF.knows * "+" / FOAF.name])
