@@ -104,7 +104,8 @@ class TestExecution:
         :return:
         """
         print("Executing tests ...")
-        logging.getLogger().setLevel(int(self.test_config.get("TEST", "log_level")))
+        if self.test_config.has_option("TEST", "log_level"):
+            logging.getLogger().setLevel(int(self.test_config.get("TEST", "log_level")))
 
         self.before_all_tests()
         test_prefix = "test_"

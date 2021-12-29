@@ -4,6 +4,7 @@ import rdflib.plugins.sparql.parser as parser
 import rdflib.plugins.sparql.algebra as algebra
 import sys
 import logging
+from pathlib import Path
 
 
 def _pprint_query(query: str):
@@ -48,7 +49,9 @@ class TestAlgebraToTest(TestExecution):
         if self.annotated_tests:
             test_name = test_name[2:]
 
-        self.query_text = open("test_data/{0}.txt".format(test_name), "r").read()
+        test_data_path = Path(__file__).absolute().parent / "test_data"
+        query_text_path = test_data_path / "{0}.txt".format(test_name)
+        self.query_text = query_text_path.read_text()
 
     def test_functions__functional_forms(self):
         query_tree = parser.parseQuery(self.query_text)

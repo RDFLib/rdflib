@@ -1,2 +1,7 @@
 berkeleydb
 networkx
+
+# pandas and tabulate are in here for `test/translate_algebra` and should be
+# removed once those tests are all integrated into pytest.
+pandas
+tabulate
