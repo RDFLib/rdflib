@@ -728,16 +728,16 @@ class Graph(Node):
                         raise
 
     def subject_predicates(
-        self, obj=None, unique=False
+        self, object=None, unique=False
     ) -> Generator[Tuple[Node, Node], None, None]:
         """A generator of (optionally unique) (subject, predicate) tuples
         for the given object"""
         if not unique:
-            for s, p, o in self.triples((None, None, obj)):
+            for s, p, o in self.triples((None, None, object)):
                 yield s, p
         else:
             subj_preds = set()
-            for s, p, o in self.triples((None, None, obj)):
+            for s, p, o in self.triples((None, None, object)):
                 if (s, p) not in subj_preds:
                     yield s, p
                     try:
