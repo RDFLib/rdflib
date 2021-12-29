@@ -1,13 +1,14 @@
 import collections
+from typing import Dict, Iterable
 
 from rdflib.term import Variable, Literal, BNode, URIRef
 
 from rdflib.plugins.sparql.operators import EBV
 from rdflib.plugins.sparql.parserutils import Expr, CompValue
-from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
+from rdflib.plugins.sparql.sparql import FrozenDict, SPARQLError, NotBoundError
 
 
-def _diff(a, b, expr):
+def _diff(a: Iterable[FrozenDict], b: Iterable[FrozenDict], expr):
     res = set()
 
     for x in a:
@@ -17,13 +18,13 @@ def _diff(a, b, expr):
     return res
 
 
-def _minus(a, b):
+def _minus(a: Iterable[FrozenDict], b: Iterable[FrozenDict]):
     for x in a:
         if all((not x.compatible(y)) or x.disjointDomain(y) for y in b):
             yield x
 
 
-def _join(a, b):
+def _join(a: Iterable[FrozenDict], b: Iterable[Dict]):
     for x in a:
         for y in b:
             if x.compatible(y):
