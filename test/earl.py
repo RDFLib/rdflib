@@ -84,9 +84,12 @@ class EarlReport:
         self.asserter: Node
         asserter: Node
         if asserter_uri is not None or asserter_homepage is not None:
-            self.asserter = asserter = URIRef(
-                asserter_homepage if asserter_uri is None else asserter_uri
+            # cast to remove Optional because mypy is not smart enough to
+            # figure out that it won't be optional.
+            asserter_ref = cast(
+                str, asserter_homepage if asserter_uri is None else asserter_uri
             )
+            self.asserter = asserter = URIRef(asserter_ref)
             graph.add((asserter, RDF.type, FOAF.Person))
         else:
             self.asserter = asserter = BNode()

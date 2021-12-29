@@ -6,10 +6,7 @@ import unittest
 import pytest
 
 
-try:
-    from os import fork
-    from os import pipe
-except ImportError:
+if os.name == "nt":
     pytestmark = pytest.mark.skip(
         reason="No os.fork() and/or os.pipe() on this platform, skipping"
     )
