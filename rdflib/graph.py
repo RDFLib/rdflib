@@ -671,7 +671,8 @@ class Graph(Node):
         return self
 
     def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
-        """A generator of unique subjects with the given predicate and object"""
+        """A generator of (optionally unique) subjects with the given
+        predicate and object"""
         if not unique:
             for s, p, o in self.triples((None, predicate, object)):
                 yield s
@@ -689,7 +690,8 @@ class Graph(Node):
                         raise
 
     def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
-        """A generator of unique predicates with the given subject and object"""
+        """A generator of (optionally unique) predicates with the given
+        subject and object"""
         if not unique:
             for s, p, o in self.triples((subject, None, object)):
                 yield p
@@ -707,7 +709,8 @@ class Graph(Node):
                         raise
 
     def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
-        """A generator of unique objects with the given subject and predicate"""
+        """A generator of (optionally unique) objects with the given
+        subject and predicate"""
         if not unique:
             for s, p, o in self.triples((subject, predicate, None)):
                 yield o
@@ -725,17 +728,17 @@ class Graph(Node):
                         raise
 
     def subject_predicates(
-        self, object=None, unique=False
+        self, obj=None, unique=False
     ) -> Generator[Tuple[Node, Node], None, None]:
-        """A generator of (subject, predicate) tuples for the given object"""
-        if not unique or not hasattr(self.store, "identifier"):
-            for s, p, o in self.triples((None, None, object)):
+        """A generator of (optionally unique) (subject, predicate) tuples
+        for the given object"""
+        if not unique:
+            for s, p, o in self.triples((None, None, obj)):
                 yield s, p
         else:
             subj_preds = set()
-            for s, p, o in self.triples((None, None, object)):
+            for s, p, o in self.triples((None, None, obj)):
                 if (s, p) not in subj_preds:
-                    # logger.debug(f"YIELDING {s, p} ")
                     yield s, p
                     try:
                         subj_preds.add((s, p))
@@ -748,8 +751,9 @@ class Graph(Node):
     def subject_objects(
         self, predicate=None, unique=False
     ) -> Generator[Tuple[Node, Node], None, None]:
-        """A generator of (subject, object) tuples for the given predicate"""
-        if not unique or not hasattr(self.store, "identifier"):
+        """A generator of (optionally unique) (subject, object) tuples
+        for the given predicate"""
+        if not unique:
             for s, p, o in self.triples((None, predicate, None)):
                 yield s, o
         else:
@@ -768,8 +772,9 @@ class Graph(Node):
     def predicate_objects(
         self, subject=None, unique=False
     ) -> Generator[Tuple[Node, Node], None, None]:
-        """A generator of (predicate, object) tuples for the given subject"""
-        if not unique or not hasattr(self.store, "identifier"):
+        """A generator of (optionally unique) (predicate, object) tuples
+        for the given subject"""
+        if not unique:
             for s, p, o in self.triples((subject, None, None)):
                 yield p, o
         else:
