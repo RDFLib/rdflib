@@ -154,6 +154,9 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
     def remove(self, _, context):
         raise TypeError("The SPARQL store is read only")
 
+    def update(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
+        raise TypeError("The SPARQL store is read only")
+
     def _query(self, *args, **kwargs):
         self._queries += 1
 
@@ -208,6 +211,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
 
         **context** may include three parameter
         to refine the underlying query:
+
         * LIMIT: an integer to limit the number of results
         * OFFSET: an integer to enable paging of results
         * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p') or, by default, the first 'None' from the given triple
@@ -219,17 +223,15 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
               the walking path on the graph)
             - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 results
 
-        ``
-        a_graph.LIMIT = limit
-        a_graph.OFFSET = offset
-        triple_generator = a_graph.triples(mytriple):
-          # do something
-          # Removes LIMIT and OFFSET if not required for the next triple() calls
-        del a_graph.LIMIT
-        del a_graph.OFFSET
-        ``
+        .. code-block:: python
 
-
+            a_graph.LIMIT = limit
+            a_graph.OFFSET = offset
+            triple_generator = a_graph.triples(mytriple):
+            # do something
+            # Removes LIMIT and OFFSET if not required for the next triple() calls
+            del a_graph.LIMIT
+            del a_graph.OFFSET
         """
 
         s, p, o = spo
@@ -541,9 +543,9 @@ class SPARQLUpdateStore(SPARQLStore):
         self._updates = 0
 
     def open(self, configuration: Union[str, Tuple[str, str]], create=False):
-        """This method is included so that calls to this Store via Graph, e.g.
+        """
+        This method is included so that calls to this Store via Graph, e.g.
         Graph("SPARQLStore"), can set the required parameters
-
         """
         if type(configuration) == str:
             self.query_endpoint = configuration  # type: ignore[assignment]
@@ -580,6 +582,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def open(self, configuration, create=False):  # type: ignore[no-redef]
         """
         sets the endpoint URLs for this SPARQLStore
+
         :param configuration: either a tuple of (query_endpoint, update_endpoint),
             or a string with the endpoint which is configured as query and update endpoint
         :param create: if True an exception is thrown.

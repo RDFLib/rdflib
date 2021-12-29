@@ -703,35 +703,125 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate=None, object=None) -> Iterable[Node]:
-        """A generator of subjects with the given predicate and object"""
-        for s, p, o in self.triples((None, predicate, object)):
-            yield s
+    def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
+        """A generator of (optionally unique) subjects with the given
+        predicate and object"""
+        if not unique:
+            for s, p, o in self.triples((None, predicate, object)):
+                yield s
+        else:
+            subs = set()
+            for s, p, o in self.triples((None, predicate, object)):
+                if s not in subs:
+                    yield s
+                    try:
+                        subs.add(s)
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
-    def predicates(self, subject=None, object=None) -> Iterable[Node]:
-        """A generator of predicates with the given subject and object"""
-        for s, p, o in self.triples((subject, None, object)):
-            yield p
+    def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
+        """A generator of (optionally unique) predicates with the given
+        subject and object"""
+        if not unique:
+            for s, p, o in self.triples((subject, None, object)):
+                yield p
+        else:
+            preds = set()
+            for s, p, o in self.triples((subject, None, object)):
+                if p not in preds:
+                    yield p
+                    try:
+                        preds.add(p)
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
-    def objects(self, subject=None, predicate=None) -> Iterable[Node]:
-        """A generator of objects with the given subject and predicate"""
-        for s, p, o in self.triples((subject, predicate, None)):
-            yield o
+    def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
+        """A generator of (optionally unique) objects with the given
+        subject and predicate"""
+        if not unique:
+            for s, p, o in self.triples((subject, predicate, None)):
+                yield o
+        else:
+            objs = set()
+            for s, p, o in self.triples((subject, predicate, None)):
+                if o not in objs:
+                    yield o
+                    try:
+                        objs.add(o)
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
-    def subject_predicates(self, object=None):
-        """A generator of (subject, predicate) tuples for the given object"""
-        for s, p, o in self.triples((None, None, object)):
-            yield s, p
+    def subject_predicates(
+        self, object=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
+        """A generator of (optionally unique) (subject, predicate) tuples
+        for the given object"""
+        if not unique:
+            for s, p, o in self.triples((None, None, object)):
+                yield s, p
+        else:
+            subj_preds = set()
+            for s, p, o in self.triples((None, None, object)):
+                if (s, p) not in subj_preds:
+                    yield s, p
+                    try:
+                        subj_preds.add((s, p))
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
-    def subject_objects(self, predicate=None):
-        """A generator of (subject, object) tuples for the given predicate"""
-        for s, p, o in self.triples((None, predicate, None)):
-            yield s, o
+    def subject_objects(
+        self, predicate=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
+        """A generator of (optionally unique) (subject, object) tuples
+        for the given predicate"""
+        if not unique:
+            for s, p, o in self.triples((None, predicate, None)):
+                yield s, o
+        else:
+            subj_objs = set()
+            for s, p, o in self.triples((None, predicate, None)):
+                if (s, o) not in subj_objs:
+                    yield s, o
+                    try:
+                        subj_objs.add((s, o))
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
-    def predicate_objects(self, subject=None):
-        """A generator of (predicate, object) tuples for the given subject"""
-        for s, p, o in self.triples((subject, None, None)):
-            yield p, o
+    def predicate_objects(
+        self, subject=None, unique=False
+    ) -> Generator[Tuple[Node, Node], None, None]:
+        """A generator of (optionally unique) (predicate, object) tuples
+        for the given subject"""
+        if not unique:
+            for s, p, o in self.triples((subject, None, None)):
+                yield p, o
+        else:
+            pred_objs = set()
+            for s, p, o in self.triples((subject, None, None)):
+                if (p, o) not in pred_objs:
+                    yield p, o
+                    try:
+                        pred_objs.add((p, o))
+                    except MemoryError as e:
+                        logger.error(
+                            f"{e}. Consider not setting parameter 'unique' to True"
+                        )
+                        raise
 
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
@@ -798,117 +888,6 @@ class Graph(Node):
                 except StopIteration:
                     pass
         return retval
-
-    def label(self, subject, default=""):
-        """Query for the RDFS.label of the subject
-
-        Return default if no label exists or any label if multiple exist.
-        """
-        warn(
-            DeprecationWarning(
-                "graph.label() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if subject is None:
-            return default
-        return self.value(subject, namespace.RDFS.label, default=default, any=True)
-
-    def preferredLabel(
-        self,
-        subject,
-        lang=None,
-        default=None,
-        labelProperties=(namespace.SKOS.prefLabel, namespace.RDFS.label),
-    ):
-        """
-        Find the preferred label for subject.
-
-        By default prefers skos:prefLabels over rdfs:labels. In case at least
-        one prefLabel is found returns those, else returns labels. In case a
-        language string (e.g., "en", "de" or even "" for no lang-tagged
-        literals) is given, only such labels will be considered.
-
-        Return a list of (labelProp, label) pairs, where labelProp is either
-        skos:prefLabel or rdfs:label.
-
-        >>> from rdflib import ConjunctiveGraph, URIRef, Literal, namespace
-        >>> from pprint import pprint
-        >>> g = ConjunctiveGraph()
-        >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, namespace.RDFS.label, Literal("foo")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> g.add([u, namespace.RDFS.label, Literal("bar")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('bar')),
-         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('foo'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")]) # doctest: +ELLIPSIS
-        <Graph identifier=... (<class 'rdflib.graph.ConjunctiveGraph'>)>
-        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla')),
-          (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en'))]
-        >>> g.preferredLabel(u, lang="") #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> pprint(g.preferredLabel(u, lang="en"))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en'))]
-        """
-        warn(
-            DeprecationWarning(
-                "graph.preferredLabel() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if default is None:
-            default = []
-
-        # setup the language filtering
-        if lang is not None:
-            if lang == "":  # we only want not language-tagged literals
-
-                def langfilter(l_):
-                    return l_.language is None
-
-            else:
-
-                def langfilter(l_):
-                    return l_.language == lang
-
-        else:  # we don't care about language tags
-
-            def langfilter(l_):
-                return True
-
-        for labelProp in labelProperties:
-            labels = list(filter(langfilter, self.objects(subject, labelProp)))
-            if len(labels) == 0:
-                continue
-            else:
-                return [(labelProp, l_) for l_ in labels]
-        return default
-
-    def comment(self, subject, default=""):
-        """Query for the RDFS.comment of the subject
-
-        Return default if no comment exists
-        """
-        warn(
-            DeprecationWarning(
-                "graph.comment() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if subject is None:
-            return default
-        return self.value(subject, namespace.RDFS.comment, default=default, any=True)
 
     def items(self, list):
         """Generator over all items in the resource specified by list
@@ -1013,21 +992,6 @@ class Graph(Node):
         for subject in self.subjects(predicate, object):
             for s in self.transitive_subjects(predicate, subject, remember):
                 yield s
-
-    def seq(self, subject):
-        """Check if subject is an rdf:Seq
-
-        If yes, it returns a Seq class instance, None otherwise.
-        """
-        warn(
-            DeprecationWarning(
-                "graph.seq() is deprecated and will be removed in rdflib 6.0.0."
-            )
-        )
-        if (subject, RDF.type, RDF.Seq) in self:
-            return Seq(self, subject)
-        else:
-            return None
 
     def qname(self, uri):
         return self.namespace_manager.qname(uri)
@@ -1316,15 +1280,6 @@ class Graph(Node):
             if source.auto_close:
                 source.close()
         return self
-
-    def load(self, source, publicID=None, format="xml"):
-        warn(
-            DeprecationWarning(
-                "graph.load() is deprecated, it will be removed in rdflib 6.0.0. "
-                "Please use graph.parse() instead."
-            )
-        )
-        return self.parse(source, publicID, format)
 
     def query(
         self,
@@ -2640,12 +2595,22 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    def quads(self, triple):
+    def quads(self, triple_or_quad):
         """Iterate over all the quads in the entire aggregate graph"""
-        s, p, o = triple
-        for graph in self.graphs:
-            for s1, p1, o1 in graph.triples((s, p, o)):
-                yield s1, p1, o1, graph
+        c = None
+        if len(triple_or_quad) == 4:
+            s, p, o, c = triple_or_quad
+        else:
+            s, p, o = triple_or_quad
+
+        if c is not None:
+            for graph in [g for g in self.graphs if g == c]:
+                for s1, p1, o1 in graph.triples((s, p, o)):
+                    yield s1, p1, o1, graph
+        else:
+            for graph in self.graphs:
+                for s1, p1, o1 in graph.triples((s, p, o)):
+                    yield s1, p1, o1, graph
 
     def __len__(self):
         return sum(len(g) for g in self.graphs)

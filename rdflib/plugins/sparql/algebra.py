@@ -13,7 +13,7 @@ from functools import reduce
 
 from rdflib import Literal, Variable, URIRef, BNode
 
-from rdflib.plugins.sparql.sparql import Prologue, Query
+from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.operators import (
     and_,
@@ -761,7 +761,7 @@ def translateUpdate(q, base=None, initNs=None):
 
         res.append(translateUpdate1(u, prologue))
 
-    return res
+    return Update(prologue, res)
 
 
 def translateQuery(q, base=None, initNs=None):

@@ -408,3 +408,13 @@ class Query:
     def __init__(self, prologue, algebra):
         self.prologue = prologue
         self.algebra = algebra
+
+
+class Update:
+    """
+    A parsed and translated update
+    """
+
+    def __init__(self, prologue, algebra):
+        self.prologue = prologue
+        self.algebra = algebra

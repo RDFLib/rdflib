@@ -181,6 +181,7 @@ No vars specified:
 """
 
 
+from functools import total_ordering
 from rdflib.term import URIRef, Node
 from typing import Union, Callable
 
@@ -192,6 +193,7 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
+@total_ordering
 class Path(object):
 
     __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
@@ -203,34 +205,12 @@ class Path(object):
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
 
-    def __hash__(self):
-        return hash(repr(self))
-
-    def __eq__(self, other):
-        return repr(self) == repr(other)
-
     def __lt__(self, other):
         if not isinstance(other, (Path, Node)):
             raise TypeError(
                 "unorderable types: %s() < %s()" % (repr(self), repr(other))
             )
         return repr(self) < repr(other)
-
-    def __le__(self, other):
-        if not isinstance(other, (Path, Node)):
-            raise TypeError(
-                "unorderable types: %s() < %s()" % (repr(self), repr(other))
-            )
-        return repr(self) <= repr(other)
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __gt__(self, other):
-        return not self <= other
-
-    def __ge__(self, other):
-        return not self < other
 
 
 class InvPath(Path):

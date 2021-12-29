@@ -184,7 +184,7 @@ initial bindings:
     )
 
     g = rdflib.Graph()
-    g.load("foaf.rdf")
+    g.parse("foaf.rdf")
 
     tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 

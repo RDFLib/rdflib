@@ -11,9 +11,9 @@ developing RDFLib code.
 
 * Please be as Pythonic as possible (:pep:`8`).
 * Code should be formatted using `black <https://github.com/psf/black>`_
-and we use Black v21.9b0, with the black.toml config file provided.
+  and we use Black v21.9b0, with the black.toml config file provided.
 * Code should also pass `flake8 <https://github.com/psf/black>`_ linting
-and `mypy <http://mypy-lang.org/>`_ type checking.
+  and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code
 
 If you add a new cool feature, consider also adding an example in ``./examples``
@@ -44,16 +44,27 @@ Running tests
 
 To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ pip install -r requirements.txt -r requirements.dev.txt
    $ pytest
 
 Specific tests can be run by file name. For example:
 
-.. code-block:: bash
+.. code-block:: console
 
   $ pytest test/test_graph.py
+
+For more extensive tests, including tests for the `berkleydb
+<https://www.oracle.com/database/technologies/related/berkeleydb.html>`_
+backend, install the requirements from ``requirements.dev-extra.txt`` before
+executing the tests.
+
+.. code-block:: console
+
+   $ pip install -r requirements.txt -r requirements.dev.txt
+   $ pip install -r requirements.dev-extra.txt
+   $ pytest
 
 Writing tests
 ~~~~~~~~~~~~~
