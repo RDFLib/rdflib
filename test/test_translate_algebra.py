@@ -15,7 +15,7 @@ from rdflib.plugins.sparql.algebra import translateAlgebra
 
 @pytest.fixture
 def data_path() -> Path:
-    return Path(__file__).parent / "test_translate_algebra"
+    return Path(__file__).parent / "translate_algebra"
 
 
 @dataclass
@@ -232,7 +232,7 @@ unused_files = {
 
 
 if os.name != "nt":
-    # On Windows this test causes a stackoverflow or memroy error, so don't run
+    # On Windows this test causes a stackoverflow or memory error, so don't run
     # it on Windows. The test fails anyway on linux and should be fixed. Once
     # the cause of this failure is fixed the condition to not run it on windows
     # should be removed and it should be added to the normal tests.
@@ -266,7 +266,7 @@ def test_all_files_used(data_path: Path) -> None:
 @pytest.mark.parametrize("test_spec", [test.pytest_param() for test in algebra_tests])
 def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     """
-    The query must also be executable and shall not violate any SPARQL query syntax.
+    Query remains the same over two successuive parse and translate cycles.
     """
     query_text = (data_path / test_spec.filename).read_text()
 
@@ -285,3 +285,7 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     assert (
         query_from_algebra == query_from_query_from_algebra
     ), f"failed expectation: {test_spec.description}"
+
+    # TODO: Execute the raw query (query_text) and the reconstitued query
+    # (query_from_query_from_algebra) against a well defined graph and ensure
+    # they yield the same result.
