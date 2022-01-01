@@ -39,7 +39,7 @@ def source_to_json(source):
         if isinstance(stream, TextIOBase):
             use_stream = stream
         else:
-            use_stream = TextIOWrapper(stream, encoding='utf-8')
+            use_stream = TextIOWrapper(stream, encoding="utf-8")
         return json.load(use_stream)
     finally:
         stream.close()
