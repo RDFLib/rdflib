@@ -126,7 +126,7 @@ class NTTestCase(unittest.TestCase):
         self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
-        uri = Path(nt_file("test.ntriples")).absolute().as_uri()
+        uri = Path(nt_file("test.nt")).absolute().as_uri()
 
         parser = ntriples.W3CNTriplesParser()
         u = urlopen(uri)

@@ -26,6 +26,12 @@ class FileParserGuessFormatTest(unittest.TestCase):
         self.assertEqual(guess_format("local-file.json-ld"), "json-ld")
         self.assertEqual(guess_format("/some/place/on/disk/example.json"), "json-ld")
         self.assertEqual(guess_format("../../relative/place/on/disk/example.json"), "json-ld")
+        self.assertEqual(guess_format("example.rdf"), "xml")
+        self.assertEqual(guess_format("example.nt"), "nt")
+        self.assertEqual(guess_format("example.n3"), "n3")
+        self.assertIsNone(guess_format("example.docx", None))
+        self.assertIsNone(guess_format("example", None))
+        self.assertIsNone(guess_format("example.mkv", None))
 
     def test_jsonld(self) -> None:
         g = Graph()
