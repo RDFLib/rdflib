@@ -204,10 +204,9 @@ class URLInputSource(InputSource):
             from rdflib.plugin import plugins
 
             acc = []
-            for p in plugins():
-                if p.kind == Parser:  # only get parsers
-                    if "/" in p.name:  # all Media Types known have a / in them
-                        acc.append(p.name)
+            for p in plugins(kind=Parser):  # only get parsers
+                if "/" in p.name:  # all Media Types known have a / in them
+                    acc.append(p.name)
 
             myheaders["Accept"] = ", ".join(acc)
 
