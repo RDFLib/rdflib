@@ -68,7 +68,7 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
         elif "text/n3" in ct:
             rct = "text/n3"
             content = n3testdoc
-        elif 'application/trig' in ct:
+        elif "application/trig" in ct:
             rct = "application/trig"
             content = ttltestdoc
         elif "text/plain" in ct or "application/n-triples" in ct:
