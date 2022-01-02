@@ -117,11 +117,6 @@ def _testPositive(uri, manifest):
         write(inDoc)
         write("' failed with")
         raise pe
-        try:
-            write(type(pe))
-        except:
-            write("sorry could not dump out error.")
-        result = 1
     else:
         if not store.isomorphic(expected):
             write("""Failed: '%s'""" % uri)

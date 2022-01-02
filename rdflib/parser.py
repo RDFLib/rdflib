@@ -199,23 +199,34 @@ class URLInputSource(InputSource):
 
         # copy headers to change
         myheaders = dict(headers)
-        if format == "application/rdf+xml":
+        if format == "xml":
             myheaders["Accept"] = "application/rdf+xml, */*;q=0.1"
         elif format == "n3":
             myheaders["Accept"] = "text/n3, */*;q=0.1"
-        elif format == "turtle":
-            myheaders["Accept"] = "text/turtle,application/x-turtle, */*;q=0.1"
+        elif format in ["turtle", "ttl"]:
+            myheaders["Accept"] = "text/turtle, application/x-turtle, */*;q=0.1"
         elif format == "nt":
             myheaders["Accept"] = "text/plain, */*;q=0.1"
+        elif format == "trig":
+            myheaders["Accept"] = "application/trig, */*;q=0.1"
+        elif format == "trix":
+            myheaders["Accept"] = "application/trix, */*;q=0.1"
         elif format == "json-ld":
             myheaders[
                 "Accept"
             ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
         else:
-            myheaders["Accept"] = (
-                "application/rdf+xml,text/rdf+n3;q=0.9,"
-                + "application/xhtml+xml;q=0.5, */*;q=0.1"
-            )
+            # if format not given, create an Accept header from all registered
+            # parser Media Types
+            from rdflib.parser import Parser
+            from rdflib.plugin import plugins
+
+            acc = []
+            for p in plugins(kind=Parser):  # only get parsers
+                if "/" in p.name:  # all Media Types known have a / in them
+                    acc.append(p.name)
+
+            myheaders["Accept"] = ", ".join(acc)
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
 
