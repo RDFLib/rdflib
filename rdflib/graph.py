@@ -1981,42 +1981,11 @@ class ConjunctiveGraph(Graph):
             else:
                 g_id = URIRef(g_id)
 
-        if format is None:
-            format = source.content_type
-        could_not_guess_format = False
-        if format is None:
-            if (
-                hasattr(source, "file")
-                and getattr(source.file, "name", None)
-                and isinstance(source.file.name, str)
-            ):
-                format = rdflib.util.guess_format(source.file.name)
-            if format is None:
-                format = "trig"
-                could_not_guess_format = True
-
-        try:
-            context = Graph(store=self.store, identifier=g_id)
-            context.remove((None, None, None))  # hmm ?
-            context.parse(source, publicID=publicID, format=format, **args)
-
-        except SyntaxError as se:
-            if could_not_guess_format:
-                raise ParserError(
-                    "Could not guess RDF format for %r from file extension so tried Trig but failed. "
-                    "You can explicitly specify format using the format argument."
-                    % source
-                )
-            else:
-                raise se
-        finally:
-            if source.auto_close:
-                source.close()
-
-        # warn(f"\n\n{list(self.contexts())}\n")
-        # warn(f"\n\n{self.serialize(format='trig')}\n")
-
-        return self
+        context = Graph(store=self.store, identifier=g_id)
+        context.remove((None, None, None))  # hmm ?
+        context.parse(source, publicID=publicID, format=format, **args)
+        # TODO: FIXME: This should not return context, but self.
+        return context
 
     def __reduce__(self):
         return ConjunctiveGraph, (self.store, self.identifier)
