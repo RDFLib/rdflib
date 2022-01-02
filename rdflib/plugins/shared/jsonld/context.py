@@ -8,6 +8,8 @@ Implementation of the JSON-LD Context structure. See:
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 
 from collections import namedtuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
+
 from rdflib.namespace import RDF
 
 from .keys import (
@@ -56,30 +58,36 @@ URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
 
 class Context(object):
-    def __init__(self, source=None, base=None, version=None):
+    def __init__(
+        self,
+        source: Optional[Any] = None,
+        base: Optional[str] = None,
+        version: Optional[float] = None,
+    ):
         self.version = version or 1.0
         self.language = None
         self.vocab = None
+        self._base: Optional[str]
         self.base = base
         self.doc_base = base
-        self.terms = {}
+        self.terms: Dict[str, Any] = {}
         # _alias maps NODE_KEY to list of aliases
-        self._alias = {}
-        self._lookup = {}
-        self._prefixes = {}
+        self._alias: Dict[str, List[str]] = {}
+        self._lookup: Dict[Tuple[str, Any, Union[Defined, str], bool], Any] = {}
+        self._prefixes: Dict[str, Any] = {}
         self.active = False
         self.parent = None
         self.propagate = True
-        self._context_cache = {}
+        self._context_cache: Dict[str, Any] = {}
         if source:
             self.load(source)
 
     @property
-    def base(self):
+    def base(self) -> Optional[str]:
         return self._base
 
     @base.setter
-    def base(self, base):
+    def base(self, base: Optional[str]):
         if base:
             hash_index = base.find("#")
             if hash_index > -1:
@@ -177,11 +185,11 @@ class Context(object):
                 return obj.get(alias)
         return obj.get(key)
 
-    def get_key(self, key):
+    def get_key(self, key: str):
         for alias in self.get_keys(key):
             return alias
 
-    def get_keys(self, key):
+    def get_keys(self, key: str):
         if key in self._alias:
             for alias in self._alias[key]:
                 yield alias
@@ -197,9 +205,9 @@ class Context(object):
 
     def add_term(
         self,
-        name,
-        idref,
-        coercion=UNDEF,
+        name: str,
+        idref: str,
+        coercion: Union[Defined, str] = UNDEF,
         container=UNDEF,
         index=None,
         language=UNDEF,
@@ -239,6 +247,7 @@ class Context(object):
 
         self.terms[name] = term
 
+        container_key: Union[Defined, str]
         for container_key in (LIST, LANG, SET):  # , INDEX, ID, GRAPH):
             if container_key in container:
                 break
@@ -251,7 +260,12 @@ class Context(object):
             self._prefixes[idref] = name
 
     def find_term(
-        self, idref, coercion=None, container=UNDEF, language=None, reverse=False
+        self,
+        idref: str,
+        coercion=None,
+        container: Union[Defined, str] = UNDEF,
+        language: Optional[str] = None,
+        reverse: bool = False,
     ):
         lu = self._lookup
 
@@ -349,9 +363,14 @@ class Context(object):
             return ":".join((pfx, name))
         return iri
 
-    def load(self, source, base=None, referenced_contexts=None):
+    def load(
+        self,
+        source: Optional[Union[List[Any], Any]],
+        base: Optional[str] = None,
+        referenced_contexts: Set[Any] = None,
+    ):
         self.active = True
-        sources = []
+        sources: List[Any] = []
         source = source if isinstance(source, list) else [source]
         referenced_contexts = referenced_contexts or set()
         self._prep_sources(base, source, sources, referenced_contexts)
@@ -361,7 +380,7 @@ class Context(object):
             else:
                 self._read_source(source, source_url, referenced_contexts)
 
-    def _accept_term(self, key):
+    def _accept_term(self, key: str) -> bool:
         if self.version < 1.1:
             return True
         if key and len(key) > 1 and key[0] == "@" and key[1].isalnum():
@@ -370,7 +389,12 @@ class Context(object):
             return True
 
     def _prep_sources(
-        self, base, inputs, sources, referenced_contexts, in_source_url=None
+        self,
+        base: Optional[str],
+        inputs: List[Any],
+        sources,
+        referenced_contexts,
+        in_source_url=None,
     ):
 
         for source in inputs:
@@ -385,6 +409,10 @@ class Context(object):
                     continue
                 else:
                     if base:
+                        if TYPE_CHECKING:
+                            # if base is not None, then source_doc_base won't be
+                            # none due to how it is assigned.
+                            assert source_doc_base is not None
                         base = urljoin(source_doc_base, source_url)
                     source = new_ctx
 
