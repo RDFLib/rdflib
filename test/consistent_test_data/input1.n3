@@ -1,8 +1,3 @@
-@prefix ns1: <urn:> .
+@prefix : <urn:> .
 
-ns1:tarek ns1:likes ns1:cheese,
-        ns1:michel,
-        ns1:pizza .
-
-ns1:michel ns1:likes ns1:pizza .
-
+:tarek :likes :pizza .
