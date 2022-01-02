@@ -93,7 +93,7 @@ def get_target_namespace_elements(g, target_namespace):
 
     elements_strs = []
     for e in elements:
-        desc = e[1].replace('\n', ' ')
+        desc = e[1].replace("\n", " ")
         elements_strs.append(
             f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
         )
@@ -148,14 +148,14 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        '-f',
+        "-f",
         "--fail",
-        dest='fail',
-        action='store_true',
+        dest="fail",
+        action="store_true",
         help="Whether (true) or not (false) to mimic ClosedNamespace and fail on "
         "non-element use",
     )
-    parser.add_argument('--no-fail', dest='fail', action='store_false')
+    parser.add_argument("--no-fail", dest="fail", action="store_false")
     parser.set_defaults(feature=False)
 
     args = parser.parse_args()

@@ -28,6 +28,7 @@ def turtle(test: RDFTest):
 
         if test.result:  # eval test
             res = Graph()
+            assert not isinstance(test.result, tuple)
             res.parse(test.result, format="nt")
 
             if verbose:

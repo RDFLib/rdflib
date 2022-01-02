@@ -33,6 +33,7 @@ Example usage::
 # NOTE: This code reads the entire JSON object into memory before parsing, but
 # we should consider streaming the input to deal with arbitrarily large graphs.
 
+from typing import Optional
 import warnings
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import URLInputSource
@@ -130,7 +131,7 @@ def to_rdf(
     dataset,
     base=None,
     context_data=None,
-    version=None,
+    version: Optional[float] = None,
     generalized_rdf=False,
     allow_lists_of_lists=None,
 ):
