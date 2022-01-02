@@ -661,7 +661,9 @@ def test_read_triple_into_dataset(get_dataset):
     # Note that in the call above -
     # ds.quads((None,None,None,"http://www.example.com/gr"))
     # would have been accepted, too
-    quads = [q for q in ds.quads((None, None, None, "http://www.example.com/gr"))]
+    quads = [
+        q for q in ds.quads((None, None, None, URIRef("http://www.example.com/gr")))
+    ]
     assert len(quads) == 2
     # logger.debug(f"quads\n{pformat(quads, width=80)}")
 

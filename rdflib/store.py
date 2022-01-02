@@ -1,13 +1,12 @@
 from io import BytesIO
 import pickle
 from rdflib.events import Dispatcher, Event
+from rdflib.term import Identifier
 from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
     from rdflib.term import Node
     from rdflib.graph import Graph
-
-from rdflib.term import Identifier
 
 """
 ============
@@ -270,7 +269,7 @@ class Store(object):
 
         # DEVNOTE: Introduced in:
         # https://github.com/RDFLib/rdflib/blob/ad23b33edd.../rdflib/store.py#L229
-        # but marked as an ereor by mypy because it is unreachable:
+        # but marked as an error by mypy because it is unreachable:
         # “Subclass of "Graph" and "Identifier" cannot exist,
         # would have incompatible method structure.”
         # Likely that this addition is superfluous in the current type-checked context

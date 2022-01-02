@@ -546,6 +546,10 @@ class SPARQLUpdateStore(SPARQLStore):
         """
         This method is included so that calls to this Store via Graph, e.g.
         Graph("SPARQLStore"), can set the required parameters
+
+        configuration must be either a string (a single query endpoint URI)
+        or a tuple (a query/update endpoint URI pair, in that order)
+
         """
         if type(configuration) == str:
             self.query_endpoint = configuration  # type: ignore[assignment]

@@ -156,7 +156,7 @@ def test_simple_dataset_default_graph_and_contexts_programmatic_modelling(get_da
 
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
-        repr(list(ds.contexts()))
+        str(list(ds.contexts()))
         == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
@@ -164,14 +164,14 @@ def test_simple_dataset_default_graph_and_contexts_programmatic_modelling(get_da
     assert set(x.identifier for x in ds.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
 
     dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
-    # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{repr(dataset_default_graph)}")
+    # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{str(dataset_default_graph)}")
     assert (
-        repr(dataset_default_graph)
-        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
+        str(dataset_default_graph)
+        == "<urn:x-rdflib-default> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']."
     )
 
-    # logger.debug(f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}")
-    assert repr(dataset_default_graph.serialize(format="xml")) == repr(
+    # logger.debug(f"\n\nXML serialization\n{str(dataset_default_graph.serialize(format='xml'))}")
+    assert str(dataset_default_graph.serialize(format="xml")) == str(
         '<?xml version="1.0" encoding="utf-8"?>\n'
         "<rdf:RDF\n"
         '   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n'
@@ -188,19 +188,19 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
     # Serialization of the empty dataset is sane
 
     # logger.debug(f"\n\nTRIG serialization\n{ds.serialize(format='trig')}")
-    assert repr(ds.serialize(format="trig")) == repr("@prefix ns1: <urn:> .\n\n")
+    assert str(ds.serialize(format="trig")) == str("@prefix ns1: <urn:> .\n\n")
 
     # logger.debug(f"\n\nNQUADS serialization\n{ds.serialize(format='nquads')}")
-    assert repr(ds.serialize(format="nquads")) == repr("\n")
+    assert str(ds.serialize(format="nquads")) == str("\n")
 
     # logger.debug(f"\n\nJSON-LD serialization\n{ds.serialize(format='json-ld')}")
-    assert repr(ds.serialize(format="json-ld")) == repr("[]")
+    assert str(ds.serialize(format="json-ld")) == str("[]")
 
     # logger.debug(f"\n\nHEXT serialization\n{ds.serialize(format='hext')}")
-    assert repr(ds.serialize(format="hext")) == repr("")
+    assert str(ds.serialize(format="hext")) == str("")
 
-    # logger.debug(f"\n\nTRIX serialization\n{repr(ds.serialize(format='trix'))}")
-    assert repr(ds.serialize(format="trix")) == repr(
+    # logger.debug(f"\n\nTRIX serialization\n{str(ds.serialize(format='trix'))}")
+    assert str(ds.serialize(format="trix")) == str(
         '<?xml version="1.0" encoding="utf-8"?>\n<TriX\n'
         '  xmlns:brick="https://brickschema.org/schema/Brick#"\n'
         '  xmlns:csvw="http://www.w3.org/ns/csvw#"\n'
@@ -212,6 +212,7 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
         '  xmlns:doap="http://usefulinc.com/ns/doap#"\n'
         '  xmlns:foaf="http://xmlns.com/foaf/0.1/"\n'
         '  xmlns:odrl="http://www.w3.org/ns/odrl/2/"\n'
+        '  xmlns:geo="http://www.opengis.net/ont/geosparql#"\n'
         '  xmlns:org="http://www.w3.org/ns/org#"\n'
         '  xmlns:owl="http://www.w3.org/2002/07/owl#"\n'
         '  xmlns:prof="http://www.w3.org/ns/dx/prof/"\n'
@@ -249,21 +250,21 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
 
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
-        repr(list(ds.contexts()))
+        str(list(ds.contexts()))
         == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
-    # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
-    assert repr(ds.serialize(format="trig")) in [
-        repr("@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"),
+    # logger.debug(f"\n\nTRIG serialization\n{str(ds.serialize(format='trig'))}")
+    assert str(ds.serialize(format="trig")) in [
+        str("@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"),
     ]
 
     dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
 
     logger.debug(
-        f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}"
+        f"\n\nXML serialization\n{str(dataset_default_graph.serialize(format='xml'))}"
     )
-    assert repr(dataset_default_graph.serialize(format="xml")) == repr(
+    assert str(dataset_default_graph.serialize(format="xml")) == str(
         '<?xml version="1.0" encoding="utf-8"?>\n'
         "<rdf:RDF\n"
         '   xmlns:ns1="urn:"\n'
@@ -278,16 +279,16 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
 
     # For exhaustive completeness: The default graph behaves as a Graph -
     # logger.debug(
-    #     f"\n\nTURTLE serialization\n{repr(dataset_default_graph.serialize(format='ttl'))}"
+    #     f"\n\nTURTLE serialization\n{str(dataset_default_graph.serialize(format='ttl'))}"
     # )
-    assert repr(dataset_default_graph.serialize(format="ttl")) == repr(
+    assert str(dataset_default_graph.serialize(format="ttl")) == str(
         "@prefix ns1: <urn:> .\n\nns1:tarek ns1:likes ns1:pizza .\n\n"
     )
 
     # logger.debug(
-    #     f"\n\nJSON-LD serialization\n{repr(dataset_default_graph.serialize(format='json-ld'))}"
+    #     f"\n\nJSON-LD serialization\n{str(dataset_default_graph.serialize(format='json-ld'))}"
     # )
-    assert repr(dataset_default_graph.serialize(format="json-ld")) == repr(
+    assert str(dataset_default_graph.serialize(format="json-ld")) == str(
         "[\n"
         "  {\n"
         '    "@graph": [\n'
@@ -307,9 +308,9 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
 
     # Serializes correctly
     # logger.debug(
-    #     f"\n\nTRIG serializes ns1 as <urn:x-rdflib:> and uses id for default graph\n{repr(ds.serialize(format='trig'))}"
+    #     f"\n\nTRIG serializes ns1 as <urn:x-rdflib:> and uses id for default graph\n{str(ds.serialize(format='trig'))}"
     # )
-    assert repr(ds.serialize(format="trig")) == repr(
+    assert str(ds.serialize(format="trig")) == str(
         "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
     )
 
@@ -353,8 +354,8 @@ def test_simple_dataset_default_graph_and_contexts_sparql_modelling(get_dataset)
     r = ds.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
     assert len(list(r)) == 1, "one person likes pizza"
 
-    # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
-    assert repr(ds.serialize(format="trig")) == repr(
+    # logger.debug(f"\n\nTRIG serialization\n{str(ds.serialize(format='trig'))}")
+    assert str(ds.serialize(format="trig")) == str(
         "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
     )
 
@@ -427,9 +428,9 @@ def test_simple_dataset_contexts_sparql_modelling(get_dataset):
     r = ds.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
     assert len(list(r)) == 1, "one person likes pizza"
 
-    # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
+    # logger.debug(f"\n\nTRIG serialization\n{str(ds.serialize(format='trig'))}")
 
-    assert repr(ds.serialize(format="trig")) == repr(
+    assert str(ds.serialize(format="trig")) == str(
         "@prefix ns1: <urn:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
     )
 
@@ -478,7 +479,7 @@ def test_dataset_add_graph(get_dataset):
     sg = ds.get_context("subgraph")
     assert len(sg) == 2
 
-    # logger.debug(f"\n\nXML serialization\n{repr(sg.serialize(format='xml'))}")
+    # logger.debug(f"\n\nXML serialization\n{str(sg.serialize(format='xml'))}")
 
 
 # # @pytest.mark.skip
@@ -492,8 +493,8 @@ def test_dataset_add_graph(get_dataset):
 #     ds.bind("", "urn:", True)
 #     ds.add((tarek, likes, pizza))
 
-#     # logger.debug(f"\n\nTRIG serialization\n{repr(ds.serialize(format='trig'))}")
-#     assert repr(ds.serialize(format="trig")) == repr(
+#     # logger.debug(f"\n\nTRIG serialization\n{str(ds.serialize(format='trig'))}")
+#     assert str(ds.serialize(format="trig")) == str(
 #         "@prefix : <urn:> .\n"
 #         "@prefix ns1: <urn:x-rdflib:> .\n"
 #         "\n"
@@ -504,9 +505,9 @@ def test_dataset_add_graph(get_dataset):
 #     )
 
 #     # logger.debug(
-#     #     f"\n\nXML serialization\n{repr(dataset_default_graph.serialize(format='xml'))}"
+#     #     f"\n\nXML serialization\n{str(dataset_default_graph.serialize(format='xml'))}"
 #     # )
-#     assert repr(dataset_default_graph.serialize(format="xml")) == repr(
+#     assert str(dataset_default_graph.serialize(format="xml")) == str(
 #         '<?xml version="1.0" encoding="utf-8"?>\n'
 #         "<rdf:RDF\n"
 #         '   xmlns="urn:"\n'

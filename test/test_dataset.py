@@ -239,13 +239,13 @@ for s in plugin.plugins(pluginname, plugin.Store):
     skip_reason: Optional[str] = None
     if s.name in (
         "default",
-        "SimpleMemory",
+        # "SimpleMemory",
         "Memory",
         "Auditable",
         "Concurrent",
         "SPARQLStore",
-        "LevelDB",
-        "SQLiteLSM",
+        # "LevelDB",
+        # "SQLiteLSM",
     ):
         continue  # these are tested by default
 

@@ -34,7 +34,7 @@ def render_contexts(ds):
     )
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_issue319_add_graph_as_dataset_default():
 
     # STATUS: FIXME remains an issue
@@ -139,7 +139,7 @@ def test_issue319_add_graph_as_dataset_default():
 
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
-        repr(list(ds.contexts()))
+        str(list(ds.contexts()))
         == "[<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>]"
     )
 
@@ -148,11 +148,11 @@ def test_issue319_add_graph_as_dataset_default():
 
     dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
 
-    # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{repr(dataset_default_graph)}")
+    # logger.debug(f"\n\nDATASET_DEFAULT_GRAPH\n{str(dataset_default_graph)}")
 
     assert (
-        repr(dataset_default_graph)
-        == "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
+        str(dataset_default_graph)
+        == "<urn:x-rdflib-default> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']."  # "<Graph identifier=urn:x-rdflib-default (<class 'rdflib.graph.Graph'>)>"
     )
 
     ds.bind("urn", URIRef("urn:"))
@@ -329,7 +329,7 @@ def test_issue319_add_graph_as_dataset_default():
 
     ds.parse(data="<urn:tarek> <urn:likes> <urn:pizza> .", format="ttl")
 
-    assert len(list(ds.contexts())) == 7
+    assert len(list(ds.contexts())) == 6
     # logger.debug(render_contexts(ds))
 
     # logger.debug("ds:\n" f"{ds.serialize(format='trig')}")
@@ -370,7 +370,7 @@ def test_issue319_add_graph_as_dataset_default():
         "INSERT DATA { GRAPH <urn:context-1> { <urn:tarek> <urn:hates> <urn:pizza> . } }"
     )
 
-    assert len(list(ds.contexts())) == 8
+    assert len(list(ds.contexts())) == 7
     # logger.debug(render_contexts(ds))
     # logger.debug("ds:\n" f"{ds.serialize(format='trig')}")
 

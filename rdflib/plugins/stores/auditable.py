@@ -83,9 +83,9 @@ class AuditableStore(Store):
                         (subject, predicate, object_)
                     ):
                         try:
-                            self.reverseOps.remove((s, p, o, ctx, 'remove'))
+                            self.reverseOps.remove((s, p, o, ctx, "remove"))
                         except ValueError:
-                            self.reverseOps.append((s, p, o, ctx, 'add'))
+                            self.reverseOps.append((s, p, o, ctx, "add"))
             else:
                 if not list(self.triples((subject, predicate, object_), context)):
                     return  # triple not present in store, do nothing

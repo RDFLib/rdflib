@@ -327,27 +327,6 @@ class Graph(Node):
 
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
 
-    Wherein a Named Graph is described as:
-
-    “a set of triples named by an URI. This URI can then be used outside
-    or within the graph to refer to it.”
-
-    Assigning a BNode as identifier is thus a questionable choice, especially
-    when inherited by ConjunctiveGraph and nonsensical as a default for
-    SPARQL-backed Stores.
-
-    Chris Bizer chose a BNode-exclusive approach in NG4J:
-
-    public interface NamedGraph extends Graph {
-
-        /**
-         * Returns the URI of the named graph. The returned Node
-         * instance is always an URI and cannot be a blank node
-         * or literal.
-         */
-        public Node getGraphName();
-    }
-
     """
 
     def __init__(
@@ -373,8 +352,9 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
-        if "SPARQL" in repr(self.__store) and isinstance(self.__identifier, BNode):
-            self.__identifier = DATASET_DEFAULT_GRAPH_ID
+        # FIXME: NONONONO
+        # if "SPARQL" in repr(self.__store) and isinstance(self.__identifier, BNode):
+        #     self.__identifier = DATASET_DEFAULT_GRAPH_ID
 
     def __get_store(self):
         return self.__store
@@ -454,7 +434,7 @@ class Graph(Node):
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
-        # logger.debug(f"GRAPH add self.identifier {self.identifier}")
+
         self.__store.add((s, p, o), self.identifier, quoted=False)
         return self
 
@@ -462,6 +442,9 @@ class Graph(Node):
         """Add a sequence of triple with context"""
         # See https://github.com/RDFLib/rdflib/issues/371
         self.__store.addN(
+            # FIXME: is this change from oohlaf desirable
+            # (s, p, o, c.identifier)
+            # vs
             (s, p, o, c.identifier if isinstance(c, Graph) else c)
             for s, p, o, c in quads
             if (isinstance(c, Graph) and c.identifier is self.identifier)
@@ -639,7 +622,7 @@ class Graph(Node):
     def __add__(self, other):
         """Set-theoretic union
         BNode IDs are not changed."""
-        warn(f"Graph.__add__ other {type(other)}")
+        # warn(f"Graph.__add__ other {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -655,7 +638,7 @@ class Graph(Node):
     def __mul__(self, other):
         """Set-theoretic intersection.
         BNode IDs are not changed."""
-        warn(f"Graph.__mul__ other: {type(other)}")
+        # warn(f"Graph.__mul__ other: {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -668,7 +651,7 @@ class Graph(Node):
     def __sub__(self, other):
         """Set-theoretic difference.
         BNode IDs are not changed."""
-        warn(f"Graph.__sub__ other {type(other)}")
+        # warn(f"Graph.__sub__ other {type(other)}")
         try:
             retval = type(self)()
         except TypeError:
@@ -1310,14 +1293,8 @@ class Graph(Node):
         initBindings = initBindings or {}
         initNs = initNs or dict(self.namespaces())
 
-        # logger.debug(
-        #     f"store has query {hasattr(self.store, 'query')} and use_store_provided {use_store_provided}"
-        # )
         if hasattr(self.store, "query") and use_store_provided:
             try:
-                # logger.debug(
-                #     f"\n\nGraph: query:: store.query {query_object} initNs {len(initNs)} initBindings {initBindings} queryGraph {self.default_union and '__UNION__' or self.identifier} kwargs {kwargs} "
-                # )
                 return self.store.query(
                     query_object,
                     initNs,
@@ -1334,13 +1311,6 @@ class Graph(Node):
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
-        # logger.debug(
-        #     f"\n\nGraph: query:: processor.graph.identifier {processor.graph.identifier}"
-        # )
-
-        # logger.debug(
-        #     f"\n\nGraph: query:: processor.query {processor} {query_object} initBindings {initBindings} initNs {len(initNs)} kwargs {kwargs} "
-        # )
         return result(processor.query(query_object, initBindings, initNs, **kwargs))
 
     def update(
@@ -1355,15 +1325,9 @@ class Graph(Node):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
         initNs = initNs or dict(self.namespaces())
-        # logger.debug(
-        #     f"store has update {hasattr(self.store, 'update')} and use_store_provided {use_store_provided}"
-        # )
 
         if hasattr(self.store, "update") and use_store_provided:
             try:
-                # logger.debug(
-                #     f"\n\nGraph: update:: store.update {update_object} initNs {len(initNs)} initBindings {initBindings} queryGraph {self.default_union and '__UNION__' or self.identifier} kwargs {kwargs} "
-                # )
                 return self.store.update(
                     update_object,
                     initNs,
@@ -1372,19 +1336,11 @@ class Graph(Node):
                     **kwargs,
                 )
             except NotImplementedError:
-                # logger.debug("However, NotImplementedError so passing the buck")
                 pass  # store has no own implementation
 
         if not isinstance(processor, query.UpdateProcessor):
             processor = plugin.get(processor, query.UpdateProcessor)(self)
 
-        # logger.debug(
-        #     f"\n\nGraph: update:: processor.graph.identifier {processor.graph.identifier}"
-        # )
-
-        # logger.debug(
-        #     f"\n\nGraph: update:: processor.update {processor} {update_object} initBindings {initBindings} initNs {len(initNs)} kwargs {kwargs} "
-        # )
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
@@ -1687,7 +1643,6 @@ class ConjunctiveGraph(Graph):
             (s, p, o) = triple_or_quad  # type: ignore[misc]
         elif len(triple_or_quad) == 4:
             (s, p, o, c) = triple_or_quad  # type: ignore[misc]
-            c = self._graph(c)
         return s, p, o, c
 
     def __contains__(self, triple_or_quad):
@@ -1717,6 +1672,7 @@ class ConjunctiveGraph(Graph):
     #     return retval
 
     # # Gromgull original, fails
+
     # def __add__(self, other):
     #     """Set-theoretic union
     #     BNode IDs are not changed."""
@@ -2012,9 +1968,18 @@ class ConjunctiveGraph(Graph):
             format=format,
         )
 
+        if "isdataset" in args:
+            isdataset = True
+            del args["isdataset"]
+        else:
+            isdataset = False
+
         g_id = publicID and publicID or source.getPublicId()
         if not isinstance(g_id, Node):
-            g_id = URIRef(g_id)
+            if isdataset and g_id == "":
+                g_id = DATASET_DEFAULT_GRAPH_ID
+            else:
+                g_id = URIRef(g_id)
 
         if format is None:
             format = source.content_type
@@ -2030,14 +1995,10 @@ class ConjunctiveGraph(Graph):
                 format = "trig"
                 could_not_guess_format = True
 
-        # parser = plugin.get(format, Parser)()
-
         try:
             context = Graph(store=self.store, identifier=g_id)
             context.remove((None, None, None))  # hmm ?
             context.parse(source, publicID=publicID, format=format, **args)
-
-            # parser.parse(source, self, **args)
 
         except SyntaxError as se:
             if could_not_guess_format:
@@ -2051,6 +2012,9 @@ class ConjunctiveGraph(Graph):
         finally:
             if source.auto_close:
                 source.close()
+
+        # warn(f"\n\n{list(self.contexts())}\n")
+        # warn(f"\n\n{self.serialize(format='trig')}\n")
 
         return self
 
@@ -2069,6 +2033,9 @@ class Dataset(ConjunctiveGraph):
     operate with graphs
     - graphs cannot be identified with blank nodes
     - added a method to directly add a single quad
+
+    #### The exclusion of BNodes as identifiers is no longer the case, see
+    #### https://github.com/RDFLib/rdflib/issues/301#issuecomment-19800669
 
     Examples of usage:
 
@@ -2182,6 +2149,7 @@ class Dataset(ConjunctiveGraph):
     """
 
     def __init__(self, store="default", default_union=False, default_graph_base=None):
+        # FIXME is this change from oohlaf desirable?
         super(Dataset, self).__init__(store=store, identifier=DATASET_DEFAULT_GRAPH_ID)
 
         if not self.store.graph_aware:
@@ -2210,6 +2178,12 @@ class Dataset(ConjunctiveGraph):
     def __setstate__(self, state):
         self.store, self.identifier, self.default_context, self.default_union = state
 
+    # def __len__(self, context=None):
+    #    """Number of triples in the default graph or context (if not None)"""
+    #    return self.store.__len__(
+    #        context=DATASET_DEFAULT_GRAPH_ID if context is None else context
+    #    )
+
     # Issue: #225 Think about __iadd__, __isub__ etc. for ConjunctiveGraph
 
     # def __add__(self, other):
@@ -2233,20 +2207,24 @@ class Dataset(ConjunctiveGraph):
         """Add all triples in ConjunctiveGraph other to this Graph.
         BNode IDs are not changed."""
 
-        # logger.debug(f"__IADD__  {type(other)}")
+        # warn(f"__IADD__  {type(other)}")
 
         if isinstance(other, Dataset):
-            logger.debug(f"DATASET__IADD__ADDN 0  {type(other)}")
+            # warn("DATASET__IADD__ADDN 0  DATASET")
             self.addN(other.quads((None, None, None)))
         elif isinstance(other, ConjunctiveGraph):
-            logger.debug(f"DATASET__IADD__ADDN 1  {type(other)}")
+            # warn("DATASET__IADD__ADDN 1  CONJUNCTIVEGRAPH")
             self.addN(other.quads((None, None, None)))
-        # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
+        # SPARQL UPDATE yields a list at least
         elif isinstance(other, list):
-            logger.debug(f"DATASET__IADD__ADDN 2  {type(other)}")
+            # warn(
+            #     f"DATASET__IADD__ADDN 2 LIST - HAVE TO USE SELF.IDENTIFIER {self.identifier}"
+            # )
             self.addN((s, p, o, self.identifier) for s, p, o in other)
         else:
-            logger.debug(f"DATASET__IADD__ADDN 3  {type(other)}")
+            # warn(
+            #     f"DATASET__IADD__ADDN UNHANDLED TYPE USING IDENTIFIER FROM {type(other)}"
+            # )
             self.addN((s, p, o, other.identifier) for s, p, o in other)
         return self
 
@@ -2261,63 +2239,31 @@ class Dataset(ConjunctiveGraph):
     #             self.remove(triple)
     #     return self
 
-    # def __iadd__(self, other):
-    #     """Add all triples in ConjunctiveGraph other to this Graph. BNode IDs are not changed."""
-    #     if isinstance(other, ConjunctiveGraph):
-    #         self.addN(other.quads((None, None, None)))
-    #     elif isinstance(other, list) and other != []:
-    #         import inspect
-
-    #         warn(
-    #             f"Got a list if {len(other)} statements: {other} passed by {inspect.stack()[1].function} in {inspect.stack()[2].function} in {inspect.stack()[3].function} in {inspect.stack()[4].function}  in {inspect.stack()[5].function}"
-    #         )
-
-    #         if len(other[0]) == 4:
-    #             self.addN((s, p, o, c) for s, p, o, c in other)
-    #         else:
-    #             self.addN((s, p, o, self.identifier) for s, p, o in other)
-    #     else:
-    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
-    #     return self
-
-    # def __iadd__(self, other):
-    #     """Add all triples in ConjunctiveGraph other to this Graph.
-    #     BNode IDs are not changed."""
-    #     # warn(f"Dataset.__iadd__ other = {type(other)}")
-
-    #     if isinstance(other, Dataset):
-    #         warn(f"Dataset.__iadd__ADDN 0 (Dataset)")
-    #         self.addN(other.quads((None, None, None)))
-    #     elif isinstance(other, ConjunctiveGraph):
-    #         warn(f"DATASET__IADD__ADDN 1 (ConjunctiveGraph)")
-    #         self.addN(other.quads((None, None, None)))
-    #     # What aspect of the model does type == list signify? Hint, it arises from SPARQL UPDATE
-    #     elif isinstance(other, list):
-    #         import inspect
-
-    #         warn(
-    #             f"Got a list {other} passed by {inspect.stack()[1].function} in {inspect.stack()[2].function} in {inspect.stack()[3].function} in {inspect.stack()[4].function}  in {inspect.stack()[5].function}"
-    #         )
-
-    #         warn(f"DATASET__IADD__ADDN 2 (list) “{list}”")
-    #         self.addN((s, p, o, self.identifier) for s, p, o in other)
-    #     else:
-    #         warn(f"DATASET__IADD__ADDN 3 (else)")
-    #         self.addN((s, p, o, other.identifier) for s, p, o in other)
-    #     return self
-
     def graph(self, identifier=None, base=None):
-        graph = None
-        if isinstance(identifier, (Graph, ConjunctiveGraph)):
+        """
+        Return the Graph identified in the Dataset by `identifier` or
+        return a new Graph if one with that identifier doesn't exist.
+
+        If `identifier` is omitted or `None`, the identifier of the new
+        Graph returned will be a skolemized BNode.
+
+        If a value for `base` is provided, it will be bound to the base of
+        the new Graph that is returned.
+        """
+
+        if isinstance(identifier, Graph):
             import inspect
             import warnings
 
+            # PRO TEM DEV ONLY because is valid usage in Dataset.add_graph()
             warnings.warn(
                 f"Got a Graph {identifier}, should be a URIRef, passed by {inspect.stack()[1].function} in {inspect.stack()[2].function}  in {inspect.stack()[3].function}"
             )
 
             graph = identifier
             identifier = graph.identifier
+        else:
+            graph = None
 
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
@@ -2330,13 +2276,6 @@ class Dataset(ConjunctiveGraph):
         g = self._graph(identifier)
         g.base = base
 
-        if graph is not None and type(graph) is Graph and len(graph) > 0:
-            g += graph
-
-        # Register the graph object and identifier?
-        # DEVNOTE: if uncommented, causes
-        # if identifier != DATASET_DEFAULT_GRAPH_ID:
-        #     self.store.add_graph(identifier)
         self.store.add_graph(identifier)
         return g
 
@@ -2350,6 +2289,22 @@ class Dataset(ConjunctiveGraph):
         data=None,
         **args,
     ):
+        """
+        Parse source adding the resulting triples to its own context
+        (sub graph of this graph) or to the default graph.
+
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
+
+        :Returns:
+
+        The graph into which the source was parsed. In the case of n3
+        it returns the root context.
+        """
+
+        # warn(f"Parsing\n\n{data}")
+
+        args["isdataset"] = True
+
         c = ConjunctiveGraph.parse(
             self,
             source,
@@ -2365,9 +2320,163 @@ class Dataset(ConjunctiveGraph):
 
         return c
 
-    def add_graph(self, g):
-        """alias of graph for consistency"""
-        return self.graph(g)
+    def parse_testing(
+        self,
+        source=None,
+        publicID=None,
+        format=None,
+        location=None,
+        file=None,
+        data=None,
+        **args,
+    ):
+
+        source = create_input_source(
+            source=source,
+            publicID=publicID,
+            location=location,
+            file=file,
+            data=data,
+            format=format,
+        )
+
+        if format is None:
+            format = source.content_type
+        could_not_guess_format = False
+        if format is None:
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
+                format = rdflib.util.guess_format(source.file.name)
+            if format is None:
+                format = "trig"
+                could_not_guess_format = True
+
+        parser = plugin.get(format, Parser)()
+        try:
+            # context = Graph(store=self.store, identifier=g_id)
+            # context.remove((None, None, None))  # hmm ?
+            # context.parse(source, publicID=publicID, format=format, **args)
+
+            g = ConjunctiveGraph()
+
+            parser.parse(source, g, **args)
+
+        except SyntaxError as se:
+            if could_not_guess_format:
+                raise ParserError(
+                    "Could not guess RDF format for %r from file extension so tried Trig but failed. "
+                    "You can explicitly specify format using the format argument."
+                    % source
+                )
+            else:
+                raise se
+        finally:
+            if source.auto_close:
+                source.close()
+
+        # self.graph(c.identifier)
+        self.graph(g)
+
+        # from pprint import pformat
+
+        # warn(f"\n\n{pformat(list(c.quads((None, None, None, None))))}")
+
+        # warn(f"\n\n{list(g.contexts())}\n")
+        # warn(f"\n\n{g.serialize(format='trig')}\n")
+
+        # warn(f"Adding triples to {c.identifier}")
+
+        # if c.identifier == DATASET_DEFAULT_GRAPH_ID:
+        #     self.addN(
+        #         [
+        #             (s, p, o, DATASET_DEFAULT_GRAPH_ID)
+        #             for s, p, o in c.triples((None, None, None))
+        #         ]
+        #     )
+        # else:
+        #     self.addN(
+        #         c.quads(
+        #             (
+        #                 None,
+        #                 None,
+        #                 None,
+        #                 None,
+        #             )
+        #         )
+        #     )
+
+        return g
+
+    def add_graph(self, g, preserve_contexts=False):
+        """
+
+        g is a Graph or URIRef
+
+        If g is a URIRef, behave as an alias to `graph()` and return the
+        Graph identified in the Dataset by `identifier` else return a
+        new Graph.
+
+        If g is a Graph, add the Graph to the Dataset, using the Graph's
+        identifier or, if None, create a skolemized BNode as identifier.
+
+
+        If g is a ConjunctiveGraph and `preserve_contexts` is True, add g
+        to the Dataset, preserving any contexts as Dataset graphs.
+        """
+
+        if isinstance(g, (BNode, URIRef)):
+            return self.graph(g)
+
+        identifier = g.identifier
+
+        if identifier is None:
+            from rdflib.term import rdflib_skolem_genid
+
+            self.bind(
+                "genid", "http://rdflib.net" + rdflib_skolem_genid, override=False
+            )
+            identifier = BNode().skolemize()
+
+        if g is not None and len(g) > 0:
+            if isinstance(g, Dataset):
+                self += g
+
+            elif isinstance(g, ConjunctiveGraph):
+                if preserve_contexts is True:
+                    self.addN(
+                        g.quads(
+                            (
+                                None,
+                                None,
+                                None,
+                                None,
+                            )
+                        )
+                    )
+                else:
+                    self.addN(
+                        [
+                            (s, p, o, identifier)
+                            for s, p, o in g.triples((None, None, None))
+                        ]
+                    )
+
+            elif isinstance(g, Graph):
+                graph = self._graph(identifier)
+                graph.base = g.base
+                # Defer to __iadd__
+                graph += g
+                # I _think_ but perhaps superfluous
+                self.store.add_graph(g)
+        else:
+            warn(
+                f"Not adding graph {g.identifier} [{g is not None}] (a {type(g)}, len={len(g)})."
+            )
+
+        return identifier
 
     def remove_graph(self, g):
         if isinstance(g, Graph):
@@ -2532,7 +2641,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     """Utility class for treating a set of graphs as a single graph
 
     Only read operations are supported (hence the name). Essentially a
-    ConjunctiveGraph over an explicit subset of the entire store.
+    ConjunctiveGraph over an explicit subset of an entire single store.
     """
 
     def __init__(self, graphs, store="default"):
@@ -2662,12 +2771,12 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def namespaces(self):
         if hasattr(self, "namespace_manager"):
-            for prefix, _namespace in self.namespace_manager.namespaces():
-                yield prefix, _namespace
+            for prefix, namespace in self.namespace_manager.namespaces():
+                yield prefix, namespace
         else:
             for graph in self.graphs:
-                for prefix, _namespace in graph.namespaces():
-                    yield prefix, _namespace
+                for prefix, namespace in graph.namespaces():
+                    yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
