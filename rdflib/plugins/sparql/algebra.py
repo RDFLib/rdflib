@@ -6,6 +6,7 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 """
 
 import functools
+import logging
 import operator
 import collections
 
@@ -847,9 +848,15 @@ def translateAlgebra(query_algebra: Query):
         with open("query.txt", "w") as file:
             file.write(filedata)
 
+    aggr_vars = collections.defaultdict(list)
+
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
-            return node_arg.n3()
+            if node_arg in aggr_vars.keys():
+                grp_var = aggr_vars[node_arg].pop(0)
+                return grp_var.n3()
+            else:
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -959,7 +966,8 @@ def translateAlgebra(query_algebra: Query):
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-                    agg_func_name = agg_func.name.split("_")[1]
+                    aggr_vars[agg_func.res].append(agg_func.vars)
+                    agg_func_name = agg_func.name.split('_')[1]
                     distinct = ""
                     if agg_func.distinct:
                         distinct = agg_func.distinct + " "
@@ -1022,7 +1030,7 @@ def translateAlgebra(query_algebra: Query):
                     if isinstance(c.expr, Identifier):
                         var = c.expr.n3()
                         if c.order is not None:
-                            cond = var + "(" + c.order + ")"
+                            cond = c.order + "(" + var + ")"
                         else:
                             cond = var
                         order_conditions.append(cond)

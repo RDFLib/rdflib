@@ -284,6 +284,7 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     query_tree = parser.parseQuery(query_text)
     query_algebra = algebra.translateQuery(query_tree)
     query_from_algebra = translateAlgebra(query_algebra)
+    logging.debug(query_from_algebra)
 
     query_tree_2 = parser.parseQuery(query_from_algebra)
     query_algebra_2 = algebra.translateQuery(query_tree_2)
@@ -296,6 +297,6 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
         query_from_algebra == query_from_query_from_algebra
     ), f"failed expectation: {test_spec.description}"
 
-    # TODO: Execute the raw query (query_text) and the reconstitued query
+    # TODO: Execute the raw query (query_text) and the reconstituted query
     # (query_from_query_from_algebra) against a well defined graph and ensure
     # they yield the same result.
