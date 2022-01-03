@@ -154,6 +154,9 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
     def remove(self, _, context):
         raise TypeError("The SPARQL store is read only")
 
+    def update(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
+        raise TypeError("The SPARQL store is read only")
+
     def _query(self, *args, **kwargs):
         self._queries += 1
 

@@ -56,7 +56,7 @@ def test_roundtrip():
         "even_more_literals.nt": "JSON decoding error",
         "literals-02.nt": "JSON decoding error",
         "more_literals.nt": "JSON decoding error",
-        "test.ntriples": "JSON decoding error",
+        "test.nt": "JSON decoding error",
         "literals-05.nt": "JSON decoding error",
         "i18n-01.nt": "JSON decoding error",
         "literals-04.nt": "JSON decoding error",

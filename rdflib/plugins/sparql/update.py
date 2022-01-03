@@ -273,7 +273,7 @@ def evalUpdate(graph, update, initBindings={}):
 
     """
 
-    for u in update:
+    for u in update.algebra:
 
         initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 

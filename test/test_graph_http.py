@@ -30,6 +30,24 @@ n3testdoc = """@prefix : <http://example.org/> .
 
 nttestdoc = "<http://example.org/a> <http://example.org/b> <http://example.org/c> .\n"
 
+ttltestdoc = """@prefix : <http://example.org/> .
+
+            :a :b :c .
+            """
+
+jsonldtestdoc = """
+                [
+                  {
+                    "@id": "http://example.org/a",
+                    "http://example.org/b": [
+                      {
+                        "@id": "http://example.org/c"
+                      }
+                    ]
+                  }
+                ]
+                """
+
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -40,7 +58,7 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
         acs = self.headers["Accept"].split(",")
         acq = [x.split(";") for x in acs if ";" in x]
         acn = [(x, "q=1") for x in acs if ";" not in x]
-        acs = [(x[0], float(x[1].strip()[2:])) for x in acq + acn]
+        acs = [(x[0].strip(), float(x[1].strip()[2:])) for x in acq + acn]
         ac = sorted(acs, key=lambda x: x[1])
         ct = ac[-1]
 
@@ -50,9 +68,18 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
         elif "text/n3" in ct:
             rct = "text/n3"
             content = n3testdoc
-        elif "text/plain" in ct:
+        elif "application/trig" in ct:
+            rct = "application/trig"
+            content = ttltestdoc
+        elif "text/plain" in ct or "application/n-triples" in ct:
             rct = "text/plain"
             content = nttestdoc
+        elif "application/ld+json" in ct:
+            rct = "application/ld+json"
+            content = jsonldtestdoc
+        else:  # "text/turtle" in ct:
+            rct = "text/turtle"
+            content = ttltestdoc
 
         self.send_header("Content-type", rct)
         self.end_headers()
@@ -66,7 +93,7 @@ class TestGraphHTTP(unittest.TestCase):
     def test_content_negotiation(self) -> None:
         EG = Namespace("http://example.org/")
         expected = Graph()
-        expected.add((EG["a"], EG["b"], EG["c"]))
+        expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
         with ctx_http_server(ContentNegotiationHandler) as server:
@@ -76,6 +103,19 @@ class TestGraphHTTP(unittest.TestCase):
                 graph = Graph()
                 graph.parse(url, format=format)
                 self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+
+    def test_content_negotiation_no_format(self) -> None:
+        EG = Namespace("http://example.org/")
+        expected = Graph()
+        expected.add((EG.a, EG.b, EG.c))
+        expected_triples = GraphHelper.triple_set(expected)
+
+        with ctx_http_server(ContentNegotiationHandler) as server:
+            (host, port) = server.server_address
+            url = f"http://{host}:{port}/foo"
+            graph = Graph()
+            graph.parse(url)
+            self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
 
     def test_source(self) -> None:
         EG = Namespace("http://example.org/")

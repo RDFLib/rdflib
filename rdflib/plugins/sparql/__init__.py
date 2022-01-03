@@ -35,7 +35,7 @@ from . import parser
 from . import operators
 from . import parserutils
 
-from .processor import prepareQuery, processUpdate
+from .processor import prepareQuery, prepareUpdate, processUpdate
 
 assert parser
 assert operators
