@@ -284,14 +284,17 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     query_tree = parser.parseQuery(query_text)
     query_algebra = algebra.translateQuery(query_tree)
     query_from_algebra = translateAlgebra(query_algebra)
-    logging.debug(query_from_algebra)
+    logging.debug(
+        "query_from_query_from_algebra = \n%s",
+        query_from_algebra,
+    )
 
     query_tree_2 = parser.parseQuery(query_from_algebra)
     query_algebra_2 = algebra.translateQuery(query_tree_2)
     query_from_query_from_algebra = translateAlgebra(query_algebra_2)
     logging.debug(
         "query_from_query_from_algebra = \n%s",
-        _format_query(query_from_query_from_algebra),
+        query_from_query_from_algebra,
     )
     assert (
         query_from_algebra == query_from_query_from_algebra

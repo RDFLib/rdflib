@@ -852,11 +852,13 @@ def translateAlgebra(query_algebra: Query):
 
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
-            if node_arg in aggr_vars.keys():
-                grp_var = aggr_vars[node_arg].pop(0)
-                return grp_var.n3()
+            if node_arg.n3() in aggr_vars.keys():
+                grp_var = aggr_vars[node_arg.n3()].pop(0)
+                logging.debug(grp_var)
+                return grp_var
             else:
                 return node_arg.n3()
+            # return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -966,7 +968,8 @@ def translateAlgebra(query_algebra: Query):
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-                    aggr_vars[agg_func.res].append(agg_func.vars)
+                    aggr_vars[convert_node_arg(agg_func.res)].append(convert_node_arg(agg_func.vars))
+
                     agg_func_name = agg_func.name.split('_')[1]
                     distinct = ""
                     if agg_func.distinct:
@@ -1241,7 +1244,7 @@ def translateAlgebra(query_algebra: Query):
                     "{Builtin_STRLEN}", "STRLEN(" + convert_node_arg(node.arg) + ")"
                 )
             elif node.name.endswith("Builtin_SUBSTR"):
-                args = [node.arg.n3(), node.start]
+                args = [convert_node_arg(node.arg), node.start]
                 if node.length:
                     args.append(node.length)
                 expr = "SUBSTR(" + ", ".join(args) + ")"
@@ -1302,7 +1305,8 @@ def translateAlgebra(query_algebra: Query):
                 )
             elif node.name.endswith("Builtin_CONCAT"):
                 expr = "CONCAT({vars})".format(
-                    vars=", ".join(elem.n3() for elem in node.arg)
+                    #vars=", ".join(elem.n3() for elem in node.arg)
+                    vars=", ".join(convert_node_arg(elem) for elem in node.arg)
                 )
                 replace("{Builtin_CONCAT}", expr)
             elif node.name.endswith("Builtin_LANGMATCHES"):
