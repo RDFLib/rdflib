@@ -852,13 +852,12 @@ def translateAlgebra(query_algebra: Query):
 
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
-            if node_arg.n3() in aggr_vars.keys():
-                grp_var = aggr_vars[node_arg.n3()].pop(0)
+            if node_arg in aggr_vars.keys():
+                grp_var = aggr_vars[node_arg].pop(0).n3()
                 logging.debug(grp_var)
                 return grp_var
             else:
                 return node_arg.n3()
-            # return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -968,7 +967,7 @@ def translateAlgebra(query_algebra: Query):
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-                    aggr_vars[convert_node_arg(agg_func.res)].append(convert_node_arg(agg_func.vars))
+                    aggr_vars[agg_func.res].append(agg_func.vars)
 
                     agg_func_name = agg_func.name.split('_')[1]
                     distinct = ""
