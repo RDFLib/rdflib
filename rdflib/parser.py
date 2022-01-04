@@ -21,6 +21,7 @@ from typing import (
     IO,
     Any,
     BinaryIO,
+    List,
     Optional,
     TextIO,
     Tuple,
@@ -195,6 +196,7 @@ class URLInputSource(InputSource):
     """
     TODO:
     """
+    links: List[str]
 
     @classmethod
     def getallmatchingheaders(cls, message: 'HTTPMessage', name):
