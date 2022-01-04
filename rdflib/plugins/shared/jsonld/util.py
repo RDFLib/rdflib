@@ -16,9 +16,7 @@ from posixpath import sep
 from posixpath import normpath
 
 from urllib.parse import urljoin, urlsplit, urlunsplit
-from rdflib.parser import create_input_source, BytesIOWrapper, PythonInputSource
-
-from rdflib.parser import create_input_source, PythonInputSource, StringInputSource
+from rdflib.parser import create_input_source, BytesIOWrapper, PythonInputSource, StringInputSource
 
 from io import TextIOBase, TextIOWrapper
 
