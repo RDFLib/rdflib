@@ -848,7 +848,7 @@ def translateAlgebra(query_algebra: Query):
         with open("query.txt", "w") as file:
             file.write(filedata)
 
-    aggr_vars = collections.defaultdict(list)
+    aggr_vars = collections.defaultdict(list)  # type: dict
 
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
