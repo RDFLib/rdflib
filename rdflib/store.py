@@ -2,7 +2,7 @@ from io import BytesIO
 import pickle
 from rdflib.events import Dispatcher, Event
 from rdflib.term import Identifier
-from typing import Tuple, TYPE_CHECKING, Iterable, Optional
+from typing import Tuple, TYPE_CHECKING, Iterable, Optional, Union
 
 if TYPE_CHECKING:
     from rdflib.term import Node
@@ -210,7 +210,7 @@ class Store(object):
     def add(
         self,
         triple: Tuple["Node", "Node", "Node"],
-        context: Optional[Union[["Graph", "Identifier"]],
+        context: Optional[Union["Graph", "Identifier"]],
         quoted: bool = False,
     ):
         """
