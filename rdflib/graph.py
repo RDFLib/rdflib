@@ -1807,6 +1807,9 @@ class ConjunctiveGraph(Graph):
         context.remove((None, None, None))  # hmm ?
         context.parse(source, publicID=publicID, format=format, **args)
         # TODO: FIXME: This should not return context, but self.
+        # Returning self atm creates spurious additional contexts as discussed
+        # in https://github.com/RDFLib/rdflib/issues/436 but returning
+        # context is the cause of https://github.com/RDFLib/rdflib/issues/939
         return context
 
     def __reduce__(self):
@@ -1832,9 +1835,7 @@ class Dataset(ConjunctiveGraph):
     >>> # simple triples goes to default graph
     >>> ds.add((URIRef("http://example.org/a"),
     ...    URIRef("http://www.example.org/b"),
-    ...    Literal("foo")))  # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
-    >>>
+    ...    Literal("foo")))
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
     >>> # (ie, the Dataset keeps track of the constituent graphs)
@@ -1850,8 +1851,7 @@ class Dataset(ConjunctiveGraph):
     >>> ds.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/z"),
-    ...     Literal("foo-bar"),g) ) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
+    ...     Literal("foo-bar"),g) )
     >>>
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -1899,7 +1899,7 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> # resticting iteration to a graph:
+    >>> # restricting iteration to a graph:
     >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
