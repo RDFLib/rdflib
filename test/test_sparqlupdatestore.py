@@ -21,21 +21,21 @@ DB = "/db/"
 
 # THIS WILL DELETE ALL DATA IN THE /db dataset
 
-michel = URIRef("urn:michel")
-tarek = URIRef("urn:tarek")
-bob = URIRef("urn:bob")
-likes = URIRef("urn:likes")
-hates = URIRef("urn:hates")
-pizza = URIRef("urn:pizza")
-cheese = URIRef("urn:cheese")
+michel = URIRef("urn:x-rdflib:michel")
+tarek = URIRef("urn:x-rdflib:tarek")
+bob = URIRef("urn:x-rdflib:bob")
+likes = URIRef("urn:x-rdflib:likes")
+hates = URIRef("urn:x-rdflib:hates")
+pizza = URIRef("urn:x-rdflib:pizza")
+cheese = URIRef("urn:x-rdflib:cheese")
 
-graphuri = URIRef("urn:graph")
-othergraphuri = URIRef("urn:othergraph")
+graphuri = URIRef("urn:x-rdflib:graph")
+othergraphuri = URIRef("urn:x-rdflib:othergraph")
 
 try:
     assert len(urlopen(HOST).read()) > 0
     skip = False
-except:
+except Exception:
     skip = True
 
 
@@ -68,7 +68,7 @@ class TestSparql11(unittest.TestCase):
         self.assertEqual(3, len(g), "graph contains 3 triples")
         self.assertEqual(1, len(g2), "other graph contains 1 triple")
 
-        r = g.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
+        r = g.query("SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }")
         self.assertEqual(2, len(list(r)), "two people like pizza")
 
         r = g.triples((None, likes, pizza))
@@ -76,7 +76,8 @@ class TestSparql11(unittest.TestCase):
 
         # Test initBindings
         r = g.query(
-            "SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }", initBindings={"s": tarek}
+            "SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }",
+            initBindings={"s": tarek},
         )
         self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
@@ -88,12 +89,15 @@ class TestSparql11(unittest.TestCase):
 
         g2.add((tarek, likes, pizza))
         g.remove((tarek, likes, pizza))
-        r = g.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
+        r = g.query("SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }")
         self.assertEqual(1, len(list(r)), "only bob likes pizza")
 
     def testConjunctiveDefault(self):
         g = self.graph.get_context(graphuri)
         g.add((tarek, likes, pizza))
+
+        isunion = len(self.graph) > 0
+
         g2 = self.graph.get_context(othergraphuri)
         g2.add((bob, likes, pizza))
         g.add((tarek, hates, cheese))
@@ -110,35 +114,45 @@ class TestSparql11(unittest.TestCase):
         ##
         # Fuseki/TDB has a flag for specifying that the default graph
         # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
+
         self.assertEqual(
-            3,
+            3 if isunion else 0,
             len(self.graph),
             "default union graph should contain three triples but contains:\n"
             "%s" % list(self.graph),
         )
 
-        r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
-        self.assertEqual(2, len(list(r)), "two people like pizza")
+        r = self.graph.query(
+            "SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }"
+        )
+        self.assertEqual(2 if isunion else 0, len(list(r)), "two people like pizza")
 
         r = self.graph.query(
-            "SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }", initBindings={"s": tarek}
+            "SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }",
+            initBindings={"s": tarek},
         )
-        self.assertEqual(1, len(list(r)), "i was asking only about tarek")
+        self.assertEqual(
+            1 if isunion else 0, len(list(r)), "i was asking only about tarek"
+        )
 
         r = self.graph.triples((tarek, likes, pizza))
-        self.assertEqual(1, len(list(r)), "i was asking only about tarek")
+        self.assertEqual(
+            1 if isunion else 0, len(list(r)), "i was asking only about tarek"
+        )
 
         r = self.graph.triples((tarek, likes, cheese))
         self.assertEqual(0, len(list(r)), "tarek doesn't like cheese")
 
         g2.remove((bob, likes, pizza))
 
-        r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
-        self.assertEqual(1, len(list(r)), "only tarek likes pizza")
+        r = self.graph.query(
+            "SELECT * WHERE { ?s <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . }"
+        )
+        self.assertEqual(1 if isunion else 0, len(list(r)), "only tarek likes pizza")
 
     def testUpdate(self):
         self.graph.update(
-            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> . } }"
+            "INSERT DATA { GRAPH <urn:x-rdflib:graph> { <urn:x-rdflib:michel> <urn:x-rdflib:likes> <urn:x-rdflib:pizza> . } }"
         )
 
         g = self.graph.get_context(graphuri)
@@ -147,7 +161,7 @@ class TestSparql11(unittest.TestCase):
     def testUpdateWithInitNs(self):
         self.graph.update(
             "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
-            initNs={"ns": URIRef("urn:")},
+            initNs={"ns": URIRef("urn:x-rdflib:")},
         )
 
         g = self.graph.get_context(graphuri)
@@ -159,11 +173,11 @@ class TestSparql11(unittest.TestCase):
 
     def testUpdateWithInitBindings(self):
         self.graph.update(
-            "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WherE { }",
+            "INSERT { GRAPH <urn:x-rdflib:graph> { ?a ?b ?c . } } WherE { }",
             initBindings={
-                "a": URIRef("urn:michel"),
-                "b": URIRef("urn:likes"),
-                "c": URIRef("urn:pizza"),
+                "a": URIRef("urn:x-rdflib:michel"),
+                "b": URIRef("urn:x-rdflib:likes"),
+                "c": URIRef("urn:x-rdflib:pizza"),
             },
         )
 
@@ -176,7 +190,7 @@ class TestSparql11(unittest.TestCase):
 
     def testUpdateWithBlankNode(self):
         self.graph.update(
-            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }"
+            "INSERT DATA { GRAPH <urn:x-rdflib:graph> { _:blankA <urn:type> <urn:Blank> } }"
         )
         g = self.graph.get_context(graphuri)
         for t in g.triples((None, None, None)):
@@ -186,26 +200,26 @@ class TestSparql11(unittest.TestCase):
 
     def testUpdateWithBlankNodeSerializeAndParse(self):
         self.graph.update(
-            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }"
+            "INSERT DATA { GRAPH <urn:x-rdflib:graph> { _:blankA <urn:type> <urn:Blank> } }"
         )
         g = self.graph.get_context(graphuri)
         string = g.serialize(format="ntriples")
         raised = False
         try:
             Graph().parse(data=string, format="ntriples")
-        except Exception as e:
+        except Exception:
             raised = True
         self.assertFalse(raised, "Exception raised when parsing: " + string)
 
     def testMultipleUpdateWithInitBindings(self):
         self.graph.update(
-            "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WHERE { };"
-            "INSERT { GRAPH <urn:graph> { ?d ?b ?c . } } WHERE { }",
+            "INSERT { GRAPH <urn:x-rdflib:graph> { ?a ?b ?c . } } WHERE { };"
+            "INSERT { GRAPH <urn:x-rdflib:graph> { ?d ?b ?c . } } WHERE { }",
             initBindings={
-                "a": URIRef("urn:michel"),
-                "b": URIRef("urn:likes"),
-                "c": URIRef("urn:pizza"),
-                "d": URIRef("urn:bob"),
+                "a": URIRef("urn:x-rdflib:michel"),
+                "b": URIRef("urn:x-rdflib:likes"),
+                "c": URIRef("urn:x-rdflib:pizza"),
+                "d": URIRef("urn:x-rdflib:bob"),
             },
         )
 
@@ -218,7 +232,7 @@ class TestSparql11(unittest.TestCase):
 
     def testNamedGraphUpdate(self):
         g = self.graph.get_context(graphuri)
-        r1 = "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        r1 = "INSERT DATA { <urn:x-rdflib:michel> <urn:x-rdflib:likes> <urn:x-rdflib:pizza> }"
         g.update(r1)
         self.assertEqual(
             set(g.triples((None, None, None))),
@@ -227,8 +241,8 @@ class TestSparql11(unittest.TestCase):
         )
 
         r2 = (
-            "DELETE { <urn:michel> <urn:likes> <urn:pizza> } "
-            + "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+            "DELETE { <urn:x-rdflib:michel> <urn:x-rdflib:likes> <urn:x-rdflib:pizza> } "
+            + "INSERT { <urn:x-rdflib:bob> <urn:x-rdflib:likes> <urn:x-rdflib:pizza> } WHERE {}"
         )
         g.update(r2)
         self.assertEqual(
@@ -245,7 +259,7 @@ class TestSparql11(unittest.TestCase):
         for tricky_str in tricky_strs:
             r3 = (
                 """INSERT { ?b <urn:says> "%s" }
-            WHERE { ?b <urn:likes> <urn:pizza>} """
+            WHERE { ?b <urn:x-rdflib:likes> <urn:x-rdflib:pizza>} """
                 % tricky_str
             )
             g.update(r3)
@@ -272,7 +286,10 @@ class TestSparql11(unittest.TestCase):
         r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
         r4 = "\n".join(
-            ["INSERT DATA { <urn:michel> <urn:says> %s } ;" % s for s in r4strings]
+            [
+                "INSERT DATA { <urn:x-rdflib:michel> <urn:says> %s } ;" % s
+                for s in r4strings
+            ]
         )
         g.update(r4)
         values = set()
@@ -297,7 +314,7 @@ class TestSparql11(unittest.TestCase):
         # (commenting out the end of the block).
         # The ' must not be interpreted as the start of a string, causing the }
         # in the literal to be identified as the end of the block.
-        r5 = """INSERT DATA { <urn:michel> <urn:hates> <urn:foo'bar?baz;a=1&b=2#fragment>, "'}" }"""
+        r5 = """INSERT DATA { <urn:x-rdflib:michel> <urn:x-rdflib:hates> <urn:foo'bar?baz;a=1&b=2#fragment>, "'}" }"""
 
         g.update(r5)
         values = set()
@@ -308,8 +325,8 @@ class TestSparql11(unittest.TestCase):
         # Comments
         r6 = """
             INSERT DATA {
-                <urn:bob> <urn:hates> <urn:bob> . # No closing brace: }
-                <urn:bob> <urn:hates> <urn:michel>.
+                <urn:x-rdflib:bob> <urn:x-rdflib:hates> <urn:x-rdflib:bob> . # No closing brace: }
+                <urn:x-rdflib:bob> <urn:x-rdflib:hates> <urn:x-rdflib:michel>.
             }
         #Final { } comment"""
 

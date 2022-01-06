@@ -2,7 +2,7 @@ import sys
 import os
 import unittest
 
-from tempfile import mkdtemp, mkstemp
+from tempfile import mkdtemp, gettempdir
 import shutil
 
 import pytest
@@ -18,8 +18,8 @@ class ContextTestCase(unittest.TestCase):
             self.graph = ConjunctiveGraph(store=self.store)
         except ImportError:
             pytest.skip("Dependencies for store '%s' not available!" % self.store)
-        if self.store == "SQLite":
-            _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
+        if self.store in ["LevelDB", "SQLiteLSM"]:
+            self.tmppath = os.path.join(gettempdir(), f"test_{self.store.lower()}")
         else:
             self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)

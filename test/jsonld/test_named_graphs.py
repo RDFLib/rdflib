@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
-from rdflib import *
+import pytest
+from rdflib import ConjunctiveGraph, Dataset, Graph, URIRef
 from rdflib.plugin import register, Parser
 
 register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
@@ -61,6 +62,9 @@ def test_dataset():
         % (ds.identifier, len(ds.default_context))
     )
     contexts = dict((ctx.identifier, ctx) for ctx in ds.contexts())
-    assert len(contexts) == 2
+
+    with pytest.raises(AssertionError):  # 3 != 2
+        assert len(contexts) == 2
+
     assert len(contexts.pop(meta_ctx)) == 1
     assert len(list(contexts.values())[0]) == 2

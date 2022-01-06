@@ -7,13 +7,13 @@ timblcardn3 = open(
 ).read()
 
 
-michel = URIRef("urn:michel")
-tarek = URIRef("urn:tarek")
-bob = URIRef("urn:bob")
-likes = URIRef("urn:likes")
-hates = URIRef("urn:hates")
-pizza = URIRef("urn:pizza")
-cheese = URIRef("urn:cheese")
+michel = URIRef("urn:x-rdflib:michel")
+tarek = URIRef("urn:x-rdflib:tarek")
+bob = URIRef("urn:x-rdflib:bob")
+likes = URIRef("urn:x-rdflib:likes")
+hates = URIRef("urn:x-rdflib:hates")
+pizza = URIRef("urn:x-rdflib:pizza")
+cheese = URIRef("urn:x-rdflib:cheese")
 
 
 def add_stuff(graph):

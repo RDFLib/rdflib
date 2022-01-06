@@ -53,9 +53,9 @@ class NQuadsParserTest(unittest.TestCase):
         uri1 = URIRef("http://example.org/mygraph1")
         uri2 = URIRef("http://example.org/mygraph2")
 
-        bob = URIRef("urn:bob")
-        likes = URIRef("urn:likes")
-        pizza = URIRef("urn:pizza")
+        bob = URIRef("urn:x-rdflib:bob")
+        likes = URIRef("urn:x-rdflib:likes")
+        pizza = URIRef("urn:x-rdflib:pizza")
 
         g.get_context(uri1).add((bob, likes, pizza))
         g.get_context(uri2).add((bob, likes, pizza))

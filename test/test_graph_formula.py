@@ -1,6 +1,6 @@
 import sys
 import os
-from tempfile import mkdtemp, mkstemp
+from tempfile import mkdtemp, gettempdir
 
 import pytest
 from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
@@ -30,8 +30,8 @@ def checkFormulaStore(store="default", configString=None):
         g.destroy(configString)
         g.open(configString)
     else:
-        if store == "SQLite":
-            _, path = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
+        if store in ["LevelDB", "SQLiteLSM"]:
+            path = os.path.join(gettempdir(), f"test_{store.lower()}")
             g.open(path, create=True)
         else:
             g.open(mkdtemp(), create=True)
