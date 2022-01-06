@@ -119,6 +119,16 @@ algebra_tests = [
         'Test if "group" gets properly translated into the query text.',
     ),
     AlgebraTest(
+        "test_graph_patterns__group_and_substr",
+        'Test if a query with a variable that is used in the "GROUP BY" clause '
+        'and in the SUBSTR function gets properly translated into the query text.',
+    ),
+    AlgebraTest(
+        "test_graph_patterns__group_and_nested_concat",
+        'Test if a query with a nested concat expression in the select clause which '
+        'uses a group variable gets properly translated into the query text.',
+    ),
+    AlgebraTest(
         "test_graph_patterns__having",
         'Test if "having" gets properly translated into the query text.',
     ),
@@ -266,7 +276,7 @@ def test_all_files_used(data_path: Path) -> None:
 @pytest.mark.parametrize("test_spec", [test.pytest_param() for test in algebra_tests])
 def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     """
-    Query remains the same over two successuive parse and translate cycles.
+    Query remains the same over two successive parse and translate cycles.
     """
     query_text = (data_path / test_spec.filename).read_text()
 
@@ -274,18 +284,22 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     query_tree = parser.parseQuery(query_text)
     query_algebra = algebra.translateQuery(query_tree)
     query_from_algebra = translateAlgebra(query_algebra)
+    logging.debug(
+        "query_from_query_from_algebra = \n%s",
+        query_from_algebra,
+    )
 
     query_tree_2 = parser.parseQuery(query_from_algebra)
     query_algebra_2 = algebra.translateQuery(query_tree_2)
     query_from_query_from_algebra = translateAlgebra(query_algebra_2)
     logging.debug(
         "query_from_query_from_algebra = \n%s",
-        _format_query(query_from_query_from_algebra),
+        query_from_query_from_algebra,
     )
     assert (
         query_from_algebra == query_from_query_from_algebra
     ), f"failed expectation: {test_spec.description}"
 
-    # TODO: Execute the raw query (query_text) and the reconstitued query
+    # TODO: Execute the raw query (query_text) and the reconstituted query
     # (query_from_query_from_algebra) against a well defined graph and ensure
     # they yield the same result.
