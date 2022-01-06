@@ -6,7 +6,6 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 """
 
 import functools
-import logging
 import operator
 import collections
 
