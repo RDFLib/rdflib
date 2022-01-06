@@ -1940,7 +1940,7 @@ class Dataset(ConjunctiveGraph):
     """
 
     def __init__(self, store="default", default_union=False, default_graph_base=None):
-        super(Dataset, self).__init__(store=store, identifier=None)
+        super(Dataset, self).__init__(store=store, identifier=DATASET_DEFAULT_GRAPH_ID)
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")

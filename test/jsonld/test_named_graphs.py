@@ -62,9 +62,6 @@ def test_dataset():
         % (ds.identifier, len(ds.default_context))
     )
     contexts = dict((ctx.identifier, ctx) for ctx in ds.contexts())
-
-    with pytest.raises(AssertionError):  # 3 != 2
-        assert len(contexts) == 2
-
+    assert len(contexts) == 2
     assert len(contexts.pop(meta_ctx)) == 1
     assert len(list(contexts.values())[0]) == 2

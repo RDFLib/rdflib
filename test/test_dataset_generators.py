@@ -33,59 +33,43 @@ def add_stuff(graph):
 def test_unique_subjects():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([sub for sub in graph.subjects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 3
-        assert len([sub for sub in graph.subjects(unique=True)]) == 3
+    assert len([sub for sub in graph.subjects()]) == 11
+    assert len([sub for sub in graph.subjects(unique=True)]) == 3
 
 
 def test_unique_predicates():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([pred for pred in graph.predicates()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 2
-        assert len([pred for pred in graph.predicates(unique=True)]) == 2
+    assert len([pred for pred in graph.predicates()]) == 11
+    assert len([pred for pred in graph.predicates(unique=True)]) == 2
 
 
 def test_unique_objects():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([obj for obj in graph.objects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 5
-        assert len([obj for obj in graph.objects(unique=True)]) == 5
+    assert len([obj for obj in graph.objects()]) == 11
+    assert len([obj for obj in graph.objects(unique=True)]) == 5
 
 
 def test_unique_subject_predicates():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([sub for sub in graph.subject_predicates()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 4
-        assert len([sub for sub in graph.subject_predicates(unique=True)]) == 4
+    assert len([sub for sub in graph.subject_predicates()]) == 11
+    assert len([sub for sub in graph.subject_predicates(unique=True)]) == 4
 
 
 def test_unique_predicate_objects():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([pred for pred in graph.predicate_objects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([obj for obj in graph.subject_objects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 7
-        assert len([pred for pred in graph.predicate_objects(unique=True)]) == 7
+    assert len([pred for pred in graph.predicate_objects()]) == 11
+    assert len([pred for pred in graph.predicate_objects(unique=True)]) == 7
 
 
 def test_unique_subject_objects():
     graph = Dataset()
     add_stuff(graph)
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([obj for obj in graph.subject_objects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([obj for obj in graph.subject_objects()]) == 11
-    with pytest.raises(AssertionError):  # 0 != 11
-        assert len([obj for obj in graph.subject_objects(unique=True)]) == 11
+    assert len([obj for obj in graph.subject_objects()]) == 11
+    assert len([obj for obj in graph.subject_objects(unique=True)]) == 11
 
 
 no_of_statements_in_card = 86
