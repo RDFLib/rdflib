@@ -69,7 +69,7 @@ def evalDrop(ctx, u):
     """
     if ctx.dataset.store.graph_aware:
         for g in _graphAll(ctx, u.graphiri):
-            ctx.dataset.store.remove_graph(g)
+            ctx.dataset.remove_graph(g)
     else:
         evalClear(ctx, u)
 
@@ -226,7 +226,7 @@ def evalMove(ctx, u):
     dstg += srcg
 
     if ctx.dataset.store.graph_aware:
-        ctx.dataset.store.remove_graph(srcg)
+        ctx.dataset.remove_graph(srcg)
     else:
         srcg.remove((None, None, None))
 

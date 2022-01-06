@@ -1,6 +1,7 @@
 from io import BytesIO
 import pickle
 from rdflib.events import Dispatcher, Event
+from rdflib.term import Identifier
 from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
@@ -156,7 +157,7 @@ class Store(object):
             from rdflib.term import URIRef
             from rdflib.term import BNode
             from rdflib.term import Literal
-            from rdflib.graph import Graph, QuotedGraph
+            from rdflib.graph import QuotedGraph
             from rdflib.term import Variable
 
             self.__node_pickler = np = NodePickler()
@@ -164,7 +165,6 @@ class Store(object):
             np.register(URIRef, "U")
             np.register(BNode, "B")
             np.register(Literal, "L")
-            np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
         return self.__node_pickler
@@ -210,7 +210,7 @@ class Store(object):
     def add(
         self,
         triple: Tuple["Node", "Node", "Node"],
-        context: Optional["Graph"],
+        context: Optional[Union[["Graph", "Identifier"]],
         quoted: bool = False,
     ):
         """
@@ -221,6 +221,9 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
+        if not isinstance(context, Identifier):
+            raise Exception("Trying to add to a context that isn't an identifier: %s" % context)
+
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
@@ -239,7 +242,10 @@ class Store(object):
             self.add((s, p, o), c)
 
     def remove(self, triple, context=None):
-        """Remove the set of triples matching the pattern from the store"""
+        """ Remove the set of triples matching the pattern from the store """
+        if context is not None and not isinstance(context, Identifier):
+            raise Exception("Trying to remove from a context that isn't an identifier: %s" % context)
+
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):

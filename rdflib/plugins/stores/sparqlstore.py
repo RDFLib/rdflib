@@ -286,8 +286,8 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
             pass
 
         result = self._query(
-            query,
-            default_graph=context.identifier if self._is_contextual(context) else None,
+             query,
+             default_graph=context if self._is_contextual(context) else None,
         )
 
         if vars:
@@ -327,7 +327,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
 
             result = self._query(
                 q,
-                default_graph=context.identifier
+                default_graph=context
                 if self._is_contextual(context)
                 else None,
             )
@@ -395,7 +395,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         if isinstance(graph, str):
             return graph != "__UNION__"
         else:
-            return graph.identifier != DATASET_DEFAULT_GRAPH_ID
+            return graph != DATASET_DEFAULT_GRAPH_ID
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
@@ -625,7 +625,7 @@ class SPARQLUpdateStore(SPARQLStore):
         nts = self.node_to_sparql
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
-            q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context.identifier), triple)
+            q = "INSERT DATA { GRAPH %s { %s } }" % (nts(context), triple)
         else:
             q = "INSERT DATA { %s }" % triple
         self._transaction().append(q)
@@ -649,7 +649,7 @@ class SPARQLUpdateStore(SPARQLStore):
             ]
             data.append(
                 "INSERT DATA { GRAPH %s { %s } }\n"
-                % (nts(context.identifier), "\n".join(triples))
+                % (nts(context), "\n".join(triples))
             )
         self._transaction().extend(data)
         if self.autocommit:
@@ -671,7 +671,7 @@ class SPARQLUpdateStore(SPARQLStore):
         nts = self.node_to_sparql
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
-            cid = nts(context.identifier)
+            cid = nts(context)
             q = "WITH %(graph)s DELETE { %(triple)s } WHERE { %(triple)s }" % {
                 "graph": cid,
                 "triple": triple,
@@ -812,16 +812,23 @@ class SPARQLUpdateStore(SPARQLStore):
     def add_graph(self, graph):
         if not self.graph_aware:
             Store.add_graph(self, graph)
-        elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
-            self.update("CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
+        elif graph != DATASET_DEFAULT_GRAPH_ID:
+            self.update("CREATE GRAPH %s" % self.node_to_sparql(graph))
+
+    def close(self, commit_pending_transaction=False):
+
+        if commit_pending_transaction:
+            self.commit()
+
+        super(SPARQLStore, self).close()
 
     def remove_graph(self, graph):
         if not self.graph_aware:
             Store.remove_graph(self, graph)
-        elif graph.identifier == DATASET_DEFAULT_GRAPH_ID:
+        elif graph == DATASET_DEFAULT_GRAPH_ID:
             self.update("DROP DEFAULT")
         else:
-            self.update("DROP GRAPH %s" % self.node_to_sparql(graph.identifier))
+            self.update("DROP GRAPH %s" % self.node_to_sparql(graph))
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
