@@ -854,7 +854,6 @@ def translateAlgebra(query_algebra: Query):
         if isinstance(node_arg, Identifier):
             if node_arg in aggr_vars.keys():
                 grp_var = aggr_vars[node_arg].pop(0).n3()
-                logging.debug(grp_var)
                 return grp_var
             else:
                 return node_arg.n3()
