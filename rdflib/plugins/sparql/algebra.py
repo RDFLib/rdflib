@@ -1304,7 +1304,6 @@ def translateAlgebra(query_algebra: Query):
                 )
             elif node.name.endswith("Builtin_CONCAT"):
                 expr = "CONCAT({vars})".format(
-                    #vars=", ".join(elem.n3() for elem in node.arg)
                     vars=", ".join(convert_node_arg(elem) for elem in node.arg)
                 )
                 replace("{Builtin_CONCAT}", expr)
