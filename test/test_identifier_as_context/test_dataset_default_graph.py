@@ -129,21 +129,18 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
 
     dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
 
-    with pytest.raises(
-        AttributeError
-    ):  # 'Dataset' object has no attribute 'compute_qname_strict'
-        assert str(dataset_default_graph.serialize(format="xml")) == str(
-            '<?xml version="1.0" encoding="utf-8"?>\n'
-            "<rdf:RDF\n"
-            '   xmlns:ns1="urn:"\n'
-            '   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n'
-            ">\n"
-            '  <rdf:Description rdf:about="urn:example:tarek">\n'
-            '    <ns1:likes rdf:resource="urn:example:pizza"/>\n'
-            "  </rdf:Description>\n"
-            "</rdf:RDF>"
-            "\n"
-        )
+    assert str(dataset_default_graph.serialize(format="xml")) == str(
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        "<rdf:RDF\n"
+        '   xmlns:ns1="urn:example:"\n'
+        '   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n'
+        ">\n"
+        '  <rdf:Description rdf:about="urn:example:tarek">\n'
+        '    <ns1:likes rdf:resource="urn:example:pizza"/>\n'
+        "  </rdf:Description>\n"
+        "</rdf:RDF>"
+        "\n"
+    )
 
     # For exhaustive completeness: The default graph behaves as a Graph -
     assert str(dataset_default_graph.serialize(format="ttl")) == str(

@@ -968,6 +968,12 @@ class Graph(Node):
     def compute_qname(self, uri, generate=True):
         return self.namespace_manager.compute_qname(uri, generate)
 
+    def qname_strict(self, uri):
+        return self.namespace_manager.qname_strict(uri)
+
+    def compute_qname_strict(self, uri, generate=True):
+        return self.namespace_manager.compute_qname_strict(uri, generate)
+
     def bind(self, prefix, namespace, override=True, replace=False) -> None:
         """Bind prefix to namespace
 
