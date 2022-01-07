@@ -1,3 +1,4 @@
+import pytest
 from rdflib import Dataset, URIRef
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
@@ -11,7 +12,16 @@ cheese = URIRef("urn:example:cheese")
 c1 = URIRef("urn:example:context-1")
 c2 = URIRef("urn:example:context-2")
 
+try:
+    from urllib.request import urlopen
 
+    assert len(urlopen("http://localhost:3030").read()) > 0
+    skip = False
+except Exception:
+    skip = True
+
+
+@pytest.mark.skipif(skip, reason="sparql endpoint is unavailable.")
 def test_issue167_consistency_of_quads_between_dataset_and_sparqlupdatestore():
 
     ds = Dataset()

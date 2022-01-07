@@ -6,7 +6,7 @@ import re
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
 from urllib.request import urlopen
 
-HOST = "http://localhost:3031"
+HOST = "http://localhost:3030"
 DB = "/db/"
 
 # this assumes SPARQL1.1 query/update endpoints running locally at

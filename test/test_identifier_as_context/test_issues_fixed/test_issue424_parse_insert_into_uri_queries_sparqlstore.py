@@ -1,6 +1,17 @@
+import pytest
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
 
+try:
+    from urllib.request import urlopen
+
+    assert len(urlopen("http://localhost:3030").read()) > 0
+    skip = False
+except Exception:
+    skip = True
+
+
+@pytest.mark.skipif(skip, reason="sparql endpoint is unavailable.")
 def test_issue424_parse_insert_into_uri_queries_sparqlstore():
 
     store = SPARQLUpdateStore(

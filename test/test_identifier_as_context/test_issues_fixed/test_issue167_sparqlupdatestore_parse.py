@@ -12,6 +12,16 @@ sportquadsnq = open(
 ).read()
 
 
+try:
+    from urllib.request import urlopen
+
+    assert len(urlopen("http://localhost:3030").read()) > 0
+    skip = False
+except Exception:
+    skip = True
+
+
+@pytest.mark.skipif(skip, reason="sparql endpoint is unavailable.")
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_issue167_sparqlupdatestore_parse():
 

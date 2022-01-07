@@ -1,3 +1,4 @@
+import pytest
 from rdflib import Dataset, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
@@ -7,6 +8,16 @@ likes = URIRef("urn:example:likes")
 pizza = URIRef("urn:example:pizza")
 
 
+try:
+    from urllib.request import urlopen
+
+    assert len(urlopen("http://localhost:3030").read()) > 0
+    skip = False
+except Exception:
+    skip = True
+
+
+@pytest.mark.skipif(skip, reason="sparql endpoint is unavailable.")
 def test_sparqlupdatestore_dataset_default_add_succeeds():
     ds = Dataset(store="SPARQLUpdateStore")
     ds.open(
