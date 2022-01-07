@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        max-parallel: 1
+        matrix:
+            python-version: ["3.7", "3.8", "3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libdb-dev -y
+        python -m pip install --upgrade pip
+        for i in ./requirements*.txt;do python -m pip install -r "$i";done
+    - name: Test
+      run: |
+        pytest -vv
