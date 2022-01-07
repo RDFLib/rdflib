@@ -54,14 +54,12 @@ def test_conjunctive_graph():
 def test_dataset():
     ds = Dataset()
     ds.default_context.parse(data=data, format="application/ld+json")
-    assert len(ds) == 3
 
-    assert len(ds.default_context) == 2
-    print(
-        "default graph (%s) contains %s triples (expected 2)"
-        % (ds.identifier, len(ds.default_context))
-    )
+    assert len(ds) == 2
+    assert len(ds.default_context) == 2, len(ds.default_context)
+
     contexts = dict((ctx.identifier, ctx) for ctx in ds.contexts())
+
     assert len(contexts) == 2
     assert len(contexts.pop(meta_ctx)) == 1
     assert len(list(contexts.values())[0]) == 2

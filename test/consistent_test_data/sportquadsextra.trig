@@ -1,0 +1,27 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex: <http://example.org/graph/> .
+@prefix ont: <http://example.com/ontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:students {
+    <http://example.com/resource/student_10> a ont:Student ;
+        foaf:name "Venus Williams" .
+
+    <http://example.com/resource/student_30> a ont:Student ;
+        foaf:name "Tom Hanks" .
+}
+
+ex:sports {
+    <http://example.com/resource/sport_100> a ont:Sport ;
+        rdfs:label "Tennis" .
+
+    <http://example.com/resource/sport_200> a ont:Sport ;
+        rdfs:label "Table Tennis" .
+}
+
+ex:practise {
+    <http://example.com/resource/student_10> ont:practises <http://example.com/resource/sport_100> .
+
+    <http://example.com/resource/student_30> ont:practises <http://example.com/resource/sport_200> .
+
+}

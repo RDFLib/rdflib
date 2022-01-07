@@ -28,7 +28,7 @@ def test_sparqlupdatestore_dataset_default_add_succeeds():
     )
     ds.add((tarek, likes, pizza))
 
-    assert len(ds) == 0
+    assert len(ds) == 1
 
     g = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
 

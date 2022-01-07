@@ -43,5 +43,5 @@ def test_issue1396_store_query_and_update_methods_queryGraph_parameter_does_not_
         "[<Graph identifier=urn:example:context1 (<class 'rdflib.graph.Graph'>)>, <Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]",
     ]
 
-    # There is one triple in the context, so dataset length == 1
-    assert len(ds) == 1
+    # No triples have been stored in the default graph, so dataset length == 0
+    assert len(ds) == 0

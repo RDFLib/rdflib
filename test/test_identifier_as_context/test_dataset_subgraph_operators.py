@@ -1,43 +1,88 @@
+import os
 import pytest
+from pprint import pformat
 from rdflib import (
     Graph,
     ConjunctiveGraph,
     Dataset,
     URIRef,
+    logger,
 )
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+
+sportquadsnq = open(
+    os.path.join(
+        os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.nq"
+    )
+).read()
 
 
-michel = URIRef("urn:example:michel")
-tarek = URIRef("urn:example:tarek")
-bob = URIRef("urn:example:bob")
-likes = URIRef("urn:example:likes")
-hates = URIRef("urn:example:hates")
-pizza = URIRef("urn:example:pizza")
-cheese = URIRef("urn:example:cheese")
+sportquadsextranq = open(
+    os.path.join(
+        os.path.dirname(__file__), "..", "consistent_test_data", "sportquadsextra.nq"
+    )
+).read()
+
+
+sportsextras = """@prefix exgraph: <http://example.org/graph/> .
+@prefix ex: <http://example.com/resource/> .
+@prefix sports: <http://example.com/ontology/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:sport_200 rdfs:label "Table Tennis" .
+
+ex:student_30 a sports:Student ;
+    foaf:name "Tom Hanks" ;
+    sports:practises ex:sport_200 .
+
+ex:student_20 a sports:Student ;
+    foaf:name "Demi Moore" ;
+    sports:practises ex:sport_100 .
+"""
 
 c1 = URIRef("urn:example:context-1")
 c2 = URIRef("urn:example:context-2")
 
 
+def bind_standard_namespaces(obj):
+    obj.bind("rl", URIRef("urn:x-rdflib:"))
+    obj.bind("sports", URIRef("http://example.com/ontology/"))
+    obj.bind("ex", URIRef("http://example.com/resource/"))
+    obj.bind("exgraph", URIRef("http://example.org/graph/"))
+
+
 def test_operators_with_dataset_and_graph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    bind_standard_namespaces(ds)
+    ds.parse(data=sportquadsnq, format="nquads")
+    assert len(ds) == 0
+    assert len(ds.get_context(DATASET_DEFAULT_GRAPH_ID)) == 0
+    logger.debug(f"DS:\n{pformat([(g.identifier, len(g)) for g in ds.contexts()])}\n\n")
 
     g = Graph()
-    g.add([tarek, likes, pizza])
-    g.add([tarek, likes, cheese])
+    bind_standard_namespaces(g)
+    g.parse(data=sportsextras, format="n3")
+    assert len(g) == 7
+    # logger.debug(f"G:\n{g.serialize(format='ttl')}")
 
-    with pytest.raises(
-        Exception
-    ):  # Trying to add to a context that isn't an identifier: None
-        assert len(ds + g) == 3  # adds cheese as liking
+    assert len(ds + g) == 7  # adds student_30, "Tom Hanks", "Table Tennis", "practises"
+
+    ds1 = ds + g
+    assert len(ds1) == 7
+
+    logger.debug(
+        f"DS1:\n{pformat([(g.identifier, len(g)) for g in ds1.contexts()])}\n\n"
+    )
+    logger.debug(f"DS1:\n{ds1.serialize(format='nquads')}")
 
     with pytest.raises(ValueError):  # too many values to unpack (expected 3)
         assert len(ds - g) == 1  # removes pizza
 
-    assert len(ds * g) == 1  # only pizza
+    with pytest.raises(AssertionError):  # 0 != 1
+        assert len(ds * g) == 1  # only pizza
 
     with pytest.raises(ValueError):  # too many values to unpack (expected 3)
         assert len(ds ^ g) == 2  # removes pizza, adds cheese
@@ -46,12 +91,10 @@ def test_operators_with_dataset_and_graph():
 def test_operators_with_dataset_and_conjunctivegraph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
     cg = ConjunctiveGraph()
-    cg.add([tarek, likes, pizza])
-    cg.add([tarek, likes, cheese])
+    cg.parse(data=sportquadsextranq, format="nquads")
 
     with pytest.raises(
         Exception
@@ -63,18 +106,17 @@ def test_operators_with_dataset_and_conjunctivegraph():
     ):  # Trying to add to a context that isn't an identifier: None
         assert len(ds - cg) == 1  # removes pizza
 
-    assert len(ds * cg) == 1  # only pizza
+    with pytest.raises(AssertionError):  # 0 != 1
+        assert len(ds * cg) == 1  # only pizza
 
 
 def test_operators_with_dataset_and_namedgraph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
-    ng = ConjunctiveGraph(identifier=URIRef("context-1"))
-    ng.add([tarek, likes, pizza])
-    ng.add([tarek, likes, cheese])
+    ng = ConjunctiveGraph(identifier=URIRef("urn:example:context-1"))
+    ng.parse(data=sportquadsextranq, format="nquads")
 
     with pytest.raises(
         Exception
@@ -86,23 +128,23 @@ def test_operators_with_dataset_and_namedgraph():
     ):  # Trying to add to a context that isn't an identifier: None
         assert len(ds - ng) == 1  # removes pizza
 
-    assert len(ds * ng) == 1  # only pizza
+    with pytest.raises(AssertionError):  # 0 != 1
+        assert len(ds * ng) == 1  # only pizza
 
 
 def test_reversed_operators_with_dataset_and_graph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
     g = Graph()
-    g.add([tarek, likes, pizza])
-    g.add([tarek, likes, cheese])
+    g.parse(data=sportsextras, format="n3")
 
     with pytest.raises(ValueError):  # too many values to unpack (expected 3)
         assert len(g + ds) == 3  # adds cheese as liking
 
-    assert len(g - ds) == 1  # removes pizza
+    with pytest.raises(AssertionError):  # 0 != 1
+        assert len(g - ds) == 1  # removes pizza
 
     with pytest.raises(ValueError):  # too many values to unpack (expected 3)
         assert len(g * ds) == 1  # only pizza
@@ -114,12 +156,10 @@ def test_reversed_operators_with_dataset_and_graph():
 def test_operators_with_two_datasets():
 
     ds1 = Dataset()
-    ds1.add((tarek, likes, pizza))
-    ds1.add((tarek, likes, michel))
+    ds1.parse(data=sportquadsnq, format="nquads")
 
     ds2 = Dataset()
-    ds2.add((tarek, likes, pizza))
-    ds2.add((tarek, likes, cheese))
+    ds1.parse(data=sportquadsextranq, format="nquads")
 
     with pytest.raises(
         Exception
@@ -145,12 +185,10 @@ def test_operators_with_two_datasets():
 def test_operators_with_two_datasets_default_union():
 
     ds1 = Dataset(default_union=True)
-    ds1.add((tarek, likes, pizza))
-    ds1.add((tarek, likes, michel))
+    ds1.parse(data=sportquadsnq, format="nquads")
 
     ds2 = Dataset()
-    ds2.add((tarek, likes, pizza))
-    ds2.add((tarek, likes, cheese))
+    ds1.parse(data=sportquadsextranq, format="nquads")
 
     with pytest.raises(
         Exception
@@ -173,81 +211,17 @@ def test_operators_with_two_datasets_default_union():
         assert len(ds1 ^ ds2) == 1  # only pizza
 
 
-def test_inplace_operators_with_conjunctivegraph_and_graph():
-
-    cg = ConjunctiveGraph()
-    cg.add((tarek, likes, pizza))
-    cg.add((tarek, likes, michel))
-
-    g = Graph()
-    g.add([tarek, likes, pizza])
-    g.add([tarek, likes, cheese])
-
-    cg += g  # now cg contains everything
-
-    assert len(cg) == 3
-
-    cg.remove((None, None, None, None))
-    assert len(cg) == 0
-
-    cg -= g
-
-    with pytest.raises(AssertionError):  # 0 == 1
-        assert len(cg) == 1  # removes pizza
-
-    cg.remove((None, None, None, None))
-    assert len(cg) == 0
-
-    cg *= g
-
-    with pytest.raises(AssertionError):  # 0 == 1
-        assert len(cg) == 1  # only pizza
-
-
-def test_inplace_operators_with_two_conjunctivegraphs():
-
-    cg1 = ConjunctiveGraph()
-    cg1.add((tarek, likes, pizza))
-    cg1.add((tarek, likes, michel))
-
-    cg2 = ConjunctiveGraph()
-    cg2.add((tarek, likes, pizza))
-    cg2.add((tarek, likes, cheese))
-
-    cg1 += cg2  # now cg1 contains everything
-
-    assert len(cg1) == 3
-
-    cg1.remove((None, None, None, None))
-    assert len(cg1) == 0
-
-    cg1 -= cg2
-
-    with pytest.raises(AssertionError):
-        assert len(cg1) == 1  # removes pizza
-
-    cg1.remove((None, None, None, None))
-    assert len(cg1) == 0
-
-    cg1 *= cg2
-
-    with pytest.raises(AssertionError):
-        assert len(cg1) == 1  # only pizza
-
-
-def test_inplace_operators_with_dataset_and_graph():
+def test_inplace_operators_with_dataset_and_named_graph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
-    g = Graph()
-    g.add([tarek, likes, pizza])
-    g.add([tarek, likes, cheese])
+    g = Graph(identifier=URIRef("urn:example:context-1"))
+    g.parse(data=sportsextras, format="n3")
 
     ds += g  # now ds contains everything
 
-    assert len(ds) == 3
+    assert len(ds) == 7
 
     ds.remove((None, None, None, None))
     assert len(ds) == 0
@@ -269,16 +243,14 @@ def test_inplace_operators_with_dataset_and_graph():
 def test_inplace_operators_with_dataset_and_conjunctivegraph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
     cg = ConjunctiveGraph()
-    cg.add([tarek, likes, pizza])
-    cg.add([tarek, likes, cheese])
+    cg.parse(data=sportquadsextranq, format="nquads")
 
     ds += cg  # now ds contains everything
 
-    assert len(ds) == 3
+    assert len(ds) == 10
 
     ds.remove((None, None, None, None))
     assert len(ds) == 0
@@ -300,16 +272,14 @@ def test_inplace_operators_with_dataset_and_conjunctivegraph():
 def test_inplace_operators_with_dataset_and_namedgraph():
 
     ds = Dataset()
-    ds.add((tarek, likes, pizza))
-    ds.add((tarek, likes, michel))
+    ds.parse(data=sportquadsnq, format="nquads")
 
-    cg = ConjunctiveGraph(identifier=URIRef("context-1"))
-    cg.add((tarek, likes, pizza))
-    cg.add((tarek, likes, cheese))
+    cg = ConjunctiveGraph(identifier=URIRef("urn:example:context-1"))
+    cg.parse(data=sportquadsextranq, format="nquads")
 
     ds += cg  # now ds contains everything
 
-    assert len(ds) == 3
+    assert len(ds) == 10
 
     ds.remove((None, None, None, None))
     assert len(ds) == 0
@@ -331,28 +301,32 @@ def test_inplace_operators_with_dataset_and_namedgraph():
 def test_inplace_operators_with_two_datasets():
 
     ds1 = Dataset()
-    ds1.add((tarek, likes, pizza))
-    ds1.add((tarek, likes, michel))
+    ds1.parse(data=sportquadsnq, format="nquads")
 
     ds2 = Dataset()
-    ds2.add((tarek, likes, pizza))
-    ds2.add((tarek, likes, cheese))
+    ds1.parse(data=sportquadsextranq, format="nquads")
 
-    with pytest.raises(ValueError):  # too many values to unpack (expected 3)
-        ds1 += ds2  # now ds1 contains everything
+    ds1 += ds2  # now ds1 contains everything
+    assert len(ds1) == 0
 
     ds1.remove((None, None, None, None))
     assert len(ds1) == 0
+    for context in ds1.contexts():
+        assert len(ds1.get_context(context)) == 0  # All gone
+
+    ds1.parse(data=sportquadsnq, format="nquads")
 
     ds1 -= ds2
 
-    with pytest.raises(AssertionError):  # 0 == 1
-        assert len(ds1) == 1  # removes pizza
+    assert len(ds1) == 0  # removes extras
 
-    ds1.remove((None, None, None, None))
-    assert len(ds1) == 0
+    ds1.parse(data=sportquadsnq, format="nquads")
 
     ds1 *= ds2
 
-    with pytest.raises(AssertionError):  # 0 == 1
-        assert len(ds1) == 1  # only pizza
+    assert len(ds1) == 0  # only pizza
+
+    for g in ds1.graphs():
+        logger.debug(
+            f"G:{g.identifier}\n{ds1.get_context(g.identifier).serialize(format='trig')}"
+        )

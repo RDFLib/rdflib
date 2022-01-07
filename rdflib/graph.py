@@ -314,10 +314,9 @@ class Graph(Node):
     that will be used to store the graph data (see the "store"
     package for stores currently shipped with rdflib).
 
-    Stores can be context-aware or unaware.  Unaware stores take up
-    (some) less space but cannot support features that require
-    context, such as true merging/demerging of sub-graphs and
-    provenance.
+    Stores can be context-aware or unaware.  Context-unaware stores take up
+    (some) less space but cannot support features that require context,
+    such as representing provenance and true merging/demerging of sub-graphs.
 
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for its
@@ -1974,7 +1973,24 @@ class Dataset(ConjunctiveGraph):
     def __setstate__(self, state):
         self.store, self.identifier, self.default_context, self.default_union = state
 
+    def __len__(self, context=None):
+        """Number of triples in the default graph or context (if not None)"""
+        return self.store.__len__(
+            context=DATASET_DEFAULT_GRAPH_ID if context is None else context
+        )
+
     def graph(self, identifier=None, base=None):
+        """
+        Return the Graph identified in the Dataset by `identifier` or
+        return a new Graph if one with that identifier doesn't exist.
+
+        If `identifier` is omitted or `None`, the identifier of the new
+        Graph returned will be a skolemized BNode.
+
+        If a value for `base` is provided, it will be bound to the base of
+        the new Graph that is returned.
+        """
+
         if isinstance(identifier, Graph): identifier = identifier.identifier
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
@@ -2101,7 +2117,9 @@ class Dataset(ConjunctiveGraph):
         for s, p, o, c in super(Dataset, self).quads(quad):
             if c.identifier == DATASET_DEFAULT_GRAPH_ID:
                 yield s, p, o, None
-            else:
+            elif len(quad) == 3:
+                yield s, p, o, c.identifier
+            elif len(quad) == 4 and (quad[3] == c.identifier or quad[3] is None):
                 yield s, p, o, c.identifier
 
     def __iter__(self) -> Generator[DatasetQuad, None, None]:
@@ -2239,7 +2257,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     """Utility class for treating a set of graphs as a single graph
 
     Only read operations are supported (hence the name). Essentially a
-    ConjunctiveGraph over an explicit subset of the entire store.
+    ConjunctiveGraph over an explicit subset of an entire single store.
     """
 
     def __init__(self, graphs, store="default"):
