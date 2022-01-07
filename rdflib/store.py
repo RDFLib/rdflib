@@ -241,7 +241,11 @@ class Store(object):
             )
             self.add((s, p, o), c)
 
-    def remove(self, triple, context=None):
+    def remove(
+        self,
+        triple: Tuple["Node", "Node", "Node"],
+        context: Optional[Union["Graph", "Identifier"]],
+    ):
         """ Remove the set of triples matching the pattern from the store """
         if context is not None and not isinstance(context, Identifier):
             raise Exception("Trying to remove from a context that isn't an identifier: %s" % context)
