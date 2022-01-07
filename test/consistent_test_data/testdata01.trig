@@ -1,0 +1,14 @@
+@prefix ns1: <http://example.org/ns#> .
+{
+    <http://example.org/a> ns1:label "A" .
+}
+<http://example.org/b/> 
+{
+    <http://example.org/b> ns1:label "B" .
+}
+{
+    <http://example.org/c> ns1:label "C" .
+}
+_:d {
+    <http://example.org/d> ns1:label "D" .
+}
