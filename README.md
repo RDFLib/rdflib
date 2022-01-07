@@ -94,13 +94,13 @@ You can use them like this:
 
 ```python
 from rdflib import Graph, URIRef, Literal
-from rdflib.namespace import RDFS
+from rdflib.namespace import RDFS, XSD
 
 g = Graph()
 semweb = URIRef('http://dbpedia.org/resource/Semantic_Web')
 type = g.value(semweb, RDFS.label)
 ```
-Where `RDFS` is the RDFS Namespace, `g.value` returns an object of the triple-pattern given (or an arbitrary one if more exist).
+Where `RDFS` is the RDFS namespace, `XSD` the XML Schema Datatypes namespace and `g.value` returns an object of the triple-pattern given (or an arbitrary one if multiple exist).
 
 Or like this, adding a triple to a graph `g`:
 
@@ -112,7 +112,7 @@ g.add((
 ))
 ```
 The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .`
-is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
+is created where the property `FOAF.givenName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
 URI `<http://www.w3.org/2001/XMLSchema#string>`.
 
 You can bind namespaces to prefixes to shorten the URIs for RDF/XML, Turtle, N3, TriG, TriX & JSON-LD serializations:
