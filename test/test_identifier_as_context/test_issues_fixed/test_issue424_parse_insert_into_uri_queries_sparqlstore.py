@@ -4,8 +4,8 @@ from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 def test_issue424_parse_insert_into_uri_queries_sparqlstore():
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     store.update(

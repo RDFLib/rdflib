@@ -11,8 +11,8 @@ def test_sparqlupdatestore_dataset_default_add_succeeds():
     ds = Dataset(store="SPARQLUpdateStore")
     ds.open(
         configuration=(
-            "http://localhost:3031/db/sparql",
-            "http://localhost:3031/db/update",
+            "http://localhost:3030/db/sparql",
+            "http://localhost:3030/db/update",
         )
     )
     ds.add((tarek, likes, pizza))

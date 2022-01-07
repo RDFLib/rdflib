@@ -54,8 +54,8 @@ list_of_nquads = [
 def test_issue167_sparqlupdatestore_clear():
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     ds = Dataset(store=store)
@@ -69,8 +69,8 @@ def test_issue167_sparqlupdatestore_clear():
 def test_issue167_sparqlupdatestore_addN():
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     ds = Dataset(store=store)

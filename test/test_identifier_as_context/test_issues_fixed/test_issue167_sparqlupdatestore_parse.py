@@ -16,8 +16,8 @@ sportquadsnq = open(
 def test_issue167_sparqlupdatestore_parse():
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     ds = Dataset(store=store)

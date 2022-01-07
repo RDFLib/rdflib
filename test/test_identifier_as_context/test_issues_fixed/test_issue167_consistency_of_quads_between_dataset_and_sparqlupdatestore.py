@@ -21,8 +21,8 @@ def test_issue167_consistency_of_quads_between_dataset_and_sparqlupdatestore():
     quads = ds.quads((None, None, None, None))  # Fourth term is identifier
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     store.addN(quads)  # Fourth term is identifier

@@ -21,8 +21,8 @@ def test_issue371_validation_of_quads_at_graph_addN_does_not_work_as_expected():
     quads = ds.quads((None, None, None, None))  # Fourth term is identifier
 
     store = SPARQLUpdateStore(
-        query_endpoint="http://localhost:3031/db/sparql",
-        update_endpoint="http://localhost:3031/db/update",
+        query_endpoint="http://localhost:3030/db/sparql",
+        update_endpoint="http://localhost:3030/db/update",
     )
 
     store.addN(quads)  # Fourth term is identifier
