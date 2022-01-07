@@ -1,5 +1,4 @@
 import os
-import pytest
 from rdflib import Dataset, URIRef
 
 timblcardn3 = open(
@@ -7,13 +6,13 @@ timblcardn3 = open(
 ).read()
 
 
-michel = URIRef("urn:x-rdflib:michel")
-tarek = URIRef("urn:x-rdflib:tarek")
-bob = URIRef("urn:x-rdflib:bob")
-likes = URIRef("urn:x-rdflib:likes")
-hates = URIRef("urn:x-rdflib:hates")
-pizza = URIRef("urn:x-rdflib:pizza")
-cheese = URIRef("urn:x-rdflib:cheese")
+michel = URIRef("urn:example:michel")
+tarek = URIRef("urn:example:tarek")
+bob = URIRef("urn:example:bob")
+likes = URIRef("urn:example:likes")
+hates = URIRef("urn:example:hates")
+pizza = URIRef("urn:example:pizza")
+cheese = URIRef("urn:example:cheese")
 
 
 def add_stuff(graph):
@@ -33,43 +32,43 @@ def add_stuff(graph):
 def test_unique_subjects():
     graph = Dataset()
     add_stuff(graph)
-    assert len([sub for sub in graph.subjects()]) == 11
-    assert len([sub for sub in graph.subjects(unique=True)]) == 3
+    assert len(list(graph.subjects())) == 11
+    assert len(list(graph.subjects(unique=True))) == 3
 
 
 def test_unique_predicates():
     graph = Dataset()
     add_stuff(graph)
-    assert len([pred for pred in graph.predicates()]) == 11
-    assert len([pred for pred in graph.predicates(unique=True)]) == 2
+    assert len(list(graph.predicates())) == 11
+    assert len(list(graph.predicates(unique=True))) == 2
 
 
 def test_unique_objects():
     graph = Dataset()
     add_stuff(graph)
-    assert len([obj for obj in graph.objects()]) == 11
-    assert len([obj for obj in graph.objects(unique=True)]) == 5
+    assert len(list(graph.objects())) == 11
+    assert len(list(graph.objects(unique=True))) == 5
 
 
 def test_unique_subject_predicates():
     graph = Dataset()
     add_stuff(graph)
-    assert len([sub for sub in graph.subject_predicates()]) == 11
-    assert len([sub for sub in graph.subject_predicates(unique=True)]) == 4
+    assert len(list(graph.subject_predicates())) == 11
+    assert len(list(graph.subject_predicates(unique=True))) == 4
 
 
 def test_unique_predicate_objects():
     graph = Dataset()
     add_stuff(graph)
-    assert len([pred for pred in graph.predicate_objects()]) == 11
-    assert len([pred for pred in graph.predicate_objects(unique=True)]) == 7
+    assert len(list(graph.predicate_objects())) == 11
+    assert len(list(graph.predicate_objects(unique=True))) == 7
 
 
 def test_unique_subject_objects():
     graph = Dataset()
     add_stuff(graph)
-    assert len([obj for obj in graph.subject_objects()]) == 11
-    assert len([obj for obj in graph.subject_objects(unique=True)]) == 11
+    assert len(list(graph.subject_objects())) == 11
+    assert len(list(graph.subject_objects(unique=True))) == 11
 
 
 no_of_statements_in_card = 86

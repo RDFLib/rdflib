@@ -11,16 +11,16 @@ from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.store import VALID_STORE
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
-michel = URIRef("urn:x-rdflib:michel")
-tarek = URIRef("urn:x-rdflib:tarek")
-bob = URIRef("urn:x-rdflib:bob")
-likes = URIRef("urn:x-rdflib:likes")
-hates = URIRef("urn:x-rdflib:hates")
-pizza = URIRef("urn:x-rdflib:pizza")
-cheese = URIRef("urn:x-rdflib:cheese")
+michel = URIRef("urn:example:michel")
+tarek = URIRef("urn:example:tarek")
+bob = URIRef("urn:example:bob")
+likes = URIRef("urn:example:likes")
+hates = URIRef("urn:example:hates")
+pizza = URIRef("urn:example:pizza")
+cheese = URIRef("urn:example:cheese")
 
-c1 = URIRef("urn:x-rdflib:context-1")
-c2 = URIRef("urn:x-rdflib:context-2")
+c1 = URIRef("urn:example:context-1")
+c2 = URIRef("urn:example:context-2")
 
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
