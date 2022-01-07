@@ -1986,19 +1986,85 @@ class Dataset(ConjunctiveGraph):
 
     def parse(
         self,
-        source=None,
-        publicID=None,
-        format=None,
-        location=None,
-        file=None,
-        data=None,
+        source: Optional[
+            Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
+        ] = None,
+        publicID: Optional[str] = None,
+        format: Optional[str] = None,
+        location: Optional[str] = None,
+        file: Optional[Union[BinaryIO, TextIO]] = None,
+        data: Optional[Union[str, bytes]] = None,
         **args,
     ):
-        c = ConjunctiveGraph.parse(
-            self, source, publicID, format, location, file, data, **args
+        """
+        Parse source adding the resulting triples to its own context
+        (sub graph of this graph).
+
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
+
+        :Returns:
+
+        The graph into which the source was parsed. In the case of n3
+        it returns the root context.
+        """
+
+        quadformats = ["trig", "trix", "nquads", "hext", "json-ld"]
+
+        rdf_source = create_input_source(
+            source=source,
+            publicID=publicID,
+            location=location,
+            file=file,
+            data=data,
+            format=format,
         )
-        self.graph(c)
-        return c
+
+        if format is None:
+            format = rdf_source.content_type
+        could_not_guess_format = False
+
+        if format is None:
+            if (
+                hasattr(rdf_source, "file")
+                and getattr(rdf_source.file, "name", None)  # type: ignore[attr-defined]
+                and isinstance(rdf_source.file.name, str)  # type: ignore[attr-defined]
+            ):
+                format = rdflib.util.guess_format(rdf_source.file.name)  # type: ignore[attr-defined]
+            if format is None:
+                format = "trig"
+                could_not_guess_format = True
+
+        if format not in quadformats:
+            c = ConjunctiveGraph.parse(
+                self, source, publicID, format, location, file, data, **args
+            )
+            self.graph(c)
+            return c
+
+        else:
+            parser = plugin.get(format, Parser)()
+
+            try:
+                cg = ConjunctiveGraph(identifier=DATASET_DEFAULT_GRAPH_ID)
+                parser.parse(rdf_source, cg)
+
+            except SyntaxError as se:
+                if could_not_guess_format:
+                    raise ParserError(
+                        "Could not guess RDF format for %r from file extension so tried Turtle but failed."
+                        "You can explicitly specify format using the format argument."
+                        % source
+                    )
+                else:
+                    raise se
+
+            finally:
+                if rdf_source.auto_close:
+                    rdf_source.close()
+
+            self.addN(cg.quads((None, None, None, None)))
+
+            return self
 
     def add_graph(self, g):
         """alias of graph for consistency"""
