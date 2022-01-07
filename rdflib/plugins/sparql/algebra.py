@@ -847,9 +847,15 @@ def translateAlgebra(query_algebra: Query):
         with open("query.txt", "w") as file:
             file.write(filedata)
 
+    aggr_vars = collections.defaultdict(list)  # type: dict
+
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
-            return node_arg.n3()
+            if node_arg in aggr_vars.keys():
+                grp_var = aggr_vars[node_arg].pop(0).n3()
+                return grp_var
+            else:
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -959,7 +965,9 @@ def translateAlgebra(query_algebra: Query):
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-                    agg_func_name = agg_func.name.split("_")[1]
+                    aggr_vars[agg_func.res].append(agg_func.vars)
+
+                    agg_func_name = agg_func.name.split('_')[1]
                     distinct = ""
                     if agg_func.distinct:
                         distinct = agg_func.distinct + " "
@@ -1022,7 +1030,7 @@ def translateAlgebra(query_algebra: Query):
                     if isinstance(c.expr, Identifier):
                         var = c.expr.n3()
                         if c.order is not None:
-                            cond = var + "(" + c.order + ")"
+                            cond = c.order + "(" + var + ")"
                         else:
                             cond = var
                         order_conditions.append(cond)
@@ -1233,7 +1241,7 @@ def translateAlgebra(query_algebra: Query):
                     "{Builtin_STRLEN}", "STRLEN(" + convert_node_arg(node.arg) + ")"
                 )
             elif node.name.endswith("Builtin_SUBSTR"):
-                args = [node.arg.n3(), node.start]
+                args = [convert_node_arg(node.arg), node.start]
                 if node.length:
                     args.append(node.length)
                 expr = "SUBSTR(" + ", ".join(args) + ")"
@@ -1294,7 +1302,7 @@ def translateAlgebra(query_algebra: Query):
                 )
             elif node.name.endswith("Builtin_CONCAT"):
                 expr = "CONCAT({vars})".format(
-                    vars=", ".join(elem.n3() for elem in node.arg)
+                    vars=", ".join(convert_node_arg(elem) for elem in node.arg)
                 )
                 replace("{Builtin_CONCAT}", expr)
             elif node.name.endswith("Builtin_LANGMATCHES"):
