@@ -27,4 +27,6 @@ jobs:
         for i in ./requirements*.txt;do python -m pip install -r "$i";done
     - name: Test
       run: |
-        pytest -vv
+        pytest --cache-clear --cov=app test/ > pytest-coverage.txt
+    - name: Comment coverage
+      uses: coroo/pytest-coverage-commentator@v1.0.2
