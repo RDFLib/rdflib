@@ -95,9 +95,6 @@ class TestSparql11(unittest.TestCase):
     def testConjunctiveDefault(self):
         g = self.graph.get_context(graphuri)
         g.add((tarek, likes, pizza))
-
-        isunion = len(self.graph) > 0
-
         g2 = self.graph.get_context(othergraphuri)
         g2.add((bob, likes, pizza))
         g.add((tarek, hates, cheese))
@@ -114,9 +111,8 @@ class TestSparql11(unittest.TestCase):
         ##
         # Fuseki/TDB has a flag for specifying that the default graph
         # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
-
         self.assertEqual(
-            3 if isunion else 0,
+            3,
             len(self.graph),
             "default union graph should contain three triples but contains:\n"
             "%s" % list(self.graph),
@@ -125,30 +121,23 @@ class TestSparql11(unittest.TestCase):
         r = self.graph.query(
             "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }"
         )
-        self.assertEqual(2 if isunion else 0, len(list(r)), "two people like pizza")
+        self.assertEqual(2, len(list(r)), "two people like pizza")
 
         r = self.graph.query(
-            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
-            initBindings={"s": tarek},
+            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }", initBindings={"s": tarek},
         )
-        self.assertEqual(
-            1 if isunion else 0, len(list(r)), "i was asking only about tarek"
-        )
+        self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
         r = self.graph.triples((tarek, likes, pizza))
-        self.assertEqual(
-            1 if isunion else 0, len(list(r)), "i was asking only about tarek"
-        )
+        self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
         r = self.graph.triples((tarek, likes, cheese))
         self.assertEqual(0, len(list(r)), "tarek doesn't like cheese")
 
         g2.remove((bob, likes, pizza))
 
-        r = self.graph.query(
-            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }"
-        )
-        self.assertEqual(1 if isunion else 0, len(list(r)), "only tarek likes pizza")
+        r = self.graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
+        self.assertEqual(1, len(list(r)), "only tarek likes pizza")
 
     def testUpdate(self):
         self.graph.update(
@@ -286,10 +275,7 @@ class TestSparql11(unittest.TestCase):
         r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
         r4 = "\n".join(
-            [
-                "INSERT DATA { <urn:example:michel> <urn:says> %s } ;" % s
-                for s in r4strings
-            ]
+            ["INSERT DATA { <urn:example:michel> <urn:says> %s } ;" % s for s in r4strings]
         )
         g.update(r4)
         values = set()
@@ -320,9 +306,7 @@ class TestSparql11(unittest.TestCase):
         values = set()
         for v in g.objects(michel, hates):
             values.add(str(v))
-        self.assertEqual(
-            values, set(["urn:example:foo'bar?baz;a=1&b=2#fragment", "'}"])
-        )
+        self.assertEqual(values, set(["urn:example:foo'bar?baz;a=1&b=2#fragment", "'}"]))
 
         # Comments
         r6 = """
