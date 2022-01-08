@@ -1,4 +1,3 @@
-import pytest
 from rdflib import Graph, Dataset, Literal, Namespace, RDF, URIRef
 from rdflib.namespace import SKOS, DCTERMS
 
