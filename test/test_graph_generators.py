@@ -1,13 +1,13 @@
 import os
 from rdflib import Graph, URIRef
 
-michel = URIRef("urn:example:michel")
-tarek = URIRef("urn:example:tarek")
-bob = URIRef("urn:example:bob")
-likes = URIRef("urn:example:likes")
-hates = URIRef("urn:example:hates")
-pizza = URIRef("urn:example:pizza")
-cheese = URIRef("urn:example:cheese")
+michel = URIRef("urn:michel")
+tarek = URIRef("urn:tarek")
+bob = URIRef("urn:bob")
+likes = URIRef("urn:likes")
+hates = URIRef("urn:hates")
+pizza = URIRef("urn:pizza")
+cheese = URIRef("urn:cheese")
 
 timblcardn3 = open(
     os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
