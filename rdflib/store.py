@@ -210,7 +210,7 @@ class Store(object):
     def add(
         self,
         triple: Tuple["Node", "Node", "Node"],
-        context: Optional[Union["Graph", "Identifier"]],
+        context: Optional["Identifier"],
         quoted: bool = False,
     ):
         """
@@ -244,7 +244,7 @@ class Store(object):
     def remove(
         self,
         triple: Tuple["Node", "Node", "Node"],
-        context: Optional[Union["Graph", "Identifier"]],
+        context: Optional["Identifier"],
     ):
         """ Remove the set of triples matching the pattern from the store """
         if context is not None and not isinstance(context, Identifier):
