@@ -106,12 +106,8 @@ def test_scenarios() -> None:
     ds1.base = base_three
 
     trix = ds1.serialize(format="trix", base=Namespace("http://two.org/"))
-
-    with pytest.raises(Exception):
-        assert '<graph xml:base="http://one.org/">' in trix
-    with pytest.raises(Exception):
-        assert '<graph xml:base="http://two.org/">' in trix
-
+    assert '<graph xml:base="http://one.org/">' in trix
+    assert '<graph xml:base="http://two.org/">' in trix
     assert '<TriX xml:base="http://two.org/"' in trix
 
     trig = ds1.serialize(format="trig", base=Namespace("http://two.org/"))
