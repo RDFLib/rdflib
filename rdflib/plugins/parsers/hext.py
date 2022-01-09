@@ -47,7 +47,7 @@ class HextuplesParser(Parser):
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
         else:
-            s = cast(URIRef, URIRef(tup[0]))
+            s = URIRef(tup[0])
 
         # 2 - predicate
         p = URIRef(tup[1])
