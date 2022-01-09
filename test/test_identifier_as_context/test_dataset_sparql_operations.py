@@ -53,6 +53,10 @@ def test_dataset_operations():
     ds.update(
         "INSERT DATA { GRAPH <urn:x-rdflib:default> { <urn:example:tarek> <urn:example:likes> <urn:example:cheese> . } }"
     )
+    # The default graph is the only graph in the dataset so the length of ds.graphs() == 1
+    assert len(list(ds.graphs())) == 1
+    # The default graph is the only graph in the dataset so the length of ds.graphs() == 1
+    assert len(ds.get_context(DATASET_DEFAULT_GRAPH_ID)) == 1
 
     # 2. SPARQL update add triple to unspecified (i.e. default) graph
     ds.update(
@@ -61,6 +65,8 @@ def test_dataset_operations():
 
     # The default graph is the only graph in the dataset so the length of ds.graphs() == 1
     assert len(list(ds.graphs())) == 1
+    # Default graph has two triples
+    assert len(ds.get_context(DATASET_DEFAULT_GRAPH_ID)) == 2
 
     # 3. Add triple to new, BNODE-NAMED graph
     g = ds.graph(BNode())
@@ -151,38 +157,13 @@ def test_dataset_operations():
     # Still 7 graphs
     assert len(list(ds.graphs())) == 7
 
-    # logger.debug(f"DS:\n{ds.serialize(format='trig')}")
+    ds.remove_graph(c1)
 
-    """
-    @prefix ex: <urn:example:> .
-    @prefix ns1: <http://rdlib.net/.well-known/genid/rdflib/> .
-    @prefix rdflib: <urn:x-rdflib:> .
+    # One fewer graphs in the Dataset
+    assert len(list(ds.graphs())) == 6
 
-    ns1:N95f76d07b95c45278f52c4de32b0556c {
-        ex:michel ex:likes ex:pizza .
-    }
+    ds.add_graph(c1)
 
-    ex:context-4 {
-        ex:tarek ex:likes ex:michel .
-    }
+ 
+    assert c1 in list(ds.store.contexts())
 
-    {
-        ex:tarek ex:likes ex:camembert,
-                ex:cheese,
-                ex:pizza .
-    }
-
-    ex:context-3 {
-        ex:michel ex:hates ex:pizza .
-    }
-
-    _:N82982af15db7449d87a182f69465e2ee {
-        ex:bob ex:likes ex:pizza .
-    }
-
-    ex:context-1 {
-        ex:tarek ex:hates ex:cheese,
-                ex:pizza .
-    }
-
-    """
