@@ -5,7 +5,7 @@ handle contexts, i.e. multiple graphs.
 """
 import json
 
-from typing import List, Union, cast
+from typing import List, Union
 from rdflib.parser import Parser
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
@@ -47,7 +47,7 @@ class HextuplesParser(Parser):
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
         else:
-            s = cast(URIRef, URIRef(tup[0]))
+            s = URIRef(tup[0])
 
         # 2 - predicate
         p = URIRef(tup[1])
@@ -55,18 +55,14 @@ class HextuplesParser(Parser):
         # 3 - value
         o: Union[URIRef, BNode, Literal]
         if tup[3] == "globalId":
-            o = cast(URIRef, URIRef(tup[2]))
+            o = URIRef(tup[2])
         elif tup[3] == "localId":
             o = BNode(value=tup[2].replace("_:", ""))
         else:  # literal
             if tup[4] is None:
-                o = cast(
-                    Literal,
-                    Literal(tup[2], datatype=URIRef(tup[3])))
+                o = Literal(tup[2], datatype=URIRef(tup[3]))
             else:
-                o = cast(
-                    Literal,
-                    Literal(tup[2], lang=tup[4]))
+                o = Literal(tup[2], lang=tup[4])
 
         # 6 - context
         if tup[5] is not None:
