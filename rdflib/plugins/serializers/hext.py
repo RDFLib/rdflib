@@ -20,6 +20,7 @@ class HextuplesSerializer(Serializer):
 
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
         self.default_context: Optional[Node]
+        self.graph_type: Type[Graph]
         if isinstance(store, ConjunctiveGraph):
             self.graph_type = ConjunctiveGraph
             self.contexts = list(store.contexts())
