@@ -5,7 +5,7 @@ handle contexts, i.e. multiple graphs.
 """
 import json
 
-from typing import List, Union, cast
+from typing import List, Union
 from rdflib.parser import Parser
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
