@@ -11,16 +11,16 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 # Leave line endings as-is in Markdown and ReStructuredText files
-[*.{md, rst}]
+[*.{md,rst}]
 charset = utf-8
 trim_trailing_whitespace = false
 
 # Matches multiple files with brace expansion notation
 # Set default charset
-[*.{js, py, pyi, toml, yml, yaml}]
+[*.{js,py,pyi,toml,yml,yaml}]
 charset = utf-8
 
-[*.{yaml, yml}]
+[*.{yaml,yml,json}]
 indent_style = space
 indent_size = 2
 
