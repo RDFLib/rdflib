@@ -5,7 +5,7 @@ handle contexts, i.e. multiple graphs.
 """
 import json
 
-from typing import List, Union
+from typing import List, Union, cast
 from rdflib.parser import Parser
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
@@ -24,21 +24,30 @@ class HextuplesParser(Parser):
         pass
 
     def _load_json_line(self, line: str):
-        return [x if x != "" else None for x in json.loads(line)]
+        # this complex handing is because the 'value' component is
+        # allowed to be "" but not None
+        # all other "" values are treated as None
+        ret1 = json.loads(line)
+        ret2 = [x if x != "" else None for x in json.loads(line)]
+        if ret1[2] == "":
+            ret2[2] = ""
+        return ret2
 
     def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
         if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
-            raise ValueError("subject, predicate, value, datatype cannot be None")
+            raise ValueError(
+                "subject, predicate, value, datatype cannot be None. Given: "
+                f"{tup}")
 
         # 1 - subject
         s: Union[URIRef, BNode]
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
         else:
-            s = URIRef(tup[0])
+            s = cast(URIRef, URIRef(tup[0]))
 
         # 2 - predicate
         p = URIRef(tup[1])
@@ -46,14 +55,18 @@ class HextuplesParser(Parser):
         # 3 - value
         o: Union[URIRef, BNode, Literal]
         if tup[3] == "globalId":
-            o = URIRef(tup[2])
+            o = cast(URIRef, URIRef(tup[2]))
         elif tup[3] == "localId":
             o = BNode(value=tup[2].replace("_:", ""))
         else:  # literal
             if tup[4] is None:
-                o = Literal(tup[2], datatype=URIRef(tup[3]))
+                o = cast(
+                    Literal,
+                    Literal(tup[2], datatype=URIRef(tup[3])))
             else:
-                o = Literal(tup[2], lang=tup[4])
+                o = cast(
+                    Literal,
+                    Literal(tup[2], lang=tup[4]))
 
         # 6 - context
         if tup[5] is not None:

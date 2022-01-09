@@ -3,6 +3,7 @@ HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
 from typing import IO, Optional, Union
+import json
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import Literal, URIRef, Node, BNode
 from rdflib.serializer import Serializer
@@ -20,6 +21,7 @@ class HextuplesSerializer(Serializer):
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
         self.default_context: Optional[Node]
         if isinstance(store, ConjunctiveGraph):
+            self.graph_type = ConjunctiveGraph
             self.contexts = list(store.contexts())
             if store.default_context:
                 self.default_context = store.default_context
@@ -27,6 +29,7 @@ class HextuplesSerializer(Serializer):
             else:
                 self.default_context = None
         else:
+            self.graph_type = Graph
             self.contexts = [store]
             self.default_context = None
 
@@ -101,14 +104,14 @@ class HextuplesSerializer(Serializer):
             else:
                 language = ""
 
-            return '["%s", "%s", "%s", "%s", "%s", "%s"]\n' % (
+            return json.dumps([
                 self._iri_or_bn(triple[0]),
                 triple[1],
                 value,
                 datatype,
                 language,
-                self._context(context),
-            )
+                self._context(context)
+            ]) + "\n"
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None
 
@@ -121,7 +124,7 @@ class HextuplesSerializer(Serializer):
             return None
 
     def _context(self, context):
-        if self.default_context is None:
+        if self.graph_type == Graph:
             return ""
         if context.identifier == "urn:x-rdflib:default":
             return ""
