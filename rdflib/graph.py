@@ -1979,6 +1979,21 @@ class Dataset(ConjunctiveGraph):
             context=DATASET_DEFAULT_GRAPH_ID if context is None else context
         )
 
+    def __add__(self, other):
+        if isinstance(other, Graph):
+            raise NotImplementedError
+        else:
+            self.add(other)
+
+    def __mul__(self, other):
+        raise NotImplementedError
+
+    def __sub__(self, other):
+        raise NotImplementedError
+
+    def __xor__(self, other):
+        raise NotImplementedError
+
     def graph(self, identifier=None, base=None):
         """
         Return the Graph identified in the Dataset by `identifier` or
