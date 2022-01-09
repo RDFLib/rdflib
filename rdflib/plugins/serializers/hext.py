@@ -2,7 +2,7 @@
 HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
-from typing import IO, Optional, Union
+from typing import IO, Optional, Type, Union
 import json
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import Literal, URIRef, Node, BNode
