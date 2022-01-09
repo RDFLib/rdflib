@@ -55,7 +55,7 @@ class HextuplesParser(Parser):
         # 3 - value
         o: Union[URIRef, BNode, Literal]
         if tup[3] == "globalId":
-            o = cast(URIRef, URIRef(tup[2]))
+            o = URIRef(tup[2])
         elif tup[3] == "localId":
             o = BNode(value=tup[2].replace("_:", ""))
         else:  # literal
