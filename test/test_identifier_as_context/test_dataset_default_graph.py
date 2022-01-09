@@ -419,33 +419,6 @@ def test_parse_graph_with_bnode_identifier_as_new_dataset_CONTEXT():
     assert len(list(dataset.contexts())) == 2
 
 
-def test_addN_content_of_parsed_conjunctivegraph_with_bnode_identifier_as_new_dataset_CONTEXT():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    bnode_identifier = BNode()
-
-    g = ConjunctiveGraph(identifier=bnode_identifier)
-
-    g.parse(data="<a> <b> <c> .", format="ttl")
-
-    g.addN([(tarek, likes, michel, URIRef("urn:x-rdflib:context-0"))])
-
-    dataset.add_graph(g)
-
-    assert len(list(dataset.contexts())) == 2
-
-    assert len(dataset.get_context(bnode_identifier)) == 0
-
-    with pytest.raises(AssertionError):  # 4 != 3
-        assert len(list(dataset.contexts())) == 3
-
-
 def test_default_graph_method_add_parsed_turtle_graph_to_dataset_DEFAULT():
     dataset = Dataset()
     assert len(list(dataset.contexts())) == 1
