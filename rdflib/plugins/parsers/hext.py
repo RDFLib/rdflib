@@ -62,9 +62,7 @@ class HextuplesParser(Parser):
             if tup[4] is None:
                 o = Literal(tup[2], datatype=URIRef(tup[3]))
             else:
-                o = cast(
-                    Literal,
-                    Literal(tup[2], lang=tup[4]))
+                o = Literal(tup[2], lang=tup[4])
 
         # 6 - context
         if tup[5] is not None:
