@@ -60,9 +60,7 @@ class HextuplesParser(Parser):
             o = BNode(value=tup[2].replace("_:", ""))
         else:  # literal
             if tup[4] is None:
-                o = cast(
-                    Literal,
-                    Literal(tup[2], datatype=URIRef(tup[3])))
+                o = Literal(tup[2], datatype=URIRef(tup[3]))
             else:
                 o = cast(
                     Literal,
