@@ -13,6 +13,7 @@ import random
 import uuid
 import hashlib
 import datetime as py_datetime  # naming conflict with function within this module
+import warnings
 
 from functools import reduce
 
@@ -613,8 +614,9 @@ def custom_function(uri, override=False, raw=False):
 
 def unregister_custom_function(uri, func):
     if _CUSTOM_FUNCTIONS.get(uri, (None, None))[0] != func:
-        raise ValueError("This function is not registered as %s" % uri.n3())
-    del _CUSTOM_FUNCTIONS[uri]
+        warnings.warn("This function is not registered as %s" % uri.n3())
+    else:
+        del _CUSTOM_FUNCTIONS[uri]
 
 
 def Function(e, ctx):
