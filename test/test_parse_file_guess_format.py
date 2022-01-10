@@ -28,6 +28,8 @@ class FileParserGuessFormatTest(unittest.TestCase):
         self.assertEqual(guess_format("../../relative/place/on/disk/example.json"), "json-ld")
         self.assertEqual(guess_format("example.rdf"), "xml")
         self.assertEqual(guess_format("example.nt"), "nt")
+        self.assertEqual(guess_format("example.nq"), "nquads")
+        self.assertEqual(guess_format("example.nquads"), "nquads")
         self.assertEqual(guess_format("example.n3"), "n3")
         self.assertIsNone(guess_format("example.docx", None))
         self.assertIsNone(guess_format("example", None))
