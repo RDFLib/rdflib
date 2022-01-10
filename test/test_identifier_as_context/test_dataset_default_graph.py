@@ -1,5 +1,4 @@
-import pytest
-from rdflib import BNode, ConjunctiveGraph, Dataset, Graph, URIRef
+from rdflib import Dataset, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 
@@ -15,25 +14,31 @@ c1 = URIRef("urn:example:context-1")
 c2 = URIRef("urn:example:context-2")
 
 
-def test_simple_dataset_default_graph_and_contexts_programmatic_modelling():
-    ds = Dataset()
+def test_dataset_default_graph():
+    dataset = Dataset()
 
     # There are no triples in any context, so dataset length == 0
-    assert len(ds) == 0
+    assert len(dataset) == 0
 
     # The default graph is a context so the length of ds.contexts() == 1
-    assert len(list(ds.contexts())) == 1
+    assert len(list(dataset.contexts())) == 1
 
     # Only the default graph exists and is yielded by ds.contexts()
     assert (
-        str(list(ds.contexts()))
+        str(list(dataset.contexts()))
         == "[<Graph identifier=urn:x-rdflib:default (<class 'rdflib.graph.Graph'>)>]"
     )
 
-    # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
-    assert set(x.identifier for x in ds.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
+    # Only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
+    assert set(x.identifier for x in dataset.contexts()) == set(
+        [DATASET_DEFAULT_GRAPH_ID]
+    )
 
-    dataset_default_graph = ds.get_context(DATASET_DEFAULT_GRAPH_ID)
+    # A graph in the Dataset can be bound to a variable, operations on the variable are
+    # operations on the Graph in the Dataset
+    dataset_default_graph = dataset.get_context(DATASET_DEFAULT_GRAPH_ID)
+
+    assert dataset == dataset_default_graph
 
     assert (
         str(dataset_default_graph)
@@ -48,9 +53,38 @@ def test_simple_dataset_default_graph_and_contexts_programmatic_modelling():
         "</rdf:RDF>\n"
     )
 
+    dataset_default_graph.add((tarek, likes, pizza))
 
-def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic_modelling():
+    assert (
+        len(dataset) == 1
+    )  # Dataset is responsible for tracking changes to constituents
+
+
+def test_removal_of_dataset_default_graph():
+
     ds = Dataset()
+
+    # ADD ONE TRIPLE *without context* to the default graph
+
+    ds.add((tarek, likes, pizza))
+
+    # There is now one triple in the default graph, so dataset length == 1
+    assert len(ds) == 1
+
+    # Removing default graph removes triples but not the actual graph
+    ds.remove_graph(DATASET_DEFAULT_GRAPH_ID)
+
+    assert len(ds) == 0
+
+    # Default graph still exists
+    assert set(context.identifier for context in ds.contexts()) == set(
+        [DATASET_DEFAULT_GRAPH_ID]
+    )
+
+
+def test_serialization_of_dataset_default_graph():
+    ds = Dataset()
+
     # Serialization of the empty dataset is sane
     ds.bind("", URIRef("urn:x-rdflib:"))
 
@@ -164,277 +198,3 @@ def test_serialization_of_simple_dataset_default_graph_and_contexts_programmatic
         "  }\n"
         "]"
     )
-
-
-def test_removal_of_simple_dataset_default_graph_and_contexts_programmatic_modelling():
-
-    ds = Dataset()
-
-    # ADD ONE TRIPLE *without context* to the default graph
-
-    ds.add((tarek, likes, pizza))
-
-    # There is now one triple in the default graph, so dataset length == 1
-    assert len(ds) == 1
-
-    # removing default graph removes triples but not actual graph
-    ds.remove_graph(DATASET_DEFAULT_GRAPH_ID)
-
-    assert len(ds) == 0
-
-    # default still exists
-    assert set(context.identifier for context in ds.contexts()) == set(
-        [DATASET_DEFAULT_GRAPH_ID]
-    )
-
-
-def test_simple_dataset_default_graph_and_contexts_sparql_modelling():
-    ds = Dataset()
-    ds.bind("", URIRef("urn:x-rdflib:"))
-
-    # ADD ONE TRIPLE *without context* to the default graph
-
-    ds.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:likes> <urn:example:pizza> . }"
-    )
-
-    # There is now one triple in the default graph, so dataset length == 1
-    assert len(ds) == 1
-
-    r = ds.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 1, "one person likes pizza"
-
-    assert str(ds.serialize(format="trig")) == str(
-        "@prefix : <urn:x-rdflib:> .\n@prefix ns1: <urn:example:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
-    )
-
-
-def test_simple_dataset_contexts_sparql_modelling():
-    ds = Dataset()
-    ds.bind("", URIRef("urn:x-rdflib:"))
-
-    # The default graph is a context so the length of ds.contexts() should be 1
-    assert len(list(ds.contexts())) == 1
-
-    # Insert statement into the default graph
-    ds.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:likes> <urn:example:pizza> . }"
-    )
-
-    # Inserting into the default graph should not create a new context so the length of
-    # ds.contexts() should still be 1
-    assert len(list(ds.contexts())) == 1
-
-    # Only the default graph exists and is yielded by ds.contexts()
-
-    # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
-    assert set(x.identifier for x in ds.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
-
-    # There is now one triple in the default graph, so dataset length should be 1
-    assert len(ds) == 1
-
-    r = ds.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 1, "one person likes pizza"
-
-    assert str(ds.serialize(format="trig")) == str(
-        "@prefix : <urn:x-rdflib:> .\n@prefix ns1: <urn:example:> .\n\n{\n    ns1:tarek ns1:likes ns1:pizza .\n}\n\n"
-    )
-
-    # Insert into the NAMED default graph
-    ds.update(
-        "INSERT DATA { GRAPH <urn:x-rdflib:default> { <urn:example:tarek> <urn:example:likes> <urn:example:cheese> . } }"
-    )
-
-    r = ds.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:cheese> . }")
-
-    assert len(list(r)) == 1, "one person likes cheese"
-
-    # There is now two triples in the default graph, so dataset length == 2
-    assert len(ds) == 2
-
-    # removing default graph removes triples but not actual graph
-    ds.update("CLEAR DEFAULT")
-
-    assert len(ds) == 0
-
-    # only the default graph exists and is properly identified as DATASET_DEFAULT_GRAPH_ID
-    assert set(x.identifier for x in ds.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
-
-
-def test_dataset_add_graph():
-
-    data = """
-    <http://data.yyx.me/jack> <http://onto.yyx.me/work_for> <http://data.yyx.me/company_a> .
-    <http://data.yyx.me/david> <http://onto.yyx.me/work_for> <http://data.yyx.me/company_b> .
-    """
-
-    ds = Dataset()
-
-    subgraph_identifier = URIRef("urn:x-rdflib:subgraph1")
-
-    g = ds.graph(subgraph_identifier)
-
-    g.parse(data=data, format="n3")
-
-    assert len(g) == 2
-
-    subgraph = ds.get_context(subgraph_identifier)
-
-    assert type(subgraph) is Graph
-
-    assert len(subgraph) == 2
-
-
-def test_dataset_equal_to_dataset_default():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    default_graph = dataset.graph(DATASET_DEFAULT_GRAPH_ID)
-
-    assert dataset == default_graph
-
-
-def test_add_graph_content_to_dataset_DEFAULT_via_sparqlupdate():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-
-    assert len(list(dataset.contexts())) == 1
-
-
-def test_add_graph_content_to_dataset_NAMED_DEFAULT_via_sparqlupdate():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { GRAPH <urn:x-rdflib:default> { <urn:example:tarek> <urn:example:hates> <urn:example:pizza> . } }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-
-def test_add_graph_as_new_dataset_CONTEXT_via_sparqlupdate():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { GRAPH <urn:x-rdflib:context1> { <urn:example:tarek> <urn:example:hates> <urn:example:pizza> . } }"
-    )
-    assert len(list(dataset.contexts())) == 2
-
-
-def test_parse_graph_as_new_dataset_CONTEXT_nquads():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.parse(
-        data="<urn:example:tarek> <urn:example:likes> <urn:example:pizza> <urn:x-rdflib:context-0> .",
-        format="nquads",
-    )
-
-    assert len(list(dataset.contexts())) == 2
-
-
-def test_parse_graph_as_new_dataset_CONTEXT_trig():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.parse(
-        data="@prefix ex: <http://example.org/graph/> . @prefix ont: <http://example.com/ontology/> . ex:practise { <http://example.com/resource/student_10> ont:practises <http://example.com/resource/sport_100> . }",
-        format="trig",
-    )
-
-    assert len(list(dataset.contexts())) == 2
-
-
-def test_parse_graph_with_publicid_as_new_dataset_CONTEXT():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.parse(
-        data="<urn:example:tarek> <urn:example:likes> <urn:example:pizza> .",
-        publicID="urn:x-rdflib:context-a",
-        format="ttl",
-    )
-    assert len(list(dataset.contexts())) == 2
-
-
-def test_parse_graph_with_bnode_as_new_dataset_CONTEXT():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    data = """_:a <urn:example:likes> <urn:example:pizza> ."""
-
-    dataset.parse(data=data, format="ttl")
-
-    assert (
-        len(list(dataset.contexts())) == 2
-    )  # Now contains a context with a BNode graph
-
-
-def test_parse_graph_with_bnode_identifier_as_new_dataset_CONTEXT():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    g = dataset.graph(identifier=BNode())
-    g.parse(data="<a> <b> <c> .", format="ttl")
-
-    assert len(list(dataset.contexts())) == 2
-
-
-def test_default_graph_method_add_parsed_turtle_graph_to_dataset_DEFAULT():
-    dataset = Dataset()
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.update(
-        "INSERT DATA { <urn:example:tarek> <urn:example:hates> <urn:example:cheese> . }"
-    )
-    assert len(list(dataset.contexts())) == 1
-
-    dataset.default_graph = (
-        dataset.default_context
-    )  # Monkeypatch to exploit ConjunctiveGraph inheritance and make the use pattern explicit
-
-    dataset.default_graph.parse(
-        data="<urn:example:tarek> <urn:example:likes> <urn:example:pizza> .",
-        format="ttl",
-    )
-
-    assert len(list(dataset.contexts())) == 1
