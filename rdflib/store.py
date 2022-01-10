@@ -226,7 +226,7 @@ class Store(object):
 
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
-    def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
+    def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Identifier"]]):
         """
         Adds each item in the list of statements to a specific context. The
         quoted argument is interpreted by formula-aware stores to indicate this
