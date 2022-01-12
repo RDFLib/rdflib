@@ -1,0 +1,8 @@
+@base <example:> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<class_to_class> a <Category>,
+        rdfs:Class ;
+    <color> "blue" ;
+    <priority> 4 .

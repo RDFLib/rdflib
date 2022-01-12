@@ -6,6 +6,7 @@ from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
 from urllib.request import urlopen
 from pathlib import Path
+import pytest
 
 from test import TEST_DIR
 
@@ -16,6 +17,42 @@ NT_PATH = os.path.relpath(os.path.join(TEST_DIR, "nt"), os.curdir)
 
 def nt_file(fn):
     return os.path.join(NT_PATH, fn)
+
+
+class TestNT:
+    @pytest.mark.parametrize(
+        "quoted, unquoted",
+        [
+            (r"\n", "\n"),
+            (r"\r", "\r"),
+            pytest.param(
+                r"\\r",
+                r"\r",
+                marks=pytest.mark.xfail(
+                    reason="unquote is broken", raises=AssertionError
+                ),
+            ),
+            (r"\\\r", "\\\r"),
+            (r"\u000D", "\r"),
+            pytest.param(
+                r"\\u000D",
+                r"\u000D",
+                marks=pytest.mark.xfail(
+                    reason="unquote is broken", raises=AssertionError
+                ),
+            ),
+            (r"\U0000000D", "\r"),
+            pytest.param(
+                r"\\U0000000D",
+                r"\U0000000D",
+                marks=pytest.mark.xfail(
+                    reason="unquote is broken", raises=AssertionError
+                ),
+            ),
+        ],
+    )
+    def test_unquote_specials(self, quoted: str, unquoted: str) -> None:
+        assert unquoted == ntriples.unquote(quoted)
 
 
 class NTTestCase(unittest.TestCase):
