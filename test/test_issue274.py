@@ -187,7 +187,7 @@ class TestCustom(TestCase):
     def test_register_override(self):
         register_custom_function(EX.f, self.f, override=True)
 
-    def test_wrong_unregister_fails(self):
+    def test_wrong_unregister_warns(self):
         with pytest.warns(UserWarning):
             unregister_custom_function(EX.f, lambda x, y: None)
 

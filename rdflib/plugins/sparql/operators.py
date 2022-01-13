@@ -612,11 +612,17 @@ def custom_function(uri, override=False, raw=False):
     return decorator
 
 
-def unregister_custom_function(uri, func):
-    if _CUSTOM_FUNCTIONS.get(uri, (None, None))[0] != func:
-        warnings.warn("This function is not registered as %s" % uri.n3())
-    else:
+def unregister_custom_function(uri, func=None):
+    """
+    The 'func' argument is included for compatibility with existing code.
+    A previous implementation checked that the function associated with
+    the given uri was actually 'func', but this is not necessary as the
+    uri should uniquely identify the function.
+    """
+    if _CUSTOM_FUNCTIONS.get(uri):
         del _CUSTOM_FUNCTIONS[uri]
+    else:
+        warnings.warn("This function is not registered as %s" % uri.n3())
 
 
 def Function(e, ctx):
