@@ -189,7 +189,7 @@ class TestCustom(TestCase):
 
     def test_wrong_unregister_warns(self):
         with pytest.warns(UserWarning):
-            unregister_custom_function(EX.f, lambda x, y: None)
+            unregister_custom_function(EX.notexist)
 
     def test_f(self):
         res = query("""SELECT (ex:f(42, "hello") as ?x) {}""")
