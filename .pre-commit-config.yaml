@@ -20,10 +20,6 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: debug-statements
       - id: check-toml
       - id: check-yaml
-      - id: check-case-conflict
 
