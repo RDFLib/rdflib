@@ -138,7 +138,11 @@ We have enabled `https://pre-commit.ci/ <https://pre-commit.ci/>`_ and this can
 be used to automatically fix pull requests by commenting ``pre-commit.ci
 autofix`` on a pull request.
 
-There is also a pre-commit
+There is also a pre-commit environment for tox:
+
+.. code-block:: bash
+
+    tox -e precommit
 
 Using tox
 ---------------------
@@ -148,23 +152,23 @@ makes it easier to run validation on all supported python versions.
 
 .. code-block:: bash
 
-    # install tox
+    # Install tox.
     pip install tox
 
-    # list tox environments that run by default
+    # List the tox environments that run by default.
     tox -e
 
-    # run default environments
+    # Run the default environments.
     tox
 
-    # list all tox environments, including ones that don't run by default
+    # List all tox environments, including ones that don't run by default.
     tox -a
 
-    # run a specific environment
+    # Run a specific environment.
     tox -e py37 # default environment with py37
     tox -e py39-extra # extra tests with py39
 
-    # override the test command
+    # Override the test command.
     # the below command will run `pytest test/test_translate_algebra.py`
     # instead of the default pytest command.
     tox -e py37,py39 -- pytest test/test_translate_algebra.py
