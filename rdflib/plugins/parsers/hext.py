@@ -28,7 +28,7 @@ class HextuplesParser(Parser):
         # allowed to be "" but not None
         # all other "" values are treated as None
         ret1 = json.loads(line)
-        ret2 = [x if x != "" else None for x in json.loads(line)]
+        ret2 = [x if x != "" else None for x in ret1]
         if ret1[2] == "":
             ret2[2] = ""
         return ret2
