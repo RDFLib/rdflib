@@ -11,6 +11,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 import rdflib
 import rdflib.compare
 from rdflib.util import guess_format
+from rdflib.namespace import XSD
 
 """
 Test round-tripping by all serializers/parser that are registered.
@@ -116,6 +117,14 @@ XFAILS = {
         reason="rdflib.compare.isomorphic does not work for quoted graphs.",
         raises=AssertionError,
     ),
+    ("hext", "n3-writer-test-22.n3"): pytest.mark.xfail(
+        reason='HexTuples conflates "" and ""^^xsd:string strings',
+        raises=AssertionError,
+    ),
+    ("hext", "rdf-test-21.n3"): pytest.mark.xfail(
+        reason='HexTuples conflates "" and ""^^xsd:string strings',
+        raises=AssertionError,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -155,6 +164,18 @@ def roundtrip(infmt: str, testfmt: str, source: Path, verbose: bool = False) -> 
     g2 = rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)
 
+    if testfmt == "hext":
+        # HexTuples always sets Literal("abc") -> Literal("abc", datatype=XSD.string)
+        # and this prevents roundtripping since most other formats don't equate "" with
+        # ""^^xsd:string, at least not in these tests
+        #
+        # So we have to scrub the literals' string datatype declarations...
+        for c in g2.contexts():
+            for s, p, o in c.triples((None, None, None)):
+                if type(o) == rdflib.Literal and o.datatype == XSD.string:
+                    c.remove((s, p, o))
+                    c.add((s, p, rdflib.Literal(str(o))))
+
     if verbose:
         both, first, second = rdflib.compare.graph_diff(g1, g2)
         print("Diff:")
@@ -193,8 +214,8 @@ def get_formats() -> Set[str]:
 def make_cases(files: Collection[Tuple[Path, str]]) -> Iterable[ParameterSet]:
     formats = get_formats()
     for testfmt in formats:
-        if testfmt == "hext":
-            continue
+        # if testfmt == "hext":
+        #     continue
         logging.debug("testfmt = %s", testfmt)
         for f, infmt in files:
             constrained_formats = CONSTRAINED_FORMAT_MAP.get(f.name, None)

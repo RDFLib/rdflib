@@ -24,14 +24,23 @@ class HextuplesParser(Parser):
         pass
 
     def _load_json_line(self, line: str):
-        return [x if x != "" else None for x in json.loads(line)]
+        # this complex handing is because the 'value' component is
+        # allowed to be "" but not None
+        # all other "" values are treated as None
+        ret1 = json.loads(line)
+        ret2 = [x if x != "" else None for x in ret1]
+        if ret1[2] == "":
+            ret2[2] = ""
+        return ret2
 
     def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
         if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
-            raise ValueError("subject, predicate, value, datatype cannot be None")
+            raise ValueError(
+                "subject, predicate, value, datatype cannot be None. Given: "
+                f"{tup}")
 
         # 1 - subject
         s: Union[URIRef, BNode]
