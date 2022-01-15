@@ -23,4 +23,3 @@ repos:
     hooks:
       - id: check-toml
       - id: check-yaml
-

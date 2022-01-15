@@ -85,33 +85,3 @@ jobs:
             test_harness+="./with-fuseki.sh"
           fi
           "${test_harness[@]}" python -m tox
-  # docs:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python ${{env.DEFAULT_PYTHON}}
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: ${{env.DEFAULT_PYTHON}}
-  #     - name: Get pip cache dir
-  #       id: pip-cache
-  #       shell: bash
-  #       run: |
-  #         python -m ensurepip --upgrade
-  #         echo "::set-output name=dir::$(pip cache dir)"
-  #     - name: Cache pip
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ${{ steps.pip-cache.outputs.dir }}
-  #         key: docs-pip-v1-${{
-  #           hashFiles('**/setup.py', '**/requirements*.txt') }}
-  #         restore-keys: |
-  #           docs-pip-v1-
-  #     - name: Install dependencies
-  #       shell: bash
-  #       run: |
-  #         python -m pip install tox
-  #     - name: Build docs
-  #       shell: bash
-  #       run: |
-  #         python -m tox -e docs
