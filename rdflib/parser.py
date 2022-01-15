@@ -15,11 +15,20 @@ import os
 import pathlib
 import sys
 
-from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
+from io import BytesIO, RawIOBase, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
+from typing import (
+    IO,
+    Any,
+    BinaryIO,
+    Optional,
+    TextIO,
+    Tuple,
+    Union,
+    TYPE_CHECKING,
+)
 
 from urllib.request import Request
 from urllib.request import url2pathname
-from urllib.parse import urljoin
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
@@ -29,12 +38,16 @@ from rdflib import __version__
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 
+if TYPE_CHECKING:
+    from rdflib import Graph
+
 __all__ = [
     "Parser",
     "InputSource",
     "StringInputSource",
     "URLInputSource",
     "FileInputSource",
+    "PythonInputSource",
 ]
 
 
@@ -44,7 +57,7 @@ class Parser(object):
     def __init__(self):
         pass
 
-    def parse(self, source, sink):
+    def parse(self, source: "InputSource", sink: "Graph"):
         pass
 
 
@@ -84,9 +97,9 @@ class InputSource(xmlreader.InputSource, object):
     TODO:
     """
 
-    def __init__(self, system_id=None):
+    def __init__(self, system_id: Optional[str] = None):
         xmlreader.InputSource.__init__(self, system_id=system_id)
-        self.content_type = None
+        self.content_type: Optional[str] = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
 
     def close(self):
@@ -104,13 +117,58 @@ class InputSource(xmlreader.InputSource, object):
                 pass
 
 
+class PythonInputSource(InputSource):
+    """
+    Constructs an RDFLib Parser InputSource from a Python data structure,
+    for example, loaded from JSON with json.load or json.loads:
+
+    >>> import json
+    >>> as_string = \"\"\"{
+    ...   "@context" : {"ex" : "http://example.com/ns#"},
+    ...   "@graph": [{"@type": "ex:item", "@id": "#example"}]
+    ... }\"\"\"
+    >>> as_python = json.loads(as_string)
+    >>> source = create_input_source(data=as_python)
+    >>> isinstance(source, PythonInputSource)
+    True
+    """
+
+    def __init__(self, data, system_id=None):
+        self.content_type = None
+        self.auto_close = False  # see Graph.parse(), true if opened by us
+        self.public_id = None
+        self.system_id = system_id
+        self.data = data
+
+    def getPublicId(self):
+        return self.public_id
+
+    def setPublicId(self, public_id):
+        self.public_id = public_id
+
+    def getSystemId(self):
+        return self.system_id
+
+    def setSystemId(self, system_id):
+        self.system_id = system_id
+
+    def close(self):
+        self.data = None
+
+
 class StringInputSource(InputSource):
     """
     Constructs an RDFLib Parser InputSource from a Python String or Bytes
     """
 
-    def __init__(self, value, encoding="utf-8", system_id=None):
+    def __init__(
+        self,
+        value: Union[str, bytes],
+        encoding: str = "utf-8",
+        system_id: Optional[str] = None,
+    ):
         super(StringInputSource, self).__init__(system_id)
+        stream: Union[BinaryIO, TextIO]
         if isinstance(value, str):
             stream = StringIO(value)
             self.setCharacterStream(stream)
@@ -135,33 +193,44 @@ class URLInputSource(InputSource):
     TODO:
     """
 
-    def __init__(self, system_id=None, format=None):
+    def __init__(self, system_id: Optional[str] = None, format: Optional[str] = None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
 
         # copy headers to change
         myheaders = dict(headers)
-        if format == "application/rdf+xml":
+        if format == "xml":
             myheaders["Accept"] = "application/rdf+xml, */*;q=0.1"
         elif format == "n3":
             myheaders["Accept"] = "text/n3, */*;q=0.1"
-        elif format == "turtle":
-            myheaders["Accept"] = "text/turtle,application/x-turtle, */*;q=0.1"
+        elif format in ["turtle", "ttl"]:
+            myheaders["Accept"] = "text/turtle, application/x-turtle, */*;q=0.1"
         elif format == "nt":
             myheaders["Accept"] = "text/plain, */*;q=0.1"
+        elif format == "trig":
+            myheaders["Accept"] = "application/trig, */*;q=0.1"
+        elif format == "trix":
+            myheaders["Accept"] = "application/trix, */*;q=0.1"
         elif format == "json-ld":
             myheaders[
                 "Accept"
             ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
         else:
-            myheaders["Accept"] = (
-                "application/rdf+xml,text/rdf+n3;q=0.9,"
-                + "application/xhtml+xml;q=0.5, */*;q=0.1"
-            )
+            # if format not given, create an Accept header from all registered
+            # parser Media Types
+            from rdflib.parser import Parser
+            from rdflib.plugin import plugins
 
-        req = Request(system_id, None, myheaders)
+            acc = []
+            for p in plugins(kind=Parser):  # only get parsers
+                if "/" in p.name:  # all Media Types known have a / in them
+                    acc.append(p.name)
 
-        def _urlopen(req: Request):
+            myheaders["Accept"] = ", ".join(acc)
+
+        req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
+
+        def _urlopen(req: Request) -> Any:
             try:
                 return urlopen(req)
             except HTTPError as ex:
@@ -191,16 +260,18 @@ class URLInputSource(InputSource):
 
 
 class FileInputSource(InputSource):
-    def __init__(self, file):
+    def __init__(
+        self, file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]
+    ):
         base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)
+        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
             self.setCharacterStream(file)
             self.setEncoding(file.encoding)
             try:
-                b = file.buffer
+                b = file.buffer  # type: ignore[attr-defined]
                 self.setByteStream(b)
             except (AttributeError, LookupError):
                 self.setByteStream(file)
@@ -214,8 +285,15 @@ class FileInputSource(InputSource):
 
 
 def create_input_source(
-    source=None, publicID=None, location=None, file=None, data=None, format=None
-):
+    source: Optional[
+        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
+    ] = None,
+    publicID: Optional[str] = None,
+    location: Optional[str] = None,
+    file: Optional[Union[BinaryIO, TextIO]] = None,
+    data: Union[str, bytes, dict] = None,
+    format: str = None,
+) -> InputSource:
     """
     Return an appropriate InputSource instance for the given
     parameters.
@@ -246,14 +324,14 @@ def create_input_source(
                 location = str(source)
             elif isinstance(source, bytes):
                 data = source
-            elif hasattr(source, "read") and not isinstance(source, Namespace):
+            elif hasattr(source, "read") and not isinstance(source, Namespace):  # type: ignore[unreachable]
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
                     input_source.setCharacterStream(source)
-                    input_source.setEncoding(source.encoding)
+                    input_source.setEncoding(source.encoding)  # type: ignore[union-attr]
                     try:
-                        b = file.buffer
+                        b = file.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
                         input_source.setByteStream(source)
@@ -289,10 +367,14 @@ def create_input_source(
         input_source = FileInputSource(file)
 
     if data is not None:
-        if not isinstance(data, (str, bytes, bytearray)):
-            raise RuntimeError("parse data can only str, or bytes.")
-        input_source = StringInputSource(data)
-        auto_close = True
+        if isinstance(data, dict):
+            input_source = PythonInputSource(data)
+            auto_close = True
+        elif isinstance(data, (str, bytes, bytearray)):
+            input_source = StringInputSource(data)
+            auto_close = True
+        else:
+            raise RuntimeError(f"parse data can only str, or bytes. not: {type(data)}")
 
     if input_source is None:
         raise Exception("could not create InputSource")
@@ -306,7 +388,12 @@ def create_input_source(
         return input_source
 
 
-def _create_input_source_from_location(file, format, input_source, location):
+def _create_input_source_from_location(
+    file: Optional[Union[BinaryIO, TextIO]],
+    format: Optional[str],
+    input_source: Optional[InputSource],
+    location: str,
+) -> Tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a

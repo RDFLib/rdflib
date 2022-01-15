@@ -23,7 +23,7 @@ kwargs["tests_require"] = [
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
+    "docs": ["sphinx < 5", "sphinxcontrib-apidoc", "myst-parser"],
 }
 
 
@@ -71,6 +71,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent",

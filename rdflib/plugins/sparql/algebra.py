@@ -13,7 +13,7 @@ from functools import reduce
 
 from rdflib import Literal, Variable, URIRef, BNode
 
-from rdflib.plugins.sparql.sparql import Prologue, Query
+from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.operators import (
     and_,
@@ -761,7 +761,7 @@ def translateUpdate(q, base=None, initNs=None):
 
         res.append(translateUpdate1(u, prologue))
 
-    return res
+    return Update(prologue, res)
 
 
 def translateQuery(q, base=None, initNs=None):
@@ -847,11 +847,12 @@ def translateAlgebra(query_algebra: Query):
         with open("query.txt", "w") as file:
             file.write(filedata)
 
+    aggr_vars = collections.defaultdict(list)  # type: dict
+
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
             if node_arg in aggr_vars.keys():
-                grp_var = aggr_vars[node_arg].pop(0)
-                return grp_var.n3()
+                return aggr_vars[node_arg].pop(0).n3()
             else:
                 return node_arg.n3()
         elif isinstance(node_arg, CompValue):
@@ -965,7 +966,6 @@ def translateAlgebra(query_algebra: Query):
                         raise ExpressionNotCoveredException(
                             "This expression might not be covered yet."
                         )
-
                     aggr_vars[agg_func.res].append(agg_func.vars)
                     agg_func_name = agg_func.name.split('_')[1]
 
@@ -1242,7 +1242,7 @@ def translateAlgebra(query_algebra: Query):
                     "{Builtin_STRLEN}", "STRLEN(" + convert_node_arg(node.arg) + ")"
                 )
             elif node.name.endswith("Builtin_SUBSTR"):
-                args = [node.arg.n3(), node.start]
+                args = [convert_node_arg(node.arg), node.start]
                 if node.length:
                     args.append(node.length)
                 expr = "SUBSTR(" + ", ".join(args) + ")"
@@ -1303,7 +1303,7 @@ def translateAlgebra(query_algebra: Query):
                 )
             elif node.name.endswith("Builtin_CONCAT"):
                 expr = "CONCAT({vars})".format(
-                    vars=", ".join(elem.n3() for elem in node.arg)
+                    vars=", ".join(convert_node_arg(elem) for elem in node.arg)
                 )
                 replace("{Builtin_CONCAT}", expr)
             elif node.name.endswith("Builtin_LANGMATCHES"):

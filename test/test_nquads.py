@@ -53,14 +53,14 @@ class NQuadsParserTest(unittest.TestCase):
         uri1 = URIRef("http://example.org/mygraph1")
         uri2 = URIRef("http://example.org/mygraph2")
 
-        bob = URIRef("urn:bob")
-        likes = URIRef("urn:likes")
-        pizza = URIRef("urn:pizza")
+        bob = URIRef("urn:example:bob")
+        likes = URIRef("urn:example:likes")
+        pizza = URIRef("urn:example:pizza")
 
         g.get_context(uri1).add((bob, likes, pizza))
         g.get_context(uri2).add((bob, likes, pizza))
 
-        s = g.serialize(format="nquads", encoding="latin-1")
+        s = g.serialize(format="nquads", encoding="utf-8")
         self.assertEqual(len([x for x in s.split(b"\n") if x.strip()]), 2)
 
         g2 = ConjunctiveGraph()

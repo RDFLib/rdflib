@@ -32,7 +32,6 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
-    "Statement",
 ]
 
 import logging
@@ -64,7 +63,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
-from typing import TYPE_CHECKING, Dict, Callable, Union, Type
+from typing import TYPE_CHECKING, Any, Dict, Callable, Optional, Union, Type
 
 if TYPE_CHECKING:
     from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
@@ -88,7 +87,7 @@ def _is_valid_uri(uri):
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
-def _is_valid_langtag(tag):
+def _is_valid_langtag(tag: str):
     return bool(_lang_tag_regex.match(tag))
 
 
@@ -126,7 +125,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __new__(cls, value):
+    def __new__(cls, value: str) -> "Identifier":
         return str.__new__(cls, value)
 
     def eq(self, other):
@@ -231,10 +230,10 @@ class URIRef(Identifier):
     __neg__: Callable[["URIRef"], "NegatedPath"]
     __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
 
-    def __new__(cls, value, base=None):
+    def __new__(cls, value: str, base: Optional[str] = None):
         if base is not None:
             ends_in_hash = value.endswith("#")
-            value = urljoin(base, value, allow_fragments=1)
+            value = urljoin(base, value, allow_fragments=1)  # type: ignore[arg-type]
             if ends_in_hash:
                 if not value.endswith("#"):
                     value += "#"
@@ -248,10 +247,10 @@ class URIRef(Identifier):
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
-    def toPython(self):
+    def toPython(self) -> str:
         return str(self)
 
     def n3(self, namespace_manager=None) -> str:
@@ -396,8 +395,11 @@ class BNode(Identifier):
     __slots__ = ()
 
     def __new__(
-        cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
-    ):
+        cls,
+        value: Optional[str] = None,
+        _sn_gen: Callable[[], str] = _serial_number_generator(),
+        _prefix: str = _unique_id(),
+    ) -> "BNode":
         """
         # only store implementations should pass in a value
         """
@@ -414,9 +416,9 @@ class BNode(Identifier):
             pass  # assert is_ncname(str(value)), "BNode identifiers
             # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
             # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
-        return Identifier.__new__(cls, value)
+        return Identifier.__new__(cls, value)  # type: ignore[return-value]
 
-    def toPython(self):
+    def toPython(self) -> str:
         return str(self)
 
     def n3(self, namespace_manager=None):
@@ -446,7 +448,7 @@ class BNode(Identifier):
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
-        return URIRef(urljoin(authority, skolem))
+        return RDFLibGenid(urljoin(authority, skolem))
 
 
 class Literal(Identifier):
@@ -533,9 +535,17 @@ class Literal(Identifier):
 
     """
 
+    _value: Any
+
     __slots__ = ("_language", "_datatype", "_value")
 
-    def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
+    def __new__(
+        cls,
+        lexical_or_value: Any,
+        lang: Optional[str] = None,
+        datatype: Optional[str] = None,
+        normalize: Optional[bool] = None,
+    ):
 
         if lang == "":
             lang = None  # no empty lang-tags in RDF
@@ -548,8 +558,8 @@ class Literal(Identifier):
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
             )
 
-        if lang and not _is_valid_langtag(lang):
-            raise Exception("'%s' is not a valid language tag!" % lang)
+        if lang is not None and not _is_valid_langtag(lang):
+            raise ValueError("'%s' is not a valid language tag!" % lang)
 
         if datatype:
             datatype = URIRef(datatype)
@@ -597,7 +607,7 @@ class Literal(Identifier):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
-            inst = str.__new__(cls, lexical_or_value)
+            inst: Literal = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
@@ -631,7 +641,7 @@ class Literal(Identifier):
         return self._value
 
     @property
-    def language(self):
+    def language(self) -> Optional[str]:
         return self._language
 
     @property
@@ -1220,7 +1230,7 @@ class Literal(Identifier):
         else:
             return self._literal_n3()
 
-    def _literal_n3(self, use_plain=False, qname_callback=None):
+    def _literal_n3(self, use_plain=False, qname_callback=None) -> str:
         """
         Using plain literal (shorthand) output::
             >>> from rdflib.namespace import XSD
@@ -1362,7 +1372,7 @@ class Literal(Identifier):
             clsName = self.__class__.__name__
         return """%s(%s)""" % (clsName, ", ".join(args))
 
-    def toPython(self):
+    def toPython(self) -> Any:
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
@@ -1676,7 +1686,7 @@ def _strip_and_collapse_whitespace(lexical_or_value):
 
 def bind(
     datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False
-):
+) -> None:
     """
     register a new datatype<->pythontype binding
 
@@ -1729,7 +1739,7 @@ class Variable(Identifier):
 
         return """%s(%s)""" % (clsName, super(Variable, self).__repr__())
 
-    def toPython(self):
+    def toPython(self) -> str:
         return "?%s" % self
 
     def n3(self, namespace_manager=None):
@@ -1737,24 +1747,6 @@ class Variable(Identifier):
 
     def __reduce__(self):
         return (Variable, (str(self),))
-
-
-class Statement(Node, tuple):
-    def __new__(cls, triple, context):
-        subject, predicate, object = triple
-        warnings.warn(
-            "Class Statement is deprecated, and will be removed in "
-            + "the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return tuple.__new__(cls, ((subject, predicate, object), context))
-
-    def __reduce__(self):
-        return (Statement, (self[0], self[1]))
-
-    def toPython(self):
-        return (self[0], self[1])
 
 
 # Nodes are ordered like this

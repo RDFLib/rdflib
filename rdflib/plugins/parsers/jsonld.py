@@ -33,6 +33,7 @@ Example usage::
 # NOTE: This code reads the entire JSON object into memory before parsing, but
 # we should consider streaming the input to deal with arbitrarily large graphs.
 
+from typing import Optional
 import warnings
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import URLInputSource
@@ -68,17 +69,6 @@ from ..shared.jsonld.keys import (
 
 __all__ = ["JsonLDParser", "to_rdf"]
 
-
-# Add jsonld suffix so RDFLib can guess format from file name
-try:
-    from rdflib.util import SUFFIX_FORMAT_MAP
-
-    if "jsonld" not in SUFFIX_FORMAT_MAP:
-        SUFFIX_FORMAT_MAP["jsonld"] = "application/ld+json"
-except ImportError:
-    pass
-
-
 TYPE_TERM = Term(str(RDF.type), TYPE, VOCAB)  # type: ignore[call-arg]
 
 ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
@@ -94,7 +84,7 @@ class JsonLDParser(rdflib.parser.Parser):
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
                 "JSON should be encoded as unicode. "
-                + "Given encoding was: %s" % encoding
+                "Given encoding was: %s" % encoding
             )
 
         base = kwargs.get("base") or sink.absolutize(
@@ -130,7 +120,7 @@ def to_rdf(
     dataset,
     base=None,
     context_data=None,
-    version=None,
+    version: Optional[float] = None,
     generalized_rdf=False,
     allow_lists_of_lists=None,
 ):

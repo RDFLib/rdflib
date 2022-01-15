@@ -9,6 +9,7 @@ import random
 
 from contextlib import AbstractContextManager, contextmanager
 from typing import (
+    Callable,
     Iterable,
     List,
     Optional,
@@ -23,12 +24,11 @@ from typing import (
     cast,
     NamedTuple,
 )
-from urllib.parse import ParseResult, urlparse, parse_qs
+from urllib.parse import ParseResult, unquote, urlparse, parse_qs
 from traceback import print_exc
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import email.message
-from nose import SkipTest
 import unittest
 
 from rdflib import BNode, Graph, ConjunctiveGraph
@@ -36,117 +36,11 @@ from rdflib.term import Node
 from unittest.mock import MagicMock, Mock
 from urllib.error import HTTPError
 from urllib.request import urlopen
+from pathlib import PurePath, PureWindowsPath
+from nturl2path import url2pathname as nt_url2pathname
 
 if TYPE_CHECKING:
     import typing_extensions as te
-
-
-# TODO: make an introspective version (like this one) of
-# rdflib.graphutils.isomorphic and use instead.
-from test import TEST_DIR
-
-
-def crapCompare(g1, g2):
-    """A really crappy way to 'check' if two graphs are equal. It ignores blank
-    nodes completely and ignores subgraphs."""
-    if len(g1) != len(g2):
-        raise Exception("Graphs dont have same length")
-    for t in g1:
-        s = _no_blank(t[0])
-        o = _no_blank(t[2])
-        if not (s, t[1], o) in g2:
-            e = "(%s, %s, %s) is not in both graphs!" % (s, t[1], o)
-            raise Exception(e)
-
-
-def _no_blank(node):
-    if isinstance(node, BNode):
-        return None
-    if isinstance(node, Graph):
-        return None  # node._Graph__identifier = _SQUASHED_NODE
-    return node
-
-
-def check_serialize_parse(fpath, infmt, testfmt, verbose=False):
-    g = ConjunctiveGraph()
-    _parse_or_report(verbose, g, fpath, format=infmt)
-    if verbose:
-        for t in g:
-            print(t)
-        print("========================================")
-        print("Parsed OK!")
-    s = g.serialize(format=testfmt)
-    if verbose:
-        print(s)
-    g2 = ConjunctiveGraph()
-    _parse_or_report(verbose, g2, data=s, format=testfmt)
-    if verbose:
-        print(g2.serialize())
-    crapCompare(g, g2)
-
-
-def _parse_or_report(verbose, graph, *args, **kwargs):
-    try:
-        graph.parse(*args, **kwargs)
-    except:
-        if verbose:
-            print("========================================")
-            print("Error in parsing serialization:")
-            print(args, kwargs)
-        raise
-
-
-def nose_tst_earl_report(generator, earl_report_name=None):
-    from optparse import OptionParser
-
-    p = OptionParser()
-    (options, args) = p.parse_args()
-
-    skip = 0
-    tests = 0
-    success = 0
-
-    for t in generator(args):
-        tests += 1
-        print("Running ", t[1].uri)
-        try:
-            t[0](t[1])
-            add_test(t[1].uri, "passed")
-            success += 1
-        except SkipTest as e:
-            add_test(t[1].uri, "untested", e.message)
-            print("skipping %s - %s" % (t[1].uri, e.message))
-            skip += 1
-
-        except KeyboardInterrupt:
-            raise
-        except AssertionError:
-            add_test(t[1].uri, "failed")
-        except:
-            add_test(t[1].uri, "failed", "error")
-            print_exc()
-            sys.stderr.write("%s\n" % t[1].uri)
-
-    print(
-        "Ran %d tests, %d skipped, %d failed. " % (tests, skip, tests - skip - success)
-    )
-    if earl_report_name:
-        now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-        earl_report = os.path.join(
-            TEST_DIR,
-            "../test_reports/%s-%s.ttl"
-            % (
-                earl_report_name,
-                now.replace(":", ""),
-            ),
-        )
-
-        report.serialize(earl_report, format="n3")
-        report.serialize(
-            os.path.join(TEST_DIR, "../test_reports/%s-latest.ttl" % earl_report_name),
-            format="n3",
-        )
-        print("Wrote EARL-report to '%s'" % earl_report)
 
 
 def get_random_ip(parts: List[str] = None) -> str:
@@ -469,3 +363,33 @@ def eq_(lhs, rhs, msg=None):
         assert lhs == rhs, msg
     else:
         assert lhs == rhs
+
+
+PurePathT = TypeVar("PurePathT", bound=PurePath)
+
+
+def file_uri_to_path(
+    file_uri: str,
+    path_class: Type[PurePathT] = PurePath,  # type: ignore[assignment]
+    url2pathname: Optional[Callable[[str], str]] = None,
+) -> PurePathT:
+    """
+    This function returns a pathlib.PurePath object for the supplied file URI.
+
+    :param str file_uri: The file URI ...
+    :param class path_class: The type of path in the file_uri. By default it uses
+        the system specific path pathlib.PurePath, to force a specific type of path
+        pass pathlib.PureWindowsPath or pathlib.PurePosixPath
+    :returns: the pathlib.PurePath object
+    :rtype: pathlib.PurePath
+    """
+    is_windows_path = isinstance(path_class(), PureWindowsPath)
+    file_uri_parsed = urlparse(file_uri)
+    if url2pathname is None:
+        if is_windows_path:
+            url2pathname = nt_url2pathname
+        else:
+            url2pathname = unquote
+    pathname = url2pathname(file_uri_parsed.path)
+    result = path_class(pathname)
+    return result

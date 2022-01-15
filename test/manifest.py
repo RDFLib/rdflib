@@ -1,8 +1,8 @@
-from typing import Iterable, List, NamedTuple, Optional, Tuple
+from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
 
 from rdflib import RDF, RDFS, Graph, Namespace
 from rdflib.namespace import DefinedNamespace
-from rdflib.term import Node, URIRef
+from rdflib.term import Identifier, Node, URIRef
 
 MF = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")
 QT = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#")
@@ -42,15 +42,18 @@ class RDFT(DefinedNamespace):
 
 DAWG = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#")
 
+ResultType = Union[Identifier, Tuple[Identifier, List[Tuple[Identifier, Identifier]]]]
+GraphDataType = Union[List[Identifier], List[Tuple[Identifier, Identifier]]]
+
 
 class RDFTest(NamedTuple):
     uri: URIRef
     name: str
     comment: str
-    data: Node
-    graphdata: Optional[List[Node]]
-    action: Node
-    result: Optional[Node]
+    data: Identifier
+    graphdata: Optional[GraphDataType]
+    action: Identifier
+    result: Optional[ResultType]
     syntax: bool
 
 
@@ -61,7 +64,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
         return None
 
     g = Graph()
-    g.load(f, publicID=base, format="turtle")
+    g.parse(f, publicID=base, format="turtle")
 
     for m in g.subjects(RDF.type, MF.Manifest):
 
@@ -102,29 +105,33 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                 name = g.value(e, MF.name)
                 comment = g.value(e, RDFS.comment)
                 data = None
-                graphdata = None
-                res = None
+                graphdata: Optional[GraphDataType] = None
+                res: Optional[ResultType] = None
                 syntax = True
 
                 if _type in (MF.QueryEvaluationTest, MF.CSVResultFormatTest):
                     a = g.value(e, MF.action)
                     query = g.value(a, QT.query)
                     data = g.value(a, QT.data)
-                    graphdata = list(g.objects(a, QT.graphData))
+                    # NOTE: Casting to identifier because g.objects return Node
+                    # but should probably return identifier instead.
+                    graphdata = list(
+                        cast(Iterable[Identifier], g.objects(a, QT.graphData))
+                    )
                     res = g.value(e, MF.result)
                 elif _type in (MF.UpdateEvaluationTest, UP.UpdateEvaluationTest):
                     a = g.value(e, MF.action)
                     query = g.value(a, UP.request)
                     data = g.value(a, UP.data)
-                    graphdata = []
+                    graphdata = cast(List[Tuple[Identifier, Identifier]], [])
                     for gd in g.objects(a, UP.graphData):
                         graphdata.append(
                             (g.value(gd, UP.graph), g.value(gd, RDFS.label))
                         )
 
                     r = g.value(e, MF.result)
-                    resdata = g.value(r, UP.data)
-                    resgraphdata = []
+                    resdata: Identifier = g.value(r, UP.data)
+                    resgraphdata: List[Tuple[Identifier, Identifier]] = []
                     for gd in g.objects(r, UP.graphData):
                         resgraphdata.append(
                             (g.value(gd, UP.graph), g.value(gd, RDFS.label))

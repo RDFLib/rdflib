@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import Optional
 import unittest
 
 from tempfile import mkdtemp, mkstemp
@@ -27,10 +28,13 @@ DB = "/db/"
 
 class DatasetTestCase(unittest.TestCase):
     store = "default"
+    skip_reason = None
     slow = True
     tmppath = None
 
     def setUp(self):
+        if self.skip_reason is not None:
+            self.skipTest(skip_reason)
         try:
             self.graph = Dataset(store=self.store)
         except ImportError:
@@ -45,17 +49,17 @@ class DatasetTestCase(unittest.TestCase):
 
         if self.store != "SPARQLUpdateStore":
             self.graph.open(self.tmppath, create=True)
-        self.michel = URIRef("urn:michel")
-        self.tarek = URIRef("urn:tarek")
-        self.bob = URIRef("urn:bob")
-        self.likes = URIRef("urn:likes")
-        self.hates = URIRef("urn:hates")
-        self.pizza = URIRef("urn:pizza")
+        self.michel = URIRef("urn:example:michel")
+        self.tarek = URIRef("urn:example:tarek")
+        self.bob = URIRef("urn:example:bob")
+        self.likes = URIRef("urn:example:likes")
+        self.hates = URIRef("urn:example:hates")
+        self.pizza = URIRef("urn:example:pizza")
         self.cheese = URIRef("urn:cheese")
 
         # Use regular URIs because SPARQL endpoints like Fuseki alter short names
-        self.c1 = URIRef("urn:context-1")
-        self.c2 = URIRef("urn:context-2")
+        self.c1 = URIRef("urn:example:context-1")
+        self.c2 = URIRef("urn:example:context-2")
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
@@ -207,6 +211,7 @@ if __name__ == "__main__":
 tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
+    skip_reason: Optional[str] = None
     if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
@@ -218,12 +223,14 @@ for s in plugin.plugins(pluginname, plugin.Store):
 
         try:
             assert len(urlopen(HOST).read()) > 0
-        except:
-            sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
-            continue
+        except BaseException:
+            skip_reason = "No SPARQL endpoint for %s (tests skipped)\n" % s.name
+            sys.stderr.write(skip_reason)
 
     locals()["t%d" % tests] = type(
-        "%sContextTestCase" % s.name, (DatasetTestCase,), {"store": s.name}
+        "%sContextTestCase" % s.name,
+        (DatasetTestCase,),
+        {"store": s.name, "skip_reason": skip_reason},
     )
     tests += 1
 

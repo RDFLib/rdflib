@@ -20,6 +20,10 @@ trim_trailing_whitespace = false
 [*.{js, py, pyi, toml, yml, yaml}]
 charset = utf-8
 
+[*.{yaml, yml}]
+indent_style = space
+indent_size = 2
+
 # 4 space indentation
 [*.py]
 indent_style = space

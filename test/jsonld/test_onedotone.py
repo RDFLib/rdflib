@@ -1,5 +1,8 @@
 from os import environ, chdir, getcwd, path as p
 import json
+import os
+from typing import Tuple
+
 
 import pytest
 
@@ -13,7 +16,7 @@ TC_BASE = "https://w3c.github.io/json-ld-api/tests/toRdf/"
 testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "1.1")
 
 
-unsupported_tests = ("frame", "normalize")
+unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
     "error",
     "remote",
@@ -22,7 +25,7 @@ unsupported_tests += ("flatten", "compact", "expand")
 unsupported_tests += ("html",)
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
 
-known_bugs = (
+known_bugs: Tuple[str, ...] = (
     # TODO: Literal doesn't preserve representations
     "fromRdf/0002-in",
     # RDflib does not print Integer with scientific notation
@@ -135,6 +138,10 @@ known_bugs = (
     # TODO: Rdflib should silently reject bad predicate URIs
     "toRdf/wf02-in",
 )
+
+if os.name == "nt":
+    # nquad parser does not correctly handle unnormalized unicode on windows.
+    known_bugs += ("toRdf/js11-in", )
 
 TC_BASE = "https://w3c.github.io/json-ld-api/tests/"
 allow_lists_of_lists = True

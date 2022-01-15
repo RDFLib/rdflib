@@ -1,14 +1,18 @@
 from __future__ import print_function
 
 import os
+from pathlib import PurePath
 import sys
+from io import TextIOWrapper
 
 # Needed to pass
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
-from test.manifest import UP, MF, RDFTest, read_manifest
+from test.manifest import UP, MF, RDFTest, ResultType, read_manifest
 import pytest
+
+from test.testutils import file_uri_to_path
 
 sys.setrecursionlimit(6000)  # default is 1000
 
@@ -19,11 +23,11 @@ from collections import Counter
 import datetime
 import isodate
 import typing
-from typing import Dict, Callable
+from typing import Dict, Callable, List, Optional, Tuple, cast
 
 
 from rdflib import Dataset, Graph, URIRef, BNode
-from rdflib.term import Node
+from rdflib.term import Identifier, Node
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -194,12 +198,18 @@ def pp_binding(solutions):
     )
 
 
-def update_test(t):
+def update_test(t: RDFTest):
 
     # the update-eval tests refer to graphs on http://example.org
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = False
 
     uri, name, comment, data, graphdata, query, res, syntax = t
+    # These casts are here because the RDFTest type is not sufficently
+    # expressive to capture the two different flavors of tests.
+    res = cast(Optional[ResultType], res)
+    graphdata = cast(Optional[List[Tuple[Identifier, Identifier]]], graphdata)
+
+    query_path: PurePath = file_uri_to_path(query)
 
     if uri in skiptests:
         pytest.skip()
@@ -209,54 +219,59 @@ def update_test(t):
 
         if not res:
             if syntax:
-                with bopen(query[7:]) as f:
+                with bopen(query_path) as f:
                     translateUpdate(parseUpdate(f))
             else:
                 try:
-                    with bopen(query[7:]) as f:
+                    with bopen(query_path) as f:
                         translateUpdate(parseUpdate(f))
                     raise AssertionError("Query shouldn't have parsed!")
                 except:
                     pass  # negative syntax test
             return
 
-        resdata, resgraphdata = res
+        res = cast(ResultType, res)
+        resdata: Identifier
+        resgraphdata: List[Tuple[Identifier, Identifier]]
+        resdata, resgraphdata = res  # type: ignore[assignment]
 
         # read input graphs
         if data:
-            g.default_context.load(data, format=_fmt(data))
+            g.default_context.parse(data, format=_fmt(data))
 
         if graphdata:
             for x, l in graphdata:
-                g.load(x, publicID=URIRef(l), format=_fmt(x))
+                g.parse(x, publicID=URIRef(l), format=_fmt(x))
 
-        with bopen(query[7:]) as f:
+        with bopen(query_path) as f:
             req = translateUpdate(parseUpdate(f))
         evalUpdate(g, req)
 
         # read expected results
         resg = Dataset()
         if resdata:
-            resg.default_context.load(resdata, format=_fmt(resdata))
+            resg.default_context.parse(resdata, format=_fmt(resdata))
 
         if resgraphdata:
             for x, l in resgraphdata:
-                resg.load(x, publicID=URIRef(l), format=_fmt(x))
+                resg.parse(x, publicID=URIRef(l), format=_fmt(x))
 
         eq(
-            set(x.identifier for x in g.contexts() if x != g.default_context),
-            set(x.identifier for x in resg.contexts() if x != resg.default_context),
+            set(ctx.identifier for ctx in g.contexts() if ctx != g.default_context),
+            set(
+                ctx.identifier for ctx in resg.contexts() if ctx != resg.default_context
+            ),
             "named graphs in datasets do not match",
         )
         assert isomorphic(
             g.default_context, resg.default_context
         ), "Default graphs are not isomorphic"
 
-        for x in g.contexts():
-            if x == g.default_context:
+        for ctx in g.contexts():
+            if ctx == g.default_context:
                 continue
-            assert isomorphic(x, resg.get_context(x.identifier)), (
-                "Graphs with ID %s are not isomorphic" % x.identifier
+            assert isomorphic(ctx, resg.get_context(ctx.identifier)), (
+                "Graphs with ID %s are not isomorphic" % ctx.identifier
             )
 
     except Exception as e:
@@ -283,33 +298,37 @@ def update_test(t):
             if data:
                 print("----------------- DATA --------------------")
                 print(">>>", data)
-                print(bopen_read_close(data[7:]))
+                data_path: PurePath = file_uri_to_path(data)
+                print(bopen_read_close(data_path))
             if graphdata:
                 print("----------------- GRAPHDATA --------------------")
                 for x, l in graphdata:
                     print(">>>", x, l)
-                    print(bopen_read_close(x[7:]))
+                    x_path: PurePath = file_uri_to_path(x)
+                    print(bopen_read_close(x_path))
 
             print("----------------- Request -------------------")
             print(">>>", query)
-            print(bopen_read_close(query[7:]))
+            print(bopen_read_close(query_path))
 
             if res:
                 if resdata:
                     print("----------------- RES DATA --------------------")
                     print(">>>", resdata)
-                    print(bopen_read_close(resdata[7:]))
+                    resdata_path: PurePath = file_uri_to_path(resdata)
+                    print(bopen_read_close(resdata_path))
                 if resgraphdata:
                     print("----------------- RES GRAPHDATA -------------------")
                     for x, l in resgraphdata:
                         print(">>>", x, l)
-                        print(bopen_read_close(x[7:]))
+                        x_path = file_uri_to_path(x)
+                        print(bopen_read_close(x_path))
 
             print("------------- MY RESULT ----------")
             print(g.serialize(format="trig"))
 
             try:
-                pq = translateUpdate(parseUpdate(bopen_read_close(query[7:])))
+                pq = translateUpdate(parseUpdate(bopen_read_close(query_path)))
                 print("----------------- Parsed ------------------")
                 pprintAlgebra(pq)
                 # print pq
@@ -324,11 +343,20 @@ def update_test(t):
         raise
 
 
-def query_test(t):
+def query_test(t: RDFTest):
     uri, name, comment, data, graphdata, query, resfile, syntax = t
+
+    # These casts are here because the RDFTest type is not sufficently
+    # expressive to capture the two different flavors of tests.
+    graphdata = cast(Optional[List[Identifier]], graphdata)
+    resfile = cast(Optional[Identifier], resfile)
 
     # the query-eval tests refer to graphs to load by resolvable filenames
     rdflib_sparql_module.SPARQL_LOAD_GRAPHS = True
+
+    query_path: PurePath = file_uri_to_path(query)
+
+    resfile_path = file_uri_to_path(resfile) if resfile else None
 
     if uri in skiptests:
         pytest.skip()
@@ -341,24 +369,24 @@ def query_test(t):
     try:
         g = Dataset()
         if data:
-            g.default_context.load(data, format=_fmt(data))
+            g.default_context.parse(data, format=_fmt(data))
 
         if graphdata:
             for x in graphdata:
-                g.load(x, format=_fmt(x))
+                g.parse(x, format=_fmt(x))
 
         if not resfile:
             # no result - syntax test
 
             if syntax:
                 translateQuery(
-                    parseQuery(bopen_read_close(query[7:])), base=urljoin(query, ".")
+                    parseQuery(bopen_read_close(query_path)), base=urljoin(query, ".")
                 )
             else:
                 # negative syntax test
                 try:
                     translateQuery(
-                        parseQuery(bopen_read_close(query[7:])),
+                        parseQuery(bopen_read_close(query_path)),
                         base=urljoin(query, "."),
                     )
 
@@ -368,22 +396,22 @@ def query_test(t):
             return
 
         # eval test - carry out query
-        res2 = g.query(bopen_read_close(query[7:]), base=urljoin(query, "."))
+        res2 = g.query(bopen_read_close(query_path), base=urljoin(query, "."))
 
         if resfile.endswith("ttl"):
             resg = Graph()
-            resg.load(resfile, format="turtle", publicID=resfile)
+            resg.parse(resfile, format="turtle", publicID=resfile)
             res = RDFResultParser().parse(resg)
         elif resfile.endswith("rdf"):
             resg = Graph()
-            resg.load(resfile, publicID=resfile)
+            resg.parse(resfile, publicID=resfile)
             res = RDFResultParser().parse(resg)
         else:
-            with bopen(resfile[7:]) as f:
+            with bopen(resfile_path) as f:
                 if resfile.endswith("srj"):
                     res = Result.parse(f, format="json")
                 elif resfile.endswith("tsv"):
-                    res = Result.parse(f, format="tsv")
+                    res = Result.parse(TextIOWrapper(f), format="tsv")
 
                 elif resfile.endswith("csv"):
                     res = Result.parse(f, format="csv")
@@ -404,6 +432,7 @@ def query_test(t):
         if not DETAILEDASSERT:
             eq(res.type, res2.type, "Types do not match")
             if res.type == "SELECT":
+                assert res2.vars is not None
                 eq(set(res.vars), set(res2.vars), "Vars do not match")
                 comp = bindingsCompatible(set(res), set(res2))
                 assert comp, "Bindings do not match"
@@ -420,6 +449,7 @@ def query_test(t):
                 "Types do not match: %r != %r" % (res.type, res2.type),
             )
             if res.type == "SELECT":
+                assert res2.vars is not None
                 eq(
                     set(res.vars),
                     set(res2.vars),
@@ -427,7 +457,7 @@ def query_test(t):
                 )
                 assert bindingsCompatible(
                     set(res), set(res2)
-                ), "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s" % (
+                ), "Bindings do not match: \nexpected:\n%r\n!=\ngot:\n%r" % (
                     res.serialize(format="txt", namespace_manager=g.namespace_manager),
                     res2.serialize(format="txt", namespace_manager=g.namespace_manager),
                 )
@@ -467,23 +497,25 @@ def query_test(t):
             if data:
                 print("----------------- DATA --------------------")
                 print(">>>", data)
-                print(bopen_read_close(data[7:]))
+                data_path: PurePath = file_uri_to_path(data)
+                print(bopen_read_close(data_path))
             if graphdata:
                 print("----------------- GRAPHDATA --------------------")
                 for x in graphdata:
                     print(">>>", x)
-                    print(bopen_read_close(x[7:]))
+                    x_path: PurePath = file_uri_to_path(x)
+                    print(bopen_read_close(x_path))
 
             print("----------------- Query -------------------")
             print(">>>", query)
-            print(bopen_read_close(query[7:]))
+            print(bopen_read_close(query_path))
             if resfile:
                 print("----------------- Res -------------------")
                 print(">>>", resfile)
-                print(bopen_read_close(resfile[7:]))
+                print(bopen_read_close(resfile_path))
 
             try:
-                pq = parseQuery(bopen_read_close(query[7:]))
+                pq = parseQuery(bopen_read_close(query_path))
                 print("----------------- Parsed ------------------")
                 pprintAlgebra(translateQuery(pq, base=urljoin(query, ".")))
             except:

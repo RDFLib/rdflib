@@ -2,7 +2,7 @@
 
 RDFLib
 ======
-[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
+[![Build Status](https://drone.rdflib.ashs.dev/api/badges/RDFLib/rdflib/status.svg?ref=refs/heads/master)](https://drone.rdflib.ashs.dev/RDFLib/rdflib/branches)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
 [![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
 [![PyPI](https://img.shields.io/pypi/v/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
@@ -29,11 +29,12 @@ Please see the list for all packages/repositories here:
 
 ## Versions & Releases
 
-* `6.0.1-alpha` current `master` branch
+* `6.2.0-alpha` current `master` branch
 * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+    * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
-See <https://rdflib.dev> for the release schedule.
+See <https://rdflib.dev> for the release overview.
 
 ## Documentation
 See <https://rdflib.readthedocs.io> for our documentation built from the code. Note that there are `latest`, `stable` `5.0.0` and `4.2.2` documentation versions, matching releases.
@@ -46,7 +47,7 @@ The stable release of RDFLib may be installed with Python's package management t
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 6.1.1, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current master branch (for developers)
 
@@ -93,13 +94,13 @@ You can use them like this:
 
 ```python
 from rdflib import Graph, URIRef, Literal
-from rdflib.namespace import RDFS
+from rdflib.namespace import RDFS, XSD
 
 g = Graph()
 semweb = URIRef('http://dbpedia.org/resource/Semantic_Web')
 type = g.value(semweb, RDFS.label)
 ```
-Where `RDFS` is the RDFS Namespace, `g.value` returns an object of the triple-pattern given (or an arbitrary one if more exist).
+Where `RDFS` is the RDFS namespace, `XSD` the XML Schema Datatypes namespace and `g.value` returns an object of the triple-pattern given (or an arbitrary one if multiple exist).
 
 Or like this, adding a triple to a graph `g`:
 
@@ -111,7 +112,7 @@ g.add((
 ))
 ```
 The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .`
-is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
+is created where the property `FOAF.givenName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
 URI `<http://www.w3.org/2001/XMLSchema#string>`.
 
 You can bind namespaces to prefixes to shorten the URIs for RDF/XML, Turtle, N3, TriG, TriX & JSON-LD serializations:

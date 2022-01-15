@@ -17,12 +17,21 @@ from rdflib.plugins.sparql.evaluate import evalQuery
 from rdflib.plugins.sparql.update import evalUpdate
 
 
-def prepareQuery(queryString, initNs={}, base=None):
+def prepareQuery(queryString, initNs={}, base=None) -> Query:
     """
     Parse and translate a SPARQL Query
     """
     ret = translateQuery(parseQuery(queryString), base, initNs)
     ret._original_args = (queryString, initNs, base)
+    return ret
+
+
+def prepareUpdate(updateString, initNs={}, base=None):
+    """
+    Parse and translate a SPARQL Update
+    """
+    ret = translateUpdate(parseUpdate(updateString), base, initNs)
+    ret._original_args = (updateString, initNs, base)
     return ret
 
 

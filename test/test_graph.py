@@ -33,13 +33,13 @@ class GraphTestCase(unittest.TestCase):
             self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)
 
-        self.michel = URIRef("michel")
-        self.tarek = URIRef("tarek")
-        self.bob = URIRef("bob")
-        self.likes = URIRef("likes")
-        self.hates = URIRef("hates")
-        self.pizza = URIRef("pizza")
-        self.cheese = URIRef("cheese")
+        self.michel = URIRef("urn:example:michel")
+        self.tarek = URIRef("urn:example:tarek")
+        self.bob = URIRef("urn:example:bob")
+        self.likes = URIRef("urn:example:likes")
+        self.hates = URIRef("urn:example:hates")
+        self.pizza = URIRef("urn:example:pizza")
+        self.cheese = URIRef("urn:example:cheese")
 
     def tearDown(self):
         self.graph.close()

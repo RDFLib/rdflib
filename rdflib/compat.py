@@ -5,7 +5,6 @@ and different versions of support libraries.
 
 import re
 import codecs
-import warnings
 import typing as t
 
 if t.TYPE_CHECKING:
@@ -57,28 +56,6 @@ r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")
 
 def _unicodeExpand(s):
     return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
-
-
-narrow_build = False
-try:
-    chr(0x10FFFF)
-except ValueError:
-    narrow_build = True
-
-if narrow_build:
-
-    def _unicodeExpand(s):
-        try:
-            return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
-        except ValueError:
-            warnings.warn(
-                "Encountered a unicode char > 0xFFFF in a narrow python build. "
-                "Trying to degrade gracefully, but this can cause problems "
-                "later when working with the string:\n%s" % s
-            )
-            return r_unicodeEscape.sub(
-                lambda m: codecs.decode(m.group(0), "unicode_escape"), s
-            )
 
 
 def decodeStringEscape(s):

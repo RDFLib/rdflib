@@ -41,6 +41,7 @@ from rdflib.serializer import Serializer
 from rdflib.graph import Graph
 from rdflib.term import URIRef, Literal, BNode
 from rdflib.namespace import RDF, XSD
+from typing import IO, Optional
 
 from ..shared.jsonld.context import Context, UNDEF
 from ..shared.jsonld.util import json
@@ -53,16 +54,21 @@ PLAIN_LITERAL_TYPES = {XSD.boolean, XSD.integer, XSD.double, XSD.string}
 
 
 class JsonLDSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(JsonLDSerializer, self).__init__(store)
 
-    def serialize(self, stream, base=None, encoding=None, **kwargs):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **kwargs,
+    ):
         # TODO: docstring w. args and return value
         encoding = encoding or "utf-8"
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
-                "JSON should be encoded as unicode. "
-                + "Given encoding was: %s" % encoding
+                "JSON should be encoded as unicode. " f"Given encoding was: {encoding}"
             )
 
         context_data = kwargs.get("context")
@@ -357,18 +363,18 @@ class Converter(object):
             else:
                 return v
 
-    def to_collection(self, graph, l):
-        if l != RDF.nil and not graph.value(l, RDF.first):
+    def to_collection(self, graph, l_):
+        if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
         list_nodes = []
-        chain = set([l])
-        while l:
-            if l == RDF.nil:
+        chain = set([l_])
+        while l_:
+            if l_ == RDF.nil:
                 return list_nodes
-            if isinstance(l, URIRef):
+            if isinstance(l_, URIRef):
                 return None
             first, rest = None, None
-            for p, o in graph.predicate_objects(l):
+            for p, o in graph.predicate_objects(l_):
                 if not first and p == RDF.first:
                     first = o
                 elif not rest and p == RDF.rest:
@@ -376,7 +382,7 @@ class Converter(object):
                 elif p != RDF.type or o != RDF.List:
                     return None
             list_nodes.append(first)
-            l = rest
-            if l in chain:
+            l_ = rest
+            if l_ in chain:
                 return None
-            chain.add(l)
+            chain.add(l_)

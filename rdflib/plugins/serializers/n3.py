@@ -14,7 +14,7 @@ class N3Serializer(TurtleSerializer):
 
     short_name = "n3"
 
-    def __init__(self, store, parent=None):
+    def __init__(self, store: Graph, parent=None):
         super(N3Serializer, self).__init__(store)
         self.keywords.update({OWL.sameAs: "=", SWAP_LOG.implies: "=>"})
         self.parent = parent

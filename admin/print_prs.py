@@ -2,7 +2,7 @@
 
 import json
 
-with open("prs2.json") as f:
+with open("prs.json") as f:
     for pr in sorted(json.load(f), key=lambda k: k["merged_at"], reverse=True):
         if not pr["title"].startswith("Bump"):
             id = pr["url"].replace(

@@ -1,5 +1,6 @@
 import sys
 from encodings.utf_8 import StreamWriter
+from typing import ClassVar
 
 import unittest
 
@@ -84,7 +85,7 @@ RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
 
 
 def relative(url):
-    return url[len(RDFCOREBASE) :]
+    return url[len(RDFCOREBASE):]
 
 
 def resolve(rel):
@@ -116,11 +117,6 @@ def _testPositive(uri, manifest):
         write(inDoc)
         write("' failed with")
         raise pe
-        try:
-            write(type(pe))
-        except:
-            write("sorry could not dump out error.")
-        result = 1
     else:
         if not store.isomorphic(expected):
             write("""Failed: '%s'""" % uri)
@@ -171,6 +167,8 @@ class ParserTestCase(unittest.TestCase):
     path = "store"
     slow = True
 
+    RDF_setting: ClassVar[bool]
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.RDF_setting = RDF._fail
@@ -183,8 +181,9 @@ class ParserTestCase(unittest.TestCase):
     def setUp(self):
         self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
-        manifest.load(
-            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+        manifest.parse(
+            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
+            format="xml",
         )
 
     def tearDown(self):
@@ -242,8 +241,9 @@ results.add((system, RDFS.comment, Literal("")))
 
 if __name__ == "__main__":
     manifest = Graph()
-    manifest.load(
-        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+    manifest.parse(
+        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
+        format="xml",
     )
     import sys
     import getopt
