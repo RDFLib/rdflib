@@ -23,7 +23,7 @@ kwargs["tests_require"] = [
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
+    "docs": ["sphinx < 5", "sphinxcontrib-apidoc", "myst-parser"],
 }
 
 
