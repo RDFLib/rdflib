@@ -2,6 +2,7 @@
 ci:
   # https://pre-commit.ci/#configuration
   autoupdate_schedule: weekly
+  autofix_prs: false
 
 repos:
   - repo: https://github.com/PyCQA/isort

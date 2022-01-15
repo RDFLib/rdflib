@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
+import codecs
 import os
 import re
-import codecs
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 kwargs = {}
 kwargs["install_requires"] = [
@@ -13,9 +14,7 @@ kwargs["install_requires"] = [
     "importlib-metadata; python_version < '3.8.0'",
 ]
 kwargs["tests_require"] = [
-    "berkeleydb",
     "html5lib",
-    "networkx",
     "pytest",
     "pytest-cov",
     "pytest-subtests",
@@ -23,6 +22,17 @@ kwargs["tests_require"] = [
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
+    "berkeleydb": ["berkeleydb"],
+    "networkx": ["networkx"],
+    "dev": [
+        "isort",
+        "black",
+        "mypy",
+        "flake8",
+        "flake8-black",
+        "types-setuptools",
+        "pre-commit",
+    ],
     "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
 }
 

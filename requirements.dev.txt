@@ -8,7 +8,7 @@ mypy
 pytest
 pytest-cov
 pytest-subtests
-sphinx
+sphinx < 5
 sphinxcontrib-apidoc
 types-setuptools
 pre-commit

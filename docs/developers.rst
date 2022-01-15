@@ -108,6 +108,38 @@ Check types with `mypy <http://mypy-lang.org/>`_:
 
     python -m mypy --show-error-context --show-error-codes rdflib
 
+pre-commit and pre-commit ci
+---------------------
+
+We have `pre-commit <https://pre-commit.com/>`_ configured with `pycln
+<https://github.com/hadialqattan/pycln>`_ which cleans out unused imports,
+`isort <https://github.com/PyCQA/isort>`_ for sorting imports, and `black
+<https://github.com/psf/black>`_ for formatting out code.
+
+The basics of using pre-commit is:
+
+.. code-block:: bash
+
+    # Install pre-commit.
+    pip install --user --upgrade pre-commit
+
+    # Install pre-commit hooks, this will run pre-commit
+    # every time you make a git commit.
+    pre-commit install
+
+    # Run pre-commit on changed files
+    pre-commit run
+
+We would prefer that contributors install and use pre-commit so that
+their contributions have cleaned and sorted imports, and formatted code,
+however this is not a hard requirement or blocker for pull requests.
+
+We have enabled `https://pre-commit.ci/ <https://pre-commit.ci/>`_ and this can
+be used to automatically fix pull requests by commenting ``pre-commit.ci
+autofix`` on a pull request.
+
+There is also a pre-commit
+
 Using tox
 ---------------------
 
