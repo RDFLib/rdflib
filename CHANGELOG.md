@@ -1,3 +1,33 @@
+RELEASE TODO
+========================
+
+Changes:
+--------
+
+### Fixed the handling of escape sequences in the ntriples and nquads parsers
+
+These parsers will now correctly handle strings like `"\\r"`.
+
+The time it takes for these parsers to parse strings with escape sequences will be increased, and the increase will be correlated with the amount of escape sequences that occur in a string.
+
+For strings with many escape sequences the parsing speed seems to be almost 4 times slower.
+
+Fixes [issue #1655](https://github.com/RDFLib/rdflib/issues/1655).
+
+### Deprecated Functions
+
+Marked the following functions as deprecated:
+
+- `rdflib.compat.decodeStringEscape`: This function is not used anywhere in
+  rdflib anymore and the utility that it does provide is not implemented
+  correctly. It will be removed in RDFLib 7.0.0
+
+PRs merged since last release:
+------------------------------
+
+* TODO
+
+
 2021-12-20 RELEASE 6.1.1
 ========================
 Better testing and tidier code.

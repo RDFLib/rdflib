@@ -13,7 +13,7 @@ from typing import IO, TYPE_CHECKING, Optional, Pattern, TextIO, Union
 from rdflib.term import Node, URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
-from rdflib.compat import decodeUnicodeEscape
+from rdflib.compat import decodeUnicodeEscape, _string_escape_translator
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 
@@ -49,19 +49,18 @@ class DummySink(object):
         print(s, p, o)
 
 
-quot = {"t": "\t", "n": "\n", "r": "\r", '"': '"', "\\": "\\"}
 r_safe = re.compile(r"([\x20\x21\x23-\x5B\x5D-\x7E]+)")
-r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
+r_quot = re.compile(r"""\\([tbnrf"'\\])""")
+r_uniquot = re.compile(r"\\u([0-9A-Fa-f]{4})|\\U([0-9A-Fa-f]{8})")
 
 
-def unquote(s):
+def unquote(s: str) -> str:
     """Unquote an N-Triples string."""
     if not validate:
         if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
-            s = s.decode("unicode-escape")
+            s = s.decode("unicode-escape")  # type: ignore[unreachable]
 
         return s
     else:
@@ -76,7 +75,7 @@ def unquote(s):
             m = r_quot.match(s)
             if m:
                 s = s[2:]
-                result.append(quot[m.group(1)])
+                result.append(m.group(1).translate(_string_escape_translator))
                 continue
 
             m = r_uniquot.match(s)
