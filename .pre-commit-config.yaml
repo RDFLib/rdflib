@@ -1,0 +1,24 @@
+---
+ci:
+  # https://pre-commit.ci/#configuration
+  autoupdate_schedule: weekly
+  autofix_prs: false
+
+repos:
+  - repo: https://github.com/hadialqattan/pycln
+    rev: v1.1.0
+    hooks:
+      - id: pycln
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        additional_dependencies: [toml]
+  - repo: https://github.com/psf/black
+    rev: 21.12b0
+    hooks:
+      - id: black
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: check-yaml

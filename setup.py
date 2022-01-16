@@ -13,9 +13,7 @@ kwargs["install_requires"] = [
     "importlib-metadata; python_version < '3.8.0'",
 ]
 kwargs["tests_require"] = [
-    "berkeleydb",
     "html5lib",
-    "networkx",
     "pytest",
     "pytest-cov",
     "pytest-subtests",
@@ -24,6 +22,17 @@ kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
     "docs": ["sphinx < 5", "sphinxcontrib-apidoc", "myst-parser"],
+    "berkeleydb": ["berkeleydb"],
+    "networkx": ["networkx"],
+    "dev": [
+        "isort",
+        "black",
+        "mypy",
+        "flake8",
+        "flake8-black",
+        "types-setuptools",
+        "pre-commit",
+    ],
 }
 
 

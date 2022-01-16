@@ -108,6 +108,54 @@ Check types with `mypy <http://mypy-lang.org/>`_:
 
     python -m mypy --show-error-context --show-error-codes rdflib
 
+pre-commit and pre-commit ci
+----------------------------
+
+We have `pre-commit <https://pre-commit.com/>`_ configured with `pycln
+<https://github.com/hadialqattan/pycln>`_ for removing unused imports,
+`isort <https://github.com/PyCQA/isort>`_ for sorting imports, and `black
+<https://github.com/psf/black>`_ for formatting out code.
+
+Some useful commands for using pre-commit:
+
+.. code-block:: bash
+
+    # Install pre-commit.
+    pip install --user --upgrade pre-commit
+
+    # Install pre-commit hooks, this will run pre-commit
+    # every time you make a git commit.
+    pre-commit install
+
+    # Run pre-commit on changed files.
+    pre-commit run
+
+    # Run pre-commit on all files.
+    pre-commit run --all-files
+
+There is also two tox environments for pre-commit:
+
+.. code-block:: bash
+
+    # run pre-commit on changed files.
+    tox -e precommit
+
+    # run pre-commit on all files.
+    tox -e precommitall
+
+
+There is no hard requirement for pull requests to be processed with pre-commit (or the underlying processors), however doing this makes for a less noisy codebase with cleaner history.
+
+We have enabled `https://pre-commit.ci/ <https://pre-commit.ci/>`_ and this can
+be used to automatically fix pull requests by commenting ``pre-commit.ci
+autofix`` on a pull request.
+
+There is also a pre-commit environment for tox:
+
+.. code-block:: bash
+
+    tox -e precommit
+
 Using tox
 ---------------------
 
@@ -116,21 +164,26 @@ makes it easier to run validation on all supported python versions.
 
 .. code-block:: bash
 
-    # install tox
+    # Install tox.
     pip install tox
 
-    # list tox environments that run by default
+    # List the tox environments that run by default.
     tox -e
 
-    # list all tox environments
-    tox -a
-
-    # run default environment for all python versions
+    # Run the default environments.
     tox
 
-    # run a specific environment
+    # List all tox environments, including ones that don't run by default.
+    tox -a
+
+    # Run a specific environment.
     tox -e py37 # default environment with py37
-    tox -e py39-mypy # mypy environment with py39
+    tox -e py39-extra # extra tests with py39
+
+    # Override the test command.
+    # the below command will run `pytest test/test_translate_algebra.py`
+    # instead of the default pytest command.
+    tox -e py37,py39 -- pytest test/test_translate_algebra.py
 
 Writing documentation
 ---------------------
