@@ -13,7 +13,7 @@ from typing import IO, TYPE_CHECKING, Optional, Pattern, TextIO, Union
 from rdflib.term import Node, URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
-from rdflib.compat import decodeUnicodeEscape, _string_escape_translator
+from rdflib.compat import decodeUnicodeEscape, _string_escape_map
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 
@@ -75,7 +75,7 @@ def unquote(s: str) -> str:
             m = r_quot.match(s)
             if m:
                 s = s[2:]
-                result.append(m.group(1).translate(_string_escape_translator))
+                result.append(_string_escape_map[m.group(1)])
                 continue
 
             m = r_uniquot.match(s)

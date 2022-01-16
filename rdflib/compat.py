@@ -96,13 +96,12 @@ _string_escape_map = {
     "'": "'",
     "\\": "\\",
 }
-_string_escape_translator = str.maketrans(_string_escape_map)
 
 
 def _turtle_escape_subber(match: Match[str]) -> str:
     smatch, umatch = match.groups()
     if smatch is not None:
-        return smatch.translate(_string_escape_translator)
+        return _string_escape_map[smatch]
     else:
         return chr(int(umatch[1:], 16))
 
@@ -115,7 +114,6 @@ _turtle_escape_pattern = re.compile(
 def decodeUnicodeEscape(escaped: str) -> str:
     if "\\" not in escaped:
         # Most of times, there are no backslashes in strings.
-        # In the general case, it could use maketrans and translate.
         return escaped
     return _turtle_escape_pattern.sub(_turtle_escape_subber, escaped)
 
