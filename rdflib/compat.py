@@ -5,9 +5,11 @@ and different versions of support libraries.
 
 import re
 import codecs
-import typing as t
+import warnings
+from typing import TYPE_CHECKING, Match
 
-if t.TYPE_CHECKING:
+
+if TYPE_CHECKING:
     import xml.etree.ElementTree as etree
 else:
     try:
@@ -59,6 +61,14 @@ def _unicodeExpand(s):
 
 
 def decodeStringEscape(s):
+    warnings.warn(
+        DeprecationWarning(
+            "rdflib.compat.decodeStringEscape() is deprecated, "
+            "it will be removed in rdflib 7.0.0. "
+            "This function is not used anywhere in rdflib anymore "
+            "and the utility that it does provide is not implemented correctly."
+        )
+    )
     r"""
     s is byte-string - replace \ escapes in string
     """
@@ -76,28 +86,36 @@ def decodeStringEscape(s):
     # return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
 
 
-def decodeUnicodeEscape(s):
-    """
-    s is a unicode string
-    replace ``\\n`` and ``\\u00AC`` unicode escapes
-    """
-    if "\\" not in s:
+_string_escape_map = {
+    "t": "\t",
+    "b": "\b",
+    "n": "\n",
+    "r": "\r",
+    "f": "\f",
+    '"': '"',
+    "'": "'",
+    "\\": "\\",
+}
+
+
+def _turtle_escape_subber(match: Match[str]) -> str:
+    smatch, umatch = match.groups()
+    if smatch is not None:
+        return _string_escape_map[smatch]
+    else:
+        return chr(int(umatch[1:], 16))
+
+
+_turtle_escape_pattern = re.compile(
+    r"""\\(?:([tbnrf"'\\])|(u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}))""",
+)
+
+
+def decodeUnicodeEscape(escaped: str) -> str:
+    if "\\" not in escaped:
         # Most of times, there are no backslashes in strings.
-        # In the general case, it could use maketrans and translate.
-        return s
-
-    s = s.replace("\\t", "\t")
-    s = s.replace("\\n", "\n")
-    s = s.replace("\\r", "\r")
-    s = s.replace("\\b", "\b")
-    s = s.replace("\\f", "\f")
-    s = s.replace('\\"', '"')
-    s = s.replace("\\'", "'")
-    s = s.replace("\\\\", "\\")
-
-    s = _unicodeExpand(s)  # hmm - string escape doesn't do unicode escaping
-
-    return s
+        return escaped
+    return _turtle_escape_pattern.sub(_turtle_escape_subber, escaped)
 
 
 # Migration to abc in Python 3.8

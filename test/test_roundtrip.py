@@ -1,7 +1,7 @@
+from json.decoder import JSONDecodeError
 import logging
 import os.path
 from pathlib import Path
-from test.testutils import GraphHelper
 from typing import Callable, Collection, Iterable, List, Optional, Set, Tuple, Union
 from xml.sax import SAXParseException
 
@@ -10,8 +10,12 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
+from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.util import guess_format
 from rdflib.namespace import XSD
+from test.testutils import GraphHelper
+
+logger = logging.getLogger(__name__)
 
 """
 Test round-tripping by all serializers/parser that are registered.
@@ -35,7 +39,8 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 
 """
 
-NT_DATA_DIR = Path(__file__).parent / "nt"
+TEST_DIR = Path(__file__).parent
+NT_DATA_DIR = TEST_DIR / "nt"
 INVALID_NT_FILES = {
     # illegal literal as subject
     "literals-01.nt",
@@ -125,6 +130,30 @@ XFAILS = {
         reason='HexTuples conflates "" and ""^^xsd:string strings',
         raises=AssertionError,
     ),
+    ("xml", "special_chars.nt"): pytest.mark.xfail(
+        reason="missing escaping: PCDATA invalid Char value 12 and 8",
+        raises=SAXParseException,
+    ),
+    ("trix", "special_chars.nt"): pytest.mark.xfail(
+        reason="missing escaping: PCDATA invalid Char value 12 and 8",
+        raises=SAXParseException,
+    ),
+    ("n3", "rdf_prefix.jsonld"): pytest.mark.xfail(
+        reason="missing 'rdf:' prefix",
+        raises=BadSyntax,
+    ),
+    ("ttl", "rdf_prefix.jsonld"): pytest.mark.xfail(
+        reason="missing 'rdf:' prefix",
+        raises=BadSyntax,
+    ),
+    ("trig", "rdf_prefix.jsonld"): pytest.mark.xfail(
+        reason="missing 'rdf:' prefix",
+        raises=BadSyntax,
+    ),
+    ("turtle", "rdf_prefix.jsonld"): pytest.mark.xfail(
+        reason="missing 'rdf:' prefix",
+        raises=BadSyntax,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -149,17 +178,15 @@ def collect_files(
     return result
 
 
-def roundtrip(infmt: str, testfmt: str, source: Path, verbose: bool = False) -> None:
-
+def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
     g1 = rdflib.ConjunctiveGraph()
 
     g1.parse(source, format=infmt)
 
     s = g1.serialize(format=testfmt)
 
-    if verbose:
-        print("S:")
-        print(s, flush=True)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug("serailized = \n%s", s)
 
     g2 = rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)
@@ -176,23 +203,16 @@ def roundtrip(infmt: str, testfmt: str, source: Path, verbose: bool = False) -> 
                     c.remove((s, p, o))
                     c.add((s, p, rdflib.Literal(str(o))))
 
-    if verbose:
+    if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)
-        print("Diff:")
-        print("%d triples in both" % len(both))
-        print("G1 Only:")
-        for t in sorted(first):
-            print(t)
+        logger.debug("Items in both:\n%s", GraphHelper.format_graph_set(both))
+        logger.debug("Items in G1 Only:\n%s", GraphHelper.format_graph_set(first))
+        logger.debug("Items in G2 Only:\n%s", GraphHelper.format_graph_set(second))
 
-        print("--------------------")
-        print("G2 Only")
-        for t in sorted(second):
-            print(t)
+    GraphHelper.assert_isomorphic(g1, g2)
 
-    assert rdflib.compare.isomorphic(g1, g2)
-
-    if verbose:
-        print("Ok!")
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug("OK")
 
 
 _formats: Optional[Set[str]] = None
@@ -211,7 +231,9 @@ def get_formats() -> Set[str]:
     return _formats
 
 
-def make_cases(files: Collection[Tuple[Path, str]]) -> Iterable[ParameterSet]:
+def make_cases(
+    files: Collection[Tuple[Path, str]], hext_okay: bool = False
+) -> Iterable[ParameterSet]:
     formats = get_formats()
     for testfmt in formats:
         # if testfmt == "hext":
@@ -250,4 +272,19 @@ def test_nt(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Pat
 
 @pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
 def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+    checker(*args)
+
+
+EXTRA_FILES = [
+    (TEST_DIR / "variants" / "special_chars.nt", "ntriples"),
+    (TEST_DIR / "variants" / "xml_literal.rdf", "xml"),
+    (TEST_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
+]
+
+
+@pytest.mark.parametrize("checker, args", make_cases(EXTRA_FILES, hext_okay=True))
+def test_extra(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+    """
+    Round tripping works correctly for selected extra files.
+    """
     checker(*args)
