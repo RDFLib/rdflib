@@ -36,6 +36,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
+    "myst_parser",
 ]
 
 apidoc_module_dir = "../rdflib"

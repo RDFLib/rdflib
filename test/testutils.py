@@ -21,6 +21,7 @@ from typing import (
     Dict,
     Any,
     TypeVar,
+    Union,
     cast,
     NamedTuple,
 )
@@ -32,12 +33,13 @@ import email.message
 import unittest
 
 from rdflib import BNode, Graph, ConjunctiveGraph
-from rdflib.term import Node
+from rdflib.term import Identifier, Literal, Node, URIRef
 from unittest.mock import MagicMock, Mock
 from urllib.error import HTTPError
 from urllib.request import urlopen
 from pathlib import PurePath, PureWindowsPath
 from nturl2path import url2pathname as nt_url2pathname
+import rdflib.compare
 
 if TYPE_CHECKING:
     import typing_extensions as te
@@ -65,21 +67,173 @@ def ctx_http_server(
     server_thread.join()
 
 
+IdentifierTriple = Tuple[Identifier, Identifier, Identifier]
+IdentifierTripleSet = Set[IdentifierTriple]
+IdentifierQuad = Tuple[Identifier, Identifier, Identifier, Identifier]
+IdentifierQuadSet = Set[IdentifierQuad]
+
+
 class GraphHelper:
-    @classmethod
-    def triple_set(cls, graph: Graph) -> Set[Tuple[Node, Node, Node]]:
-        return set(graph.triples((None, None, None)))
+    """
+    Provides methods which are useful for working with graphs.
+    """
 
     @classmethod
-    def triple_sets(cls, graphs: Iterable[Graph]) -> List[Set[Tuple[Node, Node, Node]]]:
-        result: List[Set[Tuple[Node, Node, Node]]] = []
-        for graph in graphs:
-            result.append(cls.triple_set(graph))
+    def identifier(self, node: Node) -> Identifier:
+        """
+        Return the identifier of the provided node.
+        """
+        if isinstance(node, Graph):
+            return node.identifier
+        else:
+            return cast(Identifier, node)
+
+    @classmethod
+    def identifiers(cls, nodes: Tuple[Node, ...]) -> Tuple[Identifier, ...]:
+        """
+        Return the identifiers of the provided nodes.
+        """
+        result = []
+        for node in nodes:
+            result.append(cls.identifier(node))
+        return tuple(result)
+
+    @classmethod
+    def triple_set(
+        cls, graph: Graph, exclude_blanks: bool = False
+    ) -> IdentifierTripleSet:
+        result = set()
+        for sn, pn, on in graph.triples((None, None, None)):
+            s, p, o = cls.identifiers((sn, pn, on))
+            if exclude_blanks and (
+                isinstance(s, BNode) or isinstance(p, BNode) or isinstance(o, BNode)
+            ):
+                continue
+            result.add((s, p, o))
         return result
 
     @classmethod
-    def equals(cls, lhs: Graph, rhs: Graph) -> bool:
-        return cls.triple_set(lhs) == cls.triple_set(rhs)
+    def triple_sets(
+        cls, graphs: Iterable[Graph], exclude_blanks: bool = False
+    ) -> List[IdentifierTripleSet]:
+        """
+        Extracts the set of all triples from the supplied Graph.
+        """
+        result: List[IdentifierTripleSet] = []
+        for graph in graphs:
+            result.append(cls.triple_set(graph, exclude_blanks))
+        return result
+
+    @classmethod
+    def quad_set(
+        cls, graph: ConjunctiveGraph, exclude_blanks: bool = False
+    ) -> IdentifierQuadSet:
+        """
+        Extracts the set of all quads from the supplied ConjunctiveGraph.
+        """
+        result = set()
+        for sn, pn, on, gn in graph.quads((None, None, None, None)):
+            s, p, o, g = cls.identifiers((sn, pn, on, gn))
+            if exclude_blanks and (
+                isinstance(s, BNode)
+                or isinstance(p, BNode)
+                or isinstance(o, BNode)
+                or isinstance(g, BNode)
+            ):
+                continue
+            result.add((s, p, o, g))
+        return result
+
+    @classmethod
+    def triple_or_quad_set(
+        cls, graph: Graph, exclude_blanks: bool = False
+    ) -> Union[IdentifierQuadSet, IdentifierTripleSet]:
+        """
+        Extracts quad or triple sets depending on whether or not the graph is
+        ConjunctiveGraph or a normal Graph.
+        """
+        if isinstance(graph, ConjunctiveGraph):
+            return cls.quad_set(graph, exclude_blanks)
+        return cls.triple_set(graph, exclude_blanks)
+
+    @classmethod
+    def assert_triple_sets_equals(
+        cls, lhs: Graph, rhs: Graph, exclude_blanks: bool = False
+    ) -> None:
+        """
+        Asserts that the triple sets in the two graphs are equal.
+        """
+        lhs_set = cls.triple_set(lhs, exclude_blanks)
+        rhs_set = cls.triple_set(rhs, exclude_blanks)
+        assert lhs_set == rhs_set
+
+    @classmethod
+    def assert_quad_sets_equals(
+        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph, exclude_blanks: bool = False
+    ) -> None:
+        """
+        Asserts that the quads sets in the two graphs are equal.
+        """
+        lhs_set = cls.quad_set(lhs, exclude_blanks)
+        rhs_set = cls.quad_set(rhs, exclude_blanks)
+        assert lhs_set == rhs_set
+
+    @classmethod
+    def assert_sets_equals(
+        cls, lhs: Graph, rhs: Graph, exclude_blanks: bool = False
+    ) -> None:
+        """
+        Asserts that that ther quad or triple sets from the two graphs are equal.
+        """
+        lhs_set = cls.triple_or_quad_set(lhs, exclude_blanks)
+        rhs_set = cls.triple_or_quad_set(rhs, exclude_blanks)
+        assert lhs_set == rhs_set
+
+    @classmethod
+    def format_set(
+        cls, item_set: Union[IdentifierQuadSet, IdentifierTripleSet], prefix: str = "  "
+    ) -> str:
+        items = []
+        for item in item_set:
+            items.append(f"{prefix}{item}")
+        return "\n".join(items)
+
+    @classmethod
+    def format_graph_set(cls, graph: Graph, prefix: str = "  ") -> str:
+        return cls.format_set(cls.triple_or_quad_set(graph), prefix)
+
+    @classmethod
+    def assert_isomorphic(cls, lhs: Graph, rhs: Graph) -> None:
+        """
+        This asserts that the two graphs are isomorphic, providing a nicely
+        formatted error message if they are not.
+        """
+
+        def format_report() -> str:
+            in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)
+            return (
+                "in both:\n"
+                f"{cls.format_graph_set(in_both)}"
+                "\nonly in first:\n"
+                f"{cls.format_graph_set(in_lhs)}"
+                "\nonly in second:\n"
+                f"{cls.format_graph_set(in_rhs)}"
+            )
+
+        assert rdflib.compare.isomorphic(lhs, rhs), format_report()
+
+    @classmethod
+    def strip_literal_datatypes(cls, graph: Graph, datatypes: Set[URIRef]) -> None:
+        """
+        Strips datatypes in the provided set from literals in the graph.
+        """
+        for object in graph.objects():
+            if not isinstance(object, Literal):
+                continue
+            if object.datatype is None:
+                continue
+            if object.datatype in datatypes:
+                object._datatype = None
 
 
 GenericT = TypeVar("GenericT", bound=Any)
