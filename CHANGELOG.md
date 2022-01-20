@@ -22,6 +22,12 @@ Marked the following functions as deprecated:
   rdflib anymore and the utility that it does provide is not implemented
   correctly. It will be removed in RDFLib 7.0.0
 
+### Type Hints
+
+Type hints were added to the following modules:
+
+- `rdflib.namespace`: Nearly everything in this module has type hints now.
+
 PRs merged since last release:
 ------------------------------
 
