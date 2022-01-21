@@ -27,6 +27,7 @@ from fractions import Fraction
 __all__ = [
     "bind",
     "Node",
+    "IdentifiedNode",
     "Identifier",
     "URIRef",
     "BNode",
@@ -218,7 +219,21 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     __hash__ = str.__hash__
 
 
-class URIRef(Identifier):
+class IdentifiedNode(Identifier):
+    """
+    An abstract class, primarily defined to identify Nodes that are not Literals.
+
+    The name "Identified Node" is not explicitly defined in the RDF specification, but can be drawn from this section: https://www.w3.org/TR/rdf-concepts/#section-URI-Vocabulary
+    """
+
+    def __getnewargs__(self):
+        return (str(self),)
+
+    def toPython(self) -> str:
+        return str(self)
+
+
+class URIRef(IdentifiedNode):
     """
     RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
     """
@@ -250,9 +265,6 @@ class URIRef(Identifier):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
-    def toPython(self) -> str:
-        return str(self)
-
     def n3(self, namespace_manager=None) -> str:
         """
         This will do a limited check for valid URIs,
@@ -283,9 +295,6 @@ class URIRef(Identifier):
 
     def __reduce__(self):
         return (URIRef, (str(self),))
-
-    def __getnewargs__(self):
-        return (str(self),)
 
     def __repr__(self):
         if self.__class__ is URIRef:
@@ -386,7 +395,7 @@ def _serial_number_generator():
     return _generator
 
 
-class BNode(Identifier):
+class BNode(IdentifiedNode):
     """
     Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
 
@@ -418,14 +427,8 @@ class BNode(Identifier):
             # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)  # type: ignore[return-value]
 
-    def toPython(self) -> str:
-        return str(self)
-
     def n3(self, namespace_manager=None):
         return "_:%s" % self
-
-    def __getnewargs__(self):
-        return (str(self),)
 
     def __reduce__(self):
         return (BNode, (str(self),))

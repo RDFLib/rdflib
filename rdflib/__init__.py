@@ -51,6 +51,7 @@ __date__ = "2021-12-20"
 __all__ = [
     "URIRef",
     "BNode",
+    "IdentifiedNode",
     "Literal",
     "Variable",
     "Namespace",
@@ -155,7 +156,7 @@ In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
 
-from rdflib.term import URIRef, BNode, Literal, Variable
+from rdflib.term import URIRef, BNode, IdentifiedNode, Literal, Variable
 
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
