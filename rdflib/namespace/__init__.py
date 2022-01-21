@@ -1,6 +1,6 @@
 import logging
 import warnings
-from typing import TYPE_CHECKING, List, Union, Iterable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from unicodedata import category
 
 from pathlib import Path
@@ -8,6 +8,10 @@ from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.store import Store
 
 __doc__ = """
 ===================
@@ -110,26 +114,26 @@ class Namespace(str):
         return rt
 
     @property
-    def title(self):
+    def title(self) -> URIRef:
         # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
-    def term(self, name):
+    def term(self, name: str) -> URIRef:
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, str) else ""))
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> URIRef:  # type: ignore[override]
         return self.term(key)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> URIRef:
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
         return self.term(name)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Namespace({super().__repr__()})"
 
-    def __contains__(self, ref):
+    def __contains__(self, ref: str) -> bool:  # type: ignore[override]
         """Allows to check if a URI is within (starts with) this Namespace.
 
         >>> from rdflib import URIRef
@@ -159,20 +163,22 @@ class URIPattern(str):
 
     """
 
-    def __new__(cls, value):
+    def __new__(cls, value: Union[str, bytes]) -> "URIPattern":
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
+            if TYPE_CHECKING:
+                assert isinstance(value, bytes)
             rt = str.__new__(cls, value, "utf-8")
         return rt
 
-    def __mod__(self, *args, **kwargs):
+    def __mod__(self, *args, **kwargs) -> URIRef:
         return URIRef(super().__mod__(*args, **kwargs))
 
-    def format(self, *args, **kwargs):
+    def format(self, *args, **kwargs) -> URIRef:
         return URIRef(super().format(*args, **kwargs))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"URIPattern({super().__repr__()})"
 
 
@@ -188,10 +194,10 @@ class DefinedNamespaceMeta(type):
     _extras: List[str] = []  # List of non-pythonesque items
     _underscore_num: bool = False  # True means pass "_n" constructs
 
-    def __getitem__(cls, name, default=None):
+    def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
         if str(name).startswith("__"):
-            return super().__getitem__(name, default)
+            return super().__getitem__(name, default)  # type: ignore[misc] # undefined in superclass
         if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
@@ -202,23 +208,23 @@ class DefinedNamespaceMeta(type):
                 )
         return cls._NS[name]
 
-    def __getattr__(cls, name):
+    def __getattr__(cls, name: str):
         return cls.__getitem__(name)
 
-    def __repr__(cls):
+    def __repr__(cls) -> str:
         return f'Namespace("{cls._NS}")'
 
-    def __str__(cls):
+    def __str__(cls) -> str:
         return str(cls._NS)
 
-    def __add__(cls, other):
+    def __add__(cls, other: str) -> URIRef:
         return cls.__getitem__(other)
 
-    def __contains__(cls, item):
+    def __contains__(cls, item: str) -> bool:
         """Determine whether a URI or an individual item belongs to this namespace"""
         item_str = str(item)
         if item_str.startswith("__"):
-            return super().__contains__(item)
+            return super().__contains__(item)  # type: ignore[misc] # undefined in superclass
         if item_str.startswith(str(cls._NS)):
             item_str = item_str[len(str(cls._NS)) :]
         return any(
@@ -251,25 +257,27 @@ class ClosedNamespace(Namespace):
     Trying to create terms not listed is an error
     """
 
-    def __new__(cls, uri, terms):
+    __uris: Dict[str, URIRef]
+
+    def __new__(cls, uri: str, terms: List[str]):
         rt = super().__new__(cls, uri)
-        rt.__uris = {t: URIRef(rt + t) for t in terms}
+        rt.__uris = {t: URIRef(rt + t) for t in terms}  # type: ignore[attr-defined]
         return rt
 
     @property
-    def uri(self):  # Back-compat
+    def uri(self) -> str:  # Back-compat
         return str(self)
 
-    def term(self, name):
+    def term(self, name: str) -> URIRef:
         uri = self.__uris.get(name)
         if uri is None:
             raise KeyError(f"term '{name}' not in namespace '{self}'")
         return uri
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> URIRef:  # type: ignore[override]
         return self.term(key)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> URIRef:
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
         else:
@@ -278,18 +286,18 @@ class ClosedNamespace(Namespace):
             except KeyError as e:
                 raise AttributeError(e)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__module__}.{self.__class__.__name__}({str(self)!r})"
 
-    def __dir__(self):
+    def __dir__(self) -> List[str]:
         return list(self.__uris)
 
-    def __contains__(self, ref):
+    def __contains__(self, ref: str) -> bool:  # type: ignore[override]
         return (
             ref in self.__uris.values()
         )  # test namespace membership with "ref in ns" syntax
 
-    def _ipython_key_completions_(self):
+    def _ipython_key_completions_(self) -> List[str]:
         return dir(self)
 
 
@@ -328,13 +336,13 @@ class NamespaceManager(object):
 
     """
 
-    def __init__(self, graph):
+    def __init__(self, graph: "Graph"):
         self.graph = graph
-        self.__cache = {}
-        self.__cache_strict = {}
+        self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
+        self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__log = None
-        self.__strie = {}
-        self.__trie = {}
+        self.__strie: Dict[str, Any] = {}
+        self.__trie: Dict[str, Any] = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
 
@@ -370,14 +378,14 @@ class NamespaceManager(object):
         # Namespace bindings.
         self.bind("xml", XMLNS)
 
-    def __contains__(self, ref):
+    def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
         # "ref in manager". Note that we don't use "ref in ns", as
         # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
         # rather than Iterator[Tuple[str, Namespace]]
         return any(ref.startswith(ns) for prefix, ns in self.namespaces())
 
-    def reset(self):
+    def reset(self) -> None:
         self.__cache = {}
         self.__strie = {}
         self.__trie = {}
@@ -385,24 +393,24 @@ class NamespaceManager(object):
             insert_trie(self.__trie, str(n))
 
     @property
-    def store(self):
+    def store(self) -> "Store":
         return self.graph.store
 
-    def qname(self, uri):
+    def qname(self, uri: str) -> str:
         prefix, namespace, name = self.compute_qname(uri)
         if prefix == "":
             return name
         else:
             return ":".join((prefix, name))
 
-    def qname_strict(self, uri):
+    def qname_strict(self, uri: str) -> str:
         prefix, namespace, name = self.compute_qname_strict(uri)
         if prefix == "":
             return name
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self, rdfTerm) -> str:
+    def normalizeUri(self, rdfTerm: str) -> str:
         """
         Takes an RDF Term and 'normalizes' it into a QName (using the
         registered prefix) or (unlike compute_qname) the Notation 3
@@ -427,7 +435,7 @@ class NamespaceManager(object):
             qNameParts = self.compute_qname(rdfTerm)
             return ":".join([qNameParts[0], qNameParts[-1]])
 
-    def compute_qname(self, uri, generate=True):
+    def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
 
         if not _is_valid_uri(uri):
             raise ValueError(
@@ -471,10 +479,14 @@ class NamespaceManager(object):
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
 
-    def compute_qname_strict(self, uri, generate=True):
+    def compute_qname_strict(
+        self, uri: str, generate: bool = True
+    ) -> Tuple[str, str, str]:
         # code repeated to avoid branching on strict every time
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
+        namespace: str
+        prefix: Optional[str]
         prefix, namespace, name = self.compute_qname(uri)
         if is_ncname(str(name)):
             return prefix, namespace, name
@@ -527,7 +539,13 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def bind(self, prefix, namespace, override=True, replace=False) -> None:
+    def bind(
+        self,
+        prefix: Optional[str],
+        namespace: Any,
+        override: bool = True,
+        replace: bool = False,
+    ) -> None:
         """bind a given namespace to the prefix
 
         if override, rebind, even if the given namespace is already
@@ -587,12 +605,12 @@ class NamespaceManager(object):
                     self.store.bind(prefix, namespace)
         insert_trie(self.__trie, str(namespace))
 
-    def namespaces(self):
+    def namespaces(self) -> Iterable[Tuple[str, URIRef]]:
         for prefix, namespace in self.store.namespaces():
             namespace = URIRef(namespace)
             yield prefix, namespace
 
-    def absolutize(self, uri, defrag=1):
+    def absolutize(self, uri: str, defrag: int = 1) -> URIRef:
         base = Path.cwd().as_uri()
         result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
         if defrag:
@@ -650,7 +668,7 @@ ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%", "(", ")"]
 #      | Extender
 
 
-def is_ncname(name):
+def is_ncname(name: str) -> int:
     if name:
         first = name[0]
         if first == "_" or category(first) in NAME_START_CATEGORIES:
@@ -669,7 +687,9 @@ def is_ncname(name):
     return 0
 
 
-def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
+def split_uri(
+    uri: str, split_start: List[str] = SPLIT_START_CATEGORIES
+) -> Tuple[str, str]:
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
@@ -690,7 +710,9 @@ def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
     raise ValueError("Can't split '{}'".format(uri))
 
 
-def insert_trie(trie, value):  # aka get_subtrie_or_insert
+def insert_trie(
+    trie: Dict[str, Any], value: str
+) -> Dict[str, Any]:  # aka get_subtrie_or_insert
     """Insert a value into the trie if it is not already contained in the trie.
     Return the subtree for the value regardless of whether it is a new value
     or not."""
@@ -713,12 +735,12 @@ def insert_trie(trie, value):  # aka get_subtrie_or_insert
     return trie[value]
 
 
-def insert_strie(strie, trie, value):
+def insert_strie(strie: Dict[str, Any], trie: Dict[str, Any], value: str) -> None:
     if value not in strie:
         strie[value] = insert_trie(trie, value)
 
 
-def get_longest_namespace(trie, value):
+def get_longest_namespace(trie: Dict[str, Any], value: str) -> Optional[str]:
     for key in trie:
         if value.startswith(key):
             out = get_longest_namespace(trie[key], value)
