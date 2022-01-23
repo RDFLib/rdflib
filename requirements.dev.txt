@@ -12,3 +12,4 @@ sphinx
 sphinxcontrib-apidoc
 myst-parser
 types-setuptools
+sphinxcontrib-kroki
