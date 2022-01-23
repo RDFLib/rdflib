@@ -1744,6 +1744,13 @@ class ConjunctiveGraph(Graph):
             else:
                 yield self.get_context(context)
 
+    def get_graph(
+        self,
+        identifier: Union[URIRef, BNode]
+    ) -> Union[Graph, None]:
+        """Returns the graph identified by given identifier"""
+        return [x for x in self.contexts() if x.identifier == identifier][0]
+
     def get_context(
         self,
         identifier: Optional[Union[Node, str]],
