@@ -1750,7 +1750,7 @@ def bind(
 class Variable(Identifier):
     """
     A Variable - this is used for querying, or in Formula aware
-    graphs, where Variables can stored in the graph
+    graphs, where Variables can be stored
     """
 
     __slots__ = ()

@@ -332,6 +332,7 @@ class Graph(Node):
         identifier: Optional[Union[Node, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
+        bind_namespaces: str = "core"
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -346,6 +347,7 @@ class Graph(Node):
         else:
             self.__store = store
         self.__namespace_manager = namespace_manager
+        self.bind_namespaces = bind_namespaces
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
@@ -362,7 +364,7 @@ class Graph(Node):
 
     def _get_namespace_manager(self):
         if self.__namespace_manager is None:
-            self.__namespace_manager = NamespaceManager(self)
+            self.__namespace_manager = NamespaceManager(self, self.bind_namespaces)
         return self.__namespace_manager
 
     def _set_namespace_manager(self, nm):

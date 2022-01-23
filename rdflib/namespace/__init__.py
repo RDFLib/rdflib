@@ -336,7 +336,7 @@ class NamespaceManager(object):
 
     """
 
-    def __init__(self, graph: "Graph"):
+    def __init__(self, graph: "Graph", bind_namespaces: str = "core"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -346,37 +346,27 @@ class NamespaceManager(object):
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
 
-        # DefinedNamespace bindings.
-        self.bind("brick", BRICK)
-        self.bind("csvw", CSVW)
-        self.bind("dc", DC)
-        self.bind("dcat", DCAT)
-        self.bind("dcmitype", DCMITYPE)
-        self.bind("dcterms", DCTERMS)
-        self.bind("dcam", DCAM)
-        self.bind("doap", DOAP)
-        self.bind("foaf", FOAF)
-        self.bind("odrl", ODRL2)
-        self.bind("geo", GEO)
-        self.bind("org", ORG)
-        self.bind("owl", OWL)
-        self.bind("prof", PROF)
-        self.bind("prov", PROV)
-        self.bind("qb", QB)
-        self.bind("rdf", RDF)
-        self.bind("rdfs", RDFS)
-        self.bind("schema", SDO)
-        self.bind("sh", SH)
-        self.bind("skos", SKOS)
-        self.bind("sosa", SOSA)
-        self.bind("ssn", SSN)
-        self.bind("time", TIME)
-        self.bind("vann", VANN)
-        self.bind("void", VOID)
-        self.bind("xsd", XSD)
-
-        # Namespace bindings.
-        self.bind("xml", XMLNS)
+        # bind Namespaces as per options.
+        # default is core
+        if bind_namespaces == "core":
+            # bind a few core RDF namespaces
+            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+                self.bind(prefix, ns)
+        elif bind_namespaces == "rdflib":
+            # bind all the Namespaces shipped with RDFLib
+            for prefix, ns in NAMESPACE_PREFIXES_RDFLIB.items():
+                self.bind(prefix, ns)
+            # ... don't forget the core ones too
+            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+                self.bind(prefix, ns)
+        elif bind_namespaces == "cc":
+            # bind any prefix that can be found with lookups to prefix.cc
+            # first bind core and rdflib ones
+            # work out remainder - namespaces without prefixes
+            # only look those ones up
+            raise NotImplementedError("Haven't got to this option yet")
+        else:  # bind_namespaces is None
+            pass  # bind nothing
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
@@ -778,3 +768,42 @@ from rdflib.namespace._TIME import TIME
 from rdflib.namespace._VANN import VANN
 from rdflib.namespace._VOID import VOID
 from rdflib.namespace._XSD import XSD
+
+
+# prefixes for the core Namespaces shipped with RDFLib
+NAMESPACE_PREFIXES_CORE = {
+    "owl": OWL,
+    "rdf": RDF,
+    "rdfs": RDFS,
+    "xsd": XSD,
+    # Namespace binding for XML - needed for RDF/XML
+    "xml": XMLNS
+}
+
+
+# prefixes for all the non-core Namespaces shipped with RDFLib
+NAMESPACE_PREFIXES_RDFLIB = {
+    "brick": BRICK,
+    "csvw": CSVW,
+    "dc": DC,
+    "dcat": DCAT,
+    "dcmitype": DCMITYPE,
+    "cdterms": DCTERMS,
+    "dcam": DCAM,
+    "doap": DOAP,
+    "foaf": FOAF,
+    "geo": GEO,
+    "odrl": ODRL2,
+    "org": ORG,
+    "prof": PROF,
+    "prov": PROV,
+    "qb": QB,
+    "sdo": SDO,
+    "sh": SH,
+    "skos": SKOS,
+    "sosa": SOSA,
+    "ssn": SSN,
+    "time": TIME,
+    "vann": VANN,
+    "void": VOID,
+}
