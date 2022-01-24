@@ -5,11 +5,11 @@ flake8
 flake8-black
 html5lib
 mypy
+myst-parser
 pytest
 pytest-cov
 pytest-subtests
 sphinx
 sphinxcontrib-apidoc
-myst-parser
-types-setuptools
 sphinxcontrib-kroki
+types-setuptools
