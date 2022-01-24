@@ -1,7 +1,8 @@
-from json.decoder import JSONDecodeError
 import logging
 import os.path
+from json.decoder import JSONDecodeError
 from pathlib import Path
+from test.testutils import GraphHelper
 from typing import Callable, Collection, Iterable, List, Optional, Set, Tuple, Union
 from xml.sax import SAXParseException
 
@@ -10,10 +11,9 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
+from rdflib.namespace import XSD
 from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.util import guess_format
-from rdflib.namespace import XSD
-from test.testutils import GraphHelper
 
 logger = logging.getLogger(__name__)
 

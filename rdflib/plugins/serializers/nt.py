@@ -3,14 +3,13 @@ N-Triples RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
 format.
 """
+import codecs
+import warnings
 from typing import IO, Optional
 
 from rdflib.graph import Graph
-from rdflib.term import Literal
 from rdflib.serializer import Serializer
-
-import warnings
-import codecs
+from rdflib.term import Literal
 
 __all__ = ["NTSerializer"]
 

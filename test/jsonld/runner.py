@@ -1,13 +1,13 @@
 # -*- coding: UTF-8 -*-
 import json
+
 from rdflib import ConjunctiveGraph
 from rdflib.compare import isomorphic
 from rdflib.plugins.parsers.jsonld import to_rdf
+# monkey-patch N-Quads parser via it's underlying W3CNTriplesParser to keep source bnode id:s ..
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, bNode, r_nodeid
 from rdflib.plugins.serializers.jsonld import from_rdf
 from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
-
-# monkey-patch N-Quads parser via it's underlying W3CNTriplesParser to keep source bnode id:s ..
-from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_nodeid, bNode
 
 
 def _preserving_nodeid(self, bnode_context=None):

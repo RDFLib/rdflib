@@ -4,7 +4,7 @@ Verify evaluation of BIND expressions of different types. See
 """
 import pytest
 
-from rdflib import Graph, URIRef, Literal, Variable
+from rdflib import Graph, Literal, URIRef, Variable
 
 
 def get_bind_tests():
@@ -36,6 +36,7 @@ def get_bind_tests():
         "type",
         URIRef("http://example.org/ns#Thing"),
     )
+
 
 @pytest.mark.parametrize("checker, expr, var, obj", get_bind_tests())
 def test_bind(checker, expr, var, obj) -> None:

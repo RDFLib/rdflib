@@ -2,20 +2,16 @@
 An RDF/XML parser for RDFLib
 """
 
-from xml.sax import make_parser, handler, xmlreader
-from xml.sax.handler import ErrorHandler
-from xml.sax.saxutils import quoteattr, escape
-
-
 from urllib.parse import urldefrag, urljoin
-from rdflib.namespace import is_ncname
-from rdflib.namespace import RDF
-from rdflib.plugins.parsers.RDFVOC import RDFVOC
-from rdflib.term import URIRef
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.exceptions import ParserError, Error
+from xml.sax import handler, make_parser, xmlreader
+from xml.sax.handler import ErrorHandler
+from xml.sax.saxutils import escape, quoteattr
+
+from rdflib.exceptions import Error, ParserError
+from rdflib.namespace import RDF, is_ncname
 from rdflib.parser import Parser
+from rdflib.plugins.parsers.RDFVOC import RDFVOC
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 

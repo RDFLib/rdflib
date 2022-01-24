@@ -1,15 +1,14 @@
+import itertools
 import os
+import unittest
+from test import TEST_DIR
+from urllib.error import URLError
 
 import pytest
 
-from rdflib.graph import Graph, ConjunctiveGraph
-import unittest
-from rdflib.term import Literal, URIRef
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
-import itertools
-from urllib.error import URLError
-
-from test import TEST_DIR
+from rdflib.term import Literal, URIRef
 
 test_data = """
 #  Definitions of terms describing the n3 model

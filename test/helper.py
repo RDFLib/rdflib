@@ -4,7 +4,6 @@ import urllib.error
 import rdflib
 import rdflib.query
 
-
 MAX_RETRY = 10
 BACKOFF_FACTOR = 1.5
 

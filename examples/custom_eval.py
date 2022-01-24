@@ -17,9 +17,8 @@ i.e. in your setup.py::
 """
 
 import rdflib
-
-from rdflib.plugins.sparql.evaluate import evalBGP
 from rdflib.namespace import FOAF, RDF, RDFS
+from rdflib.plugins.sparql.evaluate import evalBGP
 
 inferredSubClass = RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
 

@@ -4,12 +4,11 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 handle contexts, i.e. multiple graphs.
 """
 import json
-
-from typing import List, Union
-from rdflib.parser import Parser
-from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
+from typing import List, Union
 
+from rdflib import BNode, ConjunctiveGraph, Literal, URIRef
+from rdflib.parser import Parser
 
 __all__ = ["HextuplesParser"]
 
@@ -39,8 +38,8 @@ class HextuplesParser(Parser):
         # language and graph may be None
         if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
             raise ValueError(
-                "subject, predicate, value, datatype cannot be None. Given: "
-                f"{tup}")
+                "subject, predicate, value, datatype cannot be None. Given: " f"{tup}"
+            )
 
         # 1 - subject
         s: Union[URIRef, BNode]

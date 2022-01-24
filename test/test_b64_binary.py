@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import base64
-from rdflib import Literal, XSD
+import unittest
+
+from rdflib import XSD, Literal
 
 
 class B64BinaryTestCase(unittest.TestCase):

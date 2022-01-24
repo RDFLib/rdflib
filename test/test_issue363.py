@@ -1,4 +1,5 @@
 import pytest
+
 import rdflib
 
 data = """<?xml version="1.0" encoding="utf-8"?>

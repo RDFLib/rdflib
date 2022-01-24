@@ -1,12 +1,12 @@
-from .testutils import eq_
 from unittest import TestCase
+
 import pytest
 
-from rdflib import BNode, Graph, Literal, Namespace, RDFS, XSD
-from rdflib.plugins.sparql.operators import (
-    register_custom_function,
-    unregister_custom_function,
-)
+from rdflib import RDFS, XSD, BNode, Graph, Literal, Namespace
+from rdflib.plugins.sparql.operators import (register_custom_function,
+                                             unregister_custom_function)
+
+from .testutils import eq_
 
 EX = Namespace("http://example.org/")
 G = Graph()

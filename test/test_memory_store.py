@@ -1,4 +1,5 @@
 import unittest
+
 import rdflib
 
 rdflib.plugin.register(

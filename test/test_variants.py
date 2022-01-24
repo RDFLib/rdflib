@@ -5,18 +5,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from test.testutils import GraphHelper
-from typing import (
-    ClassVar,
-    Collection,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Pattern,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import (ClassVar, Collection, Dict, Iterable, List, Optional, Pattern,
+                    Tuple, Union, cast)
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet

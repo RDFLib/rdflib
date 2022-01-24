@@ -16,9 +16,10 @@ Example 2: larger data
 * does not delete the DB at the end so you can see it on disk
 """
 import os
-from rdflib import ConjunctiveGraph, Namespace, Literal
-from rdflib.store import NO_STORE, VALID_STORE
 from tempfile import mktemp
+
+from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib.store import NO_STORE, VALID_STORE
 
 
 def example_1():
@@ -98,10 +99,10 @@ def example_2():
         9719
         ...
     """
-    from urllib.request import urlopen, Request
-    from urllib.error import HTTPError
-    import json
     import base64
+    import json
+    from urllib.error import HTTPError
+    from urllib.request import Request, urlopen
 
     g = ConjunctiveGraph("BerkeleyDB")
     g.open("gsg_vocabs", create=True)

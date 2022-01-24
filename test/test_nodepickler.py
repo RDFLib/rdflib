@@ -1,9 +1,8 @@
-import unittest
 import pickle
-
-from rdflib.term import Literal
+import unittest
 
 from rdflib.store import NodePickler
+from rdflib.term import Literal
 
 # same as nt/more_literals.nt
 cases = [

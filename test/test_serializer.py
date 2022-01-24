@@ -1,7 +1,8 @@
 import unittest
-from rdflib import Graph, URIRef, Literal
-from tempfile import TemporaryDirectory
 from pathlib import Path, PurePath
+from tempfile import TemporaryDirectory
+
+from rdflib import Graph, Literal, URIRef
 
 
 class TestSerialize(unittest.TestCase):

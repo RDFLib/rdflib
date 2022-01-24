@@ -1,14 +1,14 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
 import os
+from test import TEST_DIR
+from test.manifest import RDFT, RDFTest, read_manifest
 from typing import Callable, Dict
+
+import pytest
 
 from rdflib import Graph
 from rdflib.term import Node, URIRef
-from test import TEST_DIR
-from test.manifest import RDFT, RDFTest, read_manifest
-
-import pytest
 
 verbose = False
 

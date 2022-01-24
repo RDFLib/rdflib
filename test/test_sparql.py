@@ -1,7 +1,7 @@
-from rdflib.plugins.sparql import sparql, prepareQuery
-from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
-from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
+from rdflib.namespace import RDF, RDFS, Namespace
+from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.term import Variable
 
 from .testutils import eq_

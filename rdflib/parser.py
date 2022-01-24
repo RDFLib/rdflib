@@ -14,29 +14,15 @@ import codecs
 import os
 import pathlib
 import sys
-
-from io import BytesIO, RawIOBase, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
-from typing import (
-    IO,
-    Any,
-    BinaryIO,
-    Optional,
-    TextIO,
-    Tuple,
-    Union,
-    TYPE_CHECKING,
-)
-
-from urllib.request import Request
-from urllib.request import url2pathname
-from urllib.request import urlopen
+from io import BufferedIOBase, BytesIO, RawIOBase, StringIO, TextIOBase, TextIOWrapper
+from typing import IO, TYPE_CHECKING, Any, BinaryIO, Optional, TextIO, Tuple, Union
 from urllib.error import HTTPError
-
+from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
 from rdflib import __version__
-from rdflib.term import URIRef
 from rdflib.namespace import Namespace
+from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from rdflib import Graph

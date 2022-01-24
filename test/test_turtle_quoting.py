@@ -5,9 +5,10 @@ ntriples, nquads, trig and n3.
 """
 
 from typing import Callable, Dict, Iterable, List, Tuple
-import pytest
-from rdflib.graph import ConjunctiveGraph
 
+import pytest
+
+from rdflib.graph import ConjunctiveGraph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal
 

@@ -5,8 +5,8 @@ example stuff in the Primer on N3:
 http://www.w3.org/2000/10/swap/Primer
 """
 
-from rdflib import ConjunctiveGraph, Namespace, Literal
-from rdflib.namespace import OWL, DC
+from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib.namespace import DC, OWL
 
 if __name__ == "__main__":
 

@@ -1,9 +1,9 @@
 import subprocess
-import unittest
 import sys
-from os import remove, close
-from tempfile import mkstemp
+import unittest
+from os import close, remove
 from pathlib import Path
+from tempfile import mkstemp
 
 
 class CSV2RDFTest(unittest.TestCase):

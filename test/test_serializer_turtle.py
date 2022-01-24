@@ -1,4 +1,4 @@
-from rdflib import Graph, URIRef, BNode, RDF, RDFS, Literal, Namespace
+from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 

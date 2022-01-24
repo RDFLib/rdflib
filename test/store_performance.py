@@ -1,15 +1,14 @@
-import unittest
-import os
 import gc
 import itertools
-from time import time
-from random import random
-
-from tempfile import mkdtemp
+import os
 import shutil
+import unittest
+from random import random
+from tempfile import mkdtemp
+from time import time
 
-from rdflib.term import URIRef
 from rdflib.graph import Graph
+from rdflib.term import URIRef
 
 
 def random_uri():

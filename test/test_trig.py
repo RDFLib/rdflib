@@ -1,6 +1,7 @@
-import unittest
-import rdflib
 import re
+import unittest
+
+import rdflib
 
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),

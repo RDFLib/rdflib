@@ -1,13 +1,11 @@
-import os
 import itertools
+import os
 import shutil
 import tempfile
-import warnings
 import types
-from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
-
+import warnings
 from io import BytesIO
-
+from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 from urllib.parse import urlparse
 
 __all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]

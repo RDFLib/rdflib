@@ -8,8 +8,8 @@ This example shows how to create Named Graphs and work with the
 conjunction (union) of all the graphs.
 """
 
-from rdflib import Namespace, Literal, URIRef
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib import Literal, Namespace, URIRef
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.stores.memory import Memory
 
 if __name__ == "__main__":

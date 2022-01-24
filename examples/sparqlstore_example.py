@@ -2,7 +2,7 @@
 Simple examples showing how to use the SPARQLStore
 """
 
-from rdflib import Graph, URIRef, Namespace
+from rdflib import Graph, Namespace, URIRef
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import Graph, XSD, RDF, RDFS, URIRef, Literal
+from rdflib import RDF, RDFS, XSD, Graph, Literal, URIRef
 
 
 class TestIssue977(unittest.TestCase):

@@ -10,7 +10,6 @@ from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
 
-
 __all__ = ["TrigSerializer"]
 
 

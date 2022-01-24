@@ -1,5 +1,5 @@
-from rdflib import Graph, Literal, BNode, RDF
-from rdflib.namespace import FOAF, DC
+from rdflib import RDF, BNode, Graph, Literal
+from rdflib.namespace import DC, FOAF
 
 if __name__ == "__main__":
 

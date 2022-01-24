@@ -9,7 +9,7 @@ can be realised.
 See :meth:`rdflib.graph.Graph.__getitem__` for details
 """
 
-from rdflib import Graph, RDF
+from rdflib import RDF, Graph
 from rdflib.namespace import FOAF
 
 if __name__ == "__main__":

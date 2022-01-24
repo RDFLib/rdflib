@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import re
-
-from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
+import unittest
 from urllib.request import urlopen
+
+from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
 
 HOST = "http://localhost:3031"
 DB = "/db/"
@@ -76,7 +76,8 @@ class TestSparql11(unittest.TestCase):
 
         # Test initBindings
         r = g.query(
-            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }", initBindings={"s": tarek},
+            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
+            initBindings={"s": tarek},
         )
         self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
@@ -117,11 +118,14 @@ class TestSparql11(unittest.TestCase):
             "%s" % list(self.graph),
         )
 
-        r = self.graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
+        r = self.graph.query(
+            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }"
+        )
         self.assertEqual(2, len(list(r)), "two people like pizza")
 
         r = self.graph.query(
-            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }", initBindings={"s": tarek},
+            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
+            initBindings={"s": tarek},
         )
         self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
@@ -133,7 +137,9 @@ class TestSparql11(unittest.TestCase):
 
         g2.remove((bob, likes, pizza))
 
-        r = self.graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
+        r = self.graph.query(
+            "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }"
+        )
         self.assertEqual(1, len(list(r)), "only tarek likes pizza")
 
     def testUpdate(self):
@@ -272,7 +278,10 @@ class TestSparql11(unittest.TestCase):
         r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
         r4 = "\n".join(
-            ["INSERT DATA { <urn:example:michel> <urn:says> %s } ;" % s for s in r4strings]
+            [
+                "INSERT DATA { <urn:example:michel> <urn:says> %s } ;" % s
+                for s in r4strings
+            ]
         )
         g.update(r4)
         values = set()
@@ -303,7 +312,9 @@ class TestSparql11(unittest.TestCase):
         values = set()
         for v in g.objects(michel, hates):
             values.add(str(v))
-        self.assertEqual(values, set(["urn:example:foo'bar?baz;a=1&b=2#fragment", "'}"]))
+        self.assertEqual(
+            values, set(["urn:example:foo'bar?baz;a=1&b=2#fragment", "'}"])
+        )
 
         # Comments
         r6 = """

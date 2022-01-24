@@ -1,6 +1,6 @@
-from rdflib import Graph, URIRef, Literal, Variable
-from rdflib.plugins.sparql import prepareQuery
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.compare import isomorphic
+from rdflib.plugins.sparql import prepareQuery
 
 from . import helper
 

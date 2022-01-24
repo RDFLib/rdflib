@@ -25,30 +25,16 @@ information.
 
 """
 
-from rdflib.store import Store
-from rdflib.parser import Parser
-from rdflib.serializer import Serializer
-from rdflib.query import (
-    ResultParser,
-    ResultSerializer,
-    Processor,
-    Result,
-    UpdateProcessor,
-)
-from rdflib.exceptions import Error
 import sys
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generic,
-    Iterator,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    overload,
-)
+from typing import (TYPE_CHECKING, Any, Dict, Generic, Iterator, Optional, Tuple, Type,
+                    TypeVar, overload)
+
+from rdflib.exceptions import Error
+from rdflib.parser import Parser
+from rdflib.query import (Processor, Result, ResultParser, ResultSerializer,
+                          UpdateProcessor)
+from rdflib.serializer import Serializer
+from rdflib.store import Store
 
 if TYPE_CHECKING:
     from pkg_resources import EntryPoint

@@ -1,6 +1,4 @@
-from rdflib import plugin
-from rdflib import serializer
-from rdflib import parser
+from rdflib import parser, plugin, serializer
 
 assert plugin
 assert serializer

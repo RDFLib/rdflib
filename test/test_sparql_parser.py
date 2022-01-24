@@ -1,11 +1,12 @@
+import math
+import sys
+import unittest
+from typing import Set, Tuple
+
 from rdflib import Graph, Literal
-from rdflib.term import Node
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
-import unittest
-import sys
-import math
-from typing import Set, Tuple
+from rdflib.term import Node
 
 
 def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:

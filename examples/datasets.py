@@ -7,7 +7,7 @@ This example file shows how to decalre a Dataset, add content to it, serialise i
 and remove things from it.
 """
 
-from rdflib import Dataset, URIRef, Literal, Namespace
+from rdflib import Dataset, Literal, Namespace, URIRef
 
 #
 #   Create & Add

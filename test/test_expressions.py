@@ -1,11 +1,10 @@
 from functools import partial
 
 import rdflib.plugins.sparql.parser as p
-from rdflib.plugins.sparql.sparql import QueryContext, SPARQLError, Prologue
-from rdflib.plugins.sparql.algebra import traverse, translatePName
+from rdflib import Literal, Variable
+from rdflib.plugins.sparql.algebra import translatePName, traverse
 from rdflib.plugins.sparql.operators import simplify
-
-from rdflib import Variable, Literal
+from rdflib.plugins.sparql.sparql import Prologue, QueryContext, SPARQLError
 
 from .testutils import eq_ as eq
 

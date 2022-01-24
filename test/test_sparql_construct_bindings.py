@@ -1,9 +1,11 @@
-from rdflib import Graph, URIRef, Literal, BNode
-from rdflib.plugins.sparql import prepareQuery
-from rdflib.compare import isomorphic
-
 import unittest
+
+from rdflib import BNode, Graph, Literal, URIRef
+from rdflib.compare import isomorphic
+from rdflib.plugins.sparql import prepareQuery
+
 from .testutils import eq_
+
 
 class TestConstructInitBindings(unittest.TestCase):
     def test_construct_init_bindings(self):

@@ -1,9 +1,7 @@
 import unittest
 
+from rdflib.exceptions import ObjectTypeError, PredicateTypeError, SubjectTypeError
 from rdflib.graph import Graph
-from rdflib.exceptions import SubjectTypeError
-from rdflib.exceptions import PredicateTypeError
-from rdflib.exceptions import ObjectTypeError
 from rdflib.term import URIRef
 
 foo = URIRef("foo")

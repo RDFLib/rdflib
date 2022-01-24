@@ -1,8 +1,8 @@
-from rdflib.term import BNode
-from rdflib.term import Literal
+import unittest
+
 from rdflib import Graph
 from rdflib.container import Alt, Bag, Seq
-import unittest
+from rdflib.term import BNode, Literal
 
 
 class TestContainer(unittest.TestCase):

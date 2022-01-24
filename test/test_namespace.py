@@ -1,21 +1,11 @@
 import unittest
 from unittest.case import expectedFailure
-
 from warnings import warn
 
 from rdflib import DCTERMS
 from rdflib.graph import Graph
-from rdflib.namespace import (
-    FOAF,
-    OWL,
-    RDF,
-    RDFS,
-    SH,
-    DefinedNamespaceMeta,
-    Namespace,
-    ClosedNamespace,
-    URIPattern,
-)
+from rdflib.namespace import (FOAF, OWL, RDF, RDFS, SH, ClosedNamespace,
+                              DefinedNamespaceMeta, Namespace, URIPattern)
 from rdflib.term import URIRef
 
 

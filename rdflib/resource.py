@@ -286,9 +286,9 @@ objects::
 
 """
 
-from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
 from rdflib.paths import Path
+from rdflib.term import BNode, Node, URIRef
 
 __all__ = ["Resource"]
 

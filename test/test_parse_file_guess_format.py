@@ -7,15 +7,14 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-import unittest
 import logging
+import unittest
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 
-from rdflib.exceptions import ParserError
-
 from rdflib import Graph
+from rdflib.exceptions import ParserError
 from rdflib.util import guess_format
 
 
@@ -25,7 +24,9 @@ class FileParserGuessFormatTest(unittest.TestCase):
         self.assertEqual(guess_format("local-file.jsonld"), "json-ld")
         self.assertEqual(guess_format("local-file.json-ld"), "json-ld")
         self.assertEqual(guess_format("/some/place/on/disk/example.json"), "json-ld")
-        self.assertEqual(guess_format("../../relative/place/on/disk/example.json"), "json-ld")
+        self.assertEqual(
+            guess_format("../../relative/place/on/disk/example.json"), "json-ld"
+        )
         self.assertEqual(guess_format("example.rdf"), "xml")
         self.assertEqual(guess_format("example.nt"), "nt")
         self.assertEqual(guess_format("example.nq"), "nquads")

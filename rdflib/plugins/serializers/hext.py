@@ -2,13 +2,14 @@
 HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
-from typing import IO, Optional, Type, Union
 import json
-from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.term import Literal, URIRef, Node, BNode
-from rdflib.serializer import Serializer
-from rdflib.namespace import RDF, XSD
 import warnings
+from typing import IO, Optional, Type, Union
+
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.namespace import RDF, XSD
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, Node, URIRef
 
 __all__ = ["HextuplesSerializer"]
 
@@ -105,14 +106,19 @@ class HextuplesSerializer(Serializer):
             else:
                 language = ""
 
-            return json.dumps([
-                self._iri_or_bn(triple[0]),
-                triple[1],
-                value,
-                datatype,
-                language,
-                self._context(context)
-            ]) + "\n"
+            return (
+                json.dumps(
+                    [
+                        self._iri_or_bn(triple[0]),
+                        triple[1],
+                        value,
+                        datatype,
+                        language,
+                        self._context(context),
+                    ]
+                )
+                + "\n"
+            )
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None
 

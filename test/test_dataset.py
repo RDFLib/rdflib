@@ -1,12 +1,12 @@
-import sys
 import os
-from typing import Optional
-import unittest
-
-from tempfile import mkdtemp, mkstemp
 import shutil
+import sys
+import unittest
+from tempfile import mkdtemp, mkstemp
+from typing import Optional
 
 import pytest
+
 from rdflib import Dataset, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 

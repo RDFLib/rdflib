@@ -12,37 +12,12 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
 from rdflib.namespace import RDF
 
-from .keys import (
-    BASE,
-    CONTAINER,
-    CONTEXT,
-    GRAPH,
-    ID,
-    IMPORT,
-    INCLUDED,
-    INDEX,
-    JSON,
-    LANG,
-    LIST,
-    NEST,
-    NONE,
-    PREFIX,
-    PROPAGATE,
-    PROTECTED,
-    REV,
-    SET,
-    TYPE,
-    VALUE,
-    VERSION,
-    VOCAB,
-)
-from .errors import (
-    INVALID_REMOTE_CONTEXT,
-    RECURSIVE_CONTEXT_INCLUSION,
-    INVALID_CONTEXT_ENTRY,
-)
-from .util import source_to_json, urljoin, urlsplit, split_iri, norm_url
-
+from .errors import (INVALID_CONTEXT_ENTRY, INVALID_REMOTE_CONTEXT,
+                     RECURSIVE_CONTEXT_INCLUSION)
+from .keys import (BASE, CONTAINER, CONTEXT, GRAPH, ID, IMPORT, INCLUDED, INDEX, JSON,
+                   LANG, LIST, NEST, NONE, PREFIX, PROPAGATE, PROTECTED, REV, SET, TYPE,
+                   VALUE, VERSION, VOCAB)
+from .util import norm_url, source_to_json, split_iri, urljoin, urlsplit
 
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 

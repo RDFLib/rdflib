@@ -1,5 +1,6 @@
-from .earl import EarlReporter
 import pytest
+
+from .earl import EarlReporter
 
 pytest_plugins = [EarlReporter.__module__]
 

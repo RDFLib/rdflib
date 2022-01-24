@@ -4,7 +4,6 @@ import unittest
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 
-
 DATA = """<http://example.com#C> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class>.
 <http://example.com#B> <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:fIYNVPxd4.
 <http://example.com#B> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://example.com#A>.

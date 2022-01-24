@@ -1,7 +1,8 @@
 import unittest
+
 from rdflib import Graph
-from rdflib.store import Store
 from rdflib.namespace import NamespaceManager
+from rdflib.store import Store
 
 
 class TestAbstractStore(unittest.TestCase):

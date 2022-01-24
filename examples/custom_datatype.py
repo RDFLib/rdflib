@@ -9,8 +9,7 @@ mappings between literal datatypes and Python objects
 """
 
 
-from rdflib import Graph, Literal, Namespace, XSD
-from rdflib import term
+from rdflib import XSD, Graph, Literal, Namespace, term
 
 if __name__ == "__main__":
 

@@ -3,11 +3,10 @@ Utility functions and objects to ease Python 2/3 compatibility,
 and different versions of support libraries.
 """
 
-import re
 import codecs
+import re
 import warnings
 from typing import TYPE_CHECKING, Match
-
 
 if TYPE_CHECKING:
     import xml.etree.ElementTree as etree

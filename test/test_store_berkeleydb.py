@@ -1,8 +1,9 @@
 import unittest
 from tempfile import mktemp
+
 from rdflib import ConjunctiveGraph, URIRef
-from rdflib.store import VALID_STORE
 from rdflib.plugins.stores.berkeleydb import has_bsddb
+from rdflib.store import VALID_STORE
 
 
 class BerkeleyDBTestCase(unittest.TestCase):

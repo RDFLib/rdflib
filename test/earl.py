@@ -9,7 +9,6 @@ from test.manifest import RDFT
 from typing import TYPE_CHECKING, Generator, Optional, Tuple, cast
 
 import pytest
-
 from pytest import Item
 
 from rdflib import RDF, BNode, Graph, Literal, Namespace, URIRef

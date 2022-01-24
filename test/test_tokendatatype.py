@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import Literal, XSD
+from rdflib import XSD, Literal
 
 
 class TokenDatatypeTest(unittest.TestCase):

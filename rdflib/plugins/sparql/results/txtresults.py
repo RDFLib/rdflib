@@ -1,7 +1,8 @@
 from typing import IO, List, Optional
-from rdflib import URIRef, BNode, Literal
-from rdflib.query import ResultSerializer
+
+from rdflib import BNode, Literal, URIRef
 from rdflib.namespace import NamespaceManager
+from rdflib.query import ResultSerializer
 from rdflib.term import Variable
 
 

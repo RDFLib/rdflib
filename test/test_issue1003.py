@@ -1,5 +1,5 @@
-from rdflib import Graph, Dataset, Literal, Namespace, RDF, URIRef
-from rdflib.namespace import SKOS, DCTERMS
+from rdflib import RDF, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib.namespace import DCTERMS, SKOS
 
 
 def test_scenarios() -> None:

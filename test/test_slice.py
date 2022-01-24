@@ -1,5 +1,6 @@
-from rdflib import Graph, URIRef
 import unittest
+
+from rdflib import Graph, URIRef
 
 
 class GraphSlice(unittest.TestCase):

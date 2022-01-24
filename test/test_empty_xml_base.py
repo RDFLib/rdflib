@@ -5,13 +5,12 @@ xml:base='' should resolve to the given publicID per XML Base specification
 and RDF/XML dependence on it
 """
 
-from rdflib.graph import ConjunctiveGraph
-from rdflib.term import URIRef
-from rdflib.namespace import RDF, FOAF
+import unittest
 from io import StringIO
 
-import unittest
-
+from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import FOAF, RDF
+from rdflib.term import URIRef
 
 test_data = """
 <rdf:RDF

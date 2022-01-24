@@ -1,4 +1,5 @@
 import os
+
 from rdflib import Graph, URIRef
 
 michel = URIRef("urn:example:michel")

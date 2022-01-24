@@ -1,5 +1,5 @@
-from rdflib.term import URIRef
 from rdflib.namespace import DefinedNamespace, Namespace
+from rdflib.term import URIRef
 
 
 class SSN(DefinedNamespace):

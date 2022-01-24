@@ -182,9 +182,9 @@ No vars specified:
 
 
 from functools import total_ordering
-from rdflib.term import URIRef, Node
-from typing import Union, Callable
+from typing import Callable, Union
 
+from rdflib.term import Node, URIRef
 
 # property paths
 

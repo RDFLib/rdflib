@@ -1,21 +1,18 @@
-import sys
 import os
-import unittest
-
-from tempfile import mkdtemp, mkstemp
 import shutil
-from urllib.error import URLError, HTTPError
+import sys
+import unittest
+from pathlib import Path
+from tempfile import mkdtemp, mkstemp
+from test.testutils import GraphHelper
+from urllib.error import HTTPError, URLError
 
 import pytest
 
-from rdflib import URIRef, Graph, plugin
+from rdflib import Graph, URIRef, plugin
 from rdflib.exceptions import ParserError
-from rdflib.plugin import PluginException
 from rdflib.namespace import Namespace
-
-from pathlib import Path
-
-from test.testutils import GraphHelper
+from rdflib.plugin import PluginException
 
 
 class GraphTestCase(unittest.TestCase):

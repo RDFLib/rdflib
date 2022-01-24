@@ -1,6 +1,6 @@
 import pytest
-from rdflib import Graph, Namespace
 
+from rdflib import Graph, Namespace
 
 """Tests the Graph class' cbd() function"""
 

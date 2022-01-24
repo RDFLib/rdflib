@@ -1,10 +1,6 @@
 import os
-from rdflib import (
-    Graph,
-    ConjunctiveGraph,
-    URIRef,
-)
 
+from rdflib import ConjunctiveGraph, Graph, URIRef
 
 michel = URIRef("urn:example:michel")
 tarek = URIRef("urn:example:tarek")

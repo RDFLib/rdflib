@@ -1,14 +1,12 @@
 import sys
 import unittest
-
 from datetime import datetime
 
-from isodate import datetime_isoformat, UTC
+from isodate import UTC, datetime_isoformat
 from isodate.isostrf import DATE_EXT_COMPLETE, TZ_EXT
 
-from rdflib.term import URIRef
-from rdflib.term import Literal
 from rdflib.namespace import XSD
+from rdflib.term import Literal, URIRef
 
 
 class TestRelativeBase(unittest.TestCase):

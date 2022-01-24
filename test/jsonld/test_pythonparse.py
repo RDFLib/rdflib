@@ -1,6 +1,7 @@
+import json
+
 from rdflib import Graph
 from rdflib.compare import isomorphic
-import json
 
 
 def test_wrap():

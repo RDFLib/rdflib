@@ -1,6 +1,6 @@
 import os
-from rdflib import ConjunctiveGraph, URIRef
 
+from rdflib import ConjunctiveGraph, URIRef
 
 timblcardn3 = open(
     os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")

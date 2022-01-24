@@ -21,7 +21,6 @@ underlying Graph:
 
 """
 import re
-
 from fractions import Fraction
 
 __all__ = [
@@ -36,38 +35,26 @@ __all__ = [
 ]
 
 import logging
-import warnings
 import math
-
+import warnings
 import xml.dom.minidom
-
-from datetime import date, time, datetime, timedelta
-from re import sub, compile
-from collections import defaultdict
-
-from isodate import (
-    parse_time,
-    parse_date,
-    parse_datetime,
-    Duration,
-    parse_duration,
-    duration_isoformat,
-)
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
+from collections import defaultdict
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+from re import compile, sub
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, Union
+from urllib.parse import urldefrag, urljoin, urlparse
+
+from isodate import (Duration, duration_isoformat, parse_date, parse_datetime,
+                     parse_duration, parse_time)
 
 import rdflib
 from rdflib.compat import long_type
 
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
-from urllib.parse import urlparse
-
-from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, Callable, Optional, Union, Type
-
 if TYPE_CHECKING:
-    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
+    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"

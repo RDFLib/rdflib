@@ -1,5 +1,6 @@
 import unittest
 from io import StringIO
+
 from rdflib.plugins.sparql.results.tsvresults import TSVResultParser
 
 

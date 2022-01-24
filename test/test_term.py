@@ -3,12 +3,12 @@ some more specific Literal tests are in test_literal.py
 """
 
 import base64
-import unittest
 import random
+import unittest
 
-from rdflib.term import URIRef, BNode, Literal, _is_valid_unicode
-from rdflib.graph import QuotedGraph, Graph
+from rdflib.graph import Graph, QuotedGraph
 from rdflib.namespace import XSD
+from rdflib.term import BNode, Literal, URIRef, _is_valid_unicode
 
 
 def uformat(s):

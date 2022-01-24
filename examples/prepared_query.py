@@ -9,9 +9,8 @@ When executing, variables can be bound with the
 """
 
 import rdflib
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.namespace import FOAF
-
+from rdflib.plugins.sparql import prepareQuery
 
 if __name__ == "__main__":
 

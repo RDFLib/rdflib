@@ -1,7 +1,7 @@
 # coding=utf-8
 # test for https://github.com/RDFLib/rdflib/issues/446
 
-from rdflib import Graph, URIRef, Literal
+from rdflib import Graph, Literal, URIRef
 
 
 def test_sparql_unicode():

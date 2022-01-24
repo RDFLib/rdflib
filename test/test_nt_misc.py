@@ -1,13 +1,13 @@
-import unittest
 import logging
 import os
 import re
+import unittest
+from pathlib import Path
+from test import TEST_DIR
+from urllib.request import urlopen
+
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
-from urllib.request import urlopen
-from pathlib import Path
-
-from test import TEST_DIR
 
 log = logging.getLogger(__name__)
 

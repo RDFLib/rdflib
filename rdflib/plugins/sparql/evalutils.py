@@ -1,11 +1,10 @@
 import collections
 from typing import Dict, Iterable
 
-from rdflib.term import Variable, Literal, BNode, URIRef
-
 from rdflib.plugins.sparql.operators import EBV
-from rdflib.plugins.sparql.parserutils import Expr, CompValue
-from rdflib.plugins.sparql.sparql import FrozenDict, SPARQLError, NotBoundError
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
+from rdflib.plugins.sparql.sparql import FrozenDict, NotBoundError, SPARQLError
+from rdflib.term import BNode, Literal, URIRef, Variable
 
 
 def _diff(a: Iterable[FrozenDict], b: Iterable[FrozenDict], expr):
