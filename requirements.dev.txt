@@ -8,6 +8,7 @@ mypy
 pytest
 pytest-cov
 pytest-subtests
+isort
 sphinx
 sphinxcontrib-apidoc
 myst-parser
