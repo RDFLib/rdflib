@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 import os
+import unittest
+from test import TEST_DIR
 
 from rdflib.graph import ConjunctiveGraph
-import unittest
-
-from test import TEST_DIR
 
 
 class TestTrixParse(unittest.TestCase):
