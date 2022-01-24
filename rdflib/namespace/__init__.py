@@ -336,7 +336,7 @@ class NamespaceManager(object):
 
     """
 
-    def __init__(self, graph: "Graph", bind_namespaces: str = "core"):
+    def __init__(self, graph: "Graph", bind_namespaces: Optional[str] = "core"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -348,7 +348,9 @@ class NamespaceManager(object):
 
         # bind Namespaces as per options.
         # default is core
-        if bind_namespaces == "core":
+        if bind_namespaces is None:
+            pass  # bind nothing
+        elif bind_namespaces == "core":
             # bind a few core RDF namespaces
             for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
@@ -365,8 +367,8 @@ class NamespaceManager(object):
             # work out remainder - namespaces without prefixes
             # only look those ones up
             raise NotImplementedError("Haven't got to this option yet")
-        else:  # bind_namespaces is None
-            pass  # bind nothing
+        else:
+            raise ValueError(f"Invalid bind_namespaces value {bind_namespaces!r}")
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax

@@ -1,5 +1,8 @@
 import sys
 from pathlib import Path
+
+import pytest
+
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
 from rdflib.namespace import NAMESPACE_PREFIXES_CORE, NAMESPACE_PREFIXES_RDFLIB
@@ -24,3 +27,14 @@ def test_rdflib_prefixes_bound():
 
 def test_cc_prefixes_bound():
     pass
+
+
+def test_no_prefixes_bound():
+    g = Graph(bind_namespaces=None)
+    assert len(list(g.namespaces())) == 0
+
+
+def test_invalid_prefixes_bound():
+    with pytest.raises(ValueError):
+        g = Graph(bind_namespaces="INVALID")
+        list(g.namespaces())

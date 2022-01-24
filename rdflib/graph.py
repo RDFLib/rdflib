@@ -332,7 +332,7 @@ class Graph(Node):
         identifier: Optional[Union[Node, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
-        bind_namespaces: str = "core"
+        bind_namespaces: Optional[str] = "core",
     ):
         super(Graph, self).__init__()
         self.base = base
