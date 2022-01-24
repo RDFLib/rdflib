@@ -31,6 +31,7 @@ import codecs
 import os
 import re
 import sys
+
 # importing typing for `typing.List` because `List`` is used for something else
 import typing
 from decimal import Decimal
@@ -40,8 +41,16 @@ from uuid import uuid4
 from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
 from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
-from rdflib.term import (_XSD_PFX, BNode, Identifier, Literal, Node, URIRef, Variable,
-                         _unique_id)
+from rdflib.term import (
+    _XSD_PFX,
+    BNode,
+    Identifier,
+    Literal,
+    Node,
+    URIRef,
+    Variable,
+    _unique_id,
+)
 
 __all__ = [
     "BadSyntax",
