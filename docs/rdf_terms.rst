@@ -209,7 +209,7 @@ Most simple literals such as *string* or *integer* have XML Schema (XSD) datatyp
 below. Additionally, these XSD datatypes are listed in the :class:`XSD Namespace class <rdflib.XSD>` that 
 ships with RDFLib, so many Python code editors will prompt you with autocomplete for them when using it.
 
-Remember, you don't *have* to use XSD datatype and can always make up your own, as GeoSPARQL does, as described above.
+Remember, you don't *have* to use XSD datatypes and can always make up your own, as GeoSPARQL does, as described above.
 
 .. image:: /_static/datatype_hierarchy.png
    :alt: datatype hierarchy
