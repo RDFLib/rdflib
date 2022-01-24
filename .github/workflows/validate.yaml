@@ -87,7 +87,7 @@ jobs:
             1>&2 echo "Running with fuseki"
             test_harness+="./with-fuseki.sh"
           fi
-          black --config black.toml --check . || true
+          black --config black.toml --check --diff . || true
           flake8 --exit-zero rdflib
           mypy --show-error-context --show-error-codes
           "${test_harness[@]}" pytest -ra --cov
