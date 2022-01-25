@@ -5,7 +5,7 @@ from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 
 from rdflib.graph import Graph
-from rdflib.term import Identifier, URIRef, Literal, BNode
+from rdflib.term import Identifier, URIRef, Literal, BNode, Node, IdentifiedNode
 from rdflib.util import first, more_than
 from rdflib.collection import Collection
 from rdflib.serializer import Serializer
@@ -187,7 +187,9 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible = set(store.predicates()).union(store.objects(None, RDF.type))
+        possible: Set[Node] = set()
+        possible |= set(store.predicates())
+        possible |= set(store.objects(None, RDF.type))
 
         for predicate in possible:
             prefix, namespace, local = nm.compute_qname_strict(predicate)
@@ -204,7 +206,7 @@ class PrettyXMLSerializer(Serializer):
 
         writer.namespaces(namespaces.items())
 
-        subject: Identifier
+        subject: IdentifiedNode
         # Write out subjects that can not be inline
         for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
@@ -234,7 +236,7 @@ class PrettyXMLSerializer(Serializer):
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None  # type: ignore[assignment]
 
-    def subject(self, subject: Identifier, depth: int = 1):
+    def subject(self, subject: IdentifiedNode, depth: int = 1):
         store = self.store
         writer = self.writer
 
