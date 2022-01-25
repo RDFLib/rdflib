@@ -18,7 +18,7 @@ import random
 from rdflib.namespace import Namespace, RDF
 from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
-from rdflib.term import BNode, Node, URIRef, Literal, Genid
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
 from rdflib.store import Store
 from rdflib.serializer import Serializer
@@ -43,9 +43,8 @@ assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
 
-# Type aliases to make unpacking what's going on a little more human friendly
-ContextNode = Union[BNode, URIRef]
-DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
+# Type aliase to make unpacking what's going on a little more human friendly
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[IdentifiedNode]]
 
 __doc__ = """\
 
