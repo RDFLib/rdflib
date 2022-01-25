@@ -453,7 +453,10 @@ class Graph(Node):
         return self
 
     def triples(
-        self, triple: Tuple[Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]]
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+        ],
     ) -> Iterable[Tuple[IdentifiedNode, IdentifiedNode, Node]]:
         """Generator over the triple store
 
@@ -672,7 +675,12 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate: Union[None, Path, IdentifiedNode]=None, object: Optional[Node]=None, unique: bool=False) -> Iterable[IdentifiedNode]:
+    def subjects(
+        self,
+        predicate: Union[None, Path, IdentifiedNode] = None,
+        object: Optional[Node] = None,
+        unique: bool = False,
+    ) -> Iterable[IdentifiedNode]:
         """A generator of (optionally unique) subjects with the given
         predicate and object"""
         if not unique:
@@ -691,7 +699,12 @@ class Graph(Node):
                         )
                         raise
 
-    def predicates(self, subject: Optional[IdentifiedNode]=None, object: Optional[Node]=None, unique: bool=False) -> Iterable[IdentifiedNode]:
+    def predicates(
+        self,
+        subject: Optional[IdentifiedNode] = None,
+        object: Optional[Node] = None,
+        unique: bool = False,
+    ) -> Iterable[IdentifiedNode]:
         """A generator of (optionally unique) predicates with the given
         subject and object"""
         if not unique:
@@ -710,7 +723,12 @@ class Graph(Node):
                         )
                         raise
 
-    def objects(self, subject: Optional[IdentifiedNode]=None, predicate: Union[None, Path, IdentifiedNode]=None, unique: bool=False) -> Iterable[Node]:
+    def objects(
+        self,
+        subject: Optional[IdentifiedNode] = None,
+        predicate: Union[None, Path, IdentifiedNode] = None,
+        unique: bool = False,
+    ) -> Iterable[Node]:
         """A generator of (optionally unique) objects with the given
         subject and predicate"""
         if not unique:
@@ -730,7 +748,7 @@ class Graph(Node):
                         raise
 
     def subject_predicates(
-        self, object: Optional[Node]=None, unique: bool=False
+        self, object: Optional[Node] = None, unique: bool = False
     ) -> Generator[Tuple[IdentifiedNode, IdentifiedNode], None, None]:
         """A generator of (optionally unique) (subject, predicate) tuples
         for the given object"""
@@ -751,7 +769,7 @@ class Graph(Node):
                         raise
 
     def subject_objects(
-        self, predicate: Union[None, Path, IdentifiedNode]=None, unique: bool=False
+        self, predicate: Union[None, Path, IdentifiedNode] = None, unique: bool = False
     ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
         """A generator of (optionally unique) (subject, object) tuples
         for the given predicate"""
@@ -772,7 +790,7 @@ class Graph(Node):
                         raise
 
     def predicate_objects(
-        self, subject: Optional[IdentifiedNode]=None, unique: bool=False
+        self, subject: Optional[IdentifiedNode] = None, unique: bool = False
     ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
         """A generator of (optionally unique) (predicate, object) tuples
         for the given subject"""

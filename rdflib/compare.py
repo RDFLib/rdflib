@@ -511,7 +511,9 @@ class _TripleCanonicalizer(object):
         if stats is not None:
             stats["color_count"] = len(coloring)
 
-        bnode_labels: Dict[Node, str] = dict([(c.nodes[0], c.hash_color()) for c in coloring])
+        bnode_labels: Dict[Node, str] = dict(
+            [(c.nodes[0], c.hash_color()) for c in coloring]
+        )
         if stats is not None:
             stats["canonicalize_triples_runtime"] = _total_seconds(
                 datetime.now() - start_coloring
@@ -521,7 +523,9 @@ class _TripleCanonicalizer(object):
             yield result
 
     def _canonicalize_bnodes(
-        self, triple: Tuple[IdentifiedNode, IdentifiedNode, Node], labels: Dict[Node, str]
+        self,
+        triple: Tuple[IdentifiedNode, IdentifiedNode, Node],
+        labels: Dict[Node, str],
     ):
         for term in triple:
             if isinstance(term, BNode):
