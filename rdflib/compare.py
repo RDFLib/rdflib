@@ -93,7 +93,7 @@ __all__ = [
 ]
 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.term import BNode, Node, URIRef
+from rdflib.term import BNode, Node, URIRef, IdentifiedNode
 from hashlib import sha256
 
 from datetime import datetime
@@ -214,7 +214,7 @@ Stats = Dict[str, Union[int, str]]
 class Color:
     def __init__(
         self,
-        nodes: List[Node],
+        nodes: List[IdentifiedNode],
         hashfunc: HashFunc,
         color: ColorItemTuple = (),
         hash_cache: HashCache = None,
@@ -511,7 +511,7 @@ class _TripleCanonicalizer(object):
         if stats is not None:
             stats["color_count"] = len(coloring)
 
-        bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
+        bnode_labels: Dict[Node, str] = dict([(c.nodes[0], c.hash_color()) for c in coloring])
         if stats is not None:
             stats["canonicalize_triples_runtime"] = _total_seconds(
                 datetime.now() - start_coloring
@@ -521,7 +521,7 @@ class _TripleCanonicalizer(object):
             yield result
 
     def _canonicalize_bnodes(
-        self, triple: Tuple[Node, Node, Node], labels: Dict[Node, str]
+        self, triple: Tuple[IdentifiedNode, IdentifiedNode, Node], labels: Dict[Node, str]
     ):
         for term in triple:
             if isinstance(term, BNode):
