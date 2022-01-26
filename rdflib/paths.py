@@ -183,7 +183,10 @@ No vars specified:
 
 from functools import total_ordering
 from rdflib.term import URIRef, Node
-from typing import Union, Callable
+from typing import Union, Callable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from rdflib import Graph
 
 
 # property paths
@@ -202,7 +205,7 @@ class Path(object):
     __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
     __mul__: Callable[["Path", str], "MulPath"]
 
-    def eval(self, graph, subj=None, obj=None):
+    def eval(self, graph: "Graph", subj=None, obj=None):
         raise NotImplementedError()
 
     def __lt__(self, other):
