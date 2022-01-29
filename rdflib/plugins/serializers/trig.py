@@ -90,6 +90,7 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier == self.default_context:
                 self.write(self.indent() + "\n{")
             else:
+                iri: Optional[str]
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
                 else:
