@@ -1,16 +1,20 @@
 """
-This module is intended for tests related to quoting/escaping and
-unquoting/unescaping in various formats that are related to turtle, such as
-ntriples, nquads, trig and n3.
+This module is intended for tests related to unquoting/unescaping in various
+formats that are related to turtle, such as ntriples, nquads, trig and n3.
 """
 
+import itertools
+import logging
 from typing import Callable, Dict, Iterable, List, Tuple
 import pytest
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph, Graph
 
 from rdflib.plugins.parsers import ntriples
-from rdflib.term import Literal
+from rdflib.term import Literal, URIRef
+from rdflib import Namespace
+from .testutils import GraphHelper
 
+# https://www.w3.org/TR/turtle/#string
 string_escape_map = {
     "t": "\t",
     "b": "\b",
@@ -22,8 +26,10 @@ string_escape_map = {
     "\\": "\\",
 }
 
+import re
 
-def make_correctness_pairs() -> List[Tuple[str, str]]:
+
+def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -59,7 +65,7 @@ def make_correctness_pairs() -> List[Tuple[str, str]]:
     return result
 
 
-CORRECTNESS_PAIRS = make_correctness_pairs()
+UNQUOTE_CORRECTNESS_PAIRS = make_unquote_correctness_pairs()
 
 
 def ntriples_unquote_validate(input: str) -> str:
@@ -92,7 +98,7 @@ unquoters: Dict[str, Callable[[str], str]] = {
 }
 
 
-def make_correctness_tests(
+def make_unquote_correctness_tests(
     selectors: Iterable[str],
 ) -> Iterable[Tuple[str, str, str]]:
     """
@@ -100,12 +106,12 @@ def make_correctness_tests(
     `CORRECTNESS_PAIRS` that is suitable for use as pytest parameters.
     """
     for selector in selectors:
-        for quoted, unquoted in CORRECTNESS_PAIRS:
+        for quoted, unquoted in UNQUOTE_CORRECTNESS_PAIRS:
             yield selector, quoted, unquoted
 
 
 @pytest.mark.parametrize(
-    "unquoter_key, quoted, unquoted", make_correctness_tests(unquoters.keys())
+    "unquoter_key, quoted, unquoted", make_unquote_correctness_tests(unquoters.keys())
 )
 def test_unquote_correctness(
     unquoter_key: str,
@@ -124,7 +130,7 @@ QUAD_FORMATS = {"nquads"}
 
 @pytest.mark.parametrize(
     "format, quoted, unquoted",
-    make_correctness_tests(["turtle", "ntriples", "nquads"]),
+    make_unquote_correctness_tests(["turtle", "ntriples", "nquads"]),
 )
 def test_parse_correctness(
     format: str,
@@ -146,3 +152,67 @@ def test_parse_correctness(
     assert isinstance(obj, Literal)
     assert isinstance(obj.value, str)
     assert obj.value == unquoted
+
+
+EGNS = Namespace("http://example.com/")
+
+
+@pytest.mark.parametrize(
+    "format, char, escaped",
+    [
+        (format, char, escaped)
+        for format, (char, escaped) in itertools.product(
+            ["turtle"],
+            [
+                (r"x", r"x"),
+                (r"(", r"\("),
+                (r")", r"\)"),
+            ],
+        )
+    ],
+)
+def test_pname_escaping(format: str, char: str, escaped: str) -> None:
+    graph = Graph()
+    triple = (
+        URIRef(EGNS["prefix/John_Doe"]),
+        URIRef(EGNS[f"prefix/prop{char}"]),
+        Literal("foo", lang="en"),
+    )
+    graph.bind("egns", EGNS["prefix/"])
+    graph.add(triple)
+    data = graph.serialize(format=format)
+    pattern = re.compile(f"\\segns:prop{re.escape(escaped)}\\s")
+    logging.debug(
+        "format = %s, char = %r, escaped = %r, pattern = %r, data = %s",
+        format,
+        char,
+        escaped,
+        pattern,
+        data,
+    )
+    assert re.search(pattern, data) is not None
+
+
+# https://www.w3.org/TR/turtle/#grammar-production-PN_LOCAL_ESC
+# Not including %, as % should be used for percent encoding.
+PN_LOCAL_ESC_CHARS = r"_~.-!$&'()*+,;=/?#@"
+
+
+@pytest.mark.parametrize(
+    "format, char",
+    itertools.product(["turtle", "ntriples"], "A2c" + PN_LOCAL_ESC_CHARS),
+)
+def test_serialize_roundtrip(format: str, char: str) -> None:
+    graph = Graph()
+    triple = (
+        URIRef(EGNS["prefix/John_Doe"]),
+        URIRef(EGNS[f"prefix/prop{char}"]),
+        Literal("foo", lang="en"),
+    )
+    graph.add(triple)
+    graph.bind("egns", EGNS["prefix/"])
+    data = graph.serialize(format=format)
+    logging.debug("format = %s, char = %s, data = %s", format, char, data)
+    parsed_graph = Graph()
+    parsed_graph.parse(data=data, format=format)
+    GraphHelper.assert_sets_equals(graph, parsed_graph)
