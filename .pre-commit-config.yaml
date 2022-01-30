@@ -6,7 +6,7 @@ ci:
 
 repos:
   - repo: https://github.com/psf/black
-    # WARNING: rev should be the same as in `black.toml`.
+    # WARNING: rev should be the same as in `pyproject.toml`.
     rev: 21.9b0
     hooks:
       - id: black
