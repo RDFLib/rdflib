@@ -380,7 +380,7 @@ class Store(object):
         # See https://stackoverflow.com/q/13243766 and
         # https://www.python.org/dev/peps/pep-0255/#why-a-new-keyword-for-yield-why-not-a-builtin-function-instead
         if False:
-            yield None  # type: ignore[unreachable]
+            yield None
 
     # Optional Transactional methods
 

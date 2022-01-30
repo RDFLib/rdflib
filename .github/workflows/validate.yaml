@@ -87,10 +87,12 @@ jobs:
             1>&2 echo "Running with fuseki"
             test_harness+="./with-fuseki.sh"
           fi
-          black --config black.toml --check ./rdflib || true
-          flake8 --exit-zero --diff ./rdflib
-          mypy --show-error-context --show-error-codes
-          "${test_harness[@]}" pytest -ra --cov
+          is_success=0
+          black --config black.toml --check --diff ./rdflib || is_success=1
+          flake8 --diff ./rdflib || is_success=1
+          mypy --show-error-context --show-error-codes || is_success=1
+          "${test_harness[@]}" pytest -ra --cov || is_success=1
+          exit "$is_success"
   docs:
     runs-on: ubuntu-latest
     steps:
