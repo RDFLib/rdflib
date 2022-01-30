@@ -1223,7 +1223,7 @@ class Graph(Node):
         parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
-            parser.parse(source, self, **args)  # type: ignore[call-arg]
+            parser.parse(source, self, **args)
         except SyntaxError as se:
             if could_not_guess_format:
                 raise ParserError(
@@ -1624,7 +1624,7 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
-    def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
+    def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":
         """
         Add a triple or quad to the store.
 
