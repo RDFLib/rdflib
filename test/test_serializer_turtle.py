@@ -112,4 +112,4 @@ def test_turtle_namespace():
     assert "RO_has_phenotype:" in output
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
-    assert "EX:name_with_(parenthesis)" in output
+    assert r"EX:name_with_\(parenthesis\)" in output

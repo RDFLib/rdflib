@@ -138,6 +138,10 @@ XFAILS = {
         reason="missing escaping: PCDATA invalid Char value 12 and 8",
         raises=SAXParseException,
     ),
+    ("xml", "rdflibtest-pnamebrackets.nt"): pytest.mark.xfail(
+        reason="results in invalid xml element name: <ns1:name(s)/>",
+        raises=SAXParseException,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
