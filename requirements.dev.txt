@@ -1,4 +1,4 @@
-black==21.12b0
+black==22.1.0
 coverage
 doctest-ignore-unicode==0.1.2
 flake8
