@@ -350,29 +350,26 @@ class Graph(Node):
         self.formula_aware = False
         self.default_union = False
 
-    def __get_store(self):
+    @property
+    def store(self):
         return self.__store
 
-    store = property(__get_store)  # read-only attr
-
-    def __get_identifier(self):
+    @property
+    def identifier(self):
         return self.__identifier
 
-    identifier = property(__get_identifier)  # read-only attr
-
-    def _get_namespace_manager(self):
+    @property
+    def namespace_manager(self):
+        """
+        this graph's namespace-manager
+        """
         if self.__namespace_manager is None:
             self.__namespace_manager = NamespaceManager(self)
         return self.__namespace_manager
 
-    def _set_namespace_manager(self, nm):
+    @namespace_manager.setter
+    def namespace_manager(self, nm):
         self.__namespace_manager = nm
-
-    namespace_manager = property(
-        _get_namespace_manager,
-        _set_namespace_manager,
-        doc="this graph's namespace-manager",
-    )
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
