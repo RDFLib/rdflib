@@ -474,7 +474,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     o = URIRef(atts[att])
                 else:
                     if datatype is not None:
-                        language = None  # type: ignore[unreachable]
+                        language = None
                     o = Literal(atts[att], language, datatype)
 
                 if object is None:

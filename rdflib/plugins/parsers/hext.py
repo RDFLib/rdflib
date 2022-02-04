@@ -39,8 +39,8 @@ class HextuplesParser(Parser):
         # language and graph may be None
         if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
             raise ValueError(
-                "subject, predicate, value, datatype cannot be None. Given: "
-                f"{tup}")
+                "subject, predicate, value, datatype cannot be None. Given: " f"{tup}"
+            )
 
         # 1 - subject
         s: Union[URIRef, BNode]

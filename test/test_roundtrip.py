@@ -138,21 +138,9 @@ XFAILS = {
         reason="missing escaping: PCDATA invalid Char value 12 and 8",
         raises=SAXParseException,
     ),
-    ("n3", "rdf_prefix.jsonld"): pytest.mark.xfail(
-        reason="missing 'rdf:' prefix",
-        raises=BadSyntax,
-    ),
-    ("ttl", "rdf_prefix.jsonld"): pytest.mark.xfail(
-        reason="missing 'rdf:' prefix",
-        raises=BadSyntax,
-    ),
-    ("trig", "rdf_prefix.jsonld"): pytest.mark.xfail(
-        reason="missing 'rdf:' prefix",
-        raises=BadSyntax,
-    ),
-    ("turtle", "rdf_prefix.jsonld"): pytest.mark.xfail(
-        reason="missing 'rdf:' prefix",
-        raises=BadSyntax,
+    ("xml", "rdflibtest-pnamebrackets.nt"): pytest.mark.xfail(
+        reason="results in invalid xml element name: <ns1:name(s)/>",
+        raises=SAXParseException,
     ),
 }
 
