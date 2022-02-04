@@ -268,6 +268,7 @@ class TurtleSerializer(RecursiveSerializer):
         if isinstance(p, BNode):  # hmm - when is P ever a bnode?
             self._references[p] += 1
 
+    # TODO: Rename to get_pname
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
             return None
@@ -288,6 +289,8 @@ class TurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
+
+        local = local.replace(r"(", r"\(").replace(r")", r"\)")
 
         # QName cannot end with .
         if local.endswith("."):
