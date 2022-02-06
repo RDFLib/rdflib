@@ -33,3 +33,7 @@ max_line_length = 88
 # tab indentation
 [Makefile]
 indent_style = tab
+
+[*.{cfg,ini}]
+indent_style = space
+indent_size = 4
