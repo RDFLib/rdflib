@@ -319,9 +319,9 @@ class Graph(Node):
     context, such as true merging/demerging of sub-graphs and
     provenance.
 
-    Even when used with a context-aware store, Graph will only expose the quads
-    which belong to the default graph. To access the rest of the data,
-    `ConjunctiveGraph` or `Dataset` classes can be used instead.
+    Even if used with a context-aware store, Graph will only expose the quads which
+    belong to the default graph. To access the rest of the data, `ConjunctiveGraph` or
+    `Dataset` classes can be used instead.
 
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for its
@@ -1628,7 +1628,12 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
-    def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":
+    def add(
+        self,
+        triple_or_quad: Union[
+            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
+        ],
+    ) -> "ConjunctiveGraph":
         """
         Add a triple or quad to the store.
 
