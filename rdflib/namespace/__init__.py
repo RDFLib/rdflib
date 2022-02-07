@@ -1,9 +1,9 @@
+import json
 import logging
 import warnings
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from unicodedata import category
-
-from pathlib import Path
 from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
@@ -238,6 +238,16 @@ class DefinedNamespaceMeta(type):
     def __dir__(cls) -> Iterable[str]:
         values = {cls[str(x)] for x in cls.__annotations__}
         return values
+
+    def jsonld_context(self, pfx: str) -> str:
+        """This function creates a JSON-LD 'context' JSON object from this
+        DefinedNamespace namespace and it's members"""
+        terms = {pfx: str(self._NS)}
+        for key, term in self.__annotations__.items():
+            if term == URIRef:
+                terms[key] = f'{pfx}:{key}'
+
+        return json.dumps({'@context': terms})
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
