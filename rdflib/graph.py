@@ -44,7 +44,8 @@ assert Namespace  # avoid warning
 logger = logging.getLogger(__name__)
 
 # Type aliase to make unpacking what's going on a little more human friendly
-DatasetQuad = Tuple[Node, URIRef, Node, Optional[IdentifiedNode]]
+ContextNode = Union[IdentifiedNode, Literal, str, None]
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
