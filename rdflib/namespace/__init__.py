@@ -75,6 +75,7 @@ The following namespaces are available by directly importing from rdflib:
 * TIME
 * VANN
 * VOID
+* WGS84
 * XSD
 
 .. code-block:: pycon
@@ -373,6 +374,7 @@ class NamespaceManager(object):
         self.bind("time", TIME)
         self.bind("vann", VANN)
         self.bind("void", VOID)
+        self.bind("wgs84", WGS84)
         self.bind("xsd", XSD)
 
         # Namespace bindings.
@@ -777,4 +779,5 @@ from rdflib.namespace._SSN import SSN
 from rdflib.namespace._TIME import TIME
 from rdflib.namespace._VANN import VANN
 from rdflib.namespace._VOID import VOID
+from rdflib.namespace._WGS84 import WGS84
 from rdflib.namespace._XSD import XSD
