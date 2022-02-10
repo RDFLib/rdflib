@@ -374,7 +374,7 @@ class NamespaceManager(object):
         self.bind("time", TIME)
         self.bind("vann", VANN)
         self.bind("void", VOID)
-        self.bind("wgspos", WGS84)
+        self.bind("wgs", WGS84)
         self.bind("xsd", XSD)
 
         # Namespace bindings.
