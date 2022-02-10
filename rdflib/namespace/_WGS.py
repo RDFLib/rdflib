@@ -2,7 +2,7 @@ from rdflib.namespace import DefinedNamespace, Namespace
 from rdflib.term import URIRef
 
 
-class WGS84(DefinedNamespace):
+class WGS(DefinedNamespace):
     """
     Basic Geo (WGS84 lat/long) Vocabulary
 
