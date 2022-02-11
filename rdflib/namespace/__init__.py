@@ -244,7 +244,7 @@ class DefinedNamespaceMeta(type):
         DefinedNamespace namespace and it's members"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
-            if term == URIRef:
+            if isinstance(term, URIRef):
                 terms[key] = f'{pfx}:{key}'
 
         return json.dumps({'@context': terms}, sort_keys=True)
