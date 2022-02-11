@@ -247,7 +247,7 @@ class DefinedNamespaceMeta(type):
             if term == URIRef:
                 terms[key] = f'{pfx}:{key}'
 
-        return json.dumps({'@context': terms})
+        return json.dumps({'@context': terms}, sort_keys=True)
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
