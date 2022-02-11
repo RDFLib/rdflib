@@ -167,7 +167,7 @@ def test_definednamespace_jsonld_context():
             "ConceptScheme": "skos:ConceptScheme",
             "OrderedCollection": "skos:OrderedCollection"
         }
-    })
+    }, sort_keys=True)
 
     actual = SKOS.jsonld_context("skos")
 
