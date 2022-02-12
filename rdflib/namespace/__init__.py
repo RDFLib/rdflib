@@ -75,7 +75,7 @@ The following namespaces are available by directly importing from rdflib:
 * TIME
 * VANN
 * VOID
-* WGS84
+* WGS
 * XSD
 
 .. code-block:: pycon
