@@ -151,7 +151,8 @@ class Store(object):
         if configuration:
             self.open(configuration)
 
-    def __get_node_pickler(self):
+    @property
+    def node_pickler(self):
         if self.__node_pickler is None:
             from rdflib.term import URIRef
             from rdflib.term import BNode
@@ -169,7 +170,6 @@ class Store(object):
             np.register(Variable, "V")
         return self.__node_pickler
 
-    node_pickler = property(__get_node_pickler)
 
     # Database management methods
     def create(self, configuration):
