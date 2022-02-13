@@ -11,11 +11,60 @@ import pytest
 from rdflib import URIRef, Graph, plugin
 from rdflib.exceptions import ParserError
 from rdflib.plugin import PluginException
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, NamespaceManager
 
 from pathlib import Path
+from rdflib.store import Store
+from rdflib.term import BNode
 
 from test.testutils import GraphHelper
+
+
+class TestGraphPT:
+    """
+    ``pytest`` based test class for `rdflib.graph.Graph`.
+
+    New tests should be added here.
+    """
+
+    def test_property_store(self) -> None:
+        """
+        The ``store`` property works correctly.
+        """
+        graph = Graph()
+        assert isinstance(graph.store, Store)
+
+    def test_property_identifier_default(self) -> None:
+        """
+        The default identifier for a graph is a `rdflib.term.BNode`.
+        """
+        graph = Graph()
+        assert isinstance(graph.identifier, BNode)
+
+    def test_property_identifier(self) -> None:
+        """
+        The ``identifier`` property works correctly.
+        """
+        id = URIRef("example:a")
+        graph = Graph(identifier=id)
+        assert id == graph.identifier
+
+    def test_property_namespace_manager(self) -> None:
+        """
+        The ``namespace_manager`` property works correctly.
+        """
+        graph = Graph()
+        # check repeats as property is a signleton
+        assert isinstance(graph.namespace_manager, NamespaceManager)
+        assert isinstance(graph.namespace_manager, NamespaceManager)
+
+        new_nsm = NamespaceManager(graph)
+        new_nsm.reset()
+        new_nsm.bind("test", URIRef("example:test:"))
+        graph.namespace_manager = new_nsm
+        assert isinstance(graph.namespace_manager, NamespaceManager)
+        nss = list(graph.namespace_manager.namespaces())
+        assert ("test", URIRef("example:test:")) in nss
 
 
 class GraphTestCase(unittest.TestCase):
