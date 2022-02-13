@@ -177,23 +177,24 @@ class Result(object):
         self.askAnswer: bool = None  # type: ignore[assignment]
         self.graph: "Graph" = None  # type: ignore[assignment]
 
-    def _get_bindings(self):
+    @property
+    def bindings(self):
+        """
+        a list of variable bindings as dicts
+        """
         if self._genbindings:
             self._bindings += list(self._genbindings)
             self._genbindings = None
 
         return self._bindings
 
-    def _set_bindings(self, b):
+    @bindings.setter
+    def bindings(self, b):
         if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []
         else:
             self._bindings = b
-
-    bindings = property(
-        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts"
-    )
 
     @staticmethod
     def parse(

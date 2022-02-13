@@ -245,3 +245,48 @@ def test_txtresult():
     assert len(lines) == 3
     vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
     assert vars_check == vars
+
+
+def test_property_bindings(rdfs_graph: Graph) -> None:
+    """
+    The ``bindings`` property of a `rdflib.query.Result` result works as expected.
+    """
+    result = rdfs_graph.query(
+        """
+            SELECT ?class ?label WHERE {
+                ?class rdf:type rdfs:Class.
+                ?class rdfs:label ?label.
+            } ORDER BY ?class
+        """
+    )
+    expected_bindings = [
+        {
+            Variable('class'): RDFS.Class,
+            Variable('label'): Literal('Class'),
+        },
+        {
+            Variable('class'): RDFS.Container,
+            Variable('label'): Literal('Container'),
+        },
+        {
+            Variable('class'): RDFS.ContainerMembershipProperty,
+            Variable('label'): Literal('ContainerMembershipProperty'),
+        },
+        {
+            Variable('class'): RDFS.Datatype,
+            Variable('label'): Literal('Datatype'),
+        },
+        {
+            Variable('class'): RDFS.Literal,
+            Variable('label'): Literal('Literal'),
+        },
+        {
+            Variable('class'): RDFS.Resource,
+            Variable('label'): Literal('Resource'),
+        },
+    ]
+
+    assert expected_bindings == result.bindings
+
+    result.bindings = []
+    assert [] == result.bindings
