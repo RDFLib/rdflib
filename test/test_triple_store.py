@@ -1,35 +1,32 @@
-import unittest
+import pytest
 
 from rdflib.term import BNode, Literal
 from rdflib.namespace import RDFS
 from rdflib.graph import Graph
 
+remove_me = (BNode(), RDFS.label, Literal("remove_me"))
 
-class GraphTest(unittest.TestCase):
-    backend = "default"
-    path = "store"
+@pytest.fixture(scope="function")
+def get_store(request):
+    store = Graph(store="default")
+    store.open("store")
+    store.add(remove_me)
 
-    def setUp(self):
-        self.store = Graph(store=self.backend)
-        self.store.open(self.path)
-        self.remove_me = (BNode(), RDFS.label, Literal("remove_me"))
-        self.store.add(self.remove_me)
+    yield store
 
-    def tearDown(self):
-        self.store.close()
+    store.close()
 
-    def testAdd(self):
-        subject = BNode()
-        self.store.add((subject, RDFS.label, Literal("foo")))
+def test_add(get_store):
+    store = get_store
+    subject = BNode()
+    store.add((subject, RDFS.label, Literal("foo")))
 
-    def testRemove(self):
-        self.store.remove(self.remove_me)
-        self.store.remove((None, None, None))
+def test_remove(get_store):
+    store = get_store
+    store.remove(remove_me)
+    store.remove((None, None, None))
 
-    def testTriples(self):
-        for s, p, o in self.store:
-            pass
-
-
-if __name__ == "__main__":
-    unittest.main()
+def test_triples(get_store):
+    store = get_store
+    for s, p, o in store:
+        pass
