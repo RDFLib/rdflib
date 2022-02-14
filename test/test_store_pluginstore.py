@@ -24,7 +24,11 @@ for s in plugin.plugins(None, plugin.Store):
     ):
         continue  # inappropriate for these tests
 
-    pluginstores.append(s.name)
+    try:
+        graph = ConjunctiveGraph(store=s.name)
+        pluginstores.append(s.name)
+    except ImportError:
+        pass
 
 
 @pytest.fixture(

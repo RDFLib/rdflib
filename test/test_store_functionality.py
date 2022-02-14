@@ -37,7 +37,6 @@ pluginstores = []
 
 for s in plugin.plugins(None, plugin.Store):
     if s.name in (
-        "default",
         "Memory",
         "Auditable",
         "Concurrent",
@@ -47,7 +46,11 @@ for s in plugin.plugins(None, plugin.Store):
     ):
         continue  # inappropriate for these tests
 
-    pluginstores.append(s.name)
+    try:
+        graph = ConjunctiveGraph(store=s.name)
+        pluginstores.append(s.name)
+    except ImportError:
+        pass
 
 
 @pytest.fixture(
@@ -64,8 +67,9 @@ def get_conjunctive_graph(request):
         pass
 
     graph = ConjunctiveGraph(store=store)
-    rt = graph.open(path, create=True)
-    assert rt == VALID_STORE, "The underlying store is corrupt"
+    if store != "default":
+        rt = graph.open(path, create=True)
+        assert rt == VALID_STORE, "The underlying store is corrupt"
 
     yield graph, store, path
 
@@ -365,6 +369,7 @@ def test_n3_store_conjunctive_graph(get_conjunctive_graph):
         assert len(list(universe.triples((None, URIRef("http://test/d"), None)))) == 1
 
         # context tests
+
         # test contexts with triple argument
         assert len(list(universe.contexts((a, d, c)))) == 1
 

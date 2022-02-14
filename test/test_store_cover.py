@@ -42,8 +42,11 @@ for s in plugin.plugins(None, plugin.Store):
         "SPARQLUpdateStore",
     ):
         continue  # inappropriate for these tests
-
-    pluginstores.append(s.name)
+    try:
+        graph = Graph(store=s.name)
+        pluginstores.append(s.name)
+    except ImportError:
+        pass
 
 
 @pytest.fixture(
@@ -164,7 +167,25 @@ def test_graph_basic(get_graph):
 
     assert len(list(g.triples(triple, context=g.identifier))) == 1
 
-    assert str(list(g.store.contexts(triple))) == "[<Graph identifier=urn:example:context-1 (<class 'rdflib.graph.Graph'>)>]"
+    assert (
+        str(list(g.store.contexts(triple)))
+        == "[<Graph identifier=urn:example:context-1 (<class 'rdflib.graph.Graph'>)>]"
+    )
+
+    assert (
+        str(
+            list(
+                g.store.contexts(
+                    (
+                        URIRef("urn:example:harry"),
+                        URIRef("urn:example:likes"),
+                        URIRef("urn:example:sally"),
+                    )
+                )
+            )
+        )
+        == "[]"  # Trigger KeyError for coverage
+    )
 
     assert g.store.__len__(context=context1) == 0
 
@@ -302,7 +323,10 @@ def test_store_basic(get_graph):
         assert len(list(store.triples(triple, context=store.identifier))) == 1
 
     with pytest.raises(AssertionError):
-        assert str(list(store.contexts(triple))) == "[<Graph identifier=urn:example:context-1 (<class 'rdflib.graph.Graph'>)>]"
+        assert (
+            str(list(store.contexts(triple)))
+            == "[<Graph identifier=urn:example:context-1 (<class 'rdflib.graph.Graph'>)>]"
+        )
 
     assert store.__len__(context=context1) == 0
 
