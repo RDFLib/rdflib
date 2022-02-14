@@ -1,23 +1,53 @@
-import sys
+# -*- coding: utf-8 -*-
 import os
-import unittest
-
-from tempfile import mkdtemp, mkstemp
 import shutil
-from urllib.error import URLError, HTTPError
+import tempfile
+from pathlib import Path
+from test.testutils import GraphHelper
+from urllib.error import HTTPError, URLError
 
 import pytest
 
-from rdflib import URIRef, Graph, plugin
+from rdflib import Graph, URIRef, plugin
 from rdflib.exceptions import ParserError
-from rdflib.plugin import PluginException
 from rdflib.namespace import Namespace, NamespaceManager
+from rdflib.plugin import PluginException
+from rdflib.store import VALID_STORE
 
 from pathlib import Path
 from rdflib.store import Store
 from rdflib.term import BNode
 
 from test.testutils import GraphHelper
+
+
+michel = URIRef("urn:x-rdflib:michel")
+tarek = URIRef("urn:x-rdflib:tarek")
+bob = URIRef("urn:x-rdflib:bob")
+likes = URIRef("urn:x-rdflib:likes")
+hates = URIRef("urn:x-rdflib:hates")
+pizza = URIRef("urn:x-rdflib:pizza")
+cheese = URIRef("urn:x-rdflib:cheese")
+
+c1 = URIRef("urn:x-rdflib:context-1")
+c2 = URIRef("urn:x-rdflib:context-2")
+
+
+pluginstores = []
+
+for s in plugin.plugins(None, plugin.Store):
+    if s.name in (
+        # "default",
+        "Memory",
+        "Auditable",
+        "Concurrent",
+        "SimpleMemory",
+        "SPARQLStore",
+        "SPARQLUpdateStore",
+    ):
+        continue  # inappropriate for these tests
+
+    pluginstores.append(s.name)
 
 
 class TestGraphPT:
@@ -67,277 +97,248 @@ class TestGraphPT:
         assert ("test", URIRef("example:test:")) in nss
 
 
-class GraphTestCase(unittest.TestCase):
-    store = "default"
-    tmppath = None
+@pytest.fixture(
+    scope="function",
+    params=pluginstores,
+)
+def get_graph(request):
+    store = request.param
+    path = tempfile.mktemp()
+    try:
+        shutil.rmtree(path)
+    except Exception:
+        pass
 
-    def setUp(self):
-        try:
-            self.graph = Graph(store=self.store)
-        except ImportError:
-            pytest.skip("Dependencies for store '%s' not available!" % self.store)
-        if self.store == "SQLite":
-            _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
-        else:
-            self.tmppath = mkdtemp()
-        self.graph.open(self.tmppath, create=True)
+    try:
+        graph = Graph(store=store)
+    except ImportError:
+        pytest.skip("Dependencies for store '%s' not available!" % store)
 
-        self.michel = URIRef("urn:example:michel")
-        self.tarek = URIRef("urn:example:tarek")
-        self.bob = URIRef("urn:example:bob")
-        self.likes = URIRef("urn:example:likes")
-        self.hates = URIRef("urn:example:hates")
-        self.pizza = URIRef("urn:example:pizza")
-        self.cheese = URIRef("urn:example:cheese")
+    if store != "default":
+        rt = graph.open(configuration=path, create=True)
+        assert rt == VALID_STORE, "The underlying store is corrupt"
 
-    def tearDown(self):
-        self.graph.close()
-        if os.path.isdir(self.tmppath):
-            shutil.rmtree(self.tmppath)
-        else:
-            os.remove(self.tmppath)
+    assert len(graph) == 0, "There must be zero triples in the graph just after store (file) creation"
 
-    def addStuff(self):
-        tarek = self.tarek
-        michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
+    yield graph
 
-        self.graph.add((tarek, likes, pizza))
-        self.graph.add((tarek, likes, cheese))
-        self.graph.add((michel, likes, pizza))
-        self.graph.add((michel, likes, cheese))
-        self.graph.add((bob, likes, cheese))
-        self.graph.add((bob, hates, pizza))
-        self.graph.add((bob, hates, michel))  # gasp!
+    graph.close()
+    graph.destroy(configuration=path)
 
-    def removeStuff(self):
-        tarek = self.tarek
-        michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
 
-        self.graph.remove((tarek, likes, pizza))
-        self.graph.remove((tarek, likes, cheese))
-        self.graph.remove((michel, likes, pizza))
-        self.graph.remove((michel, likes, cheese))
-        self.graph.remove((bob, likes, cheese))
-        self.graph.remove((bob, hates, pizza))
-        self.graph.remove((bob, hates, michel))  # gasp!
+def populate_graph(graph):
+    graph.add((tarek, likes, pizza))
+    graph.add((tarek, likes, cheese))
+    graph.add((michel, likes, pizza))
+    graph.add((michel, likes, cheese))
+    graph.add((bob, likes, cheese))
+    graph.add((bob, hates, pizza))
+    graph.add((bob, hates, michel))  # gasp!
 
-    def testAdd(self):
-        self.addStuff()
 
-    def testRemove(self):
-        self.addStuff()
-        self.removeStuff()
+def depopulate_graph(graph):
+    graph.remove((tarek, likes, pizza))
+    graph.remove((tarek, likes, cheese))
+    graph.remove((michel, likes, pizza))
+    graph.remove((michel, likes, cheese))
+    graph.remove((bob, likes, cheese))
+    graph.remove((bob, hates, pizza))
+    graph.remove((bob, hates, michel))  # gasp!
 
-    def testTriples(self):
-        tarek = self.tarek
-        michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
-        asserte = self.assertEqual
-        triples = self.graph.triples
-        Any = None
 
-        self.addStuff()
+def test_add(get_graph):
+    graph = get_graph
 
-        # unbound subjects
-        asserte(len(list(triples((Any, likes, pizza)))), 2)
-        asserte(len(list(triples((Any, hates, pizza)))), 1)
-        asserte(len(list(triples((Any, likes, cheese)))), 3)
-        asserte(len(list(triples((Any, hates, cheese)))), 0)
+    populate_graph(graph)
 
-        # unbound objects
-        asserte(len(list(triples((michel, likes, Any)))), 2)
-        asserte(len(list(triples((tarek, likes, Any)))), 2)
-        asserte(len(list(triples((bob, hates, Any)))), 2)
-        asserte(len(list(triples((bob, likes, Any)))), 1)
 
-        # unbound predicates
-        asserte(len(list(triples((michel, Any, cheese)))), 1)
-        asserte(len(list(triples((tarek, Any, cheese)))), 1)
-        asserte(len(list(triples((bob, Any, pizza)))), 1)
-        asserte(len(list(triples((bob, Any, michel)))), 1)
+def test_remove(get_graph):
+    graph = get_graph
 
-        # unbound subject, objects
-        asserte(len(list(triples((Any, hates, Any)))), 2)
-        asserte(len(list(triples((Any, likes, Any)))), 5)
+    populate_graph(graph)
 
-        # unbound predicates, objects
-        asserte(len(list(triples((michel, Any, Any)))), 2)
-        asserte(len(list(triples((bob, Any, Any)))), 3)
-        asserte(len(list(triples((tarek, Any, Any)))), 2)
+    depopulate_graph(graph)
 
-        # unbound subjects, predicates
-        asserte(len(list(triples((Any, Any, pizza)))), 3)
-        asserte(len(list(triples((Any, Any, cheese)))), 3)
-        asserte(len(list(triples((Any, Any, michel)))), 1)
 
-        # all unbound
-        asserte(len(list(triples((Any, Any, Any)))), 7)
-        self.removeStuff()
-        asserte(len(list(triples((Any, Any, Any)))), 0)
+def test_triples(get_graph):
+    graph = get_graph
+    triples = graph.triples
+    Any = None
 
-    def testConnected(self):
-        graph = self.graph
-        self.addStuff()
-        self.assertEqual(True, graph.connected())
+    populate_graph(graph)
 
-        jeroen = URIRef("jeroen")
-        unconnected = URIRef("unconnected")
+    # unbound subjects
+    assert len(list(triples((Any, likes, pizza)))) == 2
+    assert len(list(triples((Any, hates, pizza)))) == 1
+    assert len(list(triples((Any, likes, cheese)))) == 3
+    assert len(list(triples((Any, hates, cheese)))) == 0
 
-        graph.add((jeroen, self.likes, unconnected))
+    # unbound objects
+    assert len(list(triples((michel, likes, Any)))) == 2
+    assert len(list(triples((tarek, likes, Any)))) == 2
+    assert len(list(triples((bob, hates, Any)))) == 2
+    assert len(list(triples((bob, likes, Any)))) == 1
 
-        self.assertEqual(False, graph.connected())
+    # unbound predicates
+    assert len(list(triples((michel, Any, cheese)))) == 1
+    assert len(list(triples((tarek, Any, cheese)))) == 1
+    assert len(list(triples((bob, Any, pizza)))) == 1
+    assert len(list(triples((bob, Any, michel)))) == 1
 
-    def testSub(self):
-        g1 = self.graph
-        g2 = Graph(store=g1.store)
+    # unbound subject, objects
+    assert len(list(triples((Any, hates, Any)))) == 2
+    assert len(list(triples((Any, likes, Any)))) == 5
 
-        tarek = self.tarek
-        # michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        # hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
+    # unbound predicates, objects
+    assert len(list(triples((michel, Any, Any)))) == 2
+    assert len(list(triples((bob, Any, Any)))) == 3
+    assert len(list(triples((tarek, Any, Any)))) == 2
 
-        g1.add((tarek, likes, pizza))
-        g1.add((bob, likes, cheese))
+    # unbound subjects, predicates
+    assert len(list(triples((Any, Any, pizza)))) == 3
+    assert len(list(triples((Any, Any, cheese)))) == 3
+    assert len(list(triples((Any, Any, michel)))) == 1
 
-        g2.add((bob, likes, cheese))
+    # all unbound
+    assert len(list(triples((Any, Any, Any)))) == 7
+    depopulate_graph(graph)
+    assert len(list(triples((Any, Any, Any)))) == 0
 
-        g3 = g1 - g2
 
-        self.assertEqual(len(g3), 1)
-        self.assertEqual((tarek, likes, pizza) in g3, True)
-        self.assertEqual((tarek, likes, cheese) in g3, False)
+def test_connected(get_graph):
+    graph = get_graph
 
-        self.assertEqual((bob, likes, cheese) in g3, False)
+    populate_graph(graph)
+    assert graph.connected()
 
-        g1 -= g2
+    jeroen = URIRef("jeroen")
+    unconnected = URIRef("unconnected")
 
-        self.assertEqual(len(g1), 1)
-        self.assertEqual((tarek, likes, pizza) in g1, True)
-        self.assertEqual((tarek, likes, cheese) in g1, False)
+    graph.add((jeroen, likes, unconnected))
 
-        self.assertEqual((bob, likes, cheese) in g1, False)
+    assert graph.connected() is False
 
-    def testGraphAdd(self):
-        g1 = self.graph
-        g2 = Graph(store=g1.store)
 
-        tarek = self.tarek
-        # michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        # hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
+def test_sub(get_graph):
 
-        g1.add((tarek, likes, pizza))
+    g1 = get_graph
 
-        g2.add((bob, likes, cheese))
+    g2 = Graph(store=g1.store)
 
-        g3 = g1 + g2
+    g1.add((tarek, likes, pizza))
+    g1.add((bob, likes, cheese))
 
-        self.assertEqual(len(g3), 2)
-        self.assertEqual((tarek, likes, pizza) in g3, True)
-        self.assertEqual((tarek, likes, cheese) in g3, False)
+    g2.add((bob, likes, cheese))
 
-        self.assertEqual((bob, likes, cheese) in g3, True)
+    g3 = g1 - g2
 
-        g1 += g2
+    assert len(g3) == 1
+    assert (tarek, likes, pizza) in g3
+    assert (tarek, likes, cheese) not in g3
 
-        self.assertEqual(len(g1), 2)
-        self.assertEqual((tarek, likes, pizza) in g1, True)
-        self.assertEqual((tarek, likes, cheese) in g1, False)
+    assert (bob, likes, cheese) not in g3
 
-        self.assertEqual((bob, likes, cheese) in g1, True)
+    g1 -= g2
 
-    def testGraphIntersection(self):
-        g1 = self.graph
-        g2 = Graph(store=g1.store)
+    assert len(g1) == 1
+    assert (tarek, likes, pizza) in g1
+    assert (tarek, likes, cheese) not in g1
 
-        tarek = self.tarek
-        michel = self.michel
-        bob = self.bob
-        likes = self.likes
-        # hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
+    assert (bob, likes, cheese) not in g1
 
-        g1.add((tarek, likes, pizza))
-        g1.add((michel, likes, cheese))
 
-        g2.add((bob, likes, cheese))
-        g2.add((michel, likes, cheese))
+def test_graph_add(get_graph):
+    graph = get_graph
 
-        g3 = g1 * g2
+    g1 = graph
+    g2 = Graph(store=g1.store)
 
-        self.assertEqual(len(g3), 1)
-        self.assertEqual((tarek, likes, pizza) in g3, False)
-        self.assertEqual((tarek, likes, cheese) in g3, False)
+    g1.add((tarek, likes, pizza))
 
-        self.assertEqual((bob, likes, cheese) in g3, False)
+    g2.add((bob, likes, cheese))
 
-        self.assertEqual((michel, likes, cheese) in g3, True)
+    g3 = g1 + g2
 
-        g1 *= g2
+    assert len(g3) == 2
+    assert (tarek, likes, pizza) in g3
+    assert (tarek, likes, cheese) not in g3
 
-        self.assertEqual(len(g1), 1)
+    assert (bob, likes, cheese) in g3
 
-        self.assertEqual((tarek, likes, pizza) in g1, False)
-        self.assertEqual((tarek, likes, cheese) in g1, False)
+    g1 += g2
 
-        self.assertEqual((bob, likes, cheese) in g1, False)
+    assert len(g1) == 2
+    assert (tarek, likes, pizza) in g1
+    assert (tarek, likes, cheese) not in g1
 
-        self.assertEqual((michel, likes, cheese) in g1, True)
+    assert (bob, likes, cheese) in g1
 
-    def testGuessFormatForParse(self):
-        self.graph = Graph()
 
-        # files
-        with self.assertRaises(ParserError):
-            self.graph.parse(__file__)  # here we are trying to parse a Python file!!
+def test_graph_intersection(get_graph):
+    graph = get_graph
 
-        # .nt can be parsed by Turtle Parser
-        self.graph.parse("test/nt/anons-01.nt")
-        # RDF/XML
-        self.graph.parse("test/rdf/datatypes/test001.rdf")  # XML
-        # bad filename but set format
-        self.graph.parse("test/rdf/datatypes/test001.borked", format="xml")
+    g1 = graph
+    g2 = Graph(store=g1.store)
 
-        # strings
-        self.graph = Graph()
+    g1.add((tarek, likes, pizza))
+    g1.add((michel, likes, cheese))
 
-        with self.assertRaises(ParserError):
-            self.graph.parse(data="rubbish")
+    g2.add((bob, likes, cheese))
+    g2.add((michel, likes, cheese))
 
-        # Turtle - default
-        self.graph.parse(
-            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> ."
-        )
+    g3 = g1 * g2
 
-        # Turtle - format given
-        self.graph.parse(
-            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .",
-            format="turtle",
-        )
+    assert len(g3) == 1
+    assert (tarek, likes, pizza) not in g3
+    assert (tarek, likes, cheese) not in g3
 
-        # RDF/XML - format given
-        rdf = """<rdf:RDF
+    assert (bob, likes, cheese) not in g3
+
+    assert (michel, likes, cheese) in g3
+
+    g1 *= g2
+
+    assert len(g1) == 1
+
+    assert (tarek, likes, pizza) not in g1
+    assert (tarek, likes, cheese) not in g1
+
+    assert (bob, likes, cheese) not in g1
+
+    assert (michel, likes, cheese) in g1
+
+
+def test_guess_format_for_parse(get_graph):
+    graph = get_graph
+
+    # files
+    with pytest.raises(ParserError):
+        graph.parse(__file__)  # here we are trying to parse a Python file!!
+
+    # .nt can be parsed by Turtle Parser
+    graph.parse("test/nt/anons-01.nt")
+    # RDF/XML
+    graph.parse("test/rdf/datatypes/test001.rdf")  # XML
+    # bad filename but set format
+    graph.parse("test/rdf/datatypes/test001.borked", format="xml")
+
+    # strings
+    graph = Graph()
+
+    with pytest.raises(ParserError):
+        graph.parse(data="rubbish")
+
+    # Turtle - default
+    graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+
+    # Turtle - format given
+    graph.parse(
+        data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .",
+        format="turtle",
+    )
+
+    # RDF/XML - format given
+    rdf = """<rdf:RDF
   xmlns:ns1="http://example.org/#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 >
@@ -354,116 +355,91 @@ class GraphTestCase(unittest.TestCase):
     <ns1:p rdf:resource="http://example.org/q"/>
   </rdf:Description>
 </rdf:RDF>
-        """
-        self.graph.parse(data=rdf, format="xml")
+    """
+    graph.parse(data=rdf, format="xml")
 
-        # URI
-        self.graph = Graph()
+    # URI
+    graph = get_graph
 
-        # only getting HTML
-        with self.assertRaises(PluginException):
-            self.graph.parse(location="https://www.google.com")
+    # only getting HTML
+    with pytest.raises(PluginException):
+        graph.parse(location="https://www.google.com")
 
-        try:
-            self.graph.parse(location="http://www.w3.org/ns/adms.ttl")
-            self.graph.parse(location="http://www.w3.org/ns/adms.rdf")
-        except (URLError, HTTPError):
-            # this endpoint is currently not available, ignore this test.
-            pass
+    try:
+        graph.parse(location="http://www.w3.org/ns/adms.ttl")
+        graph.parse(location="http://www.w3.org/ns/adms.rdf")
+    except (URLError, HTTPError):
+        # this endpoint is currently not available, ignore this test.
+        pass
 
-        try:
-            # persistent Australian Government online RDF resource without a file-like ending
-            self.graph.parse(
-                location="https://linked.data.gov.au/def/agrif?_format=text/turtle"
-            )
-        except (URLError, HTTPError):
-            # this endpoint is currently not available, ignore this test.
-            pass
-
-    def test_parse_file_uri(self):
-        EG = Namespace("http://example.org/#")
-        g = Graph()
-        g.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
-        triple_set = GraphHelper.triple_set(g)
-        self.assertEqual(
-            triple_set,
-            {
-                (EG["Subject"], EG["predicate"], EG["ObjectP"]),
-                (EG["Subject"], EG["predicate"], EG["ObjectQ"]),
-                (EG["Subject"], EG["predicate"], EG["ObjectR"]),
-            },
-        )
-
-    def testTransitive(self):
-        person = URIRef("ex:person")
-        dad = URIRef("ex:dad")
-        mom = URIRef("ex:mom")
-        mom_of_dad = URIRef("ex:mom_o_dad")
-        mom_of_mom = URIRef("ex:mom_o_mom")
-        dad_of_dad = URIRef("ex:dad_o_dad")
-        dad_of_mom = URIRef("ex:dad_o_mom")
-
-        parent = URIRef("ex:parent")
-
-        g = Graph()
-        g.add((person, parent, dad))
-        g.add((person, parent, mom))
-        g.add((dad, parent, mom_of_dad))
-        g.add((dad, parent, dad_of_dad))
-        g.add((mom, parent, mom_of_mom))
-        g.add((mom, parent, dad_of_mom))
-
-        # transitive parents of person
-        self.assertEqual(
-            set(g.transitive_objects(subject=person, predicate=parent)),
-            {person, dad, mom_of_dad, dad_of_dad, mom, mom_of_mom, dad_of_mom},
-        )
-        # transitive parents of dad
-        self.assertEqual(
-            set(g.transitive_objects(dad, parent)), {dad, mom_of_dad, dad_of_dad}
-        )
-        # transitive parents of dad_of_dad
-        self.assertEqual(set(g.transitive_objects(dad_of_dad, parent)), {dad_of_dad})
-
-        # transitive children (inverse of parents) of mom_of_mom
-        self.assertEqual(
-            set(g.transitive_subjects(predicate=parent, object=mom_of_mom)),
-            {mom_of_mom, mom, person},
-        )
-        # transitive children (inverse of parents) of mom
-        self.assertEqual(set(g.transitive_subjects(parent, mom)), {mom, person})
-        # transitive children (inverse of parents) of person
-        self.assertEqual(set(g.transitive_subjects(parent, person)), {person})
+    try:
+        # persistent Australian Government online RDF resource without a file-like ending
+        graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
+    except (URLError, HTTPError):
+        # this endpoint is currently not available, ignore this test.
+        pass
 
 
-# dynamically create classes for each registered Store
+def test_parse_file_uri(get_graph):
+    graph = get_graph
 
-pluginname = None
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        pluginname = sys.argv[1]
-
-tests = 0
-for s in plugin.plugins(pluginname, plugin.Store):
-    if s.name in (
-        "default",
-        "Memory",
-        "Auditable",
-        "Concurrent",
-        "SPARQLStore",
-        "SPARQLUpdateStore",
-    ):
-        continue  # these are tested by default
-
-    if s.name in ("SimpleMemory",):
-        # these (by design) won't pass some of the tests (like Intersection)
-        continue
-
-    locals()["t%d" % tests] = type(
-        "%sGraphTestCase" % s.name, (GraphTestCase,), {"store": s.name}
-    )
-    tests += 1
+    EG = Namespace("http://example.org/#")
+    graph.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
+    triple_set = GraphHelper.triple_set(graph)
+    assert triple_set == {
+        (EG["Subject"], EG["predicate"], EG["ObjectP"]),
+        (EG["Subject"], EG["predicate"], EG["ObjectQ"]),
+        (EG["Subject"], EG["predicate"], EG["ObjectR"]),
+    }
 
 
-if __name__ == "__main__":
-    unittest.main(argv=sys.argv[:1])
+def test_transitive(get_graph):
+    graph = get_graph
+
+    person = URIRef("ex:person")
+    dad = URIRef("ex:dad")
+    mom = URIRef("ex:mom")
+    mom_of_dad = URIRef("ex:mom_o_dad")
+    mom_of_mom = URIRef("ex:mom_o_mom")
+    dad_of_dad = URIRef("ex:dad_o_dad")
+    dad_of_mom = URIRef("ex:dad_o_mom")
+
+    parent = URIRef("ex:parent")
+
+    graph.add((person, parent, dad))
+    graph.add((person, parent, mom))
+    graph.add((dad, parent, mom_of_dad))
+    graph.add((dad, parent, dad_of_dad))
+    graph.add((mom, parent, mom_of_mom))
+    graph.add((mom, parent, dad_of_mom))
+
+    # transitive parents of person
+    assert set(graph.transitive_objects(subject=person, predicate=parent)) == {
+        person,
+        dad,
+        mom_of_dad,
+        dad_of_dad,
+        mom,
+        mom_of_mom,
+        dad_of_mom,
+    }
+    # transitive parents of dad
+    assert set(graph.transitive_objects(dad, parent)) == {
+        dad,
+        mom_of_dad,
+        dad_of_dad,
+    }
+    # transitive parents of dad_of_dad
+    assert set(graph.transitive_objects(dad_of_dad, parent)) == {dad_of_dad}
+
+    # transitive children (inverse of parents) of mom_of_mom
+    assert set(graph.transitive_subjects(predicate=parent, object=mom_of_mom)) == {
+        mom_of_mom,
+        mom,
+        person,
+    }
+
+    # transitive children (inverse of parents) of mom
+    assert set(graph.transitive_subjects(parent, mom)) == {mom, person}
+    # transitive children (inverse of parents) of person
+    assert set(graph.transitive_subjects(parent, person)) == {person}

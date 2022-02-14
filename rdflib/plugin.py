@@ -200,6 +200,12 @@ register(
     "ConcurrentStore",
 )
 register(
+    "SQLiteDBStore",
+    Store,
+    "rdflib.plugins.stores.sqlitedbstore",
+    "SQLiteDBStore",
+)
+register(
     "BerkeleyDB",
     Store,
     "rdflib.plugins.stores.berkeleydb",
