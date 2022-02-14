@@ -16,7 +16,6 @@ from threading import Thread
 from urllib.request import pathname2url
 from typing import Callable, Generator, Tuple, Union, Optional, List, Any, Dict, cast, Iterable, ItemsView, Iterator
 
-from rdflib import logger
 from rdflib.graph import Graph, DATASET_DEFAULT_GRAPH_ID
 from rdflib.store import NO_STORE, VALID_STORE, Store
 from rdflib.term import BNode, IdentifiedNode, Node, Literal, Variable, URIRef
@@ -769,14 +768,16 @@ class SQLiteDBStore(Store):
 
     def add_graph(self, graph: Union[IdentifiedNode, Literal, Variable, str]) -> None:
         assert self.__open, "The Store must be open."
-        if isinstance(graph, (Graph, type(None))):
-            raise TypeError(f"""graph identifier cannot be {type(graph)}""")
+        # TODO: uncomment when Dataset rework merged
+        # if isinstance(graph, (Graph, type(None))):
+        #     raise TypeError(f"""graph identifier cannot be {type(graph)}""")
         self.__contexts[self._to_string(graph)] = b""
 
     def remove_graph(self, graph: Union[IdentifiedNode, Literal, Variable, str]) -> None:
         assert self.__open, "The Store must be open."
-        if isinstance(graph, (Graph, type(None))):
-            raise TypeError(f"""graph cannot be {type(graph)}""")
+        # TODO: uncomment when Dataset rework merged
+        # if isinstance(graph, (Graph, type(None))):
+        #     raise TypeError(f"""graph cannot be {type(graph)}""")
         self.remove((None, None, None), graph)
 
     def __len__(self, context: Any = None) -> int:
