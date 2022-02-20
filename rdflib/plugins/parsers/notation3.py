@@ -27,32 +27,30 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
-import sys
+import codecs
 import os
 import re
-import codecs
-from typing import IO, TYPE_CHECKING, Any, Callable, Dict, Optional, TypeVar, Union
+import sys
 
 # importing typing for `typing.List` because `List`` is used for something else
 import typing
-
 from decimal import Decimal
-
+from typing import IO, TYPE_CHECKING, Any, Callable, Dict, Optional, TypeVar, Union
 from uuid import uuid4
 
+from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
+from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.term import (
+    _XSD_PFX,
+    BNode,
     Identifier,
+    Literal,
     Node,
     URIRef,
-    BNode,
-    Literal,
     Variable,
-    _XSD_PFX,
     _unique_id,
 )
-from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
-from rdflib.compat import long_type
 
 __all__ = [
     "BadSyntax",
