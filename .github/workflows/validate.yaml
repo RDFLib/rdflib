@@ -88,7 +88,7 @@ jobs:
             test_harness+="./with-fuseki.sh"
           fi
           black --config black.toml --check --diff ./rdflib || true
-          isort --check-only --diff ./rdflib
+          isort --check-only --diff . || true
           flake8 --exit-zero rdflib
           mypy --show-error-context --show-error-codes
           "${test_harness[@]}" pytest -ra --cov
