@@ -5,19 +5,17 @@ A commandline tool for parsing RDF in different formats and serializing the
 resulting graph to a chosen format.
 """
 
+import logging
 import sys
 from optparse import OptionParser
-import logging
 
 import rdflib
 from rdflib import plugin
-from rdflib.store import Store
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
-
+from rdflib.store import Store
 from rdflib.util import guess_format
-
 
 DEFAULT_INPUT_FORMAT = "xml"
 DEFAULT_OUTPUT_FORMAT = "n3"

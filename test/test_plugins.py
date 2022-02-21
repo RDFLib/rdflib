@@ -6,8 +6,7 @@ import sys
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, Callable, Dict, Generator, List
-
-from sphinx import warnings
+import warnings
 
 import rdflib.plugin
 import rdflib.plugins.sparql
