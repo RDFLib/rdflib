@@ -9,6 +9,7 @@ myst-parser
 pytest
 pytest-cov
 pytest-subtests
+isort
 sphinx
 sphinxcontrib-apidoc
 sphinxcontrib-kroki
