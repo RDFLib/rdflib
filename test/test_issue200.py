@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import os
-import rdflib
 import unittest
+
 import pytest
 
+import rdflib
 
 if os.name == "nt":
     pytestmark = pytest.mark.skip(
