@@ -5,6 +5,15 @@ ci:
   autofix_prs: false
 
 repos:
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    - id: isort
+      # This is here to defer file selection to isort which will do it based on
+      # black config.
+      pass_filenames: false
+      require_serial: true
+      args: ["."]
   - repo: local
     hooks:
     # using a local hook for black because of an issue that arises when using
