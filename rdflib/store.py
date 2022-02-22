@@ -170,7 +170,6 @@ class Store(object):
             np.register(Variable, "V")
         return self.__node_pickler
 
-
     # Database management methods
     def create(self, configuration):
         self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
