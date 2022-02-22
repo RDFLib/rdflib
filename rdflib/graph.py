@@ -2037,11 +2037,9 @@ class Dataset(ConjunctiveGraph):
             else:
                 yield s, p, o, c.identifier
 
-    # FIXME: Currently graph identifiers/context can be any Node, even
-    # though this goes outside of the RDF 1.1. specificiation. This should be
-    # fixed, but the fix should not only fix the return value here but also
-    # narrow the type annotations of Graph.__new__.
-    def __iter__(self) -> Generator[Tuple[Node, URIRef, Node, Optional[Node]], None, None]:
+    def __iter__(
+        self,
+    ) -> Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]:
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
 
