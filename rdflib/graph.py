@@ -1808,7 +1808,7 @@ class ConjunctiveGraph(Graph):
         # hint on InputSource (TODO/FIXME).
         g_id: str = publicID and publicID or source.getPublicId()
         if not isinstance(g_id, Node):
-            g_id = URIRef(g_id)  # type: ignore[arg-type]
+            g_id = URIRef(g_id)
 
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))  # hmm ?
