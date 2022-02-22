@@ -452,6 +452,33 @@ class Graph(Node):
         self.__store.remove(triple, context=self)
         return self
 
+    @overload
+    def triples(
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, IdentifiedNode, Node]]:
+        ...
+
+    @overload
+    def triples(
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Path, Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, Path, Node]]:
+        ...
+
+    @overload
+    def triples(
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, Union[IdentifiedNode, Path], Node]]:
+        ...
+
     def triples(
         self,
         triple: Tuple[
@@ -463,13 +490,13 @@ class Graph(Node):
         Returns triples that match the given triple pattern. If triple pattern
         does not provide a context, all contexts will be searched.
         """
-        (s0, p0, o0) = triple
-        if isinstance(p0, Path):
-            for s1, o1 in p0.eval(self, s0, o0):
-                yield s1, p0, o1
+        s, p, o = triple
+        if isinstance(p, Path):
+            for _s, _o in p.eval(self, s, o):
+                yield _s, p, _o
         else:
-            for (s2, p2, o2), cg in self.__store.triples(triple, context=self):
-                yield s2, p2, o2
+            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
+                yield _s, _p, _o
 
     def __getitem__(self, item):
         """
