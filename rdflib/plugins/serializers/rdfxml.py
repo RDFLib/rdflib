@@ -187,9 +187,7 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible: Set[Node] = set()
-        possible |= set(store.predicates())
-        possible |= set(store.objects(None, RDF.type))
+        possible: Set[Node] = set(store.predicates()).union(store.objects(None, RDF.type))
 
         for predicate in possible:
             prefix, namespace, local = nm.compute_qname_strict(predicate)
