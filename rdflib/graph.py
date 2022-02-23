@@ -464,9 +464,7 @@ class Graph(Node):
     @overload
     def triples(
         self,
-        triple: Tuple[
-            Optional[IdentifiedNode], Path, Optional[Node]
-        ],
+        triple: Tuple[Optional[IdentifiedNode], Path, Optional[Node]],
     ) -> Iterable[Tuple[IdentifiedNode, Path, Node]]:
         ...
 

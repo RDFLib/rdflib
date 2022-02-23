@@ -293,7 +293,9 @@ class Store(object):
 
     def triples(
         self,
-        triple_pattern: Tuple[Optional["IdentifiedNode"], Optional["IdentifiedNode"], Optional["Node"]],
+        triple_pattern: Tuple[
+            Optional["IdentifiedNode"], Optional["IdentifiedNode"], Optional["Node"]
+        ],
         context=None,
     ):
         """
