@@ -6,8 +6,8 @@ import tempfile
 import pytest
 
 from rdflib import Graph, Namespace, plugin
-from rdflib.store import VALID_STORE
 from rdflib.plugins.stores.auditable import AuditableStore
+from rdflib.store import VALID_STORE
 
 EX = Namespace("http://example.org/")
 

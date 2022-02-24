@@ -57,7 +57,9 @@ def get_graph(request):
         rt = graph.open(configuration=path, create=True)
         assert rt == VALID_STORE, "The underlying store is corrupt"
 
-    assert len(graph) == 0, "There must be zero triples in the graph just after store (file) creation"
+    assert (
+        len(graph) == 0
+    ), "There must be zero triples in the graph just after store (file) creation"
 
     yield graph
 
@@ -346,12 +348,20 @@ def test_triples(get_graph):
             ]
         )
 
-        assert set(c.predicate_objects(michel)) == set([(likes, cheese), (likes, pizza)])
-        assert set(c.predicate_objects(bob)) == set([(likes, cheese), (hates, pizza), (hates, michel)])
+        assert set(c.predicate_objects(michel)) == set(
+            [(likes, cheese), (likes, pizza)]
+        )
+        assert set(c.predicate_objects(bob)) == set(
+            [(likes, cheese), (hates, pizza), (hates, michel)]
+        )
         assert set(c.predicate_objects(tarek)) == set([(likes, cheese), (likes, pizza)])
 
-        assert set(c.subject_predicates(pizza)) == set([(bob, hates), (tarek, likes), (michel, likes)])
-        assert set(c.subject_predicates(cheese)) == set([(bob, likes), (tarek, likes), (michel, likes)])
+        assert set(c.subject_predicates(pizza)) == set(
+            [(bob, hates), (tarek, likes), (michel, likes)]
+        )
+        assert set(c.subject_predicates(cheese)) == set(
+            [(bob, likes), (tarek, likes), (michel, likes)]
+        )
         assert set(c.subject_predicates(michel)) == set([(bob, hates)])
 
         assert set(c) == set(

@@ -45,7 +45,9 @@ def get_conjunctive_graph(request):
     graph = ConjunctiveGraph(store=store)
     rt = graph.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
-    assert len(graph) == 0, "There must be zero triples in the graph just after store (file) creation"
+    assert (
+        len(graph) == 0
+    ), "There must be zero triples in the graph just after store (file) creation"
     data = """
             PREFIX : <https://example.org/>
 
@@ -76,28 +78,36 @@ def test_open_shut(get_conjunctive_graph):
     graph2 = ConjunctiveGraph(store)
     graph2.open(path, create=False)
 
-    assert len(graph2) == 3, "After close and reopen, we should still have the 3 originally added triples"
+    assert (
+        len(graph2) == 3
+    ), "After close and reopen, we should still have the 3 originally added triples"
     graph2.close()
     graph2.store.destroy(configuration=path)
 
 
 def test_write(get_conjunctive_graph):
     graph, store, path = get_conjunctive_graph
-    assert len(graph) == 3, "There must be three triples in the graph after the first data chunk parse"
+    assert (
+        len(graph) == 3
+    ), "There must be three triples in the graph after the first data chunk parse"
     data2 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     graph.parse(data=data2, format="ttl")
-    assert len(graph) == 4, "There must be four triples in the graph after the second data chunk parse"
+    assert (
+        len(graph) == 4
+    ), "There must be four triples in the graph after the second data chunk parse"
     data3 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     graph.parse(data=data3, format="ttl")
-    assert len(graph) == 4, "There must still be four triples in the graph after the thrd data chunk parse"
+    assert (
+        len(graph) == 4
+    ), "There must still be four triples in the graph after the thrd data chunk parse"
 
 
 def test_read(get_conjunctive_graph):

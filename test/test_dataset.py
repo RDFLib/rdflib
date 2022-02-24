@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import Optional
-
 import shutil
 import tempfile
+from typing import Optional
 
 import pytest
 
-from rdflib import BNode, Literal, XSD, FOAF, URIRef, plugin
+from rdflib import FOAF, XSD, BNode, Literal, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
-
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -41,9 +39,13 @@ c2 = URIRef("urn:example:context-2")
 
 dgb = URIRef("http://rdflib/net/")
 
-timblcardn3 = open(os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")).read()
+timblcardn3 = open(
+    os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
+).read()
 
-timblcardnquads = open(os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.nquads")).read()
+timblcardnquads = open(
+    os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.nquads")
+).read()
 
 no_of_statements_in_card = 86
 no_of_unique_subjects = 20
@@ -54,13 +56,7 @@ no_of_unique_objects = 62
 pluginstores = []
 
 for s in plugin.plugins(None, plugin.Store):
-    if s.name in (
-        "default",
-        "Memory",
-        "Auditable",
-        "Concurrent",
-        "SPARQLStore"
-        ):
+    if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
     if not s.getClass().graph_aware:
@@ -133,6 +129,7 @@ def get_dataset(request):
             except:
                 pass
 
+
 def test_graph_aware(get_dataset):
 
     store, graph = get_dataset
@@ -147,7 +144,9 @@ def test_graph_aware(get_dataset):
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # added graph exists
-        assert set(x.identifier for x in graph.contexts()) == set([c1, DATASET_DEFAULT_GRAPH_ID])
+        assert set(x.identifier for x in graph.contexts()) == set(
+            [c1, DATASET_DEFAULT_GRAPH_ID]
+        )
 
     # added graph is empty
     assert len(g1) == 0
@@ -155,7 +154,9 @@ def test_graph_aware(get_dataset):
     g1.add((tarek, likes, pizza))
 
     # added graph still exists
-    assert set(x.identifier for x in graph.contexts()) == set([c1, DATASET_DEFAULT_GRAPH_ID])
+    assert set(x.identifier for x in graph.contexts()) == set(
+        [c1, DATASET_DEFAULT_GRAPH_ID]
+    )
 
     # added graph contains one triple
     assert len(g1) == 1
@@ -169,12 +170,16 @@ def test_graph_aware(get_dataset):
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # graph still exists, although empty
-        assert set(x.identifier for x in graph.contexts()) == set([c1, DATASET_DEFAULT_GRAPH_ID])
+        assert set(x.identifier for x in graph.contexts()) == set(
+            [c1, DATASET_DEFAULT_GRAPH_ID]
+        )
 
     g.remove_graph(c1)
 
     # graph is gone
-    assert set(x.identifier for x in graph.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
+    assert set(x.identifier for x in graph.contexts()) == set(
+        [DATASET_DEFAULT_GRAPH_ID]
+    )
 
 
 def test_default_graph(get_dataset):
@@ -190,14 +195,19 @@ def test_default_graph(get_dataset):
     graph.add((tarek, likes, pizza))
     assert len(graph) == 1
     # only default exists
-    assert set(x.identifier for x in graph.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
+    assert set(x.identifier for x in graph.contexts()) == set(
+        [DATASET_DEFAULT_GRAPH_ID]
+    )
 
     # removing default graph removes triples but not actual graph
     graph.remove_graph(DATASET_DEFAULT_GRAPH_ID)
 
     assert len(graph) == 0
     # default still exists
-    assert set(x.identifier for x in graph.contexts()) == set([DATASET_DEFAULT_GRAPH_ID])
+    assert set(x.identifier for x in graph.contexts()) == set(
+        [DATASET_DEFAULT_GRAPH_ID]
+    )
+
 
 def test_not_union(get_dataset):
 
@@ -213,6 +223,7 @@ def test_not_union(get_dataset):
 
     assert list(graph.objects(tarek, None)) == []
     assert list(g1.objects(tarek, None)) == [pizza]
+
 
 def test_iter(get_dataset):
 

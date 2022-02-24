@@ -72,7 +72,9 @@ def test_create(get_graph):
     assert rt == VALID_STORE, "The underlying store is corrupt"
 
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
     g.close()
     g.destroy(configuration=path)
 
@@ -83,7 +85,9 @@ def test_reuse(get_graph):
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
     g.parse(data=timblcardn3, format="n3")
     assert len(g) == 86
     g.close()
@@ -93,7 +97,9 @@ def test_reuse(get_graph):
     g = Graph(store, URIRef("http://rdflib.net"))
     g.open(path, create=False)
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
 
     assert len(g) == 86
 

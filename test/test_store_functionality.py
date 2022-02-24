@@ -137,7 +137,9 @@ def test_conjunctive_default(get_conjunctive_graph):
     # #
     # # Fuseki/TDB has a flag for specifying that the default graph
     # # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
-    assert len(cg) == 3, f"default union graph should contain three triples but contains {list(cg)}:\n"
+    assert (
+        len(cg) == 3
+    ), f"default union graph should contain three triples but contains {list(cg)}:\n"
 
     r = cg.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
     assert len(list(r)) == 2, "two people like pizza"
@@ -162,7 +164,9 @@ def test_conjunctive_default(get_conjunctive_graph):
 
 def test_update(get_conjunctive_graph):
     cg, store, path = get_conjunctive_graph
-    cg.update("INSERT DATA { GRAPH <urn:example:graph> { <urn:example:michel> <urn:example:likes> <urn:example:pizza> . } }")
+    cg.update(
+        "INSERT DATA { GRAPH <urn:example:graph> { <urn:example:michel> <urn:example:likes> <urn:example:pizza> . } }"
+    )
 
     graph = cg.get_context(graphuri)
     assert len(graph) == 1, "graph contains 1 triple"
@@ -176,7 +180,9 @@ def test_update_with_initns(get_conjunctive_graph):
     )
 
     graph = cg.get_context(graphuri)
-    assert set(graph.triples((None, None, None))) == set([(michel, likes, pizza)]), "only michel likes pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(michel, likes, pizza)]
+    ), "only michel likes pizza"
 
 
 def test_update_with_initbindings(get_conjunctive_graph):
@@ -191,13 +197,16 @@ def test_update_with_initbindings(get_conjunctive_graph):
     )
 
     graph = cg.get_context(graphuri)
-    assert set(graph.triples((None, None, None))) == set([(michel, likes, pizza)]), "only michel likes pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(michel, likes, pizza)]
+    ), "only michel likes pizza"
 
 
 def test_multiple_update_with_initbindings(get_conjunctive_graph):
     cg, store, path = get_conjunctive_graph
     cg.update(
-        "INSERT { GRAPH <urn:example:graph> { ?a ?b ?c . } } WHERE { };" "INSERT { GRAPH <urn:example:graph> { ?d ?b ?c . } } WHERE { }",
+        "INSERT { GRAPH <urn:example:graph> { ?a ?b ?c . } } WHERE { };"
+        "INSERT { GRAPH <urn:example:graph> { ?d ?b ?c . } } WHERE { }",
         initBindings={
             "a": URIRef("urn:example:michel"),
             "b": URIRef("urn:example:likes"),
@@ -207,7 +216,9 @@ def test_multiple_update_with_initbindings(get_conjunctive_graph):
     )
 
     graph = cg.get_context(graphuri)
-    assert set(graph.triples((None, None, None))) == set([(michel, likes, pizza), (bob, likes, pizza)]), "michel and bob like pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(michel, likes, pizza), (bob, likes, pizza)]
+    ), "michel and bob like pizza"
 
 
 def test_named_graph_update(get_conjunctive_graph):
@@ -215,14 +226,18 @@ def test_named_graph_update(get_conjunctive_graph):
     graph = cg.get_context(graphuri)
     r1 = "INSERT DATA { <urn:example:michel> <urn:example:likes> <urn:example:pizza> }"
     graph.update(r1)
-    assert set(graph.triples((None, None, None))) == set([(michel, likes, pizza)]), "only michel likes pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(michel, likes, pizza)]
+    ), "only michel likes pizza"
 
     r2 = (
         "DELETE { <urn:example:michel> <urn:example:likes> <urn:example:pizza> } "
         + "INSERT { <urn:example:bob> <urn:example:likes> <urn:example:pizza> } WHERE {}"
     )
     graph.update(r2)
-    assert set(graph.triples((None, None, None))) == set([(bob, likes, pizza)]), "only bob likes pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(bob, likes, pizza)]
+    ), "only bob likes pizza"
     says = URIRef("urn:example:says")
 
     # Strings with unbalanced curly braces
@@ -256,7 +271,12 @@ def test_named_graph_update(get_conjunctive_graph):
     r4strings.append(r"""'''9: adfk } <foo> #éï \\'''""")
     r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
-    r4 = "\n".join(["INSERT DATA { <urn:example:michel> <urn:example:says> %s } ;" % s for s in r4strings])
+    r4 = "\n".join(
+        [
+            "INSERT DATA { <urn:example:michel> <urn:example:says> %s } ;" % s
+            for s in r4strings
+        ]
+    )
     graph.update(r4)
     values = set()
     for v in graph.objects(michel, says):
@@ -305,7 +325,9 @@ def test_named_graph_update_with_initbindings(get_conjunctive_graph):
     graph = cg.get_context(graphuri)
     r = "INSERT { ?a ?b ?c } WHERE {}"
     graph.update(r, initBindings={"a": michel, "b": likes, "c": pizza})
-    assert set(graph.triples((None, None, None))) == set([(michel, likes, pizza)]), "only michel likes pizza"
+    assert set(graph.triples((None, None, None))) == set(
+        [(michel, likes, pizza)]
+    ), "only michel likes pizza"
 
 
 def test_empty_literal(get_conjunctive_graph):
