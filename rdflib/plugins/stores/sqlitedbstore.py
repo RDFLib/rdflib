@@ -4,21 +4,34 @@ An adaptation of the BerkeleyDB Store's key-value approach to use the
 Python shelve module as a back-end.
 """
 
+import collections
 import os
 import shutil
 import sqlite3
-import collections
-from operator import itemgetter
-from time import sleep, time
-from rdflib.paths import Path
 from functools import lru_cache
+from operator import itemgetter
 from threading import Thread
+from time import sleep, time
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    ItemsView,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 from urllib.request import pathname2url
-from typing import Callable, Generator, Tuple, Union, Optional, List, Any, Dict, cast, Iterable, ItemsView, Iterator
-
-from rdflib.graph import Graph, DATASET_DEFAULT_GRAPH_ID
+from rdflib import logger
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+from rdflib.paths import Path
 from rdflib.store import NO_STORE, VALID_STORE, Store
-from rdflib.term import BNode, IdentifiedNode, Node, Literal, Variable, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef, Variable
 
 __all__ = ["SQLiteDBStore"]
 
@@ -93,9 +106,10 @@ Issues:
 
 error = sqlite3.DatabaseError
 
+
 class ListRepr:
     def __repr__(self) -> str:
-        return repr(list(self))  # type: ignore[call-overload]
+        return repr(list(self))  # type: ignore[call-overload]  # pragma: no cover
 
 
 class SQLhashKeysView(collections.abc.KeysView, ListRepr):  # type: ignore[type-arg]
@@ -117,7 +131,7 @@ class SQLhashItemsView(collections.abc.ValuesView, ListRepr):  # type: ignore[ty
 
 
 class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
-    def __init__(self, filename:str=":memory:", flags:str="r", mode:Any=None):
+    def __init__(self, filename: str = ":memory:", flags: str = "r", mode: Any = None):
         # XXX add flag/mode handling
         #   c -- create if it doesn't exist
         #   n -- new empty
@@ -136,8 +150,8 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
                 self.conn.commit()
                 self.conn.close()
                 self.conn = None  # type: ignore[assignment]
-        except Exception:
-            pass
+        except Exception:  # pragma: no cover
+            pass  # pragma: no cover
 
     def __del__(self) -> None:
         self.close()
@@ -170,19 +184,19 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
         if self.conn is not None:
             self.conn.commit()
 
-    def __getitem__(self, key:object) -> Any:
+    def __getitem__(self, key: object) -> Any:
         GET_ITEM = "SELECT value FROM shelf WHERE key = ?"
         item = self.conn.execute(GET_ITEM, (key,)).fetchone()
         if item is None:
             raise KeyError(key)
         return item[0]
 
-    def __setitem__(self, key:object, value:object) -> None:
+    def __setitem__(self, key: object, value: object) -> None:
         ADD_ITEM = "REPLACE INTO shelf (key, value) VALUES (?,?)"
         self.conn.execute(ADD_ITEM, (key, value))
         # self.conn.commit()
 
-    def __delitem__(self, key:object) -> None:
+    def __delitem__(self, key: object) -> None:
         if key not in self:
             raise KeyError(key)
         DEL_ITEM = "DELETE FROM shelf WHERE key = ?"
@@ -191,7 +205,7 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
     def __iter__(self) -> Iterator[object]:
         return iter(self.keys())
 
-    def __contains__(self, key:object) -> bool:
+    def __contains__(self, key: object) -> bool:
         HAS_ITEM = "SELECT 1 FROM shelf WHERE key = ?"
         return self.conn.execute(HAS_ITEM, (key,)).fetchone() is not None
 
@@ -202,12 +216,6 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
     def __bool__(self) -> bool:
         GET_BOOL = "SELECT MAX(ROWID) FROM shelf"  # returns None if count is zero
         return self.conn.execute(GET_BOOL).fetchone()[0] is not None
-
-
-def open(file=None, *args):  # type: ignore[no-untyped-def]
-    if file is not None:
-        return SQLhash(file)
-    return SQLhash()
 
 
 """
@@ -251,7 +259,9 @@ def from_key_func(i: Any) -> Callable[[Any], Tuple[Any, Any, Any, Any]]:
     return from_key
 
 
-def results_from_key_func(i: int, from_string: Callable[[str], Any]) -> Callable[..., Any]:
+def results_from_key_func(
+    i: int, from_string: Callable[[str], Any]
+) -> Callable[..., Any]:
     def from_key(
         key: Any, subject: Any, predicate: Any, object: Any, contexts_value: Any
     ) -> Tuple[Tuple[Any, Any, Any], Generator["Graph", None, None]]:
@@ -277,6 +287,7 @@ def results_from_key_func(i: int, from_string: Callable[[str], Any]) -> Callable
         )
 
     return from_key
+
 
 class SQLiteDBStore(Store):
     """
@@ -304,18 +315,16 @@ class SQLiteDBStore(Store):
     def __init__(
         self,
         configuration: Optional[Union[str, "os.PathLike[Any]"]] = None,
-        identifier: Optional[URIRef] = None
+        identifier: Optional[URIRef] = None,
     ) -> None:
         self.__open = False
-        self._terms = 0
         self.__identifier = identifier
         super(SQLiteDBStore, self).__init__(configuration)  # type: ignore
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
         self.dbdir = configuration
         self.__needs_sync = False
-        self.__indices: List[Any] = [None] * 3
-        self.__indices_info: List[Any] = [None] * 3
+        self._terms = 0
         self.__sync_thread: Thread
 
     def is_open(self) -> bool:
@@ -380,7 +389,9 @@ class SQLiteDBStore(Store):
         if self.should_create is True:
             if os.path.exists(dbpathname):
                 if os.listdir(dbpathname) != []:
-                    raise Exception(f"Database {dbpathname} aready exists, please move or delete it.")
+                    raise Exception(
+                        f"Database {dbpathname} aready exists, please move or delete it."
+                    )
                 else:
                     self.dbdir = dbpathname  # pragma: no cover
             else:
@@ -393,6 +404,8 @@ class SQLiteDBStore(Store):
                 self.dbdir = dbpathname
 
         dbopenflag = "c" if create is True else "w"
+        self.__indices: List[Any] = [None] * 3
+        self.__indices_info: List[Any] = [None] * 3
         for i in range(0, 3):
             index_name = to_key_func(i)(
                 (
@@ -424,8 +437,12 @@ class SQLiteDBStore(Store):
             results.sort()
             score, start, _len = results[-1]  # type: ignore  # Incompatible types in assignment (expression has type "Tuple[int, int]", variable has type "int")
 
-            def get_prefix_func(start: Any, end: Any) -> Callable[[Tuple[Any, Any, Any], Any], Generator[Any, Any, Any]]:
-                def get_prefix(triple: Tuple[Any, Any, Any], context: Any) -> Generator[str, None, None]:
+            def get_prefix_func(
+                start: Any, end: Any
+            ) -> Callable[[Tuple[Any, Any, Any], Any], Generator[Any, Any, Any]]:
+                def get_prefix(
+                    triple: Tuple[Any, Any, Any], context: Any
+                ) -> Generator[str, None, None]:
                     if context is None:
                         yield ""
                     else:
@@ -454,7 +471,7 @@ class SQLiteDBStore(Store):
 
         try:
             self._terms = int(self.__k2i["__terms__"])
-            assert isinstance(self._terms, int)
+            assert isinstance(self._terms, int)  # pragma: no cover
         except KeyError:
             pass  # new store, no problem
 
@@ -517,7 +534,9 @@ class SQLiteDBStore(Store):
         index number (as a string) from rdflib term
         if term is not already in the database, add it
         """
-        assert isinstance(term, (BNode, Graph, Literal, Path, URIRef, Variable, type(None)))
+        assert isinstance(
+            term, (BNode, Graph, Literal, Path, URIRef, Variable, type(None))
+        )
         k = self._dumps(term)
         try:
             i = self.__k2i[k]
@@ -534,7 +553,9 @@ class SQLiteDBStore(Store):
 
         return i  # type: ignore
 
-    def add(self, triple: Tuple[Any, Any, Any], context: Any, quoted: bool = False) -> None:
+    def add(
+        self, triple: Tuple[Any, Any, Any], context: Any, quoted: bool = False
+    ) -> None:
         """
         Add a triple to the store of triples.
         """
@@ -635,7 +656,12 @@ class SQLiteDBStore(Store):
             if context == self:
                 context = None
 
-        if subject is not None and predicate is not None and object is not None and context is not None:
+        if (
+            subject is not None
+            and predicate is not None
+            and object is not None
+            and context is not None
+        ):
             s = _to_string(subject)
             p = _to_string(predicate)
             o = _to_string(object)
@@ -648,7 +674,9 @@ class SQLiteDBStore(Store):
                 self.__remove((s, p, o), c)
                 self.__needs_sync = True
         else:
-            index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
+            index, prefix, from_key, results_from_key = self.__lookup(
+                (subject, predicate, object), context
+            )
 
             for key in index.keys():
                 if key.startswith(prefix):
@@ -669,7 +697,12 @@ class SQLiteDBStore(Store):
                         self.__remove((s, p, o), c)
 
             if context is not None:
-                if subject is None and predicate is None and object is None and _to_string(context) in self.__contexts.keys():
+                if (
+                    subject is None
+                    and predicate is None
+                    and object is None
+                    and _to_string(context) in self.__contexts.keys()
+                ):
                     # TODO: also if context becomes empty and not just on
                     try:
                         del self.__contexts[_to_string(context)]
@@ -678,7 +711,9 @@ class SQLiteDBStore(Store):
 
             self.__needs_sync = True
 
-    def triples(self, spo: Tuple[Any, Any, Any], context: Optional[Any] = None) -> Generator[Callable[..., str], None, None]:
+    def triples(
+        self, spo: Tuple[Any, Any, Any], context: Optional[Any] = None
+    ) -> Generator[Callable[..., str], None, None]:
         assert self.__open, "The Store must be open."
         """A generator over all the triples matching"""
         assert self.__open, "The Store must be open."
@@ -688,7 +723,9 @@ class SQLiteDBStore(Store):
             if context == self:
                 context = None  # pragma: no cover
 
-        index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
+        index, prefix, from_key, results_from_key = self.__lookup(
+            (subject, predicate, object), context
+        )
 
         for key in index.keys():
             if key.startswith(prefix):
@@ -734,7 +771,9 @@ class SQLiteDBStore(Store):
         for k in self.__namespace.keys():
             yield k, URIRef(self.__namespace[k])
 
-    def contexts(self, triple: Optional[Tuple[Node, Node, Node]] = None) -> Generator[str, None, None]:
+    def contexts(
+        self, triple: Optional[Tuple[Node, Node, Node]] = None
+    ) -> Generator[str, None, None]:
         assert self.__open, "The Store must be open."
 
         _from_string = self._from_string
@@ -757,7 +796,9 @@ class SQLiteDBStore(Store):
                             yield _from_string(c)
             else:
                 for k in self.__contexts:
-                    index, prefix, from_key, results_from_key = self.__lookup((subj, pred, obj), _from_string(k))
+                    index, prefix, from_key, results_from_key = self.__lookup(
+                        (subj, pred, obj), _from_string(k)
+                    )
                     for key in index.keys():
                         if key.startswith(prefix):
                             yield _from_string(k)
@@ -766,18 +807,14 @@ class SQLiteDBStore(Store):
             for k in self.__contexts.keys():
                 yield _from_string(k)
 
-    def add_graph(self, graph: Union[IdentifiedNode, Literal, Variable, str]) -> None:
+    def add_graph(self, graph: IdentifiedNode) -> None:
         assert self.__open, "The Store must be open."
-        # TODO: uncomment when Dataset rework merged
-        # if isinstance(graph, (Graph, type(None))):
-        #     raise TypeError(f"""graph identifier cannot be {type(graph)}""")
         self.__contexts[self._to_string(graph)] = b""
 
-    def remove_graph(self, graph: Union[IdentifiedNode, Literal, Variable, str]) -> None:
+    def remove_graph(
+        self, graph: IdentifiedNode
+    ) -> None:
         assert self.__open, "The Store must be open."
-        # TODO: uncomment when Dataset rework merged
-        # if isinstance(graph, (Graph, type(None))):
-        #     raise TypeError(f"""graph cannot be {type(graph)}""")
         self.remove((None, None, None), graph)
 
     def __len__(self, context: Any = None) -> int:

@@ -1,4 +1,5 @@
 import pytest
+
 import rdflib
 
 
@@ -6,6 +7,7 @@ import rdflib
 def get_graph(request):
     g = rdflib.Graph(request.param)
     yield g
+
 
 def test_memory_store(get_graph):
     g = get_graph

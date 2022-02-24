@@ -7,15 +7,14 @@ import pytest
 
 from rdflib import URIRef, plugin
 from rdflib.graph import ConjunctiveGraph, Graph, Literal
-from rdflib.store import VALID_STORE
 from rdflib.plugins.stores.sqlitedbstore import (
+    ListRepr,
     SQLhash,
     SQLhashItemsView,
-    SQLhashValuesView,
     SQLhashKeysView,
-    open as sqlhashopen,
-    ListRepr,
+    SQLhashValuesView,
 )
+from rdflib.store import VALID_STORE
 
 timblcardn3 = open(
     os.path.join(
@@ -80,7 +79,9 @@ def test_create(get_graph):
     assert rt == VALID_STORE, "The underlying store is corrupt"
 
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
     g.close()
     g.destroy(configuration=path)
 
@@ -91,7 +92,9 @@ def test_reuse(get_graph):
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
     g.parse(data=timblcardn3, format="n3")
     assert len(g) == 86
     g.close()
@@ -101,7 +104,9 @@ def test_reuse(get_graph):
     g = Graph(store, URIRef("http://rdflib.net"))
     g.open(path, create=False)
     assert g.identifier == URIRef('http://rdflib.net')
-    assert str(g).startswith(f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}")
+    assert str(g).startswith(
+        f"<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '{store}"
+    )
 
     assert len(g) == 86
 
@@ -258,12 +263,12 @@ def test_graph_basic(get_graph):
 
 def test_store_graph_readable_index(get_graph):
     storename, path = get_graph
-    if storename == "SQLiteDB":
-        from rdflib.plugins.stores.sqlitedb import readable_index
+    if storename == "SQLiteDBStore":
+        from rdflib.plugins.stores.sqlitedbstore import readable_index
     elif storename == "BerkeleyDB":
         from rdflib.plugins.stores.berkeleydb import readable_index
     else:
-        pytest.skip("Store does not have readable_index")
+        pytest.skip(f"Store {storename} does not have readable_index")
 
     assert readable_index(1) == "s,?,?"
     assert readable_index(11) == "s,p,?"
@@ -321,9 +326,9 @@ def test_store_basic(get_graph):
 
     assert len(list(store.contexts())) == 0
 
-    store.add_graph(subgraph1)
+    store.add_graph(context1)
     assert len(list(store.contexts())) == 1
-    store.add_graph(subgraph2)
+    store.add_graph(context2)
     assert len(list(store.contexts())) == 2
 
     assert store.__len__(context=context1) == 0
@@ -351,7 +356,7 @@ def test_store_basic(get_graph):
 
     store.remove_graph(context2)
 
-    assert len(list(store.contexts())) == 2
+    assert len(list(store.contexts())) == 1
 
     store.remove_graph(subgraph1)
 
@@ -371,11 +376,15 @@ def test_store_basic(get_graph):
         True,
     )
 
-    assert len(list(store.contexts())) == 2
+    assert len(list(store.contexts())) == 3
+
+    assert len(list(store.contexts(triple))) == 1
+
+    assert len(list(store.contexts((None, URIRef("urn:example:likes"), None)))) == 2
 
     store.remove((None, None, None), context1)
 
-    store.remove_graph(store)
+    store.remove_graph(store.identifier)
 
     with pytest.raises(Exception):
         store._from_string("99")
@@ -389,6 +398,7 @@ def test_store_basic(get_graph):
 
     store.remove((None, None, None), URIRef("urn:example:context-3"))
 
+    store.sync()
     store.close()
     store.sync()
     store.destroy(configuration=path)

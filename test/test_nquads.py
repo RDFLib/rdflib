@@ -49,9 +49,13 @@ def get_graph(request):
         rt = graph.open(configuration=path, create=True)
         assert rt == VALID_STORE, "The underlying store is corrupt"
 
-    assert len(graph) == 0, "There must be zero triples in the graph just after store (file) creation"
+    assert (
+        len(graph) == 0
+    ), "There must be zero triples in the graph just after store (file) creation"
 
-    nq_path = os.path.relpath(os.path.join(TEST_DIR, "nquads.rdflib/example.nquads"), os.curdir)
+    nq_path = os.path.relpath(
+        os.path.join(TEST_DIR, "nquads.rdflib/example.nquads"), os.curdir
+    )
     with open(nq_path, "rb") as data:
         graph.parse(data, format="nquads")
 
@@ -94,7 +98,9 @@ def test_03_get_value(get_graph):
 
 def test_context_is_optional(get_graph):
     graph = get_graph
-    nq_path = os.path.relpath(os.path.join(TEST_DIR, "nquads.rdflib/test6.nq"), os.curdir)
+    nq_path = os.path.relpath(
+        os.path.join(TEST_DIR, "nquads.rdflib/test6.nq"), os.curdir
+    )
     with open(nq_path, "rb") as data:
         graph.parse(data, format="nquads")
     assert len(graph) > 0
@@ -119,7 +125,9 @@ def test_serialize():
     g2.parse(data=s, format="nquads")
 
     assert len(g) == len(g2)
-    assert sorted(x.identifier for x in g.contexts()) == sorted(x.identifier for x in g2.contexts())
+    assert sorted(x.identifier for x in g.contexts()) == sorted(
+        x.identifier for x in g2.contexts()
+    )
 
 
 @pytest.fixture

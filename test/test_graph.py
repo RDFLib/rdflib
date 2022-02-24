@@ -12,14 +12,8 @@ from rdflib import Graph, URIRef, plugin
 from rdflib.exceptions import ParserError
 from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
-from rdflib.store import VALID_STORE
-
-from pathlib import Path
-from rdflib.store import Store
+from rdflib.store import VALID_STORE, Store
 from rdflib.term import BNode
-
-from test.testutils import GraphHelper
-
 
 michel = URIRef("urn:x-rdflib:michel")
 tarek = URIRef("urn:x-rdflib:tarek")
@@ -118,7 +112,9 @@ def get_graph(request):
         rt = graph.open(configuration=path, create=True)
         assert rt == VALID_STORE, "The underlying store is corrupt"
 
-    assert len(graph) == 0, "There must be zero triples in the graph just after store (file) creation"
+    assert (
+        len(graph) == 0
+    ), "There must be zero triples in the graph just after store (file) creation"
 
     yield graph
 
@@ -329,7 +325,9 @@ def test_guess_format_for_parse(get_graph):
         graph.parse(data="rubbish")
 
     # Turtle - default
-    graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+    graph.parse(
+        data="<http://example.com/a> <http://example.com/a> <http://example.com/a> ."
+    )
 
     # Turtle - format given
     graph.parse(

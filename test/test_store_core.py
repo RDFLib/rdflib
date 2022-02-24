@@ -5,9 +5,9 @@ import tempfile
 
 import pytest
 
+from rdflib import RDFS, XSD, Literal, URIRef, plugin
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib import Literal, URIRef, RDFS, XSD, plugin
-from rdflib.store import VALID_STORE, NO_STORE
+from rdflib.store import NO_STORE, VALID_STORE
 
 logging.basicConfig(level=logging.ERROR, format="%(message)s")
 logger = logging.getLogger(__name__)
@@ -196,21 +196,27 @@ def test_graph_isopen_db(get_graph):
 
 def test_graph_write(get_graph):
     g, store, path = get_graph
-    assert len(g) == 3, "There must be three triples in the graph after the first data chunk parse"
+    assert (
+        len(g) == 3
+    ), "There must be three triples in the graph after the first data chunk parse"
     data2 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data2, format="ttl")
-    assert len(g) == 4, "There must be four triples in the graph after the second data chunk parse"
+    assert (
+        len(g) == 4
+    ), "There must be four triples in the graph after the second data chunk parse"
     data3 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data3, format="ttl")
-    assert len(g) == 4, "There must still be four triples in the graph after the thrd data chunk parse"
+    assert (
+        len(g) == 4
+    ), "There must still be four triples in the graph after the thrd data chunk parse"
 
 
 def test_graph_read(get_graph):
@@ -262,7 +268,9 @@ def test_graph_open_shut(get_graph):
     # reopen the graph
     g = ConjunctiveGraph(store)
     g.open(path, create=False)
-    assert len(g) == 3, "After close and reopen, we should still have the 3 originally added triples"
+    assert (
+        len(g) == 3
+    ), "After close and reopen, we should still have the 3 originally added triples"
 
 
 def test_conjunctive_graph_namespaces(get_conjunctive_graph):
@@ -346,30 +354,41 @@ def test_conjunctive_graph_serialize(get_conjunctive_graph):
     s = graph.serialize(format="nquads")
     assert len([x for x in s.split("\n") if x.strip()]) == 5
 
-    g2 = ConjunctiveGraph()
+    g2 = ConjunctiveGraph(store=store)
+    g2.open(tempfile.mktemp(prefix="sqlitelsmstoretest"), create=True)
     g2.parse(data=s, format="nquads")
 
     assert len(graph) == len(g2)
     # default graphs are unique to each ConjunctiveGraph, so exclude
-    assert sorted(x.identifier for x in graph.contexts())[1:] == sorted(x.identifier for x in g2.contexts())[1:]
+    assert (
+        sorted(x.identifier for x in graph.contexts())[1:]
+        == sorted(x.identifier for x in g2.contexts())[1:]
+    )
+
 
 def test_conjunctive_graph_write(get_conjunctive_graph):
     g, store, path = get_conjunctive_graph
-    assert len(g) == 3, "There must be three triples in the graph after the first data chunk parse"
+    assert (
+        len(g) == 3
+    ), "There must be three triples in the graph after the first data chunk parse"
     data2 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data2, format="ttl")
-    assert len(g) == 4, "There must be four triples in the graph after the second data chunk parse"
+    assert (
+        len(g) == 4
+    ), "There must be four triples in the graph after the second data chunk parse"
     data3 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
     g.parse(data=data3, format="ttl")
-    assert len(g) == 4, "There must still be four triples in the graph after the thrd data chunk parse"
+    assert (
+        len(g) == 4
+    ), "There must still be four triples in the graph after the thrd data chunk parse"
 
 
 def test_conjunctive_graph_read(get_conjunctive_graph):
@@ -454,6 +473,6 @@ def test_conjunctive_graph_open_shut(get_conjunctive_graph):
     # reopen the graph
     g = ConjunctiveGraph(store)
     g.open(path, create=False)
-    assert len(g) == 3, "After close and reopen, we should still have the 3 originally added triples"
-
-
+    assert (
+        len(g) == 3
+    ), "After close and reopen, we should still have the 3 originally added triples"
