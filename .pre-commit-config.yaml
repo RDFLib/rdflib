@@ -26,7 +26,7 @@ repos:
       entry: black
       language: python
       # WARNING: version should be the same as in `pyproject.toml`.
-      additional_dependencies: [black==22.1.0]
+      additional_dependencies: [black==21.9b0]
       # This is here to defer file selection to black which will do it based on
       # black config.
       pass_filenames: false
