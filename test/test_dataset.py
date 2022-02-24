@@ -27,8 +27,6 @@ from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 HOST = "http://localhost:3030"
 DB = "/db/"
 
-pluginstores = []
-
 michel = URIRef("urn:example:michel")
 tarek = URIRef("urn:example:tarek")
 bob = URIRef("urn:example:bob")
