@@ -27,6 +27,7 @@ from typing import (
     cast,
 )
 from urllib.request import pathname2url
+
 from rdflib import logger
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
 from rdflib.paths import Path
@@ -525,8 +526,10 @@ class SQLiteDBStore(Store):
 
         path = configuration or self.dbdir
         if os.path.exists(path):  # type: ignore  # Argument 1 to "exists" has incompatible type "Union[str, PathLike[Any], None]"; expected "Union[Union[str, bytes, PathLike[str], PathLike[bytes]], int]"
-
-            shutil.rmtree(path)  # type: ignore  # Argument 1 to "rmtree" has incompatible type "Union[str, PathLike[Any], None]"; expected "Union[bytes, Union[str, PathLike[str]]]"
+            try:
+                shutil.rmtree(path)  # type: ignore  # Argument 1 to "rmtree" has incompatible type "Union[str, PathLike[Any], None]"; expected "Union[bytes, Union[str, PathLike[str]]]"
+            except Exception as e:
+                logger.warn(f"Failed to destroy datasbse at {path}: {e}")
 
     @lru_cache(maxsize=5000)
     def _to_string(self, term: Union[str, Graph, Literal, URIRef, BNode]) -> str:
