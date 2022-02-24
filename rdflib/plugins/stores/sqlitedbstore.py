@@ -112,25 +112,25 @@ class ListRepr:
         return repr(list(self))  # type: ignore[call-overload]  # pragma: no cover
 
 
-class SQLhashKeysView(collections.abc.KeysView, ListRepr):  # type: ignore[type-arg]
-    def __iter__(self):  # type: ignore[no-untyped-def]
+class SQLhashKeysView(collections.abc.KeysView, ListRepr):
+    def __iter__(self):
         GET_KEYS = "SELECT key FROM shelf ORDER BY ROWID"
-        return map(itemgetter(0), self._mapping.conn.cursor().execute(GET_KEYS))  # type: ignore[attr-defined]
+        return map(itemgetter(0), self._mapping.conn.cursor().execute(GET_KEYS))
 
 
-class SQLhashValuesView(collections.abc.ValuesView, ListRepr):  # type: ignore[type-arg]
+class SQLhashValuesView(collections.abc.ValuesView, ListRepr):
     def __iter__(self) -> Iterator[object]:
         GET_VALUES = "SELECT value FROM shelf ORDER BY ROWID"
         return map(itemgetter(0), self._mapping.conn.cursor().execute(GET_VALUES))  # type: ignore[attr-defined]
 
 
-class SQLhashItemsView(collections.abc.ValuesView, ListRepr):  # type: ignore[type-arg]
+class SQLhashItemsView(collections.abc.ValuesView, ListRepr):
     def __iter__(self) -> Iterator[Any]:
         GET_ITEMS = "SELECT key, value FROM shelf ORDER BY ROWID"
         return iter(self._mapping.conn.cursor().execute(GET_ITEMS))  # type: ignore[attr-defined]
 
 
-class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
+class SQLhash(collections.abc.MutableMapping):
     def __init__(self, filename: str = ":memory:", flags: str = "r", mode: Any = None):
         # XXX add flag/mode handling
         #   c -- create if it doesn't exist
@@ -166,7 +166,7 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
         return SQLhashItemsView(self)
         # self.conn.commit()
 
-    def update(self, items=(), **kwds) -> None:  # type: ignore[no-untyped-def, override]
+    def update(self, items=(), **kwds) -> None:  # type: ignore[override]
         if isinstance(items, collections.abc.Mapping):
             items = items.items()
         UPDATE_ITEMS = "REPLACE INTO shelf (key, value) VALUES (?, ?)"
@@ -319,7 +319,7 @@ class SQLiteDBStore(Store):
     ) -> None:
         self.__open = False
         self.__identifier = identifier
-        super(SQLiteDBStore, self).__init__(configuration)  # type: ignore
+        super(SQLiteDBStore, self).__init__(configuration)
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
         self.dbdir = configuration
@@ -373,7 +373,7 @@ class SQLiteDBStore(Store):
         except KeyError:
             k = None
         if k is not None:
-            return self._loads(k)  # type: ignore # Returning Any from function declared to return "URIRef"
+            return self._loads(k)
         else:
             raise Exception(f"Key for {i} is None")  # pragma: no cover
 
@@ -551,7 +551,7 @@ class SQLiteDBStore(Store):
             self.__k2i[k] = i
             self.__k2i[b"__terms__"] = str(self._terms)
 
-        return i  # type: ignore
+        return i
 
     def add(
         self, triple: Tuple[Any, Any, Any], context: Any, quoted: bool = False
@@ -763,7 +763,7 @@ class SQLiteDBStore(Store):
         except KeyError:
             prefix = None
         if prefix is not None:
-            return prefix  # type: ignore
+            return prefix
         return None
 
     def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
@@ -795,7 +795,7 @@ class SQLiteDBStore(Store):
                         if c:
                             yield _from_string(c)
             else:
-                for k in self.__contexts:
+                for k in self.__contexts:  # type: ignore[unreachable]
                     index, prefix, from_key, results_from_key = self.__lookup(
                         (subj, pred, obj), _from_string(k)
                     )
