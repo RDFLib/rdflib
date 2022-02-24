@@ -772,7 +772,7 @@ class SQLiteDBStore(Store):
             yield k, URIRef(self.__namespace[k])
 
     def contexts(
-        self, triple: Optional[Tuple[Node, Node, Node]] = None
+        self, triple: Optional[Tuple[Union[Node, None], Union[Node, None], Union[Node, None]]] = None
     ) -> Generator[str, None, None]:
         assert self.__open, "The Store must be open."
 
@@ -795,7 +795,7 @@ class SQLiteDBStore(Store):
                         if c:
                             yield _from_string(c)
             else:
-                for k in self.__contexts:  # type: ignore[unreachable]
+                for k in self.__contexts:
                     index, prefix, from_key, results_from_key = self.__lookup(
                         (subj, pred, obj), _from_string(k)
                     )
