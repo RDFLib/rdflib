@@ -775,7 +775,10 @@ class SQLiteDBStore(Store):
             yield k, URIRef(self.__namespace[k])
 
     def contexts(
-        self, triple: Optional[Tuple[Union[Node, None], Union[Node, None], Union[Node, None]]] = None
+        self,
+        triple: Optional[
+            Tuple[Union[Node, None], Union[Node, None], Union[Node, None]]
+        ] = None,
     ) -> Generator[str, None, None]:
         assert self.__open, "The Store must be open."
 
@@ -814,9 +817,7 @@ class SQLiteDBStore(Store):
         assert self.__open, "The Store must be open."
         self.__contexts[self._to_string(graph)] = b""
 
-    def remove_graph(
-        self, graph: IdentifiedNode
-    ) -> None:
+    def remove_graph(self, graph: IdentifiedNode) -> None:
         assert self.__open, "The Store must be open."
         self.remove((None, None, None), graph)
 
