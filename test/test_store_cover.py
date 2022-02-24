@@ -63,10 +63,7 @@ for s in plugin.plugins(None, plugin.Store):
 )
 def get_graph(request):
     store = request.param
-    if store in ["SQLiteLSM", "LevelDB"]:
-        path = os.path.join(tempfile.gettempdir(), f"test_{store.lower()}")
-    else:
-        path = tempfile.mktemp()
+    path = tempfile.mktemp()
     try:
         shutil.rmtree(path)
     except Exception:

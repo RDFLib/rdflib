@@ -49,10 +49,7 @@ context2 = URIRef("urn:example:graph2")
 def get_graph(request):
     store = request.param
 
-    if store in ["SQLiteLSM", "LevelDB"]:
-        path = os.path.join(tempfile.gettempdir(), f"test_{store.lower()}")
-    else:
-        path = tempfile.mktemp()
+    path = tempfile.mktemp()
     try:
         shutil.rmtree(path)
     except Exception:
@@ -93,10 +90,7 @@ def get_graph(request):
 def get_conjunctive_graph(request):
     store = request.param
 
-    if store in ["SQLiteLSM", "LevelDB"]:
-        path = os.path.join(tempfile.gettempdir(), f"test_{store.lower()}")
-    else:
-        path = tempfile.mktemp()
+    path = tempfile.mktemp()
     try:
         shutil.rmtree(path)
     except Exception:
