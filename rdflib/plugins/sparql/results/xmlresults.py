@@ -61,11 +61,19 @@ class XMLResult(Result):
             for result in results:  # type: ignore[union-attr]
                 r = {}
                 for binding in result:
-                    r[Variable(binding.get("name"))] = parseTerm(binding[0])
+                    # type error: error: Argument 1 to "Variable" has incompatible type "Union[str, None, Any]"; expected "str"
+                    # NOTE on type error: Element.get() can return None, and
+                    # this will invariably fail if passed into Variable
+                    # constructor as value
+                    r[Variable(binding.get("name"))] = parseTerm(binding[0])  # type: ignore[arg-type] # FIXME
                 self.bindings.append(r)
 
             self.vars = [
-                Variable(x.get("name"))
+                # type error: Argument 1 to "Variable" has incompatible type "Optional[str]"; expected "str"
+                # NOTE on type error: Element.get() can return None, and this
+                # will invariably fail if passed into Variable constructor as
+                # value
+                Variable(x.get("name"))  # type: ignore[arg-type] # FIXME
                 for x in tree.findall(
                     "./%shead/%svariable" % (RESULTS_NS_ET, RESULTS_NS_ET)
                 )

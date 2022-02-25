@@ -105,14 +105,19 @@ class HextuplesSerializer(Serializer):
             else:
                 language = ""
 
-            return json.dumps([
-                self._iri_or_bn(triple[0]),
-                triple[1],
-                value,
-                datatype,
-                language,
-                self._context(context)
-            ]) + "\n"
+            return (
+                json.dumps(
+                    [
+                        self._iri_or_bn(triple[0]),
+                        triple[1],
+                        value,
+                        datatype,
+                        language,
+                        self._context(context),
+                    ]
+                )
+                + "\n"
+            )
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None
 

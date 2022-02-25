@@ -319,6 +319,10 @@ class Graph(Node):
     context, such as true merging/demerging of sub-graphs and
     provenance.
 
+    Even if used with a context-aware store, Graph will only expose the quads which
+    belong to the default graph. To access the rest of the data, `ConjunctiveGraph` or
+    `Dataset` classes can be used instead.
+
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for its
     identifier.
@@ -352,29 +356,26 @@ class Graph(Node):
         self.formula_aware = False
         self.default_union = False
 
-    def __get_store(self):
+    @property
+    def store(self):
         return self.__store
 
-    store = property(__get_store)  # read-only attr
-
-    def __get_identifier(self):
+    @property
+    def identifier(self):
         return self.__identifier
 
-    identifier = property(__get_identifier)  # read-only attr
-
-    def _get_namespace_manager(self):
+    @property
+    def namespace_manager(self):
+        """
+        this graph's namespace-manager
+        """
         if self.__namespace_manager is None:
             self.__namespace_manager = NamespaceManager(self, self.bind_namespaces)
         return self.__namespace_manager
 
-    def _set_namespace_manager(self, nm):
+    @namespace_manager.setter
+    def namespace_manager(self, nm):
         self.__namespace_manager = nm
-
-    namespace_manager = property(
-        _get_namespace_manager,
-        _set_namespace_manager,
-        doc="this graph's namespace-manager",
-    )
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
@@ -1225,7 +1226,7 @@ class Graph(Node):
         parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
-            parser.parse(source, self, **args)  # type: ignore[call-arg]
+            parser.parse(source, self, **args)
         except SyntaxError as se:
             if could_not_guess_format:
                 raise ParserError(
@@ -1626,7 +1627,12 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
-    def add(self, triple_or_quad: Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]) -> "ConjunctiveGraph":  # type: ignore[override]
+    def add(
+        self,
+        triple_or_quad: Union[
+            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
+        ],
+    ) -> "ConjunctiveGraph":
         """
         Add a triple or quad to the store.
 

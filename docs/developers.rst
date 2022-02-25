@@ -108,6 +108,46 @@ Check types with `mypy <http://mypy-lang.org/>`_:
 
     python -m mypy --show-error-context --show-error-codes rdflib
 
+pre-commit and pre-commit ci
+----------------------------
+
+We have `pre-commit <https://pre-commit.com/>`_ configured with `black
+<https://github.com/psf/black>`_ for formatting code.
+
+Some useful commands for using pre-commit:
+
+.. code-block:: bash
+
+    # Install pre-commit.
+    pip install --user --upgrade pre-commit
+
+    # Install pre-commit hooks, this will run pre-commit
+    # every time you make a git commit.
+    pre-commit install
+
+    # Run pre-commit on changed files.
+    pre-commit run
+
+    # Run pre-commit on all files.
+    pre-commit run --all-files
+
+There is also two tox environments for pre-commit:
+
+.. code-block:: bash
+
+    # run pre-commit on changed files.
+    tox -e precommit
+
+    # run pre-commit on all files.
+    tox -e precommitall
+
+
+There is no hard requirement for pull requests to be processed with pre-commit (or the underlying processors), however doing this makes for a less noisy codebase with cleaner history.
+
+We have enabled `https://pre-commit.ci/ <https://pre-commit.ci/>`_ and this can
+be used to automatically fix pull requests by commenting ``pre-commit.ci
+autofix`` on a pull request.
+
 Using tox
 ---------------------
 

@@ -31,6 +31,7 @@ NotImplementedError if they cannot handle a certain part
 PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
 import sys
+from typing import TYPE_CHECKING, Any
 from . import parser
 from . import operators
 from . import parserutils
@@ -47,10 +48,12 @@ else:
     from importlib.metadata import entry_points
 
 all_entry_points = entry_points()
-if isinstance(all_entry_points, dict):
-    # Prior to Python 3.10, this returns a dict instead of the selection interface
-    for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
+if hasattr(all_entry_points, "select"):
+    for ep in all_entry_points.select(group=PLUGIN_ENTRY_POINT):
         CUSTOM_EVALS[ep.name] = ep.load()
 else:
-    for ep in all_entry_points.select(group=PLUGIN_ENTRY_POINT):
+    # Prior to Python 3.10, this returns a dict instead of the selection interface
+    if TYPE_CHECKING:
+        assert isinstance(all_entry_points, dict)
+    for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
         CUSTOM_EVALS[ep.name] = ep.load()

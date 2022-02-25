@@ -37,7 +37,7 @@ def _node_to_sparql(node) -> str:
     return node.n3()
 
 
-class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
+class SPARQLStore(SPARQLConnector, Store):
     """An RDFLib store around a SPARQL endpoint
 
     This is context-aware and should work as expected
@@ -543,7 +543,7 @@ class SPARQLUpdateStore(SPARQLStore):
         Graph("SPARQLStore"), can set the required parameters
         """
         if type(configuration) == str:
-            self.query_endpoint = configuration  # type: ignore[assignment]
+            self.query_endpoint = configuration
         elif type(configuration) == tuple:
             self.query_endpoint = configuration[0]
             self.update_endpoint = configuration[1]
