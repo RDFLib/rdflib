@@ -13,7 +13,7 @@ RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_
 
 * **Store implementations**
 
-  * for memory stores
+  * memory stores
   * persistent, on-disk stores, using databases such as BerkeleyDB
   * remote SPARQL endpoints
 
