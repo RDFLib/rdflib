@@ -43,6 +43,7 @@ extensions = [
 apidoc_module_dir = "../rdflib"
 apidoc_output_dir = "apidocs"
 autodoc_default_options = {"special-members": True}
+autodoc_typehints = "both"
 
 autosummary_generate = True
 
