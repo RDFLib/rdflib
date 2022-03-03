@@ -35,7 +35,7 @@ Public Type Aliases
 =============================
 In python, type hints are specified in annotations. Type hints are different from type aliases which are normal python variables that are not intended to provide runtime utility and are instead intended for use in static type checking.
 
-For clarify, the following is an example of a function ``foo`` with type hints:
+For clarity, the following is an example of a function ``foo`` with type hints:
 
 .. code-block:: python
 	
@@ -61,13 +61,31 @@ Ignoring type hints, the public API of RDFLib exists implicitly as a consequence
 
 Type hints attempt to formally document RDFLib's implicitly defined public API in a machine-readable fashion as accurately and correctly as possible within the framework outline earlier in this document.
 
-Type hints do not change the functionality of RDFLib, nor do they affect the runtime API of RDFLib. In this way then, they are somewhat outside of the scope of semver, however, they still have an impact on the users of RDFLib, even if this impact is not at runtime, but during development. This necessitates some clarity as to what users of RDFLib should expect regarding type hints in RDFLib releases.
+Type hints do not affect the runtime API or behaviour of RDFLib. In this way then, they are somewhat outside of the scope of semver, however, they still have an impact on the users of RDFLib, even if this impact is not at runtime, but during development. This necessitates some clarity as to what users of RDFLib should expect regarding type hints in RDFLib releases.
 
 Changes to type hints can broadly be classified as follow:
 
-* **Type Addition**: Adding new type hints to existing code.
-* **Type Narrowing**: Changing type hints of existing code to be narrower. The line between type additions and narrowing is somewhat blurry, as un-annotated code is usually treated the same as if it was annotated with `typing.Any`, so type addition is a form of type narrowing.
-* **Type Corrections** to type hints which contradict the behavior of the code or relevant specifications.
+**Type Declaration**
+  Adding type hints to existing code that had no explicit type hints, for example, changing
+
+  .. code-block:: python
+  
+      def foo(val):
+          return val + 1
+  
+  to
+
+  .. code-block:: python
+  
+      def foo(val: int) -> int:
+          return val + 1
+
+
+**Type Refinement**
+  Refining existing type hints to be narrower, for example, changing a type hint of `typing.Collection` to `typing.Sequence`.
+
+**Type Corrections**
+  Correcting existing type hints which contradict the behaviour of the code or relevant specifications, for example, changing `typing.Sequence` from `typing.Set`
 
 Given semver version components ``MAJOR.MINOR.PATCH``, RDFLib will attempt to constrain type hint changes as follow:
 
@@ -95,6 +113,7 @@ Given semver version components ``MAJOR.MINOR.PATCH``, RDFLib will attempt to co
      - NO
      - YES
 
-A caveat worth nothing here is that code that passed type validation on one version of RDFLib can fail type validation on a later version of RDFLib that only differs in ``PATCH`` version component.
+.. CAUTION::
+   A caveat worth nothing here is that code that passed type validation on one version of RDFLib can fail type validation on a later version of RDFLib that only differs in ``PATCH`` version component. This is as a consequence of potential *Type Corrections*.
 
 
