@@ -94,8 +94,8 @@ Given semver version components ``MAJOR.MINOR.PATCH``, RDFLib will attempt to co
    :header-rows: 1
 
    * - Version Component
-     - Type Additions
-     - Type Narrowing
+     - Type Declaration
+     - Type Refinement
      - Type Corrections
 
    * - MAJOR
