@@ -4,7 +4,7 @@ from rdflib.events import Dispatcher, Event
 from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
-    from rdflib.term import Node
+    from rdflib.term import Node, IdentifiedNode
     from rdflib.graph import Graph
 
 """
@@ -292,7 +292,9 @@ class Store(object):
 
     def triples(
         self,
-        triple_pattern: Tuple[Optional["Node"], Optional["Node"], Optional["Node"]],
+        triple_pattern: Tuple[
+            Optional["IdentifiedNode"], Optional["IdentifiedNode"], Optional["Node"]
+        ],
         context=None,
     ):
         """
