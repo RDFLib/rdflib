@@ -1968,8 +1968,7 @@ def _isEqualXMLNode(
         if TYPE_CHECKING:
             assert isinstance(node, xml.dom.minidom.DocumentType)
             assert isinstance(other, xml.dom.minidom.DocumentType)
-        # type error: "DocumentType" has no attribute "system"
-        return node.publicId == other.publicId and node.systemId == other.system.Id  # type: ignore[attr-defined]
+        return node.publicId == other.publicId and node.systemId == other.systemId
 
     else:
         # should not happen, in fact
