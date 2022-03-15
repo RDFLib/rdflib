@@ -10,8 +10,7 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible (:pep:`8`).
-* Code should be formatted using `black <https://github.com/psf/black>`_
-  and we use Black v21.9b0, with the black.toml config file provided.
+* Code should be formatted using `black <https://github.com/psf/black>`_.
 * Code should also pass `flake8 <https://github.com/psf/black>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code
