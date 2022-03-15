@@ -9,15 +9,12 @@ You can draw the graph of an RDFS file directly:
    rdf2dot my_rdfs_file.rdf | dot -Tpng | display
 """
 
-import rdflib.extras.cmdlineutils
-
-import sys
-import itertools
 import collections
+import itertools
+import sys
 
-
-from rdflib import XSD, RDF, RDFS
-
+import rdflib.extras.cmdlineutils
+from rdflib import RDF, RDFS, XSD
 
 XSDTERMS = [
     XSD[x]
@@ -90,7 +87,7 @@ def rdfs2dot(g, stream, opts={}):
         if lbl is None:
             try:
                 lbl = grf.namespace_manager.compute_qname(xx)[2]
-            except:
+            except Exception:
                 pass  # bnodes and some weird URIs cannot be split
         return lbl
 

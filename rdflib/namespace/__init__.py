@@ -1,11 +1,9 @@
 import logging
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
-from unicodedata import category
-
 from pathlib import Path
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
+from unicodedata import category
+from urllib.parse import urldefrag, urljoin
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
 
@@ -423,7 +421,7 @@ class NamespaceManager(object):
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(str(namespace))
-        except:
+        except Exception:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
             else:
@@ -496,7 +494,7 @@ class NamespaceManager(object):
             if uri not in self.__cache_strict:
                 try:
                     namespace, name = split_uri(uri, NAME_START_CATEGORIES)
-                except ValueError as e:
+                except ValueError as err:  # noqa: F841
                     message = (
                         "This graph cannot be serialized to a strict format "
                         "because there is no valid way to shorten {}".format(uri)
@@ -506,7 +504,7 @@ class NamespaceManager(object):
                     # namespace = URIRef(uri)
                     # prefix = self.store.prefix(namespace)
                     # if not prefix:
-                    # raise e
+                    # raise err
 
                 if namespace not in self.__strie:
                     insert_strie(self.__strie, self.__trie, namespace)
@@ -756,10 +754,10 @@ def get_longest_namespace(trie: Dict[str, Any], value: str) -> Optional[str]:
 from rdflib.namespace._BRICK import BRICK
 from rdflib.namespace._CSVW import CSVW
 from rdflib.namespace._DC import DC
+from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DCAT import DCAT
 from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
-from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
 from rdflib.namespace._GEO import GEO

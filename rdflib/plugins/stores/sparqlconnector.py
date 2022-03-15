@@ -1,14 +1,13 @@
-import logging
-from typing import Optional, TYPE_CHECKING, Tuple
-from urllib.request import urlopen, Request
-from urllib.parse import urlencode
-from urllib.error import HTTPError, URLError
 import base64
-
+import logging
 from io import BytesIO
+from typing import TYPE_CHECKING, Optional, Tuple
+from urllib.error import HTTPError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-from rdflib.query import Result
 from rdflib import BNode
+from rdflib.query import Result
 
 log = logging.getLogger(__name__)
 
@@ -106,7 +105,7 @@ class SPARQLConnector(object):
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )
-            except Exception as e:
+            except Exception:
                 raise ValueError(
                     "You did something wrong formulating either the URI or your SPARQL query"
                 )
@@ -172,7 +171,7 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(
+        _ = urlopen(
             Request(
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )

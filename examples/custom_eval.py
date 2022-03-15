@@ -17,9 +17,8 @@ i.e. in your setup.py::
 """
 
 import rdflib
-
-from rdflib.plugins.sparql.evaluate import evalBGP
 from rdflib.namespace import FOAF, RDF, RDFS
+from rdflib.plugins.sparql.evaluate import evalBGP
 
 inferredSubClass = RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
 
@@ -60,11 +59,11 @@ if __name__ == "__main__":
     # Find all FOAF Agents
     for x in g.query(
         f"""
-        PREFIX foaf: <{FOAF}> 
-        
-        SELECT * 
+        PREFIX foaf: <{FOAF}>
+
+        SELECT *
         WHERE {{
-            ?s a foaf:Agent . 
+            ?s a foaf:Agent .
         }}
         """
     ):

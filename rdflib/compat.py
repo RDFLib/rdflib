@@ -3,11 +3,10 @@ Utility functions and objects to ease Python 2/3 compatibility,
 and different versions of support libraries.
 """
 
-import re
 import codecs
+import re
 import warnings
 from typing import TYPE_CHECKING, Match
-
 
 if TYPE_CHECKING:
     import xml.etree.ElementTree as etree
@@ -21,7 +20,6 @@ else:
 try:
     etree_register_namespace = etree.register_namespace
 except AttributeError:
-
     import xml.etree.ElementTree as etreenative
 
     def etree_register_namespace(prefix, uri):
@@ -120,6 +118,6 @@ def decodeUnicodeEscape(escaped: str) -> str:
 
 # Migration to abc in Python 3.8
 try:
-    from collections.abc import Mapping, MutableMapping
-except:
-    from collections import Mapping, MutableMapping
+    from collections.abc import Mapping, MutableMapping  # noqa: F401
+except Exception:
+    from collections import Mapping, MutableMapping  # noqa: F401

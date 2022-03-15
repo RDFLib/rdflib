@@ -580,7 +580,8 @@ def create_parser(target, store) -> xmlreader.XMLReader:
     try:
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
-        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")  # type: ignore[attr-defined]
+        # type: ignore[attr-defined]
+        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)

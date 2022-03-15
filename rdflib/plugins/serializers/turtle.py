@@ -6,10 +6,10 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 from collections import defaultdict
 from functools import cmp_to_key
 
-from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
-from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -277,7 +277,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        except Exception:
 
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
@@ -402,7 +402,7 @@ class TurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:

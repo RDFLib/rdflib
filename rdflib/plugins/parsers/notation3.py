@@ -329,7 +329,7 @@ numberCharsPlus = numberChars | {"+", "."}
 def unicodeExpand(m):
     try:
         return chr(int(m.group(1), 16))
-    except:
+    except Exception:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 
@@ -425,7 +425,9 @@ class SinkParser:
         if openFormula is None and not turtle:
             if self._thisDoc:
                 # TODO FIXME: store.newFormula does not take any arguments
-                self._formula = store.newFormula(thisDoc + "#_formula")  # type: ignore[call-arg]
+                self._formula = store.newFormula(
+                    thisDoc + "#_formula"
+                )  # type: ignore[call-arg]
             else:
                 self._formula = store.newFormula()
         else:
@@ -653,7 +655,6 @@ class SinkParser:
         return -1  # Not a directive, could be something else.
 
     def sparqlDirective(self, argstr: str, i: int):
-
         """
         turtle and trig support BASE/PREFIX without @ and without
         terminating .
@@ -1290,7 +1291,9 @@ class SinkParser:
         while i < len_argstr and argstr[i] not in _notKeywordsChars:
             i += 1
         if self._parentContext is None:
-            varURI = self._store.newSymbol(self._baseURI + "#" + argstr[j:i])  # type: ignore[operator]
+            varURI = self._store.newSymbol(
+                self._baseURI + "#" + argstr[j:i]
+            )  # type: ignore[operator]
             if varURI not in self._variables:
                 self._variables[varURI] = self._context.newUniversal(
                     varURI, why=self._reason2
@@ -1301,7 +1304,9 @@ class SinkParser:
             # self.BadSyntax(argstr, j,
             #     "Can't use ?xxx syntax for variable in outermost level: %s"
             #     % argstr[j-1:i])
-        varURI = self._store.newSymbol(self._baseURI + "#" + argstr[j:i])  # type: ignore[operator]
+        varURI = self._store.newSymbol(
+            self._baseURI + "#" + argstr[j:i]
+        )  # type: ignore[operator]
         if varURI not in self._parentVariables:
             self._parentVariables[varURI] = self._parentContext.newUniversal(
                 varURI, why=self._reason2
@@ -1450,7 +1455,8 @@ class SinkParser:
 
                 j, s = self.strconst(argstr, i, delim)
 
-                res.append(self._store.newLiteral(s))  # type: ignore[call-arg] # TODO FIXME
+                # type: ignore[call-arg] # TODO FIXME
+                res.append(self._store.newLiteral(s))
                 return j
             else:
                 return -1
@@ -1647,7 +1653,7 @@ class SinkParser:
             )
         try:
             return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
-        except:
+        except Exception:
             raise BadSyntax(
                 self._thisDoc,
                 startline,

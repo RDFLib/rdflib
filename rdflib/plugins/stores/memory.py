@@ -45,33 +45,33 @@ class SimpleMemory(Store):
         spo = self.__spo
         try:
             po = spo[subject]
-        except:
+        except Exception:
             po = spo[subject] = {}
         try:
             o = po[predicate]
-        except:
+        except Exception:
             o = po[predicate] = {}
         o[object] = 1
 
         pos = self.__pos
         try:
             os = pos[predicate]
-        except:
+        except Exception:
             os = pos[predicate] = {}
         try:
             s = os[object]
-        except:
+        except Exception:
             s = os[object] = {}
         s[subject] = 1
 
         osp = self.__osp
         try:
             sp = osp[object]
-        except:
+        except Exception:
             sp = osp[object] = {}
         try:
             p = sp[subject]
-        except:
+        except Exception:
             p = sp[subject] = {}
         p[predicate] = 1
 

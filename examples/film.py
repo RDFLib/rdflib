@@ -136,7 +136,7 @@ def main(argv=None):
                 try:
                     i = eval('"{}"'.format(input("Review date (YYYY-MM-DD): ")))
                     date = datetime.datetime(*time.strptime(i, "%Y-%m-%d")[:6])
-                except:
+                except Exception:
                     date = None
             comment = eval('"{}"'.format(input("Comment: ")))
             s.new_review(movie, date, rating, comment)

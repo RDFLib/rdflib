@@ -9,13 +9,12 @@ You can draw the graph of an RDF file directly:
 
 """
 
+import collections
+import html
+import sys
+
 import rdflib
 import rdflib.extras.cmdlineutils
-
-import sys
-import html
-import collections
-
 from rdflib import XSD
 
 LABEL_PROPERTIES = [
@@ -88,7 +87,6 @@ def rdf2dot(g, stream, opts={}):
     nodes = {}
 
     def node(x):
-
         if x not in nodes:
             nodes[x] = "node%d" % len(nodes)
         return nodes[x]
@@ -100,22 +98,22 @@ def rdf2dot(g, stream, opts={}):
                 return l_
         try:
             return g.namespace_manager.compute_qname(x)[2]
-        except:
+        except Exception:
             return x
 
-    def formatliteral(l, g):
-        v = html.escape(l)
-        if l.datatype:
-            return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
-        elif l.language:
-            return "&quot;%s&quot;@%s" % (v, l.language)
+    def formatliteral(literal, g):
+        v = html.escape(literal)
+        if literal.datatype:
+            return "&quot;%s&quot;^^%s" % (v, qname(literal.datatype, g))
+        elif literal.language:
+            return "&quot;%s&quot;@%s" % (v, literal.language)
         return "&quot;%s&quot;" % v
 
     def qname(x, g):
         try:
             q = g.compute_qname(x)
             return q[0] + ":" + q[2]
-        except:
+        except Exception:
             return x
 
     def color(p):

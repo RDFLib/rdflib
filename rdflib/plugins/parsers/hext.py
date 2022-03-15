@@ -4,12 +4,11 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 handle contexts, i.e. multiple graphs.
 """
 import json
-
-from typing import List, Union
-from rdflib.parser import Parser
-from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
+from typing import List, Union
 
+from rdflib import BNode, ConjunctiveGraph, Literal, URIRef
+from rdflib.parser import Parser
 
 __all__ = ["HextuplesParser"]
 
@@ -89,9 +88,9 @@ class HextuplesParser(Parser):
         # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
             with open(source.file.name) as fp:
-                for l in fp:
-                    self._parse_hextuple(cg, self._load_json_line(l))
+                for line in fp:
+                    self._parse_hextuple(cg, self._load_json_line(line))
         elif hasattr(source, "_InputSource__bytefile"):
             if hasattr(source._InputSource__bytefile, "wrapped"):
-                for l in source._InputSource__bytefile.wrapped.strip().splitlines():
-                    self._parse_hextuple(cg, self._load_json_line(l))
+                for line in source._InputSource__bytefile.wrapped.strip().splitlines():
+                    self._parse_hextuple(cg, self._load_json_line(line))

@@ -16,10 +16,11 @@ to turtle - the original turtle serializer. It:
 - Nicholas Car, 2021
 """
 
-from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
-from .turtle import RecursiveSerializer
 from rdflib.namespace import RDF
+from rdflib.term import BNode, Literal, URIRef
+
+from .turtle import RecursiveSerializer
 
 __all__ = ["LongTurtleSerializer"]
 
@@ -125,7 +126,7 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        except Exception:
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 
@@ -246,7 +247,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:

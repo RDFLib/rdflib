@@ -2,7 +2,7 @@
 Simple examples showing how to use the SPARQLStore
 """
 
-from rdflib import Graph, URIRef, Namespace
+from rdflib import Graph, Namespace, URIRef
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
 
 if __name__ == "__main__":
@@ -29,8 +29,7 @@ if __name__ == "__main__":
         URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal
     ):
         print(
-            "According to DBPedia, Brisbane has a population of "
-            "{0:,}".format(int(p), ",d")
+            "According to DBPedia, Brisbane has a population of " "{0:,}".format(int(p))
         )
     print()
 

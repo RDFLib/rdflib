@@ -197,7 +197,7 @@ class Converter(object):
         nodemap = {}
 
         for s in set(graph.subjects()):
-            ## only iri:s and unreferenced (rest will be promoted to top if needed)
+            # only iri:s and unreferenced (rest will be promoted to top if needed)
             if isinstance(s, URIRef) or (
                 isinstance(s, BNode) and not any(graph.subjects(None, s))
             ):

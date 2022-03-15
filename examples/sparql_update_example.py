@@ -15,8 +15,8 @@ if __name__ == "__main__":
         """
         PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         PREFIX dbpedia: <http://dbpedia.org/resource/>
-        INSERT { 
-            ?s a dbpedia:Human . 
+        INSERT {
+            ?s a dbpedia:Human .
         }
         WHERE {
             ?s a foaf:Person .

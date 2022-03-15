@@ -7,17 +7,16 @@ try: ``csv2rdf --help``
 
 """
 
-import sys
-import re
-import csv
-import getopt
-import fileinput
 import codecs
-import time
-import datetime
-import warnings
-
 import configparser
+import csv
+import datetime
+import fileinput
+import getopt
+import re
+import sys
+import time
+import warnings
 from urllib.parse import quote
 
 import rdflib
@@ -418,7 +417,7 @@ class CSV2RDF(object):
                         "%d rows, %d triples, elapsed %.2fs.\n"
                         % (rows, self.triples, time.time() - start)
                     )
-            except:
+            except Exception:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise
 
