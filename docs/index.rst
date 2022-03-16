@@ -86,6 +86,7 @@ For developers
    CODE_OF_CONDUCT
    docs
    persisting_n3_terms
+   type_hints
 
 Source Code
 -----------
