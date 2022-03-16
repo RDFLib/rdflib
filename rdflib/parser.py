@@ -215,7 +215,7 @@ class URLInputSource(InputSource):
                 retarray.append(link)
         return retarray
 
-    def get_alternates(self, type_: Optional[str] = None):
+    def get_alternates(self, type_: Optional[str] = None) -> List[str]:
         typestr: Optional[str] = f"type=\"{type_}\"" if type_ else None
         relstr = "rel=\"alternate\""
         alts = []
@@ -281,7 +281,7 @@ class URLInputSource(InputSource):
                 else:
                     raise
 
-        response = _urlopen(req)
+        response: HTTPResponse = _urlopen(req)
         self.url = response.geturl()  # in case redirections took place
         self.links = self.get_links(response)
         if format in ("json-ld", "application/ld+json"):
@@ -289,7 +289,7 @@ class URLInputSource(InputSource):
             for link in alts:
                 full_link = urljoin(self.url, link)
                 if full_link != self.url and full_link != system_id:
-                    response = _urlopen(full_link)
+                    response = _urlopen(Request(full_link))
                     self.url = response.geturl()  # in case redirections took place
                     break
 
