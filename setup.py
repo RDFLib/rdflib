@@ -25,9 +25,9 @@ kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
     "docs": [
+        "myst-parser",
         "sphinx < 5",
         "sphinxcontrib-apidoc",
-        "myst-parser",
         "sphinxcontrib-kroki",
     ],
 }

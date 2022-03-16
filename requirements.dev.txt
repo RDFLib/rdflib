@@ -4,13 +4,13 @@ doctest-ignore-unicode==0.1.2
 flake8
 flake8-black
 html5lib
+isort
 mypy
 myst-parser
 pytest
 pytest-cov
 pytest-subtests
-isort
-sphinx
+sphinx<5
 sphinxcontrib-apidoc
 sphinxcontrib-kroki
 types-setuptools
