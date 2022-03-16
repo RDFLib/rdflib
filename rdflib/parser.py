@@ -194,7 +194,7 @@ headers = {
 
 class URLInputSource(InputSource):
     """
-    TODO:
+    Constructs an RDFLib Parser InputSource from a URL to read it from the Web.
     """
     links: List[str]
 
