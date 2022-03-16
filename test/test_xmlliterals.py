@@ -1,5 +1,12 @@
+import logging
+import textwrap
+from typing import Callable, Optional, Sequence
+
+import pytest
 import rdflib
-from rdflib import RDF, Graph, Literal
+from rdflib import RDF, Literal
+
+import xml.dom.minidom
 
 
 def testPythonRoundtrip():
@@ -88,3 +95,58 @@ def testHTML():
 
     assert l1 != l2
     assert not l1.eq(l2)
+
+
+@pytest.mark.parametrize(
+    ("values", "equals"),
+    [
+        pytest.param(
+            [
+                lambda: Literal('<something />', datatype=RDF.XMLLiteral),
+                lambda: Literal('<something/>', datatype=RDF.XMLLiteral),
+            ],
+            True,
+        ),
+        pytest.param(
+            [
+                lambda: Literal(
+                    xml.dom.minidom.parseString(
+                        textwrap.dedent(
+                            """\
+                    <!DOCTYPE example>
+                    <something/>
+                    """
+                        )
+                    ),
+                    datatype=RDF.XMLLiteral,
+                ),
+                lambda: Literal(
+                    xml.dom.minidom.parseString(
+                        textwrap.dedent(
+                            """\
+                    <!DOCTYPE example>
+                    <something />
+                    """
+                        )
+                    ),
+                    datatype=RDF.XMLLiteral,
+                ),
+            ],
+            True,
+        ),
+    ],
+)
+def test_eq(values: Sequence[Callable[[], Literal]], equals: bool) -> None:
+    first_value = values[0]()
+    logging.debug("first_value = \n%r", first_value)
+    for value in values[1:]:
+        current_value = value()
+        logging.debug("current_value = \n%r", current_value)
+        if equals:
+            assert first_value.eq(
+                current_value
+            ), f"{current_value} must be equal to {first_value}"
+        else:
+            assert not first_value.eq(
+                current_value
+            ), f"{current_value} must be not be equal to {first_value}"
