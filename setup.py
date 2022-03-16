@@ -31,7 +31,7 @@ kwargs["extras_require"] = {
     "berkeleydb": ["berkeleydb"],
     "networkx": ["networkx"],
     "dev": [
-        "black==21.9b0",
+        "black==22.1.0",
         "mypy",
         "flake8",
         "flake8-black",
