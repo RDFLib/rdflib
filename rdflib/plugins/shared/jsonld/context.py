@@ -576,4 +576,4 @@ Term = namedtuple(
     "Term",
     "id, name, type, container, index, language, reverse, context," "prefix, protected",
 )
-Term.__new__.__defaults__ = (UNDEF, UNDEF, UNDEF, UNDEF, False, UNDEF, False, False)  # type: ignore[attr-defined]
+Term.__new__.__defaults__ = (UNDEF, UNDEF, UNDEF, UNDEF, False, UNDEF, False, False)
