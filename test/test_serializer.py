@@ -1,7 +1,52 @@
+import logging
 import unittest
-from rdflib import Graph, URIRef, Literal
+from rdflib import RDF, Graph, Literal, Namespace, URIRef
 from tempfile import TemporaryDirectory
 from pathlib import Path, PurePath
+
+from typing import Tuple, cast
+
+import pytest
+import itertools
+
+from rdflib.graph import ConjunctiveGraph
+
+from .testutils import GraphHelper
+
+
+@pytest.mark.parametrize(
+    "format, tuple_index, is_keyword",
+    [
+        (format, tuple_index, keyword)
+        for format, (tuple_index, keyword) in itertools.product(
+            ["turtle", "n3", "trig"],
+            [
+                (0, False),
+                (1, True),
+                (2, False),
+            ],
+        )
+    ]
+    + [("trig", 3, False)],
+)
+def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
+    NS = Namespace("example:")
+    graph = ConjunctiveGraph()
+    graph.bind("eg", NS)
+    nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
+    nodes[tuple_index] = RDF.type
+    quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
+    graph.add(quad)
+    data = graph.serialize(format=format)
+    logging.info("data = %s", data)
+    assert NS in data
+    if is_keyword:
+        assert str(RDF) not in data
+    else:
+        assert str(RDF) in data
+    parsed_graph = ConjunctiveGraph()
+    parsed_graph.parse(data=data, format=format)
+    GraphHelper.assert_triple_sets_equals(graph, parsed_graph)
 
 
 class TestSerialize(unittest.TestCase):
@@ -56,7 +101,3 @@ class TestSerialize(unittest.TestCase):
             graph_check = Graph()
             graph_check.parse(source=tfpath, format="nt")
         self.assertEqual(self.triple, next(iter(graph_check)))
-
-
-if __name__ == "__main__":
-    unittest.main()

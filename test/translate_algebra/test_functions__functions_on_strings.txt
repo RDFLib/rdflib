@@ -12,6 +12,7 @@ select
 (concat("foo"@en, "bar"@en) as ?concat)
 (replace("abcd", "b", "Z") as ?replace)
 (regex(substr("foobar", 4), "bar", "bar") as ?regex)
+(regex(substr("foobar", 4, 1), "b", "b") as ?regex2)
 where {
 	?s ?p ?o .
     FILTER langMatches(lang(?o), "EN" )

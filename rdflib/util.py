@@ -364,6 +364,7 @@ SUFFIX_FORMAT_MAP = {
     "html": "rdfa",
     "svg": "rdfa",
     "nq": "nquads",
+    "nquads": "nquads",
     "trig": "trig",
     "json": "json-ld",
     "jsonld": "json-ld",

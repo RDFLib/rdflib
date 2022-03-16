@@ -1,7 +1,7 @@
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib import Graph
-from rdflib.container import *
+from rdflib.container import Alt, Bag, Seq
 import unittest
 
 

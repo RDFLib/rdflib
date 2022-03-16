@@ -6,13 +6,51 @@ from threading import Thread
 from unittest.mock import patch
 from rdflib.namespace import RDF, XSD, XMLNS, FOAF, RDFS
 from rdflib.plugins.stores.sparqlstore import SPARQLConnector
-from typing import ClassVar
+from typing import ClassVar, Callable, Type
+import pytest
+import re
 
 from . import helper
 from .testutils import (
     MockHTTPResponse,
     ServedSimpleHTTPMock,
 )
+
+
+class TestSPARQLStoreGraph:
+    """
+    Tests for ``rdflib.Graph(store="SPARQLStore")``.
+
+    .. note::
+        This is a pytest based test class to be used for new tests instead of
+        the older `unittest.TestCase` based classes.
+    """
+
+    @pytest.mark.parametrize(
+        "call, exception_type",
+        [
+            (
+                lambda graph: graph.update("insert data {<urn:s> <urn:p> <urn:o>}"),
+                TypeError,
+            ),
+            # Additional methods that modify graphs should be added here.
+        ],
+    )
+    def test_graph_modify_fails(
+        self, call: Callable[[Graph], None], exception_type: Type[Exception]
+    ) -> None:
+        """
+        Methods that modify the Graph fail.
+        """
+        graph = Graph(store="SPARQLStore")
+        graph.open("http://something.invalid/", create=True)
+        with pytest.raises(exception_type) as ctx:
+            call(graph)
+        pattern_str = r"read.*only"
+        msg = f"{ctx.value}"
+        assert (
+            re.search(pattern_str, msg, re.IGNORECASE) is not None
+        ), f"exception text {msg!r} does not match regex {pattern_str!r}"
 
 
 class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):

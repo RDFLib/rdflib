@@ -1,0 +1,3 @@
+@prefix test: <http://example.org/>.
+@prefix object: <http://example.org/object>.
+test:subject test:predicate object:.

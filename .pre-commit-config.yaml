@@ -1,0 +1,34 @@
+---
+ci:
+  # https://pre-commit.ci/#configuration
+  autoupdate_schedule: weekly
+  autofix_prs: false
+
+repos:
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    - id: isort
+      # This is here to defer file selection to isort which will do it based on
+      # black config.
+      pass_filenames: false
+      require_serial: true
+      args: ["."]
+  - repo: local
+    hooks:
+    # using a local hook for black because of an issue that arises when using
+    # pre-commit and setuptools-scm that results in version info being lost.
+    # For more info see https://github.com/psf/black/issues/2493
+    # Based on https://github.com/psf/black/blob/main/.pre-commit-hooks.yaml
+    - id: black
+      name: black
+      description: "Black: The uncompromising Python code formatter"
+      entry: black
+      language: python
+      # WARNING: version should be the same as in `pyproject.toml`.
+      additional_dependencies: [black==21.9b0]
+      # This is here to defer file selection to black which will do it based on
+      # black config.
+      pass_filenames: false
+      require_serial: true
+      args: ["."]

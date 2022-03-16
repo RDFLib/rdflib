@@ -106,12 +106,10 @@ Full example in the ``to_rdf`` method below::
 """
 
 from contextlib import contextmanager
+
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib.term import Identifier
-from rdflib.term import Literal
-from rdflib.term import URIRef
+from rdflib.term import BNode, Identifier, Literal, URIRef
 
 
 class Describer(object):

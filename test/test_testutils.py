@@ -1,7 +1,11 @@
+from dataclasses import dataclass
 import os
 from pathlib import PurePosixPath, PureWindowsPath
 from typing import Optional
-from .testutils import file_uri_to_path
+
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.term import URIRef
+from .testutils import GraphHelper, file_uri_to_path
 
 import pytest
 
@@ -89,3 +93,139 @@ def test_paths(
     expected_posix_path: Optional[str],
 ) -> None:
     check(file_uri, expected_windows_path, expected_posix_path)
+
+
+@dataclass
+class SetsEqualTestCase:
+    equal: bool
+    format: str
+    ignore_blanks: bool
+    lhs: str
+    rhs: str
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    [
+        SetsEqualTestCase(
+            equal=False,
+            format="turtle",
+            ignore_blanks=False,
+            lhs="""
+            @prefix eg: <ex:> .
+            _:a _:b _:c .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+            rhs="""
+            @prefix eg: <ex:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="turtle",
+            ignore_blanks=True,
+            lhs="""
+            @prefix eg: <ex:> .
+            _:a _:b _:c .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+            rhs="""
+            @prefix eg: <ex:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="turtle",
+            ignore_blanks=False,
+            lhs="""
+            <ex:o0> <ex:p0> <ex:s0> .
+            <ex:o1> <ex:p1> <ex:s1> .
+            """,
+            rhs="""
+            @prefix eg: <ex:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=False,
+            format="turtle",
+            ignore_blanks=False,
+            lhs="""
+            <ex:o0> <ex:p0> <ex:s0> .
+            <ex:o1> <ex:p1> <ex:s1> .
+            <ex:o2> <ex:p2> <ex:s2> .
+            """,
+            rhs="""
+            @prefix eg: <ex:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+    ],
+)
+def test_assert_sets_equal(test_case: SetsEqualTestCase):
+    """
+    GraphHelper.sets_equals and related functions work correctly in both
+    positive and negative cases.
+    """
+    lhs_graph: Graph = Graph().parse(data=test_case.lhs, format=test_case.format)
+    rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.format)
+
+    public_id = URIRef("example:graph")
+    lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
+    lhs_cgraph.parse(data=test_case.lhs, format=test_case.format, publicID=public_id)
+
+    rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
+    rhs_cgraph.parse(data=test_case.rhs, format=test_case.format, publicID=public_id)
+
+    assert isinstance(lhs_cgraph, ConjunctiveGraph)
+    assert isinstance(rhs_cgraph, ConjunctiveGraph)
+    graph: Graph
+    cgraph: ConjunctiveGraph
+    for graph, cgraph in ((lhs_graph, lhs_cgraph), (rhs_graph, rhs_cgraph)):
+        GraphHelper.assert_sets_equals(graph, graph, True)
+        GraphHelper.assert_sets_equals(cgraph, cgraph, True)
+        GraphHelper.assert_triple_sets_equals(graph, graph, True)
+        GraphHelper.assert_triple_sets_equals(cgraph, cgraph, True)
+        GraphHelper.assert_quad_sets_equals(cgraph, cgraph, True)
+
+    if not test_case.equal:
+        with pytest.raises(AssertionError):
+            GraphHelper.assert_sets_equals(
+                lhs_graph, rhs_graph, test_case.ignore_blanks
+            )
+        with pytest.raises(AssertionError):
+            GraphHelper.assert_sets_equals(
+                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+            )
+        with pytest.raises(AssertionError):
+            GraphHelper.assert_triple_sets_equals(
+                lhs_graph, rhs_graph, test_case.ignore_blanks
+            )
+        with pytest.raises(AssertionError):
+            GraphHelper.assert_triple_sets_equals(
+                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+            )
+        with pytest.raises(AssertionError):
+            GraphHelper.assert_quad_sets_equals(
+                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+            )
+    else:
+        GraphHelper.assert_sets_equals(lhs_graph, rhs_graph, test_case.ignore_blanks)
+        GraphHelper.assert_sets_equals(lhs_cgraph, rhs_cgraph, test_case.ignore_blanks)
+        GraphHelper.assert_triple_sets_equals(
+            lhs_graph, rhs_graph, test_case.ignore_blanks
+        )
+        GraphHelper.assert_triple_sets_equals(
+            lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+        )
+        GraphHelper.assert_quad_sets_equals(
+            lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+        )

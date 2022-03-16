@@ -49,17 +49,17 @@ class DatasetTestCase(unittest.TestCase):
 
         if self.store != "SPARQLUpdateStore":
             self.graph.open(self.tmppath, create=True)
-        self.michel = URIRef("urn:michel")
-        self.tarek = URIRef("urn:tarek")
-        self.bob = URIRef("urn:bob")
-        self.likes = URIRef("urn:likes")
-        self.hates = URIRef("urn:hates")
-        self.pizza = URIRef("urn:pizza")
+        self.michel = URIRef("urn:example:michel")
+        self.tarek = URIRef("urn:example:tarek")
+        self.bob = URIRef("urn:example:bob")
+        self.likes = URIRef("urn:example:likes")
+        self.hates = URIRef("urn:example:hates")
+        self.pizza = URIRef("urn:example:pizza")
         self.cheese = URIRef("urn:cheese")
 
         # Use regular URIs because SPARQL endpoints like Fuseki alter short names
-        self.c1 = URIRef("urn:context-1")
-        self.c2 = URIRef("urn:context-2")
+        self.c1 = URIRef("urn:example:context-1")
+        self.c2 = URIRef("urn:example:context-2")
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))

@@ -1,5 +1,6 @@
 from .testutils import eq_
 from unittest import TestCase
+import pytest
 
 from rdflib import BNode, Graph, Literal, Namespace, RDFS, XSD
 from rdflib.plugins.sparql.operators import (
@@ -186,9 +187,9 @@ class TestCustom(TestCase):
     def test_register_override(self):
         register_custom_function(EX.f, self.f, override=True)
 
-    def test_wrong_unregister_fails(self):
-        with self.assertRaises(ValueError):
-            unregister_custom_function(EX.f, lambda x, y: None)
+    def test_wrong_unregister_warns(self):
+        with pytest.warns(UserWarning):
+            unregister_custom_function(EX.notexist)
 
     def test_f(self):
         res = query("""SELECT (ex:f(42, "hello") as ?x) {}""")

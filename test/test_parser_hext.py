@@ -22,13 +22,30 @@ def test_small_string():
     assert len(d) == 10
 
 
+def test_small_string_cg():
+    s = """
+        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", ""]
+        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", ""]
+        ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+        ["http://example.com/s01", "http://example.com/creationDate", "2021-12-01", "http://www.w3.org/2001/XMLSchema#date", "", ""]
+        ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13:00", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
+        ["http://example.com/s01", "http://example.com/age", "42", "http://www.w3.org/2001/XMLSchema#integer", "", ""]
+        ["http://example.com/s01", "http://example.com/trueFalse", "false", ",http://www.w3.org/2001/XMLSchema#boolean", "", ""]
+        ["http://example.com/s01", "http://example.com/op1", "http://example.com/o1", "globalId", "", ""]
+        ["http://example.com/s01", "http://example.com/op1", "http://example.com/o2", "globalId", "", ""]
+        ["http://example.com/s01", "http://example.com/op2", "http://example.com/o3", "globalId", "", ""]
+        """
+    d = ConjunctiveGraph().parse(data=s, format="hext")
+    assert len(d) == 10
+
+
 def test_small_file_singlegraph():
     d = Dataset().parse(Path(__file__).parent / "test_parser_hext_singlegraph.ndjson", format="hext")
     assert len(d) == 10
 
 
 def test_small_file_multigraph():
-    d = ConjunctiveGraph()
+    d = Dataset()
     assert len(d) == 0
     d.parse(
         Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
@@ -38,6 +55,26 @@ def test_small_file_multigraph():
 
     """There are 22 lines in the file test_parser_hext_multigraph.ndjson. When loaded
     into a Dataset, we get only 18 quads since the the dataset can contextualise
+    the triples and thus deduplicate 4."""
+    total_triples = 0
+    # count all the triples in the Dataset
+    for context in d.contexts():
+        for triple in context.triples((None, None, None)):
+            total_triples += 1
+    assert total_triples == 18
+
+
+def test_small_file_multigraph_cg():
+    d = ConjunctiveGraph()
+    assert len(d) == 0
+    d.parse(
+        Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
+        format="hext",
+        publicID=d.default_context.identifier
+    )
+
+    """There are 22 lines in the file test_parser_hext_multigraph.ndjson. When loaded
+    into a CG, we get only 18 quads since the the CG can contextualise
     the triples and thus deduplicate 4."""
     total_triples = 0
     # count all the triples in the Dataset

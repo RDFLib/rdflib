@@ -257,7 +257,8 @@ class TurtleSerializer(RecursiveSerializer):
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if node in self.keywords:
+            if i == VERB and node in self.keywords:
+                # predicate is a keyword
                 continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
@@ -267,6 +268,7 @@ class TurtleSerializer(RecursiveSerializer):
         if isinstance(p, BNode):  # hmm - when is P ever a bnode?
             self._references[p] += 1
 
+    # TODO: Rename to get_pname
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
             return None
@@ -287,6 +289,8 @@ class TurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
+
+        local = local.replace(r"(", r"\(").replace(r")", r"\)")
 
         # QName cannot end with .
         if local.endswith("."):

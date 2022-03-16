@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
+import codecs
 import os
 import re
-import codecs
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 kwargs = {}
 kwargs["install_requires"] = [
@@ -23,7 +24,12 @@ kwargs["tests_require"] = [
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
+    "docs": [
+        "myst-parser",
+        "sphinx < 5",
+        "sphinxcontrib-apidoc",
+        "sphinxcontrib-kroki",
+    ],
 }
 
 
