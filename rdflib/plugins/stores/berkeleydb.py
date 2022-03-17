@@ -300,15 +300,12 @@ class BerkeleyDB(Store):
     def __remove(self, spo, c, quoted=False, txn=None):
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
-        contexts_value = (
-            cspo.get(
-                "^".encode("latin-1").join(
-                    ["".encode("latin-1"), s, p, o, "".encode("latin-1")]
-                ),
-                txn=txn,
-            )
-            or "".encode("latin-1")
-        )
+        contexts_value = cspo.get(
+            "^".encode("latin-1").join(
+                ["".encode("latin-1"), s, p, o, "".encode("latin-1")]
+            ),
+            txn=txn,
+        ) or "".encode("latin-1")
         contexts = set(contexts_value.split("^".encode("latin-1")))
         contexts.discard(c)
         contexts_value = "^".encode("latin-1").join(contexts)
