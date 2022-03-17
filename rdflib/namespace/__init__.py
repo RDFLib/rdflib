@@ -1,5 +1,6 @@
 import logging
 import warnings
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from unicodedata import category
 
@@ -184,10 +185,7 @@ class URIPattern(str):
 
 
 class DefinedNamespaceMeta(type):
-    """
-    Utility metaclass for generating URIRefs with a common prefix
-
-    """
+    """Utility metaclass for generating URIRefs with a common prefix."""
 
     _NS: Namespace
     _warn: bool = True
@@ -195,6 +193,7 @@ class DefinedNamespaceMeta(type):
     _extras: List[str] = []  # List of non-pythonesque items
     _underscore_num: bool = False  # True means pass "_n" constructs
 
+    @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
         if str(name).startswith("__"):

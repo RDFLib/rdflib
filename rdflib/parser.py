@@ -10,6 +10,7 @@ want to do so through the Graph class parse method.
 
 """
 
+from typing import TYPE_CHECKING
 import codecs
 import os
 import pathlib
@@ -20,6 +21,7 @@ from typing import (
     IO,
     Any,
     BinaryIO,
+    List,
     Optional,
     TextIO,
     Tuple,
@@ -30,6 +32,7 @@ from typing import (
 from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.request import urlopen
+from urllib.parse import urljoin
 from urllib.error import HTTPError
 
 from xml.sax import xmlreader
@@ -39,6 +42,7 @@ from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 
 if TYPE_CHECKING:
+    from http.client import HTTPMessage, HTTPResponse
     from rdflib import Graph
 
 __all__ = [
@@ -190,8 +194,42 @@ headers = {
 
 class URLInputSource(InputSource):
     """
-    TODO:
+    Constructs an RDFLib Parser InputSource from a URL to read it from the Web.
     """
+
+    links: List[str]
+
+    @classmethod
+    def getallmatchingheaders(cls, message: 'HTTPMessage', name):
+        # This is reimplemented here, because the method
+        # getallmatchingheaders from HTTPMessage is broken since Python 3.0
+        name = name.lower()
+        return [val for key, val in message.items() if key.lower() == name]
+
+    @classmethod
+    def get_links(cls, response: 'HTTPResponse'):
+        linkslines = cls.getallmatchingheaders(response.headers, "Link")
+        retarray = []
+        for linksline in linkslines:
+            links = [l.strip() for l in linksline.split(",")]
+            for link in links:
+                retarray.append(link)
+        return retarray
+
+    def get_alternates(self, type_: Optional[str] = None) -> List[str]:
+        typestr: Optional[str] = f"type=\"{type_}\"" if type_ else None
+        relstr = "rel=\"alternate\""
+        alts = []
+        for link in self.links:
+            parts = [p.strip() for p in link.split(";")]
+            if relstr not in parts:
+                continue
+            if typestr:
+                if typestr in parts:
+                    alts.append(parts[0].strip("<>"))
+            else:
+                alts.append(parts[0].strip("<>"))
+        return alts
 
     def __init__(self, system_id: Optional[str] = None, format: Optional[str] = None):
         super(URLInputSource, self).__init__(system_id)
@@ -244,16 +282,26 @@ class URLInputSource(InputSource):
                 else:
                     raise
 
-        file = _urlopen(req)
-        # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
-        self.url = file.geturl()  # in case redirections took place
+        response: HTTPResponse = _urlopen(req)
+        self.url = response.geturl()  # in case redirections took place
+        self.links = self.get_links(response)
+        if format in ("json-ld", "application/ld+json"):
+            alts = self.get_alternates(type_="application/ld+json")
+            for link in alts:
+                full_link = urljoin(self.url, link)
+                if full_link != self.url and full_link != system_id:
+                    response = _urlopen(Request(full_link))
+                    self.url = response.geturl()  # in case redirections took place
+                    break
+
         self.setPublicId(self.url)
-        self.content_type = file.info().get("content-type")
+        content_types = self.getallmatchingheaders(response.headers, "content-type")
+        self.content_type = content_types[0] if content_types else None
         if self.content_type is not None:
             self.content_type = self.content_type.split(";", 1)[0]
-        self.setByteStream(file)
+        self.setByteStream(response)
         # TODO: self.setEncoding(encoding)
-        self.response_info = file.info()  # a mimetools.Message instance
+        self.response_info = response.info()  # a mimetools.Message instance
 
     def __repr__(self):
         return self.url
