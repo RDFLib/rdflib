@@ -155,21 +155,26 @@ makes it easier to run validation on all supported python versions.
 
 .. code-block:: bash
 
-    # install tox
+    # Install tox.
     pip install tox
 
-    # list tox environments that run by default
+    # List the tox environments that run by default.
     tox -e
 
-    # list all tox environments
-    tox -a
-
-    # run default environment for all python versions
+    # Run the default environments.
     tox
 
-    # run a specific environment
+    # List all tox environments, including ones that don't run by default.
+    tox -a
+
+    # Run a specific environment.
     tox -e py37 # default environment with py37
-    tox -e py39-mypy # mypy environment with py39
+    tox -e py39-extra # extra tests with py39
+
+    # Override the test command.
+    # the below command will run `pytest test/test_translate_algebra.py`
+    # instead of the default pytest command.
+    tox -e py37,py39 -- pytest test/test_translate_algebra.py
 
 Writing documentation
 ---------------------
