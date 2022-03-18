@@ -1,8 +1,10 @@
-from rdflib.graph import ConjunctiveGraph
-from typing import ClassVar
-from rdflib import Namespace
-from .testutils import MockHTTPResponse, ServedSimpleHTTPMock
 import unittest
+from typing import ClassVar
+
+from rdflib import Namespace
+from rdflib.graph import ConjunctiveGraph
+
+from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
 
 EG = Namespace("http://example.org/")
 
