@@ -10,15 +10,10 @@ import shutil
 import sqlite3
 from functools import lru_cache
 from operator import itemgetter
-from threading import Thread
-from time import sleep, time
 from typing import (
     Any,
     Callable,
-    Dict,
     Generator,
-    ItemsView,
-    Iterable,
     Iterator,
     List,
     Optional,
@@ -319,49 +314,17 @@ class SQLiteDBStore(Store):
         identifier: Optional[URIRef] = None,
     ) -> None:
         self.__open = False
+        self._terms = 0
         self.__identifier = identifier
         super(SQLiteDBStore, self).__init__(configuration)
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
         self.dbdir = configuration
-        self.__needs_sync = False
-        self._terms = 0
-        self.__sync_thread: Thread
+        self.__indices: List[Any] = [None] * 3
+        self.__indices_info: List[Any] = [None] * 3
 
     def is_open(self) -> bool:
         return self.__open
-
-    def sync(self) -> None:
-        if self.__open:
-            for i in self.__indices:
-                i.sync()
-            self.__contexts.sync()
-            self.__namespace.sync()
-            self.__prefix.sync()
-            self.__i2k.sync()
-            self.__k2i.sync()
-
-    def __sync_run(self) -> None:
-        try:
-            min_seconds, max_seconds = 10, 300
-            while self.__open:
-                if self.__needs_sync:
-                    t0 = t1 = time()
-                    self.__needs_sync = False
-                    while self.__open:
-                        sleep(0.1)
-                        if self.__needs_sync:
-                            t1 = time()
-                            self.__needs_sync = False
-                        if time() - t1 > min_seconds or time() - t0 > max_seconds:
-                            self.__needs_sync = False
-                            logger.debug("sync")
-                            self.sync()
-                            break
-                else:
-                    sleep(1)
-        except Exception as e:  # pragma: no cover
-            logger.exception(e)  # pragma: no cover
 
     @lru_cache(maxsize=5000)
     def _from_string(self, i: str) -> URIRef:
@@ -405,8 +368,6 @@ class SQLiteDBStore(Store):
                 self.dbdir = dbpathname
 
         dbopenflag = "c" if create is True else "w"
-        self.__indices: List[Any] = [None] * 3
-        self.__indices_info: List[Any] = [None] * 3
         for i in range(0, 3):
             index_name = to_key_func(i)(
                 (
@@ -478,18 +439,12 @@ class SQLiteDBStore(Store):
 
         self.__open = True
 
-        self.__needs_sync = False
-        t = Thread(target=self.__sync_run)
-        t.daemon = True
-        t.start()
-        self.__sync_thread = t
         return VALID_STORE
 
     def close(self, commit_pending_transaction: bool = False) -> None:
         if not self.__open:
             return
         self.__open = False
-        self.__sync_thread.join()
         for i in self.__indices:
             i.close()
         self.__contexts.close()
@@ -603,8 +558,6 @@ class SQLiteDBStore(Store):
                 cpos[f"^{p}^{o}^{s}^"] = contexts_value
                 cosp[f"^{o}^{s}^{p}^"] = contexts_value
 
-            self.__needs_sync = True
-
     def __remove(self, spo: Tuple[Any, Any, Any], c: Any, quoted: bool = False) -> None:
         s, p, o = spo
         cspo, cpos, cosp = self.__indices
@@ -617,17 +570,17 @@ class SQLiteDBStore(Store):
         contexts_value = "^".join(contexts)
         for i, _to_key, _from_key in self.__indices_info:
             del i[_to_key((s, p, o), c)]
+        if not quoted:
+            if contexts_value:
+                for i, _to_key, _from_key in self.__indices_info:
+                    i[_to_key((s, p, o), "")] = contexts_value
 
-        if contexts_value:
-            for i, _to_key, _from_key in self.__indices_info:
-                i[_to_key((s, p, o), "")] = contexts_value
-
-        else:
-            for i, _to_key, _from_key in self.__indices_info:
-                try:
-                    del i[_to_key((s, p, o), "")]
-                except Exception:  # pragma: no cover
-                    pass  # FIXME okay to ignore these?
+            else:
+                for i, _to_key, _from_key in self.__indices_info:
+                    try:
+                        del i[_to_key((s, p, o), "")]
+                    except Exception:  # pragma: no cover
+                        pass  # FIXME okay to ignore these?
 
     def __lookup(self, spo: Any, context: Any) -> Any:
         subject, predicate, object = spo
@@ -675,7 +628,6 @@ class SQLiteDBStore(Store):
                 value = None
             if value is not None:
                 self.__remove((s, p, o), c)
-                self.__needs_sync = True
         else:
             index, prefix, from_key, results_from_key = self.__lookup(
                 (subject, predicate, object), context
@@ -711,8 +663,6 @@ class SQLiteDBStore(Store):
                         del self.__contexts[_to_string(context)]
                     except KeyError:  # pragma: no cover
                         pass  # pragma: no cover
-
-            self.__needs_sync = True
 
     def triples(
         self, spo: Tuple[Any, Any, Any], context: Optional[Any] = None
@@ -775,10 +725,7 @@ class SQLiteDBStore(Store):
             yield k, URIRef(self.__namespace[k])
 
     def contexts(
-        self,
-        triple: Optional[
-            Tuple[Union[Node, None], Union[Node, None], Union[Node, None]]
-        ] = None,
+        self, triple: Optional[Tuple[Node, Node, Node]] = None
     ) -> Generator[str, None, None]:
         assert self.__open, "The Store must be open."
 
@@ -787,7 +734,7 @@ class SQLiteDBStore(Store):
 
         if triple:
             subj, pred, obj = triple
-            if subj is not None and pred is not None and obj is not None:
+            if subj and pred and obj:
 
                 s = _to_string(subj)
                 p = _to_string(pred)
@@ -813,12 +760,18 @@ class SQLiteDBStore(Store):
             for k in self.__contexts.keys():
                 yield _from_string(k)
 
-    def add_graph(self, graph: IdentifiedNode) -> None:
+    def add_graph(self, graph: Union[IdentifiedNode, Literal, Variable, str]) -> None:
         assert self.__open, "The Store must be open."
+        if isinstance(graph, (Graph, type(None))):
+            raise TypeError(f"""graph identifier cannot be {type(graph)}""")
         self.__contexts[self._to_string(graph)] = b""
 
-    def remove_graph(self, graph: IdentifiedNode) -> None:
+    def remove_graph(
+        self, graph: Union[IdentifiedNode, Literal, Variable, str]
+    ) -> None:
         assert self.__open, "The Store must be open."
+        if isinstance(graph, (Graph, type(None))):
+            raise TypeError(f"""graph cannot be {type(graph)}""")
         self.remove((None, None, None), graph)
 
     def __len__(self, context: Any = None) -> int:
