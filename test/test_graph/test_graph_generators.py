@@ -10,7 +10,7 @@ pizza = URIRef("urn:example:pizza")
 cheese = URIRef("urn:example:cheese")
 
 timblcardn3 = open(
-    os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
+    os.path.join(os.path.dirname(__file__), "..", "consistent_test_data", "timbl-card.n3")
 ).read()
 
 
