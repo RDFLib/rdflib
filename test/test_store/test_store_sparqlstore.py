@@ -1,19 +1,20 @@
-import re
-import socket
+from rdflib import Graph, URIRef, Literal
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import socket
 from threading import Thread
-from typing import Callable, ClassVar, Type
 from unittest.mock import patch
-
-import pytest
-
-from rdflib import Graph, Literal, URIRef
-from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
+from rdflib.namespace import RDF, XSD, XMLNS, FOAF, RDFS
 from rdflib.plugins.stores.sparqlstore import SPARQLConnector
+from typing import ClassVar, Callable, Type
+import pytest
+import re
 
-from test import helper
-from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
+from . import helper
+from .testutils import (
+    MockHTTPResponse,
+    ServedSimpleHTTPMock,
+)
 
 
 class TestSPARQLStoreGraph:

@@ -1,473 +1,386 @@
 # -*- coding=utf8 -*-
-import os
-import shutil
-import tempfile
+import unittest
 
-import pytest
-
-from rdflib import Graph, Namespace, plugin
+from rdflib import Graph, Namespace
 from rdflib.plugins.stores.auditable import AuditableStore
-from rdflib.store import VALID_STORE
 
 EX = Namespace("http://example.org/")
 
 
-def get_plugin_stores():
-    pluginstores = []
-
-    for s in plugin.plugins(None, plugin.Store):
-        if s.name in (
-            "default",
-            "Memory",
-            "Auditable",
-            "Concurrent",
-            "SimpleMemory",
-            "SPARQLStore",
-            "SPARQLUpdateStore",
-        ):
-            continue  # excluded from these tests
-
+class BaseTestAuditableStore(unittest.TestCase):
+    def assert_graph_equal(self, g1, g2):
         try:
-            graph = Graph(store=s.name)
-            pluginstores.append(s.name)
-        except ImportError:
-            pass
-    return pluginstores
-
-
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_graph(request):
-    storename = request.param
-
-    g = Graph(store=storename)
-
-    path = tempfile.mktemp()
-
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
-
-    rt = g.open(configuration=path, create=True)
-    assert rt == VALID_STORE, "The underlying store is corrupt"
-
-    g.add((EX.s0, EX.p0, EX.o0))
-    g.add((EX.s0, EX.p0, EX.o0bis))
-
-    t = Graph(AuditableStore(g.store), g.identifier)
-
-    yield g, t
-
-    g.close()
-
-    g.destroy(configuration=path)
-
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
-
-
-def test_add_commit(get_graph):
-    g, t = get_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-
-
-def test_remove_commit(get_graph):
-    g, t = get_graph
-    t.remove((EX.s0, EX.p0, EX.o0))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_multiple_remove_commit(get_graph):
-    g, t = get_graph
-    t.remove((EX.s0, EX.p0, None))
-    assert set(t) == set([])
-    t.commit()
-    assert set(g) == set([])
-
-
-def test_noop_add_commit(get_graph):
-    g, t = get_graph
-    t.add((EX.s0, EX.p0, EX.o0))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_noop_remove_commit(get_graph):
-    g, t = get_graph
-    t.add((EX.s0, EX.p0, EX.o0))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_add_remove_commit(get_graph):
-    g, t = get_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    t.remove((EX.s1, EX.p1, EX.o1))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_remove_add_commit(get_graph):
-    g, t = get_graph
-    t.remove((EX.s1, EX.p1, EX.o1))
-    t.add((EX.s1, EX.p1, EX.o1))
-    assert set(t) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-
-
-def test_add_rollback(get_graph):
-    g, t = get_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_remove_rollback(get_graph):
-    g, t = get_graph
-    t.remove((EX.s0, EX.p0, EX.o0))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_multiple_remove_rollback(get_graph):
-    g, t = get_graph
-    t.remove((EX.s0, EX.p0, None))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_noop_add_rollback(get_graph):
-    g, t = get_graph
-    t.add((EX.s0, EX.p0, EX.o0))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_noop_remove_rollback(get_graph):
-    g, t = get_graph
-    t.add((EX.s0, EX.p0, EX.o0))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_add_remove_rollback(get_graph):
-    g, t = get_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    t.remove((EX.s1, EX.p1, EX.o1))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_remove_add_rollback(get_graph):
-    g, t = get_graph
-    t.remove((EX.s1, EX.p1, EX.o1))
-    t.add((EX.s1, EX.p1, EX.o1))
-    t.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_empty_graph(request):
-    storename = request.param
-
-    path = tempfile.mktemp()
-
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
-
-    g = Graph(store=storename)
-    rt = g.open(configuration=path, create=True)
-    assert rt == VALID_STORE, "The underlying store is corrupt"
-
-    t = Graph(AuditableStore(g.store), g.identifier)
-
-    yield g, t
-    g.close()
-    g.destroy(configuration=path)
-
-
-def test_add_commit_empty(get_empty_graph):
-    g, t = get_empty_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    assert set(t) == set(
-        [
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-    t.commit()
-    assert set(g) == set(
-        [
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-
-
-def test_add_rollback_empty(get_empty_graph):
-    g, t = get_empty_graph
-    t.add((EX.s1, EX.p1, EX.o1))
-    t.rollback()
-    assert set(g) == set([])
-
-
-@pytest.fixture
-def get_concurrent_graph():
-    g = Graph()
-    g.add((EX.s0, EX.p0, EX.o0))
-    g.add((EX.s0, EX.p0, EX.o0bis))
-    t1 = Graph(AuditableStore(g.store), g.identifier)
-    t2 = Graph(AuditableStore(g.store), g.identifier)
-    t1.add((EX.s1, EX.p1, EX.o1))
-    t2.add((EX.s2, EX.p2, EX.o2))
-    t1.remove((EX.s0, EX.p0, EX.o0))
-    t2.remove((EX.s0, EX.p0, EX.o0bis))
-
-    yield g, t1, t2
-
-
-def test_commit_commit(get_concurrent_graph):
-    g, t1, t2 = get_concurrent_graph
-    t1.commit()
-    t2.commit()
-    assert set(g) == set(
-        [
-            (EX.s1, EX.p1, EX.o1),
-            (EX.s2, EX.p2, EX.o2),
-        ]
-    )
-
-
-def test_commit_rollback(get_concurrent_graph):
-    g, t1, t2 = get_concurrent_graph
-    t1.commit()
-    t2.rollback()
-    assert set(g) == set(
-        [
-            (EX.s1, EX.p1, EX.o1),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_rollback_commit(get_concurrent_graph):
-    g, t1, t2 = get_concurrent_graph
-    t1.rollback()
-    t2.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s2, EX.p2, EX.o2),
-        ]
-    )
-
-
-def test_rollback_rollback(get_concurrent_graph):
-    g, t1, t2 = get_concurrent_graph
-    t1.rollback()
-    t2.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-@pytest.fixture
-def get_embedded_graph():
-    g = Graph()
-    g.add((EX.s0, EX.p0, EX.o0))
-    g.add((EX.s0, EX.p0, EX.o0bis))
-
-    t1 = Graph(AuditableStore(g.store), g.identifier)
-    t1.add((EX.s1, EX.p1, EX.o1))
-    t1.remove((EX.s0, EX.p0, EX.o0bis))
-
-    t2 = Graph(AuditableStore(t1.store), t1.identifier)
-    t2.add((EX.s2, EX.p2, EX.o2))
-    t2.remove((EX.s1, EX.p1, EX.o1))
-
-    yield g, t1, t2
-
-
-def test_commit_commit_embedded(get_embedded_graph):
-    g, t1, t2 = get_embedded_graph
-    assert set(t2) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s2, EX.p2, EX.o2),
-        ]
-    )
-    t2.commit()
-    assert set(t1) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s2, EX.p2, EX.o2),
-        ]
-    )
-    t1.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s2, EX.p2, EX.o2),
-        ]
-    )
-
-
-def test_commit_rollback_embedded(get_embedded_graph):
-    g, t1, t2 = get_embedded_graph
-    t2.commit()
-    t1.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
-
-
-def test_rollback_commit_embedded(get_embedded_graph):
-    g, t1, t2 = get_embedded_graph
-    t2.rollback()
-    assert set(t1) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-    t1.commit()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s1, EX.p1, EX.o1),
-        ]
-    )
-
-
-def test_rollback_rollback_embedded(get_embedded_graph):
-    g, t1, t2 = get_embedded_graph
-    t2.rollback()
-    t1.rollback()
-    assert set(g) == set(
-        [
-            (EX.s0, EX.p0, EX.o0),
-            (EX.s0, EX.p0, EX.o0bis),
-        ]
-    )
+            return self.assertSetEqual(set(g1), set(g2))
+        except AttributeError:
+            # python2.6 does not have assertSetEqual
+            assert set(g1) == set(g2)
+
+
+class TestAuditableStore(BaseTestAuditableStore):
+    def setUp(self):
+        self.g = Graph()
+        self.g.add((EX.s0, EX.p0, EX.o0))
+        self.g.add((EX.s0, EX.p0, EX.o0bis))
+
+        self.t = Graph(AuditableStore(self.g.store), self.g.identifier)
+
+    def test_add_commit(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+
+    def test_remove_commit(self):
+        self.t.remove((EX.s0, EX.p0, EX.o0))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_multiple_remove_commit(self):
+        self.t.remove((EX.s0, EX.p0, None))
+        self.assert_graph_equal(self.t, [])
+        self.t.commit()
+        self.assert_graph_equal(self.g, [])
+
+    def test_noop_add_commit(self):
+        self.t.add((EX.s0, EX.p0, EX.o0))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_noop_remove_commit(self):
+        self.t.add((EX.s0, EX.p0, EX.o0))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_add_remove_commit(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.t.remove((EX.s1, EX.p1, EX.o1))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_remove_add_commit(self):
+        self.t.remove((EX.s1, EX.p1, EX.o1))
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+
+    def test_add_rollback(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_remove_rollback(self):
+        self.t.remove((EX.s0, EX.p0, EX.o0))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_multiple_remove_rollback(self):
+        self.t.remove((EX.s0, EX.p0, None))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_noop_add_rollback(self):
+        self.t.add((EX.s0, EX.p0, EX.o0))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_noop_remove_rollback(self):
+        self.t.add((EX.s0, EX.p0, EX.o0))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_add_remove_rollback(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.t.remove((EX.s1, EX.p1, EX.o1))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_remove_add_rollback(self):
+        self.t.remove((EX.s1, EX.p1, EX.o1))
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.t.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+
+class TestAuditableStoreEmptyGraph(BaseTestAuditableStore):
+    def setUp(self):
+        self.g = Graph()
+        self.t = Graph(AuditableStore(self.g.store), self.g.identifier)
+
+    def test_add_commit(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.assert_graph_equal(
+            self.t,
+            [
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+        self.t.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+
+    def test_add_rollback(self):
+        self.t.add((EX.s1, EX.p1, EX.o1))
+        self.t.rollback()
+        self.assert_graph_equal(self.g, [])
+
+
+class TestAuditableStoreConccurent(BaseTestAuditableStore):
+    def setUp(self):
+        self.g = Graph()
+        self.g.add((EX.s0, EX.p0, EX.o0))
+        self.g.add((EX.s0, EX.p0, EX.o0bis))
+        self.t1 = Graph(AuditableStore(self.g.store), self.g.identifier)
+        self.t2 = Graph(AuditableStore(self.g.store), self.g.identifier)
+        self.t1.add((EX.s1, EX.p1, EX.o1))
+        self.t2.add((EX.s2, EX.p2, EX.o2))
+        self.t1.remove((EX.s0, EX.p0, EX.o0))
+        self.t2.remove((EX.s0, EX.p0, EX.o0bis))
+
+    def test_commit_commit(self):
+        self.t1.commit()
+        self.t2.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s1, EX.p1, EX.o1),
+                (EX.s2, EX.p2, EX.o2),
+            ],
+        )
+
+    def test_commit_rollback(self):
+        self.t1.commit()
+        self.t2.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s1, EX.p1, EX.o1),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_rollback_commit(self):
+        self.t1.rollback()
+        self.t2.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s2, EX.p2, EX.o2),
+            ],
+        )
+
+    def test_rollback_rollback(self):
+        self.t1.rollback()
+        self.t2.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+
+class TestAuditableStoreEmbeded(BaseTestAuditableStore):
+    def setUp(self):
+        self.g = Graph()
+        self.g.add((EX.s0, EX.p0, EX.o0))
+        self.g.add((EX.s0, EX.p0, EX.o0bis))
+
+        self.t1 = Graph(AuditableStore(self.g.store), self.g.identifier)
+        self.t1.add((EX.s1, EX.p1, EX.o1))
+        self.t1.remove((EX.s0, EX.p0, EX.o0bis))
+
+        self.t2 = Graph(AuditableStore(self.t1.store), self.t1.identifier)
+        self.t2.add((EX.s2, EX.p2, EX.o2))
+        self.t2.remove((EX.s1, EX.p1, EX.o1))
+
+    def test_commit_commit(self):
+        self.assert_graph_equal(
+            self.t2,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s2, EX.p2, EX.o2),
+            ],
+        )
+        self.t2.commit()
+        self.assert_graph_equal(
+            self.t1,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s2, EX.p2, EX.o2),
+            ],
+        )
+        self.t1.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s2, EX.p2, EX.o2),
+            ],
+        )
+
+    def test_commit_rollback(self):
+        self.t2.commit()
+        self.t1.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
+
+    def test_rollback_commit(self):
+        self.t2.rollback()
+        self.assert_graph_equal(
+            self.t1,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+        self.t1.commit()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s1, EX.p1, EX.o1),
+            ],
+        )
+
+    def test_rollback_rollback(self):
+        self.t2.rollback()
+        self.t1.rollback()
+        self.assert_graph_equal(
+            self.g,
+            [
+                (EX.s0, EX.p0, EX.o0),
+                (EX.s0, EX.p0, EX.o0bis),
+            ],
+        )
