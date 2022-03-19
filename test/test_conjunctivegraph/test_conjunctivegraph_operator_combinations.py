@@ -4,17 +4,21 @@ from rdflib import (
     ConjunctiveGraph,
     URIRef,
 )
-from test.data import (
-    CONSISTENT_DATA_DIR,
-    michel,
-    tarek,
-    likes,
-    pizza,
-    cheese,
-)
+
+
+michel = URIRef("urn:example:michel")
+tarek = URIRef("urn:example:tarek")
+bob = URIRef("urn:example:bob")
+likes = URIRef("urn:example:likes")
+hates = URIRef("urn:example:hates")
+pizza = URIRef("urn:example:pizza")
+cheese = URIRef("urn:example:cheese")
+
+c1 = URIRef("urn:example:context-1")
+c2 = URIRef("urn:example:context-2")
 
 sportquadstrig = open(
-    os.path.join(CONSISTENT_DATA_DIR, "sportquads.trig")
+    os.path.join(os.path.dirname(__file__), "consistent_test_data", "sportquads.trig")
 ).read()
 
 

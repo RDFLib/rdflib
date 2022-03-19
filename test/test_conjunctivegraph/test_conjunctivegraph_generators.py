@@ -1,20 +1,19 @@
 import os
 from rdflib import ConjunctiveGraph, URIRef
-from test.data import (
-    CONSISTENT_DATA_DIR,
-    michel,
-    tarek,
-    bob,
-    likes,
-    hates,
-    pizza,
-    cheese,
-    context1,
-)
+
 
 timblcardn3 = open(
-    os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")
+    os.path.join(os.path.dirname(__file__), "consistent_test_data", "timbl-card.n3")
 ).read()
+
+
+michel = URIRef("urn:example:michel")
+tarek = URIRef("urn:example:tarek")
+bob = URIRef("urn:example:bob")
+likes = URIRef("urn:example:likes")
+hates = URIRef("urn:example:hates")
+pizza = URIRef("urn:example:pizza")
+cheese = URIRef("urn:example:cheese")
 
 
 def add_stuff(graph):
@@ -89,7 +88,7 @@ def test_parse_berners_lee_card_into_conjunctivegraph_default():
 
 
 def test_parse_berners_lee_card_into_named_graph():
-    graph = ConjunctiveGraph(identifier=context1)
+    graph = ConjunctiveGraph(identifier=URIRef("context-1"))
     graph.parse(data=timblcardn3, format="n3")
     assert len(list(graph.subjects())) == no_of_statements_in_card
     assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects

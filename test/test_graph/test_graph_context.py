@@ -1,381 +1,389 @@
+import sys
 import os
+import unittest
+
+from tempfile import mkdtemp, mkstemp
 import shutil
-import tempfile
 
 import pytest
+from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
 
-from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
-from rdflib.store import VALID_STORE
+class ContextTestCase(unittest.TestCase):
+    store = "default"
+    slow = True
+    tmppath = None
 
-michel = URIRef("urn:example:michel")
-tarek = URIRef("urn:example:tarek")
-bob = URIRef("urn:example:bob")
-likes = URIRef("urn:example:likes")
-hates = URIRef("urn:example:hates")
-pizza = URIRef("urn:example:pizza")
-cheese = URIRef("urn:example:cheese")
+    def setUp(self):
+        try:
+            self.graph = ConjunctiveGraph(store=self.store)
+        except ImportError:
+            pytest.skip("Dependencies for store '%s' not available!" % self.store)
+        if self.store == "SQLite":
+            _, self.tmppath = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
+        else:
+            self.tmppath = mkdtemp()
+        self.graph.open(self.tmppath, create=True)
+        self.michel = URIRef("michel")
+        self.tarek = URIRef("tarek")
+        self.bob = URIRef("bob")
+        self.likes = URIRef("likes")
+        self.hates = URIRef("hates")
+        self.pizza = URIRef("pizza")
+        self.cheese = URIRef("cheese")
 
-c1 = URIRef("urn:example:context-1")
-c2 = URIRef("urn:example:context-2")
+        self.c1 = URIRef("context-1")
+        self.c2 = URIRef("context-2")
+
+        # delete the graph for each test!
+        self.graph.remove((None, None, None))
+
+    def tearDown(self):
+        self.graph.close()
+        if os.path.isdir(self.tmppath):
+            shutil.rmtree(self.tmppath)
+        else:
+            os.remove(self.tmppath)
+
+    def addStuff(self):
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        c1 = self.c1
+        graph = Graph(self.graph.store, c1)
+
+        graph.add((tarek, likes, pizza))
+        graph.add((tarek, likes, cheese))
+        graph.add((michel, likes, pizza))
+        graph.add((michel, likes, cheese))
+        graph.add((bob, likes, cheese))
+        graph.add((bob, hates, pizza))
+        graph.add((bob, hates, michel))  # gasp!
+
+    def removeStuff(self):
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        c1 = self.c1
+        graph = Graph(self.graph.store, c1)
+
+        graph.remove((tarek, likes, pizza))
+        graph.remove((tarek, likes, cheese))
+        graph.remove((michel, likes, pizza))
+        graph.remove((michel, likes, cheese))
+        graph.remove((bob, likes, cheese))
+        graph.remove((bob, hates, pizza))
+        graph.remove((bob, hates, michel))  # gasp!
+
+    def addStuffInMultipleContexts(self):
+        c1 = self.c1
+        c2 = self.c2
+        triple = (self.pizza, self.hates, self.tarek)  # revenge!
+
+        # add to default context
+        self.graph.add(triple)
+        # add to context 1
+        graph = Graph(self.graph.store, c1)
+        graph.add(triple)
+        # add to context 2
+        graph = Graph(self.graph.store, c2)
+        graph.add(triple)
+
+    def testConjunction(self):
+        if self.store == "SQLite":
+            pytest.skip("Skipping known issue with __len__")
+        self.addStuffInMultipleContexts()
+        triple = (self.pizza, self.likes, self.pizza)
+        # add to context 1
+        graph = Graph(self.graph.store, self.c1)
+        graph.add(triple)
+        self.assertEqual(len(self.graph), len(graph))
+
+    def testAdd(self):
+        self.addStuff()
+
+    def testRemove(self):
+        self.addStuff()
+        self.removeStuff()
+
+    def testLenInOneContext(self):
+        c1 = self.c1
+        # make sure context is empty
+
+        self.graph.remove_context(self.graph.get_context(c1))
+        graph = Graph(self.graph.store, c1)
+        oldLen = len(self.graph)
+
+        for i in range(0, 10):
+            graph.add((BNode(), self.hates, self.hates))
+        self.assertEqual(len(graph), oldLen + 10)
+        self.assertEqual(len(self.graph.get_context(c1)), oldLen + 10)
+        self.graph.remove_context(self.graph.get_context(c1))
+        self.assertEqual(len(self.graph), oldLen)
+        self.assertEqual(len(graph), 0)
+
+    def testLenInMultipleContexts(self):
+        if self.store == "SQLite":
+            pytest.skip("Skipping known issue with __len__")
+        oldLen = len(self.graph)
+        self.addStuffInMultipleContexts()
+
+        # addStuffInMultipleContexts is adding the same triple to
+        # three different contexts. So it's only + 1
+        self.assertEqual(len(self.graph), oldLen + 1)
+
+        graph = Graph(self.graph.store, self.c1)
+        self.assertEqual(len(graph), oldLen + 1)
+
+    def testRemoveInMultipleContexts(self):
+        c1 = self.c1
+        c2 = self.c2
+        triple = (self.pizza, self.hates, self.tarek)  # revenge!
+
+        self.addStuffInMultipleContexts()
+
+        # triple should be still in store after removing it from c1 + c2
+        self.assertTrue(triple in self.graph)
+        graph = Graph(self.graph.store, c1)
+        graph.remove(triple)
+        self.assertTrue(triple in self.graph)
+        graph = Graph(self.graph.store, c2)
+        graph.remove(triple)
+        self.assertTrue(triple in self.graph)
+        self.graph.remove(triple)
+        # now gone!
+        self.assertTrue(triple not in self.graph)
+
+        # add again and see if remove without context removes all triples!
+        self.addStuffInMultipleContexts()
+        self.graph.remove(triple)
+        self.assertTrue(triple not in self.graph)
+
+    def testContexts(self):
+        triple = (self.pizza, self.hates, self.tarek)  # revenge!
+
+        self.addStuffInMultipleContexts()
+
+        def cid(c):
+            return c.identifier
+
+        self.assertTrue(self.c1 in map(cid, self.graph.contexts()))
+        self.assertTrue(self.c2 in map(cid, self.graph.contexts()))
+
+        contextList = list(map(cid, list(self.graph.contexts(triple))))
+        self.assertTrue(self.c1 in contextList, (self.c1, contextList))
+        self.assertTrue(self.c2 in contextList, (self.c2, contextList))
+
+    def testRemoveContext(self):
+        c1 = self.c1
+
+        self.addStuffInMultipleContexts()
+        self.assertEqual(len(Graph(self.graph.store, c1)), 1)
+        self.assertEqual(len(self.graph.get_context(c1)), 1)
+
+        self.graph.remove_context(self.graph.get_context(c1))
+        self.assertTrue(self.c1 not in self.graph.contexts())
+
+    def testRemoveAny(self):
+        Any = None
+        self.addStuffInMultipleContexts()
+        self.graph.remove((Any, Any, Any))
+        self.assertEqual(len(self.graph), 0)
+
+    def testTriples(self):
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        c1 = self.c1
+        asserte = self.assertEqual
+        triples = self.graph.triples
+        graph = self.graph
+        c1graph = Graph(self.graph.store, c1)
+        c1triples = c1graph.triples
+        Any = None
+
+        self.addStuff()
+
+        # unbound subjects with context
+        asserte(len(list(c1triples((Any, likes, pizza)))), 2)
+        asserte(len(list(c1triples((Any, hates, pizza)))), 1)
+        asserte(len(list(c1triples((Any, likes, cheese)))), 3)
+        asserte(len(list(c1triples((Any, hates, cheese)))), 0)
+
+        # unbound subjects without context, same results!
+        asserte(len(list(triples((Any, likes, pizza)))), 2)
+        asserte(len(list(triples((Any, hates, pizza)))), 1)
+        asserte(len(list(triples((Any, likes, cheese)))), 3)
+        asserte(len(list(triples((Any, hates, cheese)))), 0)
+
+        # unbound objects with context
+        asserte(len(list(c1triples((michel, likes, Any)))), 2)
+        asserte(len(list(c1triples((tarek, likes, Any)))), 2)
+        asserte(len(list(c1triples((bob, hates, Any)))), 2)
+        asserte(len(list(c1triples((bob, likes, Any)))), 1)
+
+        # unbound objects without context, same results!
+        asserte(len(list(triples((michel, likes, Any)))), 2)
+        asserte(len(list(triples((tarek, likes, Any)))), 2)
+        asserte(len(list(triples((bob, hates, Any)))), 2)
+        asserte(len(list(triples((bob, likes, Any)))), 1)
+
+        # unbound predicates with context
+        asserte(len(list(c1triples((michel, Any, cheese)))), 1)
+        asserte(len(list(c1triples((tarek, Any, cheese)))), 1)
+        asserte(len(list(c1triples((bob, Any, pizza)))), 1)
+        asserte(len(list(c1triples((bob, Any, michel)))), 1)
+
+        # unbound predicates without context, same results!
+        asserte(len(list(triples((michel, Any, cheese)))), 1)
+        asserte(len(list(triples((tarek, Any, cheese)))), 1)
+        asserte(len(list(triples((bob, Any, pizza)))), 1)
+        asserte(len(list(triples((bob, Any, michel)))), 1)
+
+        # unbound subject, objects with context
+        asserte(len(list(c1triples((Any, hates, Any)))), 2)
+        asserte(len(list(c1triples((Any, likes, Any)))), 5)
+
+        # unbound subject, objects without context, same results!
+        asserte(len(list(triples((Any, hates, Any)))), 2)
+        asserte(len(list(triples((Any, likes, Any)))), 5)
+
+        # unbound predicates, objects with context
+        asserte(len(list(c1triples((michel, Any, Any)))), 2)
+        asserte(len(list(c1triples((bob, Any, Any)))), 3)
+        asserte(len(list(c1triples((tarek, Any, Any)))), 2)
+
+        # unbound predicates, objects without context, same results!
+        asserte(len(list(triples((michel, Any, Any)))), 2)
+        asserte(len(list(triples((bob, Any, Any)))), 3)
+        asserte(len(list(triples((tarek, Any, Any)))), 2)
+
+        # unbound subjects, predicates with context
+        asserte(len(list(c1triples((Any, Any, pizza)))), 3)
+        asserte(len(list(c1triples((Any, Any, cheese)))), 3)
+        asserte(len(list(c1triples((Any, Any, michel)))), 1)
+
+        # unbound subjects, predicates without context, same results!
+        asserte(len(list(triples((Any, Any, pizza)))), 3)
+        asserte(len(list(triples((Any, Any, cheese)))), 3)
+        asserte(len(list(triples((Any, Any, michel)))), 1)
+
+        # all unbound with context
+        asserte(len(list(c1triples((Any, Any, Any)))), 7)
+        # all unbound without context, same result!
+        asserte(len(list(triples((Any, Any, Any)))), 7)
+
+        for c in [graph, self.graph.get_context(c1)]:
+            # unbound subjects
+            asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
+            asserte(set(c.subjects(hates, pizza)), set((bob,)))
+            asserte(set(c.subjects(likes, cheese)), set([tarek, bob, michel]))
+            asserte(set(c.subjects(hates, cheese)), set())
+
+            # unbound objects
+            asserte(set(c.objects(michel, likes)), set([cheese, pizza]))
+            asserte(set(c.objects(tarek, likes)), set([cheese, pizza]))
+            asserte(set(c.objects(bob, hates)), set([michel, pizza]))
+            asserte(set(c.objects(bob, likes)), set([cheese]))
+
+            # unbound predicates
+            asserte(set(c.predicates(michel, cheese)), set([likes]))
+            asserte(set(c.predicates(tarek, cheese)), set([likes]))
+            asserte(set(c.predicates(bob, pizza)), set([hates]))
+            asserte(set(c.predicates(bob, michel)), set([hates]))
+
+            asserte(set(c.subject_objects(hates)), set([(bob, pizza), (bob, michel)]))
+            asserte(
+                set(c.subject_objects(likes)),
+                set(
+                    [
+                        (tarek, cheese),
+                        (michel, cheese),
+                        (michel, pizza),
+                        (bob, cheese),
+                        (tarek, pizza),
+                    ]
+                ),
+            )
+
+            asserte(
+                set(c.predicate_objects(michel)), set([(likes, cheese), (likes, pizza)])
+            )
+            asserte(
+                set(c.predicate_objects(bob)),
+                set([(likes, cheese), (hates, pizza), (hates, michel)]),
+            )
+            asserte(
+                set(c.predicate_objects(tarek)), set([(likes, cheese), (likes, pizza)])
+            )
+
+            asserte(
+                set(c.subject_predicates(pizza)),
+                set([(bob, hates), (tarek, likes), (michel, likes)]),
+            )
+            asserte(
+                set(c.subject_predicates(cheese)),
+                set([(bob, likes), (tarek, likes), (michel, likes)]),
+            )
+            asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
+
+            asserte(
+                set(c),
+                set(
+                    [
+                        (bob, hates, michel),
+                        (bob, likes, cheese),
+                        (tarek, likes, pizza),
+                        (michel, likes, pizza),
+                        (michel, likes, cheese),
+                        (bob, hates, pizza),
+                        (tarek, likes, cheese),
+                    ]
+                ),
+            )
+
+        # remove stuff and make sure the graph is empty again
+        self.removeStuff()
+        asserte(len(list(c1triples((Any, Any, Any)))), 0)
+        asserte(len(list(triples((Any, Any, Any)))), 0)
 
 
-pluginstores = []
+# dynamically create classes for each registered Store
+pluginname = None
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        pluginname = sys.argv[1]
 
-for s in plugin.plugins(None, plugin.Store):
+tests = 0
+for s in plugin.plugins(pluginname, plugin.Store):
     if s.name in (
         "default",
         "Memory",
         "Auditable",
         "Concurrent",
-        "SimpleMemory",
         "SPARQLStore",
         "SPARQLUpdateStore",
     ):
-        continue  # inappropriate for these tests
+        continue  # these are tested by default
+    if not s.getClass().context_aware:
+        continue
 
-    pluginstores.append(s.name)
+    locals()["t%d" % tests] = type(
+        "%sContextTestCase" % s.name, (ContextTestCase,), {"store": s.name}
+    )
+    tests += 1
 
 
-@pytest.fixture(
-    scope="function",
-    params=pluginstores,
-)
-def get_graph(request):
-    store = request.param
-    path = tempfile.mktemp()
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
-
-    try:
-        graph = ConjunctiveGraph(store=store)
-    except ImportError:
-        pytest.skip("Dependencies for store '%s' not available!" % store)
-
-    if store != "default":
-        rt = graph.open(configuration=path, create=True)
-        assert rt == VALID_STORE, "The underlying store is corrupt"
-
-    assert (
-        len(graph) == 0
-    ), "There must be zero triples in the graph just after store (file) creation"
-
-    yield graph
-
-    graph.close()
-    graph.store.destroy(path)
-
-    if os.path.isdir(path):
-        shutil.rmtree(path)
-    elif os.path.exists(path):
-        os.remove(path)
-
-
-def populate_c1(graph):
-    context1 = Graph(graph.store, c1)
-
-    context1.add((tarek, likes, pizza))
-    context1.add((tarek, likes, cheese))
-    context1.add((michel, likes, pizza))
-    context1.add((michel, likes, cheese))
-    context1.add((bob, likes, cheese))
-    context1.add((bob, hates, pizza))
-    context1.add((bob, hates, michel))  # gasp!
-
-
-def depopulate_c1(graph):
-    context1 = Graph(graph.store, c1)
-
-    context1.remove((tarek, likes, pizza))
-    context1.remove((tarek, likes, cheese))
-    context1.remove((michel, likes, pizza))
-    context1.remove((michel, likes, cheese))
-    context1.remove((bob, likes, cheese))
-    context1.remove((bob, hates, pizza))
-    context1.remove((bob, hates, michel))  # gasp!
-
-
-def add_triple_to_default_context_context1_and_context2(graph):
-    triple = (pizza, hates, tarek)  # revenge!
-
-    # add to default context
-    graph.add(triple)
-
-    # add to context 1
-    context1 = Graph(graph.store, c1)
-    context1.add(triple)
-
-    # add to context 2
-    context2 = Graph(graph.store, c2)
-    context2.add(triple)
-
-
-def test_conjunction(get_graph):
-    graph = get_graph
-
-    if graph.store == "Shelf":
-        pytest.skip("Skipping known issue with __len__")
-
-    add_triple_to_default_context_context1_and_context2(graph)
-    triple = (pizza, likes, pizza)
-
-    # add to context 1
-    context1 = Graph(graph.store, c1)
-    context1.add(triple)
-    assert len(context1) == len(graph)
-
-
-def test_add(get_graph):
-    graph = get_graph
-
-    populate_c1(graph)
-
-
-def test_remove(get_graph):
-    graph = get_graph
-
-    populate_c1(graph)
-    depopulate_c1(graph)
-
-
-def test_len_in_one_context(get_graph):
-    graph = get_graph
-    # make sure context is empty
-
-    graph.remove_context(graph.get_context(c1))
-    context1 = Graph(graph.store, c1)
-    oldLen = len(graph)
-
-    for i in range(0, 10):
-        context1.add((BNode(), hates, hates))
-    assert len(context1) == oldLen + 10
-
-    assert len(graph.get_context(c1)) == oldLen + 10
-
-    graph.remove_context(graph.get_context(c1))
-
-    assert len(graph) == oldLen
-    assert len(graph) == 0
-
-
-def test_len_in_multiple_contexts(get_graph):
-    graph = get_graph
-
-    if graph.store == "Shelf":
-        pytest.skip("Skipping known issue with __len__")
-
-    oldLen = len(graph)
-    add_triple_to_default_context_context1_and_context2(graph)
-
-    # add_triple_to_default_context_context1_and_context2 is adding the same triple to
-    # three different contexts. So it's only + 1
-    assert len(graph) == oldLen + 1
-
-    context1 = Graph(graph.store, c1)
-    assert len(context1) == oldLen + 1
-
-
-def test_remove_in_multiple_contexts(get_graph):
-    graph = get_graph
-
-    triple = (pizza, hates, tarek)  # revenge!
-
-    add_triple_to_default_context_context1_and_context2(graph)
-
-    # triple should be still in store after removing it from c1 + c2
-    assert triple in graph
-    context1 = Graph(graph.store, c1)
-    context1.remove(triple)
-
-    assert triple in graph
-    context2 = Graph(graph.store, c2)
-    context2.remove(triple)
-    assert triple in graph
-    graph.remove(triple)
-    # now gone!
-    assert triple not in graph
-
-    # add again and see if remove without context removes all triples!
-    add_triple_to_default_context_context1_and_context2(graph)
-    graph.remove(triple)
-    assert triple not in graph
-
-
-def test_contexts(get_graph):
-    graph = get_graph
-    triple = (pizza, hates, tarek)  # revenge!
-
-    add_triple_to_default_context_context1_and_context2(graph)
-
-    def cid(c):
-        return c.identifier
-
-    assert c1 in map(cid, graph.contexts())
-    assert c2 in map(cid, graph.contexts())
-
-    contextList = list(map(cid, list(graph.contexts(triple))))
-    assert c1 in contextList, (c1, contextList)
-    assert c2 in contextList, (c2, contextList)
-
-
-def test_remove_context(get_graph):
-    graph = get_graph
-
-    add_triple_to_default_context_context1_and_context2(graph)
-
-    assert len(Graph(graph.store, c1)) == 1
-    assert len(graph.get_context(c1)) == 1
-
-    graph.remove_context(graph.get_context(c1))
-    assert c1 not in graph.contexts()
-
-
-def test_remove_any(get_graph):
-    graph = get_graph
-    Any = None
-    add_triple_to_default_context_context1_and_context2(graph)
-    graph.remove((Any, Any, Any))
-    assert len(graph) == 0
-
-
-def test_triples(get_graph):
-    graph = get_graph
-
-    triples = graph.triples
-    Any = None
-    populate_c1(graph)
-
-    context1 = Graph(graph.store, c1)
-    context1triples = context1.triples
-
-    # unbound subjects with context
-    assert len(list(context1triples((Any, likes, pizza)))) == 2, graph.store
-    assert len(list(context1triples((Any, hates, pizza)))) == 1
-    assert len(list(context1triples((Any, likes, cheese)))) == 3
-    assert len(list(context1triples((Any, hates, cheese)))) == 0
-
-    # unbound subjects without context, same results!
-    assert len(list(triples((Any, likes, pizza)))) == 2
-    assert len(list(triples((Any, hates, pizza)))) == 1
-    assert len(list(triples((Any, likes, cheese)))) == 3
-    assert len(list(triples((Any, hates, cheese)))) == 0
-
-    # unbound objects with context
-    assert len(list(context1triples((michel, likes, Any)))) == 2
-    assert len(list(context1triples((tarek, likes, Any)))) == 2
-    assert len(list(context1triples((bob, hates, Any)))) == 2
-    assert len(list(context1triples((bob, likes, Any)))) == 1
-
-    # unbound objects without context, same results!
-    assert len(list(triples((michel, likes, Any)))) == 2
-    assert len(list(triples((tarek, likes, Any)))) == 2
-    assert len(list(triples((bob, hates, Any)))) == 2
-    assert len(list(triples((bob, likes, Any)))) == 1
-
-    # unbound predicates with context
-    assert len(list(context1triples((michel, Any, cheese)))) == 1
-    assert len(list(context1triples((tarek, Any, cheese)))) == 1
-    assert len(list(context1triples((bob, Any, pizza)))) == 1
-    assert len(list(context1triples((bob, Any, michel)))) == 1
-
-    # unbound predicates without context, same results!
-    assert len(list(triples((michel, Any, cheese)))) == 1
-    assert len(list(triples((tarek, Any, cheese)))) == 1
-    assert len(list(triples((bob, Any, pizza)))) == 1
-    assert len(list(triples((bob, Any, michel)))) == 1
-
-    # unbound subject, objects with context
-    assert len(list(context1triples((Any, hates, Any)))) == 2
-    assert len(list(context1triples((Any, likes, Any)))) == 5
-
-    # unbound subject, objects without context, same results!
-    assert len(list(triples((Any, hates, Any)))) == 2
-    assert len(list(triples((Any, likes, Any)))) == 5
-
-    # unbound predicates, objects with context
-    assert len(list(context1triples((michel, Any, Any)))) == 2
-    assert len(list(context1triples((bob, Any, Any)))) == 3
-    assert len(list(context1triples((tarek, Any, Any)))) == 2
-
-    # unbound predicates, objects without context, same results!
-    assert len(list(triples((michel, Any, Any)))) == 2
-    assert len(list(triples((bob, Any, Any)))) == 3
-    assert len(list(triples((tarek, Any, Any)))) == 2
-
-    # unbound subjects, predicates with context
-    assert len(list(context1triples((Any, Any, pizza)))) == 3
-    assert len(list(context1triples((Any, Any, cheese)))) == 3
-    assert len(list(context1triples((Any, Any, michel)))) == 1
-
-    # unbound subjects, predicates without context, same results!
-    assert len(list(triples((Any, Any, pizza)))) == 3
-    assert len(list(triples((Any, Any, cheese)))) == 3
-    assert len(list(triples((Any, Any, michel)))) == 1
-
-    # all unbound with context
-    assert len(list(context1triples((Any, Any, Any)))) == 7
-    # all unbound without context, same result!
-    assert len(list(triples((Any, Any, Any)))) == 7
-
-    for c in [graph, graph.get_context(c1)]:
-        # unbound subjects
-        assert set(c.subjects(likes, pizza)) == set((michel, tarek))
-        assert set(c.subjects(hates, pizza)) == set((bob,))
-        assert set(c.subjects(likes, cheese)) == set([tarek, bob, michel])
-        assert set(c.subjects(hates, cheese)) == set()
-
-        # unbound objects
-        assert set(c.objects(michel, likes)) == set([cheese, pizza])
-        assert set(c.objects(tarek, likes)) == set([cheese, pizza])
-        assert set(c.objects(bob, hates)) == set([michel, pizza])
-        assert set(c.objects(bob, likes)) == set([cheese])
-
-        # unbound predicates
-        assert set(c.predicates(michel, cheese)) == set([likes])
-        assert set(c.predicates(tarek, cheese)) == set([likes])
-        assert set(c.predicates(bob, pizza)) == set([hates])
-        assert set(c.predicates(bob, michel)) == set([hates])
-
-        assert set(c.subject_objects(hates)) == set([(bob, pizza), (bob, michel)])
-        assert set(c.subject_objects(likes)) == set(
-            [
-                (tarek, cheese),
-                (michel, cheese),
-                (michel, pizza),
-                (bob, cheese),
-                (tarek, pizza),
-            ]
-        )
-
-        assert set(c.predicate_objects(michel)) == set(
-            [(likes, cheese), (likes, pizza)]
-        )
-        assert set(c.predicate_objects(bob)) == set(
-            [(likes, cheese), (hates, pizza), (hates, michel)]
-        )
-        assert set(c.predicate_objects(tarek)) == set([(likes, cheese), (likes, pizza)])
-
-        assert set(c.subject_predicates(pizza)) == set(
-            [(bob, hates), (tarek, likes), (michel, likes)]
-        )
-        assert set(c.subject_predicates(cheese)) == set(
-            [(bob, likes), (tarek, likes), (michel, likes)]
-        )
-        assert set(c.subject_predicates(michel)) == set([(bob, hates)])
-
-        assert set(c) == set(
-            [
-                (bob, hates, michel),
-                (bob, likes, cheese),
-                (tarek, likes, pizza),
-                (michel, likes, pizza),
-                (michel, likes, cheese),
-                (bob, hates, pizza),
-                (tarek, likes, cheese),
-            ]
-        )
-    # remove stuff and make sure the graph is empty again
-    depopulate_c1(graph)
-    assert len(list(context1triples((Any, Any, Any)))) == 0
-    assert len(list(triples((Any, Any, Any)))) == 0
+if __name__ == "__main__":
+    unittest.main()
