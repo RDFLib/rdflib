@@ -1,7 +1,7 @@
 from rdflib.graph import ConjunctiveGraph
 from typing import ClassVar
 from rdflib import Namespace
-from .testutils import MockHTTPResponse, ServedSimpleHTTPMock
+from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
 import unittest
 
 EG = Namespace("http://example.org/")
