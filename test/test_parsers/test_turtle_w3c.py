@@ -11,7 +11,7 @@ from rdflib.term import Node, URIRef
 
 from test.manifest import RDFT, RDFTest, read_manifest
 import pytest
-from .testutils import file_uri_to_path
+from test.testutils import file_uri_to_path
 
 verbose = False
 

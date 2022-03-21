@@ -11,7 +11,7 @@ import itertools
 
 from rdflib.graph import ConjunctiveGraph
 
-from .testutils import GraphHelper
+from test.testutils import GraphHelper
 
 
 @pytest.mark.parametrize(

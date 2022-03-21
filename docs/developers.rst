@@ -13,9 +13,59 @@ developing RDFLib code.
 * Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v22.1.0, with the black config in ``pyproject.toml``.
 * Code should also pass `flake8 <https://github.com/psf/black>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
-* You must supply tests for new code
+* You must supply tests for new code.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
+
+Pull Requests Guidelines
+------------------------
+
+Contributions to RDFLib are made through pull requests (PRs).
+
+In general, maintainers will only merge PRs if the following conditions are
+met:
+
+* The PR has been sufficiently reviewed.
+
+  Each PR should be reviewed and approved by at least two people other than the
+  author of the PR before it is merged and PRs will be processed faster if
+  they are easier to review and approve of.
+
+  Reviews are open to everyone, but the weight assigned to any particular
+  review is at the discretion of maintainers.
+
+* Changes that have a runtime impact are covered by unit tests.
+
+  There should either be existing tests that cover the changed code and
+  behaviour, or the PR should include tests. For more information about what is
+  considered adequate testing see the :ref:`Tests section <Tests>`.
+
+* Documentation that covers something that changed has been updated.
+
+* Type checks and unit tests that are part of our continuous integration
+  workflow pass.
+
+In addition to these conditions, PRs that are easier to review and approve will
+be processed quicker. The primary factors that determine this is the scope and
+size of a PR. If there are few changes and the scope is limited then there is
+less that a reviewer has to understand and less that they can disagree with. It
+is thus important to try and split up your changes into multiple independent
+PRs if possible. No PR is too small.
+
+For PRs that introduce breaking changes, it is even more critical that they are
+limited in size and scope, as they will likely have to be kept up to date with
+the master branch of this project for some time before they are merged.
+
+It is also critical that your PR is understandable both in what it does and why
+it does it, and how the change will impact the users of this project, for this
+reason it is essential that your PR's description explains the nature of the
+PR, what the PR intends to do, why this is desirable, and how this will affect
+the users of this project.
+
+Please note that while we would like all PRs to follow the guidelines given
+here, we will not reject a PR just because it does not.
+
+.. Tests:
 
 Tests
 -----
