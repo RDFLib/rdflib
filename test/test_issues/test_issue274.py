@@ -1,4 +1,4 @@
-from .testutils import eq_
+from test.testutils import eq_
 from unittest import TestCase
 import pytest
 

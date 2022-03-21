@@ -40,7 +40,7 @@ def test_small_string_cg():
 
 
 def test_small_file_singlegraph():
-    d = Dataset().parse(Path(__file__).parent / "test_parser_hext_singlegraph.ndjson", format="hext")
+    d = Dataset().parse(Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_singlegraph.ndjson", format="hext")
     assert len(d) == 10
 
 
@@ -48,7 +48,7 @@ def test_small_file_multigraph():
     d = Dataset()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
         publicID=d.default_context.identifier
     )
@@ -68,7 +68,7 @@ def test_small_file_multigraph_cg():
     d = ConjunctiveGraph()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
         publicID=d.default_context.identifier
     )

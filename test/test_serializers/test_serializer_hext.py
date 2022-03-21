@@ -234,7 +234,7 @@ def test_hext_dataset_linecount():
     d = Dataset()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
         publicID=d.default_context.identifier
     )
@@ -253,12 +253,12 @@ def test_hext_dataset_linecount():
 def test_roundtrip():
     d = Dataset()
     d.parse(
-        Path(__file__).parent / "test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
         publicID=d.default_context.identifier
     )
     d.default_union = True
-    with open(str(Path(__file__).parent / "test_parser_hext_multigraph.ndjson")) as i:
+    with open(str(Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson")) as i:
         ordered_input = "".join(sorted(i.readlines())).strip()
 
     ordered_output = "\n".join(sorted(d.serialize(format="hext").split("\n"))).strip()
