@@ -203,7 +203,13 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         return Literal(value, language, datatype)
     elif s == "true" or s == "false":
         return Literal(s == "true")
-    elif s.lower().replace('.','').replace('-','').replace('e','').isnumeric():
+    elif (
+        s.lower()
+        .replace('.', '', 1)
+        .replace('-', '', 1)
+        .replace('e', '', 1)
+        .isnumeric()
+    ):
         if "." in s:
             return (
                 Literal(s, datatype=XSD.double)
