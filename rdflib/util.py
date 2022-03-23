@@ -46,7 +46,7 @@ from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import SubjectTypeError
 import rdflib.graph  # avoid circular dependency
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, XSD
 from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
 from rdflib.term import Literal
@@ -203,8 +203,19 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         return Literal(value, language, datatype)
     elif s == "true" or s == "false":
         return Literal(s == "true")
-    elif s.isdigit():
-        return Literal(int(s))
+    elif s.lower().replace('.','').replace('-','').replace('e','').isnumeric():
+        if "." in s:
+            return (
+                Literal(s, datatype=XSD.double)
+                if "e" in s.lower()
+                else Literal(float(s), datatype=XSD.decimal)
+            )
+        else:
+            return (
+                Literal(s, datatype=XSD.double)
+                if "e" in s.lower()
+                else Literal(int(s), datatype=XSD.integer)
+            )
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.QuotedGraph(backend, identifier)
