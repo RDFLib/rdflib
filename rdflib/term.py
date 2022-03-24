@@ -608,10 +608,12 @@ class Literal(Identifier):
             # passed a string
             # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
-            if datatype and datatype in _check_well_formed_types:
-                checker = _check_well_formed_types[datatype]
-                well_formed = checker(lexical_or_value, value)
-                ill_formed = ill_formed or (not well_formed)
+            if datatype:
+                dt_uri: URIRef = URIRef(datatype)
+                if dt_uri in _check_well_formed_types:
+                    checker = _check_well_formed_types[dt_uri]
+                    well_formed = checker(lexical_or_value, value)
+                    ill_formed = ill_formed or (not well_formed)
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -1499,7 +1501,7 @@ def _parseBoolean(value: Union[str, bytes]) -> bool:
     return False
 
 
-def _well_formed_by_value(lexical: Union[str, bytes], value: Any):
+def _well_formed_by_value(lexical: Union[str, bytes], value: Any) -> bool:
     return value is not None
 
 
@@ -1519,7 +1521,7 @@ def _well_formed_boolean(lexical: Union[str, bytes], value: Any) -> bool:
     return lexical in ("true", b"true", "false", b"false", "1", b"1", "0", b"0")
 
 
-def _well_formed_int(lexical: Union[str, bytes], value: Any):
+def _well_formed_int(lexical: Union[str, bytes], value: Any) -> bool:
     """
     The value space of xs:int is the set of common single size integers (32 bits),
     i.e., the integers between -2147483648 and 2147483647,
@@ -1532,14 +1534,14 @@ def _well_formed_int(lexical: Union[str, bytes], value: Any):
     )
 
 
-def _well_formed_unsignedint(lexical: Union[str, bytes], value: Any):
+def _well_formed_unsignedint(lexical: Union[str, bytes], value: Any) -> bool:
     """
     xsd:unsignedInt has a 32bit value of between 0 and 4294967295
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 4294967295)
 
 
-def _well_formed_short(lexical: Union[str, bytes], value: Any):
+def _well_formed_short(lexical: Union[str, bytes], value: Any) -> bool:
     """
     The value space of xs:short is the set of common short integers (16 bits),
     i.e., the integers between -2147483648 and 2147483647,
@@ -1548,14 +1550,14 @@ def _well_formed_short(lexical: Union[str, bytes], value: Any):
     return len(lexical) > 0 and isinstance(value, int) and (-32768 <= value <= 32767)
 
 
-def _well_formed_unsignedshort(lexical: Union[str, bytes], value: Any):
+def _well_formed_unsignedshort(lexical: Union[str, bytes], value: Any) -> bool:
     """
     xsd:unsignedShort has a 16bit value of between 0 and 65535
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 65535)
 
 
-def _well_formed_byte(lexical: Union[str, bytes], value: Any):
+def _well_formed_byte(lexical: Union[str, bytes], value: Any) -> bool:
     """
     The value space of xs:byte is the set of common single byte integers (8 bits),
     i.e., the integers between -128 and 127,
@@ -1564,26 +1566,26 @@ def _well_formed_byte(lexical: Union[str, bytes], value: Any):
     return len(lexical) > 0 and isinstance(value, int) and (-128 <= value <= 127)
 
 
-def _well_formed_unsignedbyte(lexical: Union[str, bytes], value: Any):
+def _well_formed_unsignedbyte(lexical: Union[str, bytes], value: Any) -> bool:
     """
     xsd:unsignedByte has a 8bit value of between 0 and 255
     """
     return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 255)
 
 
-def _well_formed_non_negative_integer(lexical: Union[str, bytes], value: Any):
+def _well_formed_non_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
     return isinstance(value, int) and value >= 0
 
 
-def _well_formed_positive_integer(lexical: Union[str, bytes], value: Any):
+def _well_formed_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
     return isinstance(value, int) and value > 0
 
 
-def _well_formed_non_positive_integer(lexical: Union[str, bytes], value: Any):
+def _well_formed_non_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
     return isinstance(value, int) and value <= 0
 
 
-def _well_formed_negative_integer(lexical: Union[str, bytes], value: Any):
+def _well_formed_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
     return isinstance(value, int) and value < 0
 
 
@@ -1796,7 +1798,7 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     _RDF_HTMLLITERAL: _parseHTML,
 }
 
-_check_well_formed_types = {
+_check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
     URIRef(_XSD_PFX + "integer"): _well_formed_by_value,
     URIRef(_XSD_PFX + "long"): _well_formed_by_value,
