@@ -1544,7 +1544,7 @@ def _well_formed_unsignedint(lexical: Union[str, bytes], value: Any) -> bool:
 def _well_formed_short(lexical: Union[str, bytes], value: Any) -> bool:
     """
     The value space of xs:short is the set of common short integers (16 bits),
-    i.e., the integers between -2147483648 and 2147483647,
+    i.e., the integers between -32768 and 32767,
     its lexical space allows any number of insignificant leading zeros.
     """
     return len(lexical) > 0 and isinstance(value, int) and (-32768 <= value <= 32767)
