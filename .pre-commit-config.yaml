@@ -25,8 +25,8 @@ repos:
       description: "Black: The uncompromising Python code formatter"
       entry: black
       language: python
-      # WARNING: version should be the same as in `pyproject.toml`.
-      additional_dependencies: [black==21.9b0]
+      # WARNING: version should be the same as in `pyproject.toml` and `requirements.dev.txt`.
+      additional_dependencies: ["black>=22.0,<23"]
       # This is here to defer file selection to black which will do it based on
       # black config.
       pass_filenames: false
