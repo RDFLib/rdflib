@@ -36,7 +36,6 @@ Example usage::
 from typing import Optional
 import warnings
 from rdflib.graph import ConjunctiveGraph
-from rdflib.parser import URLInputSource
 import rdflib.parser
 from rdflib.namespace import RDF, XSD
 from rdflib.term import URIRef, BNode, Literal

@@ -585,4 +585,4 @@ Term.__new__.__defaults__ = (
     UNDEF,
     False,
     False,
-)  # type: ignore[attr-defined]
+)

@@ -425,9 +425,9 @@ class SinkParser:
         if openFormula is None and not turtle:
             if self._thisDoc:
                 # TODO FIXME: store.newFormula does not take any arguments
-                self._formula = store.newFormula(
-                    thisDoc + "#_formula"
-                )  # type: ignore[call-arg]
+                self._formula = store.newFormula(  # type: ignore[call-arg]
+                    f"{thisDoc}#_formula"
+                )
             else:
                 self._formula = store.newFormula()
         else:
@@ -1291,9 +1291,7 @@ class SinkParser:
         while i < len_argstr and argstr[i] not in _notKeywordsChars:
             i += 1
         if self._parentContext is None:
-            varURI = self._store.newSymbol(
-                self._baseURI + "#" + argstr[j:i]
-            )  # type: ignore[operator]
+            varURI = self._store.newSymbol(f"{self._baseURI}#{argstr[j:i]}")
             if varURI not in self._variables:
                 self._variables[varURI] = self._context.newUniversal(
                     varURI, why=self._reason2
@@ -1304,9 +1302,7 @@ class SinkParser:
             # self.BadSyntax(argstr, j,
             #     "Can't use ?xxx syntax for variable in outermost level: %s"
             #     % argstr[j-1:i])
-        varURI = self._store.newSymbol(
-            self._baseURI + "#" + argstr[j:i]
-        )  # type: ignore[operator]
+        varURI = self._store.newSymbol(f"{self._baseURI}#{argstr[j:i]}")
         if varURI not in self._parentVariables:
             self._parentVariables[varURI] = self._parentContext.newUniversal(
                 varURI, why=self._reason2
@@ -1455,8 +1451,7 @@ class SinkParser:
 
                 j, s = self.strconst(argstr, i, delim)
 
-                # type: ignore[call-arg] # TODO FIXME
-                res.append(self._store.newLiteral(s))
+                res.append(self._store.newLiteral(s))  # type: ignore[call-arg] # TODO FIXME
                 return j
             else:
                 return -1

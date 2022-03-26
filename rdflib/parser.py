@@ -10,7 +10,6 @@ want to do so through the Graph class parse method.
 
 """
 
-from typing import TYPE_CHECKING
 import codecs
 import os
 import pathlib
@@ -211,7 +210,7 @@ class URLInputSource(InputSource):
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
         retarray = []
         for linksline in linkslines:
-            links = [l.strip() for l in linksline.split(",")]
+            links = [line.strip() for line in linksline.split(",")]
             for link in links:
                 retarray.append(link)
         return retarray
