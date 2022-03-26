@@ -563,7 +563,7 @@ class Literal(Identifier):
     _language: Optional[str]
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
     _datatype: Optional[str]
-    _ill_formed: bool
+    _ill_formed: Optional[bool]
     __slots__ = ("_language", "_datatype", "_value", "_ill_formed")
 
     def __new__(
@@ -592,7 +592,7 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-        ill_formed = False
+        ill_formed: Optional[bool] = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
@@ -608,12 +608,13 @@ class Literal(Identifier):
             # passed a string
             # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
-            if datatype:
+            if datatype and datatype in _toPythonMapping:
+                # datatype is a recognized datatype IRI:
+                # https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris
                 dt_uri: URIRef = URIRef(datatype)
-                if dt_uri in _check_well_formed_types:
-                    checker = _check_well_formed_types[dt_uri]
-                    well_formed = checker(lexical_or_value, value)
-                    ill_formed = ill_formed or (not well_formed)
+                checker = _check_well_formed_types.get(dt_uri, _well_formed_by_value)
+                well_formed = checker(lexical_or_value, value)
+                ill_formed = ill_formed or (not well_formed)
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -671,7 +672,17 @@ class Literal(Identifier):
             return self
 
     @property
-    def ill_formed(self) -> bool:
+    def ill_formed(self) -> Optional[bool]:
+        """
+        For `recognized datatype IRIs
+        <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
+        this value will be `True` if the literal is ill formed, otherwise it
+        will be `False`. `Literal.value` (i.e. the `literal value <https://www.w3.org/TR/rdf11-concepts/#dfn-literal-value>`_) should always be defined if this value is `True`, but should not be considered reliable if this property is not `True`.
+
+        If the literal's datatype is not in the set of `recognized datatype IRIs
+        <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
+
+        """
         return self._ill_formed
 
     @property
@@ -1800,8 +1811,6 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
 
 _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
-    URIRef(_XSD_PFX + "integer"): _well_formed_by_value,
-    URIRef(_XSD_PFX + "long"): _well_formed_by_value,
     URIRef(_XSD_PFX + "nonPositiveInteger"): _well_formed_non_positive_integer,
     URIRef(_XSD_PFX + "nonNegativeInteger"): _well_formed_non_negative_integer,
     URIRef(_XSD_PFX + "negativeInteger"): _well_formed_negative_integer,
@@ -1813,9 +1822,6 @@ _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]]
     URIRef(_XSD_PFX + "unsignedLong"): _well_formed_unsignedlong,
     URIRef(_XSD_PFX + "unsignedShort"): _well_formed_unsignedshort,
     URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
-    URIRef(_XSD_PFX + "float"): _well_formed_by_value,
-    URIRef(_XSD_PFX + "double"): _well_formed_by_value,
-    URIRef(_XSD_PFX + "decimal"): _well_formed_by_value,
 }
 
 _toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}

@@ -15,8 +15,11 @@ import datetime
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from rdflib import XSD
+from rdflib.namespace import RDF, Namespace
 
 import pytest
+
+EGNS = Namespace("http://example.com/")
 
 
 class TestLiteral(unittest.TestCase):
@@ -107,19 +110,32 @@ class TestNewPT:
             ("2147483647", XSD.int, False),
             ("2147483648", XSD.int, True),
             ("2147483648", XSD.integer, False),
+            ("valid ASCII", XSD.string, False),
+            ("Not a valid time", XSD.time, True),
+            ("Not a valid date", XSD.date, True),
+            ("7264666c6962", XSD.hexBinary, False),
+
+            # RDF.langString is not a recognized datatype IRI as we assing no literal value to it, though this should likely change.
+            ("English string", RDF.langString, None),
+
+            # The datatypes IRIs below should never be recognized.
+            ("[p]", EGNS.unrecognized, None),
         ],
     )
     def test_ill_formed_literals(
         self,
         lexical: Union[bytes, str],
         datatype: URIRef,
-        is_ill_formed: bool,
+        is_ill_formed: Optional[bool],
     ) -> None:
         """
         Construction of Literal fails if the language tag is invalid.
         """
         lit = Literal(lexical, datatype=datatype)
         assert lit.ill_formed is is_ill_formed
+        if is_ill_formed is False:
+            # If the literal is not ill formed it should have a value associated with it.
+            assert lit.value is not None
 
 
 class TestNew(unittest.TestCase):
