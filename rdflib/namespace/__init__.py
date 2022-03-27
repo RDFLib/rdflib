@@ -312,17 +312,21 @@ class NamespaceManager(object):
     is one of the following:
 
     * core:
-        * binds several core prefixes only
+        * binds several core RDF prefixes only
         * owl, rdf, rdfs, xsd, xml from the NAMESPACE_PREFIXES_CORE object
-        * this is detfault
+        * this is default
     * rdflib:
         * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
         * all the core namespaces and all the following: brick, csvw, dc, dcat
         * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
         * sh, skos, sosa, ssn, time, vann, void
         * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
+    * none:
+        * binds no namespaces to prefixes
+        * note this is NOT default behaviour
     * cc:
         * using prefix bindings from prefix.cc which is a online prefixes database
+        * not implemented yet - this is aspirational
 
     See the
     Sample usage
@@ -355,6 +359,10 @@ class NamespaceManager(object):
 
         # bind Namespaces as per options.
         # default is core
+        if bind_namespaces == "none":
+            # binds no namespaces to prefixes
+            # note this is NOT default
+            pass
         if bind_namespaces == "core":
             # bind a few core RDF namespaces
             for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
@@ -372,8 +380,6 @@ class NamespaceManager(object):
             # work out remainder - namespaces without prefixes
             # only look those ones up
             raise NotImplementedError("Haven't got to this option yet")
-        else:  # bind_namespaces is None
-            pass  # bind nothing
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
