@@ -1934,14 +1934,12 @@ def _isEqualXMLNode(
         # to worry about that, which is a bonus...
         n_keys = [
             k
-            # type error: Item "Element" of "Union[Document, Element]" has no attribute "attributes"
-            for k in node.attributes.keysNS()  # type: ignore[union-attr]
+            for k in node.attributes.keysNS()
             if k[0] != "http://www.w3.org/2000/xmlns/"
         ]
         o_keys = [
             k
-            # type error: Item "Element" of "Union[Document, Element]" has no attribute "attributes"
-            for k in other.attributes.keysNS()  # type: ignore[union-attr]
+            for k in other.attributes.keysNS()
             if k[0] != "http://www.w3.org/2000/xmlns/"
         ]
         if len(n_keys) != len(o_keys):
@@ -1996,9 +1994,9 @@ def _isEqualXMLNode(
 
     elif node.nodeType == XMLNode.DOCUMENT_TYPE_NODE:
         if TYPE_CHECKING:
-            assert isinstance(node, xml.dom.minidom.Document)
-            assert isinstance(other, xml.dom.minidom.Document)
-        return node.publicId == other.publicId and node.systemId == other.system.Id
+            assert isinstance(node, xml.dom.minidom.DocumentType)
+            assert isinstance(other, xml.dom.minidom.DocumentType)
+        return node.publicId == other.publicId and node.systemId == other.systemId
 
     else:
         # should not happen, in fact

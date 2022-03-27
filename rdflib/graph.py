@@ -18,7 +18,7 @@ import random
 from rdflib.namespace import Namespace, RDF
 from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
-from rdflib.term import BNode, Node, URIRef, Literal, Genid
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
 from rdflib.store import Store
 from rdflib.serializer import Serializer
@@ -42,10 +42,6 @@ assert Literal  # avoid warning
 assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
-
-# Type aliases to make unpacking what's going on a little more human friendly
-ContextNode = Union[BNode, URIRef]
-DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
@@ -333,7 +329,7 @@ class Graph(Node):
     def __init__(
         self,
         store: Union[Store, str] = "default",
-        identifier: Optional[Union[Node, str]] = None,
+        identifier: Optional[Union[IdentifiedNode, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
         bind_namespaces: str = "core"
@@ -455,9 +451,37 @@ class Graph(Node):
         self.__store.remove(triple, context=self)
         return self
 
+    @overload
     def triples(
-        self, triple: Tuple[Optional[Node], Union[None, Path, Node], Optional[Node]]
-    ):
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, IdentifiedNode, Node]]:
+        ...
+
+    @overload
+    def triples(
+        self,
+        triple: Tuple[Optional[IdentifiedNode], Path, Optional[Node]],
+    ) -> Iterable[Tuple[IdentifiedNode, Path, Node]]:
+        ...
+
+    @overload
+    def triples(
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, Union[IdentifiedNode, Path], Node]]:
+        ...
+
+    def triples(
+        self,
+        triple: Tuple[
+            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+        ],
+    ) -> Iterable[Tuple[IdentifiedNode, Union[IdentifiedNode, Path], Node]]:
         """Generator over the triple store
 
         Returns triples that match the given triple pattern. If triple pattern
@@ -468,8 +492,8 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
-                yield s, p, o
+            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
+                yield _s, _p, _o
 
     def __getitem__(self, item):
         """
@@ -675,7 +699,12 @@ class Graph(Node):
         self.add((subject, predicate, object_))
         return self
 
-    def subjects(self, predicate=None, object=None, unique=False) -> Iterable[Node]:
+    def subjects(
+        self,
+        predicate: Union[None, Path, IdentifiedNode] = None,
+        object: Optional[Node] = None,
+        unique: bool = False,
+    ) -> Iterable[IdentifiedNode]:
         """A generator of (optionally unique) subjects with the given
         predicate and object"""
         if not unique:
@@ -694,7 +723,12 @@ class Graph(Node):
                         )
                         raise
 
-    def predicates(self, subject=None, object=None, unique=False) -> Iterable[Node]:
+    def predicates(
+        self,
+        subject: Optional[IdentifiedNode] = None,
+        object: Optional[Node] = None,
+        unique: bool = False,
+    ) -> Iterable[IdentifiedNode]:
         """A generator of (optionally unique) predicates with the given
         subject and object"""
         if not unique:
@@ -713,7 +747,12 @@ class Graph(Node):
                         )
                         raise
 
-    def objects(self, subject=None, predicate=None, unique=False) -> Iterable[Node]:
+    def objects(
+        self,
+        subject: Optional[IdentifiedNode] = None,
+        predicate: Union[None, Path, IdentifiedNode] = None,
+        unique: bool = False,
+    ) -> Iterable[Node]:
         """A generator of (optionally unique) objects with the given
         subject and predicate"""
         if not unique:
@@ -733,8 +772,8 @@ class Graph(Node):
                         raise
 
     def subject_predicates(
-        self, object=None, unique=False
-    ) -> Generator[Tuple[Node, Node], None, None]:
+        self, object: Optional[Node] = None, unique: bool = False
+    ) -> Generator[Tuple[IdentifiedNode, IdentifiedNode], None, None]:
         """A generator of (optionally unique) (subject, predicate) tuples
         for the given object"""
         if not unique:
@@ -754,8 +793,8 @@ class Graph(Node):
                         raise
 
     def subject_objects(
-        self, predicate=None, unique=False
-    ) -> Generator[Tuple[Node, Node], None, None]:
+        self, predicate: Union[None, Path, IdentifiedNode] = None, unique: bool = False
+    ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
         """A generator of (optionally unique) (subject, object) tuples
         for the given predicate"""
         if not unique:
@@ -775,8 +814,8 @@ class Graph(Node):
                         raise
 
     def predicate_objects(
-        self, subject=None, unique=False
-    ) -> Generator[Tuple[Node, Node], None, None]:
+        self, subject: Optional[IdentifiedNode] = None, unique: bool = False
+    ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
         """A generator of (optionally unique) (predicate, object) tuples
         for the given subject"""
         if not unique:
@@ -1561,7 +1600,7 @@ class ConjunctiveGraph(Graph):
     def __init__(
         self,
         store: Union[Store, str] = "default",
-        identifier: Optional[Union[Node, str]] = None,
+        identifier: Optional[Union[IdentifiedNode, str]] = None,
         default_graph_base: Optional[str] = None,
     ):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
@@ -1818,7 +1857,14 @@ class ConjunctiveGraph(Graph):
             format=format,
         )
 
-        g_id = publicID and publicID or source.getPublicId()
+        # NOTE on type hint: `xml.sax.xmlreader.InputSource.getPublicId` has no
+        # type annotations but given that systemId should be a string, and
+        # given that there is no specific mention of type for publicId, it
+        # seems reasonable to assume it should also be a string. Furthermore,
+        # create_input_source will ensure that publicId is not None, though it
+        # would be good if this guaruntee was made more explicit i.e. by type
+        # hint on InputSource (TODO/FIXME).
+        g_id: str = publicID and publicID or source.getPublicId()
         if not isinstance(g_id, Node):
             g_id = URIRef(g_id)
 
@@ -2049,7 +2095,9 @@ class Dataset(ConjunctiveGraph):
             else:
                 yield s, p, o, c.identifier
 
-    def __iter__(self) -> Generator[DatasetQuad, None, None]:
+    def __iter__(
+        self,
+    ) -> Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]:
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
 

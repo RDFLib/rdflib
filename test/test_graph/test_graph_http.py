@@ -2,7 +2,7 @@ from rdflib import Graph, Namespace
 
 from http.server import BaseHTTPRequestHandler
 from urllib.error import HTTPError
-from .testutils import SimpleHTTPMock, MockHTTPResponse, ctx_http_server, GraphHelper
+from test.testutils import SimpleHTTPMock, MockHTTPResponse, ctx_http_server, GraphHelper
 import unittest
 
 

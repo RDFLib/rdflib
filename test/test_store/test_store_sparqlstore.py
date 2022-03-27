@@ -10,8 +10,8 @@ from typing import ClassVar, Callable, Type
 import pytest
 import re
 
-from . import helper
-from .testutils import (
+from test import helper
+from test.testutils import (
     MockHTTPResponse,
     ServedSimpleHTTPMock,
 )
