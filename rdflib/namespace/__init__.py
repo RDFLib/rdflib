@@ -305,29 +305,36 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 
 class NamespaceManager(object):
-    """
+    """Class for managing prefix => namespace mappings
 
-    Class for managing prefix => namespace mappings
+    This class requires an RDFlib Graph as an input parameter and may optionally have
+    the parameter bind_namespaces set. This second parameter selects a strategy which
+    is one of the following:
 
-    Sample usage from FuXi ...
+    * core:
+        * binds several core prefixes only
+        * owl, rdf, rdfs, xsd, xml from the NAMESPACE_PREFIXES_CORE object
+        * this is detfault
+    * rdflib:
+        * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
+        * all the core namespaces and all the following: brick, csvw, dc, dcat
+        * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+        * sh, skos, sosa, ssn, time, vann, void
+        * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
+    * cc:
+        * using prefix bindings from prefix.cc which is a online prefixes database
 
-    .. code-block:: python
-
-        ruleStore = N3RuleStore(additionalBuiltins=additionalBuiltins)
-        nsMgr = NamespaceManager(Graph(ruleStore))
-        ruleGraph = Graph(ruleStore,namespace_manager=nsMgr)
-
-
-    and ...
+    See the
+    Sample usage
 
     .. code-block:: pycon
 
         >>> import rdflib
         >>> from rdflib import Graph
         >>> from rdflib.namespace import Namespace, NamespaceManager
-        >>> exNs = Namespace('http://example.com/')
+        >>> EX = Namespace('http://example.com/')
         >>> namespace_manager = NamespaceManager(Graph())
-        >>> namespace_manager.bind('ex', exNs, override=False)
+        >>> namespace_manager.bind('ex', EX, override=False)
         >>> g = Graph()
         >>> g.namespace_manager = namespace_manager
         >>> all_ns = [n for n in g.namespace_manager.namespaces()]

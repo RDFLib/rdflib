@@ -22,5 +22,6 @@ def test_rdflib_prefixes_bound():
     assert len(list(g.namespaces())) == \
            len(NAMESPACE_PREFIXES_CORE) + len(list(NAMESPACE_PREFIXES_RDFLIB))
 
+
 def test_cc_prefixes_bound():
     pass
