@@ -239,15 +239,14 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in cls.__annotations__}
         return values
 
-    def jsonld_context(self, pfx: str) -> str:
-        """This function creates a JSON-LD 'context' JSON object from this
-        DefinedNamespace namespace and it's members"""
+    def as_jsonld_context(self, pfx: str) -> dict:
+        """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
             if issubclass(term, URIRef):
                 terms[key] = f'{pfx}:{key}'
 
-        return json.dumps({'@context': terms}, sort_keys=True)
+        return {'@context': terms}
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
