@@ -22,8 +22,8 @@ Usage:
 """
 import datetime
 import os
-import sys
 import re
+import sys
 import time
 
 try:
@@ -31,8 +31,8 @@ try:
 except ImportError:
     imdb = None
 
-from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace
-from rdflib.namespace import FOAF, DC, RDF
+from rdflib import BNode, ConjunctiveGraph, Literal, Namespace, URIRef
+from rdflib.namespace import DC, FOAF, RDF
 
 storefn = os.path.expanduser("~/movies.n3")
 # storefn = '/home/simon/codes/film.dev/movies.n3'

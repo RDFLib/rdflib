@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 import unittest
-
-from rdflib.graph import ConjunctiveGraph
-from rdflib.term import URIRef, Literal
-from rdflib.graph import Graph
 from io import BytesIO
+
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.term import Literal, URIRef
 
 
 class TestTrixSerialize(unittest.TestCase):

@@ -109,16 +109,14 @@ Python
 """
 
 import itertools
+import logging
 
-from rdflib import BNode, Literal, Namespace, RDF, RDFS, URIRef, Variable
-from rdflib.graph import Graph
+from rdflib import RDF, RDFS, BNode, Literal, Namespace, URIRef, Variable
 from rdflib.collection import Collection
-from rdflib.namespace import OWL, XSD
-from rdflib.namespace import NamespaceManager
+from rdflib.graph import Graph
+from rdflib.namespace import OWL, XSD, NamespaceManager
 from rdflib.term import Identifier
 from rdflib.util import first
-
-import logging
 
 logger = logging.getLogger(__name__)
 

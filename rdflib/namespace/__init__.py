@@ -2,6 +2,7 @@ import json
 import logging
 import warnings
 from pathlib import Path
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from unicodedata import category
 from urllib.parse import urldefrag
@@ -75,6 +76,7 @@ The following namespaces are available by directly importing from rdflib:
 * TIME
 * VANN
 * VOID
+* WGS
 * XSD
 
 .. code-block:: pycon
@@ -183,10 +185,7 @@ class URIPattern(str):
 
 
 class DefinedNamespaceMeta(type):
-    """
-    Utility metaclass for generating URIRefs with a common prefix
-
-    """
+    """Utility metaclass for generating URIRefs with a common prefix."""
 
     _NS: Namespace
     _warn: bool = True
@@ -194,6 +193,7 @@ class DefinedNamespaceMeta(type):
     _extras: List[str] = []  # List of non-pythonesque items
     _underscore_num: bool = False  # True means pass "_n" constructs
 
+    @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
         if str(name).startswith("__"):
@@ -383,6 +383,7 @@ class NamespaceManager(object):
         self.bind("time", TIME)
         self.bind("vann", VANN)
         self.bind("void", VOID)
+        self.bind("wgs", WGS)
         self.bind("xsd", XSD)
 
         # Namespace bindings.
@@ -787,4 +788,5 @@ from rdflib.namespace._SSN import SSN
 from rdflib.namespace._TIME import TIME
 from rdflib.namespace._VANN import VANN
 from rdflib.namespace._VOID import VOID
+from rdflib.namespace._WGS import WGS
 from rdflib.namespace._XSD import XSD
