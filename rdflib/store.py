@@ -366,7 +366,7 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix, namespace):
+    def bind(self, prefix, namespace, replace=False):
         """ """
 
     def prefix(self, namespace):

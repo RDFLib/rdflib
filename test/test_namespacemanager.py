@@ -3,6 +3,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
 from rdflib.namespace import NAMESPACE_PREFIXES_CORE, NAMESPACE_PREFIXES_RDFLIB
+from rdflib.namespace import OWL
 
 
 def test_core_prefixes_bound():
@@ -25,3 +26,22 @@ def test_rdflib_prefixes_bound():
 
 def test_cc_prefixes_bound():
     pass
+
+
+def test_rebinding():
+    g = Graph()  # 'core' bind_namespaces (default)
+    print()
+    # 'owl' should be bound
+    assert "owl" in [x for x, y in list(g.namespaces())]
+
+    # replace 'owl' with 'sowa'
+    # 'sowa' should be bound
+    # 'owl' should not be bound
+    g.bind("sowa", OWL, replace=True)
+
+    assert "sowa" in [x for x, y in list(g.namespaces())]
+    assert "owl" not in [x for x, y in list(g.namespaces())]
+
+
+
+test_rebinding()

@@ -38,7 +38,7 @@ met:
 
   There should either be existing tests that cover the changed code and
   behaviour, or the PR should include tests. For more information about what is
-  considered adequate testing see the :ref:`Tests section <Tests>`.
+  considered adequate testing see the `Tests directory for examples <https://github.com/RDFLib/rdflib/tree/master/test>`_.
 
 * Documentation that covers something that changed has been updated.
 
@@ -69,7 +69,7 @@ here, we will not reject a PR just because it does not.
 
 Tests
 -----
-Any new functionality being added to RDFLib _must_ have unit tests and
+Any new functionality being added to RDFLib *must* have unit tests and
 should have doc tests supplied.
 
 Typically, you should add your functionality and new tests to a branch of

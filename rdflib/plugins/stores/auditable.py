@@ -129,8 +129,8 @@ class AuditableStore(Store):
         for ctx in self.store.contexts(triple):
             yield ctx
 
-    def bind(self, prefix, namespace):
-        self.store.bind(prefix, namespace)
+    def bind(self, prefix, namespace, replace=False):
+        self.store.bind(prefix, namespace, replace=replace)
 
     def prefix(self, namespace):
         return self.store.prefix(namespace)

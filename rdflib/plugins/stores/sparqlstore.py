@@ -366,7 +366,10 @@ class SPARQLStore(SPARQLConnector, Store):
         return (row.name for row in result)
 
     # Namespace persistence interface implementation
-    def bind(self, prefix, namespace):
+    def bind(self, prefix, namespace, replace=False):
+        bound_prefix = self.prefix(namespace)
+        if replace and bound_prefix:
+            del self.nsBindings[bound_prefix]
         self.nsBindings[prefix] = namespace
 
     def prefix(self, namespace):

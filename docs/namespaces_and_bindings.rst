@@ -80,6 +80,21 @@ Valid strategies are:
     * using prefix bindings from prefix.cc which is a online prefixes database
     * not implemented yet - this is aspirational
 
+Re-binding
+^^^^^^^^^^
+
+Note that regardless of the strategy employed, prefixes for namespaces can be overwritten with users preferred prefixes,
+for example::
+
+    from rdflib import Graph
+    from rdflib.namespace import GEO  # imports GeoSPARQL's namespace
+    
+    g = Graph(bind_namespaces="rdflib")  # binds GeoSPARQL's namespace to prefix 'geo'
+    
+    g.bind('geosp', GEO) 
+    
+    
+
 `NamespaceManager` also has a method to normalize a given url::
 
     from rdflib.namespace import NamespaceManager

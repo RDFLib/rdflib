@@ -86,7 +86,7 @@ The following namespaces are available by directly importing from rdflib:
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
 
-__all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "NamespaceManager"]
+__all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "DefinedNamespace", "NamespaceManager"]
 
 logger = logging.getLogger(__name__)
 
@@ -354,8 +354,8 @@ class NamespaceManager(object):
         self.__log = None
         self.__strie: Dict[str, Any] = {}
         self.__trie: Dict[str, Any] = {}
-        for p, n in self.namespaces():  # self.bind is not always called
-            insert_trie(self.__trie, str(n))
+        # for p, n in self.namespaces():  # self.bind is not always called
+        #     insert_trie(self.__trie, str(n))
 
         # bind Namespaces as per options.
         # default is core
@@ -363,10 +363,6 @@ class NamespaceManager(object):
             # binds no namespaces to prefixes
             # note this is NOT default
             pass
-        if bind_namespaces == "core":
-            # bind a few core RDF namespaces
-            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
-                self.bind(prefix, ns)
         elif bind_namespaces == "rdflib":
             # bind all the Namespaces shipped with RDFLib
             for prefix, ns in NAMESPACE_PREFIXES_RDFLIB.items():
@@ -380,6 +376,10 @@ class NamespaceManager(object):
             # work out remainder - namespaces without prefixes
             # only look those ones up
             raise NotImplementedError("Haven't got to this option yet")
+        else:  # bind_namespaces == "core":
+            # bind a few core RDF namespaces - default
+            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+                self.bind(prefix, ns)
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
@@ -549,12 +549,12 @@ class NamespaceManager(object):
         override: bool = True,
         replace: bool = False,
     ) -> None:
-        """bind a given namespace to the prefix
+        """Bind a given namespace to the prefix
 
-        if override, rebind, even if the given namespace is already
+        If override, rebind, even if the given namespace is already
         bound to another prefix.
 
-        if replace, replace any existing prefix with the new namespace
+        If replace, replace any existing prefix with the new namespace
 
         """
 
@@ -566,25 +566,33 @@ class NamespaceManager(object):
             raise KeyError("Prefixes may not contain spaces.")
 
         bound_namespace = self.store.namespace(prefix)
+
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
         # This is to prevent duplicate namespaces with the
         # same URI
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
+
+        if replace:
+            print("REPLACE")
+            print([x for x, y in list(self.store.namespaces())])
+
+            self.store.bind(prefix, namespace, replace=replace)
+            insert_trie(self.__trie, str(namespace))
+
+            print([x for x, y in list(self.store.namespaces())])
+
+            return
+
         if bound_namespace and bound_namespace != namespace:
-
-            if replace:
-                self.store.bind(prefix, namespace)
-                insert_trie(self.__trie, str(namespace))
-                return
-
             # prefix already in use for different namespace
             #
             # append number to end of prefix until we find one
             # that's not in use.
             if not prefix:
                 prefix = "default"
+
             num = 1
             while 1:
                 new_prefix = "%s%s" % (prefix, num)
@@ -606,6 +614,7 @@ class NamespaceManager(object):
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
                     self.store.bind(prefix, namespace)
+
         insert_trie(self.__trie, str(namespace))
 
     def namespaces(self) -> Iterable[Tuple[str, URIRef]]:
