@@ -574,14 +574,8 @@ class NamespaceManager(object):
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
 
-        if replace:
-            print("REPLACE")
-            print([x for x, y in list(self.store.namespaces())])
-
             self.store.bind(prefix, namespace, replace=replace)
             insert_trie(self.__trie, str(namespace))
-
-            print([x for x, y in list(self.store.namespaces())])
 
             return
 
