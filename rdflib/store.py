@@ -4,7 +4,7 @@ from rdflib.events import Dispatcher, Event
 from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
-    from rdflib.term import Node, IdentifiedNode
+    from rdflib.term import Node, IdentifiedNode, URIRef
     from rdflib.graph import Graph
 
 """
@@ -366,13 +366,15 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix, namespace, replace=False):
-        """ """
+    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+        """
+        :param override: rebind, even if the given namespace is already bound to another prefix.
+        """
 
-    def prefix(self, namespace):
-        """ """
+    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+        """"""
 
-    def namespace(self, prefix):
+    def namespace(self, prefix: str) -> Optional["URIRef"]:
         """ """
 
     def namespaces(self):

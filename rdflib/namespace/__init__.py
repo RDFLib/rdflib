@@ -450,7 +450,7 @@ class NamespaceManager(object):
                     uri
                 )
             )
-
+        prefix: Optional[str]
         if uri not in self.__cache:
             try:
                 namespace, name = split_uri(uri)
@@ -577,13 +577,12 @@ class NamespaceManager(object):
         # same URI
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
-
-            self.store.bind(prefix, namespace, replace=replace)
-            insert_trie(self.__trie, str(namespace))
-
-            return
-
         if bound_namespace and bound_namespace != namespace:
+
+            if replace:
+                self.store.bind(prefix, namespace, override=override)
+                insert_trie(self.__trie, str(namespace))
+                return
             # prefix already in use for different namespace
             #
             # append number to end of prefix until we find one
@@ -602,16 +601,16 @@ class NamespaceManager(object):
                 if not self.store.namespace(new_prefix):
                     break
                 num += 1
-            self.store.bind(new_prefix, namespace)
+            self.store.bind(new_prefix, namespace, override=override)
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
-                self.store.bind(prefix, namespace)
+                self.store.bind(prefix, namespace, override=override)
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
-                    self.store.bind(prefix, namespace)
+                    self.store.bind(prefix, namespace, override=override)
 
         insert_trie(self.__trie, str(namespace))
 

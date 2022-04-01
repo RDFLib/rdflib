@@ -148,9 +148,9 @@ class SimpleMemory(Store):
             i += 1
         return i
 
-    def bind(self, prefix, namespace, replace=False):
+    def bind(self, prefix, namespace, override=True):
         bound_prefix = self.__prefix.get(namespace)
-        if replace and bound_prefix:
+        if override and bound_prefix:
             del self.__namespace[bound_prefix]
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
@@ -402,9 +402,9 @@ class Memory(Store):
                         if self.__triple_has_context(triple, req_ctx):
                             yield triple, self.__contexts(triple)
 
-    def bind(self, prefix, namespace, replace=False):
+    def bind(self, prefix, namespace, override=True):
         bound_prefix = self.__prefix.get(namespace)
-        if replace and bound_prefix:
+        if override and bound_prefix:
             del self.__namespace[bound_prefix]
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
