@@ -15,6 +15,18 @@ HOST = "http://localhost:3030"
 DB = "/db/"
 root = HOST + DB
 
+#
+# SQLAlchemy RDBS back-ends require a more extensive connection string which,
+# for security reasons, should be specified via shell variables when running
+# the test, e.g.
+#
+# $ PGDB=1 PGDBURI="postgresql+pg8000://vagrant:vagrant@localhost/testdb" \
+# MYSQLDB=1 MYDBURI="mysql+pymysql://vagrant:vagrant@localhost/testdb" \
+# ./run_tests.py test/test_store/test_store_auditable.py
+#
+
+dburis = {}
+
 def get_plugin_stores():
     pluginstores = []
 
@@ -33,20 +45,30 @@ def get_plugin_stores():
 
         try:
             graph = Graph(store=s.name)
+
             if s.name == "SQLAlchemy":
-                pluginstores.append(s.name + ":MYSQL")
-                pluginstores.append(s.name + ":PGSQL")
+                if os.environ.get("PGDB"):
+                    dburis["PGSQL"] = os.environ.get(
+                        "PGDBURI",
+                        "postgresql+pg8000://postgres@localhost/test")
+                    pluginstores.append(s.name + ":PGSQL")
+                if os.environ.get("MYSQLDB"):
+                    dburis["MYSQL"] = os.environ.get(
+                        "MYDBURI",
+                        "mysql+pymysql://root@127.0.0.1:3306/test?charset=utf8")
+                    pluginstores.append(s.name + ":MYSQL")
+                if os.environ.get("SQLDB"):
+                    dburis["SQLITE"] = os.environ.get(
+                        "SQLDBURI",
+                        "sqlite://")
+                    pluginstores.append(s.name + ":SQLITE")
             else:
                 pluginstores.append(s.name)
+
         except ImportError:
             pass
-    return pluginstores
 
-DBURIS = {
-    "MYSQL": "mysql+pymysql://vagrant:vagrant@localhost/testdb",
-    "PGSQL": "postgresql+pg8000://vagrant:vagrant@localhost/testdb",
-    "SQLITE": "sqlite:////tmp/sqlitetest.db",
-}
+    return pluginstores
 
 def set_store_and_path(storename):
 
@@ -60,7 +82,7 @@ def set_store_and_path(storename):
 
     elif ":" in storename:
         store, backend = storename.split(":")
-        path = DBURIS[backend]
+        path = dburis[backend]
 
     else:
         path = tempfile.mkdtemp()
