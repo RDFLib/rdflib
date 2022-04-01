@@ -6,7 +6,7 @@ from test.data import context1, likes, pizza, tarek
 
 import pytest
 
-from rdflib import FOAF, XSD, BNode, Literal, URIRef, logger, plugin
+from rdflib import FOAF, XSD, BNode, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
@@ -28,7 +28,7 @@ DB = "/db/"
 pluginstores = []
 
 for s in plugin.plugins(None, plugin.Store):
-    if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
+    if s.name in ("Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
     if not s.getClass().graph_aware:
