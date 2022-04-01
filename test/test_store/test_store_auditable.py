@@ -1,143 +1,17 @@
 # -*- coding=utf8 -*-
-import shutil
-import tempfile
-import os
-
 import pytest
 
-from rdflib import Graph, Namespace, URIRef, plugin
+from rdflib import Graph, Namespace
 from rdflib.plugins.stores.auditable import AuditableStore
 from rdflib.store import VALID_STORE
 
 EX = Namespace("http://example.org/")
 
-HOST = "http://localhost:3030"
-DB = "/db/"
-root = HOST + DB
 
-#
-# SQLAlchemy RDBS back-ends require a more extensive connection string which,
-# for security reasons, should be specified via shell variables when running
-# the test, e.g.
-#
-# $ PGDB=1 PGDBURI="postgresql+pg8000://vagrant:vagrant@localhost/testdb" \
-# MYSQLDB=1 MYDBURI="mysql+pymysql://vagrant:vagrant@localhost/testdb" \
-# ./run_tests.py test/test_store/test_store_auditable.py
-#
+@pytest.fixture
+def get_graph():
 
-dburis = {}
-
-def get_plugin_stores():
-    pluginstores = []
-
-    for s in plugin.plugins(None, plugin.Store):
-        if s.name in (
-            "default",
-            "Auditable",
-            "Concurrent",
-            "SimpleMemory",
-            "SPARQLStore",
-            "ZODB",
-            "Shelving",
-            "OxMemory",
-        ):
-            continue  # excluded from these tests
-
-        try:
-            graph = Graph(store=s.name)
-
-            if s.name == "SQLAlchemy":
-                if os.environ.get("PGDB"):
-                    dburis["PGSQL"] = os.environ.get(
-                        "PGDBURI",
-                        "postgresql+pg8000://postgres@localhost/test")
-                    pluginstores.append(s.name + ":PGSQL")
-                if os.environ.get("MYSQLDB"):
-                    dburis["MYSQL"] = os.environ.get(
-                        "MYDBURI",
-                        "mysql+pymysql://root@127.0.0.1:3306/test?charset=utf8")
-                    pluginstores.append(s.name + ":MYSQL")
-                if os.environ.get("SQLDB"):
-                    dburis["SQLITE"] = os.environ.get(
-                        "SQLDBURI",
-                        "sqlite://")
-                    pluginstores.append(s.name + ":SQLITE")
-            else:
-                pluginstores.append(s.name)
-
-        except ImportError:
-            pass
-
-    return pluginstores
-
-def set_store_and_path(storename):
-
-    store = storename
-
-    if storename == "SPARQLUpdateStore":
-        path = (root + "sparql", root + "update")
-
-    elif storename in ["SQLiteLSM", "LevelDB"]:
-        path = os.path.join(tempfile.gettempdir(), f"test_{storename.lower()}")
-
-    elif ":" in storename:
-        store, backend = storename.split(":")
-        path = dburis[backend]
-
-    else:
-        path = tempfile.mkdtemp()
-        try:
-            shutil.rmtree(path)
-        except Exception:
-            pass
-
-    return store, path
-
-
-def open_graph_store(g, storename, path):
-    if storename == "SPARQLUpdateStore":
-        g.open(configuration=path, create=False)
-    elif storename == "FileStorageZODB":
-        g.open(configuration=path, create=True)
-    elif storename != "Memory":
-        rt = g.open(configuration=path, create=True)
-        assert rt == VALID_STORE, "The underlying store is corrupt"
-    return g
-
-
-def cleanup(g, storename, path):
-    try:
-        g.store.commit()
-    except Exception:
-        pass
-
-    if storename != "Memory":
-        if storename == "SPARQLUpdateStore":
-            g.remove((None, None, None))
-            g.close()
-        else:
-            try:
-                g.close()
-                g.destroy(configuration=path)
-            except Exception:
-                pass
-        try:
-            shutil.rmtree(path)
-        except Exception:
-            pass
-
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_graph(request):
-    storename = request.param
-
-    store, path = set_store_and_path(storename)
-
-    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
-
-    g = open_graph_store(g, storename, path)
+    g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
@@ -145,13 +19,6 @@ def get_graph(request):
     t = Graph(AuditableStore(g.store), g.identifier)
 
     yield g, t
-
-    try:
-        t.close()
-    except Exception:
-        pass
-
-    cleanup(g, storename, path)
 
 
 def test_add_commit(get_graph):
@@ -362,32 +229,14 @@ def test_remove_add_rollback(get_graph):
     )
 
 
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_empty_graph(request):
-    storename = request.param
+@pytest.fixture
+def get_empty_graph():
 
-    store = storename
-
-    store, path = set_store_and_path(storename)
-
-    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
-
-    g = open_graph_store(g, storename, path)
-
+    g = Graph("Memory")
 
     t = Graph(AuditableStore(g.store), g.identifier)
 
     yield g, t
-
-    try:
-        t.close()
-    except Exception:
-        pass
-
-    cleanup(g, storename, path)
 
 
 def test_add_commit_empty(get_empty_graph):
@@ -413,18 +262,10 @@ def test_add_rollback_empty(get_empty_graph):
     assert set(g) == set([])
 
 
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_concurrent_graph(request):
-    storename = request.param
+@pytest.fixture
+def get_concurrent_graph():
 
-    store, path = set_store_and_path(storename)
-
-    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
-
-    g = open_graph_store(g, storename, path)
+    g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
@@ -437,13 +278,6 @@ def get_concurrent_graph(request):
 
     yield g, t1, t2
 
-    try:
-        t1.close()
-        t2.close()
-    except Exception:
-        pass
-
-    cleanup(g, storename, path)
 
 def test_commit_commit(get_concurrent_graph):
     g, t1, t2 = get_concurrent_graph
@@ -493,18 +327,10 @@ def test_rollback_rollback(get_concurrent_graph):
     )
 
 
-@pytest.fixture(
-    scope="function",
-    params=get_plugin_stores(),
-)
-def get_embedded_graph(request):
-    storename = request.param
+@pytest.fixture
+def get_embedded_graph():
 
-    store, path = set_store_and_path(storename)
-
-    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
-
-    g = open_graph_store(g, storename, path)
+    g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
@@ -519,13 +345,6 @@ def get_embedded_graph(request):
 
     yield g, t1, t2
 
-    try:
-        t1.close()
-        t2.close()
-    except Exception:
-        pass
-
-    cleanup(g, storename, path)
 
 def test_commit_commit_embedded(get_embedded_graph):
     g, t1, t2 = get_embedded_graph
