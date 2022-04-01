@@ -1,15 +1,19 @@
 # -*- coding=utf8 -*-
 import shutil
 import tempfile
+import os
 
 import pytest
 
-from rdflib import Graph, Namespace, plugin
+from rdflib import Graph, Namespace, URIRef, plugin
 from rdflib.plugins.stores.auditable import AuditableStore
 from rdflib.store import VALID_STORE
 
 EX = Namespace("http://example.org/")
 
+HOST = "http://localhost:3030"
+DB = "/db/"
+root = HOST + DB
 
 def get_plugin_stores():
     pluginstores = []
@@ -17,22 +21,88 @@ def get_plugin_stores():
     for s in plugin.plugins(None, plugin.Store):
         if s.name in (
             "default",
-            "Memory",
             "Auditable",
             "Concurrent",
             "SimpleMemory",
             "SPARQLStore",
-            "SPARQLUpdateStore",
+            "ZODB",
+            "Shelving",
+            "OxMemory",
         ):
             continue  # excluded from these tests
 
         try:
             graph = Graph(store=s.name)
-            pluginstores.append(s.name)
+            if s.name == "SQLAlchemy":
+                pluginstores.append(s.name + ":MYSQL")
+                pluginstores.append(s.name + ":PGSQL")
+            else:
+                pluginstores.append(s.name)
         except ImportError:
             pass
     return pluginstores
 
+DBURIS = {
+    "MYSQL": "mysql+pymysql://vagrant:vagrant@localhost/testdb",
+    "PGSQL": "postgresql+pg8000://vagrant:vagrant@localhost/testdb",
+    "SQLITE": "sqlite:////tmp/sqlitetest.db",
+}
+
+def set_store_and_path(storename):
+
+    store = storename
+
+    if storename == "SPARQLUpdateStore":
+        path = (root + "sparql", root + "update")
+
+    elif storename in ["SQLiteLSM", "LevelDB"]:
+        path = os.path.join(tempfile.gettempdir(), f"test_{storename.lower()}")
+
+    elif ":" in storename:
+        store, backend = storename.split(":")
+        path = DBURIS[backend]
+
+    else:
+        path = tempfile.mkdtemp()
+        try:
+            shutil.rmtree(path)
+        except Exception:
+            pass
+
+    return store, path
+
+
+def open_graph_store(g, storename, path):
+    if storename == "SPARQLUpdateStore":
+        g.open(configuration=path, create=False)
+    elif storename == "FileStorageZODB":
+        g.open(configuration=path, create=True)
+    elif storename != "Memory":
+        rt = g.open(configuration=path, create=True)
+        assert rt == VALID_STORE, "The underlying store is corrupt"
+    return g
+
+
+def cleanup(g, storename, path):
+    try:
+        g.store.commit()
+    except Exception:
+        pass
+
+    if storename != "Memory":
+        if storename == "SPARQLUpdateStore":
+            g.remove((None, None, None))
+            g.close()
+        else:
+            try:
+                g.close()
+                g.destroy(configuration=path)
+            except Exception:
+                pass
+        try:
+            shutil.rmtree(path)
+        except Exception:
+            pass
 
 @pytest.fixture(
     scope="function",
@@ -41,17 +111,11 @@ def get_plugin_stores():
 def get_graph(request):
     storename = request.param
 
-    g = Graph(store=storename)
+    store, path = set_store_and_path(storename)
 
-    path = tempfile.mktemp()
+    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
 
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
-
-    rt = g.open(configuration=path, create=True)
-    assert rt == VALID_STORE, "The underlying store is corrupt"
+    g = open_graph_store(g, storename, path)
 
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
@@ -60,14 +124,12 @@ def get_graph(request):
 
     yield g, t
 
-    g.close()
-
-    g.destroy(configuration=path)
-
     try:
-        shutil.rmtree(path)
+        t.close()
     except Exception:
         pass
+
+    cleanup(g, storename, path)
 
 
 def test_add_commit(get_graph):
@@ -285,22 +347,25 @@ def test_remove_add_rollback(get_graph):
 def get_empty_graph(request):
     storename = request.param
 
-    path = tempfile.mktemp()
+    store = storename
 
-    try:
-        shutil.rmtree(path)
-    except Exception:
-        pass
+    store, path = set_store_and_path(storename)
 
-    g = Graph(store=storename)
-    rt = g.open(configuration=path, create=True)
-    assert rt == VALID_STORE, "The underlying store is corrupt"
+    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
+
+    g = open_graph_store(g, storename, path)
+
 
     t = Graph(AuditableStore(g.store), g.identifier)
 
     yield g, t
-    g.close()
-    g.destroy(configuration=path)
+
+    try:
+        t.close()
+    except Exception:
+        pass
+
+    cleanup(g, storename, path)
 
 
 def test_add_commit_empty(get_empty_graph):
@@ -326,9 +391,19 @@ def test_add_rollback_empty(get_empty_graph):
     assert set(g) == set([])
 
 
-@pytest.fixture
-def get_concurrent_graph():
-    g = Graph()
+@pytest.fixture(
+    scope="function",
+    params=get_plugin_stores(),
+)
+def get_concurrent_graph(request):
+    storename = request.param
+
+    store, path = set_store_and_path(storename)
+
+    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
+
+    g = open_graph_store(g, storename, path)
+
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
     t1 = Graph(AuditableStore(g.store), g.identifier)
@@ -340,6 +415,13 @@ def get_concurrent_graph():
 
     yield g, t1, t2
 
+    try:
+        t1.close()
+        t2.close()
+    except Exception:
+        pass
+
+    cleanup(g, storename, path)
 
 def test_commit_commit(get_concurrent_graph):
     g, t1, t2 = get_concurrent_graph
@@ -389,9 +471,19 @@ def test_rollback_rollback(get_concurrent_graph):
     )
 
 
-@pytest.fixture
-def get_embedded_graph():
-    g = Graph()
+@pytest.fixture(
+    scope="function",
+    params=get_plugin_stores(),
+)
+def get_embedded_graph(request):
+    storename = request.param
+
+    store, path = set_store_and_path(storename)
+
+    g = Graph(store=store, identifier=URIRef("urn:example:testgraph"))
+
+    g = open_graph_store(g, storename, path)
+
     g.add((EX.s0, EX.p0, EX.o0))
     g.add((EX.s0, EX.p0, EX.o0bis))
 
@@ -405,6 +497,13 @@ def get_embedded_graph():
 
     yield g, t1, t2
 
+    try:
+        t1.close()
+        t2.close()
+    except Exception:
+        pass
+
+    cleanup(g, storename, path)
 
 def test_commit_commit_embedded(get_embedded_graph):
     g, t1, t2 = get_embedded_graph
