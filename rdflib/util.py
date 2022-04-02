@@ -210,18 +210,12 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         .replace('e', '', 1)
         .isnumeric()
     ):
+        if "e" in s.lower():
+            return Literal(s, datatype=XSD.double)
         if "." in s:
-            return (
-                Literal(s, datatype=XSD.double)
-                if "e" in s.lower()
-                else Literal(float(s), datatype=XSD.decimal)
-            )
-        else:
-            return (
-                Literal(s, datatype=XSD.double)
-                if "e" in s.lower()
-                else Literal(int(s), datatype=XSD.integer)
-            )
+            return Literal(float(s), datatype=XSD.decimal)
+        return Literal(int(s), datatype=XSD.integer)
+
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.QuotedGraph(backend, identifier)
