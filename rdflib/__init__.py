@@ -97,6 +97,7 @@ try:
     if (
         not hasattr(__main__, "__file__")
         and sys.stdout is not None
+        and hasattr(sys.stderr, "isatty")
         and sys.stderr.isatty()
     ):
         # show log messages in interactive mode
