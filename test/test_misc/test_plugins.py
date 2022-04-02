@@ -14,7 +14,7 @@ import rdflib.plugins.sparql.evaluate
 from rdflib import Graph
 from rdflib.parser import Parser
 
-TEST_DIR = Path(__file__).parent
+TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
 
 

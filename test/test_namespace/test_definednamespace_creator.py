@@ -8,8 +8,8 @@ def test_definednamespace_creator_qb():
     Tests basic use of DefinedNamespace creator script using QB
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "qb.ttl"
+    definednamespace_script = Path(__file__).parent.parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    qb_data_file = Path(__file__).parent.parent / "defined_namespaces" / "qb.ttl"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...")
@@ -48,8 +48,8 @@ def test_definednamespace_creator_fake():
     RDF file of unknonwn type
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
+    definednamespace_script = Path(__file__).parent.parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    qb_data_file = Path(__file__).parent.parent / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...(expected to fail)")
@@ -74,8 +74,8 @@ def test_definednamespace_creator_bad_ns():
     supplied namespace doesn't end in # or /
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
+    definednamespace_script = Path(__file__).parent.parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    qb_data_file = Path(__file__).parent.parent / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...(expected to fail - bad NS given)")

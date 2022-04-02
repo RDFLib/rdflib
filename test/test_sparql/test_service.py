@@ -2,7 +2,7 @@ from rdflib import Graph, URIRef, Literal, Variable
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
-from . import helper
+from test import helper
 
 
 def test_service():

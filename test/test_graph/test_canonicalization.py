@@ -14,7 +14,7 @@ from rdflib.plugins.stores.memory import Memory
 from io import StringIO
 import unittest
 
-from .testutils import GraphHelper
+from test.testutils import GraphHelper
 
 
 def get_digest_value(rdf, mimetype):
