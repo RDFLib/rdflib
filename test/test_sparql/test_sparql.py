@@ -4,7 +4,7 @@ from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.compare import isomorphic
 from rdflib.term import Variable
 
-from .testutils import eq_
+from test.testutils import eq_
 
 
 def test_graph_prefix():

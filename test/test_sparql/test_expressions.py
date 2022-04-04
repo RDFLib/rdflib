@@ -7,7 +7,7 @@ from rdflib.plugins.sparql.operators import simplify
 
 from rdflib import Variable, Literal
 
-from .testutils import eq_ as eq
+from test.testutils import eq_ as eq
 
 
 def _eval(e, ctx=None):
