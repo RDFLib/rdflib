@@ -444,14 +444,16 @@ class NamespaceManager(object):
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
 
-        if not _is_valid_uri(uri):
-            raise ValueError(
-                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
-                    uri
-                )
-            )
         prefix: Optional[str]
         if uri not in self.__cache:
+
+            if not _is_valid_uri(uri):
+                raise ValueError(
+                    '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
+                        uri
+                    )
+                )
+
             try:
                 namespace, name = split_uri(uri)
             except ValueError as e:
