@@ -86,7 +86,14 @@ The following namespaces are available by directly importing from rdflib:
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
 
-__all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "DefinedNamespace", "NamespaceManager"]
+__all__ = [
+    "is_ncname",
+    "split_uri",
+    "Namespace",
+    "ClosedNamespace",
+    "DefinedNamespace",
+    "NamespaceManager",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -799,7 +806,7 @@ NAMESPACE_PREFIXES_CORE = {
     "rdfs": RDFS,
     "xsd": XSD,
     # Namespace binding for XML - needed for RDF/XML
-    "xml": XMLNS
+    "xml": XMLNS,
 }
 
 

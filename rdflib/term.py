@@ -261,6 +261,7 @@ class URIRef(IdentifiedNode):
 
     IRIs are a generalization of URIs [RFC3986] that permits a wider range of Unicode characters.
     """
+
     __slots__ = ()
 
     __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
