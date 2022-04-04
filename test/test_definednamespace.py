@@ -131,7 +131,7 @@ def test_definednamespace_dir():
 
 
 def test_definednamespace_jsonld_context():
-    expected = json.dumps({
+    expected = {
         "@context": {
             "skos": "http://www.w3.org/2004/02/skos/core#",
             "altLabel": "skos:altLabel",
@@ -167,8 +167,7 @@ def test_definednamespace_jsonld_context():
             "ConceptScheme": "skos:ConceptScheme",
             "OrderedCollection": "skos:OrderedCollection"
         }
-    }, sort_keys=True)
-
-    actual = SKOS.jsonld_context("skos")
+    }
+    actual = SKOS.as_jsonld_context("skos")
 
     assert actual == expected
