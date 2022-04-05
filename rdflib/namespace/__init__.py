@@ -361,9 +361,6 @@ class NamespaceManager(object):
         self.__log = None
         self.__strie: Dict[str, Any] = {}
         self.__trie: Dict[str, Any] = {}
-        # for p, n in self.namespaces():  # self.bind is not always called
-        #     insert_trie(self.__trie, str(n))
-
         # This type declaration is here becuase there is no common base class
         # for all namespaces and without it the inferred type of ns is not
         # compatible with all prefixes.
