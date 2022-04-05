@@ -91,7 +91,7 @@ for example::
     
     g = Graph(bind_namespaces="rdflib")  # binds GeoSPARQL's namespace to prefix 'geo'
     
-    g.bind('geosp', GEO) 
+    g.bind('geosp', GEO, override=True) 
     
     
 
