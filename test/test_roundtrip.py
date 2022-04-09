@@ -267,6 +267,7 @@ EXTRA_FILES = [
     (TEST_DIR / "variants" / "special_chars.nt", "ntriples"),
     (TEST_DIR / "variants" / "xml_literal.rdf", "xml"),
     (TEST_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
+    (TEST_DIR / "variants" / "simple_quad.trig", "trig")
 ]
 
 

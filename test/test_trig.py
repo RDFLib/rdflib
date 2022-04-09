@@ -1,7 +1,12 @@
+import logging
 import re
 import unittest
 
+import pytest
+
 import rdflib
+from rdflib.namespace import Namespace
+from .testutils import GraphHelper
 
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),
@@ -187,3 +192,43 @@ def test_prefixes():
     assert "ns2: <http://ex.org/docs/".encode("latin-1") in data, data
     assert "<ns2:document1>".encode("latin-1") not in data, data
     assert "ns2:document1".encode("latin-1") in data, data
+
+
+EG = Namespace("http://example.com/")
+
+
+@pytest.mark.xfail(raises=AssertionError, reason="""
+    This should pass, but for some reason when the default identifier is
+    set, trig serializes quads inside this default indentifier to an
+    anonymous graph.
+
+    In this test, data_str is:
+
+        @base <utf-8> .
+        @prefix ns1: <http://example.com/> .
+
+        {
+            ns1:subject ns1:predicate ns1:object .
+        }
+
+    instead of:
+        @base <utf-8> .
+        @prefix ns1: <http://example.com/> .
+
+        ns1:graph {
+            ns1:subject ns1:predicate ns1:object .
+        }
+""")
+def test_default_identifier() -> None:
+    """
+    Quads inside the default graph is serialized correctly.
+    """
+    graph_id = EG["graph"]
+    graph = rdflib.ConjunctiveGraph(identifier=EG["graph"])
+    quad = (EG["subject"], EG["predicate"], EG["object"], graph_id)
+    graph.add(quad)
+    parsed_graph = rdflib.ConjunctiveGraph()
+    data_str = graph.serialize(format="trig")
+    logging.debug("data_str = %s", data_str)
+    parsed_graph.parse(data=data_str, format="trig")
+    GraphHelper.assert_quad_sets_equals(graph, parsed_graph)

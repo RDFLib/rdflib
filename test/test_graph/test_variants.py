@@ -45,10 +45,13 @@ class GraphAsserts:
     """
 
     quad_count: Optional[int] = None
+    exact_match: bool = False
 
-    def check(self, graph: ConjunctiveGraph) -> None:
+    def check(self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph) -> None:
         if self.quad_count is not None:
             assert self.quad_count == len(list(graph.quads()))
+        if first_graph is not None and self.exact_match:
+            GraphHelper.assert_quad_sets_equals(first_graph, graph)
 
 
 @dataclass(order=True)
@@ -164,7 +167,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
     logging.debug("graph_variant = %s", graph_variant)
     public_id = URIRef(f"example:{graph_variant.key}")
     assert len(graph_variant.variants) > 0
-    first_graph: Optional[Graph] = None
+    first_graph: Optional[ConjunctiveGraph] = None
     for variant_key, variant_path in graph_variant.variants.items():
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
@@ -175,7 +178,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
         # opinions of when a bare string is of datatype XSD.string or not.
         # Probably something that needs more investigation.
         GraphHelper.strip_literal_datatypes(graph, {XSD.string})
-        graph_variant.asserts.check(graph)
+        graph_variant.asserts.check(first_graph, graph)
         if first_graph is None:
             first_graph = graph
         else:
