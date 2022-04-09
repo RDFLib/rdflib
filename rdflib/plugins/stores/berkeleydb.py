@@ -470,10 +470,17 @@ class BerkeleyDB(Store):
         prefix = prefix.encode("utf-8")
         namespace = namespace.encode("utf-8")
         bound_prefix = self.__prefix.get(namespace)
-        if override and bound_prefix:
-            self.__namespace.delete(bound_prefix)
-        self.__prefix[namespace] = prefix
-        self.__namespace[prefix] = namespace
+        bound_namespace = self.__namespace.get(prefix)
+        if override:
+            if bound_prefix:
+                self.__namespace.delete(bound_prefix)
+            if bound_namespace:
+                self.__prefix.delete(bound_namespace)
+            self.__prefix[namespace] = prefix
+            self.__namespace[prefix] = namespace
+        else:
+            self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
+            self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")
