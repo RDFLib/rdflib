@@ -404,7 +404,9 @@ class Memory(Store):
 
     def bind(self, prefix, namespace, override=True):
         bound_namespace = self.__namespace.get(prefix)
-        bound_prefix = self.__prefix.get(namespace) or self.__prefix.get(bound_namespace)
+        bound_prefix = self.__prefix.get(namespace) or self.__prefix.get(
+            bound_namespace
+        )
         if override:
             if bound_prefix:
                 del self.__namespace[bound_prefix]
