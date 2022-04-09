@@ -6,10 +6,13 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 from collections import defaultdict
 from functools import cmp_to_key
 
+from rdflib.graph import Graph
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
+from io import TextIOWrapper
+from typing import IO, Dict, Optional
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -44,10 +47,13 @@ class RecursiveSerializer(Serializer):
     indentString = "  "
     roundtrip_prefixes = ()
 
-    def __init__(self, store):
+    def __init__(self, store: Graph):
 
         super(RecursiveSerializer, self).__init__(store)
-        self.stream = None
+        # TODO FIXME: Ideally stream should be optional, but nothing treats it
+        # as such, so least weird solution is to just type it as not optional
+        # even thoug it can sometimes be null.
+        self.stream: IO[str] = None  # type: ignore[assignment]
         self.reset()
 
     def addNamespace(self, prefix, uri):
@@ -166,9 +172,9 @@ class RecursiveSerializer(Serializer):
         """Returns indent string multiplied by the depth"""
         return (self.depth + modifier) * self.indentString
 
-    def write(self, text):
-        """Write text in given encoding."""
-        self.stream.write(text.encode(self.encoding, "replace"))
+    def write(self, text: str):
+        """Write text"""
+        self.stream.write(text)
 
 
 SUBJECT = 0
@@ -184,15 +190,15 @@ class TurtleSerializer(RecursiveSerializer):
     short_name = "turtle"
     indentString = "    "
 
-    def __init__(self, store):
-        self._ns_rewrite = {}
+    def __init__(self, store: Graph):
+        self._ns_rewrite: Dict[str, str] = {}
         super(TurtleSerializer, self).__init__(store)
         self.keywords = {RDF.type: "a"}
         self.reset()
-        self.stream = None
+        self.stream: TextIOWrapper = None  # type: ignore[assignment]
         self._spacious = _SPACIOUS_OUTPUT
 
-    def addNamespace(self, prefix, namespace):
+    def addNamespace(self, prefix: str, namespace: str):
         # Turtle does not support prefix that start with _
         # if they occur in the graph, rewrite to p_blah
         # this is more complicated since we need to make sure p_blah
@@ -223,36 +229,60 @@ class TurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def _serialize_init(
+        self,
+        stream: IO[bytes],
+        base: Optional[str],
+        encoding: Optional[str],
+        spacious: Optional[bool],
+    ) -> None:
         self.reset()
-        self.stream = stream
+        if encoding is not None:
+            self.encoding = encoding
+        self.stream = TextIOWrapper(
+            stream, self.encoding, errors="replace", write_through=True
+        )
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
         elif self.store.base is not None:
             self.base = self.store.base
-
         if spacious is not None:
             self._spacious = spacious
 
-        self.preprocess()
-        subjects_list = self.orderSubjects()
+    def _serialize_end(self) -> None:
+        self.stream.flush()
+        self.stream.detach()
+        self.stream = None  # type: ignore[assignment]
 
-        self.startDocument()
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
+        **args,
+    ):
+        self._serialize_init(stream, base, encoding, spacious)
+        try:
+            self.preprocess()
+            subjects_list = self.orderSubjects()
 
-        firstTime = True
-        for subject in subjects_list:
-            if self.isDone(subject):
-                continue
-            if firstTime:
-                firstTime = False
-            if self.statement(subject) and not firstTime:
-                self.write("\n")
+            self.startDocument()
 
-        self.endDocument()
-        stream.write("\n".encode("latin-1"))
+            firstTime = True
+            for subject in subjects_list:
+                if self.isDone(subject):
+                    continue
+                if firstTime:
+                    firstTime = False
+                if self.statement(subject) and not firstTime:
+                    self.write("\n")
 
-        self.base = None
+            self.endDocument()
+            self.stream.write("\n")
+        finally:
+            self._serialize_end()
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)

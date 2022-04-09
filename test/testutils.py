@@ -1,4 +1,6 @@
 from __future__ import print_function
+from rdflib.graph import Dataset
+from rdflib.plugin import Plugin
 
 import os
 import sys
@@ -10,6 +12,7 @@ import random
 from contextlib import AbstractContextManager, contextmanager
 from typing import (
     Callable,
+    Generic,
     Iterable,
     List,
     Optional,
@@ -40,10 +43,43 @@ from urllib.request import urlopen
 from pathlib import PurePath, PureWindowsPath
 from nturl2path import url2pathname as nt_url2pathname
 import rdflib.compare
+import rdflib.plugin
+
 
 if TYPE_CHECKING:
     import typing_extensions as te
 
+
+# TODO: make an introspective version (like this one) of
+# rdflib.graphutils.isomorphic and use instead.
+from test import TEST_DIR
+
+PluginT = TypeVar("PluginT")
+
+
+class PluginWithNames(Generic[PluginT]):
+    def __init__(self, plugin: Plugin[PluginT], names: Set[str]) -> None:
+        self.plugin = plugin
+        self.names = names
+
+
+def get_unique_plugins(
+    type: Type[PluginT],
+) -> Dict[Type[PluginT], Set[Plugin[PluginT]]]:
+    result: Dict[Type[PluginT], Set[Plugin[PluginT]]] = {}
+    for plugin in rdflib.plugin.plugins(None, type):
+        cls = plugin.getClass()
+        plugins = result.setdefault(cls, set())
+        plugins.add(plugin)
+    return result
+
+
+def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
+    result: Set[str] = set()
+    unique_plugins = get_unique_plugins(type)
+    for type, plugin_set in unique_plugins.items():
+        result.add(next(iter(plugin_set)).name)
+    return result
 
 def get_random_ip(parts: List[str] = None) -> str:
     if parts is None:
@@ -77,6 +113,14 @@ class GraphHelper:
     """
     Provides methods which are useful for working with graphs.
     """
+    @classmethod
+    def add_triples(
+        cls, graph: Graph, triples: Iterable[Tuple[Node, Node, Node]]
+    ) -> Graph:
+        for triple in triples:
+            graph.add(triple)
+        return graph
+
 
     @classmethod
     def identifier(self, node: Node) -> Identifier:
@@ -234,7 +278,6 @@ class GraphHelper:
                 continue
             if object.datatype in datatypes:
                 object._datatype = None
-
 
 GenericT = TypeVar("GenericT", bound=Any)
 

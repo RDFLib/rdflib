@@ -1,7 +1,12 @@
-import re
-import unittest
 
+import unittest
+from unittest.case import expectedFailure
+
+import pytest
 import rdflib
+import re
+from rdflib import Namespace
+from .testutils import GraphHelper
 
 TRIPLE = (
     rdflib.URIRef("http://example.com/s"),
@@ -14,6 +19,55 @@ def test_empty():
     g = rdflib.Graph()
     s = g.serialize(format="trig")
     assert s is not None
+
+
+EG = Namespace("http://example.com/")
+
+
+def test_single_quad(self) -> None:
+    graph = rdflib.ConjunctiveGraph()
+    quad = (EG["subject"], EG["predicate"], EG["object"], EG["graph"])
+    graph.add(quad)
+    check_graph = rdflib.ConjunctiveGraph()
+    data_str = graph.serialize(format="trig")
+    check_graph.parse(data=data_str, format="trig")
+    quad_set, check_quad_set = GraphHelper.quad_sets([graph, check_graph])
+    assert quad_set == check_quad_set
+
+
+@pytest.mark.xfail
+def test_default_identifier(self) -> None:
+    """
+    This should pass, but for some reason when the default identifier is
+    set, trig serializes quads inside this default indentifier to an
+    anonymous graph.
+
+    So in this test, data_str is:
+
+        @base <utf-8> .
+        @prefix ns1: <http://example.com/> .
+
+        {
+            ns1:subject ns1:predicate ns1:object .
+        }
+
+    instead of:
+        @base <utf-8> .
+        @prefix ns1: <http://example.com/> .
+
+        ns1:graph {
+            ns1:subject ns1:predicate ns1:object .
+        }
+    """
+    graph_id = EG["graph"]
+    graph = rdflib.ConjunctiveGraph(identifier=EG["graph"])
+    quad = (EG["subject"], EG["predicate"], EG["object"], graph_id)
+    graph.add(quad)
+    check_graph = rdflib.ConjunctiveGraph()
+    data_str = graph.serialize(format="trig")
+    check_graph.parse(data=data_str, format="trig")
+    quad_set, check_quad_set = GraphHelper.quad_sets([graph, check_graph])
+    self.assertEqual(quad_set, check_quad_set)
 
 
 def test_repeat_triples():

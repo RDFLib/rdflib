@@ -351,15 +351,15 @@ class Graph(Node):
         self.default_union = False
 
     @property
-    def store(self):
+    def store(self) -> Store:  # read-only attr
         return self.__store
 
     @property
-    def identifier(self):
+    def identifier(self) -> Node:  # read-only attr
         return self.__identifier
 
     @property
-    def namespace_manager(self):
+    def namespace_manager(self) -> NamespaceManager:
         """
         this graph's namespace-manager
         """
@@ -368,8 +368,9 @@ class Graph(Node):
         return self.__namespace_manager
 
     @namespace_manager.setter
-    def namespace_manager(self, nm):
-        self.__namespace_manager = nm
+    def namespace_manager(self, value: NamespaceManager):
+        """this graph's namespace-manager"""
+        self.__namespace_manager = value
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
@@ -1096,18 +1097,37 @@ class Graph(Node):
         encoding: Optional[str] = None,
         **args: Any,
     ) -> Union[bytes, str, "Graph"]:
-        """Serialize the Graph to destination
+        """
+        Serialize the graph.
 
-        If destination is None serialize method returns the serialization as
-        bytes or string.
-
-        If encoding is None and destination is None, returns a string
-        If encoding is set, and Destination is None, returns bytes
-
-        Format defaults to turtle.
-
-        Format support can be extended with plugins,
-        but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
+        :param destination:
+           The destination to serialize the graph to. This can be a path as a
+           :class:`str` or :class:`~pathlib.PurePath` object, or it can be a
+           :class:`~typing.IO[bytes]` like object. If this parameter is not
+           supplied the serialized graph will be returned.
+        :type destination: Optional[Union[str, typing.IO[bytes], pathlib.PurePath]]
+        :param format:
+           The format that the output should be written in. This value
+           references a :class:`~rdflib.serializer.Serializer` plugin. Format
+           support can be extended with plugins, but `"xml"`, `"n3"`,
+           `"turtle"`, `"nt"`, `"pretty-xml"`, `"trix"`, `"trig"`, `"nquads"`
+           and `"json-ld"` are built in. Defaults to `"turtle"`.
+        :type format: str
+        :param base:
+           The base IRI for formats that support it. For the turtle format this
+           will be used as the `@base` directive.
+        :type base: Optional[str]
+        :param encoding: Encoding of output.
+        :type encoding: Optional[str]
+        :param **args:
+           Additional arguments to pass to the
+           :class:`~rdflib.serializer.Serializer` that will be used.
+        :type **args: Any
+        :return: The serialized graph if `destination` is `None`.
+        :rtype: :class:`bytes` if `destination` is `None` and `encoding` is not `None`.
+        :rtype: :class:`bytes` if `destination` is `None` and `encoding` is `None`.
+        :return: `self` (i.e. the :class:`~rdflib.graph.Graph` instance) if `destination` is not None.
+        :rtype: :class:`~rdflib.graph.Graph` if `destination` is not None.
         """
 
         # if base is not given as attribute use the base set for the graph
@@ -1298,7 +1318,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.Result
+        :returntype: :class:`~rdflib.query.Result`
 
         """
 

@@ -62,53 +62,45 @@ class TrigSerializer(TurtleSerializer):
         spacious: Optional[bool] = None,
         **args,
     ):
-        self.reset()
-        self.stream = stream
-        # if base is given here, use that, if not and a base is set for the graph use that
-        if base is not None:
-            self.base = base
-        elif self.store.base is not None:
-            self.base = self.store.base
+        self._serialize_init(stream, base, encoding, spacious)
+        try:
+            self.preprocess()
 
-        if spacious is not None:
-            self._spacious = spacious
+            self.startDocument()
 
-        self.preprocess()
-
-        self.startDocument()
-
-        firstTime = True
-        for store, (ordered_subjects, subjects, ref) in self._contexts.items():
-            if not ordered_subjects:
-                continue
-
-            self._references = ref
-            self._serialized = {}
-            self.store = store
-            self._subjects = subjects
-
-            if self.default_context and store.identifier == self.default_context:
-                self.write(self.indent() + "\n{")
-            else:
-                iri: Optional[str]
-                if isinstance(store.identifier, BNode):
-                    iri = store.identifier.n3()
-                else:
-                    iri = self.getQName(store.identifier)
-                    if iri is None:
-                        iri = store.identifier.n3()
-                self.write(self.indent() + "\n%s {" % iri)
-
-            self.depth += 1
-            for subject in ordered_subjects:
-                if self.isDone(subject):
+            firstTime = True
+            for store, (ordered_subjects, subjects, ref) in self._contexts.items():
+                if not ordered_subjects:
                     continue
-                if firstTime:
-                    firstTime = False
-                if self.statement(subject) and not firstTime:
-                    self.write("\n")
-            self.depth -= 1
-            self.write("}\n")
 
-        self.endDocument()
-        stream.write("\n".encode("latin-1"))
+                self._references = ref
+                self._serialized = {}
+                self.store = store
+                self._subjects = subjects
+
+                if self.default_context and store.identifier == self.default_context:
+                    self.write(self.indent() + "\n{")
+                else:
+                    if isinstance(store.identifier, BNode):
+                        iri = store.identifier.n3()
+                    else:
+                        iri = self.getQName(store.identifier)
+                        if iri is None:
+                            iri = store.identifier.n3()
+                    self.write(self.indent() + "\n%s {" % iri)
+
+                self.depth += 1
+                for subject in ordered_subjects:
+                    if self.isDone(subject):
+                        continue
+                    if firstTime:
+                        firstTime = False
+                    if self.statement(subject) and not firstTime:
+                        self.write("\n")
+                self.depth -= 1
+                self.write("}\n")
+
+            self.endDocument()
+            self.write("\n")
+        finally:
+            self._serialize_end()

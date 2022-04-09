@@ -5,9 +5,11 @@ Tests for ConjunctiveGraph that do not depend on the underlying store
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph
+from rdflib.namespace import Namespace
 from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource
-from os import path
+
+from .testutils import GraphHelper
 
 
 DATA = """
@@ -15,6 +17,17 @@ DATA = """
 """
 
 PUBLIC_ID = "http://example.org/record/1"
+
+EG = Namespace("http://example.com/")
+
+
+def test_add() -> None:
+    quad = (EG["subject"], EG["predicate"], EG["object"], EG["graph"])
+    g = ConjunctiveGraph()
+    g.add(quad)
+    quad_set = GraphHelper.quad_set(g)
+    assert len(quad_set) == 1
+    assert next(iter(quad_set)) == quad
 
 
 def test_bnode_publicid():

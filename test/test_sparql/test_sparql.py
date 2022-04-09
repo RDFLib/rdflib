@@ -240,8 +240,15 @@ def test_txtresult():
     assert result.type == "SELECT"
     assert len(result) == 1
     assert result.vars == vars
-    txtresult = result.serialize(format="txt")
-    lines = txtresult.decode().splitlines()
+
+    bytesresult = result.serialize(format="txt", encoding="utf-8")
+    lines = bytesresult.decode().splitlines()
+    assert len(lines) == 3
+    vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
+    assert vars_check == vars
+
+    strresult = result.serialize(format="txt")
+    lines = strresult.splitlines()
     assert len(lines) == 3
     vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
     assert vars_check == vars

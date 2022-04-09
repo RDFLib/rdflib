@@ -1,4 +1,4 @@
-from typing import IO, Dict, Optional, Set
+from typing import IO, Dict, Optional, Set, cast
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
@@ -173,6 +173,8 @@ class PrettyXMLSerializer(Serializer):
         encoding: Optional[str] = None,
         **args,
     ):
+        # TODO FIXME: this should be Optional, but it's not because nothing
+        # treats it as such.
         self.__serialized: Dict[Identifier, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -241,6 +243,7 @@ class PrettyXMLSerializer(Serializer):
         writer = self.writer
 
         if subject in self.forceRDFAbout:
+            subject = cast(URIRef, subject)
             writer.push(RDFVOC.Description)
             writer.attribute(RDFVOC.about, self.relativize(subject))
             writer.pop(RDFVOC.Description)
@@ -282,6 +285,7 @@ class PrettyXMLSerializer(Serializer):
 
         elif subject in self.forceRDFAbout:
             # TODO FIXME?: this looks like a duplicate of first condition
+            subject = cast(URIRef, subject)
             writer.push(RDFVOC.Description)
             writer.attribute(RDFVOC.about, self.relativize(subject))
             writer.pop(RDFVOC.Description)

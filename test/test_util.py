@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from io import BufferedIOBase, RawIOBase, TextIOBase
+from typing import BinaryIO, TextIO
 import unittest
 import time
 from unittest.case import expectedFailure
@@ -15,6 +17,9 @@ from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import ContextTypeError
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from rdflib.util import as_textio
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -44,7 +49,7 @@ n3source = """\
 
 :sister a rdf:Property.
 
-:sister rdfs:domain :Person; 
+:sister rdfs:domain :Person;
         rdfs:range :Woman.
 
 :Woman = foo:FemaleAdult .
@@ -389,6 +394,49 @@ class TestUtilCheckers(unittest.TestCase):
         self.assertRaises(ObjectTypeError, util.check_pattern, (self.s, self.p, c))
         res = util.check_pattern((self.s, self.p, self.o))
         self.assertTrue(res == None)
+
+
+class TestIO(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = TemporaryDirectory()
+        self.tmpdir = Path(self._tmpdir.name)
+
+        return super().setUp()
+
+    def tearDown(self) -> None:
+        self._tmpdir.cleanup()
+
+    def test_as_textio_text(self) -> None:
+        tmp_file = self.tmpdir / "file"
+        with tmp_file.open("w") as text_stream:
+            text_io: TextIO = text_stream
+            assert text_io is text_stream
+            with as_textio(text_stream) as text_io:
+                assert text_io is text_stream
+                text_io.write("Test")
+            text_stream.flush()
+            self.assertEqual(tmp_file.read_text(), "Test")
+            self.assertIsInstance(text_io, TextIOBase)
+
+    def test_as_textio_buffered_stream(self) -> None:
+        tmp_file = self.tmpdir / "file"
+        with tmp_file.open("wb") as buffered_stream:
+            binary_io: BinaryIO = buffered_stream
+            assert binary_io is buffered_stream
+            with as_textio(buffered_stream) as text_io:
+                text_io.write("Test")
+            self.assertEqual(tmp_file.read_text(), "Test")
+            self.assertIsInstance(buffered_stream, BufferedIOBase)
+
+    def test_as_textio_raw_stream(self) -> None:
+        tmp_file = self.tmpdir / "file"
+        with tmp_file.open("wb", buffering=0) as raw_stream:
+            binary_io: BinaryIO = raw_stream
+            assert binary_io is raw_stream
+            with as_textio(raw_stream) as text_io:
+                text_io.write("Test")
+            self.assertEqual(tmp_file.read_text(), "Test")
+            self.assertIsInstance(binary_io, RawIOBase)
 
 
 if __name__ == "__main__":

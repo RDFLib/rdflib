@@ -109,7 +109,7 @@ class N3Serializer(TurtleSerializer):
             self.write("{")
             self.depth += 1
             serializer = N3Serializer(node, parent=self)
-            serializer.serialize(self.stream)
+            serializer.serialize(self.stream.buffer)
             self.depth -= 1
             self.write(self.indent() + "}")
             return True

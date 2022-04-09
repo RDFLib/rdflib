@@ -9,11 +9,13 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 
 import codecs
 import csv
-from typing import IO
+from typing import IO, TYPE_CHECKING, Optional, TextIO, Union
 
 from rdflib import Variable, BNode, URIRef, Literal
 
 from rdflib.query import Result, ResultSerializer, ResultParser
+
+from rdflib.util import as_textio
 
 
 class CSVResultParser(ResultParser):
@@ -62,24 +64,24 @@ class CSVResultSerializer(ResultSerializer):
         if result.type != "SELECT":
             raise Exception("CSVSerializer can only serialize select query results")
 
-    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
+    def serialize(
+        self, stream: Union[IO[bytes], TextIO], encoding: Optional[str] = None, **kwargs
+    ):
 
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards
 
-        import codecs
-
-        stream = codecs.getwriter(encoding)(stream)  # type: ignore[assignment]
-
-        out = csv.writer(stream, delimiter=self.delim)
-
-        vs = [self.serializeTerm(v, encoding) for v in self.result.vars]  # type: ignore[union-attr]
-        out.writerow(vs)
-        for row in self.result.bindings:
-            out.writerow(
-                [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]  # type: ignore[union-attr]
-            )
+        with as_textio(stream, encoding=encoding) as stream:
+            out = csv.writer(stream, delimiter=self.delim)
+            if TYPE_CHECKING:
+                assert self.result.vars is not None
+            vs = [self.serializeTerm(v, encoding) for v in self.result.vars]
+            out.writerow(vs)
+            for row in self.result.bindings:
+                out.writerow(
+                    [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]
+                )
 
     def serializeTerm(self, term, encoding):
         if term is None:

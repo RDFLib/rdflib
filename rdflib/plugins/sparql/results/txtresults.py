@@ -1,7 +1,8 @@
-from typing import IO, List, Optional
+from typing import IO, TYPE_CHECKING, List, Optional, TextIO, Union
 from rdflib import URIRef, BNode, Literal
 from rdflib.query import ResultSerializer
 from rdflib.namespace import NamespaceManager
+from rdflib.util import as_textio
 from rdflib.term import Variable
 
 
@@ -27,8 +28,8 @@ class TXTResultSerializer(ResultSerializer):
     # TODO FIXME: class specific args should be keyword only.
     def serialize(  # type: ignore[override]
         self,
-        stream: IO,
-        encoding: str,
+        stream: Union[IO[bytes], TextIO],
+        encoding: Optional[str],
         namespace_manager: Optional[NamespaceManager] = None,
     ):
         """
@@ -62,9 +63,13 @@ class TXTResultSerializer(ResultSerializer):
                 for i in range(len(keys)):
                     maxlen[i] = max(maxlen[i], len(r[i]))
 
-            stream.write("|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-            stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
-            for r in sorted(b):
+            with as_textio(stream) as stream:
                 stream.write(
-                    "|".join([t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n"
+                    "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n"
                 )
+                stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
+                for r in sorted(b):
+                    stream.write(
+                        "|".join([t + " " * (i - len(t)) for i, t in zip(maxlen, r)])
+                        + "\n"
+                    )
