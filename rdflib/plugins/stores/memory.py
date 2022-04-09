@@ -403,11 +403,19 @@ class Memory(Store):
                             yield triple, self.__contexts(triple)
 
     def bind(self, prefix, namespace, override=True):
-        bound_prefix = self.__prefix.get(namespace)
-        if override and bound_prefix:
-            del self.__namespace[bound_prefix]
-        self.__prefix[namespace] = prefix
-        self.__namespace[prefix] = namespace
+        bound_namespace = self.__namespace.get(prefix)
+        bound_prefix = self.__prefix.get(namespace) or self.__prefix.get(bound_namespace)
+        if override:
+            if bound_prefix:
+                del self.__namespace[bound_prefix]
+            if bound_namespace:
+                del self.__prefix[bound_namespace]
+
+            self.__prefix[namespace] = prefix
+            self.__namespace[prefix] = namespace
+        else:
+            self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
+            self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)
