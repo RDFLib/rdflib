@@ -12,6 +12,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    OrderedDict,
     Pattern,
     Tuple,
     Union,
@@ -45,10 +46,13 @@ class GraphAsserts:
     """
 
     quad_count: Optional[int] = None
+    exact_match: bool = False
 
-    def check(self, graph: ConjunctiveGraph) -> None:
+    def check(self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph) -> None:
         if self.quad_count is not None:
             assert self.quad_count == len(list(graph.quads()))
+        if first_graph is not None and self.exact_match:
+            GraphHelper.assert_quad_sets_equals(first_graph, graph)
 
 
 @dataclass(order=True)
@@ -58,7 +62,7 @@ class GraphVariants:
     """
 
     key: str
-    variants: Dict[str, Path] = field(default_factory=dict)
+    variants: Dict[str, Path] = field(default_factory=OrderedDict)
     asserts: GraphAsserts = field(default_factory=lambda: GraphAsserts())
 
     _variant_regex: ClassVar[Pattern[str]] = re.compile(
@@ -135,6 +139,29 @@ EXPECTED_FAILURES = {
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,
     ),
+    ("variants/rdf11trig_eg2"): pytest.mark.xfail(
+        reason="""
+    This fails randomly, passing less than 10% of the time, and always failing
+    with comparing hext against trig. Not clear why, it may be a big with hext
+    parsing.
+
+    AssertionError: checking rdf11trig_eg2.hext against rdf11trig_eg2.trig
+    in both:
+        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:bob@oldcorp.example.org'))
+        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Bob'))
+        (rdflib.term.URIRef('http://example.org/bob'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Bob'))
+        (rdflib.term.URIRef('http://example.org/alice'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Alice'))
+    only in first:
+        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'))
+        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:alice@work.example.org'))
+        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Alice'))
+    only in second:
+        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cbcd41774964510991c01701d8430149bc373e1f23734d9c938c81a40b1429aa33'))
+        (rdflib.term.BNode('cbcd41774964510991c01701d8430149bc373e1f23734d9c938c81a40b1429aa33'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:alice@work.example.org'))
+        (rdflib.term.BNode('cbcd41774964510991c01701d8430149bc373e1f23734d9c938c81a40b1429aa33'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Alice'))
+        """,
+        raises=AssertionError,
+    ),
 }
 
 
@@ -164,7 +191,8 @@ def test_variants(graph_variant: GraphVariants) -> None:
     logging.debug("graph_variant = %s", graph_variant)
     public_id = URIRef(f"example:{graph_variant.key}")
     assert len(graph_variant.variants) > 0
-    first_graph: Optional[Graph] = None
+    first_graph: Optional[ConjunctiveGraph] = None
+    first_path: Optional[Path] = None
     for variant_key, variant_path in graph_variant.variants.items():
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
@@ -175,8 +203,10 @@ def test_variants(graph_variant: GraphVariants) -> None:
         # opinions of when a bare string is of datatype XSD.string or not.
         # Probably something that needs more investigation.
         GraphHelper.strip_literal_datatypes(graph, {XSD.string})
-        graph_variant.asserts.check(graph)
+        graph_variant.asserts.check(first_graph, graph)
         if first_graph is None:
             first_graph = graph
+            first_path = variant_path
         else:
-            GraphHelper.assert_isomorphic(first_graph, graph)
+            assert first_path is not None
+            GraphHelper.assert_isomorphic(first_graph, graph, f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}")
