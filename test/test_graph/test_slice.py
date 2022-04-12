@@ -4,7 +4,7 @@ import unittest
 
 
 class GraphSlice(unittest.TestCase):
-    def test_slice():
+    def test_slice(self):
         """
         We pervert the slice object,
         and use start, stop, step as subject, predicate, object

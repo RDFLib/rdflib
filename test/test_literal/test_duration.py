@@ -23,7 +23,7 @@ class TestDuration(unittest.TestCase):
         assert isinstance(l.toPython(), Duration)
         assert l.toPython() == parse_duration("P1Y2M4DT5H6M7S")
 
-    def test_equalityself():
+    def test_equalityself(self):
         x = Literal("P1Y2M3W4DT5H6M7S", datatype=XSD.duration)
         y = Literal("P1Y2M25DT5H6M7S", datatype=XSD.duration)
         assert x == y

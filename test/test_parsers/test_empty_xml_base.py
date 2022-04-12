@@ -36,11 +36,9 @@ baseUri = URIRef("http://example.com/")
 baseUri2 = URIRef("http://example.com/foo/bar")
 
 class TestEmptyBase(unittest.TestCase):
-    def setup(self, method):
+    def test_empty_base_ref(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(data=test_data, publicID=baseUri, format="xml")
-
-    def test_empty_base_ref(self):
         assert len(list(self.graph)) > 0, "There should be at least one statement in the graph"
         assert (
             baseUri,
@@ -50,11 +48,10 @@ class TestEmptyBase(unittest.TestCase):
 
 
 class TestRelativeBase(unittest.TestCase):
-    def setup(self, method):
-        self.graph = ConjunctiveGraph()
-        self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
 
     def test_relative_base_ref(self):
+        self.graph = ConjunctiveGraph()
+        self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
         assert len(self.graph) > 0, "There should be at least one statement in the graph"
         resolvedBase = URIRef("http://example.com/baz")
         assert (

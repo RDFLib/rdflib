@@ -1,3 +1,4 @@
+import unittest
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 
