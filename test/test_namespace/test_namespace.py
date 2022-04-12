@@ -90,6 +90,22 @@ class TestURIPattern:
 
 
 class TestNamespacePrefix:
+    @pytest.mark.parametrize(
+        "invalid_uri",
+        [
+            ("<123>"),
+            ('-"-'),
+            ("{}"),
+            ("a|b"),
+            ("1\\2"),
+            ("^"),
+        ],
+    )
+    def test_invalid_uri(self, invalid_uri: str) -> None:
+        g = Graph()
+        with pytest.raises(ValueError):
+            g.namespace_manager.compute_qname(invalid_uri)
+
     def test_compute_qname(self):
         """Test sequential assignment of unknown prefixes"""
         g = Graph()

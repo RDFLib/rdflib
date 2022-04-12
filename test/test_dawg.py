@@ -212,7 +212,7 @@ def update_test(t: RDFTest):
     query_path: PurePath = file_uri_to_path(query)
 
     if uri in skiptests:
-        pytest.skip()
+        pytest.xfail()
 
     try:
         g = Dataset()
@@ -359,7 +359,7 @@ def query_test(t: RDFTest):
     resfile_path = file_uri_to_path(resfile) if resfile else None
 
     if uri in skiptests:
-        pytest.skip()
+        pytest.xfail()
 
     def skip(reason="(none)"):
         print("Skipping %s from now on." % uri)
