@@ -9,8 +9,6 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.namespace import FOAF, RDF
 from rdflib.term import URIRef
 
-import unittest
-
 test_data = """
 <rdf:RDF
     xmlns:foaf="http://xmlns.com/foaf/0.1/"
@@ -35,7 +33,7 @@ test_data2 = """
 baseUri = URIRef("http://example.com/")
 baseUri2 = URIRef("http://example.com/foo/bar")
 
-class TestEmptyBase(unittest.TestCase):
+class TestEmptyBase:
     def test_empty_base_ref(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(data=test_data, publicID=baseUri, format="xml")
@@ -47,8 +45,7 @@ class TestEmptyBase(unittest.TestCase):
         ) in self.graph, f"There should be a triple with {baseUri} as the subject"
 
 
-class TestRelativeBase(unittest.TestCase):
-
+class TestRelativeBase:
     def test_relative_base_ref(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")

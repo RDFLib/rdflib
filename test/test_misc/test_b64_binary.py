@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import base64
 from rdflib import Literal, XSD
 
 
-class B64BinaryTestCase(unittest.TestCase):
+class TestB64Binary:
     def test_unicode(self):
         str1 = "Test utf-8 string éàë"
         # u b64string

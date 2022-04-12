@@ -1,5 +1,3 @@
-import unittest
-
 from rdflib import Graph
 
 graph = Graph().parse(
@@ -15,7 +13,7 @@ graph = Graph().parse(
 )
 
 
-class PrefixTypesTest(unittest.TestCase):
+class TestPrefixTypes:
 
     """N3/Turtle serializers should use prefixes,
     also for types and datatypes

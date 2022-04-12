@@ -3,7 +3,6 @@ some more specific Literal tests are in test_literal.py
 """
 
 import base64
-import unittest
 import random
 
 from rdflib.term import URIRef, BNode, Literal, _is_valid_unicode
@@ -15,7 +14,7 @@ def uformat(s):
     return s.replace("u'", "'")
 
 
-class TestURIRefRepr(unittest.TestCase):
+class TestURIRefRepr:
     """
     see also test_literal.TestRepr
     """
@@ -36,7 +35,7 @@ class TestURIRefRepr(unittest.TestCase):
         a = u > g
 
 
-class TestBNodeRepr(unittest.TestCase):
+class TestBNodeRepr:
     def test_subclass_name_appears_in_repr(self):
         class MyBNode(BNode):
             pass
@@ -44,7 +43,7 @@ class TestBNodeRepr(unittest.TestCase):
         x = MyBNode()
         assert repr(x).startswith("MyBNode(")
 
-class TestLiteral(unittest.TestCase):
+class TestLiteral:
     def test_base64_values(self):
         b64msg = "cmRmbGliIGlzIGNvb2whIGFsc28gaGVyZSdzIHNvbWUgYmluYXJ5IAAR83UC"
         decoded_b64msg = base64.b64decode(b64msg)
@@ -269,7 +268,7 @@ class TestLiteral(unittest.TestCase):
             assert case_passed, "Case " + str(case[0]) + " failed"
 
 
-class TestValidityFunctions(unittest.TestCase):
+class TestValidityFunctions:
     def test_is_valid_unicode(self):
         testcase_list = (
             (None, True),

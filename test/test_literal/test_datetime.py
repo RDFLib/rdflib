@@ -1,5 +1,4 @@
 import sys
-import unittest
 
 from datetime import datetime
 
@@ -11,7 +10,7 @@ from rdflib.term import Literal
 from rdflib.namespace import XSD
 
 
-class TestRelativeBase(unittest.TestCase):
+class TestRelativeBase:
     def test_equality(self):
         x = Literal(
             "2008-12-01T18:02:00Z",

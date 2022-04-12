@@ -1,4 +1,3 @@
-import unittest
 from datetime import timedelta
 
 from isodate import Duration, parse_duration
@@ -7,7 +6,7 @@ from rdflib.namespace import XSD
 from rdflib.term import Literal
 
 
-class TestDuration(unittest.TestCase):
+class TestDuration:
     def test_to_python_timedelta(self):
         l = Literal("P4DT5H6M7S", datatype=XSD.dayTimeDuration)
         assert isinstance(l.toPython(), timedelta)

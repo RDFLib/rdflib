@@ -1,9 +1,8 @@
-import unittest
 import pytest
 from rdflib.parser import create_input_source
 
 
-class ParserTestCase(unittest.TestCase):
+class TestParser:
     def test_empty_arguments(self):
         """create_input_source() function must receive exactly one argument."""
         with pytest.raises(ValueError):

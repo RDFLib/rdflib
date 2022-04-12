@@ -1,9 +1,7 @@
-import unittest
-
 from rdflib import Literal, XSD
 
 
-class TokenDatatypeTest(unittest.TestCase):
+class TestTokenDatatype:
     def test1(self):
         lit2 = Literal("\two\nw", datatype=XSD.normalizedString)
         lit = Literal("\two\nw", datatype=XSD.string)
