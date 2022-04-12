@@ -1,6 +1,3 @@
-# import os, sys, string
-import unittest
-
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 
@@ -29,24 +26,14 @@ _:list3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/199
 """
 
 
-def main():
-    unittest.main()
-
-
 class OWLCollectionTest(unittest.TestCase):
-    def testCollectionRDFXML(self):
+    def test_collection_rdfxml(self):
         g = Graph().parse(data=DATA, format="nt")
         g.namespace_manager.bind("owl", URIRef("http://www.w3.org/2002/07/owl#"))
-        print(g.serialize(format="pretty-xml"))
+        s = g.serialize(format="pretty-xml")
 
 
 class ListTest(unittest.TestCase):
-    def testFalseElement(self):
+    def test_false_element(self):
         g = Graph().parse(data=DATA_FALSE_ELEMENT, format="nt")
-        self.assertEqual(
-            len(list(g.items(URIRef("http://example.org/#ThreeMemberList")))), 3
-        )
-
-
-if __name__ == "__main__":
-    main()
+        assert len(list(g.items(URIRef("http://example.org/#ThreeMemberList")))) == 3

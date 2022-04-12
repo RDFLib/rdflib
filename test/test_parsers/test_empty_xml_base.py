@@ -6,12 +6,10 @@ and RDF/XML dependence on it
 """
 
 from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import FOAF, RDF
 from rdflib.term import URIRef
-from rdflib.namespace import RDF, FOAF
-from io import StringIO
 
 import unittest
-
 
 test_data = """
 <rdf:RDF
@@ -37,37 +35,30 @@ test_data2 = """
 baseUri = URIRef("http://example.com/")
 baseUri2 = URIRef("http://example.com/foo/bar")
 
-
 class TestEmptyBase(unittest.TestCase):
-    def setUp(self):
+    def setup(self, method):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data), publicID=baseUri, format="xml")
+        self.graph.parse(data=test_data, publicID=baseUri, format="xml")
 
-    def test_base_ref(self):
-        self.assertTrue(
-            len(list(self.graph)), "There should be at least one statement in the graph"
-        )
-        self.assertTrue(
-            (baseUri, RDF.type, FOAF.Document) in self.graph,
-            "There should be a triple with %s as the subject" % baseUri,
-        )
+    def test_empty_base_ref(self):
+        assert len(list(self.graph)) > 0, "There should be at least one statement in the graph"
+        assert (
+            baseUri,
+            RDF.type,
+            FOAF.Document,
+        ) in self.graph, f"There should be a triple with {baseUri} as the subject"
 
 
 class TestRelativeBase(unittest.TestCase):
-    def setUp(self):
+    def setup(self, method):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data2), publicID=baseUri2, format="xml")
+        self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
 
-    def test_base_ref(self):
-        self.assertTrue(
-            len(self.graph), "There should be at least one statement in the graph"
-        )
+    def test_relative_base_ref(self):
+        assert len(self.graph) > 0, "There should be at least one statement in the graph"
         resolvedBase = URIRef("http://example.com/baz")
-        self.assertTrue(
-            (resolvedBase, RDF.type, FOAF.Document) in self.graph,
-            "There should be a triple with %s as the subject" % resolvedBase,
-        )
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert (
+            resolvedBase,
+            RDF.type,
+            FOAF.Document,
+        ) in self.graph, f"There should be a triple with {resolvedBase} as the subject"

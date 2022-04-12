@@ -32,7 +32,7 @@ class UtilTestCase(unittest.TestCase):
 """
         )
         b = np.loads(np.dumps(a))
-        self.assertEqual(a, b)
+        assert a == b
 
     def test_literal_cases(self):
         np = NodePickler()
@@ -40,15 +40,11 @@ class UtilTestCase(unittest.TestCase):
         for l in cases:
             a = Literal(l)
             b = np.loads(np.dumps(a))
-            self.assertEqual(a, b)
+            assert a == b
 
     def test_pickle(self):
         np = NodePickler()
         dump = pickle.dumps(np)
         np2 = pickle.loads(dump)
-        self.assertEqual(np._ids, np2._ids)
-        self.assertEqual(np._objects, np2._objects)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert np._ids == np2._ids
+        assert np._objects == np2._objects

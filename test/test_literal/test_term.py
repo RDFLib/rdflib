@@ -20,14 +20,14 @@ class TestURIRefRepr(unittest.TestCase):
     see also test_literal.TestRepr
     """
 
-    def testSubclassNameAppearsInRepr(self):
+    def test_subclass_name_appears_in_repr(self):
         class MyURIRef(URIRef):
             pass
 
         x = MyURIRef("http://example.com/")
-        self.assertEqual(repr(x), uformat("MyURIRef(u'http://example.com/')"))
+        assert repr(x) == uformat("MyURIRef(u'http://example.com/')")
 
-    def testGracefulOrdering(self):
+    def test_graceful_ordering(self):
         u = URIRef("cake")
         g = Graph()
         a = u > u
@@ -37,21 +37,20 @@ class TestURIRefRepr(unittest.TestCase):
 
 
 class TestBNodeRepr(unittest.TestCase):
-    def testSubclassNameAppearsInRepr(self):
+    def test_subclass_name_appears_in_repr(self):
         class MyBNode(BNode):
             pass
 
         x = MyBNode()
-        self.assertTrue(repr(x).startswith("MyBNode("))
-
+        assert repr(x).startswith("MyBNode(")
 
 class TestLiteral(unittest.TestCase):
     def test_base64_values(self):
         b64msg = "cmRmbGliIGlzIGNvb2whIGFsc28gaGVyZSdzIHNvbWUgYmluYXJ5IAAR83UC"
         decoded_b64msg = base64.b64decode(b64msg)
         lit = Literal(b64msg, datatype=XSD.base64Binary)
-        self.assertEqual(lit.value, decoded_b64msg)
-        self.assertEqual(str(lit), b64msg)
+        assert lit.value == decoded_b64msg
+        assert str(lit) == b64msg
 
     def test_total_order(self):
         types = {
@@ -78,7 +77,7 @@ class TestLiteral(unittest.TestCase):
                 print(repr(l_), repr(l_.value))
             print(e)
             orderable = False
-        self.assertTrue(orderable)
+        assert orderable is True
 
         # also make sure that within a datetime things are still ordered:
         l1 = [
@@ -101,7 +100,7 @@ class TestLiteral(unittest.TestCase):
         ]
         l2 = list(l1)
         random.shuffle(l2)
-        self.assertListEqual(l1, sorted(l2))
+        assert l1 == sorted(l2)
 
     def test_literal_add(self):
         from decimal import Decimal
@@ -267,7 +266,7 @@ class TestLiteral(unittest.TestCase):
                     + (case[1] + case[2]).datatype
                 )
 
-            self.assertTrue(case_passed, "Case " + str(case[0]) + " failed")
+            assert case_passed, "Case " + str(case[0]) + " failed"
 
 
 class TestValidityFunctions(unittest.TestCase):
@@ -282,4 +281,4 @@ class TestValidityFunctions(unittest.TestCase):
             (b"foo\xf3\x02", False),
         )
         for val, expected in testcase_list:
-            self.assertEqual(_is_valid_unicode(val), expected)
+            assert _is_valid_unicode(val) == expected
