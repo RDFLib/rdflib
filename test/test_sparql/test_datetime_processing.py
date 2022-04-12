@@ -2,7 +2,7 @@ from rdflib import Graph, URIRef, Literal, BNode, XSD
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 import rdflib
-from .testutils import eq_
+from test.testutils import eq_
 from pprint import pprint
 import io
 

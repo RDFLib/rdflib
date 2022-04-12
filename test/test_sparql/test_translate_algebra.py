@@ -15,7 +15,7 @@ from rdflib.plugins.sparql.algebra import translateAlgebra
 
 @pytest.fixture
 def data_path() -> Path:
-    return Path(__file__).parent / "translate_algebra"
+    return Path(__file__).parent.parent / "translate_algebra"
 
 
 @dataclass

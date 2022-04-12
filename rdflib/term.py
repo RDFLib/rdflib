@@ -26,6 +26,7 @@ from fractions import Fraction
 
 __all__ = [
     "bind",
+    "_is_valid_uri",
     "Node",
     "IdentifiedNode",
     "Identifier",

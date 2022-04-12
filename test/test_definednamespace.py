@@ -1,6 +1,8 @@
 import sys
 import subprocess
 from pathlib import Path
+from rdflib import RDF, SKOS
+import json
 
 
 def test_definednamespace_creator_qb():
@@ -92,3 +94,80 @@ def test_definednamespace_creator_bad_ns():
         universal_newlines=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
+
+
+def test_definednamespace_dir():
+    x = dir(RDF)
+
+    values = [
+        RDF.nil,
+        RDF.direction,
+        RDF.first,
+        RDF.language,
+        RDF.object,
+        RDF.predicate,
+        RDF.rest,
+        RDF.subject,
+        RDF.type,
+        RDF.value,
+        RDF.Alt,
+        RDF.Bag,
+        RDF.CompoundLiteral,
+        RDF.List,
+        RDF.Property,
+        RDF.Seq,
+        RDF.Statement,
+        RDF.HTML,
+        RDF.JSON,
+        RDF.PlainLiteral,
+        RDF.XMLLiteral,
+        RDF.langString,
+    ]
+
+    assert len(values) == len(x)
+
+    for value in values:
+        assert value in x
+
+
+def test_definednamespace_jsonld_context():
+    expected = {
+        "@context": {
+            "skos": "http://www.w3.org/2004/02/skos/core#",
+            "altLabel": "skos:altLabel",
+            "broadMatch": "skos:broadMatch",
+            "broader": "skos:broader",
+            "broaderTransitive": "skos:broaderTransitive",
+            "changeNote": "skos:changeNote",
+            "closeMatch": "skos:closeMatch",
+            "definition": "skos:definition",
+            "editorialNote": "skos:editorialNote",
+            "exactMatch": "skos:exactMatch",
+            "example": "skos:example",
+            "hasTopConcept": "skos:hasTopConcept",
+            "hiddenLabel": "skos:hiddenLabel",
+            "historyNote": "skos:historyNote",
+            "inScheme": "skos:inScheme",
+            "mappingRelation": "skos:mappingRelation",
+            "member": "skos:member",
+            "memberList": "skos:memberList",
+            "narrowMatch": "skos:narrowMatch",
+            "narrower": "skos:narrower",
+            "narrowerTransitive": "skos:narrowerTransitive",
+            "notation": "skos:notation",
+            "note": "skos:note",
+            "prefLabel": "skos:prefLabel",
+            "related": "skos:related",
+            "relatedMatch": "skos:relatedMatch",
+            "scopeNote": "skos:scopeNote",
+            "semanticRelation": "skos:semanticRelation",
+            "topConceptOf": "skos:topConceptOf",
+            "Collection": "skos:Collection",
+            "Concept": "skos:Concept",
+            "ConceptScheme": "skos:ConceptScheme",
+            "OrderedCollection": "skos:OrderedCollection"
+        }
+    }
+    actual = SKOS.as_jsonld_context("skos")
+
+    assert actual == expected

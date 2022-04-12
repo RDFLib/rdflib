@@ -6,7 +6,7 @@ from rdflib.compare import graph_diff
 from rdflib.namespace import RDF, FOAF
 from rdflib import Graph
 from rdflib.term import Node, BNode, Literal
-from .testutils import GraphHelper
+from test.testutils import GraphHelper
 
 """Test for graph_diff - much more extensive testing
 would certainly be possible"""

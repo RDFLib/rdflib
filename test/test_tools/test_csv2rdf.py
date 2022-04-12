@@ -8,7 +8,7 @@ from pathlib import Path
 
 class CSV2RDFTest(unittest.TestCase):
     def setUp(self):
-        self.REALESTATE_FILE_PATH = Path(__file__).parent / "csv" / "realestate.csv"
+        self.REALESTATE_FILE_PATH = Path(__file__).parent.parent / "consistent_test_data" / "csv" / "realestate.csv"
 
     def test_csv2rdf_cli(self):
         completed = subprocess.run(

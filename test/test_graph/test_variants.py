@@ -28,7 +28,7 @@ from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
 
-TEST_DIR = Path(__file__).parent.absolute()
+TEST_DIR = Path(__file__).parent.parent.absolute()
 VARIANTS_DIR = TEST_DIR / "variants"
 
 # Put files from other directories in here.

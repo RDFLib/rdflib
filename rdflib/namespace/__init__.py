@@ -1,10 +1,10 @@
+import json
 import logging
 import warnings
+from pathlib import Path
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from unicodedata import category
-
-from pathlib import Path
 from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
@@ -239,6 +239,15 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in cls.__annotations__}
         return values
 
+    def as_jsonld_context(self, pfx: str) -> dict:
+        """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
+        terms = {pfx: str(self._NS)}
+        for key, term in self.__annotations__.items():
+            if issubclass(term, URIRef):
+                terms[key] = f'{pfx}:{key}'
+
+        return {'@context': terms}
+
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     """
@@ -438,14 +447,15 @@ class NamespaceManager(object):
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
 
-        if not _is_valid_uri(uri):
-            raise ValueError(
-                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
-                    uri
-                )
-            )
-
         if uri not in self.__cache:
+
+            if not _is_valid_uri(uri):
+                raise ValueError(
+                    '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
+                        uri
+                    )
+                )
+
             try:
                 namespace, name = split_uri(uri)
             except ValueError as e:

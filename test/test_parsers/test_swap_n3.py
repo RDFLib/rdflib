@@ -71,7 +71,7 @@ class Envelope(object):
 def generictest(e):
     """Documentation"""
     if e.skip:
-        pytest.skip("%s skipped, known issue" % e.name)
+        pytest.xfail("%s skipped, known issue" % e.name)
     g = rdflib.Graph()
     for i in [rdf, rdfs, xsd, owl, test, n3test, rdft, triage, mf, qt]:
         g.bind(str(i), i)
