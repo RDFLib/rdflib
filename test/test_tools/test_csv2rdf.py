@@ -1,32 +1,30 @@
+import os
+import re
 import subprocess
-import unittest
 import sys
-from os import remove, close
 from tempfile import mkstemp
-from pathlib import Path
+from test.data import CONSISTENT_DATA_DIR
 
+REALESTATE_FILE_PATH = os.path.join(CONSISTENT_DATA_DIR, "csv", "realestate.csv")
 
-class CSV2RDFTest(unittest.TestCase):
-    def setUp(self):
-        self.REALESTATE_FILE_PATH = Path(__file__).parent.parent / "consistent_test_data" / "csv" / "realestate.csv"
-
+class TestCSV2RDF:
     def test_csv2rdf_cli(self):
         completed = subprocess.run(
             [
                 sys.executable,
                 "-m",
                 "rdflib.tools.csv2rdf",
-                str(self.REALESTATE_FILE_PATH),
+                str(REALESTATE_FILE_PATH),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True,
         )
-        self.assertEqual(completed.returncode, 0)
-        self.assertRegex(completed.stderr, r"Converted \d+ rows into \d+ triples.")
-        self.assertRegex(completed.stderr, r"Took [\d\.]+ seconds.")
-        self.assertIn("<http://example.org/instances/0>", completed.stdout)
-        self.assertIn("<http://example.org/props/zip>", completed.stdout)
+        assert completed.returncode == 0
+        assert "Converted 19 rows into 228 triples." in completed.stderr
+        assert re.search(r"Took [\d\.]+ seconds\.", completed.stderr)
+        assert "<http://example.org/instances/0>" in completed.stdout
+        assert "<http://example.org/props/zip>" in completed.stdout
 
     def test_csv2rdf_cli_fileout(self):
         fh, fname = mkstemp()
@@ -37,11 +35,11 @@ class CSV2RDFTest(unittest.TestCase):
                 "rdflib.tools.csv2rdf",
                 "-o",
                 fname,
-                str(self.REALESTATE_FILE_PATH),
+                str(REALESTATE_FILE_PATH),
             ],
         )
-        self.assertEqual(completed.returncode, 0)
+        assert completed.returncode == 0
         with open(fname) as f:
-            self.assertGreater(len(f.readlines()), 0)
-        close(fh)
-        remove(fname)
+            assert len(f.readlines()) == 228
+        os.close(fh)
+        os.remove(fname)

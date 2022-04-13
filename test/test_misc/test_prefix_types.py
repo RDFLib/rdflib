@@ -1,5 +1,3 @@
-import unittest
-
 from rdflib import Graph
 
 graph = Graph().parse(
@@ -15,7 +13,7 @@ graph = Graph().parse(
 )
 
 
-class PrefixTypesTest(unittest.TestCase):
+class TestPrefixTypes:
 
     """N3/Turtle serializers should use prefixes,
     also for types and datatypes
@@ -23,12 +21,7 @@ class PrefixTypesTest(unittest.TestCase):
     This is issue 161
     http://code.google.com/p/rdflib/issues/detail?id=161
     """
-
     def test(self):
-        s = graph.serialize(format="n3")
-        self.assertTrue("foaf:Document" in s)
-        self.assertTrue("xsd:date" in s)
-
-
-if __name__ == "__main__":
-    unittest.main()
+	    s = graph.serialize(format="n3")
+	    assert "foaf:Document" in s
+	    assert "xsd:date" in s
