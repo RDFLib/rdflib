@@ -35,19 +35,19 @@ class DatasetSlice(unittest.TestCase):
 
         # single slice slices by s,p,o, with : used to split
         # tell me everything about "tarek" (same as above)
-        sl(g[tarek : :], 2)
+        sl(g[tarek::], 2)
 
         # give me every "likes" relationship
-        sl(g[: likes :], 5)
+        sl(g[:likes:], 5)
 
         # give me every relationship to pizza
-        sl(g[:: pizza], 3)
+        sl(g[::pizza], 3)
 
         # give me everyone who likes pizza
-        sl(g[: likes : pizza], 2)
+        sl(g[:likes:pizza], 2)
 
         # does tarek like pizza?
-        assert g[tarek : likes : pizza] is True
+        assert g[tarek:likes:pizza] is True
 
         # More intesting is using paths
 

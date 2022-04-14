@@ -1,7 +1,18 @@
 import os
 import shutil
 import tempfile
-from test.data import tarek, likes, pizza, michel, hates, cheese, bob, context0, context1, context2
+from test.data import (
+    tarek,
+    likes,
+    pizza,
+    michel,
+    hates,
+    cheese,
+    bob,
+    context0,
+    context1,
+    context2,
+)
 from urllib.request import urlopen
 
 import pytest
@@ -10,6 +21,7 @@ from rdflib import logger
 from rdflib.graph import Dataset
 from rdflib.store import VALID_STORE
 from rdflib.term import URIRef
+
 
 def test_dataset_graphs_with_triple_pattern():
     ds = Dataset()

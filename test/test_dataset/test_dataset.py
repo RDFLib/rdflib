@@ -2,8 +2,25 @@
 import os
 import shutil
 import tempfile
-from test.data import context0, context1, likes, pizza, tarek, michel, bob, CONSISTENT_DATA_DIR
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.data import (
+    context0,
+    context1,
+    likes,
+    pizza,
+    tarek,
+    michel,
+    bob,
+    CONSISTENT_DATA_DIR,
+)
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 import pytest
 
@@ -460,7 +477,7 @@ def test_dataset_graphs_method() -> None:
 
     # FIXME: Same behaviour as RDFLib master
     with pytest.raises(AssertionError):  # 0 != 2
-        assert len(list((ds.subjects((None, likes, pizza))))) == 1
+        assert len(list(ds.subjects(likes, pizza))) == 2
 
 
 def test_triples_with_path():
@@ -479,8 +496,11 @@ test:subject test:predicate object:.
     ds = Dataset()
     ds.parse(data=simple_triple_ttl, format="turtle")
 
+
 def test_variant_2():
     ds = Dataset()
-    variant_file = os.path.join(CONSISTENT_DATA_DIR, "..", "variants", "simple_triple-variant-prefix_dot.ttl")
+    variant_file = os.path.join(
+        CONSISTENT_DATA_DIR, "..", "variants", "simple_triple-variant-prefix_dot.ttl"
+    )
     with open(variant_file, 'r') as fp:
         ds.parse(file=fp, format="turtle")

@@ -81,30 +81,6 @@ def test_parse_graph_as_new_dataset_subgraph_nquads():
 
     assert len(list(dataset.contexts())) == 0
 
-    assert len(list(dataset.graphs((tarek, None, None)))) == 1
-
-    assert len(dataset) == 1
-
-    dataset.parse(
-        data="<urn:example:tarek> <urn:example:likes> <urn:example:pizza> <urn:example:context-a> .",
-        format="nquads",
-    )
-
-    assert len(list(dataset.contexts())) == 1
-
-    assert len(list(dataset.graphs((tarek, None, None)))) == 1
-
-
-def test_parse_graph_as_new_dataset_subgraph_nquads():
-
-    dataset = Dataset()
-
-    assert len(list(dataset.contexts())) == 0
-
-    dataset.add((tarek, hates, cheese))
-
-    assert len(list(dataset.contexts())) == 0
-
     with pytest.raises(AssertionError):
         assert len(list(dataset.graphs((tarek, None, None)))) == 1
 

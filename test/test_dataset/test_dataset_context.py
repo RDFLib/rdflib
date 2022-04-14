@@ -13,7 +13,14 @@ from rdflib.graph import Graph, Dataset
 from rdflib.exceptions import ParserError
 from rdflib.namespace import Namespace
 from rdflib.plugin import PluginException
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+)
 
 from test.data import (
     michel,
@@ -27,6 +34,7 @@ from test.data import (
     context2,
 )
 
+
 @pytest.fixture(
     scope="function",
     params=get_plugin_stores(),
@@ -36,7 +44,9 @@ def get_dataset(request):
 
     store, path = set_store_and_path(storename)
 
-    d = Dataset(store=store, identifier=URIRef("urn:example:testgraph"), default_union=True)
+    d = Dataset(
+        store=store, identifier=URIRef("urn:example:testgraph"), default_union=True
+    )
 
     dataset = open_store(d, storename, path)
 

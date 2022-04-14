@@ -1763,8 +1763,8 @@ class Dataset(Graph):
 
     def __init__(
         self,
-        store: Optional[Union[Store, str]] = "default",
-        identifier: Optional[Union[Node, str]] = None,
+        store: Union[Store, str] = "default",
+        identifier: Optional[Union[IdentifiedNode, str]] = None,
         default_union: Optional[bool] = False,
         default_graph_base: Optional[str] = None,
         bind_namespaces: str = "core"

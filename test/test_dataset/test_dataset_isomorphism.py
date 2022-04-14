@@ -26,12 +26,14 @@ from test.data import (
     pizza,
 )
 from test.testutils import GraphHelper
+
 # # For future reference:
 
 # logger.debug(f"D1:\n{os.linesep.join(sorted(d1.serialize(format='nquads').split(os.linesep)))}")
 # logger.debug(f"D2:\n{os.linesep.join(sorted(d2.serialize(format='nquads').split(os.linesep)))}")
 
 # Progammatic construction
+
 
 def test_with_matching_default_graphs():
 
@@ -53,6 +55,7 @@ def test_with_matching_default_graphs():
 
     assert isomorphic(ds1, ds2)
 
+
 def test_negative_with_different_default_graphs():
 
     t1 = (tarek, likes, pizza)
@@ -72,6 +75,7 @@ def test_negative_with_different_default_graphs():
 
     assert not isomorphic(ds1, ds2)
 
+
 def test_matching_graphs_and_context_identifiers():
 
     t1 = (tarek, likes, pizza)
@@ -88,7 +92,6 @@ def test_matching_graphs_and_context_identifiers():
     ds1g2.add(t1)
     ds1g2.add(t2)
 
-
     ds2 = Dataset()
     ds2.bind("", URIRef("urn:example:"))
 
@@ -104,6 +107,7 @@ def test_matching_graphs_and_context_identifiers():
     assert len([t for t in ds2.quads((None, None, None, None))]) == 4
 
     assert isomorphic(ds1, ds2)
+
 
 def test_negative_with_mismatching_graphs_and_matching_context_identifiers():
 
@@ -136,7 +140,10 @@ def test_negative_with_mismatching_graphs_and_matching_context_identifiers():
 
     assert not isomorphic(ds1, ds2)
 
-@pytest.mark.xfail(reason="Datasets with isomorphic graphs but different context identifers are improperly isomorphic")
+
+@pytest.mark.xfail(
+    reason="Datasets with isomorphic graphs but different context identifers are improperly isomorphic"
+)
 def test_negative_with_matching_graphs_and_mismatched_context_identifiers():
 
     t1 = (tarek, likes, pizza)
@@ -213,12 +220,16 @@ iso7 = os.path.join(
     "example-2-default-and-two-named-graphs-harry-added-to-default-and-harry-bnode-graph.trig",
 )
 
-@pytest.mark.xfail(reason="Inconsistent fail/pass with reordered isomorphic trig graphs")
+
+@pytest.mark.xfail(
+    reason="Inconsistent fail/pass with reordered isomorphic trig graphs"
+)
 def test_assert_reordered_graph_is_isomorphic():
     ds1 = Dataset().parse(data=open(iso1, "r").read(), format="trig")
     ds2 = Dataset().parse(data=open(iso2, "r").read(), format="trig")
 
     GraphHelper.assert_isomorphic(ds1, ds2)
+
 
 def test_assert_reordered_graph_is_isomorphic_after_to_isomorphic():
     ds1 = Dataset().parse(data=open(iso1, "r").read(), format="trig")
@@ -228,8 +239,6 @@ def test_assert_reordered_graph_is_isomorphic_after_to_isomorphic():
     ids2 = to_isomorphic(ds2)
 
     GraphHelper.assert_isomorphic(ids1, ids2)
-
-
 
     # logger.debug(f"IDS1 {ids1.serialize(format='trig')}")
 

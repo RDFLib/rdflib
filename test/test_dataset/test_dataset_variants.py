@@ -209,4 +209,8 @@ def test_variants(graph_variant: GraphVariants) -> None:
             first_path = variant_path
         else:
             assert first_path is not None
-            GraphHelper.assert_isomorphic(first_graph, graph, f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}")
+            GraphHelper.assert_isomorphic(
+                first_graph,
+                graph,
+                f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}",
+            )

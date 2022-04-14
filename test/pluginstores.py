@@ -24,6 +24,7 @@ root = HOST + DB
 
 dburis = {}
 
+
 def get_plugin_stores():
     pluginstores = []
 
@@ -47,18 +48,17 @@ def get_plugin_stores():
             if s.name == "SQLAlchemy":
                 if os.environ.get("PGDB"):
                     dburis["PGSQL"] = os.environ.get(
-                        "PGDBURI",
-                        "postgresql+pg8000://postgres@localhost/test")
+                        "PGDBURI", "postgresql+pg8000://postgres@localhost/test"
+                    )
                     pluginstores.append(s.name + ":PGSQL")
                 if os.environ.get("MYSQLDB"):
                     dburis["MYSQL"] = os.environ.get(
                         "MYDBURI",
-                        "mysql+pymysql://root@127.0.0.1:3306/test?charset=utf8")
+                        "mysql+pymysql://root@127.0.0.1:3306/test?charset=utf8",
+                    )
                     pluginstores.append(s.name + ":MYSQL")
                 if os.environ.get("SQLDB"):
-                    dburis["SQLITE"] = os.environ.get(
-                        "SQLDBURI",
-                        "sqlite://")
+                    dburis["SQLITE"] = os.environ.get("SQLDBURI", "sqlite://")
                     pluginstores.append(s.name + ":SQLITE")
             elif s.name == "SPARQLUpdateStore":
                 try:
@@ -73,6 +73,7 @@ def get_plugin_stores():
             pass
 
     return pluginstores
+
 
 def set_store_and_path(storename):
 
@@ -130,6 +131,7 @@ def cleanup(g, storename, path):
             shutil.rmtree(path)
         except Exception:
             pass
+
 
 # @pytest.fixture(
 #     scope="function",

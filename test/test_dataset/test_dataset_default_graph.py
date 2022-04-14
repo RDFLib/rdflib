@@ -74,6 +74,7 @@ def test_trig_serialization_of_empty_dataset_default_graph():
 
     assert str(dataset.serialize(format="trig")) == str("\n")
 
+
 def test_nquads_serialization_of_empty_dataset_default_graph():
     dataset = Dataset()
 
@@ -81,6 +82,7 @@ def test_nquads_serialization_of_empty_dataset_default_graph():
     dataset.bind("", URIRef("urn:example:"))
 
     assert str(dataset.serialize(format="nquads")) == str("\n")
+
 
 def test_jsonld_serialization_of_empty_dataset_default_graph():
     dataset = Dataset()
@@ -90,6 +92,7 @@ def test_jsonld_serialization_of_empty_dataset_default_graph():
 
     assert str(dataset.serialize(format="json-ld")) == str("[]")
 
+
 def test_hext_serialization_of_empty_dataset_default_graph():
     dataset = Dataset()
 
@@ -97,6 +100,8 @@ def test_hext_serialization_of_empty_dataset_default_graph():
     dataset.bind("", URIRef("urn:example:"))
 
     assert str(dataset.serialize(format="hext")) == str("")
+
+
 @pytest.mark.xfail(reason="pending merge of changes namespace bindings")
 def test_trix_serialization_of_empty_dataset_default_graph():
     dataset = Dataset()
@@ -115,6 +120,7 @@ def test_trix_serialization_of_empty_dataset_default_graph():
         '  xmlns="http://www.w3.org/2004/03/trix/trix-1/"\n'
         '/>\n'
     )
+
 
 def test_serialization_of_dataset_default_graph():
     dataset = Dataset()
@@ -183,6 +189,7 @@ def test_trig_serialization_of_empty_dataset_default_graph_with_default_union():
 
     assert str(dataset.serialize(format="trig")) == str("\n")
 
+
 def test_nquads_serialization_of_empty_dataset_default_graph_with_default_union():
     dataset = Dataset(default_union=True)
 
@@ -190,6 +197,7 @@ def test_nquads_serialization_of_empty_dataset_default_graph_with_default_union(
     dataset.bind("", URIRef("urn:x-rdflib:"))
 
     assert str(dataset.serialize(format="nquads")) == str("\n")
+
 
 def test_jsonld_serialization_of_empty_dataset_default_graph_with_default_union():
     dataset = Dataset(default_union=True)
@@ -199,6 +207,7 @@ def test_jsonld_serialization_of_empty_dataset_default_graph_with_default_union(
 
     assert str(dataset.serialize(format="json-ld")) == str("[]")
 
+
 def test_hext_serialization_of_empty_dataset_default_graph_with_default_union():
     dataset = Dataset(default_union=True)
 
@@ -206,6 +215,7 @@ def test_hext_serialization_of_empty_dataset_default_graph_with_default_union():
     dataset.bind("", URIRef("urn:x-rdflib:"))
 
     assert str(dataset.serialize(format="hext")) == str("")
+
 
 @pytest.mark.xfail(reason="pending merge of changes namespace bindings")
 def test_trix_serialization_of_empty_dataset_default_graph_with_default_union():

@@ -12,6 +12,7 @@ from rdflib import Namespace, Literal, URIRef, logger
 from rdflib.graph import Graph, Dataset
 from rdflib.plugins.stores.memory import Memory
 
+
 def test_dataset_example():
 
     LOVE = Namespace("http://love.com#")
@@ -59,7 +60,7 @@ def test_dataset_example():
 
     logger.debug("Query the conjunction of all graphs:")
     xx = None
-    for x in g[mary : LOVE.loves / LOVE.hasCuteName ]:
+    for x in g[mary : LOVE.loves / LOVE.hasCuteName]:
         xx = x
     logger.debug("Q: Who does Mary love?")
     logger.debug("A: Mary loves {}".format(xx))

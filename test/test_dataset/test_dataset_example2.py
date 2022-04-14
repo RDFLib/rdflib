@@ -127,7 +127,9 @@ def xfail_selected_context_parse_file_formats(request):
     ]
 
     if fmt in expected_failures:
-        request.node.add_marker(pytest.mark.xfail(reason=f"Expected failure with {fmt}"))
+        request.node.add_marker(
+            pytest.mark.xfail(reason=f"Expected failure with {fmt}")
+        )
 
 
 @pytest.mark.parametrize("fmt", context_formats)
@@ -147,7 +149,9 @@ def test_parse_example2_from_file(fmt, example2):
     assert alice_uri in d2.contexts()
     assert bob_uri in d2.contexts()
 
-    assert len(list(d1.quads((None, None, None, None)))) == len(list(d2.quads((None, None, None, None))))
+    assert len(list(d1.quads((None, None, None, None)))) == len(
+        list(d2.quads((None, None, None, None)))
+    )
 
     assert len(d1.store) == len(d2.store)
 
@@ -159,6 +163,7 @@ def test_parse_example2_from_file(fmt, example2):
             assert isomorphic(d1sk, d2sk)
     else:
         assert isomorphic(d1sk, d2sk)
+
 
 @pytest.fixture
 def xfail_selected_context_parse_location_formats(request):
@@ -173,7 +178,9 @@ def xfail_selected_context_parse_location_formats(request):
     ]
 
     if fmt in expected_failures:
-        request.node.add_marker(pytest.mark.xfail(reason=f"Expected failure with {fmt}"))
+        request.node.add_marker(
+            pytest.mark.xfail(reason=f"Expected failure with {fmt}")
+        )
 
 
 @pytest.mark.parametrize("fmt", context_formats)
@@ -200,7 +207,9 @@ def test_parse_example2_from_location(fmt, example2):
     assert alice_uri in d2.contexts()
     assert bob_uri in d2.contexts()
 
-    assert len(list(d1.quads((None, None, None, None)))) == len(list(d2.quads((None, None, None, None))))
+    assert len(list(d1.quads((None, None, None, None)))) == len(
+        list(d2.quads((None, None, None, None)))
+    )
 
     assert len(d1.store) == len(d2.store)
 

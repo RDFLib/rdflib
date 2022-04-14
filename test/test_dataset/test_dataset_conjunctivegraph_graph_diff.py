@@ -137,6 +137,7 @@ def test_graph_diff_nquads():
     in_both, in_first, in_second = graph_diff(ds1, ds2)
     assert len(list(in_both)) == 4
 
+
 @pytest.mark.xfail(reason="incorrect graph_diff with N-Triples")
 def test_graph_diff_nquads_actually_ntriples():
     g1 = Graph().parse(data=nquads_a, format="nt")

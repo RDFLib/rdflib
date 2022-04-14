@@ -1,7 +1,7 @@
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 
 
-def test_issue319_add_graph_as_dataset_default():
+def test_issue319_add_graph_as_dataset_default_1():
 
     ds = Dataset()
     assert len(list(ds.graphs())) == 0
@@ -12,7 +12,7 @@ def test_issue319_add_graph_as_dataset_default():
     assert len(list(ds.graphs())) == 0
 
 
-def test_issue319_add_graph_as_dataset_default():
+def test_issue319_add_graph_as_dataset_default_2():
 
     ds = Dataset()
     assert len(list(ds.graphs())) == 0
