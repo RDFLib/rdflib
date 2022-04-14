@@ -38,14 +38,12 @@ class NQuadsSerializer(Serializer):
         for context in list(self.store.contexts()) + [DATASET_DEFAULT_GRAPH_ID]:
             graph = self.store.graph(context)
             for triple in graph:
-                stream.write(
-                    self._nq_row(triple, context).encode(encoding, "replace")
-                )
+                stream.write(self._nq_row(triple, context).encode(encoding, "replace"))
         stream.write("\n".encode("latin-1"))
-
 
     def _nq_row(self, quad, context):
         from rdflib import logger
+
         subj, pred, obj = quad
 
         if isinstance(subj, QuotedGraph):

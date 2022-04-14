@@ -222,7 +222,9 @@ class Store(object):
         formula-aware.
         """
         if not isinstance(context, (Identifier, type(None))):
-            raise Exception("Trying to add to a context that isn't an identifier: %s" % context)
+            raise Exception(
+                "Trying to add to a context that isn't an identifier: %s" % context
+            )
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Identifier"]]):
@@ -243,7 +245,9 @@ class Store(object):
     def remove(self, triple, context=None):
         """Remove the set of triples matching the pattern from the store"""
         if context is not None and not isinstance(context, Identifier):
-            raise Exception("Trying to remove from a context that isn't an identifier: %s" % context)
+            raise Exception(
+                "Trying to remove from a context that isn't an identifier: %s" % context
+            )
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):

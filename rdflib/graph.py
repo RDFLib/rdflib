@@ -321,24 +321,24 @@ class UnSupportedGraphOperation(Error):
 class Graph(Node):
     """An RDF Graph
 
-    The constructor accepts one argument, the "store"
-    that will be used to store the graph data (see the "store"
-    package for stores currently shipped with rdflib).
+     The constructor accepts one argument, the "store"
+     that will be used to store the graph data (see the "store"
+     package for stores currently shipped with rdflib).
 
-    Stores can be context-aware or unaware.  Unaware stores take up
-    (some) less space but cannot support features that require
-    context, such as true merging/demerging of sub-graphs and
-    provenance.
+     Stores can be context-aware or unaware.  Unaware stores take up
+     (some) less space but cannot support features that require
+     context, such as true merging/demerging of sub-graphs and
+     provenance.
 
-    Even if used with a context-aware store, Graph will only expose the quads which
-    belong to the default graph. To access the rest of the data, `Dataset` classes
-   can be used instead.
+     Even if used with a context-aware store, Graph will only expose the quads which
+     belong to the default graph. To access the rest of the data, `Dataset` classes
+    can be used instead.
 
-    The Graph constructor can take an identifier which identifies the Graph
-    by name.  If none is given, the graph is assigned a BNode for its
-    identifier.
+     The Graph constructor can take an identifier which identifies the Graph
+     by name.  If none is given, the graph is assigned a BNode for its
+     identifier.
 
-    For more on named graphs, see: http://www.w3.org/2004/03/trix/
+     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
     def __init__(
@@ -505,7 +505,9 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self.identifier):
+            for (_s, _p, _o), cg in self.__store.triples(
+                (s, p, o), context=self.identifier
+            ):
                 yield _s, _p, _o
 
     def __getitem__(self, item):
@@ -1767,7 +1769,7 @@ class Dataset(Graph):
         identifier: Optional[Union[IdentifiedNode, str]] = None,
         default_union: Optional[bool] = False,
         default_graph_base: Optional[str] = None,
-        bind_namespaces: str = "core"
+        bind_namespaces: str = "core",
     ):
 
         if not isinstance(identifier, (URIRef, BNode, Literal, str, type(None))):
@@ -1779,9 +1781,9 @@ class Dataset(Graph):
             store,
             identifier=DATASET_DEFAULT_GRAPH_ID if identifier is None else identifier,
         )
-        assert self.store.context_aware, (
-            "Dataset must be backed by a context aware store."
-        )
+        assert (
+            self.store.context_aware
+        ), "Dataset must be backed by a context aware store."
         self.default_graph_base = default_graph_base
         self.context_aware = True
         self.bind_namespaces = bind_namespaces
@@ -1818,9 +1820,7 @@ class Dataset(Graph):
             return self.store.__len__()
         else:
             # Number of triples in the context graph or the default graph
-            return self.store.__len__(
-                context=context or DATASET_DEFAULT_GRAPH_ID
-            )
+            return self.store.__len__(context=context or DATASET_DEFAULT_GRAPH_ID)
 
     def __contains__(self, triple_or_quad):
         """Support for 'triple/quad in graph' syntax"""
@@ -1838,7 +1838,6 @@ class Dataset(Graph):
             g = self.default_graph
 
         return g.__getitem__(item)
-
 
     """
     https://www.w3.org/2011/rdf-wg/track/issues/17
@@ -2210,11 +2209,9 @@ class Dataset(Graph):
 
         return g
 
-
     def get_graph(self, identifier: Union[URIRef, BNode]) -> Union[Graph, None]:
         """Returns the graph identified by given identifier"""
         return [x for x in self.graphs() if x.identifier == identifier][0]
-
 
     def graphs(self, triple=None, empty=False):
         """
@@ -2409,15 +2406,19 @@ class Dataset(Graph):
             store=self.store, identifier=identifier, namespace_manager=self, base=base
         )
 
-
     def skolemize(self, bnode=None, authority=None, basepath=None):
         d = Dataset(default_union=self.default_union)
         for g in self.contexts():
             ng = d.graph(g)
             ng.skolemize(
-                new_graph=ng, bnode=bnode, authority=authority, basepath=basepath)
+                new_graph=ng, bnode=bnode, authority=authority, basepath=basepath
+            )
         self.default_graph.skolemize(
-            new_graph=d.default_graph, bnode=bnode, authority=authority, basepath=basepath)
+            new_graph=d.default_graph,
+            bnode=bnode,
+            authority=authority,
+            basepath=basepath,
+        )
         return d
 
 

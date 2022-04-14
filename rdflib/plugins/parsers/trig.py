@@ -138,18 +138,14 @@ class TrigParser(Parser):
         # we're currently being handed a Graph, not a Dataset
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
-        ds = Dataset(
-            store=graph.store, identifier=graph.identifier, default_union=True
-        )
+        ds = Dataset(store=graph.store, identifier=graph.identifier, default_union=True)
         ds.default_graph = graph
         # TODO: update N3Processor so that it can use ds as the sink
         ds.namespace_manager = graph.namespace_manager
 
         sink = RDFSink(ds)
 
-        baseURI = ds.absolutize(
-            source.getPublicId() or source.getSystemId() or ""
-        )
+        baseURI = ds.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
 
         stream = source.getCharacterStream()  # try to get str stream first

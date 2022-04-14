@@ -1968,9 +1968,7 @@ class N3Parser(TurtleParser):
         elif not fa:
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
-        ds = Dataset(
-            identifier=graph.identifier, store=graph.store, default_union=True
-        )
+        ds = Dataset(identifier=graph.identifier, store=graph.store, default_union=True)
         ds.default_graph = graph
         # TODO: update N3Processor so that it can use conj_graph as the sink
         ds.namespace_manager = graph.namespace_manager
