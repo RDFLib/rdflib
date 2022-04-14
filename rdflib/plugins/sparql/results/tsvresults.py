@@ -68,30 +68,24 @@ class TSVResultParser(ResultParser):
             # if reading from source returns bytes do utf-8 decoding
             source = codecs.getreader("utf-8")(source)
 
-        try:
-            r = Result("SELECT")
+        r = Result("SELECT")
 
-            header = source.readline()
+        header = source.readline()
 
-            r.vars = list(HEADER.parseString(header.strip(), parseAll=True))
-            r.bindings = []
-            while True:
-                line = source.readline()
-                if not line:
-                    break
-                line = line.strip("\n")
-                if line == "":
-                    continue
+        r.vars = list(HEADER.parseString(header.strip(), parseAll=True))
+        r.bindings = []
+        while True:
+            line = source.readline()
+            if not line:
+                break
+            line = line.strip("\n")
+            if line == "":
+                continue
 
-                row = ROW.parseString(line, parseAll=True)
-                r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))
+            row = ROW.parseString(line, parseAll=True)
+            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))
 
-            return r
-
-        except ParseException as err:
-            print(err.line)
-            print(" " * (err.column - 1) + "^")
-            print(err)
+        return r
 
     def convertTerm(self, t):
         if t is NONE_VALUE:
