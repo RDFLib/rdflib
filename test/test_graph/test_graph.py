@@ -22,6 +22,7 @@ from rdflib.term import BNode
 
 from test.testutils import GraphHelper, get_unique_plugin_names
 from test.data import tarek, likes, pizza, michel, hates, cheese, bob
+from rdflib.plugins.stores.berkeleydb import has_bsddb
 
 
 def test_property_store() -> None:
@@ -76,6 +77,8 @@ def get_store_names() -> Set[Optional[str]]:
         "SimpleMemory",
     })
     names.add(None)
+    if not has_bsddb:
+        names.remove("BerkeleyDB")
 
     logging.debug("names = %s", names)
     return names
