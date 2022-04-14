@@ -26,4 +26,3 @@ class TestNormalizedString:
         )
         expected = Literal("""hey there a tab carriage return""", datatype=XSD.string)
         assert str(lit) == str(expected)
-

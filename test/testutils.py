@@ -191,7 +191,10 @@ class GraphHelper:
 
     @classmethod
     def format_set(
-        cls, item_set: Union[IdentifierQuadSet, IdentifierTripleSet], prefix: str = "  ", sort: bool = False
+        cls,
+        item_set: Union[IdentifierQuadSet, IdentifierTripleSet],
+        prefix: str = "  ",
+        sort: bool = False,
     ) -> str:
         items = []
         use_item_set = sorted(item_set) if sort else item_set
@@ -200,11 +203,15 @@ class GraphHelper:
         return "\n".join(items)
 
     @classmethod
-    def format_graph_set(cls, graph: Graph, prefix: str = "  ", sort: bool = False) -> str:
+    def format_graph_set(
+        cls, graph: Graph, prefix: str = "  ", sort: bool = False
+    ) -> str:
         return cls.format_set(cls.triple_or_quad_set(graph), prefix, sort)
 
     @classmethod
-    def assert_isomorphic(cls, lhs: Graph, rhs: Graph, message: Optional[str] = None) -> None:
+    def assert_isomorphic(
+        cls, lhs: Graph, rhs: Graph, message: Optional[str] = None
+    ) -> None:
         """
         This asserts that the two graphs are isomorphic, providing a nicely
         formatted error message if they are not.

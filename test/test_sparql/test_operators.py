@@ -5,6 +5,7 @@ from rdflib.plugins.sparql import operators
 from rdflib.plugins.sparql import sparql
 import pytest
 
+
 def test_date_cast():
     now = datetime.datetime.now()
     today = now.date()

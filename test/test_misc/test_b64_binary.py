@@ -21,4 +21,3 @@ class TestB64Binary:
         assert b_str1 == b_str1b
         assert b_str1b.decode("utf-8") == str1
         assert str(l1b) == b64_str1
-

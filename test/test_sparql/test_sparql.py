@@ -164,60 +164,42 @@ def test_named_filter_graph_query():
     """,
     )
 
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
-                initNs={"ex": ex},
-            )
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
+            initNs={"ex": ex},
         )
-        == [(Literal("Boris"),)]
-    )
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                initNs={"ex": ex},
-            )
+    ) == [(Literal("Boris"),)]
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+            initNs={"ex": ex},
         )
-        == [(Literal("Boris"),)]
-    )
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                initNs={"ex": ex},
-            )
+    ) == [(Literal("Boris"),)]
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ex:g1 { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+            initNs={"ex": ex},
         )
-        == [(Literal("Susan"),)]
-    )
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
-                initNs={"ex": ex},
-            )
+    ) == [(Literal("Susan"),)]
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } ?a a ?type }",
+            initNs={"ex": ex},
         )
-        == [(Literal("Boris"),)]
-    )
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
-                initNs={"ex": ex},
-            )
+    ) == [(Literal("Boris"),)]
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER EXISTS { ?a a ?type }}",
+            initNs={"ex": ex},
         )
-        == [(Literal("Boris"),)]
-    )
-    assert (
-        list(
-            g.query(
-                "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
-                initNs={"ex": ex},
-            )
+    ) == [(Literal("Boris"),)]
+    assert list(
+        g.query(
+            "SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
+            initNs={"ex": ex},
         )
-        == [(Literal("Susan"),)]
-    )
+    ) == [(Literal("Susan"),)]
 
 
 def test_txtresult():

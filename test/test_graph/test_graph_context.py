@@ -8,6 +8,7 @@ import shutil
 import pytest
 from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
 
+
 class ContextTestCase(unittest.TestCase):
     store = "default"
     slow = True

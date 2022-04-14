@@ -25,4 +25,5 @@ class ExampleParser(Parser):
     def constant_output(cls) -> Set[Tuple["Identifier", "Identifier", "Identifier"]]:
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}
 
+
 from rdflib.namespace import Namespace

@@ -7,6 +7,7 @@ from test.data import CONSISTENT_DATA_DIR
 
 REALESTATE_FILE_PATH = os.path.join(CONSISTENT_DATA_DIR, "csv", "realestate.csv")
 
+
 class TestCSV2RDF:
     def test_csv2rdf_cli(self):
         completed = subprocess.run(

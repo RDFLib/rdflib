@@ -37,6 +37,7 @@ def get_bind_tests():
         URIRef("http://example.org/ns#Thing"),
     )
 
+
 @pytest.mark.parametrize("checker, expr, var, obj", get_bind_tests())
 def test_bind(checker, expr, var, obj) -> None:
     checker(expr, var, obj)

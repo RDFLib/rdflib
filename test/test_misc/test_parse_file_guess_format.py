@@ -63,4 +63,3 @@ class TestFileParserGuessFormat:
                     match="does not look like a valid URI, trying to serialize this will break.",
                 ) as logwarning:
                     g.parse(str(newpath))
-

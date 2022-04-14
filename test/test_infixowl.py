@@ -51,8 +51,7 @@ def test_infix_owl_example1():
     namespace_manager.bind("owl", OWL, override=False)
     owlGraph.namespace_manager = namespace_manager
     assert (
-        str(list(Class(OWL.Class, graph=owlGraph).subClassOf))
-        == "[Class: rdfs:Class ]"
+        str(list(Class(OWL.Class, graph=owlGraph).subClassOf)) == "[Class: rdfs:Class ]"
     )
 
     # Operators are also available. For instance we can add ex:Opera to the extension

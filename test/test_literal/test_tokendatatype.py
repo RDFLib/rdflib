@@ -32,4 +32,3 @@ class TestTokenDatatype:
             datatype=XSD.string,
         )
         assert str(lit) == str(expected)
-

@@ -12,4 +12,3 @@ class TestParser:
         """create_input_source() function has a few conflicting arguments."""
         with pytest.raises(ValueError):
             create_input_source(source="a", location="b")
-

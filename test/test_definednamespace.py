@@ -10,7 +10,12 @@ def test_definednamespace_creator_qb():
     Tests basic use of DefinedNamespace creator script using QB
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    definednamespace_script = (
+        Path(__file__).parent.parent
+        / "rdflib"
+        / "tools"
+        / "defined_namespace_creator.py"
+    )
     qb_data_file = Path(__file__).parent / "defined_namespaces" / "qb.ttl"
     print("\n")
     print(f"Using {definednamespace_script}...")
@@ -35,7 +40,10 @@ def test_definednamespace_creator_qb():
         for line in f.readlines():
             if '_NS = Namespace("http://purl.org/linked-data/cube#")' in line:
                 has_ns = True
-            if 'Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions' in line:
+            if (
+                'Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions'
+                in line
+            ):
                 has_test_class = True
     assert has_ns, "_QB.py does not contain _NS"
     assert has_test_class, "_QB.py does not class Attachable"
@@ -50,7 +58,12 @@ def test_definednamespace_creator_fake():
     RDF file of unknonwn type
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    definednamespace_script = (
+        Path(__file__).parent.parent
+        / "rdflib"
+        / "tools"
+        / "defined_namespace_creator.py"
+    )
     qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
@@ -76,7 +89,12 @@ def test_definednamespace_creator_bad_ns():
     supplied namespace doesn't end in # or /
     """
 
-    definednamespace_script = Path(__file__).parent.parent / "rdflib" / "tools" / "defined_namespace_creator.py"
+    definednamespace_script = (
+        Path(__file__).parent.parent
+        / "rdflib"
+        / "tools"
+        / "defined_namespace_creator.py"
+    )
     qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
@@ -165,7 +183,7 @@ def test_definednamespace_jsonld_context():
             "Collection": "skos:Collection",
             "Concept": "skos:Concept",
             "ConceptScheme": "skos:ConceptScheme",
-            "OrderedCollection": "skos:OrderedCollection"
+            "OrderedCollection": "skos:OrderedCollection",
         }
     }
     actual = SKOS.as_jsonld_context("skos")

@@ -1,6 +1,7 @@
 from rdflib import Graph, URIRef, Literal
 import pytest
 
+
 def test_rdflib_to_networkx():
     try:
         import networkx

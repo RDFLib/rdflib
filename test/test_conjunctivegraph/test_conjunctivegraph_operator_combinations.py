@@ -18,7 +18,9 @@ c1 = URIRef("urn:example:context-1")
 c2 = URIRef("urn:example:context-2")
 
 sportquadstrig = open(
-    os.path.join(os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.trig")
+    os.path.join(
+        os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.trig"
+    )
 ).read()
 
 
