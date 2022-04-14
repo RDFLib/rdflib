@@ -40,7 +40,7 @@ from uuid import uuid4
 
 from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.graph import Dataset, Graph, QuotedGraph
 from rdflib.term import (
     _XSD_PFX,
     BNode,
@@ -1959,7 +1959,7 @@ class N3Parser(TurtleParser):
         pass
 
     def parse(self, source, graph, encoding="utf-8"):
-        # we're currently being handed a Graph, not a ConjunctiveGraph
+        # we're currently being handed a Graph, not a Dataset
         # context-aware is this implied by formula_aware
         ca = getattr(graph.store, "context_aware", False)
         fa = getattr(graph.store, "formula_aware", False)
@@ -1968,13 +1968,14 @@ class N3Parser(TurtleParser):
         elif not fa:
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
-        # default_context arg
+        ds = Dataset(
+            identifier=graph.identifier, store=graph.store, default_union=True
+        )
+        ds.default_graph = graph
         # TODO: update N3Processor so that it can use conj_graph as the sink
-        conj_graph.namespace_manager = graph.namespace_manager
+        ds.namespace_manager = graph.namespace_manager
 
-        TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
+        TurtleParser.parse(self, source, ds, encoding, turtle=False)
 
 
 def _test():  # pragma: no cover
@@ -1984,7 +1985,7 @@ def _test():  # pragma: no cover
 
 
 def main():  # pragma: no cover
-    g = ConjunctiveGraph()
+    g = Dataset(default_union=True)
 
     sink = RDFSink(g)
     base_uri = "file://" + os.path.join(os.getcwd(), sys.argv[1])

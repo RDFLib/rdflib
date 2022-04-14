@@ -38,7 +38,7 @@ Example usage::
 import warnings
 
 from rdflib.serializer import Serializer
-from rdflib.graph import Graph
+from rdflib.graph import Graph, Dataset, DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import URIRef, Literal, BNode
 from rdflib.namespace import RDF, XSD
 from typing import IO, Optional
@@ -145,16 +145,11 @@ class Converter(object):
         self.use_rdf_type = use_rdf_type
 
     def convert(self, graph):
-        # TODO: bug in rdflib dataset parsing (nquads et al):
-        # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
-            default_graph = Graph()
-            graphs = [default_graph]
-            for g in graph.contexts():
-                if isinstance(g.identifier, URIRef):
+            if isinstance(graph, Dataset):
+                graphs = [graph.default_graph]
+                for g in graph.graphs():
                     graphs.append(g)
-                else:
-                    default_graph += g
         else:
             graphs = [graph]
 
@@ -165,9 +160,16 @@ class Converter(object):
             obj = {}
             graphname = None
 
-            if isinstance(g.identifier, URIRef):
+            if isinstance(graph, Dataset) and g.identifier != DATASET_DEFAULT_GRAPH_ID:
                 graphname = context.shrink_iri(g.identifier)
                 obj[context.id_key] = graphname
+            else:
+                if (
+                    isinstance(g.identifier, URIRef)
+                    and g.identifier != DATASET_DEFAULT_GRAPH_ID
+                ):
+                    graphname = context.shrink_iri(g.identifier)
+                    obj[context.id_key] = graphname
 
             nodes = self.from_graph(g)
 

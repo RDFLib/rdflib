@@ -57,7 +57,6 @@ __all__ = [
     "Namespace",
     "Dataset",
     "Graph",
-    "ConjunctiveGraph",
     "BRICK",
     "CSVW",
     "DC",
@@ -159,7 +158,7 @@ Literal work, eq, __neq__, __lt__, etc.
 
 from rdflib.term import URIRef, BNode, IdentifiedNode, Literal, Variable
 
-from rdflib.graph import Dataset, Graph, ConjunctiveGraph
+from rdflib.graph import Dataset, Graph
 
 from rdflib import plugin
 from rdflib import query

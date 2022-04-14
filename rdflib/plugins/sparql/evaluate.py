@@ -192,10 +192,10 @@ def evalGraph(ctx: QueryContext, part: CompValue):
     prev_graph = ctx.graph
     if graph is None:
 
-        for graph in ctx.dataset.contexts():
+        for graph in ctx.dataset.graphs():
 
             # in SPARQL the default graph is NOT a named graph
-            if graph == ctx.dataset.default_context:
+            if graph == ctx.dataset.default_graph:
                 continue
 
             c = ctx.pushGraph(graph)
@@ -206,7 +206,7 @@ def evalGraph(ctx: QueryContext, part: CompValue):
                 yield x
 
     else:
-        c = ctx.pushGraph(ctx.dataset.get_context(graph))
+        c = ctx.pushGraph(ctx.dataset.graph(graph))
         for x in evalPart(c, part.p):
             x.ctx.graph = prev_graph
             yield x
@@ -577,7 +577,7 @@ def evalQuery(graph, query, initBindings, base=None):
 
                 if firstDefault:
                     # replace current default graph
-                    dg = ctx.dataset.get_context(BNode())
+                    dg = ctx.dataset.graph(BNode())
                     ctx = ctx.pushGraph(dg)
                     firstDefault = True
 

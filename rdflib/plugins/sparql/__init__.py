@@ -15,7 +15,7 @@ will load/parse more data
 SPARQL_DEFAULT_GRAPH_UNION = True
 """
 If True - the default graph in the RDF Dataset is the union of all
-named graphs (like RDFLib's ConjunctiveGraph)
+named graphs
 """
 
 

@@ -15,8 +15,9 @@ from typing import (
 import logging
 from warnings import warn
 import random
+from rdflib.exceptions import Error
 from rdflib.namespace import Namespace, RDF
-from rdflib import plugin, exceptions, query, namespace
+from rdflib import plugin, exceptions, query, namespace, logger
 import rdflib.term
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
@@ -300,7 +301,21 @@ __all__ = [
     "UnSupportedAggregateOperation",
     "ReadOnlyGraphAggregate",
     "BatchAddGraph",
+    "DATASET_DEFAULT_GRAPH_ID",
 ]
+
+
+class UnSupportedGraphOperation(Error):
+    def __init__(self, msg=None):
+        Error.__init__(self, msg)
+        self.msg = msg
+
+    def __str__(self):
+        return (
+            self.msg
+            if self.msg is not None
+            else "This operation is not supported by Graph instances"
+        )
 
 
 class Graph(Node):
@@ -316,8 +331,8 @@ class Graph(Node):
     provenance.
 
     Even if used with a context-aware store, Graph will only expose the quads which
-    belong to the default graph. To access the rest of the data, `ConjunctiveGraph` or
-    `Dataset` classes can be used instead.
+    belong to the default graph. To access the rest of the data, `Dataset` classes
+   can be used instead.
 
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for its
@@ -425,14 +440,14 @@ class Graph(Node):
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
-        self.__store.add((s, p, o), self, quoted=False)
+        self.__store.add((s, p, o), self.identifier, quoted=False)
         return self
 
     def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
         """Add a sequence of triple with context"""
 
         self.__store.addN(
-            (s, p, o, c)
+            (s, p, o, c.identifier)
             for s, p, o, c in quads
             if isinstance(c, Graph)
             and c.identifier is self.identifier
@@ -446,7 +461,7 @@ class Graph(Node):
         If the triple does not provide a context attribute, removes the triple
         from all contexts.
         """
-        self.__store.remove(triple, context=self)
+        self.__store.remove(triple, context=self.identifier)
         return self
 
     @overload
@@ -490,7 +505,7 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
+            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self.identifier):
                 yield _s, _p, _o
 
     def __getitem__(self, item):
@@ -571,7 +586,7 @@ class Graph(Node):
         If context is specified then the number of triples in the context is
         returned instead.
         """
-        return self.__store.__len__(context=self)
+        return self.__store.__len__(context=self.identifier)
 
     def __iter__(self):
         """Iterates over all triples in the store"""
@@ -621,12 +636,16 @@ class Graph(Node):
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph.
         BNode IDs are not changed."""
+        if type(other) is Dataset:
+            raise UnSupportedGraphOperation(f"Cannot add Dataset to Graph")
         self.addN((s, p, o, self) for s, p, o in other)
         return self
 
     def __isub__(self, other):
         """Subtract all triples in Graph other from Graph.
         BNode IDs are not changed."""
+        if type(self) is not Dataset and type(other) is Dataset:
+            raise UnSupportedGraphOperation(f"Cannot subtract Dataset from Graph")
         for triple in other:
             self.remove(triple)
         return self
@@ -634,6 +653,8 @@ class Graph(Node):
     def __add__(self, other):
         """Set-theoretic union
         BNode IDs are not changed."""
+        if type(other) is Dataset:
+            raise UnSupportedGraphOperation(f"Cannot add Dataset to Graph")
         try:
             retval = type(self)()
         except TypeError:
@@ -649,6 +670,10 @@ class Graph(Node):
     def __mul__(self, other):
         """Set-theoretic intersection.
         BNode IDs are not changed."""
+        if type(other) is (Dataset):
+            raise UnSupportedGraphOperation(
+                f"Cannot return intersection of Graph and Dataset"
+            )
         try:
             retval = type(self)()
         except TypeError:
@@ -661,6 +686,10 @@ class Graph(Node):
     def __sub__(self, other):
         """Set-theoretic difference.
         BNode IDs are not changed."""
+        if type(other) is Dataset:
+            raise UnSupportedGraphOperation(
+                f"Cannot return difference between Graph and Dataset"
+            )
         try:
             retval = type(self)()
         except TypeError:
@@ -673,6 +702,8 @@ class Graph(Node):
     def __xor__(self, other):
         """Set-theoretic XOR.
         BNode IDs are not changed."""
+        if type(other) is Dataset:
+            raise UnSupportedGraphOperation(f"Cannot return XOR of Graph and Dataset")
         return (self - other) + (other - self)
 
     __or__ = __add__
@@ -835,7 +866,7 @@ class Graph(Node):
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
         for (s, p, o), cg in self.store.triples_choices(
-            (subject, predicate, object_), context=self
+            (subject, predicate, object_), context=self.identifier
         ):
             yield s, p, o
 
@@ -1581,7 +1612,23 @@ class Graph(Node):
         return subgraph
 
 
-class ConjunctiveGraph(Graph):
+class UnSupportedDatasetOperation(Exception):
+    def __init__(self, msg=None):
+        Error.__init__(self, msg)
+        self.msg = msg
+
+    def __str__(self):
+        return (
+            self.msg
+            if self.msg is not None
+            else "This operation is not supported by Dataset instances"
+        )  # pragma: no cover
+
+
+DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib:default")
+
+
+class Dataset(Graph):
     """A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
@@ -1595,284 +1642,6 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    def __init__(
-        self,
-        store: Union[Store, str] = "default",
-        identifier: Optional[Union[IdentifiedNode, str]] = None,
-        default_graph_base: Optional[str] = None,
-    ):
-        super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
-        assert self.store.context_aware, (
-            "ConjunctiveGraph must be backed by" " a context aware store."
-        )
-        self.context_aware = True
-        self.default_union = True  # Conjunctive!
-        self.default_context = Graph(
-            store=self.store, identifier=identifier or BNode(), base=default_graph_base
-        )
-
-    def __str__(self):
-        pattern = (
-            "[a rdflib:ConjunctiveGraph;rdflib:storage "
-            "[a rdflib:Store;rdfs:label '%s']]"
-        )
-        return pattern % self.store.__class__.__name__
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: Union[
-            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
-        ],
-        default: bool = False,
-    ) -> Tuple[Node, Node, Node, Optional[Graph]]:
-        ...
-
-    @overload
-    def _spoc(
-        self,
-        triple_or_quad: None,
-        default: bool = False,
-    ) -> Tuple[None, None, None, Optional[Graph]]:
-        ...
-
-    def _spoc(
-        self,
-        triple_or_quad: Optional[
-            Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]
-        ],
-        default: bool = False,
-    ) -> Tuple[Optional[Node], Optional[Node], Optional[Node], Optional[Graph]]:
-        """
-        helper method for having methods that support
-        either triples or quads
-        """
-        if triple_or_quad is None:
-            return (None, None, None, self.default_context if default else None)
-        if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
-            (s, p, o) = triple_or_quad  # type: ignore[misc]
-        elif len(triple_or_quad) == 4:
-            (s, p, o, c) = triple_or_quad  # type: ignore[misc]
-            c = self._graph(c)
-        return s, p, o, c
-
-    def __contains__(self, triple_or_quad):
-        """Support for 'triple/quad in graph' syntax"""
-        s, p, o, c = self._spoc(triple_or_quad)
-        for t in self.triples((s, p, o), context=c):
-            return True
-        return False
-
-    def add(
-        self,
-        triple_or_quad: Union[
-            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
-        ],
-    ) -> "ConjunctiveGraph":
-        """
-        Add a triple or quad to the store.
-
-        if a triple is given it is added to the default context
-        """
-
-        s, p, o, c = self._spoc(triple_or_quad, default=True)
-
-        _assertnode(s, p, o)
-
-        self.store.add((s, p, o), context=c, quoted=False)
-        return self
-
-    @overload
-    def _graph(self, c: Union[Graph, Node, str]) -> Graph:
-        ...
-
-    @overload
-    def _graph(self, c: None) -> None:
-        ...
-
-    def _graph(self, c: Optional[Union[Graph, Node, str]]) -> Optional[Graph]:
-        if c is None:
-            return None
-        if not isinstance(c, Graph):
-            return self.get_context(c)
-        else:
-            return c
-
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
-        """Add a sequence of triples with context"""
-
-        self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
-        )
-        return self
-
-    def remove(self, triple_or_quad):
-        """
-        Removes a triple or quads
-
-        if a triple is given it is removed from all contexts
-
-        a quad is removed from the given context only
-
-        """
-        s, p, o, c = self._spoc(triple_or_quad)
-
-        self.store.remove((s, p, o), context=c)
-        return self
-
-    def triples(self, triple_or_quad, context=None):
-        """
-        Iterate over all the triples in the entire conjunctive graph
-
-        For legacy reasons, this can take the context to query either
-        as a fourth element of the quad, or as the explicit context
-        keyword parameter. The kw param takes precedence.
-        """
-
-        s, p, o, c = self._spoc(triple_or_quad)
-        context = self._graph(context or c)
-
-        if self.default_union:
-            if context == self.default_context:
-                context = None
-        else:
-            if context is None:
-                context = self.default_context
-
-        if isinstance(p, Path):
-            if context is None:
-                context = self
-
-            for s, o in p.eval(context, s, o):
-                yield s, p, o
-        else:
-            for (s, p, o), cg in self.store.triples((s, p, o), context=context):
-                yield s, p, o
-
-    def quads(self, triple_or_quad=None):
-        """Iterate over all the quads in the entire conjunctive graph"""
-
-        s, p, o, c = self._spoc(triple_or_quad)
-
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
-            for ctx in cg:
-                yield s, p, o, ctx
-
-    def triples_choices(self, triple, context=None):
-        """Iterate over all the triples in the entire conjunctive graph"""
-        s, p, o = triple
-        if context is None:
-            if not self.default_union:
-                context = self.default_context
-        else:
-            context = self._graph(context)
-
-        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=context):
-            yield s1, p1, o1
-
-    def __len__(self):
-        """Number of triples in the entire conjunctive graph"""
-        return self.store.__len__()
-
-    def contexts(self, triple=None):
-        """Iterate over all contexts in the graph
-
-        If triple is specified, iterate over all contexts the triple is in.
-        """
-        for context in self.store.contexts(triple):
-            if isinstance(context, Graph):
-                # TODO: One of these should never happen and probably
-                # should raise an exception rather than smoothing over
-                # the weirdness - see #225
-                yield context
-            else:
-                yield self.get_context(context)
-
-    def get_context(
-        self,
-        identifier: Optional[Union[Node, str]],
-        quoted: bool = False,
-        base: Optional[str] = None,
-    ) -> Graph:
-        """Return a context graph for the given identifier
-
-        identifier must be a URIRef or BNode.
-        """
-        # TODO: FIXME - why is ConjunctiveGraph passed as namespace_manager?
-        return Graph(
-            store=self.store, identifier=identifier, namespace_manager=self, base=base  # type: ignore[arg-type]
-        )
-
-    def remove_context(self, context):
-        """Removes the given context from the graph"""
-        self.store.remove((None, None, None), context)
-
-    def context_id(self, uri, context_id=None):
-        """URI#context"""
-        uri = uri.split("#", 1)[0]
-        if context_id is None:
-            context_id = "#context"
-        return URIRef(context_id, base=uri)
-
-    def parse(
-        self,
-        source: Optional[
-            Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
-        ] = None,
-        publicID: Optional[str] = None,
-        format: Optional[str] = None,
-        location: Optional[str] = None,
-        file: Optional[Union[BinaryIO, TextIO]] = None,
-        data: Optional[Union[str, bytes]] = None,
-        **args,
-    ):
-        """
-        Parse source adding the resulting triples to its own context
-        (sub graph of this graph).
-
-        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
-
-        :Returns:
-
-        The graph into which the source was parsed. In the case of n3
-        it returns the root context.
-        """
-
-        source = create_input_source(
-            source=source,
-            publicID=publicID,
-            location=location,
-            file=file,
-            data=data,
-            format=format,
-        )
-
-        # NOTE on type hint: `xml.sax.xmlreader.InputSource.getPublicId` has no
-        # type annotations but given that systemId should be a string, and
-        # given that there is no specific mention of type for publicId, it
-        # seems reasonable to assume it should also be a string. Furthermore,
-        # create_input_source will ensure that publicId is not None, though it
-        # would be good if this guaruntee was made more explicit i.e. by type
-        # hint on InputSource (TODO/FIXME).
-        g_id: str = publicID and publicID or source.getPublicId()
-        if not isinstance(g_id, Node):
-            g_id = URIRef(g_id)
-
-        context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None))  # hmm ?
-        context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
-        return context
-
-    def __reduce__(self):
-        return ConjunctiveGraph, (self.store, self.identifier)
-
-
-DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib:default")
-
-
-class Dataset(ConjunctiveGraph):
     __doc__ = """
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
     - the primary term is graphs in the datasets and not contexts with quads,
@@ -1888,9 +1657,7 @@ class Dataset(ConjunctiveGraph):
     >>> # simple triples goes to default graph
     >>> ds.add((URIRef("http://example.org/a"),
     ...    URIRef("http://www.example.org/b"),
-    ...    Literal("foo")))  # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
-    >>>
+    ...    Literal("foo")))
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
     >>> # (ie, the Dataset keeps track of the constituent graphs)
@@ -1906,8 +1673,7 @@ class Dataset(ConjunctiveGraph):
     >>> ds.add(
     ...     (URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/z"),
-    ...     Literal("foo-bar"),g) ) # doctest: +ELLIPSIS
-    <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
+    ...     Literal("foo-bar"),g) )
     >>>
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
@@ -1955,7 +1721,7 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> # resticting iteration to a graph:
+    >>> # restricting iteration to a graph:
     >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
@@ -1995,35 +1761,435 @@ class Dataset(ConjunctiveGraph):
     .. versionadded:: 4.0
     """
 
-    def __init__(self, store="default", default_union=False, default_graph_base=None):
-        super(Dataset, self).__init__(store=store, identifier=None)
+    def __init__(
+        self,
+        store: Optional[Union[Store, str]] = "default",
+        identifier: Optional[Union[Node, str]] = None,
+        default_union: Optional[bool] = False,
+        default_graph_base: Optional[str] = None,
+        bind_namespaces: str = "core"
+    ):
 
-        if not self.store.graph_aware:
-            raise Exception("DataSet must be backed by a graph-aware store!")
-        self.default_context = Graph(
+        if not isinstance(identifier, (URIRef, BNode, Literal, str, type(None))):
+            raise ValueError(
+                f"Dataset identifer must be one of URIRef, Literal, BNode, str or None, cannot be {type(identifier).__name__}"
+            )
+
+        super(Dataset, self).__init__(
+            store,
+            identifier=DATASET_DEFAULT_GRAPH_ID if identifier is None else identifier,
+        )
+        assert self.store.context_aware, (
+            "Dataset must be backed by a context aware store."
+        )
+        self.default_graph_base = default_graph_base
+        self.context_aware = True
+        self.bind_namespaces = bind_namespaces
+        self.default_union = default_union or False
+        self.default_graph = Graph(
             store=self.store,
-            identifier=DATASET_DEFAULT_GRAPH_ID,
+            identifier=DATASET_DEFAULT_GRAPH_ID,  # or self.identifier,
             base=default_graph_base,
         )
 
-        self.default_union = default_union
-
     def __str__(self):
         pattern = (
-            "[a rdflib:Dataset;rdflib:storage " "[a rdflib:Store;rdfs:label '%s']]"
+            f"[a rdflib:Dataset;rdflib:storage " "[a rdflib:Store;rdfs:label '%s']]"
         )
         return pattern % self.store.__class__.__name__
 
     def __reduce__(self):
-        return (type(self), (self.store, self.default_union))
+        return Dataset, (self.store, self.identifier)
 
     def __getstate__(self):
-        return self.store, self.identifier, self.default_context, self.default_union
+        return self.store, self.identifier, self.default_graph, self.default_union
 
     def __setstate__(self, state):
-        self.store, self.identifier, self.default_context, self.default_union = state
+        (self.store, self.identifier, self.default_graph, self.default_union) = state
 
-    def graph(self, identifier=None, base=None):
+    def __iter__(self):
+        """Iterates over all quads in the store"""
+
+        return self.quads((None, None, None, None))
+
+    def __len__(self, context=None):
+        if self.default_union:
+            # Number of triples in the entire store
+            return self.store.__len__()
+        else:
+            # Number of triples in the context graph or the default graph
+            return self.store.__len__(
+                context=context or DATASET_DEFAULT_GRAPH_ID
+            )
+
+    def __contains__(self, triple_or_quad):
+        """Support for 'triple/quad in graph' syntax"""
+        s, p, o, c = self._spoc(triple_or_quad)
+        for t in self.triples((s, p, o), context=c):
+            return True
+        return False
+
+    def __getitem__(self, item):
+        if self.default_union:
+            g = Graph()
+            for (s, p, o, c) in self:
+                g.add((s, p, o))
+        else:
+            g = self.default_graph
+
+        return g.__getitem__(item)
+
+
+    """
+    https://www.w3.org/2011/rdf-wg/track/issues/17
+
+    RESOLVED: close issue-17 -- there is no general purpose way to merge datasets;
+    it can only be done with external knowledge.
+
+    David Wood, 29 Oct 2012, 13:42:58
+    """
+
+    def __add__(self, other):
+        """Set-theoretic union
+        BNode IDs are not changed."""
+
+        retval = Dataset()
+        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+            retval.bind(prefix, uri)
+        retval += self
+        retval += other
+
+        return retval
+
+    def __iadd__(self, other):
+        """Add all triples in Graph other to Graph.
+        BNode IDs are not changed."""
+
+        if type(other) is Graph:
+            for (prefix, uri) in set(
+                list(self.namespaces()) + list(other.namespaces())
+            ):
+                self.bind(prefix, uri)
+
+            self.addN(
+                (s, p, o, DATASET_DEFAULT_GRAPH_ID)
+                for s, p, o in other.triples((None, None, None))
+            )
+
+        elif isinstance(other, list):  # SPARQL IADD passes a list of triples
+            # FIXME: namespace bindings are are not handled
+            for triple in other:
+                self.add(triple)
+
+        elif isinstance(other, Dataset):
+            # FIXME: namespace bindings are are not handled
+            for (s, p, o, c) in other:
+                self.add((s, p, o, c))
+
+        return self
+
+    def __sub__(self, other):
+        """Set-theoretic union
+        BNode IDs are not changed."""
+
+        retval = Dataset()
+
+        retval += self
+        retval -= other
+
+        return retval
+
+    def __isub__(self, other):
+        """Subtract all triples in Graph other from Graph.
+        BNode IDs are not changed."""
+
+        if type(other) is Graph:
+            context = other.identifier if other in self.graphs() else None
+            for (s, p, o) in other:
+                self.remove((s, p, o, context))
+
+        elif isinstance(other, list):
+            for (s, p, o) in other:
+                self.remove(((s, p, o, None)))
+
+        elif isinstance(other, Dataset):
+            for x in other:
+                self.remove(x)
+
+        return self
+
+    def __mul__(self, other):
+        """
+        Set-theoretic union BNode IDs are not changed.
+        """
+
+        if not isinstance(other, Dataset):
+            raise UnSupportedDatasetOperation("Can only perform union of two Datasets.")
+
+        try:
+            retval = type(self)()
+        except Exception:  # pragma: no cover
+            retval = Dataset()  # pragma: no cover
+
+        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+            retval.bind(prefix, uri)
+
+        for quad in other:
+            # if quad[3] is None:
+            #     quad = quad[:3] + (DATASET_DEFAULT_GRAPH_ID,)
+            if quad in self:
+                retval.add(quad)
+
+        return retval
+
+    def __xor__(self, other):
+        if type(other) is Graph:
+            raise UnSupportedDatasetOperation("Can only perform xor of two Datasets.")
+
+        return (self - other) + (other - self)
+
+    __or__ = __add__
+    __and__ = __mul__
+
+    def _spoc(self, triple_or_quad, default=False):
+        """
+        Helper method for having methods that support either triples or quads
+
+        Returns s, p, o and a generator of Graph objects which contain (s, p, o)
+
+        """
+
+        if triple_or_quad is None:
+            return None, None, None, self.identifier if default else None
+
+        if len(triple_or_quad) == 3:
+            c = self.default_graph.identifier if default else None
+            (s, p, o) = triple_or_quad
+
+        elif len(triple_or_quad) == 4:
+            (s, p, o, c) = triple_or_quad
+
+        assert isinstance(c, (URIRef, BNode, type(None)))
+
+        return s, p, o, c
+
+    def open(self, configuration, create=False):
+        """
+        Open the graph store.
+
+        Might be necessary for stores that require opening a connection to a
+        database or acquiring some resource.
+
+        :param configuration: a store configuration string, e.g. `file:///tmp/testdb`
+        :type configuration: str
+        :return: result VALID_STORE (1), CORRUPTED_STORE (0), NO_STORE (-1)
+        :rtype: int
+
+        """
+        res = self.store.open(configuration, create)
+        if create == True and getattr(self.store, "add_graph", None) is not None:
+            self.store.add_graph(self.default_graph.identifier)
+        return res
+
+    def add(self, triple_or_quad):
+        """
+        Add a triple or quad to the store, if a triple is given
+        it is added to the default context.
+
+        The subject, predicate and object components of the triple
+        or quad must be of type Node.
+
+        :param triple_or_quad: a tuple of three or four terms, e.g `(tarek, likes, pizza)` or `(tarek, likes, pizza, c1)`
+        :type triple_or_quad: tuple of four terms
+        :return: self
+        :rtype: Dataset
+
+        """
+
+        if not self.default_union and len(triple_or_quad) == 3:
+            triple_or_quad = triple_or_quad + (DATASET_DEFAULT_GRAPH_ID,)
+
+        s, p, o, c = self._spoc(triple_or_quad, default=True)
+
+        _assertnode(s, p, o)
+
+        self.store.add(
+            (s, p, o),
+            context=c or DATASET_DEFAULT_GRAPH_ID,
+            quoted=False,
+        )
+
+        return self
+
+    def addN(self, quads):
+        """
+        Add a sequence of triples with context.
+
+        The subject, predicate and object components of the
+        quad must be of type Node. The context must be one of
+        URIRef, BNode, Literal or str, which must already exist
+        in the dataset.
+
+        :param quads: a sequence of tuples of four terms, e.g `[(tarek, likes, pizza, c1)]`
+        :type quads: sequence
+        :return: self
+        :rtype: Dataset
+
+        """
+
+        self.store.addN(
+            (s, p, o, c or DATASET_DEFAULT_GRAPH_ID)
+            for s, p, o, c in quads
+            if _assertnode(s, p, o)
+        )
+        return self
+
+    def remove(self, triple_or_quad):
+        """
+        Removes a triple or quad matching a pattern.
+        If a triple is given it is removed from all contexts,
+        a quad is removed from the given context only.
+
+        :param triple_or_quad: tuple of four terms, e.g `(tarek, likes, pizza, c1)`
+        :type triple_or_quad: tuple of four terms
+        :return: self
+        :rtype: Dataset
+
+        """
+        s, p, o, c = self._spoc(triple_or_quad)
+
+        self.store.remove(
+            (s, p, o), context=c.identifier if isinstance(c, Graph) else c
+        )
+
+        return self
+
+    def triples(self, triple_or_quad, context=None):
+        """
+        Iterate over all the triples in the given context or, if context
+        is None, the default graph.
+
+        For legacy reasons, this can take the context to query either
+        as a fourth element of the quad, or as the explicit context
+        keyword parameter. The kw param takes precedence.
+
+        :param triple_or_quad: tuple of four terms, e.g `(tarek, likes, pizza, c1)`
+        :type triple_or_quad: tuple of four terms
+        :param context: context identifier
+        :type context: URIRef, BNode, Literal, str or None
+        :return: A generator of triples
+        :rtype: iterable
+
+        """
+
+        s, p, o, c = self._spoc(triple_or_quad)
+
+        context = context or c
+
+        if self.default_union:
+            if context == self.identifier:
+                context = None
+
+        else:
+            if context is None:
+                context = self.identifier
+
+        if isinstance(p, Path):
+            if context is None:
+                context = self
+
+            for s, o in p.eval(self.graph(context), s, o):
+                yield s, p, o
+        else:
+            for (s, p, o), cg in self.store.triples((s, p, o), context=context):
+                yield s, p, o
+
+    def triples_choices(self, triple, context=None):
+        """
+        Iterate over all the triples in the given context or, if
+        context is None, the default graph.
+
+        A variant of `triples` that can take a list of terms in
+        any one slot instead of a single term.
+
+        See :meth:`rdflib.store.Store.triples_choices` for implementation.
+
+        :param triple: tuple of terms, one of which may be a list of terms
+        :type triple: tuple
+        :param context: context identifier
+        :type context: URIRef, BNode, Literal, str or None
+        :return: iterated triples
+        :rtype: iterable
+
+        """
+
+        s, p, o = triple
+        if context is None:
+            if not self.default_union:
+                context = self.identifier
+
+        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=context):
+            yield s1, p1, o1
+
+    def quads(self, triple_or_quad=None):
+        """
+        Iterate over all the quads in the dataset.
+
+        The search is optionally narrowed by a given quad pattern
+        only to those quads that that match the pattern.
+
+        The pattern may be complete e.g.`(tarek, likes, pizza, c1)`
+        or partial, e.g. `(tarek, likes, None, None)`. In the latter
+        case, all contexts will be searched for triples in which tarek
+        likes anything.
+
+        :param quad: quad pattern of terms
+        :type quad: tuple or None
+        :return: iterated quads
+        :rtype: iterable
+
+        """
+        s, p, o, ctxt = self._spoc(triple_or_quad)
+
+        for (s, p, o), ctxgen in self.store.triples((s, p, o), context=ctxt):
+            for c in ctxgen:
+                if c == DATASET_DEFAULT_GRAPH_ID:
+                    yield s, p, o, None
+                elif triple_or_quad is None:
+                    yield s, p, o, c
+                elif len(triple_or_quad) == 3:  # No context specified
+                    yield s, p, o, c
+                elif len(triple_or_quad) == 4 and (
+                    triple_or_quad[3] == c or triple_or_quad[3] is None
+                ):  # Filter by context
+                    yield s, p, o, c
+
+    def graph(self, identifier=None, quoted=False, base=None):
+        """
+        Return the Graph identified in the Dataset by `identifier` or
+        return a new Graph if one with that identifier does not exist.
+
+        If `identifier` is omitted or `None`, the identifier of the new
+        Graph returned will be a skolemized BNode.
+
+        If a value for `base` is provided, it will be bound to the base of
+        the new Graph that is returned.
+
+        :param identifier: Context identifier or None
+        :type identifier: URIRef, BNode, Literal, str or None
+        :param quoted: if provided and `True` the new graph returned is a `QuotedGraph`
+        :type quoted: boolean
+        :param base: the base of the new graph that is returned
+        :type base: str
+        :return: a Graph, retrieved if known or created if not
+        :rtype: `Graph` or `QuotedGraph`
+
+        """
+        if not isinstance(identifier, (URIRef, BNode, Literal, str, type(None))):
+            raise ValueError(
+                f"identifer can be URIRef, BNode, Literal or None (but not {type(identifier).__name__})"
+            )
+
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
 
@@ -2032,11 +2198,109 @@ class Dataset(ConjunctiveGraph):
             )
             identifier = BNode().skolemize()
 
-        g = self._graph(identifier)
+        elif identifier == DATASET_DEFAULT_GRAPH_ID:
+            return self.default_graph
+
+        g = Graph(
+            store=self.store, identifier=identifier, namespace_manager=self, base=base
+        )
         g.base = base
 
-        self.store.add_graph(g)
+        self.store.add_graph(identifier)
+
         return g
+
+
+    def get_graph(self, identifier: Union[URIRef, BNode]) -> Union[Graph, None]:
+        """Returns the graph identified by given identifier"""
+        return [x for x in self.graphs() if x.identifier == identifier][0]
+
+
+    def graphs(self, triple=None, empty=False):
+        """
+        Iterate over all of the context graphs in the dataset.
+
+        The search is optionally narrowed by a given triple
+        pattern only to those graphs that contain triples
+        that match the pattern.
+
+        The pattern may be complete e.g. (tarek, likes, pizza)
+        or partial, e.g. (tarek, likes, None). In the latter case,
+        all graphs will be searched for triples in which tarek
+        likes anything.
+
+        :param triple: triple of three RDF terms, any or all of which may be None.
+        :type triple: tuple of three terms or None
+        :return: iterated context graphs
+        :rtype: iterable
+
+        """
+
+        for context in set(self.store.contexts(triple)):
+            if isinstance(context, Graph):
+                raise Exception(
+                    "Got graph object as context, not Identifier!"
+                )  # pragma: no cover
+            if context != DATASET_DEFAULT_GRAPH_ID:
+                g = self.graph(context)
+                if not empty or (empty and len(g) > 0):
+                    yield g
+
+                # yield self.graph(context)
+
+    def contexts(self, triple=None):
+        """
+
+        Iterate over all of the context identifiers in the dataset.
+
+        The search is optionally narrowed by a given triple pattern
+        only to those contexts that contain triples that match the
+        pattern.
+
+        The triple pattern may be complete e.g. (tarek, likes, pizza)
+        or partial, e.g. (tarek, likes, None). In the latter case,
+        all contexts will be searched for triples in which tarek
+        likes anything.
+
+        The context identifiers yielded may be of type URIRef, BNode,
+        Literal or str.
+
+        :param triple: Optional triple of RDF terms or None.
+        :type triple: tuple of three terms
+        :return: An interator of context identifiers
+        :rtype: iterable
+
+        """
+
+        for context in set(self.store.contexts(triple)):
+            if isinstance(context, Graph):
+                raise Exception(
+                    "Got graph object as context, not Identifier!"
+                )  # pragma: no cover
+            if context != DATASET_DEFAULT_GRAPH_ID:
+                yield context
+
+    def remove_graph(self, contextid):
+        """
+        Remove a graph from the store, this should also remove all
+        triples in the graph
+
+        :param contextid: the identifier of the context graph to be removed
+        :type contextid: URIRef, BNode, Literal or str
+        :return: self
+        :rtype: Dataset
+
+        """
+
+        if isinstance(contextid, Graph):
+            contextid = contextid.identifier
+
+        self.store.remove_graph(contextid)
+        if contextid is None or contextid == DATASET_DEFAULT_GRAPH_ID:
+            # default graph cannot be removed
+            # only triples deleted, so add it back in
+            self.store.add_graph(DATASET_DEFAULT_GRAPH_ID)
+        return self
 
     def parse(
         self,
@@ -2048,49 +2312,113 @@ class Dataset(ConjunctiveGraph):
         data=None,
         **args,
     ):
-        c = ConjunctiveGraph.parse(
-            self, source, publicID, format, location, file, data, **args
+        """
+        Parse source adding the resulting triples to its own context
+        (sub graph of this graph).
+
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
+
+        :Returns:
+
+        The graph into which the source was parsed. In the case of n3
+        it returns the root context.
+        """
+
+        source = create_input_source(
+            source=source,
+            publicID=publicID,
+            location=location,
+            file=file,
+            data=data,
+            format=format,
         )
-        self.graph(c)
-        return c
 
-    def add_graph(self, g):
-        """alias of graph for consistency"""
-        return self.graph(g)
+        g_id = publicID and publicID or source.getPublicId() or DATASET_DEFAULT_GRAPH_ID
 
-    def remove_graph(self, g):
-        if not isinstance(g, Graph):
-            g = self.get_context(g)
+        if not isinstance(g_id, Node):
+            g_id = URIRef(g_id)
+        elif g_id.startswith("file:") and format == "nquads":  # Improper for nquads
+            g_id = DATASET_DEFAULT_GRAPH_ID
 
-        self.store.remove_graph(g)
-        if g is None or g == self.default_context:
-            # default graph cannot be removed
-            # only triples deleted, so add it back in
-            self.store.add_graph(self.default_context)
-        return self
+        context = Graph(store=self.store, identifier=g_id)
 
-    def contexts(self, triple=None):
-        default = False
-        for c in super(Dataset, self).contexts(triple):
-            default |= c.identifier == DATASET_DEFAULT_GRAPH_ID
-            yield c
-        if not default:
-            yield self.graph(DATASET_DEFAULT_GRAPH_ID)
+        # try:
+        #     context.remove((None, None, None))  # hmm ?
+        # except Exception as e:
+        #     if "SPARQLStore does not support BNodes!" in str(e):
+        #         pass
+        #     else:
+        #         raise(Exception(e))
 
-    graphs = contexts
+        context.parse(source, publicID=publicID, format=format, **args)
 
-    def quads(self, quad):
-        for s, p, o, c in super(Dataset, self).quads(quad):
-            if c.identifier == self.default_context:
-                yield s, p, o, None
-            else:
-                yield s, p, o, c.identifier
+        return self  # because it's the Store that was augmented with the parsed RDF
 
-    def __iter__(
-        self,
-    ) -> Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]:
-        """Iterates over all quads in the store"""
-        return self.quads((None, None, None, None))
+    def isomorphic(self, other):
+        """
+        does a very basic check if these datasets are the same
+        If no BNodes are involved, this is accurate.
+
+        See rdflib.compare for a correct implementation of isomorphism checks
+        """
+        # TODO: this is only an approximation.
+        if len(self.store) != len(other.store) or not isinstance(other, Dataset):
+            return False
+
+        for s, p, o, c in self:
+            if not isinstance(s, BNode) and not isinstance(o, BNode):
+                if not (s, p, o, c) in other:
+                    return False
+        for s, p, o, c in other:
+            if not isinstance(s, BNode) and not isinstance(o, BNode):
+                if not (s, p, o, c) in self:
+                    return False
+        # TODO: very well could be a false positive at this point yet.
+        return True
+
+    def get_context(self, identifier, quoted=False, base=None):
+        """
+        LEGACY
+
+        Return a context graph for the given identifier if it exists
+        or `None`.
+
+        :param identifier: the identifier of the context graph to be retrieved
+        :type identifier: URIRef, BNode, Literal or str
+        :param quoted: if provided and `True` the new graph returned is a `QuotedGraph`
+        :type quoted: boolean
+        :param base: the base of the new graph that is returned.
+        :type base: str
+        :return: a context graph or None
+        :rtype: Graph, QuotedGraph or None
+        """
+        warn(
+            "Dataset::get_context() is deprecated and will be removed in a later version of RDFLib, use Dataset::graph()",
+            DeprecationWarning,
+        )
+        import inspect
+        import warnings
+
+        warnings.warn(
+            f"Dataset::get_context() called by "
+            f"{inspect.stack()[1].function} in {inspect.stack()[2].function} "
+            f"in {inspect.stack()[3].function}",
+            UserWarning,
+        )
+        return Graph(
+            store=self.store, identifier=identifier, namespace_manager=self, base=base
+        )
+
+
+    def skolemize(self, bnode=None, authority=None, basepath=None):
+        d = Dataset(default_union=self.default_union)
+        for g in self.contexts():
+            ng = d.graph(g)
+            ng.skolemize(
+                new_graph=ng, bnode=bnode, authority=authority, basepath=basepath)
+        self.default_graph.skolemize(
+            new_graph=d.default_graph, bnode=bnode, authority=authority, basepath=basepath)
+        return d
 
 
 class QuotedGraph(Graph):
@@ -2111,14 +2439,14 @@ class QuotedGraph(Graph):
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
 
-        self.store.add((s, p, o), self, quoted=True)
+        self.store.add((s, p, o), self.identifier, quoted=True)
         return self
 
     def addN(self, quads: Tuple[Node, Node, Node, Any]) -> "QuotedGraph":  # type: ignore[override]
         """Add a sequence of triple with context"""
 
         self.store.addN(
-            (s, p, o, c)
+            (s, p, o, c.identifier)
             for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
@@ -2219,7 +2547,7 @@ class UnSupportedAggregateOperation(Exception):
         return "This operation is not supported by ReadOnlyGraphAggregate " "instances"
 
 
-class ReadOnlyGraphAggregate(ConjunctiveGraph):
+class ReadOnlyGraphAggregate(Dataset):
     """Utility class for treating a set of graphs as a single graph
 
     Only read operations are supported (hence the name). Essentially a
@@ -2238,6 +2566,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             and [g for g in graphs if isinstance(g, Graph)]
         ), "graphs argument must be a list of Graphs!!"
         self.graphs = graphs
+        self.default_union = True
 
     def __repr__(self):
         return "<ReadOnlyGraphAggregate: %s graphs>" % len(self.graphs)
@@ -2285,13 +2614,17 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         if len(triple_or_quad) == 4:
             context = triple_or_quad[3]
         for graph in self.graphs:
-            if context is None or graph.identifier == context.identifier:
+            if context is None or graph.identifier == context:
                 if triple_or_quad[:3] in graph:
                     return True
         return False
 
-    def quads(self, triple_or_quad):
+    def quads(self, triple_or_quad=None):
         """Iterate over all the quads in the entire aggregate graph"""
+
+        if triple_or_quad is None:
+            triple_or_quad = (None, None, None, None)
+
         c = None
         if len(triple_or_quad) == 4:
             s, p, o, c = triple_or_quad
@@ -2299,13 +2632,13 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             s, p, o = triple_or_quad
 
         if c is not None:
-            for graph in [g for g in self.graphs if g == c]:
+            for graph in [g for g in self.graphs if g.identifier == c]:
                 for s1, p1, o1 in graph.triples((s, p, o)):
-                    yield s1, p1, o1, graph
+                    yield s1, p1, o1, graph.identifier
         else:
-            for graph in self.graphs:
+            for graph in list(self.graphs) + [self.default_graph]:
                 for s1, p1, o1 in graph.triples((s, p, o)):
-                    yield s1, p1, o1, graph
+                    yield s1, p1, o1, graph.identifier if graph.identifier != DATASET_DEFAULT_GRAPH_ID else None
 
     def __len__(self):
         return sum(len(g) for g in self.graphs)

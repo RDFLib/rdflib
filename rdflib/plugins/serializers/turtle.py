@@ -270,8 +270,10 @@ class TurtleSerializer(RecursiveSerializer):
 
     # TODO: Rename to get_pname
     def getQName(self, uri, gen_prefix=True):
-        if not isinstance(uri, URIRef):
+        if not isinstance(uri, (BNode, URIRef)):
             return None
+        elif isinstance(uri, BNode):
+            return f"_:{uri}"
 
         parts = None
 

@@ -4,8 +4,7 @@ from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.term import URIRef, Literal, BNode
 from rdflib.namespace import Namespace
-
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, Dataset, DATASET_DEFAULT_GRAPH_ID
 
 
 __all__ = ["TriXSerializer"]
@@ -13,6 +12,7 @@ __all__ = ["TriXSerializer"]
 # TODO: Move this somewhere central
 TRIXNS = Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
+DSDFID = DATASET_DEFAULT_GRAPH_ID
 
 
 class TriXSerializer(Serializer):
@@ -43,8 +43,12 @@ class TriXSerializer(Serializer):
             self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
         self.writer.namespaces()
 
-        if isinstance(self.store, ConjunctiveGraph):
-            for subgraph in self.store.contexts():
+        if isinstance(self.store, Dataset):
+            if self.store.identifier != DATASET_DEFAULT_GRAPH_ID:
+                DSDFID = self.store.identifier
+            if self.store.default_graph:
+                self._writeGraph(self.store.default_graph)
+            for subgraph in self.store.graphs():
                 self._writeGraph(subgraph)
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)
@@ -60,8 +64,12 @@ class TriXSerializer(Serializer):
             self.writer.attribute(
                 "http://www.w3.org/XML/1998/namespacebase", graph.base
             )
-        if isinstance(graph.identifier, URIRef):
+        if isinstance(graph.identifier, URIRef) and graph.identifier is not DSDFID:
             self.writer.element(TRIXNS["uri"], content=str(graph.identifier))
+        elif isinstance(graph.identifier, BNode):
+            self.writer.element(
+                TRIXNS["uri"], content=str(graph.identifier.skolemize())
+            )
 
         for triple in graph.triples((None, None, None)):
             self._writeTriple(triple)

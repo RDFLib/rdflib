@@ -92,7 +92,7 @@ __all__ = [
     "similar",
 ]
 
-from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
+from rdflib.graph import Graph, Dataset, ReadOnlyGraphAggregate
 from rdflib.term import BNode, Node, URIRef, IdentifiedNode
 from hashlib import sha256
 
@@ -159,7 +159,16 @@ class _call_count(object):
         return wrapped_f
 
 
-class IsomorphicGraph(ConjunctiveGraph):
+def _yield_triples(graph):
+    if isinstance(graph, Dataset):
+        for s, p, o, c in graph:
+            yield s, p, o
+    else:
+        for s, p, o in graph:
+            yield s, p, o
+
+
+class IsomorphicGraph(Graph):
     """An implementation of the RGDA1 graph digest algorithm.
 
     An implementation of RGDA1 (publication below),
@@ -314,7 +323,7 @@ class _TripleCanonicalizer(object):
         bnodes: Set[BNode] = set()
         others = set()
         self._neighbors = defaultdict(set)
-        for s, p, o in self.graph:
+        for s, p, o in _yield_triples(self.graph):
             nodes = set([s, p, o])
             b = set([x for x in nodes if isinstance(x, BNode)])
             if len(b) > 0:
@@ -518,7 +527,7 @@ class _TripleCanonicalizer(object):
             stats["canonicalize_triples_runtime"] = _total_seconds(
                 datetime.now() - start_coloring
             )
-        for triple in self.graph:
+        for triple in _yield_triples(self.graph):
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result
 
@@ -540,7 +549,8 @@ def to_isomorphic(graph):
     result = IsomorphicGraph()
     if hasattr(graph, "identifier"):
         result = IsomorphicGraph(identifier=graph.identifier)
-    result += graph
+    for t in _yield_triples(graph):
+        result.add(t)
     return result
 
 
@@ -575,6 +585,7 @@ def isomorphic(graph1, graph2):
         >>> isomorphic(g1, g3)
         False
     """
+
     gd1 = _TripleCanonicalizer(graph1).to_hash()
     gd2 = _TripleCanonicalizer(graph2).to_hash()
     return gd1 == gd2
