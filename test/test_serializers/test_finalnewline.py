@@ -2,7 +2,7 @@ from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
 
 
-def testFinalNewline():
+def test_finalnewline():
     """
     http://code.google.com/p/rdflib/issues/detail?id=5
     """

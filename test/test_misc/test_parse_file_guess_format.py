@@ -7,7 +7,7 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-import unittest
+import pytest
 import logging
 from pathlib import Path
 from shutil import copyfile
@@ -19,36 +19,36 @@ from rdflib import Graph
 from rdflib.util import guess_format
 
 
-class FileParserGuessFormatTest(unittest.TestCase):
+class TestFileParserGuessFormat:
     def test_guess_format(self) -> None:
-        self.assertEqual(guess_format("example.trix"), "trix")
-        self.assertEqual(guess_format("local-file.jsonld"), "json-ld")
-        self.assertEqual(guess_format("local-file.json-ld"), "json-ld")
-        self.assertEqual(guess_format("/some/place/on/disk/example.json"), "json-ld")
-        self.assertEqual(guess_format("../../relative/place/on/disk/example.json"), "json-ld")
-        self.assertEqual(guess_format("example.rdf"), "xml")
-        self.assertEqual(guess_format("example.nt"), "nt")
-        self.assertEqual(guess_format("example.nq"), "nquads")
-        self.assertEqual(guess_format("example.nquads"), "nquads")
-        self.assertEqual(guess_format("example.n3"), "n3")
-        self.assertIsNone(guess_format("example.docx", None))
-        self.assertIsNone(guess_format("example", None))
-        self.assertIsNone(guess_format("example.mkv", None))
+        assert guess_format("example.trix") == "trix"
+        assert guess_format("local-file.jsonld") == "json-ld"
+        assert guess_format("local-file.json-ld") == "json-ld"
+        assert guess_format("/some/place/on/disk/example.json") == "json-ld"
+        assert guess_format("../../relative/place/on/disk/example.json") == "json-ld"
+        assert guess_format("example.rdf") == "xml"
+        assert guess_format("example.nt") == "nt"
+        assert guess_format("example.nq") == "nquads"
+        assert guess_format("example.nquads") == "nquads"
+        assert guess_format("example.n3") == "n3"
+        assert guess_format("example.docx", None) is None
+        assert guess_format("example", None) is None
+        assert guess_format("example.mkv", None) is None
 
     def test_jsonld(self) -> None:
         g = Graph()
-        self.assertIsInstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
-        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json"), Graph)
-        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.json-ld"), Graph)
-        self.assertIsInstance(g.parse("test/jsonld/file_ending_test_01.jsonld"), Graph)
+        assert isinstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
+        assert isinstance(g.parse("test/jsonld/file_ending_test_01.json"), Graph)
+        assert isinstance(g.parse("test/jsonld/file_ending_test_01.json-ld"), Graph)
+        assert isinstance(g.parse("test/jsonld/file_ending_test_01.jsonld"), Graph)
 
     def test_ttl(self) -> None:
         g = Graph()
-        self.assertIsInstance(g.parse("test/w3c/turtle/IRI_subject.ttl"), Graph)
+        assert isinstance(g.parse("test/w3c/turtle/IRI_subject.ttl"), Graph)
 
     def test_n3(self) -> None:
         g = Graph()
-        self.assertIsInstance(g.parse("test/n3/example-lots_of_graphs.n3"), Graph)
+        assert isinstance(g.parse("test/n3/example-lots_of_graphs.n3"), Graph)
 
     def test_warning(self) -> None:
         g = Graph()
@@ -57,10 +57,10 @@ class FileParserGuessFormatTest(unittest.TestCase):
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
             copyfile("test/rdf/Manifest.rdf", str(newpath))
-            with self.assertLogs(graph_logger, "WARNING"):
-                with self.assertRaises(ParserError):
+            with pytest.raises(ParserError, match=r"Could not guess RDF format"):
+                with pytest.warns(
+                    UserWarning,
+                    match="does not look like a valid URI, trying to serialize this will break.",
+                ) as logwarning:
                     g.parse(str(newpath))
 
-
-if __name__ == "__main__":
-    unittest.main()

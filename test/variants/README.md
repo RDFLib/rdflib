@@ -18,4 +18,4 @@ test/variants/literal_with_lang.ttl
 
 Some additional assertions on graphs can be specified in file names that end
 with `-asserts.json`, for details on supported asserts see
-`test/test_variants.py`.
+`test/test_graph/test_variants.py`.

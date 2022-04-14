@@ -1,6 +1,5 @@
 from collections import Counter
 from typing import Set, Tuple
-from unittest.case import expectedFailure
 
 import pytest
 from rdflib.term import Node
@@ -524,7 +523,7 @@ _TripleSet = Set[_Triple]
 
 
 class TestConsistency(unittest.TestCase):
-    @expectedFailure
+    @pytest.mark.xfail
     def test_consistent_ids(self) -> None:
         """
         This test verifies that `to_canonical_graph` creates consistent
@@ -566,7 +565,3 @@ class TestConsistency(unittest.TestCase):
         assert cg0_ts.issubset(
             cg1_ts
         ), "canonical triple set cg0_ts should be a subset of canonical triple set cg1_ts"
-
-
-if __name__ == "__main__":
-    unittest.main()

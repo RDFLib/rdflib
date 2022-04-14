@@ -1,8 +1,18 @@
+from typing import Any, Callable, Type
 from rdflib.plugins.sparql import sparql, prepareQuery
+from rdflib.plugins.sparql.sparql import SPARQLError
 from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
 from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.compare import isomorphic
+from rdflib.query import Result
 from rdflib.term import Variable
+from rdflib.plugins.sparql.evaluate import evalPart
+from rdflib.plugins.sparql.evalutils import _eval
+import pytest
+from pytest import MonkeyPatch
+import rdflib.plugins.sparql.operators
+import rdflib.plugins.sparql.parser
+import rdflib.plugins.sparql
 
 from test.testutils import eq_
 
@@ -290,3 +300,194 @@ def test_property_bindings(rdfs_graph: Graph) -> None:
 
     result.bindings = []
     assert [] == result.bindings
+
+
+def test_call_function() -> None:
+    """
+    SPARQL built-in function call works as expected.
+    """
+    graph = Graph()
+    query_string = """
+    SELECT ?output0 WHERE {
+        BIND(CONCAT("a", " + ", "b") AS ?output0)
+    }
+    """
+    result = graph.query(query_string)
+    assert result.type == "SELECT"
+    rows = list(result)
+    assert len(rows) == 1
+    assert len(rows[0]) == 1
+    assert rows[0][0] == Literal("a + b")
+
+
+def test_custom_eval() -> None:
+    """
+    SPARQL custom eval function works as expected.
+    """
+    eg = Namespace("http://example.com/")
+    custom_function_uri = eg["function"]
+    custom_function_result = eg["result"]
+
+    def custom_eval_extended(ctx: Any, extend: Any) -> Any:
+        for c in evalPart(ctx, extend.p):
+            try:
+                if (
+                    hasattr(extend.expr, "iri")
+                    and extend.expr.iri == custom_function_uri
+                ):
+                    evaluation = custom_function_result
+                else:
+                    evaluation = _eval(extend.expr, c.forget(ctx, _except=extend._vars))
+                    if isinstance(evaluation, SPARQLError):
+                        raise evaluation
+
+                yield c.merge({extend.var: evaluation})
+
+            except SPARQLError:
+                yield c
+
+    def custom_eval(ctx: Any, part: Any) -> Any:
+        if part.name == "Extend":
+            return custom_eval_extended(ctx, part)
+        else:
+            raise NotImplementedError()
+
+    try:
+        rdflib.plugins.sparql.CUSTOM_EVALS["test_function"] = custom_eval
+        graph = Graph()
+        query_string = """
+        PREFIX eg: <http://example.com/>
+        SELECT ?output0 ?output1 WHERE {
+            BIND(CONCAT("a", " + ", "b") AS ?output0)
+            BIND(eg:function() AS ?output1)
+        }
+        """
+        result = graph.query(query_string)
+        assert result.type == "SELECT"
+        rows = list(result)
+        assert len(rows) == 1
+        assert len(rows[0]) == 2
+        assert rows[0][0] == Literal("a + b")
+        assert rows[0][1] == custom_function_result
+    finally:
+        rdflib.plugins.sparql.CUSTOM_EVALS["test_function"]
+
+
+@pytest.mark.parametrize(
+    "result_consumer, exception_type, ",
+    [
+        pytest.param(lambda result: len(result), TypeError, id="len+TypeError"),
+        pytest.param(
+            lambda result: list(result),
+            TypeError,
+            id="list+TypeError",
+            marks=pytest.mark.xfail(
+                reason="TypeError does not propagate through list constructor"
+            ),
+        ),
+        pytest.param(lambda result: len(result), RuntimeError, id="len+RuntimeError"),
+        pytest.param(lambda result: list(result), RuntimeError, id="list+RuntimeError"),
+    ],
+)
+def test_custom_eval_exception(
+    result_consumer: Callable[[Result], None], exception_type: Type[Exception]
+) -> None:
+    """
+    Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
+    query propagates to the caller.
+    """
+    eg = Namespace("http://example.com/")
+    custom_function_uri = eg["function"]
+
+    def custom_eval_extended(ctx: Any, extend: Any) -> Any:
+        for c in evalPart(ctx, extend.p):
+            try:
+                if (
+                    hasattr(extend.expr, "iri")
+                    and extend.expr.iri == custom_function_uri
+                ):
+                    raise exception_type("TEST ERROR")
+                else:
+                    evaluation = _eval(extend.expr, c.forget(ctx, _except=extend._vars))
+                    if isinstance(evaluation, SPARQLError):
+                        raise evaluation
+
+                yield c.merge({extend.var: evaluation})
+
+            except SPARQLError:
+                yield c
+
+    def custom_eval(ctx: Any, part: Any) -> Any:
+        if part.name == "Extend":
+            return custom_eval_extended(ctx, part)
+        else:
+            raise NotImplementedError()
+
+    try:
+        rdflib.plugins.sparql.CUSTOM_EVALS["test_function"] = custom_eval
+        graph = Graph()
+        query_string = """
+        PREFIX eg: <http://example.com/>
+        SELECT ?output0 ?output1 WHERE {
+            BIND(CONCAT("a", " + ", "b") AS ?output0)
+            BIND(eg:function() AS ?output1)
+        }
+        """
+        result: Result = graph.query(query_string)
+        with pytest.raises(exception_type) as excinfo:
+            result_consumer(result)
+        assert str(excinfo.value) == "TEST ERROR"
+    finally:
+        del rdflib.plugins.sparql.CUSTOM_EVALS["test_function"]
+
+
+@pytest.mark.parametrize(
+    "result_consumer, exception_type, ",
+    [
+        pytest.param(lambda result: len(result), TypeError, id="len+TypeError"),
+        pytest.param(
+            lambda result: list(result),
+            TypeError,
+            id="list+TypeError",
+            marks=pytest.mark.xfail(
+                reason="TypeError does not propagate through list constructor"
+            ),
+        ),
+        pytest.param(lambda result: len(result), RuntimeError, id="len+RuntimeError"),
+        pytest.param(lambda result: list(result), RuntimeError, id="list+RuntimeError"),
+    ],
+)
+def test_operator_exception(
+    result_consumer: Callable[[Result], None],
+    exception_type: Type[Exception],
+    monkeypatch: MonkeyPatch,
+) -> None:
+    """
+    Exception raised from an operator during the execution of a query
+    propagates to the caller.
+    """
+
+    def thrower(*args: Any, **kwargs: Any) -> None:
+        raise exception_type("TEST ERROR")
+
+    monkeypatch.setattr(
+        rdflib.plugins.sparql.operators, "calculateFinalDateTime", thrower
+    )
+
+    graph = Graph()
+    result: Result = graph.query(
+        """
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT (?d + ?duration AS ?next_year)
+    WHERE {
+        VALUES (?duration ?d) {
+            ("P1Y"^^xsd:yearMonthDuration"2019-05-28T12:14:45Z"^^xsd:dateTime)
+            ("P1Y"^^xsd:yearMonthDuration"2019-05-28"^^xsd:date)
+        }
+    }
+    """
+    )
+
+    with pytest.raises(exception_type) as excinfo:
+        result_consumer(result)
+    assert str(excinfo.value) == "TEST ERROR"
