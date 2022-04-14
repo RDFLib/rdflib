@@ -5,6 +5,7 @@ from rdflib.compare import isomorphic
 import unittest
 from test.testutils import eq_
 
+
 class TestConstructInitBindings(unittest.TestCase):
     def test_construct_init_bindings(self):
         """

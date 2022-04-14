@@ -34,7 +34,9 @@ def test_prepare_query():
 
     g = Graph()
     g.parse(
-        location=os.path.join(os.path.dirname(__file__), "..", "..", "examples", "foaf.n3"),
+        location=os.path.join(
+            os.path.dirname(__file__), "..", "..", "examples", "foaf.n3"
+        ),
         format="n3",
     )
 

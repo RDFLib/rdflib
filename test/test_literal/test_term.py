@@ -43,6 +43,7 @@ class TestBNodeRepr:
         x = MyBNode()
         assert repr(x).startswith("MyBNode(")
 
+
 class TestLiteral:
     def test_base64_values(self):
         b64msg = "cmRmbGliIGlzIGNvb2whIGFsc28gaGVyZSdzIHNvbWUgYmluYXJ5IAAR83UC"

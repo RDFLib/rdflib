@@ -33,11 +33,14 @@ test_data2 = """
 baseUri = URIRef("http://example.com/")
 baseUri2 = URIRef("http://example.com/foo/bar")
 
+
 class TestEmptyBase:
     def test_empty_base_ref(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(data=test_data, publicID=baseUri, format="xml")
-        assert len(list(self.graph)) > 0, "There should be at least one statement in the graph"
+        assert (
+            len(list(self.graph)) > 0
+        ), "There should be at least one statement in the graph"
         assert (
             baseUri,
             RDF.type,
@@ -49,7 +52,9 @@ class TestRelativeBase:
     def test_relative_base_ref(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
-        assert len(self.graph) > 0, "There should be at least one statement in the graph"
+        assert (
+            len(self.graph) > 0
+        ), "There should be at least one statement in the graph"
         resolvedBase = URIRef("http://example.com/baz")
         assert (
             resolvedBase,

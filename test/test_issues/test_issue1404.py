@@ -20,7 +20,10 @@ def test_skolem_de_skolem_roundtrip():
     graph = Graph()
     graph.parse(data=ttl, format='turtle')
 
-    query = {"subject": URIRef("http://www.wikidata.org/entity/Q1203"), "predicate": FOAF.knows}
+    query = {
+        "subject": URIRef("http://www.wikidata.org/entity/Q1203"),
+        "predicate": FOAF.knows,
+    }
 
     # Save the original bnode id.
     bnode_id = graph.value(**query)

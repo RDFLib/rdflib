@@ -48,7 +48,9 @@ class GraphAsserts:
     quad_count: Optional[int] = None
     exact_match: bool = False
 
-    def check(self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph) -> None:
+    def check(
+        self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph
+    ) -> None:
         if self.quad_count is not None:
             assert self.quad_count == len(list(graph.quads()))
         if first_graph is not None and self.exact_match:
@@ -209,4 +211,8 @@ def test_variants(graph_variant: GraphVariants) -> None:
             first_path = variant_path
         else:
             assert first_path is not None
-            GraphHelper.assert_isomorphic(first_graph, graph, f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}")
+            GraphHelper.assert_isomorphic(
+                first_graph,
+                graph,
+                f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}",
+            )

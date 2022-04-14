@@ -85,7 +85,7 @@ RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
 
 
 def relative(url):
-    return url[len(RDFCOREBASE):]
+    return url[len(RDFCOREBASE) :]
 
 
 def resolve(rel):

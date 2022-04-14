@@ -21,7 +21,8 @@ class TestPrefixTypes:
     This is issue 161
     http://code.google.com/p/rdflib/issues/detail?id=161
     """
+
     def test(self):
-	    s = graph.serialize(format="n3")
-	    assert "foaf:Document" in s
-	    assert "xsd:date" in s
+        s = graph.serialize(format="n3")
+        assert "foaf:Document" in s
+        assert "xsd:date" in s
