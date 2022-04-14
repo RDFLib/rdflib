@@ -5,7 +5,7 @@ example stuff in the Primer on N3:
 http://www.w3.org/2000/10/swap/Primer
 """
 
-from rdflib import ConjunctiveGraph, Namespace, Literal
+from rdflib import Dataset, Namespace, Literal
 from rdflib.namespace import OWL, DC
 
 if __name__ == "__main__":
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # Here we create a "Graph" of our work.
     # Think of it as a blank piece of graph paper!
 
-    primer = ConjunctiveGraph()
+    primer = Dataset()
     myNS = Namespace("https://example.com/")
 
     primer.add((myNS.pat, myNS.knows, myNS.jo))
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     # with a fresh new graph.
 
     del primer
-    primer = ConjunctiveGraph()
+    primer = Dataset(default_union=True)
 
     # Lets start with a verbatim string straight from the primer text:
 
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
     print()
     print("Printing bigger example's triples:")
-    for i in [(x, y, z) for x, y, z in primer]:
+    for i in [(x, y, z, c) for x, y, z, c in primer]:
         print(i)
 
     # or spit it back out (mostly) the way we created it:

@@ -1,6 +1,6 @@
 """
-An RDFLib ConjunctiveGraph is an (unnamed) aggregation of all the Named Graphs
-within a Store. The :meth:`~rdflib.graph.ConjunctiveGraph.get_context`
+An RDFLib Dataset is a means of working with a set of Named Graphs
+within a Store. The :meth:`~rdflib.graph.Dataset.graph`
 method can be used to get a particular named graph for use, such as to add
 triples to, or the default graph can be used.
 
@@ -9,10 +9,10 @@ conjunction (union) of all the graphs.
 """
 
 from rdflib import Namespace, Literal, URIRef
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, Dataset
 from rdflib.plugins.stores.memory import Memory
 
-if __name__ == "__main__":
+def test_dataset_example():
 
     LOVE = Namespace("http://love.com#")
     LOVERS = Namespace("http://love.com/lovers/")
@@ -25,25 +25,25 @@ if __name__ == "__main__":
 
     store = Memory()
 
-    g = ConjunctiveGraph(store=store)
+    g = Dataset(store=store, default_union=True)
     g.bind("love", LOVE)
     g.bind("lovers", LOVERS)
 
     # Add a graph containing Mary's facts to the Conjunctive Graph
-    gmary = Graph(store=store, identifier=cmary)
+    gmary = g.graph(cmary)
     # Mary's graph only contains the URI of the person she loves, not his cute name
     gmary.add((mary, LOVE.hasName, Literal("Mary")))
     gmary.add((mary, LOVE.loves, john))
 
     # Add a graph containing John's facts to the Conjunctive Graph
-    gjohn = Graph(store=store, identifier=cjohn)
+    gjohn = g.graph(cjohn)
     # John's graph contains his cute name
     gjohn.add((john, LOVE.hasCuteName, Literal("Johnny Boy")))
 
     # Enumerate contexts
     print("Contexts:")
     for c in g.contexts():
-        print(f"-- {c.identifier} ")
+        print(f"-- {c} ")
     print("===================")
     # Separate graphs
     print("John's Graph:")
@@ -63,3 +63,7 @@ if __name__ == "__main__":
         xx = x
     print("Q: Who does Mary love?")
     print("A: Mary loves {}".format(xx))
+
+if __name__ == "__main__":
+    test_dataset_example()
+

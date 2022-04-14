@@ -44,7 +44,7 @@ transtive closures of user-defined functions.
 """
 
 if __name__ == "__main__":
-    from rdflib import ConjunctiveGraph, URIRef
+    from rdflib import Dataset, URIRef
 
     person = URIRef("ex:person")
     dad = URIRef("ex:d")
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     parent = URIRef("ex:parent")
 
-    g = ConjunctiveGraph()
+    g = Dataset()
     g.add((person, parent, dad))
     g.add((person, parent, mom))
     g.add((dad, parent, momOfDad))
