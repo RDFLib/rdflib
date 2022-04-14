@@ -18,7 +18,15 @@ import pytest
 from rdflib import URIRef, plugin
 from rdflib.graph import Dataset, Graph, Literal
 from rdflib.store import VALID_STORE, NO_STORE
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 timblcardn3 = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")).read()
 

@@ -19,7 +19,15 @@ import pytest
 from rdflib import RDF, RDFS, BNode, Dataset, Literal, URIRef, Variable, logger, plugin
 from rdflib.graph import Graph, QuotedGraph
 from rdflib.store import VALID_STORE
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
 

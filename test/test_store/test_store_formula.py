@@ -6,7 +6,15 @@ import pytest
 from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
 from rdflib.graph import QuotedGraph, Dataset
 from rdflib.store import NO_STORE, VALID_STORE, Store
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 from test.data import context0
 
 
@@ -22,6 +30,7 @@ _:foo a rdfs:Class.
 
 # Thorough test suite for formula-aware store
 
+
 @pytest.fixture(
     scope="function",
     params=get_plugin_stores(),
@@ -36,7 +45,9 @@ def get_dataset(request):
     if not s.formula_aware:
         pytest.skip(reason=f"{store} not formula-aware")
 
-    d = Dataset(store=store, identifier=URIRef("urn:example:testgraph"), default_union=True)
+    d = Dataset(
+        store=store, identifier=URIRef("urn:example:testgraph"), default_union=True
+    )
 
     dataset = open_store(d, storename, path)
 
@@ -90,7 +101,7 @@ def test_formula_store(get_dataset):
         # assert len(list(universe.contexts((a, d, c)))) == 1, \
         #                     [ct for ct in universe.contexts((a, d, c))]
 
-        # (a, d, c) is in both the formula and the default graph but for a 
+        # (a, d, c) is in both the formula and the default graph but for a
         # Dataset the latter is not considered a context
 
         if store == "SQLiteDBStore":  # The only Store that handles this correctly
@@ -121,7 +132,6 @@ def test_formula_store(get_dataset):
 
         universe.remove((None, None, None))
         assert len(universe) == 0
-
 
     except Exception as e:
         if store != "Memory":

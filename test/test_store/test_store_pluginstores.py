@@ -5,7 +5,15 @@ import pytest
 from rdflib import Dataset, URIRef
 from test.data import tarek, likes, pizza, michel, hates, cheese, bob
 from rdflib.store import VALID_STORE
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 
 @pytest.fixture(
@@ -17,7 +25,9 @@ def get_dataset(request):
 
     store, path = set_store_and_path(storename)
 
-    d = Dataset(store=store, identifier=URIRef("urn:example:testgraph"), default_union=True)
+    d = Dataset(
+        store=store, identifier=URIRef("urn:example:testgraph"), default_union=True
+    )
 
     dataset = open_store(d, storename, path)
 

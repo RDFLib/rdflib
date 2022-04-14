@@ -3,7 +3,7 @@ from test.data import likes, pizza, tarek
 import pytest
 
 from rdflib import FOAF, XSD, Namespace
-from rdflib.graph import  Graph
+from rdflib.graph import Graph
 from rdflib.term import (
     BNode,
     IdentifiedNode,
@@ -43,8 +43,8 @@ def test_graph_identifier_as_namespace():
     assert (
         type(g.identifier) is URIRef
     )  # rdflib.term.URIRef("(rdflib.term.URIRef('urn:example:tarek'),
-       #                      rdflib.term.URIRef('urn:example:likes'),
-       #                      rdflib.term.URIRef('urn:example:pizza'))")
+    #                      rdflib.term.URIRef('urn:example:likes'),
+    #                      rdflib.term.URIRef('urn:example:pizza'))")
     assert issubclass(type(g.identifier), Node)
     assert issubclass(type(g.identifier), IdentifiedNode)
 

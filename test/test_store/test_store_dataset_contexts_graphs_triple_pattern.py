@@ -1,7 +1,18 @@
 import os
 import shutil
 import tempfile
-from test.data import tarek, likes, pizza, michel, hates, cheese, bob, context0, context1, context2
+from test.data import (
+    tarek,
+    likes,
+    pizza,
+    michel,
+    hates,
+    cheese,
+    bob,
+    context0,
+    context1,
+    context2,
+)
 from urllib.request import urlopen
 
 import pytest
@@ -10,7 +21,15 @@ from rdflib import logger
 from rdflib.graph import Dataset
 from rdflib.store import VALID_STORE
 from rdflib.term import URIRef
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 try:
     assert len(urlopen(HOST).read()) > 0
@@ -19,6 +38,7 @@ except:
     skipsparql = True
 
 skipsparql = True
+
 
 @pytest.fixture(
     scope="function",
@@ -47,14 +67,15 @@ def get_dataset_defaultunion(request):
 
     store, path = set_store_and_path(storename)
 
-    dataset = Dataset(store=store, identifier=URIRef("urn:example:testgraph"), default_union=True)
+    dataset = Dataset(
+        store=store, identifier=URIRef("urn:example:testgraph"), default_union=True
+    )
 
     ds = open_store(dataset, storename, path)
 
     yield dataset
 
     cleanup(dataset, storename, path)
-
 
 
 def test_dataset_graphs_with_triple_pattern(get_dataset):
@@ -80,9 +101,13 @@ def test_dataset_graphs_with_triple_pattern(get_dataset):
     )
 
     if "LevelDBStore" in str(store):
-        assert len(list(ds.graphs((michel, likes, None)))) == 0  # Should yield two graphs
+        assert (
+            len(list(ds.graphs((michel, likes, None)))) == 0
+        )  # Should yield two graphs
     else:
-        assert len(list(ds.graphs((michel, likes, None)))) == 2  # Should yield two graphs
+        assert (
+            len(list(ds.graphs((michel, likes, None)))) == 2
+        )  # Should yield two graphs
 
     if "LevelDBStore" in str(store):
         assert len(list(ds.graphs((tarek, None, None)))) == 0  # Should yield one graph
@@ -97,7 +122,6 @@ def test_dataset_graphs_with_triple_pattern(get_dataset):
         assert len(list(ds.graphs((None, likes, None)))) == 3  # Should yield two graphs
     else:
         assert len(list(ds.graphs((None, likes, None)))) == 2  # Should yield two graphs
-
 
     if "LevelDBStore" in str(store):
         assert len(list(ds.graphs((None, None, pizza)))) == 0  # Should yield two graphs
@@ -146,29 +170,53 @@ def test_dataset_contexts_with_triple_pattern(get_dataset):
         )  # Should yield two contextss
 
     if "LevelDBStore" in str(store):
-        assert len(list(ds.contexts((tarek, None, None)))) == 0  # Should yield one context
+        assert (
+            len(list(ds.contexts((tarek, None, None)))) == 0
+        )  # Should yield one context
     elif "OxigraphStore" in str(store):
-        assert len(list(ds.contexts((tarek, None, None)))) == 2  # Should yield one context
+        assert (
+            len(list(ds.contexts((tarek, None, None)))) == 2
+        )  # Should yield one context
     else:
-        assert len(list(ds.contexts((tarek, None, None)))) == 1  # Should yield one context
+        assert (
+            len(list(ds.contexts((tarek, None, None)))) == 1
+        )  # Should yield one context
 
     if "LevelDBStore" in str(store):
-        assert len(list(ds.contexts((None, likes, None)))) == 0  # Should yield two contexts
+        assert (
+            len(list(ds.contexts((None, likes, None)))) == 0
+        )  # Should yield two contexts
     elif "OxigraphStore" in str(store):
-        assert len(list(ds.contexts((None, likes, None)))) == 3  # Should yield two contexts
+        assert (
+            len(list(ds.contexts((None, likes, None)))) == 3
+        )  # Should yield two contexts
     else:
-        assert len(list(ds.contexts((None, likes, None)))) == 2  # Should yield two contexts
+        assert (
+            len(list(ds.contexts((None, likes, None)))) == 2
+        )  # Should yield two contexts
 
     if "LevelDBStore" in str(store):
-        assert len(list(ds.contexts((None, None, pizza)))) == 0  # Should yield one context
+        assert (
+            len(list(ds.contexts((None, None, pizza)))) == 0
+        )  # Should yield one context
     elif "OxigraphStore" in str(store):
-        assert len(list(ds.contexts((None, None, pizza)))) == 2  # Should yield one context
+        assert (
+            len(list(ds.contexts((None, None, pizza)))) == 2
+        )  # Should yield one context
     else:
-        assert len(list(ds.contexts((None, None, pizza)))) == 1  # Should yield one context
+        assert (
+            len(list(ds.contexts((None, None, pizza)))) == 1
+        )  # Should yield one context
 
     if "LevelDBStore" in str(store):
-        assert len(list(ds.contexts((None, None, None)))) == 0  # Should yield both contexts
+        assert (
+            len(list(ds.contexts((None, None, None)))) == 0
+        )  # Should yield both contexts
     elif "OxigraphStore" in str(store):
-        assert len(list(ds.contexts((None, None, None)))) == 3  # Should yield both contexts
+        assert (
+            len(list(ds.contexts((None, None, None)))) == 3
+        )  # Should yield both contexts
     else:
-        assert len(list(ds.contexts((None, None, None)))) == 2  # Should yield both contexts
+        assert (
+            len(list(ds.contexts((None, None, None)))) == 2
+        )  # Should yield both contexts

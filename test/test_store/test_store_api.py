@@ -19,7 +19,15 @@ import pytest
 from rdflib import RDFS, XSD, Literal, URIRef, plugin
 from rdflib.graph import Dataset, Graph, DATASET_DEFAULT_GRAPH_ID
 from rdflib.store import NO_STORE, VALID_STORE, Store
-from test.pluginstores import HOST, root, get_plugin_stores, set_store_and_path, open_store, cleanup, dburis
+from test.pluginstores import (
+    HOST,
+    root,
+    get_plugin_stores,
+    set_store_and_path,
+    open_store,
+    cleanup,
+    dburis,
+)
 
 timblcardn3 = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")).read()
 
@@ -459,7 +467,5 @@ def test_graph_basic(get_dataset):
     ds.parse(data=timblcardn3, format="n3")
     assert len(ds) == 86
 
-
     ds.remove((None, None, None, DATASET_DEFAULT_GRAPH_ID))
     assert len(ds) == 0
-
