@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import logging
 import sys
 import os
+from typing import Callable, Optional, Set
 import unittest
 
 from tempfile import mkdtemp, mkstemp
@@ -18,7 +20,7 @@ from pathlib import Path
 from rdflib.store import Store
 from rdflib.term import BNode
 
-from test.testutils import GraphHelper
+from test.testutils import GraphHelper, get_unique_plugin_names
 from test.data import tarek, likes, pizza, michel, hates, cheese, bob
 
 
@@ -62,7 +64,46 @@ def test_property_namespace_manager() -> None:
     assert ("test", URIRef("example:test:")) in nss
 
 
-def populate_graph(graph):
+def get_store_names() -> Set[Optional[str]]:
+    names: Set[Optional[str]] = {*get_unique_plugin_names(plugin.Store)}
+    names.difference_update({
+        "default",
+        "Memory",
+        "Auditable",
+        "Concurrent",
+        "SPARQLStore",
+        "SPARQLUpdateStore",
+        "SimpleMemory",
+    })
+    names.add(None)
+
+    logging.debug("names = %s", names)
+    return names
+
+
+GraphFactory = Callable[[], Graph]
+
+
+@pytest.fixture(scope="function", params=get_store_names())
+def make_graph(tmp_path: Path, request) -> GraphFactory:
+    store_name: Optional[str] = request.param
+
+    def make_graph() -> Graph:
+        if store_name is None:
+            graph = Graph()
+        else:
+            graph = Graph(store=store_name)
+
+        use_path = tmp_path / f"{store_name}"
+        use_path.mkdir(exist_ok=True, parents=True)
+        logging.debug("use_path = %s", use_path)
+        graph.open(f"{use_path}", create=True)
+        return graph
+
+    return make_graph
+
+
+def populate_graph(graph: Graph):
     graph.add((tarek, likes, pizza))
     graph.add((tarek, likes, cheese))
     graph.add((michel, likes, pizza))
@@ -71,7 +112,7 @@ def populate_graph(graph):
     graph.add((bob, hates, pizza))
     graph.add((bob, hates, michel))  # gasp!
 
-def depopulate_graph(graph):
+def depopulate_graph(graph: Graph):
     graph.remove((tarek, likes, pizza))
     graph.remove((tarek, likes, cheese))
     graph.remove((michel, likes, pizza))
@@ -80,17 +121,17 @@ def depopulate_graph(graph):
     graph.remove((bob, hates, pizza))
     graph.remove((bob, hates, michel))  # gasp!
 
-def test_add():
-    graph = Graph()
+def test_add(make_graph: GraphFactory):
+    graph = make_graph()
     populate_graph(graph)
 
-def test_remove():
-    graph = Graph()
+def test_remove(make_graph: GraphFactory):
+    graph = make_graph()
     populate_graph(graph)
     depopulate_graph(graph)
 
-def test_triples():
-    graph = Graph()
+def test_triples(make_graph: GraphFactory):
+    graph = make_graph()
     triples = graph.triples
     Any = None
 
@@ -133,8 +174,8 @@ def test_triples():
     depopulate_graph(graph)
     assert len(list(triples((Any, Any, Any)))) == 0
 
-def test_connected():
-    graph = Graph()
+def test_connected(make_graph: GraphFactory):
+    graph = make_graph()
     populate_graph(graph)
     assert graph.connected() is True
 
@@ -145,9 +186,9 @@ def test_connected():
 
     assert graph.connected() is False
 
-def test_graph_sub():
-    g1 = Graph()
-    g2 = Graph()
+def test_graph_sub(make_graph: GraphFactory):
+    g1 = make_graph()
+    g2 = make_graph()
 
     g1.add((tarek, likes, pizza))
     g1.add((bob, likes, cheese))
@@ -170,9 +211,9 @@ def test_graph_sub():
 
     assert (bob, likes, cheese) not in g1
 
-def test_graph_add():
-    g1 = Graph()
-    g2 = Graph()
+def test_graph_add(make_graph: GraphFactory):
+    g1 = make_graph()
+    g2 = make_graph()
 
     g1.add((tarek, likes, pizza))
     g2.add((bob, likes, cheese))
@@ -193,9 +234,9 @@ def test_graph_add():
 
     assert (bob, likes, cheese) in g1
 
-def test_graph_intersection():
-    g1 = Graph()
-    g2 = Graph()
+def test_graph_intersection(make_graph: GraphFactory):
+    g1 = make_graph()
+    g2 = make_graph()
 
     g1.add((tarek, likes, pizza))
     g1.add((michel, likes, cheese))
@@ -224,8 +265,8 @@ def test_graph_intersection():
 
     assert (michel, likes, cheese) in g1
 
-def test_guess_format_for_parse():
-    graph = Graph()
+def test_guess_format_for_parse(make_graph: GraphFactory):
+    graph = make_graph()
 
     # files
     with pytest.raises(ParserError):
@@ -295,9 +336,9 @@ def test_guess_format_for_parse():
         # this endpoint is currently not available, ignore this test.
         pass
 
-def test_parse_file_uri():
+def test_parse_file_uri(make_graph: GraphFactory):
     EG = Namespace("http://example.org/#")
-    g = Graph()
+    g = make_graph()
     g.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
     triple_set = GraphHelper.triple_set(g)
     assert triple_set == {
@@ -306,7 +347,7 @@ def test_parse_file_uri():
             (EG["Subject"], EG["predicate"], EG["ObjectR"]),
         }
 
-def test_transitive():
+def test_transitive(make_graph: GraphFactory):
     person = URIRef("ex:person")
     dad = URIRef("ex:dad")
     mom = URIRef("ex:mom")
@@ -317,7 +358,7 @@ def test_transitive():
 
     parent = URIRef("ex:parent")
 
-    g = Graph()
+    g = make_graph()
     g.add((person, parent, dad))
     g.add((person, parent, mom))
     g.add((dad, parent, mom_of_dad))

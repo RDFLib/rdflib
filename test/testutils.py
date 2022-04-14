@@ -41,6 +41,32 @@ from pathlib import PurePath, PureWindowsPath
 from nturl2path import url2pathname as nt_url2pathname
 import rdflib.compare
 
+import rdflib.plugin
+from rdflib.plugin import Plugin
+
+
+PluginT = TypeVar("PluginT")
+
+
+def get_unique_plugins(
+    type: Type[PluginT],
+) -> Dict[Type[PluginT], Set[Plugin[PluginT]]]:
+    result: Dict[Type[PluginT], Set[Plugin[PluginT]]] = {}
+    for plugin in rdflib.plugin.plugins(None, type):
+        cls = plugin.getClass()
+        plugins = result.setdefault(cls, set())
+        plugins.add(plugin)
+    return result
+
+
+def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
+    result: Set[str] = set()
+    unique_plugins = get_unique_plugins(type)
+    for type, plugin_set in unique_plugins.items():
+        result.add(next(iter(plugin_set)).name)
+    return result
+
+
 if TYPE_CHECKING:
     import typing_extensions as te
 
