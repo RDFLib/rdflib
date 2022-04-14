@@ -37,7 +37,7 @@ In most cases, passing the name of the store to the Graph constructor is enough:
 
 
 Most stores offering on-disk persistence will need to be opened before reading or writing.
-When peristing a triplestore, rather than a ConjuntiveGraph quadstore, you need to specify
+When peristing a triplestore, rather than a Dataset quadstore, you need to specify
 an identifier with which you can open the graph:
 
 .. code-block:: python
@@ -73,6 +73,7 @@ More store implementations are available in RDFLib extension projects:
  * `rdflib-sqlalchemy <https://github.com/RDFLib/rdflib-sqlalchemy>`_, which supports stored on a wide-variety of RDBMs backends, 
  * `rdflib-leveldb <https://github.com/RDFLib/rdflib-leveldb>`_ - a store on to of Google's `LevelDB <https://code.google.com/p/leveldb/>`_ key-value store. 
  * `rdflib-kyotocabinet <https://github.com/RDFLib/rdflib-kyotocabinet>`_ - a store on to of the `Kyoto Cabinet <http://fallabs.com/kyotocabinet/>`_ key-value store. 
+ * `rdflib-sqlitelsm <https://github.com/RDFLib/rdflib-sqlitelsm>`_ - a store on to of the `SQLite LSM <https://sqlite.org/src4/doc/trunk/www/lsm.wiki>`_ key-value store. 
 
 Example
 ^^^^^^^

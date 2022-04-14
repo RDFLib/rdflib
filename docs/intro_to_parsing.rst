@@ -116,8 +116,8 @@ Working with multi-graphs
 -------------------------
 
 To read and query multi-graphs, that is RDF data that is context-aware, you need to use rdflib's
-:class:`rdflib.ConjunctiveGraph` or :class:`rdflib.Dataset` class. These are extensions to :class:`rdflib.Graph` that
-know all about quads (triples + graph IDs).
+:class:`rdflib.Dataset` class. This is an extension to :class:`rdflib.Graph` that know all about
+quads (triples + graph IDs).
 
 If you had this multi-graph data file (in the ``trig`` format, using new-style ``PREFIX`` statement (not the older
 ``@prefix``):
