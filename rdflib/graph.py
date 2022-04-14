@@ -34,7 +34,7 @@ import shutil
 import tempfile
 import pathlib
 
-from io import BytesIO
+from io import StringIO
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
@@ -1117,13 +1117,9 @@ class Graph(Node):
         serializer = plugin.get(format, Serializer)(self)
         stream: IO[bytes]
         if destination is None:
-            stream = BytesIO()
-            if encoding is None:
-                serializer.serialize(stream, base=base, encoding="utf-8", **args)
-                return stream.getvalue().decode("utf-8")
-            else:
-                serializer.serialize(stream, base=base, encoding=encoding, **args)
-                return stream.getvalue()
+            stream = StringIO()
+            serializer.serialize(stream, base=base, encoding="utf-8", **args)
+            return stream.getvalue()
         if hasattr(destination, "write"):
             stream = cast(IO[bytes], destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -1151,7 +1147,7 @@ class Graph(Node):
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
-            self.serialize(None, format=format, encoding=encoding).decode(encoding),
+            self.serialize(None, format=format, encoding=encoding),
             file=out,
             flush=True,
         )

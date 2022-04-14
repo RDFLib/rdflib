@@ -111,4 +111,4 @@ class TrigSerializer(TurtleSerializer):
             self.write("}\n")
 
         self.endDocument()
-        stream.write("\n".encode("latin-1"))
+        stream.write("\n")
