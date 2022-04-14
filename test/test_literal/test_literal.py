@@ -111,11 +111,13 @@ class TestNewPT:
             ("2147483648", XSD.int, True),
             ("2147483648", XSD.integer, False),
             ("valid ASCII", XSD.string, False),
+            pytest.param("هذا رجل ثلج⛄", XSD.string, False, id="snowman-ar"),
+            ("More ASCII", None, None),
             ("Not a valid time", XSD.time, True),
             ("Not a valid date", XSD.date, True),
             ("7264666c6962", XSD.hexBinary, False),
 
-            # RDF.langString is not a recognized datatype IRI as we assing no literal value to it, though this should likely change.
+            # RDF.langString is not a recognized datatype IRI as we assign no literal value to it, though this should likely change.
             ("English string", RDF.langString, None),
 
             # The datatypes IRIs below should never be recognized.
@@ -125,11 +127,11 @@ class TestNewPT:
     def test_ill_formed_literals(
         self,
         lexical: Union[bytes, str],
-        datatype: URIRef,
+        datatype: Optional[URIRef],
         is_ill_formed: Optional[bool],
     ) -> None:
         """
-        Construction of Literal fails if the language tag is invalid.
+        ill_formed has the correct value.
         """
         lit = Literal(lexical, datatype=datatype)
         assert lit.ill_formed is is_ill_formed

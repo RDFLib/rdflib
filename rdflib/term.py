@@ -678,11 +678,10 @@ class Literal(Identifier):
         For `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
         this value will be `True` if the literal is ill formed, otherwise it
-        will be `False`. `Literal.value` (i.e. the `literal value <https://www.w3.org/TR/rdf11-concepts/#dfn-literal-value>`_) should always be defined if this value is `True`, but should not be considered reliable if this property is not `True`.
+        will be `False`. `Literal.value` (i.e. the `literal value <https://www.w3.org/TR/rdf11-concepts/#dfn-literal-value>`_) should always be defined if this property is `False`, but should not be considered reliable if this property is `True`.
 
-        If the literal's datatype is not in the set of `recognized datatype IRIs
+        If the literal's datatype is `None` or not in the set of `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
-
         """
         return self._ill_formed
 
@@ -1514,6 +1513,14 @@ def _parseBoolean(value: Union[str, bytes]) -> bool:
 
 
 def _well_formed_by_value(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    This function is used as the fallback for detecting ill-typed/ill-formed
+    literals and operates on the asumption that if a value (i.e.
+    `Literal.value`) could be determined for a Literal then it is not
+    ill-typed/ill-formed.
+
+    This function will be called with `Literal.lexical` and `Literal.value` as arguments.
+    """
     return value is not None
 
 
