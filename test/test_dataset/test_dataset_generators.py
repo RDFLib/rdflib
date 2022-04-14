@@ -11,11 +11,15 @@ from test.data import (
 )
 
 from rdflib import Dataset, URIRef
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 timblcardn3 = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")).read()
 
 
-def add_stuff(graph):
+timblcardnquads = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.nquads")).read()
+
+
+def populate_graph(graph):
     graph.add((tarek, likes, pizza))
     graph.add((tarek, likes, cheese))
     graph.add((tarek, likes, bob))
@@ -29,46 +33,142 @@ def add_stuff(graph):
     graph.add((bob, likes, tarek))
 
 
+def test_unique_subjects_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.subjects())) == 11
+    assert len(list(graph.subjects(unique=True))) == 3
+
+
 def test_unique_subjects():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([sub for sub in graph.subjects()]) == 11
-    assert len([sub for sub in graph.subjects(unique=True)]) == 3
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.subjects())) == 11
+    assert len(list(ds.subjects(unique=True))) == 3
+
+
+def test_unique_subjects_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.subjects())) == 11
+    assert len(list(ds.subjects(unique=True))) == 3
+
+
+def test_unique_predicates_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.predicates())) == 11
+    assert len(list(graph.predicates(unique=True))) == 2
 
 
 def test_unique_predicates():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([pred for pred in graph.predicates()]) == 11
-    assert len([pred for pred in graph.predicates(unique=True)]) == 2
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.predicates())) == 11
+    assert len(list(ds.predicates(unique=True))) == 2
+
+
+def test_unique_predicates_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.predicates())) == 11
+    assert len(list(ds.predicates(unique=True))) == 2
+
+
+def test_unique_objects_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.objects())) == 11
+    assert len(list(graph.objects(unique=True))) == 5
 
 
 def test_unique_objects():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([obj for obj in graph.objects()]) == 11
-    assert len([obj for obj in graph.objects(unique=True)]) == 5
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.objects())) == 11
+    assert len(list(ds.objects(unique=True))) == 5
+
+
+def test_unique_objects_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.objects())) == 11
+    assert len(list(ds.objects(unique=True))) == 5
+
+
+def test_unique_subject_predicates_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.subject_predicates())) == 11
+    assert len(list(graph.subject_predicates(unique=True))) == 4
 
 
 def test_unique_subject_predicates():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([sub for sub in graph.subject_predicates()]) == 11
-    assert len([sub for sub in graph.subject_predicates(unique=True)]) == 4
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.subject_predicates())) == 11
+    assert len(list(ds.subject_predicates(unique=True))) == 4
+
+
+def test_unique_subject_predicates_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.subject_predicates())) == 11
+    assert len(list(ds.subject_predicates(unique=True))) == 4
+
+
+def test_unique_predicate_objects_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.predicate_objects())) == 11
+    assert len(list(graph.subject_objects())) == 11
+    assert len(list(graph.predicate_objects(unique=True))) == 7
 
 
 def test_unique_predicate_objects():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([pred for pred in graph.predicate_objects()]) == 11
-    assert len([pred for pred in graph.predicate_objects(unique=True)]) == 7
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.predicate_objects())) == 11
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.predicate_objects(unique=True))) == 7
+
+
+def test_unique_predicate_objects_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.predicate_objects())) == 11
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.predicate_objects(unique=True))) == 7
+
+
+def test_unique_subject_objects_default_graph():
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+    populate_graph(graph)
+    assert len(list(graph.subject_objects())) == 11
+    assert len(list(graph.subject_objects())) == 11
+    assert len(list(graph.subject_objects(unique=True))) == 11
 
 
 def test_unique_subject_objects():
-    graph = Dataset()
-    add_stuff(graph)
-    assert len([obj for obj in graph.subject_objects()]) == 11
-    assert len([obj for obj in graph.subject_objects(unique=True)]) == 11
+    ds = Dataset()
+    populate_graph(ds)
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.subject_objects(unique=True))) == 11
+
+
+def test_unique_subject_objects_union():
+    ds = Dataset(default_union=True)
+    populate_graph(ds)
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.subject_objects())) == 11
+    assert len(list(ds.subject_objects(unique=True))) == 11
 
 
 no_of_statements_in_card = 86
@@ -77,28 +177,44 @@ no_of_unique_predicates = 58
 no_of_unique_objects = 62
 
 
-def test_parse_berners_lee_card_into_dataset_default():
+def test_parse_berners_lee_card_into_dataset():
 
-    # Workaround pending completion of identifier-as-context work
-    # current W-I-P allows parsing direct to Dataset default context
-    # and doesn't require the dubious creation of a graph with the
-    # same context identifier as the Dataset default context.
+    ds = Dataset()
 
-    # graph = Dataset()
+    ds.parse(data=timblcardnquads, format="nquads")
+    assert len(list(ds.subjects())) == no_of_statements_in_card
+    assert len(list(ds.subjects(unique=True))) == no_of_unique_subjects
+    assert len(list(ds.predicates(unique=True))) == no_of_unique_predicates
+    assert len(list(ds.objects(unique=True))) == no_of_unique_objects
 
-    g = Dataset()
-    graph = g.graph(URIRef("urn:x-rdflib:default"))
 
-    graph.parse(data=timblcardn3, format="n3")
+def test_parse_berners_lee_card_into_dataset_default_graph():
+
+    ds = Dataset()
+    graph = ds.graph(DATASET_DEFAULT_GRAPH_ID)
+
+    graph.parse(data=timblcardnquads, format="nquads")
     assert len(list(graph.subjects())) == no_of_statements_in_card
     assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects
     assert len(list(graph.predicates(unique=True))) == no_of_unique_predicates
     assert len(list(graph.objects(unique=True))) == no_of_unique_objects
 
 
-def test_parse_berners_lee_card_into_dataset_context():
-    g = Dataset()
-    graph = g.graph()
+def test_parse_berners_lee_card_into_dataset_default_union():
+
+    ds = Dataset(default_union=True)
+
+    ds.parse(data=timblcardnquads, format="nquads")
+    assert len(list(ds.subjects())) == no_of_statements_in_card
+    assert len(list(ds.subjects(unique=True))) == no_of_unique_subjects
+    assert len(list(ds.predicates(unique=True))) == no_of_unique_predicates
+    assert len(list(ds.objects(unique=True))) == no_of_unique_objects
+
+
+def test_parse_berners_lee_card_into_dataset_graph():
+    ds = Dataset()
+    graph = ds.graph()
+
     graph.parse(data=timblcardn3, format="n3")
     assert len(list(graph.subjects())) == no_of_statements_in_card
     assert len(list(graph.subjects(unique=True))) == no_of_unique_subjects

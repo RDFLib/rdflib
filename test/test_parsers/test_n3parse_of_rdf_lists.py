@@ -1,3 +1,4 @@
+import unittest
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 
@@ -26,14 +27,15 @@ _:list3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/199
 """
 
 
-class TestOWLCollectionTest:
+class OWLCollectionTest(unittest.TestCase):
     def test_collection_rdfxml(self):
         g = Graph().parse(data=DATA, format="nt")
         g.namespace_manager.bind("owl", URIRef("http://www.w3.org/2002/07/owl#"))
         s = g.serialize(format="pretty-xml")
+        # TODO: test serialization
 
 
-class TestListTest:
+class ListTest(unittest.TestCase):
     def test_false_element(self):
         g = Graph().parse(data=DATA_FALSE_ELEMENT, format="nt")
         assert len(list(g.items(URIRef("http://example.org/#ThreeMemberList")))) == 3

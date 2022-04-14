@@ -1,11 +1,11 @@
 from unittest import TestCase
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 
 
 class EntityTest(TestCase):
     def test_turtle_namespace_prefixes(self):
 
-        g = ConjunctiveGraph()
+        g = Dataset()
         n3 = """
         @prefix _9: <http://data.linkedmdb.org/resource/movie/> .
         @prefix p_9: <urn:test:> .
@@ -22,7 +22,7 @@ class EntityTest(TestCase):
         turtle = g.serialize(format="turtle")
 
         # Check round-tripping, just for kicks.
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(data=turtle, format="turtle")
         # Shouldn't have got to here
         s = g.serialize(format="turtle", encoding="latin-1")

@@ -7,6 +7,7 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
+import unittest
 import pytest
 import logging
 from pathlib import Path
@@ -19,7 +20,7 @@ from rdflib import Graph
 from rdflib.util import guess_format
 
 
-class TestFileParserGuessFormat:
+class FileParserGuessFormatTest(unittest.TestCase):
     def test_guess_format(self) -> None:
         assert guess_format("example.trix") == "trix"
         assert guess_format("local-file.jsonld") == "json-ld"

@@ -1,3 +1,4 @@
+import unittest
 import pickle
 
 from rdflib.term import Literal
@@ -22,7 +23,7 @@ cases = [
 ]
 
 
-class TestUtil:
+class UtilTestCase(unittest.TestCase):
     def test_to_bits_from_bits_round_trip(self):
         np = NodePickler()
 

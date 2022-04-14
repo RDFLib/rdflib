@@ -1,4 +1,4 @@
-from rdflib import Graph
+from rdflib import Dataset
 from rdflib.compare import isomorphic
 import json
 
@@ -38,13 +38,13 @@ def test_wrap():
     data = json.loads(_data)
     data = walk(data)
     data = json.dumps(data)  # wasteful
-    g1 = Graph()
+    g1 = Dataset()
     g1.parse(data=data, format="json-ld")
 
     # Desired behavior
     data = json.loads(_data)
     data = walk(data)
-    g2 = Graph()
+    g2 = Dataset()
     g2.parse(data=data, format="json-ld")
 
     assert isomorphic(g1, g2)

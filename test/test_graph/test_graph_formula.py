@@ -4,7 +4,7 @@ from tempfile import mkdtemp, mkstemp
 
 import pytest
 from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
-from rdflib.graph import QuotedGraph, ConjunctiveGraph
+from rdflib.graph import QuotedGraph, Dataset
 
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
@@ -22,7 +22,7 @@ _:foo a rdfs:Class.
 
 def checkFormulaStore(store="default", configString=None):
     try:
-        g = ConjunctiveGraph(store=store)
+        g = Dataset(store=store)
     except ImportError:
         pytest.skip("Dependencies for store '%s' not available!" % store)
 
@@ -43,13 +43,13 @@ def checkFormulaStore(store="default", configString=None):
             formulaB = o
 
         assert type(formulaA) == QuotedGraph and type(formulaB) == QuotedGraph
-        # a = URIRef('http://test/a')
+        a = URIRef('http://test/a')
         b = URIRef("http://test/b")
         c = URIRef("http://test/c")
         d = URIRef("http://test/d")
         v = Variable("y")
 
-        universe = ConjunctiveGraph(g.store)
+        universe = Dataset(g.store)
 
         # test formula as terms
         assert len(list(universe.triples((formulaA, implies, formulaB)))) == 1
@@ -76,18 +76,15 @@ def checkFormulaStore(store="default", configString=None):
         # assert len(list(universe.contexts((a, d, c)))) == 1, \
         #                     [ct for ct in universe.contexts((a, d, c))]
 
-        # FAIL: test.test_graph_formula.testFormulaStores('SQLite',)
-        # --------------------------------------------------------------------
-        # Traceback (most recent call last):
-        #   File ".../site-packages/nose/case.py", line 197, in runTest
-        #     self.test(*self.arg)
-        #   File ".../test_graph_formula.py", line 80, in testFormulaStore
-        #     [ct for ct in universe.contexts((a, d, c))]
-        # AssertionError: [
-        #     <Graph identifier=N52fd4417ef7641089b2e4045ef19ad87
-        #        (<class 'rdflib.graph.Graph'>)>,
-        #     <Graph identifier=_:Formula16 (<class 'rdflib.graph.Graph'>)>
-        #     ]
+        # (a, d, c) is in both the formula and the default graph but for a 
+        # Dataset the latter is not considered a context
+
+        if store == "SQLiteDBStore":  # The only Store that handles this correctly
+            assert len(list(universe.contexts((a, d, c)))) == 1
+        else:
+            assert len(list(universe.contexts((a, d, c)))) == 0
+
+        assert len(list(universe.default_graph.triples((a, d, c)))) == 1
 
         # Remove test cases
         universe.remove((None, implies, None))
@@ -103,7 +100,7 @@ def checkFormulaStore(store="default", configString=None):
         universe.remove((None, RDF.type, RDFS.Class))
 
         # remove_context tests
-        universe.remove_context(formulaB)
+        universe.remove_graph(formulaB)
         assert len(list(universe.triples((None, RDF.type, None)))) == 0
         assert len(universe) == 1
         assert len(formulaB) == 0

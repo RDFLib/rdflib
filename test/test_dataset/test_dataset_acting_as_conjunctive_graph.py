@@ -1,14 +1,14 @@
 """
-Tests for ConjunctiveGraph that do not depend on the underlying store
+Tests for Dataset with default_union=True (partly mimicking the old ConjunctiveGraph)
+that do not depend on the underlying store
 """
+
 
 import pytest
 
-from rdflib import ConjunctiveGraph, Graph
-from rdflib.term import Identifier, URIRef, BNode
+from rdflib import Dataset, Graph
 from rdflib.parser import StringInputSource
-from os import path
-
+from rdflib.term import BNode, Identifier, URIRef
 
 DATA = """
 <http://example.org/record/1> a <http://xmlns.com/foaf/0.1/Document> .
@@ -19,43 +19,43 @@ PUBLIC_ID = "http://example.org/record/1"
 
 def test_bnode_publicid():
 
-    g = ConjunctiveGraph()
+    g = Dataset(default_union=True)
     b = BNode()
     data = "<d:d> <e:e> <f:f> ."
     print("Parsing %r into %r" % (data, b))
     g.parse(data=data, format="turtle", publicID=b)
 
-    triples = list(g.get_context(b).triples((None, None, None)))
+    triples = list(g.graph(b).triples((None, None, None)))
     if not triples:
         raise Exception("No triples found in graph %r" % b)
 
     u = URIRef(b)
 
-    triples = list(g.get_context(u).triples((None, None, None)))
+    triples = list(g.graph(u).triples((None, None, None)))
     if triples:
         raise Exception("Bad: Found in graph %r: %r" % (u, triples))
 
 
 def test_quad_contexts():
-    g = ConjunctiveGraph()
+    g = Dataset(default_union=True)
     a = URIRef("urn:a")
     b = URIRef("urn:b")
-    g.get_context(a).add((a, a, a))
+    g.graph(a).add((a, a, a))
     g.addN([(b, b, b, b)])
 
-    assert set(g) == set([(a, a, a), (b, b, b)])
+    assert set(g) == set([(a, a, a, a), (b, b, b, b)])
+
     for q in g.quads():
-        assert isinstance(q[3], Graph)
+        assert isinstance(q[3], URIRef)
 
 
 def get_graph_ids_tests():
     def check(kws):
-        cg = ConjunctiveGraph()
+        cg = Dataset(default_union=True)
         cg.parse(**kws)
 
         for g in cg.contexts():
-            gid = g.identifier
-            assert isinstance(gid, Identifier)
+            assert isinstance(g, Identifier)
 
     yield check, dict(data=DATA, publicID=PUBLIC_ID, format="turtle")
 
