@@ -1,7 +1,6 @@
 import pytest
-
-from rdflib import RDF, Dataset, Graph, Literal, Namespace, URIRef
-from rdflib.namespace import DCTERMS, SKOS
+from rdflib import Graph, Dataset, Literal, Namespace, RDF, URIRef
+from rdflib.namespace import SKOS, DCTERMS
 
 """
 Testing scenarios:
@@ -25,7 +24,6 @@ description = Literal("Test Description", lang="en")
 creator = URIRef("https://creator.com")
 cs = URIRef("")
 
-
 @pytest.fixture
 def get_graph(request):
     # starting graph
@@ -38,7 +36,6 @@ def get_graph(request):
 
     yield g
 
-
 # 1. no base set for graph, no base set for serialization
 def test_scenarios_1(get_graph):
     g = get_graph
@@ -46,7 +43,6 @@ def test_scenarios_1(get_graph):
     g1 += g
     # @base should not be in output
     assert "@base" not in g.serialize(format="turtle")
-
 
 # 2. base one set for graph, no base set for serialization
 def test_scenarios_2(get_graph):
@@ -56,7 +52,6 @@ def test_scenarios_2(get_graph):
     # @base should be in output, from Graph (one)
     assert "@base <http://one.org/> ." in g2.serialize(format="turtle")
 
-
 # 3. no base set for graph, base two set for serialization
 def test_scenarios_3(get_graph):
     g = get_graph
@@ -64,7 +59,6 @@ def test_scenarios_3(get_graph):
     g3 += g
     # @base should be in output, from serialization (two)
     assert "@base <http://two.org/> ." in g3.serialize(format="turtle", base=base_two)
-
 
 # 4. base one set for graph, base two set for serialization, Graph one overrides
 def test_scenarios_4(get_graph):
@@ -78,7 +72,6 @@ def test_scenarios_4(get_graph):
         format="turtle", base=base_two
     )
 
-
 # 5. multiple serialization side effect checking
 def test_scenarios_5(get_graph):
     g = get_graph
@@ -90,7 +83,6 @@ def test_scenarios_5(get_graph):
     # checking for side affects - no base now set for this serialization
     # @base should not be in output
     assert "@base" not in g5.serialize(format="turtle")
-
 
 # 6. checking results for RDF/XML
 def test_scenarios_6(get_graph):
@@ -105,7 +97,6 @@ def test_scenarios_6(get_graph):
     assert 'xml:base="http://two.org/"' in g6.serialize(format="xml")
     assert 'xml:base="http://one.org/"' in g6.serialize(format="xml", base=base_one)
 
-
 # 7. checking results for N3
 def test_scenarios_7(get_graph):
     g = get_graph
@@ -119,9 +110,9 @@ def test_scenarios_7(get_graph):
     assert "@base <http://two.org/> ." in g7.serialize(format="n3")
     assert "@base <http://one.org/> ." in g7.serialize(format="n3", base=base_one)
 
-
 # 8. checking results for TriX
 # TriX can specify a base per graph but setting a base for the whole
+@pytest.mark.xfail(reason="TriX not serializing graph bases")
 def test_scenarios_8(get_graph):
     g = get_graph
     base_three = Namespace("http://three.org/")

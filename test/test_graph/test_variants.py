@@ -24,7 +24,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
@@ -48,7 +48,7 @@ class GraphAsserts:
     quad_count: Optional[int] = None
     exact_match: bool = False
 
-    def check(self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph) -> None:
+    def check(self, first_graph: Optional[Dataset], graph: Dataset) -> None:
         if self.quad_count is not None:
             assert self.quad_count == len(list(graph.quads()))
         if first_graph is not None and self.exact_match:
@@ -191,13 +191,13 @@ def test_variants(graph_variant: GraphVariants) -> None:
     logging.debug("graph_variant = %s", graph_variant)
     public_id = URIRef(f"example:{graph_variant.key}")
     assert len(graph_variant.variants) > 0
-    first_graph: Optional[ConjunctiveGraph] = None
+    first_graph: Optional[Dataset] = None
     first_path: Optional[Path] = None
     for variant_key, variant_path in graph_variant.variants.items():
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
         assert format is not None, f"could not determine format for {variant_path.name}"
-        graph = ConjunctiveGraph()
+        graph = Dataset(default_union=True)
         graph.parse(variant_path, format=format, publicID=public_id)
         # Stripping data types as different parsers (e.g. hext) have different
         # opinions of when a bare string is of datatype XSD.string or not.

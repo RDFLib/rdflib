@@ -1,12 +1,13 @@
 import collections
 import itertools
 import datetime
-
+from warnings import warn
 import isodate
 
 from rdflib.compat import Mapping, MutableMapping
 from rdflib.namespace import NamespaceManager
-from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
+from rdflib import Variable, BNode, URIRef, Literal
+from rdflib.graph import Dataset, Graph
 from rdflib.term import Node
 
 from rdflib.plugins.sparql.parserutils import CompValue
@@ -232,12 +233,19 @@ class QueryContext(object):
         if initBindings:
             self.bindings.update(initBindings)
 
-        if isinstance(graph, ConjunctiveGraph):
+        if isinstance(graph, Dataset):
+            if (
+                rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION
+                and not graph.default_union
+            ):
+                warn(
+                    f"DEFAULT_UNION MISMATCH - SPARQL_DEFAULT_GRAPH_UNION is {rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION} DATASET_DEFAULT_UNION is {graph.default_union}"
+                )
             self._dataset = graph
             if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
                 self.graph = self.dataset
             else:
-                self.graph = self.dataset.default_context
+                self.graph = self.dataset.default_graph
         else:
             self._dataset = None
             self.graph = graph
@@ -269,9 +277,8 @@ class QueryContext(object):
         """ "current dataset"""
         if self._dataset is None:
             raise Exception(
-                "You performed a query operation requiring "
-                + "a dataset (i.e. ConjunctiveGraph), but "
-                + "operating currently on a single graph."
+                "You performed a query operation requiring a dataset "
+                + "but are operating currently on a single graph."
             )
         return self._dataset
 
@@ -300,7 +307,7 @@ class QueryContext(object):
             # we are not loading - if we already know the graph
             # being "loaded", just add it to the default-graph
             if default:
-                self.graph += self.dataset.get_context(source)
+                self.graph += self.dataset.graph(source)
         else:
 
             if default:

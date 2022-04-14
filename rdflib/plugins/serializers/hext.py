@@ -4,7 +4,7 @@ See <https://github.com/ontola/hextuples> for details about the format.
 """
 from typing import IO, Optional, Type, Union
 import json
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Dataset, DATASET_DEFAULT_GRAPH_ID, Graph
 from rdflib.term import Literal, URIRef, Node, BNode
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, XSD
@@ -18,21 +18,21 @@ class HextuplesSerializer(Serializer):
     Serializes RDF graphs to NTriples format.
     """
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
-        self.default_context: Optional[Node]
+    def __init__(self, store: Union[Graph, Dataset]):
+        self.default_graph: Optional[Node]
         self.graph_type: Type[Graph]
-        if isinstance(store, ConjunctiveGraph):
-            self.graph_type = ConjunctiveGraph
-            self.contexts = list(store.contexts())
-            if store.default_context:
-                self.default_context = store.default_context
-                self.contexts.append(store.default_context)
+        if isinstance(store, Dataset):
+            self.graph_type = Dataset
+            self.graphs = list(store.graphs())
+            if store.default_graph:
+                self.default_graph = store.default_graph
+                self.graphs.append(store.default_graph)
             else:
-                self.default_context = None
+                self.default_graph = None
         else:
             self.graph_type = Graph
-            self.contexts = [store]
-            self.default_context = None
+            self.graphs = [store]
+            self.default_graph = None
 
         Serializer.__init__(self, store)
 
@@ -61,13 +61,13 @@ class HextuplesSerializer(Serializer):
                 "Hextuple serialization can't (yet) handle formula-aware stores"
             )
 
-        for context in self.contexts:
-            for triple in context:
-                hl = self._hex_line(triple, context)
+        for graph in self.graphs:
+            for triple in graph:
+                hl = self._hex_line(triple, graph)
                 if hl is not None:
                     stream.write(hl.encode())
 
-    def _hex_line(self, triple, context):
+    def _hex_line(self, triple, graph):
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects
@@ -113,7 +113,7 @@ class HextuplesSerializer(Serializer):
                         value,
                         datatype,
                         language,
-                        self._context(context),
+                        self._contexturi(graph),
                     ]
                 )
                 + "\n"
@@ -129,12 +129,12 @@ class HextuplesSerializer(Serializer):
         else:
             return None
 
-    def _context(self, context):
+    def _contexturi(self, graph):
         if self.graph_type == Graph:
             return ""
-        if context.identifier == "urn:x-rdflib:default":
+        if graph.identifier == DATASET_DEFAULT_GRAPH_ID:
             return ""
-        elif context is not None and self.default_context is not None:
-            if context.identifier == self.default_context.identifier:
+        elif graph.identifier is not None and self.default_graph is not None:
+            if graph.identifier == self.default_graph.identifier:
                 return ""
-        return context.identifier
+        return graph.identifier

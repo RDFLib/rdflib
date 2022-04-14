@@ -6,7 +6,7 @@ from urllib.request import urlopen
 
 import pytest
 
-from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
+from rdflib import BNode, Dataset, Graph, Literal, URIRef
 
 HOST = "http://localhost:3031"
 DB = "/db/"
@@ -33,31 +33,49 @@ except:
 
 
 @pytest.fixture
-def get_graph():
+def get_dataset():
     longMessage = True
-    graph = ConjunctiveGraph("SPARQLUpdateStore")
+    dataset = Dataset("SPARQLUpdateStore")
 
     root = HOST + DB
-    graph.open((root + "sparql", root + "update"))
+    dataset.open((root + "sparql", root + "update"))
 
     # clean out the store
-    for c in graph.contexts():
+    for c in dataset.graphs():
         c.remove((None, None, None))
         assert len(c) == 0
 
-    yield graph
+    yield dataset
 
-    graph.close()
+    dataset.close()
 
 
-def test_simple_graph(get_graph):
-    graph = get_graph
-    g = graph.get_context(graphuri)
+@pytest.fixture()
+def get_datasetunion():
+    longMessage = True
+    dataset = Dataset("SPARQLUpdateStore", default_union=True)
+
+    root = HOST + DB
+    dataset.open((root + "sparql", root + "update"))
+
+    # clean out the store
+    for c in dataset.graphs():
+        c.remove((None, None, None))
+        assert len(c) == 0
+
+    yield dataset
+
+    dataset.close()
+
+
+def test_simple_graph(get_dataset):
+    dataset = get_dataset
+    g = dataset.graph(graphuri)
     g.add((tarek, likes, pizza))
     g.add((bob, likes, pizza))
     g.add((bob, likes, cheese))
 
-    g2 = graph.get_context(othergraphuri)
+    g2 = dataset.graph(othergraphuri)
     g2.add((michel, likes, pizza))
 
     assert len(g) == 3, "graph contains 3 triples"
@@ -88,11 +106,11 @@ def test_simple_graph(get_graph):
     assert len(list(r)) == 1, "only bob likes pizza"
 
 
-def test_conjunctive_default(get_graph):
-    graph = get_graph
-    g = graph.get_context(graphuri)
+def test_dataset_default(get_datasetunion):
+    dataset = get_datasetunion
+    g = dataset.graph(graphuri)
     g.add((tarek, likes, pizza))
-    g2 = graph.get_context(othergraphuri)
+    g2 = dataset.graph(othergraphuri)
     g2.add((bob, likes, pizza))
     g.add((tarek, hates, cheese))
 
@@ -109,58 +127,56 @@ def test_conjunctive_default(get_graph):
     # Fuseki/TDB has a flag for specifying that the default graph
     # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
     assert (
-        len(graph) == 3
-    ), "default union graph should contain three triples but contains:\n%s" % list(
-        graph
-    )
+        len(dataset) == 3
+    ), f"default union graph should contain three triples but contains:{len(list(dataset))}"
 
-    r = graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
+    r = dataset.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
     assert len(list(r)) == 2, "two people like pizza"
 
-    r = graph.query(
+    r = dataset.query(
         "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
         initBindings={"s": tarek},
     )
     assert len(list(r)) == 1, "i was asking only about tarek"
 
-    r = graph.triples((tarek, likes, pizza))
+    r = dataset.triples((tarek, likes, pizza))
     assert len(list(r)) == 1, "i was asking only about tarek"
 
-    r = graph.triples((tarek, likes, cheese))
+    r = dataset.triples((tarek, likes, cheese))
     assert len(list(r)) == 0, "tarek doesn't like cheese"
 
     g2.remove((bob, likes, pizza))
 
-    r = graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
+    r = dataset.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
     assert len(list(r)) == 1, "only tarek likes pizza"
 
 
-def testU_update(get_graph):
-    graph = get_graph
-    graph.update(
+def test_update(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT DATA { GRAPH <urn:example:graph> { <urn:example:michel> <urn:example:likes> <urn:example:pizza> . } }"
     )
 
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     assert 1 == len(g), "graph contains 1 triples"
 
 
-def testU_update_with_initns(get_graph):
-    graph = get_graph
-    graph.update(
+def test_update_with_initns(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
         initNs={"ns": URIRef("urn:example:")},
     )
 
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     assert set(g.triples((None, None, None))) == set(
         [(michel, likes, pizza)]
     ), "only michel likes pizza"
 
 
-def test_update_with_init_bindings(get_graph):
-    graph = get_graph
-    graph.update(
+def test_update_with_initbindings(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT { GRAPH <urn:example:graph> { ?a ?b ?c . } } WherE { }",
         initBindings={
             "a": URIRef("urn:example:michel"),
@@ -169,42 +185,42 @@ def test_update_with_init_bindings(get_graph):
         },
     )
 
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     assert set(g.triples((None, None, None))) == set(
         [(michel, likes, pizza)]
     ), "only michel likes pizza"
 
 
-def test_update_with_blank_node(get_graph):
-    graph = get_graph
-    graph.update(
+def test_update_with_blank_node(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT DATA { GRAPH <urn:example:graph> { _:blankA <urn:example:type> <urn:example:Blank> } }"
     )
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     for t in g.triples((None, None, None)):
         assert isinstance(t[0], BNode)
         assert t[1].n3() == "<urn:example:type>"
         assert t[2].n3() == "<urn:example:Blank>"
 
 
-def test_updateW_with_blank_node_serialize_and_parse(get_graph):
-    graph = get_graph
-    graph.update(
+def test_update_with_blank_node_serialize_and_parse(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT DATA { GRAPH <urn:example:graph> { _:blankA <urn:example:type> <urn:example:Blank> } }"
     )
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     string = g.serialize(format="ntriples")
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
     except Exception as e:
         raised = True
-    assert raised is False, "Exception raised when parsing: " + string
+    assert raised is False, f"Exception raised when parsing: {string}"
 
 
-def test_multiple_update_with_init_bindings(get_graph):
-    graph = get_graph
-    graph.update(
+def test_multiple_update_with_initbindings(get_datasetunion):
+    dataset = get_datasetunion
+    dataset.update(
         "INSERT { GRAPH <urn:example:graph> { ?a ?b ?c . } } WHERE { };"
         "INSERT { GRAPH <urn:example:graph> { ?d ?b ?c . } } WHERE { }",
         initBindings={
@@ -215,15 +231,15 @@ def test_multiple_update_with_init_bindings(get_graph):
         },
     )
 
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     assert set(g.triples((None, None, None))) == set(
         [(michel, likes, pizza), (bob, likes, pizza)]
     ), "michel and bob like pizza"
 
 
-def test_named_graph_update(get_graph):
-    graph = get_graph
-    g = graph.get_context(graphuri)
+def test_named_graph_update(get_dataset):
+    dataset = get_dataset
+    g = dataset.graph(graphuri)
     r1 = "INSERT DATA { <urn:example:michel> <urn:example:likes> <urn:example:pizza> }"
     g.update(r1)
     assert set(g.triples((None, None, None))) == set(
@@ -318,9 +334,9 @@ def test_named_graph_update(get_graph):
     assert values == set([bob, michel])
 
 
-def test_named_graph_update_with_init_bindings(get_graph):
-    graph = get_graph
-    g = graph.get_context(graphuri)
+def test_named_graph_update_with_initbindings(get_dataset):
+    dataset = get_dataset
+    g = dataset.graph(graphuri)
     r = "INSERT { ?a ?b ?c } WHERE {}"
     g.update(r, initBindings={"a": michel, "b": likes, "c": pizza})
     assert set(g.triples((None, None, None))) == set(
@@ -328,24 +344,24 @@ def test_named_graph_update_with_init_bindings(get_graph):
     ), "only michel likes pizza"
 
 
-def test_empty_named_graph(get_graph):
-    graph = get_graph
+def test_empty_named_graph(get_dataset):
+    dataset = get_dataset
     empty_graph_iri = "urn:empty-graph-1"
-    graph.update("CREATE GRAPH <%s>" % empty_graph_iri)
+    dataset.update("CREATE GRAPH <%s>" % empty_graph_iri)
     named_graphs = [
-        str(r[0]) for r in graph.query("SELECT ?name WHERE { GRAPH ?name {} }")
+        str(r[0]) for r in dataset.query("SELECT ?name WHERE { GRAPH ?name {} }")
     ]
     # Some SPARQL endpoint backends (like TDB) are not able to find empty named graphs
     # (at least with this query)
     if empty_graph_iri in named_graphs:
-        assert empty_graph_iri in [str(g.identifier) for g in graph.contexts()]
+        assert empty_graph_iri in [str(g) for g in dataset.contexts()]
 
 
-def test_empty_literal(get_graph):
-    graph = get_graph
+def test_empty_literal(get_dataset):
+    dataset = get_dataset
     # test for https://github.com/RDFLib/rdflib/issues/457
     # also see test_issue457.py which is sparql store independent!
-    g = graph.get_context(graphuri)
+    g = dataset.graph(graphuri)
     g.add(
         (
             URIRef("http://example.com/s"),

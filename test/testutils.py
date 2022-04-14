@@ -32,7 +32,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHan
 import email.message
 import unittest
 
-from rdflib import BNode, Graph, ConjunctiveGraph
+from rdflib import BNode, Graph, Dataset
 from rdflib.term import Identifier, Literal, Node, URIRef
 from unittest.mock import MagicMock, Mock
 from urllib.error import HTTPError
@@ -126,10 +126,10 @@ class GraphHelper:
 
     @classmethod
     def quad_set(
-        cls, graph: ConjunctiveGraph, exclude_blanks: bool = False
+        cls, graph: Dataset, exclude_blanks: bool = False
     ) -> IdentifierQuadSet:
         """
-        Extracts the set of all quads from the supplied ConjunctiveGraph.
+        Extracts the set of all quads from the supplied Dataset.
         """
         result = set()
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
@@ -150,9 +150,9 @@ class GraphHelper:
     ) -> Union[IdentifierQuadSet, IdentifierTripleSet]:
         """
         Extracts quad or triple sets depending on whether or not the graph is
-        ConjunctiveGraph or a normal Graph.
+        Dataset or a normal Graph.
         """
-        if isinstance(graph, ConjunctiveGraph):
+        if isinstance(graph, Dataset):
             return cls.quad_set(graph, exclude_blanks)
         return cls.triple_set(graph, exclude_blanks)
 
@@ -169,7 +169,7 @@ class GraphHelper:
 
     @classmethod
     def assert_quad_sets_equals(
-        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph, exclude_blanks: bool = False
+        cls, lhs: Dataset, rhs: Dataset, exclude_blanks: bool = False
     ) -> None:
         """
         Asserts that the quads sets in the two graphs are equal.

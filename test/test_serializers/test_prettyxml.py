@@ -4,7 +4,7 @@ from rdflib.namespace import RDF, RDFS
 from io import BytesIO
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset, Graph, DATASET_DEFAULT_GRAPH_ID
 
 
 class SerializerTestBase(object):
@@ -12,7 +12,7 @@ class SerializerTestBase(object):
     repeats = 8
 
     def setup(self):
-        graph = ConjunctiveGraph()
+        graph = Dataset()
         graph.parse(data=self.testContent, format=self.testContentFormat)
         self.sourceGraph = graph
 
@@ -43,19 +43,19 @@ _blank = BNode()
 
 def _mangled_copy(g):
     "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
-    gcopy = ConjunctiveGraph()
+    gcopy = Dataset()
 
     def isbnode(v):
         return isinstance(v, BNode)
 
-    for s, p, o in g:
+    for s, p, o, c in g:
         if isbnode(s):
             s = _blank
         if isbnode(p):
             p = _blank
         if isbnode(o):
             o = _blank
-        gcopy.add((s, p, o))
+        gcopy.add((s, p, o, DATASET_DEFAULT_GRAPH_ID if c is None else c))
     return gcopy
 
 
@@ -69,7 +69,7 @@ def serialize(sourceGraph, makeSerializer, getValue=True, extra_args={}):
 def serialize_and_load(sourceGraph, makeSerializer):
     stream = serialize(sourceGraph, makeSerializer, False)
     stream.seek(0)
-    reparsedGraph = ConjunctiveGraph()
+    reparsedGraph = Dataset()
     reparsedGraph.parse(stream, format="xml")
     return reparsedGraph
 
@@ -173,7 +173,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
 
     def test_pretty_xmlliteral(self):
         # given:
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.add(
             (
                 BNode(),
@@ -194,7 +194,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
 
     def test_pretty_broken_xmlliteral(self):
         # given:
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.add((BNode(), RDF.value, Literal("""<p """, datatype=RDF.XMLLiteral)))
         # when:
         xmlrepr = g.serialize(format="pretty-xml")
@@ -206,7 +206,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
 
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
-    for s, p, o in graph:
+    for s, p, o, c in graph:
         if p in predicates:
             someTrue = [isinstance(o, t) for t in types]
             assert (

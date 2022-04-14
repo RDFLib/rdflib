@@ -3,6 +3,7 @@ from threading import Thread
 from os.path import exists, abspath
 from os import mkdir
 from rdflib.store import Store, VALID_STORE, NO_STORE
+from rdflib.graph import Graph
 from rdflib.term import URIRef
 from urllib.request import pathname2url
 
@@ -508,14 +509,22 @@ class BerkeleyDB(Store):
 
         if triple:
             s, p, o = triple
-            s = _to_string(s)
-            p = _to_string(p)
-            o = _to_string(o)
-            contexts = self.__indicies[0].get(bb("%s^%s^%s^%s^" % ("", s, p, o)))
-            if contexts:
-                for c in contexts.split("^".encode("latin-1")):
-                    if c:
-                        yield _from_string(c)
+            if s is not None and p is not None and o is not None:
+                s = _to_string(s)
+                p = _to_string(p)
+                o = _to_string(o)
+                contexts = self.__indicies[0].get(bb("%s^%s^%s^%s^" % ("", s, p, o)))
+                if contexts:
+                    for c in contexts.split("^".encode("latin-1")):
+                        if c:
+                            yield _from_string(c)
+            else:
+                from itertools import chain
+
+                for ctx in chain.from_iterable(
+                    list(c) for (t, c) in self.triples(triple)
+                ):
+                    yield ctx
         else:
             index = self.__contexts
             cursor = index.cursor()
@@ -535,9 +544,13 @@ class BerkeleyDB(Store):
                 cursor.close()
 
     def add_graph(self, graph):
+        if isinstance(graph, (Graph, type(None))):
+            raise TypeError(f"""graph identifier cannot be {type(graph)}""")
         self.__contexts.put(bb(self._to_string(graph)), b"")
 
     def remove_graph(self, graph):
+        if isinstance(graph, (Graph, type(None))):
+            raise TypeError(f"""graph identifier cannot be {type(graph)}""")
         self.remove((None, None, None), graph)
 
     def _from_string(self, i):

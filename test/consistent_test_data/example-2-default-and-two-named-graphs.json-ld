@@ -1,0 +1,53 @@
+[
+  {
+    "@graph": [
+      {
+        "@id": "_:genid-13ba88743e41484b8022f165e905dfa1-b",
+        "http://xmlns.com/foaf/0.1/mbox": [
+          { 
+            "@id": "mailto:alice@work.example.org"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/name": [
+          {
+            "@value": "Alice"
+          }
+        ]
+      }
+    ],
+    "@id": "http://example.org/alice",
+    "http://purl.org/dc/terms/publisher": [
+      {
+        "@value": "Alice"
+      }
+    ]
+  },
+  {
+    "@graph": [
+      {
+        "@id": "_:genid-13ba88743e41484b8022f165e905dfa1-a",
+        "http://xmlns.com/foaf/0.1/knows": [
+          {
+            "@id": "_:genid-13ba88743e41484b8022f165e905dfa1-b"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/mbox": [
+          {
+            "@id": "mailto:bob@oldcorp.example.org"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/name": [
+          {
+            "@value": "Bob"
+          }
+        ]
+      }
+    ],
+    "@id": "http://example.org/bob",
+    "http://purl.org/dc/terms/publisher": [
+      {
+        "@value": "Bob"
+      }
+    ]
+  }
+]

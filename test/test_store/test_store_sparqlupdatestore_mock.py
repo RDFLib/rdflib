@@ -1,4 +1,4 @@
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from typing import ClassVar
 from rdflib import Namespace
 from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
@@ -35,7 +35,7 @@ class TestSPARQLConnector(unittest.TestCase):
         pass
 
     def test_graph_update(self):
-        graph = ConjunctiveGraph("SPARQLUpdateStore")
+        graph = Dataset("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
         update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
 

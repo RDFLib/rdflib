@@ -5,9 +5,11 @@ xml:base='' should resolve to the given publicID per XML Base specification
 and RDF/XML dependence on it
 """
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.namespace import FOAF, RDF
 from rdflib.term import URIRef
+
+import unittest
 
 test_data = """
 <rdf:RDF
@@ -33,9 +35,9 @@ test_data2 = """
 baseUri = URIRef("http://example.com/")
 baseUri2 = URIRef("http://example.com/foo/bar")
 
-class TestEmptyBase:
+class TestEmptyBase(unittest.TestCase):
     def test_empty_base_ref(self):
-        self.graph = ConjunctiveGraph()
+        self.graph = Dataset(default_union=True)
         self.graph.parse(data=test_data, publicID=baseUri, format="xml")
         assert len(list(self.graph)) > 0, "There should be at least one statement in the graph"
         assert (
@@ -45,9 +47,10 @@ class TestEmptyBase:
         ) in self.graph, f"There should be a triple with {baseUri} as the subject"
 
 
-class TestRelativeBase:
+class TestRelativeBase(unittest.TestCase):
+
     def test_relative_base_ref(self):
-        self.graph = ConjunctiveGraph()
+        self.graph = Dataset(default_union=True)
         self.graph.parse(data=test_data2, publicID=baseUri2, format="xml")
         assert len(self.graph) > 0, "There should be at least one statement in the graph"
         resolvedBase = URIRef("http://example.com/baz")

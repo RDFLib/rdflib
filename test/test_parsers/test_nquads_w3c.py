@@ -2,7 +2,7 @@
 test suite."""
 
 from typing import Callable, Dict
-from rdflib import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.term import Node, URIRef
 from test.manifest import RDFT, RDFTest, read_manifest
 import pytest
@@ -11,7 +11,7 @@ verbose = False
 
 
 def nquads(test):
-    g = ConjunctiveGraph()
+    g = Dataset()
 
     try:
         g.parse(test.action, format="nquads")

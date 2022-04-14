@@ -5,7 +5,7 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph
+from rdflib.graph import Graph, Dataset, DATASET_DEFAULT_GRAPH_ID
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
 
@@ -27,10 +27,12 @@ class TriXHandler(handler.ContentHandler):
     def __init__(self, store):
         self.store = store
         self.preserve_bnode_ids = False
+        self.is_default_graph = None
         self.reset()
 
     def reset(self):
         self.bnode = {}
+        self.is_default_graph = None
         self.graph = None
         self.triple = None
         self.state = 0
@@ -67,6 +69,7 @@ class TriXHandler(handler.ContentHandler):
 
         elif name[1] == "graph":
             if self.state == 1:
+                self.is_default_graph = True  # until we encounter a uri
                 self.state = 2
             else:
                 self.error("Unexpected graph element")
@@ -83,7 +86,12 @@ class TriXHandler(handler.ContentHandler):
 
         elif name[1] == "triple":
             if self.state == 2:
-                if self.graph is None:
+                if self.is_default_graph:
+                    self.graph = Graph(
+                        store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID
+                    )
+                    self.is_default_graph = True
+                elif self.graph is None:
                     # anonymous graph, create one with random bnode id
                     self.graph = Graph(store=self.store)
                 # start of a triple
@@ -152,6 +160,7 @@ class TriXHandler(handler.ContentHandler):
                 self.graph = Graph(
                     store=self.store, identifier=URIRef(self.chars.strip())
                 )
+                self.is_default_graph = False
                 self.state = 2
             elif self.state == 4:
                 self.triple += [URIRef(self.chars.strip())]
@@ -166,6 +175,7 @@ class TriXHandler(handler.ContentHandler):
                 self.graph = Graph(
                     self.store, identifier=self.get_bnode(self.chars.strip())
                 )
+                self.is_default_graph = False
                 self.state = 2
             elif self.state == 4:
                 self.triple += [self.get_bnode(self.chars.strip())]
@@ -195,8 +205,6 @@ class TriXHandler(handler.ContentHandler):
                     )
 
                 self.graph.add(self.triple)
-                # self.store.store.add(self.triple,context=self.graph)
-                # self.store.addN([self.triple+[self.graph]])
                 self.state = 2
             else:
                 self.error(

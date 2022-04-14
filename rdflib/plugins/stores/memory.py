@@ -1,6 +1,8 @@
 #
 #
 from rdflib.store import Store
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib import logger
 
 __all__ = ["SimpleMemory", "Memory"]
 
@@ -415,14 +417,24 @@ class Memory(Store):
 
     def contexts(self, triple=None):
         if triple is None or triple == (None, None, None):
-            return (context for context in self.__all_contexts)
+            return set([context for context in self.__all_contexts])
 
         subj, pred, obj = triple
-        try:
-            _ = self.__spo[subj][pred][obj]
-            return self.__contexts(triple)
-        except KeyError:
-            return (_ for _ in [])
+        if subj and pred and obj:
+            try:
+                _ = self.__spo[subj][pred][obj]
+                return self.__contexts(triple)
+            except KeyError:
+                return (_ for _ in [])
+        else:
+            from itertools import chain
+
+            return set(
+                ctx
+                for ctx in chain.from_iterable(
+                    list(c) for (t, c) in self.triples(triple)
+                )
+            )
 
     def __len__(self, context=None):
         ctx = self.__ctx_to_str(context)

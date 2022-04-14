@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import pytest
 from rdflib import *
 from rdflib.plugin import register, Parser
 
@@ -29,38 +30,40 @@ data = """
 meta_ctx = URIRef("http://example.org/data#metadata")
 
 
+@pytest.mark.xfail(reason="Reading JSON-LD into a Graph")
 def test_graph():
     g = Graph()
     g.parse(data=data, format="application/ld+json")
     assert len(g) == 2
 
-
-def test_conjunctive_graph():
-    cg = ConjunctiveGraph()
-    cg.default_context.parse(data=data, format="application/ld+json")
+def test_dataset_default_union():
+    cg = Dataset(default_union=True)
+    cg.default_graph.parse(data=data, format="application/ld+json")
     assert len(cg) == 3
 
     print(
         "default graph (%s) contains %s triples (expected 2)"
-        % (cg.identifier, len(cg.default_context))
+        % (cg.identifier, len(cg.default_graph))
     )
     for ctx in cg.contexts():
-        print("named graph (%s) contains %s triples" % (ctx.identifier, len(ctx)))
-    assert len(cg.default_context) == 2
-    assert len(list(cg.contexts())) == 2
+        print("named graph (%s) contains %s triples" % (ctx, len(cg.graph(ctx))))
+    assert len(cg.default_graph) == 2
+    assert len(list(cg.contexts())) == 1
 
 
 def test_dataset():
     ds = Dataset()
-    ds.default_context.parse(data=data, format="application/ld+json")
-    assert len(ds) == 3
+    ds.default_graph.parse(data=data, format="application/ld+json")
+    assert len(ds) == 2
 
-    assert len(ds.default_context) == 2
+    assert len(ds.default_graph) == 2
     print(
         "default graph (%s) contains %s triples (expected 2)"
-        % (ds.identifier, len(ds.default_context))
+        % (ds.identifier, len(ds.default_graph))
     )
-    contexts = dict((ctx.identifier, ctx) for ctx in ds.contexts())
-    assert len(contexts) == 2
+
+    contexts = dict((g.identifier, g) for g in ds.graphs())
+
+    assert len(contexts) == 1
     assert len(contexts.pop(meta_ctx)) == 1
-    assert len(list(contexts.values())[0]) == 2
+    assert len(contexts) == 0

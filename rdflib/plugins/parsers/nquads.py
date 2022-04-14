@@ -3,8 +3,8 @@ This is a rdflib plugin for parsing NQuad files into Conjunctive
 graphs that can be used and queried. The store that backs the graph
 *must* be able to handle contexts.
 
->>> from rdflib import ConjunctiveGraph, URIRef, Namespace
->>> g = ConjunctiveGraph()
+>>> from rdflib import Dataset, URIRef, Namespace
+>>> g = Dataset()
 >>> data = open("test/nquads.rdflib/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
 <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -25,7 +25,7 @@ graphs that can be used and queried. The store that backs the graph
 
 from codecs import getreader
 
-from rdflib import ConjunctiveGraph
+from rdflib import Dataset
 
 # Build up from the NTriples parser:
 from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
@@ -52,7 +52,7 @@ class NQuadsParser(W3CNTriplesParser):
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."
         )
-        self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+        self.sink = Dataset(store=sink.store, identifier=sink.identifier)
 
         source = inputsource.getCharacterStream()
         if not source:
@@ -96,4 +96,4 @@ class NQuadsParser(W3CNTriplesParser):
             raise ParseError("Trailing garbage")
         # Must have a context aware store - add on a normal Graph
         # discards anything where the ctx != graph.identifier
-        self.sink.get_context(context).add((subject, predicate, obj))
+        self.sink.graph(context).add((subject, predicate, obj))

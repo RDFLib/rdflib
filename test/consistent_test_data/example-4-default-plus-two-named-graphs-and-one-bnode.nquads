@@ -1,0 +1,10 @@
+<http://example.org/alice> <http://purl.org/dc/terms/publisher> "Alice" .
+<http://example.org/bob> <http://purl.org/dc/terms/publisher> "Bob" .
+<http://rdlib.net/.well-known/genid/rdflib/N61cb5aa6ff474425ae642981b84bbeb4> <http://purl.org/dc/terms/publisher> "Harry" .
+_:Nafdb8095d54e4535bd95ca3dfc693871 <http://xmlns.com/foaf/0.1/mbox> <mailto:alice@work.example.org> <http://example.org/alice> .
+_:Nafdb8095d54e4535bd95ca3dfc693871 <http://xmlns.com/foaf/0.1/name> "Alice" <http://example.org/alice> .
+_:Nf237929acdbf4369b5ea86ee5464796e <http://xmlns.com/foaf/0.1/knows> _:Nafdb8095d54e4535bd95ca3dfc693871 <http://example.org/bob> .
+_:Nf237929acdbf4369b5ea86ee5464796e <http://xmlns.com/foaf/0.1/mbox> <mailto:bob@oldcorp.example.org> <http://example.org/bob> .
+_:Nf237929acdbf4369b5ea86ee5464796e <http://xmlns.com/foaf/0.1/name> "Bob" <http://example.org/bob> .
+_:Nf4a9f5df16604cb4bd23632b22edceed <http://xmlns.com/foaf/0.1/mbox> <mailto:harry@work.example.org> <http://rdlib.net/.well-known/genid/rdflib/N61cb5aa6ff474425ae642981b84bbeb4> .
+_:Nf4a9f5df16604cb4bd23632b22edceed <http://xmlns.com/foaf/0.1/name> "Harry" <http://rdlib.net/.well-known/genid/rdflib/N61cb5aa6ff474425ae642981b84bbeb4> .

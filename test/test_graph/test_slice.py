@@ -1,8 +1,9 @@
 from rdflib import Graph, URIRef
 from test.data import tarek, likes, pizza, cheese, michel, bob, hates
+import unittest
 
 
-class TestGraphSlice():
+class GraphSlice(unittest.TestCase):
     def test_slice(self):
         """
         We pervert the slice object,

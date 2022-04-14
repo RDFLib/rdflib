@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.parser import Parser
 from .notation3 import SinkParser, RDFSink
 
@@ -135,20 +135,17 @@ class TrigParser(Parser):
                 ("TriG files are always utf-8 encoded, ", "I was passed: %s") % encoding
             )
 
-        # we're currently being handed a Graph, not a ConjunctiveGraph
+        # we're currently being handed a Graph, not a Dataset
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
-        conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
-        # default_context arg
-        # TODO: update N3Processor so that it can use conj_graph as the sink
-        conj_graph.namespace_manager = graph.namespace_manager
+        ds = Dataset(store=graph.store, identifier=graph.identifier, default_union=True)
+        ds.default_graph = graph
+        # TODO: update N3Processor so that it can use ds as the sink
+        ds.namespace_manager = graph.namespace_manager
 
-        sink = RDFSink(conj_graph)
+        sink = RDFSink(ds)
 
-        baseURI = conj_graph.absolutize(
-            source.getPublicId() or source.getSystemId() or ""
-        )
+        baseURI = ds.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
 
         stream = source.getCharacterStream()  # try to get str stream first
@@ -158,6 +155,6 @@ class TrigParser(Parser):
         p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
-            conj_graph.bind(prefix, namespace)
+            ds.bind(prefix, namespace)
 
         # return ???

@@ -6,9 +6,9 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 from collections import defaultdict
 from typing import IO, TYPE_CHECKING, Optional, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph, DATASET_DEFAULT_GRAPH_ID
 from rdflib.plugins.serializers.turtle import TurtleSerializer
-from rdflib.term import BNode, Node
+from rdflib.term import BNode, Node, URIRef
 
 
 __all__ = ["TrigSerializer"]
@@ -19,15 +19,15 @@ class TrigSerializer(TurtleSerializer):
     short_name = "trig"
     indentString = 4 * " "
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
+    def __init__(self, store: Union[Graph, Dataset]):
         self.default_context: Optional[Node]
         if store.context_aware:
             if TYPE_CHECKING:
-                assert isinstance(store, ConjunctiveGraph)
-            self.contexts = list(store.contexts())
-            self.default_context = store.default_context.identifier
-            if store.default_context:
-                self.contexts.append(store.default_context)
+                assert isinstance(store, Dataset)
+            self.contexts = list(store.graphs())
+            self.default_context = store.default_graph.identifier
+            if store.default_graph:
+                self.contexts.append(store.default_graph)
         else:
             self.contexts = [store]
             self.default_context = None
@@ -37,7 +37,9 @@ class TrigSerializer(TurtleSerializer):
     def preprocess(self):
         for context in self.contexts:
             self.store = context
-            self.getQName(context.identifier)
+            # Add prefix+namespace for all non-default context graphs
+            if context.identifier != self.default_context:
+                self.getQName(context.identifier)
             self._references = defaultdict(int)
             self._subjects = {}
 

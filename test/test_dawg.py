@@ -237,7 +237,7 @@ def update_test(t: RDFTest):
 
         # read input graphs
         if data:
-            g.default_context.parse(data, format=_fmt(data))
+            g.default_graph.parse(data, format=_fmt(data))
 
         if graphdata:
             for x, l in graphdata:
@@ -250,28 +250,26 @@ def update_test(t: RDFTest):
         # read expected results
         resg = Dataset()
         if resdata:
-            resg.default_context.parse(resdata, format=_fmt(resdata))
+            resg.default_graph.parse(resdata, format=_fmt(resdata))
 
         if resgraphdata:
             for x, l in resgraphdata:
                 resg.parse(x, publicID=URIRef(l), format=_fmt(x))
 
         eq(
-            set(ctx.identifier for ctx in g.contexts() if ctx != g.default_context),
-            set(
-                ctx.identifier for ctx in resg.contexts() if ctx != resg.default_context
-            ),
+            set(g for g in g.graphs() if len(g) > 0),
+            set(g for g in resg.graphs() if len(g) > 0),
             "named graphs in datasets do not match",
         )
         assert isomorphic(
-            g.default_context, resg.default_context
+            g.default_graph, resg.default_graph
         ), "Default graphs are not isomorphic"
 
         for ctx in g.contexts():
-            if ctx == g.default_context:
+            if ctx == g.default_graph.identifier:
                 continue
-            assert isomorphic(ctx, resg.get_context(ctx.identifier)), (
-                "Graphs with ID %s are not isomorphic" % ctx.identifier
+            assert isomorphic(g.graph(ctx), resg.graph(ctx)), (
+                "Graphs with ID %s are not isomorphic" % ctx
             )
 
     except Exception as e:
@@ -369,7 +367,7 @@ def query_test(t: RDFTest):
     try:
         g = Dataset()
         if data:
-            g.default_context.parse(data, format=_fmt(data))
+            g.default_graph.parse(data, format=_fmt(data))
 
         if graphdata:
             for x in graphdata:

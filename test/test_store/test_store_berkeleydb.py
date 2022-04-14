@@ -2,7 +2,7 @@ from tempfile import mktemp
 
 import pytest
 
-from rdflib import ConjunctiveGraph, URIRef
+from rdflib import Dataset, URIRef
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import VALID_STORE
 
@@ -11,14 +11,17 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-@pytest.fixture
-def get_graph():
+@pytest.fixture(
+    scope="function",
+    params=[True, False],
+)
+def get_dataset(request):
     path = mktemp()
-    g = ConjunctiveGraph("BerkeleyDB")
-    rt = g.open(path, create=True)
+    dataset = Dataset("BerkeleyDB", default_union=request.param)
+    rt = dataset.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
     assert (
-        len(g) == 0
+        len(dataset) == 0
     ), "There must be zero triples in the graph just after store (file) creation"
     data = """
             PREFIX : <https://example.org/>
@@ -27,43 +30,48 @@ def get_graph():
             :d :e :f .
             :d :g :h .
             """
-    g.parse(data=data, format="ttl")
+    # if request.param is True:
+    #     dataset.parse(data=data, format="ttl")
+    # else:
+    #     dataset.default_graph.parse(data=data, format="ttl")
 
-    yield path, g
+    dataset.parse(data=data, format="ttl")
 
-    g.close()
-    g.destroy(path)
+    yield path, dataset
+
+    dataset.close()
+    dataset.destroy(path)
 
 
-def test_write(get_graph):
-    path, g = get_graph
+def test_write(get_dataset):
+    path, dataset = get_dataset
     assert (
-        len(g) == 3
+        len(dataset.default_graph) == 3
     ), "There must be three triples in the graph after the first data chunk parse"
     data2 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
-    g.parse(data=data2, format="ttl")
+    dataset.parse(data=data2, format="ttl")
     assert (
-        len(g) == 4
+        len(dataset) == 4
     ), "There must be four triples in the graph after the second data chunk parse"
     data3 = """
             PREFIX : <https://example.org/>
 
             :d :i :j .
             """
-    g.parse(data=data3, format="ttl")
+    dataset.parse(data=data3, format="ttl")
     assert (
-        len(g) == 4
+        len(dataset) == 4
     ), "There must still be four triples in the graph after the third data chunk parse"
 
 
-def test_read(get_graph):
-    path, g = get_graph
+def test_read(get_dataset):
+    path, dataset = get_dataset
     sx = None
-    for s in g.subjects(
+    for s in dataset.subjects(
         predicate=URIRef("https://example.org/e"),
         object=URIRef("https://example.org/f"),
     ):
@@ -71,8 +79,8 @@ def test_read(get_graph):
     assert sx == URIRef("https://example.org/d")
 
 
-def test_sparql_query(get_graph):
-    path, g = get_graph
+def test_sparql_query(get_dataset):
+    path, dataset = get_dataset
     q = """
         PREFIX : <https://example.org/>
 
@@ -82,13 +90,13 @@ def test_sparql_query(get_graph):
         }"""
 
     c = 0
-    for row in g.query(q):
+    for row in dataset.query(q):
         c = int(row.c)
     assert c == 2, "SPARQL COUNT must return 2"
 
 
-def test_sparql_insert(get_graph):
-    path, g = get_graph
+def test_sparql_insert(get_dataset):
+    path, dataset = get_dataset
     q = """
         PREFIX : <https://example.org/>
 
@@ -96,12 +104,12 @@ def test_sparql_insert(get_graph):
             :x :y :z .
         }"""
 
-    g.update(q)
-    assert len(g) == 4, "After extra triple insert, length must be 4"
+    dataset.update(q)
+    assert len(dataset) == 4, "After extra triple insert, length must be 4"
 
 
-def test_multigraph(get_graph):
-    path, g = get_graph
+def test_multigraph(get_dataset):
+    path, dataset = get_dataset
     q = """
         PREFIX : <https://example.org/>
 
@@ -114,7 +122,7 @@ def test_multigraph(get_graph):
             }
         }"""
 
-    g.update(q)
+    dataset.update(q)
 
     q = """
         SELECT (COUNT(?g) AS ?c)
@@ -128,20 +136,20 @@ def test_multigraph(get_graph):
         }
         """
     c = 0
-    for row in g.query(q):
+    for row in dataset.query(q):
         c = int(row.c)
-    assert c == 3, "SPARQL COUNT must return 3 (default, :m & :n)"
+    assert c == 2, "SPARQL COUNT must return 2 (:m & :n)"
 
 
-def test_open_shut(get_graph):
-    path, g = get_graph
-    assert len(g) == 3, "Initially we must have 3 triples from setUp"
-    g.close()
-    g = None
+def test_open_shut(get_dataset):
+    path, dataset = get_dataset
+    assert len(dataset) == 3, "Initially we must have 3 triples from setUp"
+    dataset.close()
+    dataset = None
 
     # reopen the graph
-    g = ConjunctiveGraph("BerkeleyDB")
-    g.open(path, create=False)
+    dataset = Dataset("BerkeleyDB")
+    dataset.open(path, create=False)
     assert (
-        len(g) == 3
+        len(dataset) == 3
     ), "After close and reopen, we should still have the 3 originally added triples"

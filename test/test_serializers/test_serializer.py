@@ -9,7 +9,7 @@ from typing import Tuple, cast
 import pytest
 import itertools
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 
 from test.testutils import GraphHelper
 
@@ -31,7 +31,7 @@ from test.testutils import GraphHelper
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     NS = Namespace("example:")
-    graph = ConjunctiveGraph()
+    graph = Dataset(default_union=True)
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
@@ -44,7 +44,7 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
         assert str(RDF) not in data
     else:
         assert str(RDF) in data
-    parsed_graph = ConjunctiveGraph()
+    parsed_graph = Dataset(default_union=True)
     parsed_graph.parse(data=data, format=format)
     GraphHelper.assert_triple_sets_equals(graph, parsed_graph)
 

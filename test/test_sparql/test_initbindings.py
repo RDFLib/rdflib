@@ -1,9 +1,9 @@
 from rdflib.plugins.sparql import prepareQuery
 
 
-from rdflib import ConjunctiveGraph, URIRef, Literal, Namespace, Variable
+from rdflib import Dataset, URIRef, Literal, Namespace, Variable
 
-g = ConjunctiveGraph()
+g = Dataset()
 
 
 def testStr():
@@ -273,7 +273,7 @@ def testPrepare():
 
 
 def testData():
-    data = ConjunctiveGraph()
+    data = Dataset()
     data += [
         (URIRef("urn:a"), URIRef("urn:p"), Literal("a")),
         (URIRef("urn:b"), URIRef("urn:p"), Literal("b")),
@@ -299,7 +299,7 @@ def testAsk():
 
 
 EX = Namespace("http://example.com/")
-g2 = ConjunctiveGraph()
+g2 = Dataset()
 g2.bind("", EX)
 g2.add((EX["s1"], EX["p"], EX["o1"]))
 g2.add((EX["s2"], EX["p"], EX["o2"]))

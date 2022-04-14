@@ -12,9 +12,9 @@ from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
 
 def _graphOrDefault(ctx, g):
     if g == "DEFAULT":
-        return ctx.graph
+        return ctx.dataset.default_graph
     else:
-        return ctx.dataset.get_context(g)
+        return ctx.dataset.graph(g)
 
 
 def _graphAll(ctx, g):
@@ -22,15 +22,13 @@ def _graphAll(ctx, g):
     return a list of graphs
     """
     if g == "DEFAULT":
-        return [ctx.graph]
+        return [ctx.dataset.default_graph]
     elif g == "NAMED":
-        return [
-            c for c in ctx.dataset.contexts() if c.identifier != ctx.graph.identifier
-        ]
+        return [c for c in ctx.dataset.graphs() if c.identifier != ctx.graph.identifier]
     elif g == "ALL":
-        return list(ctx.dataset.contexts())
+        return list(ctx.dataset.graphs()) + [ctx.dataset.default_graph]
     else:
-        return [ctx.dataset.get_context(g)]
+        return [ctx.dataset.graph(g)]
 
 
 def evalLoad(ctx, u):
@@ -48,7 +46,7 @@ def evalCreate(ctx, u):
     """
     http://www.w3.org/TR/sparql11-update/#create
     """
-    g = ctx.dataset.get_context(u.graphiri)
+    g = ctx.dataset.graph(u.graphiri)
     if len(g) > 0:
         raise Exception("Graph %s already exists." % g.identifier)
     raise Exception("Create not implemented!")
@@ -69,7 +67,7 @@ def evalDrop(ctx, u):
     """
     if ctx.dataset.store.graph_aware:
         for g in _graphAll(ctx, u.graphiri):
-            ctx.dataset.store.remove_graph(g)
+            ctx.dataset.remove_graph(g)
     else:
         evalClear(ctx, u)
 
@@ -85,7 +83,7 @@ def evalInsertData(ctx, u):
     # add quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.graph(g)
         cg += u.quads[g]
 
 
@@ -100,7 +98,7 @@ def evalDeleteData(ctx, u):
     # remove quads
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.graph(g)
         cg -= u.quads[g]
 
 
@@ -111,7 +109,7 @@ def evalDeleteWhere(ctx, u):
 
     res = evalBGP(ctx, u.triples)
     for g in u.quads:
-        cg = ctx.dataset.get_context(g)
+        cg = ctx.dataset.graph(g)
         c = ctx.pushGraph(cg)
         res = _join(res, list(evalBGP(c, u.quads[g])))
 
@@ -120,7 +118,7 @@ def evalDeleteWhere(ctx, u):
         g -= _fillTemplate(u.triples, c)
 
         for g in u.quads:
-            cg = ctx.dataset.get_context(c.get(g))
+            cg = ctx.dataset.graph(c.get(g))
             cg -= _fillTemplate(u.quads[g], c)
 
 
@@ -156,7 +154,7 @@ def evalModify(ctx, u):
     # the WITH clause will be ignored while evaluating the WHERE
     # clause."
     if not u.using and u.withClause:
-        g = ctx.dataset.get_context(u.withClause)
+        g = ctx.dataset.graph(u.withClause)
         ctx = ctx.pushGraph(g)
 
     res = evalPart(ctx, u.where)
@@ -165,7 +163,7 @@ def evalModify(ctx, u):
         if otherDefault:
             ctx = originalctx  # restore original default graph
         if u.withClause:
-            g = ctx.dataset.get_context(u.withClause)
+            g = ctx.dataset.graph(u.withClause)
             ctx = ctx.pushGraph(g)
 
     for c in res:
@@ -174,14 +172,14 @@ def evalModify(ctx, u):
             dg -= _fillTemplate(u.delete.triples, c)
 
             for g, q in u.delete.quads.items():
-                cg = ctx.dataset.get_context(c.get(g))
+                cg = ctx.dataset.graph(c.get(g))
                 cg -= _fillTemplate(q, c)
 
         if u.insert:
             dg += _fillTemplate(u.insert.triples, c)
 
             for g, q in u.insert.quads.items():
-                cg = ctx.dataset.get_context(c.get(g))
+                cg = ctx.dataset.graph(c.get(g))
                 cg += _fillTemplate(q, c)
 
 
@@ -226,7 +224,7 @@ def evalMove(ctx, u):
     dstg += srcg
 
     if ctx.dataset.store.graph_aware:
-        ctx.dataset.store.remove_graph(srcg)
+        ctx.dataset.remove_graph(srcg)
     else:
         srcg.remove((None, None, None))
 

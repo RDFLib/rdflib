@@ -7,7 +7,7 @@ import json
 
 from typing import List, Union
 from rdflib.parser import Parser
-from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
+from rdflib import Dataset, URIRef, Literal, BNode
 import warnings
 
 
@@ -33,7 +33,7 @@ class HextuplesParser(Parser):
             ret2[2] = ""
         return ret2
 
-    def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
+    def _parse_hextuple(self, ds: Dataset, tup: List[Union[str, None]]):
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
@@ -67,9 +67,9 @@ class HextuplesParser(Parser):
         # 6 - context
         if tup[5] is not None:
             c = URIRef(tup[5])
-            cg.add((s, p, o, c))
+            ds.add((s, p, o, c))
         else:
-            cg.add((s, p, o))
+            ds.add((s, p, o))
 
     def parse(self, source, graph, **kwargs):
         if kwargs.get("encoding") not in [None, "utf-8"]:
@@ -83,15 +83,15 @@ class HextuplesParser(Parser):
             graph.store.context_aware
         ), "Hextuples Parser needs a context-aware store!"
 
-        cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        cg.default_context = graph
+        ds = Dataset(store=graph.store, identifier=graph.identifier)
+        ds.default_graph = graph
 
         # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
             with open(source.file.name) as fp:
                 for l in fp:
-                    self._parse_hextuple(cg, self._load_json_line(l))
+                    self._parse_hextuple(ds, self._load_json_line(l))
         elif hasattr(source, "_InputSource__bytefile"):
             if hasattr(source._InputSource__bytefile, "wrapped"):
                 for l in source._InputSource__bytefile.wrapped.strip().splitlines():
-                    self._parse_hextuple(cg, self._load_json_line(l))
+                    self._parse_hextuple(ds, self._load_json_line(l))

@@ -1,0 +1,76 @@
+[
+  {
+    "@graph" : [ 
+      {
+        "@id" : "_:genid-70f4f70599434aa09c8e722eb5608922-Nafdb8095d54e4535bd95ca3dfc693871",
+        "http://xmlns.com/foaf/0.1/mbox" : [ 
+          {
+            "@id" : "mailto:alice@work.example.org"
+          } 
+        ],
+        "http://xmlns.com/foaf/0.1/name" : [ 
+          {
+            "@value" : "Alice"
+          }
+        ]
+      }
+    ],
+    "@id" : "http://example.org/alice",
+    "http://purl.org/dc/terms/publisher" : [
+      {
+        "@value" : "Alice"
+      }
+    ]
+  },
+  {
+    "@graph" : [
+      {
+        "@id" : "_:genid-70f4f70599434aa09c8e722eb5608922-Nf237929acdbf4369b5ea86ee5464796e",
+        "http://xmlns.com/foaf/0.1/knows" : [
+          {
+            "@id" : "_:genid-70f4f70599434aa09c8e722eb5608922-Nafdb8095d54e4535bd95ca3dfc693871"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/mbox" : [
+          {
+            "@id" : "mailto:bob@oldcorp.example.org"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/name" : [
+          {
+            "@value" : "Bob"
+          }
+        ]
+      }
+    ],
+    "@id" : "http://example.org/bob",
+    "http://purl.org/dc/terms/publisher" : [
+      {
+        "@value" : "Bob"
+      }
+    ]
+  },
+  {
+    "@graph" : [
+      {
+        "@id" : "_:genid-70f4f70599434aa09c8e722eb5608922-Nf4a9f5df16604cb4bd23632b22edceed",
+        "http://xmlns.com/foaf/0.1/mbox" : [
+          {
+            "@id" : "mailto:harry@work.example.org"
+          }
+        ],
+        "http://xmlns.com/foaf/0.1/name" : [
+          {
+            "@value" : "Harry"
+          }
+        ]
+      }
+    ],
+    "@id" : "http://rdlib.net/.well-known/genid/rdflib/N61cb5aa6ff474425ae642981b84bbeb4",
+    "http://purl.org/dc/terms/publisher" : [
+      {
+        "@value" : "Harry"
+      }
+    ]
+  }
+]

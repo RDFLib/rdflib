@@ -3,7 +3,7 @@
 """
 
 from typing import Callable, Dict
-from rdflib import ConjunctiveGraph
+from rdflib import Dataset
 from rdflib.namespace import Namespace, split_uri
 from rdflib.compare import graph_diff, isomorphic
 from rdflib.term import Node, URIRef
@@ -17,7 +17,7 @@ verbose = False
 
 
 def trig(test):
-    g = ConjunctiveGraph()
+    g = Dataset(default_union=True)
 
     try:
         base = "http://www.w3.org/2013/TriGTests/" + split_uri(test.action)[1]
@@ -27,7 +27,7 @@ def trig(test):
             raise AssertionError("Input shouldn't have parsed!")
 
         if test.result:  # eval test
-            res = ConjunctiveGraph()
+            res = Dataset(default_union=True)
             res.parse(test.result, format="nquads")
 
             if verbose:

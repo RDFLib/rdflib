@@ -3,14 +3,13 @@ from typing import Set, Tuple
 
 import pytest
 from rdflib.term import Node
-from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Literal
+from rdflib import Graph, RDF, BNode, URIRef, Namespace, Dataset, Literal
 from rdflib.namespace import FOAF
 from rdflib.compare import to_isomorphic, to_canonical_graph
 
 import rdflib
 from rdflib.plugins.stores.memory import Memory
 
-from io import StringIO
 import unittest
 
 from test.testutils import GraphHelper
@@ -18,7 +17,7 @@ from test.testutils import GraphHelper
 
 def get_digest_value(rdf, mimetype):
     graph = Graph()
-    graph.parse(StringIO(rdf), format=mimetype)
+    graph.parse(data=rdf, format=mimetype)
     stats = {}
     ig = to_isomorphic(graph)
     result = ig.graph_digest(stats)
@@ -195,10 +194,6 @@ def negative_graph_match_test():
     def fn(rdf1, rdf2, identical):
         digest1 = get_digest_value(rdf1, "text/turtle")
         digest2 = get_digest_value(rdf2, "text/turtle")
-        print(rdf1)
-        print(digest1)
-        print(rdf2)
-        print(digest2)
         assert (digest1 == digest2) == identical
 
     for inputs in testInputs:
@@ -283,7 +278,8 @@ def test_issue494_collapsing_bnodes():
     cg_pos_counts = Counter(), Counter(), Counter()
     for t in cg:
         for i, node in enumerate(t):
-            cg_pos_counts[i][t] += 1
+            if i < 3:  # Exclude context
+                cg_pos_counts[i][t] += 1
     cg_count_signature = [sorted(c.values()) for c in cg_pos_counts]
 
     assert (
@@ -302,7 +298,7 @@ def test_issue682_signing_named_graphs():
 
     store = Memory()
 
-    g = ConjunctiveGraph(store=store)
+    g = Dataset(store=store, default_union=True)
     g.bind("love", ns)
 
     gmary = Graph(store=store, identifier=cmary)
@@ -510,7 +506,8 @@ def test_issue725_collapsing_bnodes_2():
     cg_pos_counts = Counter(), Counter(), Counter()
     for t in cg:
         for i, node in enumerate(t):
-            cg_pos_counts[i][t] += 1
+            if i < 3:  # Exclude context
+                cg_pos_counts[i][t] += 1
     cg_count_signature = [sorted(c.values()) for c in cg_pos_counts]
 
     assert (

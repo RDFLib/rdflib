@@ -189,7 +189,7 @@ def collect_files(
 
 
 def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
-    g1 = rdflib.ConjunctiveGraph()
+    g1 = rdflib.graph.Dataset(default_union=True)
 
     g1.parse(source, format=infmt)
 
@@ -198,7 +198,7 @@ def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("serailized = \n%s", s)
 
-    g2 = rdflib.ConjunctiveGraph()
+    g2 = rdflib.graph.Dataset(default_union=True)
     g2.parse(data=s, format=testfmt)
 
     if testfmt == "hext":
@@ -207,7 +207,7 @@ def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
         # ""^^xsd:string, at least not in these tests
         #
         # So we have to scrub the literals' string datatype declarations...
-        for c in g2.contexts():
+        for c in list(g2.graphs()) + [g2.default_graph]:
             for s, p, o in c.triples((None, None, None)):
                 if type(o) == rdflib.Literal and o.datatype == XSD.string:
                     c.remove((s, p, o))

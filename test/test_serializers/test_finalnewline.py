@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph, URIRef
+from rdflib import Dataset, URIRef
 import rdflib.plugin
 
 
@@ -7,7 +7,7 @@ def test_finalnewline():
     http://code.google.com/p/rdflib/issues/detail?id=5
     """
 
-    graph = ConjunctiveGraph()
+    graph = Dataset()
     graph.add(
         (
             URIRef("http://ex.org/a"),

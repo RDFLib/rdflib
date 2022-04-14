@@ -1,0 +1,69 @@
+[ {
+  "@graph" : [ {
+    "@id" : "http://www.example.org/exampleDocument#Monica",
+    "http://www.example.org/vocabulary#email" : [ {
+      "@id" : "mailto:monica@monicamurphy.org"
+    } ],
+    "http://www.example.org/vocabulary#hasSkill" : [ {
+      "@id" : "http://www.example.org/vocabulary#Management"
+    } ],
+    "http://www.example.org/vocabulary#homepage" : [ {
+      "@id" : "http://www.monicamurphy.org"
+    } ],
+    "http://www.example.org/vocabulary#name" : [ {
+      "@value" : "Monica Murphy"
+    } ]
+  } ],
+  "@id" : "http://www.example.org/exampleDocument#G1"
+}, {
+  "@graph" : [ {
+    "@id" : "http://www.example.org/exampleDocument#Monica",
+    "@type" : [ "http://www.example.org/vocabulary#Person" ],
+    "http://www.example.org/vocabulary#hasSkill" : [ {
+      "@id" : "http://www.example.org/vocabulary#Programming"
+    } ]
+  } ],
+  "@id" : "http://www.example.org/exampleDocument#G2"
+}, {
+  "@graph" : [ {
+    "@id" : "_:genid-b075de16d5d246ecb0b38c2cfa719cba-w1",
+    "http://purl.org/dc/elements/1.1/date" : [ {
+      "@type" : "http://www.w3.org/2001/XMLSchema#date",
+      "@value" : "2003-10-02"
+    } ],
+    "http://www.w3.org/2004/03/trix/swp-1/authority" : [ {
+      "@id" : "http://www.example.org/exampleDocument#Chris"
+    } ]
+  }, {
+    "@id" : "_:genid-b075de16d5d246ecb0b38c2cfa719cba-w2",
+    "http://purl.org/dc/elements/1.1/date" : [ {
+      "@type" : "http://www.w3.org/2001/XMLSchema#date",
+      "@value" : "2003-09-03"
+    } ],
+    "http://www.w3.org/2004/03/trix/swp-1/authority" : [ {
+      "@id" : "http://www.example.org/exampleDocument#Chris"
+    } ]
+  }, {
+    "@id" : "http://www.example.org/exampleDocument#Chris",
+    "@type" : [ "http://www.example.org/vocabulary#Person" ],
+    "http://www.example.org/vocabulary#email" : [ {
+      "@id" : "mailto:chris@bizer.de"
+    } ]
+  }, {
+    "@id" : "http://www.example.org/exampleDocument#G1",
+    "http://www.w3.org/2004/03/trix/swp-1/assertedBy" : [ {
+      "@id" : "_:genid-b075de16d5d246ecb0b38c2cfa719cba-w1"
+    } ]
+  }, {
+    "@id" : "http://www.example.org/exampleDocument#G2",
+    "http://www.w3.org/2004/03/trix/swp-1/quotedBy" : [ {
+      "@id" : "_:genid-b075de16d5d246ecb0b38c2cfa719cba-w2"
+    } ]
+  }, {
+    "@id" : "http://www.example.org/exampleDocument#G3",
+    "http://www.w3.org/2004/03/trix/swp-1/assertedBy" : [ {
+      "@id" : "_:genid-b075de16d5d246ecb0b38c2cfa719cba-w2"
+    } ]
+  } ],
+  "@id" : "http://www.example.org/exampleDocument#G3"
+} ]

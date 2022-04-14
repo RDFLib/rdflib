@@ -5,7 +5,7 @@ import json
 import itertools
 
 import pytest
-from rdflib import Graph
+from rdflib import Graph, Dataset
 from rdflib.plugin import register, Serializer
 
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
@@ -234,7 +234,7 @@ json_kwargs = dict(indent=2, separators=(",", ": "), sort_keys=True, ensure_asci
 
 
 def run(data, expected):
-    g = Graph().parse(data=data, format="turtle")
+    g = Dataset().parse(data=data, format="turtle")
     result = g.serialize(format="json-ld", context=expected["@context"])
     result = json.loads(result)
 

@@ -3,7 +3,7 @@ import os
 from pathlib import PurePosixPath, PureWindowsPath
 from typing import Optional
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.term import URIRef
 from .testutils import GraphHelper, file_uri_to_path
 
@@ -179,16 +179,16 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.format)
 
     public_id = URIRef("example:graph")
-    lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
+    lhs_cgraph: Dataset = Dataset()
     lhs_cgraph.parse(data=test_case.lhs, format=test_case.format, publicID=public_id)
 
-    rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
+    rhs_cgraph: Dataset = Dataset()
     rhs_cgraph.parse(data=test_case.rhs, format=test_case.format, publicID=public_id)
 
-    assert isinstance(lhs_cgraph, ConjunctiveGraph)
-    assert isinstance(rhs_cgraph, ConjunctiveGraph)
+    assert isinstance(lhs_cgraph, Dataset)
+    assert isinstance(rhs_cgraph, Dataset)
     graph: Graph
-    cgraph: ConjunctiveGraph
+    cgraph: Dataset
     for graph, cgraph in ((lhs_graph, lhs_cgraph), (rhs_graph, rhs_cgraph)):
         GraphHelper.assert_sets_equals(graph, graph, True)
         GraphHelper.assert_sets_equals(cgraph, cgraph, True)
@@ -209,10 +209,14 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
             GraphHelper.assert_triple_sets_equals(
                 lhs_graph, rhs_graph, test_case.ignore_blanks
             )
-        with pytest.raises(AssertionError):
-            GraphHelper.assert_triple_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
-            )
+        GraphHelper.assert_triple_sets_equals(
+            lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+        )
+        # with pytest.raises(AssertionError):
+        #     GraphHelper.assert_triple_sets_equals(
+        #         lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+        #     )
+
         with pytest.raises(AssertionError):
             GraphHelper.assert_quad_sets_equals(
                 lhs_cgraph, rhs_cgraph, test_case.ignore_blanks

@@ -1,6 +1,6 @@
 from fractions import Fraction
 
-from rdflib import Graph, ConjunctiveGraph, Literal, URIRef
+from rdflib import Literal, URIRef
 import unittest
 
 

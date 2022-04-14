@@ -1,9 +1,9 @@
 """
-An RDFLib Dataset is a slight extension to ConjunctiveGraph: it uses simpler terminology
+An RDFLib Dataset uses simpler terminology than the old ConjunctiveGraph
 and has a few additional convenience method extensions, for example add() can be used to
 add quads directly to a specific Graph within the Dataset.
 
-This example file shows how to decalre a Dataset, add content to it, serialise it, query it
+This example file shows how to declare a Dataset, add content to it, serialise it, query it
 and remove things from it.
 """
 

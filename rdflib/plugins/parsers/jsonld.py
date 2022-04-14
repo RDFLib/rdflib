@@ -35,7 +35,7 @@ Example usage::
 
 from typing import Optional
 import warnings
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.parser import URLInputSource
 import rdflib.parser
 from rdflib.namespace import RDF, XSD
@@ -104,15 +104,17 @@ class JsonLDParser(rdflib.parser.Parser):
 
         data = source_to_json(source)
 
-        # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
+        # NOTE: A Dataset parses into a Graph sink, so no sink will be
         # context_aware. Keeping this check in case RDFLib is changed, or
         # someone passes something context_aware to this parser directly.
         if not sink.context_aware:
-            conj_sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+            dataset_sink = Dataset(
+                store=sink.store, identifier=sink.identifier, default_union=True
+            )
         else:
-            conj_sink = sink
+            dataset_sink = sink
 
-        to_rdf(data, conj_sink, base, context_data, version, generalized_rdf)
+        to_rdf(data, dataset_sink, base, context_data, version, generalized_rdf)
 
 
 def to_rdf(
@@ -163,7 +165,7 @@ class Parser(object):
             if term.id and term.id.endswith(VOCAB_DELIMS):
                 dataset.bind(name, term.id)
 
-        graph = dataset.default_context if dataset.context_aware else dataset
+        graph = dataset.default_graph if dataset.context_aware else dataset
 
         for node in resources:
             self._add_to_graph(dataset, graph, context, node, topcontext)
@@ -267,7 +269,7 @@ class Parser(object):
 
         if GRAPH in (key, term_id):
             if dataset.context_aware and not no_id:
-                subgraph = dataset.get_context(subj)
+                subgraph = dataset.graph(subj)
             else:
                 subgraph = graph
             for onode in obj_nodes:
