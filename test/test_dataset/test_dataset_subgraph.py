@@ -4,6 +4,7 @@ import pytest
 
 from rdflib import BNode, Dataset, Graph, URIRef, logger
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.plugins.stores.berkeleydb import has_bsddb
 
 s1 = (
     URIRef("http://data.yyx.me/jack"),
@@ -108,6 +109,9 @@ def test_parse_graph_as_new_dataset_subgraph_nquads():
     assert (tarek, likes, pizza) in g
 
 
+@pytest.mark.skipif(
+    not has_bsddb, reason="skipping berkeleydb test, module not available"
+)
 def test_parse_graph_as_new_dataset_subgraph_nquads_with_dataset_aware_store():
     import shutil
     import tempfile
