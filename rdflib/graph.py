@@ -1511,10 +1511,8 @@ class Graph(Node):
             (s, p, o) = t
 
             if RDFLibGenid._is_rdflib_skolem(s):
-                print('rdflibgen')
                 s = RDFLibGenid(s).de_skolemize()
             elif Genid._is_external_skolem(s):
-                print('genid')
                 s = Genid(s).de_skolemize()
 
             if RDFLibGenid._is_rdflib_skolem(o):
