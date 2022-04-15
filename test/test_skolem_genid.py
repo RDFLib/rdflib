@@ -1,5 +1,5 @@
 from rdflib import URIRef
-from rdflib.term import RDFLibGenid, Genid
+from rdflib.term import Genid, RDFLibGenid
 
 
 def test_skolem_genid_and_rdflibgenid():
