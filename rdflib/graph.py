@@ -18,7 +18,7 @@ import random
 from rdflib.namespace import Namespace, RDF
 from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
-from rdflib.term import BNode, IdentifiedNode, Node, URIRef, Literal, Genid
+from rdflib.term import BNode, IdentifiedNode, Node, RDFLibGenid, URIRef, Literal, Genid
 from rdflib.paths import Path
 from rdflib.store import Store
 from rdflib.serializer import Serializer
@@ -1512,10 +1512,17 @@ class Graph(Node):
 
         def do_de_skolemize2(t):
             (s, p, o) = t
-            if isinstance(s, Genid):
-                s = s.de_skolemize()
-            if isinstance(o, Genid):
-                o = o.de_skolemize()
+
+            if RDFLibGenid._is_external_skolem(s):
+                s = Genid(s).de_skolemize()
+            elif RDFLibGenid._is_rdflib_skolem(s):
+                s = RDFLibGenid(s).de_skolemize()
+
+            if RDFLibGenid._is_external_skolem(o):
+                o = Genid(o).de_skolemize()
+            elif RDFLibGenid._is_rdflib_skolem(o):
+                o = RDFLibGenid(o).de_skolemize()
+
             return s, p, o
 
         retval = Graph() if new_graph is None else new_graph
