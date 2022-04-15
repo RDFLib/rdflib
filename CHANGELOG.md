@@ -14,6 +14,11 @@ For strings with many escape sequences the parsing speed seems to be almost 4 ti
 
 Fixes [issue #1655](https://github.com/RDFLib/rdflib/issues/1655).
 
+### Other fixes
+
+- Fixed the handling of `EXISTS` inside `BIND` for SPARQL.
+  This was raising an exception during evaluation before but is now correctly handled.
+
 ### Deprecated Functions
 
 Marked the following functions as deprecated:
