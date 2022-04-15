@@ -243,3 +243,9 @@ intersphinx_mapping = {
 html_experimental_html5_writer = True
 
 needs_sphinx = "4.1.2"
+
+suppress_warnings = [
+    # This is here to prevent:
+    #  "WARNING: more than one target found for cross-reference"
+    "ref.python",
+]
