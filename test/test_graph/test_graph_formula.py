@@ -1,11 +1,11 @@
-import sys
 import os
+import sys
 from tempfile import mkdtemp, mkstemp
 
 import pytest
-from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
-from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
+from rdflib import RDF, RDFS, BNode, URIRef, Variable, plugin
+from rdflib.graph import ConjunctiveGraph, QuotedGraph
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
 testN3 = """
@@ -139,6 +139,7 @@ def get_formula_stores_tests():
         if not s.getClass().formula_aware:
             continue
         yield checkFormulaStore, s.name
+
 
 @pytest.mark.parametrize("checker, name", get_formula_stores_tests())
 def test_formula_stores(checker, name) -> None:

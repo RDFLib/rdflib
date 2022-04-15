@@ -4,7 +4,6 @@ import urllib.error
 import rdflib
 import rdflib.query
 
-
 MAX_RETRY = 10
 BACKOFF_FACTOR = 1.5
 
@@ -47,7 +46,7 @@ def query_with_retry(graph: rdflib.Graph, query: str, **kwargs) -> rdflib.query.
             if i == MAX_RETRY - 1:
                 raise e
 
-            backoff_s = (BACKOFF_FACTOR ** backoff) / 10
+            backoff_s = (BACKOFF_FACTOR**backoff) / 10
             print(
                 f"Network error {e} during query, waiting for {backoff_s:.2f}s and retrying"
             )

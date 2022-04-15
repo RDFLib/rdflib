@@ -8,11 +8,10 @@ provides the support by replacing the REGEXTerms by wildcards (None) and
 matching against the results from the store it's wrapping.
 """
 
-from rdflib.store import Store
-from rdflib.graph import Graph
-
-
 import re
+
+from rdflib.graph import Graph
+from rdflib.store import Store
 
 # Store is capable of doing its own REGEX matching
 NATIVE_REGEX = 0

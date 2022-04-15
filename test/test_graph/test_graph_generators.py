@@ -1,17 +1,18 @@
 import os
+from test.data import (
+    CONSISTENT_DATA_DIR,
+    bob,
+    cheese,
+    hates,
+    likes,
+    michel,
+    pizza,
+    tarek,
+)
+
 from rdflib import Graph, URIRef
 
-michel = URIRef("urn:example:michel")
-tarek = URIRef("urn:example:tarek")
-bob = URIRef("urn:example:bob")
-likes = URIRef("urn:example:likes")
-hates = URIRef("urn:example:hates")
-pizza = URIRef("urn:example:pizza")
-cheese = URIRef("urn:example:cheese")
-
-timblcardn3 = open(
-    os.path.join(os.path.dirname(__file__), "..", "consistent_test_data", "timbl-card.n3")
-).read()
+timblcardn3 = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")).read()
 
 
 def add_stuff(graph):

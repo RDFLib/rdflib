@@ -13,64 +13,64 @@ All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class
    :caption: Term Class Hierarchy
    :type: plantuml
 
-@startuml
-skinparam shadowing false
-skinparam monochrome true
-skinparam packageStyle rectangle
-skinparam backgroundColor FFFFFE
-
-class Node
-
-class Identifier {
-    eq(other) -> bool
-    neq(other) -> bool
-    startswith(prefix: str, start, end) -> bool
-}
-Identifier -up-|> Node
-
-class IdentifiedNode {
-    toPython() -> str
-}
-IdentifiedNode -up-|> Identifier
-
-class URIRef {
-    n3(namespace_manager) -> str
-    defrag() -> URIRef
-    de_skolemize() -> BNode
-}
-URIRef -up-|> IdentifiedNode
-
-
-class Genid
-Genid -up-|> URIRef
-
-class RDFLibGenid
-RDFLibGenid -up-|> Genid
-
-class BNode {
-    n3(namespace_manager) -> str
-    skolemize(authority, basepath) -> RDFLibGenid
-}
-BNode -up-|> IdentifiedNode
-
-class Literal {
-    datatype: Optional[str]
-    lang: Optional[str]
-    value: Any
-
-    normalize() -> Literal
-    n3(namespace_manager) -> str
-    toPython() -> str
-}
-Literal -up-|> Identifier
-
-class Variable {
-    n3(namespace_manager) -> str
-    toPython() -> str
-}
-Variable -up-|> Identifier
-
-@enduml
+    @startuml
+    skinparam shadowing false
+    skinparam monochrome true
+    skinparam packageStyle rectangle
+    skinparam backgroundColor FFFFFE
+    
+    class Node
+    
+    class Identifier {
+        eq(other) -> bool
+        neq(other) -> bool
+        startswith(prefix: str, start, end) -> bool
+    }
+    Identifier -up-|> Node
+    
+    class IdentifiedNode {
+        toPython() -> str
+    }
+    IdentifiedNode -up-|> Identifier
+    
+    class URIRef {
+        n3(namespace_manager) -> str
+        defrag() -> URIRef
+        de_skolemize() -> BNode
+    }
+    URIRef -up-|> IdentifiedNode
+    
+    
+    class Genid
+    Genid -up-|> URIRef
+    
+    class RDFLibGenid
+    RDFLibGenid -up-|> Genid
+    
+    class BNode {
+        n3(namespace_manager) -> str
+        skolemize(authority, basepath) -> RDFLibGenid
+    }
+    BNode -up-|> IdentifiedNode
+    
+    class Literal {
+        datatype: Optional[str]
+        lang: Optional[str]
+        value: Any
+    
+        normalize() -> Literal
+        n3(namespace_manager) -> str
+        toPython() -> str
+    }
+    Literal -up-|> Identifier
+    
+    class Variable {
+        n3(namespace_manager) -> str
+        toPython() -> str
+    }
+    Variable -up-|> Identifier
+    
+    @enduml
 
 Nodes are a subset of the Terms that the underlying store actually persists.
 The set of such Terms depends on whether or not the store is formula-aware. 

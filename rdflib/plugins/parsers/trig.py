@@ -1,6 +1,7 @@
 from rdflib import ConjunctiveGraph
 from rdflib.parser import Parser
-from .notation3 import SinkParser, RDFSink
+
+from .notation3 import RDFSink, SinkParser
 
 
 def becauseSubGraph(*args, **kwargs):

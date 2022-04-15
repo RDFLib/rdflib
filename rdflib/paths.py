@@ -182,8 +182,9 @@ No vars specified:
 
 
 from functools import total_ordering
-from rdflib.term import URIRef, Node, IdentifiedNode
-from typing import Union, Callable, TYPE_CHECKING, Optional, Iterator, Tuple
+from typing import TYPE_CHECKING, Callable, Iterator, Optional, Tuple, Union
+
+from rdflib.term import IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib import Graph

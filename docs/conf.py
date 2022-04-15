@@ -11,9 +11,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
 import re
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -243,3 +243,9 @@ intersphinx_mapping = {
 html_experimental_html5_writer = True
 
 needs_sphinx = "4.1.2"
+
+suppress_warnings = [
+    # This is here to prevent:
+    #  "WARNING: more than one target found for cross-reference"
+    "ref.python",
+]

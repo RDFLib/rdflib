@@ -1,9 +1,8 @@
 import json
 from typing import IO, Any, Dict, Optional, TextIO, Union
 
-from rdflib.query import Result, ResultException, ResultSerializer, ResultParser
-from rdflib import Literal, URIRef, BNode, Variable
-
+from rdflib import BNode, Literal, URIRef, Variable
+from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 
 """A Serializer for SPARQL results in JSON:
 

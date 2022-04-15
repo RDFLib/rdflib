@@ -6,34 +6,32 @@ using setEvalFn
 
 """
 
-import sys
-import re
-import math
-import random
-import uuid
-import hashlib
 import datetime as py_datetime  # naming conflict with function within this module
-import warnings
-
-from functools import reduce
-
-from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
-
+import hashlib
+import math
 import operator as pyop  # python operators
-
-import isodate
-
-from rdflib.plugins.sparql.parserutils import CompValue, Expr
-from rdflib.plugins.sparql.datatypes import XSD_DTs, type_promotion
-from rdflib.plugins.sparql.datatypes import XSD_DateTime_DTs, XSD_Duration_DTs
-from rdflib import URIRef, BNode, Variable, Literal, XSD, RDF
-from rdflib.term import Node
-
+import random
+import re
+import sys
+import uuid
+import warnings
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from functools import reduce
 from urllib.parse import quote
 
+import isodate
 from pyparsing import ParseResults
 
+from rdflib import RDF, XSD, BNode, Literal, URIRef, Variable
+from rdflib.plugins.sparql.datatypes import (
+    XSD_DateTime_DTs,
+    XSD_DTs,
+    XSD_Duration_DTs,
+    type_promotion,
+)
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.sparql import SPARQLError, SPARQLTypeError
+from rdflib.term import Node
 
 
 def Builtin_IRI(expr, ctx):

@@ -1,6 +1,6 @@
 from unittest import TestCase
-from rdflib import ConjunctiveGraph
-from rdflib import Namespace, Literal
+
+from rdflib import ConjunctiveGraph, Literal, Namespace
 from rdflib.collection import Collection
 
 target1xml = """\

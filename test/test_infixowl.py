@@ -1,18 +1,18 @@
-from rdflib import BNode, Graph, Literal, Namespace, RDFS, OWL, XSD
-from rdflib.namespace import NamespaceManager
-from rdflib.util import first
+from rdflib import OWL, RDFS, XSD, BNode, Graph, Literal, Namespace
 from rdflib.extras.infixowl import (
     BooleanClass,
     Class,
     Collection,
     DeepClassClear,
-    Individual,
-    some,
     EnumeratedClass,
+    Individual,
     Property,
     Restriction,
     max,
+    some,
 )
+from rdflib.namespace import NamespaceManager
+from rdflib.util import first
 
 
 def test_infix_owl_example1():
@@ -51,8 +51,7 @@ def test_infix_owl_example1():
     namespace_manager.bind("owl", OWL, override=False)
     owlGraph.namespace_manager = namespace_manager
     assert (
-        str(list(Class(OWL.Class, graph=owlGraph).subClassOf))
-        == "[Class: rdfs:Class ]"
+        str(list(Class(OWL.Class, graph=owlGraph).subClassOf)) == "[Class: rdfs:Class ]"
     )
 
     # Operators are also available. For instance we can add ex:Opera to the extension

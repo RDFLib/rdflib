@@ -33,21 +33,16 @@ Example usage::
 # NOTE: This code reads the entire JSON object into memory before parsing, but
 # we should consider streaming the input to deal with arbitrarily large graphs.
 
-from typing import Optional
 import warnings
-from rdflib.graph import ConjunctiveGraph
-from rdflib.parser import URLInputSource
-import rdflib.parser
-from rdflib.namespace import RDF, XSD
-from rdflib.term import URIRef, BNode, Literal
+from typing import Optional
 
-from ..shared.jsonld.context import Context, Term, UNDEF
-from ..shared.jsonld.util import (
-    json,
-    source_to_json,
-    VOCAB_DELIMS,
-    context_from_urlinputsource,
-)
+import rdflib.parser
+from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import RDF, XSD
+from rdflib.parser import URLInputSource
+from rdflib.term import BNode, Literal, URIRef
+
+from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import (
     CONTEXT,
     GRAPH,
@@ -65,7 +60,12 @@ from ..shared.jsonld.keys import (
     VALUE,
     VOCAB,
 )
-
+from ..shared.jsonld.util import (
+    VOCAB_DELIMS,
+    context_from_urlinputsource,
+    json,
+    source_to_json,
+)
 
 __all__ = ["JsonLDParser", "to_rdf"]
 

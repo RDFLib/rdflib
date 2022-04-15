@@ -6,15 +6,12 @@ These should be automatically registered with RDFLib
 """
 
 
-from rdflib.query import Processor, Result, UpdateProcessor
-
-from rdflib.plugins.sparql.sparql import Query
-
-from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
-
 from rdflib.plugins.sparql.evaluate import evalQuery
+from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
+from rdflib.plugins.sparql.sparql import Query
 from rdflib.plugins.sparql.update import evalUpdate
+from rdflib.query import Processor, Result, UpdateProcessor
 
 
 def prepareQuery(queryString, initNs={}, base=None) -> Query:

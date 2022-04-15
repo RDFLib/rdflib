@@ -1,10 +1,6 @@
 import os
-from rdflib import (
-    Graph,
-    ConjunctiveGraph,
-    URIRef,
-)
 
+from rdflib import ConjunctiveGraph, Graph, URIRef
 
 michel = URIRef("urn:example:michel")
 tarek = URIRef("urn:example:tarek")
@@ -18,7 +14,9 @@ c1 = URIRef("urn:example:context-1")
 c2 = URIRef("urn:example:context-2")
 
 sportquadstrig = open(
-    os.path.join(os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.trig")
+    os.path.join(
+        os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.trig"
+    )
 ).read()
 
 

@@ -1,12 +1,13 @@
 # -*- coding: UTF-8 -*-
 
-import re
-import json
 import itertools
+import json
+import re
 
 import pytest
+
 from rdflib import Graph
-from rdflib.plugin import register, Serializer
+from rdflib.plugin import Serializer, register
 
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 

@@ -1,45 +1,41 @@
 from __future__ import print_function
 
 import os
-from pathlib import PurePath
 import sys
 from io import TextIOWrapper
+from pathlib import PurePath
 
 # Needed to pass
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
-from test.manifest import UP, MF, RDFTest, ResultType, read_manifest
-import pytest
-
+from test.manifest import MF, UP, RDFTest, ResultType, read_manifest
 from test.testutils import file_uri_to_path
+
+import pytest
 
 sys.setrecursionlimit(6000)  # default is 1000
 
 
-from collections import Counter
-
-
 import datetime
-import isodate
 import typing
-from typing import Dict, Callable, List, Optional, Tuple, cast
+from collections import Counter
+from io import BytesIO
+from typing import Callable, Dict, List, Optional, Tuple, cast
+from urllib.parse import urljoin
 
+import isodate
 
-from rdflib import Dataset, Graph, URIRef, BNode
-from rdflib.term import Identifier, Node
-from rdflib.query import Result
+from rdflib import BNode, Dataset, Graph, URIRef
 from rdflib.compare import isomorphic
-
+from rdflib.compat import bopen, decodeStringEscape
 from rdflib.plugins import sparql as rdflib_sparql_module
 from rdflib.plugins.sparql.algebra import pprintAlgebra, translateQuery, translateUpdate
 from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.plugins.sparql.update import evalUpdate
-
-from rdflib.compat import decodeStringEscape, bopen
-from urllib.parse import urljoin
-from io import BytesIO
+from rdflib.query import Result
+from rdflib.term import Identifier, Node
 
 
 def eq(a, b, msg):
@@ -212,7 +208,7 @@ def update_test(t: RDFTest):
     query_path: PurePath = file_uri_to_path(query)
 
     if uri in skiptests:
-        pytest.skip()
+        pytest.xfail()
 
     try:
         g = Dataset()
@@ -359,7 +355,7 @@ def query_test(t: RDFTest):
     resfile_path = file_uri_to_path(resfile) if resfile else None
 
     if uri in skiptests:
-        pytest.skip()
+        pytest.xfail()
 
     def skip(reason="(none)"):
         print("Skipping %s from now on." % uri)

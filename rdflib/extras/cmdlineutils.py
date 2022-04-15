@@ -1,9 +1,9 @@
+import codecs
+import getopt
 import sys
 import time
-import getopt
-import rdflib
-import codecs
 
+import rdflib
 from rdflib.util import guess_format
 
 
