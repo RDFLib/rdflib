@@ -4,6 +4,7 @@ import pathlib
 import random
 import shutil
 import tempfile
+import system
 from io import BytesIO
 from typing import (
     IO,
@@ -347,6 +348,9 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
+        resource.setrlimit(resource.RLIMIT_STACK, (2 ** 29, -1))
+        sys.setrecursionlimit(10 ** 6)
+        
 
     @property
     def store(self):
