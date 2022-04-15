@@ -1,42 +1,40 @@
+import logging
+import os
+import pathlib
+import random
+import shutil
+import tempfile
+from io import BytesIO
 from typing import (
     IO,
     Any,
     BinaryIO,
+    Generator,
     Iterable,
     Optional,
     TextIO,
-    Union,
+    Tuple,
     Type,
+    Union,
     cast,
     overload,
-    Generator,
-    Tuple,
 )
-import logging
-from warnings import warn
-import random
-from rdflib.namespace import Namespace, RDF
-from rdflib import plugin, exceptions, query, namespace
-import rdflib.term
-from rdflib.term import BNode, IdentifiedNode, Node, URIRef, Literal, Genid
-from rdflib.paths import Path
-from rdflib.store import Store
-from rdflib.serializer import Serializer
-from rdflib.parser import InputSource, Parser, create_input_source
-from rdflib.namespace import NamespaceManager
-from rdflib.resource import Resource
-from rdflib.collection import Collection
-import rdflib.util  # avoid circular dependency
-from rdflib.exceptions import ParserError
-
-import os
-import shutil
-import tempfile
-import pathlib
-
-from io import BytesIO
 from urllib.parse import urlparse
 from urllib.request import url2pathname
+from warnings import warn
+
+import rdflib.term
+import rdflib.util  # avoid circular dependency
+from rdflib import exceptions, namespace, plugin, query
+from rdflib.collection import Collection
+from rdflib.exceptions import ParserError
+from rdflib.namespace import RDF, Namespace, NamespaceManager
+from rdflib.parser import InputSource, Parser, create_input_source
+from rdflib.paths import Path
+from rdflib.resource import Resource
+from rdflib.serializer import Serializer
+from rdflib.store import Store
+from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, URIRef
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning

@@ -1,7 +1,8 @@
-import unittest
 import io
 import json
-from rdflib import Graph, RDF, RDFS, Namespace
+import unittest
+
+from rdflib import RDF, RDFS, Graph, Namespace
 
 
 class TestIssue1484_json(unittest.TestCase):

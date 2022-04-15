@@ -16,10 +16,11 @@ to turtle - the original turtle serializer. It:
 - Nicholas Car, 2021
 """
 
-from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
-from .turtle import RecursiveSerializer
 from rdflib.namespace import RDF
+from rdflib.term import BNode, Literal, URIRef
+
+from .turtle import RecursiveSerializer
 
 __all__ = ["LongTurtleSerializer"]
 

@@ -3,8 +3,9 @@ This module contains tests for the parsing of the turtle family of formats: N3,
 Turtle, NTriples, NQauds and TriG.
 """
 
-from dataclasses import dataclass, field
+import enum
 import itertools
+from dataclasses import dataclass, field
 from typing import (
     Callable,
     Collection,
@@ -18,14 +19,11 @@ from typing import (
     Union,
 )
 
-from pyparsing import Opt
-
-from rdflib import Namespace, Literal, XSD, Graph
-import enum
-
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
+from pyparsing import Opt
 
+from rdflib import XSD, Graph, Literal, Namespace
 from rdflib.term import Identifier
 from rdflib.util import from_n3
 

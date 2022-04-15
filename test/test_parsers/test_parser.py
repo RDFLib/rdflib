@@ -1,9 +1,8 @@
 import unittest
 
-from rdflib.namespace import RDF, RDFS
-from rdflib.term import URIRef
-from rdflib.term import Literal
 from rdflib.graph import Graph
+from rdflib.namespace import RDF, RDFS
+from rdflib.term import Literal, URIRef
 
 
 class ParserTestCase(unittest.TestCase):

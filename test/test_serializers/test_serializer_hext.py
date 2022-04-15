@@ -2,8 +2,9 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Dataset, Graph, ConjunctiveGraph
 import json
+
+from rdflib import ConjunctiveGraph, Dataset, Graph
 
 
 def test_hext_graph():

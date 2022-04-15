@@ -1,5 +1,6 @@
-from rdflib import Graph, URIRef, Literal
 import pytest
+
+from rdflib import Graph, Literal, URIRef
 
 
 def test_rdflib_to_networkx():
@@ -7,9 +8,11 @@ def test_rdflib_to_networkx():
         import networkx
     except ImportError:
         pytest.skip("couldn't find networkx")
-    from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
-    from rdflib.extras.external_graph_libs import rdflib_to_networkx_digraph
-    from rdflib.extras.external_graph_libs import rdflib_to_networkx_graph
+    from rdflib.extras.external_graph_libs import (
+        rdflib_to_networkx_digraph,
+        rdflib_to_networkx_graph,
+        rdflib_to_networkx_multidigraph,
+    )
 
     g = Graph()
     a, b, l = URIRef("a"), URIRef("b"), Literal("l")

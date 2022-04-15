@@ -1,9 +1,9 @@
 """Get all merged PRs since last release, save them to a JSON file"""
 
-import httpx
 import json
 from datetime import datetime
 
+import httpx
 
 r = httpx.get(
     "https://api.github.com/repos/rdflib/rdflib/pulls",

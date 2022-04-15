@@ -11,6 +11,7 @@ See also rdflib.plugin
 """
 
 from typing import IO, TYPE_CHECKING, Optional
+
 from rdflib.term import URIRef
 
 if TYPE_CHECKING:

@@ -7,31 +7,29 @@ It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 import codecs
 
 from pyparsing import (
-    Optional,
-    ZeroOrMore,
-    Literal,
-    ParserElement,
-    ParseException,
-    Suppress,
     FollowedBy,
     LineEnd,
+    Literal,
+    Optional,
+    ParseException,
+    ParserElement,
+    Suppress,
+    ZeroOrMore,
 )
-
-from rdflib.query import Result, ResultParser
-
-from rdflib.plugins.sparql.parser import (
-    Var,
-    STRING_LITERAL1,
-    STRING_LITERAL2,
-    IRIREF,
-    BLANK_NODE_LABEL,
-    NumericLiteral,
-    BooleanLiteral,
-    LANGTAG,
-)
-from rdflib.plugins.sparql.parserutils import Comp, Param, CompValue
 
 from rdflib import Literal as RDFLiteral
+from rdflib.plugins.sparql.parser import (
+    BLANK_NODE_LABEL,
+    IRIREF,
+    LANGTAG,
+    STRING_LITERAL1,
+    STRING_LITERAL2,
+    BooleanLiteral,
+    NumericLiteral,
+    Var,
+)
+from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
+from rdflib.query import Result, ResultParser
 
 ParserElement.setDefaultWhitespaceChars(" \n")
 

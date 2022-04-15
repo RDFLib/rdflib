@@ -1,10 +1,10 @@
-from rdflib.namespace import RDF, RDFS
-from rdflib import logger, plugin
 from io import StringIO
-from rdflib.term import URIRef
-from rdflib.store import Store
-from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 
+from rdflib import logger, plugin
+from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate
+from rdflib.namespace import RDF, RDFS
+from rdflib.store import Store
+from rdflib.term import URIRef
 
 testGraph1N3 = """
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

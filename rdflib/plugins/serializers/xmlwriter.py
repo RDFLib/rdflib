@@ -1,5 +1,5 @@
 import codecs
-from xml.sax.saxutils import quoteattr, escape
+from xml.sax.saxutils import escape, quoteattr
 
 __all__ = ["XMLWriter"]
 

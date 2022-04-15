@@ -36,16 +36,16 @@ Example usage::
 # graphs.
 
 import warnings
-
-from rdflib.serializer import Serializer
-from rdflib.graph import Graph
-from rdflib.term import URIRef, Literal, BNode
-from rdflib.namespace import RDF, XSD
 from typing import IO, Optional
 
-from ..shared.jsonld.context import Context, UNDEF
+from rdflib.graph import Graph
+from rdflib.namespace import RDF, XSD
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
+
+from ..shared.jsonld.context import UNDEF, Context
+from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import json
-from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, VOCAB, LIST, SET, LANG
 
 __all__ = ["JsonLDSerializer", "from_rdf"]
 

@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Dataset, ConjunctiveGraph, Literal
+from rdflib import ConjunctiveGraph, Dataset, Literal
 from rdflib.namespace import XSD
 
 

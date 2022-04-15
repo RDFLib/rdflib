@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Set, Tuple
+
 from rdflib.parser import Parser
 
-
 if TYPE_CHECKING:
-    from rdflib.parser import InputSource
     from rdflib.graph import Graph
     from rdflib.namespace import Namespace
+    from rdflib.parser import InputSource
     from rdflib.term import Identifier
 
 

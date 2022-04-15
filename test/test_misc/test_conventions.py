@@ -1,6 +1,6 @@
-import unittest
-import pkgutil
 import os.path
+import pkgutil
+import unittest
 
 import rdflib
 

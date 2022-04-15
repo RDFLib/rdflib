@@ -3,10 +3,10 @@ import logging
 import shutil
 import subprocess
 import sys
+import warnings
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import Any, Callable, Dict, Generator, List
-import warnings
 
 import rdflib.plugin
 import rdflib.plugins.sparql

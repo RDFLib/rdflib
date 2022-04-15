@@ -1,5 +1,6 @@
+from test.data import bob, cheese, hates, likes, michel, pizza, tarek
+
 from rdflib import Graph, URIRef
-from test.data import tarek, likes, pizza, cheese, michel, bob, hates
 
 
 class TestGraphSlice:

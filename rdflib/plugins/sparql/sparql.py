@@ -1,17 +1,15 @@
 import collections
-import itertools
 import datetime
+import itertools
 
 import isodate
 
+import rdflib.plugins.sparql
+from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef, Variable
 from rdflib.compat import Mapping, MutableMapping
 from rdflib.namespace import NamespaceManager
-from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
-from rdflib.term import Node
-
 from rdflib.plugins.sparql.parserutils import CompValue
-
-import rdflib.plugins.sparql
+from rdflib.term import Node
 
 
 class SPARQLError(Exception):

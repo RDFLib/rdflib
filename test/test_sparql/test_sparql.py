@@ -1,20 +1,21 @@
+from test.testutils import eq_
 from typing import Any, Callable, Type
-from rdflib.plugins.sparql import sparql, prepareQuery
-from rdflib.plugins.sparql.sparql import SPARQLError
-from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
-from rdflib.namespace import Namespace, RDF, RDFS
-from rdflib.compare import isomorphic
-from rdflib.query import Result
-from rdflib.term import Variable
-from rdflib.plugins.sparql.evaluate import evalPart
-from rdflib.plugins.sparql.evalutils import _eval
+
 import pytest
 from pytest import MonkeyPatch
+
+import rdflib.plugins.sparql
 import rdflib.plugins.sparql.operators
 import rdflib.plugins.sparql.parser
-import rdflib.plugins.sparql
-
-from test.testutils import eq_
+from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
+from rdflib.compare import isomorphic
+from rdflib.namespace import RDF, RDFS, Namespace
+from rdflib.plugins.sparql import prepareQuery, sparql
+from rdflib.plugins.sparql.evaluate import evalPart
+from rdflib.plugins.sparql.evalutils import _eval
+from rdflib.plugins.sparql.sparql import SPARQLError
+from rdflib.query import Result
+from rdflib.term import Variable
 
 
 def test_graph_prefix():

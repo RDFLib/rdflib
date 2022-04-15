@@ -1,19 +1,17 @@
+import unittest
 from collections import Counter
+from io import StringIO
+from test.testutils import GraphHelper
 from typing import Set, Tuple
 
 import pytest
-from rdflib.term import Node
-from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Literal
-from rdflib.namespace import FOAF
-from rdflib.compare import to_isomorphic, to_canonical_graph
 
 import rdflib
+from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace, URIRef
+from rdflib.compare import to_canonical_graph, to_isomorphic
+from rdflib.namespace import FOAF
 from rdflib.plugins.stores.memory import Memory
-
-from io import StringIO
-import unittest
-
-from test.testutils import GraphHelper
+from rdflib.term import Node
 
 
 def get_digest_value(rdf, mimetype):

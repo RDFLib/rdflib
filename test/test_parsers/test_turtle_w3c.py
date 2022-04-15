@@ -3,15 +3,16 @@ test suite."""
 
 import os
 from pathlib import Path
-from typing import Callable, Dict, Set
-from rdflib import Graph
-from rdflib.namespace import Namespace, split_uri
-from rdflib.compare import graph_diff, isomorphic
-from rdflib.term import Node, URIRef
-
 from test.manifest import RDFT, RDFTest, read_manifest
-import pytest
 from test.testutils import file_uri_to_path
+from typing import Callable, Dict, Set
+
+import pytest
+
+from rdflib import Graph
+from rdflib.compare import graph_diff, isomorphic
+from rdflib.namespace import Namespace, split_uri
+from rdflib.term import Node, URIRef
 
 verbose = False
 

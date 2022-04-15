@@ -1,6 +1,5 @@
-from rdflib.term import Literal
-from rdflib.term import URIRef
 from rdflib.graph import ConjunctiveGraph
+from rdflib.term import Literal, URIRef
 
 
 def test_escaping_of_triple_doublequotes():

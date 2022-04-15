@@ -1,9 +1,9 @@
 import decimal
-import unittest
 import io
 import sys
+import unittest
 
-from rdflib import Graph, Namespace, XSD, RDFS, Literal
+from rdflib import RDFS, XSD, Graph, Literal, Namespace
 
 
 class TestIssue1043(unittest.TestCase):

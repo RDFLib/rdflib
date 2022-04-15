@@ -21,24 +21,16 @@ Date/time utilities
 """
 
 from calendar import timegm
-from time import altzone
-from typing import Optional
-
-# from time import daylight
-from time import gmtime
-from time import localtime
-from time import time
-from time import timezone
-
 from os.path import splitext
 
+# from time import daylight
+from time import altzone, gmtime, localtime, time, timezone
+from typing import Optional
+
 import rdflib.graph  # avoid circular dependency
-from rdflib.namespace import Namespace, XSD
-from rdflib.namespace import NamespaceManager
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.term import URIRef
 from rdflib.compat import sign
+from rdflib.namespace import XSD, Namespace, NamespaceManager
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = [
     "list2set",

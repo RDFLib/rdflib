@@ -1,9 +1,9 @@
-from rdflib.term import URIRef, BNode
-from rdflib.namespace import RDFS
 from io import BytesIO
-from rdflib.plugins.serializers.rdfxml import XMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import RDFS
+from rdflib.plugins.serializers.rdfxml import XMLSerializer
+from rdflib.term import BNode, URIRef
 
 
 class SerializerTestBase(object):

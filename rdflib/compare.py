@@ -73,10 +73,7 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
+from __future__ import absolute_import, division, print_function
 
 # TODO:
 # - Doesn't handle quads.
@@ -92,23 +89,23 @@ __all__ = [
     "similar",
 ]
 
-from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.term import BNode, Node, URIRef, IdentifiedNode
-from hashlib import sha256
-
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
+from hashlib import sha256
 from typing import (
-    Set,
-    Dict,
     TYPE_CHECKING,
-    Union,
-    List,
-    Tuple,
     Callable,
-    Optional,
+    Dict,
     Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
 )
+
+from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate
+from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
     from _hashlib import HASH
