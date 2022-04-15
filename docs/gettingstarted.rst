@@ -45,13 +45,13 @@ who hasn't worked with RDF before.*
 The primary interface that RDFLib exposes for working with RDF is a
 :class:`~rdflib.graph.Graph`.
 
-RDFLib graphs are un-sorted containers; they have ordinary ``set``
+RDFLib graphs are un-sorted containers; they have ordinary Python ``set``
 operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus
 methods that search triples and return them in arbitrary order.
 
 RDFLib graphs also redefine certain built-in Python methods in order
-to behave in a predictable way: they `emulate container types
-<http://docs.python.org/release/2.5.2/ref/sequence-types.html>`_ and
+to behave in a predictable way. They do this by `emulating container types
+<https://docs.python.org/3.7/reference/datamodel.html#emulating-container-types>`_ and
 are best thought of as a set of 3-item tuples ("triples", in RDF-speak):
 
 .. code-block:: text

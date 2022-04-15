@@ -467,11 +467,11 @@ class BerkeleyDB(Store):
         cursor.close()
         return count
 
-    def bind(self, prefix, namespace):
+    def bind(self, prefix, namespace, override=True):
         prefix = prefix.encode("utf-8")
         namespace = namespace.encode("utf-8")
         bound_prefix = self.__prefix.get(namespace)
-        if bound_prefix:
+        if override and bound_prefix:
             self.__namespace.delete(bound_prefix)
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace

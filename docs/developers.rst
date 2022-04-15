@@ -69,7 +69,7 @@ here, we will not reject a PR just because it does not.
 
 Tests
 -----
-Any new functionality being added to RDFLib _must_ have unit tests and
+Any new functionality being added to RDFLib *must* have unit tests and
 should have doc tests supplied.
 
 Typically, you should add your functionality and new tests to a branch of

@@ -6,7 +6,7 @@ from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
-    from rdflib.term import IdentifiedNode, Node
+    from rdflib.term import IdentifiedNode, Node, URIRef
 
 """
 ============
@@ -364,13 +364,15 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix, namespace):
-        """ """
+    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+        """
+        :param override: rebind, even if the given namespace is already bound to another prefix.
+        """
 
-    def prefix(self, namespace):
-        """ """
+    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+        """"""
 
-    def namespace(self, prefix):
+    def namespace(self, prefix: str) -> Optional["URIRef"]:
         """ """
 
     def namespaces(self):

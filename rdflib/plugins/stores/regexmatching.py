@@ -155,8 +155,8 @@ class REGEXMatching(Store):
     def remove_context(self, identifier):
         self.storage.remove((None, None, None), identifier)
 
-    def bind(self, prefix, namespace):
-        self.storage.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        self.storage.bind(prefix, namespace, override=override)
 
     def prefix(self, namespace):
         return self.storage.prefix(namespace)

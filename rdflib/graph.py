@@ -330,6 +330,7 @@ class Graph(Node):
         identifier: Optional[Union[IdentifiedNode, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
+        bind_namespaces: str = "core",
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -344,6 +345,7 @@ class Graph(Node):
         else:
             self.__store = store
         self.__namespace_manager = namespace_manager
+        self.bind_namespaces = bind_namespaces
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
@@ -362,7 +364,7 @@ class Graph(Node):
         this graph's namespace-manager
         """
         if self.__namespace_manager is None:
-            self.__namespace_manager = NamespaceManager(self)
+            self.__namespace_manager = NamespaceManager(self, self.bind_namespaces)
         return self.__namespace_manager
 
     @namespace_manager.setter
@@ -1786,6 +1788,10 @@ class ConjunctiveGraph(Graph):
                 yield context
             else:
                 yield self.get_context(context)
+
+    def get_graph(self, identifier: Union[URIRef, BNode]) -> Union[Graph, None]:
+        """Returns the graph identified by given identifier"""
+        return [x for x in self.contexts() if x.identifier == identifier][0]
 
     def get_context(
         self,
