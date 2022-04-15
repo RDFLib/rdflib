@@ -803,7 +803,6 @@ from rdflib.namespace._VOID import VOID
 from rdflib.namespace._WGS import WGS
 from rdflib.namespace._XSD import XSD
 
-
 # prefixes for the core Namespaces shipped with RDFLib
 NAMESPACE_PREFIXES_CORE = {
     "owl": OWL,

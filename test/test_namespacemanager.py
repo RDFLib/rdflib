@@ -2,10 +2,15 @@ import sys
 from pathlib import Path
 
 from rdflib.term import URIRef
+
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
-from rdflib.namespace import NAMESPACE_PREFIXES_CORE, NAMESPACE_PREFIXES_RDFLIB
-from rdflib.namespace import OWL, RDFS
+from rdflib.namespace import (
+    NAMESPACE_PREFIXES_CORE,
+    NAMESPACE_PREFIXES_RDFLIB,
+    OWL,
+    RDFS,
+)
 
 
 def test_core_prefixes_bound():
@@ -22,8 +27,9 @@ def test_rdflib_prefixes_bound():
     g = Graph(bind_namespaces="rdflib")
 
     # the core 5 + the extra 23 namespaces with prefixes
-    assert len(list(g.namespaces())) == \
-           len(NAMESPACE_PREFIXES_CORE) + len(list(NAMESPACE_PREFIXES_RDFLIB))
+    assert len(list(g.namespaces())) == len(NAMESPACE_PREFIXES_CORE) + len(
+        list(NAMESPACE_PREFIXES_RDFLIB)
+    )
 
 
 def test_cc_prefixes_bound():
@@ -60,10 +66,15 @@ def test_replace():
 
     g.bind("rdfs", "http://example.com", replace=False)
 
-    assert ("rdfs", URIRef("http://example.com")) not in list(g.namespace_manager.namespaces())
-    assert ("rdfs1", URIRef("http://example.com")) in list(g.namespace_manager.namespaces())
-
+    assert ("rdfs", URIRef("http://example.com")) not in list(
+        g.namespace_manager.namespaces()
+    )
+    assert ("rdfs1", URIRef("http://example.com")) in list(
+        g.namespace_manager.namespaces()
+    )
 
     g.bind("rdfs", "http://example.com", replace=True)
 
-    assert ("rdfs", URIRef("http://example.com")) in list(g.namespace_manager.namespaces())
+    assert ("rdfs", URIRef("http://example.com")) in list(
+        g.namespace_manager.namespaces()
+    )
