@@ -1513,12 +1513,12 @@ class Graph(Node):
         def do_de_skolemize2(t):
             (s, p, o) = t
 
-            if RDFLibGenid._is_external_skolem(s):
+            if Genid._is_external_skolem(s):
                 s = Genid(s).de_skolemize()
             elif RDFLibGenid._is_rdflib_skolem(s):
                 s = RDFLibGenid(s).de_skolemize()
 
-            if RDFLibGenid._is_external_skolem(o):
+            if Genid._is_external_skolem(o):
                 o = Genid(o).de_skolemize()
             elif RDFLibGenid._is_rdflib_skolem(o):
                 o = RDFLibGenid(o).de_skolemize()
