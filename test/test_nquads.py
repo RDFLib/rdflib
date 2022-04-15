@@ -1,7 +1,8 @@
 import os
 import unittest
-from rdflib import ConjunctiveGraph, URIRef, Namespace
 from test import TEST_DIR
+
+from rdflib import ConjunctiveGraph, Namespace, URIRef
 
 TEST_BASE = "test/nquads.rdflib"
 

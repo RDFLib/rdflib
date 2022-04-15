@@ -1,14 +1,14 @@
-from os import environ, chdir, getcwd, path as p
 import json
 import os
+from os import chdir, environ, getcwd
+from os import path as p
 from typing import Tuple
-
 
 import pytest
 
 from rdflib.term import URIRef
-from . import runner
 
+from . import runner
 
 TC_BASE = "https://w3c.github.io/json-ld-api/tests/toRdf/"
 

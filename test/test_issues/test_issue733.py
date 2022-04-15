@@ -5,10 +5,10 @@ zeroOrMore ('*') property paths and specifying neither the
 subject or the object.
 """
 
-from rdflib import URIRef, Graph
 import unittest
 
-from rdflib.namespace import RDF, RDFS, NamespaceManager, Namespace
+from rdflib import Graph, URIRef
+from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager
 
 
 class TestIssue733(unittest.TestCase):

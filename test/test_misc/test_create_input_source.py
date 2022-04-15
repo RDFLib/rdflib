@@ -1,4 +1,5 @@
 import pytest
+
 from rdflib.parser import create_input_source
 
 

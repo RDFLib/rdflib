@@ -1,4 +1,4 @@
-from rdflib import Graph, RDF
+from rdflib import RDF, Graph
 
 
 def test_recursive_list_detection():

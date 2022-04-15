@@ -1,11 +1,13 @@
 """This runs the nquads tests for the W3C RDF Working Group's N-Quads
 test suite."""
 
+from test.manifest import RDFT, RDFTest, read_manifest
 from typing import Callable, Dict
+
+import pytest
+
 from rdflib import ConjunctiveGraph
 from rdflib.term import Node, URIRef
-from test.manifest import RDFT, RDFTest, read_manifest
-import pytest
 
 verbose = False
 

@@ -1,6 +1,7 @@
 import tempfile
-import rdflib
 from pathlib import Path
+
+import rdflib
 
 
 def test_reading_from_path_object():

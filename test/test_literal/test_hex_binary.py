@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import binascii
-from rdflib import Literal, XSD
+import unittest
+
+from rdflib import XSD, Literal
 
 
 class HexBinaryTestCase(unittest.TestCase):

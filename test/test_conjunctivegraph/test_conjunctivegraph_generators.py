@@ -1,6 +1,6 @@
 import os
-from rdflib import ConjunctiveGraph, URIRef
 
+from rdflib import ConjunctiveGraph, URIRef
 
 timblcardn3 = open(
     os.path.join(

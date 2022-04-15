@@ -1,4 +1,5 @@
 import pytest
+
 from rdflib import Graph, Literal, Variable
 
 query_tpl = """

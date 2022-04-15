@@ -1,8 +1,8 @@
-from rdflib import Graph, URIRef, Literal, Variable
-from rdflib.plugins.sparql import prepareQuery
-from rdflib.compare import isomorphic
-
 from test import helper
+
+from rdflib import Graph, Literal, URIRef, Variable
+from rdflib.compare import isomorphic
+from rdflib.plugins.sparql import prepareQuery
 
 
 def test_service():

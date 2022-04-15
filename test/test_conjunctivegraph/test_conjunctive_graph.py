@@ -2,13 +2,13 @@
 Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
+from os import path
+
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph
-from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource
-from os import path
-
+from rdflib.term import BNode, Identifier, URIRef
 
 DATA = """
 <http://example.org/record/1> a <http://xmlns.com/foaf/0.1/Document> .

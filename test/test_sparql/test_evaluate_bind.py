@@ -4,7 +4,7 @@ Verify evaluation of BIND expressions of different types. See
 """
 import pytest
 
-from rdflib import Graph, URIRef, Literal, Variable
+from rdflib import Graph, Literal, URIRef, Variable
 
 
 def get_bind_tests():

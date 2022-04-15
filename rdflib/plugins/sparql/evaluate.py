@@ -16,36 +16,35 @@ also return a dict of list of dicts
 
 import collections
 import itertools
+import json as j
 import re
 from typing import Any, Deque, Dict, List, Union
-from urllib.request import urlopen, Request
 from urllib.parse import urlencode
-import json as j
+from urllib.request import Request, urlopen
+
 from pyparsing import ParseException
 
-from rdflib import Variable, Graph, BNode, URIRef, Literal
-from rdflib.plugins.sparql import CUSTOM_EVALS
-from rdflib.plugins.sparql.parserutils import CompValue, value
-from rdflib.plugins.sparql.sparql import (
-    QueryContext,
-    AlreadyBound,
-    FrozenBindings,
-    Bindings,
-    SPARQLError,
-)
+from rdflib import BNode, Graph, Literal, URIRef, Variable
+from rdflib.plugins.sparql import CUSTOM_EVALS, parser
+from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.evalutils import (
-    _filter,
-    _eval,
-    _join,
     _diff,
-    _minus,
-    _fillTemplate,
     _ebv,
+    _eval,
+    _fillTemplate,
+    _filter,
+    _join,
+    _minus,
     _val,
 )
-
-from rdflib.plugins.sparql.aggregates import Aggregator
-from rdflib.plugins.sparql import parser
+from rdflib.plugins.sparql.parserutils import CompValue, value
+from rdflib.plugins.sparql.sparql import (
+    AlreadyBound,
+    Bindings,
+    FrozenBindings,
+    QueryContext,
+    SPARQLError,
+)
 from rdflib.term import Identifier
 
 

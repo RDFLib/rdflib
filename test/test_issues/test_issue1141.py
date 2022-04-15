@@ -1,8 +1,8 @@
 import unittest
 
 from rdflib import Graph
-from rdflib.plugins.stores.memory import Memory, SimpleMemory
 from rdflib.plugins.stores.auditable import AuditableStore
+from rdflib.plugins.stores.memory import Memory, SimpleMemory
 
 
 class TestIssue1141(unittest.TestCase):

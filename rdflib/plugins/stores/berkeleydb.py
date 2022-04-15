@@ -1,10 +1,11 @@
 import logging
-from threading import Thread
-from os.path import exists, abspath
 from os import mkdir
-from rdflib.store import Store, VALID_STORE, NO_STORE
-from rdflib.term import URIRef
+from os.path import abspath, exists
+from threading import Thread
 from urllib.request import pathname2url
+
+from rdflib.store import NO_STORE, VALID_STORE, Store
+from rdflib.term import URIRef
 
 
 def bb(u):

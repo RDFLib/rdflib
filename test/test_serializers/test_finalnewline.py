@@ -1,5 +1,5 @@
-from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
+from rdflib import ConjunctiveGraph, URIRef
 
 
 def test_finalnewline():

@@ -1,8 +1,9 @@
-import sys
-import subprocess
-from pathlib import Path
-from rdflib import RDF, SKOS
 import json
+import subprocess
+import sys
+from pathlib import Path
+
+from rdflib import RDF, SKOS
 
 
 def test_definednamespace_creator_qb():

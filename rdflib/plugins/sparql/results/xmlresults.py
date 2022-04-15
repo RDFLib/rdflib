@@ -1,15 +1,12 @@
 import logging
 from typing import IO, Optional
-
-from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
+from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
+from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.compat import etree
-
-from rdflib import Literal, URIRef, BNode, Variable
-from rdflib.query import Result, ResultParser, ResultSerializer, ResultException
-
+from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 
 SPARQL_XML_NAMESPACE = "http://www.w3.org/2005/sparql-results#"
 RESULTS_NS_ET = "{%s}" % SPARQL_XML_NAMESPACE

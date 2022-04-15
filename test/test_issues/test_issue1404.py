@@ -1,6 +1,6 @@
-from rdflib import Graph, URIRef, FOAF
-from rdflib.term import RDFLibGenid
+from rdflib import FOAF, Graph, URIRef
 from rdflib.compare import isomorphic
+from rdflib.term import RDFLibGenid
 
 
 def test_skolem_de_skolem_roundtrip():

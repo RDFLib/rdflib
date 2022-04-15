@@ -1,6 +1,6 @@
 from rdflib import Graph
-from rdflib.resource import Resource
 from rdflib.namespace import RDFS
+from rdflib.resource import Resource
 
 
 def test_properties(rdfs_graph: Graph) -> None:
