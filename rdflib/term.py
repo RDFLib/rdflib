@@ -472,7 +472,7 @@ class BNode(IdentifiedNode):
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
-        return RDFLibGenid(urljoin(authority, skolem))
+        return URIRef(urljoin(authority, skolem))
 
 
 class Literal(Identifier):

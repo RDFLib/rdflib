@@ -1,5 +1,4 @@
 from rdflib import Graph, URIRef, FOAF
-from rdflib.term import RDFLibGenid
 from rdflib.compare import isomorphic
 
 
@@ -20,7 +19,10 @@ def test_skolem_de_skolem_roundtrip():
     graph = Graph()
     graph.parse(data=ttl, format='turtle')
 
-    query = {"subject": URIRef("http://www.wikidata.org/entity/Q1203"), "predicate": FOAF.knows}
+    query = {
+        "subject": URIRef("http://www.wikidata.org/entity/Q1203"),
+        "predicate": FOAF.knows,
+    }
 
     # Save the original bnode id.
     bnode_id = graph.value(**query)
@@ -29,7 +31,7 @@ def test_skolem_de_skolem_roundtrip():
 
     # Check the BNode is now an RDFLibGenid after skolemization.
     skolem_bnode = skolemized_graph.value(**query)
-    assert type(skolem_bnode) == RDFLibGenid
+    assert type(skolem_bnode) == URIRef
 
     # Check that the original bnode id exists somewhere in the uri.
     assert bnode_id in skolem_bnode
