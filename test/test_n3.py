@@ -66,7 +66,6 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 class TestN3Case:
-
     def test_base_cumulative(self):
         """
         Test that the n3 parser supports base declarations
