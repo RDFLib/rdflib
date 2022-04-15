@@ -8,15 +8,18 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
 from decimal import Decimal
-from typing import Any, Optional, Sequence, Tuple, Type
+from typing import Any, Optional, Sequence, Tuple, Type, Union
 import unittest
 import datetime
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from rdflib import XSD
+from rdflib.namespace import RDF, Namespace
 
 import pytest
+
+EGNS = Namespace("http://example.com/")
 
 
 class TestLiteral(unittest.TestCase):
@@ -79,6 +82,62 @@ class TestNewPT:
         """
         with pytest.raises(exception_type):
             Literal("foo", lang=lang)
+
+    @pytest.mark.parametrize(
+        "lexical, datatype, is_ill_formed",
+        [
+            ("true", XSD.boolean, False),
+            ("1", XSD.boolean, False),
+            (b"false", XSD.boolean, False),
+            (b"0", XSD.boolean, False),
+            ("yes", XSD.boolean, True),
+            ("200", XSD.byte, True),
+            (b"-128", XSD.byte, False),
+            ("127", XSD.byte, False),
+            ("255", XSD.unsignedByte, False),
+            ("-100", XSD.unsignedByte, True),
+            (b"200", XSD.unsignedByte, False),
+            (b"64300", XSD.short, True),
+            ("-6000", XSD.short, False),
+            ("1000000", XSD.nonNegativeInteger, False),
+            ("-100", XSD.nonNegativeInteger, True),
+            ("a", XSD.double, True),
+            ("0", XSD.double, False),
+            ("0.1", XSD.double, False),
+            ("0.1", XSD.decimal, False),
+            ("0.g", XSD.decimal, True),
+            ("b", XSD.integer, True),
+            ("2147483647", XSD.int, False),
+            ("2147483648", XSD.int, True),
+            ("2147483648", XSD.integer, False),
+            ("valid ASCII", XSD.string, False),
+            pytest.param("هذا رجل ثلج⛄", XSD.string, False, id="snowman-ar"),
+            ("More ASCII", None, None),
+            ("Not a valid time", XSD.time, True),
+            ("Not a valid date", XSD.date, True),
+            ("7264666c6962", XSD.hexBinary, False),
+
+            # RDF.langString is not a recognized datatype IRI as we assign no literal value to it, though this should likely change.
+            ("English string", RDF.langString, None),
+
+            # The datatypes IRIs below should never be recognized.
+            ("[p]", EGNS.unrecognized, None),
+        ],
+    )
+    def test_ill_formed_literals(
+        self,
+        lexical: Union[bytes, str],
+        datatype: Optional[URIRef],
+        is_ill_formed: Optional[bool],
+    ) -> None:
+        """
+        ill_formed has the correct value.
+        """
+        lit = Literal(lexical, datatype=datatype)
+        assert lit.ill_formed is is_ill_formed
+        if is_ill_formed is False:
+            # If the literal is not ill formed it should have a value associated with it.
+            assert lit.value is not None
 
 
 class TestNew(unittest.TestCase):
