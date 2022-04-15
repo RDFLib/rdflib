@@ -1,6 +1,5 @@
 from rdflib import FOAF, Graph, URIRef
 from rdflib.compare import isomorphic
-from rdflib.term import RDFLibGenid
 
 
 def test_skolem_de_skolem_roundtrip():
@@ -30,7 +29,7 @@ def test_skolem_de_skolem_roundtrip():
 
     skolemized_graph = graph.skolemize()
 
-    # Check the BNode is now an RDFLibGenid after skolemization.
+    # Check the BNode is now a URIRef after skolemization.
     skolem_bnode = skolemized_graph.value(**query)
     assert type(skolem_bnode) == URIRef
 
