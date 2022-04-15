@@ -23,6 +23,7 @@ from urllib.parse import urlparse
 from urllib.request import url2pathname
 from warnings import warn
 
+import rdflib.util  # avoid circular dependency
 from rdflib import exceptions, namespace, plugin, query
 from rdflib.collection import Collection
 from rdflib.exceptions import ParserError
@@ -33,7 +34,6 @@ from rdflib.resource import Resource
 from rdflib.serializer import Serializer
 from rdflib.store import Store
 from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid, URIRef
-import rdflib.util  # avoid circular dependency
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
