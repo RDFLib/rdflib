@@ -9,8 +9,9 @@ N3, by contrast, succeeds:
 
 g.parse(data='<a:> <b:> <c:> .', format='n3')
 """
-from rdflib import Graph
 import unittest
+
+from rdflib import Graph
 
 
 class TestIssue920(unittest.TestCase):

@@ -1,5 +1,6 @@
-from rdflib import Graph
 import unittest
+
+from rdflib import Graph
 
 
 class TestIssue910(unittest.TestCase):

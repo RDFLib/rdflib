@@ -1,17 +1,15 @@
+import itertools
 import logging
 import unittest
-from rdflib import RDF, Graph, Literal, Namespace, URIRef
-from tempfile import TemporaryDirectory
 from pathlib import Path, PurePath
-
+from tempfile import TemporaryDirectory
+from test.testutils import GraphHelper
 from typing import Tuple, cast
 
 import pytest
-import itertools
 
+from rdflib import RDF, Graph, Literal, Namespace, URIRef
 from rdflib.graph import ConjunctiveGraph
-
-from test.testutils import GraphHelper
 
 
 @pytest.mark.parametrize(

@@ -5,7 +5,7 @@ zeroOrMore ('*') property paths and specifying neither the
 subject or the object.
 """
 
-from rdflib import URIRef, Graph
+from rdflib import Graph, URIRef
 
 
 def test_issue_715():

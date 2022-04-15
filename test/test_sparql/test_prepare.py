@@ -1,10 +1,8 @@
 import os
-from rdflib.plugins.sparql import prepareUpdate, prepareQuery
+
+from rdflib import Graph, URIRef
 from rdflib.namespace import FOAF
-from rdflib import (
-    Graph,
-    URIRef,
-)
+from rdflib.plugins.sparql import prepareQuery, prepareUpdate
 
 
 def test_prepare_update():

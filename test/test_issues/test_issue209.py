@@ -1,6 +1,7 @@
-import rdflib
-import unittest
 import threading
+import unittest
+
+import rdflib
 
 
 def makeNode():

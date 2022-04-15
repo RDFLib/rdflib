@@ -1,7 +1,7 @@
 import collections
 
-from rdflib import URIRef, Graph, Literal
-from rdflib.namespace import VOID, RDF
+from rdflib import Graph, Literal, URIRef
+from rdflib.namespace import RDF, VOID
 
 
 def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):

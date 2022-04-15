@@ -1,5 +1,6 @@
 import unittest
-from rdflib.graph import Graph, BatchAddGraph
+
+from rdflib.graph import BatchAddGraph, Graph
 from rdflib.term import URIRef
 
 

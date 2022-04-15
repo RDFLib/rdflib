@@ -6,12 +6,14 @@ formats that are related to turtle, such as ntriples, nquads, trig and n3.
 import itertools
 import logging
 from typing import Callable, Dict, Iterable, List, Tuple
-import pytest
-from rdflib.graph import ConjunctiveGraph, Graph
 
+import pytest
+
+from rdflib import Namespace
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
-from rdflib import Namespace
+
 from .testutils import GraphHelper
 
 # https://www.w3.org/TR/turtle/#string

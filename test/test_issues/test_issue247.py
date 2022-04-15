@@ -1,5 +1,6 @@
-import rdflib
 import unittest
+
+import rdflib
 
 failxml = """\
 <rdf:RDF

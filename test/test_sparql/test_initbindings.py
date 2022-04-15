@@ -1,7 +1,5 @@
+from rdflib import ConjunctiveGraph, Literal, Namespace, URIRef, Variable
 from rdflib.plugins.sparql import prepareQuery
-
-
-from rdflib import ConjunctiveGraph, URIRef, Literal, Namespace, Variable
 
 g = ConjunctiveGraph()
 

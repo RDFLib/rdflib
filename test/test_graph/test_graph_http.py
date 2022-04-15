@@ -1,15 +1,14 @@
-from rdflib import Graph, Namespace
-
-from http.server import BaseHTTPRequestHandler
-from urllib.error import HTTPError
-from test.testutils import (
-    SimpleHTTPMock,
-    MockHTTPResponse,
-    ctx_http_server,
-    GraphHelper,
-)
 import unittest
+from http.server import BaseHTTPRequestHandler
+from test.testutils import (
+    GraphHelper,
+    MockHTTPResponse,
+    SimpleHTTPMock,
+    ctx_http_server,
+)
+from urllib.error import HTTPError
 
+from rdflib import Graph, Namespace
 
 """
 Test that correct content negotiation headers are passed

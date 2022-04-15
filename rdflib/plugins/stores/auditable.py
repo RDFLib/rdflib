@@ -15,9 +15,10 @@ system fails): A and I out of ACID.
 
 """
 
-from rdflib.store import Store
-from rdflib import Graph, ConjunctiveGraph
 import threading
+
+from rdflib import ConjunctiveGraph, Graph
+from rdflib.store import Store
 
 destructiveOpLocks = {
     "add": None,

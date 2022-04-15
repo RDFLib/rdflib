@@ -1,7 +1,5 @@
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib.term import Literal
-
+from rdflib.term import BNode, Literal
 
 __all__ = ["Collection"]
 

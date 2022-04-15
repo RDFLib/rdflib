@@ -1,14 +1,13 @@
-import logging
-from typing import Optional, TYPE_CHECKING, Tuple
-from urllib.request import urlopen, Request
-from urllib.parse import urlencode
-from urllib.error import HTTPError, URLError
 import base64
-
+import logging
 from io import BytesIO
+from typing import TYPE_CHECKING, Optional, Tuple
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-from rdflib.query import Result
 from rdflib import BNode
+from rdflib.query import Result
 
 log = logging.getLogger(__name__)
 

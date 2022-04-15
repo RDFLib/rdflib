@@ -1,5 +1,7 @@
 import logging
+
 import pytest
+
 import rdflib
 import rdflib.term
 

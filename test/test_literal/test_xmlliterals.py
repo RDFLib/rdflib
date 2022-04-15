@@ -1,12 +1,12 @@
 import logging
 import textwrap
+import xml.dom.minidom
 from typing import Callable, Optional, Sequence
 
 import pytest
+
 import rdflib
 from rdflib import RDF, Literal
-
-import xml.dom.minidom
 
 
 def testPythonRoundtrip():

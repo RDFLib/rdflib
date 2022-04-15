@@ -25,17 +25,6 @@ information.
 
 """
 
-from rdflib.store import Store
-from rdflib.parser import Parser
-from rdflib.serializer import Serializer
-from rdflib.query import (
-    ResultParser,
-    ResultSerializer,
-    Processor,
-    Result,
-    UpdateProcessor,
-)
-from rdflib.exceptions import Error
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -50,10 +39,22 @@ from typing import (
     overload,
 )
 
+from rdflib.exceptions import Error
+from rdflib.parser import Parser
+from rdflib.query import (
+    Processor,
+    Result,
+    ResultParser,
+    ResultSerializer,
+    UpdateProcessor,
+)
+from rdflib.serializer import Serializer
+from rdflib.store import Store
+
 if sys.version_info < (3, 8):
-    from importlib_metadata import entry_points, EntryPoint
+    from importlib_metadata import EntryPoint, entry_points
 else:
-    from importlib.metadata import entry_points, EntryPoint
+    from importlib.metadata import EntryPoint, entry_points
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 

@@ -3,7 +3,6 @@ import re
 from hashlib import md5
 from uuid import uuid4
 
-
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
 
 

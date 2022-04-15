@@ -1,49 +1,47 @@
 from __future__ import print_function
 
-import os
-import sys
-from types import TracebackType
-import isodate
 import datetime
+import email.message
+import os
 import random
-
+import sys
+import unittest
 from contextlib import AbstractContextManager, contextmanager
+from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
+from pathlib import PurePath, PureWindowsPath
+from threading import Thread
+from traceback import print_exc
+from types import TracebackType
 from typing import (
-    Callable,
-    Iterable,
-    List,
-    Optional,
     TYPE_CHECKING,
-    Type,
+    Any,
+    Callable,
+    Dict,
+    Iterable,
     Iterator,
+    List,
+    NamedTuple,
+    Optional,
     Set,
     Tuple,
-    Dict,
-    Any,
+    Type,
     TypeVar,
     Union,
     cast,
-    NamedTuple,
 )
-from urllib.parse import ParseResult, unquote, urlparse, parse_qs
-from traceback import print_exc
-from threading import Thread
-from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
-import email.message
-import unittest
-
-from rdflib import BNode, Graph, ConjunctiveGraph
-from rdflib.term import Identifier, Literal, Node, URIRef
 from unittest.mock import MagicMock, Mock
 from urllib.error import HTTPError
+from urllib.parse import ParseResult, parse_qs, unquote, urlparse
 from urllib.request import urlopen
-from pathlib import PurePath, PureWindowsPath
+
+import isodate
 from nturl2path import url2pathname as nt_url2pathname
+
 import rdflib.compare
-
 import rdflib.plugin
+from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.plugin import Plugin
-
+from rdflib.term import Identifier, Literal, Node, URIRef
 
 PluginT = TypeVar("PluginT")
 

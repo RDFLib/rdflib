@@ -9,13 +9,12 @@ You can draw the graph of an RDF file directly:
 
 """
 
+import collections
+import html
+import sys
+
 import rdflib
 import rdflib.extras.cmdlineutils
-
-import sys
-import html
-import collections
-
 from rdflib import XSD
 
 LABEL_PROPERTIES = [

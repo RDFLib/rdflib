@@ -10,10 +10,10 @@ namespace:
 
 Nicholas J. Car, Dec, 2021
 """
-import sys
-from pathlib import Path
 import argparse
 import datetime
+import sys
+from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
 

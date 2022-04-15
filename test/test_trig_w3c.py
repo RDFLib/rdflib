@@ -2,16 +2,16 @@
 
 """
 
-from typing import Callable, Dict
-from rdflib import ConjunctiveGraph
-from rdflib.namespace import Namespace, split_uri
-from rdflib.compare import graph_diff, isomorphic
-from rdflib.term import Node, URIRef
-
+import os
 from test.manifest import RDFT, RDFTest, read_manifest
+from typing import Callable, Dict
+
 import pytest
 
-import os
+from rdflib import ConjunctiveGraph
+from rdflib.compare import graph_diff, isomorphic
+from rdflib.namespace import Namespace, split_uri
+from rdflib.term import Node, URIRef
 
 verbose = False
 

@@ -1,7 +1,8 @@
-from io import BytesIO
 import pickle
+from io import BytesIO
+from typing import TYPE_CHECKING, Iterable, Optional, Tuple
+
 from rdflib.events import Dispatcher, Event
-from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
     from rdflib.term import Node, IdentifiedNode, URIRef
@@ -154,11 +155,8 @@ class Store(object):
     @property
     def node_pickler(self):
         if self.__node_pickler is None:
-            from rdflib.term import URIRef
-            from rdflib.term import BNode
-            from rdflib.term import Literal
             from rdflib.graph import Graph, QuotedGraph
-            from rdflib.term import Variable
+            from rdflib.term import BNode, Literal, URIRef, Variable
 
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")

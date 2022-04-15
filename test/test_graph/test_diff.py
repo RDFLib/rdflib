@@ -1,12 +1,13 @@
-from typing import Set, Tuple
 import unittest
-from unittest.case import expectedFailure
-import rdflib
-from rdflib.compare import graph_diff
-from rdflib.namespace import RDF, FOAF
-from rdflib import Graph
-from rdflib.term import Node, BNode, Literal
 from test.testutils import GraphHelper
+from typing import Set, Tuple
+from unittest.case import expectedFailure
+
+import rdflib
+from rdflib import Graph
+from rdflib.compare import graph_diff
+from rdflib.namespace import FOAF, RDF
+from rdflib.term import BNode, Literal, Node
 
 """Test for graph_diff - much more extensive testing
 would certainly be possible"""
