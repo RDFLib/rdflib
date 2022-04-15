@@ -2,7 +2,6 @@ import unittest
 from unittest import mock
 
 import rdflib
-
 from rdflib import ConjunctiveGraph
 from rdflib.parser import URLInputSource
 

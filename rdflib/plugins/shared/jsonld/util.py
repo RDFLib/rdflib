@@ -12,18 +12,16 @@ else:
     except ImportError:
         import simplejson as json
 
-from posixpath import sep
-from posixpath import normpath
-
+from io import TextIOBase, TextIOWrapper
+from posixpath import normpath, sep
 from urllib.parse import urljoin, urlsplit, urlunsplit
+
 from rdflib.parser import (
-    create_input_source,
     BytesIOWrapper,
     PythonInputSource,
     StringInputSource,
+    create_input_source,
 )
-
-from io import TextIOBase, TextIOWrapper
 
 
 def source_to_json(source):

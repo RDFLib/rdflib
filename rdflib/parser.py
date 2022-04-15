@@ -10,15 +10,14 @@ want to do so through the Graph class parse method.
 
 """
 
-from typing import TYPE_CHECKING
 import codecs
 import os
 import pathlib
 import sys
-
-from io import BytesIO, RawIOBase, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
+from io import BufferedIOBase, BytesIO, RawIOBase, StringIO, TextIOBase, TextIOWrapper
 from typing import (
     IO,
+    TYPE_CHECKING,
     Any,
     BinaryIO,
     List,
@@ -26,23 +25,19 @@ from typing import (
     TextIO,
     Tuple,
     Union,
-    TYPE_CHECKING,
 )
-
-from urllib.request import Request
-from urllib.request import url2pathname
-from urllib.request import urlopen
-from urllib.parse import urljoin
 from urllib.error import HTTPError
-
+from urllib.parse import urljoin
+from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
 from rdflib import __version__
-from rdflib.term import URIRef
 from rdflib.namespace import Namespace
+from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from http.client import HTTPMessage, HTTPResponse
+
     from rdflib import Graph
 
 __all__ = [

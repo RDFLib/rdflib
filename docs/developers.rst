@@ -38,7 +38,7 @@ met:
 
   There should either be existing tests that cover the changed code and
   behaviour, or the PR should include tests. For more information about what is
-  considered adequate testing see the :ref:`Tests section <Tests>`.
+  considered adequate testing see the :ref:`Tests section <tests>`.
 
 * Documentation that covers something that changed has been updated.
 
@@ -65,7 +65,7 @@ the users of this project.
 Please note that while we would like all PRs to follow the guidelines given
 here, we will not reject a PR just because it does not.
 
-.. Tests:
+.. _tests:
 
 Tests
 -----

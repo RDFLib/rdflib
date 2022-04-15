@@ -1,5 +1,6 @@
-import rdflib.plugins.sparql.parser
 import pprint
+
+import rdflib.plugins.sparql.parser
 
 
 def test_parser_structure() -> None:

@@ -5,25 +5,19 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
 
+import collections
 import functools
 import operator
-import collections
-
 from functools import reduce
-
-from rdflib import Literal, Variable, URIRef, BNode
-
-from rdflib.plugins.sparql.sparql import Prologue, Query, Update
-from rdflib.plugins.sparql.parserutils import CompValue, Expr
-from rdflib.plugins.sparql.operators import (
-    and_,
-    TrueFilter,
-    simplify as simplifyFilters,
-)
-from rdflib.paths import InvPath, AlternativePath, SequencePath, MulPath, NegatedPath
 
 from pyparsing import ParseResults
 
+from rdflib import BNode, Literal, URIRef, Variable
+from rdflib.paths import AlternativePath, InvPath, MulPath, NegatedPath, SequencePath
+from rdflib.plugins.sparql.operators import TrueFilter, and_
+from rdflib.plugins.sparql.operators import simplify as simplifyFilters
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
+from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 
 # ---------------------------
 # Some convenience methods
@@ -1470,9 +1464,10 @@ def pprintAlgebra(q):
 
 
 if __name__ == "__main__":
-    import sys
-    from rdflib.plugins.sparql import parser
     import os.path
+    import sys
+
+    from rdflib.plugins.sparql import parser
 
     if os.path.exists(sys.argv[1]):
         q = open(sys.argv[1]).read()

@@ -1,12 +1,11 @@
+import json
 import logging
 import warnings
 from functools import lru_cache
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
-from unicodedata import category
-
 from pathlib import Path
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
+from unicodedata import category
+from urllib.parse import urldefrag, urljoin
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
 
@@ -239,6 +238,15 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in cls.__annotations__}
         return values
 
+    def as_jsonld_context(self, pfx: str) -> dict:
+        """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
+        terms = {pfx: str(self._NS)}
+        for key, term in self.__annotations__.items():
+            if issubclass(term, URIRef):
+                terms[key] = f'{pfx}:{key}'
+
+        return {'@context': terms}
+
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     """
@@ -438,14 +446,15 @@ class NamespaceManager(object):
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
 
-        if not _is_valid_uri(uri):
-            raise ValueError(
-                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
-                    uri
-                )
-            )
-
         if uri not in self.__cache:
+
+            if not _is_valid_uri(uri):
+                raise ValueError(
+                    '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
+                        uri
+                    )
+                )
+
             try:
                 namespace, name = split_uri(uri)
             except ValueError as e:
@@ -755,10 +764,10 @@ def get_longest_namespace(trie: Dict[str, Any], value: str) -> Optional[str]:
 from rdflib.namespace._BRICK import BRICK
 from rdflib.namespace._CSVW import CSVW
 from rdflib.namespace._DC import DC
+from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DCAT import DCAT
 from rdflib.namespace._DCMITYPE import DCMITYPE
 from rdflib.namespace._DCTERMS import DCTERMS
-from rdflib.namespace._DCAM import DCAM
 from rdflib.namespace._DOAP import DOAP
 from rdflib.namespace._FOAF import FOAF
 from rdflib.namespace._GEO import GEO

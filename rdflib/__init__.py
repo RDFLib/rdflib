@@ -86,8 +86,8 @@ __all__ = [
     "util",
 ]
 
-import sys
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +97,7 @@ try:
     if (
         not hasattr(__main__, "__file__")
         and sys.stdout is not None
+        and hasattr(sys.stderr, "isatty")
         and sys.stderr.isatty()
     ):
         # show log messages in interactive mode
@@ -156,13 +157,8 @@ In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
 
-from rdflib.term import URIRef, BNode, IdentifiedNode, Literal, Variable
-
-from rdflib.graph import Dataset, Graph, ConjunctiveGraph
-
-from rdflib import plugin
-from rdflib import query
-
+from rdflib import plugin, query
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import (
     BRICK,
     CSVW,
@@ -192,11 +188,11 @@ from rdflib.namespace import (
     XSD,
     Namespace,
 )
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef, Variable
 
 # tedious sop to flake8
 assert plugin
 assert query
 
 from rdflib import util
-
 from rdflib.container import *

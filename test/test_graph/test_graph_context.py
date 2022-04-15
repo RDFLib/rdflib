@@ -1,12 +1,13 @@
-import sys
 import os
-import unittest
-
-from tempfile import mkdtemp, mkstemp
 import shutil
+import sys
+import unittest
+from tempfile import mkdtemp, mkstemp
 
 import pytest
-from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
+
+from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
+
 
 class ContextTestCase(unittest.TestCase):
     store = "default"

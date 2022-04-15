@@ -1,23 +1,22 @@
 # -*- coding: UTF-8 -*-
 import json
 from functools import partial
+
 from rdflib import ConjunctiveGraph
 from rdflib.compare import isomorphic
 from rdflib.parser import InputSource
-from rdflib.plugins.parsers.jsonld import to_rdf, JsonLDParser
-from rdflib.plugins.serializers.jsonld import from_rdf
-from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
+from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
 
 # monkey-patch N-Quads parser via it's underlying W3CNTriplesParser to keep source bnode id:s ..
-from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_nodeid, bNode
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, bNode, r_nodeid
+from rdflib.plugins.serializers.jsonld import from_rdf
+from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
 
 
 def _preserving_nodeid(self, bnode_context=None):
     if not self.peek("_"):
         return False
     return bNode(self.eat(r_nodeid).group(1))
-
-
 
 
 DEFAULT_PARSER_VERSION = 1.0
@@ -46,7 +45,9 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
             source.content_type = options['contentType']
         if "redirectTo" in options:
             redir = suite_base + options['redirectTo']
-            local_redirect = redir.replace("https://w3c.github.io/json-ld-api/tests/", "./")
+            local_redirect = redir.replace(
+                "https://w3c.github.io/json-ld-api/tests/", "./"
+            )
             if f:
                 f.close()
             try:
@@ -59,13 +60,22 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
             source.setSystemId(redir)
     return source
 
+
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
     input_graph = ConjunctiveGraph()
     if cat == "remote-doc":
-        input_src = make_fake_urlinputsource(input_uri, format="json-ld", suite_base=suite_base, options=options)
+        input_src = make_fake_urlinputsource(
+            input_uri, format="json-ld", suite_base=suite_base, options=options
+        )
         p = JsonLDParser()
-        p.parse(input_src, input_graph, base=input_src.getPublicId(), context_data=context, generalized_rdf=True)
+        p.parse(
+            input_src,
+            input_graph,
+            base=input_src.getPublicId(),
+            context_data=context,
+            generalized_rdf=True,
+        )
     else:
         input_obj = _load_json(inputpath)
         to_rdf(
@@ -118,9 +128,17 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
         elif requested_version == "json-ld-1.0":
             version = 1.0
     if cat == "remote-doc":
-        input_src = make_fake_urlinputsource(input_uri, format="json-ld", options=options)
+        input_src = make_fake_urlinputsource(
+            input_uri, format="json-ld", options=options
+        )
         p = JsonLDParser()
-        p.parse(input_src, result_graph, base=input_uri, context_data=context, generalized_rdf=True)
+        p.parse(
+            input_src,
+            result_graph,
+            base=input_uri,
+            context_data=context,
+            generalized_rdf=True,
+        )
     else:
         to_rdf(
             input_obj,

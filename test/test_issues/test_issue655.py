@@ -1,6 +1,7 @@
-from decimal import Decimal
 import unittest
-from rdflib import Graph, Namespace, URIRef, Literal, XSD
+from decimal import Decimal
+
+from rdflib import XSD, Graph, Literal, Namespace, URIRef
 from rdflib.compare import to_isomorphic
 
 

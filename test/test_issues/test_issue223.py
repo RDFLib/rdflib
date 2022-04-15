@@ -1,6 +1,6 @@
+from rdflib.collection import Collection
 from rdflib.graph import Graph
 from rdflib.term import URIRef
-from rdflib.collection import Collection
 
 ttl = """
 @prefix : <http://example.org/>.

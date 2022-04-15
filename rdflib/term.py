@@ -21,11 +21,11 @@ underlying Graph:
 
 """
 import re
-
 from fractions import Fraction
 
 __all__ = [
     "bind",
+    "_is_valid_uri",
     "Node",
     "IdentifiedNode",
     "Identifier",
@@ -36,51 +36,44 @@ __all__ = [
 ]
 
 import logging
-import warnings
 import math
-
+import warnings
 import xml.dom.minidom
-
-from datetime import date, time, datetime, timedelta
-from re import sub, compile
-from collections import defaultdict
-
-from isodate import (
-    parse_time,
-    parse_date,
-    parse_datetime,
-    Duration,
-    parse_duration,
-    duration_isoformat,
-)
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
+from collections import defaultdict
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+from re import compile, sub
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+from urllib.parse import urldefrag, urljoin, urlparse
+
+from isodate import (
+    Duration,
+    duration_isoformat,
+    parse_date,
+    parse_datetime,
+    parse_duration,
+    parse_time,
+)
 
 import rdflib
 from rdflib.compat import long_type
 
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
-from urllib.parse import urlparse
-
-from decimal import Decimal
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Callable,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-    Type,
-)
-
-
 if TYPE_CHECKING:
-    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
     from .namespace import NamespaceManager
+    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
@@ -563,7 +556,8 @@ class Literal(Identifier):
     _language: Optional[str]
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
     _datatype: Optional[str]
-    __slots__ = ("_language", "_datatype", "_value")
+    _ill_formed: Optional[bool]
+    __slots__ = ("_language", "_datatype", "_value", "_ill_formed")
 
     def __new__(
         cls,
@@ -585,12 +579,13 @@ class Literal(Identifier):
             )
 
         if lang is not None and not _is_valid_langtag(lang):
-            raise ValueError("'%s' is not a valid language tag!" % lang)
+            raise ValueError(f"'{str(lang)}' is not a valid language tag!")
 
         if datatype:
             datatype = URIRef(datatype)
 
         value = None
+        ill_formed: Optional[bool] = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
@@ -606,7 +601,13 @@ class Literal(Identifier):
             # passed a string
             # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
-
+            if datatype and datatype in _toPythonMapping:
+                # datatype is a recognized datatype IRI:
+                # https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris
+                dt_uri: URIRef = URIRef(datatype)
+                checker = _check_well_formed_types.get(dt_uri, _well_formed_by_value)
+                well_formed = checker(lexical_or_value, value)
+                ill_formed = ill_formed or (not well_formed)
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -640,6 +641,7 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
+        inst._ill_formed = ill_formed
 
         return inst
 
@@ -661,6 +663,19 @@ class Literal(Identifier):
             return Literal(self.value, datatype=self.datatype, lang=self.language)
         else:
             return self
+
+    @property
+    def ill_formed(self) -> Optional[bool]:
+        """
+        For `recognized datatype IRIs
+        <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
+        this value will be `True` if the literal is ill formed, otherwise it
+        will be `False`. `Literal.value` (i.e. the `literal value <https://www.w3.org/TR/rdf11-concepts/#dfn-literal-value>`_) should always be defined if this property is `False`, but should not be considered reliable if this property is `True`.
+
+        If the literal's datatype is `None` or not in the set of `recognized datatype IRIs
+        <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
+        """
+        return self._ill_formed
 
     @property
     def value(self) -> Any:
@@ -1470,9 +1485,14 @@ def _unhexlify(value: Union[str, bytes, Literal]) -> bytes:
     return unhexlify(value)
 
 
-def _parseBoolean(value: str) -> bool:
-    true_accepted_values = ["1", "true"]
-    false_accepted_values = ["0", "false"]
+def _parseBoolean(value: Union[str, bytes]) -> bool:
+    """
+    Boolean is a datatype with value space {true,false},
+    lexical space {"true", "false","1","0"} and
+    lexical-to-value mapping {"true"→true, "false"→false, "1"→true, "0"→false}.
+    """
+    true_accepted_values = ["1", "true", b"1", b"true"]
+    false_accepted_values = ["0", "false", b"0", b"false"]
     new_value = value.lower()
     if new_value in true_accepted_values:
         return True
@@ -1482,6 +1502,102 @@ def _parseBoolean(value: str) -> bool:
             category=UserWarning,
         )
     return False
+
+
+def _well_formed_by_value(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    This function is used as the fallback for detecting ill-typed/ill-formed
+    literals and operates on the asumption that if a value (i.e.
+    `Literal.value`) could be determined for a Literal then it is not
+    ill-typed/ill-formed.
+
+    This function will be called with `Literal.lexical` and `Literal.value` as arguments.
+    """
+    return value is not None
+
+
+def _well_formed_unsignedlong(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    xsd:unsignedInteger and xsd:unsignedLong must not be negative
+    """
+    return len(lexical) > 0 and isinstance(value, long_type) and value >= 0
+
+
+def _well_formed_boolean(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    Boolean is a datatype with value space {true,false},
+    lexical space {"true", "false","1","0"} and
+    lexical-to-value mapping {"true"→true, "false"→false, "1"→true, "0"→false}.
+    """
+    return lexical in ("true", b"true", "false", b"false", "1", b"1", "0", b"0")
+
+
+def _well_formed_int(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    The value space of xs:int is the set of common single size integers (32 bits),
+    i.e., the integers between -2147483648 and 2147483647,
+    its lexical space allows any number of insignificant leading zeros.
+    """
+    return (
+        len(lexical) > 0
+        and isinstance(value, int)
+        and (-2147483648 <= value <= 2147483647)
+    )
+
+
+def _well_formed_unsignedint(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    xsd:unsignedInt has a 32bit value of between 0 and 4294967295
+    """
+    return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 4294967295)
+
+
+def _well_formed_short(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    The value space of xs:short is the set of common short integers (16 bits),
+    i.e., the integers between -32768 and 32767,
+    its lexical space allows any number of insignificant leading zeros.
+    """
+    return len(lexical) > 0 and isinstance(value, int) and (-32768 <= value <= 32767)
+
+
+def _well_formed_unsignedshort(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    xsd:unsignedShort has a 16bit value of between 0 and 65535
+    """
+    return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 65535)
+
+
+def _well_formed_byte(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    The value space of xs:byte is the set of common single byte integers (8 bits),
+    i.e., the integers between -128 and 127,
+    its lexical space allows any number of insignificant leading zeros.
+    """
+    return len(lexical) > 0 and isinstance(value, int) and (-128 <= value <= 127)
+
+
+def _well_formed_unsignedbyte(lexical: Union[str, bytes], value: Any) -> bool:
+    """
+    xsd:unsignedByte has a 8bit value of between 0 and 255
+    """
+    return len(lexical) > 0 and isinstance(value, int) and (0 <= value <= 255)
+
+
+def _well_formed_non_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
+    return isinstance(value, int) and value >= 0
+
+
+def _well_formed_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
+    return isinstance(value, int) and value > 0
+
+
+def _well_formed_non_positive_integer(lexical: Union[str, bytes], value: Any) -> bool:
+    return isinstance(value, int) and value <= 0
+
+
+def _well_formed_negative_integer(lexical: Union[str, bytes], value: Any) -> bool:
+    return isinstance(value, int) and value < 0
 
 
 # Cannot import Namespace/XSD because of circular dependencies
@@ -1673,15 +1789,15 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     URIRef(_XSD_PFX + "boolean"): _parseBoolean,
     URIRef(_XSD_PFX + "decimal"): Decimal,
     URIRef(_XSD_PFX + "integer"): long_type,
-    URIRef(_XSD_PFX + "nonPositiveInteger"): int,
+    URIRef(_XSD_PFX + "nonPositiveInteger"): long_type,
     URIRef(_XSD_PFX + "long"): long_type,
-    URIRef(_XSD_PFX + "nonNegativeInteger"): int,
-    URIRef(_XSD_PFX + "negativeInteger"): int,
-    URIRef(_XSD_PFX + "int"): long_type,
+    URIRef(_XSD_PFX + "nonNegativeInteger"): long_type,
+    URIRef(_XSD_PFX + "negativeInteger"): long_type,
+    URIRef(_XSD_PFX + "int"): int,
     URIRef(_XSD_PFX + "unsignedLong"): long_type,
-    URIRef(_XSD_PFX + "positiveInteger"): int,
+    URIRef(_XSD_PFX + "positiveInteger"): long_type,
     URIRef(_XSD_PFX + "short"): int,
-    URIRef(_XSD_PFX + "unsignedInt"): long_type,
+    URIRef(_XSD_PFX + "unsignedInt"): int,
     URIRef(_XSD_PFX + "byte"): int,
     URIRef(_XSD_PFX + "unsignedShort"): int,
     URIRef(_XSD_PFX + "unsignedByte"): int,
@@ -1691,6 +1807,21 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML,
+}
+
+_check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
+    URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
+    URIRef(_XSD_PFX + "nonPositiveInteger"): _well_formed_non_positive_integer,
+    URIRef(_XSD_PFX + "nonNegativeInteger"): _well_formed_non_negative_integer,
+    URIRef(_XSD_PFX + "negativeInteger"): _well_formed_negative_integer,
+    URIRef(_XSD_PFX + "positiveInteger"): _well_formed_positive_integer,
+    URIRef(_XSD_PFX + "int"): _well_formed_int,
+    URIRef(_XSD_PFX + "short"): _well_formed_short,
+    URIRef(_XSD_PFX + "byte"): _well_formed_byte,
+    URIRef(_XSD_PFX + "unsignedInt"): _well_formed_unsignedint,
+    URIRef(_XSD_PFX + "unsignedLong"): _well_formed_unsignedlong,
+    URIRef(_XSD_PFX + "unsignedShort"): _well_formed_unsignedshort,
+    URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
 }
 
 _toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}

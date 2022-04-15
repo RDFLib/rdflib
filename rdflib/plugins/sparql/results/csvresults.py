@@ -11,9 +11,8 @@ import codecs
 import csv
 from typing import IO
 
-from rdflib import Variable, BNode, URIRef, Literal
-
-from rdflib.query import Result, ResultSerializer, ResultParser
+from rdflib import BNode, Literal, URIRef, Variable
+from rdflib.query import Result, ResultParser, ResultSerializer
 
 
 class CSVResultParser(ResultParser):

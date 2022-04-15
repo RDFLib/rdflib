@@ -5,9 +5,9 @@ Code for carrying out Update Operations
 """
 
 from rdflib import Graph, Variable
-from rdflib.plugins.sparql.sparql import QueryContext
-from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
+from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
+from rdflib.plugins.sparql.sparql import QueryContext
 
 
 def _graphOrDefault(ctx, g):

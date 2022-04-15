@@ -56,9 +56,7 @@ def test_rdflib_query_exercise() -> None:
     graph.add((kb_https_uriref, predicate_q, literal_two))
     graph.add((kb_bnode, predicate_p, literal_one))
 
-    expected_nodes_using_predicate_q: Set[rdflib.IdentifiedNode] = {
-        kb_https_uriref
-    }
+    expected_nodes_using_predicate_q: Set[rdflib.IdentifiedNode] = {kb_https_uriref}
     computed_nodes_using_predicate_q: Set[rdflib.IdentifiedNode] = set()
     for triple in graph.triples((None, predicate_q, None)):
         computed_nodes_using_predicate_q.add(triple[0])

@@ -3,11 +3,10 @@ Utility functions and objects to ease Python 2/3 compatibility,
 and different versions of support libraries.
 """
 
-import re
 import codecs
+import re
 import warnings
 from typing import TYPE_CHECKING, Match
-
 
 if TYPE_CHECKING:
     import xml.etree.ElementTree as etree
@@ -16,16 +15,6 @@ else:
         from lxml import etree
     except ImportError:
         import xml.etree.ElementTree as etree
-
-
-try:
-    etree_register_namespace = etree.register_namespace
-except AttributeError:
-
-    import xml.etree.ElementTree as etreenative
-
-    def etree_register_namespace(prefix, uri):
-        etreenative._namespace_map[uri] = prefix
 
 
 def cast_bytes(s, enc="utf-8"):
