@@ -57,8 +57,8 @@ class TestIssue1484_str(unittest.TestCase):
         g.bind("rdfs", RDFS)
         g.parse(data=jsonstr, publicID=b, format="json-ld")
 
-        assert((n.s, RDF.type, n.t) in g)
-        assert((n.s, n.p, n.o) in g)
+        assert (n.s, RDF.type, n.t) in g
+        assert (n.s, n.p, n.o) in g
 
 
 if __name__ == "__main__":

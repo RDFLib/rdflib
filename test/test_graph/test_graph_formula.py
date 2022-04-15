@@ -140,6 +140,7 @@ def get_formula_stores_tests():
             continue
         yield checkFormulaStore, s.name
 
+
 @pytest.mark.parametrize("checker, name", get_formula_stores_tests())
 def test_formula_stores(checker, name) -> None:
     checker(name)

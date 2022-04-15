@@ -37,9 +37,7 @@ def get_test_suite_cases():
                 func = runner.do_test_parser
         else:  # fromRdf
             func = runner.do_test_serializer
-        rdf_test_uri = URIRef("{0}{1}-manifest.jsonld#t{2}".format(
-            TC_BASE, cat, num
-        ))
+        rdf_test_uri = URIRef("{0}{1}-manifest.jsonld#t{2}".format(TC_BASE, cat, num))
         yield rdf_test_uri, func, TC_BASE, cat, num, inputpath, expectedpath, context, options
 
 
@@ -55,5 +53,15 @@ def testsuide_dir():
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
     get_test_suite_cases(),
 )
-def test_suite(rdf_test_uri: URIRef, func, suite_base, cat, num, inputpath, expectedpath, context, options):
+def test_suite(
+    rdf_test_uri: URIRef,
+    func,
+    suite_base,
+    cat,
+    num,
+    inputpath,
+    expectedpath,
+    context,
+    options,
+):
     func(suite_base, cat, num, inputpath, expectedpath, context, options)

@@ -104,37 +104,3 @@ jobs:
           export TOXENV
           export TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}"
           "${test_harness[@]}" python -m tox
-  docs:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        tox-env: ["docs"]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{env.DEFAULT_PYTHON}}
-      - name: Get pip cache dir
-        id: pip-cache
-        shell: bash
-        run: |
-          python -m ensurepip --upgrade
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: tox-${{ matrix.tox-env }}-pip-v1-${{
-            hashFiles('**/setup.py', '**/requirements*.txt') }}
-          restore-keys: |
-            tox-${{ matrix.tox-env }}-pip-v1-
-      - name: Install dependencies
-        shell: bash
-        run: |
-          python -m pip install tox tox-gh-actions
-      - name: Run ${{ matrix.tox-env }}
-        shell: bash
-        run: |
-          python -m tox -e ${{ matrix.tox-env }}

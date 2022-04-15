@@ -41,6 +41,32 @@ from pathlib import PurePath, PureWindowsPath
 from nturl2path import url2pathname as nt_url2pathname
 import rdflib.compare
 
+import rdflib.plugin
+from rdflib.plugin import Plugin
+
+
+PluginT = TypeVar("PluginT")
+
+
+def get_unique_plugins(
+    type: Type[PluginT],
+) -> Dict[Type[PluginT], Set[Plugin[PluginT]]]:
+    result: Dict[Type[PluginT], Set[Plugin[PluginT]]] = {}
+    for plugin in rdflib.plugin.plugins(None, type):
+        cls = plugin.getClass()
+        plugins = result.setdefault(cls, set())
+        plugins.add(plugin)
+    return result
+
+
+def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
+    result: Set[str] = set()
+    unique_plugins = get_unique_plugins(type)
+    for type, plugin_set in unique_plugins.items():
+        result.add(next(iter(plugin_set)).name)
+    return result
+
+
 if TYPE_CHECKING:
     import typing_extensions as te
 
@@ -191,36 +217,45 @@ class GraphHelper:
 
     @classmethod
     def format_set(
-        cls, item_set: Union[IdentifierQuadSet, IdentifierTripleSet], prefix: str = "  "
+        cls,
+        item_set: Union[IdentifierQuadSet, IdentifierTripleSet],
+        prefix: str = "  ",
+        sort: bool = False,
     ) -> str:
         items = []
-        for item in item_set:
+        use_item_set = sorted(item_set) if sort else item_set
+        for item in use_item_set:
             items.append(f"{prefix}{item}")
         return "\n".join(items)
 
     @classmethod
-    def format_graph_set(cls, graph: Graph, prefix: str = "  ") -> str:
-        return cls.format_set(cls.triple_or_quad_set(graph), prefix)
+    def format_graph_set(
+        cls, graph: Graph, prefix: str = "  ", sort: bool = False
+    ) -> str:
+        return cls.format_set(cls.triple_or_quad_set(graph), prefix, sort)
 
     @classmethod
-    def assert_isomorphic(cls, lhs: Graph, rhs: Graph) -> None:
+    def assert_isomorphic(
+        cls, lhs: Graph, rhs: Graph, message: Optional[str] = None
+    ) -> None:
         """
         This asserts that the two graphs are isomorphic, providing a nicely
         formatted error message if they are not.
         """
 
-        def format_report() -> str:
+        def format_report(message: Optional[str] = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)
+            preamle = "" if message is None else f"{message}\n"
             return (
-                "in both:\n"
+                f"{preamle}in both:\n"
                 f"{cls.format_graph_set(in_both)}"
                 "\nonly in first:\n"
-                f"{cls.format_graph_set(in_lhs)}"
+                f"{cls.format_graph_set(in_lhs, sort = True)}"
                 "\nonly in second:\n"
-                f"{cls.format_graph_set(in_rhs)}"
+                f"{cls.format_graph_set(in_rhs, sort = True)}"
             )
 
-        assert rdflib.compare.isomorphic(lhs, rhs), format_report()
+        assert rdflib.compare.isomorphic(lhs, rhs), format_report(message)
 
     @classmethod
     def strip_literal_datatypes(cls, graph: Graph, datatypes: Set[URIRef]) -> None:

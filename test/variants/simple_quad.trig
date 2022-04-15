@@ -1,0 +1,5 @@
+@prefix example: <http://example.org/>.
+
+example:graph {
+	example:subject example:predicate example:object .
+}

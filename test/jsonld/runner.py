@@ -18,8 +18,6 @@ def _preserving_nodeid(self, bnode_context=None):
     return bNode(self.eat(r_nodeid).group(1))
 
 
-
-
 DEFAULT_PARSER_VERSION = 1.0
 
 
@@ -46,7 +44,9 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
             source.content_type = options['contentType']
         if "redirectTo" in options:
             redir = suite_base + options['redirectTo']
-            local_redirect = redir.replace("https://w3c.github.io/json-ld-api/tests/", "./")
+            local_redirect = redir.replace(
+                "https://w3c.github.io/json-ld-api/tests/", "./"
+            )
             if f:
                 f.close()
             try:
@@ -59,13 +59,22 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
             source.setSystemId(redir)
     return source
 
+
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
     input_graph = ConjunctiveGraph()
     if cat == "remote-doc":
-        input_src = make_fake_urlinputsource(input_uri, format="json-ld", suite_base=suite_base, options=options)
+        input_src = make_fake_urlinputsource(
+            input_uri, format="json-ld", suite_base=suite_base, options=options
+        )
         p = JsonLDParser()
-        p.parse(input_src, input_graph, base=input_src.getPublicId(), context_data=context, generalized_rdf=True)
+        p.parse(
+            input_src,
+            input_graph,
+            base=input_src.getPublicId(),
+            context_data=context,
+            generalized_rdf=True,
+        )
     else:
         input_obj = _load_json(inputpath)
         to_rdf(
@@ -118,9 +127,17 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
         elif requested_version == "json-ld-1.0":
             version = 1.0
     if cat == "remote-doc":
-        input_src = make_fake_urlinputsource(input_uri, format="json-ld", options=options)
+        input_src = make_fake_urlinputsource(
+            input_uri, format="json-ld", options=options
+        )
         p = JsonLDParser()
-        p.parse(input_src, result_graph, base=input_uri, context_data=context, generalized_rdf=True)
+        p.parse(
+            input_src,
+            result_graph,
+            base=input_uri,
+            context_data=context,
+            generalized_rdf=True,
+        )
     else:
         to_rdf(
             input_obj,

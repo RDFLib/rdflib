@@ -81,6 +81,7 @@ All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class
     @enduml
 
 Nodes are a subset of the Terms that underlying stores actually persist.
+
 The set of such Terms depends on whether or not the store is formula-aware. 
 Stores that aren't formula-aware only persist those terms core to the
 RDF Model but those that are formula-aware also persist the N3

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import time
 from unittest.case import expectedFailure
+
+import pytest
 from rdflib.graph import Graph
 from rdflib.graph import QuotedGraph
 from rdflib.graph import ConjunctiveGraph
@@ -11,10 +12,6 @@ from rdflib.term import Literal
 from rdflib.term import URIRef
 from rdflib import util
 from rdflib import XSD
-from rdflib.exceptions import SubjectTypeError
-from rdflib.exceptions import PredicateTypeError
-from rdflib.exceptions import ObjectTypeError
-from rdflib.exceptions import ContextTypeError
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -44,7 +41,7 @@ n3source = """\
 
 :sister a rdf:Property.
 
-:sister rdfs:domain :Person; 
+:sister rdfs:domain :Person;
         rdfs:range :Woman.
 
 :Woman = foo:FemaleAdult .
@@ -53,8 +50,8 @@ n3source = """\
 """  # --- End of primer code
 
 
-class TestUtilMisc(unittest.TestCase):
-    def setUp(self):
+class TestUtilMisc:
+    def setup_method(self):
         self.x = Literal(
             "2008-12-01T18:02:00Z",
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
@@ -63,22 +60,22 @@ class TestUtilMisc(unittest.TestCase):
     def test_util_list2set(self):
         base = [Literal("foo"), self.x]
         r = util.list2set(base + base)
-        self.assertTrue(r == base)
+        assert r == base
 
     def test_util_uniq(self):
         base = ["michel", "hates", "pizza"]
         r = util.uniq(base + base)
-        self.assertEqual(sorted(r), sorted(base))
+        assert sorted(r) == sorted(base)
         base = ["michel", "hates", "pizza"]
         r = util.uniq(base + base, strip=True)
-        self.assertEqual(sorted(r), sorted(base))
+        assert sorted(r) == sorted(base)
 
     def test_coverage_dodge(self):
         util.test()
 
 
-class TestUtilDateTime(unittest.TestCase):
-    def setUp(self):
+class TestUtilDateTime:
+    def setup_method(self):
         self.x = Literal(
             "2008-12-01T18:02:00Z",
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
@@ -87,32 +84,32 @@ class TestUtilDateTime(unittest.TestCase):
     def test_util_date_time_tisnoneandnotz(self):
         t = None
         res = util.date_time(t, local_time_zone=False)
-        self.assertTrue(res[4:5] == "-")
+        assert res[4:5] == "-"
 
     def test_util_date_time_tisnonebuttz(self):
         t = None
         res = util.date_time(t, local_time_zone=True)
-        self.assertTrue(res[4:5] == "-")
+        assert res[4:5] == "-"
 
     def test_util_date_time_tistime(self):
         t = time.time()
         res = util.date_time(t, local_time_zone=False)
-        self.assertTrue(res[4:5] == "-")
+        assert res[4:5] == "-"
 
     def test_util_date_time_tistimewithtz(self):
         t = time.time()
         res = util.date_time(t, local_time_zone=True)
-        self.assertTrue(res[4:5] == "-")
+        assert res[4:5] == "-"
 
     def test_util_parse_date_time(self):
         t = time.time()
         res = util.parse_date_time("1970-01-01")
-        self.assertTrue(res is not t)
+        assert res is not t
 
     def test_util_parse_date_timewithtz(self):
         t = time.time()
         res = util.parse_date_time("1970-01-01")
-        self.assertTrue(res is not t)
+        assert res is not t
 
     def test_util_date_timewithtoutz(self):
         t = time.time()
@@ -125,11 +122,11 @@ class TestUtilDateTime(unittest.TestCase):
 
         util.localtime = ablocaltime
         res = util.date_time(t, local_time_zone=True)
-        self.assertTrue(res is not t)
+        assert res is not t
 
 
-class TestUtilTermConvert(unittest.TestCase):
-    def setUp(self):
+class TestUtilTermConvert:
+    def setup_method(self):
         self.x = Literal(
             "2008-12-01T18:02:00Z",
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
@@ -137,110 +134,112 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_to_term_sisNone(self):
         s = None
-        self.assertEqual(util.to_term(s), s)
-        self.assertEqual(util.to_term(s, default=""), "")
+        assert util.to_term(s) == s
+        assert util.to_term(s, default="") == ""
 
     def test_util_to_term_sisstr(self):
         s = '"http://example.com"'
         res = util.to_term(s)
-        self.assertTrue(isinstance(res, Literal))
-        self.assertEqual(str(res), s[1:-1])
+        assert isinstance(res, Literal)
+        assert str(res) == s[1:-1]
 
     def test_util_to_term_sisurl(self):
         s = "<http://example.com>"
         res = util.to_term(s)
-        self.assertTrue(isinstance(res, URIRef))
-        self.assertEqual(str(res), s[1:-1])
+        assert isinstance(res, URIRef)
+        assert str(res) == s[1:-1]
 
     def test_util_to_term_sisbnode(self):
         s = "_http%23%4F%4Fexample%33com"
         res = util.to_term(s)
-        self.assertTrue(isinstance(res, BNode))
+        assert isinstance(res, BNode)
 
     def test_util_to_term_sisunknown(self):
         s = "http://example.com"
-        self.assertRaises(Exception, util.to_term, s)
+        with pytest.raises(Exception):
+            util.to_term(s)
 
     def test_util_to_term_sisnotstr(self):
         s = self.x
-        self.assertRaises(Exception, util.to_term, s)
+        with pytest.raises(Exception):
+            util.to_term(s)
 
     def test_util_from_n3_sisnonenodefault(self):
         s = None
         default = None
         res = util.from_n3(s, default=default, backend=None)
-        self.assertTrue(res == default)
+        assert res == default
 
     def test_util_from_n3_sisnonewithdefault(self):
         s = None
         default = "TestofDefault"
         res = util.from_n3(s, default=default, backend=None)
-        self.assertTrue(res == default)
+        assert res == default
 
     def test_util_from_n3_expectdefaultbnode(self):
         s = "michel"
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, BNode))
+        assert isinstance(res, BNode)
 
     def test_util_from_n3_expectbnode(self):
         s = "_:michel"
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, BNode))
+        assert isinstance(res, BNode)
 
     def test_util_from_n3_expectliteral(self):
         s = '"michel"'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, Literal))
+        assert isinstance(res, Literal)
 
     def test_util_from_n3_expecturiref(self):
         s = "<http://example.org/schema>"
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, URIRef))
+        assert isinstance(res, URIRef)
 
     def test_util_from_n3_expectliteralandlang(self):
         s = '"michel"@fr'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, Literal))
+        assert isinstance(res, Literal)
 
     def test_util_from_n3_expectliteralandlangdtype(self):
         s = '"michel"@fr^^xsd:fr'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(isinstance(res, Literal))
-        self.assertEqual(res, Literal("michel", datatype=XSD["fr"]))
+        assert isinstance(res, Literal)
+        assert res == Literal("michel", datatype=XSD["fr"])
 
     def test_util_from_n3_expectliteralanddtype(self):
         s = '"true"^^xsd:boolean'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(res.eq(Literal("true", datatype=XSD["boolean"])))
+        assert res.eq(Literal("true", datatype=XSD["boolean"]))
 
     def test_util_from_n3_expectliteralwithdatatypefromint(self):
         s = "42"
         res = util.from_n3(s)
-        self.assertEqual(res, Literal(42))
+        assert res == Literal(42)
 
     def test_util_from_n3_expectliteralwithdatatypefrombool(self):
         s = "true"
         res = util.from_n3(s)
-        self.assertEqual(res, Literal(True))
+        assert res == Literal(True)
         s = "false"
         res = util.from_n3(s)
-        self.assertEqual(res, Literal(False))
+        assert res == Literal(False)
 
     def test_util_from_n3_expectliteralmultiline(self):
         s = '"""multi\nline\nstring"""@en'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(res, Literal("multi\nline\nstring", lang="en"))
+        assert res == Literal("multi\nline\nstring", lang="en")
 
     def test_util_from_n3_expectliteralwithescapedquote(self):
         s = '"\\""'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertTrue(res, Literal('\\"', lang="en"))
+        assert res == Literal('"')
 
     def test_util_from_n3_expectliteralwithtrailingbackslash(self):
         s = '"trailing\\\\"^^<http://www.w3.org/2001/XMLSchema#string>'
         res = util.from_n3(s)
-        self.assertTrue(res, Literal("trailing\\", datatype=XSD["string"]))
-        self.assertTrue(res.n3(), s)
+        assert res == Literal("trailing\\", datatype=XSD["string"])
+        assert res.n3() == s
 
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in (
@@ -251,11 +250,9 @@ class TestUtilTermConvert(unittest.TestCase):
             # '"\\""', # exception as '\\"' --> '"' by orig parser as well
             '"""multi\n"line"\nstring"""@en',
         ):
-            self.assertEqual(
-                util.from_n3(n3).n3(),
-                n3,
-                "from_n3(%(n3e)r).n3() != %(n3e)r" % {"n3e": n3},
-            )
+            assert util.from_n3(n3).n3() == n3, "from_n3(%(n3e)r).n3() != %(n3e)r" % {
+                "n3e": n3
+            }
 
     def test_util_from_n3_expectsameasn3parser(self):
         def parse_n3(term_n3):
@@ -285,25 +282,27 @@ class TestUtilTermConvert(unittest.TestCase):
             '"""multi\n"line"\nstring"""@en',
         ):
             res, exp = util.from_n3(n3), parse_n3(n3)
-            self.assertEqual(
-                res,
-                exp,
-                "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r"
-                % {"res": res, "exp": exp, "n3e": n3},
-            )
+            assert (
+                res == exp
+            ), "from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r" % {
+                "res": res,
+                "exp": exp,
+                "n3e": n3,
+            }
 
     def test_util_from_n3_expectquotedgraph(self):
         s = "{<http://example.com/schema>}"
         res = util.from_n3(s, default=None, backend="Memory")
-        self.assertTrue(isinstance(res, QuotedGraph))
+        assert isinstance(res, QuotedGraph)
 
     def test_util_from_n3_expectgraph(self):
         s = "[<http://example.com/schema>]"
         res = util.from_n3(s, default=None, backend="Memory")
-        self.assertTrue(isinstance(res, Graph))
+        assert isinstance(res, Graph)
 
-    def test_util_from_n3_escapes(self) -> None:
-        pairs = [
+    @pytest.mark.parametrize(
+        ["escaped", "raw"],
+        [
             ("\\t", "\t"),
             ("\\b", "\b"),
             ("\\n", "\n"),
@@ -314,82 +313,33 @@ class TestUtilTermConvert(unittest.TestCase):
             ("\\\\", "\\"),
             ("\\u00F6", "ö"),
             ("\\U000000F6", "ö"),
-        ]
-        for escaped, raw in pairs:
-            with self.subTest(f"{escaped} => {raw}"):
-                literal_str = str(util.from_n3(f'"{escaped}"'))
-                self.assertEqual(literal_str, f"{raw}")
+        ],
+    )
+    def test_util_from_n3_escapes(self, escaped: str, raw: str) -> None:
+        literal_str = str(util.from_n3(f'"{escaped}"'))
+        assert literal_str == f"{raw}"
 
-    def test_util_from_n3_not_escapes(self) -> None:
-        strings = [
-            "jörn",
-            "j\\xf6rn",
-        ]
-        for string in strings:
-            with self.subTest(f"{string}"):
-                literal_str = str(util.from_n3(f'"{string}"'))
-                self.assertEqual(literal_str, f"{string}")
+    @pytest.mark.parametrize(
+        "string",
+        [
+            ("jörn"),
+            ("j\\xf6rn"),
+            ("\\I"),
+        ],
+    )
+    def test_util_from_n3_not_escapes(self, string: str) -> None:
+        literal_str = str(util.from_n3(f'"{string}"'))
+        assert literal_str == f"{string}"
 
-    @expectedFailure
-    def test_util_from_n3_not_escapes_xf(self) -> None:
-        strings = [
-            f"j\\366rn",
-            f"\\",
-            f"\\0",
-            f"\\I",
-        ]
-        for string in strings:
-            with self.subTest(f"{string}"):
-                literal_str = str(util.from_n3(f'"{string}"'))
-                self.assertEqual(literal_str, f"{string}")
-
-
-class TestUtilCheckers(unittest.TestCase):
-    def setUp(self):
-        self.c = URIRef("http://example.com")
-        self.s = BNode("http://example.com")
-        self.p = URIRef("http://example.com/predicates/isa")
-        self.o = Literal("Objectification")
-
-    def test_util_checker_exceptions(self):
-        c = "http://example.com"
-        self.assertRaises(ContextTypeError, util.check_context, c)
-        self.assertRaises(SubjectTypeError, util.check_subject, c)
-        self.assertRaises(PredicateTypeError, util.check_predicate, c)
-        self.assertRaises(ObjectTypeError, util.check_object, c)
-
-    def test_util_check_context(self):
-        res = util.check_context(self.c)
-        self.assertTrue(res == None)
-
-    def test_util_check_subject(self):
-        res = util.check_subject(self.s)
-        self.assertTrue(res == None)
-
-    def test_util_check_predicate(self):
-        res = util.check_predicate(self.p)
-        self.assertTrue(res == None)
-
-    def test_util_check_object(self):
-        res = util.check_object(self.o)
-        self.assertTrue(res == None)
-
-    def test_util_check_statement(self):
-        c = "http://example.com"
-        self.assertRaises(SubjectTypeError, util.check_statement, (c, self.p, self.o))
-        self.assertRaises(PredicateTypeError, util.check_statement, (self.s, c, self.o))
-        self.assertRaises(ObjectTypeError, util.check_statement, (self.s, self.p, c))
-        res = util.check_statement((self.s, self.p, self.o))
-        self.assertTrue(res == None)
-
-    def test_util_check_pattern(self):
-        c = "http://example.com"
-        self.assertRaises(SubjectTypeError, util.check_pattern, (c, self.p, self.o))
-        self.assertRaises(PredicateTypeError, util.check_pattern, (self.s, c, self.o))
-        self.assertRaises(ObjectTypeError, util.check_pattern, (self.s, self.p, c))
-        res = util.check_pattern((self.s, self.p, self.o))
-        self.assertTrue(res == None)
-
-
-if __name__ == "__main__":
-    unittest.main()
+    @pytest.mark.xfail
+    @pytest.mark.parametrize(
+        "string",
+        [
+            (f"j\\366rn"),
+            (f"\\"),
+            (f"\\0"),
+        ],
+    )
+    def test_util_from_n3_not_escapes_xf(self, string: str) -> None:
+        literal_str = str(util.from_n3(f'"{string}"'))
+        assert literal_str == f"{string}"
