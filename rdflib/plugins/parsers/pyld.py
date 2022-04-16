@@ -1,11 +1,11 @@
-from io import StringIO, BufferedReader
 import json
+from io import BufferedReader, StringIO
 from typing import Union
 
 from pyld import jsonld
 
 from rdflib import Graph
-from rdflib.parser import Parser, InputSource, BytesIOWrapper, PythonInputSource
+from rdflib.parser import BytesIOWrapper, InputSource, Parser, PythonInputSource
 
 
 class JSONLDParser(Parser):
