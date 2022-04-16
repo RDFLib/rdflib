@@ -424,14 +424,14 @@ register(
 register(
     "application/ld+json",
     Parser,
-    "rdflib.plugins.parsers.jsonld",
-    "JsonLDParser",
+    "rdflib.plugins.parsers.pyld",
+    "JSONLDParser",
 )
 register(
     "json-ld",
     Parser,
-    "rdflib.plugins.parsers.jsonld",
-    "JsonLDParser",
+    "rdflib.plugins.parsers.pyld",
+    "JSONLDParser",
 )
 
 # Register Quad Parsers
