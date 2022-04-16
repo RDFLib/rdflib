@@ -21,7 +21,7 @@ from rdflib.store import Store
 from rdflib.term import BNode
 
 from test.testutils import GraphHelper, get_unique_plugin_names
-from test.data import tarek, likes, pizza, michel, hates, cheese, bob
+from test.data import TEST_DATA_DIR, tarek, likes, pizza, michel, hates, cheese, bob
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 
 
@@ -32,12 +32,14 @@ def test_property_store() -> None:
     graph = Graph()
     assert isinstance(graph.store, Store)
 
+
 def test_property_identifier_default() -> None:
     """
     The default identifier for a graph is a `rdflib.term.BNode`.
     """
     graph = Graph()
     assert isinstance(graph.identifier, BNode)
+
 
 def test_property_identifier() -> None:
     """
@@ -46,6 +48,7 @@ def test_property_identifier() -> None:
     id = URIRef("example:a")
     graph = Graph(identifier=id)
     assert id == graph.identifier
+
 
 def test_property_namespace_manager() -> None:
     """
@@ -67,15 +70,17 @@ def test_property_namespace_manager() -> None:
 
 def get_store_names() -> Set[Optional[str]]:
     names: Set[Optional[str]] = {*get_unique_plugin_names(plugin.Store)}
-    names.difference_update({
-        "default",
-        "Memory",
-        "Auditable",
-        "Concurrent",
-        "SPARQLStore",
-        "SPARQLUpdateStore",
-        "SimpleMemory",
-    })
+    names.difference_update(
+        {
+            "default",
+            "Memory",
+            "Auditable",
+            "Concurrent",
+            "SPARQLStore",
+            "SPARQLUpdateStore",
+            "SimpleMemory",
+        }
+    )
     names.add(None)
     if not has_bsddb:
         names.remove("BerkeleyDB")
@@ -115,6 +120,7 @@ def populate_graph(graph: Graph):
     graph.add((bob, hates, pizza))
     graph.add((bob, hates, michel))  # gasp!
 
+
 def depopulate_graph(graph: Graph):
     graph.remove((tarek, likes, pizza))
     graph.remove((tarek, likes, cheese))
@@ -124,14 +130,17 @@ def depopulate_graph(graph: Graph):
     graph.remove((bob, hates, pizza))
     graph.remove((bob, hates, michel))  # gasp!
 
+
 def test_add(make_graph: GraphFactory):
     graph = make_graph()
     populate_graph(graph)
+
 
 def test_remove(make_graph: GraphFactory):
     graph = make_graph()
     populate_graph(graph)
     depopulate_graph(graph)
+
 
 def test_triples(make_graph: GraphFactory):
     graph = make_graph()
@@ -177,6 +186,7 @@ def test_triples(make_graph: GraphFactory):
     depopulate_graph(graph)
     assert len(list(triples((Any, Any, Any)))) == 0
 
+
 def test_connected(make_graph: GraphFactory):
     graph = make_graph()
     populate_graph(graph)
@@ -188,6 +198,7 @@ def test_connected(make_graph: GraphFactory):
     graph.add((jeroen, likes, unconnected))
 
     assert graph.connected() is False
+
 
 def test_graph_sub(make_graph: GraphFactory):
     g1 = make_graph()
@@ -214,6 +225,7 @@ def test_graph_sub(make_graph: GraphFactory):
 
     assert (bob, likes, cheese) not in g1
 
+
 def test_graph_add(make_graph: GraphFactory):
     g1 = make_graph()
     g2 = make_graph()
@@ -236,6 +248,7 @@ def test_graph_add(make_graph: GraphFactory):
     assert (tarek, likes, cheese) not in g1
 
     assert (bob, likes, cheese) in g1
+
 
 def test_graph_intersection(make_graph: GraphFactory):
     g1 = make_graph()
@@ -268,6 +281,7 @@ def test_graph_intersection(make_graph: GraphFactory):
 
     assert (michel, likes, cheese) in g1
 
+
 def test_guess_format_for_parse(make_graph: GraphFactory):
     graph = make_graph()
 
@@ -276,11 +290,20 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
         graph.parse(__file__)  # here we are trying to parse a Python file!!
 
     # .nt can be parsed by Turtle Parser
-    graph.parse("test/nt/anons-01.nt")
+    graph.parse(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "anons-01.nt"))
     # RDF/XML
-    graph.parse("test/rdf/datatypes/test001.rdf")  # XML
+    graph.parse(
+        os.path.join(
+            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.rdf"
+        )
+    )  # XML
     # bad filename but set format
-    graph.parse("test/rdf/datatypes/test001.borked", format="xml")
+    graph.parse(
+        os.path.join(
+            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.borked"
+        ),
+        format="xml",
+    )
 
     with pytest.raises(ParserError):
         graph.parse(data="rubbish")
@@ -332,23 +355,27 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
 
     try:
         # persistent Australian Government online RDF resource without a file-like ending
-        graph.parse(
-            location="https://linked.data.gov.au/def/agrif?_format=text/turtle"
-        )
+        graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
     except (URLError, HTTPError):
         # this endpoint is currently not available, ignore this test.
         pass
 
+
 def test_parse_file_uri(make_graph: GraphFactory):
     EG = Namespace("http://example.org/#")
     g = make_graph()
-    g.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
+    g.parse(
+        Path(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "simple-04.nt"))
+        .absolute()
+        .as_uri()
+    )
     triple_set = GraphHelper.triple_set(g)
     assert triple_set == {
-            (EG["Subject"], EG["predicate"], EG["ObjectP"]),
-            (EG["Subject"], EG["predicate"], EG["ObjectQ"]),
-            (EG["Subject"], EG["predicate"], EG["ObjectR"]),
-        }
+        (EG["Subject"], EG["predicate"], EG["ObjectP"]),
+        (EG["Subject"], EG["predicate"], EG["ObjectQ"]),
+        (EG["Subject"], EG["predicate"], EG["ObjectR"]),
+    }
+
 
 def test_transitive(make_graph: GraphFactory):
     person = URIRef("ex:person")
@@ -370,14 +397,26 @@ def test_transitive(make_graph: GraphFactory):
     g.add((mom, parent, dad_of_mom))
 
     # transitive parents of person
-    assert set(g.transitive_objects(subject=person, predicate=parent)) == {person, dad, mom_of_dad, dad_of_dad, mom, mom_of_mom, dad_of_mom}
+    assert set(g.transitive_objects(subject=person, predicate=parent)) == {
+        person,
+        dad,
+        mom_of_dad,
+        dad_of_dad,
+        mom,
+        mom_of_mom,
+        dad_of_mom,
+    }
     # transitive parents of dad
     assert set(g.transitive_objects(dad, parent)) == {dad, mom_of_dad, dad_of_dad}
     # transitive parents of dad_of_dad
     assert set(g.transitive_objects(dad_of_dad, parent)) == {dad_of_dad}
 
     # transitive children (inverse of parents) of mom_of_mom
-    assert set(g.transitive_subjects(predicate=parent, object=mom_of_mom)) == {mom_of_mom, mom, person}
+    assert set(g.transitive_subjects(predicate=parent, object=mom_of_mom)) == {
+        mom_of_mom,
+        mom,
+        person,
+    }
     # transitive children (inverse of parents) of mom
     assert set(g.transitive_subjects(parent, mom)) == {mom, person}
     # transitive children (inverse of parents) of person

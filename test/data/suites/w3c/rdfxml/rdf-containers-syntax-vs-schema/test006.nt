@@ -1,0 +1,40 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id$
+# 
+#####################################################################
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> .
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_3> "3" .
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "foobar" .
+
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> .
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> "2" .
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "foobar" .
+
+<http://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf#e2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "barfoo" .
+
+
+
+
+_:bag <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+
+
+
+
+
+
+
+

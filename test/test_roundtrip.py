@@ -14,6 +14,7 @@ from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.util import guess_format
 from rdflib.namespace import XSD
 from test.testutils import GraphHelper
+from test.data import TEST_DATA_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 """
 
 TEST_DIR = Path(__file__).parent
-NT_DATA_DIR = TEST_DIR / "nt"
+NT_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "nt_misc"
 INVALID_NT_FILES = {
     # illegal literal as subject
     "literals-01.nt",
@@ -67,7 +68,7 @@ INVALID_NT_FILES = {
 }
 
 
-N3_DATA_DIR = Path(__file__).parent / "n3"
+N3_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "n3roundtrip"
 
 XFAILS = {
     ("xml", "n3-writer-test-29.n3",): pytest.mark.xfail(

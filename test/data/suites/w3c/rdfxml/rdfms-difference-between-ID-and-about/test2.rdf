@@ -1,0 +1,22 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test2.rdf,v 1.9 2002/07/26 04:06:56 jcarroll Exp $
+-->
+<!--  
+Base URI: http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test2.rdf
+
+Non-ASCII characters in IDs are not converted.
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:ID="D&#xFC;rst">
+  <rdf:value>abc</rdf:value>
+</rdf:Description>
+</rdf:RDF>

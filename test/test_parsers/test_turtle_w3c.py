@@ -12,6 +12,7 @@ from rdflib.term import Node, URIRef
 from test.manifest import RDFT, RDFTest, read_manifest
 import pytest
 from test.testutils import file_uri_to_path
+from test.data import TEST_DATA_DIR
 
 verbose = False
 
@@ -78,7 +79,7 @@ if os.name == "nt":
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/w3c/turtle/manifest.ttl"),
+    read_manifest(os.path.join(TEST_DATA_DIR, "suites/w3c/turtle/manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     if rdf_test_uri in EXPECTED_FAILURES:

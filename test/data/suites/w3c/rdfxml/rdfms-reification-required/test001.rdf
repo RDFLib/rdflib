@@ -1,0 +1,29 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+$Id: test001.rdf,v 1.3 2002/04/05 11:32:03 bmcbride Exp $
+-->
+<!--
+
+ Assumed base URI:
+
+http://www.w3.org/2013/RDFXMLTests/rdfms-reification-required/test001.rdf
+
+ Description:
+
+ A parser is not required to generate a bag of reified statements for all
+ description elements.
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org#">
+  <rdf:Description rdf:about="http://example.org/" eg:prop="10"/>
+</rdf:RDF>
+

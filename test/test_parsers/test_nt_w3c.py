@@ -7,6 +7,7 @@ from rdflib import Graph
 from rdflib.term import Node, URIRef
 from test import TEST_DIR
 from test.manifest import RDFT, RDFTest, read_manifest
+from test.data import TEST_DATA_DIR
 
 import pytest
 
@@ -33,7 +34,9 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest(os.path.join(TEST_DIR, "w3c/nt/manifest.ttl"), legacy=True),
+    read_manifest(
+        os.path.join(TEST_DATA_DIR, "suites", "w3c/ntriples/manifest.ttl"), legacy=True
+    ),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)

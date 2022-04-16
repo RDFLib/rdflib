@@ -4,24 +4,20 @@ from rdflib import (
     ConjunctiveGraph,
     URIRef,
 )
+from test.data import (
+    TEST_DATA_DIR,
+    michel,
+    tarek,
+    bob,
+    likes,
+    hates,
+    pizza,
+    cheese,
+    context1 as c1,
+    context2 as c2,
+)
 
-
-michel = URIRef("urn:example:michel")
-tarek = URIRef("urn:example:tarek")
-bob = URIRef("urn:example:bob")
-likes = URIRef("urn:example:likes")
-hates = URIRef("urn:example:hates")
-pizza = URIRef("urn:example:pizza")
-cheese = URIRef("urn:example:cheese")
-
-c1 = URIRef("urn:example:context-1")
-c2 = URIRef("urn:example:context-2")
-
-sportquadstrig = open(
-    os.path.join(
-        os.path.dirname(__file__), "..", "consistent_test_data", "sportquads.trig"
-    )
-).read()
+sportquadstrig = open(os.path.join(TEST_DATA_DIR, "sportquads.trig")).read()
 
 
 def test_operators_with_conjunctivegraph_and_graph():

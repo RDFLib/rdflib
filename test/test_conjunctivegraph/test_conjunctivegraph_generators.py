@@ -1,12 +1,8 @@
 import os
 from rdflib import ConjunctiveGraph, URIRef
+from test.data import TEST_DATA_DIR
 
-
-timblcardn3 = open(
-    os.path.join(
-        os.path.dirname(__file__), "..", "consistent_test_data", "timbl-card.n3"
-    )
-).read()
+timblcardn3 = open(os.path.join(TEST_DATA_DIR, "timbl-card.n3")).read()
 
 
 michel = URIRef("urn:example:michel")

@@ -1,0 +1,14 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test1.nt,v 1.2 2001/09/06 21:07:20 barstow Exp $
+# 
+#####################################################################
+<http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test1.rdf#foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "abc" .

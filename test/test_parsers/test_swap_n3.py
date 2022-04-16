@@ -5,6 +5,7 @@ import pytest
 
 maketrans = str.maketrans
 import rdflib
+from test.data import TEST_DATA_DIR
 
 """
 SWAP N3 parser test suite
@@ -99,7 +100,7 @@ def get_cases():
     from copy import deepcopy
 
     g = rdflib.Graph()
-    swap_dir = os.path.join(os.getcwd(), "test", "swap-n3")
+    swap_dir = os.path.join(TEST_DATA_DIR, "suites", "swap-n3")
     g.parse(os.path.join(swap_dir, "n3-rdf.tests"), format="n3")
     g.parse(os.path.join(swap_dir, "n3-full.tests"), format="n3")
     tfiles = []

@@ -116,10 +116,8 @@ class TestNewPT:
             ("Not a valid time", XSD.time, True),
             ("Not a valid date", XSD.date, True),
             ("7264666c6962", XSD.hexBinary, False),
-
             # RDF.langString is not a recognized datatype IRI as we assign no literal value to it, though this should likely change.
             ("English string", RDF.langString, None),
-
             # The datatypes IRIs below should never be recognized.
             ("[p]", EGNS.unrecognized, None),
         ],

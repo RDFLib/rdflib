@@ -1,6 +1,6 @@
 import os
 from test.data import (
-    CONSISTENT_DATA_DIR,
+    TEST_DATA_DIR,
     bob,
     cheese,
     hates,
@@ -12,7 +12,7 @@ from test.data import (
 
 from rdflib import Dataset, URIRef
 
-timblcardn3 = open(os.path.join(CONSISTENT_DATA_DIR, "timbl-card.n3")).read()
+timblcardn3 = open(os.path.join(TEST_DATA_DIR, "timbl-card.n3")).read()
 
 
 def add_stuff(graph):

@@ -66,7 +66,6 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 class TestN3Case:
-
     def test_base_cumulative(self):
         """
         Test that the n3 parser supports base declarations
@@ -161,7 +160,7 @@ foo-bar:Ex foo-bar:name "Test" . """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        n3_path = os.path.relpath(os.path.join(TEST_DIR, "n3/issue156.n3", os.curdir))
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "data/issue156.n3", os.curdir))
         g.parse(n3_path, format="n3")
 
     def test_issue999(self):

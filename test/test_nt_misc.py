@@ -7,11 +7,11 @@ from rdflib.plugins.parsers import ntriples
 from urllib.request import urlopen
 from pathlib import Path
 
-from test import TEST_DIR
+from test.data import TEST_DATA_DIR
 
 log = logging.getLogger(__name__)
 
-NT_PATH = os.path.relpath(os.path.join(TEST_DIR, "nt"), os.curdir)
+NT_PATH = os.path.relpath(os.path.join(TEST_DATA_DIR, "suites", "nt_misc"), os.curdir)
 
 
 def nt_file(fn):
@@ -44,7 +44,7 @@ class NTTestCase(unittest.TestCase):
         self.assertEqual(s, '<foo> <foo> "test\\n"@en .')
 
     def testIssue1144_rdflib(self):
-        fname = "test/nt/lists-02.nt"
+        fname = nt_file("lists-02.nt")
         g1 = Graph()
         with open(fname, "r") as f:
             g1.parse(f, format="nt")
@@ -55,7 +55,7 @@ class NTTestCase(unittest.TestCase):
         self.assertEqual(14, len(g2))
 
     def testIssue1144_w3c(self):
-        fname = "test/nt/lists-02.nt"
+        fname = nt_file("lists-02.nt")
         sink1 = ntriples.NTGraphSink(Graph())
         p1 = ntriples.W3CNTriplesParser(sink1)
         with open(fname, "r") as f:
