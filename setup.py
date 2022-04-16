@@ -12,6 +12,7 @@ kwargs["install_requires"] = [
     "pyparsing",
     "setuptools",
     "importlib-metadata; python_version < '3.8.0'",
+    "pyld",
 ]
 kwargs["tests_require"] = [
     "html5lib",
