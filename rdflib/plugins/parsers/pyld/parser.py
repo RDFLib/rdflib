@@ -1,0 +1,126 @@
+from io import StringIO, BufferedReader
+import json
+from typing import Union
+
+import pyld
+from pyld import jsonld
+from pyld.jsonld import RDF_TYPE, _is_keyword, _is_absolute_iri
+
+from rdflib import BNode, Graph, Literal, URIRef
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.parser import Parser, InputSource, BytesIOWrapper, PythonInputSource
+
+from .to_rdf import to_rdf
+
+
+# Monkey patch pyld.
+pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf
+
+
+class JSONLDParser(Parser):
+    def parse(self, source: InputSource, sink: Graph) -> None:
+        # TODO: Do we need to set up a document loader?
+        #       See https://github.com/digitalbazaar/pyld#document-loader
+        #       Using a document loader requires either Requests or aiohttp
+
+        def _graph_to_rdf(
+            self: pyld.jsonld.JsonLdProcessor,
+            pyld_graph_name: str,
+            pyld_graph_dict: dict,
+            issuer: pyld.jsonld.IdentifierIssuer,
+            options: dict,
+        ):
+            """
+            Creates an array of RDF triples for the given graph.
+
+            :param pyld_graph_name: the graph name of the triples.
+            :param pyld_graph_dict: the graph to create RDF triples for.
+            :param issuer: the IdentifierIssuer for issuing blank node identifiers.
+            :param options: the RDF serialization options.
+
+            :return: the array of RDF triples for the given graph.
+            """
+            triples = []
+
+            for id_, node in sorted(pyld_graph_dict.items()):
+                for property, items in sorted(node.items()):
+                    if property == "@type":
+                        property = RDF_TYPE
+                    elif _is_keyword(property):
+                        continue
+
+                    for item in items:
+                        # skip relative IRI subjects and predicates
+                        if not (_is_absolute_iri(id_) and _is_absolute_iri(property)):
+                            continue
+
+                        # RDF subject
+                        subject = None
+                        if id_.startswith("_:"):
+                            subject = BNode(id_[2:])
+                        else:
+                            subject = URIRef(id_)
+
+                        # RDF predicate
+                        predicate = None
+                        if property.startswith("_:"):
+                            # skip bnode predicates unless producing
+                            # generalized RDF
+                            if not options["produceGeneralizedRdf"]:
+                                continue
+                            predicate = BNode(property[2:])
+                        else:
+                            predicate = URIRef(property)
+
+                        # convert list, value or node object to triple
+                        object = self._object_to_rdf(
+                            item, issuer, triples, options.get("rdfDirection")
+                        )
+                        # skip None objects (they are relative IRIs)
+                        if object is not None:
+                            if object["type"] == "IRI":
+                                o = URIRef(object["value"])
+                            elif object["type"] == "blank node":
+                                o = BNode(object["value"][2:])
+                            else:
+                                o = Literal(
+                                    object["value"],
+                                    datatype=URIRef(object["datatype"]),
+                                )
+
+                            if pyld_graph_name == "@default":
+                                graph_name = DATASET_DEFAULT_GRAPH_ID
+                            elif pyld_graph_name.startswith("_:"):
+                                graph_name = BNode(pyld_graph_name[2:])
+                            else:
+                                graph_name = URIRef(pyld_graph_name)
+
+                            sink.store.add(
+                                (
+                                    subject,
+                                    predicate,
+                                    o,
+                                ),
+                                graph_name,
+                            )
+
+        # Monkey patch pyld.
+        pyld.jsonld.JsonLdProcessor._graph_to_rdf = _graph_to_rdf
+
+        if isinstance(source, PythonInputSource):
+            data = source.data
+            jsonld.to_rdf(data)
+        else:
+            stream: Union[
+                StringIO, BytesIOWrapper, BufferedReader
+            ] = source.getByteStream()
+
+            if isinstance(stream, (StringIO, BytesIOWrapper, BufferedReader)):
+                data = json.loads(stream.read())
+            else:
+                raise TypeError(f"Unhandled type for 'stream' as {type(stream)}.")
+
+            try:
+                jsonld.to_rdf(data)
+            finally:
+                stream.close()
