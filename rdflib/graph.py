@@ -1018,6 +1018,13 @@ class Graph(Node):
         for example:  graph.bind("foaf", "http://xmlns.com/foaf/0.1/")
 
         """
+        # TODO FIXME: This method's behaviour should be simplified and made
+        # more robust. If the method cannot do what it is asked it should raise
+        # an exception, it is also unclear why this method has all the
+        # different modes. It seems to just make it more complex to use, maybe
+        # it should be clarified when someone will need to use override=False
+        # and replace=False. And also why silent failure here is preferred over
+        # raising an excpetion.
         return self.namespace_manager.bind(
             prefix, namespace, override=override, replace=replace
         )

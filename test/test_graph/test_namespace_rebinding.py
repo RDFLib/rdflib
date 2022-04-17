@@ -13,7 +13,7 @@ foaf2_uri = URIRef("http://xmlns.com/foaf/2.0/")
 FOAF1 = Namespace(foaf1_uri)
 FOAF2 = Namespace(foaf2_uri)
 
-# @pytest.mark.xfail(reason="'foaf=>FOAF2' binding improperly removed from namespaces")
+
 def test_binding_replace():
 
     # The confusion here is in the two arguments “override” and “replace” and
@@ -234,7 +234,11 @@ def test_parse_rebinds_prefix():
 
 
 @pytest.mark.xfail(
-    reason="Automatic handling of unknown predicates not automatically registered with namespace manager"
+    reason="""
+    Automatic handling of unknown predicates not automatically registered with namespace manager
+
+    NOTE: This is not a bug, but more of a feature request.
+    """
 )
 def test_automatic_handling_of_unknown_predicates():
 
@@ -393,7 +397,6 @@ def test_new_namespace_override_false():
     ]
 
 
-# @pytest.mark.xfail()
 def test_change_namespace_and_prefix():
 
     # A more extensive illustration of attempted rebinds of

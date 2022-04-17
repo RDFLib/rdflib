@@ -25,7 +25,7 @@ from os.path import splitext
 
 # from time import daylight
 from time import altzone, gmtime, localtime, time, timezone
-from typing import Optional
+from typing import Optional, TypeVar
 
 import rdflib.graph  # avoid circular dependency
 from rdflib.compat import sign
@@ -44,6 +44,7 @@ __all__ = [
     "guess_format",
     "find_roots",
     "get_tree",
+    "_coalesce",
 ]
 
 
@@ -428,6 +429,29 @@ def get_tree(
             tree.append(t)
 
     return (mapper(root), sorted(tree, key=sortkey))
+
+
+_AnyT = TypeVar("_AnyT")
+
+
+def _coalesce(*args: Optional[_AnyT]) -> Optional[_AnyT]:
+    """
+    This is a null coalescing function, it will return the first non-`None`
+    argument passed to it, otherwise it will return `None`.
+
+    For more info regarding the rationale of this function see deferred `PEP
+    505 <https://peps.python.org/pep-0505/>`_.
+
+    :param args: Values to consider as candidates to return, the first arg that
+        is not `None` will be returned. If no argument is passed this function
+        will return None.
+    :return: The first ``arg`` that is not `None`, otherwise `None` if there
+        are no args or if all args are `None`.
+    """
+    for arg in args:
+        if arg is not None:
+            return arg
+    return None
 
 
 def test():
