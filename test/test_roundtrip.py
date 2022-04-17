@@ -292,6 +292,8 @@ EXTRA_FILES = [
     (TEST_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
     (TEST_DIR / "variants" / "simple_quad.trig", "trig"),
     (TEST_DIR / "variants" / "rdf11trig_eg2.trig", "trig"),
+    (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
+    (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]
 
 
