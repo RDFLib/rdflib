@@ -4,8 +4,9 @@ import sys
 import pytest
 
 maketrans = str.maketrans
-import rdflib
 from test.data import TEST_DATA_DIR
+
+import rdflib
 
 """
 SWAP N3 parser test suite

@@ -2,6 +2,7 @@
 import os
 import unittest
 from test.data import TEST_DATA_DIR
+
 from rdflib.graph import ConjunctiveGraph
 
 

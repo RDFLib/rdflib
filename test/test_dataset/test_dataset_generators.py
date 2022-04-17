@@ -1,14 +1,5 @@
 import os
-from test.data import (
-    TEST_DATA_DIR,
-    bob,
-    cheese,
-    hates,
-    likes,
-    michel,
-    pizza,
-    tarek,
-)
+from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 
 from rdflib import Dataset, URIRef
 
