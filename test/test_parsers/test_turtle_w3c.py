@@ -69,13 +69,11 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
 }
 
 NAMESPACE = Namespace("http://www.w3.org/2013/TurtleTests/manifest.ttl#")
-EXPECTED_FAILURES: Dict[URIRef, str] = {}
+EXPECTED_FAILURES: Dict[str, str] = {}
 
 if os.name == "nt":
     for test in ["literal_with_LINE_FEED", "turtle-subm-15", "turtle-subm-16"]:
-        EXPECTED_FAILURES[
-            NAMESPACE[test]
-        ] = "Issue with nt parser and line endings on windows"
+        EXPECTED_FAILURES[test] = "Issue with nt parser and line endings on windows"
 
 
 @pytest.mark.parametrize(
@@ -83,6 +81,7 @@ if os.name == "nt":
     read_manifest(os.path.join(TEST_DATA_DIR, "suites/w3c/turtle/manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
-    if rdf_test_uri in EXPECTED_FAILURES:
-        pytest.xfail(EXPECTED_FAILURES[rdf_test_uri])
+    suffix = rdf_test_uri.split("#")[1]
+    if suffix in EXPECTED_FAILURES:
+        pytest.xfail(EXPECTED_FAILURES[suffix])
     testers[type](rdf_test)
