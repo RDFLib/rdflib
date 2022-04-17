@@ -21,7 +21,6 @@ underlying Graph:
 
 """
 import re
-
 from fractions import Fraction
 
 __all__ = [
@@ -37,51 +36,44 @@ __all__ = [
 ]
 
 import logging
-import warnings
 import math
-
+import warnings
 import xml.dom.minidom
-
-from datetime import date, time, datetime, timedelta
-from re import sub, compile
-from collections import defaultdict
-
-from isodate import (
-    parse_time,
-    parse_date,
-    parse_datetime,
-    Duration,
-    parse_duration,
-    duration_isoformat,
-)
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
+from collections import defaultdict
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+from re import compile, sub
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+from urllib.parse import urldefrag, urljoin, urlparse
+
+from isodate import (
+    Duration,
+    duration_isoformat,
+    parse_date,
+    parse_datetime,
+    parse_duration,
+    parse_time,
+)
 
 import rdflib
 from rdflib.compat import long_type
 
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
-from urllib.parse import urlparse
-
-from decimal import Decimal
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Callable,
-    List,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-    Type,
-)
-
-
 if TYPE_CHECKING:
-    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
     from .namespace import NamespaceManager
+    from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
@@ -252,7 +244,15 @@ class IdentifiedNode(Identifier):
 
 class URIRef(IdentifiedNode):
     """
-    RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
+    RDF 1.1's IRI Section https://www.w3.org/TR/rdf11-concepts/#section-IRIs
+
+    .. note:: Documentation on RDF outside of RDFLib uses the term IRI or URI whereas this class is called URIRef. This is because it was made when the first version of the RDF specification was current, and it used the term *URIRef*, see `RDF 1.0 URIRef <http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref>`_
+
+    An IRI (Internationalized Resource Identifier) within an RDF graph is a Unicode string that conforms to the syntax defined in RFC 3987.
+
+    IRIs in the RDF abstract syntax MUST be absolute, and MAY contain a fragment identifier.
+
+    IRIs are a generalization of URIs [RFC3986] that permits a wider range of Unicode characters.
     """
 
     __slots__ = ()
@@ -416,8 +416,21 @@ def _serial_number_generator() -> Callable[[], str]:
 
 class BNode(IdentifiedNode):
     """
-    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
+    RDF 1.1's Blank Nodes Section: https://www.w3.org/TR/rdf11-concepts/#section-blank-nodes
 
+    Blank Nodes are local identifiers for unnamed nodes in RDF graphs that are used in
+    some concrete RDF syntaxes or RDF store implementations. They are always locally
+    scoped to the file or RDF store, and are not persistent or portable identifiers for
+    blank nodes. The identifiers for Blank Nodes are not part of the RDF abstract
+    syntax, but are entirely dependent on particular concrete syntax or implementation
+    (such as Turtle, JSON-LD).
+
+    ---
+
+    RDFLib's ``BNode`` class makes unique IDs for all the Blank Nodes in a Graph but you
+    should *never* expect, or reply on, BNodes' IDs to match across graphs, or even for
+    multiple copies of the same graph, if they are regenerated from some non-RDFLib
+    source, such as loading from RDF data.
     """
 
     __slots__ = ()
@@ -478,12 +491,20 @@ class BNode(IdentifiedNode):
 
 class Literal(Identifier):
     __doc__ = """
-    RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    The lexical value of the literal is the unicode object.
-    The interpreted, datatyped value is available from .value
+    RDF 1.1's Literals Section: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    Language tags must be valid according to :rfc:5646
+    Literals are used for values such as strings, numbers, and dates.
+
+    A literal in an RDF graph consists of two or three elements:
+
+    * a lexical form, being a Unicode string, which SHOULD be in Normal Form C
+    * a datatype IRI, being an IRI identifying a datatype that determines how the lexical form maps to a literal value, and
+    * if and only if the datatype IRI is ``http://www.w3.org/1999/02/22-rdf-syntax-ns#langString``, a non-empty language tag. The language tag MUST be well-formed according to section 2.2.9 of `Tags for identifying languages <http://tools.ietf.org/html/bcp47>`_.
+
+    A literal is a language-tagged string if the third element is present. Lexical representations of language tags MAY be converted to lower case. The value space of language tags is always in lower case.
+
+    ---
 
     For valid XSD datatypes, the lexical form is optionally normalized
     at construction time. Default behaviour is set by rdflib.NORMALIZE_LITERALS
@@ -1936,7 +1957,7 @@ def bind(
 class Variable(Identifier):
     """
     A Variable - this is used for querying, or in Formula aware
-    graphs, where Variables can stored in the graph
+    graphs, where Variables can be stored
     """
 
     __slots__ = ()

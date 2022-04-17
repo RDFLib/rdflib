@@ -15,9 +15,10 @@ system fails): A and I out of ACID.
 
 """
 
-from rdflib.store import Store
-from rdflib import Graph, ConjunctiveGraph
 import threading
+
+from rdflib import ConjunctiveGraph, Graph
+from rdflib.store import Store
 
 destructiveOpLocks = {
     "add": None,
@@ -129,8 +130,8 @@ class AuditableStore(Store):
         for ctx in self.store.contexts(triple):
             yield ctx
 
-    def bind(self, prefix, namespace):
-        self.store.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        self.store.bind(prefix, namespace, override=override)
 
     def prefix(self, namespace):
         return self.store.prefix(namespace)

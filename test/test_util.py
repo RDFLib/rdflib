@@ -4,14 +4,10 @@ import time
 from unittest.case import expectedFailure
 
 import pytest
-from rdflib.graph import Graph
-from rdflib.graph import QuotedGraph
-from rdflib.graph import ConjunctiveGraph
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.term import URIRef
-from rdflib import util
-from rdflib import XSD
+
+from rdflib import XSD, util
+from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.term import BNode, Literal, URIRef
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.

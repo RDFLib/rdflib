@@ -1,11 +1,12 @@
-from io import BytesIO
 import pickle
+from io import BytesIO
+from typing import TYPE_CHECKING, Iterable, Optional, Tuple
+
 from rdflib.events import Dispatcher, Event
-from typing import Tuple, TYPE_CHECKING, Iterable, Optional
 
 if TYPE_CHECKING:
-    from rdflib.term import Node, IdentifiedNode
     from rdflib.graph import Graph
+    from rdflib.term import IdentifiedNode, Node, URIRef
 
 """
 ============
@@ -154,11 +155,8 @@ class Store(object):
     @property
     def node_pickler(self):
         if self.__node_pickler is None:
-            from rdflib.term import URIRef
-            from rdflib.term import BNode
-            from rdflib.term import Literal
             from rdflib.graph import Graph, QuotedGraph
-            from rdflib.term import Variable
+            from rdflib.term import BNode, Literal, URIRef, Variable
 
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")
@@ -366,13 +364,15 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix, namespace):
-        """ """
+    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+        """
+        :param override: rebind, even if the given namespace is already bound to another prefix.
+        """
 
-    def prefix(self, namespace):
-        """ """
+    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+        """"""
 
-    def namespace(self, prefix):
+    def namespace(self, prefix: str) -> Optional["URIRef"]:
         """ """
 
     def namespaces(self):

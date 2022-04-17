@@ -1,6 +1,6 @@
 from rdflib import Graph
-from rdflib.store import NodePickler, Store
 from rdflib.namespace import NamespaceManager
+from rdflib.store import NodePickler, Store
 
 
 def test_namespaces() -> None:

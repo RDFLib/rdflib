@@ -4,12 +4,11 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 handle contexts, i.e. multiple graphs.
 """
 import json
-
-from typing import List, Union
-from rdflib.parser import Parser
-from rdflib import ConjunctiveGraph, URIRef, Literal, BNode
 import warnings
+from typing import List, Union
 
+from rdflib import BNode, ConjunctiveGraph, Literal, URIRef
+from rdflib.parser import Parser
 
 __all__ = ["HextuplesParser"]
 

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import textwrap
 import unittest
+
+import pytest
 
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import StringInputSource
-import textwrap
-import pytest
 
 prefix = textwrap.dedent(
     """\

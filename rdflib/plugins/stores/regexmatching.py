@@ -8,11 +8,10 @@ provides the support by replacing the REGEXTerms by wildcards (None) and
 matching against the results from the store it's wrapping.
 """
 
-from rdflib.store import Store
-from rdflib.graph import Graph
-
-
 import re
+
+from rdflib.graph import Graph
+from rdflib.store import Store
 
 # Store is capable of doing its own REGEX matching
 NATIVE_REGEX = 0
@@ -156,8 +155,8 @@ class REGEXMatching(Store):
     def remove_context(self, identifier):
         self.storage.remove((None, None, None), identifier)
 
-    def bind(self, prefix, namespace):
-        self.storage.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        self.storage.bind(prefix, namespace, override=override)
 
     def prefix(self, namespace):
         return self.storage.prefix(namespace)

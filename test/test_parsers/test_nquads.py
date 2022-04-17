@@ -1,8 +1,9 @@
 import os
 import unittest
-from rdflib import ConjunctiveGraph, URIRef, Namespace
 from test import TEST_DIR
 from test.data import TEST_DATA_DIR
+
+from rdflib import ConjunctiveGraph, Namespace, URIRef
 
 TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
 

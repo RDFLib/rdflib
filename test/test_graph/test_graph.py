@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
 import logging
-import sys
 import os
-from typing import Callable, Optional, Set
-import unittest
-
-from tempfile import mkdtemp, mkstemp
 import shutil
-from urllib.error import URLError, HTTPError
+import sys
+import unittest
+from pathlib import Path
+from tempfile import mkdtemp, mkstemp
+from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
+from test.testutils import GraphHelper, get_unique_plugin_names
+from typing import Callable, Optional, Set
+from urllib.error import HTTPError, URLError
 
 import pytest
 
-from rdflib import URIRef, Graph, plugin
+from rdflib import Graph, URIRef, plugin
 from rdflib.exceptions import ParserError
-from rdflib.plugin import PluginException
 from rdflib.namespace import Namespace, NamespaceManager
-
-from pathlib import Path
+from rdflib.plugin import PluginException
+from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import Store
 from rdflib.term import BNode
-
-from test.testutils import GraphHelper, get_unique_plugin_names
-from test.data import TEST_DATA_DIR, tarek, likes, pizza, michel, hates, cheese, bob
-from rdflib.plugins.stores.berkeleydb import has_bsddb
 
 
 def test_property_store() -> None:

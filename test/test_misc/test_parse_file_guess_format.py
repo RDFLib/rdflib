@@ -7,18 +7,18 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-import os
-import pytest
 import logging
+import os
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
+from test.data import TEST_DATA_DIR
 
-from rdflib.exceptions import ParserError
+import pytest
 
 from rdflib import Graph
+from rdflib.exceptions import ParserError
 from rdflib.util import guess_format
-from test.data import TEST_DATA_DIR
 
 
 class TestFileParserGuessFormat:

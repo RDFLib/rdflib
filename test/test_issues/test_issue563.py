@@ -1,4 +1,4 @@
-from rdflib import BNode, Literal, Graph, Namespace
+from rdflib import BNode, Graph, Literal, Namespace
 from rdflib.compare import isomorphic
 
 EX = Namespace("http://example.org/")

@@ -1,18 +1,18 @@
-from rdflib import BNode, Graph, Literal, Namespace, RDFS, OWL, XSD
-from rdflib.namespace import NamespaceManager
-from rdflib.util import first
+from rdflib import OWL, RDFS, XSD, BNode, Graph, Literal, Namespace
 from rdflib.extras.infixowl import (
     BooleanClass,
     Class,
     Collection,
     DeepClassClear,
-    Individual,
-    some,
     EnumeratedClass,
+    Individual,
     Property,
     Restriction,
     max,
+    some,
 )
+from rdflib.namespace import NamespaceManager
+from rdflib.util import first
 
 
 def test_infix_owl_example1():

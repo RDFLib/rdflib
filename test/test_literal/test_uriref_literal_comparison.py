@@ -1,15 +1,9 @@
 import unittest
 
-from rdflib.namespace import RDF
-
-from rdflib.term import URIRef
-from rdflib.term import BNode
-from rdflib.term import Literal
-
 from rdflib.graph import Graph
-
+from rdflib.namespace import RDF
 from rdflib.plugins.parsers.rdfxml import CORE_SYNTAX_TERMS
-
+from rdflib.term import BNode, Literal, URIRef
 
 """
 Ah... it's coming back to me...

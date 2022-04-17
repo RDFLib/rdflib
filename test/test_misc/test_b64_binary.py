@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import base64
-from rdflib import Literal, XSD
+
+from rdflib import XSD, Literal
 
 
 class TestB64Binary:

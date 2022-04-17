@@ -1,21 +1,10 @@
 import os
-from rdflib import (
-    Graph,
-    ConjunctiveGraph,
-    URIRef,
-)
-from test.data import (
-    TEST_DATA_DIR,
-    michel,
-    tarek,
-    bob,
-    likes,
-    hates,
-    pizza,
-    cheese,
-    context1 as c1,
-    context2 as c2,
-)
+from test.data import TEST_DATA_DIR, bob, cheese
+from test.data import context1 as c1
+from test.data import context2 as c2
+from test.data import hates, likes, michel, pizza, tarek
+
+from rdflib import ConjunctiveGraph, Graph, URIRef
 
 sportquadstrig = open(os.path.join(TEST_DATA_DIR, "sportquads.trig")).read()
 

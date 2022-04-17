@@ -1,5 +1,6 @@
-from rdflib import URIRef
 from pathlib import Path
+
+from rdflib import URIRef
 
 TEST_DIR = Path(__file__).parent
 TEST_DATA_DIR = TEST_DIR / "data"

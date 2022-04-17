@@ -1,22 +1,18 @@
-import sys
-from encodings.utf_8 import StreamWriter
-from typing import ClassVar
-
-import unittest
-
+import logging
 import os
 import os.path
+import sys
+import unittest
+from encodings.utf_8 import StreamWriter
 from io import StringIO
-
+from test.data import TEST_DATA_DIR
+from typing import ClassVar
 from urllib.request import url2pathname, urlopen
 
-from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
+from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.exceptions import ParserError
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.util import first
-from test.data import TEST_DATA_DIR
-
-import logging
 
 _logger = logging.getLogger("parser_rdfcore")
 
@@ -245,8 +241,8 @@ if __name__ == "__main__":
         cached_file("http://www.w3.org/2013/RDFXMLTests//Manifest.rdf"),
         format="xml",
     )
-    import sys
     import getopt
+    import sys
 
     try:
         optlist, args = getopt.getopt(sys.argv[1:], "h:", ["help"])

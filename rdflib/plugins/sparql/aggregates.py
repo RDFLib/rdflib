@@ -1,11 +1,10 @@
-from rdflib import Literal, XSD
-from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
-from rdflib.plugins.sparql.operators import numeric
-from rdflib.plugins.sparql.datatypes import type_promotion
-
-from rdflib.plugins.sparql.sparql import SPARQLTypeError
-
 from decimal import Decimal
+
+from rdflib import XSD, Literal
+from rdflib.plugins.sparql.datatypes import type_promotion
+from rdflib.plugins.sparql.evalutils import NotBoundError, _eval, _val
+from rdflib.plugins.sparql.operators import numeric
+from rdflib.plugins.sparql.sparql import SPARQLTypeError
 
 """
 Aggregation functions

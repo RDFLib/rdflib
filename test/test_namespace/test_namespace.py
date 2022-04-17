@@ -1,6 +1,5 @@
 import unittest
 from unittest.case import expectedFailure
-
 from warnings import warn
 
 import pytest
@@ -13,9 +12,9 @@ from rdflib.namespace import (
     RDF,
     RDFS,
     SH,
+    ClosedNamespace,
     DefinedNamespaceMeta,
     Namespace,
-    ClosedNamespace,
     URIPattern,
 )
 from rdflib.term import URIRef

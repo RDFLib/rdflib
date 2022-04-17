@@ -1,8 +1,7 @@
+from collections import OrderedDict
 from types import MethodType
 
-from collections import OrderedDict
-
-from pyparsing import TokenConverter, ParseResults, originalTextFor
+from pyparsing import ParseResults, TokenConverter, originalTextFor
 
 from rdflib import BNode, Variable
 
@@ -271,8 +270,9 @@ def prettify_parsetree(t, indent="", depth=0):
 
 
 if __name__ == "__main__":
-    from pyparsing import Word, nums
     import sys
+
+    from pyparsing import Word, nums
 
     Number = Word(nums)
     Number.setParseAction(lambda x: int(x[0]))
@@ -284,4 +284,4 @@ if __name__ == "__main__":
     print(r[0].eval({}))
 
 # hurrah for circular imports
-from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
+from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError

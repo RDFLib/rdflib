@@ -7,17 +7,17 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
+import datetime
+import unittest
 from decimal import Decimal
 from typing import Any, Optional, Sequence, Tuple, Type, Union
-import unittest
-import datetime
-
-import rdflib  # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
-from rdflib import XSD
-from rdflib.namespace import RDF, Namespace
 
 import pytest
+
+import rdflib  # needed for eval(repr(...)) below
+from rdflib import XSD
+from rdflib.namespace import RDF, Namespace
+from rdflib.term import _XSD_BOOLEAN, _XSD_DOUBLE, Literal, URIRef, bind
 
 EGNS = Namespace("http://example.com/")
 

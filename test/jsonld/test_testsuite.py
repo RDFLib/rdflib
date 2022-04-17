@@ -1,13 +1,15 @@
-from os import environ, chdir, getcwd, path as p
 import json
+from os import chdir, environ, getcwd
+from os import path as p
 from typing import Tuple
 
 import pytest
+
 import rdflib
 import rdflib.plugins.parsers.jsonld as parser
 from rdflib.term import URIRef
-from . import runner
 
+from . import runner
 
 unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
