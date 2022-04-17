@@ -45,7 +45,7 @@ class TestStore(Graph):
         super(TestStore, self).add((s, p, o))
 
 
-TEST = Namespace("http://www.w3.org/2013/RDFXMLTests/testSchema#")
+TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
 CACHE_DIR = os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdfxml")
 
@@ -77,7 +77,7 @@ def cached_file(url):
     return fpath
 
 
-RDFCOREBASE = "http://www.w3.org/2013/RDFXMLTests/"
+RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
 
 
 def relative(url):
@@ -178,7 +178,7 @@ class ParserTestCase(unittest.TestCase):
         self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
         manifest.parse(
-            cached_file("http://www.w3.org/2013/RDFXMLTests/Manifest.rdf"),
+            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
             format="xml",
         )
 
@@ -189,6 +189,7 @@ class ParserTestCase(unittest.TestCase):
         manifest = self.manifest
         num_failed = total = 0
         negs = list(manifest.subjects(RDF.type, TEST["NegativeParserTest"]))
+        self.assertGreater(len(negs), 1)
         negs.sort()
         for neg in negs:
             status = first(manifest.objects(neg, TEST["status"]))
@@ -201,6 +202,7 @@ class ParserTestCase(unittest.TestCase):
     def testPositive(self):
         manifest = self.manifest
         uris = list(manifest.subjects(RDF.type, TEST["PositiveParserTest"]))
+        self.assertGreater(len(uris), 1)
         uris.sort()
         num_failed = total = 0
         for uri in uris:
@@ -238,7 +240,7 @@ results.add((system, RDFS.comment, Literal("")))
 if __name__ == "__main__":
     manifest = Graph()
     manifest.parse(
-        cached_file("http://www.w3.org/2013/RDFXMLTests//Manifest.rdf"),
+        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
         format="xml",
     )
     import getopt
