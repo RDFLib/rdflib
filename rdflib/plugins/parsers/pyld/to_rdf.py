@@ -62,4 +62,5 @@ def to_rdf(self: pyld.jsonld.JsonLdProcessor, input_: dict, options: dict) -> No
     for graph_name, graph in sorted(node_map.items()):
         # skip relative IRIs
         if graph_name == "@default" or _is_absolute_iri(graph_name):
-            self._graph_to_rdf(graph_name, graph, issuer, options)
+            # Ignore method signature due to monkey patch.
+            self._graph_to_rdf(graph_name, graph, issuer, options)  # type: ignore

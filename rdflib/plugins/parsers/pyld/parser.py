@@ -17,7 +17,7 @@ from rdflib.parser import BytesIOWrapper, InputSource, Parser, PythonInputSource
 from .to_rdf import to_rdf
 
 # Monkey patch pyld.
-pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf
+pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf  # type: ignore
 
 
 def _get_object(object):
@@ -142,7 +142,7 @@ class JSONLDParser(Parser):
                 sink.store.add((s, p, o), graph_name)
 
         # Monkey patch pyld.
-        pyld.jsonld.JsonLdProcessor._graph_to_rdf = _graph_to_rdf
+        pyld.jsonld.JsonLdProcessor._graph_to_rdf = _graph_to_rdf  # type: ignore
 
         if isinstance(source, PythonInputSource):
             data = source.data

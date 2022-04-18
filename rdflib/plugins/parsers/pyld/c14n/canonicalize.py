@@ -27,15 +27,15 @@ from .number_to_json import convert2Es6Format
 try:
     from _json import encode_basestring_ascii as c_encode_basestring_ascii
 except ImportError:
-    c_encode_basestring_ascii = None
+    c_encode_basestring_ascii = None  # type: ignore
 try:
-    from _json import encode_basestring as c_encode_basestring
+    from _json import encode_basestring as c_encode_basestring  # type: ignore
 except ImportError:
     c_encode_basestring = None
 try:
     from _json import make_encoder as c_make_encoder
 except ImportError:
-    c_make_encoder = None
+    c_make_encoder = None  # type: ignore
 
 ESCAPE = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t]')
 ESCAPE_ASCII = re.compile(r'([\\"]|[^\ -~])')
@@ -90,7 +90,7 @@ def py_encode_basestring_ascii(s):
     return '"' + ESCAPE_ASCII.sub(replace, s) + '"'
 
 
-encode_basestring_ascii = c_encode_basestring_ascii or py_encode_basestring_ascii
+encode_basestring_ascii = c_encode_basestring_ascii or py_encode_basestring_ascii  # type: ignore
 
 
 class JSONEncoder(object):
