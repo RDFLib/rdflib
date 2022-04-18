@@ -2,6 +2,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from test.data import TEST_DATA_DIR
 
 from rdflib import RDF, SKOS
 
@@ -12,12 +13,12 @@ def test_definednamespace_creator_qb():
     """
 
     definednamespace_script = (
-        Path(__file__).parent.parent
+        Path(__file__).parent.parent.parent
         / "rdflib"
         / "tools"
         / "defined_namespace_creator.py"
     )
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "qb.ttl"
+    qb_data_file = Path(TEST_DATA_DIR) / "defined_namespaces" / "qb.ttl"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...")
@@ -60,12 +61,12 @@ def test_definednamespace_creator_fake():
     """
 
     definednamespace_script = (
-        Path(__file__).parent.parent
+        Path(__file__).parent.parent.parent
         / "rdflib"
         / "tools"
         / "defined_namespace_creator.py"
     )
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
+    qb_data_file = Path(TEST_DATA_DIR) / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...(expected to fail)")
@@ -91,12 +92,12 @@ def test_definednamespace_creator_bad_ns():
     """
 
     definednamespace_script = (
-        Path(__file__).parent.parent
+        Path(__file__).parent.parent.parent
         / "rdflib"
         / "tools"
         / "defined_namespace_creator.py"
     )
-    qb_data_file = Path(__file__).parent / "defined_namespaces" / "fake.xxx"
+    qb_data_file = Path(TEST_DATA_DIR) / "defined_namespaces" / "fake.xxx"
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...(expected to fail - bad NS given)")

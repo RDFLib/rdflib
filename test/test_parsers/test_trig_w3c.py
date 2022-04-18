@@ -3,6 +3,7 @@
 """
 
 import os
+from test.data import TEST_DATA_DIR
 from test.manifest import RDFT, RDFTest, read_manifest
 from typing import Callable, Dict
 
@@ -78,20 +79,19 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
 NAMESPACE = Namespace(
     "https://dvcs.w3.org/hg/rdf/raw-file/default/trig/tests/manifest.ttl#"
 )
-EXPECTED_FAILURES: Dict[URIRef, str] = {}
+EXPECTED_FAILURES: Dict[str, str] = {}
 
 if os.name == "nt":
     for test in ["literal_with_LINE_FEED", "trig-subm-15", "trig-subm-16"]:
-        EXPECTED_FAILURES[
-            NAMESPACE[test]
-        ] = "Issue with nt parser and line endings on windows"
+        EXPECTED_FAILURES[test] = "Issue with nt parser and line endings on windows"
 
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/w3c/trig/manifest.ttl"),
+    read_manifest(os.path.join(TEST_DATA_DIR, "suites/w3c/trig/manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
-    if rdf_test_uri in EXPECTED_FAILURES:
-        pytest.xfail(EXPECTED_FAILURES[rdf_test_uri])
+    suffix = rdf_test_uri.split("#")[1]
+    if suffix in EXPECTED_FAILURES:
+        pytest.xfail(EXPECTED_FAILURES[suffix])
     testers[type](rdf_test)

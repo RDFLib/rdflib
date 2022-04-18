@@ -5,6 +5,7 @@ import sys
 import unittest
 from encodings.utf_8 import StreamWriter
 from io import StringIO
+from test.data import TEST_DATA_DIR
 from typing import ClassVar
 from urllib.request import url2pathname, urlopen
 
@@ -46,7 +47,7 @@ class TestStore(Graph):
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
-CACHE_DIR = os.path.join(os.path.dirname(__file__), "rdf")
+CACHE_DIR = os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdfxml")
 
 skipped = (
     # "datatypes/Manifest.rdf#test002",
@@ -188,6 +189,7 @@ class ParserTestCase(unittest.TestCase):
         manifest = self.manifest
         num_failed = total = 0
         negs = list(manifest.subjects(RDF.type, TEST["NegativeParserTest"]))
+        self.assertGreater(len(negs), 1)
         negs.sort()
         for neg in negs:
             status = first(manifest.objects(neg, TEST["status"]))
@@ -200,6 +202,7 @@ class ParserTestCase(unittest.TestCase):
     def testPositive(self):
         manifest = self.manifest
         uris = list(manifest.subjects(RDF.type, TEST["PositiveParserTest"]))
+        self.assertGreater(len(uris), 1)
         uris.sort()
         num_failed = total = 0
         for uri in uris:

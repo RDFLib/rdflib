@@ -1,6 +1,9 @@
 """This runs the nquads tests for the W3C RDF Working Group's N-Quads
 test suite."""
 
+
+import os
+from test.data import TEST_DATA_DIR
 from test.manifest import RDFT, RDFTest, read_manifest
 from typing import Callable, Dict
 
@@ -32,7 +35,7 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/w3c/nquads/manifest.ttl"),
+    read_manifest(os.path.join(TEST_DATA_DIR, "suites", "w3c/nquads/manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)

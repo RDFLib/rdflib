@@ -1,5 +1,6 @@
+import logging
 from test.testutils import eq_
-from typing import Any, Callable, Type
+from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
 from pytest import MonkeyPatch
@@ -11,11 +12,14 @@ from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
 from rdflib.compare import isomorphic
 from rdflib.namespace import RDF, RDFS, Namespace
 from rdflib.plugins.sparql import prepareQuery, sparql
+from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
+from rdflib.plugins.sparql.parser import parseQuery
+from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
 from rdflib.query import Result
-from rdflib.term import Variable
+from rdflib.term import Identifier, Variable
 
 
 def test_graph_prefix():
@@ -474,3 +478,250 @@ def test_operator_exception(
     with pytest.raises(exception_type) as excinfo:
         result_consumer(result)
     assert str(excinfo.value) == "TEST ERROR"
+
+
+@pytest.mark.parametrize(
+    ["query_string", "expected_bindings"],
+    [
+        pytest.param(
+            """
+            SELECT ?label ?deprecated WHERE {
+                ?s rdfs:label "Class"
+                OPTIONAL {
+                    ?s
+                    rdfs:comment
+                    ?label
+                }
+                OPTIONAL {
+                    ?s
+                    owl:deprecated
+                    ?deprecated
+                }
+            }
+            """,
+            [{Variable('label'): Literal("The class of classes.")}],
+            id="select-optional",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND( SHA256("abc") as ?bound )
+            }
+            """,
+            [
+                {
+                    Variable('bound'): Literal(
+                        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+                    )
+                }
+            ],
+            id="select-bind-sha256",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND( (1+2) as ?bound )
+            }
+            """,
+            [{Variable('bound'): Literal(3)}],
+            id="select-bind-plus",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                OPTIONAL {
+                    <http://example.com/a>
+                    <http://example.com/b>
+                    <http://example.com/c>
+                }
+            }
+            """,
+            [{}],
+            id="select-optional-const",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:label "Class" .
+                FILTER EXISTS {
+                    <http://example.com/a>
+                    <http://example.com/b>
+                    <http://example.com/c>
+                }
+            }
+            """,
+            [],
+            id="select-filter-exists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:label "Class" .
+                FILTER NOT EXISTS {
+                    <http://example.com/a>
+                    <http://example.com/b>
+                    <http://example.com/c>
+                }
+            }
+            """,
+            [{Variable("s"): RDFS.Class}],
+            id="select-filter-notexists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:label "Class"
+                FILTER EXISTS {
+                    rdfs:Class rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#>
+                }
+            }
+            """,
+            [{Variable("s"): RDFS.Class}],
+            id="select-filter-exists-const-true",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:label "Class"
+                FILTER NOT EXISTS {
+                    rdfs:Class rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#>
+                }
+            }
+            """,
+            [],
+            id="select-filter-notexists-const-true",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#>
+                FILTER EXISTS {
+                    ?s rdfs:label "MISSING" .
+                }
+            }
+            """,
+            [],
+            id="select-filter-exists-var-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#>
+                FILTER EXISTS {
+                    ?s rdfs:label "Class" .
+                }
+            }
+            """,
+            [{Variable("s"): RDFS.Class}],
+            id="select-filter-exists-var-true",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND(
+                    EXISTS {
+                        <http://example.com/a>
+                        <http://example.com/b>
+                        <http://example.com/c>
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable('bound'): Literal(False)}],
+            id="select-bind-exists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND(
+                    EXISTS {
+                        rdfs:Class rdfs:label "Class"
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable('bound'): Literal(True)}],
+            id="select-bind-exists-const-true",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:comment "The class of classes."
+                BIND(
+                    EXISTS {
+                        ?s rdfs:label "Class"
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable("s"): RDFS.Class, Variable('bound'): Literal(True)}],
+            id="select-bind-exists-var-true",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                ?s rdfs:comment "The class of classes."
+                BIND(
+                    EXISTS {
+                        ?s rdfs:label "Property"
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable("s"): RDFS.Class, Variable('bound'): Literal(False)}],
+            id="select-bind-exists-var-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND(
+                    NOT EXISTS {
+                        <http://example.com/a>
+                        <http://example.com/b>
+                        <http://example.com/c>
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable('bound'): Literal(True)}],
+            id="select-bind-notexists-const-false",
+        ),
+        pytest.param(
+            """
+            SELECT * WHERE {
+                BIND(
+                    NOT EXISTS {
+                        rdfs:Class rdfs:label "Class"
+                    }
+                    AS ?bound
+                )
+            }
+            """,
+            [{Variable('bound'): Literal(False)}],
+            id="select-bind-notexists-const-true",
+        ),
+    ],
+)
+def test_queries(
+    query_string: str,
+    expected_bindings: Sequence[Mapping["Variable", "Identifier"]],
+    rdfs_graph: Graph,
+) -> None:
+    """
+    Results of queries against the rdfs.ttl return the expected values.
+    """
+    query_tree = parseQuery(query_string)
+
+    logging.debug("query_tree = %s", prettify_parsetree(query_tree))
+    logging.debug("query_tree = %s", query_tree)
+    query = translateQuery(query_tree)
+    logging.debug("query = %s", query)
+    query._original_args = (query_string, {}, None)
+    result = rdfs_graph.query(query)
+    logging.debug("result = %s", result)
+    assert expected_bindings == result.bindings

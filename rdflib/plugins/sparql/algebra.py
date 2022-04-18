@@ -306,7 +306,10 @@ def translateGroupGraphPattern(graphPattern):
         elif p.name in ("BGP", "Extend"):
             G = Join(p1=G, p2=p)
         elif p.name == "Bind":
-            G = Extend(G, p.expr, p.var)
+            # translateExists will translate the expression if it is EXISTS, and otherwise return
+            # the expression as is. This is needed because EXISTS has a graph pattern
+            # which must be translated to work properly during evaluation.
+            G = Extend(G, translateExists(p.expr), p.var)
 
         else:
             raise Exception(

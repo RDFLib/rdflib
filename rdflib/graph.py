@@ -23,7 +23,6 @@ from urllib.parse import urlparse
 from urllib.request import url2pathname
 from warnings import warn
 
-import rdflib.term
 import rdflib.util  # avoid circular dependency
 from rdflib import exceptions, namespace, plugin, query
 from rdflib.collection import Collection
@@ -34,7 +33,7 @@ from rdflib.paths import Path
 from rdflib.resource import Resource
 from rdflib.serializer import Serializer
 from rdflib.store import Store
-from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid, URIRef
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
@@ -1512,10 +1511,17 @@ class Graph(Node):
 
         def do_de_skolemize2(t):
             (s, p, o) = t
-            if isinstance(s, Genid):
-                s = s.de_skolemize()
-            if isinstance(o, Genid):
-                o = o.de_skolemize()
+
+            if RDFLibGenid._is_rdflib_skolem(s):
+                s = RDFLibGenid(s).de_skolemize()
+            elif Genid._is_external_skolem(s):
+                s = Genid(s).de_skolemize()
+
+            if RDFLibGenid._is_rdflib_skolem(o):
+                o = RDFLibGenid(o).de_skolemize()
+            elif Genid._is_external_skolem(o):
+                o = Genid(o).de_skolemize()
+
             return s, p, o
 
         retval = Graph() if new_graph is None else new_graph

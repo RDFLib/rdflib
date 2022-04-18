@@ -1,17 +1,18 @@
 import os
 import unittest
 from test import TEST_DIR
+from test.data import TEST_DATA_DIR
 
 from rdflib import ConjunctiveGraph, Namespace, URIRef
 
-TEST_BASE = "test/nquads.rdflib"
+TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
 
 
 class NQuadsParserTest(unittest.TestCase):
     def _load_example(self):
         g = ConjunctiveGraph()
         nq_path = os.path.relpath(
-            os.path.join(TEST_DIR, "nquads.rdflib/example.nquads"), os.curdir
+            os.path.join(TEST_DATA_DIR, "nquads.rdflib/example.nquads"), os.curdir
         )
         with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
@@ -43,7 +44,7 @@ class NQuadsParserTest(unittest.TestCase):
     def test_context_is_optional(self):
         g = ConjunctiveGraph()
         nq_path = os.path.relpath(
-            os.path.join(TEST_DIR, "nquads.rdflib/test6.nq"), os.curdir
+            os.path.join(TEST_DATA_DIR, "nquads.rdflib/test6.nq"), os.curdir
         )
         with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
@@ -76,9 +77,14 @@ class NQuadsParserTest(unittest.TestCase):
 
 class BnodeContextTest(unittest.TestCase):
     def setUp(self):
-        self.data = open("test/nquads.rdflib/bnode_context.nquads", "rb")
+        self.data = open(
+            os.path.join(TEST_DATA_DIR, "nquads.rdflib/bnode_context.nquads"), "rb"
+        )
         self.data_obnodes = open(
-            "test/nquads.rdflib/bnode_context_obj_bnodes.nquads", "rb"
+            os.path.join(
+                TEST_DATA_DIR, "nquads.rdflib/bnode_context_obj_bnodes.nquads"
+            ),
+            "rb",
         )
 
     def tearDown(self):
