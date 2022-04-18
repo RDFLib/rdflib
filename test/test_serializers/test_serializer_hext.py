@@ -1,8 +1,10 @@
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Dataset, Graph, ConjunctiveGraph
 import json
+
+from rdflib import ConjunctiveGraph, Dataset, Graph
 
 
 def test_hext_graph():
@@ -33,18 +35,51 @@ def test_hext_graph():
     out = g.serialize(format="hext")
     # note: can't test for BNs in result as they will be different every time
     testing_lines = [
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p7", "true", "http://www.w3.org/2001/XMLSchema#boolean", "", ""]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", ""]'],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p7", "true", "http://www.w3.org/2001/XMLSchema#boolean", "", ""]',
+        ],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", ""]',
+        ],
         [False, '["http://example.com/s1", "http://example.com/p2"'],
-        [False, '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", ""]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p8", "false", "http://www.w3.org/2001/XMLSchema#boolean", "", ""]'],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", ""]',
+        ],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p8", "false", "http://www.w3.org/2001/XMLSchema#boolean", "", ""]',
+        ],
     ]
     for line in out.splitlines():
         for test in testing_lines:
@@ -97,24 +132,75 @@ def test_hext_cg():
     out = d.serialize(format="hext")
     # note: cant' test for BNs in result as they will be different ever time
     testing_lines = [
-        [False, '["http://example.com/s21", "http://example.com/p21", "http://example.com/o21", "globalId", "", ""]'],
-        [False, '["http://example.com/s21", "http://example.com/p21", "http://example.com/o22", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]'],
-        [False, '["http://example.com/s11", "http://example.com/p11", "http://example.com/o12", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s11", "http://example.com/p11", "http://example.com/o11", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g1"]'],
+        [
+            False,
+            '["http://example.com/s21", "http://example.com/p21", "http://example.com/o21", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s21", "http://example.com/p21", "http://example.com/o22", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s11", "http://example.com/p11", "http://example.com/o12", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s11", "http://example.com/p11", "http://example.com/o11", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g1"]',
+        ],
         [False, '["http://example.com/s1", "http://example.com/p2"'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
     ]
     for line in out.splitlines():
         for test in testing_lines:
@@ -162,24 +248,75 @@ def test_hext_dataset():
     out = d.serialize(format="hext")
     # note: cant' test for BNs in result as they will be different ever time
     testing_lines = [
-        [False, '["http://example.com/s21", "http://example.com/p21", "http://example.com/o21", "globalId", "", ""]'],
-        [False, '["http://example.com/s21", "http://example.com/p21", "http://example.com/o22", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]'],
-        [False, '["http://example.com/s11", "http://example.com/p11", "http://example.com/o12", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s11", "http://example.com/p11", "http://example.com/o11", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g2"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g1"]'],
+        [
+            False,
+            '["http://example.com/s21", "http://example.com/p21", "http://example.com/o21", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s21", "http://example.com/p21", "http://example.com/o22", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", ""]',
+        ],
+        [
+            False,
+            '["http://example.com/s11", "http://example.com/p11", "http://example.com/o12", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s11", "http://example.com/p11", "http://example.com/o11", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g2"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o2", "globalId", "", "http://example.com/g1"]',
+        ],
         [False, '["http://example.com/s1", "http://example.com/p2"'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
-        [False, '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]'],
-        [False, '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]'],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#value", "thingy", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://www.w3.org/2002/07/owl#Thing", "globalId", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 4 - English", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p6", "42", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p4", "2021-12-03", "http://www.w3.org/2001/XMLSchema#date", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p1", "http://example.com/o1", "globalId", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p5", "42", "http://www.w3.org/2001/XMLSchema#integer", "", "http://example.com/g1"]',
+        ],
+        [
+            False,
+            '["http://example.com/s1", "http://example.com/p3", "Object 3", "http://www.w3.org/2001/XMLSchema#string", "", "http://example.com/g1"]',
+        ],
     ]
     for line in out.splitlines():
         for test in testing_lines:
@@ -234,9 +371,10 @@ def test_hext_dataset_linecount():
     d = Dataset()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent
+        / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier
+        publicID=d.default_context.identifier,
     )
     total_triples = 0
     # count all the triples in the Dataset
@@ -253,12 +391,18 @@ def test_hext_dataset_linecount():
 def test_roundtrip():
     d = Dataset()
     d.parse(
-        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent
+        / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier
+        publicID=d.default_context.identifier,
     )
     d.default_union = True
-    with open(str(Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson")) as i:
+    with open(
+        str(
+            Path(__file__).parent.parent
+            / "consistent_test_data/test_parser_hext_multigraph.ndjson"
+        )
+    ) as i:
         ordered_input = "".join(sorted(i.readlines())).strip()
 
     ordered_output = "\n".join(sorted(d.serialize(format="hext").split("\n"))).strip()

@@ -1,12 +1,10 @@
 from typing import IO, Optional
-from rdflib.serializer import Serializer
-from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
-from rdflib.term import URIRef, Literal, BNode
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
-
-from rdflib.graph import Graph, ConjunctiveGraph
-
+from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["TriXSerializer"]
 

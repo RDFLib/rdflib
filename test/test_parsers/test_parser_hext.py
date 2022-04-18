@@ -1,7 +1,8 @@
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Dataset, ConjunctiveGraph, Literal
+from rdflib import ConjunctiveGraph, Dataset, Literal
 from rdflib.namespace import XSD
 
 
@@ -40,7 +41,11 @@ def test_small_string_cg():
 
 
 def test_small_file_singlegraph():
-    d = Dataset().parse(Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_singlegraph.ndjson", format="hext")
+    d = Dataset().parse(
+        Path(__file__).parent.parent
+        / "consistent_test_data/test_parser_hext_singlegraph.ndjson",
+        format="hext",
+    )
     assert len(d) == 10
 
 
@@ -48,9 +53,10 @@ def test_small_file_multigraph():
     d = Dataset()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent
+        / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier
+        publicID=d.default_context.identifier,
     )
 
     """There are 22 lines in the file test_parser_hext_multigraph.ndjson. When loaded
@@ -68,9 +74,10 @@ def test_small_file_multigraph_cg():
     d = ConjunctiveGraph()
     assert len(d) == 0
     d.parse(
-        Path(__file__).parent.parent / "consistent_test_data/test_parser_hext_multigraph.ndjson",
+        Path(__file__).parent.parent
+        / "consistent_test_data/test_parser_hext_multigraph.ndjson",
         format="hext",
-        publicID=d.default_context.identifier
+        publicID=d.default_context.identifier,
     )
 
     """There are 22 lines in the file test_parser_hext_multigraph.ndjson. When loaded
@@ -121,7 +128,7 @@ def test_roundtrip():
                 cg2.parse(
                     data=cg.serialize(format="hext"),
                     format="hext",
-                    publicID=cg2.default_context.identifier
+                    publicID=cg2.default_context.identifier,
                 )
                 if cg2.context_aware:
                     for context in cg2.contexts():
@@ -129,7 +136,9 @@ def test_roundtrip():
                             if type(triple[2]) == Literal:
                                 if triple[2].datatype == XSD.string:
                                     context.remove((triple[0], triple[1], triple[2]))
-                                    context.add((triple[0], triple[1], Literal(str(triple[2]))))
+                                    context.add(
+                                        (triple[0], triple[1], Literal(str(triple[2])))
+                                    )
                 else:
                     for triple in cg2.triples((None, None, None)):
                         if type(triple[2]) == Literal:

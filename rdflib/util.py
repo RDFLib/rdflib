@@ -18,40 +18,19 @@ Date/time utilities
 * date_time
 * parse_date_time
 
-Statement and component type checkers
-
-* check_context
-* check_subject
-* check_predicate
-* check_object
-* check_statement
-* check_pattern
-
 """
 
 from calendar import timegm
-from time import altzone
-from typing import Optional
-
-# from time import daylight
-from time import gmtime
-from time import localtime
-from time import time
-from time import timezone
-
 from os.path import splitext
 
-from rdflib.exceptions import ContextTypeError
-from rdflib.exceptions import ObjectTypeError
-from rdflib.exceptions import PredicateTypeError
-from rdflib.exceptions import SubjectTypeError
+# from time import daylight
+from time import altzone, gmtime, localtime, time, timezone
+from typing import Optional
+
 import rdflib.graph  # avoid circular dependency
-from rdflib.namespace import Namespace
-from rdflib.namespace import NamespaceManager
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.term import URIRef
 from rdflib.compat import sign
+from rdflib.namespace import XSD, Namespace, NamespaceManager
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = [
     "list2set",
@@ -62,12 +41,6 @@ __all__ = [
     "from_n3",
     "date_time",
     "parse_date_time",
-    "check_context",
-    "check_subject",
-    "check_predicate",
-    "check_object",
-    "check_statement",
-    "check_pattern",
     "guess_format",
     "find_roots",
     "get_tree",
@@ -203,8 +176,19 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         return Literal(value, language, datatype)
     elif s == "true" or s == "false":
         return Literal(s == "true")
-    elif s.isdigit():
-        return Literal(int(s))
+    elif (
+        s.lower()
+        .replace('.', '', 1)
+        .replace('-', '', 1)
+        .replace('e', '', 1)
+        .isnumeric()
+    ):
+        if "e" in s.lower():
+            return Literal(s, datatype=XSD.double)
+        if "." in s:
+            return Literal(float(s), datatype=XSD.decimal)
+        return Literal(int(s), datatype=XSD.integer)
+
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.QuotedGraph(backend, identifier)
@@ -222,55 +206,6 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         return Namespace(ns)[last_part]
     else:
         return BNode(s)
-
-
-def check_context(c):
-    if not (isinstance(c, URIRef) or isinstance(c, BNode)):
-        raise ContextTypeError("%s:%s" % (c, type(c)))
-
-
-def check_subject(s):
-    """Test that s is a valid subject identifier."""
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-
-def check_predicate(p):
-    """Test that p is a valid predicate identifier."""
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-
-def check_object(o):
-    """Test that o is a valid object identifier."""
-    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-
-def check_statement(triple):
-    (s, p, o) = triple
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-
-def check_pattern(triple):
-    (s, p, o) = triple
-    if s and not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if p and not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if o and not (
-        isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)
-    ):
-        raise ObjectTypeError(o)
 
 
 def date_time(t=None, local_time_zone=False):

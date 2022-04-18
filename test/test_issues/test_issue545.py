@@ -1,5 +1,5 @@
+from rdflib.namespace import DC, OWL, RDFS, SKOS
 from rdflib.plugins import sparql
-from rdflib.namespace import RDFS, OWL, DC, SKOS
 
 
 def test_issue():

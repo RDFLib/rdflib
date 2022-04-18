@@ -28,10 +28,12 @@ from codecs import getreader
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
-from rdflib.plugins.parsers.ntriples import ParseError
-from rdflib.plugins.parsers.ntriples import r_tail
-from rdflib.plugins.parsers.ntriples import r_wspace
+from rdflib.plugins.parsers.ntriples import (
+    ParseError,
+    W3CNTriplesParser,
+    r_tail,
+    r_wspace,
+)
 
 __all__ = ["NQuadsParser"]
 

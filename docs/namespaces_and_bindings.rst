@@ -10,37 +10,103 @@ The :mod:`rdflib.namespace` defines the :class:`rdflib.namespace.Namespace` clas
 
 	from rdflib import Namespace
 
-	n = Namespace("http://example.org/")
-	n.Person  # as attribute
-	# = rdflib.term.URIRef("http://example.org/Person")
+	EX = Namespace("http://example.org/")
+	EX.Person  # a Python attribute for EX. This example is equivalent to rdflib.term.URIRef("http://example.org/Person")
 
-	n['first%20name']  # as item - for things that are not valid python identifiers
-	# = rdflib.term.URIRef("http://example.org/first%20name")
+    # use dict notation for things that are not valid Python identifiers, e.g.:
+	n['first%20name']  # as rdflib.term.URIRef("http://example.org/first%20name")
 
-Note that if a name string is valid for use in an RDF namespace but not valid as a Python identifier, such as '1234', it must be addressed with the "item" syntax (using the "attribute" syntax will raise a Syntax Error).
+These two styles of namespace creation - object attribute and dict - are equivalent and are made available just to allow for valid
+RDF namespaces and URIs that are not valid Python identifiers. This isn't just for syntactic things like spaces, as per 
+the example of ``first%20name`` above, but also for Python reserved words like ``class`` or ``while``, so for the URI 
+``http://example.org/class``, create it with ``EX['class']``, not ``EX.class``.
 
-The ``namespace`` module also defines many common namespaces such as RDF, RDFS, OWL, FOAF, SKOS, PROF, etc.
+Common Namespaces
+-----------------
 
-Namespaces can also be associated with prefixes, in a :class:`rdflib.namespace.NamespaceManager`, i.e. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``. Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Additional prefixes can be bound with the :meth:`rdflib.graph.bind` method.
+The ``namespace`` module defines many common namespaces such as RDF, RDFS, OWL, FOAF, SKOS, PROF, etc. The list of the 
+namespaces provided grows with user contributions to RDFLib.
+
+These Namespaces, and any others that users define, can also be associated with prefixes using the :class:`rdflib.namespace.NamespaceManager`, e.g. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``.
+
+Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Prefixes can be bound with the :meth:`rdflib.graph.bind` method::
+
+    from rdflib import Graph, Namespace
+    from rdflib.namespace import FOAF
+    
+    EX = Namespace("http://example.org/")
+    
+    g = Graph()
+    g.bind("foaf", FOAF)  # bind an RDFLib-provided namespace to a prefix
+    g.bind("ex", EX)      # bind a user-declared namespace to a prefix
+    
+
+The :meth:`rdflib.graph.bind` method is actually supplied by the :class:`rdflib.namespace.NamespaceManager` class - see next.
 
 NamespaceManager
 ----------------
 
+Each RDFLib graph comes with a :class:`rdflib.namespace.NamespaceManager` instance in the `namespace_manager` field; you can use the `bind` method of this instance to bind a prefix to a namespace URI,
+as above, however note that the `NamespaceManager` automatically performs some bindings according to a selected strategy. 
 
-Each graph comes with a `NamespaceManager`__ instance in the `namespace_manager` field; you can use the `bind` method of this instance to bind a prefix to a namespace URI::
+Namespace binding strategies are indicated with the `bind_namespaces` input parameter to `NamespaceManager` instances 
+and may be set via ``Graph`` also::
 
-	myGraph.namespace_manager.bind('prefix', URIRef('scheme:my-namespace-uri:'))
-        myGraph.namespace_manager.bind('owl', OWL_NS, override=False)
+    from rdflib import Graph
+    from rdflib.namespace import NamespaceManager
+    
+    g = Graph(bind_namespaces="rdflib")  # bind via Graph
+    
+    g2 = Graph()
+    nm = NamespaceManager(g2, bind_namespaces="rdflib")  # bind via NamespaceManager
 
-It has a method to normalize a given url :
 
-	myGraph.namespace_manager.normalizeUri(t)
+Valid strategies are:
+
+* core:
+    * binds several core RDF prefixes only
+    * owl, rdf, rdfs, xsd, xml from the NAMESPACE_PREFIXES_CORE object
+    * this is default
+* rdflib:
+    * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
+    * all the core namespaces and all the following: brick, csvw, dc, dcat
+    * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+    * sh, skos, sosa, ssn, time, vann, void
+    * see the NAMESPACE_PREFIXES_RDFLIB object in :class:`rdflib.namespace` for up-to-date list
+* none:
+    * binds no namespaces to prefixes
+    * note this is NOT default behaviour
+* cc:
+    * using prefix bindings from prefix.cc which is a online prefixes database
+    * not implemented yet - this is aspirational
+
+Re-binding
+^^^^^^^^^^
+
+Note that regardless of the strategy employed, prefixes for namespaces can be overwritten with users preferred prefixes,
+for example::
+
+    from rdflib import Graph
+    from rdflib.namespace import GEO  # imports GeoSPARQL's namespace
+    
+    g = Graph(bind_namespaces="rdflib")  # binds GeoSPARQL's namespace to prefix 'geo'
+    
+    g.bind('geosp', GEO, override=True) 
+    
+    
+
+`NamespaceManager` also has a method to normalize a given url::
+
+    from rdflib.namespace import NamespaceManager
+    
+    nm = NamespaceManager(Graph())
+    nm.normalizeUri(t)
 
 
 For simple output, or simple serialisation, you often want a nice
-readable representation of a term.  All terms have a
-``.n3(namespace_manager = None)`` method, which will return a suitable
-N3 format::
+readable representation of a term.  All RDFLib terms have a
+``.n3()`` method, which will return a suitable N3 format and into which you can supply a NamespaceManager instance
+to provide prefixes, i.e. ``.n3(namespace_manager=some_nm)``::
 
    >>> from rdflib import Graph, URIRef, Literal, BNode
    >>> from rdflib.namespace import FOAF, NamespaceManager
@@ -59,16 +125,15 @@ N3 format::
    >>> l.n3()
    '"2"^^<http://www.w3.org/2001/XMLSchema#integer>'
    
-   >>> l.n3(g.namespace_manager)
+   >>> l.n3(NamespaceManager(Graph(), bind_namespaces="core"))
    '"2"^^xsd:integer'
    
-The namespace manage also has a useful method compute_qname
-g.namespace_manager.compute_qname(x) which takes an url and decomposes it into the parts::
+The namespace manage also has a useful method ``compute_qname``
+``g.namespace_manager.compute_qname(x)`` (or just ``g.compute_qname(x)``) which takes a URI and decomposes it into the parts::
 
     self.assertEqual(g.compute_qname(URIRef("http://foo/bar#baz")),
 	            ("ns2", URIRef("http://foo/bar#"), "baz"))
    
-__ http://rdflib.net/rdflib-2.4.0/html/public/rdflib.syntax.NamespaceManager.NamespaceManager-class.html
 
 
 Namespaces in SPARQL Queries
@@ -78,7 +143,7 @@ The ``initNs`` argument supplied to :meth:`~rdflib.graph.Graph.query` is a dicti
 If you pass no ``initNs`` argument, the namespaces registered with the graphs namespace_manager are used::
 
     from rdflib.namespace import FOAF
-    graph.query('SELECT * WHERE { ?p a foaf:Person }', initNs={ 'foaf': FOAF })
+    graph.query('SELECT * WHERE { ?p a foaf:Person }', initNs={'foaf': FOAF})
 
 
 In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``PREFIX`` directive with no prefix in the SPARQL query to set a default namespace:

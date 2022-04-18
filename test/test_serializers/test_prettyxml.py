@@ -1,10 +1,10 @@
 # -*- coding: UTF-8 -*-
-from rdflib.term import URIRef, BNode, Literal
-from rdflib.namespace import RDF, RDFS
 from io import BytesIO
-from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import RDF, RDFS
+from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
+from rdflib.term import BNode, Literal, URIRef
 
 
 class SerializerTestBase(object):

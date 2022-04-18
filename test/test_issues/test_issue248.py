@@ -1,5 +1,6 @@
-import rdflib
 import unittest
+
+import rdflib
 
 
 class TestSerialization(unittest.TestCase):

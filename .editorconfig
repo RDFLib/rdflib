@@ -20,7 +20,7 @@ trim_trailing_whitespace = false
 [*.{js,py,pyi,toml,yml,yaml}]
 charset = utf-8
 
-[*.{yaml,yml,json}]
+[*.{yaml,yml,json,jsonld}]
 indent_style = space
 indent_size = 2
 

@@ -4,34 +4,34 @@ SPARQL 1.1 Parser
 based on pyparsing
 """
 
-import sys
 import re
+import sys
 
-from pyparsing import (
-    Literal,
-    Regex,
-    Optional,
-    OneOrMore,
-    ZeroOrMore,
-    Forward,
-    ParseException,
-    Suppress,
-    Combine,
-    restOfLine,
-    Group,
-    ParseResults,
-    delimitedList,
-)
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
+from pyparsing import (
+    Combine,
+    Forward,
+    Group,
+    Literal,
+    OneOrMore,
+    Optional,
+    ParseException,
+    ParseResults,
+    Regex,
+    Suppress,
+    ZeroOrMore,
+    delimitedList,
+    restOfLine,
+)
+
+import rdflib
+from rdflib.compat import decodeUnicodeEscape
+
+from . import operators as op
+from .parserutils import Comp, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
-from .parserutils import Comp, Param, ParamList
-
-from . import operators as op
-from rdflib.compat import decodeUnicodeEscape
-
-import rdflib
 
 DEBUG = False
 

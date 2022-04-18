@@ -5,18 +5,17 @@ This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
 
 """
-import re
 import collections
+import re
+from typing import Any, Callable, Dict, Optional, Tuple, Union
+
+from rdflib import BNode, Variable
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
+from rdflib.store import Store
+from rdflib.term import Node
 
 from .sparqlconnector import SPARQLConnector
-
-from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
-
-from rdflib.store import Store
-from rdflib import Variable, BNode
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.term import Node
-from typing import Any, Callable, Dict, Optional, Union, Tuple
 
 # Defines some SPARQL keywords
 LIMIT = "LIMIT"
@@ -366,7 +365,10 @@ class SPARQLStore(SPARQLConnector, Store):
         return (row.name for row in result)
 
     # Namespace persistence interface implementation
-    def bind(self, prefix, namespace):
+    def bind(self, prefix, namespace, override=True):
+        bound_prefix = self.prefix(namespace)
+        if override and bound_prefix:
+            del self.nsBindings[bound_prefix]
         self.nsBindings[prefix] = namespace
 
     def prefix(self, namespace):

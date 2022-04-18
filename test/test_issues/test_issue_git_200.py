@@ -1,5 +1,6 @@
-import rdflib
 import pytest
+
+import rdflib
 
 
 def test_broken_add():

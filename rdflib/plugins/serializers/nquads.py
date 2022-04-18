@@ -1,11 +1,10 @@
-from typing import IO, Optional
 import warnings
+from typing import IO, Optional
 
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.term import Literal
-from rdflib.serializer import Serializer
-
 from rdflib.plugins.serializers.nt import _quoteLiteral
+from rdflib.serializer import Serializer
+from rdflib.term import Literal
 
 __all__ = ["NQuadsSerializer"]
 
