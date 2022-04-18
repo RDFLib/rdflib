@@ -6,7 +6,7 @@ import sys
 import unittest
 from pathlib import Path
 from tempfile import mkdtemp, mkstemp
-from test.data import bob, cheese, hates, likes, michel, pizza, tarek
+from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.testutils import GraphHelper, get_unique_plugin_names
 from typing import Callable, Optional, Set
 from urllib.error import HTTPError, URLError
@@ -287,11 +287,20 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
         graph.parse(__file__)  # here we are trying to parse a Python file!!
 
     # .nt can be parsed by Turtle Parser
-    graph.parse("test/nt/anons-01.nt")
+    graph.parse(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "anons-01.nt"))
     # RDF/XML
-    graph.parse("test/rdf/datatypes/test001.rdf")  # XML
+    graph.parse(
+        os.path.join(
+            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.rdf"
+        )
+    )  # XML
     # bad filename but set format
-    graph.parse("test/rdf/datatypes/test001.borked", format="xml")
+    graph.parse(
+        os.path.join(
+            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.borked"
+        ),
+        format="xml",
+    )
 
     with pytest.raises(ParserError):
         graph.parse(data="rubbish")
@@ -352,7 +361,11 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
 def test_parse_file_uri(make_graph: GraphFactory):
     EG = Namespace("http://example.org/#")
     g = make_graph()
-    g.parse(Path("./test/nt/simple-04.nt").absolute().as_uri())
+    g.parse(
+        Path(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "simple-04.nt"))
+        .absolute()
+        .as_uri()
+    )
     triple_set = GraphHelper.triple_set(g)
     assert triple_set == {
         (EG["Subject"], EG["predicate"], EG["ObjectP"]),

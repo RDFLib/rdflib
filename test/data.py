@@ -3,7 +3,7 @@ from pathlib import Path
 from rdflib import URIRef
 
 TEST_DIR = Path(__file__).parent
-CONSISTENT_DATA_DIR = TEST_DIR / "consistent_test_data"
+TEST_DATA_DIR = TEST_DIR / "data"
 
 alice_uri = URIRef("http://example.org/alice")
 bob_uri = URIRef("http://example.org/bob")

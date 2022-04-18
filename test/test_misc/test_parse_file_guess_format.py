@@ -8,9 +8,11 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
 import logging
+import os
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
+from test.data import TEST_DATA_DIR
 
 import pytest
 
@@ -44,11 +46,20 @@ class TestFileParserGuessFormat:
 
     def test_ttl(self) -> None:
         g = Graph()
-        assert isinstance(g.parse("test/w3c/turtle/IRI_subject.ttl"), Graph)
+        assert isinstance(
+            g.parse(
+                os.path.join(
+                    TEST_DATA_DIR, "suites", "w3c", "turtle", "IRI_subject.ttl"
+                )
+            ),
+            Graph,
+        )
 
     def test_n3(self) -> None:
         g = Graph()
-        assert isinstance(g.parse("test/n3/example-lots_of_graphs.n3"), Graph)
+        assert isinstance(
+            g.parse(os.path.join(TEST_DATA_DIR, "example-lots_of_graphs.n3")), Graph
+        )
 
     def test_warning(self) -> None:
         g = Graph()
@@ -56,7 +67,10 @@ class TestFileParserGuessFormat:
 
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
-            copyfile("test/rdf/Manifest.rdf", str(newpath))
+            copyfile(
+                os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdfxml", "Manifest.rdf"),
+                str(newpath),
+            )
             with pytest.raises(ParserError, match=r"Could not guess RDF format"):
                 with pytest.warns(
                     UserWarning,
