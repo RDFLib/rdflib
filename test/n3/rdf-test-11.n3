@@ -10,5 +10,5 @@ _:a = _:b .
 # 'this' refers to the current formula so is not legal for RDF
 # this a "thing".
 
-<> a "thing too".
-<#> a "another thing".
+<> a <#thing-too> .
+<#> a <#another-thing> .
