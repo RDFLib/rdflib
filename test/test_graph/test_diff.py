@@ -1,19 +1,22 @@
 import unittest
+from test.testutils import GraphHelper
 from test.utils import GraphHelper
-from typing import Set, Tuple
+from typing import TYPE_CHECKING, Set
 from unittest.case import expectedFailure
 
 import rdflib
 from rdflib import Graph
 from rdflib.compare import graph_diff
 from rdflib.namespace import FOAF, RDF
-from rdflib.term import BNode, Literal, Node
+from rdflib.term import BNode, Literal
+
+if TYPE_CHECKING:
+    from rdflib.graph import _TripleType
 
 """Test for graph_diff - much more extensive testing
 would certainly be possible"""
 
-_TripleT = Tuple[Node, Node, Node]
-_TripleSetT = Set[_TripleT]
+_TripleSetT = Set["_TripleType"]
 
 
 class TestDiff(unittest.TestCase):

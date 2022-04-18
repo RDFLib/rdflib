@@ -190,7 +190,8 @@ class PrettyXMLSerializer(Serializer):
         )
 
         for predicate in possible:
-            prefix, namespace, local = nm.compute_qname_strict(predicate)
+            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+            prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"

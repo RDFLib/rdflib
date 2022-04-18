@@ -16,6 +16,7 @@ from typing import (
     TextIO,
     Tuple,
     Type,
+    TypeVar,
     Union,
     cast,
     overload,
@@ -36,7 +37,27 @@ from rdflib.paths import Path
 from rdflib.resource import Resource
 from rdflib.serializer import Serializer
 from rdflib.store import Store
-from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid, URIRef
+from rdflib.term import (
+    BNode,
+    Genid,
+    IdentifiedNode,
+    Identifier,
+    Literal,
+    Node,
+    RDFLibGenid,
+    URIRef,
+)
+
+_SubjectType = IdentifiedNode
+_PredicateType = IdentifiedNode
+_ObjectType = Identifier
+
+_TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
+_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "Graph"]
+_TriplePatternType = Tuple[
+    Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
+]
+_GraphT = TypeVar("_GraphT", bound="Graph")
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
@@ -356,15 +377,15 @@ class Graph(Node):
         self.default_union = False
 
     @property
-    def store(self):
+    def store(self) -> Store:
         return self.__store
 
     @property
-    def identifier(self):
+    def identifier(self) -> Node:
         return self.__identifier
 
     @property
-    def namespace_manager(self):
+    def namespace_manager(self) -> NamespaceManager:
         """
         this graph's namespace-manager
         """
@@ -373,7 +394,7 @@ class Graph(Node):
         return self.__namespace_manager
 
     @namespace_manager.setter
-    def namespace_manager(self, nm):
+    def namespace_manager(self, nm: NamespaceManager):
         self.__namespace_manager = nm
 
     def __repr__(self):
@@ -424,7 +445,7 @@ class Graph(Node):
         """
         return self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
-    def add(self, triple: Tuple[Node, Node, Node]):
+    def add(self, triple: "_TripleType"):
         """Add a triple with self as context"""
         s, p, o = triple
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
@@ -433,7 +454,7 @@ class Graph(Node):
         self.__store.add((s, p, o), self, quoted=False)
         return self
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
+    def addN(self, quads: Iterable["_QuadType"]):  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.__store.addN(
@@ -457,34 +478,40 @@ class Graph(Node):
     @overload
     def triples(
         self,
-        triple: Tuple[
-            Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]
-        ],
-    ) -> Iterable[Tuple[IdentifiedNode, IdentifiedNode, Node]]:
+        triple: "_TriplePatternType",
+    ) -> Generator["_TripleType", None, None]:
         ...
 
     @overload
     def triples(
         self,
-        triple: Tuple[Optional[IdentifiedNode], Path, Optional[Node]],
-    ) -> Iterable[Tuple[IdentifiedNode, Path, Node]]:
+        triple: Tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]],
+    ) -> Generator[Tuple["_SubjectType", "_PredicateType", "_ObjectType"], None, None]:
         ...
 
     @overload
     def triples(
         self,
         triple: Tuple[
-            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+            Optional["_SubjectType"],
+            Union[None, Path, "_PredicateType"],
+            Optional["_ObjectType"],
         ],
-    ) -> Iterable[Tuple[IdentifiedNode, Union[IdentifiedNode, Path], Node]]:
+    ) -> Generator[
+        Tuple["_SubjectType", Union["_PredicateType", Path], "_ObjectType"], None, None
+    ]:
         ...
 
     def triples(
         self,
         triple: Tuple[
-            Optional[IdentifiedNode], Union[None, Path, IdentifiedNode], Optional[Node]
+            Optional["_SubjectType"],
+            Union[None, Path, "_PredicateType"],
+            Optional["_ObjectType"],
         ],
-    ) -> Iterable[Tuple[IdentifiedNode, Union[IdentifiedNode, Path], Node]]:
+    ) -> Generator[
+        Tuple["_SubjectType", Union["_PredicateType", Path], "_ObjectType"], None, None
+    ]:
         """Generator over the triple store
 
         Returns triples that match the given triple pattern. If triple pattern
@@ -578,7 +605,7 @@ class Graph(Node):
         """
         return self.__store.__len__(context=self)
 
-    def __iter__(self):
+    def __iter__(self) -> Generator["_TripleType", None, None]:
         """Iterates over all triples in the store"""
         return self.triples((None, None, None))
 
@@ -623,20 +650,20 @@ class Graph(Node):
     def __ge__(self, other):
         return self > other or self == other
 
-    def __iadd__(self, other):
+    def __iadd__(self: "_GraphT", other: Iterable["_TripleType"]) -> "_GraphT":
         """Add all triples in Graph other to Graph.
         BNode IDs are not changed."""
         self.addN((s, p, o, self) for s, p, o in other)
         return self
 
-    def __isub__(self, other):
+    def __isub__(self: "_GraphT", other: Iterable["_TripleType"]) -> "_GraphT":
         """Subtract all triples in Graph other from Graph.
         BNode IDs are not changed."""
         for triple in other:
             self.remove(triple)
         return self
 
-    def __add__(self, other):
+    def __add__(self, other: "Graph") -> "Graph":
         """Set-theoretic union
         BNode IDs are not changed."""
         try:
@@ -651,7 +678,7 @@ class Graph(Node):
             retval.add(y)
         return retval
 
-    def __mul__(self, other):
+    def __mul__(self, other: "Graph") -> "Graph":
         """Set-theoretic intersection.
         BNode IDs are not changed."""
         try:
@@ -663,7 +690,7 @@ class Graph(Node):
                 retval.add(x)
         return retval
 
-    def __sub__(self, other):
+    def __sub__(self, other: "Graph") -> "Graph":
         """Set-theoretic difference.
         BNode IDs are not changed."""
         try:
@@ -704,10 +731,10 @@ class Graph(Node):
 
     def subjects(
         self,
-        predicate: Union[None, Path, IdentifiedNode] = None,
-        object: Optional[Node] = None,
+        predicate: Union[None, Path, "_PredicateType"] = None,
+        object: Optional["_ObjectType"] = None,
         unique: bool = False,
-    ) -> Iterable[IdentifiedNode]:
+    ) -> Generator["_SubjectType", None, None]:
         """A generator of (optionally unique) subjects with the given
         predicate and object"""
         if not unique:
@@ -728,10 +755,10 @@ class Graph(Node):
 
     def predicates(
         self,
-        subject: Optional[IdentifiedNode] = None,
-        object: Optional[Node] = None,
+        subject: Optional["_SubjectType"] = None,
+        object: Optional["_ObjectType"] = None,
         unique: bool = False,
-    ) -> Iterable[IdentifiedNode]:
+    ) -> Generator["_PredicateType", None, None]:
         """A generator of (optionally unique) predicates with the given
         subject and object"""
         if not unique:
@@ -752,10 +779,10 @@ class Graph(Node):
 
     def objects(
         self,
-        subject: Optional[IdentifiedNode] = None,
-        predicate: Union[None, Path, IdentifiedNode] = None,
+        subject: Optional["_SubjectType"] = None,
+        predicate: Union[None, Path, "_PredicateType"] = None,
         unique: bool = False,
-    ) -> Iterable[Node]:
+    ) -> Generator["_ObjectType", None, None]:
         """A generator of (optionally unique) objects with the given
         subject and predicate"""
         if not unique:
@@ -775,8 +802,8 @@ class Graph(Node):
                         raise
 
     def subject_predicates(
-        self, object: Optional[Node] = None, unique: bool = False
-    ) -> Generator[Tuple[IdentifiedNode, IdentifiedNode], None, None]:
+        self, object: Optional["_ObjectType"] = None, unique: bool = False
+    ) -> Generator[Tuple["_SubjectType", "_PredicateType"], None, None]:
         """A generator of (optionally unique) (subject, predicate) tuples
         for the given object"""
         if not unique:
@@ -796,8 +823,10 @@ class Graph(Node):
                         raise
 
     def subject_objects(
-        self, predicate: Union[None, Path, IdentifiedNode] = None, unique: bool = False
-    ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
+        self,
+        predicate: Union[None, Path, "_PredicateType"] = None,
+        unique: bool = False,
+    ) -> Generator[Tuple["_SubjectType", "_ObjectType"], None, None]:
         """A generator of (optionally unique) (subject, object) tuples
         for the given predicate"""
         if not unique:
@@ -817,8 +846,8 @@ class Graph(Node):
                         raise
 
     def predicate_objects(
-        self, subject: Optional[IdentifiedNode] = None, unique: bool = False
-    ) -> Generator[Tuple[IdentifiedNode, Node], None, None]:
+        self, subject: Optional["_SubjectType"] = None, unique: bool = False
+    ) -> Generator[Tuple["_PredicateType", "_ObjectType"], None, None]:
         """A generator of (optionally unique) (predicate, object) tuples
         for the given subject"""
         if not unique:
@@ -1641,10 +1670,11 @@ class ConjunctiveGraph(Graph):
     def _spoc(
         self,
         triple_or_quad: Union[
-            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
+            Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Any]],
+            "_TripleType",
         ],
         default: bool = False,
-    ) -> Tuple[Node, Node, Node, Optional[Graph]]:
+    ) -> Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Graph]]:
         ...
 
     @overload
@@ -1658,10 +1688,18 @@ class ConjunctiveGraph(Graph):
     def _spoc(
         self,
         triple_or_quad: Optional[
-            Union[Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]]
+            Union[
+                Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Any]],
+                "_TripleType",
+            ]
         ],
         default: bool = False,
-    ) -> Tuple[Optional[Node], Optional[Node], Optional[Node], Optional[Graph]]:
+    ) -> Tuple[
+        Optional["_SubjectType"],
+        Optional["_PredicateType"],
+        Optional["_ObjectType"],
+        Optional[Graph],
+    ]:
         """
         helper method for having methods that support
         either triples or quads
@@ -1686,7 +1724,8 @@ class ConjunctiveGraph(Graph):
     def add(
         self,
         triple_or_quad: Union[
-            Tuple[Node, Node, Node, Optional[Any]], Tuple[Node, Node, Node]
+            Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Any]],
+            "_TripleType",
         ],
     ) -> "ConjunctiveGraph":
         """
@@ -1718,7 +1757,7 @@ class ConjunctiveGraph(Graph):
         else:
             return c
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
+    def addN(self, quads: Iterable["_QuadType"]):  # noqa: N802
         """Add a sequence of triples with context"""
 
         self.store.addN(
@@ -1794,7 +1833,9 @@ class ConjunctiveGraph(Graph):
         """Number of triples in the entire conjunctive graph"""
         return self.store.__len__()
 
-    def contexts(self, triple=None):
+    def contexts(
+        self, triple: Optional["_TripleType"] = None
+    ) -> Generator[Graph, None, None]:
         """Iterate over all contexts in the graph
 
         If triple is specified, iterate over all contexts the triple is in.
@@ -1831,7 +1872,7 @@ class ConjunctiveGraph(Graph):
         """Removes the given context from the graph"""
         self.store.remove((None, None, None), context)
 
-    def context_id(self, uri, context_id=None):
+    def context_id(self, uri: str, context_id: Optional[str] = None) -> URIRef:
         """URI#context"""
         uri = uri.split("#", 1)[0]
         if context_id is None:
@@ -2111,7 +2152,8 @@ class Dataset(ConjunctiveGraph):
             else:
                 yield s, p, o, c.identifier
 
-    def __iter__(
+    # type error: Return type "Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]" of "__iter__" incompatible with return type "Generator[Tuple[IdentifiedNode, IdentifiedNode, Union[IdentifiedNode, Literal]], None, None]" in supertype "Graph"
+    def __iter__(  # type: ignore[override]
         self,
     ) -> Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]:
         """Iterates over all quads in the store"""
@@ -2129,7 +2171,7 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, triple: Tuple[Node, Node, Node]):
+    def add(self, triple: "_TripleType"):
         """Add a triple with self as context"""
         s, p, o = triple
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
@@ -2139,7 +2181,7 @@ class QuotedGraph(Graph):
         self.store.add((s, p, o), self, quoted=True)
         return self
 
-    def addN(self, quads: Tuple[Node, Node, Node, Any]) -> "QuotedGraph":  # type: ignore[override]   # noqa: N802
+    def addN(self, quads: Iterable["_QuadType"]) -> "QuotedGraph":  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.store.addN(
@@ -2348,10 +2390,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         else:
             return -1
 
-    def __iadd__(self, other):
+    def __iadd__(self: "_GraphT", other: Iterable["_TripleType"]) -> "_GraphT":
         raise ModificationException()
 
-    def __isub__(self, other):
+    def __isub__(self: "_GraphT", other: Iterable["_TripleType"]) -> "_GraphT":
         raise ModificationException()
 
     # Conv. methods
@@ -2442,7 +2484,10 @@ class BatchAddGraph(object):
 
     def add(
         self,
-        triple_or_quad: Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Any]],
+        triple_or_quad: Union[
+            "_TripleType",
+            "_QuadType",
+        ],
     ) -> "BatchAddGraph":
         """
         Add a triple to the buffer
@@ -2459,7 +2504,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad)
         return self
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
+    def addN(self, quads: Iterable["_QuadType"]):  # noqa: N802
         if self.__batch_addn:
             for q in quads:
                 self.add(q)

@@ -13,7 +13,7 @@ from pytest import Item
 
 from rdflib import RDF, BNode, Graph, Literal, URIRef
 from rdflib.namespace import DC, DOAP, FOAF
-from rdflib.term import Node
+from rdflib.term import IdentifiedNode, Node
 
 if TYPE_CHECKING:
     from _pytest.main import Session
@@ -40,8 +40,8 @@ class EarlReport:
         graph.bind("doap", DOAP)
         graph.bind("dc", DC)
 
-        self.asserter: Node
-        asserter: Node
+        self.asserter: IdentifiedNode
+        asserter: IdentifiedNode
         if asserter_uri is not None or asserter_homepage is not None:
             # cast to remove Optional because mypy is not smart enough to
             # figure out that it won't be optional.
