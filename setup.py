@@ -13,7 +13,7 @@ kwargs["install_requires"] = [
     "setuptools",
     "importlib-metadata; python_version < '3.8.0'",
     "cachetools",
-    "frozendict"
+    "frozendict",
 ]
 kwargs["tests_require"] = [
     "html5lib",
@@ -39,6 +39,7 @@ kwargs["extras_require"] = {
         "flake8-black",
         "isort",
         "types-setuptools",
+        "types-cachetools",
     ],
 }
 
