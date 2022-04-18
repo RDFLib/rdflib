@@ -1,17 +1,16 @@
-from io import StringIO, BufferedReader
 import json
+from io import BufferedReader, StringIO
 from typing import Union
 
 import pyld
 from pyld import jsonld
-from pyld.jsonld import RDF_TYPE, _is_keyword, _is_absolute_iri
+from pyld.jsonld import RDF_TYPE, _is_absolute_iri, _is_keyword
 
 from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
-from rdflib.parser import Parser, InputSource, BytesIOWrapper, PythonInputSource
+from rdflib.parser import BytesIOWrapper, InputSource, Parser, PythonInputSource
 
 from .to_rdf import to_rdf
-
 
 # Monkey patch pyld.
 pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf
