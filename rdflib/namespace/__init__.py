@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 import warnings
 from functools import lru_cache
 from pathlib import Path
@@ -342,6 +343,14 @@ class ClosedNamespace(Namespace):
 
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 8):
+        from typing import Literal as PyLiteral
+    else:
+        from typing_extensions import Literal as PyLiteral
+
+    _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
+
 
 class NamespaceManager(object):
     """Class for managing prefix => namespace mappings
@@ -386,7 +395,7 @@ class NamespaceManager(object):
 
     """
 
-    def __init__(self, graph: "Graph", bind_namespaces: str = "core"):
+    def __init__(self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "core"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -405,10 +414,10 @@ class NamespaceManager(object):
             pass
         elif bind_namespaces == "rdflib":
             # bind all the Namespaces shipped with RDFLib
-            for prefix, ns in NAMESPACE_PREFIXES_RDFLIB.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_RDFLIB.items():
                 self.bind(prefix, ns)
             # ... don't forget the core ones too
-            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
         elif bind_namespaces == "cc":
             # bind any prefix that can be found with lookups to prefix.cc
@@ -416,10 +425,12 @@ class NamespaceManager(object):
             # work out remainder - namespaces without prefixes
             # only look those ones up
             raise NotImplementedError("Haven't got to this option yet")
-        else:  # bind_namespaces == "core":
+        elif bind_namespaces == "core":
             # bind a few core RDF namespaces - default
-            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
+        else:
+            raise ValueError(f"unsupported namespace set {bind_namespaces}")
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
@@ -828,7 +839,7 @@ from rdflib.namespace._WGS import WGS
 from rdflib.namespace._XSD import XSD
 
 # prefixes for the core Namespaces shipped with RDFLib
-NAMESPACE_PREFIXES_CORE = {
+_NAMESPACE_PREFIXES_CORE = {
     "owl": OWL,
     "rdf": RDF,
     "rdfs": RDFS,
@@ -839,7 +850,7 @@ NAMESPACE_PREFIXES_CORE = {
 
 
 # prefixes for all the non-core Namespaces shipped with RDFLib
-NAMESPACE_PREFIXES_RDFLIB = {
+_NAMESPACE_PREFIXES_RDFLIB = {
     "brick": BRICK,
     "csvw": CSVW,
     "dc": DC,
