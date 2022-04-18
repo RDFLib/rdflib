@@ -1,6 +1,6 @@
 from io import StringIO, BufferedReader
 import json
-from typing import Union
+from typing import List, Union
 
 import pyld
 from pyld import jsonld
@@ -58,8 +58,9 @@ class JSONLDParser(Parser):
 
             :return: the array of RDF triples for the given graph.
             """
-            triples = []
+            triples: List[dict] = []
 
+            graph_name: Union[Graph, URIRef, BNode, None] = None
             if pyld_graph_name == "@default":
                 # TODO: This should set the graph_name to the default graph.
                 #       For now, we need to stick with `graph_name = sink`` to pass tests.
@@ -87,14 +88,14 @@ class JSONLDParser(Parser):
                             continue
 
                         # RDF subject
-                        subject = None
+                        subject: Union[URIRef, BNode, None] = None
                         if id_.startswith("_:"):
                             subject = BNode(id_[2:])
                         else:
                             subject = URIRef(id_)
 
                         # RDF predicate
-                        predicate = None
+                        predicate: Union[URIRef, BNode, None] = None
                         if property.startswith("_:"):
                             # skip bnode predicates unless producing
                             # generalized RDF

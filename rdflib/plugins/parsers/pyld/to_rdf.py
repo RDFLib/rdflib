@@ -1,3 +1,4 @@
+from typing import Dict
 import pyld
 from pyld.jsonld import (
     _is_string,
@@ -53,7 +54,7 @@ def to_rdf(self: pyld.jsonld.JsonLdProcessor, input_: dict, options: dict) -> No
 
     # create node map for default graph (and any named graphs)
     issuer = IdentifierIssuer("_:b")
-    node_map = {"@default": {}}
+    node_map: Dict[str, Dict] = {"@default": {}}
     self._create_node_map(expanded, node_map, "@default", issuer)
 
     # output RDF dataset
