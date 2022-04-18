@@ -7270,7 +7270,7 @@ def load_document(url, options, base=None, profile=None, requestProfile=None):
 
 
 # Registered global RDF parsers hashed by content-type.
-_rdf_parsers: Dict[str, Callable] = {}
+_rdf_parsers = {}  # type: ignore
 
 # register the N-Quads RDF parser
 register_rdf_parser('application/n-quads', JsonLdProcessor.parse_nquads)
