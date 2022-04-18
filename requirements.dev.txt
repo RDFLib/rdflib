@@ -14,3 +14,4 @@ sphinx<5
 sphinxcontrib-apidoc
 sphinxcontrib-kroki
 types-setuptools
+types-cachetools
