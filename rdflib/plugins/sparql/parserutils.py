@@ -269,19 +269,5 @@ def prettify_parsetree(t, indent="", depth=0):
     return "".join(out)
 
 
-if __name__ == "__main__":
-    import sys
-
-    from pyparsing import Word, nums
-
-    Number = Word(nums)
-    Number.setParseAction(lambda x: int(x[0]))
-    Plus = Comp("plus", Param("a", Number) + "+" + Param("b", Number))
-    Plus.setEvalFn(lambda self, ctx: self.a + self.b)
-
-    r = Plus.parseString(sys.argv[1])
-    print(r)
-    print(r[0].eval({}))
-
 # hurrah for circular imports
 from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError

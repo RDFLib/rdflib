@@ -68,9 +68,6 @@ class TestUtilMisc:
         r = util.uniq(base + base, strip=True)
         assert sorted(r) == sorted(base)
 
-    def test_coverage_dodge(self):
-        util.test()
-
 
 class TestUtilDateTime:
     def setup_method(self):

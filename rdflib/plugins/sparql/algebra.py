@@ -1464,21 +1464,3 @@ def pprintAlgebra(q):
         # it's update, just a list
         for x in q:
             pp(x)
-
-
-if __name__ == "__main__":
-    import os.path
-    import sys
-
-    from rdflib.plugins.sparql import parser
-
-    if os.path.exists(sys.argv[1]):
-        q = open(sys.argv[1]).read()
-    else:
-        q = sys.argv[1]
-
-    pq = parser.parseQuery(q)
-    print(pq)
-    print("--------")
-    tq = translateQuery(pq)
-    pprintAlgebra(tq)

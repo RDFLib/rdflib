@@ -452,23 +452,3 @@ def _coalesce(*args: Optional[_AnyT]) -> Optional[_AnyT]:
         if arg is not None:
             return arg
     return None
-
-
-def test():
-    import doctest
-
-    doctest.testmod()
-
-
-if __name__ == "__main__":
-    # try to make the tests work outside of the time zone they were written in
-    # import os, time
-    # os.environ['TZ'] = 'US/Pacific'
-    # try:
-    #    time.tzset()
-    # except AttributeError, e:
-    #    print e
-    # pass
-    # tzset missing! see
-    # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
-    test()  # pragma: no cover
