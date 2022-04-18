@@ -17,6 +17,24 @@ from .to_rdf import to_rdf
 pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf
 
 
+def _get_object(object):
+    if object["type"] == "IRI":
+        o = URIRef(object["value"])
+    elif object["type"] == "blank node":
+        o = BNode(object["value"][2:])
+    else:
+        o = Literal(
+            object["value"],
+            datatype=URIRef(object["datatype"])
+            if object["datatype"]
+            != "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            and object["datatype"] != "http://www.w3.org/2001/XMLSchema#string"
+            else None,
+            lang=object.get("language"),
+        )
+    return o
+
+
 class JSONLDParser(Parser):
     def parse(self, source: InputSource, sink: Graph) -> None:
         # TODO: Do we need to set up a document loader?
@@ -41,6 +59,20 @@ class JSONLDParser(Parser):
             :return: the array of RDF triples for the given graph.
             """
             triples = []
+
+            if pyld_graph_name == "@default":
+                # TODO: This should set the graph_name to the default graph.
+                #       For now, we need to stick with `graph_name = sink`` to pass tests.
+                #       Otherwise Graph does not work properly.
+
+                # Setting this to default graph is the correctly behaviour for Dataset but
+                # fails to add triples to a Graph object.
+                # graph_name = DATASET_DEFAULT_GRAPH_ID
+                graph_name = sink
+            elif pyld_graph_name.startswith("_:"):
+                graph_name = BNode(pyld_graph_name[2:])
+            else:
+                graph_name = URIRef(pyld_graph_name)
 
             for id_, node in sorted(pyld_graph_dict.items()):
                 for property, items in sorted(node.items()):
@@ -76,35 +108,10 @@ class JSONLDParser(Parser):
                         object = self._object_to_rdf(
                             item, issuer, triples, options.get("rdfDirection")
                         )
+
                         # skip None objects (they are relative IRIs)
                         if object is not None:
-                            if object["type"] == "IRI":
-                                o = URIRef(object["value"])
-                            elif object["type"] == "blank node":
-                                o = BNode(object["value"][2:])
-                            else:
-                                o = Literal(
-                                    object["value"],
-                                    datatype=URIRef(object["datatype"])
-                                    if object["datatype"]
-                                    != "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
-                                    else None,
-                                    lang=object.get("language"),
-                                )
-
-                            if pyld_graph_name == "@default":
-                                # TODO: This should set the graph_name to the default graph.
-                                #       For now, we need to stick with `graph_name = sink`` to pass tests.
-                                #       Otherwise Graph does not work properly.
-
-                                # Setting this to default graph is the correctly behaviour for Dataset but
-                                # fails to add triples to a Graph object.
-                                # graph_name = DATASET_DEFAULT_GRAPH_ID
-                                graph_name = sink
-                            elif pyld_graph_name.startswith("_:"):
-                                graph_name = BNode(pyld_graph_name[2:])
-                            else:
-                                graph_name = URIRef(pyld_graph_name)
+                            o = _get_object(object)
 
                             sink.store.add(
                                 (
@@ -114,6 +121,21 @@ class JSONLDParser(Parser):
                                 ),
                                 graph_name,
                             )
+
+            # Add RDF list items.
+            for triple in triples:
+                s = (
+                    URIRef(triple["subject"]["value"])
+                    if triple["subject"]["type"] == "IRI"
+                    else BNode(triple["subject"]["value"][2:])
+                )
+                p = (
+                    URIRef(triple["predicate"]["value"])
+                    if triple["predicate"]["type"] == "IRI"
+                    else BNode(triple["predicate"]["value"][2:])
+                )
+                o = _get_object(triple["object"])
+                sink.store.add((s, p, o), graph_name)
 
         # Monkey patch pyld.
         pyld.jsonld.JsonLdProcessor._graph_to_rdf = _graph_to_rdf
