@@ -17,17 +17,18 @@ import json
 import re
 import sys
 import traceback
+from typing import Callable, Dict
 import warnings
 import uuid
 from .context_resolver import ContextResolver
-from ..c14n.Canonicalize import canonicalize
+from ..c14n.canonicalize import canonicalize
 from cachetools import LRUCache
 from collections import namedtuple
 from functools import cmp_to_key
 
 # import lxml.html
 from numbers import Integral, Real
-from frozendict import frozendict
+from frozendict.core import frozendict
 from .__about__ import __copyright__, __license__, __version__
 
 
@@ -127,9 +128,9 @@ MAX_CONTEXT_URLS = 10
 # resolved context cache
 # TODO: consider basing max on context size rather than number
 RESOLVED_CONTEXT_CACHE_MAX_SIZE = 100
-_resolved_context_cache = LRUCache(maxsize=RESOLVED_CONTEXT_CACHE_MAX_SIZE)
+_resolved_context_cache: LRUCache = LRUCache(maxsize=RESOLVED_CONTEXT_CACHE_MAX_SIZE)
 INVERSE_CONTEXT_CACHE_MAX_SIZE = 20
-_inverse_context_cache = LRUCache(maxsize=INVERSE_CONTEXT_CACHE_MAX_SIZE)
+_inverse_context_cache: LRUCache = LRUCache(maxsize=INVERSE_CONTEXT_CACHE_MAX_SIZE)
 # Initial contexts, defined on first access
 INITIAL_CONTEXTS = {}
 
@@ -7269,7 +7270,7 @@ def load_document(url, options, base=None, profile=None, requestProfile=None):
 
 
 # Registered global RDF parsers hashed by content-type.
-_rdf_parsers = {}
+_rdf_parsers: Dict[str, Callable] = {}
 
 # register the N-Quads RDF parser
 register_rdf_parser('application/n-quads', JsonLdProcessor.parse_nquads)
