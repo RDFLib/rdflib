@@ -1,6 +1,7 @@
 from typing import Dict
-import pyld
-from pyld.jsonld import (
+
+import rdflib.plugins.parsers.pyld.pyld as pyld
+from rdflib.plugins.parsers.pyld.pyld.jsonld import (
     ContextResolver,
     IdentifierIssuer,
     JsonLdError,

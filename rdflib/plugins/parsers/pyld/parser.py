@@ -2,9 +2,13 @@ import json
 from io import BufferedReader, StringIO
 from typing import Union, List
 
-import pyld
-from pyld import jsonld
-from pyld.jsonld import RDF_TYPE, _is_absolute_iri, _is_keyword
+import rdflib.plugins.parsers.pyld.pyld as pyld
+from rdflib.plugins.parsers.pyld.pyld import jsonld
+from rdflib.plugins.parsers.pyld.pyld.jsonld import (
+    RDF_TYPE,
+    _is_absolute_iri,
+    _is_keyword,
+)
 
 from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
