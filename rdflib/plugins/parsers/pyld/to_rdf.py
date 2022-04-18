@@ -1,13 +1,13 @@
 from typing import Dict
 import pyld
 from pyld.jsonld import (
-    _is_string,
-    _default_document_loader,
     ContextResolver,
-    _resolved_context_cache,
-    JsonLdError,
     IdentifierIssuer,
+    JsonLdError,
+    _default_document_loader,
     _is_absolute_iri,
+    _is_string,
+    _resolved_context_cache,
 )
 
 
