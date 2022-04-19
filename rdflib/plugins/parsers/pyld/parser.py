@@ -117,7 +117,6 @@ class JSONLDParser(Parser):
                         # skip None objects (they are relative IRIs)
                         if object is not None:
                             o = _get_object(object)
-                            # print(subject, predicate, o, graph_name.identifier)
 
                             sink.store.add(
                                 (
@@ -130,18 +129,19 @@ class JSONLDParser(Parser):
 
             # Add RDF list items.
             for triple in triples:
-                s = (
-                    URIRef(triple["subject"]["value"])
-                    if triple["subject"]["type"] == "IRI"
-                    else BNode(triple["subject"]["value"][2:])
-                )
-                p = (
-                    URIRef(triple["predicate"]["value"])
-                    if triple["predicate"]["type"] == "IRI"
-                    else BNode(triple["predicate"]["value"][2:])
-                )
-                o = _get_object(triple["object"])
-                sink.store.add((s, p, o), graph_name)
+                if triple["object"] is not None:
+                    s = (
+                        URIRef(triple["subject"]["value"])
+                        if triple["subject"]["type"] == "IRI"
+                        else BNode(triple["subject"]["value"][2:])
+                    )
+                    p = (
+                        URIRef(triple["predicate"]["value"])
+                        if triple["predicate"]["type"] == "IRI"
+                        else BNode(triple["predicate"]["value"][2:])
+                    )
+                    o = _get_object(triple["object"])
+                    sink.store.add((s, p, o), graph_name)
 
         # Monkey patch pyld.
         pyld.jsonld.JsonLdProcessor._graph_to_rdf = _graph_to_rdf  # type: ignore
