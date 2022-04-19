@@ -2133,9 +2133,3 @@ def _isEqualXMLNode(
     else:
         # should not happen, in fact
         raise Exception("I dont know how to compare XML Node type: %s" % node.nodeType)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

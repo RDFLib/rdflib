@@ -85,13 +85,3 @@ class Dispatcher(object):
                 raise ValueError("unknown event type: %s" % type(event))
             for l_ in lst:
                 l_(event)
-
-
-def test():
-    import doctest
-
-    doctest.testmod()
-
-
-if __name__ == "__main__":
-    test()

@@ -1975,34 +1975,3 @@ class N3Parser(TurtleParser):
         conj_graph.namespace_manager = graph.namespace_manager
 
         TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
-
-
-def _test():  # pragma: no cover
-    import doctest
-
-    doctest.testmod()
-
-
-def main():  # pragma: no cover
-    g = ConjunctiveGraph()
-
-    sink = RDFSink(g)
-    base_uri = "file://" + os.path.join(os.getcwd(), sys.argv[1])
-
-    p = SinkParser(sink, baseURI=base_uri)
-    p._bindings[""] = p._baseURI + "#"
-    p.startDoc()
-
-    f = open(sys.argv[1], "rb")
-    rdbytes = f.read()
-    f.close()
-
-    p.feed(rdbytes)
-    p.endDoc()
-    for t in g.quads((None, None, None)):
-
-        print(t)
-
-
-if __name__ == "__main__":
-    main()

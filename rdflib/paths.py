@@ -487,10 +487,7 @@ def neg_path(p):
 
 
 if __name__ == "__main__":
-
-    import doctest
-
-    doctest.testmod()
+    pass
 else:
     # monkey patch
     # (these cannot be directly in terms.py

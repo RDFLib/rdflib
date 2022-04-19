@@ -2470,13 +2470,3 @@ class BatchAddGraph(object):
     def __exit__(self, *exc):
         if exc[0] is None:
             self.graph.addN(self.batch)
-
-
-def test():
-    import doctest
-
-    doctest.testmod()
-
-
-if __name__ == "__main__":
-    test()

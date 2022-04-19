@@ -95,12 +95,3 @@ class TSVResultParser(ResultParser):
                 raise Exception("I dont know how to handle this: %s" % (t,))
         else:
             return t
-
-
-if __name__ == "__main__":
-    import sys
-
-    r = Result.parse(source=sys.argv[1], format="tsv")
-    print(r.vars)
-    print(r.bindings)
-    # print r.serialize(format='json')

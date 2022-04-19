@@ -2183,13 +2183,3 @@ def CommonNSBindings(graph, additionalNS={}):
     for prefix, uri in list(additionalNS.items()):
         namespace_manager.bind(prefix, uri, override=False)
     graph.namespace_manager = namespace_manager
-
-
-def test():
-    import doctest
-
-    doctest.testmod()
-
-
-if __name__ == "__main__":
-    test()
