@@ -1,6 +1,7 @@
 #
 #
 from rdflib.store import Store
+from rdflib.util import _coalesce
 
 __all__ = ["SimpleMemory", "Memory"]
 
@@ -149,11 +150,26 @@ class SimpleMemory(Store):
         return i
 
     def bind(self, prefix, namespace, override=True):
-        bound_prefix = self.__prefix.get(namespace)
-        if override and bound_prefix:
-            del self.__namespace[bound_prefix]
-        self.__prefix[namespace] = prefix
-        self.__namespace[prefix] = namespace
+        # should be identical to `Memory.bind`
+        bound_namespace = self.__namespace.get(prefix)
+        bound_prefix = _coalesce(
+            self.__prefix.get(namespace),
+            self.__prefix.get(bound_namespace),
+        )
+        if override:
+            if bound_prefix is not None:
+                del self.__namespace[bound_prefix]
+            if bound_namespace is not None:
+                del self.__prefix[bound_namespace]
+            self.__prefix[namespace] = prefix
+            self.__namespace[prefix] = namespace
+        else:
+            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(
+                bound_prefix, prefix
+            )
+            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(
+                bound_namespace, namespace
+            )
 
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)
@@ -403,11 +419,26 @@ class Memory(Store):
                             yield triple, self.__contexts(triple)
 
     def bind(self, prefix, namespace, override=True):
-        bound_prefix = self.__prefix.get(namespace)
-        if override and bound_prefix:
-            del self.__namespace[bound_prefix]
-        self.__prefix[namespace] = prefix
-        self.__namespace[prefix] = namespace
+        # should be identical to `SimpleMemory.bind`
+        bound_namespace = self.__namespace.get(prefix)
+        bound_prefix = _coalesce(
+            self.__prefix.get(namespace),
+            self.__prefix.get(bound_namespace),
+        )
+        if override:
+            if bound_prefix is not None:
+                del self.__namespace[bound_prefix]
+            if bound_namespace is not None:
+                del self.__prefix[bound_namespace]
+            self.__prefix[namespace] = prefix
+            self.__namespace[prefix] = namespace
+        else:
+            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(
+                bound_prefix, prefix
+            )
+            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(
+                bound_namespace, namespace
+            )
 
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)

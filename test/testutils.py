@@ -16,7 +16,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Collection,
     Dict,
+    Generator,
     Iterable,
     Iterator,
     List,
@@ -35,6 +37,8 @@ from urllib.parse import ParseResult, parse_qs, unquote, urlparse
 from urllib.request import urlopen
 
 import isodate
+import pytest
+from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from nturl2path import url2pathname as nt_url2pathname
 
 import rdflib.compare
@@ -580,3 +584,30 @@ def file_uri_to_path(
     pathname = url2pathname(file_uri_parsed.path)
     result = path_class(pathname)
     return result
+
+
+ParamsT = TypeVar("ParamsT", bound=tuple)
+Marks = Collection[Union[Mark, MarkDecorator]]
+
+
+def pytest_mark_filter(
+    param_sets: Iterable[Union[ParamsT, ParameterSet]], mark_dict: Dict[ParamsT, Marks]
+) -> Generator[ParameterSet, None, None]:
+    """
+    Adds marks to test parameters. Useful for adding xfails to test parameters.
+    """
+    for param_set in param_sets:
+        if isinstance(param_set, ParameterSet):
+            # param_set.marks = [*param_set.marks, *marks.get(param_set.values, ())]
+            yield pytest.param(
+                *param_set.values,
+                id=param_set.id,
+                marks=[
+                    *param_set.marks,
+                    *mark_dict.get(cast(ParamsT, param_set.values), cast(Marks, ())),
+                ],
+            )
+        else:
+            yield pytest.param(
+                *param_set, marks=mark_dict.get(param_set, cast(Marks, ()))
+            )

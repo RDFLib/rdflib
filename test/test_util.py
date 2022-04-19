@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+from typing import Any, Collection, Tuple
 from unittest.case import expectedFailure
 
 import pytest
@@ -8,6 +9,7 @@ import pytest
 from rdflib import XSD, util
 from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.term import BNode, Literal, URIRef
+from rdflib.util import _coalesce
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -339,3 +341,19 @@ class TestUtilTermConvert:
     def test_util_from_n3_not_escapes_xf(self, string: str) -> None:
         literal_str = str(util.from_n3(f'"{string}"'))
         assert literal_str == f"{string}"
+
+
+@pytest.mark.parametrize(
+    ["params", "expected_result"],
+    [
+        ([], None),
+        (["something"], "something"),
+        ([False, "something"], False),
+        (["", "something"], ""),
+        ([0, "something"], 0),
+        ([None, "something", 1], "something"),
+        (["something", None, 1], "something"),
+    ],
+)
+def test__coalesce(params: Collection[Any], expected_result: Any) -> None:
+    assert expected_result == _coalesce(*params)
