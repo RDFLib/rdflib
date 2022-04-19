@@ -40,7 +40,7 @@ assert Literal  # avoid warning
 assert Namespace  # avoid warning
 
 if TYPE_CHECKING:
-    from rdflib.namespace import _NamespaceSetString
+    from rdflib._type_checking import _NamespaceSetString
 
 logger = logging.getLogger(__name__)
 

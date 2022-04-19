@@ -30,6 +30,7 @@ extensions = [
     "sphinxcontrib.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
+    "sphinx_autodoc_typehints",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
@@ -42,8 +43,12 @@ extensions = [
 
 apidoc_module_dir = "../rdflib"
 apidoc_output_dir = "apidocs"
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_default_options = {"special-members": True}
-autodoc_typehints = "both"
+
+# https://github.com/tox-dev/sphinx-autodoc-typehints
+always_document_param_types = True
 
 autosummary_generate = True
 
