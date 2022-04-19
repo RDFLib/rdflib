@@ -27,7 +27,7 @@ from functools import cmp_to_key
 
 # import lxml.html
 from numbers import Integral, Real
-from frozendict.core import frozendict
+from frozendict import frozendict # type: ignore
 from .__about__ import __copyright__, __license__, __version__
 
 

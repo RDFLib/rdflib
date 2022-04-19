@@ -6,7 +6,7 @@ Context Resolver for managing remote contexts.
 .. moduleauthor:: Gregg Kellogg <gregg@greggkellogg.net>
 """
 
-from frozendict.core import frozendict
+from frozendict import frozendict  # type: ignore
 from ..c14n.canonicalize import canonicalize
 from . import jsonld
 from .resolved_context import ResolvedContext
