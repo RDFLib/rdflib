@@ -1,15 +1,22 @@
+import logging
 import sys
+from contextlib import ExitStack
 from pathlib import Path
+from typing import Any, Dict, Optional, Set, Tuple, Type, Union
 
+import pytest
+
+from rdflib.graph import Dataset
 from rdflib.term import URIRef
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
 from rdflib.namespace import (
-    NAMESPACE_PREFIXES_CORE,
-    NAMESPACE_PREFIXES_RDFLIB,
+    _NAMESPACE_PREFIXES_CORE,
+    _NAMESPACE_PREFIXES_RDFLIB,
     OWL,
     RDFS,
+    NamespaceManager,
 )
 
 
@@ -18,7 +25,7 @@ def test_core_prefixes_bound():
     g = Graph()
 
     # prefixes in Graph
-    assert len(list(g.namespaces())) == len(NAMESPACE_PREFIXES_CORE)
+    assert len(list(g.namespaces())) == len(_NAMESPACE_PREFIXES_CORE)
     pre = sorted([x[0] for x in list(g.namespaces())])
     assert pre == ["owl", "rdf", "rdfs", "xml", "xsd"]
 
@@ -27,8 +34,8 @@ def test_rdflib_prefixes_bound():
     g = Graph(bind_namespaces="rdflib")
 
     # the core 5 + the extra 23 namespaces with prefixes
-    assert len(list(g.namespaces())) == len(NAMESPACE_PREFIXES_CORE) + len(
-        list(NAMESPACE_PREFIXES_RDFLIB)
+    assert len(list(g.namespaces())) == len(_NAMESPACE_PREFIXES_CORE) + len(
+        list(_NAMESPACE_PREFIXES_RDFLIB)
     )
 
 
@@ -78,3 +85,80 @@ def test_replace():
     assert ("rdfs", URIRef("http://example.com")) in list(
         g.namespace_manager.namespaces()
     )
+
+
+def test_invalid_selector() -> None:
+    graph = Graph()
+    with pytest.raises(ValueError):
+        NamespaceManager(graph, bind_namespaces="invalid")  # type: ignore[arg-type]
+
+
+NamespaceSet = Set[Tuple[str, URIRef]]
+
+
+def check_graph_ns(
+    graph: Graph,
+    expected_nsmap: Dict[str, Any],
+    check_namespaces: Optional[NamespaceSet] = None,
+) -> None:
+    expected_namespaces = {
+        (prefix, URIRef(f"{uri}")) for prefix, uri in expected_nsmap.items()
+    }
+    logging.debug("expected_namespaces = %s", expected_namespaces)
+    graph_namespaces = {*graph.namespaces()}
+    assert expected_namespaces == graph_namespaces
+    nman_namespaces = {*graph.namespace_manager.namespaces()}
+    assert expected_namespaces == nman_namespaces
+    if check_namespaces is not None:
+        assert expected_namespaces == check_namespaces
+        logging.debug("check_namespaces = %s", check_namespaces)
+
+
+@pytest.mark.parametrize(
+    ["selector", "expected_result"],
+    [
+        (None, ValueError),
+        ("invalid", ValueError),
+        ("core", _NAMESPACE_PREFIXES_CORE),
+        ("rdflib", {**_NAMESPACE_PREFIXES_CORE, **_NAMESPACE_PREFIXES_RDFLIB}),
+        ("none", {}),
+    ],
+)
+def test_graph_bind_namespaces(
+    selector: Any,
+    expected_result: Union[Dict[str, Any], Type[Exception]],
+) -> None:
+    namespaces: Optional[NamespaceSet] = None
+    with ExitStack() as xstack:
+        if not isinstance(expected_result, dict):
+            xstack.enter_context(pytest.raises(expected_result))
+        graph = Graph(bind_namespaces=selector)
+        namespaces = {*graph.namespaces()}
+    if isinstance(expected_result, dict):
+        assert namespaces is not None
+        check_graph_ns(graph, expected_result, namespaces)
+    else:
+        assert namespaces is None
+
+
+@pytest.mark.parametrize(
+    ["selector", "expected_result"],
+    [
+        (None, ValueError),
+        ("invalid", ValueError),
+        ("core", _NAMESPACE_PREFIXES_CORE),
+        ("rdflib", {**_NAMESPACE_PREFIXES_CORE, **_NAMESPACE_PREFIXES_RDFLIB}),
+        ("none", {}),
+    ],
+)
+def test_nman_bind_namespaces(
+    selector: Any,
+    expected_result: Union[Dict[str, Any], Type[Exception]],
+) -> None:
+    with ExitStack() as xstack:
+        if not isinstance(expected_result, dict):
+            xstack.enter_context(pytest.raises(expected_result))
+        graph = Dataset()
+        graph.namespace_manager = NamespaceManager(graph, selector)
+    if isinstance(expected_result, dict):
+        check_graph_ns(graph, expected_result)

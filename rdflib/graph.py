@@ -7,6 +7,7 @@ import tempfile
 from io import BytesIO
 from typing import (
     IO,
+    TYPE_CHECKING,
     Any,
     BinaryIO,
     Generator,
@@ -37,6 +38,9 @@ from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
+
+if TYPE_CHECKING:
+    from rdflib.namespace import _NamespaceSetString
 
 logger = logging.getLogger(__name__)
 
@@ -329,7 +333,7 @@ class Graph(Node):
         identifier: Optional[Union[IdentifiedNode, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
-        bind_namespaces: str = "core",
+        bind_namespaces: "_NamespaceSetString" = "core",
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -344,7 +348,7 @@ class Graph(Node):
         else:
             self.__store = store
         self.__namespace_manager = namespace_manager
-        self.bind_namespaces = bind_namespaces
+        self._bind_namespaces = bind_namespaces
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
@@ -363,7 +367,7 @@ class Graph(Node):
         this graph's namespace-manager
         """
         if self.__namespace_manager is None:
-            self.__namespace_manager = NamespaceManager(self, self.bind_namespaces)
+            self.__namespace_manager = NamespaceManager(self, self._bind_namespaces)
         return self.__namespace_manager
 
     @namespace_manager.setter
