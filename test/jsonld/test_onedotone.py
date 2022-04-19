@@ -70,13 +70,7 @@ known_bugs: Tuple[str, ...] = (
     # @id and @vocab in literal datatype expansion doesn't work
     "toRdf/e088-in",
     # TODO: relative-iri keeps . on end of IRI?
-    "toRdf/e076-in",
-    "toRdf/e089-in",
-    "toRdf/e090-in",
-    "toRdf/e091-in",
     "toRdf/e110-in",
-    "toRdf/e129-in",
-    "toRdf/e130-in",
     # TODO: Just broken expansion...
     "toRdf/e080-in",
     "toRdf/e092-in",
@@ -107,9 +101,6 @@ known_bugs: Tuple[str, ...] = (
     # JSON-native double representation
     "toRdf/js04-in",
     "toRdf/js10-in",
-    # JSON character escaping
-    "toRdf/js12-in",
-    "toRdf/js13-in",
     # Broken list comprehension
     "toRdf/li05-in",
     "toRdf/li06-in",

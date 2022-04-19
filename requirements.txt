@@ -1,3 +1,5 @@
 html5lib
 isodate
 pyparsing
+cachetools
+frozendict
