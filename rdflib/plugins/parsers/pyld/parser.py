@@ -66,8 +66,9 @@ class JSONLDParser(Parser):
             graph_name: Union[Graph, URIRef, BNode, None] = None
             if pyld_graph_name == "@default":
                 # TODO: This should set the graph_name to the default graph.
-                #       For now, we need to stick with `graph_name = sink`` to pass tests.
-                #       Otherwise Graph does not work properly.
+                #       For now, we need to stick with `graph_name = sink` to pass tests
+                #       Some JSON-LD tests fail because of rdflib's erroneous serialization results.
+                #       E.g. rdflib ignoring default graph e.g. https://github.com/RDFLib/rdflib/issues/1842.
 
                 # Setting this to default graph is the correctly behaviour for Dataset but
                 # fails to add triples to a Graph object.
@@ -116,6 +117,7 @@ class JSONLDParser(Parser):
                         # skip None objects (they are relative IRIs)
                         if object is not None:
                             o = _get_object(object)
+                            # print(subject, predicate, o, graph_name.identifier)
 
                             sink.store.add(
                                 (
