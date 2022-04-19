@@ -486,7 +486,7 @@ class Graph(Node):
     def triples(
         self,
         triple: Tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]],
-    ) -> Generator[Tuple["_SubjectType", "_PredicateType", "_ObjectType"], None, None]:
+    ) -> Generator[Tuple["_SubjectType", Path, "_ObjectType"], None, None]:
         ...
 
     @overload
