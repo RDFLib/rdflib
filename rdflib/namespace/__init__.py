@@ -3,7 +3,7 @@ import logging
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
 
@@ -190,6 +190,19 @@ class URIPattern(str):
         return f"URIPattern({super().__repr__()})"
 
 
+# _DFNS_RESERVED_ATTRS are attributes for which DefinedNamespaceMeta should
+# always raise AttributeError if they are not defined and which should not be
+# considered part of __dir__ results. These should be all annotations on
+# `DefinedNamespaceMeta`.
+_DFNS_RESERVED_ATTRS: Set[str] = {
+    "_NS",
+    "_warn",
+    "_fail",
+    "_extras",
+    "_underscore_num",
+}
+
+
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
 
@@ -202,7 +215,13 @@ class DefinedNamespaceMeta(type):
     @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
+        if name in _DFNS_RESERVED_ATTRS:
+            raise AttributeError(
+                f"DefinedNamespace like object has no attribute {name!r}"
+            )
         if str(name).startswith("__"):
+            # NOTE on type ignore: This seems to be a real bug, super() does not
+            # implement this method, it will fail if it is ever reached.
             return super().__getitem__(name, default)  # type: ignore[misc] # undefined in superclass
         if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
@@ -218,7 +237,7 @@ class DefinedNamespaceMeta(type):
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
-        return f'Namespace("{cls._NS}")'
+        return f'Namespace({str(cls._NS)!r})'
 
     def __str__(cls) -> str:
         return str(cls._NS)
@@ -230,6 +249,8 @@ class DefinedNamespaceMeta(type):
         """Determine whether a URI or an individual item belongs to this namespace"""
         item_str = str(item)
         if item_str.startswith("__"):
+            # NOTE on type ignore: This seems to be a real bug, super() does not
+            # implement this method, it will fail if it is ever reached.
             return super().__contains__(item)  # type: ignore[misc] # undefined in superclass
         if item_str.startswith(str(cls._NS)):
             item_str = item_str[len(str(cls._NS)) :]
@@ -242,7 +263,10 @@ class DefinedNamespaceMeta(type):
         )
 
     def __dir__(cls) -> Iterable[str]:
-        values = {cls[str(x)] for x in cls.__annotations__}
+        attrs = {str(x) for x in cls.__annotations__}
+        # Removing these as they should not be considered part of the namespace.
+        attrs.difference_update(_DFNS_RESERVED_ATTRS)
+        values = {cls[str(x)] for x in attrs}
         return values
 
     def as_jsonld_context(self, pfx: str) -> dict:
