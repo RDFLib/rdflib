@@ -17,7 +17,6 @@ import json
 import re
 import sys
 import traceback
-from typing import Callable, Dict
 import warnings
 import uuid
 from .context_resolver import ContextResolver
