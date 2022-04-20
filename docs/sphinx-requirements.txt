@@ -3,3 +3,4 @@ myst-parser
 sphinx<5
 sphinxcontrib-apidoc
 sphinxcontrib-kroki
+sphinx-autodoc-typehints

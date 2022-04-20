@@ -344,12 +344,7 @@ class ClosedNamespace(Namespace):
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 if TYPE_CHECKING:
-    if sys.version_info >= (3, 8):
-        from typing import Literal as PyLiteral
-    else:
-        from typing_extensions import Literal as PyLiteral
-
-    _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
+    from rdflib._type_checking import _NamespaceSetString
 
 
 class NamespaceManager(object):
