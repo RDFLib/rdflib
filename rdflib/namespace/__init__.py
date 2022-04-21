@@ -1,4 +1,6 @@
 import json
+import string
+import random
 import logging
 import sys
 import warnings
@@ -520,12 +522,12 @@ class NamespaceManager(object):
                     raise KeyError(
                         "No known prefix for {} and generate=False".format(namespace)
                     )
-                num = 1
+                suffix = ''.join(random.choices(string.ascii_uppercase, k=10))
                 while 1:
-                    prefix = "ns%s" % num
+                    prefix = "ns%s" % suffix
                     if not self.store.namespace(prefix):
                         break
-                    num += 1
+                    suffix = ''.join(random.choices(string.ascii_uppercase, k=10))
                 self.bind(prefix, namespace)
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
