@@ -1,0 +1,41 @@
+#Processed by EYE-Autumn15 12111500Z josd
+#eye --nope --no-distinct http://eulersharp.sourceforge.net/2009/12dtb/test-dl-10.n3 --query http://eulersharp.sourceforge.net/2007/07test/parteval-subclass.n3
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://eulersharp.sourceforge.net/2009/12dtb/test#>.
+
+{?U0 a :N0} => {?U0 a :N1}.
+{?U1 a :N0} => {?U1 a :I1}.
+{?U2 a :N0} => {?U2 a :J1}.
+{?U3 a :N1} => {?U3 a :N2}.
+{?U4 a :N1} => {?U4 a :I2}.
+{?U5 a :N1} => {?U5 a :J2}.
+{?U6 a :N2} => {?U6 a :N3}.
+{?U7 a :N2} => {?U7 a :I3}.
+{?U8 a :N2} => {?U8 a :J3}.
+{?U9 a :N3} => {?U9 a :N4}.
+{?U10 a :N3} => {?U10 a :I4}.
+{?U11 a :N3} => {?U11 a :J4}.
+{?U12 a :N4} => {?U12 a :N5}.
+{?U13 a :N4} => {?U13 a :I5}.
+{?U14 a :N4} => {?U14 a :J5}.
+{?U15 a :N5} => {?U15 a :N6}.
+{?U16 a :N5} => {?U16 a :I6}.
+{?U17 a :N5} => {?U17 a :J6}.
+{?U18 a :N6} => {?U18 a :N7}.
+{?U19 a :N6} => {?U19 a :I7}.
+{?U20 a :N6} => {?U20 a :J7}.
+{?U21 a :N7} => {?U21 a :N8}.
+{?U22 a :N7} => {?U22 a :I8}.
+{?U23 a :N7} => {?U23 a :J8}.
+{?U24 a :N8} => {?U24 a :N9}.
+{?U25 a :N8} => {?U25 a :I9}.
+{?U26 a :N8} => {?U26 a :J9}.
+{?U27 a :N9} => {?U27 a :N10}.
+{?U28 a :N9} => {?U28 a :I10}.
+{?U29 a :N9} => {?U29 a :J10}.
+{?U30 a :N10} => {?U30 a :A2}.
+
+#ENDS 0.544 [sec] IO=33/31 TC=0 TP=0 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

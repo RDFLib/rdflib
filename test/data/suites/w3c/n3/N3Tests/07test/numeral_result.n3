@@ -1,0 +1,18 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --strict --no-numerals --turtle http://eulersharp.sourceforge.net/2007/07test/numeral.n3 --pass
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://example.org/try#>.
+
+:s1 :p "99999999999999999999999999999999999999999999999999999999999999999999999999999999999"^^xsd:integer .
+:s2 :p "9999999999999999999999999999999999999999999999999999999999999999.0"^^xsd:decimal .
+:s3 :p "99999999999999999999999999999999999999.9999999999999"^^xsd:decimal .
+:s4 :p "999999999.999999"^^xsd:decimal .
+:s5 :p "999999999.99999900"^^xsd:decimal .
+:s6 :p "999999999.999999"^^xsd:decimal .
+:s7 :p "9.99999999e+15"^^xsd:double .
+:s8 :p "9.0"^^xsd:decimal .
+
+#2018-04-18T08:28:09.642Z in=8 out=8 ent=0 step=0 brake=1 inf=15708 sec=0.020 inf/sec=785400
+#ENDS
+

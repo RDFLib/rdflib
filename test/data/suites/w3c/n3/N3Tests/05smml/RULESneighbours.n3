@@ -1,0 +1,135 @@
+
+
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+
+  # Change STL notation of vertices.
+  {                                
+  ?TriangleA stl:vertex1 ?v1.
+  ?TriangleA stl:vertex2 ?v2.
+  ?TriangleA stl:vertex3 ?v3.
+  }
+  =>
+  {
+  ?TriangleA stl:vertex ?v1.
+  ?TriangleA stl:vertex ?v2.
+  ?TriangleA stl:vertex ?v3.
+  }.
+
+  # Search triangles sharing at least one vertex.
+	{
+  ?TriangleA a stl:StlTriangle.
+  ?TriangleB a stl:StlTriangle.
+  ?TriangleA log:notEqualTo ?TriangleB.
+  ?TriangleA stl:vertex ?X.
+  ?TriangleB stl:vertex ?X.
+  }
+  =>
+  {
+  ?TriangleA we:sharedvertex ?TriangleB.
+  }.
+  
+  
+  # Search triangles sharing at least two vertices => neighbours.
+	{
+  ?TriangleA we:sharedvertex ?TriangleB.
+  ?TriangleA a stl:StlTriangle.
+  ?TriangleB a stl:StlTriangle.
+  ?TriangleA stl:vertex ?X.
+  ?TriangleB stl:vertex ?X.
+  ?TriangleA stl:vertex ?Y.
+  ?TriangleB stl:vertex ?Y.
+  ?X log:notEqualTo ?Y.
+  }
+  =>
+  {
+  ?TriangleA we:neighbourtriangle ?TriangleB.
+  }.
+  
+  # Put the neighbour triangles in a sorted list.
+  { 
+     ?TriangleA a stl:StlTriangle.
+     ?y e:findall (?TriangleE {?TriangleA we:neighbourtriangle ?TriangleE} ?ANSWER)
+  }
+  =>
+  {
+     ?TriangleA we:neighbourtriangles ?ANSWER
+  }.
+  
+  # Neighbourcount
+  {
+	   ?TriangleA we:neighbourtriangles ?NTlist.
+	   ?NTlist e:length ?length.
+  }
+  =>
+  {
+     ?TriangleA we:neighbourcount ?length.
+  }.
+  
+  # Put the neighbour triangles in a sorted list.
+  { 
+     ?TriangleA a stl:StlTriangle.
+     ?y e:findall (?TriangleE {?TriangleA we:neighbourtriangle ?TriangleE} ?ANSWER)
+  }
+  =>
+  {
+     ?TriangleA we:neighbourtriangles ?ANSWER
+  }.
+  
+  
+  
+  # Search triangles with the same normal.
+	{
+     ?TriangleA stl:normal (?NA1 ?NA2 ?NA3).
+     ?TriangleX stl:normal (?NX1 ?NX2 ?NX3).
+     ?TriangleA log:notEqualTo ?TriangleX.
+     (1 10000) math:quotient ?Tolerance.
+     (?NA1 ?NX1) math:difference ?NDiff1.
+     ?NDiff1 math:absoluteValue ?NAbs1.
+     ?NAbs1 math:lessThan ?Tolerance.
+     (?NA2 ?NX2) math:difference ?NDiff2.
+     ?NDiff2 math:absoluteValue ?NAbs2.
+     ?NAbs2 math:lessThan ?Tolerance.
+     (?NA3 ?NX3) math:difference ?NDiff3.
+     ?NDiff3 math:absoluteValue ?NAbs3.
+     ?NAbs3 math:lessThan ?Tolerance.
+  }
+  =>
+  {
+    ?TriangleA we:samenormal ?TriangleX.
+  }.
+  
+  # Search triangles with the opposite normal.
+	{
+     ?TriangleA stl:normal (?NA1 ?NA2 ?NA3).
+     ?TriangleX stl:normal (?NX1 ?NX2 ?NX3).
+     ?TriangleA log:notEqualTo ?TriangleX.
+     (1 10000) math:quotient ?Tolerance.
+     (?NA1 ?NX1) math:sum ?NDiff1.
+     ?NDiff1 math:absoluteValue ?NAbs1.
+     ?NAbs1 math:lessThan ?Tolerance.
+     (?NA2 ?NX2) math:sum ?NDiff2.
+     ?NDiff2 math:absoluteValue ?NAbs2.
+     ?NAbs2 math:lessThan ?Tolerance.
+     (?NA3 ?NX3) math:sum ?NDiff3.
+     ?NDiff3 math:absoluteValue ?NAbs3.
+     ?NAbs3 math:lessThan ?Tolerance.
+  }
+  =>
+  {
+    ?TriangleA we:oppositenormal ?TriangleX.
+  }.

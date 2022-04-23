@@ -1,0 +1,192 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --tactic limited-answer 1 http://josd.github.io/brain/hanoi/hanoi.n3 --pass
+
+# Move top disk from <http://josd.github.io/brain#left> to <http://josd.github.io/brain#right>
+# Move top disk from <http://josd.github.io/brain#left> to <http://josd.github.io/brain#center>
+# Move top disk from <http://josd.github.io/brain#right> to <http://josd.github.io/brain#center>
+# Move top disk from <http://josd.github.io/brain#left> to <http://josd.github.io/brain#right>
+# Move top disk from <http://josd.github.io/brain#center> to <http://josd.github.io/brain#left>
+# Move top disk from <http://josd.github.io/brain#center> to <http://josd.github.io/brain#right>
+# Move top disk from <http://josd.github.io/brain#left> to <http://josd.github.io/brain#right>
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    3 :answer (:left :right :center).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    3 :answer (:left :right :center).
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#answer"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:left :right :center)];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    3 :answer (:left :right :center).
+  };
+  r:evidence (
+    <#lemma4>
+  );
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_1 var:x_0 var:x_2} => {var:x_1 var:x_0 var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2003/03swap/pass>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    3 :move (:left :right :center).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {3 math:greaterThan 1}]
+    [ a r:Fact; r:gives {(3 1) math:difference 2}]
+    <#lemma6>
+    [ a r:Fact; r:gives {1 :move (:left :right _:sk_0)}]
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    {3 :move (:left :right :center)} => {3 :answer (:left :right :center)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/hanoi/hanoi.n3>].
+
+<#lemma6> a r:Inference;
+  r:gives {
+    2 :move (:left :center :right).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {2 math:greaterThan 1}]
+    [ a r:Fact; r:gives {(2 1) math:difference 1}]
+    <#lemma9>
+    <#lemma10>
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    2 :move (:center :right :left).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {2 math:greaterThan 1}]
+    [ a r:Fact; r:gives {(2 1) math:difference 1}]
+    <#lemma12>
+    <#lemma13>
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. {var:x_0 :move (var:x_2 var:x_4 var:x_3)} <= {var:x_0 math:greaterThan 1 .
+     (var:x_0 1) math:difference var:x_1.
+     var:x_1 :move (var:x_2 var:x_3 var:x_4).
+     1 :move (var:x_2 var:x_4 var:x_5).
+     var:x_1 :move (var:x_3 var:x_4 var:x_2)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/hanoi/hanoi.n3>].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    1 :move (:left :right :center).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("format" "# Move top disk from ~w to ~w~n" (:left :right)) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:rule <#lemma14>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    1 :move (:left :center _:sk_0).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("format" "# Move top disk from ~w to ~w~n" (:left :center)) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma14>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    1 :move (:right :center :left).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("format" "# Move top disk from ~w to ~w~n" (:right :center)) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:rule <#lemma14>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    1 :move (:center :left :right).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("format" "# Move top disk from ~w to ~w~n" (:center :left)) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#left"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:rule <#lemma14>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    1 :move (:center :right _:sk_0).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("format" "# Move top disk from ~w to ~w~n" (:center :right)) e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#center"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#right"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma14>.
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. @forSome var:x_2. {1 :move (var:x_0 var:x_1 var:x_2)} <= {("format" "# Move top disk from ~w to ~w~n" (var:x_0 var:x_1)) e:derive true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/hanoi/hanoi.n3>].
+
+#2020-02-22T21:51:52.947Z in=3 out=1 ent=2 step=2 brake=1 inf=38805 sec=0.092 inf/sec=421793
+#ENDS
+

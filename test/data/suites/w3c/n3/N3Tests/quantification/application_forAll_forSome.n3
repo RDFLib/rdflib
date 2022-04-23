@@ -1,0 +1,6 @@
+@prefix : <http://example.org#>.
+
+
+@forAll :x. :x :p :o.
+
+{@forSome :f. :f :p :o }=>{:test :was :successful}. 

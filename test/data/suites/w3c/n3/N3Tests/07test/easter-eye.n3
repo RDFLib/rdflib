@@ -1,0 +1,26 @@
+#Processed by Id: euler.yap 7902 2015-04-02 11:01:27Z josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/easterP.n3 --query http://eulersharp.sourceforge.net/2007/07test/easterF.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+
+(5 4) :easterFor 2015 .
+(27 3) :easterFor 2016 .
+(16 4) :easterFor 2017 .
+(1 4) :easterFor 2018 .
+(21 4) :easterFor 2019 .
+(12 4) :easterFor 2020 .
+(4 4) :easterFor 2021 .
+(17 4) :easterFor 2022 .
+(9 4) :easterFor 2023 .
+(31 3) :easterFor 2024 .
+(20 4) :easterFor 2025 .
+(5 4) :easterFor 2026 .
+(28 3) :easterFor 2027 .
+(16 4) :easterFor 2028 .
+(1 4) :easterFor 2029 .
+(21 4) :easterFor 2030 .
+
+#ENDS 1.137 [sec] TC=32 TP=64 BC=0 BP=0 PM=0 CM=0 FM=0 AM=0
+

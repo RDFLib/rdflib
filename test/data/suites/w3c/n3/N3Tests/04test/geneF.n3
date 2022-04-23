@@ -1,0 +1,8 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+-prolog+-nope+sfcvs%2F2004%2F04test%2Fgene.n3+-query+sfcvs%2F2004%2F04test%2FgeneF.n3
+# PxButton | euler5np | bash .euler5 http://localhost/.euler+-prolog+-nope+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Fgene.n3+-query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FgeneF.n3 > geneE.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gene#>.
+
+{?X e:depends ?Y} => {?X e:depends ?Y}.
+{(?SCOPE 1) e:bayesian ((((:has_gene :dexter) e:T)) (((:has_gene :galaxy) e:T)) ?X)} => {(?SCOPE 1) e:bayesian ((((:has_gene :dexter) e:T)) (((:has_gene :galaxy) e:T)) ?X)}.

@@ -1,0 +1,9 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### snow is not black and things are black or white
+
+{:snow :hasColor :black} e:boolean e:F.
+
+{{?S :hasColor :black} e:boolean e:T} => {{?S :hasColor :white} e:boolean e:F}.
+{{?S :hasColor :white} e:boolean e:T} => {{?S :hasColor :black} e:boolean e:F}.

@@ -1,0 +1,44 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet http://eulersharp.sourceforge.net/2007/07test/alpP001.n3 http://eulersharp.sourceforge.net/2007/07test/alpA001.n3 --query http://eulersharp.sourceforge.net/2007/07test/alpQ001.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+
+[ e:possibleModel {:Peter :ascribed :smokes}
+; e:gives {
+    :Peter :ascribed :wheezing.
+  }
+].
+
+[ e:falseModel {:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker}
+; e:because [ e:integrityConstraint {{:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker} => false}
+  ; e:selected [ e:triple {:Peter :ascribed :smokes}
+    ]
+  ; e:selected [ e:triple {:Peter :ascribed :nonsmoker}
+    ]
+  ]
+; e:inconsistentTriplesOrdering ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker})
+; e:gives {
+    :Peter :ascribed :wheezing.
+  }].
+
+[ e:possibleModel {:Peter :ascribed :influenza. :Peter :ascribed :nonsmoker}
+; e:gives {
+    :Peter :ascribed :wheezing.
+  }
+].
+
+[ e:counterModel {:Peter :ascribed :nonsmoker}
+].
+
+[ e:possibleModel {:Peter :ascribed :influenza}
+; e:gives {
+    :Peter :ascribed :wheezing.
+  }
+].
+
+[ e:inductivity 0.75; e:evidentiality 0.8; e:applicability 0.6; e:possibleModels 3; e:counterModels 1; e:falseModels 1; e:allModels 5].
+
+#ENDS 0.863 [sec] TC=0 TP=0 BC=26 BP=94 PM=3 CM=1 FM=1 AM=5
+

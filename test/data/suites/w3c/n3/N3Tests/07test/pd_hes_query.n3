@@ -1,0 +1,5 @@
+@prefix : <pd_hes#>.
+
+{:bc :i ?U. :ac :i ?U. :ab :i ?U} => {:bc :i ?U. :ac :i ?U. :ab :i ?U}.
+{:a1 :i :b2c2} => {:a1 :i :b2c2}.
+{:b2 :i :a1c1} => {:b2 :i :a1c1}.

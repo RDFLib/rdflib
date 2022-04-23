@@ -1,0 +1,4 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+{?S :saying :C} => {?S :saying :C}.
+

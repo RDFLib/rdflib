@@ -1,0 +1,10 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+
+# current state
+:i1 :location :Gent.
+
+# map of Belgium
+{:map-BE gps:description ({?S :location :Brugge} true {?S :location :Oostende} :drive_brugge_oostende 900.0 0.004 0.98 1.0)} <= true.
+{:map-BE gps:description ({?S :location :Gent} true {?S :location :Brugge} :drive_gent_brugge 1500.0 0.006 0.96 0.99)} <= true.

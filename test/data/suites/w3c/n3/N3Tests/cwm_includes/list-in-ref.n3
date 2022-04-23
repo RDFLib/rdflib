@@ -1,0 +1,10 @@
+@prefix : <list-in.n3#> .
+
+3      a :Pythagorean, :RESULT1 .
+4      a :Pythagorean, :RESULT1 .
+5      a :Pythagorean, :RESULT1 .
+12     a :Pythagorean .
+13     a :Pythagorean .
+:amy   a :Friend .
+:fred  a :Friend .
+:joe   a :Friend .

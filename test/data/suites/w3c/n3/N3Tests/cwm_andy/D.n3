@@ -1,0 +1,11 @@
+@prefix log:   <http://www.w3.org/2000/10/swap/log#> .
+@prefix d:     <http://example.org/dawg/> .
+
+:doc :is { 
+  d:a d:p d:b .
+  d:a d:q d:c .
+} .
+
+{ :doc :is ?d .
+  ?d log:notIncludes { d:a d:p d:xxx } .
+ } => { :doc a :Success . } .

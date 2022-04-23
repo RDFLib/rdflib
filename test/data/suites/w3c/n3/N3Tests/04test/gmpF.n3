@@ -1,0 +1,24 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+-prolog+-nope+sfcvs%2F2004%2F04test%2Fgmp.n3+-query+sfcvs%2F2004%2F04test%2FgmpF.n3
+# PxButton | euler5np | bash .euler5 http://localhost/.euler+-prolog+-nope+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Fgmp.n3+-query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FgmpF.n3 > gmpE.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gmp#>.
+
+# deduction
+{(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:T) ((:P log:implies :C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:T) ((:P log:implies :C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:T) ((:P log:implies :C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:T) ((:P log:implies :C) e:F)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:F) ((:P log:implies :C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:F) ((:P log:implies :C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:F) ((:P log:implies :C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:C) e:T)) (((:P) e:F) ((:P log:implies :C) e:F)) ?Y)}.
+
+# abduction
+{(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:T) ((:P log:implies :C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:T) ((:P log:implies :C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:T) ((:P log:implies :C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:T) ((:P log:implies :C) e:F)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:F) ((:P log:implies :C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:F) ((:P log:implies :C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:F) ((:P log:implies :C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P) e:T)) (((:C) e:F) ((:P log:implies :C) e:F)) ?Y)}.
+
+# induction
+{(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:T) ((:C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:T) ((:C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:T) ((:C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:T) ((:C) e:F)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:F) ((:C) e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:F) ((:C) e:T)) ?Y)}.
+{(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:F) ((:C) e:F)) ?Y)} => {(?SCOPE 1) e:bayesian ((((:P log:implies :C) e:T)) (((:P) e:F) ((:C) e:F)) ?Y)}.

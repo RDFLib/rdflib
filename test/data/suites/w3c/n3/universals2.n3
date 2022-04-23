@@ -1,0 +1,3 @@
+PREFIX : <https://example.org/ns/example#>
+
+{ ?x :y :z } => { :a :b :c }.

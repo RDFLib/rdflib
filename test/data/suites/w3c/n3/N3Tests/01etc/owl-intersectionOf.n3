@@ -1,0 +1,9 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{?C owl:intersectionOf ?L. ?X a ?C. ?D list:in ?L} => {?X a ?D}.
+{?C owl:intersectionOf ?L. ?L rdf:first ?A. ?X a ?A. ?L rdf:rest ?B. ?S e:findall (?Y {?Y list:in ?B. ?X a ?Y} ?B)} => {?X a ?C}.
+{?C owl:intersectionOf ?L. ?D list:in ?L} => {?C rdfs:subClassOf ?D}.

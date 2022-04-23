@@ -1,0 +1,4 @@
+@prefix : <builtin3.n3#> .
+@base <http://example.org/> .
+
+:will :hasAge

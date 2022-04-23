@@ -1,0 +1,15 @@
+# $Id: stc2b.n3 2732 2009-03-12 21:12:25Z josd $
+# PxButton | es  | euler --nope --think u1.n3 u2.n3 --query stc2b.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py u1.n3 u2.n3 --think --query"=stc2b.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://example.org/data#> .
+
+[]
+q:select {<> q:answer (?X ?Y ?Z)};
+q:where  {<u1.n3>!log:semantics log:includes {?X ?Y ?Z}}.
+
+[]
+q:select {<> q:answer (?X ?Y ?Z)};
+q:where  {<u2.n3>!log:semantics log:includes {?X ?Y ?Z}}.

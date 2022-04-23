@@ -1,0 +1,13 @@
+# $Id: LanguageQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think sample.n3 --query LanguageQ.n3
+# PxButton | cwm | cwm sample.n3 --think --query"=LanguageQ.n3"
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+
+[]
+q:select {?X rdfs:label "Database Management"@en, ?D@de};
+q:where  {?X rdfs:label "Database Management"@en, ?D@de}.

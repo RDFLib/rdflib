@@ -1,0 +1,11 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/turing.n3 --query http://eulersharp.sourceforge.net/2007/07test/turingQ.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/turing#>.
+
+((1 1 1) (1 1 1 1)) :turing true.
+
+#2018-04-18T08:28:56.452Z in=57 out=1 ent=1 step=1 brake=1 inf=13048 sec=0.021 inf/sec=621333
+#ENDS
+

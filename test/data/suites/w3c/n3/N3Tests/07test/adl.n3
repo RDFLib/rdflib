@@ -1,0 +1,11 @@
+### appending difference lists
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <try#>.
+
+{(?A ?B ?B ?C) :append (?A ?C)} <= true.
+{?X e:firstRest (:a ?Y). ?Y e:firstRest (:b ?A). ?Z e:firstRest (:c ?B). (?X ?A ?Z ?B) :append (?C ())} => {?C a :Result}.
+
+:Socrates a :Male, :Mortal.
+:Xanthippe a :Female, :Human.
+{?SCOPE e:findall (?S {?S a :Male} ?R ?U), (?S {?S a :Female} ?U ?V), (?S {?S a :Human} ?V (:Dan :Tim))} => {?R a :Result}.

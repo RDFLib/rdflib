@@ -1,0 +1,13 @@
+#Processed by Id: cwm.py,v 1.106 2002/09/13 23:36:48 timbl Exp 
+        #    using base file:/devel/WWW/2000/10/swap/test/i18n/umlaut.rdf
+        
+#  Notation3 generation by
+#       notation3.py,v 1.118 2002/08/16 22:30:48 timbl Exp
+
+#   Base was: file:/devel/WWW/2000/10/swap/test/i18n/umlaut.rdf
+     @prefix : <http://www.w3.org/2000/01/rdf-schema#> .
+     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    
+      [      :label "Martin J D\u00fcrst" ].
+    
+#ENDS

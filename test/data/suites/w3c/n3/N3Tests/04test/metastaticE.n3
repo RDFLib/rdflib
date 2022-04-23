@@ -1,0 +1,159 @@
+#Processed by Id: euler.yap,v 1.156 2007/02/16 09:43:25 josd Exp 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/metastatic#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+[ a r:Proof, r:Conjunction;
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) () 0.2)}; r:evidence (
+    [ a r:Extraction; r:gives {(:MetastaticCancer e:T) e:depends (() 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) () 0.2)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:MetastaticCancer e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (() 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.2]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) () var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) () var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) () 0.32)}; r:evidence (
+    [ a r:Extraction; r:gives {(:SerumCalcium e:T) e:depends (((:MetastaticCancer e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) () 0.32)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:SerumCalcium e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.32]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) () var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) () var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) () 0.08)}; r:evidence (
+    [ a r:Extraction; r:gives {(:BrainTumor e:T) e:depends (((:MetastaticCancer e:T)) 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) () 0.08)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:BrainTumor e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.08]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) () var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) () var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) () 0.32)}; r:evidence (
+    [ a r:Extraction; r:gives {(:Coma e:T) e:depends (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) () 0.32)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:Coma e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.32]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) () var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) () var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) () 0.616)}; r:evidence (
+    [ a r:Extraction; r:gives {(:HeadAche e:T) e:depends (((:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) () 0.616)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:HeadAche e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.616]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) () var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) () var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:T)) 0.425)}; r:evidence (
+    [ a r:Extraction; r:gives {(:MetastaticCancer e:T) e:depends (() 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:T)) 0.425)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:MetastaticCancer e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (() 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.425]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:T)) 0.8)}; r:evidence (
+    [ a r:Extraction; r:gives {(:SerumCalcium e:T) e:depends (((:MetastaticCancer e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:T)) 0.8)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:SerumCalcium e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.8]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:T)) 0.2)}; r:evidence (
+    [ a r:Extraction; r:gives {(:BrainTumor e:T) e:depends (((:MetastaticCancer e:T)) 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:T)) 0.2)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:BrainTumor e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.2]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:T)) 1)}; r:evidence (
+    [ a r:Extraction; r:gives {(:Coma e:T) e:depends (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:T)) 1)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:Coma e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 1]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:T)) 0.64)}; r:evidence (
+    [ a r:Extraction; r:gives {(:HeadAche e:T) e:depends (((:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:T)) 0.64)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:HeadAche e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.64]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397)}; r:evidence (
+    [ a r:Extraction; r:gives {(:MetastaticCancer e:T) e:depends (() 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:MetastaticCancer e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (() 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.0972762645914397]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397)}; r:evidence (
+    [ a r:Extraction; r:gives {(:SerumCalcium e:T) e:depends (((:MetastaticCancer e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:SerumCalcium e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.0972762645914397]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0311284046692607)}; r:evidence (
+    [ a r:Extraction; r:gives {(:BrainTumor e:T) e:depends (((:MetastaticCancer e:T)) 0.2)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0311284046692607)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:BrainTumor e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:MetastaticCancer e:T)) 0.2)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0.0311284046692607]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:F) (:HeadAche e:T)) 0)}; r:evidence (
+    [ a r:Extraction; r:gives {(:Coma e:T) e:depends (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:F) (:HeadAche e:T)) 0)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:Coma e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 0]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:F) (:HeadAche e:T)) 1)}; r:evidence (
+    [ a r:Extraction; r:gives {(:HeadAche e:T) e:depends (((:BrainTumor e:T)) 0.8)}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>]]
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:F) (:HeadAche e:T)) 1)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo (:HeadAche e:T)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Z"]; r:boundTo (((:BrainTumor e:T)) 0.8)]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#Y"]; r:boundTo 1]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:X,var:Z,var:SCOPE,var:Y. {var:X e:depends var:Z. (var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)} => {(var:SCOPE 1) e:bayesian ((var:X) ((:Coma e:F) (:HeadAche e:T)) var:Y)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>]]];
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) () 0.2).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) () 0.32).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) () 0.08).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) () 0.32).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) () 0.616).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:T)) 0.425).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:T)) 0.8).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:T)) 0.2).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:T)) 1).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:T)) 0.64).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:MetastaticCancer e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:SerumCalcium e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0972762645914397).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:BrainTumor e:T)) ((:Coma e:F) (:HeadAche e:T)) 0.0311284046692607).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:Coma e:T)) ((:Coma e:F) (:HeadAche e:T)) 0).
+    ((<http://eulersharp.sourceforge.net/2004/04test/metastatic.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/metastaticF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian (((:HeadAche e:T)) ((:Coma e:F) (:HeadAche e:T)) 1).}].
+
+#ENDS 60 msec.
+

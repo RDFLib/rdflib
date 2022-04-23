@@ -1,0 +1,17 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/socrates.n3 --query http://eulersharp.sourceforge.net/2007/07test/socratesQ.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/socrates#>.
+
+:socrates a :Human.
+:socrates a :NonFemale.
+:socrates a :MaleOrFemale.
+
+#2018-04-18T08:28:44.266Z in=28 out=3 ent=4 step=8 brake=2 inf=14496 sec=0.020 inf/sec=724800
+#ENDS
+

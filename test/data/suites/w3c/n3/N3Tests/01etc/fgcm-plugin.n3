@@ -1,0 +1,370 @@
+# EYE Components for FGCM -- Gijs Muys
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix fgcm: <http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix dco: <http://www.debugit.eu/ontology/1.0/dco.owl#>.
+
+{(?A ?B ?UnknownVar) fl:gpi (?C1 ?C2)} <=
+{
+    ?SCOPE e:call {
+        ("if_then_else"
+            {
+                ("nb_getval" "fnet" "done") e:derive true.
+            }
+            true
+            {
+                (";"
+                    {
+                        () fgcm:expandClosureGmu true.
+                        () fgcm:expandClosureGsigma true.
+                        (?UnknownVar) fgcm:handleUnknownVariables true.
+                        (?A 1) fgcm:iterate ?IterationsNeeded.
+                        ("nb_setval" "IterationsNeeded" ?IterationsNeeded) e:derive true.
+                    }
+                    {
+                        ("nb_setval" "fnet" "done") e:derive true.
+                    }
+                ) e:derive true
+            }
+        ) e:derive true.
+        ("nb_getval" "IterationsNeeded" ?IterationsNeeded) e:derive true.
+        ?A fgcm:gpi (?B ?MembershipLower ?MembershipUpper ?IterationsNeeded).
+        ("if_then_else"
+            {
+                ?SCOPE e:closure {(?A ?B) fl:gpi (?FixedMembershipLower ?FixedMembershipUpper)}.
+            }
+            {
+                ?C1 log:equalTo ?FixedMembershipLower.
+                ?C2 log:equalTo ?FixedMembershipUpper.
+            }
+            {
+                ?C1 log:equalTo ?MembershipLower.
+                ?C2 log:equalTo ?MembershipUpper.
+            }
+        ) e:derive true.
+    }
+}.
+
+{(?A ?B ?UnknownVar) fl:gpiWhitenized ?C} <=
+{
+    ?SCOPE e:call {
+        ("if_then_else"
+            {
+                ("nb_getval" "fnet" "done") e:derive true.
+            }
+            true
+            {
+                (";"
+                    {
+                        () fgcm:expandClosureGmu true.
+                        () fgcm:expandClosureGsigma true.
+                        (?UnknownVar) fgcm:handleUnknownVariables true.
+                        (?A 1) fgcm:iterate ?IterationsNeeded.
+                        ("nb_setval" "IterationsNeeded" ?IterationsNeeded) e:derive true.
+                    }
+                    {
+                        ("nb_setval" "fnet" "done") e:derive true.
+                    }
+                ) e:derive true
+            }
+        ) e:derive true.
+        ("nb_getval" "IterationsNeeded" ?IterationsNeeded) e:derive true.
+        ?A fgcm:gpi (?B ?MembershipLower ?MembershipUpper ?IterationsNeeded).
+        ("if_then_else"
+            {
+                ?SCOPE e:closure {(?A ?B) fl:gpi (?FixedMembershipLower ?FixedMembershipUpper)}.
+            }
+            {
+                (?FixedMembershipLower ?FixedMembershipUpper) fgcm:whitenize ?C.
+            }
+            {
+                (?MembershipLower ?MembershipUpper) fgcm:whitenize ?C.
+            }
+        ) e:derive true.
+    }
+}.
+
+#Expand deductive closure
+#In the context of statements, a deductive closure is the set of all the statements that can be deduced from a given set of statements.
+
+#Initialize given variable values
+{() fgcm:expandClosureGmu true} <=
+{
+    ("forall"
+        {
+            (?X ?Y) fl:gmu (?Z ?Q).
+        }
+        {
+            ("if_then_else"
+                {
+                    (?X) fgcm:fm true.
+                }
+                true
+                {
+                    ("assertz" {(?X) fgcm:fm true}) e:derive true.
+                }
+            ) e:derive true.
+            ("assertz" {?X fgcm:gpi (?Y ?Z ?Q 0)}) e:derive true.
+        }
+    ) e:derive true.
+}.
+
+#Setup model
+{() fgcm:expandClosureGsigma true} <=
+{
+    ("forall"
+        {
+            (?X ?Y) fl:gsigma (?V6 ?V7).
+        }
+        {
+            ("if_then_else"
+                {
+                    (?X) fgcm:fs true.
+                }
+                true
+                {
+                    ("assertz" {(?X) fgcm:fs true}) e:derive true.
+                }
+            ) e:derive true.
+            ("if_then_else"
+                {
+                    (?Y) fgcm:fs true.
+                }
+                true
+                {
+                    ("assertz" {(?Y) fgcm:fs true}) e:derive true.
+                }
+            ) e:derive true.
+        }
+    ) e:derive true.
+}.
+
+{(?UnknownVar) fgcm:handleUnknownVariables true} <= {
+    ("if_then_else"
+        {
+            ("=" ?UnknownVar true) e:derive true.
+        }
+        {
+            () fgcm:assignUnknownVariables true.
+        }
+        true
+    ) e:derive true.
+}.
+
+#If variable value unknown, initialize value as [0,1]
+{() fgcm:assignUnknownVariables true} <=
+{
+
+    (?Observable) fgcm:fm true.
+    ("forall"
+        {
+            (?Node) fgcm:fs true.
+        }
+        {
+            ("if_then_else"
+                {
+                    ?Observable fgcm:gpi (?Node ?MembershipLower ?MembershipUpper 0).
+                }
+                true
+                {
+                    ("assertz" {?Observable fgcm:gpi (?Node 0.0 1.0 0)}) e:derive true.
+                }
+            ) e:derive true.
+        }
+    ) e:derive true.
+}.
+
+#Calculates the sum of a list of tuples. eg [(1,1),(2,3)] = (3,4)
+{(?List ?Acc) fgcm:tupleSum ?Acc} <=
+{
+    ?List log:equalTo ().
+}.
+
+{(?Hs (?A1 ?A2)) fgcm:tupleSum ?C} <=
+{
+    ?Hs e:firstRest ((?H1 ?H2) ?Tail).
+    ("_H1+_A1" ?H1 ?A1) e:calculate ?NewA1.
+    ("_H2+_A2" ?H2 ?A2) e:calculate ?NewA2.
+    (?Tail (?NewA1 ?NewA2)) fgcm:tupleSum ?C.
+}.
+
+#Keeps on iterating until the difference between subsequent iterations is small enough. Maximum of 1000 iterations allowed
+{(?A ?NbIterations) fgcm:iterate ?IterationsNeeded} <=
+{
+    ("if_then_else"
+        {
+            ("=<" ?NbIterations 1000) e:derive true.
+        }
+        {
+            ("_NbIterations-1" ?NbIterations) e:calculate ?PrevNbIterations.
+            (?A ?PrevNbIterations) fgcm:getNodes ?NodesPreviousValue.
+            (";"
+                {
+                    (?PrevNbIterations ?NbIterations) fgcm:calculateNodes true.
+                    #always fails once all nodes have been calculated
+                }
+                {
+                    (?PrevNbIterations ?NbIterations) fgcm:refresh true.
+                    (?A ?NbIterations) fgcm:getNodes ?NodesCurrentValue.
+                    ("=" ?Epsilon 0.001) e:derive true.
+                    ("if_then_else"
+                        {
+                            (?NodesPreviousValue ?NodesCurrentValue ?Epsilon) fgcm:differenceBelowEpsilon true.
+                        }
+                        {
+                            ("=" ?IterationsNeeded ?NbIterations) e:derive true.
+                        }
+                        {
+                            ("_NbIterations+1" ?NbIterations) e:calculate ?NewNbIterations.
+                            (?A ?NewNbIterations) fgcm:iterate ?IterationsNeeded.
+                        }
+                    ) e:derive true.
+                }
+            ) e:derive true.
+        }
+        {
+            ("throw" "Maximum number of iterations (1000) reached") e:derive true.
+        }
+    ) e:derive true.
+}.
+
+#Calculates nodes for one iteration. Once all nodes have been processed, method fails.
+{(?PrevNbIterations ?NbIterations) fgcm:calculateNodes true} <=
+{
+    (?Observable) fgcm:fm true.
+    (?Node) fgcm:fs true.
+    ("findall"
+        (?MinProduct ?MaxProduct)
+        {
+            (?IncomingNode ?Node) fl:gsigma (?EdgeLower ?EdgeUpper).
+            ?Observable fgcm:gpi (?IncomingNode ?MembershipLower ?MembershipUpper ?PrevNbIterations).
+
+            #Some networks use edge weights [0,1] instead of [-1,1], conversion necessary
+            ("2*_EdgeLower-1" ?EdgeLower) e:calculate ?TempEdgeLower.
+            ("2*_EdgeUpper-1" ?EdgeUpper) e:calculate ?TempEdgeUpper.
+
+            #FCM UTI network required nodes to be in [-1,1] interval as well
+            ("2*_MembershipLower-1" ?MembershipLower) e:calculate ?TempMembershipLower.
+            ("2*_MembershipUpper-1" ?MembershipUpper) e:calculate ?TempMembershipUpper.
+
+            ("_TempEdgeLower*_TempMembershipLower" ?TempEdgeLower ?TempMembershipLower) e:calculate ?ProductLL.
+            ("_TempEdgeLower*_TempMembershipUpper" ?TempEdgeLower ?TempMembershipUpper) e:calculate ?ProductLU.
+            ("_TempEdgeUpper*_TempMembershipLower" ?TempEdgeUpper ?TempMembershipLower) e:calculate ?ProductUL.
+            ("_TempEdgeUpper*_TempMembershipUpper" ?TempEdgeUpper ?TempMembershipUpper) e:calculate ?ProductUU.
+
+            ("min_list" (?ProductLL ?ProductLU ?ProductUL ?ProductUU) ?MinProduct) e:derive true.
+            ("max_list" (?ProductLL ?ProductLU ?ProductUL ?ProductUU) ?MaxProduct) e:derive true.
+        }
+        ?L
+    ) e:derive true.
+
+    ("if_then_else"
+        {
+            ?L log:equalTo ().
+        }
+        true
+        {
+            (?L (0 0)) fgcm:tupleSum (?S1 ?S2).
+            ("1/(1+exp(-_S1))" ?S1) e:calculate ?Z1.
+            ("1/(1+exp(-_S2))" ?S2) e:calculate ?Z2.
+            ("assertz" {?Observable fgcm:gpi (?Node ?Z1 ?Z2 ?NbIterations)}) e:derive true.
+        }
+    ) e:derive true.
+    ("fail") e:derive true.
+}.
+
+#If node has been given a new value current iteration, nothing happens
+#If node has not been given a new value current iteration, its value of previous iteration is taken and added to current iteration
+{(?Prev ?Cur) fgcm:refresh true} <=
+{
+    ("forall"
+        {
+            (?Node) fgcm:fs true.
+        }
+        {
+            ("if_then_else"
+                {
+                    ?Observable fgcm:gpi (?Node ?MembershipLower ?MembershipUpper ?Cur).
+                }
+                {
+                    ("retractall" {?Observable fgcm:gpi (?Node ?V1 ?V2 ?Prev)}) e:derive true.
+                }
+                {
+                    ("if_then_else"
+                        {
+                            ?Observable fgcm:gpi (?Node ?MembershipLower ?MembershipUpper ?Prev).
+                        }
+                        {
+                            ("assertz" {?Observable fgcm:gpi (?Node ?MembershipLower ?MembershipUpper ?Cur)}) e:derive true.
+                            ("retractall" {?Observable fgcm:gpi (?Node ?V1 ?V2 ?Prev)}) e:derive true.
+                        }
+                        {
+                        }
+                    ) e:derive true.
+                }
+            ) e:derive true.
+
+        }
+    ) e:derive true.
+}.
+
+#Retrieves all nodes of given iteration
+{(?A ?NbIterations) fgcm:getNodes ?Nodes} <=
+{
+    ("findall"
+        (?MembershipLower ?MembershipUpper)
+        {
+            ?A fgcm:gpi (?V1 ?MembershipLower ?MembershipUpper ?NbIterations).
+        }
+        ?Nodes #Sequence of nodes will be the same every iteration so no need to remember which node belongs to which lower & upper membership
+    ) e:derive true.
+}.
+
+#Returns true if difference between two given lists is less than given epsilon
+{(?H1s ?H2s ?Epsilon) fgcm:differenceBelowEpsilon true} <=
+{
+    ?H1s e:firstRest ((?H1LowerMembership ?H1UpperMembership) ()).
+    ?H2s e:firstRest ((?H2LowerMembership ?H2UpperMembership) ()).
+    (?H1LowerMembership ?H2LowerMembership) fgcm:absoluteSubtraction ?LowerSubtraction.
+    (?H1UpperMembership ?H2UpperMembership) fgcm:absoluteSubtraction ?UpperSubtraction.
+    ("=<" ?LowerSubtraction ?Epsilon) e:derive true.
+    ("=<" ?UpperSubtraction ?Epsilon) e:derive true.
+}.
+
+{(?H1s ?H2s ?Epsilon) fgcm:differenceBelowEpsilon ?Result} <=
+{
+    ?H1s e:firstRest ((?H1LowerMembership ?H1UpperMembership) ?T1).
+    ?H2s e:firstRest ((?H2LowerMembership ?H2UpperMembership) ?T2).
+    (?T1) log:notEqualTo ().
+    (?T2) log:notEqualTo ().
+    (?H1LowerMembership ?H2LowerMembership) fgcm:absoluteSubtraction ?LowerSubtraction.
+    (?H1UpperMembership ?H2UpperMembership) fgcm:absoluteSubtraction ?UpperSubtraction.
+    ("if_then_else"
+        {
+            ("=<" ?LowerSubtraction ?Epsilon) e:derive true.
+            ("=<" ?UpperSubtraction ?Epsilon) e:derive true.
+        }
+        {
+            (?T1 ?T2 ?Epsilon) fgcm:differenceBelowEpsilon ?Result.
+        }
+        {
+            ("=" ?Result false) e:derive true.
+        }
+    ) e:derive true.
+
+}.
+
+#abs(A-B)
+{(?A ?B) fgcm:absoluteSubtraction ?C} <=
+{
+    ("abs(_A-_B)" ?A ?B) e:calculate ?C.
+}.
+
+{(?Left ?Right) fgcm:whitenize ?Result} <=
+{
+    ("_Left+(_Right-_Left)/2" ?Right ?Left) e:calculate ?Result.
+}.

@@ -1,0 +1,18 @@
+# $Id: factorial.n3 422 2004-11-29 10:37:36Z josd $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix : <http://yosi.us/math#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+0 a :Number.
+1 a :Number.
+2 a :Number.
+3 a :Number.
+4 a :Number.
+5 a :Number.
+6 a :Number.
+
+0 :factorial 1.
+
+{?x a :Number. (?x -1) math:sum ?z. ?z :factorial ?a. (?a ?x) math:product ?y} => {?x :factorial ?y}.

@@ -1,0 +1,15 @@
+# $Id: daveQ.n3 483 2005-02-24 17:16:38Z josd $
+# PxButton | es  | euler --nope --think --graph bobFoaf.n3 aliceFoaf.n3 bobFoaf.n3 --query daveQ.n3
+# PxButton | cwm | cwm aliceFoaf.n3 bobFoaf.n3 --think --query"=daveQ.n3"
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://www.example.org/> .
+
+[] q:select {<> q:answer (?mbox ?age ?ppd)};
+   q:where {?a foaf:mbox <mailto:alice@work.example>.
+            ?a foaf:knows ?whom.
+            ?whom foaf:mbox ?mbox.
+            ?whom2 foaf:mbox ?mbox.
+            ?whom2 foaf:PersonalProfileDocument ?ppd.
+            {?whom2 foaf:age ?age} q:source ?ppd}.

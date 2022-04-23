@@ -1,0 +1,12 @@
+# $Id: da538tc2Q.n3 456 2005-01-07 13:49:46Z josd $
+# PxButton | es  | euler --nope --think da538tc2D.n3 --query da538tc2Q.n3
+# PxButton | cwm | cwm da538tc2D.n3 --think --query"=da538tc2Q.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/da538tc2D#>.
+
+[]
+q:select {<> q:answer (:x)};
+q:where  {<da538tc2D.n3> log:semantics ?F. ?F log:notIncludes {:x rdf:type :C2}}.

@@ -1,0 +1,24 @@
+# $Id: rogier.n3 474 2005-02-17 14:33:42Z josd $
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/rogier#>.
+
+{?C a owl:InverseFunctionalProperty;
+    :productProperty ?L.
+ (?X ?Y) :shareObjectForAllProperties ?L}
+ =>
+{?X owl:sameAs ?Y}.
+
+{}
+ =>
+{(?X ?Y) :shareObjectForAllProperties rdf:nil}.
+
+{?L rdf:first ?A.
+ ?X ?A ?O.
+ ?Y ?A ?O.
+ ?L rdf:rest ?B.
+ (?X ?Y) :shareObjectForAllProperties ?B}
+ =>
+{(?X ?Y) :shareObjectForAllProperties ?L}.
+

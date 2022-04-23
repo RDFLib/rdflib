@@ -1,0 +1,192 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/graph/graph.axiom.n3 http://josd.github.io/brain/graph/rpo-rules.n3 --query http://josd.github.io/brain/graph/graph.filter.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://www.agfa.com/w3c/euler/graph.axiom#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix ns1: <http://eulersharp.sourceforge.net/2003/03swap/rpo-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :paris :path :nantes.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :paris :path :nantes.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :paris :path :nantes.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+    <#lemma6>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#angers"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#nantes"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#paris"]];
+  r:rule <#lemma7>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {:paris :path :nantes} => {:paris :path :nantes}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.filter.n3>].
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    :path a owl:TransitiveProperty.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :angers :path :nantes.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#oneway"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#angers"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#nantes"]];
+  r:rule <#lemma10>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    :paris :path :angers.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma11>
+    <#lemma12>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#lemans"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#angers"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#paris"]];
+  r:rule <#lemma7>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. {var:x_0 a owl:TransitiveProperty.
+     var:x_1 var:x_0 var:x_2.
+     var:x_3 var:x_0 var:x_1} => {var:x_3 var:x_0 var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/rpo-rules.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    :oneway rdfs:subPropertyOf :path.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    :angers :oneway :nantes.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. {var:x_0 rdfs:subPropertyOf var:x_1.
+     var:x_2 var:x_0 var:x_3} => {var:x_2 var:x_1 var:x_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/rpo-rules.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    :lemans :path :angers.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma13>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#oneway"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#lemans"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#angers"]];
+  r:rule <#lemma10>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    :paris :path :lemans.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma14>
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#chartres"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#lemans"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#paris"]];
+  r:rule <#lemma7>.
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    :lemans :oneway :angers.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+<#lemma14> a r:Inference;
+  r:gives {
+    :chartres :path :lemans.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma16>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#oneway"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#chartres"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#lemans"]];
+  r:rule <#lemma10>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    :paris :path :chartres.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#oneway"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#path"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#paris"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://www.agfa.com/w3c/euler/graph.axiom#chartres"]];
+  r:rule <#lemma10>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    :chartres :oneway :lemans.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    :paris :oneway :chartres.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/graph/graph.axiom.n3>].
+
+#2020-02-22T21:51:49.851Z in=89 out=1 ent=24 step=70 brake=2 inf=91092 sec=0.117 inf/sec=778564
+#ENDS
+

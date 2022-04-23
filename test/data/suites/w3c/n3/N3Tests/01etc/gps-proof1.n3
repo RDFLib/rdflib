@@ -1,0 +1,404 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/gps/gps-plugin.n3 http://josd.github.io/brain/gps/gps-example1.n3 --query http://josd.github.io/brain/gps/gps-query1.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix gps: <http://josd.github.io/brain/gps/gps-schema#>.
+@prefix : <http://josd.github.io/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :i1 gps:path ((:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :i1 gps:path ((:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99).
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.99];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpath ({:i1 :location :Oostende} (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+  };
+  r:evidence (
+    <#lemma4>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:i1 :location :Oostende}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 3600.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 5.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 0.2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo 1];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6. {var:x_0 gps:findpath ({var:x_1 :location :Oostende} var:x_2 var:x_3 var:x_4 var:x_5 var:x_6 (3600.0 5.0 0.2 0.4 1))} => {var:x_1 gps:path (var:x_2 var:x_3 var:x_4 var:x_5 var:x_6)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-query1.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths (() {:i1 :location :Oostende} () 0.0 0.0 1.0 1.0 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+  };
+  r:evidence (
+    <#lemma6>
+    <#lemma7>
+    <#lemma8>
+    <#lemma9>
+    [ a r:Fact; r:gives {(() (:map-BE)) list:append (:map-BE)}]
+    <#lemma10>
+    [ a r:Fact; r:gives {1 math:notGreaterThan 1}]
+    [ a r:Fact; r:gives {(0.0 1500.0) math:sum 1500.0}]
+    [ a r:Fact; r:gives {1500.0 math:notGreaterThan 3600.0}]
+    [ a r:Fact; r:gives {(0.0 0.006) math:sum 0.006}]
+    [ a r:Fact; r:gives {0.006 math:notGreaterThan 5.0}]
+    [ a r:Fact; r:gives {(1.0 0.96) math:product 0.96}]
+    [ a r:Fact; r:gives {0.96 math:notLessThan 0.2}]
+    [ a r:Fact; r:gives {(1.0 0.99) math:product 0.99}]
+    [ a r:Fact; r:gives {0.99 math:notLessThan 0.4}]
+    [ a r:Fact; r:gives {(() (:drive_gent_brugge)) list:append (:drive_gent_brugge)}]
+    [ a r:Fact; r:gives {{:i1 :location :Gent} e:becomes {:i1 :location :Brugge}}]
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#map-BE"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:i1 :location :Gent}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo {:i1 :location :Brugge}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#drive_gent_brugge"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 1500.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.006];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 0.96];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (:map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo 1500.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo 0.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo 3600.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_19"]; r:boundTo 0.006];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_18"]; r:boundTo 0.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_20"]; r:boundTo 5.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_22"]; r:boundTo 0.96];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_21"]; r:boundTo 1.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_23"]; r:boundTo 0.2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_25"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_24"]; r:boundTo 1.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_26"]; r:boundTo 0.4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_28"]; r:boundTo (:drive_gent_brugge)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_27"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_29"]; r:boundTo {:i1 :location :Oostende}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_30"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_31"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_32"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_33"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_34"]; r:boundTo 0.99];
+  r:rule <#lemma12>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11. {var:x_0 gps:findpath (var:x_1 var:x_2 var:x_3 var:x_4 var:x_5 var:x_6 (var:x_7 var:x_8 var:x_9 var:x_10 var:x_11))} <= {var:x_0 gps:findpaths (() var:x_1 () 0.0 0.0 1.0 1.0 var:x_2 var:x_3 var:x_4 var:x_5 var:x_6 (var:x_7 var:x_8 var:x_9 var:x_10 var:x_11))}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-plugin.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    :map-BE gps:description ({:i1 :location :Gent} true {:i1 :location :Brugge} :drive_gent_brugge 1500.0 0.006 0.96 0.99).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-example1.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Gent}.
+  };
+  r:evidence (
+    <#lemma13>
+  );
+  r:rule [ a r:Fact; r:gives {{:i1 :location :Gent} => {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Gent}}}].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule [ a r:Fact; r:gives {true => {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call true}}].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    :map-BE gps:description ({:i1 :location :Gent} true {:i1 :location :Brugge} :drive_gent_brugge 1500.0 0.006 0.96 0.99).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i1"]];
+  r:rule <#lemma14>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    (:map-BE) gps:stagecount 1 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:map-BE) e:firstRest (:map-BE ())}]
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (:map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#map-BE"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE) {:i1 :location :Oostende} (:drive_gent_brugge) 1500.0 0.006 0.96 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1))} e:finalize {{:i1 :location :Brugge} e:becomes {:i1 :location :Gent}}.
+  };
+  r:evidence (
+    <#lemma17>
+    [ a r:Fact; r:gives {{:i1 :location :Brugge} e:becomes {:i1 :location :Gent}}]
+  );
+  r:rule [ a r:Fact; r:gives {{((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE) {:i1 :location :Oostende} (:drive_gent_brugge) 1500.0 0.006 0.96 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+    {:i1 :location :Brugge} e:becomes {:i1 :location :Gent}} => {{((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE) {:i1 :location :Oostende} (:drive_gent_brugge) 1500.0 0.006 0.96 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1))} e:finalize {{:i1 :location :Brugge} e:becomes {:i1 :location :Gent}}}}].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12, var:x_13, var:x_14, var:x_15, var:x_16, var:x_17, var:x_18, var:x_19, var:x_20, var:x_21, var:x_22, var:x_23, var:x_24, var:x_25, var:x_26, var:x_27, var:x_28, var:x_29, var:x_30, var:x_31, var:x_32, var:x_33, var:x_34. {var:x_10 gps:findpaths (var:x_11 var:x_29 var:x_27 var:x_15 var:x_18 var:x_21 var:x_24 var:x_30 var:x_31 var:x_32 var:x_33 var:x_34 (var:x_17 var:x_20 var:x_23 var:x_26 var:x_14))} <= {{var:x_0 gps:description (var:x_1 var:x_2 var:x_3 var:x_4 var:x_5 var:x_6 var:x_7 var:x_8)} <= var:x_9.
+     var:x_10 e:call var:x_1.
+     var:x_10 e:call var:x_9.
+     var:x_0 gps:description (var:x_1 var:x_2 var:x_3 var:x_4 var:x_5 var:x_6 var:x_7 var:x_8).
+     (var:x_11 (var:x_0)) list:append var:x_12.
+     var:x_12 gps:stagecount var:x_13.
+     var:x_13 math:notGreaterThan var:x_14.
+     (var:x_15 var:x_5) math:sum var:x_16.
+     var:x_16 math:notGreaterThan var:x_17.
+     (var:x_18 var:x_6) math:sum var:x_19.
+     var:x_19 math:notGreaterThan var:x_20.
+     (var:x_21 var:x_7) math:product var:x_22.
+     var:x_22 math:notLessThan var:x_23.
+     (var:x_24 var:x_8) math:product var:x_25.
+     var:x_25 math:notLessThan var:x_26.
+     (var:x_27 (var:x_4)) list:append var:x_28.
+     var:x_1 e:becomes var:x_3.
+     {var:x_10 gps:findpaths (var:x_12 var:x_29 var:x_28 var:x_16 var:x_19 var:x_22 var:x_25 var:x_30 var:x_31 var:x_32 var:x_33 var:x_34 (var:x_17 var:x_20 var:x_23 var:x_26 var:x_14))} e:finalize {var:x_3 e:becomes var:x_1}}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-plugin.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    :i1 :location :Gent.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-example1.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    @forSome var:x_0. {:map-BE gps:description ({var:x_0 :location :Gent} true {var:x_0 :location :Brugge} :drive_gent_brugge 1500.0 0.006 0.96 0.99)} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-example1.n3>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    () gps:stagecount 1 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma18>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. {var:x_0 gps:stagecount var:x_3} <= {var:x_0 e:firstRest (var:x_1 var:x_2).
+     var:x_2 gps:stagecount var:x_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-plugin.n3>].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE) {:i1 :location :Oostende} (:drive_gent_brugge) 1500.0 0.006 0.96 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+  };
+  r:evidence (
+    <#lemma19>
+    <#lemma20>
+    <#lemma8>
+    <#lemma21>
+    [ a r:Fact; r:gives {((:map-BE) (:map-BE)) list:append (:map-BE :map-BE)}]
+    <#lemma22>
+    [ a r:Fact; r:gives {1 math:notGreaterThan 1}]
+    [ a r:Fact; r:gives {(1500.0 900.0) math:sum 2400.0}]
+    [ a r:Fact; r:gives {2400.0 math:notGreaterThan 3600.0}]
+    [ a r:Fact; r:gives {(0.006 0.004) math:sum 0.01}]
+    [ a r:Fact; r:gives {0.01 math:notGreaterThan 5.0}]
+    [ a r:Fact; r:gives {(0.96 0.98) math:product 0.9408}]
+    [ a r:Fact; r:gives {0.9408 math:notLessThan 0.2}]
+    [ a r:Fact; r:gives {(0.99 1.0) math:product 0.99}]
+    [ a r:Fact; r:gives {0.99 math:notLessThan 0.4}]
+    [ a r:Fact; r:gives {((:drive_gent_brugge) (:drive_brugge_oostende)) list:append (:drive_gent_brugge :drive_brugge_oostende)}]
+    [ a r:Fact; r:gives {{:i1 :location :Brugge} e:becomes {:i1 :location :Oostende}}]
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#map-BE"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:i1 :location :Brugge}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo true];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo {:i1 :location :Oostende}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ n3:uri "http://josd.github.io/brain#drive_brugge_oostende"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 900.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.004];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 0.98];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo (:map-BE :map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo (:map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_13"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_14"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_16"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_15"]; r:boundTo 1500.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_17"]; r:boundTo 3600.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_19"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_18"]; r:boundTo 0.006];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_20"]; r:boundTo 5.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_22"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_21"]; r:boundTo 0.96];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_23"]; r:boundTo 0.2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_25"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_24"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_26"]; r:boundTo 0.4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_28"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_27"]; r:boundTo (:drive_gent_brugge)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_29"]; r:boundTo {:i1 :location :Oostende}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_30"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_31"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_32"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_33"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_34"]; r:boundTo 0.99];
+  r:rule <#lemma12>.
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    {() gps:stagecount 1} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-plugin.n3>].
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    :map-BE gps:description ({:i1 :location :Brugge} true {:i1 :location :Oostende} :drive_brugge_oostende 900.0 0.004 0.98 1.0).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-example1.n3>].
+
+<#lemma20> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Brugge}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:i1 :location :Brugge}]
+  );
+  r:rule [ a r:Fact; r:gives {{:i1 :location :Brugge} => {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Brugge}}}].
+
+<#lemma21> a r:Inference;
+  r:gives {
+    :map-BE gps:description ({:i1 :location :Brugge} true {:i1 :location :Oostende} :drive_brugge_oostende 900.0 0.004 0.98 1.0).
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain#i1"]];
+  r:rule <#lemma24>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    (:map-BE :map-BE) gps:stagecount 1 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(:map-BE :map-BE) e:firstRest (:map-BE (:map-BE))}]
+    <#lemma10>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (:map-BE :map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain#map-BE"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1];
+  r:rule <#lemma16>.
+
+<#lemma23> a r:Inference;
+  r:gives {
+    {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE :map-BE) {:i1 :location :Oostende} (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1))} e:finalize {{:i1 :location :Oostende} e:becomes {:i1 :location :Brugge}}.
+  };
+  r:evidence (
+    <#lemma25>
+    [ a r:Fact; r:gives {{:i1 :location :Oostende} e:becomes {:i1 :location :Brugge}}]
+  );
+  r:rule [ a r:Fact; r:gives {{((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE :map-BE) {:i1 :location :Oostende} (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+    {:i1 :location :Oostende} e:becomes {:i1 :location :Brugge}} => {{((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE :map-BE) {:i1 :location :Oostende} (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1))} e:finalize {{:i1 :location :Oostende} e:becomes {:i1 :location :Brugge}}}}].
+
+<#lemma24> a r:Extraction;
+  r:gives {
+    @forSome var:x_0. {:map-BE gps:description ({var:x_0 :location :Brugge} true {var:x_0 :location :Oostende} :drive_brugge_oostende 900.0 0.004 0.98 1.0)} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-example1.n3>].
+
+<#lemma25> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) gps:findpaths ((:map-BE :map-BE) {:i1 :location :Oostende} (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (:drive_gent_brugge :drive_brugge_oostende) 2400.0 0.01 0.9408 0.99 (3600.0 5.0 0.2 0.4 1)).
+  };
+  r:evidence (
+    <#lemma26>
+    [ a r:Fact; r:gives {("!") e:derive true}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo {:i1 :location :Oostende}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (:map-BE :map-BE)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (:drive_gent_brugge :drive_brugge_oostende)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 2400.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 0.01];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 0.9408];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo 0.99];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 3600.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 5.0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_11"]; r:boundTo 0.4];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_12"]; r:boundTo 1];
+  r:rule <#lemma27>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Oostende}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {:i1 :location :Oostende}]
+  );
+  r:rule [ a r:Fact; r:gives {{:i1 :location :Oostende} => {((<http://josd.github.io/brain/gps/gps-plugin.n3> <http://josd.github.io/brain/gps/gps-example1.n3>) 1) e:call {:i1 :location :Oostende}}}].
+
+<#lemma27> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. @forSome var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10, var:x_11, var:x_12. {var:x_0 gps:findpaths (var:x_2 var:x_1 var:x_3 var:x_4 var:x_5 var:x_6 var:x_7 var:x_3 var:x_4 var:x_5 var:x_6 var:x_7 (var:x_8 var:x_9 var:x_10 var:x_11 var:x_12))} <= {var:x_0 e:call var:x_1.
+     ("!") e:derive true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/gps/gps-plugin.n3>].
+
+#2020-02-22T21:51:45.799Z in=11 out=1 ent=1 step=1 brake=2 inf=127678 sec=0.139 inf/sec=918547
+#ENDS
+

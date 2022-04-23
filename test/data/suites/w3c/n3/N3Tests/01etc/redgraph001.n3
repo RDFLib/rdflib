@@ -1,0 +1,5 @@
+@prefix : <http://example.org/try#>.
+
+:s :p :o.
+:o :p :p.
+:p :p :s.

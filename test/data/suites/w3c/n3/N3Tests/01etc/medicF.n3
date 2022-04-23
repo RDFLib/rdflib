@@ -1,0 +1,3 @@
+@prefix : <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+
+{?W :isPrescribed ?M} => {?W :isPrescribed ?M}.

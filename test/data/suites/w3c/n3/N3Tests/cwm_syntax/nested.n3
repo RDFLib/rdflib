@@ -1,0 +1,33 @@
+# Test the cwm builtins
+
+#@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+#@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+#@prefix daml:  <http://www.daml.org/2000/10/daml-ont#> .
+#@prefix dpo:  <http://www.daml.org/2001/03/daml+oil#> .
+
+@prefix ex:   <http://www.example.net/2000/10/whatever#> .
+
+@prefix log:  <http://www.w3.org/2000/10/swap/log#> .
+@prefix doc:  <http://www.w3.org/2000/10/swap/pim/doc#> .
+@prefix contact:  <http://www.w3.org/2000/10/swap/pim/contact#> .
+
+@prefix : <foo.n3#>.  # Local stuff
+@prefix foo: <foo.n3#>.  # Local stuff
+
+# Usage:   cwm a1.n3 ; cwm a1.n3 -flat
+#
+# Output should conclude all test* a :success and no failures.
+#
+
+[]
+    doc:creator [ contact:email <mailto:fred@example.com> ];
+    ex:says  {
+	[]  	doc:title "Huckleberry Finn";
+		doc:creator [ contact:knownAs "Mark Twain"]
+		}.
+
+
+
+ 
+
+#ends

@@ -1,0 +1,8 @@
+@prefix : <http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#>.
+
+[] a :Greek_Pottery;
+   :has_part [a :Body; :has_characteristic :small];
+   :has_part [a :Body; :has_characteristic :deep];
+   :has_part [a :Handle; :attached_along :vertical];
+   :has_part [a :Handle; :attached_along :horizontal];
+   :has_measurement [:has_height_value 100].

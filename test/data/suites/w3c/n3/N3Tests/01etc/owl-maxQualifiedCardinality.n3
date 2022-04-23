@@ -1,0 +1,6 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?C owl:maxQualifiedCardinality 1. ?C owl:onProperty ?P. ?C owl:onClass ?D. ?U a ?C. ?U ?P ?Y. ?Y a ?D. ?U ?P ?Z. ?Z a ?D} => {?Y owl:sameAs ?Z}.
+{?C owl:maxQualifiedCardinality 1. ?C owl:onProperty ?P. ?C owl:onClass owl:Thing. ?U a ?C. ?U ?P ?Y. ?U ?P ?Z} => {?Y owl:sameAs ?Z}.
+{?C owl:maxQualifiedCardinality 0. ?C owl:onProperty ?P. ?C owl:onClass ?C. ?U a ?C. ?U ?P ?Y. ?Y a ?C} => false.
+{?C owl:maxQualifiedCardinality 0. ?C owl:onProperty ?P. ?C owl:onClass owl:Thing. ?U a ?C. ?U ?P ?Y} => false.

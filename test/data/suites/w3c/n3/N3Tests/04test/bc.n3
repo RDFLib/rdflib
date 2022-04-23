@@ -1,0 +1,14 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/bc#>.
+
+((:BreastCancer) e:T) e:depends
+  (() 0.01).
+
+((:Mammography) e:T) e:depends
+  ((((:BreastCancer) e:T)) 0.8),
+  ((((:BreastCancer) e:F)) 0.096).
+
+((:Ultrasound) e:T) e:depends
+  ((((:BreastCancer) e:T)) 0.95),
+  ((((:BreastCancer) e:F)) 0.04).

@@ -1,0 +1,37 @@
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix hr: <http://www.w3.org/2000/08/w3c-synd/#>.
+@prefix : <http://purl.org/rss/1.0/>.
+@prefix syn: <http://purl.org/rss/1.0/modules/syndication/>.
+@prefix taxo: <http://purl.org/rss/1.0/modules/taxonomy/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix admin: <http://webns.net/mvcb/>.
+@prefix rss: <http://purl.org/rss/1.0/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix slash: <http://purl.org/rss/1.0/modules/slash/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://hardware.slashdot.org/article.pl?sid=05/05/16/1832227&from=rss> rss:title "The History of PDAs in Words and Pictures". 
+<http://images.slashdot.org/topics/topicslashdot.gif> rss:title "Slashdot: ". 
+<http://science.slashdot.org/article.pl?sid=05/05/16/1419259&from=rss> rss:title "Subjecting Yourself to Experimental Meds". 
+<http://linux.slashdot.org/article.pl?sid=05/05/16/1758249&from=rss> rss:title "Could Microsoft Buy Red Hat?". 
+<http://apple.slashdot.org/article.pl?sid=05/05/16/128209&from=rss> rss:title "Get To Know Mach, the Kernel of Mac OS X". 
+<http://developers.slashdot.org/article.pl?sid=05/05/16/1212248&from=rss> rss:title "Revamping Freenet". 
+<http://developers.slashdot.org/article.pl?sid=05/05/16/0052245&from=rss> rss:title "Hacking the Web with Greasemonkey". 
+<http://slashdot.org/article.pl?sid=05/05/16/1037230&from=rss> rss:title "Dan Gillmor Launches Grassroots Journalism". 
+<http://bsd.slashdot.org/article.pl?sid=05/05/16/1333204&from=rss> rss:title "OpenBSD Hackathon Approaching". 
+<http://slashdot.org/search.pl> rss:title "Search Slashdot". 
+<http://slashdot.org/> rss:title "Slashdot: ". 
+<http://hardware.slashdot.org/article.pl?sid=05/05/16/1711254&from=rss> rss:title "Green buildings, Green Server Farms?". 
+<http://yro.slashdot.org/article.pl?sid=05/05/16/1153248&from=rss> rss:title "Macrovision Applies for P2P Interdiction Patents". 
+<http://www.w3.org/News/2005#item62> rss:title "Note: Describing Media Content of Binary Data in XML". 
+<http://www.w3.org/News/2005#item55> rss:title "W3C Seminar: Multimodal Web Applications for Embedded Systems". 
+<http://www.w3.org/News/2005#item66> rss:title "Working Drafts: Web Services Description Language (WSDL) 2.0". 
+<http://www.w3.org/News/2005#item67> rss:title "SMIL 2.1 Is a W3C Candidate Recommendation". 
+<http://www.w3.org/2000/08/w3c-synd/home.rss> rss:title "World Wide Web Consortium". 
+<http://www.w3.org/News/2005#item64> rss:title "W3C Launches Mobile Web Initiative". 
+<http://www.w3.org/News/2005#item65> rss:title "XML 1.1 and XML Schema Processors". 
+<http://www.w3.org/News/2005#item61> rss:title "XML Key Management (XKMS) Is a W3C Proposed Recommendation". 
+<http://www.w3.org/News/2005#item63> rss:title "Working Drafts: Simple Knowledge Organization System (SKOS)". 
+

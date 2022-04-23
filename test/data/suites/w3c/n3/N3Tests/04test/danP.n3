@@ -1,0 +1,7 @@
+# $Id: danP.n3 288 2004-05-14 14:40:08Z josd $
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/danP#>.
+
+[:latitude 42.30; :longitude -71.10; :cityName "Cambridge"; :state "MA"; :country "USA"].
+[:latitude 41.51; :longitude -87.41; :cityName "Chicago"; :state "IL"; :country "USA"].
+[:latitude 42.19; :longitude -71.05; :cityName "Boston"; :state "MA"; :country "USA"].

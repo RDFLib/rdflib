@@ -1,0 +1,6 @@
+# $Id: michaelC.n3 352 2004-09-03 19:50:53Z josd $
+# PxButton | es  | euler michaelP.n3 /sfcvs/2003/03swap/owl-rules.n3 /sfcvs/2003/03swap/rdfs-rules.n3 michaelC.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/michaelP#>.
+
+?W :diameterValue [ a :LenthQuantity; :value ?V; :unit ?U].

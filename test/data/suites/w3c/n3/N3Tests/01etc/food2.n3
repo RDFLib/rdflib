@@ -1,0 +1,48 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope food.n3 food-declarations.n3 preduction-plugin.n3 --query food-preduction.n3
+
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix food: <http://www.w3.org/2002/03owlt/miscellaneous/consistent002#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{?U_5 a food:EdibleThing} => {?U_5 a food:ConsumableThing}.
+{?U_11 a food:PotableLiquid} => {?U_11 a food:ConsumableThing}.
+{?U_17 a food:Juice} => {?U_17 a food:PotableLiquid}.
+{?U_23 a food:Grape} => {?U_23 a food:SweetFruit}.
+{?U_29 a food:Pasta} => {?U_29 a food:EdibleThing}.
+{?U_35 a food:PastaWithWhiteSauce} => {?U_35 a food:Pasta}.
+{?U_41 a food:PastaWithSpicyRedSauce} => {?U_41 a food:PastaWithRedSauce}.
+{?U_47 a food:PastaWithRedSauce} => {?U_47 a food:Pasta}.
+{?U_53 a food:PastaWithNonSpicyRedSauce} => {?U_53 a food:PastaWithRedSauce}.
+{?U_59 a food:PastaWithLightCreamSauce} => {?U_59 a food:PastaWithWhiteSauce}.
+{?U_65 a food:PastaWithHeavyCreamSauce} => {?U_65 a food:PastaWithWhiteSauce}.
+{?U_71 a food:OysterShellfish} => {?U_71 a food:Shellfish}.
+{?U_77 a food:OtherTomatoBasedFood} => {?U_77 a food:EdibleThing}.
+{?U_83 a food:NonSweetFruit} => {?U_83 a food:EdibleThing}.
+{?U_89 a food:NonSpicyRedMeat} => {?U_89 a food:RedMeat}.
+{?U_95 a food:NonRedMeat} => {?U_95 a food:Meat}.
+{?U_101 a food:NonOysterShellfish} => {?U_101 a food:Shellfish}.
+{?U_107 a food:NonBlandFish} => {?U_107 a food:Fish}.
+{?U_113 a food:Meat} => {?U_113 a food:EdibleThing}.
+{?U_119 a food:MealCourse} => {?U_119 a food:ConsumableThing}.
+{?U_125 a food:Meal} => {?U_125 a food:ConsumableThing}.
+{?U_131 a food:LightMeatFowl} => {?U_131 a food:Fowl}.
+{?U_137 a food:Fowl} => {?U_137 a food:EdibleThing}.
+{?U_143 a food:Dessert} => {?U_143 a food:EdibleThing}.
+{?U_149 a food:SweetFruit} => {?U_149 a food:EdibleThing}.
+{?U_155 a food:SweetDessert} => {?U_155 a food:Dessert}.
+{?U_161 a food:DarkMeatFowl} => {?U_161 a food:Fowl}.
+{?U_167 a food:CheeseNutsDessert} => {?U_167 a food:Dessert}.
+{?U_173 a food:BlandFish} => {?U_173 a food:Fish}.
+{?U_179 a food:Fish} => {?U_179 a food:Seafood}.
+{?U_185 a food:SpicyRedMeat} => {?U_185 a food:RedMeat}.
+{?U_191 a food:Shellfish} => {?U_191 a food:Seafood}.
+{?U_197 a food:Seafood} => {?U_197 a food:EdibleThing}.
+{?U_203 a food:RedMeat} => {?U_203 a food:Meat}.
+{?U_209 a food:EatingGrape} => {?U_209 a food:Grape}.
+
+#2020-02-22T21:52:29.720Z in=50 out=35 ent=35 step=35 brake=1 inf=96668 sec=0.113 inf/sec=855469
+#ENDS
+

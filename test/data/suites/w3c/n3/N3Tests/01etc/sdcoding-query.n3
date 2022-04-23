@@ -1,0 +1,13 @@
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+# remove answers that appear an even number of times
+{
+    ?X dqc:sdcoding ?Y.
+    ?SCOPE e:findall (1 {?X dqc:sdcoding ?Y} ?A).
+    ?A math:sum ?B.
+    (?B 2) math:remainder 1.
+} => {
+    ?X dqc:sdcoding ?Y.
+}.

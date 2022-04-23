@@ -1,0 +1,4 @@
+@prefix : <http://josd.github.io/brain#>.
+
+# taking a random sample of 25 triples from 1000 triples
+{(<http://josd.github.io/brain/rs/graph-1000.n3> 25) :randomsample ?A} => {?A a :Result}.

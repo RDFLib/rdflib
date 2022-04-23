@@ -1,0 +1,23 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet --quick-false http://eulersharp.sourceforge.net/2007/07test/id.n3 --pass
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/id#>.
+
+:a :r :b.
+:b :r :c.
+:c :r :d.
+:f :t :a.
+:a :t :b.
+:b :t :c.
+:c :t :d.
+:f :t :b.
+:a :t :c.
+:b :t :d.
+{{?U0 :t ?U1} => ({?U0 :r ?U1} {?U0 :t ?U2. ?U2 :t ?U1})!e:disjunction} e:tactic (() _:G_1).
+:f :t :c.
+:a :t :d.
+:f :t :d.
+
+#ENDS 0.284 [sec] TC=23 TP=69 BC=0 BP=28 PM=0 CM=0 FM=0 AM=0
+

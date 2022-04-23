@@ -1,0 +1,30 @@
+#Processed by Id: cwm.py,v 1.198 2012-01-30 09:30:20 timbl Exp 
+        #    using base http://eulersharp.sourceforge.net/2007/07test/swetA.n3
+             @prefix : </2003/03swap/etc#> .
+    @prefix e: </2003/03swap/log-rules#> .
+    {
+        {
+            :obs     :ascribed :Rain .
+            
+            }     :given {:obs     :ascribed :WetGrass .
+            } .
+        
+        }     e:possibility 0.666666666667e+00 .
+    {
+        {
+            :obs     :ascribed :Sprinkler .
+            
+            }     :given {:obs     :ascribed :WetGrass .
+            } .
+        
+        }     e:possibility 0.567901234568e+00 .
+    {
+        {
+            :obs     :ascribed :Rain,
+                        :Sprinkler .
+            
+            }     :given {:obs     :ascribed :WetGrass .
+            } .
+        
+        }     e:possibility 0.234567901235e+00 .
+    

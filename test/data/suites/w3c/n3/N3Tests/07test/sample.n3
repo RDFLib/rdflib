@@ -1,0 +1,8 @@
+@prefix : <http://example.org/try#>.
+
+:s :p {:a :b :c}.
+:s :p {:a :b :c. :d :e :f}.
+{:u :v ?W. ?X ?Y :z} => {?W a ?X}.
+{} => {_:X :p :o}.
+{:u :p ?Z} => false.
+

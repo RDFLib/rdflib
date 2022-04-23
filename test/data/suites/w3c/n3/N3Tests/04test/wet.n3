@@ -1,0 +1,19 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/wet#>.
+
+(:Cloudy e:T) e:depends
+  (() 0.5).
+
+(:Sprinkler e:T) e:depends
+  (((:Cloudy e:T)) 0.1),
+  (((:Cloudy e:F)) 0.5).
+
+(:Rain e:T) e:depends
+  (((:Cloudy e:T)) 0.8),
+  (((:Cloudy e:F)) 0.2).
+
+(:WetGrass e:T) e:depends
+  (((:Sprinkler e:T) (:Rain e:T)) 0.99),
+  (((:Sprinkler e:T) (:Rain e:F)) 0.9),
+  (((:Sprinkler e:F) (:Rain e:T)) 0.9),
+  (((:Sprinkler e:F) (:Rain e:F)) 0).

@@ -1,0 +1,14 @@
+# $Id: grahamQ.n3 521 2005-05-05 12:25:45Z josd $
+# PxButton | es  | euler --nope --think grahamP.n3 --query grahamQ.n3
+# PxButton | cwm | cwm grahamP.n3 --think --query"=grahamQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/grahamP#>.
+
+[]
+q:select {?W :maxTemperature ?M};
+q:where  {?W a :WeatherReport; :maxTemperature ?M}.
+
+[]
+q:select {?W :minTemperature ?M};
+q:where  {?W a :WeatherReport; :minTemperature ?M}.

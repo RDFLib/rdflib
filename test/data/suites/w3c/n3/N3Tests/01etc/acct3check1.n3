@@ -1,0 +1,8 @@
+@prefix my: <http://josd.github.io/brain/ppt-bank/acct3#>.
+@prefix ck: <http://josd.github.io/brain/ppt-bank/checking#>.
+
+<> a ck:Check;
+    ck:amount 5.00;
+    ck:payee "Fred";
+    ck:account my:account;
+    ck:number "0001".

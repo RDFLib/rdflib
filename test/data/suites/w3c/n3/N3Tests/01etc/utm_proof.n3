@@ -1,0 +1,1823 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --plugin http://josd.github.io/brain/utm/utm_interpreter.pl --plugin http://josd.github.io/brain/utm/utm_program.pl --query http://josd.github.io/brain/utm/utm_query.n3
+
+@prefix utm: <http://josd.github.io/brain/utm#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:gives {
+    (1 0 1 0 0 1) utm:compute (1 0 1 0 1 0 "#").
+    (1 0 1 1 1 1) utm:compute (1 1 0 0 0 0 "#").
+    (1 1 1 1 1 1) utm:compute (1 0 0 0 0 0 0 "#").
+    () utm:compute (1 "#").
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    (1 0 1 0 0 1) utm:compute (1 0 1 0 1 0 "#").
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule <#lemma6>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    (1 0 1 1 1 1) utm:compute (1 1 0 0 0 0 "#").
+  };
+  r:evidence (
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule <#lemma8>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    (1 1 1 1 1 1) utm:compute (1 0 0 0 0 0 0 "#").
+  };
+  r:evidence (
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule <#lemma10>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    () utm:compute (1 "#").
+  };
+  r:evidence (
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1 "#")];
+  r:rule <#lemma12>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    (1 0 1 0 0 1) utm:compute (1 0 1 0 1 0 "#").
+  };
+  r:evidence (
+    <#lemma13>
+    <#lemma14>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (0 1 0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {{[ <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> var:x_1; <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> var:x_2] utm:compute var:x_3} <= {"start(avar0)".
+    "find(avar0,[],avar1,avar2,avar3)"}}].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(1 0 1 0 0 1) utm:compute var:x_0} => {(1 0 1 0 0 1) utm:compute var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/utm/utm_query.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    (1 0 1 1 1 1) utm:compute (1 1 0 0 0 0 "#").
+  };
+  r:evidence (
+    <#lemma13>
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (0 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {{[ <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> var:x_1; <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> var:x_2] utm:compute var:x_3} <= {"start(avar0)".
+    "find(avar0,[],avar1,avar2,avar3)"}}].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(1 0 1 1 1 1) utm:compute var:x_0} => {(1 0 1 1 1 1) utm:compute var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/utm/utm_query.n3>].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    (1 1 1 1 1 1) utm:compute (1 0 0 0 0 0 0 "#").
+  };
+  r:evidence (
+    <#lemma13>
+    <#lemma16>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {{[ <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> var:x_1; <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> var:x_2] utm:compute var:x_3} <= {"start(avar0)".
+    "find(avar0,[],avar1,avar2,avar3)"}}].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {(1 1 1 1 1 1) utm:compute var:x_0} => {(1 1 1 1 1 1) utm:compute var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/utm/utm_query.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    () utm:compute (1 "#").
+  };
+  r:evidence (
+    <#lemma13>
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 "#")];
+  r:rule [ a r:Fact; r:gives {{() utm:compute var:x_1} <= {"start(avar0)".
+    "find(avar0,[],#,[],avar1)"}}].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {() utm:compute var:x_0} => {() utm:compute var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/utm/utm_query.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    "start(0)" .
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma14> a r:Inference;
+  r:gives {
+    "find(0,[],1,[0,1,0,0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma19>
+    <#lemma20>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 1 0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    "find(0,[],1,[0,1,1,1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma21>
+    <#lemma22>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma16> a r:Inference;
+  r:gives {
+    "find(0,[],1,[1,1,1,1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma23>
+    <#lemma24>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    "find(0,[],#,[],[1,#])".
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma26>
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    "t(0,1,1,r,0)" .
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    "move(r,[],1,[0,1,0,0,1],[1],0,[1,0,0,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma20> a r:Inference;
+  r:gives {
+    "continue(0,[1],0,[1,0,0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma28>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma21> a r:Extraction;
+  r:gives {
+    "move(r,[],1,[0,1,1,1,1],[1],0,[1,1,1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma22> a r:Inference;
+  r:gives {
+    "continue(0,[1],0,[1,1,1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma29>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma23> a r:Extraction;
+  r:gives {
+    "move(r,[],1,[1,1,1,1,1],[1],1,[1,1,1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma24> a r:Inference;
+  r:gives {
+    "continue(0,[1],1,[1,1,1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma30>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma25> a r:Extraction;
+  r:gives {
+    "t(0,#,#,l,1)" .
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma26> a r:Extraction;
+  r:gives {
+    "move(l,[],#,[],[],#,[#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma27> a r:Inference;
+  r:gives {
+    "continue(1,[],#,[#],[1,#])".
+  };
+  r:evidence (
+    <#lemma31>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma28> a r:Inference;
+  r:gives {
+    "find(0,[1],0,[1,0,0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma32>
+    <#lemma33>
+    <#lemma34>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma29> a r:Inference;
+  r:gives {
+    "find(0,[1],0,[1,1,1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma32>
+    <#lemma35>
+    <#lemma36>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma30> a r:Inference;
+  r:gives {
+    "find(0,[1],1,[1,1,1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma37>
+    <#lemma38>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma31> a r:Inference;
+  r:gives {
+    "find(1,[],#,[#],[1,#])".
+  };
+  r:evidence (
+    <#lemma39>
+    <#lemma40>
+    <#lemma41>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "s"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo {"halt"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma32> a r:Extraction;
+  r:gives {
+    "t(0,0,0,r,0)" .
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma33> a r:Extraction;
+  r:gives {
+    "move(r,[1],0,[1,0,0,1],[0,1],1,[0,0,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma34> a r:Inference;
+  r:gives {
+    "continue(0,[0,1],1,[0,0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma42>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    "move(r,[1],0,[1,1,1,1],[0,1],1,[1,1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma36> a r:Inference;
+  r:gives {
+    "continue(0,[0,1],1,[1,1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma43>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma37> a r:Extraction;
+  r:gives {
+    "move(r,[1],1,[1,1,1,1],[1,1],1,[1,1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma38> a r:Inference;
+  r:gives {
+    "continue(0,[1,1],1,[1,1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma44>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma39> a r:Extraction;
+  r:gives {
+    "t(1,#,1,s,halt)".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma40> a r:Extraction;
+  r:gives {
+    "move(s,[],1,[#],[],1,[#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma41> a r:Inference;
+  r:gives {
+    "continue(halt,[],1,[#],[1,#])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"reverse([],[])"}]
+    [ a r:Fact; r:gives {"append([],[1,#],[1,#])"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ("#")];
+  r:rule [ a r:Fact; r:gives {"continue(halt,avar0,avar2,avar3,avar4)" <= {"reverse(avar0,avar1)".
+    "append(avar1,[avar2|avar3],avar4)"}}].
+
+<#lemma42> a r:Inference;
+  r:gives {
+    "find(0,[0,1],1,[0,0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma45>
+    <#lemma46>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma43> a r:Inference;
+  r:gives {
+    "find(0,[0,1],1,[1,1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma47>
+    <#lemma48>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma44> a r:Inference;
+  r:gives {
+    "find(0,[1,1],1,[1,1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma49>
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma45> a r:Extraction;
+  r:gives {
+    "move(r,[0,1],1,[0,0,1],[1,0,1],0,[0,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma46> a r:Inference;
+  r:gives {
+    "continue(0,[1,0,1],0,[0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma51>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma47> a r:Extraction;
+  r:gives {
+    "move(r,[0,1],1,[1,1,1],[1,0,1],1,[1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma48> a r:Inference;
+  r:gives {
+    "continue(0,[1,0,1],1,[1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma52>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma49> a r:Extraction;
+  r:gives {
+    "move(r,[1,1],1,[1,1,1],[1,1,1],1,[1,1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma50> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1],1,[1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma51> a r:Inference;
+  r:gives {
+    "find(0,[1,0,1],0,[0,1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma32>
+    <#lemma54>
+    <#lemma55>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma52> a r:Inference;
+  r:gives {
+    "find(0,[1,0,1],1,[1,1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma56>
+    <#lemma57>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma53> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1],1,[1,1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma58>
+    <#lemma59>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma54> a r:Extraction;
+  r:gives {
+    "move(r,[1,0,1],0,[0,1],[0,1,0,1],0,[1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma55> a r:Inference;
+  r:gives {
+    "continue(0,[0,1,0,1],0,[1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma60>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma56> a r:Extraction;
+  r:gives {
+    "move(r,[1,0,1],1,[1,1],[1,1,0,1],1,[1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma57> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,0,1],1,[1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma61>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma58> a r:Extraction;
+  r:gives {
+    "move(r,[1,1,1],1,[1,1],[1,1,1,1],1,[1])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma59> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1,1],1,[1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma62>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma60> a r:Inference;
+  r:gives {
+    "find(0,[0,1,0,1],0,[1],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma32>
+    <#lemma63>
+    <#lemma64>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma61> a r:Inference;
+  r:gives {
+    "find(0,[1,1,0,1],1,[1],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma65>
+    <#lemma66>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma62> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1,1],1,[1],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma67>
+    <#lemma68>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma63> a r:Extraction;
+  r:gives {
+    "move(r,[0,1,0,1],0,[1],[0,0,1,0,1],1,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma64> a r:Inference;
+  r:gives {
+    "continue(0,[0,0,1,0,1],1,[],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma69>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma65> a r:Extraction;
+  r:gives {
+    "move(r,[1,1,0,1],1,[1],[1,1,1,0,1],1,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma66> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1,0,1],1,[],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma70>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma67> a r:Extraction;
+  r:gives {
+    "move(r,[1,1,1,1],1,[1],[1,1,1,1,1],1,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma68> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1,1,1],1,[],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma71>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma69> a r:Inference;
+  r:gives {
+    "find(0,[0,0,1,0,1],1,[],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma72>
+    <#lemma73>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma70> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1,0,1],1,[],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma74>
+    <#lemma75>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma71> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1,1,1],1,[],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma76>
+    <#lemma77>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "r"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma72> a r:Extraction;
+  r:gives {
+    "move(r,[0,0,1,0,1],1,[],[1,0,0,1,0,1],#,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma73> a r:Inference;
+  r:gives {
+    "continue(0,[1,0,0,1,0,1],#,[],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma78>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma74> a r:Extraction;
+  r:gives {
+    "move(r,[1,1,1,0,1],1,[],[1,1,1,1,0,1],#,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma75> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1,1,0,1],#,[],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma79>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma76> a r:Extraction;
+  r:gives {
+    "move(r,[1,1,1,1,1],1,[],[1,1,1,1,1,1],#,[])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma77> a r:Inference;
+  r:gives {
+    "continue(0,[1,1,1,1,1,1],#,[],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma80>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma78> a r:Inference;
+  r:gives {
+    "find(0,[1,0,0,1,0,1],#,[],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma81>
+    <#lemma82>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma79> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1,1,0,1],#,[],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma83>
+    <#lemma84>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma80> a r:Inference;
+  r:gives {
+    "find(0,[1,1,1,1,1,1],#,[],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma85>
+    <#lemma86>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma81> a r:Extraction;
+  r:gives {
+    "move(l,[1,0,0,1,0,1],#,[],[0,0,1,0,1],1,[#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma82> a r:Inference;
+  r:gives {
+    "continue(1,[0,0,1,0,1],1,[#],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma87>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma83> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1,1,0,1],#,[],[1,1,1,0,1],1,[#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma84> a r:Inference;
+  r:gives {
+    "continue(1,[1,1,1,0,1],1,[#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma88>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma85> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1,1,1,1],#,[],[1,1,1,1,1],1,[#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma86> a r:Inference;
+  r:gives {
+    "continue(1,[1,1,1,1,1],1,[#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma89>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma87> a r:Inference;
+  r:gives {
+    "find(1,[0,0,1,0,1],1,[#],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma91>
+    <#lemma92>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma88> a r:Inference;
+  r:gives {
+    "find(1,[1,1,1,0,1],1,[#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma93>
+    <#lemma94>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma89> a r:Inference;
+  r:gives {
+    "find(1,[1,1,1,1,1],1,[#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma95>
+    <#lemma96>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo ("#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma90> a r:Extraction;
+  r:gives {
+    "t(1,1,0,l,1)" .
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma91> a r:Extraction;
+  r:gives {
+    "move(l,[0,0,1,0,1],0,[#],[0,1,0,1],0,[0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma92> a r:Inference;
+  r:gives {
+    "continue(1,[0,1,0,1],0,[0,#],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma97>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma93> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1,0,1],0,[#],[1,1,0,1],1,[0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma94> a r:Inference;
+  r:gives {
+    "continue(1,[1,1,0,1],1,[0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma98>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma95> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1,1,1],0,[#],[1,1,1,1],1,[0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma96> a r:Inference;
+  r:gives {
+    "continue(1,[1,1,1,1],1,[0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma99>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma97> a r:Inference;
+  r:gives {
+    "find(1,[0,1,0,1],0,[0,#],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    <#lemma100>
+    <#lemma101>
+    <#lemma102>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "s"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo {"halt"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma98> a r:Inference;
+  r:gives {
+    "find(1,[1,1,0,1],1,[0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma103>
+    <#lemma104>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma99> a r:Inference;
+  r:gives {
+    "find(1,[1,1,1,1],1,[0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma105>
+    <#lemma106>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma100> a r:Extraction;
+  r:gives {
+    "t(1,0,1,s,halt)".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma101> a r:Extraction;
+  r:gives {
+    "move(s,[0,1,0,1],1,[0,#],[0,1,0,1],1,[0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma102> a r:Inference;
+  r:gives {
+    "continue(halt,[0,1,0,1],1,[0,#],[1,0,1,0,1,0,#])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"reverse([0,1,0,1],[1,0,1,0])"}]
+    [ a r:Fact; r:gives {"append([1,0,1,0],[1,0,#],[1,0,1,0,1,0,#])"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (0 1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 0 1 0)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 1 0 1 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(halt,avar0,avar2,avar3,avar4)" <= {"reverse(avar0,avar1)".
+    "append(avar1,[avar2|avar3],avar4)"}}].
+
+<#lemma103> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,0,1],0,[0,#],[1,0,1],1,[0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma104> a r:Inference;
+  r:gives {
+    "continue(1,[1,0,1],1,[0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma107>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma105> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1,1],0,[0,#],[1,1,1],1,[0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma106> a r:Inference;
+  r:gives {
+    "continue(1,[1,1,1],1,[0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma108>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma107> a r:Inference;
+  r:gives {
+    "find(1,[1,0,1],1,[0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma109>
+    <#lemma110>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma108> a r:Inference;
+  r:gives {
+    "find(1,[1,1,1],1,[0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma111>
+    <#lemma112>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma109> a r:Extraction;
+  r:gives {
+    "move(l,[1,0,1],0,[0,0,#],[0,1],1,[0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma110> a r:Inference;
+  r:gives {
+    "continue(1,[0,1],1,[0,0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma113>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma111> a r:Extraction;
+  r:gives {
+    "move(l,[1,1,1],0,[0,0,#],[1,1],1,[0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma112> a r:Inference;
+  r:gives {
+    "continue(1,[1,1],1,[0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma114>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma113> a r:Inference;
+  r:gives {
+    "find(1,[0,1],1,[0,0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma115>
+    <#lemma116>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (0 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma114> a r:Inference;
+  r:gives {
+    "find(1,[1,1],1,[0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma117>
+    <#lemma118>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma115> a r:Extraction;
+  r:gives {
+    "move(l,[0,1],0,[0,0,0,#],[1],0,[0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma116> a r:Inference;
+  r:gives {
+    "continue(1,[1],0,[0,0,0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma119>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma117> a r:Extraction;
+  r:gives {
+    "move(l,[1,1],0,[0,0,0,#],[1],1,[0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma118> a r:Inference;
+  r:gives {
+    "continue(1,[1],1,[0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma120>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma119> a r:Inference;
+  r:gives {
+    "find(1,[1],0,[0,0,0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma100>
+    <#lemma121>
+    <#lemma122>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "s"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo {"halt"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma120> a r:Inference;
+  r:gives {
+    "find(1,[1],1,[0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma123>
+    <#lemma124>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma121> a r:Extraction;
+  r:gives {
+    "move(s,[1],1,[0,0,0,0,#],[1],1,[0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma122> a r:Inference;
+  r:gives {
+    "continue(halt,[1],1,[0,0,0,0,#],[1,1,0,0,0,0,#])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"reverse([1],[1])"}]
+    [ a r:Fact; r:gives {"append([1],[1,0,0,0,0,#],[1,1,0,0,0,0,#])"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 1 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(halt,avar0,avar2,avar3,avar4)" <= {"reverse(avar0,avar1)".
+    "append(avar1,[avar2|avar3],avar4)"}}].
+
+<#lemma123> a r:Extraction;
+  r:gives {
+    "move(l,[1],0,[0,0,0,0,#],[],1,[0,0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma124> a r:Inference;
+  r:gives {
+    "continue(1,[],1,[0,0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma125>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma125> a r:Inference;
+  r:gives {
+    "find(1,[],1,[0,0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma90>
+    <#lemma126>
+    <#lemma127>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "l"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma126> a r:Extraction;
+  r:gives {
+    "move(l,[],0,[0,0,0,0,0,#],[],#,[0,0,0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma127> a r:Inference;
+  r:gives {
+    "continue(1,[],#,[0,0,0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma128>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(avar0,avar1,avar2,avar3,avar4)" <= "find(avar0,avar1,avar2,avar3,avar4)"}].
+
+<#lemma128> a r:Inference;
+  r:gives {
+    "find(1,[],#,[0,0,0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    <#lemma39>
+    <#lemma129>
+    <#lemma130>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo "#"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo "s"];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo {"halt"}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo (0 0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo (0 0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"find(avar0,avar5,avar1,avar6,avar10)" <= {"t(avar0,avar1,avar2,avar3,avar4)".
+    "move(avar3,avar5,avar2,avar6,avar7,avar8,avar9)".
+    "continue(avar4,avar7,avar8,avar9,avar10)"}}].
+
+<#lemma129> a r:Extraction;
+  r:gives {
+    "move(s,[],1,[0,0,0,0,0,0,#],[],1,[0,0,0,0,0,0,#])".
+  };
+  r:because [ a r:Parsing; r:source <>].
+
+<#lemma130> a r:Inference;
+  r:gives {
+    "continue(halt,[],1,[0,0,0,0,0,0,#],[1,0,0,0,0,0,0,#])".
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {"reverse([],[])"}]
+    [ a r:Fact; r:gives {"append([],[1,0,0,0,0,0,0,#],[1,0,0,0,0,0,0,#])"}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (1 0 0 0 0 0 0 "#")];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (0 0 0 0 0 0 "#")];
+  r:rule [ a r:Fact; r:gives {"continue(halt,avar0,avar2,avar3,avar4)" <= {"reverse(avar0,avar1)".
+    "append(avar1,[avar2|avar3],avar4)"}}].
+
+#2020-02-22T21:53:17.859Z in=4 out=4 ent=4 step=4 brake=1 inf=214524 sec=0.184 inf/sec=1165891
+#ENDS
+

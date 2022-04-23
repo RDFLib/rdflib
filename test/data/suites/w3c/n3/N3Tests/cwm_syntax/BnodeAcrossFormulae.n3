@@ -1,0 +1,7 @@
+@prefix : <#> .
+# An abuse of the _: bnode syntax is to use it across formulae     
+     
+#:I :am _:x .
+#     
+#_:x :named "yosi" .
+{ _:x :is :happy } => {_:x :is :happy } .

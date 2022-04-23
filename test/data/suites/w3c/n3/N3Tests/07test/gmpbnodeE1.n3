@@ -1,0 +1,36 @@
+#Processed by Id: EulerLibrary.java 1506 2007-09-07 14:42:47Z josd 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/gmpbnode#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+[ a r:Proof, r:Conjunction;
+  r:component [ a r:Inference; r:gives {:dan :homeRegion :Texas}; r:evidence (
+    [ a r:Extraction; r:gives {:dan :homeRegion :Texas}; r:because [ a r:Inference; r:gives {:dan :homeRegion :Texas}; r:evidence (
+      [ a r:Extraction; r:gives {@forSome var:e236762_12_. :dan :home var:e236762_12_}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/gmpbnode.n3>]]
+      [ a r:Extraction; r:gives {@forSome var:e236762_12_. var:e236762_12_ :in :Texas}; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/gmpbnode.n3>]]);
+      r:binding [ r:variable [ n3:uri "http://localhost/var#WHO"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test/gmpbnode#dan"]]; 
+      r:binding [ r:variable [ n3:uri "http://localhost/var#WHERE"]; r:boundTo [ a r:Existential; n3:nodeId "http://localhost/var#e236762_12_"]]; 
+      r:binding [ r:variable [ n3:uri "http://localhost/var#REGION"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test/gmpbnode#Texas"]]; 
+      r:rule [ a r:Extraction; r:gives {@forAll var:WHO,var:WHERE,var:REGION. {var:WHO :home var:WHERE. var:WHERE :in var:REGION} => {var:WHO :homeRegion var:REGION}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/gmpbnode.n3>]]]]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#WHO"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test/gmpbnode#dan"]]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#REGION"]; r:boundTo [ n3:uri "http://eulersharp.sourceforge.net/2007/07test/gmpbnode#Texas"]]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:WHO,var:REGION. {var:WHO :homeRegion var:REGION} => {var:WHO :homeRegion var:REGION}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/gmpbnodeF.n3>]]];
+  r:gives {
+    :dan :homeRegion :Texas.}].
+
+#ENDS 4 msec.
+

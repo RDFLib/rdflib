@@ -1,0 +1,529 @@
+#Consulting |: 
+#Processed by Id: euler.pl 1839 2008-01-03 23:10:28Z josd 
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix nsp0: <http://eulersharp.sourceforge.net/2007/07test/irP.n3#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix var: <http://localhost/var#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix p0nsp0: <http://eulersharp.sourceforge.net/2007/07test/irQ.n3#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+_: owl:sameAs (<http://eulersharp.sourceforge.net/2007/07test/irP.n3>!log:semantics <http://eulersharp.sourceforge.net/2007/07test/irQ.n3>!log:semantics)!log:conjunction.
+
+[ e:proofID 25; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:P e:boolean e:T} e:because {
+		{var:_G432 e:true 0.15} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.061425].
+
+[ e:proofID 26; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:P e:boolean e:F} e:because {
+		{(1.0 0.15) math:difference 0.85} a e:Builtin.
+		{var:_G461 e:true 0.85} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.348075].
+
+[ e:proofID 27; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:Q e:boolean e:F} a e:Lemma.
+	}; e:possibility 0.4095].
+
+[ e:proofID 28; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.4095].
+
+[ e:proofID 29; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:P e:boolean e:T} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{var:_G504 e:true 0.9604} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.3932838].
+
+[ e:proofID 30; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G335 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G378 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	{:P e:boolean e:F} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{(1.0 0.9604) math:difference 0.0396000000000001} a e:Builtin.
+		{var:_G533 e:true 0.0396000000000001} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.0162162].
+
+[ e:proofID 36; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G332 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G375 e:true 0.63} a e:Builtin.
+		}; e:source nsp0:pos_586_line_16.
+	}; e:possibility 0.4095].
+
+[ e:proofID 1; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G413 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G423 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:P e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.099].
+
+[ e:proofID 2; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G430 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G440 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:Q e:boolean e:T} e:because {
+		{var:_G457 e:true 0.35} a e:Builtin.
+		}; e:source nsp0:pos_293_line_9.
+	}; e:possibility 0.03465].
+
+[ e:proofID 3; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G457 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G467 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:Q e:boolean e:F} e:because {
+		{(1.0 0.35) math:difference 0.65} a e:Builtin.
+		{var:_G511 e:true 0.65} a e:Builtin.
+		}; e:source nsp0:pos_293_line_9.
+	}; e:possibility 0.06435].
+
+[ e:proofID 4; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G413 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G423 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.099].
+
+[ e:proofID 5; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G441 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G451 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:Q e:boolean e:T} e:because {
+		{:P e:boolean e:T} a e:Lemma.
+		{var:_G477 e:true 1} a e:Builtin.
+		}; e:source nsp0:pos_629_line_18.
+	}; e:possibility 0.099].
+
+[ e:proofID 6; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G441 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G451 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	{:Q e:boolean e:F} e:because {
+		{:P e:boolean e:T} a e:Lemma.
+		{var:_G477 e:true 0} a e:Builtin.
+		}; e:source nsp0:pos_629_line_18.
+	}; e:possibility 0.0].
+
+[ e:proofID 7; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G430 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G440 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:P e:boolean e:T} e:because {
+		{var:_G457 e:true 0.15} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.0441].
+
+[ e:proofID 16; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G457 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G467 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:P e:boolean e:T} e:because {
+		{var:_G484 e:true 0.15} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.07215].
+
+[ e:proofID 8; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G457 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G467 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:P e:boolean e:F} e:because {
+		{(1.0 0.15) math:difference 0.85} a e:Builtin.
+		{var:_G511 e:true 0.85} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.2499].
+
+[ e:proofID 17; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G484 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G494 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:P e:boolean e:F} e:because {
+		{(1.0 0.15) math:difference 0.85} a e:Builtin.
+		{var:_G538 e:true 0.85} a e:Builtin.
+		}; e:source nsp0:pos_252_line_7.
+	}; e:possibility 0.40885].
+
+[ e:proofID 9; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G413 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G423 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:Q e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.294].
+
+[ e:proofID 10; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G413 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G423 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.294].
+
+[ e:proofID 19; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G440 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G450 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.481].
+
+[ e:proofID 11; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G472 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G482 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:P e:boolean e:T} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{var:_G535 e:true 0.9604} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.2823576].
+
+[ e:proofID 20; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G499 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G509 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:P e:boolean e:T} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{var:_G562 e:true 0.9604} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.4619524].
+
+[ e:proofID 12; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G499 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G509 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:P e:boolean e:F} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{(1.0 0.9604) math:difference 0.0396000000000001} a e:Builtin.
+		{var:_G589 e:true 0.0396000000000001} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.0116424].
+
+[ e:proofID 21; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G526 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G536 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:P e:boolean e:F} e:because {
+		{:C e:boolean e:T} a e:Lemma.
+		{(0.98 0.98) math:product 0.9604} a e:Builtin.
+		{(1.0 0.9604) math:difference 0.0396000000000001} a e:Builtin.
+		{var:_G616 e:true 0.0396000000000001} a e:Builtin.
+		}; e:source nsp0:pos_752_line_21.
+	}; e:possibility 0.0190476].
+
+[ e:proofID 13; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 1} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:P e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.126].
+
+[ e:proofID 22; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 0} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:P e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.0].
+
+[ e:proofID 14; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 1} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:Q e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.126].
+
+[ e:proofID 15; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 1} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.126].
+
+[ e:proofID 24; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 0} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:C e:boolean e:T} a e:Lemma.
+	}; e:possibility 0.0].
+
+[ e:proofID 18; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G467 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G477 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:Q e:boolean e:F} a e:Lemma.
+	}; e:possibility 0.481].
+
+[ e:proofID 23; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G451 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G461 e:true 0} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G467 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	{:Q e:boolean e:F} a e:Lemma.
+	}; e:possibility 0.0].
+
+[ e:proofID 31; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:P e:boolean e:T} e:because {
+			{var:_G389 e:true 0.15} a e:Builtin.
+			}; e:source nsp0:pos_252_line_7.
+		{var:_G399 e:true 0.66} a e:Builtin.
+		}; e:source nsp0:pos_352_line_11.
+	}; e:possibility 0.099].
+
+[ e:proofID 32; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{var:_G389 e:true 0.35} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G399 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	}; e:possibility 0.294].
+
+[ e:proofID 34; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{(1.0 0.35) math:difference 0.65} a e:Builtin.
+			{var:_G416 e:true 0.65} a e:Builtin.
+			}; e:source nsp0:pos_293_line_9.
+		{var:_G426 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	}; e:possibility 0.481].
+
+[ e:proofID 33; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:T} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G427 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G437 e:true 1} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G443 e:true 0.84} a e:Builtin.
+		}; e:source nsp0:pos_470_line_14.
+	}; e:possibility 0.126].
+
+[ e:proofID 35; e:proof {
+	{:C e:boolean e:T} e:because {
+		{:Q e:boolean e:F} e:because {
+			{:P e:boolean e:T} e:because {
+				{var:_G427 e:true 0.15} a e:Builtin.
+				}; e:source nsp0:pos_252_line_7.
+			{var:_G437 e:true 0} a e:Builtin.
+			}; e:source nsp0:pos_629_line_18.
+		{var:_G443 e:true 0.74} a e:Builtin.
+		}; e:source nsp0:pos_528_line_15.
+	}; e:possibility 0.0].
+
+(16 25) e:delta 0.010725.
+
+(17 26) e:delta 0.060775.
+
+(18 27) e:delta 0.0715.
+
+(19 28) e:delta 0.0715.
+
+(20 29) e:delta 0.0686685999999999.
+
+(21 30) e:delta 0.0028314.
+
+(34 36) e:delta 0.0715.
+
+((2) (5)) e:delta 0.06435.
+
+((3) (6)) e:delta 0.06435.
+
+((4) (10 19)) e:delta 0.676.
+
+((8 17) (12 21)) e:delta 0.62806.
+
+(((8 17) (32 34)) ((1) (31))) e:delta 0.85.
+
+(((1) (31)) ((8 17) (32 34))) e:delta 0.85.
+
+(((1) (31)) ((12 21) (32 34))) e:delta 0.0396000000000001.
+
+[ e:bayesRule ((1) (31)); r:gives {
+	{:C e:boolean e:T. _: e:true 1.0} => {:P e:boolean e:T}}].
+
+[ e:bayesRule ((4) (31)); r:gives {
+	{:C e:boolean e:T. _: e:true 1.0} => {:C e:boolean e:T}}].
+
+[ e:bayesRule ((8 17) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.85} => {:P e:boolean e:F}}].
+
+[ e:bayesRule ((9) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.379354838709677} => {:Q e:boolean e:T}}].
+
+[ e:bayesRule ((12 21) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.0396000000000001} => {:P e:boolean e:F}}].
+
+[ e:bayesRule ((18) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.620645161290323} => {:Q e:boolean e:F}}].
+
+[ e:bayesRule ((1) (31)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.0} => {:P e:boolean e:F}}].
+
+[ e:bayesRule ((4) (31)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.0} => {:C e:boolean e:F}}].
+
+[ e:bayesRule ((8 17) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.15} => {:P e:boolean e:T}}].
+
+[ e:bayesRule ((12 21) (32 34)); r:gives {
+	{:C e:boolean e:T. _: e:true 0.9604} => {:P e:boolean e:T}}].
+
+#ENDS 110 msec.
+

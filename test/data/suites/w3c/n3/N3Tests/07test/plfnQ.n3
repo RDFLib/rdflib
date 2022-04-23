@@ -1,0 +1,5 @@
+# eye --nope --plugin http://eulersharp.sourceforge.net/2006/02swap/plfn-plugin.yap http://eulersharp.sourceforge.net/2007/07test/plfnP.n3 --query http://eulersharp.sourceforge.net/2007/07test/plfnQ.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{?P a ?R} => {?P a ?R}.

@@ -1,0 +1,136 @@
+@prefix ex: <http://example.org/#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+{
+  ?a1 ex:rel1 ?b1.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel2 ?b1.
+  ?a2 ex:rel2 ?b2.
+  ?a3 ex:rel2 ?b3.
+}.
+
+{
+  ?a1 ex:rel2 ?b1.
+  ?a2 ex:rel2 ?b2.
+  ?a3 ex:rel2 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel3 ?b1.
+  ?a2 ex:rel3 ?b2.
+  ?a3 ex:rel3 ?b3.
+}.
+
+{
+  ?a1 ex:rel3 ?b1.
+  ?a2 ex:rel3 ?b2.
+  ?a3 ex:rel3 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel4 ?b1.
+  ?a2 ex:rel4 ?b2.
+  ?a3 ex:rel4 ?b3.
+}.
+
+{
+  ?a1 ex:rel4 ?b1.
+  ?a2 ex:rel4 ?b2.
+  ?a3 ex:rel4 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel5 ?b1.
+  ?a2 ex:rel5 ?b2.
+  ?a3 ex:rel5 ?b3.
+}.
+
+{
+  ?a1 ex:rel5 ?b1.
+  ?a2 ex:rel5 ?b2.
+  ?a3 ex:rel5 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel6 ?b1.
+  ?a2 ex:rel6 ?b2.
+  ?a3 ex:rel6 ?b3.
+}.
+
+{
+  ?a1 ex:rel6 ?b1.
+  ?a2 ex:rel6 ?b2.
+  ?a3 ex:rel6 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel7 ?b1.
+  ?a2 ex:rel7 ?b2.
+  ?a3 ex:rel7 ?b3.
+}.
+
+{
+  ?a1 ex:rel7 ?b1.
+  ?a2 ex:rel7 ?b2.
+  ?a3 ex:rel7 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel8 ?b1.
+  ?a2 ex:rel8 ?b2.
+  ?a3 ex:rel8 ?b3.
+}.
+
+{
+  ?a1 ex:rel8 ?b1.
+  ?a2 ex:rel8 ?b2.
+  ?a3 ex:rel8 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel9 ?b1.
+  ?a2 ex:rel9 ?b2.
+  ?a3 ex:rel9 ?b3.
+}.
+
+{
+  ?a1 ex:rel9 ?b1.
+  ?a2 ex:rel9 ?b2.
+  ?a3 ex:rel9 ?b3.
+}
+=>
+{
+  _:request http:methodName "GET";
+            http:requestURI ?a1;
+            http:resp [ http:body ?b1 ].
+  ?a1 ex:rel10 ?b1.
+  ?a2 ex:rel10 ?b2.
+  ?a3 ex:rel10 ?b3.
+  ?a1 ex:relGoal ?b1.
+}.

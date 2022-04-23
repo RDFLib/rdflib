@@ -1,0 +1,10 @@
+# $Id: factorialQ.n3 521 2005-05-05 12:25:45Z josd $
+# PxButton | es  | euler factorial.n3 --nope --think --query factorialQ.n3
+# PxButton | cwm | cwm factorial.n3 --think --query"=factorialQ.n3"
+
+@prefix : <http://yosi.us/math#> .
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select {<> q:answer (?x ?y)};
+q:where {?x a :Number; :factorial ?y} .

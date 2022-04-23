@@ -1,0 +1,11 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/sc.n3 --pass
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/sc#>.
+
+:Xanthippe a :HumanFemale.
+:Xanthippe a :Human.
+
+#ENDS 0.270 [sec] TC=2 TP=4 BC=0 BP=3 PM=0 CM=0 FM=0 AM=0
+
