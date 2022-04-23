@@ -216,6 +216,42 @@ class SetsEqualTestCase:
             }
             """,
         ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { eg:ss0 eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { eg:ss0 eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { { <example:sss0> <example:ssp0> <example:sso0> } <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { { eg:sss0 eg:ssp0 eg:sso0 } eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
     ],
 )
 def test_assert_sets_equal(test_case: SetsEqualTestCase):
