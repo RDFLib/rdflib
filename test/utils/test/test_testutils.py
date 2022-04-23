@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
 from test.utils import GraphHelper, file_uri_to_path
-from typing import Optional
+from typing import Optional, Tuple, Union
 
 import pytest
 
@@ -98,10 +98,22 @@ def test_paths(
 @dataclass
 class SetsEqualTestCase:
     equal: bool
-    format: str
+    format: Union[str, Tuple[str, str]]
     ignore_blanks: bool
     lhs: str
     rhs: str
+
+    @property
+    def lhs_format(self) -> str:
+        if isinstance(self.format, tuple):
+            return self.format[0]
+        return self.format
+
+    @property
+    def rhs_format(self) -> str:
+        if isinstance(self.format, tuple):
+            return self.format[1]
+        return self.format
 
 
 @pytest.mark.parametrize(
@@ -112,13 +124,13 @@ class SetsEqualTestCase:
             format="turtle",
             ignore_blanks=False,
             lhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             _:a _:b _:c .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
             """,
             rhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
             """,
@@ -128,13 +140,13 @@ class SetsEqualTestCase:
             format="turtle",
             ignore_blanks=True,
             lhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             _:a _:b _:c .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
             """,
             rhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
             """,
@@ -144,11 +156,11 @@ class SetsEqualTestCase:
             format="turtle",
             ignore_blanks=False,
             lhs="""
-            <ex:o0> <ex:p0> <ex:s0> .
-            <ex:o1> <ex:p1> <ex:s1> .
+            <example:o0> <example:p0> <example:s0> .
+            <example:o1> <example:p1> <example:s1> .
             """,
             rhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
             """,
@@ -158,14 +170,50 @@ class SetsEqualTestCase:
             format="turtle",
             ignore_blanks=False,
             lhs="""
-            <ex:o0> <ex:p0> <ex:s0> .
-            <ex:o1> <ex:p1> <ex:s1> .
-            <ex:o2> <ex:p2> <ex:s2> .
+            <example:o0> <example:p0> <example:s0> .
+            <example:o1> <example:p1> <example:s1> .
+            <example:o2> <example:p2> <example:s2> .
             """,
             rhs="""
-            @prefix eg: <ex:> .
+            @prefix eg: <example:> .
             eg:o0 eg:p0 eg:s0 .
             eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format=("nquads", "trig"),
+            ignore_blanks=True,
+            lhs="""
+            <example:o0> <example:p0> <example:s0> .
+            <example:o1> <example:p1> <example:s1> .
+            <example:o2> <example:p2> <example:s2> .
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            eg:o2 eg:p2 eg:s2 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format=("nquads", "trig"),
+            ignore_blanks=True,
+            lhs="""
+            <example:o0> <example:p0> <example:s0> .
+            <example:o1> <example:p1> <example:s1> <example:g1>.
+            <example:o2> <example:p2> <example:s2> <example:g2> .
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            eg:o0 eg:p0 eg:s0 .
+            eg:g1 {
+                eg:o1 eg:p1 eg:s1 .
+            }
+            eg:g2 {
+                eg:o2 eg:p2 eg:s2 .
+            }
             """,
         ),
     ],
@@ -175,15 +223,19 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     GraphHelper.sets_equals and related functions work correctly in both
     positive and negative cases.
     """
-    lhs_graph: Graph = Graph().parse(data=test_case.lhs, format=test_case.format)
-    rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.format)
+    lhs_graph: Graph = Graph().parse(data=test_case.lhs, format=test_case.lhs_format)
+    rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.rhs_format)
 
     public_id = URIRef("example:graph")
     lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    lhs_cgraph.parse(data=test_case.lhs, format=test_case.format, publicID=public_id)
+    lhs_cgraph.parse(
+        data=test_case.lhs, format=test_case.lhs_format, publicID=public_id
+    )
 
     rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    rhs_cgraph.parse(data=test_case.rhs, format=test_case.format, publicID=public_id)
+    rhs_cgraph.parse(
+        data=test_case.rhs, format=test_case.rhs_format, publicID=public_id
+    )
 
     assert isinstance(lhs_cgraph, ConjunctiveGraph)
     assert isinstance(rhs_cgraph, ConjunctiveGraph)
