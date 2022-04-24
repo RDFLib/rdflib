@@ -1,0 +1,39 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix fos: <http://eulersharp.sourceforge.net/2003/03swap/foster#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix units: <http://eulersharp.sourceforge.net/2003/03swap/units#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+
+
+{   ?adult # a human:BiologicalAdult;
+        human:hasBodyMassIndex ?bodyMassIndexMeasurement;
+        human:hasWeightStatus ?weightStatus.
+    ?bodyMassIndexMeasurement
+        time:hasDateTime ?bodyMassIndexDateTime;
+        quant:hasUnit units:kilogramPerMeterSquare;
+        quant:hasValue ?bodyMassIndexValue;
+        event:basedOn ?weightMeasurement, ?lengthMeasurement.
+    ?weightMeasurement
+        quant:hasUnit units:kilogram.
+    ?lengthMeasurement
+        quant:hasUnit units:meter.
+    ?weightStatus
+        a ?WeightStatus;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement}
+=>
+{   ?adult
+        human:hasBodyMassIndex ?bodyMassIndexMeasurement;
+        human:hasWeightStatus ?weightStatus.
+    ?bodyMassIndexMeasurement
+        time:hasDateTime ?bodyMassIndexDateTime;
+        quant:hasUnit units:kilogramPerMeterSquare;
+        quant:hasValue ?bodyMassIndexValue;
+        event:basedOn ?weightMeasurement, ?lengthMeasurement.
+    ?weightStatus
+        a ?WeightStatus;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement}.

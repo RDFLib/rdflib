@@ -1,0 +1,30 @@
+# From swap/test/math/math_test.n3
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+
+# Combinatorial test
+
+"3.1415926" a :testValue.
+3.1415926 a :testValue.
+"1729" a :testValue.
+1729 a :testValue.
+"0" a :testValue.
+0 a :testValue.
+
+# Can't do double comparisons consistently
+#"1.0E7" a :testValue.
+#1.0E7 a :testValue.
+
+{ ?x a :testValue. ?y a :testValue.
+  ?z is math:sum of (?x (?y ?x)!math:difference).
+  ?z math:equalTo ?y } => {?x :worksWith ?y}.
+ 
+{ ?x a :testValue. ?y a :testValue.
+  ?z is math:sum of (?x (?y ?x)!math:difference).
+  ?z math:notEqualTo ?y } => {(?x ?y) :SumDifferenceFAILS ?z}.
+
+{ ?x a :testValue. ?y a :testValue.
+  (?x ?y) math:sum ?z.
+  (?x " + " ?y " = " ?z ) string:concatenation ?s
+} => { ?s a :RESULT }.

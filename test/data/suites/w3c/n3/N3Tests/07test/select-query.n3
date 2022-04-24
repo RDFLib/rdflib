@@ -1,0 +1,9 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/try#>.
+
+{	[] e:csvTuple (?S ?P ?A ?O ?C).
+} <=
+{	?S ?P ?O.
+	[] e:optional {?A :b ?C}.
+}.
+

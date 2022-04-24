@@ -1,0 +1,12 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+
+{
+    <http://josd.github.io/brain/rpo/rdfs-subClassOf.n3> log:semantics ?F.
+    ?F log:includes {?A => {?B a ?C}}.
+    {?A => {?B a ?C}} p:preduce ?D.
+    ?D e:graphMember {?S ?P ?O}.
+} => {
+    ?S ?P ?O.
+}.

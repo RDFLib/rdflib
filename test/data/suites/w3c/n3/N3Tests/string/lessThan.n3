@@ -1,0 +1,10 @@
+# From includes/t3.n3
+
+@prefix log:  <http://www.w3.org/2000/10/swap/log#> .
+@prefix string:  <http://www.w3.org/2000/10/swap/string#>.
+
+@prefix : <#>.  # Local stuff
+
+{  "abc" string:lessThan "aaa" } log:implies { :testh_4 a :FAILURE }.
+{  "abc" string:lessThan "abc" } log:implies { :testh_5 a :FAILURE }.
+{  "aaa" string:lessThan "abc" } log:implies { :testh4 a :success }.

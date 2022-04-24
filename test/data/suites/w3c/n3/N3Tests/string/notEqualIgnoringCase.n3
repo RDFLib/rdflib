@@ -1,0 +1,14 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{"Tim" string:notEqualIgnoringCase "TIM"} log:implies { :test1 a :FAILURE }.
+
+{ "Tim" string:notEqualIgnoringCase "Dan" } log:implies { :test2 a :success }.
+
+{ "FOOBAR" string:notEqualIgnoringCase "foobar" } log:implies { :test3 a :FAILURE }.
+
+{ "" string:notEqualIgnoringCase "Tim" } log:implies { :test4 a :success }.
+
+#ends
+

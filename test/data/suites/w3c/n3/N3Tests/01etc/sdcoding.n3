@@ -1,0 +1,99 @@
+# -----------------------------------
+# Superdense coding and teleportation
+# -----------------------------------
+#
+# See https://arxiv.org/pdf/1101.3764.pdf and https://arxiv.org/pdf/1010.2929.pdf
+#
+# One remarkable feature of entangled states is superdense coding, whereby
+# entanglement can double the information capacity of a quantum system.
+# Suppose that Alice and Bob initially share a pair of mobits in the joint
+# state |R). Alice can encode two bits (four possible messages) by choosing
+# to apply the operators 1, G, K or KG to her mobit, resulting in one of the
+# four states |R), |S), |U) or |V ). If she then delivers her transformed
+# mobit to Bob, he can perform a joint measurement on both mobits to
+# reliably distinguish these possibilities.
+# The same set of entangled mobit states and single-mobit transformations
+# can also be used to accomplish the analogue of quantum teleportation.
+
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+
+# |R) = |0, 0) + |1, 1)
+false dqc:r false.
+true dqc:r true.
+
+# |S) = |0, 1) + |1, 0)
+false dqc:s true.
+true dqc:s false.
+
+# |U) = |0, 0) + |1, 0) + |1, 1)
+false dqc:u false.
+true dqc:u false.
+true dqc:u true.
+
+# |V ) = |0, 0) + |0, 1) + |1, 0)
+false dqc:v false.
+false dqc:v true.
+true dqc:v false.
+
+# 1 |0) = |0)
+false dqc:id false.
+# 1 |1) = |1)
+true dqc:id true.
+
+# G |0) = |1)
+false dqc:g true.
+# G |1) = |0)
+true dqc:g false.
+
+# K |0) = |0)
+false dqc:k false.
+# K |1) = |0) + |1)
+true dqc:k false.
+true dqc:k true.
+
+# KG
+{?X dqc:kg ?Y} <= {
+    ?X dqc:g ?Z.
+    ?Z dqc:k ?Y.
+}.
+
+# GK
+{?X dqc:gk ?Y} <= {
+    ?X dqc:k ?Z.
+    ?Z dqc:g ?Y.
+}.
+
+# Superdense coding
+{?N dqc:sdcoding ?M} <= {
+    ?X dqc:r ?Y.
+    ?N dqc:alice (?X ?B).
+    (?B ?Y) dqc:bob ?M.
+}.
+
+# Alice
+{0 dqc:alice (?X ?Y)} <= {
+    ?X dqc:id ?Y.
+}.
+{1 dqc:alice (?X ?Y)} <= {
+    ?X dqc:g ?Y.
+}.
+{2 dqc:alice (?X ?Y)} <= {
+    ?X dqc:k ?Y.
+}.
+{3 dqc:alice (?X ?Y)} <= {
+    ?X dqc:kg ?Y.
+}.
+
+# Bob
+{(?S1 ?S2) dqc:bob 0} <= {
+    ?S1 dqc:gk ?S2.
+}.
+{(?S1 ?S2) dqc:bob 1} <= {
+    ?S1 dqc:k ?S2.
+}.
+{(?S1 ?S2) dqc:bob 2} <= {
+    ?S1 dqc:g ?S2.
+}.
+{(?S1 ?S2) dqc:bob 3} <= {
+    ?S1 dqc:id ?S2.
+}.

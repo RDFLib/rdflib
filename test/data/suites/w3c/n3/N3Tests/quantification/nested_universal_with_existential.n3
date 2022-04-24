@@ -1,0 +1,5 @@
+@prefix : <http://example.org#>.
+
+@forSome :y. {:y :p :o}=>{:y :p2 :o2}.
+
+{@forAll :x. {:x :p :o}=>{:x :p2 :o2}  }=>{:this :shouldNot :fire}.

@@ -1,0 +1,25 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Integer divided by integer
+{ ("2" "4") math:remainder 2 } => {:test1a a :SUCCESS}.
+{ (2 4) math:remainder 2 } => {:test1b a :SUCCESS}.
+{ (-2 4) math:remainder 2 } => {:test1c a :SUCCESS}.
+{ (2 -4) math:remainder -2 } => {:test1d a :SUCCESS}.
+{ (-2 -4) math:remainder -2 } => {:test1e a :SUCCESS}.
+{ (0 2) math:remainder 0 } => {:test1f a :SUCCESS}.
+
+# Combinations of types
+{ (2.0 4) math:remainder ?x } => {:test2a a :FAILURE}.
+{ (16 0.5) math:remainder ?x } => {:test2b a :FAILURE}.
+{ (16 0.5e0) math:remainder ?x } => {:test2c a :FAILURE}.
+
+# Double
+{ (0.0e0 3) math:remainder ?x } => {:test3a a :FAILURE}.
+{ (-0.0e0 3) math:remainder ?x } => {:test3b a :FAILURE}.
+{ (1.1e0 2.2e1) math:remainder ?x } => {:test3c a :FAILURE}.
+{ ("1.1e0" "2.2e1") math:remainder ?x } => {:test3d a :FAILURE}.
+
+# Argument errors
+{ (1) math:remainder ?x } => {:test4a a :FAILURE}.
+{ (1 2 3) math:remainder ?x } => {:test4b a :FAILURE}.

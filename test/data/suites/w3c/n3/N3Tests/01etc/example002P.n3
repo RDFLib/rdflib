@@ -1,0 +1,23 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix : <http://www.agfa.com/w3c/euler/case001#>.
+
+:ChildAgeAndNormalIntraocularPressure owl:intersectionOf (:ChildAge :NormalIntraocularPressure).
+:AdultAgeOrIncreasedIntraocularPressure owl:unionOf (:AdultAge :IncreasedIntraocularPressure).
+:NonNormalIntraocularPressure owl:complementOf :NormalIntraocularPressure.
+:NonIncreasedIntraocularPressure owl:complementOf :IncreasedIntraocularPressure.
+
+(:ChildAge :NormalIntraocularPressure) fl:sigma 0.985.
+(:ChildAge :IncreasedIntraocularPressure) fl:sigma 0.035.
+
+:Ann :intraocularPressure 20.4.
+
+{?P :intraocularPressure ?A. ?A math:lessThan 20.2} => {(?P :NormalIntraocularPressure) fl:mu 1.0}.
+{?P :intraocularPressure ?A. ?A math:notLessThan 20.2; math:lessThan 22. (?A 20.2) math:difference ?Y. (?Y 1.8) math:quotient ?X. (1.0 ?X) math:difference ?M} => {(?P :NormalIntraocularPressure) fl:mu ?M}.
+{?P :intraocularPressure ?A. ?A math:notLessThan 22} => {(?P :NormalIntraocularPressure) fl:mu 0.0}.
+
+{?P :intraocularPressure ?A. ?A math:lessThan 20.2} => {(?P :IncreasedIntraocularPressure) fl:mu 0.0}.
+{?P :intraocularPressure ?A. ?A math:notLessThan 20.2; math:lessThan 22. (?A 20.2) math:difference ?X. (?X 1.8) math:quotient ?M} => {(?P :IncreasedIntraocularPressure) fl:mu ?M}.
+{?P :intraocularPressure ?A. ?A math:notLessThan 22} => {(?P :IncreasedIntraocularPressure) fl:mu 1.0}.

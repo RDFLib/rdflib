@@ -1,0 +1,11 @@
+@prefix : <http://example.org#>.
+
+:c :n :m.
+:cc :n :m.
+
+@forAll :y.
+:y :p _:x.
+
+{?a :n :m.  ?a :p ?b}=>{?a :has ?b}.
+
+#here, we test whether implicit existential quantification is outside or inside of the scope of explicit universal quantification. If it is outside, the rule will produce two triples iwth the  same  object, :c :has _:x. and :cc :has _:x. if it is inside, we will get two different values, for example :c :has _:x1. and :cc :has _:x2. Because in that case the _:x depends on the :y and is different for every :y.

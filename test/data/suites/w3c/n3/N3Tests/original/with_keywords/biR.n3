@@ -1,0 +1,547 @@
+#Processed by $Id: sem_tape.pl 2027 2008-04-13 16:50:16Z josd $
+#|: 
+#Processed by $Id: sem.pl 2043 2008-04-19 20:09:02Z josd $
+
+@keywords is, of, a.
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix nsp0: <http://eulersharp.sourceforge.net/2007/07test/biP.n3#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix nsp1: <http://www.agfa.com/w3c/euler/>.
+@prefix rpo: <http://eulersharp.sourceforge.net/2003/03swap/rpo-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix galen: <http://www.co-ode.org/ontologies/galen#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix nsp2: <http://eulersharp.sourceforge.net/2007/07test/biQ.n3#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix var: <http://localhost/var#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix med: <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[ a r:Proof, r:Conjunction;
+	r:component [ a r:Inference; r:gives {(nsp0:pos_868_line_21^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_868_line_21^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {nsp0:pos_868_line_21^e:source :result 6}}]
+			[ a r:Inference; r:gives {nsp0:pos_868_line_21^e:source :result 6}; r:evidence (
+				[ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_796_line_21]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_922_line_22^e:source {(8 5 6 7 9 4) e:max 9}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_922_line_22^e:source {(8 5 6 7 9 4) e:max 9}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(8 5 6 7 9 4) e:max 9} => {nsp0:pos_922_line_22^e:source :result 9}}]
+			[ a r:Inference; r:gives {nsp0:pos_922_line_22^e:source :result 9}; r:evidence (
+				[ a r:Fact; r:gives {(8 5 6 7 9 4) e:max 9}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_883_line_22]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_976_line_23^e:source {(8 5 6 7 9 4) e:min 4}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_976_line_23^e:source {(8 5 6 7 9 4) e:min 4}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(8 5 6 7 9 4) e:min 4} => {nsp0:pos_976_line_23^e:source :result 4}}]
+			[ a r:Inference; r:gives {nsp0:pos_976_line_23^e:source :result 4}; r:evidence (
+				[ a r:Fact; r:gives {(8 5 6 7 9 4) e:min 4}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_937_line_23]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1042_line_24^e:source {:a :b :d. _:_21_ e:optional {:g :h :i}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1042_line_24^e:source {:a :b :d. _:_21_ e:optional {:g :h :i}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:a :b :d. _:_21_ e:optional {:g :h :i}} => {nsp0:pos_1042_line_24^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_1042_line_24^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Extraction; r:gives {:a :b :d}; r:because [ a r:Parsing; r:source nsp0:pos_613_line_14]]
+				[ a r:Fact; r:gives {_:_21_ e:optional {:g :h :i}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_991_line_24]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1147_line_25^e:source {(((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d)) (var:_G14180 var:_G14183) (var:_G14189 var:_G14183)) e:prune ((9 :d) (7 :a) (6 :b))}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1147_line_25^e:source {(((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d)) (var:_G14180 var:_G14183) (var:_G14189 var:_G14183)) e:prune ((9 :d) (7 :a) (6 :b))}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d)) (var:_G14180 var:_G14183) (var:_G14189 var:_G14183)) e:prune ((9 :d) (7 :a) (6 :b))} => {nsp0:pos_1147_line_25^e:source :result ((9 :d) (7 :a) (6 :b))}}]
+			[ a r:Inference; r:gives {nsp0:pos_1147_line_25^e:source :result ((9 :d) (7 :a) (6 :b))}; r:evidence (
+				[ a r:Fact; r:gives {(((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d)) (var:_G14599 var:_G14602) (var:_G14608 var:_G14602)) e:prune ((9 :d) (7 :a) (6 :b))}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1059_line_25]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1235_line_26^e:source {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1235_line_26^e:source {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {nsp0:pos_1235_line_26^e:source :result ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}}]
+			[ a r:Inference; r:gives {nsp0:pos_1235_line_26^e:source :result ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}; r:evidence (
+				[ a r:Fact; r:gives {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1162_line_26]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1320_line_27^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1320_line_27^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {nsp0:pos_1320_line_27^e:source :result ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}}]
+			[ a r:Inference; r:gives {nsp0:pos_1320_line_27^e:source :result ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}; r:evidence (
+				[ a r:Fact; r:gives {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1250_line_27]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1396_line_28^e:source {(" +|([0-9]+|+|-)" "12+4-29") e:tokenize (12 + 4 - 29)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1396_line_28^e:source {(" +|([0-9]+|+|-)" "12+4-29") e:tokenize (12 + 4 - 29)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(" +|([0-9]+|+|-)" "12+4-29") e:tokenize (12 + 4 - 29)} => {nsp0:pos_1396_line_28^e:source :result (12 + 4 - 29)}}]
+			[ a r:Inference; r:gives {nsp0:pos_1396_line_28^e:source :result (12 + 4 - 29)}; r:evidence (
+				[ a r:Fact; r:gives {(" +|([0-9]+|+|-)" "12+4-29") e:tokenize (12 + 4 - 29)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1335_line_28]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1485_line_30^e:source {("2000/10/swap/" "http://www.w3.org/") fn:resolve-uri "http://www.w3.org/2000/10/swap/"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1485_line_30^e:source {("2000/10/swap/" "http://www.w3.org/") fn:resolve-uri "http://www.w3.org/2000/10/swap/"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("2000/10/swap/" "http://www.w3.org/") fn:resolve-uri "http://www.w3.org/2000/10/swap/"} => {nsp0:pos_1485_line_30^e:source :result "http://www.w3.org/2000/10/swap/"}}]
+			[ a r:Inference; r:gives {nsp0:pos_1485_line_30^e:source :result "http://www.w3.org/2000/10/swap/"}; r:evidence (
+				[ a r:Fact; r:gives {("2000/10/swap/" "http://www.w3.org/") fn:resolve-uri "http://www.w3.org/2000/10/swap/"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1412_line_30]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1570_line_31^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-after "Head"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1570_line_31^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-after "Head"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-after "Head"} => {nsp0:pos_1570_line_31^e:source :result ("http://www.co-ode.org/ontologies/galen#Head" "Head")}}]
+			[ a r:Inference; r:gives {nsp0:pos_1570_line_31^e:source :result ("http://www.co-ode.org/ontologies/galen#Head" "Head")}; r:evidence (
+				[ a r:Fact; r:gives {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head"}]
+				[ a r:Fact; r:gives {("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-after "Head"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1500_line_31]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1661_line_32^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-before "http://www.co-ode.org/ontologies/galen"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1661_line_32^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-before "http://www.co-ode.org/ontologies/galen"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-before "http://www.co-ode.org/ontologies/galen"} => {nsp0:pos_1661_line_32^e:source :result ("http://www.co-ode.org/ontologies/galen#Head" "http://www.co-ode.org/ontologies/galen")}}]
+			[ a r:Inference; r:gives {nsp0:pos_1661_line_32^e:source :result ("http://www.co-ode.org/ontologies/galen#Head" "http://www.co-ode.org/ontologies/galen")}; r:evidence (
+				[ a r:Fact; r:gives {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head"}]
+				[ a r:Fact; r:gives {("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-before "http://www.co-ode.org/ontologies/galen"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1590_line_32]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1749_line_34^e:source {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1749_line_34^e:source {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {nsp0:pos_1749_line_34^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_1749_line_34^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1683_line_34]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1807_line_35^e:source {(:a :b :c) list:first :a}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1807_line_35^e:source {(:a :b :c) list:first :a}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c) list:first :a} => {nsp0:pos_1807_line_35^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_1807_line_35^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c) list:first :a}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1766_line_35]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1864_line_36^e:source {(:a :b :c) list:last :c}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1864_line_36^e:source {(:a :b :c) list:last :c}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c) list:last :c} => {nsp0:pos_1864_line_36^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_1864_line_36^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c) list:last :c}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1824_line_36]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1926_line_37^e:source {(:a :b :c) list:rest (:b :c)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1926_line_37^e:source {(:a :b :c) list:rest (:b :c)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c) list:rest (:b :c)} => {nsp0:pos_1926_line_37^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_1926_line_37^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c) list:rest (:b :c)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1881_line_37]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:a list:in (:a :b :c)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:a list:in (:a :b :c)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:a list:in (:a :b :c)} => {nsp0:pos_1981_line_38^e:source :result :a}}]
+			[ a r:Inference; r:gives {nsp0:pos_1981_line_38^e:source :result :a}; r:evidence (
+				[ a r:Fact; r:gives {:a list:in (:a :b :c)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1943_line_38]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:b list:in (:a :b :c)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:b list:in (:a :b :c)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:b list:in (:a :b :c)} => {nsp0:pos_1981_line_38^e:source :result :b}}]
+			[ a r:Inference; r:gives {nsp0:pos_1981_line_38^e:source :result :b}; r:evidence (
+				[ a r:Fact; r:gives {:b list:in (:a :b :c)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1943_line_38]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:c list:in (:a :b :c)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_1981_line_38^e:source {:c list:in (:a :b :c)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:c list:in (:a :b :c)} => {nsp0:pos_1981_line_38^e:source :result :c}}]
+			[ a r:Inference; r:gives {nsp0:pos_1981_line_38^e:source :result :c}; r:evidence (
+				[ a r:Fact; r:gives {:c list:in (:a :b :c)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1943_line_38]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :a}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :a}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c :d) list:member :a} => {nsp0:pos_2041_line_39^e:source :result :a}}]
+			[ a r:Inference; r:gives {nsp0:pos_2041_line_39^e:source :result :a}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c :d) list:member :a}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1996_line_39]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :b}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :b}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c :d) list:member :b} => {nsp0:pos_2041_line_39^e:source :result :b}}]
+			[ a r:Inference; r:gives {nsp0:pos_2041_line_39^e:source :result :b}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c :d) list:member :b}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1996_line_39]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :c}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :c}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c :d) list:member :c} => {nsp0:pos_2041_line_39^e:source :result :c}}]
+			[ a r:Inference; r:gives {nsp0:pos_2041_line_39^e:source :result :c}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c :d) list:member :c}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1996_line_39]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :d}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :d}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b :c :d) list:member :d} => {nsp0:pos_2041_line_39^e:source :result :d}}]
+			[ a r:Inference; r:gives {nsp0:pos_2041_line_39^e:source :result :d}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b :c :d) list:member :d}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_1996_line_39]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s1 :p1 :o1}. ({:s1 :p1 :o1} {:s1 :p1 :o1}) log:conjunction {:s1 :p1 :o1}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s1 :p1 :o1}. ({:s1 :p1 :o1} {:s1 :p1 :o1}) log:conjunction {:s1 :p1 :o1}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:s :p {:s1 :p1 :o1}. :s :p {:s1 :p1 :o1}. ({:s1 :p1 :o1} {:s1 :p1 :o1}) log:conjunction {:s1 :p1 :o1}} => {nsp0:pos_2117_line_41^e:source :result (:s {:s1 :p1 :o1} {:s1 :p1 :o1} {:s1 :p1 :o1})}}]
+			[ a r:Inference; r:gives {nsp0:pos_2117_line_41^e:source :result (:s {:s1 :p1 :o1} {:s1 :p1 :o1} {:s1 :p1 :o1})}; r:evidence (
+				[ a r:Extraction; r:gives {:s :p {:s1 :p1 :o1}}; r:because [ a r:Parsing; r:source nsp0:pos_731_line_17]]
+				[ a r:Extraction; r:gives {:s :p {:s1 :p1 :o1}}; r:because [ a r:Parsing; r:source nsp0:pos_731_line_17]]
+				[ a r:Fact; r:gives {({:s1 :p1 :o1} {:s1 :p1 :o1}) log:conjunction {:s1 :p1 :o1}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2057_line_41]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:s :p {:s1 :p1 :o1}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3}} => {nsp0:pos_2117_line_41^e:source :result (:s {:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3})}}]
+			[ a r:Inference; r:gives {nsp0:pos_2117_line_41^e:source :result (:s {:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3})}; r:evidence (
+				[ a r:Extraction; r:gives {:s :p {:s1 :p1 :o1}}; r:because [ a r:Parsing; r:source nsp0:pos_731_line_17]]
+				[ a r:Extraction; r:gives {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}}; r:because [ a r:Parsing; r:source nsp0:pos_749_line_17]]
+				[ a r:Fact; r:gives {({:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2057_line_41]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s1 :p1 :o1}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s1 :p1 :o1}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s1 :p1 :o1}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1}} => {nsp0:pos_2117_line_41^e:source :result (:s {:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1})}}]
+			[ a r:Inference; r:gives {nsp0:pos_2117_line_41^e:source :result (:s {:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1})}; r:evidence (
+				[ a r:Extraction; r:gives {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}}; r:because [ a r:Parsing; r:source nsp0:pos_749_line_17]]
+				[ a r:Extraction; r:gives {:s :p {:s1 :p1 :o1}}; r:because [ a r:Parsing; r:source nsp0:pos_731_line_17]]
+				[ a r:Fact; r:gives {({:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2057_line_41]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3}} => {nsp0:pos_2117_line_41^e:source :result (:s {:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3})}}]
+			[ a r:Inference; r:gives {nsp0:pos_2117_line_41^e:source :result (:s {:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3})}; r:evidence (
+				[ a r:Extraction; r:gives {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}}; r:because [ a r:Parsing; r:source nsp0:pos_749_line_17]]
+				[ a r:Extraction; r:gives {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}}; r:because [ a r:Parsing; r:source nsp0:pos_749_line_17]]
+				[ a r:Fact; r:gives {({:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2057_line_41]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2187_line_42^e:source {(:a :b) log:equalTo (:a :b)}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2187_line_42^e:source {(:a :b) log:equalTo (:a :b)}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(:a :b) log:equalTo (:a :b)} => {nsp0:pos_2187_line_42^e:source :result {(:a :b) log:equalTo (:a :b)}}}]
+			[ a r:Inference; r:gives {nsp0:pos_2187_line_42^e:source :result {(:a :b) log:equalTo (:a :b)}}; r:evidence (
+				[ a r:Fact; r:gives {(:a :b) log:equalTo (:a :b)}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2143_line_42]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2320_line_43^e:source {{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2320_line_43^e:source {{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}} => {nsp0:pos_2320_line_43^e:source :result (:e :f)}}]
+			[ a r:Inference; r:gives {nsp0:pos_2320_line_43^e:source :result (:e :f)}; r:evidence (
+				[ a r:Fact; r:gives {{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2229_line_43]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2414_line_44^e:source {:ng1 :namedGraph var:_G14121. var:_G14121 log:includes {:k :j :l. :e :d :f}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2414_line_44^e:source {:ng1 :namedGraph var:_G14121. var:_G14121 log:includes {:k :j :l. :e :d :f}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:ng1 :namedGraph var:_G14121. var:_G14121 log:includes {:k :j :l. :e :d :f}} => {nsp0:pos_2414_line_44^e:source :result (:e :f)}}]
+			[ a r:Inference; r:gives {nsp0:pos_2414_line_44^e:source :result (:e :f)}; r:evidence (
+				[ a r:Extraction; r:gives {:ng1 :namedGraph {:b :a :c. :e :d :f. :h :g :i. :k :j :l}}; r:because [ a r:Parsing; r:source nsp0:pos_625_line_15]]
+				[ a r:Fact; r:gives {{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2340_line_44]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2585_line_45^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2585_line_45^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}} => {nsp0:pos_2585_line_45^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_2585_line_45^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics {(med:Ann med:Fever) rpo:mu 0.8. (med:Ann med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:AcuteMyocardialInfarction) rpo:mu 0.9. (med:Joe med:ActivePepticUlcerDisease) rpo:mu 0.006. (med:Joe med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:SevereAsthma) rpo:mu 0.001. (med:Joe med:ChronicObstructivePumonaryDisease) rpo:mu 0.001. med:aspirinHighDose med:prescribedFor med:Fever. med:aspirinLowDose med:prescribedFor med:AcuteMyocardialInfarction. med:betaBlocker med:prescribedFor med:AcuteMyocardialInfarction. med:aspirinHighDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinHighDose med:excludedFor med:AllergyForAspirin. med:aspirinLowDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinLowDose med:excludedFor med:AllergyForAspirin. med:betaBlocker med:excludedFor med:SevereAsthma. med:betaBlocker med:excludedFor med:ChronicObstructivePumonaryDisease. {var:_G14391 med:prescribedFor var:_G14392. (var:_G14400 var:_G14392) rpo:mu var:_G14398. var:_G14398 math:greaterThan 0.7. (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428} var:_G14439). (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428. (var:_G14400 var:_G14428) rpo:mu var:_G14469. var:_G14469 math:notGreaterThan 0.01} var:_G14439)} => {var:_G14400 med:isPrescribed var:_G14391}}}]
+				[ a r:Fact; r:gives {{(med:Ann med:Fever) rpo:mu 0.8. (med:Ann med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:AcuteMyocardialInfarction) rpo:mu 0.9. (med:Joe med:ActivePepticUlcerDisease) rpo:mu 0.006. (med:Joe med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:SevereAsthma) rpo:mu 0.001. (med:Joe med:ChronicObstructivePumonaryDisease) rpo:mu 0.001. med:aspirinHighDose med:prescribedFor med:Fever. med:aspirinLowDose med:prescribedFor med:AcuteMyocardialInfarction. med:betaBlocker med:prescribedFor med:AcuteMyocardialInfarction. med:aspirinHighDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinHighDose med:excludedFor med:AllergyForAspirin. med:aspirinLowDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinLowDose med:excludedFor med:AllergyForAspirin. med:betaBlocker med:excludedFor med:SevereAsthma. med:betaBlocker med:excludedFor med:ChronicObstructivePumonaryDisease. {var:_G14391 med:prescribedFor var:_G14392. (var:_G14400 var:_G14392) rpo:mu var:_G14398. var:_G14398 math:greaterThan 0.7. (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428} var:_G14439). (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428. (var:_G14400 var:_G14428) rpo:mu var:_G14469. var:_G14469 math:notGreaterThan 0.01} var:_G14439)} => {var:_G14400 med:isPrescribed var:_G14391}} log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2434_line_45]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2639_line_46^e:source {:a log:notEqualTo :b}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2639_line_46^e:source {:a log:notEqualTo :b}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:a log:notEqualTo :b} => {nsp0:pos_2639_line_46^e:source :result {:a log:notEqualTo :b}}}]
+			[ a r:Inference; r:gives {nsp0:pos_2639_line_46^e:source :result {:a log:notEqualTo :b}}; r:evidence (
+				[ a r:Fact; r:gives {:a log:notEqualTo :b}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2602_line_46]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2758_line_47^e:source {{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2758_line_47^e:source {{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}} => {nsp0:pos_2758_line_47^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_2758_line_47^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2674_line_47]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_2852_line_48^e:source {:ng2 :namedGraph var:_G14121. var:_G14121 log:notIncludes {:e :d :f. :b :e :c}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_2852_line_48^e:source {:ng2 :namedGraph var:_G14121. var:_G14121 log:notIncludes {:e :d :f. :b :e :c}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{:ng2 :namedGraph var:_G14121. var:_G14121 log:notIncludes {:e :d :f. :b :e :c}} => {nsp0:pos_2852_line_48^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_2852_line_48^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Extraction; r:gives {:ng2 :namedGraph {:b :a :c. :e :d :f. :h :g :i}}; r:because [ a r:Parsing; r:source nsp0:pos_684_line_16]]
+				[ a r:Fact; r:gives {{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2775_line_48]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3017_line_49^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3017_line_49^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14121. var:_G14121 log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}} => {nsp0:pos_3017_line_49^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3017_line_49^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics {(med:Ann med:Fever) rpo:mu 0.8. (med:Ann med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:AcuteMyocardialInfarction) rpo:mu 0.9. (med:Joe med:ActivePepticUlcerDisease) rpo:mu 0.006. (med:Joe med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:SevereAsthma) rpo:mu 0.001. (med:Joe med:ChronicObstructivePumonaryDisease) rpo:mu 0.001. med:aspirinHighDose med:prescribedFor med:Fever. med:aspirinLowDose med:prescribedFor med:AcuteMyocardialInfarction. med:betaBlocker med:prescribedFor med:AcuteMyocardialInfarction. med:aspirinHighDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinHighDose med:excludedFor med:AllergyForAspirin. med:aspirinLowDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinLowDose med:excludedFor med:AllergyForAspirin. med:betaBlocker med:excludedFor med:SevereAsthma. med:betaBlocker med:excludedFor med:ChronicObstructivePumonaryDisease. {var:_G14391 med:prescribedFor var:_G14392. (var:_G14400 var:_G14392) rpo:mu var:_G14398. var:_G14398 math:greaterThan 0.7. (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428} var:_G14439). (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428. (var:_G14400 var:_G14428) rpo:mu var:_G14469. var:_G14469 math:notGreaterThan 0.01} var:_G14439)} => {var:_G14400 med:isPrescribed var:_G14391}}}]
+				[ a r:Fact; r:gives {{(med:Ann med:Fever) rpo:mu 0.8. (med:Ann med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:AcuteMyocardialInfarction) rpo:mu 0.9. (med:Joe med:ActivePepticUlcerDisease) rpo:mu 0.006. (med:Joe med:AllergyForAspirin) rpo:mu 0.001. (med:Joe med:SevereAsthma) rpo:mu 0.001. (med:Joe med:ChronicObstructivePumonaryDisease) rpo:mu 0.001. med:aspirinHighDose med:prescribedFor med:Fever. med:aspirinLowDose med:prescribedFor med:AcuteMyocardialInfarction. med:betaBlocker med:prescribedFor med:AcuteMyocardialInfarction. med:aspirinHighDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinHighDose med:excludedFor med:AllergyForAspirin. med:aspirinLowDose med:excludedFor med:ActivePepticUlcerDisease. med:aspirinLowDose med:excludedFor med:AllergyForAspirin. med:betaBlocker med:excludedFor med:SevereAsthma. med:betaBlocker med:excludedFor med:ChronicObstructivePumonaryDisease. {var:_G14391 med:prescribedFor var:_G14392. (var:_G14400 var:_G14392) rpo:mu var:_G14398. var:_G14398 math:greaterThan 0.7. (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428} var:_G14439). (var:_G14422 1) e:findall (var:_G14428 {var:_G14391 med:excludedFor var:_G14428. (var:_G14400 var:_G14428) rpo:mu var:_G14469. var:_G14469 math:notGreaterThan 0.01} var:_G14439)} => {var:_G14400 med:isPrescribed var:_G14391}} log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_2869_line_49]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3119_line_50^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3119_line_50^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {nsp0:pos_3119_line_50^e:source :result "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}}]
+			[ a r:Inference; r:gives {nsp0:pos_3119_line_50^e:source :result "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}; r:evidence (
+				[ a r:Fact; r:gives {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3034_line_50]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3268_line_52^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3268_line_52^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {nsp0:pos_3268_line_52^e:source :result <http://eulersharp.sourceforge.net/2006/02swap/med#Fever>}}]
+			[ a r:Inference; r:gives {nsp0:pos_3268_line_52^e:source :result <http://eulersharp.sourceforge.net/2006/02swap/med#Fever>}; r:evidence (
+				[ a r:Fact; r:gives {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3183_line_52]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3324_line_54^e:source {(1 1) math:difference 0}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3324_line_54^e:source {(1 1) math:difference 0}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(1 1) math:difference 0} => {nsp0:pos_3324_line_54^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3324_line_54^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {(1 1) math:difference 0}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3284_line_54]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3450_line_55^e:source {("2007-12-21T00:02:00"^^xsd:dateTime "1956-01-10T00:00:00"^^xsd:dateTime) math:difference 1639267320.0}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3450_line_55^e:source {("2007-12-21T00:02:00"^^xsd:dateTime "1956-01-10T00:00:00"^^xsd:dateTime) math:difference 1639267320.0}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("2007-12-21T00:02:00"^^xsd:dateTime "1956-01-10T00:00:00"^^xsd:dateTime) math:difference 1639267320.0} => {nsp0:pos_3450_line_55^e:source :result 1639267320.0}}]
+			[ a r:Inference; r:gives {nsp0:pos_3450_line_55^e:source :result 1639267320.0}; r:evidence (
+				[ a r:Fact; r:gives {("2007-12-21T00:02:00"^^xsd:dateTime "1956-01-10T00:00:00"^^xsd:dateTime) math:difference 1639267320.0}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3341_line_55]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3538_line_56^e:source {(2 3.0) math:exponentiation 8.0. (4.0 3.0) math:product 12.0}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3538_line_56^e:source {(2 3.0) math:exponentiation 8.0. (4.0 3.0) math:product 12.0}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(2 3.0) math:exponentiation 8.0. (4.0 3.0) math:product 12.0} => {nsp0:pos_3538_line_56^e:source :result (3.0 12.0)}}]
+			[ a r:Inference; r:gives {nsp0:pos_3538_line_56^e:source :result (3.0 12.0)}; r:evidence (
+				[ a r:Fact; r:gives {(2 3.0) math:exponentiation 8.0}]
+				[ a r:Fact; r:gives {(4.0 3.0) math:product 12.0}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3465_line_56]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3627_line_57^e:source {(2 5.0) math:exponentiation 32. (4 8) math:product 32}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3627_line_57^e:source {(2 5.0) math:exponentiation 32. (4 8) math:product 32}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(2 5.0) math:exponentiation 32. (4 8) math:product 32} => {nsp0:pos_3627_line_57^e:source :result (5.0 32)}}]
+			[ a r:Inference; r:gives {nsp0:pos_3627_line_57^e:source :result (5.0 32)}; r:evidence (
+				[ a r:Fact; r:gives {(2 5.0) math:exponentiation 32}]
+				[ a r:Fact; r:gives {(4 8) math:product 32}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3558_line_57]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3684_line_58^e:source {2 math:greaterThan 1}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3684_line_58^e:source {2 math:greaterThan 1}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{2 math:greaterThan 1} => {nsp0:pos_3684_line_58^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3684_line_58^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {2 math:greaterThan 1}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3647_line_58]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3743_line_59^e:source {"02" math:greaterThan "1"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3743_line_59^e:source {"02" math:greaterThan "1"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"02" math:greaterThan "1"} => {nsp0:pos_3743_line_59^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3743_line_59^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {"02" math:greaterThan "1"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3701_line_59]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3797_line_60^e:source {7 math:notLessThan 5}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3797_line_60^e:source {7 math:notLessThan 5}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{7 math:notLessThan 5} => {nsp0:pos_3797_line_60^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3797_line_60^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {7 math:notLessThan 5}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3760_line_60]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3847_line_61^e:source {(1 1) math:sum 2}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3847_line_61^e:source {(1 1) math:sum 2}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{(1 1) math:sum 2} => {nsp0:pos_3847_line_61^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3847_line_61^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {(1 1) math:sum 2}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3814_line_61]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3901_line_62^e:source {("1" "1") math:sum 2}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3901_line_62^e:source {("1" "1") math:sum 2}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("1" "1") math:sum 2} => {nsp0:pos_3901_line_62^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_3901_line_62^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {("1" "1") math:sum 2}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3864_line_62]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_3985_line_63^e:source {("1969-07-20T20:17:40Z"^^xsd:dateTime) math:sum -14182940.0}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_3985_line_63^e:source {("1969-07-20T20:17:40Z"^^xsd:dateTime) math:sum -14182940.0}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("1969-07-20T20:17:40Z"^^xsd:dateTime) math:sum -14182940.0} => {nsp0:pos_3985_line_63^e:source :result -14182940.0}}]
+			[ a r:Inference; r:gives {nsp0:pos_3985_line_63^e:source :result -14182940.0}; r:evidence (
+				[ a r:Fact; r:gives {("1969-07-20T20:17:40Z"^^xsd:dateTime) math:sum -14182940.0}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_3918_line_63]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4050_line_64^e:source {("P1D"^^xsd:duration) math:sum 86400}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4050_line_64^e:source {("P1D"^^xsd:duration) math:sum 86400}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("P1D"^^xsd:duration) math:sum 86400} => {nsp0:pos_4050_line_64^e:source :result 86400}}]
+			[ a r:Inference; r:gives {nsp0:pos_4050_line_64^e:source :result 86400}; r:evidence (
+				[ a r:Fact; r:gives {("P1D"^^xsd:duration) math:sum 86400}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4000_line_64]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4121_line_66^e:source {("eul" "er") str:concatenation "euler"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4121_line_66^e:source {("eul" "er") str:concatenation "euler"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{("eul" "er") str:concatenation "euler"} => {nsp0:pos_4121_line_66^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_4121_line_66^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {("eul" "er") str:concatenation "euler"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4066_line_66]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4190_line_67^e:source {"Tim" str:containsIgnoringCase "IM"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4190_line_67^e:source {"Tim" str:containsIgnoringCase "IM"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"Tim" str:containsIgnoringCase "IM"} => {nsp0:pos_4190_line_67^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_4190_line_67^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {"Tim" str:containsIgnoringCase "IM"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4138_line_67]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4264_line_68^e:source {"abracadabra" str:matches "(a|b|r|c|d)+"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4264_line_68^e:source {"abracadabra" str:matches "(a|b|r|c|d)+"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"abracadabra" str:matches "(a|b|r|c|d)+"} => {nsp0:pos_4264_line_68^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_4264_line_68^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {"abracadabra" str:matches "(a|b|r|c|d)+"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4207_line_68]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4325_line_69^e:source {"euler" str:startsWith "eu"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4325_line_69^e:source {"euler" str:startsWith "eu"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"euler" str:startsWith "eu"} => {nsp0:pos_4325_line_69^e:source :result "true"^^xsd:boolean}}]
+			[ a r:Inference; r:gives {nsp0:pos_4325_line_69^e:source :result "true"^^xsd:boolean}; r:evidence (
+				[ a r:Fact; r:gives {"euler" str:startsWith "eu"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4281_line_69]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4415_line_70^e:source {"euler" str:endsWith "ler". ("eul" "er") str:concatenation "euler"}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4415_line_70^e:source {"euler" str:endsWith "ler". ("eul" "er") str:concatenation "euler"}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"euler" str:endsWith "ler". ("eul" "er") str:concatenation "euler"} => {nsp0:pos_4415_line_70^e:source :result "euler"}}]
+			[ a r:Inference; r:gives {nsp0:pos_4415_line_70^e:source :result "euler"}; r:evidence (
+				[ a r:Fact; r:gives {"euler" str:endsWith "ler"}]
+				[ a r:Fact; r:gives {("eul" "er") str:concatenation "euler"}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4342_line_70]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4482_line_72^e:source {"2006-12-14"^^xsd:date time:day 14}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4482_line_72^e:source {"2006-12-14"^^xsd:date time:day 14}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:day 14} => {nsp0:pos_4482_line_72^e:source :result 14}}]
+			[ a r:Inference; r:gives {nsp0:pos_4482_line_72^e:source :result 14}; r:evidence (
+				[ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:day 14}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4431_line_72]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4550_line_73^e:source {"2006-12-14"^^xsd:date time:month 12}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4550_line_73^e:source {"2006-12-14"^^xsd:date time:month 12}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:month 12} => {nsp0:pos_4550_line_73^e:source :result 12}}]
+			[ a r:Inference; r:gives {nsp0:pos_4550_line_73^e:source :result 12}; r:evidence (
+				[ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:month 12}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4497_line_73]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:component [ a r:Inference; r:gives {(nsp0:pos_4617_line_74^e:source {"2006-12-14"^^xsd:date time:year 2006}) a :PASS}; r:evidence (
+		[ a r:Inference; r:gives {(nsp0:pos_4617_line_74^e:source {"2006-12-14"^^xsd:date time:year 2006}) a :PASS}; r:evidence (
+			[ a r:Fact; r:gives {{"2006-12-14"^^xsd:date time:year 2006} => {nsp0:pos_4617_line_74^e:source :result 2006}}]
+			[ a r:Inference; r:gives {nsp0:pos_4617_line_74^e:source :result 2006}; r:evidence (
+				[ a r:Fact; r:gives {"2006-12-14"^^xsd:date time:year 2006}]);
+				r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4565_line_74]]]);
+			r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp0:pos_4653_line_78]]]);
+		r:rule [ a r:Extraction; r:because [ a r:Parsing; r:source nsp2:pos_62_line_3]]];
+	r:gives {
+		(nsp0:pos_868_line_21^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6}) a :PASS.
+		(nsp0:pos_922_line_22^e:source {(8 5 6 7 9 4) e:max 9}) a :PASS.
+		(nsp0:pos_976_line_23^e:source {(8 5 6 7 9 4) e:min 4}) a :PASS.
+		(nsp0:pos_1042_line_24^e:source {:a :b :d. _:_21_ e:optional {:g :h :i}}) a :PASS.
+		(nsp0:pos_1147_line_25^e:source {(((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d)) (var:_G14203 var:_G14206) (var:_G14212 var:_G14206)) e:prune ((9 :d) (7 :a) (6 :b))}) a :PASS.
+		(nsp0:pos_1235_line_26^e:source {((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))}) a :PASS.
+		(nsp0:pos_1320_line_27^e:source {((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))}) a :PASS.
+		(nsp0:pos_1396_line_28^e:source {(" +|([0-9]+|+|-)" "12+4-29") e:tokenize (12 + 4 - 29)}) a :PASS.
+		(nsp0:pos_1485_line_30^e:source {("2000/10/swap/" "http://www.w3.org/") fn:resolve-uri "http://www.w3.org/2000/10/swap/"}) a :PASS.
+		(nsp0:pos_1570_line_31^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-after "Head"}) a :PASS.
+		(nsp0:pos_1661_line_32^e:source {<http://www.co-ode.org/ontologies/galen#Head> log:uri "http://www.co-ode.org/ontologies/galen#Head". ("http://www.co-ode.org/ontologies/galen#Head" "#") fn:substring-before "http://www.co-ode.org/ontologies/galen"}) a :PASS.
+		(nsp0:pos_1749_line_34^e:source {((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)}) a :PASS.
+		(nsp0:pos_1807_line_35^e:source {(:a :b :c) list:first :a}) a :PASS.
+		(nsp0:pos_1864_line_36^e:source {(:a :b :c) list:last :c}) a :PASS.
+		(nsp0:pos_1926_line_37^e:source {(:a :b :c) list:rest (:b :c)}) a :PASS.
+		(nsp0:pos_1981_line_38^e:source {:a list:in (:a :b :c)}) a :PASS.
+		(nsp0:pos_1981_line_38^e:source {:b list:in (:a :b :c)}) a :PASS.
+		(nsp0:pos_1981_line_38^e:source {:c list:in (:a :b :c)}) a :PASS.
+		(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :a}) a :PASS.
+		(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :b}) a :PASS.
+		(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :c}) a :PASS.
+		(nsp0:pos_2041_line_39^e:source {(:a :b :c :d) list:member :d}) a :PASS.
+		(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s1 :p1 :o1}. ({:s1 :p1 :o1} {:s1 :p1 :o1}) log:conjunction {:s1 :p1 :o1}}) a :PASS.
+		(nsp0:pos_2117_line_41^e:source {:s :p {:s1 :p1 :o1}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s1 :p1 :o1} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s1 :p1 :o1. :s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS.
+		(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s1 :p1 :o1}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s1 :p1 :o1}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3. :s1 :p1 :o1}}) a :PASS.
+		(nsp0:pos_2117_line_41^e:source {:s :p {:s2 :p2 :o2. :s3 :p3 :o3}. :s :p {:s2 :p2 :o2. :s3 :p3 :o3}. ({:s2 :p2 :o2. :s3 :p3 :o3} {:s2 :p2 :o2. :s3 :p3 :o3}) log:conjunction {:s2 :p2 :o2. :s3 :p3 :o3}}) a :PASS.
+		(nsp0:pos_2187_line_42^e:source {(:a :b) log:equalTo (:a :b)}) a :PASS.
+		(nsp0:pos_2320_line_43^e:source {{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. :e :d :f}}) a :PASS.
+		(nsp0:pos_2414_line_44^e:source {:ng1 :namedGraph var:_G14144. var:_G14144 log:includes {:k :j :l. :e :d :f}}) a :PASS.
+		(nsp0:pos_2585_line_45^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14144. var:_G14144 log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}}) a :PASS.
+		(nsp0:pos_2639_line_46^e:source {:a log:notEqualTo :b}) a :PASS.
+		(nsp0:pos_2758_line_47^e:source {{:b :a :c. :e :d :f. :h :g :i} log:notIncludes {:e :d :f. :b :e :c}}) a :PASS.
+		(nsp0:pos_2852_line_48^e:source {:ng2 :namedGraph var:_G14144. var:_G14144 log:notIncludes {:e :d :f. :b :e :c}}) a :PASS.
+		(nsp0:pos_3017_line_49^e:source {<http://www.agfa.com/w3c/euler/medic.n3> log:semantics var:_G14144. var:_G14144 log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}}) a :PASS.
+		(nsp0:pos_3119_line_50^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS.
+		(nsp0:pos_3268_line_52^e:source {<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"}) a :PASS.
+		(nsp0:pos_3324_line_54^e:source {(1 1) math:difference 0}) a :PASS.
+		(nsp0:pos_3450_line_55^e:source {("2007-12-21T00:02:00"^^xsd:dateTime "1956-01-10T00:00:00"^^xsd:dateTime) math:difference 1639267320.0}) a :PASS.
+		(nsp0:pos_3538_line_56^e:source {(2 3.0) math:exponentiation 8.0. (4.0 3.0) math:product 12.0}) a :PASS.
+		(nsp0:pos_3627_line_57^e:source {(2 5.0) math:exponentiation 32. (4 8) math:product 32}) a :PASS.
+		(nsp0:pos_3684_line_58^e:source {2 math:greaterThan 1}) a :PASS.
+		(nsp0:pos_3743_line_59^e:source {"02" math:greaterThan "1"}) a :PASS.
+		(nsp0:pos_3797_line_60^e:source {7 math:notLessThan 5}) a :PASS.
+		(nsp0:pos_3847_line_61^e:source {(1 1) math:sum 2}) a :PASS.
+		(nsp0:pos_3901_line_62^e:source {("1" "1") math:sum 2}) a :PASS.
+		(nsp0:pos_3985_line_63^e:source {("1969-07-20T20:17:40Z"^^xsd:dateTime) math:sum -14182940.0}) a :PASS.
+		(nsp0:pos_4050_line_64^e:source {("P1D"^^xsd:duration) math:sum 86400}) a :PASS.
+		(nsp0:pos_4121_line_66^e:source {("eul" "er") str:concatenation "euler"}) a :PASS.
+		(nsp0:pos_4190_line_67^e:source {"Tim" str:containsIgnoringCase "IM"}) a :PASS.
+		(nsp0:pos_4264_line_68^e:source {"abracadabra" str:matches "(a|b|r|c|d)+"}) a :PASS.
+		(nsp0:pos_4325_line_69^e:source {"euler" str:startsWith "eu"}) a :PASS.
+		(nsp0:pos_4415_line_70^e:source {"euler" str:endsWith "ler". ("eul" "er") str:concatenation "euler"}) a :PASS.
+		(nsp0:pos_4482_line_72^e:source {"2006-12-14"^^xsd:date time:day 14}) a :PASS.
+		(nsp0:pos_4550_line_73^e:source {"2006-12-14"^^xsd:date time:month 12}) a :PASS.
+		(nsp0:pos_4617_line_74^e:source {"2006-12-14"^^xsd:date time:year 2006}) a :PASS.}].
+
+#ENDS 110 + 89 msec.
+

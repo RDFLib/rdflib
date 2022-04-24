@@ -1,0 +1,10 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://www.example.org/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/daveQ.n3> q:answer (<mailto:bob@work.example> 35 <http://eulersharp.sourceforge.net/2004/04test/bobFoaf.n3>). 
+

@@ -1,0 +1,9 @@
+@prefix utm: <http://josd.github.io/brain/utm#>.
+
+{(1 0 1 0 0 1) utm:compute ?OUT} => {(1 0 1 0 0 1) utm:compute ?OUT}.
+
+{(1 0 1 1 1 1) utm:compute ?OUT} => {(1 0 1 1 1 1) utm:compute ?OUT}.
+
+{(1 1 1 1 1 1) utm:compute ?OUT} => {(1 1 1 1 1 1) utm:compute ?OUT}.
+
+{() utm:compute ?OUT} => {() utm:compute ?OUT}.

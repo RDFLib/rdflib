@@ -1,0 +1,63 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+@prefix test: <https://w3c.github.io/N3/tests/test.n3#> .
+@prefix earl: <https://www.w3.org/TR/EARL10-Schema/#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix graph: <http://www.w3.org/2000/10/swap/graph#> .
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix : <#> .
+
+test:TestN3Reason rdfs:subClassOf test:TestN3Positive .
+test:TestN3PositiveSyntax rdfs:subClassOf test:TestN3Positive, test:TestN3Syntax .
+test:TestN3NegativeSyntax rdfs:subClassOf test:TestN3Negative, test:TestN3Syntax .
+
+
+{	:tests :folder ?folder ; :fileRoot ?fileRoot .
+	?fileRoot string:length ?rootLen .
+	
+	?folder log:semantics { ?folder rdf:value ?files } .
+	(?entry
+	{ 	?files list:member ?file . 
+		?file log:uri ?path .
+		?path string:notMatches "/.*-ref\\.n3/" .
+		
+		(?path ?rootLen ?x) string:substring ?localPath .
+		(?localPath "/(.*).n3/") string:scrape ?localPath2 .
+		(?localPath2 "///" "_") string:replace ?testName .
+		# macho macho code
+		("#" ?testName)!string:concatenation <-log:uri ?uri .
+		
+		{ ?uri :hasPath ?localPath } log:equalTo ?entry .
+		
+	 } ?entries) log:collectAllIn _:x 
+
+} => { 
+	:tests :testPaths ?entries
+} .
+
+
+{	?uri a test:TestN3Positive ; 
+		mf:action ?pathUri .
+	
+} => { ?pathUri :commentsFor ?uri } .
+
+
+{	?uri a test:TestN3Negative ; 
+		mf:result ?pathUri .
+	
+} => { ?pathUri :commentsFor ?uri } .
+
+
+{	?pathUri :commentsFor ?uri .
+	
+	?pathUri log:uri ?path .	
+	:tests :fileRoot ?fileRoot .	
+	(?fileRoot ?path)!string:concatenation <-log:uri ?fullPathUri .
+	
+	?fullPathUri!log:semantics log:includes { _:x rdfs:comment ?comment } .
+
+} => { ?uri rdfs:comment ?comment } .

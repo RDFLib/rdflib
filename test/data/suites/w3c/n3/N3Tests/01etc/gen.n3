@@ -1,0 +1,58 @@
+# ----------------------------------------
+# graph and query generation -- Jos De Roo
+# ----------------------------------------
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+# graph generation
+{(?F ?N ?D ?R) :graphgen true} <= {
+    ("open" ?F "write" ?FD) e:derive true.
+    ("tell" ?FD) e:derive true.
+    ("format" "@prefix : <http://josd.github.io/brain#>.~n~n" ()) e:derive true.
+    ("between" 1 ?N ?I) e:derive true.
+    (?D) e:random ?S.
+    (?R) e:random ?Q.
+    ("round(_Q/(_R+1)*_D)" ?Q ?R ?D) e:calculate ?P.
+    (?D) e:random ?O.
+    ("format" ":i~d :i~d :i~d.~n" (?S ?P ?O)) e:derive true.
+    ("fail") e:derive true.
+}.
+{(?F ?N ?D ?R) :graphgen true} <= {
+    ("told") e:derive true.
+}.
+
+# query generation
+{(?A ?N ?D ?R) :querygen true} <= {
+    ("between" 1 ?N ?I) e:derive true.
+    ("atomic_list_concat" (?A ?I ".n3") ?F) e:derive true.
+    ("open" ?F "write" ?FD) e:derive true.
+    ("tell" ?FD) e:derive true.
+    ("format" "@prefix : <http://josd.github.io/brain#>.~n~n" ()) e:derive true.
+    (?R) e:random ?Q.
+    ("round(_Q/(_R+1)*_D)" ?Q ?R ?D) e:calculate ?P.
+    ("format" "{?S :i~d ?A. ?A :i~d ?B. ?B :i~d ?C. ?C :i~d ?O} => {?S :j ?O}.~n" (?P ?P ?P ?P)) e:derive true.
+    ("told") e:derive true.
+    ("fail") e:derive true.
+}.
+{(?A ?N ?D ?R) :querygen true} <= true.
+
+# multiquery generation
+{(?F ?A ?N) :multiquerygen true} <= {
+    ("open" ?F "write" ?FD) e:derive true.
+    ("tell" ?FD) e:derive true.
+    ("between" 1 ?N ?I) e:derive true.
+    ("atomic_list_concat" (?A ?I ".n3") ?Q) e:derive true.
+    ("format" "~w~n" (?Q)) e:derive true.
+    ("fail") e:derive true.
+}.
+{(?F ?A ?N) :multiquerygen true} <= {
+    ("told") e:derive true.
+}.
+
+# immediate goal
+true <=
+{   ("data.n3" 100000 10000 100) :graphgen true.
+    ("queries/query" 100 10000 100) :querygen true.
+    ("multi-query" "http://josd.github.io/brain/mq/queries/query" 100) :multiquerygen true.
+}.

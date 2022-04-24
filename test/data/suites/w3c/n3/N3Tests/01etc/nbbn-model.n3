@@ -1,0 +1,10 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+({{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}) e:conditional 0.5.
+
+({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}) e:conditional 0.97.
+({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}) e:conditional 0.15.
+
+({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}) e:conditional 0.17.
+({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}) e:conditional 0.5.

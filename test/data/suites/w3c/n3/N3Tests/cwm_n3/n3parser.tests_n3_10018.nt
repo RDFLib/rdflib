@@ -1,0 +1,9 @@
+    
+    <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#b>     <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#c> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#d> .
+    
+    <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#e>     <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#f> _:L9C5 .
+    
+    _:L9C5     <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#g> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#h> .
+    
+    _:L9C5     <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#i> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/trailing-semicolon.n3#j> .
+    

@@ -1,0 +1,34 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+  # Link edges to objects
+  {
+     ?obj a we:FinalObject.
+     ?y e:findall (?faceedge {
+     ?faceedge a we:FinalFaceEdge.
+     ?edge we:partoftotalfaceedge ?faceedge.
+     ?edge we:isEdgeOf ?TriangleA.
+	   ?TriangleA we:partofobject ?obj. 
+     } ?ANSWER).
+	   ?ANSWER e:distinct ?EdgeList.
+	   ?EdgeList e:length ?count.
+  }
+  =>
+  {
+     ?obj we:objectedges ?EdgeList.
+     ?obj we:edgecount ?count.
+  }.

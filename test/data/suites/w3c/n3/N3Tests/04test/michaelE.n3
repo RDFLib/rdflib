@@ -1,0 +1,62 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+(<http://eulersharp.sourceforge.net/2004/04test/michaelP.n3>!log:semantics
+ <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3>!log:semantics
+ <http://eulersharp.sourceforge.net/2003/03swap/xsd-rules.n3>!log:semantics
+ <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3>!log:semantics)!log:conjunction =>
+{
+@prefix ns1: <http://eulersharp.sourceforge.net/2003/03swap/xsd-rules#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix ns0: <http://eulersharp.sourceforge.net/2003/03swap/owl-rules#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/michaelP#>.
+@prefix ns2: <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+:myWheel :diameterValue _:e130_1. 
+_:e130_1 :value "15"^^xsd:decimal. 
+_:e130_1 :unit "cm"^^:Unit. 
+ {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 143. 
+  :LenthQuantity owl:intersectionOf _:e29_1. 
+   {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 237. 
+    _:e29_1 rdf:first :Quantity. 
+     {# <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3> line 45. 
+      :value rdfs:domain :Quantity. 
+      _:e130_1 :value "15"^^xsd:decimal} =>
+    {_:e130_1 a :Quantity}. 
+    _:e29_1 rdf:rest _:e50_1. 
+     {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 237. 
+      _:e50_1 rdf:first _:e68_1. 
+       {# <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3> line 58. 
+         {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 130. 
+          _:e68_1 owl:onProperty :value. 
+          _:e68_1 owl:allValuesFrom xsd:decimal. 
+          :value rdfs:range xsd:decimal} =>
+        {owl:Thing rdfs:subClassOf _:e68_1}. 
+        _:e130_1 a owl:Thing} =>
+      {_:e130_1 a _:e68_1}. 
+      _:e50_1 rdf:rest _:e75_1. 
+       {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 237. 
+        _:e75_1 rdf:first _:e85_1. 
+         {# <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules.n3> line 58. 
+           {# <http://eulersharp.sourceforge.net/2003/03swap/owl-rules.n3> line 130. 
+            _:e85_1 owl:onProperty :unit. 
+            _:e85_1 owl:allValuesFrom :Unit. 
+            :unit rdfs:range :Unit} =>
+          {owl:Thing rdfs:subClassOf _:e85_1}. 
+          _:e130_1 a owl:Thing} =>
+        {_:e130_1 a _:e85_1}. 
+        _:e75_1 rdf:rest rdf:nil. 
+        _:e130_1 ns0:inAllOf rdf:nil} =>
+      {_:e130_1 ns0:inAllOf _:e75_1}} =>
+    {_:e130_1 ns0:inAllOf _:e50_1}} =>
+  {_:e130_1 ns0:inAllOf _:e29_1}} =>
+{_:e130_1 a :LenthQuantity}. 
+
+# Proof found for http://eulersharp.sourceforge.net/2004/04test/michaelC.n3 in 195631 steps (135658 steps/sec) using 1 engine
+}.
+

@@ -1,0 +1,35 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2005/11swap/einstein#>.
+
+{   ?L log:equalTo ((?A1 :norwegian ?A2 ?A3 ?A4) (:blue ?A5 ?A6 ?A7 ?A8) (?A9 ?A10 ?A11 :milk ?A12) ?A13 ?A14);
+        :pair ((?A15 ?A16 ?A17 ?A18 :blends) (?A19 ?A20 :cats ?A21 ?A22));
+        :pair ((?A23 ?A24 :horse ?A25 ?A26) (?A27 ?A28 ?A29 ?A30 :dunhill));
+        :sublist ((:green ?A31 ?A32 :coffee ?A33) (:white ?A34 ?A35 ?A36 ?A37));
+        :pair ((?A38 ?A39 ?A40 ?A41 :blends) (?A42 ?A43 ?A44 :water ?A45));
+        list:member (:red :brit ?A46 ?A47 ?A48);
+        list:member (?A49 :swede :dogs ?A50 ?A51);
+        list:member (?A52 :dane ?A53 :tea ?A54);
+        list:member (?A55 ?A56 :birds ?A57 :pallmall);
+        list:member (:yellow ?A58 ?A59 ?A60 :dunhill);
+        list:member (?A61 ?A62 ?A63 :beer :bluemasters);
+        list:member (?A64 :german ?A65 ?A66 :prince);
+        list:member (?A67 ?B :fish ?A69 ?A70).
+}
+=>
+{   ?B :eats :fish.
+}.
+
+{?A :pair (?B ?C)} <=
+{   ?A :sublist (?B ?C).
+}.
+
+{?A :pair (?B ?C)} <=
+{   ?A :sublist (?C ?B).
+}.
+
+{?A :sublist ?B} <=
+{   (?C ?D) list:append ?A.
+    (?E ?B) list:append ?C.
+}.

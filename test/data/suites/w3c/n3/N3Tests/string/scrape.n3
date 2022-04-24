@@ -1,0 +1,10 @@
+# From swap/test/includes/scrape1.n3
+@prefix string:  <http://www.w3.org/2000/10/swap/string#> .
+
+@prefix : <#>.
+
+{ ("abcdef" "ab(..)ef") string:scrape "cd" } => { :Test1 a :Success }.
+
+{ ("abcdef" "ab(..)ef") string:scrape ?s } => { :Test2 :result ?s. }.
+
+{ ("abXcdef" "ab(..)ef") string:scrape ?s } => { :Test3 :result ?s }.

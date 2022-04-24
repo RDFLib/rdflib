@@ -1,0 +1,84 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+  # TETRAHEDRON. A closed object with 4 faces is a tetrahedron.
+  {
+     ?obj a we:FinalObject.
+     ?obj we:objectProperties we:ClosedObject.
+     ?obj we:facecount 4.
+     #Nog eis voor lengte van de ribben inbouwen.
+  }
+  =>
+  {
+     ?obj a we:tetrahedron.
+  }.
+  
+  
+  # BOX. A closed object with 3 pairs of perpendicular faces is a box.
+  {
+     ?obj a we:FinalObject.
+     ?obj we:objectProperties we:ClosedObject.
+     ?obj we:facecount 6.
+     ?obj we:objectfaces ?FacesList.
+     ?y e:findall ((?FL1 ?FL2) {
+     ?FacesList list:member ?FL1.
+     ?FacesList list:member ?FL2.
+     ?FL1 log:notEqualTo ?FL2.
+     ?FL1 we:parallelface ?FL2.
+     ?FL2 we:parallelface ?FL1.
+     } ?ANSWER).
+     ?ANSWER e:length 6.
+  }
+  =>
+  {
+     ?obj a we:box. 
+  }.
+  
+  # BOX DIMENSIONS.
+  {
+     ?obj a we:box.
+     ?obj we:objectedges ?objectedgeslist.
+     ?objectedgeslist list:member ?FinalFaceEdgeX.
+     ?FinalFaceEdgeX we:normalizedvector (1.0 0.0 0.0).
+     ?FinalFaceEdgeX we:length ?length.
+  }
+  =>
+  {
+     ?obj we:boxXDim ?length. 
+  }.
+  {
+     ?obj a we:box.
+     ?obj we:objectedges ?objectedgeslist.
+     ?objectedgeslist list:member ?FinalFaceEdgeX.
+     ?FinalFaceEdgeX we:normalizedvector (0.0 1.0 0.0).
+     ?FinalFaceEdgeX we:length ?length.
+  }
+  =>
+  {
+     ?obj we:boxYDim ?length. 
+  }.
+  {
+     ?obj a we:box.
+     ?obj we:objectedges ?objectedgeslist.
+     ?objectedgeslist list:member ?FinalFaceEdgeX.
+     ?FinalFaceEdgeX we:normalizedvector (0.0 0.0 1.0).
+     ?FinalFaceEdgeX we:length ?length.
+  }
+  =>
+  {
+     ?obj we:boxZDim ?length. 
+  }.

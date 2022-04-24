@@ -1,0 +1,8 @@
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+{
+    ?CASE :input1 ?I1.
+    ?CASE :input2 ?I2.
+} => {
+    ?CASE :input10 (?I1 ?I2).
+}. 

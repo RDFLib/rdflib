@@ -1,0 +1,6 @@
+# DAWG meeting 2005-2-28
+#
+@prefix foo:  <http://example.com/>.
+
+foo:fred foo:loves foo:sushi. .
+

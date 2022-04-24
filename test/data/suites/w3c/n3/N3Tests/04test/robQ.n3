@@ -1,0 +1,11 @@
+# $Id: robQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think robP.n3 --query robQ.n3
+# PxButton | cwm | cwm robP.n3 --think --query"=robQ.n3"
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/robP#>.
+
+[]
+q:select {?X :hasGroup :ManagementOrSupport};
+q:where  {?X :hasGroup :ManagementOrSupport}.

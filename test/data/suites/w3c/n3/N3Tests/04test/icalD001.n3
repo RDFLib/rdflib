@@ -1,0 +1,7 @@
+# $Id: icalD001.n3 493 2005-03-20 18:13:06Z josd $
+
+@prefix ical: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix : <http://example.org/#>.
+
+:test ical:summary "test SPARQL".
+:test ical:dtstart "2005-02-15T00:00:00Z".

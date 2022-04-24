@@ -1,0 +1,281 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --tactic limited-answer 1 http://josd.github.io/brain/dpe/dpe_theory.n3 http://josd.github.io/brain/dpe/dpe_assumption.n3 --query http://josd.github.io/brain/dpe/dpe_query.n3
+
+@prefix : <http://josd.github.io/brain/dpe/dpe#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :b :re _:sk_1.
+    :c :re _:sk_1.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :b :re _:sk_1.
+    :c :re _:sk_1.
+  };
+  r:evidence (
+    <#lemma2>
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :b :re _:sk_1.
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    :c :re _:sk_1.
+  };
+  r:evidence (
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma6>.
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {:b :re var:x_0.
+     :c :re var:x_0} => {:b :re var:x_0.
+     :c :re var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_query.n3>].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    :b :r _:sk_1.
+    :c :r _:sk_1.
+  };
+  r:evidence (
+    <#lemma7>
+    <#lemma8>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma9>.
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :r var:x_1} => {var:x_0 :re var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    :a :r :b.
+  };
+  r:evidence (
+    <#lemma10>
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:rule <#lemma12>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    :a :r :c.
+  };
+  r:evidence (
+    <#lemma13>
+    <#lemma14>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:rule <#lemma12>.
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. @forSome var:x_3. {var:x_0 :r var:x_1.
+     var:x_0 :r var:x_2} => {var:x_1 :r var:x_3.
+     var:x_2 :r var:x_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    :a :re :b.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    :a :not_e :b.
+  };
+  r:evidence (
+    <#lemma15>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:rule <#lemma16>.
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :re var:x_1.
+     var:x_0 :not_e var:x_1} => {var:x_0 :r var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    :a :re :c.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma14> a r:Inference;
+  r:gives {
+    :a :not_e :c.
+  };
+  r:evidence (
+    <#lemma17>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:rule <#lemma16>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    :b :not_e :a.
+  };
+  r:evidence (
+    <#lemma18>
+    <#lemma13>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:rule <#lemma19>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :not_e var:x_1} => {var:x_1 :not_e var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    :c :not_e :a.
+  };
+  r:evidence (
+    <#lemma20>
+    <#lemma10>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:rule <#lemma19>.
+
+<#lemma18> a r:Inference;
+  r:gives {
+    :b :not_re :c.
+  };
+  r:evidence (
+    <#lemma21>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:rule <#lemma22>.
+
+<#lemma19> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 :not_re var:x_1.
+     var:x_2 :re var:x_1} => {var:x_0 :not_e var:x_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma20> a r:Inference;
+  r:gives {
+    :c :not_re :b.
+  };
+  r:evidence (
+    <#lemma23>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:rule <#lemma24>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    :c :re :c.
+  };
+  r:evidence (
+    <#lemma25>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:rule <#lemma26>.
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {:c :re var:x_0} => {:b :not_re var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_assumption.n3>].
+
+<#lemma23> a r:Inference;
+  r:gives {
+    :b :re :b.
+  };
+  r:evidence (
+    <#lemma27>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:rule <#lemma26>.
+
+<#lemma24> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {:b :re var:x_0} => {:c :not_re var:x_0}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_assumption.n3>].
+
+<#lemma25> a r:Inference;
+  r:gives {
+    :c :e :c.
+  };
+  r:evidence (
+    <#lemma13>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#c"]];
+  r:rule <#lemma28>.
+
+<#lemma26> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :e var:x_1} => {var:x_0 :re var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+<#lemma27> a r:Inference;
+  r:gives {
+    :b :e :b.
+  };
+  r:evidence (
+    <#lemma10>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#a"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/dpe/dpe#b"]];
+  r:rule <#lemma28>.
+
+<#lemma28> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 :re var:x_1} => {var:x_1 :e var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dpe/dpe_theory.n3>].
+
+#2020-02-22T21:51:05.530Z in=16 out=2 ent=32 step=120 brake=4 inf=51651 sec=0.107 inf/sec=482720
+#ENDS
+

@@ -1,0 +1,264 @@
+# $Id: vcard.n3 336 2004-07-06 22:49:40Z josd $
+
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :   <http://www.w3.org/2001/vcard-rdf/3.0#> .
+
+:N    a       rdf:Property ;
+      rdfs:label "Name" ;
+      rdfs:range :NPROPERTIES .
+
+:postal
+      a       <ADRTYPES> .
+
+:Given
+      a       rdf:Property ;
+      rdfs:label "Given Name" ;
+      rdfs:subClassOf :NPROPERTIES .
+
+:msg  a       <TELTYPES> .
+
+:Region
+      a       rdf:Property ;
+      rdfs:label "Region/State" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:LABEL
+      a       rdf:Property ;
+      rdfs:label "Address Label" ;
+      rdfs:range :ADRTYPES .
+
+:TZTYPES
+      a       rdfs:Class .
+
+:FN   a       rdf:Property ;
+      rdfs:label "Formatted Name" .
+
+:Extadd
+      a       rdf:Property ;
+      rdfs:label "Extended Address" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:parcel
+      a       <ADRTYPES> .
+
+:ROLE
+      a       rdf:Property ;
+      rdfs:label "Position Role" .
+
+:isdn
+      a       <TELTYPES> .
+
+:KEY  a       rdf:Property ;
+      rdfs:label "Public Key" .
+
+:AGENT
+      a       rdf:Property ;
+      rdfs:label "Agent" .
+
+:Orgunit
+      a       rdf:Property ;
+      rdfs:label "Organisation Unit" ;
+      rdfs:subClassOf :ORGPROPERTIES .
+
+:LOGO
+      a       rdf:Property ;
+      rdfs:label "Logo Image" .
+
+:modem
+      a       <TELTYPES> .
+
+:BDAY
+      a       rdf:Property ;
+      rdfs:label "Birthday" .
+
+:x400
+      a       <EMAILTYPES> .
+
+:Country
+      a       rdf:Property ;
+      rdfs:label "Country" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:pager
+      a       <TELTYPES> .
+
+:video
+      a       <TELTYPES> .
+
+:TEL  a       rdf:Property ;
+      rdfs:label "Telephone" ;
+      rdfs:range :TELTYPES .
+
+:Family
+      a       rdf:Property ;
+      rdfs:label "Family Name" ;
+      rdfs:subClassOf :NPROPERTIES .
+
+:Pcode
+      a       rdf:Property ;
+      rdfs:label "Postal Code" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:dom  a       <ADRTYPES> .
+
+:home
+      a       <ADRTYPES> , <TELTYPES> .
+
+:CATEGORIES
+      a       rdf:Property ;
+      rdfs:label "Categories" .
+
+:REV  a       rdf:Property ;
+      rdfs:label "Revision" .
+
+:MAILER
+      a       rdf:Property ;
+      rdfs:label "EMail Program" .
+
+:TZ   a       rdf:Property ;
+      rdfs:label "Timezone" ;
+      rdfs:range :TZTYPES .
+
+:ADRPROPERTIES
+      a       rdfs:Class ;
+      rdfs:subClassOf :ADRTYPES .
+
+:PHOTO
+      a       rdf:Property ;
+      rdfs:label "Photograph" .
+
+:ADRTYPES
+      a       rdfs:Class .
+
+:PRODID
+      a       rdf:Property ;
+      rdfs:label "Product ID" .
+
+:intl
+      a       <ADRTYPES> .
+
+:CLASS
+      a       rdf:Property ;
+      rdfs:label "Class" .
+
+:fax  a       <TELTYPES> .
+
+:internet
+      a       <EMAILTYPES> .
+
+:ORG  a       rdf:Property ;
+      rdfs:label "Organisation" ;
+      rdfs:range :ORGPROPERTIES .
+
+:Street
+      a       rdf:Property ;
+      rdfs:label "Street" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:NPROPERTIES
+      a       rdfs:Class .
+
+:GROUP
+      a       rdf:Property ;
+      rdfs:label "Group vCard Properties" .
+
+:Orgname
+      a       rdf:Property ;
+      rdfs:label "Organisation Name" ;
+      rdfs:subClassOf :ORGPROPERTIES .
+
+:SOURCE
+      a       rdf:Property ;
+      rdfs:label "Source" .
+
+:text
+      a       <TZTYPES> .
+
+:EMAILTYPES
+      a       rdfs:Class .
+
+:cell
+      a       <TELTYPES> .
+
+:ADR  a       rdf:Property ;
+      rdfs:label "Address" ;
+      rdfs:range :ADRTYPES .
+
+:EMAIL
+      a       rdf:Property ;
+      rdfs:label "Email Address" ;
+      rdfs:range :EMAILTYPES .
+
+:GEO  a       rdf:Property ;
+      rdfs:label "Geographical Information" .
+
+:bbs  a       <TELTYPES> .
+
+:NAME
+      a       rdf:Property ;
+      rdfs:label "vCard Name" .
+
+:Locality
+      a       rdf:Property ;
+      rdfs:label "Locality/Suburb" ;
+      rdfs:subClassOf :ADRPROPERTIES .
+
+:TELTYPES
+      a       rdfs:Class .
+
+:work
+      a       <ADRTYPES> , <TELTYPES> .
+
+:pcs  a       <TELTYPES> .
+
+:Prefix
+      a       rdf:Property ;
+      rdfs:label "Prefix Name" ;
+      rdfs:subClassOf :NPROPERTIES .
+
+:SOUND
+      a       rdf:Property ;
+      rdfs:label "Audio Sound" .
+
+:NOTE
+      a       rdf:Property ;
+      rdfs:label "Notes" .
+
+:TITLE
+      a       rdf:Property ;
+      rdfs:label "Position Title" .
+
+:pref
+      a       <ADRTYPES> , <EMAILTYPES> .
+
+:UID  a       rdf:Property ;
+      rdfs:label "Unique ID" .
+
+:NICKNAME
+      a       rdf:Property ;
+      rdfs:label "Nickname" .
+
+:Other
+      a       rdf:Property ;
+      rdfs:label "Other Names" ;
+      rdfs:subClassOf :NPROPERTIES .
+
+:ORGPROPERTIES
+      a       rdfs:Class .
+
+:SORT-STRING
+      a       rdf:Property ;
+      rdfs:label "Sort String" .
+
+:car  a       <TELTYPES> .
+
+:Suffix
+      a       rdf:Property ;
+      rdfs:label "Suffix Name" ;
+      rdfs:subClassOf :NPROPERTIES .
+
+:Pobox
+      a       rdf:Property ;
+      rdfs:label "Post Office Box" ;
+      rdfs:subClassOf :ADRPROPERTIES .

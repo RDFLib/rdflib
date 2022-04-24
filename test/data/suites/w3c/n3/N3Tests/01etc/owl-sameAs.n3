@@ -1,0 +1,5 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?X owl:sameAs ?Y} => {?Y owl:sameAs ?X}.
+{?X owl:sameAs ?Y. ?Y owl:sameAs ?Z} => {?X owl:sameAs ?Z}.
+{?X owl:sameAs ?Y. ?X owl:differentFrom ?Y} => false.

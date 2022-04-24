@@ -1,0 +1,19 @@
+#Processed by EYE v18.0131.1211 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/bg-test-10.n3 --pass
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/bg#>.
+
+:s :p {:a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c.
+ :a :b :c}.
+
+#2018-01-31T12:24:45.403Z in=11 out=1 ent=0 step=0 brake=1 inf=12765 sec=0.017 inf/sec=750882
+#ENDS
+

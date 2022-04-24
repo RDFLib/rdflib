@@ -1,0 +1,49 @@
+
+     @base <http://www.w3.org/2001/tag/dj9/>.
+     
+     @prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+     @prefix ht: <http://www.w3.org/2006/http#>.
+     @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+     @prefix dc: <http://purl.org/dc/elements/1.1/>.
+     @prefix cyc: <http://sw.opencyc.org/2009/04/07/concept/en/>.
+     @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+     @prefix log: <http://www.w3.org/2000/10/swap/log#>.
+     
+     @prefix hs: <httpspeech#>.
+     @prefix c: <speech#>.
+
+
+     { ?X a cyc:AffixingSignature; cyc:performer ?WHO;
+       cyc:objectActedOn ?DOC } => { ?DOC c:speaks_for ?WHO }.
+
+
+     { ?SOMEONE c:says ?F. ?F log:includes { ?WORK dc:SOURCE ?SOURCE } }
+     => { ?SOMEONE cyc:perceives ?WORK. }.
+
+
+  [] a cyc:AffixingSignature; cyc:performer :Bob;
+     cyc:objectActedOn <http://example.org/1995/manifesto>.
+
+
+  <http://penguin-house.example/2008/article2>
+    cyc:publicationDate_IBO [ xsd:date "2008-05-16" ].
+
+
+  :C1 ht:connectionAuthority "example.org";
+     ht:requests (:Q1).
+  
+  :Q1 ht:absoluteURI "http://example.org/1995/manifesto";
+    ht:methodName "GET";
+    ht:resp :A1.
+  
+  :A1 ht:statusCodeNumber "200";
+    hs:asEntity {
+      <http://example.org/1995/manifesto> foaf:maker :Bob.
+  
+      <http://penguin-house.example/2008/article2>
+        dc::SOURCE <http://example.org/1995/manifesto>.
+    }.
+
+
+  :Bob cyc:dateOfDeath [ xsd:date "2006-01-23" ].
+

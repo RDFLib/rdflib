@@ -1,0 +1,19 @@
+# $Id: dawg-ot-0-01.n3 482 2005-02-24 17:16:37Z josd $
+# PxButton | es  | euler --nope --think dawg-data-01.n3 --query dawg-ot-0-01.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py dawg-data-01.n3 --think --query"=dawg-ot-0-01.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# Get name, and optionally the mbox, of each person
+
+[]
+q:select {<> q:answer (?name ?mbox)};
+q:where  {?person foaf:name ?name.
+          <dawg-data-01.n3> log:semantics ?F.
+	  ?F log:notIncludes {?person foaf:name ?name; foaf:mbox ?mbox}}.
+
+[]
+q:select {<> q:answer (?name ?mbox)};
+q:where  {?person foaf:name ?name; foaf:mbox ?mbox}.

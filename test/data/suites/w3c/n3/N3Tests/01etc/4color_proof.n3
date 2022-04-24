@@ -1,0 +1,867 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --tactic limited-answer 2 --turtle http://josd.github.io/brain/4color/4color_data.n3 http://josd.github.io/brain/4color/4color_rules.n3 --query http://josd.github.io/brain/4color/4color_query.n3
+
+@prefix : <http://josd.github.io/brain/4color#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+    ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:findall ((_:sk_0 _:sk_1) {_:sk_0 :neighbours _:sk_2} ((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :blue)))}]
+    [ a r:Fact; r:gives {(((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :blue))) func:reverse ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))}]
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :blue))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:findall ((_:sk_3 _:sk_4) {_:sk_3 :neighbours _:sk_5} ((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :yellow)))}]
+    [ a r:Fact; r:gives {(((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :yellow))) func:reverse ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))}]
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_3"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_4"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_5"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ((:Austria :red) (:Belgium :red) (:Bulgaria :red) (:Croatia :red) (:Cyprus :red) (:Czech_Republic :green) (:Denmark :red) (:Estonia :red) (:Finland :green) (:France :green) (:Germany :blue) (:Greece :green) (:Hungary :green) (:Ireland :red) (:Italy :blue) (:Latvia :green) (:Lithuania :blue) (:Luxemburg :yellow) (:Malta :red) (:Netherlands :green) (:Poland :red) (:Portugal :red) (:Romania :blue) (:Slovakia :blue) (:Slovenia :yellow) (:Spain :blue) (:Sweden :blue) (:United_Kingdom :yellow))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:rule <#lemma4>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:United_Kingdom :blue) ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma6>
+    <#lemma7>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Ireland :Netherlands :Belgium :France) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#United_Kingdom"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Ireland :Netherlands :Belgium :France)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5. {var:x_0 e:findall ((var:x_1 var:x_2) {var:x_1 :neighbours var:x_3} var:x_4).
+     (var:x_4) func:reverse var:x_5.
+     var:x_5 :places true} => {var:x_5 :coloring true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_query.n3>].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:United_Kingdom :yellow) ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma6>
+    <#lemma7>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :yellow}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :yellow).
+     (:Ireland :Netherlands :Belgium :France) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#United_Kingdom"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Ireland :Netherlands :Belgium :France)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Sweden :blue) ((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma9>
+    <#lemma10>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Finland :Denmark) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Sweden"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Finland :Denmark)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    :United_Kingdom :neighbours (:Ireland :Netherlands :Belgium :France).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6. {var:x_0 :places true} <= {var:x_0 e:firstRest ((var:x_1 var:x_2) var:x_3).
+     var:x_3 :places true.
+     var:x_1 :neighbours var:x_4.
+     (:red :green :blue :yellow) list:member var:x_2.
+     var:x_5 e:fail {var:x_3 list:member (var:x_6 var:x_2).
+      var:x_4 list:member var:x_6}}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_rules.n3>].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    ((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Spain :blue) ((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma11>
+    <#lemma12>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:France :Portugal) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Spain"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:France :Portugal)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    :Sweden :neighbours (:Finland :Denmark).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma11> a r:Inference;
+  r:gives {
+    ((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Slovenia :yellow) ((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma13>
+    <#lemma14>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :yellow}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :yellow).
+     (:Austria :Italy :Hungary :Croatia) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Slovenia"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Austria :Italy :Hungary :Croatia)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    :Spain :neighbours (:France :Portugal).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma13> a r:Inference;
+  r:gives {
+    ((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Slovakia :blue) ((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma15>
+    <#lemma16>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Czech_Republic :Poland :Hungary :Austria) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Slovakia"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Czech_Republic :Poland :Hungary :Austria)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    :Slovenia :neighbours (:Austria :Italy :Hungary :Croatia).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    ((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Romania :blue) ((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma17>
+    <#lemma18>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Hungary :Bulgaria) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Romania"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Hungary :Bulgaria)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    :Slovakia :neighbours (:Czech_Republic :Poland :Hungary :Austria).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma17> a r:Inference;
+  r:gives {
+    ((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Portugal :red) ((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma19>
+    <#lemma20>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Spain) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Portugal"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Spain)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    :Romania :neighbours (:Hungary :Bulgaria).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma19> a r:Inference;
+  r:gives {
+    ((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Poland :red) ((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma21>
+    <#lemma22>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Germany :Czech_Republic :Slovakia :Lithuania) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Poland"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Germany :Czech_Republic :Slovakia :Lithuania)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma20> a r:Extraction;
+  r:gives {
+    :Portugal :neighbours (:Spain).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma21> a r:Inference;
+  r:gives {
+    ((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Netherlands :green) ((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma23>
+    <#lemma24>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Belgium :Germany :United_Kingdom) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Netherlands"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Belgium :Germany :United_Kingdom)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma22> a r:Extraction;
+  r:gives {
+    :Poland :neighbours (:Germany :Czech_Republic :Slovakia :Lithuania).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma23> a r:Inference;
+  r:gives {
+    ((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Malta :red) ((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma25>
+    <#lemma26>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     () list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Malta"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma24> a r:Extraction;
+  r:gives {
+    :Netherlands :neighbours (:Belgium :Germany :United_Kingdom).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma25> a r:Inference;
+  r:gives {
+    ((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Luxemburg :yellow) ((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma27>
+    <#lemma28>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :yellow}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :yellow).
+     (:Belgium :France :Germany) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Luxemburg"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#yellow"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Belgium :France :Germany)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma26> a r:Extraction;
+  r:gives {
+    :Malta :neighbours ().
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma27> a r:Inference;
+  r:gives {
+    ((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Lithuania :blue) ((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma29>
+    <#lemma30>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Estonia :Latvia :Poland) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Lithuania"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Estonia :Latvia :Poland)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma28> a r:Extraction;
+  r:gives {
+    :Luxemburg :neighbours (:Belgium :France :Germany).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma29> a r:Inference;
+  r:gives {
+    ((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Latvia :green) ((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma31>
+    <#lemma32>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Estonia :Lithuania) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Latvia"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Estonia :Lithuania)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma30> a r:Extraction;
+  r:gives {
+    :Lithuania :neighbours (:Estonia :Latvia :Poland).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma31> a r:Inference;
+  r:gives {
+    ((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Italy :blue) ((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma33>
+    <#lemma34>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:France :Austria :Slovenia) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Italy"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:France :Austria :Slovenia)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma32> a r:Extraction;
+  r:gives {
+    :Latvia :neighbours (:Estonia :Lithuania).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma33> a r:Inference;
+  r:gives {
+    ((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Ireland :red) ((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma35>
+    <#lemma36>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:United_Kingdom) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Ireland"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:United_Kingdom)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma34> a r:Extraction;
+  r:gives {
+    :Italy :neighbours (:France :Austria :Slovenia).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma35> a r:Inference;
+  r:gives {
+    ((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Hungary :green) ((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma37>
+    <#lemma38>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Austria :Slovakia :Romania :Croatia :Slovenia) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Hungary"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Austria :Slovakia :Romania :Croatia :Slovenia)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma36> a r:Extraction;
+  r:gives {
+    :Ireland :neighbours (:United_Kingdom).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma37> a r:Inference;
+  r:gives {
+    ((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Greece :green) ((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma39>
+    <#lemma40>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Bulgaria :Cyprus) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Greece"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Bulgaria :Cyprus)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma38> a r:Extraction;
+  r:gives {
+    :Hungary :neighbours (:Austria :Slovakia :Romania :Croatia :Slovenia).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma39> a r:Inference;
+  r:gives {
+    ((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Germany :blue) ((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma41>
+    <#lemma42>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :blue}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :blue).
+     (:Netherlands :Belgium :Luxemburg :Denmark :France :Austria :Poland :Czech_Republic) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Germany"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#blue"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Netherlands :Belgium :Luxemburg :Denmark :France :Austria :Poland :Czech_Republic)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma40> a r:Extraction;
+  r:gives {
+    :Greece :neighbours (:Bulgaria :Cyprus).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma41> a r:Inference;
+  r:gives {
+    ((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:France :green) ((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma43>
+    <#lemma44>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Spain :Belgium :Luxemburg :Germany :Italy :United_Kingdom) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#France"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Spain :Belgium :Luxemburg :Germany :Italy :United_Kingdom)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma42> a r:Extraction;
+  r:gives {
+    :Germany :neighbours (:Netherlands :Belgium :Luxemburg :Denmark :France :Austria :Poland :Czech_Republic).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma43> a r:Inference;
+  r:gives {
+    ((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Finland :green) ((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma45>
+    <#lemma46>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Estonia :Sweden) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Finland"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Estonia :Sweden)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma44> a r:Extraction;
+  r:gives {
+    :France :neighbours (:Spain :Belgium :Luxemburg :Germany :Italy :United_Kingdom).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma45> a r:Inference;
+  r:gives {
+    ((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Estonia :red) ((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma47>
+    <#lemma48>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Finland :Latvia :Lithuania) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Estonia"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Finland :Latvia :Lithuania)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma46> a r:Extraction;
+  r:gives {
+    :Finland :neighbours (:Estonia :Sweden).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma47> a r:Inference;
+  r:gives {
+    ((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Denmark :red) ((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma49>
+    <#lemma50>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Germany :Sweden) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Denmark"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Germany :Sweden)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma48> a r:Extraction;
+  r:gives {
+    :Estonia :neighbours (:Finland :Latvia :Lithuania).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma49> a r:Inference;
+  r:gives {
+    ((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Czech_Republic :green) ((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma51>
+    <#lemma52>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :green}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :green).
+     (:Germany :Poland :Slovakia :Austria) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Czech_Republic"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#green"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Germany :Poland :Slovakia :Austria)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma50> a r:Extraction;
+  r:gives {
+    :Denmark :neighbours (:Germany :Sweden).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma51> a r:Inference;
+  r:gives {
+    ((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Cyprus :red) ((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma53>
+    <#lemma54>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Greece) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Cyprus"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Greece)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma52> a r:Extraction;
+  r:gives {
+    :Czech_Republic :neighbours (:Germany :Poland :Slovakia :Austria).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma53> a r:Inference;
+  r:gives {
+    ((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Croatia :red) ((:Bulgaria :red) (:Belgium :red) (:Austria :red)))}]
+    <#lemma55>
+    <#lemma56>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Bulgaria :red) (:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Slovenia :Hungary) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Croatia"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Slovenia :Hungary)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma54> a r:Extraction;
+  r:gives {
+    :Cyprus :neighbours (:Greece).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma55> a r:Inference;
+  r:gives {
+    ((:Bulgaria :red) (:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Bulgaria :red) (:Belgium :red) (:Austria :red)) e:firstRest ((:Bulgaria :red) ((:Belgium :red) (:Austria :red)))}]
+    <#lemma57>
+    <#lemma58>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Belgium :red) (:Austria :red)) list:member (_:sk_0 :red).
+     (:Romania :Greece) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Bulgaria :red) (:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Bulgaria"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Romania :Greece)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma56> a r:Extraction;
+  r:gives {
+    :Croatia :neighbours (:Slovenia :Hungary).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma57> a r:Inference;
+  r:gives {
+    ((:Belgium :red) (:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Belgium :red) (:Austria :red)) e:firstRest ((:Belgium :red) ((:Austria :red)))}]
+    <#lemma59>
+    <#lemma60>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {((:Austria :red)) list:member (_:sk_0 :red).
+     (:France :Netherlands :Luxemburg :Germany :United_Kingdom) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Belgium :red) (:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Belgium"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ((:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:France :Netherlands :Luxemburg :Germany :United_Kingdom)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma58> a r:Extraction;
+  r:gives {
+    :Bulgaria :neighbours (:Romania :Greece).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma59> a r:Inference;
+  r:gives {
+    ((:Austria :red)) :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((:Austria :red)) e:firstRest ((:Austria :red) ())}]
+    <#lemma61>
+    <#lemma62>
+    [ a r:Fact; r:gives {(:red :green :blue :yellow) list:member :red}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1) e:fail {() list:member (_:sk_0 :red).
+     (:Czech_Republic :Germany :Hungary :Italy :Slovenia :Slovakia) list:member _:sk_0}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((:Austria :red))];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#Austria"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://josd.github.io/brain/4color#red"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo (:Czech_Republic :Germany :Hungary :Italy :Slovenia :Slovakia)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ((<http://josd.github.io/brain/4color/4color_data.n3> <http://josd.github.io/brain/4color/4color_rules.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma8>.
+
+<#lemma60> a r:Extraction;
+  r:gives {
+    :Belgium :neighbours (:France :Netherlands :Luxemburg :Germany :United_Kingdom).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma61> a r:Inference;
+  r:gives {
+    () :places true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma63>.
+
+<#lemma62> a r:Extraction;
+  r:gives {
+    :Austria :neighbours (:Czech_Republic :Germany :Hungary :Italy :Slovenia :Slovakia).
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_data.n3>].
+
+<#lemma63> a r:Extraction;
+  r:gives {
+    {() :places true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/4color/4color_rules.n3>].
+
+#2020-02-22T21:50:12.800Z in=31 out=2 ent=2 step=2 brake=2 inf=434808 sec=0.252 inf/sec=1725429
+#ENDS
+

@@ -1,0 +1,6 @@
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/>.
+
+{ <lena.jpg> dbpedia-owl:thumbnail ?thumbnail. }
+=>
+{ <lena.jpg> dbpedia-owl:thumbnail ?thumbnail. }.
+

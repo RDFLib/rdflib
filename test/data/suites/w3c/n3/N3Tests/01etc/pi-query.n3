@@ -1,0 +1,3 @@
+@prefix : <http://josd.github.io/brain#>.
+
+{(1000 ?Pi) :pi true} => {(1000 ?Pi) :pi true}.

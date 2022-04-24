@@ -1,0 +1,9 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+-prolog+sfcvs%2F2004%2F04test%2Fmetastatic.n3+-query+sfcvs%2F2004%2F04test%2FmetastaticF.n3
+# PxButton | euler5p  | bash .euler5 http://localhost/.euler+-prolog+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Fmetastatic.n3+-query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FmetastaticF.n3 > metastaticE.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/metastatic#>.
+
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) () ?Y)} => {(?SCOPE 1) e:bayesian ((?X) () ?Y)}.
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) ((:Coma e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((?X) ((:Coma e:T)) ?Y)}.
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) ((:Coma e:F) (:HeadAche e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((?X) ((:Coma e:F) (:HeadAche e:T)) ?Y)}.

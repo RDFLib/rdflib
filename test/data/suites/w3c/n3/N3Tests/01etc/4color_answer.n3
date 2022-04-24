@@ -1,0 +1,14 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope --tactic limited-answer 2 --turtle http://josd.github.io/brain/4color/4color_data.n3 http://josd.github.io/brain/4color/4color_rules.n3 --query http://josd.github.io/brain/4color/4color_query.n3
+
+@prefix : <http://josd.github.io/brain/4color#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+
+((:United_Kingdom :blue) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+((:United_Kingdom :yellow) (:Sweden :blue) (:Spain :blue) (:Slovenia :yellow) (:Slovakia :blue) (:Romania :blue) (:Portugal :red) (:Poland :red) (:Netherlands :green) (:Malta :red) (:Luxemburg :yellow) (:Lithuania :blue) (:Latvia :green) (:Italy :blue) (:Ireland :red) (:Hungary :green) (:Greece :green) (:Germany :blue) (:France :green) (:Finland :green) (:Estonia :red) (:Denmark :red) (:Czech_Republic :green) (:Cyprus :red) (:Croatia :red) (:Bulgaria :red) (:Belgium :red) (:Austria :red)) :coloring true.
+
+#2020-02-22T21:50:11.637Z in=31 out=2 ent=2 step=2 brake=2 inf=56774 sec=0.106 inf/sec=535604
+#ENDS
+

@@ -1,0 +1,9 @@
+@prefix fft: <http://josd.github.io/brain/fft#>.
+
+{(0 1 2 3 4 5 6 7) fft:transform ?L} => {(0 1 2 3 4 5 6 7) fft:transform ?L}.
+
+{(0 1 2 3 0 1 2 3) fft:transform ?L} => {(0 1 2 3 0 1 2 3) fft:transform ?L}.
+
+{(0 1 0 1 0 1 0 1) fft:transform ?L} => {(0 1 0 1 0 1 0 1) fft:transform ?L}.
+
+{(0 0 0 0 0 0 0 0) fft:transform ?L} => {(0 0 0 0 0 0 0 0) fft:transform ?L}.

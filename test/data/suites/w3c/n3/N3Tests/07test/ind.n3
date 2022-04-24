@@ -1,0 +1,8 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2009/12dtb/test#>.
+
+:TestVariable a :N1.
+"test"@en a :OK.
+#"5"^^xsd:integer a :OK.
+#{:a :b {:c :d :e}} a :OK.
+

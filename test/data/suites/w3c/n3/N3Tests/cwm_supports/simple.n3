@@ -1,0 +1,3 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+{ {:a :b :c . :r :e :g . {:a :b :c} => {:d :e :f} } log:supports {:a :b :c. :d :e :f} } => {:Q :Q :Q} . 

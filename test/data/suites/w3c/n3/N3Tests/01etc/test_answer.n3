@@ -1,0 +1,18 @@
+#Processed by EYE v20.0225.2300 josd
+#eye --no-genid --wcache http://josd.github.io/eye/reasoning/c2d . --nope http://josd.github.io/eye/reasoning/c2d/test_data.n3 http://josd.github.io/eye/reasoning/c2d/train_model.n3 http://josd.github.io/eye/reasoning/c2d/background_rules.n3 http://josd.github.io/eye/reasoning/c2d/c2d_rules.n3 --query http://josd.github.io/eye/reasoning/c2d/test_query.n3
+
+@prefix : <http://josd.github.io/eye/reasoning#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix c2d: <http://josd.github.io/eye/reasoning/c2d#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+_:bn_1 :answer (:expected 1 :predicted 1 :belief 0.6434104949904202 :evidence ((1.6094379124341005 :input5 "b" 2 0) (0.5108256237659907 :input1 "xyz" 2 1) (0.0 :input4 :v4 1 1) (0.0 :input3 (0 1) 2 2))).
+_:bn_2 :answer (:expected 0 :predicted 0 :belief 0.8972970466582154 :evidence ((0.0 :input5 "a" 1 1) (-0.5877866649021191 :input2 60 2 4) (-0.5108256237659907 :input10 ("abc" 60) 1 2) (-0.5108256237659907 :input4 :v3 1 2) (-0.33647223662121295 :input1 "abc" 2 3))).
+_:bn_3 :answer (:expected 1 :predicted 1 :belief 0.8411100984858096 :evidence ((1.9459101490553135 :input2 40 3 0) (1.0986122886681096 :input10 ("xyz" 40) 1 0) (0.5108256237659907 :input1 "xyz" 2 1) (0.0 :input5 "a" 1 1))).
+_:bn_4 :answer (:expected 0 :predicted 0 :belief 0.8539892598377208 :evidence ((0.0 :input3 (0 1) 2 2) (-0.5108256237659907 :input4 :v3 1 2))).
+
+#2020-03-01T20:09:01.932Z in=40 out=4 ent=3 step=6 brake=2 inf=81025 sec=0.102 inf/sec=794363
+#ENDS
+

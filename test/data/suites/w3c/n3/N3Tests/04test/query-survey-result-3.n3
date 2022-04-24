@@ -1,0 +1,24 @@
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix p0: <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://example.org/survey-sample/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix ex: <http://example.org/survey-sample/ontology/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix acm: <http://daml.umbc.edu/ontologies/topic-ont#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Informationsysteme"@de). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Information Systems"@en). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Anfragesprachen"@de). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Query Languages"@en). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Sprachen"@de). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Languages"@en). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Datenbankmanagement"@de). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("Database Management"@en). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-3.n3> q:answer ("An Overview of RDF Query Languages"). 
+

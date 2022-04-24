@@ -1,0 +1,36 @@
+# PxButton | test | wget -q -O- http://localhost/.euler5+http%3A%2F%2Flocalhost%2F.euler%2B--prolog%2Bhttp%253A%252F%252Fwww.agfa.com%252Fw3c%252Feuler%252Fmedic.n3%2B--query%2Bhttp%253A%252F%252Fwww.agfa.com%252Fw3c%252Feuler%252FmedicF.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>. 
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+
+(:Ann :Fever) fl:mu 0.8.
+(:Ann :AllergyForAspirin) fl:mu 0.001.
+(:Joe :AcuteMyocardialInfarction) fl:mu 0.9.
+(:Joe :ActivePepticUlcerDisease) fl:mu 0.006.
+(:Joe :AllergyForAspirin) fl:mu 0.001.
+(:Joe :SevereAsthma) fl:mu 0.001.
+(:Joe :ChronicObstructivePumonaryDisease) fl:mu 0.001.
+
+:aspirinHighDose :prescribedFor :Fever.
+:aspirinLowDose :prescribedFor :AcuteMyocardialInfarction.
+:betaBlocker :prescribedFor :AcuteMyocardialInfarction.
+
+:aspirinHighDose :excludedFor :ActivePepticUlcerDisease.
+:aspirinHighDose :excludedFor :AllergyForAspirin.
+:aspirinLowDose :excludedFor :ActivePepticUlcerDisease.
+:aspirinLowDose :excludedFor :AllergyForAspirin.
+:betaBlocker :excludedFor :SevereAsthma.
+:betaBlocker :excludedFor :ChronicObstructivePumonaryDisease.
+
+{?MEDICATION :prescribedFor ?DIAGNOSIS.
+ (?WHO ?DIAGNOSIS) fl:mu ?MEMBERSHIP.
+ ?MEMBERSHIP math:greaterThan 0.7.
+ ?SCOPE e:findall (?EXCLUSION {?MEDICATION :excludedFor ?EXCLUSION} ?LIST).
+ ?SCOPE e:findall (?EXCLUSION {?MEDICATION :excludedFor ?EXCLUSION.
+                               (?WHO ?EXCLUSION) fl:mu ?VALUE.
+                               ?VALUE math:notGreaterThan 0.01} ?LIST)}
+ =>
+ {?WHO :isPrescribed ?MEDICATION}.

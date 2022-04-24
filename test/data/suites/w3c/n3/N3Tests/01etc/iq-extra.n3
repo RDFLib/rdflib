@@ -1,0 +1,5 @@
+# implicit quantification
+# extra cases
+
+:a :b {:c :d :e}.
+{?x :b ?y} => ?y.

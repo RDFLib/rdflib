@@ -1,0 +1,36 @@
+#Processed by Id: euler.yap,v 1.156 2007/02/16 09:43:25 josd Exp 
+
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix var: <http://localhost/var#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fn: <http://www.w3.org/2006/xpath-functions#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/bc#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+[ a r:Proof, r:Conjunction;
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) 0.077639751552795)}; r:evidence (
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) 0.077639751552795)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo 0.077639751552795]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:SCOPE,var:X. {(var:SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) var:X)} => {(var:SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) var:X)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>]]];
+  r:component [ a r:Inference; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) 0.666573112545608)}; r:evidence (
+    [ a r:Fact; r:gives {((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) 0.666573112545608)}]);
+    r:binding [ r:variable [ n3:uri "http://localhost/var#SCOPE"]; r:boundTo (<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion]; 
+    r:binding [ r:variable [ n3:uri "http://localhost/var#X"]; r:boundTo 0.666573112545608]; 
+    r:rule [ a r:Extraction; r:gives {@forAll var:SCOPE,var:X. {(var:SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) var:X)} => {(var:SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) var:X)}. }; r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>]]];
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) 0.077639751552795).
+    ((<http://eulersharp.sourceforge.net/2004/04test/bc.n3>!log:semantics <http://eulersharp.sourceforge.net/2004/04test/bcF.n3>!log:semantics)!log:conjunction!log:conclusion 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) 0.666573112545608).}].
+
+#ENDS 10 msec.
+

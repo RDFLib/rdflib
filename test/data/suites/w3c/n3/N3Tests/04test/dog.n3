@@ -1,0 +1,11 @@
+# $Id: dog.n3 379 2004-09-18 19:11:35Z josd $
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/dog#> .
+
+:Rob a :Person.
+:Eddie a :Person.
+:Eddie a :DogOwner.
+:Mitch a :Person.
+:Mitch :hasPet :Fido.
+:Fido a :Dog.

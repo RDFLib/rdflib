@@ -1,0 +1,10 @@
+# $Id: easterQ.n3 521 2005-05-05 12:25:45Z josd $
+# PxButton | es  | euler easterP.n3 --nope --think --query easterQ.n3
+# PxButton | cwm | cwm easterP.n3 --think --query"=easterQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+
+[]
+q:select {?A :hasEasterOnDay ?B; :hasEasterOnMonth ?C};
+q:where  {?A a :Year; :hasEasterOnDay ?B; :hasEasterOnMonth ?C}.

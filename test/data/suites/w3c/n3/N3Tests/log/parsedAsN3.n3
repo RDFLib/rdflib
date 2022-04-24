@@ -1,0 +1,21 @@
+# just test log:parsedAsN3
+# From swap/tests/crypto/parsedAsN3.n3
+ 
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <#>.
+
+@forAll :F.
+
+{"""     @prefix : <http://www.w3.org/2000/10/swap/test/crypto/acc.n3#> .
+     @prefix crypto: <http://www.w3.org/2000/10/swap/crypto#> .
+     @prefix log: <http://www.w3.org/2000/10/swap/log#> .
+     @prefix os: <http://www.w3.org/2000/10/swap/os#> .
+     @prefix string: <http://www.w3.org/2000/10/swap/string#> .
+
+    :foo     :credential <access-tina-cert.n3>;
+         :forDocument <http://www.w3.org/Member>;
+         :junk "32746213462187364732164732164321" .
+""" log:parsedAsN3 :F} log:implies { :F a :result }.
+
+#ends
+

@@ -1,0 +1,21 @@
+# implicit quantification
+# examples from the following paper:
+#    D. Arndt, R. Verborgh, J. De Roo, H. Sun, E. Mannens, R. Van de Walle.
+#    Semantics of Notation3 Logic: A solution for implicit quantification.
+#    Published in 2015 in Proceedings of the 9th International Web Rule Symposium.
+
+@prefix : <http://example.org/test#>.
+
+#?x :loves _:y.
+
+_:x :says {_:x :knows :Albert}.
+
+{_:x :knows :Albert} => {_:x :knows :Kurt}.
+
+{:e :p :a} => {:e :q :b}.
+{{?x :p :a} => {?x :q :b}} => {{?x :r :c} => {?x :s :d}}.
+
+:s :p :o.
+{?x :p :o} => {?x :pp {?x :ppp :ooo}}.
+
+{?x :p :o} => {{{?x :p2 ?y} => {?x :p3 ?y}} => {{?x :p4 ?y} => {?x :p5 ?y}}}.

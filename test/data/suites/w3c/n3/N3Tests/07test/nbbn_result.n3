@@ -1,0 +1,15 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3 http://eulersharp.sourceforge.net/2007/07test/nbbn-model.n3 --query http://eulersharp.sourceforge.net/2007/07test/nbbn-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix bbn: <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://wopeg.he.agfa.be/rules/pathFinder#>.
+
+{{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T. _: e:true 0.21419642857142857} => {{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} .
+
+#2018-04-18T08:28:08.071Z in=158 out=1 ent=1 step=1 brake=2 inf=25973 sec=0.028 inf/sec=927607
+#ENDS
+

@@ -1,0 +1,15 @@
+# $Id: kendallQ.n3 598 2005-08-05 19:34:40Z josd $
+# PxButton | cwm   | bash .cwm kendallP.n3 -think -query"=kendallQ.n3"
+# PxButton | euler | bash .euler kendallP.n3 -nope -think -query kendallQ.n3
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix myfoaf: <http://clark.dallas.tx.us/kendall/foaf.rdf#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select { myfoaf:kendall foaf:depiction <http://clark.dallas.tx.us/kendall/kendall.jpg>.
+           myfoaf:kendall foaf:schoolHomepage <http://www.smu.edu/>.
+           ?s ?p ?o };
+q:where  { ?s ?p ?o }.
+
