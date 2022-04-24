@@ -1,0 +1,114 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/wet#>.
+
+{?S :ascribed :Cloudy, :NonCloudy} => false.
+{?S :ascribed :Sprinkler, :NonSprinkler} => false.
+{?S :ascribed :Rain, :NonRain} => false.
+{?S :ascribed :WetGrass, :NonWetGrass} => false.
+
+### test
+:loc001 :exposes :roof005.
+{?X :ascribed :Rain; :exposes ?Y} => {?Y :ascribed :Wet}.
+
+true => (
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :NonSprinkler, :NonRain, :NonWetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :NonRain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :NonSprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :Cloudy, :Sprinkler, :Rain, :WetGrass, []}
+	{:loc001 :ascribed :NonCloudy, :Sprinkler, :NonRain, :WetGrass, []}
+)!e:disjunction.

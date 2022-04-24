@@ -1,0 +1,7 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/minsu#>.
+
+:A owl:intersectionOf (:B :C :D).
+:B owl:equivalentClass :D.
+:E owl:intersectionOf (:B :C).
+

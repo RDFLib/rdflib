@@ -1,0 +1,6 @@
+@prefix : <#>.
+
+[  a :Mother; :name "Mary" ].
+
+{ ?x  a :Mother } => {  ?x  :says { :You :listenTo ?x }}.
+

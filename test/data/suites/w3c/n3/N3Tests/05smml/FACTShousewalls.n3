@@ -1,0 +1,1810 @@
+@prefix : <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+:ifcOrganization_1
+	ifc:name "Autodesk Revit Architecture 2010"^^xsd:normalizedString;
+	ifc:theIfcId "1"^^xsd:long;
+	rdf:type ifc:IfcOrganization.
+
+:ifcApplication_2
+	ifc:applicationDeveloper :ifcOrganization_1;
+	ifc:version "2010"^^xsd:normalizedString;
+	ifc:applicationFullName "Autodesk Revit Architecture 2010"^^xsd:normalizedString;
+	ifc:applicationIdentifier "Revit"^^xsd:normalizedString;
+	ifc:theIfcId "2"^^xsd:long;
+	rdf:type ifc:IfcApplication.
+
+:ifcCartesianPoint_3
+	ifc:coordinates  ( "0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "3"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcCartesianPoint_4
+	ifc:coordinates  ( "0.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "4"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcDirection_5
+	ifc:directionRatios  ( "1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "5"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_6
+	ifc:directionRatios  ( "-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "6"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_7
+	ifc:directionRatios  ( "0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "7"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_8
+	ifc:directionRatios  ( "0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "8"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_9
+	ifc:directionRatios  ( "0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double );
+	ifc:theIfcId "9"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_10
+	ifc:directionRatios  ( "0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double );
+	ifc:theIfcId "10"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_11
+	ifc:directionRatios  ( "1.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "11"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_12
+	ifc:directionRatios  ( "-1.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "12"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_13
+	ifc:directionRatios  ( "0.0"^^xsd:double "1.0"^^xsd:double );
+	ifc:theIfcId "13"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcDirection_14
+	ifc:directionRatios  ( "0.0"^^xsd:double "-1.0"^^xsd:double );
+	ifc:theIfcId "14"^^xsd:long;
+	rdf:type ifc:IfcDirection.
+
+:ifcSIUnit_15
+	ifc:prefix ifc:ifcSIPrefix_milli;
+	ifc:name ifc:ifcSIUnitName_metre;
+	ifc:theIfcId "15"^^xsd:long;
+	ifc:unitType ifc:ifcUnitEnum_lengthunit;
+	rdf:type ifc:IfcSIUnit.
+
+:ifcSIUnit_16
+	ifc:prefix ifc:ifcSIPrefix_milli;
+	ifc:name ifc:ifcSIUnitName_square_metre;
+	ifc:theIfcId "16"^^xsd:long;
+	ifc:unitType ifc:ifcUnitEnum_areaunit;
+	rdf:type ifc:IfcSIUnit.
+
+:ifcSIUnit_17
+	ifc:prefix ifc:ifcSIPrefix_milli;
+	ifc:name ifc:ifcSIUnitName_cubic_metre;
+	ifc:theIfcId "17"^^xsd:long;
+	ifc:unitType ifc:ifcUnitEnum_volumeunit;
+	rdf:type ifc:IfcSIUnit.
+
+:ifcSIUnit_18
+	ifc:name ifc:ifcSIUnitName_radian;
+	ifc:theIfcId "18"^^xsd:long;
+	ifc:unitType ifc:ifcUnitEnum_planeangleunit;
+	rdf:type ifc:IfcSIUnit.
+
+:ifcDimensionalExponents_19
+	ifc:lengthExponent "0"^^xsd:long;
+	ifc:massExponent "0"^^xsd:long;
+	ifc:timeExponent "0"^^xsd:long;
+	ifc:electricCurrentExponent "0"^^xsd:long;
+	ifc:thermodynamicTemperatureExponent "0"^^xsd:long;
+	ifc:amountOfSubstanceExponent "0"^^xsd:long;
+	ifc:luminousIntensityExponent "0"^^xsd:long;
+	ifc:theIfcId "19"^^xsd:long;
+	rdf:type ifc:IfcDimensionalExponents.
+
+:ifcMeasureWithUnit_20
+	ifc:valueComponent "0.01745329251994328"^^xsd:double;
+	ifc:unitComponent :ifcSIUnit_18;
+	ifc:theIfcId "20"^^xsd:long;
+	rdf:type ifc:IfcMeasureWithUnit.
+
+:ifcConversionBasedUnit_21
+	ifc:name "DEGREE"^^xsd:normalizedString;
+	ifc:conversionFactor :ifcMeasureWithUnit_20;
+	ifc:theIfcId "21"^^xsd:long;
+	ifc:dimensions :ifcDimensionalExponents_19;
+	ifc:unitType ifc:ifcUnitEnum_planeangleunit;
+	rdf:type ifc:IfcConversionBasedUnit.
+
+:ifcSIUnit_22
+	ifc:name ifc:ifcSIUnitName_second;
+	ifc:theIfcId "22"^^xsd:long;
+	ifc:unitType ifc:ifcUnitEnum_timeunit;
+	rdf:type ifc:IfcSIUnit.
+
+:ifcUnitAssignment_23
+	ifc:units  ( :ifcSIUnit_15 :ifcSIUnit_16 :ifcSIUnit_17 :ifcConversionBasedUnit_21 :ifcSIUnit_22 );
+	ifc:theIfcId "23"^^xsd:long;
+	rdf:type ifc:IfcUnitAssignment.
+
+:ifcAxis2Placement3D_24
+	ifc:theIfcId "24"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_25
+	ifc:relativePlacement :ifcAxis2Placement3D_24;
+	ifc:theIfcId "25"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcAxis2Placement3D_26
+	ifc:theIfcId "26"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcGeometricRepresentationContext_27
+	ifc:coordinateSpaceDimension "3"^^xsd:long;
+	ifc:precision "1.0E-6"^^xsd:double;
+	ifc:worldCoordinateSystem :ifcAxis2Placement3D_26;
+	ifc:contextType "Model"^^xsd:normalizedString;
+	ifc:theIfcId "27"^^xsd:long;
+	rdf:type ifc:IfcGeometricRepresentationContext.
+
+:ifcGeometricRepresentationContext_28
+	ifc:coordinateSpaceDimension "3"^^xsd:long;
+	ifc:precision "1.0E-6"^^xsd:double;
+	ifc:worldCoordinateSystem :ifcAxis2Placement3D_26;
+	ifc:contextType "Plan"^^xsd:normalizedString;
+	ifc:theIfcId "28"^^xsd:long;
+	rdf:type ifc:IfcGeometricRepresentationContext.
+
+:ifcGeometricRepresentationSubContext_29
+	ifc:parentContext :ifcGeometricRepresentationContext_28;
+	ifc:targetScale "0.01"^^xsd:double;
+	ifc:targetView ifc:ifcGeometricProjectionEnum_plan_view;
+	ifc:contextType "Plan"^^xsd:normalizedString;
+	ifc:theIfcId "29"^^xsd:long;
+	rdf:type ifc:IfcGeometricRepresentationSubContext.
+
+:ifcPerson_30
+	ifc:givenName "Tim"^^xsd:normalizedString;
+	ifc:theIfcId "30"^^xsd:long;
+	rdf:type ifc:IfcPerson.
+
+:ifcOrganization_31
+	ifc:name ""^^xsd:normalizedString;
+	ifc:description ""^^xsd:normalizedString;
+	ifc:theIfcId "31"^^xsd:long;
+	rdf:type ifc:IfcOrganization.
+
+:ifcPersonAndOrganization_32
+	ifc:thePerson :ifcPerson_30;
+	ifc:theOrganization :ifcOrganization_31;
+	ifc:theIfcId "32"^^xsd:long;
+	rdf:type ifc:IfcPersonAndOrganization.
+
+:ifcOwnerHistory_33
+	ifc:owningUser :ifcPersonAndOrganization_32;
+	ifc:owningApplication :ifcApplication_2;
+	ifc:changeAction ifc:ifcChangeActionEnum_nochange;
+	ifc:creationDate "0"^^xsd:long;
+	ifc:theIfcId "33"^^xsd:long;
+	rdf:type ifc:IfcOwnerHistory.
+
+:ifcPostalAddress_35
+	ifc:addressLines  ( "Enter address here"^^xsd:normalizedString );
+	ifc:town "Boston"^^xsd:normalizedString;
+	ifc:region ""^^xsd:normalizedString;
+	ifc:postalCode ""^^xsd:normalizedString;
+	ifc:country "MA"^^xsd:normalizedString;
+	ifc:theIfcId "35"^^xsd:long;
+	rdf:type ifc:IfcPostalAddress.
+
+:ifcBuilding_36
+	ifc:buildingAddress :ifcPostalAddress_35;
+	ifc:theIfcId "36"^^xsd:long;
+	ifc:compositionType ifc:ifcElementCompositionEnum_element;
+	ifc:objectPlacement :ifcLocalPlacement_25;
+	ifc:globalId "2CbZXiFIL3UwFX5$YHeX6g"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcBuilding.
+
+:ifcAxis2Placement3D_37
+	ifc:theIfcId "37"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_38
+	ifc:placementRelTo :ifcLocalPlacement_25;
+	ifc:relativePlacement :ifcAxis2Placement3D_37;
+	ifc:theIfcId "38"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcBuildingStorey_39
+	ifc:elevation "0.0"^^xsd:double;
+	ifc:theIfcId "39"^^xsd:long;
+	ifc:compositionType ifc:ifcElementCompositionEnum_element;
+	ifc:objectPlacement :ifcLocalPlacement_38;
+	ifc:globalId "2CbZXiFIL3UwFX5$XkNUzi"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Level 1"^^xsd:normalizedString;
+	rdf:type ifc:IfcBuildingStorey.
+
+:ifcCartesianPoint_40
+	ifc:coordinates  ( "0.0"^^xsd:double "0.0"^^xsd:double "3000.0"^^xsd:double );
+	ifc:theIfcId "40"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement3D_41
+	ifc:theIfcId "41"^^xsd:long;
+	ifc:location :ifcCartesianPoint_40;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcCartesianPoint_44
+	ifc:coordinates  ( "-16902.6517690273"^^xsd:double "11046.16018958814"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "44"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement3D_45
+	ifc:theIfcId "45"^^xsd:long;
+	ifc:location :ifcCartesianPoint_44;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_46
+	ifc:placementRelTo :ifcLocalPlacement_38;
+	ifc:relativePlacement :ifcAxis2Placement3D_45;
+	ifc:theIfcId "46"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcCartesianPoint_47
+	ifc:coordinates  ( "6200.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "47"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcPolyline_48
+	ifc:points  ( :ifcCartesianPoint_4 :ifcCartesianPoint_47 );
+	ifc:theIfcId "48"^^xsd:long;
+	rdf:type ifc:IfcPolyline.
+
+:ifcShapeRepresentation_49
+	ifc:theIfcId "49"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Axis"^^xsd:normalizedString;
+	ifc:representationType "Curve2D"^^xsd:normalizedString;
+	ifc:items  ( :ifcPolyline_48 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcCartesianPoint_50
+	ifc:coordinates  ( "3100.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "50"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement2D_51
+	ifc:refDirection :ifcDirection_12;
+	ifc:theIfcId "51"^^xsd:long;
+	ifc:location :ifcCartesianPoint_50;
+	rdf:type ifc:IfcAxis2Placement2D.
+
+:ifcRectangleProfileDef_52
+	ifc:xDim "6199.999999999992"^^xsd:double;
+	ifc:yDim "199.9999999999978"^^xsd:double;
+	ifc:theIfcId "52"^^xsd:long;
+	ifc:position :ifcAxis2Placement2D_51;
+	ifc:profileType ifc:ifcProfileTypeEnum_area;
+	rdf:type ifc:IfcRectangleProfileDef.
+
+:ifcAxis2Placement3D_53
+	ifc:theIfcId "53"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcExtrudedAreaSolid_54
+	ifc:extrudedDirection :ifcDirection_9;
+	ifc:depth "3000.0"^^xsd:double;
+	ifc:theIfcId "54"^^xsd:long;
+	ifc:sweptArea :ifcRectangleProfileDef_52;
+	ifc:position :ifcAxis2Placement3D_53;
+	rdf:type ifc:IfcExtrudedAreaSolid.
+
+:ifcColourRgb_55
+	ifc:red "0.5019607843137255"^^xsd:double;
+	ifc:green "0.5019607843137255"^^xsd:double;
+	ifc:blue "0.5019607843137255"^^xsd:double;
+	ifc:theIfcId "55"^^xsd:long;
+	rdf:type ifc:IfcColourRgb.
+
+:ifcSurfaceStyleRendering_56
+	ifc:transparency "0.0"^^xsd:double;
+	ifc:specularColour "0.00390625"^^xsd:double;
+	ifc:specularHighlight "64.0"^^xsd:double;
+	ifc:reflectanceMethod ifc:ifcReflectanceMethodEnum_notdefined;
+	ifc:surfaceColour :ifcColourRgb_55;
+	ifc:theIfcId "56"^^xsd:long;
+	rdf:type ifc:IfcSurfaceStyleRendering.
+
+:ifcSurfaceStyle_57
+	ifc:side ifc:ifcSurfaceSide_both;
+	ifc:styles  ( :ifcSurfaceStyleRendering_56 );
+	ifc:theIfcId "57"^^xsd:long;
+	ifc:name "Default Wall"^^xsd:normalizedString;
+	rdf:type ifc:IfcSurfaceStyle.
+
+:ifcPresentationStyleAssignment_58
+	ifc:styles  ( :ifcSurfaceStyle_57 );
+	ifc:theIfcId "58"^^xsd:long;
+	rdf:type ifc:IfcPresentationStyleAssignment.
+
+:ifcStyledItem_59
+	ifc:item :ifcExtrudedAreaSolid_54;
+	ifc:styles  ( :ifcPresentationStyleAssignment_58 );
+	ifc:theIfcId "59"^^xsd:long;
+	rdf:type ifc:IfcStyledItem.
+
+:ifcShapeRepresentation_60
+	ifc:theIfcId "60"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Body"^^xsd:normalizedString;
+	ifc:representationType "SweptSolid"^^xsd:normalizedString;
+	ifc:items  ( :ifcExtrudedAreaSolid_54 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcProductDefinitionShape_61
+	ifc:representations  ( :ifcShapeRepresentation_49 :ifcShapeRepresentation_60 );
+	ifc:theIfcId "61"^^xsd:long;
+	rdf:type ifc:IfcProductDefinitionShape.
+
+:ifcWallStandardCase_62
+	ifc:theIfcId "62"^^xsd:long;
+	ifc:tag "113199"^^xsd:normalizedString;
+	ifc:objectPlacement :ifcLocalPlacement_46;
+	ifc:representation :ifcProductDefinitionShape_61;
+	ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString;
+	ifc:globalId "3LdXFneX560PR3XLIMe46S"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Basic Wall:Generic - 200mm:113199"^^xsd:normalizedString;
+	rdf:type ifc:IfcWallStandardCase.
+
+:ifcPropertySingleValue_63
+	ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString;
+	ifc:theIfcId "63"^^xsd:long;
+	ifc:name "Reference"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_64
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "64"^^xsd:long;
+	ifc:name "LoadBearing"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_65
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "65"^^xsd:long;
+	ifc:name "ExtendToStructure"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_66
+	ifc:nominalValue "true"^^xsd:boolean;
+	ifc:theIfcId "66"^^xsd:long;
+	ifc:name "IsExternal"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_67
+	ifc:hasProperties  ( :ifcPropertySingleValue_63 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66 );
+	ifc:theIfcId "67"^^xsd:long;
+	ifc:globalId "2zOSzgy6L4PAu7BJgG0J1L"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Pset_WallCommon"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_68
+	ifc:relatingPropertyDefinition :ifcPropertySet_67;
+	ifc:theIfcId "68"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:globalId "1Vq8wqQKTDOf_1BI4AjqQm"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySingleValue_69
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "69"^^xsd:long;
+	ifc:name "Location Line"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_70
+	ifc:nominalValue "New Construction"^^xsd:normalizedString;
+	ifc:theIfcId "70"^^xsd:long;
+	ifc:name "Phase Created"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_71
+	ifc:nominalValue "Level 1"^^xsd:normalizedString;
+	ifc:theIfcId "71"^^xsd:long;
+	ifc:name "Base Constraint"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_72
+	ifc:nominalValue "0.0"^^xsd:double;
+	ifc:theIfcId "72"^^xsd:long;
+	ifc:name "Base Offset"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_73
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "73"^^xsd:long;
+	ifc:name "Base is Attached"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_74
+	ifc:nominalValue "0.0"^^xsd:double;
+	ifc:theIfcId "74"^^xsd:long;
+	ifc:name "Base Extension Distance"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_75
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "75"^^xsd:long;
+	ifc:name "Structural Usage"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_76
+	ifc:nominalValue "3000.0"^^xsd:double;
+	ifc:theIfcId "76"^^xsd:long;
+	ifc:name "Unconnected Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_77
+	ifc:nominalValue "0.0"^^xsd:double;
+	ifc:theIfcId "77"^^xsd:long;
+	ifc:name "Top Offset"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_78
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "78"^^xsd:long;
+	ifc:name "Top is Attached"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_79
+	ifc:nominalValue "0.0"^^xsd:double;
+	ifc:theIfcId "79"^^xsd:long;
+	ifc:name "Top Extension Distance"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_80
+	ifc:nominalValue "true"^^xsd:boolean;
+	ifc:theIfcId "80"^^xsd:long;
+	ifc:name "Room Bounding"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_81
+	ifc:nominalValue "6000.0"^^xsd:double;
+	ifc:theIfcId "81"^^xsd:long;
+	ifc:name "Length"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_82
+	ifc:nominalValue "1.859999999999997E7"^^xsd:double;
+	ifc:theIfcId "82"^^xsd:long;
+	ifc:name "Area"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_83
+	ifc:nominalValue "3.719999999999995E9"^^xsd:double;
+	ifc:theIfcId "83"^^xsd:long;
+	ifc:name "Volume"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_84
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "84"^^xsd:long;
+	ifc:name "Related to Mass"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_85
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "85"^^xsd:long;
+	ifc:name "Coarse Scale Fill Color"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_86
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "86"^^xsd:long;
+	ifc:name "Wrapping at Inserts"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_87
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "87"^^xsd:long;
+	ifc:name "Wrapping at Ends"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_88
+	ifc:nominalValue "200.0"^^xsd:double;
+	ifc:theIfcId "88"^^xsd:long;
+	ifc:name "Width"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_89
+	ifc:nominalValue ""^^xsd:normalizedString;
+	ifc:theIfcId "89"^^xsd:long;
+	ifc:name "Assembly Description"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_90
+	ifc:nominalValue ""^^xsd:normalizedString;
+	ifc:theIfcId "90"^^xsd:long;
+	ifc:name "Assembly Code"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_91
+	ifc:nominalValue "1"^^xsd:long;
+	ifc:theIfcId "91"^^xsd:long;
+	ifc:name "Function"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_92
+	ifc:hasProperties  ( :ifcPropertySingleValue_69 :ifcPropertySingleValue_71 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_76 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84 );
+	ifc:theIfcId "92"^^xsd:long;
+	ifc:globalId "3QsDGNHi5B4BrfI3C9gRdX"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_93
+	ifc:relatingPropertyDefinition :ifcPropertySet_92;
+	ifc:theIfcId "93"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:globalId "1HSVOed5bBoOoS7m5jB03$"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_94
+	ifc:hasProperties  ( :ifcPropertySingleValue_70 );
+	ifc:theIfcId "94"^^xsd:long;
+	ifc:globalId "1BSyUE0oD8JBOKV4rN8iHj"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_95
+	ifc:relatingPropertyDefinition :ifcPropertySet_94;
+	ifc:theIfcId "95"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:globalId "3ybujdnuP0ZAXZmRP_rR81"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_96
+	ifc:hasProperties  ( :ifcPropertySingleValue_75 );
+	ifc:theIfcId "96"^^xsd:long;
+	ifc:globalId "17whOPJ3rDXAOn$w$Md2bQ"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Structural"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_97
+	ifc:relatingPropertyDefinition :ifcPropertySet_96;
+	ifc:theIfcId "97"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:globalId "3Afi6JEG18ohGi019$OG08"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_98
+	ifc:hasProperties  ( :ifcPropertySingleValue_81 :ifcPropertySingleValue_82 :ifcPropertySingleValue_83 );
+	ifc:theIfcId "98"^^xsd:long;
+	ifc:globalId "0BWdT3PW91E9O55pRQvxIw"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_99
+	ifc:relatingPropertyDefinition :ifcPropertySet_98;
+	ifc:theIfcId "99"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:globalId "3acVdALH5Cwx9QUgZgnvuz"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_100
+	ifc:hasProperties  ( :ifcPropertySingleValue_86 :ifcPropertySingleValue_87 :ifcPropertySingleValue_88 :ifcPropertySingleValue_91 );
+	ifc:theIfcId "100"^^xsd:long;
+	ifc:globalId "36URTu5W12mOBHOvsfpnUt"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Construction"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcPropertySet_101
+	ifc:hasProperties  ( :ifcPropertySingleValue_85 );
+	ifc:theIfcId "101"^^xsd:long;
+	ifc:globalId "0FMTR9_zL4EgOcBryAJUZg"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Graphics"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcPropertySet_102
+	ifc:hasProperties  ( :ifcPropertySingleValue_89 :ifcPropertySingleValue_90 );
+	ifc:theIfcId "102"^^xsd:long;
+	ifc:globalId "3rpK6DjRrCl9xvQll6xanp"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Identity Data"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcMaterial_103
+	ifc:name "Default Wall"^^xsd:normalizedString;
+	ifc:theIfcId "103"^^xsd:long;
+	rdf:type ifc:IfcMaterial.
+
+:ifcPresentationStyleAssignment_104
+	ifc:styles  ( :ifcSurfaceStyle_57 );
+	ifc:theIfcId "104"^^xsd:long;
+	rdf:type ifc:IfcPresentationStyleAssignment.
+
+:ifcStyledItem_105
+	ifc:styles  ( :ifcPresentationStyleAssignment_104 );
+	ifc:theIfcId "105"^^xsd:long;
+	rdf:type ifc:IfcStyledItem.
+
+:ifcStyledRepresentation_106
+	ifc:theIfcId "106"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationSubContext_29;
+	ifc:representationIdentifier "Style"^^xsd:normalizedString;
+	ifc:representationType "Material"^^xsd:normalizedString;
+	ifc:items  ( :ifcStyledItem_105 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcStyledRepresentation.
+
+:ifcMaterialDefinitionRepresentation_107
+	ifc:representedMaterial :ifcMaterial_103;
+	ifc:representations  ( :ifcStyledRepresentation_106 );
+	ifc:theIfcId "107"^^xsd:long;
+	rdf:type ifc:IfcMaterialDefinitionRepresentation.
+
+:ifcMaterialLayer_108
+	ifc:material :ifcMaterial_103;
+	ifc:layerThickness "200.0"^^xsd:double;
+	ifc:theIfcId "108"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayer.
+
+:ifcMaterialLayerSet_109
+	ifc:materialLayers  ( :ifcMaterialLayer_108 );
+	ifc:layerSetName "Basic Wall:Generic - 200mm"^^xsd:normalizedString;
+	ifc:theIfcId "109"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayerSet.
+
+:ifcMaterialLayerSetUsage_110
+	ifc:forLayerSet :ifcMaterialLayerSet_109;
+	ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2;
+	ifc:directionSense ifc:ifcDirectionSenseEnum_negative;
+	ifc:offsetFromReferenceLine "100.0"^^xsd:double;
+	ifc:theIfcId "110"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayerSetUsage.
+
+:ifcCartesianPoint_111
+	ifc:coordinates  ( "-10802.6517690273"^^xsd:double "10946.16018958812"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "111"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement3D_112
+	ifc:axis :ifcDirection_9;
+	ifc:refDirection :ifcDirection_8;
+	ifc:theIfcId "112"^^xsd:long;
+	ifc:location :ifcCartesianPoint_111;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_113
+	ifc:placementRelTo :ifcLocalPlacement_38;
+	ifc:relativePlacement :ifcAxis2Placement3D_112;
+	ifc:theIfcId "113"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcCartesianPoint_114
+	ifc:coordinates  ( "4000.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "114"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcPolyline_115
+	ifc:points  ( :ifcCartesianPoint_4 :ifcCartesianPoint_114 );
+	ifc:theIfcId "115"^^xsd:long;
+	rdf:type ifc:IfcPolyline.
+
+:ifcShapeRepresentation_116
+	ifc:theIfcId "116"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Axis"^^xsd:normalizedString;
+	ifc:representationType "Curve2D"^^xsd:normalizedString;
+	ifc:items  ( :ifcPolyline_115 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcCartesianPoint_117
+	ifc:coordinates  ( "2000.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "117"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement2D_118
+	ifc:refDirection :ifcDirection_12;
+	ifc:theIfcId "118"^^xsd:long;
+	ifc:location :ifcCartesianPoint_117;
+	rdf:type ifc:IfcAxis2Placement2D.
+
+:ifcRectangleProfileDef_119
+	ifc:xDim "4000.000000000001"^^xsd:double;
+	ifc:yDim "199.9999999999978"^^xsd:double;
+	ifc:theIfcId "119"^^xsd:long;
+	ifc:position :ifcAxis2Placement2D_118;
+	ifc:profileType ifc:ifcProfileTypeEnum_area;
+	rdf:type ifc:IfcRectangleProfileDef.
+
+:ifcAxis2Placement3D_120
+	ifc:theIfcId "120"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcExtrudedAreaSolid_121
+	ifc:extrudedDirection :ifcDirection_9;
+	ifc:depth "3000.0"^^xsd:double;
+	ifc:theIfcId "121"^^xsd:long;
+	ifc:sweptArea :ifcRectangleProfileDef_119;
+	ifc:position :ifcAxis2Placement3D_120;
+	rdf:type ifc:IfcExtrudedAreaSolid.
+
+:ifcPresentationStyleAssignment_122
+	ifc:styles  ( :ifcSurfaceStyle_57 );
+	ifc:theIfcId "122"^^xsd:long;
+	rdf:type ifc:IfcPresentationStyleAssignment.
+
+:ifcStyledItem_123
+	ifc:item :ifcExtrudedAreaSolid_121;
+	ifc:styles  ( :ifcPresentationStyleAssignment_122 );
+	ifc:theIfcId "123"^^xsd:long;
+	rdf:type ifc:IfcStyledItem.
+
+:ifcShapeRepresentation_124
+	ifc:theIfcId "124"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Body"^^xsd:normalizedString;
+	ifc:representationType "SweptSolid"^^xsd:normalizedString;
+	ifc:items  ( :ifcExtrudedAreaSolid_121 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcProductDefinitionShape_125
+	ifc:representations  ( :ifcShapeRepresentation_116 :ifcShapeRepresentation_124 );
+	ifc:theIfcId "125"^^xsd:long;
+	rdf:type ifc:IfcProductDefinitionShape.
+
+:ifcWallStandardCase_126
+	ifc:theIfcId "126"^^xsd:long;
+	ifc:tag "113272"^^xsd:normalizedString;
+	ifc:objectPlacement :ifcLocalPlacement_113;
+	ifc:representation :ifcProductDefinitionShape_125;
+	ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString;
+	ifc:globalId "3LdXFneX560PR3XLIMe47B"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Basic Wall:Generic - 200mm:113272"^^xsd:normalizedString;
+	rdf:type ifc:IfcWallStandardCase.
+
+:ifcPropertySingleValue_127
+	ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString;
+	ifc:theIfcId "127"^^xsd:long;
+	ifc:name "Reference"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_128
+	ifc:hasProperties  ( :ifcPropertySingleValue_127 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66 );
+	ifc:theIfcId "128"^^xsd:long;
+	ifc:globalId "1CZDyFy_D81RrK5xJhwtMt"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Pset_WallCommon"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_129
+	ifc:relatingPropertyDefinition :ifcPropertySet_128;
+	ifc:theIfcId "129"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:globalId "0IumFpiEb3HfuxtngFOhDg"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySingleValue_130
+	ifc:nominalValue "New Construction"^^xsd:normalizedString;
+	ifc:theIfcId "130"^^xsd:long;
+	ifc:name "Phase Created"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_131
+	ifc:nominalValue "Level 1"^^xsd:normalizedString;
+	ifc:theIfcId "131"^^xsd:long;
+	ifc:name "Base Constraint"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_132
+	ifc:nominalValue "3000.0"^^xsd:double;
+	ifc:theIfcId "132"^^xsd:long;
+	ifc:name "Unconnected Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_133
+	ifc:nominalValue "4000.000000000001"^^xsd:double;
+	ifc:theIfcId "133"^^xsd:long;
+	ifc:name "Length"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_134
+	ifc:nominalValue "1.2E7"^^xsd:double;
+	ifc:theIfcId "134"^^xsd:long;
+	ifc:name "Area"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_135
+	ifc:nominalValue "2.4E9"^^xsd:double;
+	ifc:theIfcId "135"^^xsd:long;
+	ifc:name "Volume"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_136
+	ifc:hasProperties  ( :ifcPropertySingleValue_69 :ifcPropertySingleValue_131 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_132 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84 );
+	ifc:theIfcId "136"^^xsd:long;
+	ifc:globalId "1tVpBj8xX8DuIjXbsEm1E$"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_137
+	ifc:relatingPropertyDefinition :ifcPropertySet_136;
+	ifc:theIfcId "137"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:globalId "1dMk6gxIPDI99pS3jsyhgk"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_138
+	ifc:hasProperties  ( :ifcPropertySingleValue_130 );
+	ifc:theIfcId "138"^^xsd:long;
+	ifc:globalId "0rXJak4cX4kxosgXbCcg$5"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_139
+	ifc:relatingPropertyDefinition :ifcPropertySet_138;
+	ifc:theIfcId "139"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:globalId "18Gj5LMbD3wefW_8wRZ8Dm"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_140
+	ifc:hasProperties  ( :ifcPropertySingleValue_75 );
+	ifc:theIfcId "140"^^xsd:long;
+	ifc:globalId "3iCq6V1dD3hRfapSo$GyXr"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Structural"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_141
+	ifc:relatingPropertyDefinition :ifcPropertySet_140;
+	ifc:theIfcId "141"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:globalId "1gQdl9JZb2pfLpWfmYurm7"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_142
+	ifc:hasProperties  ( :ifcPropertySingleValue_133 :ifcPropertySingleValue_134 :ifcPropertySingleValue_135 );
+	ifc:theIfcId "142"^^xsd:long;
+	ifc:globalId "0SWxe3tML7zAQhSquF46a4"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_143
+	ifc:relatingPropertyDefinition :ifcPropertySet_142;
+	ifc:theIfcId "143"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:globalId "0sTgoqVIH91htpQCBuHgCs"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcMaterialLayerSetUsage_144
+	ifc:forLayerSet :ifcMaterialLayerSet_109;
+	ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2;
+	ifc:directionSense ifc:ifcDirectionSenseEnum_negative;
+	ifc:offsetFromReferenceLine "100.0"^^xsd:double;
+	ifc:theIfcId "144"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayerSetUsage.
+
+:ifcCartesianPoint_145
+	ifc:coordinates  ( "-10902.6517690273"^^xsd:double "7046.160189588122"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "145"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement3D_146
+	ifc:axis :ifcDirection_9;
+	ifc:refDirection :ifcDirection_6;
+	ifc:theIfcId "146"^^xsd:long;
+	ifc:location :ifcCartesianPoint_145;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_147
+	ifc:placementRelTo :ifcLocalPlacement_38;
+	ifc:relativePlacement :ifcAxis2Placement3D_146;
+	ifc:theIfcId "147"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcCartesianPoint_148
+	ifc:coordinates  ( "6000.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "148"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcPolyline_149
+	ifc:points  ( :ifcCartesianPoint_4 :ifcCartesianPoint_148 );
+	ifc:theIfcId "149"^^xsd:long;
+	rdf:type ifc:IfcPolyline.
+
+:ifcShapeRepresentation_150
+	ifc:theIfcId "150"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Axis"^^xsd:normalizedString;
+	ifc:representationType "Curve2D"^^xsd:normalizedString;
+	ifc:items  ( :ifcPolyline_149 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcCartesianPoint_151
+	ifc:coordinates  ( "3000.0"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "151"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement2D_152
+	ifc:refDirection :ifcDirection_12;
+	ifc:theIfcId "152"^^xsd:long;
+	ifc:location :ifcCartesianPoint_151;
+	rdf:type ifc:IfcAxis2Placement2D.
+
+:ifcRectangleProfileDef_153
+	ifc:xDim "5999.999999999998"^^xsd:double;
+	ifc:yDim "200.0"^^xsd:double;
+	ifc:theIfcId "153"^^xsd:long;
+	ifc:position :ifcAxis2Placement2D_152;
+	ifc:profileType ifc:ifcProfileTypeEnum_area;
+	rdf:type ifc:IfcRectangleProfileDef.
+
+:ifcAxis2Placement3D_154
+	ifc:theIfcId "154"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcExtrudedAreaSolid_155
+	ifc:extrudedDirection :ifcDirection_9;
+	ifc:depth "3000.0"^^xsd:double;
+	ifc:theIfcId "155"^^xsd:long;
+	ifc:sweptArea :ifcRectangleProfileDef_153;
+	ifc:position :ifcAxis2Placement3D_154;
+	rdf:type ifc:IfcExtrudedAreaSolid.
+
+:ifcPresentationStyleAssignment_156
+	ifc:styles  ( :ifcSurfaceStyle_57 );
+	ifc:theIfcId "156"^^xsd:long;
+	rdf:type ifc:IfcPresentationStyleAssignment.
+
+:ifcStyledItem_157
+	ifc:item :ifcExtrudedAreaSolid_155;
+	ifc:styles  ( :ifcPresentationStyleAssignment_156 );
+	ifc:theIfcId "157"^^xsd:long;
+	rdf:type ifc:IfcStyledItem.
+
+:ifcShapeRepresentation_158
+	ifc:theIfcId "158"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Body"^^xsd:normalizedString;
+	ifc:representationType "SweptSolid"^^xsd:normalizedString;
+	ifc:items  ( :ifcExtrudedAreaSolid_155 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcProductDefinitionShape_159
+	ifc:representations  ( :ifcShapeRepresentation_150 :ifcShapeRepresentation_158 );
+	ifc:theIfcId "159"^^xsd:long;
+	rdf:type ifc:IfcProductDefinitionShape.
+
+:ifcWallStandardCase_160
+	ifc:theIfcId "160"^^xsd:long;
+	ifc:tag "113390"^^xsd:normalizedString;
+	ifc:objectPlacement :ifcLocalPlacement_147;
+	ifc:representation :ifcProductDefinitionShape_159;
+	ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString;
+	ifc:globalId "3LdXFneX560PR3XLIMe45T"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Basic Wall:Generic - 200mm:113390"^^xsd:normalizedString;
+	rdf:type ifc:IfcWallStandardCase.
+
+:ifcPropertySingleValue_161
+	ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString;
+	ifc:theIfcId "161"^^xsd:long;
+	ifc:name "Reference"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_162
+	ifc:hasProperties  ( :ifcPropertySingleValue_161 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66 );
+	ifc:theIfcId "162"^^xsd:long;
+	ifc:globalId "0I421plaTCcuNGiV1lIZDv"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Pset_WallCommon"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_163
+	ifc:relatingPropertyDefinition :ifcPropertySet_162;
+	ifc:theIfcId "163"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:globalId "1k1vlaC4b4ygZDOAHw3Fck"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySingleValue_164
+	ifc:nominalValue "New Construction"^^xsd:normalizedString;
+	ifc:theIfcId "164"^^xsd:long;
+	ifc:name "Phase Created"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_165
+	ifc:nominalValue "Level 1"^^xsd:normalizedString;
+	ifc:theIfcId "165"^^xsd:long;
+	ifc:name "Base Constraint"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_166
+	ifc:nominalValue "3000.0"^^xsd:double;
+	ifc:theIfcId "166"^^xsd:long;
+	ifc:name "Unconnected Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_167
+	ifc:nominalValue "6000.0"^^xsd:double;
+	ifc:theIfcId "167"^^xsd:long;
+	ifc:name "Length"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_168
+	ifc:nominalValue "1.8E7"^^xsd:double;
+	ifc:theIfcId "168"^^xsd:long;
+	ifc:name "Area"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_169
+	ifc:nominalValue "3.6E9"^^xsd:double;
+	ifc:theIfcId "169"^^xsd:long;
+	ifc:name "Volume"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_170
+	ifc:hasProperties  ( :ifcPropertySingleValue_69 :ifcPropertySingleValue_165 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_166 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84 );
+	ifc:theIfcId "170"^^xsd:long;
+	ifc:globalId "0akrHy16fDTxTRfFl_eyD7"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_171
+	ifc:relatingPropertyDefinition :ifcPropertySet_170;
+	ifc:theIfcId "171"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:globalId "0y99eaJW96mRCBHpZwSTvz"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_172
+	ifc:hasProperties  ( :ifcPropertySingleValue_164 );
+	ifc:theIfcId "172"^^xsd:long;
+	ifc:globalId "2hqN9VLMn3cP7182FoMMqc"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_173
+	ifc:relatingPropertyDefinition :ifcPropertySet_172;
+	ifc:theIfcId "173"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:globalId "0_sxh5zeP9Zv6Mnqwgfimm"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_174
+	ifc:hasProperties  ( :ifcPropertySingleValue_75 );
+	ifc:theIfcId "174"^^xsd:long;
+	ifc:globalId "0w7zK11vT2$fcezpc9PPcD"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Structural"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_175
+	ifc:relatingPropertyDefinition :ifcPropertySet_174;
+	ifc:theIfcId "175"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:globalId "1V73r7tv91memNSZUowDW7"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_176
+	ifc:hasProperties  ( :ifcPropertySingleValue_167 :ifcPropertySingleValue_168 :ifcPropertySingleValue_169 );
+	ifc:theIfcId "176"^^xsd:long;
+	ifc:globalId "0$hWPl3YT1GwgO_hKGJY9i"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_177
+	ifc:relatingPropertyDefinition :ifcPropertySet_176;
+	ifc:theIfcId "177"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:globalId "1JH9_xc$j8zR4VOvvmR$Jk"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcMaterialLayerSetUsage_178
+	ifc:forLayerSet :ifcMaterialLayerSet_109;
+	ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2;
+	ifc:directionSense ifc:ifcDirectionSenseEnum_negative;
+	ifc:offsetFromReferenceLine "100.0"^^xsd:double;
+	ifc:theIfcId "178"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayerSetUsage.
+
+:ifcCartesianPoint_179
+	ifc:coordinates  ( "-16802.6517690273"^^xsd:double "7146.16018958814"^^xsd:double "0.0"^^xsd:double );
+	ifc:theIfcId "179"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement3D_180
+	ifc:axis :ifcDirection_9;
+	ifc:refDirection :ifcDirection_7;
+	ifc:theIfcId "180"^^xsd:long;
+	ifc:location :ifcCartesianPoint_179;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_181
+	ifc:placementRelTo :ifcLocalPlacement_38;
+	ifc:relativePlacement :ifcAxis2Placement3D_180;
+	ifc:theIfcId "181"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcCartesianPoint_182
+	ifc:coordinates  ( "3800.0"^^xsd:double "-0.0"^^xsd:double );
+	ifc:theIfcId "182"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcPolyline_183
+	ifc:points  ( :ifcCartesianPoint_4 :ifcCartesianPoint_182 );
+	ifc:theIfcId "183"^^xsd:long;
+	rdf:type ifc:IfcPolyline.
+
+:ifcShapeRepresentation_184
+	ifc:theIfcId "184"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Axis"^^xsd:normalizedString;
+	ifc:representationType "Curve2D"^^xsd:normalizedString;
+	ifc:items  ( :ifcPolyline_183 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcCartesianPoint_185
+	ifc:coordinates  ( "1900.0"^^xsd:double "-0.0"^^xsd:double );
+	ifc:theIfcId "185"^^xsd:long;
+	rdf:type ifc:IfcCartesianPoint.
+
+:ifcAxis2Placement2D_186
+	ifc:refDirection :ifcDirection_12;
+	ifc:theIfcId "186"^^xsd:long;
+	ifc:location :ifcCartesianPoint_185;
+	rdf:type ifc:IfcAxis2Placement2D.
+
+:ifcRectangleProfileDef_187
+	ifc:xDim "3800.000000000001"^^xsd:double;
+	ifc:yDim "199.9999999999978"^^xsd:double;
+	ifc:theIfcId "187"^^xsd:long;
+	ifc:position :ifcAxis2Placement2D_186;
+	ifc:profileType ifc:ifcProfileTypeEnum_area;
+	rdf:type ifc:IfcRectangleProfileDef.
+
+:ifcAxis2Placement3D_188
+	ifc:theIfcId "188"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcExtrudedAreaSolid_189
+	ifc:extrudedDirection :ifcDirection_9;
+	ifc:depth "3000.0"^^xsd:double;
+	ifc:theIfcId "189"^^xsd:long;
+	ifc:sweptArea :ifcRectangleProfileDef_187;
+	ifc:position :ifcAxis2Placement3D_188;
+	rdf:type ifc:IfcExtrudedAreaSolid.
+
+:ifcPresentationStyleAssignment_190
+	ifc:styles  ( :ifcSurfaceStyle_57 );
+	ifc:theIfcId "190"^^xsd:long;
+	rdf:type ifc:IfcPresentationStyleAssignment.
+
+:ifcStyledItem_191
+	ifc:item :ifcExtrudedAreaSolid_189;
+	ifc:styles  ( :ifcPresentationStyleAssignment_190 );
+	ifc:theIfcId "191"^^xsd:long;
+	rdf:type ifc:IfcStyledItem.
+
+:ifcShapeRepresentation_192
+	ifc:theIfcId "192"^^xsd:long;
+	ifc:contextOfItems :ifcGeometricRepresentationContext_27;
+	ifc:representationIdentifier "Body"^^xsd:normalizedString;
+	ifc:representationType "SweptSolid"^^xsd:normalizedString;
+	ifc:items  ( :ifcExtrudedAreaSolid_189 );
+	ifc:theIfcId "-1"^^xsd:long;
+	rdf:type ifc:IfcShapeRepresentation.
+
+:ifcProductDefinitionShape_193
+	ifc:representations  ( :ifcShapeRepresentation_184 :ifcShapeRepresentation_192 );
+	ifc:theIfcId "193"^^xsd:long;
+	rdf:type ifc:IfcProductDefinitionShape.
+
+:ifcWallStandardCase_194
+	ifc:theIfcId "194"^^xsd:long;
+	ifc:tag "113427"^^xsd:normalizedString;
+	ifc:objectPlacement :ifcLocalPlacement_181;
+	ifc:representation :ifcProductDefinitionShape_193;
+	ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString;
+	ifc:globalId "3LdXFneX560PR3XLIMe42W"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Basic Wall:Generic - 200mm:113427"^^xsd:normalizedString;
+	rdf:type ifc:IfcWallStandardCase.
+
+:ifcPropertySingleValue_195
+	ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString;
+	ifc:theIfcId "195"^^xsd:long;
+	ifc:name "Reference"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_196
+	ifc:hasProperties  ( :ifcPropertySingleValue_195 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66 );
+	ifc:theIfcId "196"^^xsd:long;
+	ifc:globalId "1ronJ5kFj3Cu5Xc6E6TcYH"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Pset_WallCommon"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_197
+	ifc:relatingPropertyDefinition :ifcPropertySet_196;
+	ifc:theIfcId "197"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:globalId "1WB9D9$tj9LONNc$dzJtZp"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySingleValue_198
+	ifc:nominalValue "New Construction"^^xsd:normalizedString;
+	ifc:theIfcId "198"^^xsd:long;
+	ifc:name "Phase Created"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_199
+	ifc:nominalValue "Level 1"^^xsd:normalizedString;
+	ifc:theIfcId "199"^^xsd:long;
+	ifc:name "Base Constraint"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_200
+	ifc:nominalValue "3000.0"^^xsd:double;
+	ifc:theIfcId "200"^^xsd:long;
+	ifc:name "Unconnected Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_201
+	ifc:nominalValue "4000.000000000001"^^xsd:double;
+	ifc:theIfcId "201"^^xsd:long;
+	ifc:name "Length"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_202
+	ifc:nominalValue "1.14E7"^^xsd:double;
+	ifc:theIfcId "202"^^xsd:long;
+	ifc:name "Area"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_203
+	ifc:nominalValue "2.28E9"^^xsd:double;
+	ifc:theIfcId "203"^^xsd:long;
+	ifc:name "Volume"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_204
+	ifc:hasProperties  ( :ifcPropertySingleValue_69 :ifcPropertySingleValue_199 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_200 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84 );
+	ifc:theIfcId "204"^^xsd:long;
+	ifc:globalId "31duq7gYPCTex2a4MObxel"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_205
+	ifc:relatingPropertyDefinition :ifcPropertySet_204;
+	ifc:theIfcId "205"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:globalId "1zQM_lXWfAPPCdrR8H3edl"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_206
+	ifc:hasProperties  ( :ifcPropertySingleValue_198 );
+	ifc:theIfcId "206"^^xsd:long;
+	ifc:globalId "0xxIFOPLb4DPsAnd$w$va_"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_207
+	ifc:relatingPropertyDefinition :ifcPropertySet_206;
+	ifc:theIfcId "207"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:globalId "0ffbHcmNDFnu9NPvrt0VH3"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_208
+	ifc:hasProperties  ( :ifcPropertySingleValue_75 );
+	ifc:theIfcId "208"^^xsd:long;
+	ifc:globalId "3uLDQO$WPBbRC98qaLU1m$"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Structural"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_209
+	ifc:relatingPropertyDefinition :ifcPropertySet_208;
+	ifc:theIfcId "209"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:globalId "2Fa_pzKiX7xPmaVTQtIejL"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_210
+	ifc:hasProperties  ( :ifcPropertySingleValue_201 :ifcPropertySingleValue_202 :ifcPropertySingleValue_203 );
+	ifc:theIfcId "210"^^xsd:long;
+	ifc:globalId "3$EfreFjP56eHKBAMcvt__"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_211
+	ifc:relatingPropertyDefinition :ifcPropertySet_210;
+	ifc:theIfcId "211"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:globalId "3LXmvD0k18zguNgLFcdpHM"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcMaterialLayerSetUsage_212
+	ifc:forLayerSet :ifcMaterialLayerSet_109;
+	ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2;
+	ifc:directionSense ifc:ifcDirectionSenseEnum_negative;
+	ifc:offsetFromReferenceLine "100.0"^^xsd:double;
+	ifc:theIfcId "212"^^xsd:long;
+	rdf:type ifc:IfcMaterialLayerSetUsage.
+
+:ifcAxis2Placement3D_213
+	ifc:theIfcId "213"^^xsd:long;
+	ifc:location :ifcCartesianPoint_3;
+	rdf:type ifc:IfcAxis2Placement3D.
+
+:ifcLocalPlacement_214
+	ifc:relativePlacement :ifcAxis2Placement3D_213;
+	ifc:theIfcId "214"^^xsd:long;
+	rdf:type ifc:IfcLocalPlacement.
+
+:ifcSite_215
+	ifc:refLatitude  ( "42"^^xsd:long "12"^^xsd:long "46"^^xsd:long "800000"^^xsd:long );
+	ifc:refLongitude  ( "-71"^^xsd:long "-1"^^xsd:long "-58"^^xsd:long "-800000"^^xsd:long );
+	ifc:refElevation "-0.0"^^xsd:double;
+	ifc:theIfcId "215"^^xsd:long;
+	ifc:compositionType ifc:ifcElementCompositionEnum_element;
+	ifc:objectPlacement :ifcLocalPlacement_214;
+	ifc:objectType ""^^xsd:normalizedString;
+	ifc:globalId "2CbZXiFIL3UwFX5$YHeX6f"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Default"^^xsd:normalizedString;
+	rdf:type ifc:IfcSite.
+
+:ifcRelAggregates_216
+	ifc:theIfcId "216"^^xsd:long;
+	ifc:relatingObject :ifcProject_34;
+	ifc:relatedObjects  ( :ifcSite_215 );
+	ifc:globalId "0_7S_hurL7jPwDjVi8X7$V"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAggregates.
+
+:ifcRelAggregates_217
+	ifc:theIfcId "217"^^xsd:long;
+	ifc:relatingObject :ifcSite_215;
+	ifc:relatedObjects  ( :ifcBuilding_36 );
+	ifc:globalId "09A7s4fWjC$hS6LU1PeL3k"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAggregates.
+
+:ifcPropertySingleValue_218
+	ifc:nominalValue "Level 1"^^xsd:normalizedString;
+	ifc:theIfcId "218"^^xsd:long;
+	ifc:name "Name"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_219
+	ifc:nominalValue "0.0"^^xsd:double;
+	ifc:theIfcId "219"^^xsd:long;
+	ifc:name "Elevation"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_220
+	ifc:nominalValue "1"^^xsd:long;
+	ifc:theIfcId "220"^^xsd:long;
+	ifc:name "Line Weight"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_221
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "221"^^xsd:long;
+	ifc:name "Color"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_222
+	ifc:nominalValue "Centre"^^xsd:normalizedString;
+	ifc:theIfcId "222"^^xsd:long;
+	ifc:name "Line Pattern"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_223
+	ifc:nominalValue "0"^^xsd:long;
+	ifc:theIfcId "223"^^xsd:long;
+	ifc:name "Elevation Base"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_224
+	ifc:nominalValue "M_Level Head - Circle"^^xsd:normalizedString;
+	ifc:theIfcId "224"^^xsd:long;
+	ifc:name "Symbol"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_225
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "225"^^xsd:long;
+	ifc:name "Symbol at End 1 Default"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_226
+	ifc:nominalValue "true"^^xsd:boolean;
+	ifc:theIfcId "226"^^xsd:long;
+	ifc:name "Symbol at End 2 Default"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_227
+	ifc:nominalValue "false"^^xsd:boolean;
+	ifc:theIfcId "227"^^xsd:long;
+	ifc:name "Automatic Room Computation Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_228
+	ifc:nominalValue "1200.0"^^xsd:double;
+	ifc:theIfcId "228"^^xsd:long;
+	ifc:name "Computation Height"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_229
+	ifc:hasProperties  ( :ifcPropertySingleValue_218 );
+	ifc:theIfcId "229"^^xsd:long;
+	ifc:globalId "2dI4d7zWLBIQl5D013TY$z"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Identity Data"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_230
+	ifc:relatingPropertyDefinition :ifcPropertySet_229;
+	ifc:theIfcId "230"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "3LGvpdmzfFvwRxacrNEDio"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_231
+	ifc:hasProperties  ( :ifcPropertySingleValue_219 );
+	ifc:theIfcId "231"^^xsd:long;
+	ifc:globalId "0Zw9yTWvrAyR9LLPrlBRuL"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_232
+	ifc:relatingPropertyDefinition :ifcPropertySet_231;
+	ifc:theIfcId "232"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "3fHZoISXb2keNkWsgNwZgm"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySet_233
+	ifc:hasProperties  ( :ifcPropertySingleValue_220 :ifcPropertySingleValue_221 :ifcPropertySingleValue_222 :ifcPropertySingleValue_224 :ifcPropertySingleValue_225 :ifcPropertySingleValue_226 );
+	ifc:theIfcId "233"^^xsd:long;
+	ifc:globalId "09rQFOcXnEV8jFm5ypQ$j7"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Graphics"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcPropertySet_234
+	ifc:hasProperties  ( :ifcPropertySingleValue_223 );
+	ifc:theIfcId "234"^^xsd:long;
+	ifc:globalId "0RBysBq0f1KwUgZhBPaBK$"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Constraints"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcPropertySet_235
+	ifc:hasProperties  ( :ifcPropertySingleValue_227 :ifcPropertySingleValue_228 );
+	ifc:theIfcId "235"^^xsd:long;
+	ifc:globalId "2FJwbkX_zAeP$uPooKQSyG"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Type_Dimensions"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelContainedInSpatialStructure_236
+	ifc:relatedElements  ( :ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194 );
+	ifc:relatingStructure :ifcBuildingStorey_39;
+	ifc:theIfcId "236"^^xsd:long;
+	ifc:globalId "1JduR1zhTAfObUe$XQEWeD"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelContainedInSpatialStructure.
+
+:ifcRelAggregates_237
+	ifc:theIfcId "237"^^xsd:long;
+	ifc:relatingObject :ifcBuilding_36;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "0nYfkQiGfBr83fmi5UPkj6"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAggregates.
+
+:ifcPropertySingleValue_238
+	ifc:nominalValue "1"^^xsd:long;
+	ifc:theIfcId "238"^^xsd:long;
+	ifc:name "NumberOfStoreys"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_239
+	ifc:hasProperties  ( :ifcPropertySingleValue_238 );
+	ifc:theIfcId "239"^^xsd:long;
+	ifc:globalId "2DRZ2RNBvBhvbclRMkgEMu"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Pset_BuildingCommon"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_240
+	ifc:relatingPropertyDefinition :ifcPropertySet_239;
+	ifc:theIfcId "240"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuilding_36 );
+	ifc:globalId "0WUIz2YIXAsBv1UqexrCMr"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcPropertySingleValue_241
+	ifc:nominalValue "Issue Date"^^xsd:normalizedString;
+	ifc:theIfcId "241"^^xsd:long;
+	ifc:name "Project Issue Date"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_242
+	ifc:nominalValue "Project Status"^^xsd:normalizedString;
+	ifc:theIfcId "242"^^xsd:long;
+	ifc:name "Project Status"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_243
+	ifc:nominalValue "Owner"^^xsd:normalizedString;
+	ifc:theIfcId "243"^^xsd:long;
+	ifc:name "Client Name"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_244
+	ifc:nominalValue "Enter address here"^^xsd:normalizedString;
+	ifc:theIfcId "244"^^xsd:long;
+	ifc:name "Project Address"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_245
+	ifc:nominalValue "Project Name"^^xsd:normalizedString;
+	ifc:theIfcId "245"^^xsd:long;
+	ifc:name "Project Name"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySingleValue_246
+	ifc:nominalValue "Project Number"^^xsd:normalizedString;
+	ifc:theIfcId "246"^^xsd:long;
+	ifc:name "Project Number"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySingleValue.
+
+:ifcPropertySet_247
+	ifc:hasProperties  ( :ifcPropertySingleValue_241 :ifcPropertySingleValue_242 :ifcPropertySingleValue_243 :ifcPropertySingleValue_244 :ifcPropertySingleValue_245 :ifcPropertySingleValue_246 );
+	ifc:theIfcId "247"^^xsd:long;
+	ifc:globalId "04kJ05CEL7293JDGCUa2AM"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "PSet_Revit_Other"^^xsd:normalizedString;
+	rdf:type ifc:IfcPropertySet.
+
+:ifcRelDefinesByProperties_248
+	ifc:relatingPropertyDefinition :ifcPropertySet_247;
+	ifc:theIfcId "248"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuilding_36 );
+	ifc:globalId "2ClDjloWT6wg5RDLrxy4wm"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelAssociatesMaterial_249
+	ifc:relatingMaterial :ifcMaterialLayerSetUsage_110;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 );
+	ifc:theIfcId "249"^^xsd:long;
+	ifc:globalId "1PeY1MRlz2U96K$6wYsTRb"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAssociatesMaterial.
+
+:ifcRelAssociatesMaterial_250
+	ifc:relatingMaterial :ifcMaterialLayerSetUsage_144;
+	ifc:relatedObjects  ( :ifcWallStandardCase_126 );
+	ifc:theIfcId "250"^^xsd:long;
+	ifc:globalId "0NPcBFrTH2aBCeXG$puZA4"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAssociatesMaterial.
+
+:ifcRelAssociatesMaterial_251
+	ifc:relatingMaterial :ifcMaterialLayerSetUsage_178;
+	ifc:relatedObjects  ( :ifcWallStandardCase_160 );
+	ifc:theIfcId "251"^^xsd:long;
+	ifc:globalId "1CsyUFdHz1CQC8HAmzl5BU"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAssociatesMaterial.
+
+:ifcRelAssociatesMaterial_252
+	ifc:relatingMaterial :ifcMaterialLayerSetUsage_212;
+	ifc:relatedObjects  ( :ifcWallStandardCase_194 );
+	ifc:theIfcId "252"^^xsd:long;
+	ifc:globalId "1L$WFln454gO7jDD_8wXwa"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelAssociatesMaterial.
+
+:ifcRelDefinesByProperties_253
+	ifc:relatingPropertyDefinition :ifcPropertySet_233;
+	ifc:theIfcId "253"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "0IUhUTo5PAtecSoRJ2_hvV"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelDefinesByProperties_254
+	ifc:relatingPropertyDefinition :ifcPropertySet_234;
+	ifc:theIfcId "254"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "1dqA7AHoX6DxtKNRxNtMCs"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelDefinesByProperties_255
+	ifc:relatingPropertyDefinition :ifcPropertySet_235;
+	ifc:theIfcId "255"^^xsd:long;
+	ifc:relatedObjects  ( :ifcBuildingStorey_39 );
+	ifc:globalId "2e0QaHGm5Cc89qNKj7RYmY"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelDefinesByProperties_256
+	ifc:relatingPropertyDefinition :ifcPropertySet_100;
+	ifc:theIfcId "256"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194 );
+	ifc:globalId "2ySJvTWi15$voddqL9GNLr"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelDefinesByProperties_257
+	ifc:relatingPropertyDefinition :ifcPropertySet_101;
+	ifc:theIfcId "257"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194 );
+	ifc:globalId "3wUP76sfz5AAINJfCmkTah"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelDefinesByProperties_258
+	ifc:relatingPropertyDefinition :ifcPropertySet_102;
+	ifc:theIfcId "258"^^xsd:long;
+	ifc:relatedObjects  ( :ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194 );
+	ifc:globalId "0PeqaxMjzDsg0JBndI0pxf"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelDefinesByProperties.
+
+:ifcRelConnectsPathElements_259
+	ifc:relatingPriorities  ( );
+	ifc:relatedPriorities  ( );
+	ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atend;
+	ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atstart;
+	ifc:relatingElement :ifcWallStandardCase_62;
+	ifc:relatedElement :ifcWallStandardCase_194;
+	ifc:theIfcId "259"^^xsd:long;
+	ifc:globalId "3OsIccpZj6peXh4OqocSUj"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelConnectsPathElements.
+
+:ifcRelConnectsPathElements_260
+	ifc:relatingPriorities  ( );
+	ifc:relatedPriorities  ( );
+	ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart;
+	ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend;
+	ifc:relatingElement :ifcWallStandardCase_62;
+	ifc:relatedElement :ifcWallStandardCase_126;
+	ifc:theIfcId "260"^^xsd:long;
+	ifc:globalId "1DPnWNpIjAIvXeKoVAkYCF"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelConnectsPathElements.
+
+:ifcRelConnectsPathElements_261
+	ifc:relatingPriorities  ( );
+	ifc:relatedPriorities  ( );
+	ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart;
+	ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend;
+	ifc:relatingElement :ifcWallStandardCase_126;
+	ifc:relatedElement :ifcWallStandardCase_160;
+	ifc:theIfcId "261"^^xsd:long;
+	ifc:globalId "0VT0YPiRT6txg1B2f$_62M"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelConnectsPathElements.
+
+:ifcRelConnectsPathElements_262
+	ifc:relatingPriorities  ( );
+	ifc:relatedPriorities  ( );
+	ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart;
+	ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend;
+	ifc:relatingElement :ifcWallStandardCase_160;
+	ifc:relatedElement :ifcWallStandardCase_194;
+	ifc:theIfcId "262"^^xsd:long;
+	ifc:globalId "2vDFkkI0DFH9Z$18KYWSKp"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelConnectsPathElements.
+
+:ifcRelConnectsPathElements_263
+	ifc:relatingPriorities  ( );
+	ifc:relatedPriorities  ( );
+	ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atend;
+	ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atstart;
+	ifc:relatingElement :ifcWallStandardCase_62;
+	ifc:relatedElement :ifcWallStandardCase_194;
+	ifc:theIfcId "263"^^xsd:long;
+	ifc:globalId "2G9kBZBRbDMOFPpdpoyFVR"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	rdf:type ifc:IfcRelConnectsPathElements.
+
+:ifcPresentationLayerAssignment_264
+	ifc:name "A-WALLMBM"^^xsd:normalizedString;
+	ifc:assignedItems  ( :ifcShapeRepresentation_49 :ifcShapeRepresentation_60 :ifcShapeRepresentation_116 :ifcShapeRepresentation_124 :ifcShapeRepresentation_150 :ifcShapeRepresentation_158 :ifcShapeRepresentation_184 :ifcShapeRepresentation_192 );
+	ifc:theIfcId "264"^^xsd:long;
+	rdf:type ifc:IfcPresentationLayerAssignment.
+
+:ifcProject_34
+	ifc:longName ""^^xsd:normalizedString;
+	ifc:phase "Project Status"^^xsd:normalizedString;
+	ifc:representationContexts  ( :ifcGeometricRepresentationContext_27 :ifcGeometricRepresentationContext_28 );
+	ifc:unitsInContext :ifcUnitAssignment_23;
+	ifc:theIfcId "34"^^xsd:long;
+	ifc:globalId "2CbZXiFIL3UwFX5$YHeX6h"^^xsd:normalizedString;
+	ifc:ownerHistory :ifcOwnerHistory_33;
+	ifc:name "Project Number"^^xsd:normalizedString;
+	rdf:type ifc:IfcProject.
+

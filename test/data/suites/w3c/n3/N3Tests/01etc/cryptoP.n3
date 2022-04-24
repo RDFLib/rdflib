@@ -1,0 +1,7 @@
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{"blargh" crypto:sha ?X} => {:s1 :p ?X}.
+{"blargh" e:sha ?X} => {:s2 :p ?X}.
+{"blargh" e:hmac-sha ?X} => {:s3 :p ?X}.

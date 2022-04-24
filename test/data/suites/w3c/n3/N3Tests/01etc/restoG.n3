@@ -1,0 +1,14 @@
+@prefix resto: <http://example.org/restaurant#>.
+
+{   ?restaurant resto:hasReservation ?reservation.
+    ?reservation resto:onDate ?date;
+        resto:place ?place.
+    ?place resto:isOutside ?outside.
+}
+=>
+{   ?restaurant resto:hasReservation ?reservation.
+    ?reservation resto:onDate ?date;
+        resto:place ?place.
+    ?place resto:isOutside ?outside.
+}.
+

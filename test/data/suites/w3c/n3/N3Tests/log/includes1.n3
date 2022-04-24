@@ -1,0 +1,174 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix : <#>.
+
+{ { 
+	:will :hasName "will"
+
+} log:includes {
+	?x :hasName "will"
+
+} } => {
+	:test1 a :SUCCESS
+} .
+
+{ { 
+	:will :hasName "will"
+
+} log:notIncludes {
+	?x :hasName "will"
+
+} } => {
+	:test1i a :FAILURE
+} .
+
+
+{ { 
+	?x :hasName "will"
+
+} log:includes {
+	:will :hasName "will"
+
+} } => {
+	:test2 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" .
+
+} log:includes {
+	:will :hasName "will" .
+	:ed :hasName "will"
+	
+} } => {
+	:test3 a :FAILURE
+} .
+
+{ { 
+	?x :hasName "will" .
+
+} log:notIncludes {
+	:will :hasName "will" .
+	:ed :hasName "will"
+	
+} } => {
+	:test3i a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" .
+	?y :hasName "will" .
+
+} log:includes {
+	:will :hasName "will" .
+	:ed :hasName "will"
+	
+} } => {
+	:test4 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" .
+	?x :hasName "will" .
+
+} log:includes {
+	:will :hasName "will" .
+	:ed :hasName "will"
+	
+} } => {
+	:test5 a :FAILURE
+} .
+
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?y .
+
+} log:includes {
+	:will :hasName "will" ;
+		:hasAge 36 .
+	
+} } => {
+	:test6 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?a .
+
+} log:includes {
+	:will :hasName "will" .
+	:ed :hasAge 36 .
+	
+} } => {
+	:test7 a :FAILURE
+} .
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?a .
+
+} log:notIncludes {
+	:will :hasName "will" .
+	:ed :hasAge 36 .
+	
+} } => {
+	:test7i a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?a .
+
+} log:includes {
+	?w :hasName "will" .
+	?e :hasAge 36 .
+	
+} } => {
+	:test8 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" .
+	?y :hasAge ?a .
+
+} log:includes {
+	?w :hasName "will" ;
+		:hasAge 36 .
+	
+} } => {
+	:test9 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?y ;
+		:hasColor "perrywinkle blue"
+
+} log:includes {
+	:will :hasName "will" ;
+		:hasAge 36 .
+	
+} } => {
+	:test10 a :SUCCESS
+} .
+
+
+{ { 
+	?x :hasName "will" ;
+		:hasAge ?y
+
+} log:notIncludes {
+	:will :hasName "will" ;
+		:hasAge 36 ;
+		:hasColor "perrywinkle blue"
+	
+} } => {
+	:test11i a :SUCCESS
+} .

@@ -1,0 +1,56 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope http://josd.github.io/brain/swet/swetA.n3 http://josd.github.io/brain/swet/swetD.n3 --query http://josd.github.io/brain/swet/swetQ21.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/brain#>.
+
+_:bn_2 e:answer {:obs002 :ascribed :Sprinkler. :obs002 :ascribed :WetGrass}.
+_:bn_4 e:answer {:obs004 :ascribed :Sprinkler. :obs004 :ascribed :WetGrass}.
+_:bn_12 e:answer {:obs012 :ascribed :Sprinkler. :obs012 :ascribed :WetGrass}.
+_:bn_14 e:answer {:obs014 :ascribed :Sprinkler. :obs014 :ascribed :WetGrass}.
+_:bn_22 e:answer {:obs022 :ascribed :Sprinkler. :obs022 :ascribed :WetGrass}.
+_:bn_24 e:answer {:obs024 :ascribed :Sprinkler. :obs024 :ascribed :WetGrass}.
+_:bn_26 e:answer {:obs026 :ascribed :Sprinkler. :obs026 :ascribed :WetGrass}.
+_:bn_29 e:answer {:obs029 :ascribed :Sprinkler. :obs029 :ascribed :WetGrass}.
+_:bn_30 e:answer {:obs030 :ascribed :Sprinkler. :obs030 :ascribed :WetGrass}.
+_:bn_31 e:answer {:obs031 :ascribed :Sprinkler. :obs031 :ascribed :WetGrass}.
+_:bn_32 e:answer {:obs032 :ascribed :Sprinkler. :obs032 :ascribed :WetGrass}.
+_:bn_34 e:answer {:obs034 :ascribed :Sprinkler. :obs034 :ascribed :WetGrass}.
+_:bn_36 e:answer {:obs036 :ascribed :Sprinkler. :obs036 :ascribed :WetGrass}.
+_:bn_37 e:answer {:obs037 :ascribed :Sprinkler. :obs037 :ascribed :WetGrass}.
+_:bn_38 e:answer {:obs038 :ascribed :Sprinkler. :obs038 :ascribed :WetGrass}.
+_:bn_39 e:answer {:obs039 :ascribed :Sprinkler. :obs039 :ascribed :WetGrass}.
+_:bn_41 e:answer {:obs041 :ascribed :Sprinkler. :obs041 :ascribed :WetGrass}.
+_:bn_42 e:answer {:obs042 :ascribed :Sprinkler. :obs042 :ascribed :WetGrass}.
+_:bn_43 e:answer {:obs043 :ascribed :Sprinkler. :obs043 :ascribed :WetGrass}.
+_:bn_46 e:answer {:obs046 :ascribed :Sprinkler. :obs046 :ascribed :WetGrass}.
+_:bn_47 e:answer {:obs047 :ascribed :Sprinkler. :obs047 :ascribed :WetGrass}.
+_:bn_54 e:answer {:obs054 :ascribed :Sprinkler. :obs054 :ascribed :WetGrass}.
+_:bn_56 e:answer {:obs056 :ascribed :Sprinkler. :obs056 :ascribed :WetGrass}.
+_:bn_63 e:answer {:obs063 :ascribed :Sprinkler. :obs063 :ascribed :WetGrass}.
+_:bn_64 e:answer {:obs064 :ascribed :Sprinkler. :obs064 :ascribed :WetGrass}.
+_:bn_66 e:answer {:obs066 :ascribed :Sprinkler. :obs066 :ascribed :WetGrass}.
+_:bn_74 e:answer {:obs074 :ascribed :Sprinkler. :obs074 :ascribed :WetGrass}.
+_:bn_76 e:answer {:obs076 :ascribed :Sprinkler. :obs076 :ascribed :WetGrass}.
+_:bn_77 e:answer {:obs077 :ascribed :Sprinkler. :obs077 :ascribed :WetGrass}.
+_:bn_78 e:answer {:obs078 :ascribed :Sprinkler. :obs078 :ascribed :WetGrass}.
+_:bn_79 e:answer {:obs079 :ascribed :Sprinkler. :obs079 :ascribed :WetGrass}.
+_:bn_80 e:answer {:obs080 :ascribed :Sprinkler. :obs080 :ascribed :WetGrass}.
+_:bn_82 e:answer {:obs082 :ascribed :Sprinkler. :obs082 :ascribed :WetGrass}.
+_:bn_84 e:answer {:obs084 :ascribed :Sprinkler. :obs084 :ascribed :WetGrass}.
+_:bn_86 e:answer {:obs086 :ascribed :Sprinkler. :obs086 :ascribed :WetGrass}.
+_:bn_87 e:answer {:obs087 :ascribed :Sprinkler. :obs087 :ascribed :WetGrass}.
+_:bn_88 e:answer {:obs088 :ascribed :Sprinkler. :obs088 :ascribed :WetGrass}.
+_:bn_89 e:answer {:obs089 :ascribed :Sprinkler. :obs089 :ascribed :WetGrass}.
+_:bn_91 e:answer {:obs091 :ascribed :Sprinkler. :obs091 :ascribed :WetGrass}.
+_:bn_92 e:answer {:obs092 :ascribed :Sprinkler. :obs092 :ascribed :WetGrass}.
+_:bn_93 e:answer {:obs093 :ascribed :Sprinkler. :obs093 :ascribed :WetGrass}.
+_:bn_95 e:answer {:obs095 :ascribed :Sprinkler. :obs095 :ascribed :WetGrass}.
+_:bn_96 e:answer {:obs096 :ascribed :Sprinkler. :obs096 :ascribed :WetGrass}.
+_:bn_97 e:answer {:obs097 :ascribed :Sprinkler. :obs097 :ascribed :WetGrass}.
+_:bn_99 e:answer {:obs099 :ascribed :Sprinkler. :obs099 :ascribed :WetGrass}.
+_:bn_100 e:answer {:obs100 :ascribed :Sprinkler. :obs100 :ascribed :WetGrass}.
+
+#2020-02-22T21:53:04.790Z in=501 out=46 ent=46 step=46 brake=1 inf=212568 sec=0.172 inf/sec=1235860
+#ENDS
+

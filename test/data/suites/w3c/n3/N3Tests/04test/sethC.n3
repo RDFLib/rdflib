@@ -1,0 +1,6 @@
+# $Id: sethC.n3 352 2004-09-03 19:50:53Z josd $
+# PxButton | es  | euler sethP.n3 /sfcvs/2003/03swap/owl-rules.n3 /sfcvs/2003/03swap/rdfs-rules.n3 sethC.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sethP#>.
+
+?X a :Foo.

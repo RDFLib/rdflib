@@ -1,0 +1,6 @@
+# $Id: srcP.n3 341 2004-07-31 16:24:53Z josd $
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+<a.n3> a q:Source.
+<b.n3> a q:Source.

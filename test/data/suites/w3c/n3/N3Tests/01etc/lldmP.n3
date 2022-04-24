@@ -1,0 +1,123 @@
+# $Id: lldmP.n3,v 1.11 2005/05/03 20:20:39 amdus Exp $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://www.agfa.com/w3c/2002/10/medicad/op/lldmP#>.
+
+
+## measurement axioms
+
+:p1 a :Point; :incident :L1.
+:p2 a :Point; :incident :L1.
+:p3 a :Point; :incident :L3.
+:p4 a :Point; :incident :L4.
+:p5 a :Point; :incident :L1, :L3.
+:p6 a :Point; :incident :L1, :L4.
+:L1 a :Line; :perpendicular :L3, :L4.
+:L3 a :Line.
+:L4 a :Line.
+
+:incident rdfs:domain :Point; rdfs:range :Line; owl:inverseOf :contains.
+:perpendicular rdfs:domain :Line; rdfs:range :Line; a owl:SymmetricProperty. 
+
+:p1xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p1yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p2xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p2yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p3xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p3yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p4xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p4yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p5xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p5yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p6xCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:p6yCm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dx12Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dx51Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dx53Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dx62Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dx64Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dy12Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dy13Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dy24Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dy53Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dy64Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:cL1 rdfs:domain :Measurement; rdfs:range :Quantity.
+:dL3m rdfs:domain :Measurement; rdfs:range :Quantity.
+:cL3 rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL1x1Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL1x2Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL3x3Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL3x4Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dd13Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:ddy13Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dd24Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:ddy24Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:ddL13 rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL1dx51Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:pL1dx62Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdx53Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdx64Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdy53Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdy64Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdd53Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:sdd64Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:ssd53Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:ssd64Cm2 rdfs:domain :Measurement; rdfs:range :Quantity.
+:d53Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:d64Cm rdfs:domain :Measurement; rdfs:range :Quantity.
+:dCm rdfs:domain :Measurement; rdfs:range :Quantity.
+
+
+## measurement implications
+
+{?M a :Measurement; :p1xCm ?X; :p2xCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dx12Cm ?Z}.
+{?M a :Measurement; :p5xCm ?X; :p1xCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dx51Cm ?Z}.
+{?M a :Measurement; :p5xCm ?X; :p3xCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dx53Cm ?Z}.
+{?M a :Measurement; :p6xCm ?X; :p2xCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dx62Cm ?Z}.
+{?M a :Measurement; :p6xCm ?X; :p4xCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dx64Cm ?Z}.
+{?M a :Measurement; :p1yCm ?X; :p2yCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dy12Cm ?Z}.
+{?M a :Measurement; :p1yCm ?X; :p3yCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dy13Cm ?Z}.
+{?M a :Measurement; :p2yCm ?X; :p4yCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dy24Cm ?Z}.
+{?M a :Measurement; :p5yCm ?X; :p3yCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dy53Cm ?Z}.
+{?M a :Measurement; :p6yCm ?X; :p4yCm ?Y. (?X ?Y) math:difference ?Z} => {?M :dy64Cm ?Z}.
+
+{?M a :Measurement; :dy12Cm ?Y; :dx12Cm ?X. (?Y ?X) math:quotient ?Z} => {?M :cL1 ?Z}.
+{?M a :Measurement; :cL1 ?X. (1 ?X) math:quotient ?Z} => {?M :dL3m ?Z}.
+{?M a :Measurement; :dL3m ?X. (0 ?X) math:difference ?Z} => {?M :cL3 ?Z}.
+
+{?M a :Measurement; :cL1 ?X; :p1xCm ?Y. (?X ?Y) math:product ?Z} => {?M :pL1x1Cm ?Z}.
+{?M a :Measurement; :cL1 ?X; :p2xCm ?Y. (?X ?Y) math:product ?Z} => {?M :pL1x2Cm ?Z}.
+{?M a :Measurement; :cL3 ?X; :p3xCm ?Y. (?X ?Y) math:product ?Z} => {?M :pL3x3Cm ?Z}.
+{?M a :Measurement; :cL3 ?X; :p4xCm ?Y. (?X ?Y) math:product ?Z} => {?M :pL3x4Cm ?Z}.
+{?M a :Measurement; :pL1x1Cm ?X; :pL3x3Cm ?Y. (?X ?Y) math:difference ?Z} => {?M :dd13Cm ?Z}.
+{?M a :Measurement; :dd13Cm ?X; :dy13Cm ?Y. (?X ?Y) math:difference ?Z} => {?M :ddy13Cm ?Z}.
+{?M a :Measurement; :pL1x2Cm ?X; :pL3x4Cm ?Y. (?X ?Y) math:difference ?Z} => {?M :dd24Cm ?Z}.
+{?M a :Measurement; :dd24Cm ?X; :dy24Cm ?Y. (?X ?Y) math:difference ?Z} => {?M :ddy24Cm ?Z}.
+{?M a :Measurement; :cL1 ?X; :cL3 ?Y. (?X ?Y) math:difference ?Z} => {?M :ddL13 ?Z}.
+{?M a :Measurement; :cL1 ?X; :dx51Cm ?Y. (?X ?Y) math:product ?Z} => {?M :pL1dx51Cm ?Z}.
+{?M a :Measurement; :cL1 ?X; :dx62Cm ?Y. (?X ?Y) math:product ?Z} => {?M :pL1dx62Cm ?Z}.
+
+{?M a :Measurement; :ddy13Cm ?X; :ddL13 ?Y. (?X ?Y) math:quotient ?Z} => {?M :p5xCm ?Z}.
+{?M a :Measurement; :pL1dx51Cm ?X; :p1yCm ?Y. (?X ?Y) math:sum ?Z} => {?M :p5yCm ?Z}.
+{?M a :Measurement; :ddy24Cm ?X; :ddL13 ?Y. (?X ?Y) math:quotient ?Z} => {?M :p6xCm ?Z}.
+{?M a :Measurement; :pL1dx62Cm ?X; :p2yCm ?Y. (?X ?Y) math:sum ?Z} => {?M :p6yCm ?Z}.
+
+{?M a :Measurement; :dx53Cm ?X. (?X 2) math:exponentiation ?Z} => {?M :sdx53Cm2 ?Z}.
+{?M a :Measurement; :dx64Cm ?X. (?X 2) math:exponentiation ?Z} => {?M :sdx64Cm2 ?Z}.
+{?M a :Measurement; :dy53Cm ?X. (?X 2) math:exponentiation ?Z} => {?M :sdy53Cm2 ?Z}.
+{?M a :Measurement; :dy64Cm ?X. (?X 2) math:exponentiation ?Z} => {?M :sdy64Cm2 ?Z}.
+{?M a :Measurement; :sdx53Cm2 ?X; :sdy53Cm2 ?Y. (?X ?Y) math:sum ?Z} => {?M :ssd53Cm2 ?Z}.
+{?M a :Measurement; :sdx64Cm2 ?X; :sdy64Cm2 ?Y. (?X ?Y) math:sum ?Z} => {?M :ssd64Cm2 ?Z}.
+
+{?M a :Measurement; :ssd53Cm2 ?X. (?X 0.5) math:exponentiation ?Z} => {?M :d53Cm ?Z}.
+{?M a :Measurement; :ssd64Cm2 ?X. (?X 0.5) math:exponentiation ?Z} => {?M :d64Cm ?Z}.
+
+{?M a :Measurement; :d53Cm ?X; :d64Cm ?Y. (?X ?Y) math:difference ?Z} => {?M :dCm ?Z}.
+
+{?M a :Measurement; :dCm ?X. ?X math:lessThan -1.25} => {?M a :LLDAlarm}.
+{?M a :Measurement; :dCm ?X. ?X math:greaterThan 1.25} => {?M a :LLDAlarm}.

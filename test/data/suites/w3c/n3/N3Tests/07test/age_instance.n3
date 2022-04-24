@@ -1,0 +1,46 @@
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix organism: <http://eulersharp.sourceforge.net/2003/03swap/organism#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix i: <#>.
+
+
+# INSTANCE OF CURRENT MOMENT BOTH IN DATE TIME AND DATE
+
+[event:hasSnapshotDateTime "2010-10-30T22:00:00Z"^^xsd:dateTime].
+[event:hasSnapshotDate "2010-10-30Z"^^xsd:date].
+
+
+# INSTANCES OF ADULTS AND BABIES AND THEIR BIRTH DATE TIME AND DATE
+
+i:adult1 a human:BiologicalAdult; organism:hasBirthDateTime "1941-02-09T15:00:00Z"^^xsd:dateTime.
+i:adult1 a human:BiologicalAdult; organism:hasBirthDate "1941-02-09Z"^^xsd:date.
+
+i:adult2 a human:BiologicalAdult; organism:hasBirthDateTime "1986-05-24T00:00:00Z"^^xsd:dateTime.
+i:adult2 a human:BiologicalAdult; organism:hasBirthDate "1986-05-24Z"^^xsd:date.
+
+i:baby1 a human:Human; organism:hasBirthDateTime "2010-06-10T00:05:00Z"^^xsd:dateTime.
+i:baby1 a human:Human; organism:hasBirthDate "2010-06-10Z"^^xsd:date.
+
+i:baby2 a human:Human; organism:hasBirthDateTime "2010-10-05T00:05:00Z"^^xsd:dateTime.
+i:baby2 a human:Human; organism:hasBirthDate "2010-10-10Z"^^xsd:date.
+
+
+# INSTANCES OF ADULTS AND BABIES AND THE BEGINNING OF THEIR LIVES AS DATE TIME AND DATE
+
+i:adult3 a human:BiologicalAdult; organism:lives i:life3.
+i:life3 a organism:IndividualLife; organism:begins "1954-02-09T15:00:00Z"^^xsd:dateTime.
+i:life3 a organism:IndividualLife; organism:beginDate "1954-02-09Z"^^xsd:date.
+
+i:adult4 a human:BiologicalAdult; organism:lives i:life4.
+i:life4 a organism:IndividualLife; organism:begins "1986-05-24T00:00:00Z"^^xsd:dateTime.
+i:life4 a organism:IndividualLife; organism:beginDate "1986-05-24Z"^^xsd:date.
+
+i:baby3 a human:Human; organism:lives i:lifeb3.
+i:lifeb3 a organism:IndividualLife; organism:begins "2010-10-30T00:05:00Z"^^xsd:dateTime.
+i:lifeb3 a organism:IndividualLife; organism:beginDate "2009-06-10Z"^^xsd:date.
+
+i:baby4 a human:Human; organism:lives i:lifeb4.
+i:lifeb4 a organism:IndividualLife; organism:begins "2010-03-10T00:05:00Z"^^xsd:dateTime.
+i:lifeb4 a organism:IndividualLife; organism:beginDate "2009-10-10Z"^^xsd:date.

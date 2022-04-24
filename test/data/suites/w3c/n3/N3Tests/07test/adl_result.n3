@@ -1,0 +1,16 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/adl.n3 --pass
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+:Socrates a :Male.
+:Socrates a :Mortal.
+:Xanthippe a :Female.
+:Xanthippe a :Human.
+(:a :b :c) a :Result.
+(:Socrates :Xanthippe :Xanthippe :Dan :Tim) a :Result.
+
+#2018-04-18T08:27:35.035Z in=20 out=6 ent=2 step=6 brake=4 inf=16053 sec=0.020 inf/sec=802650
+#ENDS
+

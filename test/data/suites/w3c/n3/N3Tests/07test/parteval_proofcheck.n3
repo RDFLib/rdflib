@@ -1,0 +1,7 @@
+  @prefix : <http://eulersharp.sourceforge.net/2007/07test/try#> .
+  
+  :Xanthippe     a :Female,
+  :Human,
+  :HumanFemale .
+  
+  

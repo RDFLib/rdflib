@@ -1,0 +1,46 @@
+
+
+@prefix : <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+
+ 
+  # IfcAxis2Placement3D
+  # Test if IfcAxis2Placement3D does not includes an axis and refDirection. If so, set the default axis and the refDirection. Either both (Axis and RefDirection) are not given and therefore defaulted, or both shall be given. So it's only necessary to search for one.
+	{
+    ?x rdf:type ifc:IfcAxis2Placement3D.
+    ?y e:findall (?ref {?x ifc:refDirection ?ref} ())
+  }
+  =>
+  {
+    :ifcDirection_DefaultAxisDirection3D ifc:directionRatios ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+    :ifcDirection_DefaultAxisDirection3D a ifc:IfcDirection.
+    :ifcDirection_DefaultRefDirection3D ifc:directionRatios ("1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+    :ifcDirection_DefaultRefDirection3D a ifc:IfcDirection.
+    ?x ifc:axis :ifcDirection_DefaultAxisDirection3D.
+    ?x ifc:refDirection :ifcDirection_DefaultRefDirection3D
+  }.
+  
+  
+  # IfcAxis2Placement2D
+  # Test if IfcAxis2Placement3D does not includes an axis and refDirection. If so, set the default axis and the refDirection. Either both (Axis and RefDirection) are not given and therefore defaulted, or both shall be given. So it's only necessary to search for one.
+	{
+    ?x rdf:type ifc:IfcAxis2Placement2D.
+    ?y e:findall (?ref {?x ifc:refDirection ?ref} ())
+  }
+  =>
+  {
+    :ifcDirection_DefaultRefDirection2D ifc:directionRatios ("1.0"^^xsd:double "0.0"^^xsd:double).
+    :ifcDirection_DefaultRefDirection2D a ifc:IfcDirection.
+    ?x ifc:refDirection :ifcDirection_DefaultRefDirection2D
+  }.

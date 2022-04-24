@@ -1,0 +1,13 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-02.n3> q:answer ("Alice" _:name2_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-02.n3> q:answer ("Bob" _:name2_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-02.n3> q:answer ("Eve" _:name2_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-02.n3> q:answer ("Alice" "Bob"). 
+<http://eulersharp.sourceforge.net/2004/04test/dawg-ot-0-02.n3> q:answer ("Bob" "Alice"). 
+

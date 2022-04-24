@@ -1,0 +1,4 @@
+@prefix bad: <http://bad.org> .
+@prefix bad: <http://worse.org> .
+
+bad:s :p :bad:o .

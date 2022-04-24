@@ -1,0 +1,20 @@
+# $Id: henry.n3 473 2005-02-17 14:21:03Z josd $
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/rogier#>.
+
+:a :r1 :b;
+   :r2 :c;
+   :r3 :d;
+   :r4 :e;
+   :r5 :f.
+:g :r1 :b;
+   :r2 :c;
+   :r3 :d;
+   :r4 :e;
+   :r5 :f.
+
+:p :productProperty (:r1 :r2 :r3 :r4 :r5);
+   a owl:InverseFunctionalProperty.
+

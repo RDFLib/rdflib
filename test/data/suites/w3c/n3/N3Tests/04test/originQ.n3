@@ -1,0 +1,13 @@
+# $Id: originQ.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler --nope --think statement1.n3 JoeCo.n3 origin.n3 --query originQ.n3
+# PxButton | cwm | cwm statement1.n3 JoeCo.n3 origin.n3 --think --mode"=mrsE" --query"=originQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix bank:  <http://bank.example/statements#>.
+@prefix ical:  <http://www.w3.org/2002/12/cal/ical#> .
+
+[]
+q:select {<> q:answer (?C ?A ?D ?S ?L)};
+q:where  {?X bank:debtor bank:act01347797; bank:creditor ?C; bank:amount ?A; bank:date ?D.
+          ?Y ical:dtstart ?D; ical:summary ?S; ical:location ?L}.
+

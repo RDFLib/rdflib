@@ -1,0 +1,13 @@
+# $Id: davidP.n3 371 2004-09-08 22:56:16Z josd $
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/davidP#>.
+
+# Lookup table
+[:letterGrade "A"; :numberGrade 10].
+[:letterGrade "B"; :numberGrade 7].
+[:letterGrade "C"; :numberGrade 5].
+[:letterGrade "D"; :numberGrade 3].
+[:letterGrade "F"; :numberGrade 1].
+
+:Dave :myLetterGrade "B".
+:Kathy :myLetterGrade "A".

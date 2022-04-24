@@ -1,0 +1,8 @@
+# $Id: radlexQ.n3 1272 2007-04-21 21:14:14Z josd $
+# PxButton | es   | euler --nope --think radlex.n3 --query radlexQ.n3
+# PxButton | cwm  | cwm radlex.n3 --think --query"=radlexQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/RadLex#>.
+
+{?A :rl-term :RL432. ?A :axis-term ?B. ?B :rl-term ?T. ?T :name ?N} => {?T :name ?N}.

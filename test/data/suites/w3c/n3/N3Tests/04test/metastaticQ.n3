@@ -1,0 +1,4 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/metastatic#>.
+
+{:Coma e:boolean e:F. :HeadAche e:boolean e:T} => {:MetastaticCancer e:boolean e:T}.

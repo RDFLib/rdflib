@@ -1,0 +1,11 @@
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain/4color#>.
+
+{
+    ?SCOPE e:findall ((?PLACE ?COLOR) {?PLACE :neighbours ?NEIGHBOURS} ?LIST).
+    (?LIST) func:reverse ?PLACES.
+    ?PLACES :places true.
+} => {
+    ?PLACES :coloring true.
+}.

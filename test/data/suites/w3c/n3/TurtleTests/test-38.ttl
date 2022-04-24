@@ -1,0 +1,5 @@
+# http://bugs.librdf.org/mantis/view.php?id=505
+
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+ 
+<x> rdfs:label "\ud801\udc69" .

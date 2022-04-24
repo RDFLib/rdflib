@@ -1,0 +1,9 @@
+    
+    <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/foo.n3#albert>     <http://www.daml.example.org/2001/03/fam#mother> _:L18C10 .
+    
+    _:L18C10     <http://www.daml.example.org/2001/03/fam#sister> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/foo.n3#auntieAnne> .
+    
+    _:L20C10     <http://www.daml.example.org/2001/03/fam#father> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/foo.n3#albert> .
+    
+    _:L20C10     <http://www.daml.example.org/2001/03/fam#sister> <https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/foo.n3#nieceBertha> .
+    

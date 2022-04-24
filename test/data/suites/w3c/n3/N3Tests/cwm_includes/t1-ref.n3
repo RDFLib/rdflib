@@ -1,0 +1,2 @@
+@prefix : <t1.n3#> .
+:test1     a :success .

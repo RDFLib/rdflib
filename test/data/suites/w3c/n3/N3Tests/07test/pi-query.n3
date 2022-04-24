@@ -1,0 +1,7 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/pi#>.
+
+{(10 ?Pi) :pi true} => {(10 ?Pi) :pi true}.
+{(100 ?Pi) :pi true} => {(100 ?Pi) :pi true}.
+{(1000 ?Pi) :pi true} => {(1000 ?Pi) :pi true}.
+{(10000 ?Pi) :pi true} => {(10000 ?Pi) :pi true}.
+{(100000 ?Pi) :pi true} => {(100000 ?Pi) :pi true}.

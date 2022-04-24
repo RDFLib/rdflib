@@ -1,0 +1,7 @@
+@prefix food: <http://www.w3.org/2002/03owlt/miscellaneous/consistent002#>.
+
+_:g a food:Grape.
+_:cnd a food:CheeseNutsDessert.
+_:pwlcs a food:PastaWithLightCreamSauce.
+_:ct a food:ConsumableThing.
+_:m a food:Meal.

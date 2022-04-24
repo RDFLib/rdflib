@@ -1,0 +1,15 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <bd#>.
+
+true => (
+	{:a :b :c0}
+	{:a :b :c1}
+	{:a :b :c2}
+	{:a :b :c3}
+	{:a :b :c4}
+	{:a :b :c5}
+	{:a :b :c6}
+	{:a :b :c7}
+	{:a :b :c8}
+	{:a :b :c9}
+)!e:disjunction.

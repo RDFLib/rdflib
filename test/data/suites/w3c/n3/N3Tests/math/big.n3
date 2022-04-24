@@ -1,0 +1,12 @@
+# From swap/test/math/math_test.n3
+@prefix : <#> .
+@prefix list: <http://www.w3.org/2000/10/swap/list#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Big test
+
+{ (	("7" "2")!math:quotient  
+   	(("7" "2")!math:remainder  "10000000")!math:exponentiation
+   	("a" "b" "c" "d" "e")!list:length # changed from using math:memberCount to list:length
+  ) math:sum ?x } => 
+{ ?x :valueOf "(7 / 2) + ((7 % 2)^10000000) + 5 [should be 9.5]" } .

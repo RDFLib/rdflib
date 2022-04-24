@@ -1,0 +1,38 @@
+### example taken from http://www.sics.se/sicstus/bench.pl
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix prolog: <http://eulersharp.sourceforge.net/2003/03swap/prolog#>.
+@prefix : <bench#>.
+
+() :nrev ().
+{[ rdf:first ?X; rdf:rest ?Rest] :nrev ?Ans} <= {
+	?Rest :nrev ?L.
+	(?L (?X) ?Ans) prolog:append true.
+}.
+
+(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30) :data true.
+
+{?Count :bench ?Lips} <= {
+	("runtime"^^prolog:atom (?T0 ?T1)) prolog:statistics true.
+	?Count :dobench true.
+	("runtime"^^prolog:atom (?T2 ?T3)) prolog:statistics true.
+	(?T3 1000) prolog:quotient ?Time.
+	(((496 ?Count)!prolog:product ?Time)!prolog:quotient) prolog:round ?Lips.
+	("# ~w lips (~w nrevs in ~w sec)~n"^^prolog:atom (?Lips ?Count ?Time)) prolog:format true.
+}.
+
+{?Count :dobench true} <= {
+	?List :data true.
+	?Count :repeat true.
+	?List :nrev ?Rev.
+	() prolog:fail true.
+}.
+{?count :dobench true} <= true.
+
+{?N :repeat true} <= true.
+{?N :repeat true} <= {
+	(?N 1) prolog:arithmetic_greater_than true.
+	(?N 1) prolog:minus ?N1.
+	?N1 :repeat true.
+}.	
+

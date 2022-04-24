@@ -1,0 +1,611 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quick-possible http://eulersharp.sourceforge.net/2007/07test/bd-test-100.n3 --query http://eulersharp.sourceforge.net/2007/07test/bd-query.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/bd#>.
+
+
+[ e:possibleModel {:a :b :c0}
+; e:gives {
+    :a :b :c0.
+  }
+].
+
+[ e:possibleModel {:a :b :c1}
+; e:gives {
+    :a :b :c1.
+  }
+].
+
+[ e:possibleModel {:a :b :c2}
+; e:gives {
+    :a :b :c2.
+  }
+].
+
+[ e:possibleModel {:a :b :c3}
+; e:gives {
+    :a :b :c3.
+  }
+].
+
+[ e:possibleModel {:a :b :c4}
+; e:gives {
+    :a :b :c4.
+  }
+].
+
+[ e:possibleModel {:a :b :c5}
+; e:gives {
+    :a :b :c5.
+  }
+].
+
+[ e:possibleModel {:a :b :c6}
+; e:gives {
+    :a :b :c6.
+  }
+].
+
+[ e:possibleModel {:a :b :c7}
+; e:gives {
+    :a :b :c7.
+  }
+].
+
+[ e:possibleModel {:a :b :c8}
+; e:gives {
+    :a :b :c8.
+  }
+].
+
+[ e:possibleModel {:a :b :c9}
+; e:gives {
+    :a :b :c9.
+  }
+].
+
+[ e:possibleModel {:a :b :c10}
+; e:gives {
+    :a :b :c10.
+  }
+].
+
+[ e:possibleModel {:a :b :c11}
+; e:gives {
+    :a :b :c11.
+  }
+].
+
+[ e:possibleModel {:a :b :c12}
+; e:gives {
+    :a :b :c12.
+  }
+].
+
+[ e:possibleModel {:a :b :c13}
+; e:gives {
+    :a :b :c13.
+  }
+].
+
+[ e:possibleModel {:a :b :c14}
+; e:gives {
+    :a :b :c14.
+  }
+].
+
+[ e:possibleModel {:a :b :c15}
+; e:gives {
+    :a :b :c15.
+  }
+].
+
+[ e:possibleModel {:a :b :c16}
+; e:gives {
+    :a :b :c16.
+  }
+].
+
+[ e:possibleModel {:a :b :c17}
+; e:gives {
+    :a :b :c17.
+  }
+].
+
+[ e:possibleModel {:a :b :c18}
+; e:gives {
+    :a :b :c18.
+  }
+].
+
+[ e:possibleModel {:a :b :c19}
+; e:gives {
+    :a :b :c19.
+  }
+].
+
+[ e:possibleModel {:a :b :c20}
+; e:gives {
+    :a :b :c20.
+  }
+].
+
+[ e:possibleModel {:a :b :c21}
+; e:gives {
+    :a :b :c21.
+  }
+].
+
+[ e:possibleModel {:a :b :c22}
+; e:gives {
+    :a :b :c22.
+  }
+].
+
+[ e:possibleModel {:a :b :c23}
+; e:gives {
+    :a :b :c23.
+  }
+].
+
+[ e:possibleModel {:a :b :c24}
+; e:gives {
+    :a :b :c24.
+  }
+].
+
+[ e:possibleModel {:a :b :c25}
+; e:gives {
+    :a :b :c25.
+  }
+].
+
+[ e:possibleModel {:a :b :c26}
+; e:gives {
+    :a :b :c26.
+  }
+].
+
+[ e:possibleModel {:a :b :c27}
+; e:gives {
+    :a :b :c27.
+  }
+].
+
+[ e:possibleModel {:a :b :c28}
+; e:gives {
+    :a :b :c28.
+  }
+].
+
+[ e:possibleModel {:a :b :c29}
+; e:gives {
+    :a :b :c29.
+  }
+].
+
+[ e:possibleModel {:a :b :c30}
+; e:gives {
+    :a :b :c30.
+  }
+].
+
+[ e:possibleModel {:a :b :c31}
+; e:gives {
+    :a :b :c31.
+  }
+].
+
+[ e:possibleModel {:a :b :c32}
+; e:gives {
+    :a :b :c32.
+  }
+].
+
+[ e:possibleModel {:a :b :c33}
+; e:gives {
+    :a :b :c33.
+  }
+].
+
+[ e:possibleModel {:a :b :c34}
+; e:gives {
+    :a :b :c34.
+  }
+].
+
+[ e:possibleModel {:a :b :c35}
+; e:gives {
+    :a :b :c35.
+  }
+].
+
+[ e:possibleModel {:a :b :c36}
+; e:gives {
+    :a :b :c36.
+  }
+].
+
+[ e:possibleModel {:a :b :c37}
+; e:gives {
+    :a :b :c37.
+  }
+].
+
+[ e:possibleModel {:a :b :c38}
+; e:gives {
+    :a :b :c38.
+  }
+].
+
+[ e:possibleModel {:a :b :c39}
+; e:gives {
+    :a :b :c39.
+  }
+].
+
+[ e:possibleModel {:a :b :c40}
+; e:gives {
+    :a :b :c40.
+  }
+].
+
+[ e:possibleModel {:a :b :c41}
+; e:gives {
+    :a :b :c41.
+  }
+].
+
+[ e:possibleModel {:a :b :c42}
+; e:gives {
+    :a :b :c42.
+  }
+].
+
+[ e:possibleModel {:a :b :c43}
+; e:gives {
+    :a :b :c43.
+  }
+].
+
+[ e:possibleModel {:a :b :c44}
+; e:gives {
+    :a :b :c44.
+  }
+].
+
+[ e:possibleModel {:a :b :c45}
+; e:gives {
+    :a :b :c45.
+  }
+].
+
+[ e:possibleModel {:a :b :c46}
+; e:gives {
+    :a :b :c46.
+  }
+].
+
+[ e:possibleModel {:a :b :c47}
+; e:gives {
+    :a :b :c47.
+  }
+].
+
+[ e:possibleModel {:a :b :c48}
+; e:gives {
+    :a :b :c48.
+  }
+].
+
+[ e:possibleModel {:a :b :c49}
+; e:gives {
+    :a :b :c49.
+  }
+].
+
+[ e:possibleModel {:a :b :c50}
+; e:gives {
+    :a :b :c50.
+  }
+].
+
+[ e:possibleModel {:a :b :c51}
+; e:gives {
+    :a :b :c51.
+  }
+].
+
+[ e:possibleModel {:a :b :c52}
+; e:gives {
+    :a :b :c52.
+  }
+].
+
+[ e:possibleModel {:a :b :c53}
+; e:gives {
+    :a :b :c53.
+  }
+].
+
+[ e:possibleModel {:a :b :c54}
+; e:gives {
+    :a :b :c54.
+  }
+].
+
+[ e:possibleModel {:a :b :c55}
+; e:gives {
+    :a :b :c55.
+  }
+].
+
+[ e:possibleModel {:a :b :c56}
+; e:gives {
+    :a :b :c56.
+  }
+].
+
+[ e:possibleModel {:a :b :c57}
+; e:gives {
+    :a :b :c57.
+  }
+].
+
+[ e:possibleModel {:a :b :c58}
+; e:gives {
+    :a :b :c58.
+  }
+].
+
+[ e:possibleModel {:a :b :c59}
+; e:gives {
+    :a :b :c59.
+  }
+].
+
+[ e:possibleModel {:a :b :c60}
+; e:gives {
+    :a :b :c60.
+  }
+].
+
+[ e:possibleModel {:a :b :c61}
+; e:gives {
+    :a :b :c61.
+  }
+].
+
+[ e:possibleModel {:a :b :c62}
+; e:gives {
+    :a :b :c62.
+  }
+].
+
+[ e:possibleModel {:a :b :c63}
+; e:gives {
+    :a :b :c63.
+  }
+].
+
+[ e:possibleModel {:a :b :c64}
+; e:gives {
+    :a :b :c64.
+  }
+].
+
+[ e:possibleModel {:a :b :c65}
+; e:gives {
+    :a :b :c65.
+  }
+].
+
+[ e:possibleModel {:a :b :c66}
+; e:gives {
+    :a :b :c66.
+  }
+].
+
+[ e:possibleModel {:a :b :c67}
+; e:gives {
+    :a :b :c67.
+  }
+].
+
+[ e:possibleModel {:a :b :c68}
+; e:gives {
+    :a :b :c68.
+  }
+].
+
+[ e:possibleModel {:a :b :c69}
+; e:gives {
+    :a :b :c69.
+  }
+].
+
+[ e:possibleModel {:a :b :c70}
+; e:gives {
+    :a :b :c70.
+  }
+].
+
+[ e:possibleModel {:a :b :c71}
+; e:gives {
+    :a :b :c71.
+  }
+].
+
+[ e:possibleModel {:a :b :c72}
+; e:gives {
+    :a :b :c72.
+  }
+].
+
+[ e:possibleModel {:a :b :c73}
+; e:gives {
+    :a :b :c73.
+  }
+].
+
+[ e:possibleModel {:a :b :c74}
+; e:gives {
+    :a :b :c74.
+  }
+].
+
+[ e:possibleModel {:a :b :c75}
+; e:gives {
+    :a :b :c75.
+  }
+].
+
+[ e:possibleModel {:a :b :c76}
+; e:gives {
+    :a :b :c76.
+  }
+].
+
+[ e:possibleModel {:a :b :c77}
+; e:gives {
+    :a :b :c77.
+  }
+].
+
+[ e:possibleModel {:a :b :c78}
+; e:gives {
+    :a :b :c78.
+  }
+].
+
+[ e:possibleModel {:a :b :c79}
+; e:gives {
+    :a :b :c79.
+  }
+].
+
+[ e:possibleModel {:a :b :c80}
+; e:gives {
+    :a :b :c80.
+  }
+].
+
+[ e:possibleModel {:a :b :c81}
+; e:gives {
+    :a :b :c81.
+  }
+].
+
+[ e:possibleModel {:a :b :c82}
+; e:gives {
+    :a :b :c82.
+  }
+].
+
+[ e:possibleModel {:a :b :c83}
+; e:gives {
+    :a :b :c83.
+  }
+].
+
+[ e:possibleModel {:a :b :c84}
+; e:gives {
+    :a :b :c84.
+  }
+].
+
+[ e:possibleModel {:a :b :c85}
+; e:gives {
+    :a :b :c85.
+  }
+].
+
+[ e:possibleModel {:a :b :c86}
+; e:gives {
+    :a :b :c86.
+  }
+].
+
+[ e:possibleModel {:a :b :c87}
+; e:gives {
+    :a :b :c87.
+  }
+].
+
+[ e:possibleModel {:a :b :c88}
+; e:gives {
+    :a :b :c88.
+  }
+].
+
+[ e:possibleModel {:a :b :c89}
+; e:gives {
+    :a :b :c89.
+  }
+].
+
+[ e:possibleModel {:a :b :c90}
+; e:gives {
+    :a :b :c90.
+  }
+].
+
+[ e:possibleModel {:a :b :c91}
+; e:gives {
+    :a :b :c91.
+  }
+].
+
+[ e:possibleModel {:a :b :c92}
+; e:gives {
+    :a :b :c92.
+  }
+].
+
+[ e:possibleModel {:a :b :c93}
+; e:gives {
+    :a :b :c93.
+  }
+].
+
+[ e:possibleModel {:a :b :c94}
+; e:gives {
+    :a :b :c94.
+  }
+].
+
+[ e:possibleModel {:a :b :c95}
+; e:gives {
+    :a :b :c95.
+  }
+].
+
+[ e:possibleModel {:a :b :c96}
+; e:gives {
+    :a :b :c96.
+  }
+].
+
+[ e:possibleModel {:a :b :c97}
+; e:gives {
+    :a :b :c97.
+  }
+].
+
+[ e:possibleModel {:a :b :c98}
+; e:gives {
+    :a :b :c98.
+  }
+].
+
+[ e:possibleModel {:a :b :c99}
+; e:gives {
+    :a :b :c99.
+  }
+].
+
+[ e:inductivity 1; e:evidentiality 1; e:applicability 1; e:possibleModels 100; e:counterModels 0; e:falseModels 0; e:allModels 100].
+
+#ENDS 0.577 [sec] TC=0 TP=0 BC=200 BP=301 PM=100 CM=0 FM=0 AM=100
+

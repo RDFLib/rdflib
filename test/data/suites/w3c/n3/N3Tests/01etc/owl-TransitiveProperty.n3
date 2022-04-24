@@ -1,0 +1,3 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?P a owl:TransitiveProperty. ?S ?P ?X. ?X ?P ?O.} => {?S ?P ?O}.

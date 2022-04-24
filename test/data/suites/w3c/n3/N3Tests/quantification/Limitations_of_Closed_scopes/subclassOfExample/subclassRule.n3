@@ -1,0 +1,11 @@
+#Processed by EYE v20.1123.2124 josd
+#eye subclass_declaration.n3 --query produceSubclassRule.n3 --nope
+
+@prefix : <http://example.org#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?U_0 a :Researcher} => {?U_0 a :Person}.
+
+#2020-11-25T16:33:05.260Z in=2 out=1 ent=1 step=1 brake=1 inf=15843 sec=0.103 inf/sec=153816
+#ENDS
+

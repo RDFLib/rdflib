@@ -1,0 +1,32 @@
+# -----------------------------------
+# polynomial generation -- Jos De Roo
+# -----------------------------------
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{(?F ?N ?M) :polynomialgen true} <=
+{   ("open" ?F "write" ?FD) e:derive true.
+    ("tell" ?FD) e:derive true.
+    ("format" "@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.~n~n" ()) e:derive true.
+    ("between" 1 ?N ?I) e:derive true.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R1.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R2.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R3.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R4.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R5.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R6.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R7.
+    ("(random_float-0.5)*_M" ?M) e:calculate ?R8.
+    ("format" "((1.0 0.0) (~w ~w) (~w ~w) (~w ~w) (~w ~w)) a e:Polynomial.~n" (?R1 ?R2 ?R3 ?R4 ?R5 ?R6 ?R7 ?R8)) e:derive true.
+    ("fail") e:derive true.
+}.
+{(?F ?N ?M) :polynomialgen true} <=
+{   ("told") e:derive true.
+}.
+
+true <=
+{   ("polynomial.n3" 1000 100) :polynomialgen true.
+}.

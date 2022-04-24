@@ -1,0 +1,30 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/string/roughly.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/string/roughly.n3
+     @prefix : <roughly.n3#> .
+    @prefix contact: <http://www.w3.org/2000/10/swap/pim/contact#> .
+    @prefix rcs: <http://www.w3.org/2001/03swell/rcs#> .
+    
+    <>     <http://purl.org/dc/elements/1.1/creator>  [
+             contact:fullName "Tim berners-Lee";
+             contact:homePage <http://www.w3.org/People/Berners-Lee/>;
+             contact:mailbox <mailto:timbl@w3.org> ];
+         <http://purl.org/dc/elements/1.1/description> "Test string:containsRoughly";
+         <http://purl.org/dc/elements/1.1/rights> "copyright (c) 2001 W3C (MIT, Keio, INRIA)";
+         rcs:id "$Id: roughly.n3,v 1.2 2004-06-25 01:27:00 timbl Exp $" .
+    
+    :test1     a :success .
+    
+    :test3     a :success .
+    
+    :test6     a :success .
+    
+    :test7     a :success .
+    
+    :test8     a :success .
+    
+#ENDS

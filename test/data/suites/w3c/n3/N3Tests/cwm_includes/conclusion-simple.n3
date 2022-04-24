@@ -1,0 +1,29 @@
+# Test the log:conclusion function
+
+# simple version for debugging
+
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix daml:  <http://www.daml.org/2000/10/daml-ont#> .
+@prefix dpo:  <http://www.daml.org/2001/03/daml+oil#> .
+@prefix ex:   <http://www.daml.org/2000/10/daml-ex#> .
+@prefix log:  <http://www.w3.org/2000/10/swap/log#> .
+
+
+# Usage:   cwm conclusion-simple.n3 -think
+#
+#
+
+@prefix : <#>.
+
+
+
+{{<a> <b> <c>}=>{<test> a <SUCCESS> }.
+  <a> <b> <c>.
+}   a :TestRule.
+
+
+{   ?x a :TestRule; log:conclusion ?y }  => { ?y a :TestResult }.
+
+#ends

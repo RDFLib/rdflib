@@ -1,0 +1,11 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --query http://eulersharp.sourceforge.net/2007/07test/rulegen.n3
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{?U_0 :p ?U_1} => {?U_1 :q ?U_0}.
+
+#2018-04-18T08:28:38.929Z in=5 out=1 ent=1 step=1 brake=1 inf=11680 sec=0.019 inf/sec=614737
+#ENDS
+

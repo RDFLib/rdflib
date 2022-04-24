@@ -1,0 +1,8 @@
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+
+# first ask for all answers
+{
+    ?X dqc:sdcoding ?Y.
+} => {
+    ?X dqc:sdcoding ?Y.
+}.

@@ -1,0 +1,3 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?P a owl:AsymmetricProperty. ?S ?P ?O. ?O ?P ?S} => false.

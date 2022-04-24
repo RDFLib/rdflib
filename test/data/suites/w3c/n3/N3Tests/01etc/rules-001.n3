@@ -1,0 +1,54 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://josd.github.io/brain/cs#>.
+
+# forward rules
+{
+    :input1 :measurement10 ?M1.
+    :input2 :measurement2 true.
+    :disturbance1 :measurement3 ?D1.
+    (?M1 19.6) math:product ?C1.        # proportial part
+    (10 ?C2) math:exponentiation ?D1.    # compensation part
+    (?C1 ?C2) math:difference ?C.        # simple feedforward control
+}
+=>
+{
+    :actuator1 :control1 ?C.
+}.
+
+{
+    :input3 :measurement3 ?M3.
+    :state3 :observation3 ?P3.
+    :output2 :measurement4 ?M4.
+    :output2 :target2 ?T2.
+    (?T2 ?M4) math:difference ?E.        # error
+    (?P3 ?M4) math:difference ?D.        # differential error
+    (5.8 ?E) math:product ?C1.        # proportial part
+    (7.3 ?E) math:quotient ?N.        # nonlinear factor
+    (?N ?D) math:product ?C2.        # nonlinear differential part
+    (?C1 ?C2) math:sum ?C.            # PND feedback control
+}
+=>
+{
+    :actuator2 :control1 ?C.
+}.
+
+# backward rules
+{
+    ?I :measurement10 ?M.
+}
+<=
+{
+    ?I :measurement1 (?M1 ?M2).
+    ?M1 math:lessThan ?M2.
+    (?M2 ?M1) math:difference ?M3.
+    (?M3 0.5) math:exponentiation ?M.
+}.
+
+{
+    ?I :measurement10 ?M1.
+}
+<=
+{
+    ?I :measurement1 (?M1 ?M2).
+    ?M1 math:notLessThan ?M2.
+}.

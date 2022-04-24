@@ -1,0 +1,5 @@
+@prefix : <http://example.org/test#>.
+
+:task1 a :CompositeTask.
+
+:task2 a :CompositeTask.

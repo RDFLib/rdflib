@@ -1,0 +1,3 @@
+@prefix : <scrape.n3#> .
+:Test1     a :Success .
+:Test2     :result "cd" .

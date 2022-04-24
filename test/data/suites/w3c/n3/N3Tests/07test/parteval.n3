@@ -1,0 +1,16 @@
+# parteval test case
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+# sample fact
+:Xanthippe a :HumanFemale.
+
+# partial evaluation of human(x) => humanFemale(x) v humanMale(x).
+{?P a :Human. ?P a :Female} => {?P a :HumanFemale}.
+{?P a :Human. ?P a :Male} => {?P a :HumanMale}.
+
+# cyclic rule definition using backward rules
+{?P a :Human} <= {?P a :HumanFemale}.
+{?P a :Female} <= {?P a :HumanFemale}.
+{?P a :Human} <= {?P a :HumanMale}.
+{?P a :Male} <= {?P a :HumanMale}.

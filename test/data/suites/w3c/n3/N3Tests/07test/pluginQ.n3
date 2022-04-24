@@ -1,0 +1,4 @@
+@prefix p: <http://eulersharp.sourceforge.net/2007/07test/plugin#>.
+
+{98.6 p:fahrenheitCelsius ?X} => {98.6 p:fahrenheitCelsius ?X}.
+{?X p:fahrenheitCelsius 21} => {?X p:fahrenheitCelsius 21}.

@@ -1,0 +1,64 @@
+# Turing completeness test case
+# See http://en.wikipedia.org/wiki/Prolog#Turing_completeness
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{(?Tape0 ?Tape) :turing true} <= {
+    (:q0 () ?Ls ?Tape0 ?Rs) :perform true.
+    (?Ls ?Ls1) :reverse true.
+    (?Ls1 ?Rs ?Tape) :append true.
+}.
+
+{(:qf ?Ls ?Ls ?Rs ?Rs) :perform true} <= true.
+{(?Q0 ?Ls0 ?Ls ?Rs0 ?Rs) :perform true} <= {
+    (?Rs0 ?Sym ?RsRest) :symbol true.
+    (?Q0 ?Sym ?Q1 ?NewSym ?Action) :rule true.
+    ?Rs2 e:firstRest (?NewSym ?RsRest).
+    (?Action ?Ls0 ?Ls1 ?Rs2 ?Rs1) :action true.
+    (?Q1 ?Ls1 ?Ls ?Rs1 ?Rs) :perform true.
+}.
+
+{(() :b ()) :symbol true} <= true.
+{(?Ls ?Sym ?Rs) :symbol true} <= {
+    ?Ls e:firstRest (?Sym ?Rs).
+}.
+
+{(:left ?Ls0 ?Ls ?Rs0 ?Rs) :action true} <= {
+    (?Ls0 ?Ls ?Rs0 ?Rs) :left true.
+}.
+{(:stay ?Ls ?Ls ?Rs ?Rs) :action true} <= true.
+{(:right ?Ls0 ?Ls1 ?Rs1 ?Rs) :action true} <= {
+    ?Ls1 e:firstRest (?Sym ?Ls0).
+    ?Rs1 e:firstRest (?Sym ?Rs).
+}.
+
+{(() () ?Rs0 ?Rs1) :left true} <= {
+    ?Rs1 e:firstRest (:b ?Rs0).
+}.
+{(?Ls1 ?Ls ?Rs ?Rs1) :left true} <= {
+    ?Ls1 e:firstRest (?L ?Ls).
+    ?Rs1 e:firstRest (?L ?Rs).
+}.
+
+{(() ?L ?L) :append true} <= true.
+{(?L1 ?L ?L2) :append true} <= {
+    ?L1 e:firstRest (?H ?T).
+    ?L2 e:firstRest (?H ?R).
+    (?T ?L ?R) :append true.
+}.
+
+{(?Xs ?Ys) :reverse true} <= {
+    (?Xs () ?Ys) :reverse true.
+}.
+
+{(() ?Ys ?Ys) :reverse true} <= true.
+{(?Xs1 ?Rs ?Ys) :reverse true} <= {
+    ?Xs1 e:firstRest (?X ?Xs).
+    ?Rs1 e:firstRest (?X ?Rs).
+    (?Xs ?Rs1 ?Ys) :reverse true.
+}.
+
+# facts
+(:q0 1 :q0 1 :right) :rule true.
+(:q0 :b :qf 1 :stay) :rule true.

@@ -1,0 +1,3 @@
+# $Id: ex2-1a.n3 436 2004-12-19 22:40:26Z josd $
+
+<http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> "SPARQL Tutorial" .

@@ -1,0 +1,9 @@
+# $Id: JoeCo.n3 393 2004-10-06 08:55:57Z josd $
+
+@prefix  ical:  <http://www.w3.org/2002/12/cal/ical#> .
+
+_:1 a ical:Vevent .
+_:1 ical:uid "20020630T230445Z-3895-69-1-7@jammer" .
+_:1 ical:dtstart "2002-07-06" .
+_:1 ical:summary "Scooby Conference" .
+_:1 ical:location "San Francisco" .

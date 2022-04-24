@@ -1,0 +1,137 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/3outof5/sample.n3 --query http://josd.github.io/brain/3outof5/query.n3
+
+@prefix : <http://josd.github.io/brain#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :s a <http://josd.github.io/brain#3outof5>.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :s a <http://josd.github.io/brain#3outof5>.
+  };
+  r:evidence (
+    <#lemma2>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {1 log:equalTo 0}}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p2 true.
+     0 log:equalTo 1}}]
+    <#lemma3>
+    <#lemma4>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {1 log:equalTo 0}}]
+    <#lemma5>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {1 log:equalTo 0}}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p5 true.
+     0 log:equalTo 1}}]
+    <#lemma3>
+    [ a r:Fact; r:gives {(1 0 1 1 0) math:sum 3}]
+    [ a r:Fact; r:gives {3 math:notLessThan 3}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/3outof5/sample.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo 3];
+  r:rule <#lemma6>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p1 true.
+     1 log:equalTo 1}.
+  };
+  r:evidence (
+    <#lemma7>
+    [ a r:Fact; r:gives {1 log:equalTo 1}]
+  );
+  r:rule [ a r:Fact; r:gives {{:s :p1 true.
+    1 log:equalTo 1} => {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p1 true.
+     1 log:equalTo 1}}}].
+
+<#lemma3> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {0 log:equalTo 0}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {0 log:equalTo 0}]
+  );
+  r:rule [ a r:Fact; r:gives {{0 log:equalTo 0} => {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {0 log:equalTo 0}}}].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p3 true.
+     1 log:equalTo 1}.
+  };
+  r:evidence (
+    <#lemma8>
+    [ a r:Fact; r:gives {1 log:equalTo 1}]
+  );
+  r:rule [ a r:Fact; r:gives {{:s :p3 true.
+    1 log:equalTo 1} => {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p3 true.
+     1 log:equalTo 1}}}].
+
+<#lemma5> a r:Inference;
+  r:gives {
+    ((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p4 true.
+     1 log:equalTo 1}.
+  };
+  r:evidence (
+    <#lemma9>
+    [ a r:Fact; r:gives {1 log:equalTo 1}]
+  );
+  r:rule [ a r:Fact; r:gives {{:s :p4 true.
+    1 log:equalTo 1} => {((<http://josd.github.io/brain/3outof5/sample.n3>) 1) e:optional {:s :p4 true.
+     1 log:equalTo 1}}}].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6. {var:x_0 e:optional {:s :p1 true.
+      var:x_1 log:equalTo 1}.
+     var:x_0 e:optional {var:x_1 log:equalTo 0}.
+     var:x_0 e:optional {:s :p2 true.
+      var:x_2 log:equalTo 1}.
+     var:x_0 e:optional {var:x_2 log:equalTo 0}.
+     var:x_0 e:optional {:s :p3 true.
+      var:x_3 log:equalTo 1}.
+     var:x_0 e:optional {var:x_3 log:equalTo 0}.
+     var:x_0 e:optional {:s :p4 true.
+      var:x_4 log:equalTo 1}.
+     var:x_0 e:optional {var:x_4 log:equalTo 0}.
+     var:x_0 e:optional {:s :p5 true.
+      var:x_5 log:equalTo 1}.
+     var:x_0 e:optional {var:x_5 log:equalTo 0}.
+     (var:x_1 var:x_2 var:x_3 var:x_4 var:x_5) math:sum var:x_6.
+     var:x_6 math:notLessThan 3} => {:s a <http://josd.github.io/brain#3outof5>}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/3outof5/query.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    :s :p1 true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/3outof5/sample.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    :s :p3 true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/3outof5/sample.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    :s :p4 true.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/3outof5/sample.n3>].
+
+#2020-02-22T21:50:09.984Z in=6 out=1 ent=1 step=1 brake=2 inf=50506 sec=0.123 inf/sec=410618
+#ENDS
+

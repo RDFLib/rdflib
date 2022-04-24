@@ -1,0 +1,11 @@
+# https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/bad-preds-literal.n3
+# Used in https://w3c.github.io/N3/tests/regression.n3#t1061
+#
+# Literals and formulae cannot be predicates.
+#
+# Issue originally raised in the following bug:
+# http://lists.w3.org/Archives/Public/public-cwm-bugs/2004Nov/0014
+
+@prefix : <#> .
+
+:a "hello" :c .

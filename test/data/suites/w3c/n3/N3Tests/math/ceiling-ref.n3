@@ -1,0 +1,8 @@
+@prefix : <ceiling.n3#> .
+
+:test1a a :SUCCESS .
+:test1b a :SUCCESS .
+:test1c a :SUCCESS .
+:test1d a :SUCCESS .
+
+:test2a :is -8 .

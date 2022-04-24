@@ -1,0 +1,2 @@
+@prefix : <witch#>.
+{ :GIRL a :WITCH } => { :GIRL a :WITCH }.

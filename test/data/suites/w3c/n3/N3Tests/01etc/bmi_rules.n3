@@ -1,0 +1,167 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix physical: <http://eulersharp.sourceforge.net/2003/03swap/physicalResource#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix units: <http://eulersharp.sourceforge.net/2003/03swap/units#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+
+<http://eulersharp.sourceforge.net/2003/03swap/bmi_rules>
+    dce:title """Adult Body Mass Index rules"""@en;
+    dce:creator """Hans Cools"""@en;
+    dce:publisher """Agfa Healthcare/Belgium"""@en;
+    dce:description """Rules to calculate an adult's body mass index (BMI) using formula: BMI = human body 'weight' (mass) (kg)/(human body length (m))²."""@en.
+
+
+{   # GETTING DATA:
+    ?adult human:weighs ?weightMeasurement. # a human:BiologicalAdult
+    ?weightMeasurement
+        quant:hasUnit units:kilogram;
+        quant:hasValue ?weightValue;
+        time:hasDateTime ?weightDateTime.
+    [] e:optional {
+        ?adult human:hasLength ?lengthMeasurement.
+        ?lengthMeasurement
+            quant:hasUnit units:meter;
+            quant:hasValue ?lengthValue;
+            time:hasDateTime ?lengthDateTime}, {
+        ?adult human:hasLength ?lengthMeasurement.
+        ?lengthMeasurement
+            time:hasDateTime ?lengthDateTime;
+            quant:convertedTo ?U.
+        ?U
+            quant:hasUnit units:meter;
+            quant:hasValue ?lengthValue}.
+
+    # SETTING MAXIMUM TIME DIFFERENCE BETWEEN WEIGHT AND LENGTH MEASUREMENTS:
+    # Note: the smaller preset period, the smaller chance to get data
+    (?weightDateTime ?lengthDateTime) math:difference ?dif.
+    ?dif math:notGreaterThan "P0M"^^xsd:duration; math:notLessThan "-P0M"^^xsd:duration.    
+    
+    # TO ADD: e:findall -> smallest dif
+    
+    # CALCULATING LATEST DATE TIME OF AN EXAMINATION:
+    (?weightDateTime ?lengthDateTime) e:max ?maxDateTimeNumeral.
+    (?lexical xsd:dateTime) log:dtlit ?maxDateTimeNumeral, ?dateTime.
+    
+    # THIS DATE TIME IS USED TO CALCULATE AGE AND ALSO ASSIGNED TO FINAL RESULT
+    
+    # TRIGGERING BACKWARD RULE CALCULATING AGE AT MOMENT OF LATEST EXAMINATION:
+    (?adult ?dateTime) time:calculatingAge ?ageInYears.
+    
+    # CHECK ADULT AGE:
+    ?ageInYears math:notLessThan 15.
+    
+    # CALCULATION OF AN ADULT BODY MASS INDEX:
+    ("_weightValue/_lengthValue**2" ?weightValue ?lengthValue) e:calculate ?bodyMassIndexValue}
+=>
+{   ?adult
+        human:hasBodyMassIndex ?V.
+    ?V
+        quant:hasUnit units:kilogramPerMeterSquare;
+        quant:hasValue ?bodyMassIndexValue;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?weightMeasurement, ?lengthMeasurement}.
+
+
+# CALCULATION OF AN ADULT BODY MASS INDEX STARTING FROM BODY LENGTH AND WEIGHT MEASUREMENTS HAVING A DATE WITHOUT TIME:
+# Note: Body weight and length measurements are each placed in a period with margin of 1 day with epsilon subtracted from the end date time.
+# This is because the time of the measurement is unknown.
+
+{   # GETTING DATA
+    ?adult human:weighs ?weightMeasurement. # a human:BiologicalAdult
+    ?weightMeasurement
+        quant:hasUnit units:kilogram;
+        quant:hasValue ?weightValue;
+        time:hasObtainingPeriodMargin (?weightPeriodBeginning ?weightPeriodEnd).
+    [] e:optional {
+        ?adult human:hasLength ?lengthMeasurement.
+        ?lengthMeasurement
+            quant:hasUnit units:meter;
+            quant:hasValue ?lengthValue;
+            time:hasObtainingPeriodMargin (?lengthPeriodBeginning ?lengthPeriodEnd)}, {
+        ?adult human:hasLength ?lengthMeasurement.
+        ?lengthMeasurement
+            time:hasObtainingPeriodMargin (?lengthPeriodBeginning ?lengthPeriodEnd);
+            quant:convertedTo ?U.
+        ?U
+            quant:hasUnit units:meter;
+            quant:hasValue ?lengthValue}.
+
+    # SETTING MAXIMUM TIME DIFFERENCE BETWEEN WEIGHT AND LENGTH MEASUREMENTS:
+    # Note: the smaller set time difference, the smaller chance to get data
+    (?weightPeriodBeginning ?lengthPeriodEnd) math:difference ?dif1.
+    ?dif1 math:notGreaterThan "P0M"^^xsd:duration.
+    (?lengthPeriodBeginning ?weightPeriodEnd) math:difference ?dif2.
+    ?dif2 math:notGreaterThan "P0M"^^xsd:duration.
+    
+    # CALCULATING LATEST DATE TIME OF AN EXAMINATION:
+    (?weightPeriodEnd ?lengthPeriodEnd) e:max ?maxDateTimeNumeral.
+    (?lexical xsd:dateTime) log:dtlit ?maxDateTimeNumeral, ?dateTime.
+    
+    # THIS DATE TIME IS USED TO CALCULATE AGE AND ALSO ASSIGNED TO FINAL RESULT
+    
+    # TRIGGERING BACKWARD RULE CALCULATING AGE AT MOMENT OF LATEST EXAMINATION:
+    (?adult ?dateTime) time:calculatingAge ?ageInYears.
+    
+    # CHECK ADULT AGE:
+    ?ageInYears math:notLessThan 15.
+    
+    # CALCULATION OF AN ADULT BODY MASS INDEX:
+    ("_weightValue/_lengthValue**2" ?weightValue ?lengthValue) e:calculate ?bodyMassIndexValue}
+=>
+{   ?adult
+        human:hasBodyMassIndex ?V.
+    ?V
+        quant:hasUnit units:kilogramPerMeterSquare;
+        quant:hasValue ?bodyMassIndexValue;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?weightMeasurement, ?lengthMeasurement}.
+
+
+# CALCULATION OF AN ADULT BODY MASS INDEX INCLUDING DECLARATION OF A BODY:
+
+{   ?adult physical:hasComplexity ?body. # human:BiologicalAdult
+    ?body
+        a humanbody:Body;
+        humanbody:hasLength ?length;
+        humanbody:hasWeight ?weight.
+    ?length
+        a humanbody:Length;
+        quant:hasMeasurement ?lengthMeasurement.
+    ?lengthMeasurement
+        quant:hasUnit units:meter;
+        quant:hasValue ?lengthValue;
+        time:hasDateTime ?lengthDateTime.
+    ?weight
+        a humanbody:Weight;
+        quant:hasMeasurement ?weightMeasurement.
+    ?weightMeasurement
+        quant:hasUnit units:kilogram;
+        quant:hasValue ?weightValue;
+        time:hasDateTime ?weightDateTime.
+    (?weightDateTime ?lengthDateTime) math:difference ?dif.
+    ?dif math:notGreaterThan "P10Y"^^xsd:duration; math:notLessThan "-P7D"^^xsd:duration.
+    (?weightDateTime ?lengthDateTime) e:max ?maxDateTimeNumeral.
+    (?lexical xsd:dateTime) log:dtlit ?maxDateTimeNumeral, ?dateTime.
+    (?adult ?dateTime) time:calculatingAge ?ageInYears.
+    ?ageInYears math:notLessThan 15.
+    (?lengthValue 2) math:exponentiation ?lengthValue2.
+    (?weightValue ?lengthValue2) math:quotient ?bodyMassIndexValue}
+=>
+{   ?adult
+        human:hasBodyMassIndex ?V.
+    ?V
+        quant:hasUnit units:kilogramPerMeterSquare;
+        quant:hasValue ?bodyMassIndexValue;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?weightMeasurement, ?lengthMeasurement}.

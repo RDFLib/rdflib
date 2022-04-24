@@ -1,0 +1,98 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/norm/av.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/norm/av.n3
+     @prefix : <http://example.com/AV#> .
+    @prefix gv: <http://www.w3.org/2001/02pd/gv#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    
+    :     gv:digraph  [
+             gv:label "AV Diagram";
+             gv:subgraph  [
+                 gv:hasEdgeProperty :dottedEdge,
+                        :solidEdge;
+                 gv:hasNode :ab,
+                        :cable,
+                        :catv,
+                        :dvd,
+                        :splitter,
+                        :tv,
+                        :vcr;
+                 gv:label "" ] ] .
+    
+    :AV     a rdfs:Class .
+    
+    :ab     a :AV;
+         :output :selector;
+         :solidEdge :selector;
+         :title "A/B Switch";
+         gv:color "black";
+         gv:label "A/B Switch";
+         gv:shape "box" .
+    
+    :cable     a :AV;
+         :output :vcr;
+         :solidEdge :vcr;
+         :title "Cable Box";
+         gv:color "black";
+         gv:label "Cable Box";
+         gv:shape "box" .
+    
+    :catv     a :AV;
+         :title "CATV";
+         gv:color "black";
+         gv:label "CATV";
+         gv:shape "box" .
+    
+    :dottedEdge     gv:style "dotted" .
+    
+    :dvd     a :AV;
+         :output :selector;
+         :solidEdge :selector;
+         :title "DVD";
+         gv:color "black";
+         gv:label "DVD";
+         gv:shape "box" .
+    
+    :input     a rdfs:Property .
+    
+    :output     a rdfs:Property .
+    
+    :selector     a :AV;
+         :output :tv;
+         :solidEdge :tv;
+         :title "Signal Selector";
+         gv:color "black";
+         gv:label "Signal Selector";
+         gv:shape "box" .
+    
+    :solidEdge     gv:style "solid" .
+    
+    :splitter     a :AV;
+         :output :ab;
+         :solidEdge :ab;
+         :title "Splitter";
+         gv:color "black";
+         gv:label "Splitter";
+         gv:shape "box" .
+    
+    :title     a rdfs:Property .
+    
+    :tv     a :AV;
+         :title "TV";
+         gv:color "black";
+         gv:label "TV";
+         gv:shape "box" .
+    
+    :vcr     a :AV;
+         :output :ab;
+         :solidEdge :ab;
+         :title "VCR";
+         gv:color "black";
+         gv:label "VCR";
+         gv:shape "box" .
+    
+#ENDS

@@ -1,0 +1,120 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/witch/witch.n3 --query http://josd.github.io/brain/witch/witch-goal.n3
+
+@prefix : <http://josd.github.io/brain/witch#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :GIRL a :WITCH.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :GIRL a :WITCH.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#GIRL"]];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    :GIRL a :WITCH.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#GIRL"]];
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a :WITCH} => {var:x_0 a :WITCH}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch-goal.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    :GIRL a :BURNS.
+  };
+  r:evidence (
+    <#lemma7>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#GIRL"]];
+  r:rule <#lemma8>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    :GIRL a :WOMAN.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a :BURNS.
+     var:x_0 a :WOMAN} => {var:x_0 a :WITCH}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    :GIRL a :ISMADEOFWOOD.
+  };
+  r:evidence (
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#GIRL"]];
+  r:rule <#lemma10>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a :ISMADEOFWOOD} => {var:x_0 a :BURNS}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma9> a r:Inference;
+  r:gives {
+    :GIRL a :FLOATS.
+  };
+  r:evidence (
+    <#lemma11>
+    <#lemma12>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#DUCK"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://josd.github.io/brain/witch#GIRL"]];
+  r:rule <#lemma13>.
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a :FLOATS} => {var:x_0 a :ISMADEOFWOOD}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    :DUCK a :FLOATS.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    :DUCK :SAMEWEIGHT :GIRL.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 a :FLOATS.
+     var:x_0 :SAMEWEIGHT var:x_1} => {var:x_1 a :FLOATS}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/witch/witch.n3>].
+
+#2020-02-22T21:53:18.840Z in=8 out=1 ent=7 step=25 brake=5 inf=27099 sec=0.083 inf/sec=326494
+#ENDS
+

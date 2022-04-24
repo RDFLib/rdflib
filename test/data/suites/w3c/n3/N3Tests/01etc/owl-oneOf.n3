@@ -1,0 +1,4 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?C owl:oneOf ?L. ?X list:in ?L} => {?X a ?C}.
