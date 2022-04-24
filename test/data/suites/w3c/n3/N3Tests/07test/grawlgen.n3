@@ -1,0 +1,32 @@
+# ----------------------------------------------------
+# grawl (graph with literals) generation -- Jos De Roo
+# ----------------------------------------------------
+
+@prefix prolog: <http://eulersharp.sourceforge.net/2003/03swap/prolog#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/grawlgen#>.
+
+
+{(?F ?N) :grawlgen true} <=
+{	(?F "write"^^prolog:atom ?FD) prolog:open true.
+	(?FD) prolog:tell true.
+	("@prefix : <http://eulersharp.sourceforge.net/2007/07test/grawl#>.~n~n"^^prolog:atom ()) prolog:format true.
+	(1 ?N ?I) prolog:between true.
+	(10000) prolog:random ?S.
+	(100) prolog:random ?P.
+	(10000) prolog:random ?O.
+	(":i~d :j~d \"s~d\"^^:t.~n"^^prolog:atom (?S ?P ?O)) prolog:format true.
+	() prolog:fail true.
+}.
+{(?F ?N) :grawlgen true} <=
+{	() prolog:told true.
+}.
+
+
+true <=
+{	("grawl-10.n3"^^prolog:atom 10) :grawlgen true.
+	("grawl-100.n3"^^prolog:atom 100) :grawlgen true.
+	("grawl-1000.n3"^^prolog:atom 1000) :grawlgen true.
+	("grawl-10000.n3"^^prolog:atom 10000) :grawlgen true.
+	("grawl-100000.n3"^^prolog:atom 100000) :grawlgen true.
+	("grawl-1000000.n3"^^prolog:atom 1000000) :grawlgen true.
+}.

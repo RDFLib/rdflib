@@ -1,0 +1,4 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+
+{?A rdfs:subClassOf ?B} p:should_unfold true.

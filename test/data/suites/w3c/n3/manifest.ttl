@@ -1,0 +1,16 @@
+# Notation3 Grammar Tests
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+@prefix test: <test.n3#>.
+@prefix :     <#>.
+
+<#>  a mf:Manifest ;
+    rdfs:label "N3 Test Suite";
+    rdfs:comment "This manifest loads additional manifests for specific behavior tests" ;
+    mf:include (
+      <TurtleTests/manifest.ttl>
+      <N3Tests/manifest.ttl>
+      <N3Tests/manifest-reasoner.ttl>
+      <N3Tests/manifest-extended.ttl>
+    ) .

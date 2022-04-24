@@ -1,0 +1,88 @@
+# original version at http://www.ii.uib.no/~bezem/GL/pd_hes.in
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <pd_hes#>.
+
+#Desargues assumptions: points, lines and incidences
+#triangles a1b1c1 and a2b2c2
+:a1 :i :a1b1.
+:b1 :i :a1b1.
+:a2 :i :a2b2.
+:b2 :i :a2b2.
+:a1 :i :a1c1.
+:c1 :i :a1c1.
+:a2 :i :a2c2.
+:c2 :i :a2c2.
+:c1 :i :b1c1.
+:b1 :i :b1c1.
+:c2 :i :b2c2.
+:b2 :i :b2c2.
+
+# lines through perspectivity point o and corresponding vertices
+:o :i :oa.
+:o :i :ob.
+:o :i :oc.
+:a1 :i :oa.
+:a2 :i :oa.
+:b1 :i :ob.
+:b2 :i :ob.
+:c1 :i :oc.
+:c2 :i :oc.
+
+# cross b1c1,b2c2 in point bc
+:bc :i :b1c1.
+:bc :i :b2c2.
+
+# cross a1c1, a2c2 in point ac
+:ac :i :a1c1.
+:ac :i :a2c2.
+
+# cross a1b1,a2b2 in point ab
+:ab :i :a1b1.
+:ab :i :a2b2.
+
+#triangle1 non-degenerate
+{:a1 :i ?L. :b1 :i ?L. :c1 :i ?L} => false.
+
+#triangle2 non-degenerate
+{:a2 :i ?L. :b2 :i ?L. :c2 :i ?L} => false.
+
+#no corresponding vertices in common
+{:a2 :p :a1} => false. 
+{:b2 :p :b1} => false. 
+{:c2 :p :c1} => false.
+
+#no corresponding edges in common
+{:b1c1 :l :b2c2} => false. 
+{:a1c1 :l :a2c2} => false. 
+{:a1b1 :l :a2b2} => false.
+
+#pequality for points
+{?P :i ?Q} => {?P :p ?P}.     #sorted incidence
+{?P :p ?Q} => {?Q :p ?P}.
+{?P :p ?Q. ?Q :p ?R} => {?P :p ?R}.
+
+#pequality for lines
+{?L :i ?M} => {?M :l ?M}.     #sorted incidence
+{?L :l ?M} => {?M :l ?L}.
+{?L :l ?M. ?M :l ?N} => {?L :l ?N}.
+
+#congruence
+{?P :p ?Q. ?Q :i ?L} => {?P :i ?L}.
+{?P :i ?L. ?L :l ?M} => {?P :i ?M}.
+
+#projective uniqueness
+{?P :i ?L. ?P :i ?M. ?Q :i ?L. ?Q :i ?M} => ({?P :p ?Q} {?L :l ?M})!e:disjunction.
+
+#projective geometry
+{?P :p ?P. ?Q :p ?Q} => {?P :i ?L. ?Q :i ?L}.
+{?L :l ?L. ?M :l ?M} => {?P :i ?L. ?P :i ?M}.
+
+#Pappus: A,B,C on L, D,E,F on M, then ... or N=O;P=Q;R=S
+{?A :i ?L. ?B :i ?L. ?C :i ?L. ?D :i ?M. ?E :i ?M. ?F :i ?M.          # ABC on L, DEF on M
+ ?B :i ?N. ?F :i ?N. ?G :i ?N. ?C :i ?O. ?E :i ?O. ?G :i ?O.          # cross BF,CE in G
+ ?B :i ?P. ?D :i ?P. ?H :i ?P. ?A :i ?Q. ?E :i ?Q. ?H :i ?Q.          # cross BD,AE in H
+ ?C :i ?R. ?D :i ?R. ?I :i ?R. ?A :i ?S. ?F :i ?S. ?I :i ?S}          # cross CD,AF in I
+ =>
+ ({?N :l ?O} {?P :l ?Q} {?R :l ?S} {?T :l ?T. ?G :i ?T. ?H :i ?T. ?I :i ?T})!e:disjunction.

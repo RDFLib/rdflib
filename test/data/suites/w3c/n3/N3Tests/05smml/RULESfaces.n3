@@ -1,0 +1,179 @@
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix we: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/wingededge#>.
+
+  # List of all triangles
+  {
+	   ?y e:findall (?TriangleA {?TriangleA a stl:StlTriangle} ?ANSWER).
+  }
+  =>
+  {
+     ?A we:facelistofalltriangles ?ANSWER.
+  }.
+  
+  
+  # List of used and available triangles
+  {
+     ?x e:findall (?TriangleA {?TriangleA we:faceavailable 0. ?x e:findall (?TriangleA {?TriangleA we:partofface ?obj} ()).} ?Used).
+     ?y e:findall (?TriangleB {?TriangleB a stl:StlTriangle. ?y e:findall (?TriangleB {?TriangleB we:faceavailable 0} ()).} ?Available).
+  }
+  =>
+  {
+     ?A we:facelistofusedtriangles ?Used.
+     ?A we:facecomplementlist ?B.
+     ?B we:facelistofavailabletriangles ?Available.
+  }.
+  
+  
+  # Add first triangle to facetriangleslist.
+  {
+     ?A we:facelistofalltriangles ?loat.
+     ?loat list:first ?1.
+  }
+  =>
+  {
+     ?1 we:faceavailable 0.
+  }.
+  
+  
+  # Add new triangles to listofusedtriangles IF they are a neighbour of a member of the listofusedtriangles AND IF they have the same normal AND IF they are still available AND IF they are not yet part of a face.
+  {
+     ?A we:facelistofusedtriangles ?lout.
+     ?lout list:member ?TriangleA.
+     
+     ?B we:facelistofavailabletriangles ?loat.
+     ?loat list:member ?TriangleX.
+     
+     ?TriangleA we:neighbourtriangle ?TriangleX.
+     
+     ?TriangleA stl:normal (?NA1 ?NA2 ?NA3).
+     ?TriangleX stl:normal (?NX1 ?NX2 ?NX3).
+     ?TriangleA we:samenormal ?TriangleX.
+  }
+  =>
+  {
+     ?TriangleX we:faceavailable 0.
+  }. 
+  
+  
+  # Bij elke triangle meegeven welke de grootste lijst is waarin hij zich bevindt.
+  {
+	   ?X a stl:StlTriangle.
+	   ?y e:findall (?length {?ojb we:facelistofusedtriangles ?Neighbourtriangleslist. ?Neighbourtriangleslist list:member ?X. ?Neighbourtriangleslist e:length ?length.} ?ANSWER).
+     ?ANSWER e:max ?max.   
+  }
+  =>
+  {
+     ?X we:facesizeofmaxlist ?max.
+  }.   
+     
+  
+
+    # Zoek de grootste lijst met objecttriangles waarvan driehoekX een element is. = Zoek lijst waarvan driehoekX een element is waarbij geen grotere te vinden is.
+    # Geef die de eigenschap: is FinalFace
+    
+  {
+	   ?X we:facesizeofmaxlist ?max.
+     ?ojb we:facelistofusedtriangles ?Neighbourtriangleslist.
+	   ?Neighbourtriangleslist list:member ?X.
+	   ?Neighbourtriangleslist e:length ?length.
+	   ?length math:equalTo ?max.
+  }
+  =>
+  {
+     ?ojb rdf:type we:FinalFace.
+  }.
+  
+  
+  {
+	   ?ojb rdf:type we:FinalFace.
+	   ?ojb we:facelistofusedtriangles ?lout.
+	   ?lout e:length ?count.
+	   ?lout list:member ?X.
+  }
+  =>
+  {
+     ?X we:partofface ?ojb.
+     ?ojb we:facetriangles ?lout.
+     ?ojb we:trianglescount ?count.
+  }.
+  
+  # Als er een FinalFace gevonden is, stop de resterende driehoeken (driehoek die niet getagd zijn als partofface) dan in een nieuwe listofalltriangles.
+  {
+     ?y e:findall (?TriangleB {?TriangleB a stl:StlTriangle. ?y e:findall (?TriangleB {?TriangleB we:partofface ?obj} ()).} ?CompListTriangles).
+  }
+  =>
+  {
+     ?X we:facelistofalltriangles ?CompListTriangles.
+  }.
+  
+  # Face Normal toevoegen
+  {
+     ?FaceA a we:FinalFace.
+     ?TriangleX we:partofface ?FaceA.
+     ?TriangleX stl:normal ?Normal.
+  }
+  =>
+  {
+     ?FaceA we:facenormal ?Normal.
+  }.
+  
+  # Search faces with the same normal.
+	{
+     ?FaceA a we:FinalFace.
+	   ?FaceB a we:FinalFace.
+	   ?FaceA log:notEqualTo ?FaceB.
+     ?FaceA we:facenormal (?NA1 ?NA2 ?NA3).
+     ?FaceB we:facenormal (?NX1 ?NX2 ?NX3).
+     (1 10000) math:quotient ?Tolerance.
+     (?NA1 ?NX1) math:difference ?NDiff1.
+     ?NDiff1 math:absoluteValue ?NAbs1.
+     ?NAbs1 math:lessThan ?Tolerance.
+     (?NA2 ?NX2) math:difference ?NDiff2.
+     ?NDiff2 math:absoluteValue ?NAbs2.
+     ?NAbs2 math:lessThan ?Tolerance.
+     (?NA3 ?NX3) math:difference ?NDiff3.
+     ?NDiff3 math:absoluteValue ?NAbs3.
+     ?NAbs3 math:lessThan ?Tolerance.
+  }
+  =>
+  {
+     ?FaceA we:parallelface ?FaceB.
+  }.
+  
+  
+  # Search faces with the opposite normal.
+	{
+     ?FaceA a we:FinalFace.
+	   ?FaceB a we:FinalFace.
+	   ?FaceA log:notEqualTo ?FaceB.
+     ?FaceA we:facenormal (?NA1 ?NA2 ?NA3).
+     ?FaceB we:facenormal (?NX1 ?NX2 ?NX3).
+     (1 10000) math:quotient ?Tolerance.
+     (?NA1 ?NX1) math:sum ?NDiff1.
+     ?NDiff1 math:absoluteValue ?NAbs1.
+     ?NAbs1 math:lessThan ?Tolerance.
+     (?NA2 ?NX2) math:sum ?NDiff2.
+     ?NDiff2 math:absoluteValue ?NAbs2.
+     ?NAbs2 math:lessThan ?Tolerance.
+     (?NA3 ?NX3) math:sum ?NDiff3.
+     ?NDiff3 math:absoluteValue ?NAbs3.
+     ?NAbs3 math:lessThan ?Tolerance.
+  }
+  =>
+  {
+     ?FaceA we:parallelface ?FaceB.
+  }.

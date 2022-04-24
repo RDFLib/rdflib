@@ -1,0 +1,31 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2006/02swap/steamroller#>.
+
+:wolf_1 a :Wolf.
+:fox_1 a :Fox.
+:bird_1 a :Bird.
+:snail_1 a :Snail.
+:caterpillar_1 a :Caterpillar.
+:grain_1 a :Grain.
+
+{?X a :Wolf} => {?X a :Animal}.
+{?X a :Fox} => {?X a :Animal}.
+{?X a :Bird} => {?X a :Animal}.
+{?X a :Snail} => {?X a :Animal}.
+{?X a :Caterpillar} => {?X a :Animal}.
+{?X a :Grain} => {?X a :Plant}.
+
+{?X a :Caterpillar. ?Y a :Bird} => {?X :smaller ?Y}.
+{?X a :Snail. ?Y a :Bird} => {?X :smaller ?Y}.
+{?X a :Bird. ?Y a :Fox} => {?X :smaller ?Y}.
+{?X a :Fox. ?Y a :Wolf} => {?X :smaller ?Y}.
+
+{?X a :Wolf. ?Y a :Fox. ?X :eats ?Y} => false.
+{?X a :Wolf. ?Y a :Grain. ?X :eats ?Y} => false.
+{?X a :Bird. ?Y a :Snail. ?X :eats ?Y} => false.
+
+{?X a :Bird. ?Y a :Caterpillar} => {?X :eats ?Y}.
+{?X a :Snail} => {?X :eats [ a :Plant]}.
+{?X a :Caterpillar} => {?X :eats [ a :Plant]}.
+{?X a :Animal. ?Y a :Animal. ?Y :smaller ?X. ?U a :Plant. ?V a :Plant. ?Y :eats ?V} => ({?X :eats ?U} {?X :eats ?Y})!e:disjunction.

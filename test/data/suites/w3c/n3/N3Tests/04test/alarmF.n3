@@ -1,0 +1,18 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+-prolog+-nope+sfcvs%2F2004%2F04test%2Falarm.n3+-query+sfcvs%2F2004%2F04test%2FalarmF.n3
+# PxButton | euler5np | bash .euler5 http://localhost/.euler+-prolog+-nope+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Falarm.n3+-query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FalarmF.n3 > alarmE.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/alarm#>.
+
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:marycalls e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:marycalls e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:alarm e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:alarm e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:alarm e:T) (:earthquake e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:alarm e:T) (:earthquake e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T) (:earthquake e:F)) ?X)} => {(?SCOPE 1) e:bayesian (((:burglary e:T)) ((:johncalls e:T) (:earthquake e:F)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:earthquake e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:earthquake e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:earthquake e:T) (:burglary e:T)) ((:alarm e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:earthquake e:T) (:burglary e:T)) ((:alarm e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:alarm e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:alarm e:T)) ((:johncalls e:T) (:marycalls e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:alarm e:T)) ((:johncalls e:T) (:earthquake e:F)) ?X)} => {(?SCOPE 1) e:bayesian (((:alarm e:T)) ((:johncalls e:T) (:earthquake e:F)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:johncalls e:T)) ((:burglary e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:johncalls e:T)) ((:burglary e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian (((:marycalls e:T)) ((:burglary e:T)) ?X)} => {(?SCOPE 1) e:bayesian (((:marycalls e:T)) ((:burglary e:T)) ?X)}.

@@ -1,0 +1,75 @@
+# $Id: anatomy-facts.n3 518 2005-05-03 20:35:26Z josd $
+# see http://idm.univ-rennes1.fr/~obierlai/anatomy/annexes/index.html
+#
+# PxButton | check with cwm   | bash .cwm anatomy-facts.n3 
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://idm.univ-rennes1.fr/~obierlai/anatomy#>.
+
+### examples
+
+:MAE1 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList (:MAE2 :MAE3 :MAE4);
+    owl:differentFrom :MAE2, :MAE3, :MAE4, :MAE5, :MAE6, :MAE7, :MAE8, :MAE9.
+:MAE2 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ();
+    owl:differentFrom :MAE3, :MAE4, :MAE5, :MAE6, :MAE7, :MAE8, :MAE9.
+:MAE3 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList (:MAE5 :MAE6 :MAE4);
+    owl:differentFrom :MAE4, :MAE5, :MAE6, :MAE7, :MAE8, :MAE9.
+:MAE4 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ();
+    owl:differentFrom :MAE5, :MAE6, :MAE7, :MAE8, :MAE9.
+:MAE5 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ();
+    owl:differentFrom :MAE6, :MAE7, :MAE8, :MAE9.
+:MAE6 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ();
+    owl:differentFrom :MAE7, :MAE8, :MAE9.
+:MAE7 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList (:MAE8 :MAE9);
+    owl:differentFrom :MAE8, :MAE9.
+:MAE8 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ();
+    owl:differentFrom :MAE9.
+:MAE9 a :MaterialAnatomicalEntity;
+    :hasAnatomicalPartList ().
+
+:SF1 a :SulcalFold;
+    :hasSegmentList (:SF2 :SF3 :SF4);
+    owl:differentFrom :SF2, :SF3, :SF4, :SF5.
+:SF2 a :SulcalFold;
+    :hasSegmentList ();
+    owl:differentFrom :SF3, :SF4, :SF5.
+:SF3 a :SulcalFold;
+    :hasSegmentList (:SF5 :SF4);
+    owl:differentFrom :SF4, :SF5.
+:SF4 a :SulcalFold;
+    :hasSegmentList ();
+    owl:differentFrom :SF5.
+:SF5 a :SulcalFold;
+    :hasSegmentList ().
+
+:MAE1 :isMaterialAnatomicalEntityBoundedBy :CS1,
+	:SF1,
+	:O1,
+	:PDD1;
+    :isMaterialAnatomicalEntityConnectedTo :MAE2;
+    :isMaterialAnatomicalEntityContiguousTo :MAE2.
+:SF1 :isSulcalFoldBoundedBy :SC1;
+    :isInterruptedBy :O1,
+	:PDD1;
+    :isSulcalFoldConnectedTo :SF2;
+    :isSulcalFoldContiguousTo :SF2;
+    :separatesMaterialAnatomicalEntity (:MAE1 :MAE2).
+:O1 :separatesSulcalFold (:SF1 :SF2);
+    :connectsMaterialAnatomicalEntity (:MAE1 :MAE2).
+:PDD1 :separatesSulcalFold (:SF1 :SF2);
+    :connectsMaterialAnatomicalEntity (:MAE1 :MAE2).
+:CS1 :connectsMaterialAnatomicalEntity (:MAE1 :MAE2).
+:SC1 :connectsSulcalFold (:SF1 :SF2).

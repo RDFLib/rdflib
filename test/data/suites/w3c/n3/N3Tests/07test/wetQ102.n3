@@ -1,0 +1,5 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/wet#>.
+
+{?S :ascribed :Rain} => {?S :ascribed :Rain}.
+{?S :ascribed :Wet} => {?S :ascribed :Wet}.

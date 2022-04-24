@@ -1,0 +1,32 @@
+@prefix : <#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+# Integer plus integer
+{ ("2" "3") math:sum 5 } => {:test1a a :SUCCESS}.
+{ (2 3) math:sum 5 } => {:test1b a :SUCCESS}.
+{ (-2 3) math:sum 1 } => {:test1c a :SUCCESS}.
+{ (2 -3) math:sum -1 } => {:test1d a :SUCCESS}.
+{ (-2 -3) math:sum -5 } => {:test1e a :SUCCESS}.
+{ (2 0) math:sum 2 } => {:test1f a :SUCCESS}.
+{ (0 0) math:sum 0 } => {:test1g a :SUCCESS}.
+{ (0 4) math:sum 4 } => {:test1h a :SUCCESS}.
+
+# Combinations of types
+{ (2.7 2) math:sum 4.7 } => {:test2a a :SUCCESS}.
+{ (16 0.5) math:sum 16.5 } => {:test2b a :SUCCESS}.
+{ (16 0.5e0) math:sum 16.5e0 } => {:test2c a :SUCCESS}.
+{ (3.1415926 1.0e7) math:sum 1.00000031415926e7 } => {:test2d a :SUCCESS}.
+{ (1.0e7 1729) math:sum 1.0001729e7 } => {:test2e a :SUCCESS}.
+{ (1.0e7 0) math:sum 1.0e7 } => {:test2f a :SUCCESS}.
+{ (1.0e7 10000000.0) math:sum 2.0e7 } => {:test2g a :SUCCESS}.
+{ ("2.7" "2") math:sum 4.7 } => {:test2h a :SUCCESS}.
+
+# Double
+{ (0.0e0 3) math:sum 3.0e0 } => {:test3a a :SUCCESS}.
+{ (-0.0e0 3) math:sum 3.0e0 } => {:test3b a :SUCCESS}.
+{ (1.1e0 2.2e1) math:sum 2.31e1 } => {:test3c a :SUCCESS}.
+{ ("1.1e0" "2.2e1") math:sum 2.31e1 } => {:test3d a :SUCCESS}.
+
+# Argument errors
+{ (1) math:sum 1 } => {:test4a a :SUCCESS}.
+{ (1 2 3) math:sum 6 } => {:test4b a :SUCCESS}.

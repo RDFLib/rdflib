@@ -1,0 +1,3 @@
+@prefix : <http://www.agfa.com/w3c/euler/easterP#>.
+
+{?A :easterFor ?B} => {?A :easterFor ?B}.

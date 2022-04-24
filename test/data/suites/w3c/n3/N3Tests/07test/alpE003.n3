@@ -1,0 +1,92 @@
+#Processed by Id: euler.yap 7292 2014-06-13 12:27:29Z josd
+#eye --nope --quiet http://eulersharp.sourceforge.net/2007/07test/alpP001.n3 http://eulersharp.sourceforge.net/2007/07test/alpA001.n3 --query http://eulersharp.sourceforge.net/2007/07test/alpQ003.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+
+[ e:falseModel {:Peter :ascribed :nonsmoker. :Peter :ascribed :smokes}
+; e:because [ e:integrityConstraint {{:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker} => false}
+  ; e:selected [ e:triple {:Peter :ascribed :smokes}
+    ]
+  ; e:selected [ e:triple {:Peter :ascribed :nonsmoker}
+    ]
+  ]
+; e:inconsistentTriplesOrdering ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker})
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }].
+
+[ e:falseModel {:Peter :ascribed :nonsmoker. :Peter :ascribed :influenza. :Peter :ascribed :smokes}
+; e:because [ e:integrityConstraint {{:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker} => false}
+  ; e:selected [ e:triple {:Peter :ascribed :smokes}
+    ]
+  ; e:selected [ e:triple {:Peter :ascribed :nonsmoker}
+    ]
+  ]
+; e:inconsistentTriplesOrdering ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker})
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }].
+
+[ e:counterModel {:Peter :ascribed :influenza. :Peter :ascribed :smokes}
+].
+
+[ e:counterModel {:Peter :ascribed :smokes}
+].
+
+[ e:falseModel {:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker}
+; e:because [ e:integrityConstraint {{:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker} => false}
+  ; e:selected [ e:triple {:Peter :ascribed :smokes}
+    ]
+  ; e:selected [ e:triple {:Peter :ascribed :nonsmoker}
+    ]
+  ]
+; e:inconsistentTriplesOrdering ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker})
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }].
+
+[ e:possibleModel {:Peter :ascribed :influenza. :Peter :ascribed :nonsmoker}
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }
+].
+
+[ e:counterModel {:Peter :ascribed :nonsmoker}
+].
+
+[ e:falseModel {:Peter :ascribed :nonsmoker. :Peter :ascribed :smokes. :Peter :ascribed :influenza}
+; e:because [ e:integrityConstraint {{:Peter :ascribed :smokes. :Peter :ascribed :nonsmoker} => false}
+  ; e:selected [ e:triple {:Peter :ascribed :smokes}
+    ]
+  ; e:selected [ e:triple {:Peter :ascribed :nonsmoker}
+    ]
+  ]
+; e:inconsistentTriplesOrdering ({:Peter :ascribed :smokes} {:Peter :ascribed :nonsmoker})
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }].
+
+[ e:counterModel {:Peter :ascribed :smokes. :Peter :ascribed :influenza}
+].
+
+[ e:possibleModel {:Peter :ascribed :nonsmoker. :Peter :ascribed :influenza}
+; e:gives {
+    :Peter :ascribed :wheezing.
+    :Peter :ascribed :nonsmoker.
+  }
+].
+
+[ e:counterModel {:Peter :ascribed :influenza}
+].
+
+[ e:inductivity 0.2857142857142857; e:evidentiality 0.6363636363636364; e:applicability 0.18181818181818182; e:possibleModels 2; e:counterModels 5; e:falseModels 4; e:allModels 11].
+
+#ENDS 0.830 [sec] TC=0 TP=0 BC=39 BP=183 PM=2 CM=5 FM=4 AM=11
+

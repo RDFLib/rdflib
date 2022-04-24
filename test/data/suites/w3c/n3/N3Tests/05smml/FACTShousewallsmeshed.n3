@@ -1,0 +1,2135 @@
+#Processed by Id: euler.yap 4653 2011-10-30 11:01:47Z josd
+#eye --nope --no-span http://eulersharp.sourceforge.net/2010/05smml/FACTShousewalls.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESdefaultvaluesfindall.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESifctransformationmatrix.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESmatrix.n3 http://eulersharp.sourceforge.net/2010/05smml/RULESx3dboxtostl.n3 --pass
+
+@prefix : <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix ns1: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+@prefix stl: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+:ifcOrganization_1 ifc:name "Autodesk Revit Architecture 2010"^^xsd:normalizedString.
+:ifcOrganization_1 ifc:theIfcId "1"^^xsd:long.
+:ifcOrganization_1 a ifc:IfcOrganization.
+:ifcApplication_2 ifc:applicationDeveloper :ifcOrganization_1.
+:ifcApplication_2 ifc:version "2010"^^xsd:normalizedString.
+:ifcApplication_2 ifc:applicationFullName "Autodesk Revit Architecture 2010"^^xsd:normalizedString.
+:ifcApplication_2 ifc:applicationIdentifier "Revit"^^xsd:normalizedString.
+:ifcApplication_2 ifc:theIfcId "2"^^xsd:long.
+:ifcApplication_2 a ifc:IfcApplication.
+:ifcCartesianPoint_3 ifc:coordinates ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_3 ifc:theIfcId "3"^^xsd:long.
+:ifcCartesianPoint_3 a ifc:IfcCartesianPoint.
+:ifcCartesianPoint_4 ifc:coordinates ("0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_4 ifc:theIfcId "4"^^xsd:long.
+:ifcCartesianPoint_4 a ifc:IfcCartesianPoint.
+:ifcDirection_5 ifc:directionRatios ("1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_5 ifc:theIfcId "5"^^xsd:long.
+:ifcDirection_5 a ifc:IfcDirection.
+:ifcDirection_6 ifc:directionRatios ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_6 ifc:theIfcId "6"^^xsd:long.
+:ifcDirection_6 a ifc:IfcDirection.
+:ifcDirection_7 ifc:directionRatios ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_7 ifc:theIfcId "7"^^xsd:long.
+:ifcDirection_7 a ifc:IfcDirection.
+:ifcDirection_8 ifc:directionRatios ("0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_8 ifc:theIfcId "8"^^xsd:long.
+:ifcDirection_8 a ifc:IfcDirection.
+:ifcDirection_9 ifc:directionRatios ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+:ifcDirection_9 ifc:theIfcId "9"^^xsd:long.
+:ifcDirection_9 a ifc:IfcDirection.
+:ifcDirection_10 ifc:directionRatios ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double).
+:ifcDirection_10 ifc:theIfcId "10"^^xsd:long.
+:ifcDirection_10 a ifc:IfcDirection.
+:ifcDirection_11 ifc:directionRatios ("1.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_11 ifc:theIfcId "11"^^xsd:long.
+:ifcDirection_11 a ifc:IfcDirection.
+:ifcDirection_12 ifc:directionRatios ("-1.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_12 ifc:theIfcId "12"^^xsd:long.
+:ifcDirection_12 a ifc:IfcDirection.
+:ifcDirection_13 ifc:directionRatios ("0.0"^^xsd:double "1.0"^^xsd:double).
+:ifcDirection_13 ifc:theIfcId "13"^^xsd:long.
+:ifcDirection_13 a ifc:IfcDirection.
+:ifcDirection_14 ifc:directionRatios ("0.0"^^xsd:double "-1.0"^^xsd:double).
+:ifcDirection_14 ifc:theIfcId "14"^^xsd:long.
+:ifcDirection_14 a ifc:IfcDirection.
+:ifcSIUnit_15 ifc:prefix ifc:ifcSIPrefix_milli.
+:ifcSIUnit_15 ifc:name ifc:ifcSIUnitName_metre.
+:ifcSIUnit_15 ifc:theIfcId "15"^^xsd:long.
+:ifcSIUnit_15 ifc:unitType ifc:ifcUnitEnum_lengthunit.
+:ifcSIUnit_15 a ifc:IfcSIUnit.
+:ifcSIUnit_16 ifc:prefix ifc:ifcSIPrefix_milli.
+:ifcSIUnit_16 ifc:name ifc:ifcSIUnitName_square_metre.
+:ifcSIUnit_16 ifc:theIfcId "16"^^xsd:long.
+:ifcSIUnit_16 ifc:unitType ifc:ifcUnitEnum_areaunit.
+:ifcSIUnit_16 a ifc:IfcSIUnit.
+:ifcSIUnit_17 ifc:prefix ifc:ifcSIPrefix_milli.
+:ifcSIUnit_17 ifc:name ifc:ifcSIUnitName_cubic_metre.
+:ifcSIUnit_17 ifc:theIfcId "17"^^xsd:long.
+:ifcSIUnit_17 ifc:unitType ifc:ifcUnitEnum_volumeunit.
+:ifcSIUnit_17 a ifc:IfcSIUnit.
+:ifcSIUnit_18 ifc:name ifc:ifcSIUnitName_radian.
+:ifcSIUnit_18 ifc:theIfcId "18"^^xsd:long.
+:ifcSIUnit_18 ifc:unitType ifc:ifcUnitEnum_planeangleunit.
+:ifcSIUnit_18 a ifc:IfcSIUnit.
+:ifcDimensionalExponents_19 ifc:lengthExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:massExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:timeExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:electricCurrentExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:thermodynamicTemperatureExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:amountOfSubstanceExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:luminousIntensityExponent "0"^^xsd:long.
+:ifcDimensionalExponents_19 ifc:theIfcId "19"^^xsd:long.
+:ifcDimensionalExponents_19 a ifc:IfcDimensionalExponents.
+:ifcMeasureWithUnit_20 ifc:valueComponent "0.01745329251994328"^^xsd:double.
+:ifcMeasureWithUnit_20 ifc:unitComponent :ifcSIUnit_18.
+:ifcMeasureWithUnit_20 ifc:theIfcId "20"^^xsd:long.
+:ifcMeasureWithUnit_20 a ifc:IfcMeasureWithUnit.
+:ifcConversionBasedUnit_21 ifc:name "DEGREE"^^xsd:normalizedString.
+:ifcConversionBasedUnit_21 ifc:conversionFactor :ifcMeasureWithUnit_20.
+:ifcConversionBasedUnit_21 ifc:theIfcId "21"^^xsd:long.
+:ifcConversionBasedUnit_21 ifc:dimensions :ifcDimensionalExponents_19.
+:ifcConversionBasedUnit_21 ifc:unitType ifc:ifcUnitEnum_planeangleunit.
+:ifcConversionBasedUnit_21 a ifc:IfcConversionBasedUnit.
+:ifcSIUnit_22 ifc:name ifc:ifcSIUnitName_second.
+:ifcSIUnit_22 ifc:theIfcId "22"^^xsd:long.
+:ifcSIUnit_22 ifc:unitType ifc:ifcUnitEnum_timeunit.
+:ifcSIUnit_22 a ifc:IfcSIUnit.
+:ifcUnitAssignment_23 ifc:units (:ifcSIUnit_15 :ifcSIUnit_16 :ifcSIUnit_17 :ifcConversionBasedUnit_21 :ifcSIUnit_22).
+:ifcUnitAssignment_23 ifc:theIfcId "23"^^xsd:long.
+:ifcUnitAssignment_23 a ifc:IfcUnitAssignment.
+:ifcAxis2Placement3D_24 ifc:theIfcId "24"^^xsd:long.
+:ifcAxis2Placement3D_24 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_24 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_25 ifc:relativePlacement :ifcAxis2Placement3D_24.
+:ifcLocalPlacement_25 ifc:theIfcId "25"^^xsd:long.
+:ifcLocalPlacement_25 a ifc:IfcLocalPlacement.
+:ifcAxis2Placement3D_26 ifc:theIfcId "26"^^xsd:long.
+:ifcAxis2Placement3D_26 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_26 a ifc:IfcAxis2Placement3D.
+:ifcGeometricRepresentationContext_27 ifc:coordinateSpaceDimension "3"^^xsd:long.
+:ifcGeometricRepresentationContext_27 ifc:precision "1.0E-6"^^xsd:double.
+:ifcGeometricRepresentationContext_27 ifc:worldCoordinateSystem :ifcAxis2Placement3D_26.
+:ifcGeometricRepresentationContext_27 ifc:contextType "Model"^^xsd:normalizedString.
+:ifcGeometricRepresentationContext_27 ifc:theIfcId "27"^^xsd:long.
+:ifcGeometricRepresentationContext_27 a ifc:IfcGeometricRepresentationContext.
+:ifcGeometricRepresentationContext_28 ifc:coordinateSpaceDimension "3"^^xsd:long.
+:ifcGeometricRepresentationContext_28 ifc:precision "1.0E-6"^^xsd:double.
+:ifcGeometricRepresentationContext_28 ifc:worldCoordinateSystem :ifcAxis2Placement3D_26.
+:ifcGeometricRepresentationContext_28 ifc:contextType "Plan"^^xsd:normalizedString.
+:ifcGeometricRepresentationContext_28 ifc:theIfcId "28"^^xsd:long.
+:ifcGeometricRepresentationContext_28 a ifc:IfcGeometricRepresentationContext.
+:ifcGeometricRepresentationSubContext_29 ifc:parentContext :ifcGeometricRepresentationContext_28.
+:ifcGeometricRepresentationSubContext_29 ifc:targetScale "0.01"^^xsd:double.
+:ifcGeometricRepresentationSubContext_29 ifc:targetView ifc:ifcGeometricProjectionEnum_plan_view.
+:ifcGeometricRepresentationSubContext_29 ifc:contextType "Plan"^^xsd:normalizedString.
+:ifcGeometricRepresentationSubContext_29 ifc:theIfcId "29"^^xsd:long.
+:ifcGeometricRepresentationSubContext_29 a ifc:IfcGeometricRepresentationSubContext.
+:ifcPerson_30 ifc:givenName "Tim"^^xsd:normalizedString.
+:ifcPerson_30 ifc:theIfcId "30"^^xsd:long.
+:ifcPerson_30 a ifc:IfcPerson.
+:ifcOrganization_31 ifc:name ""^^xsd:normalizedString.
+:ifcOrganization_31 ifc:description ""^^xsd:normalizedString.
+:ifcOrganization_31 ifc:theIfcId "31"^^xsd:long.
+:ifcOrganization_31 a ifc:IfcOrganization.
+:ifcPersonAndOrganization_32 ifc:thePerson :ifcPerson_30.
+:ifcPersonAndOrganization_32 ifc:theOrganization :ifcOrganization_31.
+:ifcPersonAndOrganization_32 ifc:theIfcId "32"^^xsd:long.
+:ifcPersonAndOrganization_32 a ifc:IfcPersonAndOrganization.
+:ifcOwnerHistory_33 ifc:owningUser :ifcPersonAndOrganization_32.
+:ifcOwnerHistory_33 ifc:owningApplication :ifcApplication_2.
+:ifcOwnerHistory_33 ifc:changeAction ifc:ifcChangeActionEnum_nochange.
+:ifcOwnerHistory_33 ifc:creationDate "0"^^xsd:long.
+:ifcOwnerHistory_33 ifc:theIfcId "33"^^xsd:long.
+:ifcOwnerHistory_33 a ifc:IfcOwnerHistory.
+:ifcPostalAddress_35 ifc:addressLines ("Enter address here"^^xsd:normalizedString).
+:ifcPostalAddress_35 ifc:town "Boston"^^xsd:normalizedString.
+:ifcPostalAddress_35 ifc:region ""^^xsd:normalizedString.
+:ifcPostalAddress_35 ifc:postalCode ""^^xsd:normalizedString.
+:ifcPostalAddress_35 ifc:country "MA"^^xsd:normalizedString.
+:ifcPostalAddress_35 ifc:theIfcId "35"^^xsd:long.
+:ifcPostalAddress_35 a ifc:IfcPostalAddress.
+:ifcBuilding_36 ifc:buildingAddress :ifcPostalAddress_35.
+:ifcBuilding_36 ifc:theIfcId "36"^^xsd:long.
+:ifcBuilding_36 ifc:compositionType ifc:ifcElementCompositionEnum_element.
+:ifcBuilding_36 ifc:objectPlacement :ifcLocalPlacement_25.
+:ifcBuilding_36 ifc:globalId "2CbZXiFIL3UwFX5$YHeX6g"^^xsd:normalizedString.
+:ifcBuilding_36 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcBuilding_36 a ifc:IfcBuilding.
+:ifcAxis2Placement3D_37 ifc:theIfcId "37"^^xsd:long.
+:ifcAxis2Placement3D_37 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_37 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_38 ifc:placementRelTo :ifcLocalPlacement_25.
+:ifcLocalPlacement_38 ifc:relativePlacement :ifcAxis2Placement3D_37.
+:ifcLocalPlacement_38 ifc:theIfcId "38"^^xsd:long.
+:ifcLocalPlacement_38 a ifc:IfcLocalPlacement.
+:ifcBuildingStorey_39 ifc:elevation "0.0"^^xsd:double.
+:ifcBuildingStorey_39 ifc:theIfcId "39"^^xsd:long.
+:ifcBuildingStorey_39 ifc:compositionType ifc:ifcElementCompositionEnum_element.
+:ifcBuildingStorey_39 ifc:objectPlacement :ifcLocalPlacement_38.
+:ifcBuildingStorey_39 ifc:globalId "2CbZXiFIL3UwFX5$XkNUzi"^^xsd:normalizedString.
+:ifcBuildingStorey_39 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcBuildingStorey_39 ifc:name "Level 1"^^xsd:normalizedString.
+:ifcBuildingStorey_39 a ifc:IfcBuildingStorey.
+:ifcCartesianPoint_40 ifc:coordinates ("0.0"^^xsd:double "0.0"^^xsd:double "3000.0"^^xsd:double).
+:ifcCartesianPoint_40 ifc:theIfcId "40"^^xsd:long.
+:ifcCartesianPoint_40 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement3D_41 ifc:theIfcId "41"^^xsd:long.
+:ifcAxis2Placement3D_41 ifc:location :ifcCartesianPoint_40.
+:ifcAxis2Placement3D_41 a ifc:IfcAxis2Placement3D.
+:ifcCartesianPoint_44 ifc:coordinates ("-16902.6517690273"^^xsd:double "11046.16018958814"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_44 ifc:theIfcId "44"^^xsd:long.
+:ifcCartesianPoint_44 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement3D_45 ifc:theIfcId "45"^^xsd:long.
+:ifcAxis2Placement3D_45 ifc:location :ifcCartesianPoint_44.
+:ifcAxis2Placement3D_45 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_46 ifc:placementRelTo :ifcLocalPlacement_38.
+:ifcLocalPlacement_46 ifc:relativePlacement :ifcAxis2Placement3D_45.
+:ifcLocalPlacement_46 ifc:theIfcId "46"^^xsd:long.
+:ifcLocalPlacement_46 a ifc:IfcLocalPlacement.
+:ifcCartesianPoint_47 ifc:coordinates ("6200.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_47 ifc:theIfcId "47"^^xsd:long.
+:ifcCartesianPoint_47 a ifc:IfcCartesianPoint.
+:ifcPolyline_48 ifc:points (:ifcCartesianPoint_4 :ifcCartesianPoint_47).
+:ifcPolyline_48 ifc:theIfcId "48"^^xsd:long.
+:ifcPolyline_48 a ifc:IfcPolyline.
+:ifcShapeRepresentation_49 ifc:theIfcId "49"^^xsd:long.
+:ifcShapeRepresentation_49 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_49 ifc:representationIdentifier "Axis"^^xsd:normalizedString.
+:ifcShapeRepresentation_49 ifc:representationType "Curve2D"^^xsd:normalizedString.
+:ifcShapeRepresentation_49 ifc:items (:ifcPolyline_48).
+:ifcShapeRepresentation_49 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_49 a ifc:IfcShapeRepresentation.
+:ifcCartesianPoint_50 ifc:coordinates ("3100.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_50 ifc:theIfcId "50"^^xsd:long.
+:ifcCartesianPoint_50 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement2D_51 ifc:refDirection :ifcDirection_12.
+:ifcAxis2Placement2D_51 ifc:theIfcId "51"^^xsd:long.
+:ifcAxis2Placement2D_51 ifc:location :ifcCartesianPoint_50.
+:ifcAxis2Placement2D_51 a ifc:IfcAxis2Placement2D.
+:ifcRectangleProfileDef_52 ifc:xDim "6199.999999999992"^^xsd:double.
+:ifcRectangleProfileDef_52 ifc:yDim "199.9999999999978"^^xsd:double.
+:ifcRectangleProfileDef_52 ifc:theIfcId "52"^^xsd:long.
+:ifcRectangleProfileDef_52 ifc:position :ifcAxis2Placement2D_51.
+:ifcRectangleProfileDef_52 ifc:profileType ifc:ifcProfileTypeEnum_area.
+:ifcRectangleProfileDef_52 a ifc:IfcRectangleProfileDef.
+:ifcAxis2Placement3D_53 ifc:theIfcId "53"^^xsd:long.
+:ifcAxis2Placement3D_53 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_53 a ifc:IfcAxis2Placement3D.
+:ifcExtrudedAreaSolid_54 ifc:extrudedDirection :ifcDirection_9.
+:ifcExtrudedAreaSolid_54 ifc:depth "3000.0"^^xsd:double.
+:ifcExtrudedAreaSolid_54 ifc:theIfcId "54"^^xsd:long.
+:ifcExtrudedAreaSolid_54 ifc:sweptArea :ifcRectangleProfileDef_52.
+:ifcExtrudedAreaSolid_54 ifc:position :ifcAxis2Placement3D_53.
+:ifcExtrudedAreaSolid_54 a ifc:IfcExtrudedAreaSolid.
+:ifcColourRgb_55 ifc:red "0.5019607843137255"^^xsd:double.
+:ifcColourRgb_55 ifc:green "0.5019607843137255"^^xsd:double.
+:ifcColourRgb_55 ifc:blue "0.5019607843137255"^^xsd:double.
+:ifcColourRgb_55 ifc:theIfcId "55"^^xsd:long.
+:ifcColourRgb_55 a ifc:IfcColourRgb.
+:ifcSurfaceStyleRendering_56 ifc:transparency "0.0"^^xsd:double.
+:ifcSurfaceStyleRendering_56 ifc:specularColour "0.00390625"^^xsd:double.
+:ifcSurfaceStyleRendering_56 ifc:specularHighlight "64.0"^^xsd:double.
+:ifcSurfaceStyleRendering_56 ifc:reflectanceMethod ifc:ifcReflectanceMethodEnum_notdefined.
+:ifcSurfaceStyleRendering_56 ifc:surfaceColour :ifcColourRgb_55.
+:ifcSurfaceStyleRendering_56 ifc:theIfcId "56"^^xsd:long.
+:ifcSurfaceStyleRendering_56 a ifc:IfcSurfaceStyleRendering.
+:ifcSurfaceStyle_57 ifc:side ifc:ifcSurfaceSide_both.
+:ifcSurfaceStyle_57 ifc:styles (:ifcSurfaceStyleRendering_56).
+:ifcSurfaceStyle_57 ifc:theIfcId "57"^^xsd:long.
+:ifcSurfaceStyle_57 ifc:name "Default Wall"^^xsd:normalizedString.
+:ifcSurfaceStyle_57 a ifc:IfcSurfaceStyle.
+:ifcPresentationStyleAssignment_58 ifc:styles (:ifcSurfaceStyle_57).
+:ifcPresentationStyleAssignment_58 ifc:theIfcId "58"^^xsd:long.
+:ifcPresentationStyleAssignment_58 a ifc:IfcPresentationStyleAssignment.
+:ifcStyledItem_59 ifc:item :ifcExtrudedAreaSolid_54.
+:ifcStyledItem_59 ifc:styles (:ifcPresentationStyleAssignment_58).
+:ifcStyledItem_59 ifc:theIfcId "59"^^xsd:long.
+:ifcStyledItem_59 a ifc:IfcStyledItem.
+:ifcShapeRepresentation_60 ifc:theIfcId "60"^^xsd:long.
+:ifcShapeRepresentation_60 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_60 ifc:representationIdentifier "Body"^^xsd:normalizedString.
+:ifcShapeRepresentation_60 ifc:representationType "SweptSolid"^^xsd:normalizedString.
+:ifcShapeRepresentation_60 ifc:items (:ifcExtrudedAreaSolid_54).
+:ifcShapeRepresentation_60 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_60 a ifc:IfcShapeRepresentation.
+:ifcProductDefinitionShape_61 ifc:representations (:ifcShapeRepresentation_49 :ifcShapeRepresentation_60).
+:ifcProductDefinitionShape_61 ifc:theIfcId "61"^^xsd:long.
+:ifcProductDefinitionShape_61 a ifc:IfcProductDefinitionShape.
+:ifcWallStandardCase_62 ifc:theIfcId "62"^^xsd:long.
+:ifcWallStandardCase_62 ifc:tag "113199"^^xsd:normalizedString.
+:ifcWallStandardCase_62 ifc:objectPlacement :ifcLocalPlacement_46.
+:ifcWallStandardCase_62 ifc:representation :ifcProductDefinitionShape_61.
+:ifcWallStandardCase_62 ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString.
+:ifcWallStandardCase_62 ifc:globalId "3LdXFneX560PR3XLIMe46S"^^xsd:normalizedString.
+:ifcWallStandardCase_62 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcWallStandardCase_62 ifc:name "Basic Wall:Generic - 200mm:113199"^^xsd:normalizedString.
+:ifcWallStandardCase_62 a ifc:IfcWallStandardCase.
+:ifcPropertySingleValue_63 ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString.
+:ifcPropertySingleValue_63 ifc:theIfcId "63"^^xsd:long.
+:ifcPropertySingleValue_63 ifc:name "Reference"^^xsd:normalizedString.
+:ifcPropertySingleValue_63 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_64 ifc:nominalValue false.
+:ifcPropertySingleValue_64 ifc:theIfcId "64"^^xsd:long.
+:ifcPropertySingleValue_64 ifc:name "LoadBearing"^^xsd:normalizedString.
+:ifcPropertySingleValue_64 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_65 ifc:nominalValue false.
+:ifcPropertySingleValue_65 ifc:theIfcId "65"^^xsd:long.
+:ifcPropertySingleValue_65 ifc:name "ExtendToStructure"^^xsd:normalizedString.
+:ifcPropertySingleValue_65 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_66 ifc:nominalValue true.
+:ifcPropertySingleValue_66 ifc:theIfcId "66"^^xsd:long.
+:ifcPropertySingleValue_66 ifc:name "IsExternal"^^xsd:normalizedString.
+:ifcPropertySingleValue_66 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_67 ifc:hasProperties (:ifcPropertySingleValue_63 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66).
+:ifcPropertySet_67 ifc:theIfcId "67"^^xsd:long.
+:ifcPropertySet_67 ifc:globalId "2zOSzgy6L4PAu7BJgG0J1L"^^xsd:normalizedString.
+:ifcPropertySet_67 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_67 ifc:name "Pset_WallCommon"^^xsd:normalizedString.
+:ifcPropertySet_67 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_68 ifc:relatingPropertyDefinition :ifcPropertySet_67.
+:ifcRelDefinesByProperties_68 ifc:theIfcId "68"^^xsd:long.
+:ifcRelDefinesByProperties_68 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelDefinesByProperties_68 ifc:globalId "1Vq8wqQKTDOf_1BI4AjqQm"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_68 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_68 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySingleValue_69 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_69 ifc:theIfcId "69"^^xsd:long.
+:ifcPropertySingleValue_69 ifc:name "Location Line"^^xsd:normalizedString.
+:ifcPropertySingleValue_69 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_70 ifc:nominalValue "New Construction"^^xsd:normalizedString.
+:ifcPropertySingleValue_70 ifc:theIfcId "70"^^xsd:long.
+:ifcPropertySingleValue_70 ifc:name "Phase Created"^^xsd:normalizedString.
+:ifcPropertySingleValue_70 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_71 ifc:nominalValue "Level 1"^^xsd:normalizedString.
+:ifcPropertySingleValue_71 ifc:theIfcId "71"^^xsd:long.
+:ifcPropertySingleValue_71 ifc:name "Base Constraint"^^xsd:normalizedString.
+:ifcPropertySingleValue_71 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_72 ifc:nominalValue "0.0"^^xsd:double.
+:ifcPropertySingleValue_72 ifc:theIfcId "72"^^xsd:long.
+:ifcPropertySingleValue_72 ifc:name "Base Offset"^^xsd:normalizedString.
+:ifcPropertySingleValue_72 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_73 ifc:nominalValue false.
+:ifcPropertySingleValue_73 ifc:theIfcId "73"^^xsd:long.
+:ifcPropertySingleValue_73 ifc:name "Base is Attached"^^xsd:normalizedString.
+:ifcPropertySingleValue_73 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_74 ifc:nominalValue "0.0"^^xsd:double.
+:ifcPropertySingleValue_74 ifc:theIfcId "74"^^xsd:long.
+:ifcPropertySingleValue_74 ifc:name "Base Extension Distance"^^xsd:normalizedString.
+:ifcPropertySingleValue_74 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_75 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_75 ifc:theIfcId "75"^^xsd:long.
+:ifcPropertySingleValue_75 ifc:name "Structural Usage"^^xsd:normalizedString.
+:ifcPropertySingleValue_75 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_76 ifc:nominalValue "3000.0"^^xsd:double.
+:ifcPropertySingleValue_76 ifc:theIfcId "76"^^xsd:long.
+:ifcPropertySingleValue_76 ifc:name "Unconnected Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_76 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_77 ifc:nominalValue "0.0"^^xsd:double.
+:ifcPropertySingleValue_77 ifc:theIfcId "77"^^xsd:long.
+:ifcPropertySingleValue_77 ifc:name "Top Offset"^^xsd:normalizedString.
+:ifcPropertySingleValue_77 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_78 ifc:nominalValue false.
+:ifcPropertySingleValue_78 ifc:theIfcId "78"^^xsd:long.
+:ifcPropertySingleValue_78 ifc:name "Top is Attached"^^xsd:normalizedString.
+:ifcPropertySingleValue_78 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_79 ifc:nominalValue "0.0"^^xsd:double.
+:ifcPropertySingleValue_79 ifc:theIfcId "79"^^xsd:long.
+:ifcPropertySingleValue_79 ifc:name "Top Extension Distance"^^xsd:normalizedString.
+:ifcPropertySingleValue_79 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_80 ifc:nominalValue true.
+:ifcPropertySingleValue_80 ifc:theIfcId "80"^^xsd:long.
+:ifcPropertySingleValue_80 ifc:name "Room Bounding"^^xsd:normalizedString.
+:ifcPropertySingleValue_80 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_81 ifc:nominalValue "6000.0"^^xsd:double.
+:ifcPropertySingleValue_81 ifc:theIfcId "81"^^xsd:long.
+:ifcPropertySingleValue_81 ifc:name "Length"^^xsd:normalizedString.
+:ifcPropertySingleValue_81 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_82 ifc:nominalValue "1.859999999999997E7"^^xsd:double.
+:ifcPropertySingleValue_82 ifc:theIfcId "82"^^xsd:long.
+:ifcPropertySingleValue_82 ifc:name "Area"^^xsd:normalizedString.
+:ifcPropertySingleValue_82 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_83 ifc:nominalValue "3.719999999999995E9"^^xsd:double.
+:ifcPropertySingleValue_83 ifc:theIfcId "83"^^xsd:long.
+:ifcPropertySingleValue_83 ifc:name "Volume"^^xsd:normalizedString.
+:ifcPropertySingleValue_83 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_84 ifc:nominalValue false.
+:ifcPropertySingleValue_84 ifc:theIfcId "84"^^xsd:long.
+:ifcPropertySingleValue_84 ifc:name "Related to Mass"^^xsd:normalizedString.
+:ifcPropertySingleValue_84 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_85 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_85 ifc:theIfcId "85"^^xsd:long.
+:ifcPropertySingleValue_85 ifc:name "Coarse Scale Fill Color"^^xsd:normalizedString.
+:ifcPropertySingleValue_85 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_86 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_86 ifc:theIfcId "86"^^xsd:long.
+:ifcPropertySingleValue_86 ifc:name "Wrapping at Inserts"^^xsd:normalizedString.
+:ifcPropertySingleValue_86 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_87 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_87 ifc:theIfcId "87"^^xsd:long.
+:ifcPropertySingleValue_87 ifc:name "Wrapping at Ends"^^xsd:normalizedString.
+:ifcPropertySingleValue_87 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_88 ifc:nominalValue "200.0"^^xsd:double.
+:ifcPropertySingleValue_88 ifc:theIfcId "88"^^xsd:long.
+:ifcPropertySingleValue_88 ifc:name "Width"^^xsd:normalizedString.
+:ifcPropertySingleValue_88 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_89 ifc:nominalValue ""^^xsd:normalizedString.
+:ifcPropertySingleValue_89 ifc:theIfcId "89"^^xsd:long.
+:ifcPropertySingleValue_89 ifc:name "Assembly Description"^^xsd:normalizedString.
+:ifcPropertySingleValue_89 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_90 ifc:nominalValue ""^^xsd:normalizedString.
+:ifcPropertySingleValue_90 ifc:theIfcId "90"^^xsd:long.
+:ifcPropertySingleValue_90 ifc:name "Assembly Code"^^xsd:normalizedString.
+:ifcPropertySingleValue_90 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_91 ifc:nominalValue "1"^^xsd:long.
+:ifcPropertySingleValue_91 ifc:theIfcId "91"^^xsd:long.
+:ifcPropertySingleValue_91 ifc:name "Function"^^xsd:normalizedString.
+:ifcPropertySingleValue_91 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_92 ifc:hasProperties (:ifcPropertySingleValue_69 :ifcPropertySingleValue_71 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_76 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84).
+:ifcPropertySet_92 ifc:theIfcId "92"^^xsd:long.
+:ifcPropertySet_92 ifc:globalId "3QsDGNHi5B4BrfI3C9gRdX"^^xsd:normalizedString.
+:ifcPropertySet_92 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_92 ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_92 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_93 ifc:relatingPropertyDefinition :ifcPropertySet_92.
+:ifcRelDefinesByProperties_93 ifc:theIfcId "93"^^xsd:long.
+:ifcRelDefinesByProperties_93 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelDefinesByProperties_93 ifc:globalId "1HSVOed5bBoOoS7m5jB03$"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_93 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_93 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_94 ifc:hasProperties (:ifcPropertySingleValue_70).
+:ifcPropertySet_94 ifc:theIfcId "94"^^xsd:long.
+:ifcPropertySet_94 ifc:globalId "1BSyUE0oD8JBOKV4rN8iHj"^^xsd:normalizedString.
+:ifcPropertySet_94 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_94 ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString.
+:ifcPropertySet_94 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_95 ifc:relatingPropertyDefinition :ifcPropertySet_94.
+:ifcRelDefinesByProperties_95 ifc:theIfcId "95"^^xsd:long.
+:ifcRelDefinesByProperties_95 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelDefinesByProperties_95 ifc:globalId "3ybujdnuP0ZAXZmRP_rR81"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_95 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_95 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_96 ifc:hasProperties (:ifcPropertySingleValue_75).
+:ifcPropertySet_96 ifc:theIfcId "96"^^xsd:long.
+:ifcPropertySet_96 ifc:globalId "17whOPJ3rDXAOn$w$Md2bQ"^^xsd:normalizedString.
+:ifcPropertySet_96 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_96 ifc:name "PSet_Revit_Structural"^^xsd:normalizedString.
+:ifcPropertySet_96 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_97 ifc:relatingPropertyDefinition :ifcPropertySet_96.
+:ifcRelDefinesByProperties_97 ifc:theIfcId "97"^^xsd:long.
+:ifcRelDefinesByProperties_97 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelDefinesByProperties_97 ifc:globalId "3Afi6JEG18ohGi019$OG08"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_97 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_97 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_98 ifc:hasProperties (:ifcPropertySingleValue_81 :ifcPropertySingleValue_82 :ifcPropertySingleValue_83).
+:ifcPropertySet_98 ifc:theIfcId "98"^^xsd:long.
+:ifcPropertySet_98 ifc:globalId "0BWdT3PW91E9O55pRQvxIw"^^xsd:normalizedString.
+:ifcPropertySet_98 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_98 ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString.
+:ifcPropertySet_98 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_99 ifc:relatingPropertyDefinition :ifcPropertySet_98.
+:ifcRelDefinesByProperties_99 ifc:theIfcId "99"^^xsd:long.
+:ifcRelDefinesByProperties_99 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelDefinesByProperties_99 ifc:globalId "3acVdALH5Cwx9QUgZgnvuz"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_99 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_99 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_100 ifc:hasProperties (:ifcPropertySingleValue_86 :ifcPropertySingleValue_87 :ifcPropertySingleValue_88 :ifcPropertySingleValue_91).
+:ifcPropertySet_100 ifc:theIfcId "100"^^xsd:long.
+:ifcPropertySet_100 ifc:globalId "36URTu5W12mOBHOvsfpnUt"^^xsd:normalizedString.
+:ifcPropertySet_100 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_100 ifc:name "PSet_Revit_Type_Construction"^^xsd:normalizedString.
+:ifcPropertySet_100 a ifc:IfcPropertySet.
+:ifcPropertySet_101 ifc:hasProperties (:ifcPropertySingleValue_85).
+:ifcPropertySet_101 ifc:theIfcId "101"^^xsd:long.
+:ifcPropertySet_101 ifc:globalId "0FMTR9_zL4EgOcBryAJUZg"^^xsd:normalizedString.
+:ifcPropertySet_101 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_101 ifc:name "PSet_Revit_Type_Graphics"^^xsd:normalizedString.
+:ifcPropertySet_101 a ifc:IfcPropertySet.
+:ifcPropertySet_102 ifc:hasProperties (:ifcPropertySingleValue_89 :ifcPropertySingleValue_90).
+:ifcPropertySet_102 ifc:theIfcId "102"^^xsd:long.
+:ifcPropertySet_102 ifc:globalId "3rpK6DjRrCl9xvQll6xanp"^^xsd:normalizedString.
+:ifcPropertySet_102 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_102 ifc:name "PSet_Revit_Type_Identity Data"^^xsd:normalizedString.
+:ifcPropertySet_102 a ifc:IfcPropertySet.
+:ifcMaterial_103 ifc:name "Default Wall"^^xsd:normalizedString.
+:ifcMaterial_103 ifc:theIfcId "103"^^xsd:long.
+:ifcMaterial_103 a ifc:IfcMaterial.
+:ifcPresentationStyleAssignment_104 ifc:styles (:ifcSurfaceStyle_57).
+:ifcPresentationStyleAssignment_104 ifc:theIfcId "104"^^xsd:long.
+:ifcPresentationStyleAssignment_104 a ifc:IfcPresentationStyleAssignment.
+:ifcStyledItem_105 ifc:styles (:ifcPresentationStyleAssignment_104).
+:ifcStyledItem_105 ifc:theIfcId "105"^^xsd:long.
+:ifcStyledItem_105 a ifc:IfcStyledItem.
+:ifcStyledRepresentation_106 ifc:theIfcId "106"^^xsd:long.
+:ifcStyledRepresentation_106 ifc:contextOfItems :ifcGeometricRepresentationSubContext_29.
+:ifcStyledRepresentation_106 ifc:representationIdentifier "Style"^^xsd:normalizedString.
+:ifcStyledRepresentation_106 ifc:representationType "Material"^^xsd:normalizedString.
+:ifcStyledRepresentation_106 ifc:items (:ifcStyledItem_105).
+:ifcStyledRepresentation_106 ifc:theIfcId "-1"^^xsd:long.
+:ifcStyledRepresentation_106 a ifc:IfcStyledRepresentation.
+:ifcMaterialDefinitionRepresentation_107 ifc:representedMaterial :ifcMaterial_103.
+:ifcMaterialDefinitionRepresentation_107 ifc:representations (:ifcStyledRepresentation_106).
+:ifcMaterialDefinitionRepresentation_107 ifc:theIfcId "107"^^xsd:long.
+:ifcMaterialDefinitionRepresentation_107 a ifc:IfcMaterialDefinitionRepresentation.
+:ifcMaterialLayer_108 ifc:material :ifcMaterial_103.
+:ifcMaterialLayer_108 ifc:layerThickness "200.0"^^xsd:double.
+:ifcMaterialLayer_108 ifc:theIfcId "108"^^xsd:long.
+:ifcMaterialLayer_108 a ifc:IfcMaterialLayer.
+:ifcMaterialLayerSet_109 ifc:materialLayers (:ifcMaterialLayer_108).
+:ifcMaterialLayerSet_109 ifc:layerSetName "Basic Wall:Generic - 200mm"^^xsd:normalizedString.
+:ifcMaterialLayerSet_109 ifc:theIfcId "109"^^xsd:long.
+:ifcMaterialLayerSet_109 a ifc:IfcMaterialLayerSet.
+:ifcMaterialLayerSetUsage_110 ifc:forLayerSet :ifcMaterialLayerSet_109.
+:ifcMaterialLayerSetUsage_110 ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2.
+:ifcMaterialLayerSetUsage_110 ifc:directionSense ifc:ifcDirectionSenseEnum_negative.
+:ifcMaterialLayerSetUsage_110 ifc:offsetFromReferenceLine "100.0"^^xsd:double.
+:ifcMaterialLayerSetUsage_110 ifc:theIfcId "110"^^xsd:long.
+:ifcMaterialLayerSetUsage_110 a ifc:IfcMaterialLayerSetUsage.
+:ifcCartesianPoint_111 ifc:coordinates ("-10802.6517690273"^^xsd:double "10946.16018958812"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_111 ifc:theIfcId "111"^^xsd:long.
+:ifcCartesianPoint_111 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement3D_112 ifc:axis :ifcDirection_9.
+:ifcAxis2Placement3D_112 ifc:refDirection :ifcDirection_8.
+:ifcAxis2Placement3D_112 ifc:theIfcId "112"^^xsd:long.
+:ifcAxis2Placement3D_112 ifc:location :ifcCartesianPoint_111.
+:ifcAxis2Placement3D_112 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_113 ifc:placementRelTo :ifcLocalPlacement_38.
+:ifcLocalPlacement_113 ifc:relativePlacement :ifcAxis2Placement3D_112.
+:ifcLocalPlacement_113 ifc:theIfcId "113"^^xsd:long.
+:ifcLocalPlacement_113 a ifc:IfcLocalPlacement.
+:ifcCartesianPoint_114 ifc:coordinates ("4000.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_114 ifc:theIfcId "114"^^xsd:long.
+:ifcCartesianPoint_114 a ifc:IfcCartesianPoint.
+:ifcPolyline_115 ifc:points (:ifcCartesianPoint_4 :ifcCartesianPoint_114).
+:ifcPolyline_115 ifc:theIfcId "115"^^xsd:long.
+:ifcPolyline_115 a ifc:IfcPolyline.
+:ifcShapeRepresentation_116 ifc:theIfcId "116"^^xsd:long.
+:ifcShapeRepresentation_116 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_116 ifc:representationIdentifier "Axis"^^xsd:normalizedString.
+:ifcShapeRepresentation_116 ifc:representationType "Curve2D"^^xsd:normalizedString.
+:ifcShapeRepresentation_116 ifc:items (:ifcPolyline_115).
+:ifcShapeRepresentation_116 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_116 a ifc:IfcShapeRepresentation.
+:ifcCartesianPoint_117 ifc:coordinates ("2000.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_117 ifc:theIfcId "117"^^xsd:long.
+:ifcCartesianPoint_117 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement2D_118 ifc:refDirection :ifcDirection_12.
+:ifcAxis2Placement2D_118 ifc:theIfcId "118"^^xsd:long.
+:ifcAxis2Placement2D_118 ifc:location :ifcCartesianPoint_117.
+:ifcAxis2Placement2D_118 a ifc:IfcAxis2Placement2D.
+:ifcRectangleProfileDef_119 ifc:xDim "4000.000000000001"^^xsd:double.
+:ifcRectangleProfileDef_119 ifc:yDim "199.9999999999978"^^xsd:double.
+:ifcRectangleProfileDef_119 ifc:theIfcId "119"^^xsd:long.
+:ifcRectangleProfileDef_119 ifc:position :ifcAxis2Placement2D_118.
+:ifcRectangleProfileDef_119 ifc:profileType ifc:ifcProfileTypeEnum_area.
+:ifcRectangleProfileDef_119 a ifc:IfcRectangleProfileDef.
+:ifcAxis2Placement3D_120 ifc:theIfcId "120"^^xsd:long.
+:ifcAxis2Placement3D_120 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_120 a ifc:IfcAxis2Placement3D.
+:ifcExtrudedAreaSolid_121 ifc:extrudedDirection :ifcDirection_9.
+:ifcExtrudedAreaSolid_121 ifc:depth "3000.0"^^xsd:double.
+:ifcExtrudedAreaSolid_121 ifc:theIfcId "121"^^xsd:long.
+:ifcExtrudedAreaSolid_121 ifc:sweptArea :ifcRectangleProfileDef_119.
+:ifcExtrudedAreaSolid_121 ifc:position :ifcAxis2Placement3D_120.
+:ifcExtrudedAreaSolid_121 a ifc:IfcExtrudedAreaSolid.
+:ifcPresentationStyleAssignment_122 ifc:styles (:ifcSurfaceStyle_57).
+:ifcPresentationStyleAssignment_122 ifc:theIfcId "122"^^xsd:long.
+:ifcPresentationStyleAssignment_122 a ifc:IfcPresentationStyleAssignment.
+:ifcStyledItem_123 ifc:item :ifcExtrudedAreaSolid_121.
+:ifcStyledItem_123 ifc:styles (:ifcPresentationStyleAssignment_122).
+:ifcStyledItem_123 ifc:theIfcId "123"^^xsd:long.
+:ifcStyledItem_123 a ifc:IfcStyledItem.
+:ifcShapeRepresentation_124 ifc:theIfcId "124"^^xsd:long.
+:ifcShapeRepresentation_124 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_124 ifc:representationIdentifier "Body"^^xsd:normalizedString.
+:ifcShapeRepresentation_124 ifc:representationType "SweptSolid"^^xsd:normalizedString.
+:ifcShapeRepresentation_124 ifc:items (:ifcExtrudedAreaSolid_121).
+:ifcShapeRepresentation_124 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_124 a ifc:IfcShapeRepresentation.
+:ifcProductDefinitionShape_125 ifc:representations (:ifcShapeRepresentation_116 :ifcShapeRepresentation_124).
+:ifcProductDefinitionShape_125 ifc:theIfcId "125"^^xsd:long.
+:ifcProductDefinitionShape_125 a ifc:IfcProductDefinitionShape.
+:ifcWallStandardCase_126 ifc:theIfcId "126"^^xsd:long.
+:ifcWallStandardCase_126 ifc:tag "113272"^^xsd:normalizedString.
+:ifcWallStandardCase_126 ifc:objectPlacement :ifcLocalPlacement_113.
+:ifcWallStandardCase_126 ifc:representation :ifcProductDefinitionShape_125.
+:ifcWallStandardCase_126 ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString.
+:ifcWallStandardCase_126 ifc:globalId "3LdXFneX560PR3XLIMe47B"^^xsd:normalizedString.
+:ifcWallStandardCase_126 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcWallStandardCase_126 ifc:name "Basic Wall:Generic - 200mm:113272"^^xsd:normalizedString.
+:ifcWallStandardCase_126 a ifc:IfcWallStandardCase.
+:ifcPropertySingleValue_127 ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString.
+:ifcPropertySingleValue_127 ifc:theIfcId "127"^^xsd:long.
+:ifcPropertySingleValue_127 ifc:name "Reference"^^xsd:normalizedString.
+:ifcPropertySingleValue_127 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_128 ifc:hasProperties (:ifcPropertySingleValue_127 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66).
+:ifcPropertySet_128 ifc:theIfcId "128"^^xsd:long.
+:ifcPropertySet_128 ifc:globalId "1CZDyFy_D81RrK5xJhwtMt"^^xsd:normalizedString.
+:ifcPropertySet_128 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_128 ifc:name "Pset_WallCommon"^^xsd:normalizedString.
+:ifcPropertySet_128 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_129 ifc:relatingPropertyDefinition :ifcPropertySet_128.
+:ifcRelDefinesByProperties_129 ifc:theIfcId "129"^^xsd:long.
+:ifcRelDefinesByProperties_129 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelDefinesByProperties_129 ifc:globalId "0IumFpiEb3HfuxtngFOhDg"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_129 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_129 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySingleValue_130 ifc:nominalValue "New Construction"^^xsd:normalizedString.
+:ifcPropertySingleValue_130 ifc:theIfcId "130"^^xsd:long.
+:ifcPropertySingleValue_130 ifc:name "Phase Created"^^xsd:normalizedString.
+:ifcPropertySingleValue_130 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_131 ifc:nominalValue "Level 1"^^xsd:normalizedString.
+:ifcPropertySingleValue_131 ifc:theIfcId "131"^^xsd:long.
+:ifcPropertySingleValue_131 ifc:name "Base Constraint"^^xsd:normalizedString.
+:ifcPropertySingleValue_131 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_132 ifc:nominalValue "3000.0"^^xsd:double.
+:ifcPropertySingleValue_132 ifc:theIfcId "132"^^xsd:long.
+:ifcPropertySingleValue_132 ifc:name "Unconnected Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_132 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_133 ifc:nominalValue "4000.000000000001"^^xsd:double.
+:ifcPropertySingleValue_133 ifc:theIfcId "133"^^xsd:long.
+:ifcPropertySingleValue_133 ifc:name "Length"^^xsd:normalizedString.
+:ifcPropertySingleValue_133 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_134 ifc:nominalValue "1.2E7"^^xsd:double.
+:ifcPropertySingleValue_134 ifc:theIfcId "134"^^xsd:long.
+:ifcPropertySingleValue_134 ifc:name "Area"^^xsd:normalizedString.
+:ifcPropertySingleValue_134 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_135 ifc:nominalValue "2.4E9"^^xsd:double.
+:ifcPropertySingleValue_135 ifc:theIfcId "135"^^xsd:long.
+:ifcPropertySingleValue_135 ifc:name "Volume"^^xsd:normalizedString.
+:ifcPropertySingleValue_135 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_136 ifc:hasProperties (:ifcPropertySingleValue_69 :ifcPropertySingleValue_131 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_132 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84).
+:ifcPropertySet_136 ifc:theIfcId "136"^^xsd:long.
+:ifcPropertySet_136 ifc:globalId "1tVpBj8xX8DuIjXbsEm1E$"^^xsd:normalizedString.
+:ifcPropertySet_136 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_136 ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_136 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_137 ifc:relatingPropertyDefinition :ifcPropertySet_136.
+:ifcRelDefinesByProperties_137 ifc:theIfcId "137"^^xsd:long.
+:ifcRelDefinesByProperties_137 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelDefinesByProperties_137 ifc:globalId "1dMk6gxIPDI99pS3jsyhgk"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_137 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_137 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_138 ifc:hasProperties (:ifcPropertySingleValue_130).
+:ifcPropertySet_138 ifc:theIfcId "138"^^xsd:long.
+:ifcPropertySet_138 ifc:globalId "0rXJak4cX4kxosgXbCcg$5"^^xsd:normalizedString.
+:ifcPropertySet_138 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_138 ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString.
+:ifcPropertySet_138 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_139 ifc:relatingPropertyDefinition :ifcPropertySet_138.
+:ifcRelDefinesByProperties_139 ifc:theIfcId "139"^^xsd:long.
+:ifcRelDefinesByProperties_139 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelDefinesByProperties_139 ifc:globalId "18Gj5LMbD3wefW_8wRZ8Dm"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_139 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_139 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_140 ifc:hasProperties (:ifcPropertySingleValue_75).
+:ifcPropertySet_140 ifc:theIfcId "140"^^xsd:long.
+:ifcPropertySet_140 ifc:globalId "3iCq6V1dD3hRfapSo$GyXr"^^xsd:normalizedString.
+:ifcPropertySet_140 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_140 ifc:name "PSet_Revit_Structural"^^xsd:normalizedString.
+:ifcPropertySet_140 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_141 ifc:relatingPropertyDefinition :ifcPropertySet_140.
+:ifcRelDefinesByProperties_141 ifc:theIfcId "141"^^xsd:long.
+:ifcRelDefinesByProperties_141 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelDefinesByProperties_141 ifc:globalId "1gQdl9JZb2pfLpWfmYurm7"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_141 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_141 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_142 ifc:hasProperties (:ifcPropertySingleValue_133 :ifcPropertySingleValue_134 :ifcPropertySingleValue_135).
+:ifcPropertySet_142 ifc:theIfcId "142"^^xsd:long.
+:ifcPropertySet_142 ifc:globalId "0SWxe3tML7zAQhSquF46a4"^^xsd:normalizedString.
+:ifcPropertySet_142 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_142 ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString.
+:ifcPropertySet_142 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_143 ifc:relatingPropertyDefinition :ifcPropertySet_142.
+:ifcRelDefinesByProperties_143 ifc:theIfcId "143"^^xsd:long.
+:ifcRelDefinesByProperties_143 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelDefinesByProperties_143 ifc:globalId "0sTgoqVIH91htpQCBuHgCs"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_143 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_143 a ifc:IfcRelDefinesByProperties.
+:ifcMaterialLayerSetUsage_144 ifc:forLayerSet :ifcMaterialLayerSet_109.
+:ifcMaterialLayerSetUsage_144 ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2.
+:ifcMaterialLayerSetUsage_144 ifc:directionSense ifc:ifcDirectionSenseEnum_negative.
+:ifcMaterialLayerSetUsage_144 ifc:offsetFromReferenceLine "100.0"^^xsd:double.
+:ifcMaterialLayerSetUsage_144 ifc:theIfcId "144"^^xsd:long.
+:ifcMaterialLayerSetUsage_144 a ifc:IfcMaterialLayerSetUsage.
+:ifcCartesianPoint_145 ifc:coordinates ("-10902.6517690273"^^xsd:double "7046.160189588122"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_145 ifc:theIfcId "145"^^xsd:long.
+:ifcCartesianPoint_145 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement3D_146 ifc:axis :ifcDirection_9.
+:ifcAxis2Placement3D_146 ifc:refDirection :ifcDirection_6.
+:ifcAxis2Placement3D_146 ifc:theIfcId "146"^^xsd:long.
+:ifcAxis2Placement3D_146 ifc:location :ifcCartesianPoint_145.
+:ifcAxis2Placement3D_146 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_147 ifc:placementRelTo :ifcLocalPlacement_38.
+:ifcLocalPlacement_147 ifc:relativePlacement :ifcAxis2Placement3D_146.
+:ifcLocalPlacement_147 ifc:theIfcId "147"^^xsd:long.
+:ifcLocalPlacement_147 a ifc:IfcLocalPlacement.
+:ifcCartesianPoint_148 ifc:coordinates ("6000.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_148 ifc:theIfcId "148"^^xsd:long.
+:ifcCartesianPoint_148 a ifc:IfcCartesianPoint.
+:ifcPolyline_149 ifc:points (:ifcCartesianPoint_4 :ifcCartesianPoint_148).
+:ifcPolyline_149 ifc:theIfcId "149"^^xsd:long.
+:ifcPolyline_149 a ifc:IfcPolyline.
+:ifcShapeRepresentation_150 ifc:theIfcId "150"^^xsd:long.
+:ifcShapeRepresentation_150 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_150 ifc:representationIdentifier "Axis"^^xsd:normalizedString.
+:ifcShapeRepresentation_150 ifc:representationType "Curve2D"^^xsd:normalizedString.
+:ifcShapeRepresentation_150 ifc:items (:ifcPolyline_149).
+:ifcShapeRepresentation_150 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_150 a ifc:IfcShapeRepresentation.
+:ifcCartesianPoint_151 ifc:coordinates ("3000.0"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_151 ifc:theIfcId "151"^^xsd:long.
+:ifcCartesianPoint_151 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement2D_152 ifc:refDirection :ifcDirection_12.
+:ifcAxis2Placement2D_152 ifc:theIfcId "152"^^xsd:long.
+:ifcAxis2Placement2D_152 ifc:location :ifcCartesianPoint_151.
+:ifcAxis2Placement2D_152 a ifc:IfcAxis2Placement2D.
+:ifcRectangleProfileDef_153 ifc:xDim "5999.999999999998"^^xsd:double.
+:ifcRectangleProfileDef_153 ifc:yDim "200.0"^^xsd:double.
+:ifcRectangleProfileDef_153 ifc:theIfcId "153"^^xsd:long.
+:ifcRectangleProfileDef_153 ifc:position :ifcAxis2Placement2D_152.
+:ifcRectangleProfileDef_153 ifc:profileType ifc:ifcProfileTypeEnum_area.
+:ifcRectangleProfileDef_153 a ifc:IfcRectangleProfileDef.
+:ifcAxis2Placement3D_154 ifc:theIfcId "154"^^xsd:long.
+:ifcAxis2Placement3D_154 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_154 a ifc:IfcAxis2Placement3D.
+:ifcExtrudedAreaSolid_155 ifc:extrudedDirection :ifcDirection_9.
+:ifcExtrudedAreaSolid_155 ifc:depth "3000.0"^^xsd:double.
+:ifcExtrudedAreaSolid_155 ifc:theIfcId "155"^^xsd:long.
+:ifcExtrudedAreaSolid_155 ifc:sweptArea :ifcRectangleProfileDef_153.
+:ifcExtrudedAreaSolid_155 ifc:position :ifcAxis2Placement3D_154.
+:ifcExtrudedAreaSolid_155 a ifc:IfcExtrudedAreaSolid.
+:ifcPresentationStyleAssignment_156 ifc:styles (:ifcSurfaceStyle_57).
+:ifcPresentationStyleAssignment_156 ifc:theIfcId "156"^^xsd:long.
+:ifcPresentationStyleAssignment_156 a ifc:IfcPresentationStyleAssignment.
+:ifcStyledItem_157 ifc:item :ifcExtrudedAreaSolid_155.
+:ifcStyledItem_157 ifc:styles (:ifcPresentationStyleAssignment_156).
+:ifcStyledItem_157 ifc:theIfcId "157"^^xsd:long.
+:ifcStyledItem_157 a ifc:IfcStyledItem.
+:ifcShapeRepresentation_158 ifc:theIfcId "158"^^xsd:long.
+:ifcShapeRepresentation_158 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_158 ifc:representationIdentifier "Body"^^xsd:normalizedString.
+:ifcShapeRepresentation_158 ifc:representationType "SweptSolid"^^xsd:normalizedString.
+:ifcShapeRepresentation_158 ifc:items (:ifcExtrudedAreaSolid_155).
+:ifcShapeRepresentation_158 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_158 a ifc:IfcShapeRepresentation.
+:ifcProductDefinitionShape_159 ifc:representations (:ifcShapeRepresentation_150 :ifcShapeRepresentation_158).
+:ifcProductDefinitionShape_159 ifc:theIfcId "159"^^xsd:long.
+:ifcProductDefinitionShape_159 a ifc:IfcProductDefinitionShape.
+:ifcWallStandardCase_160 ifc:theIfcId "160"^^xsd:long.
+:ifcWallStandardCase_160 ifc:tag "113390"^^xsd:normalizedString.
+:ifcWallStandardCase_160 ifc:objectPlacement :ifcLocalPlacement_147.
+:ifcWallStandardCase_160 ifc:representation :ifcProductDefinitionShape_159.
+:ifcWallStandardCase_160 ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString.
+:ifcWallStandardCase_160 ifc:globalId "3LdXFneX560PR3XLIMe45T"^^xsd:normalizedString.
+:ifcWallStandardCase_160 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcWallStandardCase_160 ifc:name "Basic Wall:Generic - 200mm:113390"^^xsd:normalizedString.
+:ifcWallStandardCase_160 a ifc:IfcWallStandardCase.
+:ifcPropertySingleValue_161 ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString.
+:ifcPropertySingleValue_161 ifc:theIfcId "161"^^xsd:long.
+:ifcPropertySingleValue_161 ifc:name "Reference"^^xsd:normalizedString.
+:ifcPropertySingleValue_161 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_162 ifc:hasProperties (:ifcPropertySingleValue_161 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66).
+:ifcPropertySet_162 ifc:theIfcId "162"^^xsd:long.
+:ifcPropertySet_162 ifc:globalId "0I421plaTCcuNGiV1lIZDv"^^xsd:normalizedString.
+:ifcPropertySet_162 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_162 ifc:name "Pset_WallCommon"^^xsd:normalizedString.
+:ifcPropertySet_162 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_163 ifc:relatingPropertyDefinition :ifcPropertySet_162.
+:ifcRelDefinesByProperties_163 ifc:theIfcId "163"^^xsd:long.
+:ifcRelDefinesByProperties_163 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelDefinesByProperties_163 ifc:globalId "1k1vlaC4b4ygZDOAHw3Fck"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_163 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_163 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySingleValue_164 ifc:nominalValue "New Construction"^^xsd:normalizedString.
+:ifcPropertySingleValue_164 ifc:theIfcId "164"^^xsd:long.
+:ifcPropertySingleValue_164 ifc:name "Phase Created"^^xsd:normalizedString.
+:ifcPropertySingleValue_164 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_165 ifc:nominalValue "Level 1"^^xsd:normalizedString.
+:ifcPropertySingleValue_165 ifc:theIfcId "165"^^xsd:long.
+:ifcPropertySingleValue_165 ifc:name "Base Constraint"^^xsd:normalizedString.
+:ifcPropertySingleValue_165 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_166 ifc:nominalValue "3000.0"^^xsd:double.
+:ifcPropertySingleValue_166 ifc:theIfcId "166"^^xsd:long.
+:ifcPropertySingleValue_166 ifc:name "Unconnected Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_166 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_167 ifc:nominalValue "6000.0"^^xsd:double.
+:ifcPropertySingleValue_167 ifc:theIfcId "167"^^xsd:long.
+:ifcPropertySingleValue_167 ifc:name "Length"^^xsd:normalizedString.
+:ifcPropertySingleValue_167 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_168 ifc:nominalValue "1.8E7"^^xsd:double.
+:ifcPropertySingleValue_168 ifc:theIfcId "168"^^xsd:long.
+:ifcPropertySingleValue_168 ifc:name "Area"^^xsd:normalizedString.
+:ifcPropertySingleValue_168 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_169 ifc:nominalValue "3.6E9"^^xsd:double.
+:ifcPropertySingleValue_169 ifc:theIfcId "169"^^xsd:long.
+:ifcPropertySingleValue_169 ifc:name "Volume"^^xsd:normalizedString.
+:ifcPropertySingleValue_169 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_170 ifc:hasProperties (:ifcPropertySingleValue_69 :ifcPropertySingleValue_165 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_166 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84).
+:ifcPropertySet_170 ifc:theIfcId "170"^^xsd:long.
+:ifcPropertySet_170 ifc:globalId "0akrHy16fDTxTRfFl_eyD7"^^xsd:normalizedString.
+:ifcPropertySet_170 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_170 ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_170 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_171 ifc:relatingPropertyDefinition :ifcPropertySet_170.
+:ifcRelDefinesByProperties_171 ifc:theIfcId "171"^^xsd:long.
+:ifcRelDefinesByProperties_171 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelDefinesByProperties_171 ifc:globalId "0y99eaJW96mRCBHpZwSTvz"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_171 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_171 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_172 ifc:hasProperties (:ifcPropertySingleValue_164).
+:ifcPropertySet_172 ifc:theIfcId "172"^^xsd:long.
+:ifcPropertySet_172 ifc:globalId "2hqN9VLMn3cP7182FoMMqc"^^xsd:normalizedString.
+:ifcPropertySet_172 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_172 ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString.
+:ifcPropertySet_172 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_173 ifc:relatingPropertyDefinition :ifcPropertySet_172.
+:ifcRelDefinesByProperties_173 ifc:theIfcId "173"^^xsd:long.
+:ifcRelDefinesByProperties_173 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelDefinesByProperties_173 ifc:globalId "0_sxh5zeP9Zv6Mnqwgfimm"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_173 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_173 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_174 ifc:hasProperties (:ifcPropertySingleValue_75).
+:ifcPropertySet_174 ifc:theIfcId "174"^^xsd:long.
+:ifcPropertySet_174 ifc:globalId "0w7zK11vT2$fcezpc9PPcD"^^xsd:normalizedString.
+:ifcPropertySet_174 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_174 ifc:name "PSet_Revit_Structural"^^xsd:normalizedString.
+:ifcPropertySet_174 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_175 ifc:relatingPropertyDefinition :ifcPropertySet_174.
+:ifcRelDefinesByProperties_175 ifc:theIfcId "175"^^xsd:long.
+:ifcRelDefinesByProperties_175 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelDefinesByProperties_175 ifc:globalId "1V73r7tv91memNSZUowDW7"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_175 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_175 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_176 ifc:hasProperties (:ifcPropertySingleValue_167 :ifcPropertySingleValue_168 :ifcPropertySingleValue_169).
+:ifcPropertySet_176 ifc:theIfcId "176"^^xsd:long.
+:ifcPropertySet_176 ifc:globalId "0$hWPl3YT1GwgO_hKGJY9i"^^xsd:normalizedString.
+:ifcPropertySet_176 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_176 ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString.
+:ifcPropertySet_176 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_177 ifc:relatingPropertyDefinition :ifcPropertySet_176.
+:ifcRelDefinesByProperties_177 ifc:theIfcId "177"^^xsd:long.
+:ifcRelDefinesByProperties_177 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelDefinesByProperties_177 ifc:globalId "1JH9_xc$j8zR4VOvvmR$Jk"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_177 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_177 a ifc:IfcRelDefinesByProperties.
+:ifcMaterialLayerSetUsage_178 ifc:forLayerSet :ifcMaterialLayerSet_109.
+:ifcMaterialLayerSetUsage_178 ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2.
+:ifcMaterialLayerSetUsage_178 ifc:directionSense ifc:ifcDirectionSenseEnum_negative.
+:ifcMaterialLayerSetUsage_178 ifc:offsetFromReferenceLine "100.0"^^xsd:double.
+:ifcMaterialLayerSetUsage_178 ifc:theIfcId "178"^^xsd:long.
+:ifcMaterialLayerSetUsage_178 a ifc:IfcMaterialLayerSetUsage.
+:ifcCartesianPoint_179 ifc:coordinates ("-16802.6517690273"^^xsd:double "7146.16018958814"^^xsd:double "0.0"^^xsd:double).
+:ifcCartesianPoint_179 ifc:theIfcId "179"^^xsd:long.
+:ifcCartesianPoint_179 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement3D_180 ifc:axis :ifcDirection_9.
+:ifcAxis2Placement3D_180 ifc:refDirection :ifcDirection_7.
+:ifcAxis2Placement3D_180 ifc:theIfcId "180"^^xsd:long.
+:ifcAxis2Placement3D_180 ifc:location :ifcCartesianPoint_179.
+:ifcAxis2Placement3D_180 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_181 ifc:placementRelTo :ifcLocalPlacement_38.
+:ifcLocalPlacement_181 ifc:relativePlacement :ifcAxis2Placement3D_180.
+:ifcLocalPlacement_181 ifc:theIfcId "181"^^xsd:long.
+:ifcLocalPlacement_181 a ifc:IfcLocalPlacement.
+:ifcCartesianPoint_182 ifc:coordinates ("3800.0"^^xsd:double "-0.0"^^xsd:double).
+:ifcCartesianPoint_182 ifc:theIfcId "182"^^xsd:long.
+:ifcCartesianPoint_182 a ifc:IfcCartesianPoint.
+:ifcPolyline_183 ifc:points (:ifcCartesianPoint_4 :ifcCartesianPoint_182).
+:ifcPolyline_183 ifc:theIfcId "183"^^xsd:long.
+:ifcPolyline_183 a ifc:IfcPolyline.
+:ifcShapeRepresentation_184 ifc:theIfcId "184"^^xsd:long.
+:ifcShapeRepresentation_184 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_184 ifc:representationIdentifier "Axis"^^xsd:normalizedString.
+:ifcShapeRepresentation_184 ifc:representationType "Curve2D"^^xsd:normalizedString.
+:ifcShapeRepresentation_184 ifc:items (:ifcPolyline_183).
+:ifcShapeRepresentation_184 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_184 a ifc:IfcShapeRepresentation.
+:ifcCartesianPoint_185 ifc:coordinates ("1900.0"^^xsd:double "-0.0"^^xsd:double).
+:ifcCartesianPoint_185 ifc:theIfcId "185"^^xsd:long.
+:ifcCartesianPoint_185 a ifc:IfcCartesianPoint.
+:ifcAxis2Placement2D_186 ifc:refDirection :ifcDirection_12.
+:ifcAxis2Placement2D_186 ifc:theIfcId "186"^^xsd:long.
+:ifcAxis2Placement2D_186 ifc:location :ifcCartesianPoint_185.
+:ifcAxis2Placement2D_186 a ifc:IfcAxis2Placement2D.
+:ifcRectangleProfileDef_187 ifc:xDim "3800.000000000001"^^xsd:double.
+:ifcRectangleProfileDef_187 ifc:yDim "199.9999999999978"^^xsd:double.
+:ifcRectangleProfileDef_187 ifc:theIfcId "187"^^xsd:long.
+:ifcRectangleProfileDef_187 ifc:position :ifcAxis2Placement2D_186.
+:ifcRectangleProfileDef_187 ifc:profileType ifc:ifcProfileTypeEnum_area.
+:ifcRectangleProfileDef_187 a ifc:IfcRectangleProfileDef.
+:ifcAxis2Placement3D_188 ifc:theIfcId "188"^^xsd:long.
+:ifcAxis2Placement3D_188 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_188 a ifc:IfcAxis2Placement3D.
+:ifcExtrudedAreaSolid_189 ifc:extrudedDirection :ifcDirection_9.
+:ifcExtrudedAreaSolid_189 ifc:depth "3000.0"^^xsd:double.
+:ifcExtrudedAreaSolid_189 ifc:theIfcId "189"^^xsd:long.
+:ifcExtrudedAreaSolid_189 ifc:sweptArea :ifcRectangleProfileDef_187.
+:ifcExtrudedAreaSolid_189 ifc:position :ifcAxis2Placement3D_188.
+:ifcExtrudedAreaSolid_189 a ifc:IfcExtrudedAreaSolid.
+:ifcPresentationStyleAssignment_190 ifc:styles (:ifcSurfaceStyle_57).
+:ifcPresentationStyleAssignment_190 ifc:theIfcId "190"^^xsd:long.
+:ifcPresentationStyleAssignment_190 a ifc:IfcPresentationStyleAssignment.
+:ifcStyledItem_191 ifc:item :ifcExtrudedAreaSolid_189.
+:ifcStyledItem_191 ifc:styles (:ifcPresentationStyleAssignment_190).
+:ifcStyledItem_191 ifc:theIfcId "191"^^xsd:long.
+:ifcStyledItem_191 a ifc:IfcStyledItem.
+:ifcShapeRepresentation_192 ifc:theIfcId "192"^^xsd:long.
+:ifcShapeRepresentation_192 ifc:contextOfItems :ifcGeometricRepresentationContext_27.
+:ifcShapeRepresentation_192 ifc:representationIdentifier "Body"^^xsd:normalizedString.
+:ifcShapeRepresentation_192 ifc:representationType "SweptSolid"^^xsd:normalizedString.
+:ifcShapeRepresentation_192 ifc:items (:ifcExtrudedAreaSolid_189).
+:ifcShapeRepresentation_192 ifc:theIfcId "-1"^^xsd:long.
+:ifcShapeRepresentation_192 a ifc:IfcShapeRepresentation.
+:ifcProductDefinitionShape_193 ifc:representations (:ifcShapeRepresentation_184 :ifcShapeRepresentation_192).
+:ifcProductDefinitionShape_193 ifc:theIfcId "193"^^xsd:long.
+:ifcProductDefinitionShape_193 a ifc:IfcProductDefinitionShape.
+:ifcWallStandardCase_194 ifc:theIfcId "194"^^xsd:long.
+:ifcWallStandardCase_194 ifc:tag "113427"^^xsd:normalizedString.
+:ifcWallStandardCase_194 ifc:objectPlacement :ifcLocalPlacement_181.
+:ifcWallStandardCase_194 ifc:representation :ifcProductDefinitionShape_193.
+:ifcWallStandardCase_194 ifc:objectType "Basic Wall:Generic - 200mm:398"^^xsd:normalizedString.
+:ifcWallStandardCase_194 ifc:globalId "3LdXFneX560PR3XLIMe42W"^^xsd:normalizedString.
+:ifcWallStandardCase_194 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcWallStandardCase_194 ifc:name "Basic Wall:Generic - 200mm:113427"^^xsd:normalizedString.
+:ifcWallStandardCase_194 a ifc:IfcWallStandardCase.
+:ifcPropertySingleValue_195 ifc:nominalValue "Basic Wall:Generic - 200mm"^^xsd:normalizedString.
+:ifcPropertySingleValue_195 ifc:theIfcId "195"^^xsd:long.
+:ifcPropertySingleValue_195 ifc:name "Reference"^^xsd:normalizedString.
+:ifcPropertySingleValue_195 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_196 ifc:hasProperties (:ifcPropertySingleValue_195 :ifcPropertySingleValue_64 :ifcPropertySingleValue_65 :ifcPropertySingleValue_66).
+:ifcPropertySet_196 ifc:theIfcId "196"^^xsd:long.
+:ifcPropertySet_196 ifc:globalId "1ronJ5kFj3Cu5Xc6E6TcYH"^^xsd:normalizedString.
+:ifcPropertySet_196 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_196 ifc:name "Pset_WallCommon"^^xsd:normalizedString.
+:ifcPropertySet_196 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_197 ifc:relatingPropertyDefinition :ifcPropertySet_196.
+:ifcRelDefinesByProperties_197 ifc:theIfcId "197"^^xsd:long.
+:ifcRelDefinesByProperties_197 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_197 ifc:globalId "1WB9D9$tj9LONNc$dzJtZp"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_197 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_197 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySingleValue_198 ifc:nominalValue "New Construction"^^xsd:normalizedString.
+:ifcPropertySingleValue_198 ifc:theIfcId "198"^^xsd:long.
+:ifcPropertySingleValue_198 ifc:name "Phase Created"^^xsd:normalizedString.
+:ifcPropertySingleValue_198 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_199 ifc:nominalValue "Level 1"^^xsd:normalizedString.
+:ifcPropertySingleValue_199 ifc:theIfcId "199"^^xsd:long.
+:ifcPropertySingleValue_199 ifc:name "Base Constraint"^^xsd:normalizedString.
+:ifcPropertySingleValue_199 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_200 ifc:nominalValue "3000.0"^^xsd:double.
+:ifcPropertySingleValue_200 ifc:theIfcId "200"^^xsd:long.
+:ifcPropertySingleValue_200 ifc:name "Unconnected Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_200 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_201 ifc:nominalValue "4000.000000000001"^^xsd:double.
+:ifcPropertySingleValue_201 ifc:theIfcId "201"^^xsd:long.
+:ifcPropertySingleValue_201 ifc:name "Length"^^xsd:normalizedString.
+:ifcPropertySingleValue_201 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_202 ifc:nominalValue "1.14E7"^^xsd:double.
+:ifcPropertySingleValue_202 ifc:theIfcId "202"^^xsd:long.
+:ifcPropertySingleValue_202 ifc:name "Area"^^xsd:normalizedString.
+:ifcPropertySingleValue_202 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_203 ifc:nominalValue "2.28E9"^^xsd:double.
+:ifcPropertySingleValue_203 ifc:theIfcId "203"^^xsd:long.
+:ifcPropertySingleValue_203 ifc:name "Volume"^^xsd:normalizedString.
+:ifcPropertySingleValue_203 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_204 ifc:hasProperties (:ifcPropertySingleValue_69 :ifcPropertySingleValue_199 :ifcPropertySingleValue_72 :ifcPropertySingleValue_73 :ifcPropertySingleValue_74 :ifcPropertySingleValue_200 :ifcPropertySingleValue_77 :ifcPropertySingleValue_78 :ifcPropertySingleValue_79 :ifcPropertySingleValue_80 :ifcPropertySingleValue_84).
+:ifcPropertySet_204 ifc:theIfcId "204"^^xsd:long.
+:ifcPropertySet_204 ifc:globalId "31duq7gYPCTex2a4MObxel"^^xsd:normalizedString.
+:ifcPropertySet_204 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_204 ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_204 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_205 ifc:relatingPropertyDefinition :ifcPropertySet_204.
+:ifcRelDefinesByProperties_205 ifc:theIfcId "205"^^xsd:long.
+:ifcRelDefinesByProperties_205 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_205 ifc:globalId "1zQM_lXWfAPPCdrR8H3edl"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_205 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_205 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_206 ifc:hasProperties (:ifcPropertySingleValue_198).
+:ifcPropertySet_206 ifc:theIfcId "206"^^xsd:long.
+:ifcPropertySet_206 ifc:globalId "0xxIFOPLb4DPsAnd$w$va_"^^xsd:normalizedString.
+:ifcPropertySet_206 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_206 ifc:name "PSet_Revit_Phasing"^^xsd:normalizedString.
+:ifcPropertySet_206 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_207 ifc:relatingPropertyDefinition :ifcPropertySet_206.
+:ifcRelDefinesByProperties_207 ifc:theIfcId "207"^^xsd:long.
+:ifcRelDefinesByProperties_207 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_207 ifc:globalId "0ffbHcmNDFnu9NPvrt0VH3"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_207 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_207 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_208 ifc:hasProperties (:ifcPropertySingleValue_75).
+:ifcPropertySet_208 ifc:theIfcId "208"^^xsd:long.
+:ifcPropertySet_208 ifc:globalId "3uLDQO$WPBbRC98qaLU1m$"^^xsd:normalizedString.
+:ifcPropertySet_208 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_208 ifc:name "PSet_Revit_Structural"^^xsd:normalizedString.
+:ifcPropertySet_208 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_209 ifc:relatingPropertyDefinition :ifcPropertySet_208.
+:ifcRelDefinesByProperties_209 ifc:theIfcId "209"^^xsd:long.
+:ifcRelDefinesByProperties_209 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_209 ifc:globalId "2Fa_pzKiX7xPmaVTQtIejL"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_209 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_209 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_210 ifc:hasProperties (:ifcPropertySingleValue_201 :ifcPropertySingleValue_202 :ifcPropertySingleValue_203).
+:ifcPropertySet_210 ifc:theIfcId "210"^^xsd:long.
+:ifcPropertySet_210 ifc:globalId "3$EfreFjP56eHKBAMcvt__"^^xsd:normalizedString.
+:ifcPropertySet_210 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_210 ifc:name "PSet_Revit_Dimensions"^^xsd:normalizedString.
+:ifcPropertySet_210 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_211 ifc:relatingPropertyDefinition :ifcPropertySet_210.
+:ifcRelDefinesByProperties_211 ifc:theIfcId "211"^^xsd:long.
+:ifcRelDefinesByProperties_211 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_211 ifc:globalId "3LXmvD0k18zguNgLFcdpHM"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_211 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_211 a ifc:IfcRelDefinesByProperties.
+:ifcMaterialLayerSetUsage_212 ifc:forLayerSet :ifcMaterialLayerSet_109.
+:ifcMaterialLayerSetUsage_212 ifc:layerSetDirection ifc:ifcLayerSetDirectionEnum_axis2.
+:ifcMaterialLayerSetUsage_212 ifc:directionSense ifc:ifcDirectionSenseEnum_negative.
+:ifcMaterialLayerSetUsage_212 ifc:offsetFromReferenceLine "100.0"^^xsd:double.
+:ifcMaterialLayerSetUsage_212 ifc:theIfcId "212"^^xsd:long.
+:ifcMaterialLayerSetUsage_212 a ifc:IfcMaterialLayerSetUsage.
+:ifcAxis2Placement3D_213 ifc:theIfcId "213"^^xsd:long.
+:ifcAxis2Placement3D_213 ifc:location :ifcCartesianPoint_3.
+:ifcAxis2Placement3D_213 a ifc:IfcAxis2Placement3D.
+:ifcLocalPlacement_214 ifc:relativePlacement :ifcAxis2Placement3D_213.
+:ifcLocalPlacement_214 ifc:theIfcId "214"^^xsd:long.
+:ifcLocalPlacement_214 a ifc:IfcLocalPlacement.
+:ifcSite_215 ifc:refLatitude ("42"^^xsd:long "12"^^xsd:long "46"^^xsd:long "800000"^^xsd:long).
+:ifcSite_215 ifc:refLongitude ("-71"^^xsd:long "-1"^^xsd:long "-58"^^xsd:long "-800000"^^xsd:long).
+:ifcSite_215 ifc:refElevation "-0.0"^^xsd:double.
+:ifcSite_215 ifc:theIfcId "215"^^xsd:long.
+:ifcSite_215 ifc:compositionType ifc:ifcElementCompositionEnum_element.
+:ifcSite_215 ifc:objectPlacement :ifcLocalPlacement_214.
+:ifcSite_215 ifc:objectType ""^^xsd:normalizedString.
+:ifcSite_215 ifc:globalId "2CbZXiFIL3UwFX5$YHeX6f"^^xsd:normalizedString.
+:ifcSite_215 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcSite_215 ifc:name "Default"^^xsd:normalizedString.
+:ifcSite_215 a ifc:IfcSite.
+:ifcRelAggregates_216 ifc:theIfcId "216"^^xsd:long.
+:ifcRelAggregates_216 ifc:relatingObject :ifcProject_34.
+:ifcRelAggregates_216 ifc:relatedObjects (:ifcSite_215).
+:ifcRelAggregates_216 ifc:globalId "0_7S_hurL7jPwDjVi8X7$V"^^xsd:normalizedString.
+:ifcRelAggregates_216 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAggregates_216 a ifc:IfcRelAggregates.
+:ifcRelAggregates_217 ifc:theIfcId "217"^^xsd:long.
+:ifcRelAggregates_217 ifc:relatingObject :ifcSite_215.
+:ifcRelAggregates_217 ifc:relatedObjects (:ifcBuilding_36).
+:ifcRelAggregates_217 ifc:globalId "09A7s4fWjC$hS6LU1PeL3k"^^xsd:normalizedString.
+:ifcRelAggregates_217 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAggregates_217 a ifc:IfcRelAggregates.
+:ifcPropertySingleValue_218 ifc:nominalValue "Level 1"^^xsd:normalizedString.
+:ifcPropertySingleValue_218 ifc:theIfcId "218"^^xsd:long.
+:ifcPropertySingleValue_218 ifc:name "Name"^^xsd:normalizedString.
+:ifcPropertySingleValue_218 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_219 ifc:nominalValue "0.0"^^xsd:double.
+:ifcPropertySingleValue_219 ifc:theIfcId "219"^^xsd:long.
+:ifcPropertySingleValue_219 ifc:name "Elevation"^^xsd:normalizedString.
+:ifcPropertySingleValue_219 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_220 ifc:nominalValue "1"^^xsd:long.
+:ifcPropertySingleValue_220 ifc:theIfcId "220"^^xsd:long.
+:ifcPropertySingleValue_220 ifc:name "Line Weight"^^xsd:normalizedString.
+:ifcPropertySingleValue_220 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_221 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_221 ifc:theIfcId "221"^^xsd:long.
+:ifcPropertySingleValue_221 ifc:name "Color"^^xsd:normalizedString.
+:ifcPropertySingleValue_221 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_222 ifc:nominalValue "Centre"^^xsd:normalizedString.
+:ifcPropertySingleValue_222 ifc:theIfcId "222"^^xsd:long.
+:ifcPropertySingleValue_222 ifc:name "Line Pattern"^^xsd:normalizedString.
+:ifcPropertySingleValue_222 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_223 ifc:nominalValue "0"^^xsd:long.
+:ifcPropertySingleValue_223 ifc:theIfcId "223"^^xsd:long.
+:ifcPropertySingleValue_223 ifc:name "Elevation Base"^^xsd:normalizedString.
+:ifcPropertySingleValue_223 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_224 ifc:nominalValue "M_Level Head - Circle"^^xsd:normalizedString.
+:ifcPropertySingleValue_224 ifc:theIfcId "224"^^xsd:long.
+:ifcPropertySingleValue_224 ifc:name "Symbol"^^xsd:normalizedString.
+:ifcPropertySingleValue_224 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_225 ifc:nominalValue false.
+:ifcPropertySingleValue_225 ifc:theIfcId "225"^^xsd:long.
+:ifcPropertySingleValue_225 ifc:name "Symbol at End 1 Default"^^xsd:normalizedString.
+:ifcPropertySingleValue_225 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_226 ifc:nominalValue true.
+:ifcPropertySingleValue_226 ifc:theIfcId "226"^^xsd:long.
+:ifcPropertySingleValue_226 ifc:name "Symbol at End 2 Default"^^xsd:normalizedString.
+:ifcPropertySingleValue_226 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_227 ifc:nominalValue false.
+:ifcPropertySingleValue_227 ifc:theIfcId "227"^^xsd:long.
+:ifcPropertySingleValue_227 ifc:name "Automatic Room Computation Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_227 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_228 ifc:nominalValue "1200.0"^^xsd:double.
+:ifcPropertySingleValue_228 ifc:theIfcId "228"^^xsd:long.
+:ifcPropertySingleValue_228 ifc:name "Computation Height"^^xsd:normalizedString.
+:ifcPropertySingleValue_228 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_229 ifc:hasProperties (:ifcPropertySingleValue_218).
+:ifcPropertySet_229 ifc:theIfcId "229"^^xsd:long.
+:ifcPropertySet_229 ifc:globalId "2dI4d7zWLBIQl5D013TY$z"^^xsd:normalizedString.
+:ifcPropertySet_229 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_229 ifc:name "PSet_Revit_Identity Data"^^xsd:normalizedString.
+:ifcPropertySet_229 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_230 ifc:relatingPropertyDefinition :ifcPropertySet_229.
+:ifcRelDefinesByProperties_230 ifc:theIfcId "230"^^xsd:long.
+:ifcRelDefinesByProperties_230 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelDefinesByProperties_230 ifc:globalId "3LGvpdmzfFvwRxacrNEDio"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_230 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_230 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_231 ifc:hasProperties (:ifcPropertySingleValue_219).
+:ifcPropertySet_231 ifc:theIfcId "231"^^xsd:long.
+:ifcPropertySet_231 ifc:globalId "0Zw9yTWvrAyR9LLPrlBRuL"^^xsd:normalizedString.
+:ifcPropertySet_231 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_231 ifc:name "PSet_Revit_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_231 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_232 ifc:relatingPropertyDefinition :ifcPropertySet_231.
+:ifcRelDefinesByProperties_232 ifc:theIfcId "232"^^xsd:long.
+:ifcRelDefinesByProperties_232 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelDefinesByProperties_232 ifc:globalId "3fHZoISXb2keNkWsgNwZgm"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_232 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_232 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySet_233 ifc:hasProperties (:ifcPropertySingleValue_220 :ifcPropertySingleValue_221 :ifcPropertySingleValue_222 :ifcPropertySingleValue_224 :ifcPropertySingleValue_225 :ifcPropertySingleValue_226).
+:ifcPropertySet_233 ifc:theIfcId "233"^^xsd:long.
+:ifcPropertySet_233 ifc:globalId "09rQFOcXnEV8jFm5ypQ$j7"^^xsd:normalizedString.
+:ifcPropertySet_233 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_233 ifc:name "PSet_Revit_Type_Graphics"^^xsd:normalizedString.
+:ifcPropertySet_233 a ifc:IfcPropertySet.
+:ifcPropertySet_234 ifc:hasProperties (:ifcPropertySingleValue_223).
+:ifcPropertySet_234 ifc:theIfcId "234"^^xsd:long.
+:ifcPropertySet_234 ifc:globalId "0RBysBq0f1KwUgZhBPaBK$"^^xsd:normalizedString.
+:ifcPropertySet_234 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_234 ifc:name "PSet_Revit_Type_Constraints"^^xsd:normalizedString.
+:ifcPropertySet_234 a ifc:IfcPropertySet.
+:ifcPropertySet_235 ifc:hasProperties (:ifcPropertySingleValue_227 :ifcPropertySingleValue_228).
+:ifcPropertySet_235 ifc:theIfcId "235"^^xsd:long.
+:ifcPropertySet_235 ifc:globalId "2FJwbkX_zAeP$uPooKQSyG"^^xsd:normalizedString.
+:ifcPropertySet_235 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_235 ifc:name "PSet_Revit_Type_Dimensions"^^xsd:normalizedString.
+:ifcPropertySet_235 a ifc:IfcPropertySet.
+:ifcRelContainedInSpatialStructure_236 ifc:relatedElements (:ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194).
+:ifcRelContainedInSpatialStructure_236 ifc:relatingStructure :ifcBuildingStorey_39.
+:ifcRelContainedInSpatialStructure_236 ifc:theIfcId "236"^^xsd:long.
+:ifcRelContainedInSpatialStructure_236 ifc:globalId "1JduR1zhTAfObUe$XQEWeD"^^xsd:normalizedString.
+:ifcRelContainedInSpatialStructure_236 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelContainedInSpatialStructure_236 a ifc:IfcRelContainedInSpatialStructure.
+:ifcRelAggregates_237 ifc:theIfcId "237"^^xsd:long.
+:ifcRelAggregates_237 ifc:relatingObject :ifcBuilding_36.
+:ifcRelAggregates_237 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelAggregates_237 ifc:globalId "0nYfkQiGfBr83fmi5UPkj6"^^xsd:normalizedString.
+:ifcRelAggregates_237 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAggregates_237 a ifc:IfcRelAggregates.
+:ifcPropertySingleValue_238 ifc:nominalValue "1"^^xsd:long.
+:ifcPropertySingleValue_238 ifc:theIfcId "238"^^xsd:long.
+:ifcPropertySingleValue_238 ifc:name "NumberOfStoreys"^^xsd:normalizedString.
+:ifcPropertySingleValue_238 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_239 ifc:hasProperties (:ifcPropertySingleValue_238).
+:ifcPropertySet_239 ifc:theIfcId "239"^^xsd:long.
+:ifcPropertySet_239 ifc:globalId "2DRZ2RNBvBhvbclRMkgEMu"^^xsd:normalizedString.
+:ifcPropertySet_239 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_239 ifc:name "Pset_BuildingCommon"^^xsd:normalizedString.
+:ifcPropertySet_239 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_240 ifc:relatingPropertyDefinition :ifcPropertySet_239.
+:ifcRelDefinesByProperties_240 ifc:theIfcId "240"^^xsd:long.
+:ifcRelDefinesByProperties_240 ifc:relatedObjects (:ifcBuilding_36).
+:ifcRelDefinesByProperties_240 ifc:globalId "0WUIz2YIXAsBv1UqexrCMr"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_240 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_240 a ifc:IfcRelDefinesByProperties.
+:ifcPropertySingleValue_241 ifc:nominalValue "Issue Date"^^xsd:normalizedString.
+:ifcPropertySingleValue_241 ifc:theIfcId "241"^^xsd:long.
+:ifcPropertySingleValue_241 ifc:name "Project Issue Date"^^xsd:normalizedString.
+:ifcPropertySingleValue_241 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_242 ifc:nominalValue "Project Status"^^xsd:normalizedString.
+:ifcPropertySingleValue_242 ifc:theIfcId "242"^^xsd:long.
+:ifcPropertySingleValue_242 ifc:name "Project Status"^^xsd:normalizedString.
+:ifcPropertySingleValue_242 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_243 ifc:nominalValue "Owner"^^xsd:normalizedString.
+:ifcPropertySingleValue_243 ifc:theIfcId "243"^^xsd:long.
+:ifcPropertySingleValue_243 ifc:name "Client Name"^^xsd:normalizedString.
+:ifcPropertySingleValue_243 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_244 ifc:nominalValue "Enter address here"^^xsd:normalizedString.
+:ifcPropertySingleValue_244 ifc:theIfcId "244"^^xsd:long.
+:ifcPropertySingleValue_244 ifc:name "Project Address"^^xsd:normalizedString.
+:ifcPropertySingleValue_244 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_245 ifc:nominalValue "Project Name"^^xsd:normalizedString.
+:ifcPropertySingleValue_245 ifc:theIfcId "245"^^xsd:long.
+:ifcPropertySingleValue_245 ifc:name "Project Name"^^xsd:normalizedString.
+:ifcPropertySingleValue_245 a ifc:IfcPropertySingleValue.
+:ifcPropertySingleValue_246 ifc:nominalValue "Project Number"^^xsd:normalizedString.
+:ifcPropertySingleValue_246 ifc:theIfcId "246"^^xsd:long.
+:ifcPropertySingleValue_246 ifc:name "Project Number"^^xsd:normalizedString.
+:ifcPropertySingleValue_246 a ifc:IfcPropertySingleValue.
+:ifcPropertySet_247 ifc:hasProperties (:ifcPropertySingleValue_241 :ifcPropertySingleValue_242 :ifcPropertySingleValue_243 :ifcPropertySingleValue_244 :ifcPropertySingleValue_245 :ifcPropertySingleValue_246).
+:ifcPropertySet_247 ifc:theIfcId "247"^^xsd:long.
+:ifcPropertySet_247 ifc:globalId "04kJ05CEL7293JDGCUa2AM"^^xsd:normalizedString.
+:ifcPropertySet_247 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcPropertySet_247 ifc:name "PSet_Revit_Other"^^xsd:normalizedString.
+:ifcPropertySet_247 a ifc:IfcPropertySet.
+:ifcRelDefinesByProperties_248 ifc:relatingPropertyDefinition :ifcPropertySet_247.
+:ifcRelDefinesByProperties_248 ifc:theIfcId "248"^^xsd:long.
+:ifcRelDefinesByProperties_248 ifc:relatedObjects (:ifcBuilding_36).
+:ifcRelDefinesByProperties_248 ifc:globalId "2ClDjloWT6wg5RDLrxy4wm"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_248 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_248 a ifc:IfcRelDefinesByProperties.
+:ifcRelAssociatesMaterial_249 ifc:relatingMaterial :ifcMaterialLayerSetUsage_110.
+:ifcRelAssociatesMaterial_249 ifc:relatedObjects (:ifcWallStandardCase_62).
+:ifcRelAssociatesMaterial_249 ifc:theIfcId "249"^^xsd:long.
+:ifcRelAssociatesMaterial_249 ifc:globalId "1PeY1MRlz2U96K$6wYsTRb"^^xsd:normalizedString.
+:ifcRelAssociatesMaterial_249 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAssociatesMaterial_249 a ifc:IfcRelAssociatesMaterial.
+:ifcRelAssociatesMaterial_250 ifc:relatingMaterial :ifcMaterialLayerSetUsage_144.
+:ifcRelAssociatesMaterial_250 ifc:relatedObjects (:ifcWallStandardCase_126).
+:ifcRelAssociatesMaterial_250 ifc:theIfcId "250"^^xsd:long.
+:ifcRelAssociatesMaterial_250 ifc:globalId "0NPcBFrTH2aBCeXG$puZA4"^^xsd:normalizedString.
+:ifcRelAssociatesMaterial_250 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAssociatesMaterial_250 a ifc:IfcRelAssociatesMaterial.
+:ifcRelAssociatesMaterial_251 ifc:relatingMaterial :ifcMaterialLayerSetUsage_178.
+:ifcRelAssociatesMaterial_251 ifc:relatedObjects (:ifcWallStandardCase_160).
+:ifcRelAssociatesMaterial_251 ifc:theIfcId "251"^^xsd:long.
+:ifcRelAssociatesMaterial_251 ifc:globalId "1CsyUFdHz1CQC8HAmzl5BU"^^xsd:normalizedString.
+:ifcRelAssociatesMaterial_251 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAssociatesMaterial_251 a ifc:IfcRelAssociatesMaterial.
+:ifcRelAssociatesMaterial_252 ifc:relatingMaterial :ifcMaterialLayerSetUsage_212.
+:ifcRelAssociatesMaterial_252 ifc:relatedObjects (:ifcWallStandardCase_194).
+:ifcRelAssociatesMaterial_252 ifc:theIfcId "252"^^xsd:long.
+:ifcRelAssociatesMaterial_252 ifc:globalId "1L$WFln454gO7jDD_8wXwa"^^xsd:normalizedString.
+:ifcRelAssociatesMaterial_252 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelAssociatesMaterial_252 a ifc:IfcRelAssociatesMaterial.
+:ifcRelDefinesByProperties_253 ifc:relatingPropertyDefinition :ifcPropertySet_233.
+:ifcRelDefinesByProperties_253 ifc:theIfcId "253"^^xsd:long.
+:ifcRelDefinesByProperties_253 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelDefinesByProperties_253 ifc:globalId "0IUhUTo5PAtecSoRJ2_hvV"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_253 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_253 a ifc:IfcRelDefinesByProperties.
+:ifcRelDefinesByProperties_254 ifc:relatingPropertyDefinition :ifcPropertySet_234.
+:ifcRelDefinesByProperties_254 ifc:theIfcId "254"^^xsd:long.
+:ifcRelDefinesByProperties_254 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelDefinesByProperties_254 ifc:globalId "1dqA7AHoX6DxtKNRxNtMCs"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_254 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_254 a ifc:IfcRelDefinesByProperties.
+:ifcRelDefinesByProperties_255 ifc:relatingPropertyDefinition :ifcPropertySet_235.
+:ifcRelDefinesByProperties_255 ifc:theIfcId "255"^^xsd:long.
+:ifcRelDefinesByProperties_255 ifc:relatedObjects (:ifcBuildingStorey_39).
+:ifcRelDefinesByProperties_255 ifc:globalId "2e0QaHGm5Cc89qNKj7RYmY"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_255 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_255 a ifc:IfcRelDefinesByProperties.
+:ifcRelDefinesByProperties_256 ifc:relatingPropertyDefinition :ifcPropertySet_100.
+:ifcRelDefinesByProperties_256 ifc:theIfcId "256"^^xsd:long.
+:ifcRelDefinesByProperties_256 ifc:relatedObjects (:ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_256 ifc:globalId "2ySJvTWi15$voddqL9GNLr"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_256 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_256 a ifc:IfcRelDefinesByProperties.
+:ifcRelDefinesByProperties_257 ifc:relatingPropertyDefinition :ifcPropertySet_101.
+:ifcRelDefinesByProperties_257 ifc:theIfcId "257"^^xsd:long.
+:ifcRelDefinesByProperties_257 ifc:relatedObjects (:ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_257 ifc:globalId "3wUP76sfz5AAINJfCmkTah"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_257 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_257 a ifc:IfcRelDefinesByProperties.
+:ifcRelDefinesByProperties_258 ifc:relatingPropertyDefinition :ifcPropertySet_102.
+:ifcRelDefinesByProperties_258 ifc:theIfcId "258"^^xsd:long.
+:ifcRelDefinesByProperties_258 ifc:relatedObjects (:ifcWallStandardCase_62 :ifcWallStandardCase_126 :ifcWallStandardCase_160 :ifcWallStandardCase_194).
+:ifcRelDefinesByProperties_258 ifc:globalId "0PeqaxMjzDsg0JBndI0pxf"^^xsd:normalizedString.
+:ifcRelDefinesByProperties_258 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelDefinesByProperties_258 a ifc:IfcRelDefinesByProperties.
+:ifcRelConnectsPathElements_259 ifc:relatingPriorities ().
+:ifcRelConnectsPathElements_259 ifc:relatedPriorities ().
+:ifcRelConnectsPathElements_259 ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atend.
+:ifcRelConnectsPathElements_259 ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atstart.
+:ifcRelConnectsPathElements_259 ifc:relatingElement :ifcWallStandardCase_62.
+:ifcRelConnectsPathElements_259 ifc:relatedElement :ifcWallStandardCase_194.
+:ifcRelConnectsPathElements_259 ifc:theIfcId "259"^^xsd:long.
+:ifcRelConnectsPathElements_259 ifc:globalId "3OsIccpZj6peXh4OqocSUj"^^xsd:normalizedString.
+:ifcRelConnectsPathElements_259 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelConnectsPathElements_259 a ifc:IfcRelConnectsPathElements.
+:ifcRelConnectsPathElements_260 ifc:relatingPriorities ().
+:ifcRelConnectsPathElements_260 ifc:relatedPriorities ().
+:ifcRelConnectsPathElements_260 ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart.
+:ifcRelConnectsPathElements_260 ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend.
+:ifcRelConnectsPathElements_260 ifc:relatingElement :ifcWallStandardCase_62.
+:ifcRelConnectsPathElements_260 ifc:relatedElement :ifcWallStandardCase_126.
+:ifcRelConnectsPathElements_260 ifc:theIfcId "260"^^xsd:long.
+:ifcRelConnectsPathElements_260 ifc:globalId "1DPnWNpIjAIvXeKoVAkYCF"^^xsd:normalizedString.
+:ifcRelConnectsPathElements_260 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelConnectsPathElements_260 a ifc:IfcRelConnectsPathElements.
+:ifcRelConnectsPathElements_261 ifc:relatingPriorities ().
+:ifcRelConnectsPathElements_261 ifc:relatedPriorities ().
+:ifcRelConnectsPathElements_261 ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart.
+:ifcRelConnectsPathElements_261 ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend.
+:ifcRelConnectsPathElements_261 ifc:relatingElement :ifcWallStandardCase_126.
+:ifcRelConnectsPathElements_261 ifc:relatedElement :ifcWallStandardCase_160.
+:ifcRelConnectsPathElements_261 ifc:theIfcId "261"^^xsd:long.
+:ifcRelConnectsPathElements_261 ifc:globalId "0VT0YPiRT6txg1B2f$_62M"^^xsd:normalizedString.
+:ifcRelConnectsPathElements_261 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelConnectsPathElements_261 a ifc:IfcRelConnectsPathElements.
+:ifcRelConnectsPathElements_262 ifc:relatingPriorities ().
+:ifcRelConnectsPathElements_262 ifc:relatedPriorities ().
+:ifcRelConnectsPathElements_262 ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atstart.
+:ifcRelConnectsPathElements_262 ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atend.
+:ifcRelConnectsPathElements_262 ifc:relatingElement :ifcWallStandardCase_160.
+:ifcRelConnectsPathElements_262 ifc:relatedElement :ifcWallStandardCase_194.
+:ifcRelConnectsPathElements_262 ifc:theIfcId "262"^^xsd:long.
+:ifcRelConnectsPathElements_262 ifc:globalId "2vDFkkI0DFH9Z$18KYWSKp"^^xsd:normalizedString.
+:ifcRelConnectsPathElements_262 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelConnectsPathElements_262 a ifc:IfcRelConnectsPathElements.
+:ifcRelConnectsPathElements_263 ifc:relatingPriorities ().
+:ifcRelConnectsPathElements_263 ifc:relatedPriorities ().
+:ifcRelConnectsPathElements_263 ifc:relatedConnectionType ifc:ifcConnectionTypeEnum_atend.
+:ifcRelConnectsPathElements_263 ifc:relatingConnectionType ifc:ifcConnectionTypeEnum_atstart.
+:ifcRelConnectsPathElements_263 ifc:relatingElement :ifcWallStandardCase_62.
+:ifcRelConnectsPathElements_263 ifc:relatedElement :ifcWallStandardCase_194.
+:ifcRelConnectsPathElements_263 ifc:theIfcId "263"^^xsd:long.
+:ifcRelConnectsPathElements_263 ifc:globalId "2G9kBZBRbDMOFPpdpoyFVR"^^xsd:normalizedString.
+:ifcRelConnectsPathElements_263 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcRelConnectsPathElements_263 a ifc:IfcRelConnectsPathElements.
+:ifcPresentationLayerAssignment_264 ifc:name "A-WALLMBM"^^xsd:normalizedString.
+:ifcPresentationLayerAssignment_264 ifc:assignedItems (:ifcShapeRepresentation_49 :ifcShapeRepresentation_60 :ifcShapeRepresentation_116 :ifcShapeRepresentation_124 :ifcShapeRepresentation_150 :ifcShapeRepresentation_158 :ifcShapeRepresentation_184 :ifcShapeRepresentation_192).
+:ifcPresentationLayerAssignment_264 ifc:theIfcId "264"^^xsd:long.
+:ifcPresentationLayerAssignment_264 a ifc:IfcPresentationLayerAssignment.
+:ifcProject_34 ifc:longName ""^^xsd:normalizedString.
+:ifcProject_34 ifc:phase "Project Status"^^xsd:normalizedString.
+:ifcProject_34 ifc:representationContexts (:ifcGeometricRepresentationContext_27 :ifcGeometricRepresentationContext_28).
+:ifcProject_34 ifc:unitsInContext :ifcUnitAssignment_23.
+:ifcProject_34 ifc:theIfcId "34"^^xsd:long.
+:ifcProject_34 ifc:globalId "2CbZXiFIL3UwFX5$YHeX6h"^^xsd:normalizedString.
+:ifcProject_34 ifc:ownerHistory :ifcOwnerHistory_33.
+:ifcProject_34 ifc:name "Project Number"^^xsd:normalizedString.
+:ifcProject_34 a ifc:IfcProject.
+:ifcWallStandardCase_62 a ns1:BoxShapedWall.
+:ifcExtrudedAreaSolid_54 a x3d:Box.
+:ifcExtrudedAreaSolid_54 x3d:sizeX "6199.999999999992"^^xsd:double.
+:ifcExtrudedAreaSolid_54 x3d:sizeY "199.9999999999978"^^xsd:double.
+:ifcExtrudedAreaSolid_54 x3d:sizeZ "3000.0"^^xsd:double.
+:ifcWallStandardCase_126 a ns1:BoxShapedWall.
+:ifcExtrudedAreaSolid_121 a x3d:Box.
+:ifcExtrudedAreaSolid_121 x3d:sizeX "4000.000000000001"^^xsd:double.
+:ifcExtrudedAreaSolid_121 x3d:sizeY "199.9999999999978"^^xsd:double.
+:ifcExtrudedAreaSolid_121 x3d:sizeZ "3000.0"^^xsd:double.
+:ifcWallStandardCase_160 a ns1:BoxShapedWall.
+:ifcExtrudedAreaSolid_155 a x3d:Box.
+:ifcExtrudedAreaSolid_155 x3d:sizeX "5999.999999999998"^^xsd:double.
+:ifcExtrudedAreaSolid_155 x3d:sizeY "200.0"^^xsd:double.
+:ifcExtrudedAreaSolid_155 x3d:sizeZ "3000.0"^^xsd:double.
+:ifcWallStandardCase_194 a ns1:BoxShapedWall.
+:ifcExtrudedAreaSolid_189 a x3d:Box.
+:ifcExtrudedAreaSolid_189 x3d:sizeX "3800.000000000001"^^xsd:double.
+:ifcExtrudedAreaSolid_189 x3d:sizeY "199.9999999999978"^^xsd:double.
+:ifcExtrudedAreaSolid_189 x3d:sizeZ "3000.0"^^xsd:double.
+:ifcDirection_DefaultAxisDirection3D ifc:directionRatios ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+:ifcDirection_DefaultAxisDirection3D a ifc:IfcDirection.
+:ifcDirection_DefaultRefDirection3D ifc:directionRatios ("1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcDirection_DefaultRefDirection3D a ifc:IfcDirection.
+:ifcAxis2Placement3D_24 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_24 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_26 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_26 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_37 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_37 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_41 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_41 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_45 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_45 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_53 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_53 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_120 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_120 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_154 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_154 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_188 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_188 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcAxis2Placement3D_213 ifc:axis :ifcDirection_DefaultAxisDirection3D.
+:ifcAxis2Placement3D_213 ifc:refDirection :ifcDirection_DefaultRefDirection3D.
+:ifcLocalPlacement_25 ns1:TranslationMatrix _:sk0.
+_:sk0 a matrix:matrix3x1.
+_:sk0 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_25 ns1:RotationMatrix _:sk1.
+_:sk1 a matrix:matrix3x3.
+_:sk1 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+_:sk1 matrix:determinant 1.0 .
+:ifcLocalPlacement_214 ns1:TranslationMatrix _:sk2.
+_:sk2 a matrix:matrix3x1.
+_:sk2 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_214 ns1:RotationMatrix _:sk3.
+_:sk3 a matrix:matrix3x3.
+_:sk3 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+_:sk3 matrix:determinant 1.0 .
+:ifcLocalPlacement_38 ns1:LocalTranslationMatrix _:sk4.
+_:sk4 a matrix:matrix3x1.
+_:sk4 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_38 ns1:LocalRotationMatrix _:sk5.
+_:sk5 a matrix:matrix3x3.
+_:sk5 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk4 _:sk0) matrix:sum _:sk6.
+(_:sk5 _:sk1) matrix:product _:sk7.
+:ifcLocalPlacement_38 ns1:LocalTranslationResult _:sk6.
+:ifcLocalPlacement_38 ns1:LocalRotationResult _:sk7.
+_:sk7 matrix:elements (1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1).
+_:sk7 a matrix:matrix3x3.
+_:sk6 matrix:elements (0.0 0.0 0.0).
+_:sk6 a matrix:matrix3x1.
+_:sk5 matrix:determinant 1.0 .
+_:sk7 matrix:determinant 1.0 .
+(_:sk5 _:sk4) matrix:product _:sk8.
+:ifcLocalPlacement_38 ns1:TranslationMatrix _:sk8.
+:ifcLocalPlacement_38 ns1:RotationMatrix _:sk7.
+:ifcLocalPlacement_46 ns1:LocalTranslationMatrix _:sk9.
+_:sk9 a matrix:matrix3x1.
+_:sk9 matrix:elements ("-16902.6517690273"^^xsd:double "11046.16018958814"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_46 ns1:LocalRotationMatrix _:sk10.
+_:sk10 a matrix:matrix3x3.
+_:sk10 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk9 _:sk8) matrix:sum _:sk11.
+(_:sk10 _:sk7) matrix:product _:sk12.
+:ifcLocalPlacement_46 ns1:LocalTranslationResult _:sk11.
+:ifcLocalPlacement_46 ns1:LocalRotationResult _:sk12.
+_:sk12 matrix:elements (1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0).
+_:sk12 a matrix:matrix3x3.
+_:sk8 matrix:elements (0.0 0.0 0.0).
+_:sk8 a matrix:matrix3x1.
+_:sk11 matrix:elements (-16902.6517690273 11046.1601895881 0.0).
+_:sk11 a matrix:matrix3x1.
+_:sk10 matrix:determinant 1.0 .
+_:sk12 matrix:determinant 1.0 .
+:ifcLocalPlacement_113 ns1:LocalTranslationMatrix _:sk13.
+_:sk13 a matrix:matrix3x1.
+_:sk13 matrix:elements ("-10802.6517690273"^^xsd:double "10946.16018958812"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_113 ns1:LocalRotationMatrix _:sk14.
+_:sk14 a matrix:matrix3x3.
+_:sk14 matrix:elements ("0.0"^^xsd:double "-1.0"^^xsd:double 0 "-1.0"^^xsd:double "0.0"^^xsd:double 0 0 0 1).
+(_:sk13 _:sk8) matrix:sum _:sk15.
+(_:sk14 _:sk7) matrix:product _:sk16.
+:ifcLocalPlacement_113 ns1:LocalTranslationResult _:sk15.
+:ifcLocalPlacement_113 ns1:LocalRotationResult _:sk16.
+_:sk16 matrix:elements (0.0 -1.0 0.0 -1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk16 a matrix:matrix3x3.
+_:sk15 matrix:elements (-10802.6517690273 10946.1601895881 0.0).
+_:sk15 a matrix:matrix3x1.
+_:sk14 matrix:determinant -1.0 .
+_:sk16 matrix:determinant -1.0 .
+:ifcLocalPlacement_147 ns1:LocalTranslationMatrix _:sk17.
+_:sk17 a matrix:matrix3x1.
+_:sk17 matrix:elements ("-10902.6517690273"^^xsd:double "7046.160189588122"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_147 ns1:LocalRotationMatrix _:sk18.
+_:sk18 a matrix:matrix3x3.
+_:sk18 matrix:elements ("-1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "-1.0"^^xsd:double 0 0 0 1).
+(_:sk17 _:sk8) matrix:sum _:sk19.
+(_:sk18 _:sk7) matrix:product _:sk20.
+:ifcLocalPlacement_147 ns1:LocalTranslationResult _:sk19.
+:ifcLocalPlacement_147 ns1:LocalRotationResult _:sk20.
+_:sk20 matrix:elements (-1.0 0.0 0.0 0.0 -1.0 0.0 0.0 0.0 1.0).
+_:sk20 a matrix:matrix3x3.
+_:sk19 matrix:elements (-10902.6517690273 7046.16018958812 0.0).
+_:sk19 a matrix:matrix3x1.
+_:sk18 matrix:determinant 1.0 .
+_:sk20 matrix:determinant 1.0 .
+:ifcLocalPlacement_181 ns1:LocalTranslationMatrix _:sk21.
+_:sk21 a matrix:matrix3x1.
+_:sk21 matrix:elements ("-16802.6517690273"^^xsd:double "7146.16018958814"^^xsd:double "0.0"^^xsd:double).
+:ifcLocalPlacement_181 ns1:LocalRotationMatrix _:sk22.
+_:sk22 a matrix:matrix3x3.
+_:sk22 matrix:elements ("0.0"^^xsd:double "1.0"^^xsd:double 0 "1.0"^^xsd:double "0.0"^^xsd:double 0 0 0 1).
+(_:sk21 _:sk8) matrix:sum _:sk23.
+(_:sk22 _:sk7) matrix:product _:sk24.
+:ifcLocalPlacement_181 ns1:LocalTranslationResult _:sk23.
+:ifcLocalPlacement_181 ns1:LocalRotationResult _:sk24.
+_:sk24 matrix:elements (0.0 1.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk24 a matrix:matrix3x3.
+_:sk23 matrix:elements (-16802.6517690273 7146.16018958814 0.0).
+_:sk23 a matrix:matrix3x1.
+_:sk22 matrix:determinant -1.0 .
+_:sk24 matrix:determinant -1.0 .
+(_:sk10 _:sk9) matrix:product _:sk25.
+:ifcLocalPlacement_46 ns1:TranslationMatrix _:sk25.
+:ifcLocalPlacement_46 ns1:RotationMatrix _:sk12.
+:ifcWallStandardCase_62 ns1:TranslationMatrix _:sk25.
+:ifcWallStandardCase_62 ns1:RotationMatrix _:sk12.
+:ifcExtrudedAreaSolid_54 ns1:LocalTranslationMatrix _:sk27.
+_:sk27 a matrix:matrix3x1.
+_:sk27 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcExtrudedAreaSolid_54 ns1:LocalRotationMatrix _:sk28.
+_:sk28 a matrix:matrix3x3.
+_:sk28 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk27 _:sk25) matrix:sum _:sk29.
+(_:sk28 _:sk12) matrix:product _:sk30.
+(_:sk28 _:sk29) matrix:product _:sk31.
+:ifcExtrudedAreaSolid_54 ns1:TranslationMatrix _:sk31.
+:ifcExtrudedAreaSolid_54 ns1:RotationMatrix _:sk30.
+:ifcRectangleProfileDef_52 ns1:LocalTranslationMatrix _:sk32.
+_:sk32 a matrix:matrix3x1.
+_:sk32 matrix:elements ("3100.0"^^xsd:double "0.0"^^xsd:double 0).
+:ifcRectangleProfileDef_52 ns1:LocalRotationMatrix _:sk33.
+_:sk33 a matrix:matrix3x3.
+_:sk33 matrix:elements ("-1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "-1.0"^^xsd:double 0 0 0 1).
+(_:sk32 _:sk31) matrix:sum _:sk34.
+(_:sk33 _:sk30) matrix:product _:sk35.
+(_:sk33 _:sk34) matrix:product _:sk36.
+:ifcRectangleProfileDef_52 ns1:TranslationMatrix _:sk36.
+:ifcRectangleProfileDef_52 ns1:RotationMatrix _:sk35.
+(_:sk35 _:sk36) matrix:product _:sk37.
+:ifcExtrudedAreaSolid_54 x3d:translationmatrix _:sk36.
+:ifcExtrudedAreaSolid_54 x3d:rotationmatrix _:sk35.
+:ifcExtrudedAreaSolid_54 x3d:translation _:sk37.
+_:sk30 matrix:elements (1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0).
+_:sk30 a matrix:matrix3x3.
+_:sk35 matrix:elements (-1.0 0.0 0.0 0.0 -1.0 0.0 0.0 0.0 1.0).
+_:sk35 a matrix:matrix3x3.
+_:sk25 matrix:elements (-16902.6517690273 11046.1601895881 0.0).
+_:sk25 a matrix:matrix3x1.
+_:sk29 matrix:elements (-16902.6517690273 11046.1601895881 0.0).
+_:sk29 a matrix:matrix3x1.
+_:sk28 matrix:determinant 1.0 .
+_:sk33 matrix:determinant 1.0 .
+_:sk30 matrix:determinant 1.0 .
+_:sk35 matrix:determinant 1.0 .
+(_:sk14 _:sk13) matrix:product _:sk26.
+:ifcLocalPlacement_113 ns1:TranslationMatrix _:sk26.
+:ifcLocalPlacement_113 ns1:RotationMatrix _:sk16.
+:ifcWallStandardCase_126 ns1:TranslationMatrix _:sk26.
+:ifcWallStandardCase_126 ns1:RotationMatrix _:sk16.
+:ifcExtrudedAreaSolid_121 ns1:LocalTranslationMatrix _:sk39.
+_:sk39 a matrix:matrix3x1.
+_:sk39 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcExtrudedAreaSolid_121 ns1:LocalRotationMatrix _:sk40.
+_:sk40 a matrix:matrix3x3.
+_:sk40 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk39 _:sk26) matrix:sum _:sk41.
+(_:sk40 _:sk16) matrix:product _:sk42.
+(_:sk40 _:sk41) matrix:product _:sk43.
+:ifcExtrudedAreaSolid_121 ns1:TranslationMatrix _:sk43.
+:ifcExtrudedAreaSolid_121 ns1:RotationMatrix _:sk42.
+:ifcRectangleProfileDef_119 ns1:LocalTranslationMatrix _:sk44.
+_:sk44 a matrix:matrix3x1.
+_:sk44 matrix:elements ("2000.0"^^xsd:double "0.0"^^xsd:double 0).
+:ifcRectangleProfileDef_119 ns1:LocalRotationMatrix _:sk45.
+_:sk45 a matrix:matrix3x3.
+_:sk45 matrix:elements ("-1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "-1.0"^^xsd:double 0 0 0 1).
+(_:sk44 _:sk43) matrix:sum _:sk46.
+(_:sk45 _:sk42) matrix:product _:sk47.
+(_:sk45 _:sk46) matrix:product _:sk48.
+:ifcRectangleProfileDef_119 ns1:TranslationMatrix _:sk48.
+:ifcRectangleProfileDef_119 ns1:RotationMatrix _:sk47.
+(_:sk47 _:sk48) matrix:product _:sk49.
+:ifcExtrudedAreaSolid_121 x3d:translationmatrix _:sk48.
+:ifcExtrudedAreaSolid_121 x3d:rotationmatrix _:sk47.
+:ifcExtrudedAreaSolid_121 x3d:translation _:sk49.
+_:sk42 matrix:elements (0.0 -1.0 0.0 -1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk42 a matrix:matrix3x3.
+_:sk47 matrix:elements (0.0 1.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk47 a matrix:matrix3x3.
+_:sk31 matrix:elements (-16902.6517690273 11046.1601895881 0.0).
+_:sk31 a matrix:matrix3x1.
+_:sk26 matrix:elements (-10946.1601895881 10802.6517690273 0.0).
+_:sk26 a matrix:matrix3x1.
+_:sk34 matrix:elements (-13802.6517690273 11046.1601895881 0.0).
+_:sk34 a matrix:matrix3x1.
+_:sk41 matrix:elements (-10946.1601895881 10802.6517690273 0.0).
+_:sk41 a matrix:matrix3x1.
+_:sk40 matrix:determinant 1.0 .
+_:sk45 matrix:determinant 1.0 .
+_:sk42 matrix:determinant -1.0 .
+_:sk47 matrix:determinant -1.0 .
+(_:sk18 _:sk17) matrix:product _:sk38.
+:ifcLocalPlacement_147 ns1:TranslationMatrix _:sk38.
+:ifcLocalPlacement_147 ns1:RotationMatrix _:sk20.
+:ifcWallStandardCase_160 ns1:TranslationMatrix _:sk38.
+:ifcWallStandardCase_160 ns1:RotationMatrix _:sk20.
+:ifcExtrudedAreaSolid_155 ns1:LocalTranslationMatrix _:sk51.
+_:sk51 a matrix:matrix3x1.
+_:sk51 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcExtrudedAreaSolid_155 ns1:LocalRotationMatrix _:sk52.
+_:sk52 a matrix:matrix3x3.
+_:sk52 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk51 _:sk38) matrix:sum _:sk53.
+(_:sk52 _:sk20) matrix:product _:sk54.
+(_:sk52 _:sk53) matrix:product _:sk55.
+:ifcExtrudedAreaSolid_155 ns1:TranslationMatrix _:sk55.
+:ifcExtrudedAreaSolid_155 ns1:RotationMatrix _:sk54.
+:ifcRectangleProfileDef_153 ns1:LocalTranslationMatrix _:sk56.
+_:sk56 a matrix:matrix3x1.
+_:sk56 matrix:elements ("3000.0"^^xsd:double "0.0"^^xsd:double 0).
+:ifcRectangleProfileDef_153 ns1:LocalRotationMatrix _:sk57.
+_:sk57 a matrix:matrix3x3.
+_:sk57 matrix:elements ("-1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "-1.0"^^xsd:double 0 0 0 1).
+(_:sk56 _:sk55) matrix:sum _:sk58.
+(_:sk57 _:sk54) matrix:product _:sk59.
+(_:sk57 _:sk58) matrix:product _:sk60.
+:ifcRectangleProfileDef_153 ns1:TranslationMatrix _:sk60.
+:ifcRectangleProfileDef_153 ns1:RotationMatrix _:sk59.
+(_:sk59 _:sk60) matrix:product _:sk61.
+:ifcExtrudedAreaSolid_155 x3d:translationmatrix _:sk60.
+:ifcExtrudedAreaSolid_155 x3d:rotationmatrix _:sk59.
+:ifcExtrudedAreaSolid_155 x3d:translation _:sk61.
+_:sk54 matrix:elements (-1.0 0.0 0.0 0.0 -1.0 0.0 0.0 0.0 1.0).
+_:sk54 a matrix:matrix3x3.
+_:sk59 matrix:elements (1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0).
+_:sk59 a matrix:matrix3x3.
+_:sk36 matrix:elements (13802.6517690273 -11046.1601895881 0.0).
+_:sk36 a matrix:matrix3x1.
+_:sk37 matrix:elements (-13802.6517690273 11046.1601895881 0.0).
+_:sk37 a matrix:matrix3x1.
+_:sk43 matrix:elements (-10946.1601895881 10802.6517690273 0.0).
+_:sk43 a matrix:matrix3x1.
+_:sk38 matrix:elements (10902.6517690273 -7046.16018958812 0.0).
+_:sk38 a matrix:matrix3x1.
+_:sk46 matrix:elements (-8946.16018958812 10802.6517690273 0.0).
+_:sk46 a matrix:matrix3x1.
+_:sk53 matrix:elements (10902.6517690273 -7046.16018958812 0.0).
+_:sk53 a matrix:matrix3x1.
+_:sk52 matrix:determinant 1.0 .
+_:sk57 matrix:determinant 1.0 .
+_:sk54 matrix:determinant 1.0 .
+_:sk59 matrix:determinant 1.0 .
+:ifcExtrudedAreaSolid_54 stl:triangles (_:sk62 _:sk63 _:sk64 _:sk65 _:sk66 _:sk67 _:sk68 _:sk69 _:sk70 _:sk71 _:sk72 _:sk73).
+_:sk62 stl:ntemp (0 -1 0).
+_:sk62 stl:v1temp (-3100.0 -99.9999999999989 0).
+_:sk62 stl:v2temp (3100.0 -99.9999999999989 0).
+_:sk62 stl:v3temp (3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk62 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk62 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk63 stl:ntemp (0 -1 0).
+_:sk63 stl:v1temp (-3100.0 -99.9999999999989 0).
+_:sk63 stl:v2temp (3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk63 stl:v3temp (-3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk63 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk63 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk64 stl:ntemp (1 0 0).
+_:sk64 stl:v1temp (3100.0 -99.9999999999989 0).
+_:sk64 stl:v2temp (3100.0 99.9999999999989 0).
+_:sk64 stl:v3temp (3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk64 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk64 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk65 stl:ntemp (1 0 0).
+_:sk65 stl:v1temp (3100.0 -99.9999999999989 0).
+_:sk65 stl:v2temp (3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk65 stl:v3temp (3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk65 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk65 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk66 stl:ntemp (0 1 0).
+_:sk66 stl:v1temp (3100.0 99.9999999999989 0).
+_:sk66 stl:v2temp (-3100.0 99.9999999999989 0).
+_:sk66 stl:v3temp (-3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk66 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk66 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk67 stl:ntemp (0 1 0).
+_:sk67 stl:v1temp (3100.0 99.9999999999989 0).
+_:sk67 stl:v2temp (-3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk67 stl:v3temp (3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk67 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk67 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk68 stl:ntemp (-1 0 0).
+_:sk68 stl:v1temp (-3100.0 99.9999999999989 0).
+_:sk68 stl:v2temp (-3100.0 -99.9999999999989 0).
+_:sk68 stl:v3temp (-3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk68 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk68 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk69 stl:ntemp (-1 0 0).
+_:sk69 stl:v1temp (-3100.0 99.9999999999989 0).
+_:sk69 stl:v2temp (-3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk69 stl:v3temp (-3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk69 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk69 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk70 stl:ntemp (0 0 1).
+_:sk70 stl:v1temp (-3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk70 stl:v2temp (3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk70 stl:v3temp (3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk70 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk70 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk71 stl:ntemp (0 0 1).
+_:sk71 stl:v1temp (-3100.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk71 stl:v2temp (3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk71 stl:v3temp (-3100.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk71 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk71 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk72 stl:ntemp (0 0 -1).
+_:sk72 stl:v1temp (-3100.0 -99.9999999999989 0).
+_:sk72 stl:v2temp (3100.0 99.9999999999989 0).
+_:sk72 stl:v3temp (3100.0 -99.9999999999989 0).
+_:sk72 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk72 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk73 stl:ntemp (0 0 -1).
+_:sk73 stl:v1temp (-3100.0 -99.9999999999989 0).
+_:sk73 stl:v2temp (-3100.0 99.9999999999989 0).
+_:sk73 stl:v3temp (3100.0 99.9999999999989 0).
+_:sk73 stl:translation (-13802.6517690273 11046.1601895881 0.0).
+_:sk73 stl:rotation (-1.0 0.0 0.0 -1.0).
+_:sk62 stl:normal (0.0 1.0 0).
+_:sk62 stl:vertex1 (-10702.6517690273 11146.1601895881 0.0).
+_:sk62 stl:vertex2 (-16902.6517690273 11146.1601895881 0.0).
+_:sk62 stl:vertex3 (-16902.6517690273 11146.1601895881 3000.0).
+_:sk63 stl:normal (0.0 1.0 0).
+_:sk63 stl:vertex1 (-10702.6517690273 11146.1601895881 0.0).
+_:sk63 stl:vertex2 (-16902.6517690273 11146.1601895881 3000.0).
+_:sk63 stl:vertex3 (-10702.6517690273 11146.1601895881 3000.0).
+_:sk64 stl:normal (-1.0 0.0 0).
+_:sk64 stl:vertex1 (-16902.6517690273 11146.1601895881 0.0).
+_:sk64 stl:vertex2 (-16902.6517690273 10946.1601895881 0.0).
+_:sk64 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk65 stl:normal (-1.0 0.0 0).
+_:sk65 stl:vertex1 (-16902.6517690273 11146.1601895881 0.0).
+_:sk65 stl:vertex2 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk65 stl:vertex3 (-16902.6517690273 11146.1601895881 3000.0).
+_:sk66 stl:normal (0.0 -1.0 0).
+_:sk66 stl:vertex1 (-16902.6517690273 10946.1601895881 0.0).
+_:sk66 stl:vertex2 (-10702.6517690273 10946.1601895881 0.0).
+_:sk66 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk67 stl:normal (0.0 -1.0 0).
+_:sk67 stl:vertex1 (-16902.6517690273 10946.1601895881 0.0).
+_:sk67 stl:vertex2 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk67 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk68 stl:normal (1.0 0.0 0).
+_:sk68 stl:vertex1 (-10702.6517690273 10946.1601895881 0.0).
+_:sk68 stl:vertex2 (-10702.6517690273 11146.1601895881 0.0).
+_:sk68 stl:vertex3 (-10702.6517690273 11146.1601895881 3000.0).
+_:sk69 stl:normal (1.0 0.0 0).
+_:sk69 stl:vertex1 (-10702.6517690273 10946.1601895881 0.0).
+_:sk69 stl:vertex2 (-10702.6517690273 11146.1601895881 3000.0).
+_:sk69 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk70 stl:normal (0.0 0.0 1).
+_:sk70 stl:vertex1 (-10702.6517690273 11146.1601895881 3000.0).
+_:sk70 stl:vertex2 (-16902.6517690273 11146.1601895881 3000.0).
+_:sk70 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk71 stl:normal (0.0 0.0 1).
+_:sk71 stl:vertex1 (-10702.6517690273 11146.1601895881 3000.0).
+_:sk71 stl:vertex2 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk71 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk72 stl:normal (0.0 0.0 -1).
+_:sk72 stl:vertex1 (-10702.6517690273 11146.1601895881 0.0).
+_:sk72 stl:vertex2 (-16902.6517690273 10946.1601895881 0.0).
+_:sk72 stl:vertex3 (-16902.6517690273 11146.1601895881 0.0).
+_:sk73 stl:normal (0.0 0.0 -1).
+_:sk73 stl:vertex1 (-10702.6517690273 11146.1601895881 0.0).
+_:sk73 stl:vertex2 (-10702.6517690273 10946.1601895881 0.0).
+_:sk73 stl:vertex3 (-16902.6517690273 10946.1601895881 0.0).
+(_:sk22 _:sk21) matrix:product _:sk50.
+:ifcLocalPlacement_181 ns1:TranslationMatrix _:sk50.
+:ifcLocalPlacement_181 ns1:RotationMatrix _:sk24.
+:ifcWallStandardCase_194 ns1:TranslationMatrix _:sk50.
+:ifcWallStandardCase_194 ns1:RotationMatrix _:sk24.
+:ifcExtrudedAreaSolid_189 ns1:LocalTranslationMatrix _:sk74.
+_:sk74 a matrix:matrix3x1.
+_:sk74 matrix:elements ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double).
+:ifcExtrudedAreaSolid_189 ns1:LocalRotationMatrix _:sk75.
+_:sk75 a matrix:matrix3x3.
+_:sk75 matrix:elements ("1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "1.0"^^xsd:double 0 0 0 1).
+(_:sk74 _:sk50) matrix:sum _:sk76.
+(_:sk75 _:sk24) matrix:product _:sk77.
+(_:sk75 _:sk76) matrix:product _:sk78.
+:ifcExtrudedAreaSolid_189 ns1:TranslationMatrix _:sk78.
+:ifcExtrudedAreaSolid_189 ns1:RotationMatrix _:sk77.
+:ifcRectangleProfileDef_187 ns1:LocalTranslationMatrix _:sk79.
+_:sk79 a matrix:matrix3x1.
+_:sk79 matrix:elements ("1900.0"^^xsd:double "-0.0"^^xsd:double 0).
+:ifcRectangleProfileDef_187 ns1:LocalRotationMatrix _:sk80.
+_:sk80 a matrix:matrix3x3.
+_:sk80 matrix:elements ("-1.0"^^xsd:double "0.0"^^xsd:double 0 "0.0"^^xsd:double "-1.0"^^xsd:double 0 0 0 1).
+(_:sk79 _:sk78) matrix:sum _:sk81.
+(_:sk80 _:sk77) matrix:product _:sk82.
+(_:sk80 _:sk81) matrix:product _:sk83.
+:ifcRectangleProfileDef_187 ns1:TranslationMatrix _:sk83.
+:ifcRectangleProfileDef_187 ns1:RotationMatrix _:sk82.
+(_:sk82 _:sk83) matrix:product _:sk84.
+:ifcExtrudedAreaSolid_189 x3d:translationmatrix _:sk83.
+:ifcExtrudedAreaSolid_189 x3d:rotationmatrix _:sk82.
+:ifcExtrudedAreaSolid_189 x3d:translation _:sk84.
+_:sk77 matrix:elements (0.0 1.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk77 a matrix:matrix3x3.
+_:sk82 matrix:elements (0.0 -1.0 0.0 -1.0 0.0 0.0 0.0 0.0 1.0).
+_:sk82 a matrix:matrix3x3.
+_:sk48 matrix:elements (8946.16018958812 -10802.6517690273 0.0).
+_:sk48 a matrix:matrix3x1.
+_:sk49 matrix:elements (-10802.6517690273 8946.16018958812 0.0).
+_:sk49 a matrix:matrix3x1.
+_:sk55 matrix:elements (10902.6517690273 -7046.16018958812 0.0).
+_:sk55 a matrix:matrix3x1.
+_:sk50 matrix:elements (7146.16018958814 -16802.6517690273 0.0).
+_:sk50 a matrix:matrix3x1.
+_:sk58 matrix:elements (13902.6517690273 -7046.16018958812 0.0).
+_:sk58 a matrix:matrix3x1.
+_:sk76 matrix:elements (7146.16018958814 -16802.6517690273 0.0).
+_:sk76 a matrix:matrix3x1.
+_:sk75 matrix:determinant 1.0 .
+_:sk80 matrix:determinant 1.0 .
+_:sk77 matrix:determinant -1.0 .
+_:sk82 matrix:determinant -1.0 .
+:ifcExtrudedAreaSolid_121 stl:triangles (_:sk85 _:sk86 _:sk87 _:sk88 _:sk89 _:sk90 _:sk91 _:sk92 _:sk93 _:sk94 _:sk95 _:sk96).
+_:sk85 stl:ntemp (0 -1 0).
+_:sk85 stl:v1temp (-2000.0 -99.9999999999989 0).
+_:sk85 stl:v2temp (2000.0 -99.9999999999989 0).
+_:sk85 stl:v3temp (2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk85 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk85 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk86 stl:ntemp (0 -1 0).
+_:sk86 stl:v1temp (-2000.0 -99.9999999999989 0).
+_:sk86 stl:v2temp (2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk86 stl:v3temp (-2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk86 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk86 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk87 stl:ntemp (1 0 0).
+_:sk87 stl:v1temp (2000.0 -99.9999999999989 0).
+_:sk87 stl:v2temp (2000.0 99.9999999999989 0).
+_:sk87 stl:v3temp (2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk87 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk87 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk88 stl:ntemp (1 0 0).
+_:sk88 stl:v1temp (2000.0 -99.9999999999989 0).
+_:sk88 stl:v2temp (2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk88 stl:v3temp (2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk88 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk88 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk89 stl:ntemp (0 1 0).
+_:sk89 stl:v1temp (2000.0 99.9999999999989 0).
+_:sk89 stl:v2temp (-2000.0 99.9999999999989 0).
+_:sk89 stl:v3temp (-2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk89 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk89 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk90 stl:ntemp (0 1 0).
+_:sk90 stl:v1temp (2000.0 99.9999999999989 0).
+_:sk90 stl:v2temp (-2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk90 stl:v3temp (2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk90 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk90 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk91 stl:ntemp (-1 0 0).
+_:sk91 stl:v1temp (-2000.0 99.9999999999989 0).
+_:sk91 stl:v2temp (-2000.0 -99.9999999999989 0).
+_:sk91 stl:v3temp (-2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk91 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk91 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk92 stl:ntemp (-1 0 0).
+_:sk92 stl:v1temp (-2000.0 99.9999999999989 0).
+_:sk92 stl:v2temp (-2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk92 stl:v3temp (-2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk92 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk92 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk93 stl:ntemp (0 0 1).
+_:sk93 stl:v1temp (-2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk93 stl:v2temp (2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk93 stl:v3temp (2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk93 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk93 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk94 stl:ntemp (0 0 1).
+_:sk94 stl:v1temp (-2000.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk94 stl:v2temp (2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk94 stl:v3temp (-2000.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk94 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk94 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk95 stl:ntemp (0 0 -1).
+_:sk95 stl:v1temp (-2000.0 -99.9999999999989 0).
+_:sk95 stl:v2temp (2000.0 99.9999999999989 0).
+_:sk95 stl:v3temp (2000.0 -99.9999999999989 0).
+_:sk95 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk95 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk96 stl:ntemp (0 0 -1).
+_:sk96 stl:v1temp (-2000.0 -99.9999999999989 0).
+_:sk96 stl:v2temp (-2000.0 99.9999999999989 0).
+_:sk96 stl:v3temp (2000.0 99.9999999999989 0).
+_:sk96 stl:translation (-10802.6517690273 8946.16018958812 0.0).
+_:sk96 stl:rotation (0.0 1.0 1.0 0.0).
+_:sk85 stl:normal (-1.0 0.0 0).
+_:sk85 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk85 stl:vertex2 (-10902.6517690273 10946.1601895881 0.0).
+_:sk85 stl:vertex3 (-10902.6517690273 10946.1601895881 3000.0).
+_:sk86 stl:normal (-1.0 0.0 0).
+_:sk86 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk86 stl:vertex2 (-10902.6517690273 10946.1601895881 3000.0).
+_:sk86 stl:vertex3 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk87 stl:normal (0.0 1.0 0).
+_:sk87 stl:vertex1 (-10902.6517690273 10946.1601895881 0.0).
+_:sk87 stl:vertex2 (-10702.6517690273 10946.1601895881 0.0).
+_:sk87 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk88 stl:normal (0.0 1.0 0).
+_:sk88 stl:vertex1 (-10902.6517690273 10946.1601895881 0.0).
+_:sk88 stl:vertex2 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk88 stl:vertex3 (-10902.6517690273 10946.1601895881 3000.0).
+_:sk89 stl:normal (1.0 0.0 0).
+_:sk89 stl:vertex1 (-10702.6517690273 10946.1601895881 0.0).
+_:sk89 stl:vertex2 (-10702.6517690273 6946.16018958812 0.0).
+_:sk89 stl:vertex3 (-10702.6517690273 6946.16018958812 3000.0).
+_:sk90 stl:normal (1.0 0.0 0).
+_:sk90 stl:vertex1 (-10702.6517690273 10946.1601895881 0.0).
+_:sk90 stl:vertex2 (-10702.6517690273 6946.16018958812 3000.0).
+_:sk90 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk91 stl:normal (0.0 -1.0 0).
+_:sk91 stl:vertex1 (-10702.6517690273 6946.16018958812 0.0).
+_:sk91 stl:vertex2 (-10902.6517690273 6946.16018958812 0.0).
+_:sk91 stl:vertex3 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk92 stl:normal (0.0 -1.0 0).
+_:sk92 stl:vertex1 (-10702.6517690273 6946.16018958812 0.0).
+_:sk92 stl:vertex2 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk92 stl:vertex3 (-10702.6517690273 6946.16018958812 3000.0).
+_:sk93 stl:normal (0.0 0.0 1).
+_:sk93 stl:vertex1 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk93 stl:vertex2 (-10902.6517690273 10946.1601895881 3000.0).
+_:sk93 stl:vertex3 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk94 stl:normal (0.0 0.0 1).
+_:sk94 stl:vertex1 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk94 stl:vertex2 (-10702.6517690273 10946.1601895881 3000.0).
+_:sk94 stl:vertex3 (-10702.6517690273 6946.16018958812 3000.0).
+_:sk95 stl:normal (0.0 0.0 -1).
+_:sk95 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk95 stl:vertex2 (-10702.6517690273 10946.1601895881 0.0).
+_:sk95 stl:vertex3 (-10902.6517690273 10946.1601895881 0.0).
+_:sk96 stl:normal (0.0 0.0 -1).
+_:sk96 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk96 stl:vertex2 (-10702.6517690273 6946.16018958812 0.0).
+_:sk96 stl:vertex3 (-10702.6517690273 10946.1601895881 0.0).
+_:sk60 matrix:elements (-13902.6517690273 7046.16018958812 0.0).
+_:sk60 a matrix:matrix3x1.
+_:sk61 matrix:elements (-13902.6517690273 7046.16018958812 0.0).
+_:sk61 a matrix:matrix3x1.
+_:sk78 matrix:elements (7146.16018958814 -16802.6517690273 0.0).
+_:sk78 a matrix:matrix3x1.
+_:sk81 matrix:elements (9046.16018958814 -16802.6517690273 0.0).
+_:sk81 a matrix:matrix3x1.
+:ifcExtrudedAreaSolid_155 stl:triangles (_:sk97 _:sk98 _:sk99 _:sk100 _:sk101 _:sk102 _:sk103 _:sk104 _:sk105 _:sk106 _:sk107 _:sk108).
+_:sk97 stl:ntemp (0 -1 0).
+_:sk97 stl:v1temp (-3000.0 -100.0 0).
+_:sk97 stl:v2temp (3000.0 -100.0 0).
+_:sk97 stl:v3temp (3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk97 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk97 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk98 stl:ntemp (0 -1 0).
+_:sk98 stl:v1temp (-3000.0 -100.0 0).
+_:sk98 stl:v2temp (3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk98 stl:v3temp (-3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk98 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk98 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk99 stl:ntemp (1 0 0).
+_:sk99 stl:v1temp (3000.0 -100.0 0).
+_:sk99 stl:v2temp (3000.0 100.0 0).
+_:sk99 stl:v3temp (3000.0 100.0 "3000.0"^^xsd:double).
+_:sk99 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk99 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk100 stl:ntemp (1 0 0).
+_:sk100 stl:v1temp (3000.0 -100.0 0).
+_:sk100 stl:v2temp (3000.0 100.0 "3000.0"^^xsd:double).
+_:sk100 stl:v3temp (3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk100 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk100 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk101 stl:ntemp (0 1 0).
+_:sk101 stl:v1temp (3000.0 100.0 0).
+_:sk101 stl:v2temp (-3000.0 100.0 0).
+_:sk101 stl:v3temp (-3000.0 100.0 "3000.0"^^xsd:double).
+_:sk101 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk101 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk102 stl:ntemp (0 1 0).
+_:sk102 stl:v1temp (3000.0 100.0 0).
+_:sk102 stl:v2temp (-3000.0 100.0 "3000.0"^^xsd:double).
+_:sk102 stl:v3temp (3000.0 100.0 "3000.0"^^xsd:double).
+_:sk102 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk102 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk103 stl:ntemp (-1 0 0).
+_:sk103 stl:v1temp (-3000.0 100.0 0).
+_:sk103 stl:v2temp (-3000.0 -100.0 0).
+_:sk103 stl:v3temp (-3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk103 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk103 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk104 stl:ntemp (-1 0 0).
+_:sk104 stl:v1temp (-3000.0 100.0 0).
+_:sk104 stl:v2temp (-3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk104 stl:v3temp (-3000.0 100.0 "3000.0"^^xsd:double).
+_:sk104 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk104 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk105 stl:ntemp (0 0 1).
+_:sk105 stl:v1temp (-3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk105 stl:v2temp (3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk105 stl:v3temp (3000.0 100.0 "3000.0"^^xsd:double).
+_:sk105 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk105 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk106 stl:ntemp (0 0 1).
+_:sk106 stl:v1temp (-3000.0 -100.0 "3000.0"^^xsd:double).
+_:sk106 stl:v2temp (3000.0 100.0 "3000.0"^^xsd:double).
+_:sk106 stl:v3temp (-3000.0 100.0 "3000.0"^^xsd:double).
+_:sk106 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk106 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk107 stl:ntemp (0 0 -1).
+_:sk107 stl:v1temp (-3000.0 -100.0 0).
+_:sk107 stl:v2temp (3000.0 100.0 0).
+_:sk107 stl:v3temp (3000.0 -100.0 0).
+_:sk107 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk107 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk108 stl:ntemp (0 0 -1).
+_:sk108 stl:v1temp (-3000.0 -100.0 0).
+_:sk108 stl:v2temp (-3000.0 100.0 0).
+_:sk108 stl:v3temp (3000.0 100.0 0).
+_:sk108 stl:translation (-13902.6517690273 7046.16018958812 0.0).
+_:sk108 stl:rotation (1.0 0.0 0.0 1.0).
+_:sk97 stl:normal (0.0 -1.0 0).
+_:sk97 stl:vertex1 (-16902.6517690273 6946.16018958812 0.0).
+_:sk97 stl:vertex2 (-10902.6517690273 6946.16018958812 0.0).
+_:sk97 stl:vertex3 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk98 stl:normal (0.0 -1.0 0).
+_:sk98 stl:vertex1 (-16902.6517690273 6946.16018958812 0.0).
+_:sk98 stl:vertex2 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk98 stl:vertex3 (-16902.6517690273 6946.16018958812 3000.0).
+_:sk99 stl:normal (1.0 0.0 0).
+_:sk99 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk99 stl:vertex2 (-10902.6517690273 7146.16018958812 0.0).
+_:sk99 stl:vertex3 (-10902.6517690273 7146.16018958812 3000.0).
+_:sk100 stl:normal (1.0 0.0 0).
+_:sk100 stl:vertex1 (-10902.6517690273 6946.16018958812 0.0).
+_:sk100 stl:vertex2 (-10902.6517690273 7146.16018958812 3000.0).
+_:sk100 stl:vertex3 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk101 stl:normal (0.0 1.0 0).
+_:sk101 stl:vertex1 (-10902.6517690273 7146.16018958812 0.0).
+_:sk101 stl:vertex2 (-16902.6517690273 7146.16018958812 0.0).
+_:sk101 stl:vertex3 (-16902.6517690273 7146.16018958812 3000.0).
+_:sk102 stl:normal (0.0 1.0 0).
+_:sk102 stl:vertex1 (-10902.6517690273 7146.16018958812 0.0).
+_:sk102 stl:vertex2 (-16902.6517690273 7146.16018958812 3000.0).
+_:sk102 stl:vertex3 (-10902.6517690273 7146.16018958812 3000.0).
+_:sk103 stl:normal (-1.0 0.0 0).
+_:sk103 stl:vertex1 (-16902.6517690273 7146.16018958812 0.0).
+_:sk103 stl:vertex2 (-16902.6517690273 6946.16018958812 0.0).
+_:sk103 stl:vertex3 (-16902.6517690273 6946.16018958812 3000.0).
+_:sk104 stl:normal (-1.0 0.0 0).
+_:sk104 stl:vertex1 (-16902.6517690273 7146.16018958812 0.0).
+_:sk104 stl:vertex2 (-16902.6517690273 6946.16018958812 3000.0).
+_:sk104 stl:vertex3 (-16902.6517690273 7146.16018958812 3000.0).
+_:sk105 stl:normal (0.0 0.0 1).
+_:sk105 stl:vertex1 (-16902.6517690273 6946.16018958812 3000.0).
+_:sk105 stl:vertex2 (-10902.6517690273 6946.16018958812 3000.0).
+_:sk105 stl:vertex3 (-10902.6517690273 7146.16018958812 3000.0).
+_:sk106 stl:normal (0.0 0.0 1).
+_:sk106 stl:vertex1 (-16902.6517690273 6946.16018958812 3000.0).
+_:sk106 stl:vertex2 (-10902.6517690273 7146.16018958812 3000.0).
+_:sk106 stl:vertex3 (-16902.6517690273 7146.16018958812 3000.0).
+_:sk107 stl:normal (0.0 0.0 -1).
+_:sk107 stl:vertex1 (-16902.6517690273 6946.16018958812 0.0).
+_:sk107 stl:vertex2 (-10902.6517690273 7146.16018958812 0.0).
+_:sk107 stl:vertex3 (-10902.6517690273 6946.16018958812 0.0).
+_:sk108 stl:normal (0.0 0.0 -1).
+_:sk108 stl:vertex1 (-16902.6517690273 6946.16018958812 0.0).
+_:sk108 stl:vertex2 (-16902.6517690273 7146.16018958812 0.0).
+_:sk108 stl:vertex3 (-10902.6517690273 7146.16018958812 0.0).
+_:sk83 matrix:elements (-9046.16018958814 16802.6517690273 0.0).
+_:sk83 a matrix:matrix3x1.
+_:sk84 matrix:elements (-16802.6517690273 9046.16018958814 0.0).
+_:sk84 a matrix:matrix3x1.
+:ifcExtrudedAreaSolid_189 stl:triangles (_:sk109 _:sk110 _:sk111 _:sk112 _:sk113 _:sk114 _:sk115 _:sk116 _:sk117 _:sk118 _:sk119 _:sk120).
+_:sk109 stl:ntemp (0 -1 0).
+_:sk109 stl:v1temp (-1900.0 -99.9999999999989 0).
+_:sk109 stl:v2temp (1900.0 -99.9999999999989 0).
+_:sk109 stl:v3temp (1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk109 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk109 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk110 stl:ntemp (0 -1 0).
+_:sk110 stl:v1temp (-1900.0 -99.9999999999989 0).
+_:sk110 stl:v2temp (1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk110 stl:v3temp (-1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk110 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk110 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk111 stl:ntemp (1 0 0).
+_:sk111 stl:v1temp (1900.0 -99.9999999999989 0).
+_:sk111 stl:v2temp (1900.0 99.9999999999989 0).
+_:sk111 stl:v3temp (1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk111 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk111 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk112 stl:ntemp (1 0 0).
+_:sk112 stl:v1temp (1900.0 -99.9999999999989 0).
+_:sk112 stl:v2temp (1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk112 stl:v3temp (1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk112 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk112 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk113 stl:ntemp (0 1 0).
+_:sk113 stl:v1temp (1900.0 99.9999999999989 0).
+_:sk113 stl:v2temp (-1900.0 99.9999999999989 0).
+_:sk113 stl:v3temp (-1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk113 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk113 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk114 stl:ntemp (0 1 0).
+_:sk114 stl:v1temp (1900.0 99.9999999999989 0).
+_:sk114 stl:v2temp (-1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk114 stl:v3temp (1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk114 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk114 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk115 stl:ntemp (-1 0 0).
+_:sk115 stl:v1temp (-1900.0 99.9999999999989 0).
+_:sk115 stl:v2temp (-1900.0 -99.9999999999989 0).
+_:sk115 stl:v3temp (-1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk115 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk115 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk116 stl:ntemp (-1 0 0).
+_:sk116 stl:v1temp (-1900.0 99.9999999999989 0).
+_:sk116 stl:v2temp (-1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk116 stl:v3temp (-1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk116 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk116 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk117 stl:ntemp (0 0 1).
+_:sk117 stl:v1temp (-1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk117 stl:v2temp (1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk117 stl:v3temp (1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk117 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk117 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk118 stl:ntemp (0 0 1).
+_:sk118 stl:v1temp (-1900.0 -99.9999999999989 "3000.0"^^xsd:double).
+_:sk118 stl:v2temp (1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk118 stl:v3temp (-1900.0 99.9999999999989 "3000.0"^^xsd:double).
+_:sk118 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk118 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk119 stl:ntemp (0 0 -1).
+_:sk119 stl:v1temp (-1900.0 -99.9999999999989 0).
+_:sk119 stl:v2temp (1900.0 99.9999999999989 0).
+_:sk119 stl:v3temp (1900.0 -99.9999999999989 0).
+_:sk119 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk119 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk120 stl:ntemp (0 0 -1).
+_:sk120 stl:v1temp (-1900.0 -99.9999999999989 0).
+_:sk120 stl:v2temp (-1900.0 99.9999999999989 0).
+_:sk120 stl:v3temp (1900.0 99.9999999999989 0).
+_:sk120 stl:translation (-16802.6517690273 9046.16018958814 0.0).
+_:sk120 stl:rotation (0.0 -1.0 -1.0 0.0).
+_:sk109 stl:normal (1.0 0.0 0).
+_:sk109 stl:vertex1 (-16702.6517690273 10946.1601895881 0.0).
+_:sk109 stl:vertex2 (-16702.6517690273 7146.16018958814 0.0).
+_:sk109 stl:vertex3 (-16702.6517690273 7146.16018958814 3000.0).
+_:sk110 stl:normal (1.0 0.0 0).
+_:sk110 stl:vertex1 (-16702.6517690273 10946.1601895881 0.0).
+_:sk110 stl:vertex2 (-16702.6517690273 7146.16018958814 3000.0).
+_:sk110 stl:vertex3 (-16702.6517690273 10946.1601895881 3000.0).
+_:sk111 stl:normal (0.0 -1.0 0).
+_:sk111 stl:vertex1 (-16702.6517690273 7146.16018958814 0.0).
+_:sk111 stl:vertex2 (-16902.6517690273 7146.16018958814 0.0).
+_:sk111 stl:vertex3 (-16902.6517690273 7146.16018958814 3000.0).
+_:sk112 stl:normal (0.0 -1.0 0).
+_:sk112 stl:vertex1 (-16702.6517690273 7146.16018958814 0.0).
+_:sk112 stl:vertex2 (-16902.6517690273 7146.16018958814 3000.0).
+_:sk112 stl:vertex3 (-16702.6517690273 7146.16018958814 3000.0).
+_:sk113 stl:normal (-1.0 0.0 0).
+_:sk113 stl:vertex1 (-16902.6517690273 7146.16018958814 0.0).
+_:sk113 stl:vertex2 (-16902.6517690273 10946.1601895881 0.0).
+_:sk113 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk114 stl:normal (-1.0 0.0 0).
+_:sk114 stl:vertex1 (-16902.6517690273 7146.16018958814 0.0).
+_:sk114 stl:vertex2 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk114 stl:vertex3 (-16902.6517690273 7146.16018958814 3000.0).
+_:sk115 stl:normal (0.0 1.0 0).
+_:sk115 stl:vertex1 (-16902.6517690273 10946.1601895881 0.0).
+_:sk115 stl:vertex2 (-16702.6517690273 10946.1601895881 0.0).
+_:sk115 stl:vertex3 (-16702.6517690273 10946.1601895881 3000.0).
+_:sk116 stl:normal (0.0 1.0 0).
+_:sk116 stl:vertex1 (-16902.6517690273 10946.1601895881 0.0).
+_:sk116 stl:vertex2 (-16702.6517690273 10946.1601895881 3000.0).
+_:sk116 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk117 stl:normal (0.0 0.0 1).
+_:sk117 stl:vertex1 (-16702.6517690273 10946.1601895881 3000.0).
+_:sk117 stl:vertex2 (-16702.6517690273 7146.16018958814 3000.0).
+_:sk117 stl:vertex3 (-16902.6517690273 7146.16018958814 3000.0).
+_:sk118 stl:normal (0.0 0.0 1).
+_:sk118 stl:vertex1 (-16702.6517690273 10946.1601895881 3000.0).
+_:sk118 stl:vertex2 (-16902.6517690273 7146.16018958814 3000.0).
+_:sk118 stl:vertex3 (-16902.6517690273 10946.1601895881 3000.0).
+_:sk119 stl:normal (0.0 0.0 -1).
+_:sk119 stl:vertex1 (-16702.6517690273 10946.1601895881 0.0).
+_:sk119 stl:vertex2 (-16902.6517690273 7146.16018958814 0.0).
+_:sk119 stl:vertex3 (-16702.6517690273 7146.16018958814 0.0).
+_:sk120 stl:normal (0.0 0.0 -1).
+_:sk120 stl:vertex1 (-16702.6517690273 10946.1601895881 0.0).
+_:sk120 stl:vertex2 (-16902.6517690273 10946.1601895881 0.0).
+_:sk120 stl:vertex3 (-16902.6517690273 7146.16018958814 0.0).
+
+
+#ENDS 240 [msec] TC=2272 TP=42734 BC=0 BP=2253 PM=0 CM=0 FM=0 AM=0
+

@@ -1,0 +1,25 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/socrates#>.
+
+:socrates a :Human.
+:socrates a :NonFemale.
+
+:NonFemale owl:disjointWith :Female.
+:Human rdfs:subClassOf :MaleOrFemale.
+:MaleOrFemale owl:unionOf (:Female :Male).
+:Female rdfs:subClassOf :Mortal.
+:Male rdfs:subClassOf :Mortal.
+
+
+### RDF plus OWL support
+
+{?X a ?Y. ?Y rdfs:subClassOf ?Z} => {?X a ?Z}.
+
+{?X a ?Y. ?Y owl:disjointWith ?Z. ?X a ?Z} => false.
+
+#{?I a ?X. ?X rdfs:subClassOf ?Y. ?Y owl:unionOf (?A ?B)} => ({?I a ?A} {?I a ?B})!e:disjunction.
+#{?I a ?X. ?X rdfs:subClassOf ?Y. ?Y owl:unionOf (?A ?B ?C)} => ({?I a ?A} {?I a ?B} {?I a ?C})!e:disjunction.

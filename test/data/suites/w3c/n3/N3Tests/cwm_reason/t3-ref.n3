@@ -1,0 +1,14 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/reason/t3.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/reason/t3.n3
+     @prefix : <t3.n3#> .
+    
+    :a     :b :c .
+    
+    :a2     :b2 :c2 .
+    
+#ENDS

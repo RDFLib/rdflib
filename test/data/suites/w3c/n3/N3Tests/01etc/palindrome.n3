@@ -1,0 +1,32 @@
+# Palindrome example - The Art of Prolog Chapter 17
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+{(?Xs) :accept true} <= {
+    (?Q) :initial true.
+    (?Xs ?Q ()) :accept true.
+}.
+
+{(?XXs ?Q ?S) :accept true} <= {
+    ?XXs e:firstRest (?X ?Xs).
+    (?Q ?X ?S ?Q1 ?S1) :delta true.
+    (?Xs ?Q1 ?S1) :accept true.
+}.
+{(() ?Q ()) :accept true} <= {
+    (?Q) :final true.
+}.
+
+(:push) :initial true.
+(:pop) :final true.
+
+{(:push ?X ?S :push ?XS) :delta true} <= {
+    ?XS e:firstRest (?X ?S).
+}.
+{(:push ?X ?S :pop ?XS) :delta true} <= {
+    ?XS e:firstRest (?X ?S)
+}.
+{(:push ?X ?S :pop ?S) :delta true} <= true.
+{(:pop ?X ?XS :pop ?S) :delta true} <= {
+    ?XS e:firstRest (?X ?S)
+}.

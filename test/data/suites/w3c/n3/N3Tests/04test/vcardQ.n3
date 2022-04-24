@@ -1,0 +1,15 @@
+# $Id: vcardQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think vcardP.n3 --query vcardQ.n3
+# PxButton | cwm | cwm vcardP.n3 --think --query"=vcardQ.n3"
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/vcardP#>.
+
+[]
+q:select {?S ?P ?O};
+q:where  {?S :employeeId "1234". ?S ?P ?O}.
+
+[]
+q:select {?O ?Q ?R};
+q:where  {?S :employeeId "1234". ?S ?P ?O. ?O ?Q ?R}.

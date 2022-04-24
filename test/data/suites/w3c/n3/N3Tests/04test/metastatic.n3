@@ -1,0 +1,24 @@
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/metastatic#>.
+
+(:MetastaticCancer e:T) e:depends
+  (() 0.2).
+
+(:SerumCalcium e:T) e:depends
+  (((:MetastaticCancer e:T)) 0.8),
+  (((:MetastaticCancer e:F)) 0.2).
+
+(:BrainTumor e:T) e:depends
+  (((:MetastaticCancer e:T)) 0.2),
+  (((:MetastaticCancer e:F)) 0.05).
+
+(:Coma e:T) e:depends
+  (((:SerumCalcium e:T) (:BrainTumor e:T)) 0.8),
+  (((:SerumCalcium e:T) (:BrainTumor e:F)) 0.8),
+  (((:SerumCalcium e:F) (:BrainTumor e:T)) 0.8),
+  (((:SerumCalcium e:F) (:BrainTumor e:F)) 0.05).
+
+(:HeadAche e:T) e:depends
+  (((:BrainTumor e:T)) 0.8),
+  (((:BrainTumor e:F)) 0.6).

@@ -1,0 +1,12 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope --tactic existing-path http://eulersharp.sourceforge.net/2007/07test/socrater.n3 --pass
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/socrates#>.
+
+:Socrates a :human.
+_:sk_0 a :human.
+:Socrates :mother _:sk_0.
+
+#2018-04-18T08:28:43.476Z in=5 out=3 ent=2 step=3 brake=2 inf=12664 sec=0.019 inf/sec=666526
+#ENDS
+

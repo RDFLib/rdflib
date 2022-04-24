@@ -1,0 +1,4 @@
+# $Id: ex2-2a.n3 436 2004-12-19 22:40:26Z josd $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+rdf:type rdf:type rdf:Property .

@@ -1,0 +1,17 @@
+# From swap/test/list/last.n3
+@prefix : <#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+
+{ (  1 2 3 4 5 ) list:length 5 } => { :test1 a :SUCCESS }.
+
+{ () list:length 1 } => {  :trap1 a :FAILURE}.
+
+:thing1 :prop1 ( 1 2 3 ) .
+{ [ is :prop1 of :thing1 ] list:length ?item } => { :test2 :is 3 } .
+
+( :foo :bar :baz ) :prop2 :test6a .
+( :foo ) :prop2 :test6b .
+( :bar :baz ) :prop2 :trap4 .
+
+{ ?a_list list:length 3 .
+  ?a_list :prop2 ?thing } => { ?thing a :SUCCESS } .

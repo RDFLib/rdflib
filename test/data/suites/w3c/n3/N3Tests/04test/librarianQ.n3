@@ -1,0 +1,10 @@
+# $Id: librarianQ.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler --nope --think librarianP.n3 --query librarianQ.n3
+# PxButton | cwm | cwm librarianP.n3 --think --query"=librarianQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/librarianP#>.
+
+[]
+q:select {<> q:answer (?x ?y)};
+q:where  {?x a :Librarian; :hairColor ?y}.

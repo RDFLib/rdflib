@@ -1,0 +1,97 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/n3c/components.n3 --turtle http://josd.github.io/brain/n3c/tasks.n3 --query http://josd.github.io/brain/n3c/forAllIn_query.n3
+
+@prefix n3: <https://www.w3.org/ns/n3#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://example.org/test#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    :task1 a :AllTasksCompleted.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    :task1 a :AllTasksCompleted.
+  };
+  r:evidence (
+    <#lemma2>
+    <#lemma3>
+  );
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_0"]; r:boundTo [ <http://www.w3.org/2004/06/rei#uri> "http://example.org/test#task1"]];
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; <http://www.w3.org/2004/06/rei#nodeId> "_:sk_0"]];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Extraction;
+  r:gives {
+    :task1 a :CompositeTask.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3c/tasks.n3>].
+
+<#lemma3> a r:Inference;
+  r:gives {
+    ({:task1 :subTask _:sk_0} {_:sk_0 a :Completed}) n3:forAllIn <http://josd.github.io/brain/n3c/subtasks.n3>.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/n3c/subtasks.n3> log:semantics {:task1 :subTask :subtask1.
+     :subtask1 a :Completed.
+     :task1 :subTask :subtask2.
+     :subtask2 a :Completed.
+     :task1 :subTask :subtask3.
+     :subtask3 a :Completed.
+     :task2 :subTask :subtask4.
+     :subtask4 a :Completed.
+     :task2 :subTask :subtask5}}]
+    [ a r:Fact; r:gives {("forall" {{:task1 :subTask :subtask1.
+      :subtask1 a :Completed.
+      :task1 :subTask :subtask2.
+      :subtask2 a :Completed.
+      :task1 :subTask :subtask3.
+      :subtask3 a :Completed.
+      :task2 :subTask :subtask4.
+      :subtask4 a :Completed.
+      :task2 :subTask :subtask5} log:includes {:task1 :subTask _:sk_0}} {{:task1 :subTask :subtask1.
+      :subtask1 a :Completed.
+      :task1 :subTask :subtask2.
+      :subtask2 a :Completed.
+      :task1 :subTask :subtask3.
+      :subtask3 a :Completed.
+      :task2 :subTask :subtask4.
+      :subtask4 a :Completed.
+      :task2 :subTask :subtask5} log:includes {_:sk_0 a :Completed}}) e:derive true}]
+  );
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_0"]; r:boundTo [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/brain/n3c/subtasks.n3"]];
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_1"]; r:boundTo {:task1 :subTask :subtask1.
+   :subtask1 a :Completed.
+   :task1 :subTask :subtask2.
+   :subtask2 a :Completed.
+   :task1 :subTask :subtask3.
+   :subtask3 a :Completed.
+   :task2 :subTask :subtask4.
+   :subtask4 a :Completed.
+   :task2 :subTask :subtask5}];
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_2"]; r:boundTo {:task1 :subTask _:sk_0}];
+  r:binding [ r:variable [ <http://www.w3.org/2004/06/rei#uri> "http://josd.github.io/var#x_3"]; r:boundTo {_:sk_0 a :Completed}];
+  r:rule <#lemma5>.
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 a :CompositeTask.
+     ({var:x_0 :subTask var:x_1} {var:x_1 a :Completed}) n3:forAllIn <http://josd.github.io/brain/n3c/subtasks.n3>} => {var:x_0 a :AllTasksCompleted}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3c/forAllIn_query.n3>].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3. {(var:x_2 var:x_3) n3:forAllIn var:x_0} <= {var:x_0 log:semantics var:x_1.
+     ("forall" {var:x_1 log:includes var:x_2} {var:x_1 log:includes var:x_3}) e:derive true}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/n3c/components.n3>].
+
+#2020-02-22T21:52:15.928Z in=14 out=1 ent=1 step=1 brake=1 inf=36659 sec=0.103 inf/sec=355913
+#ENDS
+

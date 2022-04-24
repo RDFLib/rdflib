@@ -1,0 +1,6 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+{?P rdfs:subPropertyOf ?Q. ?S ?P ?O} => {?S ?Q ?O}.
+{?P rdfs:subPropertyOf ?Q. ?Q rdfs:subPropertyOf ?R} => {?P rdfs:subPropertyOf ?R}.
+{?P rdfs:subPropertyOf ?Q. ?Q rdfs:domain ?C} => {?P rdfs:domain ?C}.
+{?P rdfs:subPropertyOf ?Q. ?Q rdfs:range ?C} => {?P rdfs:range ?C}.

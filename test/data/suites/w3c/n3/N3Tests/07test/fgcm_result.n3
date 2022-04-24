@@ -1,0 +1,39 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin.n3 http://eulersharp.sourceforge.net/2003/03swap/fl-rules.n3 http://eulersharp.sourceforge.net/2007/07test/patient.n3 http://eulersharp.sourceforge.net/2007/07test/fgcm-model.n3 --query http://eulersharp.sourceforge.net/2007/07test/fgcm-query.n3
+
+@prefix fgcm: <http://eulersharp.sourceforge.net/2006/02swap/fgcm-plugin#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://www.example.org/patientdescriptions/>.
+@prefix dco: <http://www.debugit.eu/ontology/1.0/dco.owl#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+
+(:patient008 dco:SimpleUrinaryTractInfection false) fl:gpi (0.15609492798580316 0.24989839953254675).
+(:patient008 dco:SimpleAcuteCystitis false) fl:gpi (0.5 0.6818062399896525).
+(:patient008 dco:ComplicatedUrinaryTractInfection false) fl:gpi (0.9962884114614465 0.9975150883686373).
+(:patient008 dco:SimpleAcutePyelonephritis false) fl:gpi (0.9352648821737795 0.9575078825964835).
+(:patient008 dco:ComplicatedAcutePyelonephritis false) fl:gpi (0.3181937600103475 0.5).
+(:patient008 dco:PregnancyUrinaryTractInfection false) fl:gpi (0.6968116667552052 0.7501016004674532).
+(:patient008 dco:ObstructiveUropathy false) fl:gpi (0.3181937600103475 0.3181937600103475).
+(:patient008 dco:PregnancyObstructiveUropathy false) fl:gpi (0.6497482370328734 0.6818062399896525).
+(:patient008 dco:ComplicatedAcutePregnancyPyelonephritis false) fl:gpi (0.5968726072149699 0.7501016004674533).
+(:patient008 dco:AcuteProstatis false) fl:gpi (0.9950831899235624 0.9954629272837167).
+(:patient008 dco:Fever false) fl:gpi (0.8 1).
+(:patient008 dco:UrineDipstickTest false) fl:gpi (1 1).
+(:patient008 dco:Chills false) fl:gpi (1 1).
+(:patient008 dco:DiabetesMellitus false) fl:gpi (0 0).
+(:patient008 dco:Male false) fl:gpi (1 1).
+(:patient008 dco:Old false) fl:gpi (1 1).
+(:patient008 dco:Dysuria false) fl:gpi (1 1).
+(:patient008 dco:DigitalRectalExamination false) fl:gpi (1 1).
+
+#2018-04-18T08:27:55.856Z in=630 out=18 ent=237 step=1917 brake=5 inf=271977 sec=0.074 inf/sec=3675365
+#ENDS
+

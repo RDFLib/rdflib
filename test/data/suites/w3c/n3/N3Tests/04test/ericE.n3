@@ -1,0 +1,15 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/ericP#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A _:D_1_ _:E_1_ _:F_1_ _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A2 _:D_1_ _:E_1_ _:F_1_ _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A3 _:D_1_ _:E_1_ _:F_1_ _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A4 _:D_1_ _:E_1_ _:F_1_ _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A3 :D3 :E3 :F3 _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A4 :D4 :E4 :F4 _:G_1_). 
+<http://eulersharp.sourceforge.net/2004/04test/ericQ.n3> q:answer (:A4 :D4 :E4 :F4 :F4). 
+

@@ -1,0 +1,44 @@
+[ a log:Truth;
+  rei:statements [
+    owl:oneOf (
+      [ rei:subject [
+          rei:statements [
+            owl:oneOf (
+              [ rei:subject [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#a"];
+                rei:predicate [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#mother"];
+                rei:object [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#b"];
+              ]
+              [ rei:subject [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#a"];
+                rei:predicate [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#sister"];
+                rei:object [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#c"];
+              ]
+            )
+          ];
+          rei:existentials [owl:oneOf ()];
+          rei:universals [owl:oneOf ()]
+        ];
+        rei:predicate [ rei:uri "http://www.w3.org/2000/10/swap/log#implies"];
+        rei:object [
+          rei:statements [
+            owl:oneOf (
+              [ rei:subject [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#b"];
+                rei:predicate [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#aunt"];
+                rei:object [ rei:uri "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#c"];
+              ]
+            )
+          ];
+          rei:existentials [owl:oneOf ()];
+          rei:universals [owl:oneOf ()]
+        ];
+      ]
+    )
+  ];
+  rei:existentials [owl:oneOf ()];
+  rei:universals [
+    owl:oneOf (
+      "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#a"
+      "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#b"
+      "https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/qvars1.n3#c"
+    )
+  ]
+] .

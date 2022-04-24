@@ -1,0 +1,55 @@
+#Processed by Id: cwm.py,v 1.162 2004/08/08 01:44:49 syosi Exp 
+        #    using base http://eulersharp.sourceforge.net/2004/04test/ericP.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.163 2004/08/08 01:44:49 syosi Exp
+
+#   Base was: http://eulersharp.sourceforge.net/2004/04test/ericP.n3
+     @prefix : <ericF.n3#> .
+     @prefix da: </euler#> .
+     @prefix e: <ericP#> .
+    
+      ( e:A 
+        :d 
+        :e 
+        :f 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A2 
+        :d 
+        :e 
+        :f 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A3 
+        :d 
+        :e 
+        :f 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A3 
+        e:D3 
+        e:E3 
+        e:F3 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A4 
+        :d 
+        :e 
+        :f 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A4 
+        e:D4 
+        e:E4 
+        e:F4 
+        :g  )
+         da:bindingFor <ericF.n3> .
+      ( e:A4 
+        e:D4 
+        e:E4 
+        e:F4 
+        e:F4  )
+         da:bindingFor <ericF.n3> .
+    
+#ENDS

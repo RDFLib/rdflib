@@ -1,0 +1,5 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/mona#>.
+
+# scenario 3 from http://artint.info/html/ArtInt_133.html
+{?P :ascribed :wheezing. ?P :ascribed :nonsmoker} => {?P :ascribed :wheezing. ?P :ascribed :nonsmoker}.
+

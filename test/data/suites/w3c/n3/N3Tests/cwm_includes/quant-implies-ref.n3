@@ -1,0 +1,9 @@
+# From swap/test/ref/bi-quant-imp.n3
+@prefix : <quant-implies.n3#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+:today a :Greatday, :Sunnyday .
+
+[ a :Birthday, :Greatday, :Sunnyday ] .
+
+[ a :God ] .

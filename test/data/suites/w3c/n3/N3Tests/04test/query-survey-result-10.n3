@@ -1,0 +1,37 @@
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix p0: <http://eulersharp.sourceforge.net/2003/03swap/rdfs-rules#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://example.org/survey-sample/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix ex: <http://example.org/survey-sample/ontology/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix acm: <http://daml.umbc.edu/ontologies/topic-ont#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (:person01). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:name). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (:person02). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:author). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:Person). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:reified_triple). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (:person03). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:year). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (:Paper). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:email). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (<http://example.org/ACMTopic/Information_Systems>). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (<http://example.org/ACMTopic/Information_Systems/Database_Management/Languages/Query_Languages>). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (<http://example.org/ACMTopic/Information_Systems/Database_Management/Languages>). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:title). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:InProceedings). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:isAbout). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:Topic). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (<http://example.org/ACMTopic/Information_Systems/Database_Management>). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (:person04). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:Human). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:Publication). 
+<http://eulersharp.sourceforge.net/2004/04test/query-survey-10.n3> q:answer (ex:pages). 
+

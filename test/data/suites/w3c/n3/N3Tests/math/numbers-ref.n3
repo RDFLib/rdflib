@@ -1,0 +1,20 @@
+# From swap/ref/math1.n3
+@prefix : <numbers.n3#> .
+
+-3 :valueOf "3 negated" .
+1 :valueOf "7 % 2" .
+
+3 :valueOf "sum(3) = 3",
+    "what -3's the - of" .
+
+3.5 :valueOf "7 / 2" .
+
+5 :valueOf "8 - 3" .
+
+8 :valueOf "3 + 5 = 8", "3 + (8 - 3)" .
+
+30 :valueOf "5 * 3 * 2" .
+
+108 :valueOf "3 + 5 + 100" .
+
+1024 :valueOf "2^10" .

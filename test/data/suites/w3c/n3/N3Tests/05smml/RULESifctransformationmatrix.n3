@@ -1,0 +1,217 @@
+
+
+@prefix : <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/ifctox3d#>.
+@prefix x3d: <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologyx3d20091015#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix list: <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix inst: <http://multimedialab.elis.ugent.be/ontologies/ifc/instances#>.
+@prefix ifc: <http://multimedialab.elis.ugent.be/ontologies/ifc/ontology#>.
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> . 
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix matrix: <http://smartlab.elis.ugent.be/ontologies/regulations/geometry/matrix#>.
+
+#Find boxlike wall
+{
+	  #Information extraction
+    ?Wall ifc:representation ?ProdDefShape.
+    ?ProdDefShape ifc:representations (?A ?ShapeRep).
+    ?ShapeRep ifc:items (?EAS).
+    ?EAS a ifc:IfcExtrudedAreaSolid.
+    ?EAS ifc:extrudedDirection ?ExtrudedDirection.
+      ?ExtrudedDirection ifc:directionRatios ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double).
+    ?EAS ifc:depth ?Depth.
+    ?EAS ifc:sweptArea ?SweptArea.
+      ?SweptArea a ifc:IfcRectangleProfileDef.     
+      ?SweptArea ifc:xDim ?RectxDim.
+      ?SweptArea ifc:yDim ?RectyDim      
+}
+=>
+{
+    ?Wall a :BoxShapedWall.
+    ?EAS a x3d:Box.
+    ?EAS x3d:sizeX ?RectxDim.
+    ?EAS x3d:sizeY ?RectyDim.
+    ?EAS x3d:sizeZ ?Depth
+}.
+
+#get matrix for first LocalPlacement
+{
+    ?LP a ifc:IfcLocalPlacement.
+    ?y e:findall (?rel {?LP ifc:placementRelTo ?rel} ()).
+    
+    ?LP ifc:relativePlacement ?AP3D1.
+    ?AP3D1 ifc:location ?CP.
+    ?CP ifc:coordinates (?CPX ?CPY ?CPZ).
+    
+    ?AP3D1 ifc:refDirection ?RefDir.
+    ?RefDir ifc:directionRatios (?RefDirX ?RefDirY ?RefDirZ).
+    #(?RefDirY -1) math:product ?RefDirYNeg
+}
+=>
+{
+    ?LP :TranslationMatrix ?TM.
+    ?TM a matrix:matrix3x1.
+    ?TM matrix:elements (?CPX ?CPY ?CPZ).
+    
+    ?LP :RotationMatrix ?RM.
+    ?RM a matrix:matrix3x3.
+    ?RM matrix:elements (?RefDirX ?RefDirY 0 ?RefDirY ?RefDirX 0 0 0 1).      
+}.
+
+#get wall location point compared to WCS (Coordinate_3)
+{
+    ?LP1 a ifc:IfcLocalPlacement. 
+    ?LP1 ifc:placementRelTo ?LP. 
+    ?LP :TranslationMatrix ?TM.
+    ?LP :RotationMatrix ?RM.
+    ?y e:findall (?sTM1 {?LP1 :TranslationMatrix ?sTM1} ()).
+    
+    ?LP1 ifc:relativePlacement ?AP3D2.
+    ?AP3D2 ifc:location ?CP.
+    ?CP ifc:coordinates (?CPX ?CPY ?CPZ).
+    
+    ?AP3D2 ifc:refDirection ?RefDir.
+    ?RefDir ifc:directionRatios (?RefDirX ?RefDirY ?RefDirZ).
+    #(?RefDirY -1) math:product ?RefDirYNeg
+}
+=>
+{         
+    ?LP1 :LocalTranslationMatrix ?LTM.
+    ?LTM a matrix:matrix3x1.
+    ?LTM matrix:elements (?CPX ?CPY ?CPZ).    
+    
+    ?LP1 :LocalRotationMatrix ?LRM.
+    ?LRM a matrix:matrix3x3.
+    ?LRM matrix:elements (?RefDirX ?RefDirY 0 ?RefDirY ?RefDirX 0 0 0 1).      
+    
+    (?LTM ?TM) matrix:sum ?Transtemp. #(3x1 3x1)
+    (?LRM ?RM) matrix:product ?Rot. #(3x3 3x3)
+    
+    ?LP1 :LocalTranslationResult ?Transtemp.
+    ?LP1 :LocalRotationResult ?Rot     
+}.
+
+{
+    ?LP1 a ifc:IfcLocalPlacement. 
+    ?LP1 ifc:placementRelTo ?LP. 
+    ?LP :TranslationMatrix ?TM.
+    ?LP :RotationMatrix ?RM.
+    ?y e:findall (?sTM1 {?LP1 :TranslationMatrix ?sTM1} ()).
+    
+    ?LP1 :LocalTranslationMatrix ?LTM.
+    ?LP1 :LocalRotationMatrix ?LRM.
+    ?LP1 :LocalTranslationResult ?Transtemp.
+    ?LP1 :LocalRotationResult ?Rot
+}
+=>
+{
+    (?LRM ?LTM) matrix:product ?Trans. #(3x3 3x1) -> 3x1
+    
+    #(?LRM ?TM) matrix:product ?Rot.
+    #(?LTM ?Rot) matrix:sum ?Trans.
+    
+    ?LP1 :TranslationMatrix ?Trans.
+    ?LP1 :RotationMatrix ?Rot 
+}.
+
+# ------------------------------------------------------- #
+
+
+#find location and refdirection of wall: on corner of wall
+{
+    ?Wall a :BoxShapedWall.
+    ?Wall ifc:objectPlacement ?LPWall.
+    ?LPWall :TranslationMatrix ?TM.
+    ?LPWall :RotationMatrix ?RM
+}
+=>
+{
+    ?Wall :TranslationMatrix ?TM. #(3x1)
+    ?Wall :RotationMatrix ?RM #(3x3)     
+}.
+
+#find location and refdirection of box: on corner of wall
+{
+    ?Wall a :BoxShapedWall. 
+    ?Wall ifc:representation ?ProdDefShape.
+      ?ProdDefShape ifc:representations (?A ?ShapeRep).
+      ?ShapeRep ifc:items (?EAS).    
+    ?Wall :TranslationMatrix ?TM.
+    ?Wall :RotationMatrix ?RM.
+
+    ?EAS a x3d:Box.
+    ?EAS ifc:position ?AP3D.
+    
+    ?AP3D ifc:location ?CP.
+    ?CP ifc:coordinates (?CPX ?CPY ?CPZ).
+    ?AP3D ifc:refDirection ?RefDir.   
+    ?RefDir ifc:directionRatios (?RefDirX ?RefDirY ?RefDirZ).
+    #(?RefDirY -1) math:product ?RefDirYNeg
+}
+=>
+{
+    ?EAS :LocalTranslationMatrix ?LTM.
+    ?LTM a matrix:matrix3x1.
+    ?LTM matrix:elements (?CPX ?CPY ?CPZ).    
+    
+    ?EAS :LocalRotationMatrix ?LRM.
+    ?LRM a matrix:matrix3x3.
+    ?LRM matrix:elements (?RefDirX ?RefDirY 0 ?RefDirY ?RefDirX 0 0 0 1).        
+    
+    (?LTM ?TM) matrix:sum ?Transtemp. #(3x1 3x1)
+    (?LRM ?RM) matrix:product ?Rot. #(3x3 3x3)
+    
+    #?EAS :LocalTranslationResult ?Transtemp.
+    #?EAS :LocalRotationResult ?Rot 
+    
+    (?LRM ?Transtemp) matrix:product ?Trans. #(3x3 3x1)
+    
+    ?EAS :TranslationMatrix ?Trans. #(3x1)
+    ?EAS :RotationMatrix ?Rot.    #(3x3)
+}.
+
+#Get location and refdirection of rectangle describing box: in center of groundplane of box
+{
+    ?EAS a x3d:Box.
+    ?EAS :TranslationMatrix ?TM.
+    ?EAS :RotationMatrix ?RM.
+    ?EAS ifc:sweptArea ?Rect.
+    ?Rect ifc:position ?AP3D.
+        
+    ?AP3D ifc:location ?CP.
+    ?CP ifc:coordinates (?CPX ?CPY).
+    ?AP3D ifc:refDirection ?RefDir.   
+    ?RefDir ifc:directionRatios (?RefDirX ?RefDirY).
+    #(?RefDirY -1) math:product ?RefDirYNeg    
+}
+=>
+{
+    
+    ?Rect :LocalTranslationMatrix ?LTM.
+    ?LTM a matrix:matrix3x1.
+    ?LTM matrix:elements (?CPX ?CPY 0).    
+    
+    ?Rect :LocalRotationMatrix ?LRM.
+    ?LRM a matrix:matrix3x3.
+    ?LRM matrix:elements (?RefDirX ?RefDirY 0 ?RefDirY ?RefDirX 0 0 0 1).        
+    
+    (?LTM ?TM) matrix:sum ?Transtemp.
+    (?LRM ?RM) matrix:product ?Rot.
+    
+    (?LRM ?Transtemp) matrix:product ?Trans.
+    
+    ?Rect :TranslationMatrix ?Trans.
+    ?Rect :RotationMatrix ?Rot.   
+    
+    #X3D OUTPUT:
+    (?Rot ?Trans) matrix:product ?Transtotal. 
+    ?EAS x3d:translationmatrix ?Trans.    
+    ?EAS x3d:rotationmatrix ?Rot.       
+    ?EAS x3d:translation ?Transtotal 
+}.
+
+# ------------------------------------------------------- #

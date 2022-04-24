@@ -1,0 +1,57 @@
+# Author: karl
+#  $Id: trigo-test.n3,v 1.7 2004/06/24 20:22:51 syosi Exp $
+
+@prefix : <#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix NonPi: <http://www.w3.org/2000/10/swap/mathNonPi#> .
+ 
+# A math test to see if it works here:
+
+#{ ("3" "5") math:sum ?x } => { ?x :valueOf "3 + 5" } .
+
+# test sine, cosine, arcsine, arcosine
+
+
+0 a :TestValue, NonPi:TestValue.
+0.23 a :TestValue, NonPi:TestValue.
+-0.707 a :TestValue, NonPi:TestValue.
+1.23 a :TestValue, NonPi:TestValue.
+3.14159265358979323846 a :TestValue.
+
+
+
+# test very simple
+{ 0 math:asin ?x } => { ?x :valueOf "asin(0) = 0" } .
+{ 1 math:acos ?x } => { ?x :valueOf "acos(1) = 0" } .
+
+{ ?x a NonPi:TestValue; math:sin ?y} => {?x :SIN ?y}.
+{ ?x a :TestValue; is math:asin of ?y} => {?x :ASIN ?y}.
+{ ?x a :TestValue . ?y math:sin of ?x} => {?y :ASIN ?x}.   # Inverse of sin is asin
+
+{ ?x a :TestValue; math:cos ?y} => {?x :COS ?y}.
+{ ?x a :TestValue; is math:acos of ?y} => {?x :ACOS ?y}.
+{ ?x a :TestValue . ?y math:cos of ?x} => {?y :ACOS ?x}.   # Inverse of cos is acos
+
+{ ?x a NonPi:TestValue; math:tan ?y} => {?x :TAN ?y}.
+{ ?x a :TestValue; is math:atan of ?y} => {?x :ATAN ?y}.
+{ ?x a :TestValue . ?y math:tan of ?x} => {?y :ATAN ?x}.   # Inverse of tan is atan
+
+{ ?x a :TestValue; math:sinh ?y} => {?x :SINH ?y}.
+{ ?x a :TestValue; is math:asinh of ?y} => {?x :ASINH ?y}.
+{ ?x a :TestValue . ?y math:sinh of ?x} => {?y :ASINH ?x}.   # Inverse of sinh is asinh
+
+{ ?x a :TestValue; math:cosh ?y} => {?x :COSH ?y}.
+{ ?x a :TestValue; is math:acosh of ?y} => {?x :ACOSH ?y}.
+{ ?x a :TestValue . ?y math:cosh of ?x} => {?y :ACOSH ?x}.   # Inverse of cosh is acosh
+
+{ ?x a :TestValue; math:tanh ?y} => {?x :TANH ?y}.
+{ ?x a :TestValue; is math:atanh of ?y} => {?x :ATANH ?y}.
+{ ?x a :TestValue . ?y math:tanh of ?x} => {?y :ATANH ?x}.   # Inverse of tanh is atanh
+
+
+#{ 0 math:acos ?x } => { ?x :valueOf "acos(0) = 1.57079632679" } .
+#{ 1 math:asin ?x } => { ?x :valueOf "asin(1) = 1.57079632679" } .
+#{ 3.14159265358979323846  math:cos ?x } => { ?x :valueOf "cos(Pi) = -1" } .
+

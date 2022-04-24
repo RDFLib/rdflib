@@ -1,0 +1,12 @@
+@prefix : <content.n3#> .
+
+:test1 :is """@prefix log:  <http://www.w3.org/2000/10/swap/log#>.
+
+{<> log:content ?x} => {:test1 :is ?x} .
+
+{_:bn log:content ?x} => {:test2 a :FAILURE} .
+
+{1 log:content ?x} => {:test3 a :FAILURE} .
+
+{"foo" log:content ?x} => {:test4 a :FAILURE} .
+""" .

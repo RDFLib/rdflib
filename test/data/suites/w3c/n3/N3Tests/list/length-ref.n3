@@ -1,0 +1,5 @@
+@prefix : <length.n3#>.
+
+:test1 a :SUCCESS.
+:test2 :is 3.
+:test6a a :SUCCESS.

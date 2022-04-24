@@ -1,0 +1,12 @@
+# $Id: ex3Q.n3 426 2004-12-07 16:10:42Z josd $
+# PxButton | es  | euler ex3.n3 --nope --think --query ex3Q.n3
+# PxButton | cwm | cwm ex3.n3 --think --query"=ex3Q.n3"
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix dc:  <http://purl.org/dc/elements/1.1/>.
+@prefix ns:  <http://example.org/ns#>.
+
+[]
+q:select {<> q:answer (?title ?price)};
+q:where  {?x dc:title ?title; ns:price ?price. ?price math:lessThan 30}.

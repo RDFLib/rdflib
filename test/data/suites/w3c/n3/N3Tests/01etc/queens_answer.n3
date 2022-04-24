@@ -1,0 +1,101 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope --plugin http://josd.github.io/brain/queens/queens_program.pl --query http://josd.github.io/brain/queens/queens_query.n3
+
+@prefix queens: <http://josd.github.io/brain/queens#>.
+
+8 queens:solve (1 5 8 6 3 7 2 4).
+8 queens:solve (1 6 8 3 7 4 2 5).
+8 queens:solve (1 7 4 6 8 2 5 3).
+8 queens:solve (1 7 5 8 2 4 6 3).
+8 queens:solve (2 4 6 8 3 1 7 5).
+8 queens:solve (2 5 7 1 3 8 6 4).
+8 queens:solve (2 5 7 4 1 8 6 3).
+8 queens:solve (2 6 1 7 4 8 3 5).
+8 queens:solve (2 6 8 3 1 4 7 5).
+8 queens:solve (2 7 3 6 8 5 1 4).
+8 queens:solve (2 7 5 8 1 4 6 3).
+8 queens:solve (2 8 6 1 3 5 7 4).
+8 queens:solve (3 1 7 5 8 2 4 6).
+8 queens:solve (3 5 2 8 1 7 4 6).
+8 queens:solve (3 5 2 8 6 4 7 1).
+8 queens:solve (3 5 7 1 4 2 8 6).
+8 queens:solve (3 5 8 4 1 7 2 6).
+8 queens:solve (3 6 2 5 8 1 7 4).
+8 queens:solve (3 6 2 7 1 4 8 5).
+8 queens:solve (3 6 2 7 5 1 8 4).
+8 queens:solve (3 6 4 1 8 5 7 2).
+8 queens:solve (3 6 4 2 8 5 7 1).
+8 queens:solve (3 6 8 1 4 7 5 2).
+8 queens:solve (3 6 8 1 5 7 2 4).
+8 queens:solve (3 6 8 2 4 1 7 5).
+8 queens:solve (3 7 2 8 5 1 4 6).
+8 queens:solve (3 7 2 8 6 4 1 5).
+8 queens:solve (3 8 4 7 1 6 2 5).
+8 queens:solve (4 1 5 8 2 7 3 6).
+8 queens:solve (4 1 5 8 6 3 7 2).
+8 queens:solve (4 2 5 8 6 1 3 7).
+8 queens:solve (4 2 7 3 6 8 1 5).
+8 queens:solve (4 2 7 3 6 8 5 1).
+8 queens:solve (4 2 7 5 1 8 6 3).
+8 queens:solve (4 2 8 5 7 1 3 6).
+8 queens:solve (4 2 8 6 1 3 5 7).
+8 queens:solve (4 6 1 5 2 8 3 7).
+8 queens:solve (4 6 8 2 7 1 3 5).
+8 queens:solve (4 6 8 3 1 7 5 2).
+8 queens:solve (4 7 1 8 5 2 6 3).
+8 queens:solve (4 7 3 8 2 5 1 6).
+8 queens:solve (4 7 5 2 6 1 3 8).
+8 queens:solve (4 7 5 3 1 6 8 2).
+8 queens:solve (4 8 1 3 6 2 7 5).
+8 queens:solve (4 8 1 5 7 2 6 3).
+8 queens:solve (4 8 5 3 1 7 2 6).
+8 queens:solve (5 1 4 6 8 2 7 3).
+8 queens:solve (5 1 8 4 2 7 3 6).
+8 queens:solve (5 1 8 6 3 7 2 4).
+8 queens:solve (5 2 4 6 8 3 1 7).
+8 queens:solve (5 2 4 7 3 8 6 1).
+8 queens:solve (5 2 6 1 7 4 8 3).
+8 queens:solve (5 2 8 1 4 7 3 6).
+8 queens:solve (5 3 1 6 8 2 4 7).
+8 queens:solve (5 3 1 7 2 8 6 4).
+8 queens:solve (5 3 8 4 7 1 6 2).
+8 queens:solve (5 7 1 3 8 6 4 2).
+8 queens:solve (5 7 1 4 2 8 6 3).
+8 queens:solve (5 7 2 4 8 1 3 6).
+8 queens:solve (5 7 2 6 3 1 4 8).
+8 queens:solve (5 7 2 6 3 1 8 4).
+8 queens:solve (5 7 4 1 3 8 6 2).
+8 queens:solve (5 8 4 1 3 6 2 7).
+8 queens:solve (5 8 4 1 7 2 6 3).
+8 queens:solve (6 1 5 2 8 3 7 4).
+8 queens:solve (6 2 7 1 3 5 8 4).
+8 queens:solve (6 2 7 1 4 8 5 3).
+8 queens:solve (6 3 1 7 5 8 2 4).
+8 queens:solve (6 3 1 8 4 2 7 5).
+8 queens:solve (6 3 1 8 5 2 4 7).
+8 queens:solve (6 3 5 7 1 4 2 8).
+8 queens:solve (6 3 5 8 1 4 2 7).
+8 queens:solve (6 3 7 2 4 8 1 5).
+8 queens:solve (6 3 7 2 8 5 1 4).
+8 queens:solve (6 3 7 4 1 8 2 5).
+8 queens:solve (6 4 1 5 8 2 7 3).
+8 queens:solve (6 4 2 8 5 7 1 3).
+8 queens:solve (6 4 7 1 3 5 2 8).
+8 queens:solve (6 4 7 1 8 2 5 3).
+8 queens:solve (6 8 2 4 1 7 5 3).
+8 queens:solve (7 1 3 8 6 4 2 5).
+8 queens:solve (7 2 4 1 8 5 3 6).
+8 queens:solve (7 2 6 3 1 4 8 5).
+8 queens:solve (7 3 1 6 8 5 2 4).
+8 queens:solve (7 3 8 2 5 1 6 4).
+8 queens:solve (7 4 2 5 8 1 3 6).
+8 queens:solve (7 4 2 8 6 1 3 5).
+8 queens:solve (7 5 3 1 6 8 2 4).
+8 queens:solve (8 2 4 1 7 5 3 6).
+8 queens:solve (8 2 5 3 1 7 4 6).
+8 queens:solve (8 3 1 6 2 5 7 4).
+8 queens:solve (8 4 1 3 6 2 7 5).
+
+#2020-02-22T21:52:33.379Z in=1 out=92 ent=92 step=92 brake=1 inf=62107 sec=0.101 inf/sec=614921
+#ENDS
+

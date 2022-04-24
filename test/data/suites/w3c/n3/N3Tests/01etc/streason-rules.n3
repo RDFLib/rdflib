@@ -1,0 +1,11 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://josd.github.io/brain#>.
+
+:a :b :c.
+{?C :y ?A} <= {?A :b ?C}.
+
+{?S ?P ?O} => {?O ?P ?S}.
+{?S ?P ?O. ?X :y ?Z} => {?S ?P [ :p ?O, 4], "s5", ?Z}.
+{?S ?P ?O. ?R log:equalTo :r10} => {?S ?P [ :q ?O, 9], ?R}.
+{(?S1 ?S2 ?S3) :r5 ?O} => {(?S2 ?S3 9 ?S1) :r9 ?O}.
+

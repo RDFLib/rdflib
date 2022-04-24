@@ -1,0 +1,2203 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/mmln/mmln-gv-example.n3 http://josd.github.io/brain/mmln/mmln-gv-mln.n3 http://josd.github.io/brain/mmln/mmln-plugin.n3 --query http://josd.github.io/brain/mmln/mmln-gv-query.n3
+
+@prefix : <http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:component <#lemma5>;
+  r:component <#lemma6>;
+  r:component <#lemma7>;
+  r:component <#lemma8>;
+  r:component <#lemma9>;
+  r:component <#lemma10>;
+  r:component <#lemma11>;
+  r:component <#lemma12>;
+  r:component <#lemma13>;
+  r:component <#lemma14>;
+  r:component <#lemma15>;
+  r:component <#lemma16>;
+  r:component <#lemma17>;
+  r:component <#lemma18>;
+  r:component <#lemma19>;
+  r:component <#lemma20>;
+  r:component <#lemma21>;
+  r:component <#lemma22>;
+  r:component <#lemma23>;
+  r:component <#lemma24>;
+  r:component <#lemma25>;
+  r:component <#lemma26>;
+  r:component <#lemma27>;
+  r:component <#lemma28>;
+  r:component <#lemma29>;
+  r:component <#lemma30>;
+  r:component <#lemma31>;
+  r:component <#lemma32>;
+  r:component <#lemma33>;
+  r:component <#lemma34>;
+  r:component <#lemma35>;
+  r:component <#lemma36>;
+  r:component <#lemma37>;
+  r:component <#lemma38>;
+  r:component <#lemma39>;
+  r:component <#lemma40>;
+  r:component <#lemma41>;
+  r:component <#lemma42>;
+  r:component <#lemma43>;
+  r:component <#lemma44>;
+  r:component <#lemma45>;
+  r:component <#lemma46>;
+  r:component <#lemma47>;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Neck_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Nolan_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Panathenaic_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Pointed_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Nikosthenic_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Belly_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Pelike).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Stamnos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Transport_amphora).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Volute_krater).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Column_krater).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Calyx_krater).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Bell_krater).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Skyphoid_krater).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Lebes_dinos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Hydria).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Kalpis).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Deianira_lekythos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2222222222222222 :Standard_lekythos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Secondary_lekythos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Squat_lekythos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.125 :Acorn_lekythos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Aryballos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.23529411764705882 :Alabastron).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Askos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2 :Kothon).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Plemochoe).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Lydion).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Komast_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Siana_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.18181818181818182 :Gordion_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Little_master_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Droop_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Chalkidizing_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Merrythought_cup).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Kylix_type_A).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2 :Kylix_type_B).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.4 :Corinthian_skyphos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Hermogenean_skyphos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Skyphos_heron_type).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Cup_skyphos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.6666666666666666 :Skyphos_type_A).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.8333333333333334 :Skyphos_type_B).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Kantharos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Rhyton).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.5 :Mastos).
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Chalice).
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Neck_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma49>
+    <#lemma50>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Neck_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Nolan_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma52>
+    <#lemma53>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Nolan_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Panathenaic_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma54>
+    <#lemma55>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Panathenaic_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma51>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Pointed_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma56>
+    <#lemma57>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Pointed_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma51>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Nikosthenic_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma58>
+    <#lemma59>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Nikosthenic_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Belly_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma60>
+    <#lemma61>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Belly_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma51>.
+
+<#lemma7> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Pelike).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma62>
+    <#lemma63>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Pelike"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma8> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Stamnos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma64>
+    <#lemma65>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Stamnos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma51>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Transport_amphora).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma66>
+    <#lemma67>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Transport_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma10> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Volute_krater).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma68>
+    <#lemma69>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Volute_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Column_krater).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma70>
+    <#lemma71>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Column_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma12> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Calyx_krater).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma72>
+    <#lemma73>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Calyx_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma13> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Bell_krater).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma74>
+    <#lemma75>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Bell_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma14> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Skyphoid_krater).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma76>
+    <#lemma77>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphoid_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma15> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Lebes_dinos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma78>
+    <#lemma79>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Lebes_dinos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.25];
+  r:rule <#lemma51>.
+
+<#lemma16> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Hydria).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma80>
+    <#lemma81>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Hydria"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma51>.
+
+<#lemma17> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Kalpis).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma82>
+    <#lemma83>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kalpis"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma51>.
+
+<#lemma18> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.14285714285714285 :Deianira_lekythos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma84>
+    <#lemma85>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Deianira_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma51>.
+
+<#lemma19> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2222222222222222 :Standard_lekythos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma86>
+    <#lemma87>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Standard_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2222222222222222];
+  r:rule <#lemma51>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Secondary_lekythos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma88>
+    <#lemma89>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Secondary_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma51>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Squat_lekythos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma90>
+    <#lemma91>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Squat_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma51>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.125 :Acorn_lekythos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma92>
+    <#lemma93>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Acorn_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.125];
+  r:rule <#lemma51>.
+
+<#lemma23> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.1111111111111111 :Aryballos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma94>
+    <#lemma95>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Aryballos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma51>.
+
+<#lemma24> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.23529411764705882 :Alabastron).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma96>
+    <#lemma97>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Alabastron"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.23529411764705882];
+  r:rule <#lemma51>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Askos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma98>
+    <#lemma99>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Askos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2 :Kothon).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma100>
+    <#lemma101>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kothon"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2];
+  r:rule <#lemma51>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Plemochoe).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma102>
+    <#lemma103>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Plemochoe"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0 :Lydion).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma104>
+    <#lemma105>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Lydion"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0];
+  r:rule <#lemma51>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Komast_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma106>
+    <#lemma107>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Komast_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma51>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Siana_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma108>
+    <#lemma109>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Siana_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.25];
+  r:rule <#lemma51>.
+
+<#lemma31> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.18181818181818182 :Gordion_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma110>
+    <#lemma111>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Gordion_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.18181818181818182];
+  r:rule <#lemma51>.
+
+<#lemma32> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Little_master_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma112>
+    <#lemma113>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Little_master_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Droop_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma114>
+    <#lemma115>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Droop_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma34> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Chalkidizing_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma116>
+    <#lemma117>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Chalkidizing_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma35> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.25 :Merrythought_cup).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma118>
+    <#lemma119>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Merrythought_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.25];
+  r:rule <#lemma51>.
+
+<#lemma36> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Kylix_type_A).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma120>
+    <#lemma121>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kylix_type_A"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma37> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2 :Kylix_type_B).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma122>
+    <#lemma123>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kylix_type_B"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2];
+  r:rule <#lemma51>.
+
+<#lemma38> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.4 :Corinthian_skyphos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma124>
+    <#lemma125>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Corinthian_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.4];
+  r:rule <#lemma51>.
+
+<#lemma39> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Hermogenean_skyphos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma126>
+    <#lemma127>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Hermogenean_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma51>.
+
+<#lemma40> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.2857142857142857 :Skyphos_heron_type).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma128>
+    <#lemma129>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_heron_type"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma51>.
+
+<#lemma41> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.16666666666666666 :Cup_skyphos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma130>
+    <#lemma131>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Cup_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma42> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.6666666666666666 :Skyphos_type_A).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma132>
+    <#lemma133>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_type_A"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.6666666666666666];
+  r:rule <#lemma51>.
+
+<#lemma43> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.8333333333333334 :Skyphos_type_B).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma134>
+    <#lemma135>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_type_B"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.8333333333333334];
+  r:rule <#lemma51>.
+
+<#lemma44> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Kantharos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma136>
+    <#lemma137>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kantharos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma51>.
+
+<#lemma45> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Rhyton).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma138>
+    <#lemma139>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Rhyton"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma51>.
+
+<#lemma46> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.5 :Mastos).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma140>
+    <#lemma141>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Mastos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.5];
+  r:rule <#lemma51>.
+
+<#lemma47> a r:Inference;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> :has_shape (0.3333333333333333 :Chalice).
+  };
+  r:evidence (
+    <#lemma48>
+    <#lemma142>
+    <#lemma143>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Chalice"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma51>.
+
+<#lemma48> a r:Extraction;
+  r:gives {
+    <http://josd.github.io/.well-known/genid/#bn_1> a :Greek_Pottery.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-example.n3>].
+
+<#lemma49> a r:Extraction;
+  r:gives {
+    :Neck_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma50> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Neck_amphora) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Neck_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Neck_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Neck_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma51> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2. {var:x_0 a :Greek_Pottery.
+     var:x_1 a :Greek_Pottery_Shape.
+     (var:x_0 var:x_1) e:inductivity var:x_2} => {var:x_0 :has_shape (var:x_2 var:x_1)}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-query.n3>].
+
+<#lemma52> a r:Extraction;
+  r:gives {
+    :Nolan_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma53> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Nolan_amphora) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Nolan_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Nolan_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Nolan_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma54> a r:Extraction;
+  r:gives {
+    :Panathenaic_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma55> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Panathenaic_amphora) e:inductivity 0.14285714285714285 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Panathenaic_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Panathenaic_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(100 700) math:quotient 0.14285714285714285}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Panathenaic_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma144>.
+
+<#lemma56> a r:Extraction;
+  r:gives {
+    :Pointed_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma57> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Pointed_amphora) e:inductivity 0.14285714285714285 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Pointed_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Pointed_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(100 700) math:quotient 0.14285714285714285}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Pointed_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma144>.
+
+<#lemma58> a r:Extraction;
+  r:gives {
+    :Nikosthenic_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma59> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Nikosthenic_amphora) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Nikosthenic_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Nikosthenic_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Nikosthenic_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma60> a r:Extraction;
+  r:gives {
+    :Belly_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma61> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Belly_amphora) e:inductivity 0.14285714285714285 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Belly_amphora _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Belly_amphora _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(100 700) math:quotient 0.14285714285714285}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Belly_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma144>.
+
+<#lemma62> a r:Extraction;
+  r:gives {
+    :Pelike a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma63> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Pelike) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Pelike _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Pelike _:sk_1) e:weight _:sk_0}} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(0 500) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Pelike"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma64> a r:Extraction;
+  r:gives {
+    :Stamnos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma65> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Stamnos) e:inductivity 0.1111111111111111 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Stamnos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Stamnos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100 100 100) math:sum 900}]
+    [ a r:Fact; r:gives {(100 900) math:quotient 0.1111111111111111}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Stamnos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 900];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma144>.
+
+<#lemma66> a r:Extraction;
+  r:gives {
+    :Transport_amphora a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma67> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Transport_amphora) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Transport_amphora _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Transport_amphora _:sk_1) e:weight _:sk_0}} (100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100) math:sum 300}]
+    [ a r:Fact; r:gives {(0 300) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Transport_amphora"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 300];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma68> a r:Extraction;
+  r:gives {
+    :Volute_krater a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma69> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Volute_krater) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Volute_krater _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Volute_krater _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Volute_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma70> a r:Extraction;
+  r:gives {
+    :Column_krater a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma71> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Column_krater) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Column_krater _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Column_krater _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(0 700) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Column_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma72> a r:Extraction;
+  r:gives {
+    :Calyx_krater a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma73> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Calyx_krater) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Calyx_krater _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Calyx_krater _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Calyx_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma74> a r:Extraction;
+  r:gives {
+    :Bell_krater a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma75> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Bell_krater) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Bell_krater _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Bell_krater _:sk_1) e:weight _:sk_0}} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(0 500) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Bell_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma76> a r:Extraction;
+  r:gives {
+    :Skyphoid_krater a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma77> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Skyphoid_krater) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphoid_krater _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphoid_krater _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(0 600) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphoid_krater"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma78> a r:Extraction;
+  r:gives {
+    :Lebes_dinos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma79> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Lebes_dinos) e:inductivity 0.25 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Lebes_dinos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Lebes_dinos _:sk_1) e:weight _:sk_0}} (100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100) math:sum 400}]
+    [ a r:Fact; r:gives {(100 400) math:quotient 0.25}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Lebes_dinos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.25];
+  r:rule <#lemma144>.
+
+<#lemma80> a r:Extraction;
+  r:gives {
+    :Hydria a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma81> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Hydria) e:inductivity 0.3333333333333333 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Hydria _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Hydria _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(200 600) math:quotient 0.3333333333333333}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Hydria"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma144>.
+
+<#lemma82> a r:Extraction;
+  r:gives {
+    :Kalpis a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma83> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Kalpis) e:inductivity 0.2857142857142857 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Kalpis _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Kalpis _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(200 700) math:quotient 0.2857142857142857}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kalpis"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma144>.
+
+<#lemma84> a r:Extraction;
+  r:gives {
+    :Deianira_lekythos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma85> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Deianira_lekythos) e:inductivity 0.14285714285714285 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Deianira_lekythos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Deianira_lekythos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(100 700) math:quotient 0.14285714285714285}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Deianira_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.14285714285714285];
+  r:rule <#lemma144>.
+
+<#lemma86> a r:Extraction;
+  r:gives {
+    :Standard_lekythos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma87> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Standard_lekythos) e:inductivity 0.2222222222222222 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Standard_lekythos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Standard_lekythos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100 100 100) math:sum 900}]
+    [ a r:Fact; r:gives {(200 900) math:quotient 0.2222222222222222}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Standard_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 900];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2222222222222222];
+  r:rule <#lemma144>.
+
+<#lemma88> a r:Extraction;
+  r:gives {
+    :Secondary_lekythos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma89> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Secondary_lekythos) e:inductivity 0.1111111111111111 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Secondary_lekythos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Secondary_lekythos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100 100 100) math:sum 900}]
+    [ a r:Fact; r:gives {(100 900) math:quotient 0.1111111111111111}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Secondary_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 900];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma144>.
+
+<#lemma90> a r:Extraction;
+  r:gives {
+    :Squat_lekythos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma91> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Squat_lekythos) e:inductivity 0.3333333333333333 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Squat_lekythos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Squat_lekythos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(200 600) math:quotient 0.3333333333333333}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Squat_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma144>.
+
+<#lemma92> a r:Extraction;
+  r:gives {
+    :Acorn_lekythos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma93> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Acorn_lekythos) e:inductivity 0.125 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Acorn_lekythos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Acorn_lekythos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100 100) math:sum 800}]
+    [ a r:Fact; r:gives {(100 800) math:quotient 0.125}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Acorn_lekythos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 800];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.125];
+  r:rule <#lemma144>.
+
+<#lemma94> a r:Extraction;
+  r:gives {
+    :Aryballos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma95> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Aryballos) e:inductivity 0.1111111111111111 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Aryballos _:sk_1) e:weight _:sk_0} (50))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Aryballos _:sk_1) e:weight _:sk_0}} (200 100 50 100))}]
+    [ a r:Fact; r:gives {(50) math:sum 50}]
+    [ a r:Fact; r:gives {(200 100 50 100) math:sum 450}]
+    [ a r:Fact; r:gives {(50 450) math:quotient 0.1111111111111111}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Aryballos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (50)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (200 100 50 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 50];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 450];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.1111111111111111];
+  r:rule <#lemma144>.
+
+<#lemma96> a r:Extraction;
+  r:gives {
+    :Alabastron a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma97> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Alabastron) e:inductivity 0.23529411764705882 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Alabastron _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Alabastron _:sk_1) e:weight _:sk_0}} (100 100 25 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 25 100 100) math:sum 425}]
+    [ a r:Fact; r:gives {(100 425) math:quotient 0.23529411764705882}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Alabastron"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 25 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 425];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.23529411764705882];
+  r:rule <#lemma144>.
+
+<#lemma98> a r:Extraction;
+  r:gives {
+    :Askos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma99> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Askos) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Askos _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Askos _:sk_1) e:weight _:sk_0}} (100 100 100 200 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 200 100) math:sum 600}]
+    [ a r:Fact; r:gives {(0 600) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Askos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 200 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma100> a r:Extraction;
+  r:gives {
+    :Kothon a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma101> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Kothon) e:inductivity 0.2 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Kothon _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Kothon _:sk_1) e:weight _:sk_0}} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(100 500) math:quotient 0.2}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kothon"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2];
+  r:rule <#lemma144>.
+
+<#lemma102> a r:Extraction;
+  r:gives {
+    :Plemochoe a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma103> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Plemochoe) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Plemochoe _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Plemochoe _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(0 600) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Plemochoe"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma104> a r:Extraction;
+  r:gives {
+    :Lydion a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma105> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Lydion) e:inductivity 0 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Lydion _:sk_1) e:weight _:sk_0} ())}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Lydion _:sk_1) e:weight _:sk_0}} (100 100 100 100))}]
+    [ a r:Fact; r:gives {() math:sum 0}]
+    [ a r:Fact; r:gives {(100 100 100 100) math:sum 400}]
+    [ a r:Fact; r:gives {(0 400) math:quotient 0}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Lydion"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo ()];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0];
+  r:rule <#lemma144>.
+
+<#lemma106> a r:Extraction;
+  r:gives {
+    :Komast_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma107> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Komast_cup) e:inductivity 0.2857142857142857 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Komast_cup _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Komast_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(200 700) math:quotient 0.2857142857142857}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Komast_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma144>.
+
+<#lemma108> a r:Extraction;
+  r:gives {
+    :Siana_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma109> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Siana_cup) e:inductivity 0.25 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Siana_cup _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Siana_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100 100) math:sum 800}]
+    [ a r:Fact; r:gives {(200 800) math:quotient 0.25}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Siana_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 800];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.25];
+  r:rule <#lemma144>.
+
+<#lemma110> a r:Extraction;
+  r:gives {
+    :Gordion_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma111> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Gordion_cup) e:inductivity 0.18181818181818182 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Gordion_cup _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Gordion_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 50 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 50 100) math:sum 550}]
+    [ a r:Fact; r:gives {(100 550) math:quotient 0.18181818181818182}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Gordion_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 50 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 550];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.18181818181818182];
+  r:rule <#lemma144>.
+
+<#lemma112> a r:Extraction;
+  r:gives {
+    :Little_master_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma113> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Little_master_cup) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Little_master_cup _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Little_master_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Little_master_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma114> a r:Extraction;
+  r:gives {
+    :Droop_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma115> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Droop_cup) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Droop_cup _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Droop_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Droop_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma116> a r:Extraction;
+  r:gives {
+    :Chalkidizing_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma117> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Chalkidizing_cup) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Chalkidizing_cup _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Chalkidizing_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Chalkidizing_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma118> a r:Extraction;
+  r:gives {
+    :Merrythought_cup a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma119> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Merrythought_cup) e:inductivity 0.25 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Merrythought_cup _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Merrythought_cup _:sk_1) e:weight _:sk_0}} (100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100) math:sum 400}]
+    [ a r:Fact; r:gives {(100 400) math:quotient 0.25}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Merrythought_cup"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.25];
+  r:rule <#lemma144>.
+
+<#lemma120> a r:Extraction;
+  r:gives {
+    :Kylix_type_A a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma121> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_A) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_A _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_A _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kylix_type_A"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma122> a r:Extraction;
+  r:gives {
+    :Kylix_type_B a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma123> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_B) e:inductivity 0.2 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_B _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Kylix_type_B _:sk_1) e:weight _:sk_0}} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(100 500) math:quotient 0.2}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kylix_type_B"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2];
+  r:rule <#lemma144>.
+
+<#lemma124> a r:Extraction;
+  r:gives {
+    :Corinthian_skyphos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma125> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Corinthian_skyphos) e:inductivity 0.4 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Corinthian_skyphos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Corinthian_skyphos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(200 500) math:quotient 0.4}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Corinthian_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.4];
+  r:rule <#lemma144>.
+
+<#lemma126> a r:Extraction;
+  r:gives {
+    :Hermogenean_skyphos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma127> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Hermogenean_skyphos) e:inductivity 0.2857142857142857 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Hermogenean_skyphos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Hermogenean_skyphos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(200 700) math:quotient 0.2857142857142857}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Hermogenean_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma144>.
+
+<#lemma128> a r:Extraction;
+  r:gives {
+    :Skyphos_heron_type a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma129> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_heron_type) e:inductivity 0.2857142857142857 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_heron_type _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_heron_type _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100 100) math:sum 700}]
+    [ a r:Fact; r:gives {(200 700) math:quotient 0.2857142857142857}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_heron_type"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 700];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.2857142857142857];
+  r:rule <#lemma144>.
+
+<#lemma130> a r:Extraction;
+  r:gives {
+    :Cup_skyphos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma131> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Cup_skyphos) e:inductivity 0.16666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Cup_skyphos _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Cup_skyphos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(100 600) math:quotient 0.16666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Cup_skyphos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.16666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma132> a r:Extraction;
+  r:gives {
+    :Skyphos_type_A a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma133> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_A) e:inductivity 0.6666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_A _:sk_1) e:weight _:sk_0} (100 100 100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_A _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100 100 100) math:sum 400}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(400 600) math:quotient 0.6666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_type_A"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.6666666666666666];
+  r:rule <#lemma144>.
+
+<#lemma134> a r:Extraction;
+  r:gives {
+    :Skyphos_type_B a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma135> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_B) e:inductivity 0.8333333333333334 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_B _:sk_1) e:weight _:sk_0} (100 100 100 100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Skyphos_type_B _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100 100 100 100) math:sum 500}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(500 600) math:quotient 0.8333333333333334}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Skyphos_type_B"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 500];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.8333333333333334];
+  r:rule <#lemma144>.
+
+<#lemma136> a r:Extraction;
+  r:gives {
+    :Kantharos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma137> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Kantharos) e:inductivity 0.3333333333333333 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Kantharos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Kantharos _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(200 600) math:quotient 0.3333333333333333}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Kantharos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma144>.
+
+<#lemma138> a r:Extraction;
+  r:gives {
+    :Rhyton a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma139> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Rhyton) e:inductivity 0.3333333333333333 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Rhyton _:sk_1) e:weight _:sk_0} (100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Rhyton _:sk_1) e:weight _:sk_0}} (100 100 100))}]
+    [ a r:Fact; r:gives {(100) math:sum 100}]
+    [ a r:Fact; r:gives {(100 100 100) math:sum 300}]
+    [ a r:Fact; r:gives {(100 300) math:quotient 0.3333333333333333}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Rhyton"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 100];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 300];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma144>.
+
+<#lemma140> a r:Extraction;
+  r:gives {
+    :Mastos a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma141> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Mastos) e:inductivity 0.5 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Mastos _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Mastos _:sk_1) e:weight _:sk_0}} (100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100) math:sum 400}]
+    [ a r:Fact; r:gives {(200 400) math:quotient 0.5}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Mastos"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 400];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.5];
+  r:rule <#lemma144>.
+
+<#lemma142> a r:Extraction;
+  r:gives {
+    :Chalice a :Greek_Pottery_Shape.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-gv-mln.n3>].
+
+<#lemma143> a r:Inference;
+  r:gives {
+    (<http://josd.github.io/.well-known/genid/#bn_1> :Chalice) e:inductivity 0.3333333333333333 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {(<http://josd.github.io/.well-known/genid/#bn_1> :Chalice _:sk_1) e:weight _:sk_0} (100 100))}]
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1) e:findall (_:sk_0 {_:sk_2 => {(<http://josd.github.io/.well-known/genid/#bn_1> :Chalice _:sk_1) e:weight _:sk_0}} (100 100 100 100 100 100))}]
+    [ a r:Fact; r:gives {(100 100) math:sum 200}]
+    [ a r:Fact; r:gives {(100 100 100 100 100 100) math:sum 600}]
+    [ a r:Fact; r:gives {(200 600) math:quotient 0.3333333333333333}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo ((<http://josd.github.io/brain/mmln/mmln-gv-example.n3> <http://josd.github.io/brain/mmln/mmln-gv-mln.n3> <http://josd.github.io/brain/mmln/mmln-plugin.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ a r:Existential; n3:nodeId "http://josd.github.io/.well-known/genid/#bn_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://3dsa.metadata.net/3dsa/annotator/data/gv_ontology_v1.owl#Chalice"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_5"]; r:boundTo (100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_6"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_2"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_7"]; r:boundTo (100 100 100 100 100 100)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_8"]; r:boundTo 200];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_9"]; r:boundTo 600];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_10"]; r:boundTo 0.3333333333333333];
+  r:rule <#lemma144>.
+
+<#lemma144> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4, var:x_5, var:x_6, var:x_7, var:x_8, var:x_9, var:x_10. {(var:x_2 var:x_3) e:inductivity var:x_10} <= {var:x_0 e:findall (var:x_1 {(var:x_2 var:x_3 var:x_4) e:weight var:x_1} var:x_5).
+     var:x_0 e:findall (var:x_1 {var:x_6 => {(var:x_2 var:x_3 var:x_4) e:weight var:x_1}} var:x_7).
+     var:x_5 math:sum var:x_8.
+     var:x_7 math:sum var:x_9.
+     (var:x_8 var:x_9) math:quotient var:x_10}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/mmln/mmln-plugin.n3>].
+
+#2020-02-22T21:52:06.526Z in=345 out=47 ent=105 step=332 brake=4 inf=2070260 sec=1.284 inf/sec=1612352
+#ENDS
+

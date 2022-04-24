@@ -1,0 +1,10 @@
+@prefix : <matches.n3#> .
+
+:test1a    a :success .
+:test1c    a :success .
+:test1d    a :success .
+:test1e    a :success .
+:test2b    a :success .
+:test2c    a :success .
+:test3a    a :success .
+:test3b    a :success .

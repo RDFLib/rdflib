@@ -1,0 +1,16 @@
+# https://w3c.github.io/N3/tests/N3Tests/cwm_syntax/bad-preds.n3
+# Used in https://w3c.github.io/N3/tests/regression.n3#t1061
+#
+# Literals and formulas cannot be predicates.
+#
+# Issue originally raised in the following bug:
+# http://lists.w3.org/Archives/Public/public-cwm-bugs/2004Nov/0014
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix : <#> .
+
+{ <bad-preds-literal.n3> log:semanticsOrError ?x . }
+    log:implies { ?x a :literal_predicate_result . } .
+
+{ <bad-preds-formula.n3> log:semanticsOrError ?y . }
+    log:implies { ?y a :formula_predicate_result . } .

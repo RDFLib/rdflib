@@ -1,0 +1,229 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --tactic linear-select http://notes.restdesc.org/2015/image-processing/instances.n3 http://notes.restdesc.org/2015/image-processing/resize.n3 http://notes.restdesc.org/2015/image-processing/blend.n3 http://notes.restdesc.org/2015/image-processing/crop.n3 --query http://notes.restdesc.org/2015/image-processing/goal.n3
+
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix my: <http://example.org/my#>.
+@prefix ex: <http://example.org/image#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    _:sk_1319 a ex:Image.
+    _:sk_1739 a ex:Image.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    _:sk_1319 a ex:Image.
+  };
+  r:evidence (
+    <#lemma3>
+    <#lemma4>
+    <#lemma4>
+    <#lemma3>
+    <#lemma5>
+    <#lemma5>
+    <#lemma6>
+    <#lemma6>
+    <#lemma6>
+  );
+  r:rule <#lemma7>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    _:sk_1739 a ex:Image.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma4>
+    <#lemma4>
+    <#lemma8>
+    <#lemma5>
+    <#lemma5>
+    <#lemma9>
+    <#lemma9>
+    <#lemma9>
+  );
+  r:rule <#lemma7>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    _:sk_78 http:methodName "GET".
+    _:sk_78 http:requestURI "/blend/".
+    _:sk_78 http:body (_:sk_2 _:sk_8).
+    _:sk_78 http:resp _:sk_79.
+    _:sk_79 http:body _:sk_80.
+    _:sk_80 a ex:Image.
+    _:sk_80 ex:source _:sk_2.
+    _:sk_80 ex:source _:sk_8.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+  );
+  r:rule <#lemma10>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    _:sk_0 http:methodName "GET".
+    _:sk_0 http:requestURI ("/resize/?image=" my:ImageX "&size=" my:Small).
+    _:sk_0 http:resp _:sk_1.
+    _:sk_1 http:body _:sk_2.
+    _:sk_2 a ex:Image.
+    _:sk_2 ex:source my:ImageX.
+    _:sk_2 ex:size my:Small.
+  };
+  r:evidence (
+    <#lemma11>
+    <#lemma12>
+  );
+  r:rule <#lemma13>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    _:sk_6 http:methodName "GET".
+    _:sk_6 http:requestURI ("/resize/?image=" my:ImageY "&size=" my:Small).
+    _:sk_6 http:resp _:sk_7.
+    _:sk_7 http:body _:sk_8.
+    _:sk_8 a ex:Image.
+    _:sk_8 ex:source my:ImageY.
+    _:sk_8 ex:size my:Small.
+  };
+  r:evidence (
+    <#lemma14>
+    <#lemma12>
+  );
+  r:rule <#lemma13>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    _:sk_1317 http:methodName "GET".
+    _:sk_1317 http:requestURI ("/crop/?image=" _:sk_80 "&size=" my:Tiny).
+    _:sk_1317 http:resp _:sk_1318.
+    _:sk_1318 http:body _:sk_1319.
+    _:sk_1319 a ex:Crop.
+    _:sk_1319 ex:source _:sk_80.
+    _:sk_1319 ex:size my:Tiny.
+  };
+  r:evidence (
+    <#lemma3>
+    <#lemma15>
+  );
+  r:rule <#lemma16>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    {?x_0_1 ex:source ?x_1_1.
+     ?x_1_1 ex:source my:ImageX.
+     ?x_1_1 ex:size my:Small.
+     ?x_0_1 ex:source ?x_2_1.
+     ?x_2_1 ex:source my:ImageY.
+     ?x_2_1 ex:size my:Small.
+     ?x_3_1 a ex:Crop.
+     ?x_3_1 ex:size my:Tiny.
+     ?x_3_1 ex:source ?x_0_1} => {?x_3_1 a ex:Image}.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/goal.n3>].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    _:sk_288 http:methodName "GET".
+    _:sk_288 http:requestURI "/blend/".
+    _:sk_288 http:body (_:sk_8 _:sk_2).
+    _:sk_288 http:resp _:sk_289.
+    _:sk_289 http:body _:sk_290.
+    _:sk_290 a ex:Image.
+    _:sk_290 ex:source _:sk_8.
+    _:sk_290 ex:source _:sk_2.
+  };
+  r:evidence (
+    <#lemma5>
+    <#lemma4>
+  );
+  r:rule <#lemma10>.
+
+<#lemma9> a r:Inference;
+  r:gives {
+    _:sk_1737 http:methodName "GET".
+    _:sk_1737 http:requestURI ("/crop/?image=" _:sk_290 "&size=" my:Tiny).
+    _:sk_1737 http:resp _:sk_1738.
+    _:sk_1738 http:body _:sk_1739.
+    _:sk_1739 a ex:Crop.
+    _:sk_1739 ex:source _:sk_290.
+    _:sk_1739 ex:size my:Tiny.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma15>
+  );
+  r:rule <#lemma16>.
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    {?x_0_2 a ex:Image.
+     ?x_1_2 a ex:Image} => {_:x_2_2 http:methodName "GET".
+     _:x_2_2 http:requestURI "/blend/".
+     _:x_2_2 http:body (?x_0_2 ?x_1_2).
+     _:x_2_2 http:resp _:x_3_2.
+     _:x_3_2 http:body _:x_4_2.
+     _:x_4_2 a ex:Image.
+     _:x_4_2 ex:source ?x_0_2.
+     _:x_4_2 ex:source ?x_1_2}.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/blend.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    my:ImageX a ex:Image.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/instances.n3>].
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    my:Small a ex:Dimension.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/instances.n3>].
+
+<#lemma13> a r:Extraction;
+  r:gives {
+    {?x_0_3 a ex:Image.
+     ?x_1_3 a ex:Dimension} => {_:x_2_3 http:methodName "GET".
+     _:x_2_3 http:requestURI ("/resize/?image=" ?x_0_3 "&size=" ?x_1_3).
+     _:x_2_3 http:resp _:x_3_3.
+     _:x_3_3 http:body _:x_4_3.
+     _:x_4_3 a ex:Image.
+     _:x_4_3 ex:source ?x_0_3.
+     _:x_4_3 ex:size ?x_1_3}.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/resize.n3>].
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    my:ImageY a ex:Image.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/instances.n3>].
+
+<#lemma15> a r:Extraction;
+  r:gives {
+    my:Tiny a ex:Dimension.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/instances.n3>].
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    {?x_0_4 a ex:Image.
+     ?x_1_4 a ex:Dimension} => {_:x_2_4 http:methodName "GET".
+     _:x_2_4 http:requestURI ("/crop/?image=" ?x_0_4 "&size=" ?x_1_4).
+     _:x_2_4 http:resp _:x_3_4.
+     _:x_3_4 http:body _:x_4_4.
+     _:x_4_4 a ex:Crop.
+     _:x_4_4 ex:source ?x_0_4.
+     _:x_4_4 ex:size ?x_1_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://notes.restdesc.org/2015/image-processing/crop.n3>].
+
+#2018-04-18T08:28:35.082Z in=50 out=2 ent=8430 step=1152 brake=1 inf=1360470 sec=0.253 inf/sec=5377352
+#ENDS
+

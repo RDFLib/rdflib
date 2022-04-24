@@ -1,0 +1,4 @@
+@prefix : <bench#>.
+
+{100000 :bench ?Lips} => {100000 :bench ?Lips}.
+

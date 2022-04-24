@@ -1,0 +1,46 @@
+# EYE Components for Partial Reduction -- Jos De Roo
+#
+# See The Art of Prolog Chapter 18 Section 18.2 Partial Reduction
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix p: <http://josd.github.io/brain/preduction#>.
+
+{{?A => ?B} p:preduce {?PA => ?PB}} <= {
+    ("!") e:derive true.
+    ?A p:preduce ?PA.
+    ?B p:preduce ?PB.
+}.
+{{?A <= ?B} p:preduce {?PA <= ?PB}} <= {
+    ("!") e:derive true.
+    ?B p:preduce ?PB.
+    ?A p:preduce ?PA.
+}.
+{true p:preduce true} <= {
+    ("!") e:derive true.
+}.
+{?C p:preduce ?Res} <= {
+    ?C e:graphPair (?A ?B).
+    ("!") e:derive true.
+    ?A p:preduce ?PA.
+    ?B p:preduce ?PB.
+    (?PA ?PB) log:conjunction ?Res.
+}.
+{?A p:preduce ?B} <= {
+    ?A p:should_fold ?B.
+    ("!") e:derive true.
+}.
+{?A p:preduce ?Residue} <= {
+    ?A p:should_unfold true.
+    ("!") e:derive true.
+    ?A p:condition ?B.
+    ?B p:preduce ?Residue.
+}.
+{?A p:preduce ?A} <= true.
+
+{?A p:condition ?B} <= {
+    ?A <= ?B.
+}.
+{?A p:condition ?B} <= {
+    ?B => ?A.
+}.
