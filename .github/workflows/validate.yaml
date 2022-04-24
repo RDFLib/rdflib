@@ -43,11 +43,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Setup env
-        shell: bash
-        run: |
-          MATRIX_PYTHON_VERSION=${{ matrix.python-version }}
-          echo "TOX_PYENV=py${MATRIX_PYTHON_VERSION//./}" >> ${GITHUB_ENV}
       - name: Get pip cache dir
         id: pip-cache
         shell: bash
@@ -59,7 +54,7 @@ jobs:
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
-            hashFiles('**/setup.py', '**/requirements*.txt') }}
+            hashFiles('**/setup.py', '**/*requirements*.txt') }}
           restore-keys: |
             ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-
       - name: Cache xdg
@@ -69,38 +64,18 @@ jobs:
           key: ${{ matrix.os }}-xdg-v1-${{ hashFiles('**/with-fuseki.sh') }}
           restore-keys: |
             ${{ matrix.os }}-xdg-v1-
-      - name: Install python dependencies
-        shell: bash
-        # Installing tox-gh-actions to get some enhancement to output rendering
-        # in github actions. Eventually we can maybe collapse the tox-envs job
-        # into this one but there are some limitations of tox-gh-actions which
-        # preclude doing that at the moment.
-        run: |
-          python -m pip install tox tox-gh-actions
-      - name: Install system depdendencies for extensive tests
-        if: ${{ matrix.extensive-tests }}
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run validation
         shell: bash
         run: |
-          if [ "${{ matrix.os }}" == "ubuntu-latest" ]
-          then
-              sudo apt-get install -y libdb-dev
-          elif [ "${{ matrix.os }}" == "macos-latest" ]
-          then
-              brew install berkeley-db@4
-              export BERKELEYDB_DIR=$(brew --prefix berkeley-db@4)
-          fi
-      - name: Validate
-        shell: bash
-        run: |
-          test_harness=()
-          if "${{ matrix.extensive-tests || false }}" && [ "${{ matrix.os }}" != "windows-latest" ]
-          then
-            1>&2 echo "Running with fuseki"
-            test_harness+="./with-fuseki.sh"
-            TOX_PYENV_SUFFIX=-extensive
-          fi
-          TOXENV="${{ matrix.TOXENV }}"
-          TOXENV="${TOX_PYENV}${TOX_PYENV_SUFFIX}${TOXENV:+,${TOXENV}}"
-          export TOXENV
           export TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}"
-          "${test_harness[@]}" python -m tox
+          task \
+            EXTENSIVE=${{ matrix.extensive-tests }} \
+            TOX_PYTHON_VERSION=${{ matrix.python-version }} \
+            WITH_GITHUB_ACTIONS=1 \
+            install:system-deps \
+            install:tox \
+            tox
