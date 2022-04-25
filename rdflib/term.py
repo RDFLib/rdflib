@@ -736,10 +736,22 @@ class Literal(Identifier):
 
     def __add__(self, val: Any) -> "Literal":
         """
+        >>> from rdflib.namespace import XSD
         >>> Literal(1) + 1
         rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> Literal("1") + "1"
         rdflib.term.Literal(u'11')
+
+        # Handling dateTime/date/time based operations in Literals
+        >>> a = Literal('2006-01-01T20:50:00', datatype=XSD.dateTime)
+        >>> b = Literal('P31D', datatype=XSD.duration)
+        >>> (a + b)
+        rdflib.term.Literal('2006-02-01T20:50:00', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
+        >>> from rdflib.namespace import XSD
+        >>> a = Literal('2006-07-01T20:52:00', datatype=XSD.dateTime)
+        >>> b = Literal('P122DT15H58M', datatype=XSD.duration)
+        >>> (a + b)
+        rdflib.term.Literal('2006-11-01T12:50:00', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
         """
 
         # if no val is supplied, return this Literal
@@ -749,6 +761,35 @@ class Literal(Identifier):
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
+
+        # if self is datetime based and value is duration
+        if (
+            self.datatype in (_XSD_DATETIME, _XSD_DATE)
+            and val.datatype == _XSD_DURATION
+        ):
+            date1 = self.toPython()
+            duration = val.toPython()
+            difference = date1 + duration
+            return Literal(difference, datatype=self.datatype)
+
+        # if self is time based and value is duration
+        elif self.datatype == _XSD_TIME and val.datatype == _XSD_DURATION:
+            sdt = datetime.combine(date(2000, 1, 1), self.toPython()) + val.toPython()
+            return Literal(
+                time(sdt.hour, sdt.minute, sdt.second), datatype=self.datatype
+            )
+
+        # if self is datetime based and value is not or vice versa, or if two durations
+        elif (
+            self.datatype in _ALL_DATE_AND_TIME_TYPES
+            and val.datatype not in _ALL_DATE_AND_TIME_TYPES
+        ) or (
+            self.datatype not in _ALL_DATE_AND_TIME_TYPES
+            and val.datatype in _ALL_DATE_AND_TIME_TYPES
+        ):
+            raise TypeError(
+                f"Cannot add a Literal of datatype {str(val.datatype)} to a Literal of datatype {str(self.datatype)}"
+            )
 
         # if the datatypes are the same, just add the Python values and convert back
         if self.datatype == val.datatype:
@@ -787,6 +828,119 @@ class Literal(Identifier):
                 new_datatype = _XSD_STRING
 
             return Literal(s, self.language, datatype=new_datatype)
+
+    def __sub__(self, val: Any) -> "Literal":
+        """
+        >>> from rdflib.namespace import XSD
+        >>> Literal(2) - 1
+        rdflib.term.Literal('1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
+        >>> Literal(1.1) - 1.0
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double'))
+        >>> Literal(1.1) - 1
+        rdflib.term.Literal('0.1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+        >>> Literal(1.1, datatype=XSD.float) - Literal(1.0, datatype=XSD.float)
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#float'))
+        >>> Literal("1.1") - 1.0 # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        TypeError: Not a number; rdflib.term.Literal('1.1')
+        >>> Literal(1.1, datatype=XSD.integer) - Literal(1.0, datatype=XSD.integer)
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
+
+        # Handling dateTime/date/time based operations in Literals
+        >>> a = Literal('2006-01-01T20:50:00', datatype=XSD.dateTime)
+        >>> b = Literal('2006-02-01T20:50:00', datatype=XSD.dateTime)
+        >>> (b - a)
+        rdflib.term.Literal('P31D', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        >>> from rdflib.namespace import XSD
+        >>> a = Literal('2006-07-01T20:52:00', datatype=XSD.dateTime)
+        >>> b = Literal('2006-11-01T12:50:00', datatype=XSD.dateTime)
+        >>> (a - b)
+        rdflib.term.Literal('-P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        >>> (b - a)
+        rdflib.term.Literal('P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+
+        """
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
+
+        # convert the val to a Literal, if it isn't already one
+        if not isinstance(val, Literal):
+            val = Literal(val)
+
+        if not getattr(self, "datatype"):
+            raise TypeError(
+                "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
+            )
+        elif not getattr(val, "datatype"):
+            raise TypeError(
+                "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
+            )
+
+        if self.datatype != val.datatype:
+
+            # if only one of self and val in _ALL_DATE_AND_TIME_TYPES
+            if (
+                self.datatype in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype not in _ALL_DATE_AND_TIME_TYPES
+            ) or (
+                self.datatype not in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype in _ALL_DATE_AND_TIME_TYPES
+            ):
+                raise TypeError(
+                    f"Cannot subtract a Literal of datatype {str(val.datatype)} from a Literal of datatype {str(self.datatype)}"
+                )
+
+            # if self and val are both in _DATE_AND_TIME_TYPES
+            elif (
+                self.datatype in _DATE_AND_TIME_TYPES
+                and val.datatype in _DATE_AND_TIME_TYPES
+            ):
+                if self.datatype == _XSD_TIME:
+                    sdt = datetime.combine(date.today(), self.toPython())
+                    vdt = datetime.combine(date.today(), val.toPython())
+                    return Literal(sdt - vdt, datatype=_XSD_DURATION)
+                else:
+                    return Literal(
+                        self.toPython() - val.toPython(), datatype=_XSD_DURATION
+                    )
+
+        # if the datatypes are the same, just subtract the Python values and convert back
+        if self.datatype == val.datatype:
+            if self.datatype == _XSD_TIME:
+                sdt = datetime.combine(date.today(), self.toPython())
+                vdt = datetime.combine(date.today(), val.toPython())
+                return Literal(sdt - vdt, datatype=_XSD_DURATION)
+            else:
+                return Literal(
+                    self.toPython() - val.toPython(),
+                    self.language,
+                    datatype=_XSD_DURATION
+                    if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
+                    else self.datatype,
+                )
+
+        # if the datatypes are not the same but are both numeric, subtract the Python values and strip off decimal junk
+        # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
+        elif (
+            self.datatype in _NUMERIC_LITERAL_TYPES
+            and val.datatype in _NUMERIC_LITERAL_TYPES
+        ):
+            return Literal(
+                Decimal(
+                    (
+                        "%f"
+                        % round(Decimal(self.toPython()) - Decimal(val.toPython()), 15)
+                    )
+                    .rstrip("0")
+                    .rstrip(".")
+                ),
+                datatype=_XSD_DECIMAL,
+            )
+        # in all other cases, perform string concatenation
+        else:
+            raise TypeError("Not a number; %s" % repr(self))
 
     def __bool__(self) -> bool:
         """
@@ -1694,6 +1848,15 @@ _NUMERIC_INF_NAN_LITERAL_TYPES: Tuple[URIRef, ...] = (
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
+
+# these need dedicated operators
+_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
+    _XSD_DATETIME,
+    _XSD_DATE,
+    _XSD_TIME,
+)
+
+_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + (_XSD_DURATION,)
 
 # the following types need special treatment for reasonable sorting because
 # certain instances can't be compared to each other. We treat this by
