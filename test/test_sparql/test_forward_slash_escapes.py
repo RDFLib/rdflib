@@ -22,9 +22,10 @@ prefixed concepts, e.g. "application/json" somehow being
 from typing import Set, Tuple
 
 import pytest
+
 from rdflib import Graph
-from rdflib.term import Node
 from rdflib.plugins.sparql.processor import prepareQuery
+from rdflib.term import Node
 
 # Note that the data and query strings are Python raw strings, so
 # backslashes won't be escape characters to Python.
