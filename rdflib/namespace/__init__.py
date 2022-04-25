@@ -598,7 +598,7 @@ class NamespaceManager(object):
         >>> import rdflib
         >>> g = rdflib.Graph()
         >>> g.namespace_manager.expand_qname("rdf:type")
-        http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+        'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
         Returns None if a namespace is not bound to the prefix or the prefix
         is malformed.
