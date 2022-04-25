@@ -260,3 +260,40 @@ class TestNamespacePrefix:
 
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
+
+    def test_expand_qname(self):
+        """Test sequential assignment of unknown prefixes"""
+        g = Graph()
+
+        assert (
+            g.namespace_manager.expand_qname("rdf:type")
+            == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        )
+
+        assert (
+            g.namespace_manager.expand_qname("rdf:")
+            == "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        )
+
+        g.bind("ex", Namespace("urn:example:"))
+
+        assert g.namespace_manager.expand_qname("ex:tarek") == "urn:example:tarek"
+
+    @pytest.mark.parametrize(
+        "invalid_curie",
+        [
+            ("em:tarek"),
+            ("em:"),
+            ("em"),
+            (":"),
+            (":type"),
+            ("í"),
+            (" :"),
+            (""),
+            ("\n"),
+            (None),
+        ],
+    )
+    def test_expand_qname_invalid_curie(self, invalid_curie: str) -> None:
+        g = Graph()
+        assert g.namespace_manager.expand_qname(invalid_curie) is None

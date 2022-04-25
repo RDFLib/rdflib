@@ -590,6 +590,26 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
+    def expand_qname(self, curie):
+        """
+        Expand a qname (aka CURIE) of the form <prefix:element>, e.g. "rdf:type"
+        into its full expression:
+
+        >>> g = Graph()
+        >>> g.namespace_manager.expand_qname("rdf:type")
+        http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+
+        Returns None if a namespace is not bound to the prefix or the prefix
+        is malformed.
+
+        """
+        if (
+            isinstance(curie, str)
+            and (prefix := curie.split(":")[0])
+            and (ns := self.store.namespace(prefix))
+        ):
+            return str(ns) + curie.split(":")[1]
+
     def bind(
         self,
         prefix: Optional[str],
