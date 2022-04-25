@@ -262,7 +262,6 @@ class TestNamespacePrefix:
         assert ref in OWL, "OWL does not include owl:real"
 
     def test_expand_qname(self):
-        """Test sequential assignment of unknown prefixes"""
         g = Graph()
 
         assert (
@@ -295,5 +294,6 @@ class TestNamespacePrefix:
         ],
     )
     def test_expand_qname_invalid_curie(self, invalid_curie: str) -> None:
+        """Test use of invalid CURIEs"""
         g = Graph()
         assert g.namespace_manager.expand_qname(invalid_curie) is None
