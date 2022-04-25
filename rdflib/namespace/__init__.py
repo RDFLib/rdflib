@@ -603,12 +603,20 @@ class NamespaceManager(object):
         is malformed.
 
         """
-        if (
-            isinstance(curie, str)
-            and (prefix := curie.split(":")[0])
-            and (ns := self.store.namespace(prefix))
-        ):
-            return str(ns) + curie.split(":")[1]
+        # TODO: When we drop support for 3.7 ...
+        # if (
+        #     isinstance(curie, str)
+        #     and (prefix := curie.split(":")[0])
+        #     and (ns := self.store.namespace(prefix))
+        # ):
+        #     return str(ns) + curie.split(":")[1]
+
+        if isinstance(curie, str) and ":" in curie:
+            ns = self.store.namespace(curie.split(":")[0])
+            if ns is not None:
+                return (
+                    str(self.store.namespace(curie.split(":")[0])) + curie.split(":")[1]
+                )
 
     def bind(
         self,
