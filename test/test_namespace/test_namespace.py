@@ -261,39 +261,40 @@ class TestNamespacePrefix:
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
 
-    def test_expand_qname(self) -> None:
+    def test_expand_curie(self) -> None:
         g = Graph()
 
         assert (
-            g.namespace_manager.expand_qname("rdf:type")
+            g.namespace_manager.expand_curie("rdf:type")
             == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-        )
-
-        assert (
-            g.namespace_manager.expand_qname("rdf:")
-            == "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         )
 
         g.bind("ex", Namespace("urn:example:"))
 
-        assert g.namespace_manager.expand_qname("ex:tarek") == "urn:example:tarek"
+        assert g.namespace_manager.expand_curie("ex:tarek") == "urn:example:tarek"
 
     @pytest.mark.parametrize(
         "invalid_curie",
         [
-            ("em:tarek"),
-            ("em:"),
-            ("em"),
-            (":"),
-            (":type"),
-            ("í"),
-            (" :"),
-            (""),
-            ("\n"),
-            (None),
+            ("em:tarek", None),
+            ("em:", ValueError),
+            ("em", ValueError),
+            (":", ValueError),
+            (":type", ValueError),
+            ("í", ValueError),
+            (" :", ValueError),
+            ("", ValueError),
+            ("\n", ValueError),
+            (None, TypeError),
+            (99, TypeError),
+            (URIRef("urn:example:"), TypeError),
         ],
     )
-    def test_expand_qname_invalid_curie(self, invalid_curie: str) -> None:
+    def test_expand_curie_invalid_curie(self, invalid_curie: str) -> None:
         """Test use of invalid CURIEs"""
         g = Graph()
-        assert g.namespace_manager.expand_qname(invalid_curie) is None
+        if invalid_curie[1] is not None:
+            with pytest.raises(invalid_curie[1]):
+                assert g.namespace_manager.expand_curie(invalid_curie[0])
+        else:
+            assert g.namespace_manager.expand_curie(invalid_curie[0]) is None
