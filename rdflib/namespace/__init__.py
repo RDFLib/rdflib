@@ -614,9 +614,7 @@ class NamespaceManager(object):
         if isinstance(curie, str) and ":" in curie:
             ns = self.store.namespace(curie.split(":")[0])
             if ns is not None:
-                return (
-                    str(self.store.namespace(curie.split(":")[0])) + curie.split(":")[1]
-                )
+                return str(ns) + curie.split(":")[1]
 
     def bind(
         self,
