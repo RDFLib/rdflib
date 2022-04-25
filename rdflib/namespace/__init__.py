@@ -606,7 +606,9 @@ class NamespaceManager(object):
         if not type(curie) is str:
             raise TypeError("Argument must be a string.")
         elif ":" not in curie or curie.split(":")[0] == "" or curie.split(":")[1] == "":
-            raise ValueError("Malformed curie argument, format should be e.g. “foaf:name”.")
+            raise ValueError(
+                "Malformed curie argument, format should be e.g. “foaf:name”."
+            )
         else:
             ns = self.store.namespace(curie.split(":")[0])
             if ns is not None:

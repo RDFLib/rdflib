@@ -277,24 +277,27 @@ class TestNamespacePrefix:
         "invalid_curie",
         [
             ("em:tarek", None),
-            ("em:", ValueError),
-            ("em", ValueError),
-            (":", ValueError),
-            (":type", ValueError),
-            ("í", ValueError),
-            (" :", ValueError),
-            ("", ValueError),
-            ("\n", ValueError),
-            (None, TypeError),
-            (99, TypeError),
-            (URIRef("urn:example:"), TypeError),
+            ("em:", "ValueError"),
+            ("em", "ValueError"),
+            (":", "ValueError"),
+            (":type", "ValueError"),
+            ("í", "ValueError"),
+            (" :", "ValueError"),
+            ("", "ValueError"),
+            ("\n", "ValueError"),
+            (None, "TypeError"),
+            (99, "TypeError"),
+            (URIRef("urn:example:"), "TypeError"),
         ],
     )
     def test_expand_curie_invalid_curie(self, invalid_curie: str) -> None:
         """Test use of invalid CURIEs"""
         g = Graph()
-        if invalid_curie[1] is not None:
-            with pytest.raises(invalid_curie[1]):
+        if invalid_curie[1] == "ValueError":
+            with pytest.raises(ValueError):
+                assert g.namespace_manager.expand_curie(invalid_curie[0])
+        elif invalid_curie[1] == "TypeError":
+            with pytest.raises(TypeError):
                 assert g.namespace_manager.expand_curie(invalid_curie[0])
         else:
             assert g.namespace_manager.expand_curie(invalid_curie[0]) is None
