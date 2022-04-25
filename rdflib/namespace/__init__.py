@@ -590,7 +590,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def expand_qname(self, curie):
+    def expand_qname(self, curie: str) -> Union[str, None]:
         """
         Expand a qname (aka CURIE) of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
@@ -616,6 +616,7 @@ class NamespaceManager(object):
             ns = self.store.namespace(curie.split(":")[0])
             if ns is not None:
                 return str(ns) + curie.split(":")[1]
+        return None
 
     def bind(
         self,

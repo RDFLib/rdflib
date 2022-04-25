@@ -261,7 +261,7 @@ class TestNamespacePrefix:
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
 
-    def test_expand_qname(self):
+    def test_expand_qname(self) -> None:
         g = Graph()
 
         assert (
