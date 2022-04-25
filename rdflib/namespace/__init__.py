@@ -595,7 +595,8 @@ class NamespaceManager(object):
         Expand a qname (aka CURIE) of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
 
-        >>> g = Graph()
+        >>> import rdflib
+        >>> g = rdflib.Graph()
         >>> g.namespace_manager.expand_qname("rdf:type")
         http://www.w3.org/1999/02/22-rdf-syntax-ns#type
 
