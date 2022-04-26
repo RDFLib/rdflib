@@ -592,27 +592,26 @@ class NamespaceManager(object):
 
     def expand_curie(self, curie: str) -> Union[URIRef, None]:
         """
-        Expand a qname (aka CURIE) of the form <prefix:element>, e.g. "rdf:type"
+        Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
 
         >>> import rdflib
         >>> g = rdflib.Graph()
         >>> g.namespace_manager.expand_curie("rdf:type")
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
 
-        Returns None if a namespace is not bound to the prefix.
-
+        Returns `None` if a namespace is not bound to the prefix.
         """
         if not type(curie) is str:
             raise TypeError("Argument must be a string.")
-        elif ":" not in curie or curie.split(":")[0] == "" or curie.split(":")[1] == "":
+        parts = curie.split(":", 1)
+        if len(parts) != 2 or len(parts[0]) < 1:
             raise ValueError(
                 "Malformed curie argument, format should be e.g. “foaf:name”."
             )
-        else:
-            ns = self.store.namespace(curie.split(":")[0])
-            if ns is not None:
-                return URIRef(str(ns) + curie.split(":")[1])
+        ns = self.store.namespace(parts[0])
+        if ns is not None:
+            return URIRef(f"{str(ns)}{parts[1]}")
         return None
 
     def bind(
