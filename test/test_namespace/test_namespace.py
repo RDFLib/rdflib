@@ -1,4 +1,7 @@
 import unittest
+from contextlib import ExitStack
+from multiprocessing.sharedctypes import Value
+from typing import Any, Optional, Type, Union
 from unittest.case import expectedFailure
 from warnings import warn
 
@@ -261,46 +264,46 @@ class TestNamespacePrefix:
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
 
-    def test_expand_curie(self) -> None:
-        g = Graph()
-
-        assert g.namespace_manager.expand_curie("rdf:type") == URIRef(
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-        )
-
-        assert g.namespace_manager.expand_curie("rdf:type") == RDF.type
-
-        g.bind("ex", Namespace("urn:example:"))
-
-        assert g.namespace_manager.expand_curie("ex:tarek") == URIRef(
-            "urn:example:tarek"
-        )
-
     @pytest.mark.parametrize(
-        "invalid_curie",
+        ["curie", "expected_result"],
         [
+            ("ex:tarek", URIRef("urn:example:tarek")),
+            ("ex:", URIRef(f"urn:example:")),
+            ("ex:a", URIRef(f"urn:example:a")),
+            ("ex:a:b", URIRef(f"urn:example:a:b")),
+            ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
+            ("ex", ValueError),
             ("em:tarek", None),
-            ("em:", "ValueError"),
-            ("em", "ValueError"),
-            (":", "ValueError"),
-            (":type", "ValueError"),
-            ("í", "ValueError"),
-            (" :", "ValueError"),
-            ("", "ValueError"),
-            ("\n", "ValueError"),
-            (None, "TypeError"),
-            (99, "TypeError"),
-            (URIRef("urn:example:"), "TypeError"),
+            ("em:", None),
+            ("em", ValueError),
+            (":", ValueError),
+            (":type", ValueError),
+            ("í", ValueError),
+            (" :", None),
+            ("", ValueError),
+            ("\n", ValueError),
+            (None, TypeError),
+            (3, TypeError),
+            (URIRef("urn:example:"), TypeError),
         ],
     )
-    def test_expand_curie_invalid_curie(self, invalid_curie: str) -> None:
-        """Test use of invalid CURIEs"""
-        g = Graph()
-        if invalid_curie[1] == "ValueError":
-            with pytest.raises(ValueError):
-                assert g.namespace_manager.expand_curie(invalid_curie[0])
-        elif invalid_curie[1] == "TypeError":
-            with pytest.raises(TypeError):
-                assert g.namespace_manager.expand_curie(invalid_curie[0])
+    def test_expand_curie(
+        self, curie: Any, expected_result: Union[Type[Exception], URIRef, None]
+    ) -> None:
+        g = Graph(bind_namespaces="none")
+        nsm = g.namespace_manager
+        nsm.bind("ex", "urn:example:")
+        result: Optional[URIRef] = None
+        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+        with ExitStack() as xstack:
+            if isinstance(expected_result, type) and issubclass(
+                expected_result, Exception
+            ):
+                catcher = xstack.enter_context(pytest.raises(expected_result))
+            result = g.namespace_manager.expand_curie(curie)
+
+        if catcher is not None:
+            assert result is None
+            assert catcher.value is not None
         else:
-            assert g.namespace_manager.expand_curie(invalid_curie[0]) is None
+            assert expected_result == result
