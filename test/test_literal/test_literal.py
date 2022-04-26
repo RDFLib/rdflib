@@ -8,10 +8,14 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
 import datetime
+import logging
 import unittest
+from contextlib import ExitStack
 from decimal import Decimal
+from test.testutils import affix_tuples
 from typing import Any, Optional, Sequence, Tuple, Type, Union
 
+import isodate
 import pytest
 
 import rdflib  # needed for eval(repr(...)) below
@@ -148,195 +152,106 @@ class TestNewPT:
             # If the literal is not ill formed it should have a value associated with it.
             assert lit.value is not None
 
-    def test_datetime_sub(self) -> None:
-        a = Literal('2006-01-01T20:50:00', datatype=_XSD_DATETIME)
-        b = Literal('2006-02-01T20:50:00', datatype=_XSD_DATETIME)
-        result = b - a
-        expected = Literal('P31D', datatype=_XSD_DURATION)
-        assert result == expected
-
-    def test_datetime_sub2(self) -> None:
-        a = Literal('2006-01-02T20:50:00', datatype=_XSD_DATETIME)
-        b = Literal('2006-05-01T20:50:00', datatype=_XSD_DATETIME)
-        result = b - a
-        expected = Literal('P119D', datatype=_XSD_DURATION)
-        assert result == expected
-
-    def test_datetime_sub3(self) -> None:
-        a = Literal('2006-07-01T20:52:00', datatype=_XSD_DATETIME)
-        b = Literal('2006-11-01T12:50:00', datatype=_XSD_DATETIME)
-        result = a - b
-        expected = Literal('-P122DT15H58M', datatype=_XSD_DURATION)
-        assert result == expected
-
-    def test_date_sub4(self) -> None:
-        a = Literal('2006-07-01T20:52:00', datatype=_XSD_DATE)
-        b = Literal('2006-11-01T12:50:00', datatype=_XSD_DATE)
-        result = b - a
-        expected = Literal('P123D', datatype=_XSD_DURATION)
-        assert result == expected
-
-    def test_date_sub5(self) -> None:
-        a = Literal('2006-08-01', datatype=_XSD_DATE)
-        b = Literal('2006-11-01', datatype=_XSD_DATE)
-        result = b - a
-        expected = Literal('P92D', datatype=_XSD_DURATION)
-        assert result == expected
-
-    def test_integer_sub(self) -> None:
-        """extends the issue OF #629 - Handling substraction
-        operations in Literals"""
-        a = Literal('5', datatype=XSD.integer)
-        b = Literal('10', datatype=XSD.integer)
-        result = b - a
-        expected = Literal('5', datatype=XSD.integer)
-        assert result == expected
-
-    def test_datatype_enforcement_error_messages(self) -> None:
-        a = Literal('5')
-        b = Literal('10', datatype=_XSD_INTEGER)
-
-        with pytest.raises(TypeError) as e:
-            result = a - b
-        assert e.match(
-            "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
-        )
-
-        with pytest.raises(TypeError) as e:
-            result = b - a
-        assert e.match(
-            "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
-        )
-
-    def test_datatype_enforcement_int_float(self) -> None:
-        a = Literal('5', datatype=_XSD_INTEGER)
-        b = Literal('10', datatype=_XSD_FLOAT)
-
-        result = a - b
-        assert result == Literal("-5", datatype=_XSD_DECIMAL)
-
-        result = b - a
-        assert result == Literal("5", datatype=_XSD_DECIMAL)
-
-    def test_datatype_enforcement_float_decimal(self) -> None:
-        a = Literal('5', datatype=_XSD_FLOAT)
-        b = Literal('10', datatype=_XSD_DECIMAL)
-
-        result = a - b
-        assert result == Literal("-5", datatype=_XSD_DECIMAL)
-
-        result = b - a
-        assert result == Literal("5", datatype=_XSD_DECIMAL)
-
-    def test_datatype_enforcement_float_double(self) -> None:
-        a = Literal('5', datatype=_XSD_FLOAT)
-        b = Literal('10', datatype=_XSD_DOUBLE)
-
-        result = a - b
-        assert result == Literal("-5", datatype=_XSD_DECIMAL)
-
-        result = b - a
-        assert result == Literal("5", datatype=_XSD_DECIMAL)
-
     @pytest.mark.parametrize(
-        "desc, a, b, op, emsg",
+        "a, b, op, expected_result",
         [
-            (
-                "Attempt to subtract strings",
+            pytest.param(
                 Literal("20:00:00", datatype=_XSD_STRING),
                 Literal("23:30:00", datatype=_XSD_STRING),
                 "bminusa",
-                r"unsupported operand type\(s\) for -: 'str' and 'str",
+                TypeError(r"unsupported operand type\(s\) for -: 'str' and 'str'"),
+                id="Attempt to subtract strings",
             ),
-            (
-                "Attempt to add string to time",
+            pytest.param(
                 Literal("20:00:00", datatype=_XSD_TIME),
                 Literal("23:30:00", datatype=_XSD_STRING),
                 "aplusb",
-                "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#string to a Literal of datatype http://www.w3.org/2001/XMLSchema#time",
+                TypeError(
+                    "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#string to a Literal of datatype http://www.w3.org/2001/XMLSchema#time"
+                ),
+                id="Attempt to add string to time",
             ),
-            (
-                "Attempt to subtract string from time",
+            pytest.param(
                 Literal("20:00:00", datatype=_XSD_TIME),
                 Literal("23:30:00", datatype=_XSD_STRING),
                 "bminusa",
-                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#time from a Literal of datatype http://www.w3.org/2001/XMLSchema#string",
+                TypeError(
+                    "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#time from a Literal of datatype http://www.w3.org/2001/XMLSchema#string"
+                ),
+                id="Attempt to subtract string from time",
             ),
-            (
-                "Attempt to add integer to time",
+            pytest.param(
                 Literal("20:52:00", datatype=_XSD_TIME),
                 Literal("12", datatype=_XSD_INTEGER),
                 "aplusb",
-                "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#integer to a Literal of datatype http://www.w3.org/2001/XMLSchema#time",
+                TypeError(
+                    "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#integer to a Literal of datatype http://www.w3.org/2001/XMLSchema#time"
+                ),
+                id="Attempt to add integer to time",
             ),
-            (
-                "Attempt to add time to integer",
+            pytest.param(
                 Literal("20:52:00", datatype=_XSD_TIME),
                 Literal("12", datatype=_XSD_INTEGER),
                 "bplusa",
-                "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#time to a Literal of datatype http://www.w3.org/2001/XMLSchema#integer",
+                TypeError(
+                    "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#time to a Literal of datatype http://www.w3.org/2001/XMLSchema#integer"
+                ),
+                id="Attempt to add time to integer",
             ),
-            (
-                "Attempt to subtract integer from time",
+            pytest.param(
                 Literal("20:52:00", datatype=_XSD_TIME),
                 Literal("12", datatype=_XSD_INTEGER),
                 "aminusb",
-                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#integer from a Literal of datatype http://www.w3.org/2001/XMLSchema#time",
+                TypeError(
+                    "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#integer from a Literal of datatype http://www.w3.org/2001/XMLSchema#time"
+                ),
+                id="Attempt to subtract integer from time",
             ),
-            (
-                "Attempt to subtract time from integer",
+            pytest.param(
                 Literal("20:52:00", datatype=_XSD_TIME),
                 Literal("12", datatype=_XSD_INTEGER),
                 "bminusa",
-                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#time from a Literal of datatype http://www.w3.org/2001/XMLSchema#integer",
+                TypeError(
+                    "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#time from a Literal of datatype http://www.w3.org/2001/XMLSchema#integer"
+                ),
+                id="Attempt to subtract time from integer",
             ),
-            (
-                "Attempt to add duration to integer",
+            pytest.param(
                 Literal("12", datatype=_XSD_INTEGER),
                 Literal("P122DT15H58M", datatype=_XSD_DURATION),
                 "aplusb",
-                "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#duration to a Literal of datatype http://www.w3.org/2001/XMLSchema#integer",
+                TypeError(
+                    "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#duration to a Literal of datatype http://www.w3.org/2001/XMLSchema#integer"
+                ),
+                id="Attempt to add duration to integer",
             ),
-            (
-                "Attempt to add integer to duration",
+            pytest.param(
                 Literal("12", datatype=_XSD_INTEGER),
                 Literal("P122DT15H58M", datatype=_XSD_DURATION),
                 "bplusa",
-                "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#integer to a Literal of datatype http://www.w3.org/2001/XMLSchema#duration",
+                TypeError(
+                    "Cannot add a Literal of datatype http://www.w3.org/2001/XMLSchema#integer to a Literal of datatype http://www.w3.org/2001/XMLSchema#duration"
+                ),
+                id="Attempt to add integer to duration",
             ),
-            (
-                "Attempt to subtract duration from integer",
+            pytest.param(
                 Literal("12", datatype=_XSD_INTEGER),
                 Literal("P122DT15H58M", datatype=_XSD_DURATION),
                 "aminusb",
-                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#duration from a Literal of datatype http://www.w3.org/2001/XMLSchema#integer",
+                TypeError(
+                    "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#duration from a Literal of datatype http://www.w3.org/2001/XMLSchema#integer"
+                ),
+                id="Attempt to subtract duration from integer",
             ),
-            (
-                "Attempt to subtract integer from duration",
+            pytest.param(
                 Literal("12", datatype=_XSD_INTEGER),
                 Literal("P122DT15H58M", datatype=_XSD_DURATION),
                 "bminusa",
-                "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#integer from a Literal of datatype http://www.w3.org/2001/XMLSchema#duration",
+                TypeError(
+                    "Cannot subtract a Literal of datatype http://www.w3.org/2001/XMLSchema#integer from a Literal of datatype http://www.w3.org/2001/XMLSchema#duration"
+                ),
+                id="Attempt to subtract integer from duration",
             ),
-        ],
-    )
-    def test_datetime_errors(
-        self, desc: str, a: Literal, b: Literal, op: str, emsg: str
-    ) -> None:
-        with pytest.raises(TypeError) as e:
-            if op == "aplusb":
-                result = a + b
-            elif op == "bplusa":
-                result = b + a
-            elif op == "aminusb":
-                result = a - b
-            elif op == "bminusa":
-                result = b - a
-        assert e.match(emsg)
-
-    @pytest.mark.parametrize(
-        "a, b, op, expected",
-        [
             (
                 Literal("2006-01-01T20:50:00", datatype=_XSD_DATETIME),
                 Literal("2006-02-01T20:50:00", datatype=_XSD_DATETIME),
@@ -348,6 +263,12 @@ class TestNewPT:
                 Literal("2006-05-01T20:50:00", datatype=_XSD_DATETIME),
                 "bminusa",
                 Literal("P119D", datatype=_XSD_DURATION),
+            ),
+            (
+                Literal("2006-07-01T20:52:00", datatype=_XSD_DATETIME),
+                Literal("2006-11-01T12:50:00", datatype=_XSD_DATETIME),
+                "aminusb",
+                Literal("-P122DT15H58M", datatype=_XSD_DURATION),
             ),
             (
                 Literal("2006-07-01T20:52:00", datatype=_XSD_DATETIME),
@@ -424,6 +345,12 @@ class TestNewPT:
             (
                 Literal("3", datatype=_XSD_INTEGER),
                 Literal("5", datatype=_XSD_INTEGER),
+                "aplusb",
+                Literal("8", datatype=_XSD_INTEGER),
+            ),
+            (
+                Literal("3", datatype=_XSD_INTEGER),
+                Literal("5", datatype=_XSD_INTEGER),
                 "bminusa",
                 Literal("2", datatype=_XSD_INTEGER),
             ),
@@ -451,15 +378,276 @@ class TestNewPT:
                 "aminusb",
                 Literal("3.2", datatype=_XSD_DOUBLE),
             ),
+            (
+                Literal(isodate.Duration(hours=1)),
+                Literal(isodate.Duration(hours=1)),
+                "aplusb",
+                Literal(isodate.Duration(hours=2)),
+            ),
+            (
+                Literal(datetime.timedelta(days=1)),
+                Literal(datetime.timedelta(days=1)),
+                "aplusb",
+                Literal(datetime.timedelta(days=2)),
+            ),
+            (
+                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(isodate.Duration(hours=1)),
+                "aplusb",
+                Literal("05:23:01.000384", datatype=XSD.time),
+            ),
+            (
+                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(isodate.Duration(days=1)),
+                "aplusb",
+                Literal("2011-11-05", datatype=XSD.date),
+            ),
+            (
+                Literal(
+                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                ),
+                Literal(isodate.Duration(days=1)),
+                "aplusb",
+                Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
+            ),
+            (
+                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.timedelta(hours=1)),
+                "aplusb",
+                Literal("05:23:01.000384", datatype=XSD.time),
+            ),
+            (
+                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.timedelta(days=1)),
+                "aplusb",
+                Literal("2011-11-05", datatype=XSD.date),
+            ),
+            (
+                Literal(
+                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                ),
+                Literal(datetime.timedelta(days=1)),
+                "aplusb",
+                Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
+            ),
+            (
+                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(isodate.Duration(hours=1)),
+                "aminusb",
+                Literal("03:23:01.000384", datatype=XSD.time),
+            ),
+            (
+                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(isodate.Duration(days=1)),
+                "aminusb",
+                Literal("2011-11-03", datatype=XSD.date),
+            ),
+            (
+                Literal(
+                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                ),
+                Literal(isodate.Duration(days=1)),
+                "aminusb",
+                Literal("2011-11-03T00:05:23.283000+00:00", datatype=XSD.dateTime),
+            ),
+            (
+                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.timedelta(hours=1)),
+                "aminusb",
+                Literal("03:23:01.000384", datatype=XSD.time),
+            ),
+            (
+                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.timedelta(days=1)),
+                "aminusb",
+                Literal("2011-11-03", datatype=XSD.date),
+            ),
+            (
+                Literal(
+                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                ),
+                Literal(datetime.timedelta(days=1)),
+                "aminusb",
+                Literal("2011-11-03T00:05:23.283000+00:00", datatype=XSD.dateTime),
+            ),
+            (
+                Literal("5", datatype=XSD.integer),
+                Literal("10", datatype=XSD.integer),
+                "bminusa",
+                Literal("5", datatype=XSD.integer),
+            ),
+            (
+                Literal("5"),
+                Literal("10", datatype=_XSD_INTEGER),
+                "aminusb",
+                TypeError(
+                    "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
+                ),
+            ),
+            (
+                Literal("5"),
+                Literal("10", datatype=_XSD_INTEGER),
+                "bminusa",
+                TypeError(
+                    "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
+                ),
+            ),
+            *affix_tuples(
+                (
+                    Literal("5", datatype=_XSD_INTEGER),
+                    Literal("10", datatype=_XSD_FLOAT),
+                ),
+                [
+                    ("aminusb", Literal("-5", datatype=_XSD_DECIMAL)),
+                    ("aplusb", Literal("15", datatype=_XSD_DECIMAL)),
+                    ("bminusa", Literal("5", datatype=_XSD_DECIMAL)),
+                    ("bplusa", Literal("15", datatype=_XSD_DECIMAL)),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal("5", datatype=_XSD_FLOAT),
+                    Literal("10", datatype=_XSD_DECIMAL),
+                ),
+                [
+                    ("aminusb", Literal("-5", datatype=_XSD_DECIMAL)),
+                    ("aplusb", Literal("15", datatype=_XSD_DECIMAL)),
+                    ("bminusa", Literal("5", datatype=_XSD_DECIMAL)),
+                    ("bplusa", Literal("15", datatype=_XSD_DECIMAL)),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal("5", datatype=_XSD_FLOAT),
+                    Literal("10", datatype=_XSD_DOUBLE),
+                ),
+                [
+                    ("aminusb", Literal("-5", datatype=_XSD_DECIMAL)),
+                    ("aplusb", Literal("15", datatype=_XSD_DECIMAL)),
+                    ("bminusa", Literal("5", datatype=_XSD_DECIMAL)),
+                    ("bplusa", Literal("15", datatype=_XSD_DECIMAL)),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal(Decimal("1.2121214312312")),
+                    Literal(1),
+                ),
+                [
+                    ("aminusb", Literal(Decimal("0.212121"))),
+                    ("aplusb", Literal(Decimal("2.212121"))),
+                    ("bminusa", Literal(Decimal("-0.212121"))),
+                    ("bplusa", Literal(Decimal("2.212121"))),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal("P31D", datatype=_XSD_DURATION),
+                    Literal("P5D", datatype=_XSD_DURATION),
+                ),
+                [
+                    ("aplusb", Literal("P36D", datatype=_XSD_DURATION)),
+                    ("aminusb", Literal("P26D", datatype=_XSD_DURATION)),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal("P119D", datatype=_XSD_DURATION),
+                    Literal("2006-01-02T20:50:00", datatype=_XSD_DATETIME),
+                ),
+                [
+                    ("aplusb", TypeError(r".*datatype.*")),
+                    ("aminusb", TypeError(r".*datatype.*")),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal(isodate.Duration(days=4)),
+                    Literal(datetime.timedelta(days=1)),
+                ),
+                [
+                    (
+                        "aplusb",
+                        TypeError(
+                            r"Cannot add a Literal of datatype.*to a Literal of datatype.*"
+                        ),
+                    ),
+                    (
+                        "aminusb",
+                        TypeError(
+                            r"Cannot subtract a Literal of datatype.*from a Literal of datatype.*"
+                        ),
+                    ),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal(isodate.Duration(days=4)),
+                    Literal(isodate.Duration(days=1)),
+                ),
+                [
+                    ("aplusb", Literal(isodate.Duration(days=5))),
+                    ("aminusb", Literal(isodate.Duration(days=3))),
+                ],
+                None,
+            ),
+            *affix_tuples(
+                (
+                    Literal(datetime.timedelta(hours=4)),
+                    Literal(datetime.timedelta(hours=1)),
+                ),
+                [
+                    ("aplusb", Literal(datetime.timedelta(hours=5))),
+                    ("aminusb", Literal(datetime.timedelta(hours=3))),
+                ],
+                None,
+            ),
         ],
     )
-    def test_datetime(self, a: Literal, b: Literal, op: str, expected: Literal) -> None:
-        if op == "aplusb":
-            assert a + b == expected
-        elif op == "aminusb":
-            assert a - b == expected
-        elif op == "bminusa":
-            assert b - a == expected
+    def test_literal_addsub(
+        self,
+        a: Literal,
+        b: Literal,
+        op: str,
+        expected_result: Union[Literal, Type[Exception], Exception],
+    ) -> None:
+        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+        expected_exception: Optional[Exception] = None
+        with ExitStack() as xstack:
+            if isinstance(expected_result, type) and issubclass(
+                expected_result, Exception
+            ):
+                catcher = xstack.enter_context(pytest.raises(expected_result))
+            elif isinstance(expected_result, Exception):
+                expected_exception = expected_result
+                catcher = xstack.enter_context(pytest.raises(type(expected_exception)))
+            if op == "aplusb":
+                result = a + b
+
+            elif op == "aminusb":
+                result = a - b
+            elif op == "bminusa":
+                result = b - a
+            elif op == "bplusa":
+                result = b + a
+            else:
+                raise ValueError(f"invalid operation {op}")
+            logging.debug("result = %r", result)
+        if catcher is not None or expected_exception is not None:
+            assert catcher is not None
+            assert catcher.value is not None
+            if expected_exception is not None:
+                assert catcher.match(expected_exception.args[0])
+        else:
+            assert isinstance(expected_result, Literal)
+            assert expected_result == result
 
     @pytest.mark.parametrize(
         "a_value, b_value, result_value, datatype",

@@ -611,3 +611,16 @@ def pytest_mark_filter(
             yield pytest.param(
                 *param_set, marks=mark_dict.get(param_set, cast(Marks, ()))
             )
+
+
+def affix_tuples(
+    prefix: Optional[Tuple[Any, ...]],
+    tuples: Iterable[Tuple[Any, ...]],
+    suffix: Optional[Tuple[Any, ...]],
+) -> Generator[Tuple[Any, ...], None, None]:
+    if prefix is None:
+        prefix = tuple()
+    if suffix is None:
+        suffix = tuple()
+    for item in tuples:
+        yield (*prefix, *item, *suffix)

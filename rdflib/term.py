@@ -765,27 +765,37 @@ class Literal(Identifier):
         # if self is datetime based and value is duration
         if (
             self.datatype in (_XSD_DATETIME, _XSD_DATE)
-            and val.datatype == _XSD_DURATION
+            and val.datatype in _TIME_DELTA_TYPES
         ):
-            date1 = self.toPython()
-            duration = val.toPython()
+            date1: Union[datetime, date] = self.toPython()
+            duration: Union[Duration, timedelta] = val.toPython()
             difference = date1 + duration
             return Literal(difference, datatype=self.datatype)
 
         # if self is time based and value is duration
-        elif self.datatype == _XSD_TIME and val.datatype == _XSD_DURATION:
-            sdt = datetime.combine(date(2000, 1, 1), self.toPython()) + val.toPython()
-            return Literal(
-                time(sdt.hour, sdt.minute, sdt.second), datatype=self.datatype
-            )
+        elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
+            selfv: time = self.toPython()
+            valv: Union[Duration, timedelta] = val.toPython()
+            sdt = datetime.combine(date(2000, 1, 1), selfv) + valv
+            return Literal(sdt.time(), datatype=self.datatype)
 
-        # if self is datetime based and value is not or vice versa, or if two durations
+        # if self is datetime based and value is not or vice versa
         elif (
-            self.datatype in _ALL_DATE_AND_TIME_TYPES
-            and val.datatype not in _ALL_DATE_AND_TIME_TYPES
-        ) or (
-            self.datatype not in _ALL_DATE_AND_TIME_TYPES
-            and val.datatype in _ALL_DATE_AND_TIME_TYPES
+            (
+                self.datatype in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype not in _ALL_DATE_AND_TIME_TYPES
+            )
+            or (
+                self.datatype not in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype in _ALL_DATE_AND_TIME_TYPES
+            )
+            or (
+                self.datatype in _TIME_DELTA_TYPES
+                and (
+                    (val.datatype not in _TIME_DELTA_TYPES)
+                    or (self.datatype != val.datatype)
+                )
+            )
         ):
             raise TypeError(
                 f"Cannot add a Literal of datatype {str(val.datatype)} to a Literal of datatype {str(self.datatype)}"
@@ -878,33 +888,21 @@ class Literal(Identifier):
                 "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
             )
 
-        if self.datatype != val.datatype:
+        if (
+            self.datatype in (_XSD_DATETIME, _XSD_DATE)
+            and val.datatype in _TIME_DELTA_TYPES
+        ):
+            date1: Union[datetime, date] = self.toPython()
+            duration: Union[Duration, timedelta] = val.toPython()
+            difference = date1 - duration
+            return Literal(difference, datatype=self.datatype)
 
-            # if only one of self and val in _ALL_DATE_AND_TIME_TYPES
-            if (
-                self.datatype in _ALL_DATE_AND_TIME_TYPES
-                and val.datatype not in _ALL_DATE_AND_TIME_TYPES
-            ) or (
-                self.datatype not in _ALL_DATE_AND_TIME_TYPES
-                and val.datatype in _ALL_DATE_AND_TIME_TYPES
-            ):
-                raise TypeError(
-                    f"Cannot subtract a Literal of datatype {str(val.datatype)} from a Literal of datatype {str(self.datatype)}"
-                )
-
-            # if self and val are both in _DATE_AND_TIME_TYPES
-            elif (
-                self.datatype in _DATE_AND_TIME_TYPES
-                and val.datatype in _DATE_AND_TIME_TYPES
-            ):
-                if self.datatype == _XSD_TIME:
-                    sdt = datetime.combine(date.today(), self.toPython())
-                    vdt = datetime.combine(date.today(), val.toPython())
-                    return Literal(sdt - vdt, datatype=_XSD_DURATION)
-                else:
-                    return Literal(
-                        self.toPython() - val.toPython(), datatype=_XSD_DURATION
-                    )
+        # if self is time based and value is duration
+        elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
+            selfv: time = self.toPython()
+            valv: Union[Duration, timedelta] = val.toPython()
+            sdt = datetime.combine(date(2000, 1, 1), selfv) - valv
+            return Literal(sdt.time(), datatype=self.datatype)
 
         # if the datatypes are the same, just subtract the Python values and convert back
         if self.datatype == val.datatype:
@@ -940,7 +938,9 @@ class Literal(Identifier):
             )
         # in all other cases, perform string concatenation
         else:
-            raise TypeError("Not a number; %s" % repr(self))
+            raise TypeError(
+                f"Cannot subtract a Literal of datatype {str(val.datatype)} from a Literal of datatype {str(self.datatype)}"
+            )
 
     def __bool__(self) -> bool:
         """
@@ -1856,7 +1856,15 @@ _DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
     _XSD_TIME,
 )
 
-_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + (_XSD_DURATION,)
+# These are recognized datatype IRIs
+# (https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris) that
+# represents durations.
+_TIME_DELTA_TYPES: Tuple[URIRef, ...] = (
+    _XSD_DURATION,
+    _XSD_DAYTIMEDURATION,
+)
+
+_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
 
 # the following types need special treatment for reasonable sorting because
 # certain instances can't be compared to each other. We treat this by
