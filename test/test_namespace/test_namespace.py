@@ -8,7 +8,7 @@ from warnings import warn
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import Graph
+from rdflib.graph import BNode, Graph, Literal
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -264,6 +264,40 @@ class TestNamespacePrefix:
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
 
+    def test_expand_curie(self) -> None:
+        g = Graph()
+
+        assert g.namespace_manager.expand_curie("rdf:type") == URIRef(
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        )
+
+        assert g.namespace_manager.expand_curie("rdf:type") == RDF.type
+
+        g.bind("ex", Namespace("urn:example:"))
+
+        assert g.namespace_manager.expand_curie("ex:tarek") == URIRef(
+            "urn:example:tarek"
+        )
+
+    def test_expand_curie_exception_messages(self) -> None:
+        g = Graph()
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(URIRef("urn:example")) == None
+        assert str(e.value) == "Argument must be a string, not URIRef."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(Literal("rdf:type")) == None
+        assert str(e.value) == "Argument must be a string, not Literal."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(BNode()) == None
+        assert str(e.value) == "Argument must be a string, not BNode."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(Graph()) == None
+        assert str(e.value) == "Argument must be a string, not Graph."
+
     @pytest.mark.parametrize(
         ["curie", "expected_result"],
         [
@@ -273,18 +307,20 @@ class TestNamespacePrefix:
             ("ex:a:b", URIRef(f"urn:example:a:b")),
             ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
             ("ex", ValueError),
-            ("em:tarek", None),
-            ("em:", None),
+            ("em:tarek", ValueError),
+            ("em:", ValueError),
             ("em", ValueError),
             (":", ValueError),
             (":type", ValueError),
             ("í", ValueError),
-            (" :", None),
+            (" :", ValueError),
             ("", ValueError),
             ("\n", ValueError),
             (None, TypeError),
             (3, TypeError),
             (URIRef("urn:example:"), TypeError),
+            (BNode(), TypeError),
+            (Literal("rdf:type"), TypeError),
         ],
     )
     def test_expand_curie(
