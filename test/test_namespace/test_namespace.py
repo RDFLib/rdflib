@@ -264,14 +264,17 @@ class TestNamespacePrefix:
     def test_expand_curie(self) -> None:
         g = Graph()
 
-        assert (
-            g.namespace_manager.expand_curie("rdf:type")
-            == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        assert g.namespace_manager.expand_curie("rdf:type") == URIRef(
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
         )
+
+        assert g.namespace_manager.expand_curie("rdf:type") == RDF.type
 
         g.bind("ex", Namespace("urn:example:"))
 
-        assert g.namespace_manager.expand_curie("ex:tarek") == "urn:example:tarek"
+        assert g.namespace_manager.expand_curie("ex:tarek") == URIRef(
+            "urn:example:tarek"
+        )
 
     @pytest.mark.parametrize(
         "invalid_curie",
