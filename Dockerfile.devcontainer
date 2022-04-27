@@ -68,6 +68,5 @@ RUN \
         -r requirements.dev-extra.txt \
         -r docs/sphinx-requirements.txt \
         tox \
-        invoke \
         && \
     true
