@@ -27,13 +27,6 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
-:mod:`film` Module
-------------------
-
-.. automodule:: examples.film
-    :members:
-
-
 :mod:`foafpaths` Module
 -----------------------
 
