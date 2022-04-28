@@ -1,11 +1,14 @@
 import unittest
+from contextlib import ExitStack
+from multiprocessing.sharedctypes import Value
+from typing import Any, Optional, Type, Union
 from unittest.case import expectedFailure
 from warnings import warn
 
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import Graph
+from rdflib.graph import BNode, Graph, Literal
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -260,3 +263,68 @@ class TestNamespacePrefix:
 
         ref = URIRef("http://www.w3.org/2002/07/owl#real")
         assert ref in OWL, "OWL does not include owl:real"
+
+    def test_expand_curie_exception_messages(self) -> None:
+        g = Graph()
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(URIRef("urn:example")) == None
+        assert str(e.value) == "Argument must be a string, not URIRef."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(Literal("rdf:type")) == None
+        assert str(e.value) == "Argument must be a string, not Literal."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(BNode()) == None
+        assert str(e.value) == "Argument must be a string, not BNode."
+
+        with pytest.raises(TypeError) as e:
+            assert g.namespace_manager.expand_curie(Graph()) == None
+        assert str(e.value) == "Argument must be a string, not Graph."
+
+    @pytest.mark.parametrize(
+        ["curie", "expected_result"],
+        [
+            ("ex:tarek", URIRef("urn:example:tarek")),
+            ("ex:", URIRef(f"urn:example:")),
+            ("ex:a", URIRef(f"urn:example:a")),
+            ("ex:a:b", URIRef(f"urn:example:a:b")),
+            ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
+            ("ex", ValueError),
+            ("em:tarek", ValueError),
+            ("em:", ValueError),
+            ("em", ValueError),
+            (":", ValueError),
+            (":type", ValueError),
+            ("í", ValueError),
+            (" :", ValueError),
+            ("", ValueError),
+            ("\n", ValueError),
+            (None, TypeError),
+            (3, TypeError),
+            (URIRef("urn:example:"), TypeError),
+            (BNode(), TypeError),
+            (Literal("rdf:type"), TypeError),
+        ],
+    )
+    def test_expand_curie(
+        self, curie: Any, expected_result: Union[Type[Exception], URIRef, None]
+    ) -> None:
+        g = Graph(bind_namespaces="none")
+        nsm = g.namespace_manager
+        nsm.bind("ex", "urn:example:")
+        result: Optional[URIRef] = None
+        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+        with ExitStack() as xstack:
+            if isinstance(expected_result, type) and issubclass(
+                expected_result, Exception
+            ):
+                catcher = xstack.enter_context(pytest.raises(expected_result))
+            result = g.namespace_manager.expand_curie(curie)
+
+        if catcher is not None:
+            assert result is None
+            assert catcher.value is not None
+        else:
+            assert expected_result == result
