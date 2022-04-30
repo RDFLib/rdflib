@@ -280,7 +280,7 @@ container can be used directly to run various commands, or it can be used with
 <https://devcontainers.github.io/containers.dev/supporting>`_.
 
 .. important::
-  The devcontainer is inteded to run with a
+  The devcontainer is intended to run with a
   `rootless docker <https://docs.docker.com/engine/security/rootless/>`_
   daemon so it can edit files owned by the invoking user without
   an invovled configuration process.

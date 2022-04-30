@@ -6,12 +6,12 @@ vars:
   VENV_PATH: '{{default ".venv" (env "VENV_PATH")}}'
   # Non empty string results in tasks using a virtual environment.
   WITH_VENV: '{{env "WITH_VENV"}}'
-  # The virtual environemtn specific python iterpreter to use.
+  # The virtual environemtn specific python interpreter to use.
   VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/python.exe{{else}}{{.VENV_PATH}}/bin/python{{end}}'
   # The python interpreter to use.
   PYTHON: python
   _PYTHON: '{{if .WITH_VENV}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
-  # Non emtpy string results in java being installed as a system dependency.
+  # Non empty string results in java being installed as a system dependency.
   INSTALL_SYSTEM_DEPS_JAVA: ""
   # Non empty string results in extras being installed with pip.
   INSTALL_PIP_EXTRAS: ""
