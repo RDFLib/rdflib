@@ -184,22 +184,6 @@ Run the test suite and generate a HTML coverage report with `pytest` and `pytest
 pytest --cov
 ```
 
-### Running the tests in a Docker container
-
-Run the test suite inside a Docker container for cross-platform support. This resolves issues such as installing BerkeleyDB on Windows and avoids the host and port issues on macOS.
-```shell
-make tests
-```
-
-Tip: If the underlying Dockerfile for the test runner changes, use `make build`.
-
-### Running the tests in a Docker container with coverage report
-
-Run the test suite inside a Docker container with HTML coverage report.
-```shell
-make coverage
-```
-
 ### Viewing test coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
