@@ -273,11 +273,19 @@ Development container
 
 To simplify the process of getting a working development environment to develop
 rdflib in we provide a `Development Container
-<https://devcontainers.github.io/containers.dev/>`_ that is configured in
-`Docker Compose <https://docs.docker.com/compose/>`_. This container can be
-used directly to run various commands, or it can be used with `editors that
-support Development Containers
+<https://devcontainers.github.io/containers.dev/>`_ (*devcontainer*) that is
+configured in `Docker Compose <https://docs.docker.com/compose/>`_. This
+container can be used directly to run various commands, or it can be used with
+`editors that support Development Containers
 <https://devcontainers.github.io/containers.dev/supporting>`_.
+
+.. important::
+  The devcontainer is inteded to run with a
+  `rootless docker <https://docs.docker.com/engine/security/rootless/>`_
+  daemon so it can edit files owned by the invoking user without
+  an invovled configuration process.
+
+  Using a rootless docker daemon also has general security benefits.
 
 To use the development container directly:
 
@@ -294,6 +302,9 @@ To use the development container directly:
 
     # To get a shell into the devcontainer docker image.
     docker-compose run --rm devcontainer bash
+
+The devcontainer also works with `Podman Compose
+<https://github.com/containers/podman-compose>`_.
 
 Details on how to use the development container with `VSCode
 <https://code.visualstudio.com/>`_ can found in the `Developing inside a
