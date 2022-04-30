@@ -13,6 +13,8 @@ env:
 
 jobs:
   validate:
+    permissions:
+      contents: read
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
