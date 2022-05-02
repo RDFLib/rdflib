@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from tempfile import mkdtemp, mkstemp
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
-from test.testutils import GraphHelper, get_unique_plugin_names
+from test.utils import GraphHelper, get_unique_plugin_names
 from typing import Callable, Optional, Set
 from urllib.error import HTTPError, URLError
 

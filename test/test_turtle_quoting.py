@@ -14,7 +14,7 @@ from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
 
-from .testutils import GraphHelper
+from .utils import GraphHelper
 
 # https://www.w3.org/TR/turtle/#string
 string_escape_map = {
