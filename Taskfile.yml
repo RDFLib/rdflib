@@ -1,0 +1,205 @@
+version: "3"
+
+vars:
+  # The path to the virtual environment to use when using a virtual
+  # environment.
+  VENV_PATH: '{{default ".venv" (env "VENV_PATH")}}'
+  # Non empty string results in tasks using a virtual environment.
+  WITH_VENV: '{{env "WITH_VENV"}}'
+  # The virtual environemtn specific python interpreter to use.
+  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/python.exe{{else}}{{.VENV_PATH}}/bin/python{{end}}'
+  # The python interpreter to use.
+  PYTHON: python
+  _PYTHON: '{{if .WITH_VENV}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
+  # Non empty string results in java being installed as a system dependency.
+  INSTALL_SYSTEM_DEPS_JAVA: ""
+  # Non empty string results in extras being installed with pip.
+  INSTALL_PIP_EXTRAS: ""
+  # Non empty string results in extensive tests being ran and dependencies for
+  # extensive tests being installed.
+  EXTENSIVE: ""
+  # The python version for which tox should run, empty string does not restrict
+  # python versions.
+  TOX_PYTHON_VERSION: ""
+  TEST_HARNESS: '{{if (and .EXTENSIVE (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
+  # A non empty string results in github specific things being done.
+  WITH_GITHUB_ACTIONS: ""
+  # A non empty string results in coverage being generated for relevant
+  # commands.
+  WITH_COVERAGE: ""
+
+tasks:
+  install:system-deps:
+    desc: Install system dependencies
+    cmds:
+      - echo "OS = {{OS}}"
+      - echo "ARCH = {{ARCH}}"
+      - |
+        {{if (and .EXTENSIVE (eq OS "linux"))}}
+          if type apt-get >/dev/null 2>&1
+          then
+            sudo apt-get install -y libdb-dev
+          elif type dnf >/dev/null 2>&1
+          then
+            sudo dnf install -y libdb-devel
+          fi
+        {{else if (and .EXTENSIVE (eq OS "darwin"))}}
+          brew install berkeley-db@4
+        {{end}}
+
+  install:tox:
+    desc: Install tox
+    cmds:
+    - "{{._PYTHON}} -m pip install tox {{if .WITH_GITHUB_ACTIONS}}tox-gh-actions{{end}}"
+
+  install:pip-deps:
+    desc: Install pip dependencies
+    cmds:
+      - "{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if .INSTALL_PIP_EXTRAS}}-r requirements.dev-extras.txt{{end}}"
+
+  install:deps:
+    desc: Install all dependencies
+    cmds:
+      - task: install:system-deps
+      - task: install:tox
+      - task: install:pip-deps
+
+  venv:install:
+    desc: Install a venv to VENV_PATH(={{.VENV_PATH}})
+    cmds:
+      - "{{.PYTHON}} -m venv {{.VENV_PATH}}"
+      - task: install:pip-deps
+        vars: { _PYTHON: "{{.VENV_PYTHON}}" }
+
+  venv:clean:
+    desc: Remove the venv at VENV_PATH(={{.VENV_PATH}})
+    cmds:
+    - task: _rimraf
+      vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
+
+  tox:
+    desc: Run tox
+    cmds:
+      - echo "TOXENV=${TOXENV}"
+      - "{{.TEST_HARNESS}}{{._PYTHON}} -m tox {{.CLI_ARGS}}"
+    env:
+      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{replace "." "" .TOX_PYTHON_VERSION}}{{if .EXTENSIVE}}-extensive{{end}}{{end}}'
+
+  test:
+    desc: Run tests
+    cmds:
+      - "{{.TEST_HARNESS}}{{._PYTHON}} -m pytest {{if .WITH_COVERAGE}}--cov --cov-report={{end}} {{.CLI_ARGS}}"
+
+  lint:fix:
+    desc: Fix auto-fixable linting errors
+    cmds:
+      - "{{._PYTHON}} -m black ."
+      - "{{._PYTHON}} -m isort ."
+
+  lint:
+    desc: Perform linting
+    cmds:
+      - "{{._PYTHON}} -m isort --check --diff ."
+      - "{{._PYTHON}} -m black --check --diff ."
+
+  validate:static:
+    desc: Perform static validation
+    cmds:
+      - task: lint
+      - "{{._PYTHON}} -m mypy --show-error-context --show-error-codes"
+
+  validate:fix:
+    desc: Fix auto-fixable validation errors.
+    cmds:
+      - task: lint:fix
+
+  validate:
+    desc: Perform all validation
+    cmds:
+      - task: validate:static
+      - task: test
+
+  docs:clean:
+    desc: Clean generated documentation
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "docs/_build/" }
+
+  docs:
+    desc: Build documentation
+    cmds:
+      - echo "PYTHONPATH=${PYTHONPATH}"
+      - "{{._PYTHON}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
+
+  docs:live-server:
+    desc: Run a live server on generated docs
+    cmds:
+      - 'echo "NOTE: Docs must be built for this to work"'
+      - npx -p live-server live-server docs/_build/html/ {{.CLI_ARGS}}
+
+  default:
+    desc: Run validate
+    cmds:
+      - task: validate
+
+  clean:mypy:
+    desc: Clean mypy cache
+    cmds:
+    - task: _rimraf
+      vars: { RIMRAF_TARGET: ".mypy_cache" }
+    - task: clean:tox:mypy
+
+  clean:tox:
+    desc: Clean tox environments
+    cmds:
+    - task: _rimraf
+      vars: { RIMRAF_TARGET: ".tox" }
+
+  clean:tox:mypy:
+    desc: Clean mypy cache inside tox environments
+    cmds:
+    - task: _rimraf
+      vars: { RIMRAF_TARGET: ".tox/*/.mypy_cache/" }
+
+  clean:
+    desc: Clean everything
+    cmds:
+      - task: docs:clean
+      - task: clean:tox
+      - task: clean:mypy
+      - task: venv:clean
+
+  test:data:fetch:
+    desc: Fetch test data.
+    cmds:
+      - "{{._PYTHON}} test/data/fetcher.py {{.CLI_ARGS}}"
+
+  pre-commit:install:
+    desc: Install pre-commit hooks
+    cmds:
+      - pre-commit install {{.CLI_ARGS}}
+
+  pre-commit:run:
+    desc: Run pre-commit
+    cmds:
+      - pre-commit run {{.CLI_ARGS}}
+
+  pre-commit:run:all-files:
+    desc: Run pre-commit on all files
+    cmds:
+      - pre-commit run --all-files  {{.CLI_ARGS}}
+
+  _rimraf:
+    # This task is a utility task for recursively removing directories, it is
+    # similar to rm -rf but not identical and it should work wherever there is
+    # a python interpreter. The name is inspired by
+    # <https://www.npmjs.com/package/rimraf>.
+    - cmd: |
+        {{._PYTHON}} -c '
+        from pathlib import Path;
+        import sys, shutil;
+        for path in sys.argv[1:]:
+          if Path(path).exists():
+            sys.stderr.write(f"removing {path}\n")
+            shutil.rmtree(path, ignore_errors=True)
+        ' {{.RIMRAF_TARGET}}
