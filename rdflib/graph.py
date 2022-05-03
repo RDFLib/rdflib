@@ -330,6 +330,7 @@ class Graph(Node):
 
     def __init__(
         self,
+        recursion_depth = 1000,
         store: Union[Store, str] = "default",
         identifier: Optional[Union[IdentifiedNode, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
@@ -353,7 +354,7 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
-        sys.setrecursionlimit(10 ** 6)
+        sys.setrecursionlimit(recursion_depth)
         
 
     @property
