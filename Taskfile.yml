@@ -50,7 +50,7 @@ tasks:
   install:tox:
     desc: Install tox
     cmds:
-    - "{{._PYTHON}} -m pip install tox {{if .WITH_GITHUB_ACTIONS}}tox-gh-actions{{end}}"
+      - "{{._PYTHON}} -m pip install tox {{if .WITH_GITHUB_ACTIONS}}tox-gh-actions{{end}}"
 
   install:pip-deps:
     desc: Install pip dependencies
@@ -74,17 +74,23 @@ tasks:
   venv:clean:
     desc: Remove the venv at VENV_PATH(={{.VENV_PATH}})
     cmds:
-    - task: _rimraf
-      vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
+      - task: _rimraf
+        vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
 
   tox:
     desc: Run tox
     cmds:
       - echo "TOXENV=${TOXENV}"
-      - "{{.TEST_HARNESS}}{{._PYTHON}} -m tox {{.CLI_ARGS}}"
+      - |
+        {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
+        {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
+        {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
+        {{.TEST_HARNESS}} \
+        {{._PYTHON}} \
+          -m tox \
+          {{.CLI_ARGS}}
     env:
       TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{replace "." "" .TOX_PYTHON_VERSION}}{{if .EXTENSIVE}}-extensive{{end}}{{end}}'
-
   test:
     desc: Run tests
     cmds:
@@ -145,21 +151,21 @@ tasks:
   clean:mypy:
     desc: Clean mypy cache
     cmds:
-    - task: _rimraf
-      vars: { RIMRAF_TARGET: ".mypy_cache" }
-    - task: clean:tox:mypy
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".mypy_cache" }
+      - task: clean:tox:mypy
 
   clean:tox:
     desc: Clean tox environments
     cmds:
-    - task: _rimraf
-      vars: { RIMRAF_TARGET: ".tox" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".tox" }
 
   clean:tox:mypy:
     desc: Clean mypy cache inside tox environments
     cmds:
-    - task: _rimraf
-      vars: { RIMRAF_TARGET: ".tox/*/.mypy_cache/" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".tox/*/.mypy_cache/" }
 
   clean:
     desc: Clean everything
@@ -188,6 +194,23 @@ tasks:
     desc: Run pre-commit on all files
     cmds:
       - pre-commit run --all-files  {{.CLI_ARGS}}
+
+  gha:validate:
+    desc: GitHub Actions Validation Workflow
+    env:
+      COVERALLS_PARALLEL: true
+      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}"
+      COVERALLS_SERVICE_NAME: '{{.COVERALLS_SERVICE_NAME | default (env "COVERALLS_SERVICE_NAME") | default "github"}}'
+    cmds:
+      - task: install:system-deps
+      - task: install:tox
+        vars:
+          WITH_GITHUB_ACTIONS: 1
+      - cmd: "{{._PYTHON}} -m pip install coveralls"
+      - task: tox
+        vars:
+          COVERAGE_FILE: ".coverage"
+      - cmd: coveralls
 
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
