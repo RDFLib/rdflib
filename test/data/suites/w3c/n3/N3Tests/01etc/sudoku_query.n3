@@ -1,0 +1,3 @@
+@prefix sudoku: <http://josd.github.io/brain/sudoku#>.
+
+{?PROBLEM sudoku:solve ?ROWS} => {?PROBLEM sudoku:solve ?ROWS}.

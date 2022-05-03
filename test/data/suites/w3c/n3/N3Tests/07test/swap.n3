@@ -1,0 +1,4 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/graph#>.
+
+{?S ?P ?O. ?O log:rawType log:Other} => {?O ?P ?S}.

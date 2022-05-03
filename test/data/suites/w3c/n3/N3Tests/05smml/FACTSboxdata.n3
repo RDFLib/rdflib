@@ -1,0 +1,219 @@
+# Output by STL to RDF/n3 convertor
+# File Processed: Box.stl
+# baseURI: http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox
+# imports: http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101
+
+@prefix :        <http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox#> .
+@prefix stl:     <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<http://smartlab.elis.ugent.be/aimontologies/geometry/instancesSTLBox>
+  rdf:type owl:Ontology ;
+  owl:imports <http://smartlab.elis.ugent.be/aimontologies/geometry/ontologySTL20091101> .
+
+
+#-------------------------------------------------------------------------------
+# Instances
+#-------------------------------------------------------------------------------
+
+
+:Solid1 rdf:type stl:StlSolid .
+
+:Triangle1
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle2
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "-1.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle3
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle4
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "-1.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle5
+  rdf:type stl:StlTriangle ;
+  stl:normal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle6
+  rdf:type stl:StlTriangle ;
+  stl:normal ("1.0"^^xsd:double "-0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle7
+  rdf:type stl:StlTriangle ;
+  stl:normal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle8
+  rdf:type stl:StlTriangle ;
+  stl:normal ("1.0"^^xsd:double "0.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle9
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle10
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "1.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle11
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle12
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "1.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle13
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle14
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-1.0"^^xsd:double "-0.0"^^xsd:double "-0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle15
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle16
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-1.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle17
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle18
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle19
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle20
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle21
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle22
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "-1.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "0.0"^^xsd:double) .
+
+:Triangle23
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle24
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle25
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("30.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle26
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("0.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle27
+  rdf:type stl:StlTriangle ;
+  stl:normal ("0.0"^^xsd:double "0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "0.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .
+
+:Triangle28
+  rdf:type stl:StlTriangle ;
+  stl:normal ("-0.0"^^xsd:double "-0.0"^^xsd:double "1.0"^^xsd:double) ;
+  stl:vertex1 ("30.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex2 ("15.0"^^xsd:double "50.0"^^xsd:double "20.0"^^xsd:double) ;
+  stl:vertex3 ("0.0"^^xsd:double "25.0"^^xsd:double "20.0"^^xsd:double) .

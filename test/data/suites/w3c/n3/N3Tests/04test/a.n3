@@ -1,0 +1,6 @@
+# $Id: a.n3 436 2004-12-19 22:40:26Z josd $
+
+@prefix : <http://example.org/eg#>.
+
+:foo :a "a".
+:foo :b "b".

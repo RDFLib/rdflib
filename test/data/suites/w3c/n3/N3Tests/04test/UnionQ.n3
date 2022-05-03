@@ -1,0 +1,13 @@
+# $Id: UnionQ.n3 417 2004-11-27 22:44:36Z josd $
+# PxButton | es  | euler --nope --think sample.n3 /sfcvs/2003/03swap/rdfs-rules.n3 --query UnionQ.n3
+# PxButton | cwm | cwm sample.n3 /sfcvs/2003/03swap/rdfs-rules.n3 --think --query"=UnionQ.n3"
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+
+[]
+q:select {?P :authorName ?N};
+q:where  {?P :author ?S. ?S rdfs:member ?M. ?M :name ?N}. 

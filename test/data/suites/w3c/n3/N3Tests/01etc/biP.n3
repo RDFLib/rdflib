@@ -1,0 +1,132 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix med: <http://eulersharp.sourceforge.net/2006/02swap/med#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### test data
+:a :b :c, :d.
+:s :p :o1, :o2.
+{?S :b ?O} => {?O :p ?S}.
+:Socrates a :Male, :Mortal.
+:Xanthippe a :Female, :Human.
+
+### unit tests for e: builtins
+{(55 66 72 87 56 77 73 69 74 56) e:avg ?R. ?R math:equalTo 68.5} => {:ea1 :result true}.
+{("1+1") e:calculate ?R. ?R math:equalTo 2} => {:ec1 :result true}.
+{?X log:equalTo 3. ("sqrt(_width^2+_length^2)" ?X 4) e:calculate ?R. ?R math:equalTo 5.0} => {:ec2 :result true}.
+{("_period-250" "PT5M2S"^^xsd:dayTimeDuration) e:calculate ?R. ?R math:equalTo 52.0} => {:ec3 :result true}.
+{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.80 1.66)) e:cov ?R. ?R math:equalTo 0.992777777777778} => {:eco1 :result true}.
+{("atom_codes" "HOME" (72 79 77 69)) e:derive true} => {:epac1 :result true}.
+{("date(1970, 1, 1, 0, 0, 0.0, 0, 'UTC', -)") e:compoundTerm ?U. ("date_time_stamp" ?U ?R) e:derive true. ?R math:equalTo 0.0} => {:epdts1 :result true}.
+{?SCOPE e:findall (?O {:s :p ?O} (:o1 :o2))} => {:ef1 :result true}.
+{?SCOPE e:findall (?S {?S a :Male} (:Socrates :Xanthippe :Xanthippe :Dan :Tim) ?U), (?S {?S a :Female} ?U ?V), (?S {?S a :Human} ?V (:Dan :Tim))} => {:ef3 :result true}.
+{("This is a ~w with number ~w and with an escaped linefeed \n" "test" 5) e:format "This is a test with number 5 and with an escaped linefeed \n"} => {:ef4 :result true}.
+{({:a :b :c. :d :e :f} {}) e:graphDifference {:a :b :c. :d :e :f}} => {:egd1 :result true}.
+{({} {:d :e :f}) e:graphDifference {}} => {:egd2 :result true}.
+{({:a :b :c. :d :e :f} {:d :e :f}) e:graphDifference {:a :b :c}} => {:egd3 :result true}.
+{({:a :b :c. :d :e :f. :g :h :i} {?d :e :f}) e:graphDifference {:a :b :c. :g :h :i}} => {:egd4 :result true}.
+{({:a :b :c} {:a :b :c. :u :v :w. :x :y :z}) e:graphDifference {}} => {:egd5 :result true}.
+{({}) e:graphIntersection {}} => {:egi1 :result true}.
+{({} {:d :e :f}) e:graphIntersection {}} => {:egi2 :result true}.
+{({:a :b :c. :d :e :f. :g :h :i} {}) e:graphIntersection {}} => {:egi3 :result true}.
+{({:a :b :c. :d :e :f} {:d :e :f}) e:graphIntersection {:d :e :f}} => {:egi4 :result true}.
+{({:a :b :c. :d :e :f. :g :h :i} {:g :h :i. ?d :e :f} {?d :e :f. :g :h :i}) e:graphIntersection {?d :e :f. :g :h :i}} => {:egi5 :result true}.
+{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:length 6} => {:el1 :result true}.
+{(8 5 6 7 9 4) e:max 9} => {:em1 :result true}.
+{(8 5 6 7 9 4) e:min 4} => {:em2 :result true}.
+{(1 3 6 6 7 2 3) e:multisetEqualTo (3 3 7 6 6 2 1)} => {:eme1 :result true}.
+{(1 3 6 6 7 2 3) e:multisetNotEqualTo (3 3 7 6 2 1)} => {:emn1 :result true}.
+{:a :b :d. ?SCOPE e:optional {:g :h :i}} => {:eo1 :result true}.
+{((55 66 72 87 56 77 73 69 74 56) (1.66 1.78 1.87 1.92 1.66 1.89 1.86 1.79 1.80 1.66)) e:pcc ?R. ?R math:equalTo 0.9569729506311461} => {:ep1 :result true}.
+{(10000000) e:random 8579687} => {:era1 :result true}.
+{((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d)) e:reverse ((9 :d) (8 :d) (7 :a) (6 :b) (5 :a) (4 :d))} => {:erv1 :result true}.
+{(55 66 72 87 56 77 73 69 74 56) e:rms ?R. ?R math:equalTo 69.2105483289939} => {:erm1 :result true}.
+{((8 :d) (5 :a) (6 :b) (7 :a) (9 :d) (4 :d)) e:sort ((4 :d) (5 :a) (6 :b) (7 :a) (8 :d) (9 :d))} => {:es1 :result true}.
+{(9 3 8 3 5 7 7 9 9 2) e:sort  (2 3 3 5 7 7 8 9 9 9)} => {:es2 :result true}.
+{(55 66 72 87 56 77 73 69 74 56) e:std ?R. ?R math:equalTo 10.426994879744703} => {:est1 :result true}.
+{"\"test\n" e:stringEscape "\\\"test\\n"} => {:ese1 :result true}.
+{("a-b/c-d/e" "-/") e:stringSplit ("a" "b" "c" "d" "e")} => {:ess1 :result true}.
+{(1 2 3 4 5) e:subsequence (1 2 4)} => {:esl1 :result true}.
+{?SCOPE e:fail {(1 2 3 4 5) e:subsequence (4 2 1)}} => {:esl2 :result true}.
+{() e:subsequence ()} => {:esl3 :result true}.
+{((0 1) (2 3) (4 5)) e:transpose ((0 2 4) (1 3 5))} => {:et1 :result true}.
+{_:c e:whenGround {:a :b :d}. :a :b _:c} => {:ewg1 :result true}.
+{"http://www.agfa.com/w3c/euler" e:wwwFormEncode "http%3a%2f%2fwww.agfa.com%2fw3c%2feuler"} => {:ew1 :result true}.
+{"Hello World!" e:wwwFormEncode "Hello+World%21"} => {:ew2 :result true}.
+
+### unit tests for list: builtins
+{((:a :b :c) (:d :e)) list:append (:a :b :c :d :e)} => {:lista1 :result true}.
+{(:a :b :c) list:first :a} => {:listf1 :result true}.
+{:c list:in (:a :b :c)} => {:listi1 :result true}.
+{(:a :b :c) list:last :c} => {:listl1 :result true}.
+{(:a :b :c :d) list:member :b} => {:listm1 :result true}.
+{(:a :b :c) list:rest (:b :c)} => {:listr1 :result true}.
+
+### unit tests for log: builtins
+{({}) log:conjunction {}} => {:logc1 :result true}.
+{({} {:u :v :w} {:x :y :z. :j :k :l}) log:conjunction {:u :v :w. :x :y :z. :j :k :l}} => {:logc2 :result true}.
+{({} {:u :v :w} {} {}) log:conjunction {:u :v :w}} => {:logc3 :result true}.
+{(:a ?A) log:equalTo (?B :b)} => {:loge1 :result true}.
+{{:a :b :c} log:equalTo {:a :b :c}} => {:logee1 :result true}.
+{<abc.n3> log:semantics ?X. ?X log:equalTo {:a :b :c}} => {:loges0 :result true}.
+{<ab_c.n3> log:semantics ?X. ?X log:notEqualTo {:a :b _:c}} => {:loges3 :result true}.
+{{:b :a :c. :e :d :f. :h :g :i. :k :j :l} log:includes {:k :j :l. ?X :d ?Z}} => {:logi1 :result true}.
+{<medic.n3> log:semantics ?F. ?F log:includes {med:aspirinHighDose med:excludedFor med:AllergyForAspirin}} => {:logi3 :result true}.
+{{:a :b :c} log:includes {:a :b :c}} => {:logid0 :result true}.
+{<abc.n3> log:semantics ?X. ?X log:includes {:a :b :c}} => {:logis0 :result true}.
+{:a log:notEqualTo :b} => {:logne1 :result true}.
+{{:a :b :c} log:notEqualTo {:a :b :_c}} => {:logned1 :result true}.
+{{:a :b :_c} log:notEqualTo {:a :b :c}} => {:logned2 :result true}.
+{{:a :b :_c} log:notEqualTo {:a :b _:c}} => {:logned3 :result true}.
+{<medic.n3> log:semantics ?F. ?F log:notIncludes {med:aspirinLowDose med:excludedFor med:SevereAsthma}} => {:logni3 :result true}.
+{{:a :b :c} log:notIncludes {:a :b _:c}} => {:lognid1 :result true}.
+{{:a :b :_c} log:notIncludes {:a :b :c}} => {:lognid2 :result true}.
+{{:a :b :_c} log:notIncludes {:a :b _:c}} => {:lognid3 :result true}.
+{<abc.n3> log:semantics ?X. ?X log:notIncludes {:a :b _:c}} => {:lognis1 :result true}.
+{<ab_c.n3> log:semantics ?X. ?X log:notIncludes {:a :b :c}} => {:lognis2 :result true}.
+{<ab_c.n3> log:semantics ?X. ?X log:notIncludes {:a :b _:c}} => {:lognis3 :result true}.
+{<ab_c.n3> log:semantics ?X. <abc.n3> log:semantics ?Y. ?X log:notIncludes ?Y} => {:lognis4 :result true}.
+{<http://eulersharp.sourceforge.net/2006/02swap/med#Fever> log:uri "http://eulersharp.sourceforge.net/2006/02swap/med#Fever"} => {:logu1 :result true}.
+{:betaBlocker log:uri "http://eulersharp.sourceforge.net/2007/07test#betaBlocker"} => {:logu2 :result true}.
+
+### unit tests for math: builtins
+{(1 1) math:difference 0} => {:mathd1 :result true}.
+{("2009-01-25T12:00:00"^^xsd:dateTime "1970-01-01T00:00:00"^^xsd:dateTime) math:difference 1232884800} => {:mathd2 :result true}.
+{(2 ?X) math:exponentiation 8.0. (4.0 ?X) math:product 12.0} => {:mathe1 :result true}.
+{2 math:greaterThan 1} => {:mathg1 :result true}.
+{"02" math:greaterThan "1"} => {:mathg2 :result true}.
+{(:u :v :u) math:memberCount 3} => {:mathm1 :result true}.
+{{:s :p :o1. :s :p :o2. :s :p :o1} math:memberCount 2} => {:mathm2 :result true}.
+{7 math:notLessThan 5} => {:mathnl1 :result true}.
+{(1 1) math:sum 2} => {:maths1 :result true}.
+{("1" "1") math:sum 2} => {:maths2 :result true}.
+{("1970-01-01T00:00:00+01:00"^^xsd:dateTime) math:sum -3600} => {:maths3 :result true}.
+{("P1D"^^xsd:duration) math:sum 86400.0} => {:maths4 :result true}.
+
+### unit tests for rdf: builtins
+{(:f :g) rdf:first :f} => {:rdff1 :result true}.
+{(:f :g) rdf:rest (:g)} => {:rdfr1 :result true}.
+
+### unit tests for string: builtins
+{("eul" "er") string:concatenation "euler"} => {:strc1 :result true}.
+{("€" "Ø"@en-US) string:concatenation "€Ø"} => {:strc2 :result true}.
+{("test " "is \"ok\"") string:concatenation "test is \"ok\""} => {:strc3 :result true}.
+{"Rob Smith"^^xsd:string string:contains "Smith"} => {:strcn1 :result true}.
+{"Rob Smith"@en string:contains "Smith"@en} => {:strcn2 :result true}.
+{"Tim" string:containsIgnoringCase "IM"} => {:strci1 :result true}.
+{"abracadabra" string:matches "(a|b|r|c|d)+"} => {:strm1 :result true}.
+{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:scrape "example.org"} => {:strs1 :result true}.
+{("{x" "{(.)") string:scrape "x"} => {:strs2 :result true}.
+{("http://example.org/1995/manifesto" "http://([^/]+)/([^/]+)") string:search ("example.org" "1995")} => {:strs3 :result true}.
+{"euler" string:startsWith "eu"} => {:strs4 :result true}.
+
+### unit tests for time: builtins
+{"2006-12-14"^^xsd:date time:day "14"} => {:timed1 :result true}.
+{"2006-12-14"^^xsd:date time:month "12"} => {:timem1 :result true}.
+{"2006-12-14"^^xsd:date time:year "2006"} => {:timey1 :result true}.

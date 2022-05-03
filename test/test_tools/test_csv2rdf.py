@@ -3,9 +3,9 @@ import re
 import subprocess
 import sys
 from tempfile import mkstemp
-from test.data import CONSISTENT_DATA_DIR
+from test.data import TEST_DATA_DIR
 
-REALESTATE_FILE_PATH = os.path.join(CONSISTENT_DATA_DIR, "csv", "realestate.csv")
+REALESTATE_FILE_PATH = os.path.join(TEST_DATA_DIR, "csv", "realestate.csv")
 
 
 class TestCSV2RDF:

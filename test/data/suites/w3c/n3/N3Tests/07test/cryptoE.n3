@@ -1,0 +1,15 @@
+#Processed by Id: euler.yap 5594 2012-08-27 12:12:04Z josd
+#eye --nope --plugin http://eulersharp.sourceforge.net/2006/02swap/crypto-plugin.yap http://eulersharp.sourceforge.net/2007/07test/cryptoP.n3 --query http://eulersharp.sourceforge.net/2007/07test/cryptoQ.n3
+
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+@prefix var: <http://localhost/var#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+{"blargh" crypto:md5 "ef15c9bd4c7836612b1567f4c8396726"} a :PASS.
+{"blargh" crypto:sha "d1e670385f40ee942a059f949c761214872ac35f"} a :PASS.
+
+#ENDS 0 [msec] TC=6 TP=18 BC=0 BP=7 PM=0 CM=0 FM=0 AM=0
+

@@ -1,0 +1,8 @@
+# $Id: aliceFoaf.n3 436 2004-12-19 22:40:26Z josd $
+
+@prefix  foaf: <http://xmlns.com/foaf/0.1/> .
+
+_:a foaf:mbox <mailto:alice@work.example> .
+_:a foaf:knows _:b .
+_:b foaf:mbox <mailto:bob@work.example> .
+_:b foaf:age 32 .

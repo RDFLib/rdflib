@@ -4,6 +4,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
+from test.data import TEST_DATA_DIR
 from test.testutils import GraphHelper
 from typing import (
     ClassVar,
@@ -30,7 +31,7 @@ from rdflib.term import URIRef
 from rdflib.util import guess_format
 
 TEST_DIR = Path(__file__).parent.parent.absolute()
-VARIANTS_DIR = TEST_DIR / "variants"
+VARIANTS_DIR = TEST_DATA_DIR / "variants"
 
 # Put files from other directories in here.
 EXTRA_FILES: List[Path] = []
@@ -132,7 +133,7 @@ class GraphVariants:
 
 
 GRAPH_VARIANT_DICT = {
-    **GraphVariants.for_directory(VARIANTS_DIR, TEST_DIR),
+    **GraphVariants.for_directory(VARIANTS_DIR, TEST_DATA_DIR),
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 

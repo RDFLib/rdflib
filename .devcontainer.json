@@ -1,0 +1,23 @@
+{
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/srv/workspace/",
+  "shutdownAction": "stopCompose",
+  "settings": {
+    "python.linting.mypyEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.formatting.provider": "black"
+  },
+  "extensions": [
+    "ms-python.python",
+    "redhat.vscode-yaml",
+    "redhat.vscode-xml",
+    "stardog-union.stardog-rdf-grammars",
+    "lextudio.restructuredtext",
+    "trond-snekvik.simple-rst",
+    "EditorConfig.EditorConfig",
+    "paulvarache.vscode-taskfile",
+    "stardog-union.vscode-stardog-languages"
+  ]
+}

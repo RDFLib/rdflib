@@ -1,0 +1,5636 @@
+## Distributed under both the W3C Test Suite License[1] and the W3C Software and Document License[2].
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. https://www.w3.org/Consortium/Legal/copyright-software
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdft:  <http://www.w3.org/ns/rdftest#> .
+@prefix mf:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test:  <https://w3c.github.io/N3/tests/test.n3#>.
+@prefix :     <#>.
+
+<>  a mf:Manifest ;
+    rdfs:label "N3 ExtendedParser tests" ;
+    rdfs:comment "These tests may be useful for stress testing parsers." ;
+    mf:entries
+    (
+      :01etc_10tt_proof.n3
+      :01etc_1tt1.n3
+      :01etc_1tt10.n3
+      :01etc_1tt2.n3
+      :01etc_1tt3.n3
+      :01etc_1tt4.n3
+      :01etc_1tt5.n3
+      :01etc_1tt6.n3
+      :01etc_1tt7.n3
+      :01etc_1tt8.n3
+      :01etc_1tt9.n3
+      :01etc_4color_answer.n3
+      :01etc_4color_data.n3
+      :01etc_4color_proof.n3
+      :01etc_4color_query.n3
+      :01etc_4color_rules.n3
+      :01etc_abc.n3
+      :01etc_ab_c.n3
+      :01etc_acct3check1.n3
+      :01etc_acct3check2.n3
+      :01etc_acct3start.n3
+      :01etc_agent1-answer.n3
+      :01etc_agent1-map.n3
+      :01etc_agent1-proof.n3
+      :01etc_agent1-query.n3
+      :01etc_agent2-answer.n3
+      :01etc_agent2-map.n3
+      :01etc_agent2-proof.n3
+      :01etc_agent2-query.n3
+      :01etc_age_rules_backward.n3
+      :01etc_answer-001.n3
+      :01etc_answer.n3
+      :01etc_background_rules.n3
+      :01etc_bankSW.n3
+      :01etc_biE.n3
+      :01etc_biP.n3
+      :01etc_biQ.n3
+      :01etc_blueproof001.n3
+      :01etc_blueproof002.n3
+      :01etc_blueproof003.n3
+      :01etc_bmi_instances.n3
+      :01etc_bmi_proof.n3
+      :01etc_bmi_query.n3
+      :01etc_bmi_rules.n3
+      :01etc_ccd_rules.n3
+      :01etc_checking.n3
+      :01etc_components.n3
+      :01etc_crypto-proof.n3
+      :01etc_cryptoP.n3
+      :01etc_data-001.n3
+      :01etc_data.n3
+      :01etc_de.n3
+      :01etc_deA.n3
+      :01etc_deE.n3
+      :01etc_deQ.n3
+      :01etc_dp.n3
+      :01etc_dpE.n3
+      :01etc_dpe_assumption.n3
+      :01etc_dpe_proof.n3
+      :01etc_dpe_query.n3
+      :01etc_dpe_theory.n3
+      :01etc_dpQ.n3
+      :01etc_easter-proof.n3
+      :01etc_easter.n3
+      :01etc_easterE.n3
+      :01etc_easterF.n3
+      :01etc_easterP.n3
+      :01etc_einstein.n3
+      :01etc_einsteinE.n3
+      :01etc_einsteinQ.n3
+      :01etc_example001P.n3
+      :01etc_example002P.n3
+      :01etc_example003Q.n3
+      :01etc_fcm-plugin.n3
+      :01etc_fcm_proof.n3
+      :01etc_fgcm-model.n3
+      :01etc_fgcm-plugin.n3
+      :01etc_fgcm-query.n3
+      :01etc_fgcm_proof.n3
+      :01etc_fib.n3
+      :01etc_fibA.n3
+      :01etc_fibE.n3
+      :01etc_fibQ.n3
+      :01etc_fl-rules.n3
+      :01etc_floatingwoman-goal.n3
+      :01etc_floatingwoman-proof.n3
+      :01etc_floatingwoman.n3
+      :01etc_food-declarations.n3
+      :01etc_food-example.n3
+      :01etc_food-preduction.n3
+      :01etc_food-proof.n3
+      :01etc_food-query.n3
+      :01etc_food.n3
+      :01etc_food2-proof.n3
+      :01etc_food2.n3
+      :01etc_forAllIn_answer.n3
+      :01etc_forAllIn_proof.n3
+      :01etc_forAllIn_query.n3
+      :01etc_gedcom-facts.n3
+      :01etc_gedcom-filter.n3
+      :01etc_gedcom-proof.n3
+      :01etc_gedcom-relations.n3
+      :01etc_gen.n3
+      :01etc_goal.n3
+      :01etc_gps-example1.n3
+      :01etc_gps-example2.n3
+      :01etc_gps-plugin.n3
+      :01etc_gps-proof1.n3
+      :01etc_gps-proof2.n3
+      :01etc_gps-query1.n3
+      :01etc_gps-query2.n3
+      :01etc_graph-10.n3
+      :01etc_graph-100.n3
+      :01etc_graph-1000.n3
+      :01etc_graph-10000.n3
+      :01etc_graph.axiom.n3
+      :01etc_graph.filter.n3
+      :01etc_graph.proof.n3
+      :01etc_graphgen.n3
+      :01etc_greenquery001.n3
+      :01etc_greenquery002.n3
+      :01etc_greenquery003.n3
+      :01etc_hanoi.n3
+      :01etc_hanoiE.n3
+      :01etc_hypothesis-001.n3
+      :01etc_initial.n3
+      :01etc_iq-extra.n3
+      :01etc_iq.n3
+      :01etc_iq_proof.n3
+      :01etc_lldmD.n3
+      :01etc_lldmE.n3
+      :01etc_lldmF.n3
+      :01etc_lldmP.n3
+      :01etc_medic.n3
+      :01etc_medicE.n3
+      :01etc_medicF.n3
+      :01etc_mmln-gv-example.n3
+      :01etc_mmln-gv-mln.n3
+      :01etc_mmln-gv-proof.n3
+      :01etc_mmln-gv-query.n3
+      :01etc_mmln-plugin.n3
+      :01etc_mq_proof.n3
+      :01etc_nbbn-model.n3
+      :01etc_nbbn-plugin.n3
+      :01etc_nbbn-query.n3
+      :01etc_nbbn_proof.n3
+      :01etc_notIn_answer.n3
+      :01etc_notIn_proof.n3
+      :01etc_notIn_query.n3
+      :01etc_numeral.n3
+      :01etc_numeral_proof.n3
+      :01etc_owl-AllDifferent.n3
+      :01etc_owl-AllDisjointClasses.n3
+      :01etc_owl-AllDisjointProperties.n3
+      :01etc_owl-allValuesFrom.n3
+      :01etc_owl-AsymmetricProperty.n3
+      :01etc_owl-complementOf.n3
+      :01etc_owl-differentFrom.n3
+      :01etc_owl-disjointUnionOf.n3
+      :01etc_owl-disjointWith.n3
+      :01etc_owl-distinctMembers.n3
+      :01etc_owl-equivalentClass.n3
+      :01etc_owl-equivalentProperty.n3
+      :01etc_owl-FunctionalProperty.n3
+      :01etc_owl-hasKey.n3
+      :01etc_owl-hasValue.n3
+      :01etc_owl-intersectionOf.n3
+      :01etc_owl-InverseFunctionalProperty.n3
+      :01etc_owl-inverseOf.n3
+      :01etc_owl-IrreflexiveProperty.n3
+      :01etc_owl-maxCardinality.n3
+      :01etc_owl-maxQualifiedCardinality.n3
+      :01etc_owl-NegativePropertyAssertion.n3
+      :01etc_owl-Nothing.n3
+      :01etc_owl-oneOf.n3
+      :01etc_owl-propertyChainAxiom.n3
+      :01etc_owl-propertyDisjointWith.n3
+      :01etc_owl-sameAs-ext.n3
+      :01etc_owl-sameAs.n3
+      :01etc_owl-someValuesFrom.n3
+      :01etc_owl-SymmetricProperty.n3
+      :01etc_owl-TransitiveProperty.n3
+      :01etc_owl-unionOf.n3
+      :01etc_palindrome-declarations.n3
+      :01etc_palindrome-preduction.n3
+      :01etc_palindrome-proof.n3
+      :01etc_palindrome-query.n3
+      :01etc_palindrome.n3
+      :01etc_palindrome2-proof.n3
+      :01etc_palindrome2-query.n3
+      :01etc_palindrome2.n3
+      :01etc_parteval-subclass.n3
+      :01etc_path-9-3-proof.n3
+      :01etc_path-9-3.n3
+      :01etc_patient.n3
+      :01etc_pi-proof.n3
+      :01etc_pi-query.n3
+      :01etc_pi.n3
+      :01etc_polynomial.n3
+      :01etc_polynomialgen.n3
+      :01etc_preduction-plugin.n3
+      :01etc_proof-001.n3
+      :01etc_proof-10.n3
+      :01etc_proof-100.n3
+      :01etc_proof-1000.n3
+      :01etc_proof-10000.n3
+      :01etc_proof-2-10.n3
+      :01etc_proof-2-100.n3
+      :01etc_proof-2-1000.n3
+      :01etc_proof-2-10000.n3
+      :01etc_proof.n3
+      :01etc_query-001.n3
+      :01etc_query.n3
+      :01etc_query1.n3
+      :01etc_query10.n3
+      :01etc_query100.n3
+      :01etc_query11.n3
+      :01etc_query12.n3
+      :01etc_query13.n3
+      :01etc_query14.n3
+      :01etc_query15.n3
+      :01etc_query16.n3
+      :01etc_query17.n3
+      :01etc_query18.n3
+      :01etc_query19.n3
+      :01etc_query2.n3
+      :01etc_query20.n3
+      :01etc_query21.n3
+      :01etc_query22.n3
+      :01etc_query23.n3
+      :01etc_query24.n3
+      :01etc_query25.n3
+      :01etc_query26.n3
+      :01etc_query27.n3
+      :01etc_query28.n3
+      :01etc_query29.n3
+      :01etc_query3.n3
+      :01etc_query30.n3
+      :01etc_query31.n3
+      :01etc_query32.n3
+      :01etc_query33.n3
+      :01etc_query34.n3
+      :01etc_query35.n3
+      :01etc_query36.n3
+      :01etc_query37.n3
+      :01etc_query38.n3
+      :01etc_query39.n3
+      :01etc_query4.n3
+      :01etc_query40.n3
+      :01etc_query41.n3
+      :01etc_query42.n3
+      :01etc_query43.n3
+      :01etc_query44.n3
+      :01etc_query45.n3
+      :01etc_query46.n3
+      :01etc_query47.n3
+      :01etc_query48.n3
+      :01etc_query49.n3
+      :01etc_query5.n3
+      :01etc_query50.n3
+      :01etc_query51.n3
+      :01etc_query52.n3
+      :01etc_query53.n3
+      :01etc_query54.n3
+      :01etc_query55.n3
+      :01etc_query56.n3
+      :01etc_query57.n3
+      :01etc_query58.n3
+      :01etc_query59.n3
+      :01etc_query6.n3
+      :01etc_query60.n3
+      :01etc_query61.n3
+      :01etc_query62.n3
+      :01etc_query63.n3
+      :01etc_query64.n3
+      :01etc_query65.n3
+      :01etc_query66.n3
+      :01etc_query67.n3
+      :01etc_query68.n3
+      :01etc_query69.n3
+      :01etc_query7.n3
+      :01etc_query70.n3
+      :01etc_query71.n3
+      :01etc_query72.n3
+      :01etc_query73.n3
+      :01etc_query74.n3
+      :01etc_query75.n3
+      :01etc_query76.n3
+      :01etc_query77.n3
+      :01etc_query78.n3
+      :01etc_query79.n3
+      :01etc_query8.n3
+      :01etc_query80.n3
+      :01etc_query81.n3
+      :01etc_query82.n3
+      :01etc_query83.n3
+      :01etc_query84.n3
+      :01etc_query85.n3
+      :01etc_query86.n3
+      :01etc_query87.n3
+      :01etc_query88.n3
+      :01etc_query89.n3
+      :01etc_query9.n3
+      :01etc_query90.n3
+      :01etc_query91.n3
+      :01etc_query92.n3
+      :01etc_query93.n3
+      :01etc_query94.n3
+      :01etc_query95.n3
+      :01etc_query96.n3
+      :01etc_query97.n3
+      :01etc_query98.n3
+      :01etc_query99.n3
+      :01etc_randomsample-proof.n3
+      :01etc_randomsample-query.n3
+      :01etc_randomsample-rule.n3
+      :01etc_rdfs-domain.n3
+      :01etc_rdfs-range.n3
+      :01etc_rdfs-subClassOf.n3
+      :01etc_rdfs-subPropertyOf.n3
+      :01etc_redgraph001.n3
+      :01etc_redgraph002.n3
+      :01etc_redgraph003.n3
+      :01etc_resto-proof.n3
+      :01etc_resto.n3
+      :01etc_restoG.n3
+      :01etc_result.n3
+      :01etc_rifE.n3
+      :01etc_rifP.n3
+      :01etc_rifQ.n3
+      :01etc_rpo-rules.n3
+      :01etc_rules-001.n3
+      :01etc_sample.n3
+      :01etc_sdcoding-a-proof.n3
+      :01etc_sdcoding-a.n3
+      :01etc_sdcoding-answer.n3
+      :01etc_sdcoding-proof.n3
+      :01etc_sdcoding-q.n3
+      :01etc_sdcoding-query.n3
+      :01etc_sdcoding.n3
+      :01etc_select-data-extra.n3
+      :01etc_select-data.n3
+      :01etc_select-proof-extra.n3
+      :01etc_select-proof.n3
+      :01etc_select-query.n3
+      :01etc_skos-extra-rules.n3
+      :01etc_skos-mapping-sample-snomed-icd10.n3
+      :01etc_skos-mapping-validation-query.n3
+      :01etc_skos-mapping-validation-rules.n3
+      :01etc_skos-rules.n3
+      :01etc_skos_mv_proof.n3
+      :01etc_socrates.n3
+      :01etc_socratesF.n3
+      :01etc_socrates_proof.n3
+      :01etc_streason-output.n3
+      :01etc_streason-rules.n3
+      :01etc_subtasks.n3
+      :01etc_swetA.n3
+      :01etc_swetA01.n3
+      :01etc_swetA11.n3
+      :01etc_swetA21.n3
+      :01etc_swetA31.n3
+      :01etc_swetD.n3
+      :01etc_swetQ.n3
+      :01etc_swetQ01.n3
+      :01etc_swetQ11.n3
+      :01etc_swetQ21.n3
+      :01etc_swetQ31.n3
+      :01etc_swet_proof.n3
+      :01etc_tak.n3
+      :01etc_takE.n3
+      :01etc_takQ.n3
+      :01etc_tasks.n3
+      :01etc_test-dl-1000.n3
+      :01etc_test-dt-1000.n3
+      :01etc_test-facts.n3
+      :01etc_test-proof-1000.n3
+      :01etc_test-query.n3
+      :01etc_test.n3
+      :01etc_testE.n3
+      :01etc_testQ.n3
+      :01etc_test_answer.n3
+      :01etc_test_data.n3
+      :01etc_test_proof.n3
+      :01etc_test_query.n3
+      :01etc_train_data.n3
+      :01etc_train_model.n3
+      :01etc_train_model_proof.n3
+      :01etc_train_query.n3
+      :01etc_train_rules.n3
+      :01etc_turing.n3
+      :01etc_turingQ.n3
+      :01etc_turing_proof.n3
+      :01etc_usmE.n3
+      :01etc_usmP.n3
+      :01etc_usmQ.n3
+      :01etc_utf8.n3
+      :01etc_utf8_proof.n3
+      :01etc_weightStatus_rules.n3
+      :01etc_witch-goal.n3
+      :01etc_witch-proof.n3
+      :01etc_witch.n3
+      :01etc_year.n3
+      :04test_a.n3
+      :04test_alarm.n3
+      :04test_alarmE.n3
+      :04test_alarmF.n3
+      :04test_aliceFoaf.n3
+      :04test_anatomy-facts.n3
+      :04test_anatomy-filter.n3
+      :04test_anatomy-result.n3
+      :04test_anatomy-rules.n3
+      :04test_b.n3
+      :04test_bc.n3
+      :04test_bcE.n3
+      :04test_bcF.n3
+      :04test_bobFoaf.n3
+      :04test_books.n3
+      :04test_booksE.n3
+      :04test_booksQ.n3
+      :04test_CountingE.n3
+      :04test_CountingQ.n3
+      :04test_D1.n3
+      :04test_D1E.n3
+      :04test_D1Q.n3
+      :04test_D2.n3
+      :04test_D2E.n3
+      :04test_D2Q.n3
+      :04test_da538tc1D.n3
+      :04test_da538tc1E.n3
+      :04test_da538tc1Q.n3
+      :04test_da538tc2D.n3
+      :04test_da538tc2E.n3
+      :04test_da538tc2Q.n3
+      :04test_danC.n3
+      :04test_danE.n3
+      :04test_danP.n3
+      :04test_danQ.n3
+      :04test_danT.n3
+      :04test_data-01.n3
+      :04test_data-02.n3
+      :04test_daveE.n3
+      :04test_daveQ.n3
+      :04test_davidE.n3
+      :04test_davidP.n3
+      :04test_davidQ.n3
+      :04test_dawg-data-01.n3
+      :04test_dawg-ot-0-01.n3
+      :04test_dawg-ot-0-02.n3
+      :04test_dawg-ot-0-03.n3
+      :04test_dawg-tp-0-01.n3
+      :04test_dawg-tp-0-02.n3
+      :04test_dawg-tp-05.n3
+      :04test_dawg-tp-1-01.n3
+      :04test_dawg-tp-2-01.n3
+      :04test_diagnosis.n3
+      :04test_disjunction.n3
+      :04test_disjunctionE.n3
+      :04test_disjunctionQ.n3
+      :04test_dl-safe_small.owl.n3
+      :04test_dog.n3
+      :04test_dogE.n3
+      :04test_dogQ.n3
+      :04test_easterE.n3
+      :04test_easterF.n3
+      :04test_easterP.n3
+      :04test_easterQ.n3
+      :04test_EntailmentE.n3
+      :04test_EntailmentQ.n3
+      :04test_ericE.n3
+      :04test_ericF.n3
+      :04test_ericP.n3
+      :04test_ericQ.n3
+      :04test_ericT.n3
+      :04test_ex2-1a.n3
+      :04test_ex2-1aE.n3
+      :04test_ex2-1aQ.n3
+      :04test_ex2-2a.n3
+      :04test_ex2-2aE.n3
+      :04test_ex2-2aQ.n3
+      :04test_ex2-3a.n3
+      :04test_ex2-3aE.n3
+      :04test_ex2-3aQ.n3
+      :04test_ex2-4a.n3
+      :04test_ex2-4aE.n3
+      :04test_ex2-4aQ.n3
+      :04test_ex3.n3
+      :04test_ex3E.n3
+      :04test_ex3Q.n3
+      :04test_exonE.n3
+      :04test_exonQ.n3
+      :04test_factorial.n3
+      :04test_factorialE.n3
+      :04test_factorialQ.n3
+      :04test_gate.n3
+      :04test_gateE.n3
+      :04test_gateF.n3
+      :04test_gene.n3
+      :04test_geneE.n3
+      :04test_geneF.n3
+      :04test_gmp.n3
+      :04test_gmpE.n3
+      :04test_gmpF.n3
+      :04test_grahamC.n3
+      :04test_grahamE.n3
+      :04test_grahamP.n3
+      :04test_grahamQ.n3
+      :04test_henry.n3
+      :04test_icalD001.n3
+      :04test_icalE001.n3
+      :04test_icalE002.n3
+      :04test_icalQ001.n3
+      :04test_icalQ002.n3
+      :04test_icalR.n3
+      :04test_JoeCo.n3
+      :04test_kendallE.n3
+      :04test_kendallP.n3
+      :04test_kendallQ.n3
+      :04test_LanguageE.n3
+      :04test_LanguageQ.n3
+      :04test_LexicalSpaceE.n3
+      :04test_LexicalSpaceQ.n3
+      :04test_librarianE.n3
+      :04test_librarianP.n3
+      :04test_librarianQ.n3
+      :04test_metastatic.n3
+      :04test_metastaticE.n3
+      :04test_metastaticF.n3
+      :04test_metastaticP.n3
+      :04test_metastaticP001.n3
+      :04test_metastaticP002.n3
+      :04test_metastaticQ.n3
+      :04test_metastaticQ001.n3
+      :04test_metastaticR.n3
+      :04test_michaelC.n3
+      :04test_michaelE.n3
+      :04test_michaelP.n3
+      :04test_minsuC.n3
+      :04test_minsuE.n3
+      :04test_minsuP.n3
+      :04test_NamespaceE.n3
+      :04test_NamespaceQ.n3
+      :04test_nciOncologyE.n3
+      :04test_nciOncologyQ.n3
+      :04test_not-galen.n3
+      :04test_ontology-for-data-model.n3
+      :04test_OptionalPathE.n3
+      :04test_OptionalPathQ.n3
+      :04test_origin.n3
+      :04test_originE.n3
+      :04test_originQ.n3
+      :04test_pat.n3
+      :04test_patE.n3
+      :04test_PathE.n3
+      :04test_PathQ.n3
+      :04test_patQ.n3
+      :04test_QuantificationE.n3
+      :04test_QuantificationQ.n3
+      :04test_query-survey-1.n3
+      :04test_query-survey-10.n3
+      :04test_query-survey-11.n3
+      :04test_query-survey-12.n3
+      :04test_query-survey-13.n3
+      :04test_query-survey-2.n3
+      :04test_query-survey-3.n3
+      :04test_query-survey-8.n3
+      :04test_query-survey-9.n3
+      :04test_query-survey-result-1.n3
+      :04test_query-survey-result-10.n3
+      :04test_query-survey-result-11.n3
+      :04test_query-survey-result-12.n3
+      :04test_query-survey-result-13.n3
+      :04test_query-survey-result-2.n3
+      :04test_query-survey-result-3.n3
+      :04test_query-survey-result-8.n3
+      :04test_query-survey-result-9.n3
+      :04test_radlex.n3
+      :04test_radlexE.n3
+      :04test_radlexQ.n3
+      :04test_RecursionE.n3
+      :04test_RecursionQ.n3
+      :04test_result-ot-0-01.n3
+      :04test_result-ot-0-02.n3
+      :04test_result-ot-0-03.n3
+      :04test_result-tp-0-01.n3
+      :04test_result-tp-0-02.n3
+      :04test_result-tp-05.n3
+      :04test_result-tp-1-01.n3
+      :04test_result-tp-2-01.n3
+      :04test_robC.n3
+      :04test_robE.n3
+      :04test_robP.n3
+      :04test_robQ.n3
+      :04test_rogier.n3
+      :04test_rtE.n3
+      :04test_rtQ.n3
+      :04test_sameAsE.n3
+      :04test_sameAsQ.n3
+      :04test_sample.n3
+      :04test_sampleE.n3
+      :04test_sampleP.n3
+      :04test_sampleQ.n3
+      :04test_SequenceE.n3
+      :04test_SequenceQ.n3
+      :04test_sethC.n3
+      :04test_sethE.n3
+      :04test_sethP.n3
+      :04test_simplegraph_query.n3
+      :04test_socratesP.n3
+      :04test_socratesQ.n3
+      :04test_socratesR.n3
+      :04test_srcE.n3
+      :04test_srcP.n3
+      :04test_srcQ.n3
+      :04test_statement1.n3
+      :04test_stc1.n3
+      :04test_stc1E.n3
+      :04test_stc2a.n3
+      :04test_stc2aE.n3
+      :04test_stc2b.n3
+      :04test_stc2bE.n3
+      :04test_stc3a.n3
+      :04test_stc3aE.n3
+      :04test_stc3b.n3
+      :04test_stc3bE.n3
+      :04test_swrl-n3-rules.n3
+      :04test_swrl-n3-rulesQ.n3
+      :04test_testC.n3
+      :04test_testP.n3
+      :04test_u1.n3
+      :04test_u2.n3
+      :04test_UnionE.n3
+      :04test_UnionQ.n3
+      :04test_unsaid.n3
+      :04test_unsaidE.n3
+      :04test_unsaidQ.n3
+      :04test_v.n3
+      :04test_variableSubstitution.n3
+      :04test_vcard.n3
+      :04test_vcardE.n3
+      :04test_vcardF.n3
+      :04test_vcardP.n3
+      :04test_vcardQ.n3
+      :04test_wet.n3
+      :04test_wetE.n3
+      :04test_wetF.n3
+      :04test_xanthippe.n3
+      :04test_xanthippeQ.n3
+      :05smml_FACTSboxdata.n3
+      :05smml_FACTSboxgeometrydetection.n3
+      :05smml_FACTSfacedetection.n3
+      :05smml_FACTSfaceedgedetection.n3
+      :05smml_FACTSfeaturerecognition.n3
+      :05smml_FACTShousewalls.n3
+      :05smml_FACTShousewallsmeshed.n3
+      :05smml_FACTSlinkfaceedgestoobjects.n3
+      :05smml_FACTSlinkfacestoobjects.n3
+      :05smml_FACTSneighbourtriangles.n3
+      :05smml_FACTSobjectdetection.n3
+      :05smml_FACTStriangleedges.n3
+      :05smml_QUERYfaces.n3
+      :05smml_QUERYneighbourfaceedges.n3
+      :05smml_QUERYobjects.n3
+      :05smml_RULESdefaultvaluesefindall.n3
+      :05smml_RULESdefaultvaluesfindall.n3
+      :05smml_RULESedges.n3
+      :05smml_RULESfaceedges.n3
+      :05smml_RULESfaces.n3
+      :05smml_RULESfeaturerecognition.n3
+      :05smml_RULESgeometryrecognition.n3
+      :05smml_RULESifctransformationmatrix.n3
+      :05smml_RULESlinkedgestoobjects.n3
+      :05smml_RULESlinkfacestoobjects.n3
+      :05smml_RULESmatrix.n3
+      :05smml_RULESneighbourfaceedges.n3
+      :05smml_RULESneighbours.n3
+      :05smml_RULESobjects.n3
+      :05smml_RULESx3dboxtostl.n3
+      :07test_3outOf5-answer.n3
+      :07test_3outOf5-query.n3
+      :07test_3outOf5-sample.n3
+      :07test_abc.n3
+      :07test_ab_c.n3
+      :07test_ab_d.n3
+      :07test_adl.n3
+      :07test_adl_result.n3
+      :07test_agent_goal.n3
+      :07test_agent_knowledge.n3
+      :07test_age_instance.n3
+      :07test_age_query.n3
+      :07test_age_test_result.n3
+      :07test_alpA001.n3
+      :07test_alpA010.n3
+      :07test_alpE000.n3
+      :07test_alpE001.n3
+      :07test_alpE002.n3
+      :07test_alpE003.n3
+      :07test_alpE011.n3
+      :07test_alpE012.n3
+      :07test_alpE013.n3
+      :07test_alpP001.n3
+      :07test_alpQ001.n3
+      :07test_alpQ002.n3
+      :07test_alpQ003.n3
+      :07test_arc-goal.n3
+      :07test_arc.n3
+      :07test_arcE.n3
+      :07test_badmeta.n3
+      :07test_bd-query.n3
+      :07test_bd-result-10.n3
+      :07test_bd-result-100.n3
+      :07test_bd-result-1000.n3
+      :07test_bd-test-10.n3
+      :07test_bd-test-100.n3
+      :07test_bd-test-1000.n3
+      :07test_bench.n3
+      :07test_benchE.n3
+      :07test_benchQ.n3
+      :07test_bg-result-10.n3
+      :07test_bg-result-100.n3
+      :07test_bg-result-1000.n3
+      :07test_bg-test-10.n3
+      :07test_bg-test-100.n3
+      :07test_bg-test-1000.n3
+      :07test_biE.n3
+      :07test_biP.n3
+      :07test_biQ.n3
+      :07test_biR.n3
+      :07test_bmi_instances.n3
+      :07test_bmi_query.n3
+      :07test_bmi_test_result.n3
+      :07test_cd.n3
+      :07test_cdE.n3
+      :07test_contradiction.n3
+      :07test_cryptoE.n3
+      :07test_cryptoP.n3
+      :07test_cryptoQ.n3
+      :07test_cyclic-pass.n3
+      :07test_cyclic-rules.n3
+      :07test_data1.n3
+      :07test_data2.n3
+      :07test_data3.n3
+      :07test_de.n3
+      :07test_deA.n3
+      :07test_deE.n3
+      :07test_deQ.n3
+      :07test_desc_images.n3
+      :07test_desc_thumbnail.n3
+      :07test_dpe_answer.n3
+      :07test_dpe_assumption.n3
+      :07test_dpe_query.n3
+      :07test_dpe_theory.n3
+      :07test_dtb-result-10.n3
+      :07test_dtb-result-100.n3
+      :07test_dtb-result-1000.n3
+      :07test_easter-cwm.n3
+      :07test_easter-eye.n3
+      :07test_easterF.n3
+      :07test_easterP.n3
+      :07test_equalities1.n3
+      :07test_eventTime_instances_2.n3
+      :07test_eventTime_queries2.n3
+      :07test_eventTime_test_result.n3
+      :07test_fdlP020.n3
+      :07test_fdlQ001.n3
+      :07test_fgcm-model.n3
+      :07test_fgcm-query.n3
+      :07test_fgcm_proof.n3
+      :07test_fgcm_result.n3
+      :07test_fib.n3
+      :07test_fibE.n3
+      :07test_fibQ.n3
+      :07test_gmpbnode.n3
+      :07test_gmpbnode2.n3
+      :07test_gmpbnodeE1.n3
+      :07test_gmpbnodeE2.n3
+      :07test_gmpbnodeF.n3
+      :07test_goal.n3
+      :07test_graph-10.n3
+      :07test_graph-100.n3
+      :07test_graph-1000.n3
+      :07test_graph-10000.n3
+      :07test_graph-imjoin.n3
+      :07test_graphgen.n3
+      :07test_graphgen1bt.n3
+      :07test_graphgen512mt.n3
+      :07test_grass.n3
+      :07test_grass_pass.n3
+      :07test_grawl-10.n3
+      :07test_grawl-100.n3
+      :07test_grawl-1000.n3
+      :07test_grawlgen.n3
+      :07test_gv-answer.n3
+      :07test_gv-example.n3
+      :07test_gv-mln.n3
+      :07test_gv-query.n3
+      :07test_hanoi.n3
+      :07test_hanoiE.n3
+      :07test_httpspeech.n3
+      :07test_id.n3
+      :07test_idE.n3
+      :07test_ind.n3
+      :07test_initial.n3
+      :07test_iq.n3
+      :07test_iq_answer.n3
+      :07test_iq_proof.n3
+      :07test_irP.n3
+      :07test_irQ.n3
+      :07test_irR.n3
+      :07test_m3bP.n3
+      :07test_m3bQ.n3
+      :07test_medic.n3
+      :07test_music-proof.n3
+      :07test_music-proof2.n3
+      :07test_music-query.n3
+      :07test_music-query2.n3
+      :07test_music-rule.n3
+      :07test_music.n3
+      :07test_nbbn-model.n3
+      :07test_nbbn-query.n3
+      :07test_nbbn_proof.n3
+      :07test_nbbn_result.n3
+      :07test_nincl.n3
+      :07test_ninclQ.n3
+      :07test_numeral.n3
+      :07test_numeral_result.n3
+      :07test_orP.n3
+      :07test_orQ.n3
+      :07test_owl2.n3
+      :07test_owlth.n3
+      :07test_parteval-equivalent.n3
+      :07test_parteval-subclass.n3
+      :07test_parteval.n3
+      :07test_parteval_answer.n3
+      :07test_parteval_proofcheck.n3
+      :07test_parteval_query.n3
+      :07test_path-1-3-answer.n3
+      :07test_path-1-3.n3
+      :07test_path-10-3-answer.n3
+      :07test_path-10-3.n3
+      :07test_path-1024-3.n3
+      :07test_path-16-3.n3
+      :07test_path-2-3-answer.n3
+      :07test_path-2-3.n3
+      :07test_path-256-3.n3
+      :07test_path-3-1-answer.n3
+      :07test_path-3-1.n3
+      :07test_path-3-2-answer.n3
+      :07test_path-3-2.n3
+      :07test_path-3-3-answer.n3
+      :07test_path-3-3.n3
+      :07test_path-3-4-answer.n3
+      :07test_path-3-4.n3
+      :07test_path-3-5-answer.n3
+      :07test_path-3-5.n3
+      :07test_path-4-3-answer.n3
+      :07test_path-4-3.n3
+      :07test_path-5-3-answer.n3
+      :07test_path-5-3.n3
+      :07test_path-6-3-answer.n3
+      :07test_path-6-3.n3
+      :07test_path-64-3.n3
+      :07test_path-7-3-answer.n3
+      :07test_path-7-3.n3
+      :07test_path-8-3-answer.n3
+      :07test_path-8-3.n3
+      :07test_path-9-3-answer.n3
+      :07test_path-9-3.n3
+      :07test_patient.n3
+      :07test_pd_hes_query.n3
+      :07test_pd_hes_result.n3
+      :07test_pd_hes_tactic.n3
+      :07test_pd_hes_theory.n3
+      :07test_pi-query.n3
+      :07test_pi.n3
+      :07test_pi_result.n3
+      :07test_plfnP.n3
+      :07test_plfnQ.n3
+      :07test_pluginQ.n3
+      :07test_ptP.n3
+      :07test_ptQ.n3
+      :07test_query.n3
+      :07test_query1.n3
+      :07test_randomsample-answer.n3
+      :07test_randomsample-query.n3
+      :07test_randomsample-rule.n3
+      :07test_rdfs-nice.n3
+      :07test_rdip_proof.n3
+      :07test_resto-cwm-proof.n3
+      :07test_resto-cwm-proof2.n3
+      :07test_resto-proof.n3
+      :07test_resto-proof2.n3
+      :07test_resto.n3
+      :07test_resto2.n3
+      :07test_restoG.n3
+      :07test_rifE.n3
+      :07test_rifP.n3
+      :07test_rifQ.n3
+      :07test_rsP.n3
+      :07test_rsQ.n3
+      :07test_rulegen.n3
+      :07test_rulegen_result.n3
+      :07test_sample-roundtrip.n3
+      :07test_sample.n3
+      :07test_sc.n3
+      :07test_scE.n3
+      :07test_select-data.n3
+      :07test_select-query.n3
+      :07test_shubert.n3
+      :07test_shubertE.n3
+      :07test_shubertQ.n3
+      :07test_skos-mapping-sample-snomed-icd10.n3
+      :07test_skos-mapping-validation-query.n3
+      :07test_skos_mv_answer.n3
+      :07test_skos_mv_proof.n3
+      :07test_socrater.n3
+      :07test_socraterE.n3
+      :07test_socrates.n3
+      :07test_socratesE.n3
+      :07test_socratesQ.n3
+      :07test_speech.n3
+      :07test_streason-result.n3
+      :07test_streason-rules.n3
+      :07test_sudoku-query-1.n3
+      :07test_sudoku-query-2.n3
+      :07test_sudoku-query-3.n3
+      :07test_sudoku-solution-1.n3
+      :07test_sudoku-solution-2.n3
+      :07test_sudoku-solution-3.n3
+      :07test_sudoku-solver.n3
+      :07test_swap.n3
+      :07test_swetA.n3
+      :07test_swetA01.n3
+      :07test_swetA11.n3
+      :07test_swetA21.n3
+      :07test_swetA31.n3
+      :07test_swetD.n3
+      :07test_swetQ.n3
+      :07test_swetQ01.n3
+      :07test_swetQ11.n3
+      :07test_swetQ21.n3
+      :07test_swetQ31.n3
+      :07test_swet_cwm_result.n3
+      :07test_swet_result.n3
+      :07test_swP.n3
+      :07test_swQ.n3
+      :07test_tak.n3
+      :07test_takE.n3
+      :07test_takQ.n3
+      :07test_test-strela-10.n3
+      :07test_test-strela-100.n3
+      :07test_test-strela-1000.n3
+      :07test_theory1.n3
+      :07test_thumbnail_why.n3
+      :07test_time.n3
+      :07test_ttl-to-rdfa.n3
+      :07test_turing.n3
+      :07test_turingA.n3
+      :07test_turingQ.n3
+      :07test_turing_proof.n3
+      :07test_usmE.n3
+      :07test_usmP.n3
+      :07test_usmQ.n3
+      :07test_utf8.n3
+      :07test_wetC100.n3
+      :07test_wetE100.n3
+      :07test_wetE101.n3
+      :07test_wetE102.n3
+      :07test_wetP100.n3
+      :07test_wetQ100.n3
+      :07test_wetQ101.n3
+      :07test_wetQ102.n3
+      :07test_witch-goal.n3
+      :07test_witch.n3
+      :07test_witchA.n3
+      :07test_witchE.n3
+      :07test_witchF.n3
+      :07test_witchG.n3
+  ) .
+
+:01etc_10tt_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/10tt_proof.n3> ;
+        mf:name        "10tt_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_1tt1.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt1.n3> ;
+        mf:name        "1tt1" .
+
+:01etc_1tt10.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt10.n3> ;
+        mf:name        "1tt10" .
+
+:01etc_1tt2.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt2.n3> ;
+        mf:name        "1tt2" .
+
+:01etc_1tt3.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt3.n3> ;
+        mf:name        "1tt3" .
+
+:01etc_1tt4.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt4.n3> ;
+        mf:name        "1tt4" .
+
+:01etc_1tt5.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt5.n3> ;
+        mf:name        "1tt5" .
+
+:01etc_1tt6.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt6.n3> ;
+        mf:name        "1tt6" .
+
+:01etc_1tt7.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt7.n3> ;
+        mf:name        "1tt7" .
+
+:01etc_1tt8.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt8.n3> ;
+        mf:name        "1tt8" .
+
+:01etc_1tt9.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/1tt9.n3> ;
+        mf:name        "1tt9" .
+
+:01etc_4color_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/4color_answer.n3> ;
+        mf:name        "4color_answer" .
+
+:01etc_4color_data.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/4color_data.n3> ;
+        mf:name        "4color_data" .
+
+:01etc_4color_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/4color_proof.n3> ;
+        mf:name        "4color_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_4color_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/4color_query.n3> ;
+        mf:name        "4color_query" .
+
+:01etc_4color_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/4color_rules.n3> ;
+        mf:name        "4color_rules" .
+
+:01etc_ab_c.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/ab_c.n3> ;
+        mf:name        "ab_c" .
+
+:01etc_abc.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/abc.n3> ;
+        mf:name        "abc" .
+
+:01etc_acct3check1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/acct3check1.n3> ;
+        mf:name        "acct3check1" .
+
+:01etc_acct3check2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/acct3check2.n3> ;
+        mf:name        "acct3check2" .
+
+:01etc_acct3start.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/acct3start.n3> ;
+        mf:name        "acct3start" .
+
+:01etc_age_rules_backward.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/age_rules_backward.n3> ;
+        mf:name        "age_rules_backward" .
+
+:01etc_agent1-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent1-answer.n3> ;
+        mf:name        "agent1-answer" .
+
+:01etc_agent1-map.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent1-map.n3> ;
+        mf:name        "agent1-map" .
+
+:01etc_agent1-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent1-proof.n3> ;
+        mf:name        "agent1-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_agent1-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent1-query.n3> ;
+        mf:name        "agent1-query" .
+
+:01etc_agent2-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent2-answer.n3> ;
+        mf:name        "agent2-answer" .
+
+:01etc_agent2-map.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent2-map.n3> ;
+        mf:name        "agent2-map" .
+
+:01etc_agent2-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent2-proof.n3> ;
+        mf:name        "agent2-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_agent2-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/agent2-query.n3> ;
+        mf:name        "agent2-query" .
+
+:01etc_answer-001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/answer-001.n3> ;
+        mf:name        "answer-001" .
+
+:01etc_answer.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/answer.n3> ;
+        mf:name        "answer" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_background_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/background_rules.n3> ;
+        mf:name        "background_rules" .
+
+:01etc_bankSW.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/bankSW.n3> ;
+        mf:name        "bankSW" .
+
+:01etc_biE.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/biE.n3> ;
+        mf:name        "biE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_biP.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/biP.n3> ;
+        mf:name        "biP" .
+
+:01etc_biQ.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/biQ.n3> ;
+        mf:name        "biQ" .
+
+:01etc_blueproof001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/blueproof001.n3> ;
+        mf:name        "blueproof001" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_blueproof002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/blueproof002.n3> ;
+        mf:name        "blueproof002" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_blueproof003.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/blueproof003.n3> ;
+        mf:name        "blueproof003" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_bmi_instances.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/bmi_instances.n3> ;
+        mf:name        "bmi_instances" .
+
+:01etc_bmi_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/bmi_proof.n3> ;
+        mf:name        "bmi_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_bmi_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/bmi_query.n3> ;
+        mf:name        "bmi_query" .
+
+:01etc_bmi_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/bmi_rules.n3> ;
+        mf:name        "bmi_rules" .
+
+:01etc_ccd_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/ccd_rules.n3> ;
+        mf:name        "ccd_rules" .
+
+:01etc_checking.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/checking.n3> ;
+        mf:name        "checking" .
+
+:01etc_components.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/components.n3> ;
+        mf:name        "components" .
+
+:01etc_crypto-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/crypto-proof.n3> ;
+        mf:name        "crypto-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_cryptoP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/cryptoP.n3> ;
+        mf:name        "cryptoP" .
+
+:01etc_data-001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/data-001.n3> ;
+        mf:name        "data-001" .
+
+:01etc_data.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/data.n3> ;
+        mf:name        "data" .
+
+:01etc_de.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <01etc/de.n3> ;
+        mf:name        "de" .
+
+:01etc_deA.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/deA.n3> ;
+        mf:name        "deA" .
+
+:01etc_deE.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/deE.n3> ;
+        mf:name        "deE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_deQ.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/deQ.n3> ;
+        mf:name        "deQ" .
+
+:01etc_dp.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dp.n3> ;
+        mf:name        "dp" .
+
+:01etc_dpE.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpE.n3> ;
+        mf:name        "dpE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_dpQ.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpQ.n3> ;
+        mf:name        "dpQ" .
+
+:01etc_dpe_assumption.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpe_assumption.n3> ;
+        mf:name        "dpe_assumption" .
+
+:01etc_dpe_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpe_proof.n3> ;
+        mf:name        "dpe_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_dpe_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpe_query.n3> ;
+        mf:name        "dpe_query" .
+
+:01etc_dpe_theory.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/dpe_theory.n3> ;
+        mf:name        "dpe_theory" .
+
+:01etc_easter-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/easter-proof.n3> ;
+        mf:name        "easter-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_easter.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/easter.n3> ;
+        mf:name        "easter" .
+
+:01etc_easterE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/easterE.n3> ;
+        mf:name        "easterE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_easterF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/easterF.n3> ;
+        mf:name        "easterF" .
+
+:01etc_easterP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/easterP.n3> ;
+        mf:name        "easterP" .
+
+:01etc_einstein.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/einstein.n3> ;
+        mf:name        "einstein" .
+
+:01etc_einsteinE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/einsteinE.n3> ;
+        mf:name        "einsteinE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_einsteinQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/einsteinQ.n3> ;
+        mf:name        "einsteinQ" .
+
+:01etc_example001P.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/example001P.n3> ;
+        mf:name        "example001P" .
+
+:01etc_example002P.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/example002P.n3> ;
+        mf:name        "example002P" .
+
+:01etc_example003Q.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/example003Q.n3> ;
+        mf:name        "example003Q" .
+
+:01etc_fcm-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fcm-plugin.n3> ;
+        mf:name        "fcm-plugin" .
+
+:01etc_fcm_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fcm_proof.n3> ;
+        mf:name        "fcm_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_fgcm-model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fgcm-model.n3> ;
+        mf:name        "fgcm-model" .
+
+:01etc_fgcm-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fgcm-plugin.n3> ;
+        mf:name        "fgcm-plugin" .
+
+:01etc_fgcm-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fgcm-query.n3> ;
+        mf:name        "fgcm-query" .
+
+:01etc_fgcm_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fgcm_proof.n3> ;
+        mf:name        "fgcm_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_fib.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fib.n3> ;
+        mf:name        "fib" .
+
+:01etc_fibA.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fibA.n3> ;
+        mf:name        "fibA" .
+
+:01etc_fibE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fibE.n3> ;
+        mf:name        "fibE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_fibQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fibQ.n3> ;
+        mf:name        "fibQ" .
+
+:01etc_fl-rules.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/fl-rules.n3> ;
+        mf:name        "fl-rules" .
+
+:01etc_floatingwoman-goal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/floatingwoman-goal.n3> ;
+        mf:name        "floatingwoman-goal" .
+
+:01etc_floatingwoman-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/floatingwoman-proof.n3> ;
+        mf:name        "floatingwoman-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_floatingwoman.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/floatingwoman.n3> ;
+        mf:name        "floatingwoman" .
+
+:01etc_food-declarations.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food-declarations.n3> ;
+        mf:name        "food-declarations" .
+
+:01etc_food-example.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food-example.n3> ;
+        mf:name        "food-example" .
+
+:01etc_food-preduction.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food-preduction.n3> ;
+        mf:name        "food-preduction" .
+
+:01etc_food-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food-proof.n3> ;
+        mf:name        "food-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_food-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food-query.n3> ;
+        mf:name        "food-query" .
+
+:01etc_food.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food.n3> ;
+        mf:name        "food" .
+
+:01etc_food2-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food2-proof.n3> ;
+        mf:name        "food2-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_food2.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/food2.n3> ;
+        mf:name        "food2" .
+
+:01etc_forAllIn_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/forAllIn_answer.n3> ;
+        mf:name        "forAllIn_answer" .
+
+:01etc_forAllIn_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/forAllIn_proof.n3> ;
+        mf:name        "forAllIn_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_forAllIn_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/forAllIn_query.n3> ;
+        mf:name        "forAllIn_query" .
+
+:01etc_gedcom-facts.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gedcom-facts.n3> ;
+        mf:name        "gedcom-facts" .
+
+:01etc_gedcom-filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gedcom-filter.n3> ;
+        mf:name        "gedcom-filter" .
+
+:01etc_gedcom-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gedcom-proof.n3> ;
+        mf:name        "gedcom-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_gedcom-relations.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gedcom-relations.n3> ;
+        mf:name        "gedcom-relations" .
+
+:01etc_gen.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gen.n3> ;
+        mf:name        "gen" .
+
+:01etc_goal.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/goal.n3> ;
+        mf:name        "goal" .
+
+:01etc_gps-example1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-example1.n3> ;
+        mf:name        "gps-example1" .
+
+:01etc_gps-example2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-example2.n3> ;
+        mf:name        "gps-example2" .
+
+:01etc_gps-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-plugin.n3> ;
+        mf:name        "gps-plugin" .
+
+:01etc_gps-proof1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-proof1.n3> ;
+        mf:name        "gps-proof1" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_gps-proof2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-proof2.n3> ;
+        mf:name        "gps-proof2" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_gps-query1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-query1.n3> ;
+        mf:name        "gps-query1" .
+
+:01etc_gps-query2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/gps-query2.n3> ;
+        mf:name        "gps-query2" .
+
+:01etc_graph-10.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph-10.n3> ;
+        mf:name        "graph-10" .
+
+:01etc_graph-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph-100.n3> ;
+        mf:name        "graph-100" .
+
+:01etc_graph-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph-1000.n3> ;
+        mf:name        "graph-1000" .
+
+:01etc_graph-10000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph-10000.n3> ;
+        mf:name        "graph-10000" .
+
+:01etc_graph.axiom.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph.axiom.n3> ;
+        mf:name        "graph.axiom" .
+
+:01etc_graph.filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph.filter.n3> ;
+        mf:name        "graph.filter" .
+
+:01etc_graph.proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graph.proof.n3> ;
+        mf:name        "graph.proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_graphgen.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/graphgen.n3> ;
+        mf:name        "graphgen" .
+
+:01etc_greenquery001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/greenquery001.n3> ;
+        mf:name        "greenquery001" .
+
+:01etc_greenquery002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/greenquery002.n3> ;
+        mf:name        "greenquery002" .
+
+:01etc_greenquery003.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/greenquery003.n3> ;
+        mf:name        "greenquery003" .
+
+:01etc_hanoi.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/hanoi.n3> ;
+        mf:name        "hanoi" .
+
+:01etc_hanoiE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/hanoiE.n3> ;
+        mf:name        "hanoiE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_hypothesis-001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/hypothesis-001.n3> ;
+        mf:name        "hypothesis-001" .
+
+:01etc_initial.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/initial.n3> ;
+        mf:name        "initial" .
+
+:01etc_iq-extra.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/iq-extra.n3> ;
+        mf:name        "iq-extra" .
+
+:01etc_iq.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <01etc/iq.n3> ;
+        mf:name        "iq" .
+
+:01etc_iq_proof.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/iq_proof.n3> ;
+        mf:name        "iq_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_lldmD.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/lldmD.n3> ;
+        mf:name        "lldmD" .
+
+:01etc_lldmE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/lldmE.n3> ;
+        mf:name        "lldmE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_lldmF.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/lldmF.n3> ;
+        mf:name        "lldmF" .
+
+:01etc_lldmP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/lldmP.n3> ;
+        mf:name        "lldmP" .
+
+:01etc_medic.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/medic.n3> ;
+        mf:name        "medic" .
+
+:01etc_medicE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/medicE.n3> ;
+        mf:name        "medicE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_medicF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/medicF.n3> ;
+        mf:name        "medicF" .
+
+:01etc_mmln-gv-example.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mmln-gv-example.n3> ;
+        mf:name        "mmln-gv-example" .
+
+:01etc_mmln-gv-mln.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mmln-gv-mln.n3> ;
+        mf:name        "mmln-gv-mln" .
+
+:01etc_mmln-gv-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mmln-gv-proof.n3> ;
+        mf:name        "mmln-gv-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_mmln-gv-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mmln-gv-query.n3> ;
+        mf:name        "mmln-gv-query" .
+
+:01etc_mmln-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mmln-plugin.n3> ;
+        mf:name        "mmln-plugin" .
+
+:01etc_mq_proof.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/mq_proof.n3> ;
+        mf:name        "mq_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_nbbn-model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/nbbn-model.n3> ;
+        mf:name        "nbbn-model" .
+
+:01etc_nbbn-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/nbbn-plugin.n3> ;
+        mf:name        "nbbn-plugin" .
+
+:01etc_nbbn-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/nbbn-query.n3> ;
+        mf:name        "nbbn-query" .
+
+:01etc_nbbn_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/nbbn_proof.n3> ;
+        mf:name        "nbbn_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_notIn_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/notIn_answer.n3> ;
+        mf:name        "notIn_answer" .
+
+:01etc_notIn_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/notIn_proof.n3> ;
+        mf:name        "notIn_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_notIn_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/notIn_query.n3> ;
+        mf:name        "notIn_query" .
+
+:01etc_numeral.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/numeral.n3> ;
+        mf:name        "numeral" .
+
+:01etc_numeral_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/numeral_proof.n3> ;
+        mf:name        "numeral_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_owl-AllDifferent.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-AllDifferent.n3> ;
+        mf:name        "owl-AllDifferent" .
+
+:01etc_owl-AllDisjointClasses.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-AllDisjointClasses.n3> ;
+        mf:name        "owl-AllDisjointClasses" .
+
+:01etc_owl-AllDisjointProperties.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-AllDisjointProperties.n3> ;
+        mf:name        "owl-AllDisjointProperties" .
+
+:01etc_owl-AsymmetricProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-AsymmetricProperty.n3> ;
+        mf:name        "owl-AsymmetricProperty" .
+
+:01etc_owl-FunctionalProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-FunctionalProperty.n3> ;
+        mf:name        "owl-FunctionalProperty" .
+
+:01etc_owl-InverseFunctionalProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-InverseFunctionalProperty.n3> ;
+        mf:name        "owl-InverseFunctionalProperty" .
+
+:01etc_owl-IrreflexiveProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-IrreflexiveProperty.n3> ;
+        mf:name        "owl-IrreflexiveProperty" .
+
+:01etc_owl-NegativePropertyAssertion.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-NegativePropertyAssertion.n3> ;
+        mf:name        "owl-NegativePropertyAssertion" .
+
+:01etc_owl-Nothing.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-Nothing.n3> ;
+        mf:name        "owl-Nothing" .
+
+:01etc_owl-SymmetricProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-SymmetricProperty.n3> ;
+        mf:name        "owl-SymmetricProperty" .
+
+:01etc_owl-TransitiveProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-TransitiveProperty.n3> ;
+        mf:name        "owl-TransitiveProperty" .
+
+:01etc_owl-allValuesFrom.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-allValuesFrom.n3> ;
+        mf:name        "owl-allValuesFrom" .
+
+:01etc_owl-complementOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-complementOf.n3> ;
+        mf:name        "owl-complementOf" .
+
+:01etc_owl-differentFrom.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-differentFrom.n3> ;
+        mf:name        "owl-differentFrom" .
+
+:01etc_owl-disjointUnionOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-disjointUnionOf.n3> ;
+        mf:name        "owl-disjointUnionOf" .
+
+:01etc_owl-disjointWith.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-disjointWith.n3> ;
+        mf:name        "owl-disjointWith" .
+
+:01etc_owl-distinctMembers.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-distinctMembers.n3> ;
+        mf:name        "owl-distinctMembers" .
+
+:01etc_owl-equivalentClass.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-equivalentClass.n3> ;
+        mf:name        "owl-equivalentClass" .
+
+:01etc_owl-equivalentProperty.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-equivalentProperty.n3> ;
+        mf:name        "owl-equivalentProperty" .
+
+:01etc_owl-hasKey.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-hasKey.n3> ;
+        mf:name        "owl-hasKey" .
+
+:01etc_owl-hasValue.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-hasValue.n3> ;
+        mf:name        "owl-hasValue" .
+
+:01etc_owl-intersectionOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-intersectionOf.n3> ;
+        mf:name        "owl-intersectionOf" .
+
+:01etc_owl-inverseOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-inverseOf.n3> ;
+        mf:name        "owl-inverseOf" .
+
+:01etc_owl-maxCardinality.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-maxCardinality.n3> ;
+        mf:name        "owl-maxCardinality" .
+
+:01etc_owl-maxQualifiedCardinality.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-maxQualifiedCardinality.n3> ;
+        mf:name        "owl-maxQualifiedCardinality" .
+
+:01etc_owl-oneOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-oneOf.n3> ;
+        mf:name        "owl-oneOf" .
+
+:01etc_owl-propertyChainAxiom.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-propertyChainAxiom.n3> ;
+        mf:name        "owl-propertyChainAxiom" .
+
+:01etc_owl-propertyDisjointWith.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-propertyDisjointWith.n3> ;
+        mf:name        "owl-propertyDisjointWith" .
+
+:01etc_owl-sameAs-ext.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-sameAs-ext.n3> ;
+        mf:name        "owl-sameAs-ext" .
+
+:01etc_owl-sameAs.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-sameAs.n3> ;
+        mf:name        "owl-sameAs" .
+
+:01etc_owl-someValuesFrom.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-someValuesFrom.n3> ;
+        mf:name        "owl-someValuesFrom" .
+
+:01etc_owl-unionOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/owl-unionOf.n3> ;
+        mf:name        "owl-unionOf" .
+
+:01etc_palindrome-declarations.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome-declarations.n3> ;
+        mf:name        "palindrome-declarations" .
+
+:01etc_palindrome-preduction.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome-preduction.n3> ;
+        mf:name        "palindrome-preduction" .
+
+:01etc_palindrome-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome-proof.n3> ;
+        mf:name        "palindrome-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_palindrome-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome-query.n3> ;
+        mf:name        "palindrome-query" .
+
+:01etc_palindrome.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome.n3> ;
+        mf:name        "palindrome" .
+
+:01etc_palindrome2-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome2-proof.n3> ;
+        mf:name        "palindrome2-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_palindrome2-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome2-query.n3> ;
+        mf:name        "palindrome2-query" .
+
+:01etc_palindrome2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/palindrome2.n3> ;
+        mf:name        "palindrome2" .
+
+:01etc_parteval-subclass.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/parteval-subclass.n3> ;
+        mf:name        "parteval-subclass" .
+
+:01etc_path-9-3-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/path-9-3-proof.n3> ;
+        mf:name        "path-9-3-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_path-9-3.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/path-9-3.n3> ;
+        mf:name        "path-9-3" .
+
+:01etc_patient.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/patient.n3> ;
+        mf:name        "patient" .
+
+:01etc_pi-proof.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/pi-proof.n3> ;
+        mf:name        "pi-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_pi-query.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/pi-query.n3> ;
+        mf:name        "pi-query" .
+
+:01etc_pi.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <01etc/pi.n3> ;
+        mf:name        "pi" .
+
+:01etc_polynomial.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/polynomial.n3> ;
+        mf:name        "polynomial" .
+
+:01etc_polynomialgen.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/polynomialgen.n3> ;
+        mf:name        "polynomialgen" .
+
+:01etc_preduction-plugin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/preduction-plugin.n3> ;
+        mf:name        "preduction-plugin" .
+
+:01etc_proof-001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-001.n3> ;
+        mf:name        "proof-001" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-10.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-10.n3> ;
+        mf:name        "proof-10" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-100.n3> ;
+        mf:name        "proof-100" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-1000.n3> ;
+        mf:name        "proof-1000" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-10000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-10000.n3> ;
+        mf:name        "proof-10000" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-2-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-2-10.n3> ;
+        mf:name        "proof-2-10" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-2-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-2-100.n3> ;
+        mf:name        "proof-2-100" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-2-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-2-1000.n3> ;
+        mf:name        "proof-2-1000" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof-2-10000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof-2-10000.n3> ;
+        mf:name        "proof-2-10000" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_proof.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/proof.n3> ;
+        mf:name        "proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_query-001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query-001.n3> ;
+        mf:name        "query-001" .
+
+:01etc_query.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query.n3> ;
+        mf:name        "query" .
+
+:01etc_query1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query1.n3> ;
+        mf:name        "query1" .
+
+:01etc_query10.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query10.n3> ;
+        mf:name        "query10" .
+
+:01etc_query100.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query100.n3> ;
+        mf:name        "query100" .
+
+:01etc_query11.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query11.n3> ;
+        mf:name        "query11" .
+
+:01etc_query12.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query12.n3> ;
+        mf:name        "query12" .
+
+:01etc_query13.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query13.n3> ;
+        mf:name        "query13" .
+
+:01etc_query14.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query14.n3> ;
+        mf:name        "query14" .
+
+:01etc_query15.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query15.n3> ;
+        mf:name        "query15" .
+
+:01etc_query16.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query16.n3> ;
+        mf:name        "query16" .
+
+:01etc_query17.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query17.n3> ;
+        mf:name        "query17" .
+
+:01etc_query18.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query18.n3> ;
+        mf:name        "query18" .
+
+:01etc_query19.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query19.n3> ;
+        mf:name        "query19" .
+
+:01etc_query2.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query2.n3> ;
+        mf:name        "query2" .
+
+:01etc_query20.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query20.n3> ;
+        mf:name        "query20" .
+
+:01etc_query21.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query21.n3> ;
+        mf:name        "query21" .
+
+:01etc_query22.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query22.n3> ;
+        mf:name        "query22" .
+
+:01etc_query23.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query23.n3> ;
+        mf:name        "query23" .
+
+:01etc_query24.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query24.n3> ;
+        mf:name        "query24" .
+
+:01etc_query25.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query25.n3> ;
+        mf:name        "query25" .
+
+:01etc_query26.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query26.n3> ;
+        mf:name        "query26" .
+
+:01etc_query27.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query27.n3> ;
+        mf:name        "query27" .
+
+:01etc_query28.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query28.n3> ;
+        mf:name        "query28" .
+
+:01etc_query29.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query29.n3> ;
+        mf:name        "query29" .
+
+:01etc_query3.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query3.n3> ;
+        mf:name        "query3" .
+
+:01etc_query30.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query30.n3> ;
+        mf:name        "query30" .
+
+:01etc_query31.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query31.n3> ;
+        mf:name        "query31" .
+
+:01etc_query32.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query32.n3> ;
+        mf:name        "query32" .
+
+:01etc_query33.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query33.n3> ;
+        mf:name        "query33" .
+
+:01etc_query34.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query34.n3> ;
+        mf:name        "query34" .
+
+:01etc_query35.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query35.n3> ;
+        mf:name        "query35" .
+
+:01etc_query36.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query36.n3> ;
+        mf:name        "query36" .
+
+:01etc_query37.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query37.n3> ;
+        mf:name        "query37" .
+
+:01etc_query38.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query38.n3> ;
+        mf:name        "query38" .
+
+:01etc_query39.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query39.n3> ;
+        mf:name        "query39" .
+
+:01etc_query4.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query4.n3> ;
+        mf:name        "query4" .
+
+:01etc_query40.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query40.n3> ;
+        mf:name        "query40" .
+
+:01etc_query41.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query41.n3> ;
+        mf:name        "query41" .
+
+:01etc_query42.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query42.n3> ;
+        mf:name        "query42" .
+
+:01etc_query43.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query43.n3> ;
+        mf:name        "query43" .
+
+:01etc_query44.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query44.n3> ;
+        mf:name        "query44" .
+
+:01etc_query45.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query45.n3> ;
+        mf:name        "query45" .
+
+:01etc_query46.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query46.n3> ;
+        mf:name        "query46" .
+
+:01etc_query47.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query47.n3> ;
+        mf:name        "query47" .
+
+:01etc_query48.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query48.n3> ;
+        mf:name        "query48" .
+
+:01etc_query49.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query49.n3> ;
+        mf:name        "query49" .
+
+:01etc_query5.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query5.n3> ;
+        mf:name        "query5" .
+
+:01etc_query50.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query50.n3> ;
+        mf:name        "query50" .
+
+:01etc_query51.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query51.n3> ;
+        mf:name        "query51" .
+
+:01etc_query52.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query52.n3> ;
+        mf:name        "query52" .
+
+:01etc_query53.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query53.n3> ;
+        mf:name        "query53" .
+
+:01etc_query54.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query54.n3> ;
+        mf:name        "query54" .
+
+:01etc_query55.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query55.n3> ;
+        mf:name        "query55" .
+
+:01etc_query56.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query56.n3> ;
+        mf:name        "query56" .
+
+:01etc_query57.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query57.n3> ;
+        mf:name        "query57" .
+
+:01etc_query58.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query58.n3> ;
+        mf:name        "query58" .
+
+:01etc_query59.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query59.n3> ;
+        mf:name        "query59" .
+
+:01etc_query6.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query6.n3> ;
+        mf:name        "query6" .
+
+:01etc_query60.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query60.n3> ;
+        mf:name        "query60" .
+
+:01etc_query61.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query61.n3> ;
+        mf:name        "query61" .
+
+:01etc_query62.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query62.n3> ;
+        mf:name        "query62" .
+
+:01etc_query63.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query63.n3> ;
+        mf:name        "query63" .
+
+:01etc_query64.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query64.n3> ;
+        mf:name        "query64" .
+
+:01etc_query65.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query65.n3> ;
+        mf:name        "query65" .
+
+:01etc_query66.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query66.n3> ;
+        mf:name        "query66" .
+
+:01etc_query67.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query67.n3> ;
+        mf:name        "query67" .
+
+:01etc_query68.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query68.n3> ;
+        mf:name        "query68" .
+
+:01etc_query69.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query69.n3> ;
+        mf:name        "query69" .
+
+:01etc_query7.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query7.n3> ;
+        mf:name        "query7" .
+
+:01etc_query70.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query70.n3> ;
+        mf:name        "query70" .
+
+:01etc_query71.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query71.n3> ;
+        mf:name        "query71" .
+
+:01etc_query72.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query72.n3> ;
+        mf:name        "query72" .
+
+:01etc_query73.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query73.n3> ;
+        mf:name        "query73" .
+
+:01etc_query74.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query74.n3> ;
+        mf:name        "query74" .
+
+:01etc_query75.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query75.n3> ;
+        mf:name        "query75" .
+
+:01etc_query76.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query76.n3> ;
+        mf:name        "query76" .
+
+:01etc_query77.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query77.n3> ;
+        mf:name        "query77" .
+
+:01etc_query78.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query78.n3> ;
+        mf:name        "query78" .
+
+:01etc_query79.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query79.n3> ;
+        mf:name        "query79" .
+
+:01etc_query8.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query8.n3> ;
+        mf:name        "query8" .
+
+:01etc_query80.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query80.n3> ;
+        mf:name        "query80" .
+
+:01etc_query81.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query81.n3> ;
+        mf:name        "query81" .
+
+:01etc_query82.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query82.n3> ;
+        mf:name        "query82" .
+
+:01etc_query83.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query83.n3> ;
+        mf:name        "query83" .
+
+:01etc_query84.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query84.n3> ;
+        mf:name        "query84" .
+
+:01etc_query85.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query85.n3> ;
+        mf:name        "query85" .
+
+:01etc_query86.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query86.n3> ;
+        mf:name        "query86" .
+
+:01etc_query87.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query87.n3> ;
+        mf:name        "query87" .
+
+:01etc_query88.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query88.n3> ;
+        mf:name        "query88" .
+
+:01etc_query89.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query89.n3> ;
+        mf:name        "query89" .
+
+:01etc_query9.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query9.n3> ;
+        mf:name        "query9" .
+
+:01etc_query90.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query90.n3> ;
+        mf:name        "query90" .
+
+:01etc_query91.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query91.n3> ;
+        mf:name        "query91" .
+
+:01etc_query92.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query92.n3> ;
+        mf:name        "query92" .
+
+:01etc_query93.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query93.n3> ;
+        mf:name        "query93" .
+
+:01etc_query94.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query94.n3> ;
+        mf:name        "query94" .
+
+:01etc_query95.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query95.n3> ;
+        mf:name        "query95" .
+
+:01etc_query96.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query96.n3> ;
+        mf:name        "query96" .
+
+:01etc_query97.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query97.n3> ;
+        mf:name        "query97" .
+
+:01etc_query98.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query98.n3> ;
+        mf:name        "query98" .
+
+:01etc_query99.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/query99.n3> ;
+        mf:name        "query99" .
+
+:01etc_randomsample-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/randomsample-proof.n3> ;
+        mf:name        "randomsample-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_randomsample-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/randomsample-query.n3> ;
+        mf:name        "randomsample-query" .
+
+:01etc_randomsample-rule.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/randomsample-rule.n3> ;
+        mf:name        "randomsample-rule" .
+
+:01etc_rdfs-domain.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rdfs-domain.n3> ;
+        mf:name        "rdfs-domain" .
+
+:01etc_rdfs-range.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rdfs-range.n3> ;
+        mf:name        "rdfs-range" .
+
+:01etc_rdfs-subClassOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rdfs-subClassOf.n3> ;
+        mf:name        "rdfs-subClassOf" .
+
+:01etc_rdfs-subPropertyOf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rdfs-subPropertyOf.n3> ;
+        mf:name        "rdfs-subPropertyOf" .
+
+:01etc_redgraph001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/redgraph001.n3> ;
+        mf:name        "redgraph001" .
+
+:01etc_redgraph002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/redgraph002.n3> ;
+        mf:name        "redgraph002" .
+
+:01etc_redgraph003.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/redgraph003.n3> ;
+        mf:name        "redgraph003" .
+
+:01etc_resto-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/resto-proof.n3> ;
+        mf:name        "resto-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_resto.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/resto.n3> ;
+        mf:name        "resto" .
+
+:01etc_restoG.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/restoG.n3> ;
+        mf:name        "restoG" .
+
+:01etc_result.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/result.n3> ;
+        mf:name        "result" .
+
+:01etc_rifE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rifE.n3> ;
+        mf:name        "rifE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_rifP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rifP.n3> ;
+        mf:name        "rifP" .
+
+:01etc_rifQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rifQ.n3> ;
+        mf:name        "rifQ" .
+
+:01etc_rpo-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rpo-rules.n3> ;
+        mf:name        "rpo-rules" .
+
+:01etc_rules-001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/rules-001.n3> ;
+        mf:name        "rules-001" .
+
+:01etc_sample.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sample.n3> ;
+        mf:name        "sample" .
+
+:01etc_sdcoding-a-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-a-proof.n3> ;
+        mf:name        "sdcoding-a-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_sdcoding-a.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-a.n3> ;
+        mf:name        "sdcoding-a" .
+
+:01etc_sdcoding-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-answer.n3> ;
+        mf:name        "sdcoding-answer" .
+
+:01etc_sdcoding-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-proof.n3> ;
+        mf:name        "sdcoding-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_sdcoding-q.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-q.n3> ;
+        mf:name        "sdcoding-q" .
+
+:01etc_sdcoding-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding-query.n3> ;
+        mf:name        "sdcoding-query" .
+
+:01etc_sdcoding.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/sdcoding.n3> ;
+        mf:name        "sdcoding" .
+
+:01etc_select-data-extra.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/select-data-extra.n3> ;
+        mf:name        "select-data-extra" .
+
+:01etc_select-data.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/select-data.n3> ;
+        mf:name        "select-data" .
+
+:01etc_select-proof-extra.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/select-proof-extra.n3> ;
+        mf:name        "select-proof-extra" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_select-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/select-proof.n3> ;
+        mf:name        "select-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_select-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/select-query.n3> ;
+        mf:name        "select-query" .
+
+:01etc_skos-extra-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos-extra-rules.n3> ;
+        mf:name        "skos-extra-rules" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_skos-mapping-sample-snomed-icd10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos-mapping-sample-snomed-icd10.n3> ;
+        mf:name        "skos-mapping-sample-snomed-icd10" .
+
+:01etc_skos-mapping-validation-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos-mapping-validation-query.n3> ;
+        mf:name        "skos-mapping-validation-query" .
+
+:01etc_skos-mapping-validation-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos-mapping-validation-rules.n3> ;
+        mf:name        "skos-mapping-validation-rules" .
+
+:01etc_skos-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos-rules.n3> ;
+        mf:name        "skos-rules" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_skos_mv_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/skos_mv_proof.n3> ;
+        mf:name        "skos_mv_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_socrates.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/socrates.n3> ;
+        mf:name        "socrates" .
+
+:01etc_socratesF.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/socratesF.n3> ;
+        mf:name        "socratesF" .
+
+:01etc_socrates_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/socrates_proof.n3> ;
+        mf:name        "socrates_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_streason-output.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/streason-output.n3> ;
+        mf:name        "streason-output" .
+
+:01etc_streason-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/streason-rules.n3> ;
+        mf:name        "streason-rules" .
+
+:01etc_subtasks.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/subtasks.n3> ;
+        mf:name        "subtasks" .
+
+:01etc_swetA.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetA.n3> ;
+        mf:name        "swetA" .
+
+:01etc_swetA01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetA01.n3> ;
+        mf:name        "swetA01" .
+
+:01etc_swetA11.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetA11.n3> ;
+        mf:name        "swetA11" .
+
+:01etc_swetA21.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetA21.n3> ;
+        mf:name        "swetA21" .
+
+:01etc_swetA31.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetA31.n3> ;
+        mf:name        "swetA31" .
+
+:01etc_swetD.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetD.n3> ;
+        mf:name        "swetD" .
+
+:01etc_swetQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetQ.n3> ;
+        mf:name        "swetQ" .
+
+:01etc_swetQ01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetQ01.n3> ;
+        mf:name        "swetQ01" .
+
+:01etc_swetQ11.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetQ11.n3> ;
+        mf:name        "swetQ11" .
+
+:01etc_swetQ21.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetQ21.n3> ;
+        mf:name        "swetQ21" .
+
+:01etc_swetQ31.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swetQ31.n3> ;
+        mf:name        "swetQ31" .
+
+:01etc_swet_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/swet_proof.n3> ;
+        mf:name        "swet_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_tak.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <01etc/tak.n3> ;
+        mf:name        "tak" .
+
+:01etc_takE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/takE.n3> ;
+        mf:name        "takE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_takQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/takQ.n3> ;
+        mf:name        "takQ" .
+
+:01etc_tasks.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/tasks.n3> ;
+        mf:name        "tasks" .
+
+:01etc_test-dl-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test-dl-1000.n3> ;
+        mf:name        "test-dl-1000" .
+
+:01etc_test-dt-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test-dt-1000.n3> ;
+        mf:name        "test-dt-1000" .
+
+:01etc_test-facts.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test-facts.n3> ;
+        mf:name        "test-facts" .
+
+:01etc_test-proof-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test-proof-1000.n3> ;
+        mf:name        "test-proof-1000" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_test-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test-query.n3> ;
+        mf:name        "test-query" .
+
+:01etc_test.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test.n3> ;
+        mf:name        "test" .
+
+:01etc_testE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/testE.n3> ;
+        mf:name        "testE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_testQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/testQ.n3> ;
+        mf:name        "testQ" .
+
+:01etc_test_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test_answer.n3> ;
+        mf:name        "test_answer" .
+
+:01etc_test_data.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test_data.n3> ;
+        mf:name        "test_data" .
+
+:01etc_test_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test_proof.n3> ;
+        mf:name        "test_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_test_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/test_query.n3> ;
+        mf:name        "test_query" .
+
+:01etc_train_data.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/train_data.n3> ;
+        mf:name        "train_data" .
+
+:01etc_train_model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/train_model.n3> ;
+        mf:name        "train_model" .
+
+:01etc_train_model_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/train_model_proof.n3> ;
+        mf:name        "train_model_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_train_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/train_query.n3> ;
+        mf:name        "train_query" .
+
+:01etc_train_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/train_rules.n3> ;
+        mf:name        "train_rules" .
+
+:01etc_turing.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/turing.n3> ;
+        mf:name        "turing" .
+
+:01etc_turingQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <01etc/turingQ.n3> ;
+        mf:name        "turingQ" .
+
+:01etc_turing_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/turing_proof.n3> ;
+        mf:name        "turing_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_usmE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/usmE.n3> ;
+        mf:name        "usmE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_usmP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/usmP.n3> ;
+        mf:name        "usmP" .
+
+:01etc_usmQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/usmQ.n3> ;
+        mf:name        "usmQ" .
+
+:01etc_utf8.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/utf8.n3> ;
+        mf:name        "utf8" .
+
+:01etc_utf8_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/utf8_proof.n3> ;
+        mf:name        "utf8_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_weightStatus_rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/weightStatus_rules.n3> ;
+        mf:name        "weightStatus_rules" .
+
+:01etc_witch-goal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/witch-goal.n3> ;
+        mf:name        "witch-goal" .
+
+:01etc_witch-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <01etc/witch-proof.n3> ;
+        mf:name        "witch-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:01etc_witch.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <01etc/witch.n3> ;
+        mf:name        "witch" .
+
+:01etc_year.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <01etc/year.n3> ;
+        mf:name        "year" .
+
+:04test_CountingE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/CountingE.n3> ;
+        mf:name        "CountingE" .
+
+:04test_CountingQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/CountingQ.n3> ;
+        mf:name        "CountingQ" .
+
+:04test_D1.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <04test/D1.n3> ;
+        mf:name        "D1" .
+
+:04test_D1E.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/D1E.n3> ;
+        mf:name        "D1E" .
+
+:04test_D1Q.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/D1Q.n3> ;
+        mf:name        "D1Q" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_D2.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <04test/D2.n3> ;
+        mf:name        "D2" .
+
+:04test_D2E.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/D2E.n3> ;
+        mf:name        "D2E" .
+
+:04test_D2Q.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/D2Q.n3> ;
+        mf:name        "D2Q" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_EntailmentE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/EntailmentE.n3> ;
+        mf:name        "EntailmentE" .
+
+:04test_EntailmentQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/EntailmentQ.n3> ;
+        mf:name        "EntailmentQ" .
+
+:04test_JoeCo.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/JoeCo.n3> ;
+        mf:name        "JoeCo" .
+
+:04test_LanguageE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/LanguageE.n3> ;
+        mf:name        "LanguageE" .
+
+:04test_LanguageQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/LanguageQ.n3> ;
+        mf:name        "LanguageQ" ;
+        rdfs:comment   "using language (@) tags for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_LexicalSpaceE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/LexicalSpaceE.n3> ;
+        mf:name        "LexicalSpaceE" .
+
+:04test_LexicalSpaceQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/LexicalSpaceQ.n3> ;
+        mf:name        "LexicalSpaceQ" .
+
+:04test_NamespaceE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/NamespaceE.n3> ;
+        mf:name        "NamespaceE" .
+
+:04test_NamespaceQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/NamespaceQ.n3> ;
+        mf:name        "NamespaceQ" .
+
+:04test_OptionalPathE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/OptionalPathE.n3> ;
+        mf:name        "OptionalPathE" .
+
+:04test_OptionalPathQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/OptionalPathQ.n3> ;
+        mf:name        "OptionalPathQ" .
+
+:04test_PathE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/PathE.n3> ;
+        mf:name        "PathE" .
+
+:04test_PathQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/PathQ.n3> ;
+        mf:name        "PathQ" .
+
+:04test_QuantificationE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/QuantificationE.n3> ;
+        mf:name        "QuantificationE" .
+
+:04test_QuantificationQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/QuantificationQ.n3> ;
+        mf:name        "QuantificationQ" .
+
+:04test_RecursionE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/RecursionE.n3> ;
+        mf:name        "RecursionE" .
+
+:04test_RecursionQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/RecursionQ.n3> ;
+        mf:name        "RecursionQ" .
+
+:04test_SequenceE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/SequenceE.n3> ;
+        mf:name        "SequenceE" .
+
+:04test_SequenceQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/SequenceQ.n3> ;
+        mf:name        "SequenceQ" .
+
+:04test_UnionE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/UnionE.n3> ;
+        mf:name        "UnionE" .
+
+:04test_UnionQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/UnionQ.n3> ;
+        mf:name        "UnionQ" .
+
+:04test_a.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <04test/a.n3> ;
+        mf:name        "a" .
+
+:04test_alarm.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/alarm.n3> ;
+        mf:name        "alarm" .
+
+:04test_alarmE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/alarmE.n3> ;
+        mf:name        "alarmE" .
+
+:04test_alarmF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/alarmF.n3> ;
+        mf:name        "alarmF" .
+
+:04test_aliceFoaf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/aliceFoaf.n3> ;
+        mf:name        "aliceFoaf" .
+
+:04test_anatomy-facts.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/anatomy-facts.n3> ;
+        mf:name        "anatomy-facts" .
+
+:04test_anatomy-filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/anatomy-filter.n3> ;
+        mf:name        "anatomy-filter" .
+
+:04test_anatomy-result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/anatomy-result.n3> ;
+        mf:name        "anatomy-result" .
+
+:04test_anatomy-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/anatomy-rules.n3> ;
+        mf:name        "anatomy-rules" .
+
+:04test_b.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <04test/b.n3> ;
+        mf:name        "b" .
+
+:04test_bc.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <04test/bc.n3> ;
+        mf:name        "bc" .
+
+:04test_bcE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/bcE.n3> ;
+        mf:name        "bcE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_bcF.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/bcF.n3> ;
+        mf:name        "bcF" .
+
+:04test_bobFoaf.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/bobFoaf.n3> ;
+        mf:name        "bobFoaf" .
+
+:04test_books.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/books.n3> ;
+        mf:name        "books" .
+
+:04test_booksE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/booksE.n3> ;
+        mf:name        "booksE" .
+
+:04test_booksQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/booksQ.n3> ;
+        mf:name        "booksQ" .
+
+:04test_da538tc1D.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc1D.n3> ;
+        mf:name        "da538tc1D" .
+
+:04test_da538tc1E.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc1E.n3> ;
+        mf:name        "da538tc1E" .
+
+:04test_da538tc1Q.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc1Q.n3> ;
+        mf:name        "da538tc1Q" .
+
+:04test_da538tc2D.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc2D.n3> ;
+        mf:name        "da538tc2D" .
+
+:04test_da538tc2E.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc2E.n3> ;
+        mf:name        "da538tc2E" .
+
+:04test_da538tc2Q.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/da538tc2Q.n3> ;
+        mf:name        "da538tc2Q" .
+
+:04test_danC.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/danC.n3> ;
+        mf:name        "danC" .
+
+:04test_danE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/danE.n3> ;
+        mf:name        "danE" .
+
+:04test_danP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/danP.n3> ;
+        mf:name        "danP" .
+
+:04test_danQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/danQ.n3> ;
+        mf:name        "danQ" .
+
+:04test_danT.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/danT.n3> ;
+        mf:name        "danT" .
+
+:04test_data-01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/data-01.n3> ;
+        mf:name        "data-01" .
+
+:04test_data-02.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/data-02.n3> ;
+        mf:name        "data-02" .
+
+:04test_daveE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/daveE.n3> ;
+        mf:name        "daveE" .
+
+:04test_daveQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/daveQ.n3> ;
+        mf:name        "daveQ" .
+
+:04test_davidE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/davidE.n3> ;
+        mf:name        "davidE" .
+
+:04test_davidP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/davidP.n3> ;
+        mf:name        "davidP" .
+
+:04test_davidQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/davidQ.n3> ;
+        mf:name        "davidQ" .
+
+:04test_dawg-data-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-data-01.n3> ;
+        mf:name        "dawg-data-01" .
+
+:04test_dawg-ot-0-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-ot-0-01.n3> ;
+        mf:name        "dawg-ot-0-01" .
+
+:04test_dawg-ot-0-02.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-ot-0-02.n3> ;
+        mf:name        "dawg-ot-0-02" .
+
+:04test_dawg-ot-0-03.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-ot-0-03.n3> ;
+        mf:name        "dawg-ot-0-03" .
+
+:04test_dawg-tp-0-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-tp-0-01.n3> ;
+        mf:name        "dawg-tp-0-01" .
+
+:04test_dawg-tp-0-02.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-tp-0-02.n3> ;
+        mf:name        "dawg-tp-0-02" .
+
+:04test_dawg-tp-05.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-tp-05.n3> ;
+        mf:name        "dawg-tp-05" .
+
+:04test_dawg-tp-1-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-tp-1-01.n3> ;
+        mf:name        "dawg-tp-1-01" .
+
+:04test_dawg-tp-2-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dawg-tp-2-01.n3> ;
+        mf:name        "dawg-tp-2-01" .
+
+:04test_diagnosis.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/diagnosis.n3> ;
+        mf:name        "diagnosis" .
+
+:04test_disjunction.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/disjunction.n3> ;
+        mf:name        "disjunction" .
+
+:04test_disjunctionE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/disjunctionE.n3> ;
+        mf:name        "disjunctionE" .
+
+:04test_disjunctionQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/disjunctionQ.n3> ;
+        mf:name        "disjunctionQ" .
+
+:04test_dl-safe_small.owl.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/dl-safe_small.owl.n3> ;
+        mf:name        "dl-safe_small.owl" .
+
+:04test_dog.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/dog.n3> ;
+        mf:name        "dog" .
+
+:04test_dogE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/dogE.n3> ;
+        mf:name        "dogE" .
+
+:04test_dogQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/dogQ.n3> ;
+        mf:name        "dogQ" .
+
+:04test_easterE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/easterE.n3> ;
+        mf:name        "easterE" .
+
+:04test_easterF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/easterF.n3> ;
+        mf:name        "easterF" .
+
+:04test_easterP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/easterP.n3> ;
+        mf:name        "easterP" .
+
+:04test_easterQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/easterQ.n3> ;
+        mf:name        "easterQ" .
+
+:04test_ericE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ericE.n3> ;
+        mf:name        "ericE" .
+
+:04test_ericF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ericF.n3> ;
+        mf:name        "ericF" .
+
+:04test_ericP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ericP.n3> ;
+        mf:name        "ericP" .
+
+:04test_ericQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ericQ.n3> ;
+        mf:name        "ericQ" .
+
+:04test_ericT.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ericT.n3> ;
+        mf:name        "ericT" .
+
+:04test_ex2-1a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-1a.n3> ;
+        mf:name        "ex2-1a" .
+
+:04test_ex2-1aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-1aE.n3> ;
+        mf:name        "ex2-1aE" .
+
+:04test_ex2-1aQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-1aQ.n3> ;
+        mf:name        "ex2-1aQ" .
+
+:04test_ex2-2a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-2a.n3> ;
+        mf:name        "ex2-2a" .
+
+:04test_ex2-2aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-2aE.n3> ;
+        mf:name        "ex2-2aE" .
+
+:04test_ex2-2aQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-2aQ.n3> ;
+        mf:name        "ex2-2aQ" .
+
+:04test_ex2-3a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-3a.n3> ;
+        mf:name        "ex2-3a" .
+
+:04test_ex2-3aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-3aE.n3> ;
+        mf:name        "ex2-3aE" .
+
+:04test_ex2-3aQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-3aQ.n3> ;
+        mf:name        "ex2-3aQ" .
+
+:04test_ex2-4a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-4a.n3> ;
+        mf:name        "ex2-4a" .
+
+:04test_ex2-4aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-4aE.n3> ;
+        mf:name        "ex2-4aE" .
+
+:04test_ex2-4aQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex2-4aQ.n3> ;
+        mf:name        "ex2-4aQ" .
+
+:04test_ex3.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex3.n3> ;
+        mf:name        "ex3" .
+
+:04test_ex3E.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex3E.n3> ;
+        mf:name        "ex3E" .
+
+:04test_ex3Q.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/ex3Q.n3> ;
+        mf:name        "ex3Q" .
+
+:04test_exonE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/exonE.n3> ;
+        mf:name        "exonE" .
+
+:04test_exonQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/exonQ.n3> ;
+        mf:name        "exonQ" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_factorial.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/factorial.n3> ;
+        mf:name        "factorial" .
+
+:04test_factorialE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/factorialE.n3> ;
+        mf:name        "factorialE" .
+
+:04test_factorialQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/factorialQ.n3> ;
+        mf:name        "factorialQ" .
+
+:04test_gate.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/gate.n3> ;
+        mf:name        "gate" .
+
+:04test_gateE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/gateE.n3> ;
+        mf:name        "gateE" .
+
+:04test_gateF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/gateF.n3> ;
+        mf:name        "gateF" .
+
+:04test_gene.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/gene.n3> ;
+        mf:name        "gene" .
+
+:04test_geneE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/geneE.n3> ;
+        mf:name        "geneE" .
+
+:04test_geneF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/geneF.n3> ;
+        mf:name        "geneF" .
+
+:04test_gmp.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/gmp.n3> ;
+        mf:name        "gmp" .
+
+:04test_gmpE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/gmpE.n3> ;
+        mf:name        "gmpE" .
+
+:04test_gmpF.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/gmpF.n3> ;
+        mf:name        "gmpF" .
+
+:04test_grahamC.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/grahamC.n3> ;
+        mf:name        "grahamC" .
+
+:04test_grahamE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/grahamE.n3> ;
+        mf:name        "grahamE" .
+
+:04test_grahamP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/grahamP.n3> ;
+        mf:name        "grahamP" .
+
+:04test_grahamQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/grahamQ.n3> ;
+        mf:name        "grahamQ" .
+
+:04test_henry.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/henry.n3> ;
+        mf:name        "henry" .
+
+:04test_icalD001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalD001.n3> ;
+        mf:name        "icalD001" .
+
+:04test_icalE001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalE001.n3> ;
+        mf:name        "icalE001" .
+
+:04test_icalE002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalE002.n3> ;
+        mf:name        "icalE002" .
+
+:04test_icalQ001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalQ001.n3> ;
+        mf:name        "icalQ001" ;
+        rdfs:comment   "datatype (^^) tag for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_icalQ002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalQ002.n3> ;
+        mf:name        "icalQ002" ;
+        rdfs:comment   "datatype (^^) tag for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_icalR.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/icalR.n3> ;
+        mf:name        "icalR" ;
+        rdfs:comment   "datatype (^^) tag for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_kendallE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/kendallE.n3> ;
+        mf:name        "kendallE" .
+
+:04test_kendallP.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/kendallP.n3> ;
+        mf:name        "kendallP" .
+
+:04test_kendallQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/kendallQ.n3> ;
+        mf:name        "kendallQ" .
+
+:04test_librarianE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/librarianE.n3> ;
+        mf:name        "librarianE" .
+
+:04test_librarianP.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/librarianP.n3> ;
+        mf:name        "librarianP" .
+
+:04test_librarianQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/librarianQ.n3> ;
+        mf:name        "librarianQ" .
+
+:04test_metastatic.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastatic.n3> ;
+        mf:name        "metastatic" .
+
+:04test_metastaticE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticE.n3> ;
+        mf:name        "metastaticE" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_metastaticF.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticF.n3> ;
+        mf:name        "metastaticF" .
+
+:04test_metastaticP.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticP.n3> ;
+        mf:name        "metastaticP" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_metastaticP001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticP001.n3> ;
+        mf:name        "metastaticP001" .
+
+:04test_metastaticP002.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticP002.n3> ;
+        mf:name        "metastaticP002" .
+
+:04test_metastaticQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticQ.n3> ;
+        mf:name        "metastaticQ" .
+
+:04test_metastaticQ001.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticQ001.n3> ;
+        mf:name        "metastaticQ001" .
+
+:04test_metastaticR.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/metastaticR.n3> ;
+        mf:name        "metastaticR" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_michaelC.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/michaelC.n3> ;
+        mf:name        "michaelC" .
+
+:04test_michaelE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/michaelE.n3> ;
+        mf:name        "michaelE" .
+
+:04test_michaelP.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/michaelP.n3> ;
+        mf:name        "michaelP" .
+
+:04test_minsuC.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/minsuC.n3> ;
+        mf:name        "minsuC" .
+
+:04test_minsuE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/minsuE.n3> ;
+        mf:name        "minsuE" ;
+        rdfs:comment   "currently rejected since eye blocks on it" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_minsuP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/minsuP.n3> ;
+        mf:name        "minsuP" .
+
+:04test_nciOncologyE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/nciOncologyE.n3> ;
+        mf:name        "nciOncologyE" .
+
+:04test_nciOncologyQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/nciOncologyQ.n3> ;
+        mf:name        "nciOncologyQ" .
+
+:04test_not-galen.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/not-galen.n3> ;
+        mf:name        "not-galen" .
+
+:04test_ontology-for-data-model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/ontology-for-data-model.n3> ;
+        mf:name        "ontology-for-data-model" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_origin.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/origin.n3> ;
+        mf:name        "origin" .
+
+:04test_originE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/originE.n3> ;
+        mf:name        "originE" .
+
+:04test_originQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/originQ.n3> ;
+        mf:name        "originQ" .
+
+:04test_pat.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/pat.n3> ;
+        mf:name        "pat" .
+
+:04test_patE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/patE.n3> ;
+        mf:name        "patE" .
+
+:04test_patQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/patQ.n3> ;
+        mf:name        "patQ" .
+
+:04test_query-survey-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-1.n3> ;
+        mf:name        "query-survey-1" .
+
+:04test_query-survey-10.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <04test/query-survey-10.n3> ;
+        mf:name        "query-survey-10" ;
+        rdfs:comment   "new grammar is more restrictive re allowed escapes" .
+
+:04test_query-survey-11.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-11.n3> ;
+        mf:name        "query-survey-11" ;
+        rdfs:comment   "using language (@) tags for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_query-survey-12.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-12.n3> ;
+        mf:name        "query-survey-12" .
+
+:04test_query-survey-13.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-13.n3> ;
+        mf:name        "query-survey-13" ;
+        rdfs:comment   "datatype (^^) tag for quick-vars" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_query-survey-2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-2.n3> ;
+        mf:name        "query-survey-2" .
+
+:04test_query-survey-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-3.n3> ;
+        mf:name        "query-survey-3" .
+
+:04test_query-survey-8.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-8.n3> ;
+        mf:name        "query-survey-8" .
+
+:04test_query-survey-9.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-9.n3> ;
+        mf:name        "query-survey-9" .
+
+:04test_query-survey-result-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-1.n3> ;
+        mf:name        "query-survey-result-1" .
+
+:04test_query-survey-result-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-10.n3> ;
+        mf:name        "query-survey-result-10" .
+
+:04test_query-survey-result-11.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-11.n3> ;
+        mf:name        "query-survey-result-11" .
+
+:04test_query-survey-result-12.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-12.n3> ;
+        mf:name        "query-survey-result-12" .
+
+:04test_query-survey-result-13.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-13.n3> ;
+        mf:name        "query-survey-result-13" .
+
+:04test_query-survey-result-2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-2.n3> ;
+        mf:name        "query-survey-result-2" .
+
+:04test_query-survey-result-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-3.n3> ;
+        mf:name        "query-survey-result-3" .
+
+:04test_query-survey-result-8.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-8.n3> ;
+        mf:name        "query-survey-result-8" .
+
+:04test_query-survey-result-9.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/query-survey-result-9.n3> ;
+        mf:name        "query-survey-result-9" .
+
+:04test_radlex.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/radlex.n3> ;
+        mf:name        "radlex" .
+
+:04test_radlexE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/radlexE.n3> ;
+        mf:name        "radlexE" .
+
+:04test_radlexQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/radlexQ.n3> ;
+        mf:name        "radlexQ" .
+
+:04test_result-ot-0-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-ot-0-01.n3> ;
+        mf:name        "result-ot-0-01" .
+
+:04test_result-ot-0-02.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-ot-0-02.n3> ;
+        mf:name        "result-ot-0-02" .
+
+:04test_result-ot-0-03.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-ot-0-03.n3> ;
+        mf:name        "result-ot-0-03" .
+
+:04test_result-tp-0-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-tp-0-01.n3> ;
+        mf:name        "result-tp-0-01" .
+
+:04test_result-tp-0-02.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-tp-0-02.n3> ;
+        mf:name        "result-tp-0-02" .
+
+:04test_result-tp-05.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-tp-05.n3> ;
+        mf:name        "result-tp-05" .
+
+:04test_result-tp-1-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-tp-1-01.n3> ;
+        mf:name        "result-tp-1-01" .
+
+:04test_result-tp-2-01.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/result-tp-2-01.n3> ;
+        mf:name        "result-tp-2-01" .
+
+:04test_robC.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/robC.n3> ;
+        mf:name        "robC" .
+
+:04test_robE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/robE.n3> ;
+        mf:name        "robE" .
+
+:04test_robP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/robP.n3> ;
+        mf:name        "robP" .
+
+:04test_robQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/robQ.n3> ;
+        mf:name        "robQ" .
+
+:04test_rogier.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/rogier.n3> ;
+        mf:name        "rogier" .
+
+:04test_rtE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/rtE.n3> ;
+        mf:name        "rtE" .
+
+:04test_rtQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/rtQ.n3> ;
+        mf:name        "rtQ" .
+
+:04test_sameAsE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sameAsE.n3> ;
+        mf:name        "sameAsE" .
+
+:04test_sameAsQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sameAsQ.n3> ;
+        mf:name        "sameAsQ" .
+
+:04test_sample.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sample.n3> ;
+        mf:name        "sample" .
+
+:04test_sampleE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sampleE.n3> ;
+        mf:name        "sampleE" .
+
+:04test_sampleP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sampleP.n3> ;
+        mf:name        "sampleP" .
+
+:04test_sampleQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sampleQ.n3> ;
+        mf:name        "sampleQ" .
+
+:04test_sethC.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sethC.n3> ;
+        mf:name        "sethC" .
+
+:04test_sethE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sethE.n3> ;
+        mf:name        "sethE" .
+
+:04test_sethP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/sethP.n3> ;
+        mf:name        "sethP" .
+
+:04test_simplegraph_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/simplegraph_query.n3> ;
+        mf:name        "simplegraph_query" .
+
+:04test_socratesP.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/socratesP.n3> ;
+        mf:name        "socratesP" .
+
+:04test_socratesQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/socratesQ.n3> ;
+        mf:name        "socratesQ" .
+
+:04test_socratesR.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/socratesR.n3> ;
+        mf:name        "socratesR" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_srcE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/srcE.n3> ;
+        mf:name        "srcE" .
+
+:04test_srcP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/srcP.n3> ;
+        mf:name        "srcP" .
+
+:04test_srcQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/srcQ.n3> ;
+        mf:name        "srcQ" .
+
+:04test_statement1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/statement1.n3> ;
+        mf:name        "statement1" .
+
+:04test_stc1.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc1.n3> ;
+        mf:name        "stc1" .
+
+:04test_stc1E.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc1E.n3> ;
+        mf:name        "stc1E" .
+
+:04test_stc2a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc2a.n3> ;
+        mf:name        "stc2a" .
+
+:04test_stc2aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc2aE.n3> ;
+        mf:name        "stc2aE" .
+
+:04test_stc2b.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc2b.n3> ;
+        mf:name        "stc2b" .
+
+:04test_stc2bE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc2bE.n3> ;
+        mf:name        "stc2bE" .
+
+:04test_stc3a.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc3a.n3> ;
+        mf:name        "stc3a" .
+
+:04test_stc3aE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc3aE.n3> ;
+        mf:name        "stc3aE" .
+
+:04test_stc3b.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc3b.n3> ;
+        mf:name        "stc3b" .
+
+:04test_stc3bE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/stc3bE.n3> ;
+        mf:name        "stc3bE" .
+
+:04test_swrl-n3-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/swrl-n3-rules.n3> ;
+        mf:name        "swrl-n3-rules" .
+
+:04test_swrl-n3-rulesQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/swrl-n3-rulesQ.n3> ;
+        mf:name        "swrl-n3-rulesQ" .
+
+:04test_testC.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/testC.n3> ;
+        mf:name        "testC" .
+
+:04test_testP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/testP.n3> ;
+        mf:name        "testP" .
+
+:04test_u1.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <04test/u1.n3> ;
+        mf:name        "u1" .
+
+:04test_u2.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <04test/u2.n3> ;
+        mf:name        "u2" .
+
+:04test_unsaid.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/unsaid.n3> ;
+        mf:name        "unsaid" .
+
+:04test_unsaidE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/unsaidE.n3> ;
+        mf:name        "unsaidE" .
+
+:04test_unsaidQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/unsaidQ.n3> ;
+        mf:name        "unsaidQ" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:04test_v.n3  a      test:TestN3PositiveSyntax ;
+        mf:action      <04test/v.n3> ;
+        mf:name        "v" .
+
+:04test_variableSubstitution.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/variableSubstitution.n3> ;
+        mf:name        "variableSubstitution" .
+
+:04test_vcard.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/vcard.n3> ;
+        mf:name        "vcard" .
+
+:04test_vcardE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/vcardE.n3> ;
+        mf:name        "vcardE" .
+
+:04test_vcardF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/vcardF.n3> ;
+        mf:name        "vcardF" .
+
+:04test_vcardP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/vcardP.n3> ;
+        mf:name        "vcardP" .
+
+:04test_vcardQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <04test/vcardQ.n3> ;
+        mf:name        "vcardQ" .
+
+:04test_wet.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <04test/wet.n3> ;
+        mf:name        "wet" .
+
+:04test_wetE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/wetE.n3> ;
+        mf:name        "wetE" .
+
+:04test_wetF.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <04test/wetF.n3> ;
+        mf:name        "wetF" .
+
+:04test_xanthippe.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/xanthippe.n3> ;
+        mf:name        "xanthippe" .
+
+:04test_xanthippeQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <04test/xanthippeQ.n3> ;
+        mf:name        "xanthippeQ" .
+
+:05smml_FACTSboxdata.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSboxdata.n3> ;
+        mf:name        "FACTSboxdata" .
+
+:05smml_FACTSboxgeometrydetection.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSboxgeometrydetection.n3> ;
+        mf:name        "FACTSboxgeometrydetection" .
+
+:05smml_FACTSfacedetection.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSfacedetection.n3> ;
+        mf:name        "FACTSfacedetection" .
+
+:05smml_FACTSfaceedgedetection.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSfaceedgedetection.n3> ;
+        mf:name        "FACTSfaceedgedetection" .
+
+:05smml_FACTSfeaturerecognition.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSfeaturerecognition.n3> ;
+        mf:name        "FACTSfeaturerecognition" .
+
+:05smml_FACTShousewalls.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTShousewalls.n3> ;
+        mf:name        "FACTShousewalls" .
+
+:05smml_FACTShousewallsmeshed.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTShousewallsmeshed.n3> ;
+        mf:name        "FACTShousewallsmeshed" .
+
+:05smml_FACTSlinkfaceedgestoobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSlinkfaceedgestoobjects.n3> ;
+        mf:name        "FACTSlinkfaceedgestoobjects" .
+
+:05smml_FACTSlinkfacestoobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSlinkfacestoobjects.n3> ;
+        mf:name        "FACTSlinkfacestoobjects" .
+
+:05smml_FACTSneighbourtriangles.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSneighbourtriangles.n3> ;
+        mf:name        "FACTSneighbourtriangles" .
+
+:05smml_FACTSobjectdetection.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTSobjectdetection.n3> ;
+        mf:name        "FACTSobjectdetection" .
+
+:05smml_FACTStriangleedges.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/FACTStriangleedges.n3> ;
+        mf:name        "FACTStriangleedges" .
+
+:05smml_QUERYfaces.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/QUERYfaces.n3> ;
+        mf:name        "QUERYfaces" .
+
+:05smml_QUERYneighbourfaceedges.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/QUERYneighbourfaceedges.n3> ;
+        mf:name        "QUERYneighbourfaceedges" .
+
+:05smml_QUERYobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/QUERYobjects.n3> ;
+        mf:name        "QUERYobjects" .
+
+:05smml_RULESdefaultvaluesefindall.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESdefaultvaluesefindall.n3> ;
+        mf:name        "RULESdefaultvaluesefindall" .
+
+:05smml_RULESdefaultvaluesfindall.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESdefaultvaluesfindall.n3> ;
+        mf:name        "RULESdefaultvaluesfindall" .
+
+:05smml_RULESedges.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESedges.n3> ;
+        mf:name        "RULESedges" .
+
+:05smml_RULESfaceedges.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESfaceedges.n3> ;
+        mf:name        "RULESfaceedges" .
+
+:05smml_RULESfaces.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESfaces.n3> ;
+        mf:name        "RULESfaces" ;
+        rdfs:comment   "variables starting with number, which is not allowed in turtle nor n3" ;
+        rdft:approval  rdft:Rejected .
+
+:05smml_RULESfeaturerecognition.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESfeaturerecognition.n3> ;
+        mf:name        "RULESfeaturerecognition" .
+
+:05smml_RULESgeometryrecognition.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESgeometryrecognition.n3> ;
+        mf:name        "RULESgeometryrecognition" .
+
+:05smml_RULESifctransformationmatrix.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESifctransformationmatrix.n3> ;
+        mf:name        "RULESifctransformationmatrix" .
+
+:05smml_RULESlinkedgestoobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESlinkedgestoobjects.n3> ;
+        mf:name        "RULESlinkedgestoobjects" .
+
+:05smml_RULESlinkfacestoobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESlinkfacestoobjects.n3> ;
+        mf:name        "RULESlinkfacestoobjects" .
+
+:05smml_RULESmatrix.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESmatrix.n3> ;
+        mf:name        "RULESmatrix" .
+
+:05smml_RULESneighbourfaceedges.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESneighbourfaceedges.n3> ;
+        mf:name        "RULESneighbourfaceedges" .
+
+:05smml_RULESneighbours.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESneighbours.n3> ;
+        mf:name        "RULESneighbours" .
+
+:05smml_RULESobjects.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESobjects.n3> ;
+        mf:name        "RULESobjects" .
+
+:05smml_RULESx3dboxtostl.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <05smml/RULESx3dboxtostl.n3> ;
+        mf:name        "RULESx3dboxtostl" .
+
+:07test_3outOf5-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/3outOf5-answer.n3> ;
+        mf:name        "3outOf5-answer" .
+
+:07test_3outOf5-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/3outOf5-query.n3> ;
+        mf:name        "3outOf5-query" .
+
+:07test_3outOf5-sample.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/3outOf5-sample.n3> ;
+        mf:name        "3outOf5-sample" .
+
+:07test_ab_c.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/ab_c.n3> ;
+        mf:name        "ab_c" .
+
+:07test_ab_d.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/ab_d.n3> ;
+        mf:name        "ab_d" .
+
+:07test_abc.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/abc.n3> ;
+        mf:name        "abc" .
+
+:07test_adl.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/adl.n3> ;
+        mf:name        "adl" .
+
+:07test_adl_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/adl_result.n3> ;
+        mf:name        "adl_result" .
+
+:07test_age_instance.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/age_instance.n3> ;
+        mf:name        "age_instance" .
+
+:07test_age_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/age_query.n3> ;
+        mf:name        "age_query" .
+
+:07test_age_test_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/age_test_result.n3> ;
+        mf:name        "age_test_result" .
+
+:07test_agent_goal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/agent_goal.n3> ;
+        mf:name        "agent_goal" .
+
+:07test_agent_knowledge.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/agent_knowledge.n3> ;
+        mf:name        "agent_knowledge" .
+
+:07test_alpA001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpA001.n3> ;
+        mf:name        "alpA001" .
+
+:07test_alpA010.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpA010.n3> ;
+        mf:name        "alpA010" .
+
+:07test_alpE000.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE000.n3> ;
+        mf:name        "alpE000" .
+
+:07test_alpE001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE001.n3> ;
+        mf:name        "alpE001" .
+
+:07test_alpE002.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE002.n3> ;
+        mf:name        "alpE002" .
+
+:07test_alpE003.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE003.n3> ;
+        mf:name        "alpE003" .
+
+:07test_alpE011.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE011.n3> ;
+        mf:name        "alpE011" .
+
+:07test_alpE012.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE012.n3> ;
+        mf:name        "alpE012" .
+
+:07test_alpE013.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpE013.n3> ;
+        mf:name        "alpE013" .
+
+:07test_alpP001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpP001.n3> ;
+        mf:name        "alpP001" .
+
+:07test_alpQ001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpQ001.n3> ;
+        mf:name        "alpQ001" .
+
+:07test_alpQ002.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpQ002.n3> ;
+        mf:name        "alpQ002" .
+
+:07test_alpQ003.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/alpQ003.n3> ;
+        mf:name        "alpQ003" .
+
+:07test_arc-goal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/arc-goal.n3> ;
+        mf:name        "arc-goal" .
+
+:07test_arc.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/arc.n3> ;
+        mf:name        "arc" .
+
+:07test_arcE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/arcE.n3> ;
+        mf:name        "arcE" .
+
+:07test_badmeta.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/badmeta.n3> ;
+        mf:name        "badmeta" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_bd-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-query.n3> ;
+        mf:name        "bd-query" .
+
+:07test_bd-result-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-result-10.n3> ;
+        mf:name        "bd-result-10" .
+
+:07test_bd-result-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-result-100.n3> ;
+        mf:name        "bd-result-100" .
+
+:07test_bd-result-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-result-1000.n3> ;
+        mf:name        "bd-result-1000" .
+
+:07test_bd-test-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-test-10.n3> ;
+        mf:name        "bd-test-10" .
+
+:07test_bd-test-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-test-100.n3> ;
+        mf:name        "bd-test-100" .
+
+:07test_bd-test-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bd-test-1000.n3> ;
+        mf:name        "bd-test-1000" .
+
+:07test_bench.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/bench.n3> ;
+        mf:name        "bench" .
+
+:07test_benchE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/benchE.n3> ;
+        mf:name        "benchE" .
+
+:07test_benchQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/benchQ.n3> ;
+        mf:name        "benchQ" .
+
+:07test_bg-result-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-result-10.n3> ;
+        mf:name        "bg-result-10" .
+
+:07test_bg-result-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-result-100.n3> ;
+        mf:name        "bg-result-100" .
+
+:07test_bg-result-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-result-1000.n3> ;
+        mf:name        "bg-result-1000" .
+
+:07test_bg-test-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-test-10.n3> ;
+        mf:name        "bg-test-10" .
+
+:07test_bg-test-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-test-100.n3> ;
+        mf:name        "bg-test-100" .
+
+:07test_bg-test-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bg-test-1000.n3> ;
+        mf:name        "bg-test-1000" .
+
+:07test_biE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/biE.n3> ;
+        mf:name        "biE" .
+
+:07test_biP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/biP.n3> ;
+        mf:name        "biP" .
+
+:07test_biQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/biQ.n3> ;
+        mf:name        "biQ" .
+
+:07test_biR.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/biR.n3> ;
+        mf:name        "biR" ;
+        rdfs:comment   "(edited to remove reliance on @keywords) '+' is element of a list, not allowed in turtle nor n3" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_bmi_instances.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bmi_instances.n3> ;
+        mf:name        "bmi_instances" .
+
+:07test_bmi_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bmi_query.n3> ;
+        mf:name        "bmi_query" .
+
+:07test_bmi_test_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/bmi_test_result.n3> ;
+        mf:name        "bmi_test_result" .
+
+:07test_cd.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/cd.n3> ;
+        mf:name        "cd" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_cdE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/cdE.n3> ;
+        mf:name        "cdE" .
+
+:07test_contradiction.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/contradiction.n3> ;
+        mf:name        "contradiction" .
+
+:07test_cryptoE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/cryptoE.n3> ;
+        mf:name        "cryptoE" .
+
+:07test_cryptoP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/cryptoP.n3> ;
+        mf:name        "cryptoP" .
+
+:07test_cryptoQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/cryptoQ.n3> ;
+        mf:name        "cryptoQ" .
+
+:07test_cyclic-pass.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/cyclic-pass.n3> ;
+        mf:name        "cyclic-pass" .
+
+:07test_cyclic-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/cyclic-rules.n3> ;
+        mf:name        "cyclic-rules" .
+
+:07test_data1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/data1.n3> ;
+        mf:name        "data1" .
+
+:07test_data2.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/data2.n3> ;
+        mf:name        "data2" .
+
+:07test_data3.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/data3.n3> ;
+        mf:name        "data3" .
+
+:07test_de.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/de.n3> ;
+        mf:name        "de" .
+
+:07test_deA.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/deA.n3> ;
+        mf:name        "deA" .
+
+:07test_deE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/deE.n3> ;
+        mf:name        "deE" .
+
+:07test_deQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/deQ.n3> ;
+        mf:name        "deQ" .
+
+:07test_desc_images.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/desc_images.n3> ;
+        mf:name        "desc_images" .
+
+:07test_desc_thumbnail.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/desc_thumbnail.n3> ;
+        mf:name        "desc_thumbnail" .
+
+:07test_dpe_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dpe_answer.n3> ;
+        mf:name        "dpe_answer" .
+
+:07test_dpe_assumption.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dpe_assumption.n3> ;
+        mf:name        "dpe_assumption" .
+
+:07test_dpe_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dpe_query.n3> ;
+        mf:name        "dpe_query" .
+
+:07test_dpe_theory.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dpe_theory.n3> ;
+        mf:name        "dpe_theory" .
+
+:07test_dtb-result-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dtb-result-10.n3> ;
+        mf:name        "dtb-result-10" .
+
+:07test_dtb-result-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dtb-result-100.n3> ;
+        mf:name        "dtb-result-100" .
+
+:07test_dtb-result-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/dtb-result-1000.n3> ;
+        mf:name        "dtb-result-1000" .
+
+:07test_easter-cwm.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/easter-cwm.n3> ;
+        mf:name        "easter-cwm" .
+
+:07test_easter-eye.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/easter-eye.n3> ;
+        mf:name        "easter-eye" .
+
+:07test_easterF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/easterF.n3> ;
+        mf:name        "easterF" .
+
+:07test_easterP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/easterP.n3> ;
+        mf:name        "easterP" .
+
+:07test_equalities1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/equalities1.n3> ;
+        mf:name        "equalities1" .
+
+:07test_eventTime_instances_2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/eventTime_instances_2.n3> ;
+        mf:name        "eventTime_instances_2" .
+
+:07test_eventTime_queries2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/eventTime_queries2.n3> ;
+        mf:name        "eventTime_queries2" .
+
+:07test_eventTime_test_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/eventTime_test_result.n3> ;
+        mf:name        "eventTime_test_result" .
+
+:07test_fdlP020.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/fdlP020.n3> ;
+        mf:name        "fdlP020" .
+
+:07test_fdlQ001.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/fdlQ001.n3> ;
+        mf:name        "fdlQ001" .
+
+:07test_fgcm-model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/fgcm-model.n3> ;
+        mf:name        "fgcm-model" .
+
+:07test_fgcm-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/fgcm-query.n3> ;
+        mf:name        "fgcm-query" .
+
+:07test_fgcm_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/fgcm_proof.n3> ;
+        mf:name        "fgcm_proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_fgcm_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/fgcm_result.n3> ;
+        mf:name        "fgcm_result" .
+
+:07test_fib.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/fib.n3> ;
+        mf:name        "fib" .
+
+:07test_fibE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/fibE.n3> ;
+        mf:name        "fibE" .
+
+:07test_fibQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/fibQ.n3> ;
+        mf:name        "fibQ" .
+
+:07test_gmpbnode.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gmpbnode.n3> ;
+        mf:name        "gmpbnode" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_gmpbnode2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gmpbnode2.n3> ;
+        mf:name        "gmpbnode2" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_gmpbnodeE1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gmpbnodeE1.n3> ;
+        mf:name        "gmpbnodeE1" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_gmpbnodeE2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gmpbnodeE2.n3> ;
+        mf:name        "gmpbnodeE2" .
+
+:07test_gmpbnodeF.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gmpbnodeF.n3> ;
+        mf:name        "gmpbnodeF" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_goal.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/goal.n3> ;
+        mf:name        "goal" .
+
+:07test_graph-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graph-10.n3> ;
+        mf:name        "graph-10" .
+
+:07test_graph-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graph-100.n3> ;
+        mf:name        "graph-100" .
+
+:07test_graph-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graph-1000.n3> ;
+        mf:name        "graph-1000" .
+
+:07test_graph-10000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graph-10000.n3> ;
+        mf:name        "graph-10000" .
+
+:07test_graph-imjoin.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graph-imjoin.n3> ;
+        mf:name        "graph-imjoin" .
+
+:07test_graphgen.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graphgen.n3> ;
+        mf:name        "graphgen" .
+
+:07test_graphgen1bt.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graphgen1bt.n3> ;
+        mf:name        "graphgen1bt" ;
+        rdfs:comment   "currently rejected since eye blocks on it" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_graphgen512mt.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/graphgen512mt.n3> ;
+        rdfs:comment   "currently rejected since eye blocks on it" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_grass.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/grass.n3> ;
+        mf:name        "grass" .
+
+:07test_grass_pass.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/grass_pass.n3> ;
+        mf:name        "grass_pass" .
+
+:07test_grawl-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/grawl-10.n3> ;
+        mf:name        "grawl-10" .
+
+:07test_grawl-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/grawl-100.n3> ;
+        mf:name        "grawl-100" .
+
+:07test_grawl-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/grawl-1000.n3> ;
+        mf:name        "grawl-1000" .
+
+:07test_grawlgen.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/grawlgen.n3> ;
+        mf:name        "grawlgen" .
+
+:07test_gv-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gv-answer.n3> ;
+        mf:name        "gv-answer" .
+
+:07test_gv-example.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gv-example.n3> ;
+        mf:name        "gv-example" .
+
+:07test_gv-mln.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/gv-mln.n3> ;
+        mf:name        "gv-mln" .
+
+:07test_gv-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/gv-query.n3> ;
+        mf:name        "gv-query" .
+
+:07test_hanoi.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/hanoi.n3> ;
+        mf:name        "hanoi" .
+
+:07test_hanoiE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/hanoiE.n3> ;
+        mf:name        "hanoiE" .
+
+:07test_httpspeech.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/httpspeech.n3> ;
+        mf:name        "httpspeech" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_id.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/id.n3> ;
+        mf:name        "id" .
+
+:07test_idE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/idE.n3> ;
+        mf:name        "idE" .
+
+:07test_ind.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/ind.n3> ;
+        mf:name        "ind" .
+
+:07test_initial.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/initial.n3> ;
+        mf:name        "initial" .
+
+:07test_iq.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/iq.n3> ;
+        mf:name        "iq" .
+
+:07test_iq_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/iq_answer.n3> ;
+        mf:name        "iq_answer" .
+
+:07test_iq_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/iq_proof.n3> ;
+        mf:name        "iq_proof" .
+
+:07test_irP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/irP.n3> ;
+        mf:name        "irP" .
+
+:07test_irQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/irQ.n3> ;
+        mf:name        "irQ" .
+
+:07test_irR.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/irR.n3> ;
+        mf:name        "irR" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_m3bP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/m3bP.n3> ;
+        mf:name        "m3bP" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_m3bQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/m3bQ.n3> ;
+        mf:name        "m3bQ" .
+
+:07test_medic.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/medic.n3> ;
+        mf:name        "medic" .
+
+:07test_music-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/music-proof.n3> ;
+        mf:name        "music-proof" .
+
+:07test_music-proof2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/music-proof2.n3> ;
+        mf:name        "music-proof2" .
+
+:07test_music-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/music-query.n3> ;
+        mf:name        "music-query" .
+
+:07test_music-query2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/music-query2.n3> ;
+        mf:name        "music-query2" .
+
+:07test_music-rule.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/music-rule.n3> ;
+        mf:name        "music-rule" .
+
+:07test_music.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/music.n3> ;
+        mf:name        "music" .
+
+:07test_nbbn-model.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/nbbn-model.n3> ;
+        mf:name        "nbbn-model" .
+
+:07test_nbbn-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/nbbn-query.n3> ;
+        mf:name        "nbbn-query" .
+
+:07test_nbbn_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/nbbn_proof.n3> ;
+        mf:name        "nbbn_proof" .
+
+:07test_nbbn_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/nbbn_result.n3> ;
+        mf:name        "nbbn_result" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_nincl.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/nincl.n3> ;
+        mf:name        "nincl" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_ninclQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/ninclQ.n3> ;
+        mf:name        "ninclQ" .
+
+:07test_numeral.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/numeral.n3> ;
+        mf:name        "numeral" .
+
+:07test_numeral_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/numeral_result.n3> ;
+        mf:name        "numeral_result" .
+
+:07test_orP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/orP.n3> ;
+        mf:name        "orP" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_orQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/orQ.n3> ;
+        mf:name        "orQ" .
+
+:07test_owl2.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/owl2.n3> ;
+        mf:name        "owl2" .
+
+:07test_owlth.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/owlth.n3> ;
+        mf:name        "owlth" ;
+        rdfs:comment   "malformed: no keywords section and using 'is'" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_parteval-equivalent.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval-equivalent.n3> ;
+        mf:name        "parteval-equivalent" .
+
+:07test_parteval-subclass.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval-subclass.n3> ;
+        mf:name        "parteval-subclass" .
+
+:07test_parteval.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval.n3> ;
+        mf:name        "parteval" .
+
+:07test_parteval_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval_answer.n3> ;
+        mf:name        "parteval_answer" .
+
+:07test_parteval_proofcheck.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval_proofcheck.n3> ;
+        mf:name        "parteval_proofcheck" .
+
+:07test_parteval_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/parteval_query.n3> ;
+        mf:name        "parteval_query" .
+
+:07test_path-1-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-1-3-answer.n3> ;
+        mf:name        "path-1-3-answer" .
+
+:07test_path-1-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-1-3.n3> ;
+        mf:name        "path-1-3" .
+
+:07test_path-10-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-10-3-answer.n3> ;
+        mf:name        "path-10-3-answer" .
+
+:07test_path-10-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-10-3.n3> ;
+        mf:name        "path-10-3" .
+
+:07test_path-1024-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-1024-3.n3> ;
+        mf:name        "path-1024-3" .
+
+:07test_path-16-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-16-3.n3> ;
+        mf:name        "path-16-3" .
+
+:07test_path-2-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-2-3-answer.n3> ;
+        mf:name        "path-2-3-answer" .
+
+:07test_path-2-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-2-3.n3> ;
+        mf:name        "path-2-3" .
+
+:07test_path-256-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-256-3.n3> ;
+        mf:name        "path-256-3" .
+
+:07test_path-3-1-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-1-answer.n3> ;
+        mf:name        "path-3-1-answer" .
+
+:07test_path-3-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-1.n3> ;
+        mf:name        "path-3-1" .
+
+:07test_path-3-2-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-2-answer.n3> ;
+        mf:name        "path-3-2-answer" .
+
+:07test_path-3-2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-2.n3> ;
+        mf:name        "path-3-2" .
+
+:07test_path-3-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-3-answer.n3> ;
+        mf:name        "path-3-3-answer" .
+
+:07test_path-3-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-3.n3> ;
+        mf:name        "path-3-3" .
+
+:07test_path-3-4-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-4-answer.n3> ;
+        mf:name        "path-3-4-answer" .
+
+:07test_path-3-4.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-4.n3> ;
+        mf:name        "path-3-4" .
+
+:07test_path-3-5-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-5-answer.n3> ;
+        mf:name        "path-3-5-answer" .
+
+:07test_path-3-5.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-3-5.n3> ;
+        mf:name        "path-3-5" .
+
+:07test_path-4-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-4-3-answer.n3> ;
+        mf:name        "path-4-3-answer" .
+
+:07test_path-4-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-4-3.n3> ;
+        mf:name        "path-4-3" .
+
+:07test_path-5-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-5-3-answer.n3> ;
+        mf:name        "path-5-3-answer" .
+
+:07test_path-5-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-5-3.n3> ;
+        mf:name        "path-5-3" .
+
+:07test_path-6-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-6-3-answer.n3> ;
+        mf:name        "path-6-3-answer" .
+
+:07test_path-6-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-6-3.n3> ;
+        mf:name        "path-6-3" .
+
+:07test_path-64-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-64-3.n3> ;
+        mf:name        "path-64-3" .
+
+:07test_path-7-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-7-3-answer.n3> ;
+        mf:name        "path-7-3-answer" .
+
+:07test_path-7-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-7-3.n3> ;
+        mf:name        "path-7-3" .
+
+:07test_path-8-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-8-3-answer.n3> ;
+        mf:name        "path-8-3-answer" .
+
+:07test_path-8-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-8-3.n3> ;
+        mf:name        "path-8-3" .
+
+:07test_path-9-3-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-9-3-answer.n3> ;
+        mf:name        "path-9-3-answer" .
+
+:07test_path-9-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/path-9-3.n3> ;
+        mf:name        "path-9-3" .
+
+:07test_patient.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/patient.n3> ;
+        mf:name        "patient" .
+
+:07test_pd_hes_query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pd_hes_query.n3> ;
+        mf:name        "pd_hes_query" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_pd_hes_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pd_hes_result.n3> ;
+        mf:name        "pd_hes_result" .
+
+:07test_pd_hes_tactic.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pd_hes_tactic.n3> ;
+        mf:name        "pd_hes_tactic" ;
+        rdfs:comment   "(edited to remove reliance on @keywords) ; currently rejected since cwm blocks on it" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_pd_hes_theory.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pd_hes_theory.n3> ;
+        mf:name        "pd_hes_theory" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_pi-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pi-query.n3> ;
+        mf:name        "pi-query" .
+
+:07test_pi.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/pi.n3> ;
+        mf:name        "pi" .
+
+:07test_pi_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/pi_result.n3> ;
+        mf:name        "pi_result" .
+
+:07test_plfnP.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/plfnP.n3> ;
+        mf:name        "plfnP" .
+
+:07test_plfnQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/plfnQ.n3> ;
+        mf:name        "plfnQ" .
+
+:07test_pluginQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/pluginQ.n3> ;
+        mf:name        "pluginQ" .
+
+:07test_ptP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/ptP.n3> ;
+        mf:name        "ptP" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_ptQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/ptQ.n3> ;
+        mf:name        "ptQ" .
+
+:07test_query.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/query.n3> ;
+        mf:name        "query" .
+
+:07test_query1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/query1.n3> ;
+        mf:name        "query1" .
+
+:07test_randomsample-answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/randomsample-answer.n3> ;
+        mf:name        "randomsample-answer" .
+
+:07test_randomsample-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/randomsample-query.n3> ;
+        mf:name        "randomsample-query" .
+
+:07test_randomsample-rule.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/randomsample-rule.n3> ;
+        mf:name        "randomsample-rule" .
+
+:07test_rdfs-nice.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/rdfs-nice.n3> ;
+        mf:name        "rdfs-nice" .
+
+:07test_rdip_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/rdip_proof.n3> ;
+        mf:name        "rdip_proof" .
+
+:07test_resto-cwm-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto-cwm-proof.n3> ;
+        mf:name        "resto-cwm-proof" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_resto-cwm-proof2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto-cwm-proof2.n3> ;
+        mf:name        "resto-cwm-proof2" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_resto-proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto-proof.n3> ;
+        mf:name        "resto-proof" .
+
+:07test_resto-proof2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto-proof2.n3> ;
+        mf:name        "resto-proof2" .
+
+:07test_resto.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto.n3> ;
+        mf:name        "resto" .
+
+:07test_resto2.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/resto2.n3> ;
+        mf:name        "resto2" .
+
+:07test_restoG.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/restoG.n3> ;
+        mf:name        "restoG" .
+
+:07test_rifE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/rifE.n3> ;
+        mf:name        "rifE" .
+
+:07test_rifP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/rifP.n3> ;
+        mf:name        "rifP" .
+
+:07test_rifQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/rifQ.n3> ;
+        mf:name        "rifQ" .
+
+:07test_rsP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/rsP.n3> ;
+        mf:name        "rsP" ;
+        rdfs:comment   "uses '_:' for bnodes ; it was decided not to allow this" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_rsQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/rsQ.n3> ;
+        mf:name        "rsQ" .
+
+:07test_rulegen.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/rulegen.n3> ;
+        mf:name        "rulegen" .
+
+:07test_rulegen_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/rulegen_result.n3> ;
+        mf:name        "rulegen_result" .
+
+:07test_sample-roundtrip.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sample-roundtrip.n3> ;
+        mf:name        "sample-roundtrip" .
+
+:07test_sample.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/sample.n3> ;
+        mf:name        "sample" .
+
+:07test_sc.n3  a     test:TestN3PositiveSyntax ;
+        mf:action      <07test/sc.n3> ;
+        mf:name        "sc" .
+
+:07test_scE.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/scE.n3> ;
+        mf:name        "scE" .
+
+:07test_select-data.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/select-data.n3> ;
+        mf:name        "select-data" .
+
+:07test_select-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/select-query.n3> ;
+        mf:name        "select-query" .
+
+:07test_shubert.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/shubert.n3> ;
+        mf:name        "shubert" .
+
+:07test_shubertE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/shubertE.n3> ;
+        mf:name        "shubertE" .
+
+:07test_shubertQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/shubertQ.n3> ;
+        mf:name        "shubertQ" .
+
+:07test_skos-mapping-sample-snomed-icd10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/skos-mapping-sample-snomed-icd10.n3> ;
+        mf:name        "skos-mapping-sample-snomed-icd10" .
+
+:07test_skos-mapping-validation-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/skos-mapping-validation-query.n3> ;
+        mf:name        "skos-mapping-validation-query" .
+
+:07test_skos_mv_answer.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/skos_mv_answer.n3> ;
+        mf:name        "skos_mv_answer" .
+
+:07test_skos_mv_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/skos_mv_proof.n3> ;
+        mf:name        "skos_mv_proof" .
+
+:07test_socrater.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/socrater.n3> ;
+        mf:name        "socrater" .
+
+:07test_socraterE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/socraterE.n3> ;
+        mf:name        "socraterE" .
+
+:07test_socrates.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/socrates.n3> ;
+        mf:name        "socrates" .
+
+:07test_socratesE.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/socratesE.n3> ;
+        mf:name        "socratesE" .
+
+:07test_socratesQ.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/socratesQ.n3> ;
+        mf:name        "socratesQ" .
+
+:07test_speech.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/speech.n3> ;
+        mf:name        "speech" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_streason-result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/streason-result.n3> ;
+        mf:name        "streason-result" .
+
+:07test_streason-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/streason-rules.n3> ;
+        mf:name        "streason-rules" .
+
+:07test_sudoku-query-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-query-1.n3> ;
+        mf:name        "sudoku-query-1" .
+
+:07test_sudoku-query-2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-query-2.n3> ;
+        mf:name        "sudoku-query-2" .
+
+:07test_sudoku-query-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-query-3.n3> ;
+        mf:name        "sudoku-query-3" .
+
+:07test_sudoku-solution-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-solution-1.n3> ;
+        mf:name        "sudoku-solution-1" .
+
+:07test_sudoku-solution-2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-solution-2.n3> ;
+        mf:name        "sudoku-solution-2" .
+
+:07test_sudoku-solution-3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-solution-3.n3> ;
+        mf:name        "sudoku-solution-3" .
+
+:07test_sudoku-solver.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/sudoku-solver.n3> ;
+        mf:name        "sudoku-solver" .
+
+:07test_swP.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/swP.n3> ;
+        mf:name        "swP" .
+
+:07test_swQ.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/swQ.n3> ;
+        mf:name        "swQ" .
+
+:07test_swap.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/swap.n3> ;
+        mf:name        "swap" .
+
+:07test_swetA.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetA.n3> ;
+        mf:name        "swetA" .
+
+:07test_swetA01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetA01.n3> ;
+        mf:name        "swetA01" .
+
+:07test_swetA11.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetA11.n3> ;
+        mf:name        "swetA11" .
+
+:07test_swetA21.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetA21.n3> ;
+        mf:name        "swetA21" .
+
+:07test_swetA31.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetA31.n3> ;
+        mf:name        "swetA31" .
+
+:07test_swetD.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetD.n3> ;
+        mf:name        "swetD" .
+
+:07test_swetQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetQ.n3> ;
+        mf:name        "swetQ" .
+
+:07test_swetQ01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetQ01.n3> ;
+        mf:name        "swetQ01" .
+
+:07test_swetQ11.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetQ11.n3> ;
+        mf:name        "swetQ11" .
+
+:07test_swetQ21.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetQ21.n3> ;
+        mf:name        "swetQ21" .
+
+:07test_swetQ31.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/swetQ31.n3> ;
+        mf:name        "swetQ31" .
+
+:07test_swet_cwm_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/swet_cwm_result.n3> ;
+        mf:name        "swet_cwm_result" .
+
+:07test_swet_result.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/swet_result.n3> ;
+        mf:name        "swet_result" .
+
+:07test_tak.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <07test/tak.n3> ;
+        mf:name        "tak" .
+
+:07test_takE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/takE.n3> ;
+        mf:name        "takE" .
+
+:07test_takQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/takQ.n3> ;
+        mf:name        "takQ" .
+
+:07test_test-strela-10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/test-strela-10.n3> ;
+        mf:name        "test-strela-10" .
+
+:07test_test-strela-100.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/test-strela-100.n3> ;
+        mf:name        "test-strela-100" .
+
+:07test_test-strela-1000.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/test-strela-1000.n3> ;
+        mf:name        "test-strela-1000" .
+
+:07test_theory1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/theory1.n3> ;
+        mf:name        "theory1" .
+
+:07test_thumbnail_why.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/thumbnail_why.n3> ;
+        mf:name        "thumbnail_why" .
+
+:07test_time.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/time.n3> ;
+        mf:name        "time" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:07test_ttl-to-rdfa.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/ttl-to-rdfa.n3> ;
+        mf:name        "ttl-to-rdfa" .
+
+:07test_turing.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/turing.n3> ;
+        mf:name        "turing" .
+
+:07test_turingA.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/turingA.n3> ;
+        mf:name        "turingA" .
+
+:07test_turingQ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/turingQ.n3> ;
+        mf:name        "turingQ" .
+
+:07test_turing_proof.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/turing_proof.n3> ;
+        mf:name        "turing_proof" .
+
+:07test_usmE.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/usmE.n3> ;
+        mf:name        "usmE" .
+
+:07test_usmP.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/usmP.n3> ;
+        mf:name        "usmP" .
+
+:07test_usmQ.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/usmQ.n3> ;
+        mf:name        "usmQ" .
+
+:07test_utf8.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <07test/utf8.n3> ;
+        mf:name        "utf8" ;
+        rdfs:comment   "Uses @keywords" ;
+        rdft:approval  rdft:Rejected .
+
+:07test_wetC100.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetC100.n3> ;
+        mf:name        "wetC100" .
+
+:07test_wetE100.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetE100.n3> ;
+        mf:name        "wetE100" .
+
+:07test_wetE101.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetE101.n3> ;
+        mf:name        "wetE101" .
+
+:07test_wetE102.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetE102.n3> ;
+        mf:name        "wetE102" .
+
+:07test_wetP100.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetP100.n3> ;
+        mf:name        "wetP100" .
+
+:07test_wetQ100.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetQ100.n3> ;
+        mf:name        "wetQ100" .
+
+:07test_wetQ101.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetQ101.n3> ;
+        mf:name        "wetQ101" .
+
+:07test_wetQ102.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/wetQ102.n3> ;
+        mf:name        "wetQ102" .
+
+:07test_witch-goal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <07test/witch-goal.n3> ;
+        mf:name        "witch-goal" .
+
+:07test_witch.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/witch.n3> ;
+        mf:name        "witch" .
+
+:07test_witchA.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/witchA.n3> ;
+        mf:name        "witchA" .
+
+:07test_witchE.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/witchE.n3> ;
+        mf:name        "witchE" .
+
+:07test_witchF.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/witchF.n3> ;
+        mf:name        "witchF" .
+
+:07test_witchG.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <07test/witchG.n3> ;
+        mf:name        "witchG" .
+

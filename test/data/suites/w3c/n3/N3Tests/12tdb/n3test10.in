@@ -1,0 +1,41 @@
+name(n3test10).
+
+:- dynamic 'rdf:type'/2.
+
+(_ axiom ([] : Y)) :- Y.
+
+true => 'rdf:type'(':N0',':ind').
+
+'rdf:type'(':N0',X) => 'rdf:type'(':N1',X).
+'rdf:type'(':N0',X) => 'rdf:type'(':I1',X).
+'rdf:type'(':N0',X) => 'rdf:type'(':J1',X).
+'rdf:type'(':N1',X) => 'rdf:type'(':N2',X).
+'rdf:type'(':N1',X) => 'rdf:type'(':I2',X).
+'rdf:type'(':N1',X) => 'rdf:type'(':J2',X).
+'rdf:type'(':N2',X) => 'rdf:type'(':N3',X).
+'rdf:type'(':N2',X) => 'rdf:type'(':I3',X).
+'rdf:type'(':N2',X) => 'rdf:type'(':J3',X).
+'rdf:type'(':N3',X) => 'rdf:type'(':N4',X).
+'rdf:type'(':N3',X) => 'rdf:type'(':I4',X).
+'rdf:type'(':N3',X) => 'rdf:type'(':J4',X).
+'rdf:type'(':N4',X) => 'rdf:type'(':N5',X).
+'rdf:type'(':N4',X) => 'rdf:type'(':I5',X).
+'rdf:type'(':N4',X) => 'rdf:type'(':J5',X).
+'rdf:type'(':N5',X) => 'rdf:type'(':N6',X).
+'rdf:type'(':N5',X) => 'rdf:type'(':I6',X).
+'rdf:type'(':N5',X) => 'rdf:type'(':J6',X).
+'rdf:type'(':N6',X) => 'rdf:type'(':N7',X).
+'rdf:type'(':N6',X) => 'rdf:type'(':I7',X).
+'rdf:type'(':N6',X) => 'rdf:type'(':J7',X).
+'rdf:type'(':N7',X) => 'rdf:type'(':N8',X).
+'rdf:type'(':N7',X) => 'rdf:type'(':I8',X).
+'rdf:type'(':N7',X) => 'rdf:type'(':J8',X).
+'rdf:type'(':N8',X) => 'rdf:type'(':N9',X).
+'rdf:type'(':N8',X) => 'rdf:type'(':I9',X).
+'rdf:type'(':N8',X) => 'rdf:type'(':J9',X).
+'rdf:type'(':N9',X) => 'rdf:type'(':N10',X).
+'rdf:type'(':N9',X) => 'rdf:type'(':I10',X).
+'rdf:type'(':N9',X) => 'rdf:type'(':J10',X).
+'rdf:type'(':N10',X) => 'rdf:type'(':A2',X).
+
+'rdf:type'(':A2',X) => goal.

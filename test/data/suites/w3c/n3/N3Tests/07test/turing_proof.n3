@@ -1,0 +1,366 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2007/07test/turing.n3 --query http://eulersharp.sourceforge.net/2007/07test/turingQ.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/turing#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1 1)) :turing true.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+    <#lemma6>
+  );
+  r:rule <#lemma7>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {((1 1 1) ?x_0_1) :turing true} => {((1 1 1) ?x_0_1) :turing true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turingQ.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    (:q0 () (1 1 1) (1 1 1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma8>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma10>
+    <#lemma11>
+  );
+  r:rule <#lemma12>.
+
+<#lemma5> a r:Inference;
+  r:gives {
+    ((1 1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    <#lemma13>
+  );
+  r:rule <#lemma14>.
+
+<#lemma6> a r:Inference;
+  r:gives {
+    ((1 1 1) (1) (1 1 1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1 1 1 1) e:firstRest (1 (1 1 1))}]
+    <#lemma15>
+  );
+  r:rule <#lemma16>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    {(?x_1_2 ?x_4_2) :turing true} <= {(:q0 () ?x_0_2 ?x_1_2 ?x_2_2) :perform true.
+     (?x_0_2 ?x_3_2) :reverse true.
+     (?x_3_2 ?x_2_2 ?x_4_2) :append true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma8> a r:Inference;
+  r:gives {
+    ((1 1 1) 1 (1 1)) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+  );
+  r:rule <#lemma17>.
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    (:q0 1 :q0 1 :right) :rule true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma10> a r:Inference;
+  r:gives {
+    (:right () (1) (1 1 1) (1 1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+  );
+  r:rule <#lemma18>.
+
+<#lemma11> a r:Inference;
+  r:gives {
+    (:q0 (1) (1 1 1) (1 1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma19>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma20>
+    <#lemma21>
+  );
+  r:rule <#lemma12>.
+
+<#lemma12> a r:Extraction;
+  r:gives {
+    {(?x_3_3 ?x_8_3 ?x_11_3 ?x_0_3 ?x_12_3) :perform true} <= {(?x_0_3 ?x_1_3 ?x_2_3) :symbol true.
+     (?x_3_3 ?x_1_3 ?x_4_3 ?x_5_3 ?x_6_3) :rule true.
+     ?x_7_3 e:firstRest (?x_5_3 ?x_2_3).
+     (?x_6_3 ?x_8_3 ?x_9_3 ?x_7_3 ?x_10_3) :action true.
+     (?x_4_3 ?x_9_3 ?x_11_3 ?x_10_3 ?x_12_3) :perform true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma13> a r:Inference;
+  r:gives {
+    ((1 1 1) () (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma22>
+  );
+  r:rule <#lemma23>.
+
+<#lemma14> a r:Extraction;
+  r:gives {
+    {(?x_0_4 ?x_1_4) :reverse true} <= {(?x_0_4 () ?x_1_4) :reverse true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma15> a r:Inference;
+  r:gives {
+    ((1 1) (1) (1 1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma24>
+  );
+  r:rule <#lemma16>.
+
+<#lemma16> a r:Extraction;
+  r:gives {
+    {(?x_0_5 ?x_5_5 ?x_3_5) :append true} <= {?x_0_5 e:firstRest (?x_1_5 ?x_2_5).
+     ?x_3_5 e:firstRest (?x_1_5 ?x_4_5).
+     (?x_2_5 ?x_5_5 ?x_4_5) :append true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma17> a r:Extraction;
+  r:gives {
+    {(?x_0_6 ?x_1_6 ?x_2_6) :symbol true} <= {?x_0_6 e:firstRest (?x_1_6 ?x_2_6)}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma18> a r:Extraction;
+  r:gives {
+    {(:right ?x_2_7 ?x_0_7 ?x_3_7 ?x_4_7) :action true} <= {?x_0_7 e:firstRest (?x_1_7 ?x_2_7).
+     ?x_3_7 e:firstRest (?x_1_7 ?x_4_7)}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma19> a r:Inference;
+  r:gives {
+    ((1 1) 1 (1)) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+  );
+  r:rule <#lemma17>.
+
+<#lemma20> a r:Inference;
+  r:gives {
+    (:right (1) (1 1) (1 1) (1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+  );
+  r:rule <#lemma18>.
+
+<#lemma21> a r:Inference;
+  r:gives {
+    (:q0 (1 1) (1 1 1) (1) (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma25>
+    <#lemma9>
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma26>
+    <#lemma27>
+  );
+  r:rule <#lemma12>.
+
+<#lemma22> a r:Inference;
+  r:gives {
+    ((1 1) (1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma28>
+  );
+  r:rule <#lemma23>.
+
+<#lemma23> a r:Extraction;
+  r:gives {
+    {(?x_0_8 ?x_4_8 ?x_5_8) :reverse true} <= {?x_0_8 e:firstRest (?x_1_8 ?x_2_8).
+     ?x_3_8 e:firstRest (?x_1_8 ?x_4_8).
+     (?x_2_8 ?x_3_8 ?x_5_8) :reverse true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma24> a r:Inference;
+  r:gives {
+    ((1) (1) (1 1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1) e:firstRest (1 (1))}]
+    <#lemma29>
+  );
+  r:rule <#lemma16>.
+
+<#lemma25> a r:Inference;
+  r:gives {
+    ((1) 1 ()) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+  );
+  r:rule <#lemma17>.
+
+<#lemma26> a r:Inference;
+  r:gives {
+    (:right (1 1) (1 1 1) (1) ()) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+  );
+  r:rule <#lemma18>.
+
+<#lemma27> a r:Inference;
+  r:gives {
+    (:q0 (1 1 1) (1 1 1) () (1)) :perform true.
+  };
+  r:evidence (
+    <#lemma30>
+    <#lemma31>
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    <#lemma32>
+    <#lemma33>
+  );
+  r:rule <#lemma12>.
+
+<#lemma28> a r:Inference;
+  r:gives {
+    ((1) (1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {(1) e:firstRest (1 ())}]
+    [ a r:Fact; r:gives {(1 1 1) e:firstRest (1 (1 1))}]
+    <#lemma34>
+  );
+  r:rule <#lemma23>.
+
+<#lemma29> a r:Inference;
+  r:gives {
+    (() (1) (1)) :append true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma35>.
+
+<#lemma30> a r:Inference;
+  r:gives {
+    (() :b ()) :symbol true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma36>.
+
+<#lemma31> a r:Extraction;
+  r:gives {
+    (:q0 :b :qf 1 :stay) :rule true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma32> a r:Inference;
+  r:gives {
+    (:stay (1 1 1) (1 1 1) (1) (1)) :action true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma37>.
+
+<#lemma33> a r:Inference;
+  r:gives {
+    (:qf (1 1 1) (1 1 1) (1) (1)) :perform true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma38>.
+
+<#lemma34> a r:Inference;
+  r:gives {
+    (() (1 1 1) (1 1 1)) :reverse true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives true]
+  );
+  r:rule <#lemma39>.
+
+<#lemma35> a r:Extraction;
+  r:gives {
+    {(() ?x_0_9 ?x_0_9) :append true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma36> a r:Extraction;
+  r:gives {
+    {(() :b ()) :symbol true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma37> a r:Extraction;
+  r:gives {
+    {(:stay ?x_0_11 ?x_0_11 ?x_1_11 ?x_1_11) :action true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma38> a r:Extraction;
+  r:gives {
+    {(:qf ?x_0_12 ?x_0_12 ?x_1_12 ?x_1_12) :perform true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+<#lemma39> a r:Extraction;
+  r:gives {
+    {(() ?x_0_13 ?x_0_13) :reverse true} <= true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/turing.n3>].
+
+#2018-04-18T08:28:57.166Z in=57 out=1 ent=1 step=1 brake=1 inf=62527 sec=0.028 inf/sec=2233107
+#ENDS
+

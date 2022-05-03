@@ -1,0 +1,20 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+{(?U ?N) :randomsample ?A} <=
+{
+	?U log:semantics ?G.
+	?G e:graphList ?L.
+	?L math:memberCount ?C.
+	?S e:findall (
+		?T
+		{	("between" 1 ?N ?I) e:derive true.
+			(?C) e:random ?J.
+			("nth0" ?J ?L ?T) e:derive true.
+		}
+		?B
+	).
+	?B log:conjunction ?A.
+}.

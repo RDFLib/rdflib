@@ -1,0 +1,143 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/skos/skos-mapping-sample-snomed-icd10.n3 http://josd.github.io/brain/skos/skos-mapping-validation-rules.n3 --query http://josd.github.io/brain/skos/skos-mapping-validation-query.n3
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix validation: <http://eulersharp.sourceforge.net/2003/03swap/skos-mapping-validation-rules#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>} a validation:Pattern7CounterIntuitive.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>} a validation:Pattern7CounterIntuitive.
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+   <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+   <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+   <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>}];
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>} a validation:Pattern7CounterIntuitive.
+  };
+  r:evidence (
+    <#lemma4>
+    <#lemma5>
+    <#lemma6>
+    <#lemma7>
+    [ a r:Fact; r:gives {{<http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>} e:graphCopy {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+     <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+     <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>}}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/SNOMEDCT/203922009"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/SNOMEDCT/89369001"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/ICD10/Q00.0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/ICD10/Q00"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo {<http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+   <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+   <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+   <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>}];
+  r:rule <#lemma8>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. {var:x_0 a validation:Pattern7CounterIntuitive} => {var:x_0 a validation:Pattern7CounterIntuitive}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-validation-query.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broaderTransitive <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+  };
+  r:evidence (
+    <#lemma9>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/SNOMEDCT/203922009"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/SNOMEDCT/89369001"]];
+  r:rule <#lemma10>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-sample-snomed-icd10.n3>].
+
+<#lemma6> a r:Inference;
+  r:gives {
+    <http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broaderTransitive <http://purl.bioontology.org/ontology/ICD10/Q00>.
+  };
+  r:evidence (
+    <#lemma11>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/ICD10/Q00.0"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ n3:uri "http://purl.bioontology.org/ontology/ICD10/Q00"]];
+  r:rule <#lemma10>.
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    <http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-sample-snomed-icd10.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {var:x_0 skos:broaderTransitive var:x_1.
+     var:x_1 skos:exactMatch var:x_2.
+     var:x_2 skos:broaderTransitive var:x_3.
+     var:x_3 skos:exactMatch var:x_0.
+     {var:x_0 skos:broaderTransitive var:x_1.
+      var:x_1 skos:exactMatch var:x_2.
+      var:x_2 skos:broaderTransitive var:x_3.
+      var:x_3 skos:exactMatch var:x_0} e:graphCopy var:x_4} => {var:x_4 a validation:Pattern7CounterIntuitive}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-validation-rules.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    <http://purl.bioontology.org/ontology/SNOMEDCT/203922009> skos:broader <http://purl.bioontology.org/ontology/SNOMEDCT/89369001>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-sample-snomed-icd10.n3>].
+
+<#lemma10> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1. {var:x_0 skos:broader var:x_1} => {var:x_0 skos:broaderTransitive var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-validation-rules.n3>].
+
+<#lemma11> a r:Extraction;
+  r:gives {
+    <http://purl.bioontology.org/ontology/ICD10/Q00.0> skos:broader <http://purl.bioontology.org/ontology/ICD10/Q00>.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/skos/skos-mapping-sample-snomed-icd10.n3>].
+
+#2020-02-22T21:52:50.414Z in=110 out=1 ent=12 step=28 brake=2 inf=203149 sec=0.160 inf/sec=1269681
+#ENDS
+

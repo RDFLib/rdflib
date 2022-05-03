@@ -1,0 +1,20 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix : <concat.n3#> .
+
+log:implies a log:Chaff .
+:TEST13 a :success .
+:test13a a :success .
+:test13b a :success .
+:test13c a :success .
+:test13d a :success .
+:test13e a :success .
+:test13f a :success .
+:test13g a :success.
+:test13h a :success .
+
+:emptyString :is "" .
+:fooString :is "foo" .
+:www :is "WorldWideWeb" .
+:www2 :is "WorldWideWeb" .
+:www3 :is "WorldWIDEWeb" .
+:www5 :is "WorldWideWeb" .

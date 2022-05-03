@@ -10,8 +10,8 @@ Functional properties
 ---------------------
 
 Use :meth:`~rdflib.graph.Graph.value` and
-:meth:`~rdflib.graph.Graph.set` to work with :term:`functional
-property` instances, i.e. properties than can only occur once for a resource.
+:meth:`~rdflib.graph.Graph.set` to work with *functional
+property* instances, i.e. properties than can only occur once for a resource.
 
 .. code-block:: python
 

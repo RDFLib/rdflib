@@ -2,6 +2,7 @@ import logging
 import os.path
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from test.data import TEST_DATA_DIR
 from test.testutils import GraphHelper
 from typing import Callable, Collection, Iterable, List, Optional, Set, Tuple, Union
 from xml.sax import SAXParseException
@@ -39,8 +40,7 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 
 """
 
-TEST_DIR = Path(__file__).parent
-NT_DATA_DIR = TEST_DIR / "nt"
+NT_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "nt_misc"
 INVALID_NT_FILES = {
     # illegal literal as subject
     "literals-01.nt",
@@ -67,7 +67,7 @@ INVALID_NT_FILES = {
 }
 
 
-N3_DATA_DIR = Path(__file__).parent / "n3"
+N3_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "n3roundtrip"
 
 XFAILS = {
     ("xml", "n3-writer-test-29.n3",): pytest.mark.xfail(
@@ -286,11 +286,13 @@ def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Pat
 
 
 EXTRA_FILES = [
-    (TEST_DIR / "variants" / "special_chars.nt", "ntriples"),
-    (TEST_DIR / "variants" / "xml_literal.rdf", "xml"),
-    (TEST_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
-    (TEST_DIR / "variants" / "simple_quad.trig", "trig"),
-    (TEST_DIR / "variants" / "rdf11trig_eg2.trig", "trig"),
+    (TEST_DATA_DIR / "variants" / "special_chars.nt", "ntriples"),
+    (TEST_DATA_DIR / "variants" / "xml_literal.rdf", "xml"),
+    (TEST_DATA_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
+    (TEST_DATA_DIR / "variants" / "simple_quad.trig", "trig"),
+    (TEST_DATA_DIR / "variants" / "rdf11trig_eg2.trig", "trig"),
+    (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
+    (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]
 
 

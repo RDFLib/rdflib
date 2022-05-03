@@ -1,0 +1,11 @@
+# EYE Components for MMLN -- Jos De Roo
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+
+{(?TARGET ?KIND) e:inductivity ?PROBABILITY} <=
+{
+    ?SCOPE e:findall (?WEIGHT {(?TARGET ?KIND ?RULE) e:weight ?WEIGHT} ?PASS_WEIGHT).
+    ?SCOPE e:findall (?WEIGHT {?P => {(?TARGET ?KIND ?RULE) e:weight ?WEIGHT}} ?TOTAL_WEIGHT).
+    (?PASS_WEIGHT!math:sum ?TOTAL_WEIGHT!math:sum) math:quotient ?PROBABILITY.
+}.

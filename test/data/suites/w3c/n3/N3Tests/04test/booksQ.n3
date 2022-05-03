@@ -1,0 +1,10 @@
+# $Id: booksQ.n3 465 2005-02-06 23:33:35Z josd $
+# PxButton | es  | euler --nope --think books.n3 --query booksQ.n3
+# PxButton | cwm | cwm books.n3 --think --query"=booksQ.n3"
+
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://www.example.org/> .
+
+[ q:select { ?book dc:creator _:test . ?book a :Book} ;
+  q:where  { ?book dc:title ?title } ] .

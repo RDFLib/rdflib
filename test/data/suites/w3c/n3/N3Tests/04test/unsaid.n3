@@ -1,0 +1,6 @@
+# $Id: unsaid.n3 372 2004-09-10 11:21:14Z josd $
+
+@prefix : <http://example.org/data#>.
+
+:a :p :b .
+:a :q :c .

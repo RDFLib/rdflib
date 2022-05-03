@@ -1,0 +1,152 @@
+# From swap/test/ref/conclusion.n3
+@prefix : <../cwm_other/daml-ex.n3#> .
+@prefix con: <#> .
+@prefix daml: <http://www.daml.org/2001/03/daml+oil#> .
+@prefix foo: <foo.n3#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix d: <../cwm_other/daml-ex.n3#> .
+@prefix inv: <../cwm_other/invalid-ex.n3#> .
+@prefix v: <../cwm_other/schema-rules.n3#> .
+
+foo:result foo:is {
+  # From daml-ex.n3
+  <../cwm_other/daml-ex.n3> a daml:Ontology;
+       daml:comment "An example ontology";
+       daml:imports <http://www.daml.org/2000/10/daml-ont>;
+       daml:versionInfo "$Id: daml-ex.n3,v 1.5 2001/05/21 03:11:59 timbl Exp $" .
+
+  d:Adam     a daml:Person;
+       daml:comment "Adam is a person.";
+       daml:label "Adam" .
+  
+  :Animal     a daml:Class;
+       daml:comment """This class of animals is illustrative of a number of
+ontological idioms.""";
+       daml:label "Animal" .
+  
+  d:Car     a daml:Class;
+       daml:comment "no car is a person";
+       daml:subClassOf  [
+           a daml:Class;
+           daml:complementOf d:Person ] .
+  
+  d:Female     a daml:Class;
+       daml:disjointFrom d:Male;
+       daml:subClassOf d:Animal .
+  
+  d:Height     a daml:Class;
+       daml:oneOf  ( d:short d:medium d:tall ) .
+  
+  d:Male     a daml:Class;
+       daml:subClassOf d:Animal .
+  
+  d:Man     a daml:Class;
+       daml:subClassOf d:Male,
+              d:Person .
+  
+  d:Person     a daml:Class;
+       daml:comment "every person is a man or a woman";
+       daml:disjointUnionOf  ( d:Man d:Woman  );
+       daml:restrictedBy  [
+           a daml:Restriction;
+           daml:onProperty :parent;
+           daml:toClass :Person ];
+       daml:subClassOf :Animal .
+  
+  d:TallMan     a daml:Class;
+       daml:intersectionOf  ( d:TallThing d:Man  ) .
+  
+  d:TallThing     a daml:Class;
+       daml:restrictedBy  [
+           a daml:Restriction;
+           daml:onProperty d:height;
+           daml:toValue d:tall ] .
+  
+  d:Woman     a daml:Class;
+       daml:subClassOf d:Female, d:Person .
+  
+  d:ancestor     a daml:TransitiveProperty;
+       daml:label "ancestor" .
+  
+  d:child     a daml:Property;
+       daml:inverseOf d:parent .
+  
+  d:descendant     a daml:TransitiveProperty .
+  
+  d:father     a daml:Property;
+       daml:cardinality "1";
+       daml:range d:Man;
+       daml:subProperty d:parent .
+  
+  d:height     a daml:Property;
+       daml:domain d:Person;
+       daml:range d:Height .
+  
+  d:mom     a daml:Property;
+       = d:mother .
+  
+  d:mother     a daml:UniqueProperty;
+       daml:range d:Woman;
+       daml:subProperty d:parent .
+  
+  d:occupation     a daml:Property;
+       daml:maxCardinality "1" .
+  
+  d:parent     a daml:Property;
+       daml:cardinality "2";
+       daml:domain d:Animal .
+ 
+  # From invalid-ex.n3
+  <../cwm_other/invalid-ex.n3> daml:imports <../cwm_other/daml-ex.n3> .
+
+  inv:alex     :father inv:joe .
+  inv:bill     :mother inv:joe .
+  inv:disjointTest     a d:Man, d:Woman .
+
+  v:schemaInconsistency     daml:subPropertyOf log:Falsehood; .
+
+  { ?x ?p1 ?y . ?p1 = ?p2 . } => {?x ?p2 ?y } . # Duh
+
+  daml:subPropertyOf = rdfs:subPropertyOf .
+  daml:subClassOf = rdfs:subClassOf .
+  daml:range 	= rdfs:range .
+  daml:domain = rdfs:domain .
+
+  {
+    ?p     a daml:TransitiveProperty .
+  } => {
+    {
+      ?xx     ?p ?yx .
+      ?yx     ?p ?zx .
+    } => {?xx     ?p ?zx } .
+  } .
+
+  s:subClassOf     a daml:TransitiveProperty .
+  s:subPropertyOf     a daml:TransitiveProperty .
+
+  {
+    ?x     a ?c1 .
+    ?c1     s:subClassOf ?c2 .
+  } => {?x     a ?c2 } .
+
+  {
+    ?p1     s:range ?c .
+    ?p2     s:subPropertyOf ?p1 .
+  } => {?p2     s:range ?c} .
+
+  {
+    ?p     s:domain ?c .
+    ?x     ?p ?y .
+  } => {?x     a ?c } .
+  {
+    ?p     s:range ?c .
+    ?x     ?p ?y .
+  } => {?y     a ?c } .
+
+  {
+    ?x     a ?y, ?z .
+    ?y     daml:disjointFrom ?z .
+  } => {?x     a v:schemaInconsistency} .
+} .

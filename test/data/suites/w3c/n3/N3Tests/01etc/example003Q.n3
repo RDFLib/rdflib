@@ -1,0 +1,7 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+@prefix : <http://www.agfa.com/w3c/euler/case001#>.
+
+{(?X ?Y) fl:pi ?Z} => {(?X ?Y) fl:pi ?Z}.

@@ -1,0 +1,6 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix rgml: <http://purl.org/puninj/2001/05/rgml-schema#> .
+@prefix rr: <http://www.cs.rpi.edu/~puninj/RGML/N3/rgml_rules#>.
+@prefix : <#>.
+
+{:u a rgml:Node; rr:adjacent :v} log:forSome :u, :v.

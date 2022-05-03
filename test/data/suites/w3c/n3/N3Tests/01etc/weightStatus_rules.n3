@@ -1,0 +1,112 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix dce: <http://purl.org/dc/elements/1.1/>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix event: <http://eulersharp.sourceforge.net/2003/03swap/event#>.
+@prefix time: <http://eulersharp.sourceforge.net/2003/03swap/time#>.
+@prefix quant: <http://eulersharp.sourceforge.net/2003/03swap/quantities#>.
+@prefix human: <http://eulersharp.sourceforge.net/2003/03swap/human#>.
+@prefix humanbody: <http://eulersharp.sourceforge.net/2003/03swap/humanBody#>.
+
+<http://eulersharp.sourceforge.net/2003/03swap/weightStatus_rules>
+    dce:title """Weight Status rules"""@en;
+    dce:creator """Hans Cools"""@en;
+    dce:contributor """Jos De Roo"""@en;
+    dce:publisher """Agfa Healthcare/Belgium"""@en;
+    dce:description """Rules to calculate a weight status using adult body mass index."""@en;
+    rdfs:comment """Using http://eulersharp.sourceforge.net/2003/03swap/bmi_rules.n3."""@en.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue math:lessThan 16}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:SeverelyUnderweight;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue
+        math:notLessThan 16;
+        math:notGreaterThan 18.4}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:Underweight;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue
+        math:notLessThan 18.5;
+        math:notGreaterThan 24.9}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:NormalWeight;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue
+        math:notLessThan 25;
+        math:notGreaterThan 29.9}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:Overweight;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue
+        math:notLessThan 30;
+        math:notGreaterThan 34.9}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:Obese;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue
+        math:notLessThan 35;
+        math:notGreaterThan 44.9}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:MorbidlyObese;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.
+
+
+{   ?adult human:hasBodyMassIndex ?bodyMassIndexMeasurement.
+    ?bodyMassIndexMeasurement
+        quant:hasValue ?BodyMassIndexValue;
+        time:hasDateTime ?dateTime.
+    ?BodyMassIndexValue math:notLessThan 45}
+=>
+{   ?adult human:hasWeightStatus [
+        a humanbody:SuperObese;
+        time:hasDateTime ?dateTime;
+        event:basedOn ?bodyMassIndexMeasurement]}.

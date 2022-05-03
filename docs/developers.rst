@@ -226,6 +226,105 @@ makes it easier to run validation on all supported python versions.
     # instead of the default pytest command.
     tox -e py37,py39 -- pytest test/test_translate_algebra.py
 
+
+``go-task`` and ``Taskfile.yml``
+--------------------------------
+
+A ``Taskfile.yml`` is provided for `go-task <https://taskfile.dev/#/>`_ with
+various commands that facilitate development.
+
+Instructions for installing go-task can be seen in the `go-task installation
+guide <https://taskfile.dev/#/installation>`_.
+
+Some useful commands for working with the task in the taskfile is given below:
+
+.. code-block:: bash
+
+    # List available tasks.
+    task -l
+
+    # Install pip dependencies
+    task install:pip-deps
+
+    # Run basic validation
+    task validate
+
+    # Install a venv and run validation inside venv
+    task venv:install
+    task WITH_VENV=1 validate
+
+    # Fix all auto-fixable validation errors (i.e. run black and isort) using venv
+    task WITH_VENV=1 validate:fix
+
+    # Build docs inside venv
+    task WITH_VENV=1 docs:build
+
+    # Run live-preview on the docs
+    task docs:live-server
+
+    # Run the py310 tox environment
+    task tox -- -e py310
+
+The `Taskfile usage documentation <https://taskfile.dev/#/usage>`_ provides
+more information on how to work with taskfiles.
+
+Development container
+---------------------
+
+To simplify the process of getting a working development environment to develop
+rdflib in we provide a `Development Container
+<https://devcontainers.github.io/containers.dev/>`_ (*devcontainer*) that is
+configured in `Docker Compose <https://docs.docker.com/compose/>`_. This
+container can be used directly to run various commands, or it can be used with
+`editors that support Development Containers
+<https://devcontainers.github.io/containers.dev/supporting>`_.
+
+.. important::
+  The devcontainer is intended to run with a
+  `rootless docker <https://docs.docker.com/engine/security/rootless/>`_
+  daemon so it can edit files owned by the invoking user without
+  an invovled configuration process.
+
+  Using a rootless docker daemon also has general security benefits.
+
+To use the development container directly:
+
+.. code-block:: bash
+
+    # Build the devcontainer docker image.
+    docker-compose build
+
+    # Run the validate task inside the devtools container.
+    docker-compose run --rm devcontainer task validate
+
+    # Run tox for python 3.11 inside the devtools container,
+    docker-compose run --rm devcontainer task tox -- -e py311
+
+    # To get a shell into the devcontainer docker image.
+    docker-compose run --rm devcontainer bash
+
+The devcontainer also works with `Podman Compose
+<https://github.com/containers/podman-compose>`_.
+
+Details on how to use the development container with `VSCode
+<https://code.visualstudio.com/>`_ can found in the `Developing inside a
+Container <https://code.visualstudio.com/docs/remote/containers>`_ page. With
+the VSCode `development container CLI
+<https://code.visualstudio.com/docs/remote/devcontainer-cli>`_ installed the
+following command can be used to open the repository inside the development
+container:
+
+.. code-block:: bash
+
+    # Inside the repository base directory
+    cd ./rdflib/
+    
+    # Build the development container.
+    devcontainer build .
+
+    # Open the code inside the development container.
+    devcontainer open .
+
 Writing documentation
 ---------------------
 

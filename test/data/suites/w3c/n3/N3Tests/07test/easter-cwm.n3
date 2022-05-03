@@ -1,0 +1,45 @@
+#Processed by Id: cwm.py,v 1.198 2012-01-30 09:30:20 timbl Exp 
+        #    using base http://eulersharp.sourceforge.net/2007/07test/easterP.n3
+             @prefix : <http://www.agfa.com/w3c/euler/easterP#> .
+    
+      ( 1
+        4 )
+         :easterFor 2018,
+                2029 .
+      ( 12
+        4 )
+         :easterFor 2020 .
+      ( 16
+        4 )
+         :easterFor 2017,
+                2028 .
+      ( 17
+        4 )
+         :easterFor 2022 .
+      ( 20
+        4 )
+         :easterFor 2025 .
+      ( 21
+        4 )
+         :easterFor 2019,
+                2030 .
+      ( 27
+        3 )
+         :easterFor 2016 .
+      ( 28
+        3 )
+         :easterFor 2027 .
+      ( 31
+        3 )
+         :easterFor 2024 .
+      ( 4
+        4 )
+         :easterFor 2021 .
+      ( 5
+        4 )
+         :easterFor 2015,
+                2026 .
+      ( 9
+        4 )
+         :easterFor 2023 .
+    

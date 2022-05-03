@@ -1,0 +1,20 @@
+# $Id: graph.axiom.n3,v 1.14 2006/05/27 12:16:38 amdus Exp $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://www.agfa.com/w3c/euler/graph.axiom#>.
+
+:paris :oneway :orleans.
+:paris :oneway :chartres.
+:paris :oneway :amiens.
+:orleans :oneway :blois.
+:orleans :oneway :bourges.
+:blois :oneway :tours.
+:chartres :oneway :lemans.
+:lemans :oneway :angers.
+:lemans :oneway :tours.
+:angers :oneway :nantes.
+
+:oneway rdfs:subPropertyOf :path.
+:path a owl:TransitiveProperty.

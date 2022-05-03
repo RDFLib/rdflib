@@ -1,0 +1,59 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/rgb/redgraph001.n3 --query http://josd.github.io/brain/rgb/greenquery001.n3
+
+@prefix : <http://example.org/try#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:gives {
+    {:s :p ?U_0} => {:s :q ?U_0}.
+    {:s :q ?U_1} => {:s :r ?U_1}.
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    {:s :p ?U_0} => {:s :q ?U_0}.
+  };
+  r:evidence (
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_0"]];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    {:s :q ?U_1} => {:s :r ?U_1}.
+  };
+  r:evidence (
+    <#lemma3>
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo [ n3:uri "http://example.org/try#s"]];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo [ a r:Existential; n3:nodeId "_:sk_1"]];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    :s :p :o.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/rgb/redgraph001.n3>].
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. @forSome var:x_1. {var:x_0 :p :o} => {{var:x_0 :p var:x_1} => {var:x_0 :q var:x_1}}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/rgb/greenquery001.n3>].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0. @forSome var:x_1. {var:x_0 :p :o} => {{var:x_0 :q var:x_1} => {var:x_0 :r var:x_1}}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/rgb/greenquery001.n3>].
+
+#2020-02-22T21:52:41.525Z in=5 out=2 ent=2 step=2 brake=1 inf=20254 sec=0.083 inf/sec=244024
+#ENDS
+

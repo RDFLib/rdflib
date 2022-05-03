@@ -1,0 +1,15 @@
+@prefix dco: <http://www.debugit.eu/ontology/1.0/dco.owl#>.
+@prefix : <http://www.example.org/patientdescriptions/>.
+@prefix fl: <http://eulersharp.sourceforge.net/2003/03swap/fl-rules#>.
+
+# Acute prostatis
+
+(:patient008 dco:DiabetesMellitus) fl:mu 0.
+(:patient008 dco:Male) fl:mu 1.
+(:patient008 dco:Old) fl:mu 1.
+(:patient008 dco:DigitalRectalExamination) fl:mu 1.
+(:patient008 dco:Fever) fl:gmu (0.8 1).
+(:patient008 dco:Male) fl:mu 1.
+(:patient008 dco:Chills) fl:mu 1.
+(:patient008 dco:Dysuria) fl:mu 1.
+(:patient008 dco:UrineDipstickTest) fl:mu 1.

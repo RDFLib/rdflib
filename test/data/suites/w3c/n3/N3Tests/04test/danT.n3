@@ -1,0 +1,19 @@
+#Processed by Id: cwm.py,v 1.162 2004/08/08 01:44:49 syosi Exp 
+        #    using base file:/sfcvs/2004/04test/danP.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.163 2004/08/08 01:44:49 syosi Exp
+
+#   Base was: file:/sfcvs/2004/04test/danP.n3
+     @prefix : <http://www.w3.org/2004/ql#> .
+    
+    :result     :is  (
+        "Boston" 
+        42.19 
+        -71.05  ),
+                 (
+        "Cambridge" 
+        42.3 
+        -71.1  ) .
+    
+#ENDS

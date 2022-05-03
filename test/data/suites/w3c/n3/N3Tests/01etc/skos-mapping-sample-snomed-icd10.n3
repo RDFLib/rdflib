@@ -1,0 +1,43 @@
+# This file provides the smaple data regarding source and target vocabulary and skos mapping.
+
+# Sample data from SNOMEDCT
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#>.
+
+<http://purl.bioontology.org/ontology/SNOMEDCT/203922009>
+      rdf:type skos:Concept ;
+      skos:altLabel "Anencephalus and similar anomalies (disorder)" ;
+      skos:broader <http://purl.bioontology.org/ontology/SNOMEDCT/89369001> ;
+      skos:inScheme <http://purl.bioontology.org/ontology/SNOMEDCT> ;
+      skos:notation "203922009" ;
+      skos:prefLabel "Anencephalus and similar anomalies" .
+    
+<http://purl.bioontology.org/ontology/SNOMEDCT/89369001>
+      rdf:type skos:Concept ;
+      skos:altLabel "Anencephaly" , "Anencephalus (disorder)" , "Anencephalic monster" , "Congenital absence of brain" ;
+      skos:broader <http://purl.bioontology.org/ontology/SNOMEDCT/75076004> , <http://purl.bioontology.org/ontology/SNOMEDCT/54900001> ;
+      skos:inScheme <http://purl.bioontology.org/ontology/SNOMEDCT> ;
+      skos:notation "89369001" ;
+      skos:prefLabel "Anencephalus" .    
+    
+# Sample data from ICD10
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#>.
+    
+<http://purl.bioontology.org/ontology/ICD10/Q00.0>
+      rdf:type skos:Concept ;
+      skos:broader <http://purl.bioontology.org/ontology/ICD10/Q00> ;
+      skos:inScheme <http://purl.bioontology.org/ontology/ICD10> ;
+      skos:notation "Q00.0" ;
+      skos:prefLabel "Anencephaly" .
+    
+<http://purl.bioontology.org/ontology/ICD10/Q00>
+      rdf:type skos:Concept ;
+      skos:broader <http://purl.bioontology.org/ontology/ICD10/Q00-Q07.9> ;
+      skos:inScheme <http://purl.bioontology.org/ontology/ICD10> ;
+      skos:notation "Q00" ;
+      skos:prefLabel "Anencephaly and similar malformations" .
+
+#Sample mappings, which are generated based on UMLS-CUI
+<http://purl.bioontology.org/ontology/ICD10/Q00> skos:exactMatch <http://purl.bioontology.org/ontology/SNOMEDCT/203922009>.
+<http://purl.bioontology.org/ontology/SNOMEDCT/89369001> skos:exactMatch <http://purl.bioontology.org/ontology/ICD10/Q00.0>.

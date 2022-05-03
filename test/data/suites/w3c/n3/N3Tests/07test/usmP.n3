@@ -1,0 +1,48 @@
+### example taken from http://www.csupomona.edu/~jrfisher/cs515/SkolemMachines.pdf
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/monadic#>.
+
+# 2-Counter machine
+# Example: R1 + R2 -> R1
+# 1: jpz(R2,5,2)
+# 2: dec(R2)
+# 3: inc(R1)
+# 4: goto(1)
+# 5: halt
+
+# program
+1 :instruction (:jpz 2 5 2).
+2 :instruction (:dec 2 3).
+3 :instruction (:inc 1 4).
+4 :instruction (:goto 1).
+5 :instruction (:halt).
+
+# data
+0 :inc 1.
+1 :inc 2.
+2 :inc 3.
+3 :inc 4.
+
+1 :state (3 4). # START compute 3 + 4
+
+# UNIVERSAL INTERPRETATION OF REGISTER INSTRUCTIONS
+# :jpz
+{?PC :state (0 ?R2). ?PC :instruction (:jpz 1 ?PA ?PB)} => {?PA :state (0 ?R2)}.
+{?PC :state (?R1 ?R2). ?X :inc ?R1. ?PC :instruction (:jpz 1 ?PA ?PB)} => {?PB :state (?R1 ?R2)}.
+{?PC :state (?R1 0). ?PC :instruction (:jpz 2 ?PA ?PB)} => {?PA :state (?R1 0)}.
+{?PC :state (?R1 ?R2). ?X :inc ?R2. ?PC :instruction (:jpz 2 ?PA ?PB)} => {?PB :state (?R1 ?R2)}.
+
+# :dec
+{?PC :state (?R1 ?R2). ?PC :instruction (:dec 1 ?PB). ?D :inc ?R1} => {?PB :state (?D ?R2)}.
+{?PC :state (?R1 ?R2). ?PC :instruction (:dec 2 ?PB). ?D :inc ?R2} => {?PB :state (?R1 ?D)}.
+
+# inc
+{?PC :state (?R1 ?R2). ?PC :instruction (:inc 1 ?PB). ?R1 :inc ?I} => {?PB :state (?I ?R2)}.
+{?PC :state (?R1 ?R2). ?PC :instruction (:inc 2 ?PB). ?R2 :inc ?I} => {?PB :state (?R1 ?I)}.
+
+# :goto
+{?PC :state (?R1 ?R2). ?PC :instruction (:goto ?PB)} => {?PB :state (?R1 ?R2)}.
+
+# Natural number generation via inc
+{?X :inc ?Y} => {?Y :inc _:SomeZ}.
+

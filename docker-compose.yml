@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.devcontainer
+    working_dir: /srv/workspace
+    volumes:
+      - .:/srv/workspace:z,cached
+      - xdg-cache-home:/root/.cache
+      - dot-venv:/srv/workspace/.venv
+      - dot-tox:/srv/workspace/.tox
+      - dot-mypy-cache:/srv/workspace/.mypy_cache
+      - dot-pytest-cache:/srv/workspace/.pytest_cache
+    command:
+     - /bin/sh
+     - -c
+     - |
+       echo Waiting for shutdown... override the command if this is not what you want. 1>&2
+       while sleep 1000; do :; done
+volumes:
+    xdg-cache-home: {}
+    dot-venv: {}
+    dot-tox: {}
+    dot-mypy-cache: {}
+    dot-pytest-cache: {}

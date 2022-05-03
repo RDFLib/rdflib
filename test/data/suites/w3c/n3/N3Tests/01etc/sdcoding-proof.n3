@@ -1,0 +1,126 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --wcache http://josd.github.io/brain/dqc . --no-distinct-input http://josd.github.io/brain/dqc/sdcoding-a.n3 --query http://josd.github.io/brain/dqc/sdcoding-query.n3
+
+@prefix dqc: <http://josd.github.io/brain/dqc#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:component <#lemma4>;
+  r:gives {
+    1 dqc:sdcoding 1 .
+    3 dqc:sdcoding 3 .
+    0 dqc:sdcoding 0 .
+    2 dqc:sdcoding 2 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    1 dqc:sdcoding 1 .
+  };
+  r:evidence (
+    <#lemma5>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1) e:findall (1 {1 dqc:sdcoding 1} (1))}]
+    [ a r:Fact; r:gives {(1) math:sum 1}]
+    [ a r:Fact; r:gives {(1 2) math:remainder 1}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 1];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma6>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    3 dqc:sdcoding 3 .
+  };
+  r:evidence (
+    <#lemma7>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1) e:findall (1 {3 dqc:sdcoding 3} (1))}]
+    [ a r:Fact; r:gives {(1) math:sum 1}]
+    [ a r:Fact; r:gives {(1 2) math:remainder 1}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 3];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma6>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    0 dqc:sdcoding 0 .
+  };
+  r:evidence (
+    <#lemma8>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1) e:findall (1 {0 dqc:sdcoding 0} (1))}]
+    [ a r:Fact; r:gives {(1) math:sum 1}]
+    [ a r:Fact; r:gives {(1 2) math:remainder 1}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 0];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma6>.
+
+<#lemma4> a r:Inference;
+  r:gives {
+    2 dqc:sdcoding 2 .
+  };
+  r:evidence (
+    <#lemma9>
+    [ a r:Fact; r:gives {((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1) e:findall (1 {2 dqc:sdcoding 2} (1))}]
+    [ a r:Fact; r:gives {(1) math:sum 1}]
+    [ a r:Fact; r:gives {(1 2) math:remainder 1}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 2];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo ((<http://josd.github.io/brain/dqc/sdcoding-a.n3>) 1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo (1)];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 1];
+  r:rule <#lemma6>.
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    1 dqc:sdcoding 1 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-a.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {var:x_0 dqc:sdcoding var:x_1.
+     var:x_2 e:findall (1 {var:x_0 dqc:sdcoding var:x_1} var:x_3).
+     var:x_3 math:sum var:x_4.
+     (var:x_4 2) math:remainder 1} => {var:x_0 dqc:sdcoding var:x_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-query.n3>].
+
+<#lemma7> a r:Extraction;
+  r:gives {
+    3 dqc:sdcoding 3 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-a.n3>].
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    0 dqc:sdcoding 0 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-a.n3>].
+
+<#lemma9> a r:Extraction;
+  r:gives {
+    2 dqc:sdcoding 2 .
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/dqc/sdcoding-a.n3>].
+
+#2020-02-22T21:51:06.403Z in=25 out=4 ent=4 step=4 brake=2 inf=38922 sec=0.084 inf/sec=463357
+#ENDS
+

@@ -1,0 +1,6 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+:i a :A.
+
+{?X a :A} => {?X a :B}.
+{?X a :A} <= {?X a :B}.

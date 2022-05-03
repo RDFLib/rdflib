@@ -1,0 +1,29 @@
+# $Id: vcardP.n3 348 2004-08-18 17:19:49Z josd $
+
+@prefix vc: <http://www.w3.org/2001/vcard-rdf/3.0#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/vcardP#>.
+
+<http://qqqfoo.com/staff/corky> :employeeId "1234"; vc:ADR  [
+             vc:Country "  Australia ";
+             vc:Locality " WonderCity ";
+             vc:Pcode "    5555 ";
+             vc:Street "   111 Lake Drive " ];
+         vc:BDAY " 1980-01-01 ";
+         vc:EMAIL  [
+             a vc:internet;
+             rdf:value " corky@qqqfoo.com " ];
+         vc:FN " Corky Crystal ";
+         vc:N  [
+             vc:Family " Crystal ";
+             vc:Given "  Corky ";
+             vc:Other "  Jacky ";
+             vc:Prefix " Dr " ];
+         vc:ROLE " Programmer ";
+         vc:TEL  [
+             a vc:voice,
+                    vc:work;
+             rdf:value " +61 7 555 5555 " ];
+         vc:TITLE " Computer Officer Class 3 " .
+
+<http://qqqfoo.com/staff/barney> :employeeId "5678".

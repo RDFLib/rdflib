@@ -1,0 +1,12 @@
+    
+    <https://w3c.github.io/N3/tests/strquot.n3>     <http://purl.org/dc/elements/1.1/description> "testing string parsing in N3.\nHmm... how much of this is in the primer?\nHow much should be there?\n@@ Holding off on unicode until support\nin python is sufficiently deployed\n(e.g. python on tux doesn't grok,\nnor does pythonwin on TimBL's laptop).\n" .
+    
+    <https://w3c.github.io/N3/tests/strquot.n3#martin>     <https://w3c.github.io/N3/tests/strquot.n3#surname> "D\u00FCrst" .
+    
+    <https://w3c.github.io/N3/tests/strquot.n3#x>     <https://w3c.github.io/N3/tests/strquot.n3#prop> "simple string" .
+    
+    <https://w3c.github.io/N3/tests/strquot.n3#y>     <https://w3c.github.io/N3/tests/strquot.n3#prop> "triple quoted\nstring with newlines in it." .
+    
+    <https://w3c.github.io/N3/tests/strquot.n3#z>     <https://w3c.github.io/N3/tests/strquot.n3#prop> "string with \" escaped quote marks" .
+    
+    

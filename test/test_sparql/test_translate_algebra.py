@@ -3,6 +3,7 @@ import os
 from dataclasses import dataclass, field
 from io import StringIO
 from pathlib import Path
+from test.data import TEST_DATA_DIR
 from typing import Collection, Tuple, Union, cast
 
 import pytest
@@ -15,7 +16,7 @@ from rdflib.plugins.sparql.algebra import translateAlgebra
 
 @pytest.fixture
 def data_path() -> Path:
-    return Path(__file__).parent.parent / "translate_algebra"
+    return TEST_DATA_DIR / "translate_algebra"
 
 
 @dataclass

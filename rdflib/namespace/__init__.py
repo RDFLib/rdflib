@@ -1,9 +1,10 @@
 import json
 import logging
+import sys
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
 
@@ -190,6 +191,19 @@ class URIPattern(str):
         return f"URIPattern({super().__repr__()})"
 
 
+# _DFNS_RESERVED_ATTRS are attributes for which DefinedNamespaceMeta should
+# always raise AttributeError if they are not defined and which should not be
+# considered part of __dir__ results. These should be all annotations on
+# `DefinedNamespaceMeta`.
+_DFNS_RESERVED_ATTRS: Set[str] = {
+    "_NS",
+    "_warn",
+    "_fail",
+    "_extras",
+    "_underscore_num",
+}
+
+
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
 
@@ -202,7 +216,13 @@ class DefinedNamespaceMeta(type):
     @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
+        if name in _DFNS_RESERVED_ATTRS:
+            raise AttributeError(
+                f"DefinedNamespace like object has no attribute {name!r}"
+            )
         if str(name).startswith("__"):
+            # NOTE on type ignore: This seems to be a real bug, super() does not
+            # implement this method, it will fail if it is ever reached.
             return super().__getitem__(name, default)  # type: ignore[misc] # undefined in superclass
         if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
@@ -218,7 +238,7 @@ class DefinedNamespaceMeta(type):
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
-        return f'Namespace("{cls._NS}")'
+        return f'Namespace({str(cls._NS)!r})'
 
     def __str__(cls) -> str:
         return str(cls._NS)
@@ -230,6 +250,8 @@ class DefinedNamespaceMeta(type):
         """Determine whether a URI or an individual item belongs to this namespace"""
         item_str = str(item)
         if item_str.startswith("__"):
+            # NOTE on type ignore: This seems to be a real bug, super() does not
+            # implement this method, it will fail if it is ever reached.
             return super().__contains__(item)  # type: ignore[misc] # undefined in superclass
         if item_str.startswith(str(cls._NS)):
             item_str = item_str[len(str(cls._NS)) :]
@@ -242,7 +264,10 @@ class DefinedNamespaceMeta(type):
         )
 
     def __dir__(cls) -> Iterable[str]:
-        values = {cls[str(x)] for x in cls.__annotations__}
+        attrs = {str(x) for x in cls.__annotations__}
+        # Removing these as they should not be considered part of the namespace.
+        attrs.difference_update(_DFNS_RESERVED_ATTRS)
+        values = {cls[str(x)] for x in attrs}
         return values
 
     def as_jsonld_context(self, pfx: str) -> dict:
@@ -318,6 +343,9 @@ class ClosedNamespace(Namespace):
 
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
+
 
 class NamespaceManager(object):
     """Class for managing prefix => namespace mappings
@@ -362,7 +390,7 @@ class NamespaceManager(object):
 
     """
 
-    def __init__(self, graph: "Graph", bind_namespaces: str = "core"):
+    def __init__(self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "core"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -381,10 +409,10 @@ class NamespaceManager(object):
             pass
         elif bind_namespaces == "rdflib":
             # bind all the Namespaces shipped with RDFLib
-            for prefix, ns in NAMESPACE_PREFIXES_RDFLIB.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_RDFLIB.items():
                 self.bind(prefix, ns)
             # ... don't forget the core ones too
-            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
         elif bind_namespaces == "cc":
             # bind any prefix that can be found with lookups to prefix.cc
@@ -392,10 +420,12 @@ class NamespaceManager(object):
             # work out remainder - namespaces without prefixes
             # only look those ones up
             raise NotImplementedError("Haven't got to this option yet")
-        else:  # bind_namespaces == "core":
+        elif bind_namespaces == "core":
             # bind a few core RDF namespaces - default
-            for prefix, ns in NAMESPACE_PREFIXES_CORE.items():
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
+        else:
+            raise ValueError(f"unsupported namespace set {bind_namespaces}")
 
     def __contains__(self, ref: str) -> bool:
         # checks if a reference is in any of the managed namespaces with syntax
@@ -559,6 +589,34 @@ class NamespaceManager(object):
                 self.__cache_strict[uri] = (prefix, namespace, name)
 
             return self.__cache_strict[uri]
+
+    def expand_curie(self, curie: str) -> Union[URIRef, None]:
+        """
+        Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
+        into its full expression:
+
+        >>> import rdflib
+        >>> g = rdflib.Graph()
+        >>> g.namespace_manager.expand_curie("rdf:type")
+        rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+
+        Raises exception if a namespace is not bound to the prefix.
+
+        """
+        if not type(curie) is str:
+            raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
+        parts = curie.split(":", 1)
+        if len(parts) != 2 or len(parts[0]) < 1:
+            raise ValueError(
+                "Malformed curie argument, format should be e.g. “foaf:name”."
+            )
+        ns = self.store.namespace(parts[0])
+        if ns is not None:
+            return URIRef(f"{str(ns)}{parts[1]}")
+        else:
+            raise ValueError(
+                f"Prefix \"{curie.split(':')[0]}\" not bound to any namespace."
+            )
 
     def bind(
         self,
@@ -804,7 +862,7 @@ from rdflib.namespace._WGS import WGS
 from rdflib.namespace._XSD import XSD
 
 # prefixes for the core Namespaces shipped with RDFLib
-NAMESPACE_PREFIXES_CORE = {
+_NAMESPACE_PREFIXES_CORE = {
     "owl": OWL,
     "rdf": RDF,
     "rdfs": RDFS,
@@ -815,7 +873,7 @@ NAMESPACE_PREFIXES_CORE = {
 
 
 # prefixes for all the non-core Namespaces shipped with RDFLib
-NAMESPACE_PREFIXES_RDFLIB = {
+_NAMESPACE_PREFIXES_RDFLIB = {
     "brick": BRICK,
     "csvw": CSVW,
     "dc": DC,

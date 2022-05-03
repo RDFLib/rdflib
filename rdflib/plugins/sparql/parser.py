@@ -1553,17 +1553,3 @@ def parseUpdate(q):
 
     q = expandUnicodeEscapes(q)
     return UpdateUnit.parseString(q, parseAll=True)[0]
-
-
-if __name__ == "__main__":
-    import sys
-
-    DEBUG = True
-    try:
-        q = Query.parseString(sys.argv[1])
-        print("\nSyntax Tree:\n")
-        print(q)
-    except ParseException as err:
-        print(err.line)
-        print(" " * (err.column - 1) + "^")
-        print(err)

@@ -27,6 +27,7 @@ kwargs["extras_require"] = {
         "sphinx < 5",
         "sphinxcontrib-apidoc",
         "sphinxcontrib-kroki",
+        "sphinx-autodoc-typehints",
     ],
     "berkeleydb": ["berkeleydb"],
     "networkx": ["networkx"],

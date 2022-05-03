@@ -8,6 +8,7 @@ import sys
 from io import BytesIO
 from typing import (
     IO,
+    TYPE_CHECKING,
     Any,
     BinaryIO,
     Generator,
@@ -24,7 +25,6 @@ from urllib.parse import urlparse
 from urllib.request import url2pathname
 from warnings import warn
 
-import rdflib.term
 import rdflib.util  # avoid circular dependency
 from rdflib import exceptions, namespace, plugin, query
 from rdflib.collection import Collection
@@ -35,10 +35,13 @@ from rdflib.paths import Path
 from rdflib.resource import Resource
 from rdflib.serializer import Serializer
 from rdflib.store import Store
-from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid, URIRef
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
+
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
 
 logger = logging.getLogger(__name__)
 
@@ -331,7 +334,7 @@ class Graph(Node):
         identifier: Optional[Union[IdentifiedNode, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
-        bind_namespaces: str = "core",
+        bind_namespaces: "_NamespaceSetString" = "core",
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -346,7 +349,7 @@ class Graph(Node):
         else:
             self.__store = store
         self.__namespace_manager = namespace_manager
-        self.bind_namespaces = bind_namespaces
+        self._bind_namespaces = bind_namespaces
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
@@ -367,7 +370,7 @@ class Graph(Node):
         this graph's namespace-manager
         """
         if self.__namespace_manager is None:
-            self.__namespace_manager = NamespaceManager(self, self.bind_namespaces)
+            self.__namespace_manager = NamespaceManager(self, self._bind_namespaces)
         return self.__namespace_manager
 
     @namespace_manager.setter
@@ -1022,6 +1025,13 @@ class Graph(Node):
         for example:  graph.bind("foaf", "http://xmlns.com/foaf/0.1/")
 
         """
+        # TODO FIXME: This method's behaviour should be simplified and made
+        # more robust. If the method cannot do what it is asked it should raise
+        # an exception, it is also unclear why this method has all the
+        # different modes. It seems to just make it more complex to use, maybe
+        # it should be clarified when someone will need to use override=False
+        # and replace=False. And also why silent failure here is preferred over
+        # raising an excpetion.
         return self.namespace_manager.bind(
             prefix, namespace, override=override, replace=replace
         )
@@ -1515,10 +1525,17 @@ class Graph(Node):
 
         def do_de_skolemize2(t):
             (s, p, o) = t
-            if isinstance(s, Genid):
-                s = s.de_skolemize()
-            if isinstance(o, Genid):
-                o = o.de_skolemize()
+
+            if RDFLibGenid._is_rdflib_skolem(s):
+                s = RDFLibGenid(s).de_skolemize()
+            elif Genid._is_external_skolem(s):
+                s = Genid(s).de_skolemize()
+
+            if RDFLibGenid._is_rdflib_skolem(o):
+                o = RDFLibGenid(o).de_skolemize()
+            elif Genid._is_external_skolem(o):
+                o = Genid(o).de_skolemize()
+
             return s, p, o
 
         retval = Graph() if new_graph is None else new_graph
@@ -2456,13 +2473,3 @@ class BatchAddGraph(object):
     def __exit__(self, *exc):
         if exc[0] is None:
             self.graph.addN(self.batch)
-
-
-def test():
-    import doctest
-
-    doctest.testmod()
-
-
-if __name__ == "__main__":
-    test()

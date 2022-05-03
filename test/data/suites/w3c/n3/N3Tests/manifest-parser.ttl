@@ -1,0 +1,1395 @@
+## Distributed under both the W3C Test Suite License[1] and the W3C Software and Document License[2].
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. https://www.w3.org/Consortium/Legal/copyright-software
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdft:  <http://www.w3.org/ns/rdftest#> .
+@prefix mf:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test:  <https://w3c.github.io/N3/tests/test.n3#>.
+@prefix :     <#>.
+
+<>  a mf:Manifest ;
+    rdfs:label "N3 Parser tests" ;
+    mf:entries
+    (
+      :cwm_andy_D-ref.n3
+      :cwm_andy_D.n3
+      :cwm_i18n_hiragana.n3
+      :cwm_i18n_i18n.n3
+      :cwm_i18n_n3string.n3
+      :cwm_i18n_umlaut.n3
+      :cwm_includes_bnode-conclude-ref.n3
+      :cwm_includes_bnodeConclude.n3
+      :cwm_includes_builtins.n3
+      :cwm_includes_concat-ref.n3
+      :cwm_includes_concat.n3
+      :cwm_includes_conclusion-simple.n3
+      :cwm_includes_conclusion.n3
+      :cwm_includes_conjunction-ref.n3
+      :cwm_includes_conjunction.n3
+      :cwm_includes_foo.n3
+      :cwm_includes_genBnodeInNestedFormula.n3
+      :cwm_includes_list-in-ref.n3
+      :cwm_includes_list-in.n3
+      :cwm_includes_n3ExprFor.n3
+      :cwm_includes_quant-implies.n3
+      :cwm_includes_quantifiers.n3 # Uses explicit quantifiers
+      :cwm_includes_quantifiers_limited.n3 # Uses explicit quantifiers
+      :cwm_includes_t1.n3
+      :cwm_includes_t10.n3
+      :cwm_includes_t10a.n3
+      :cwm_includes_t11.n3
+      :cwm_includes_t2.n3
+      :cwm_includes_t3.n3
+      :cwm_includes_t4.n3
+      :cwm_includes_t6.n3
+      :cwm_includes_t8.n3
+      :cwm_includes_t9br.n3
+      :cwm_includes_uri-object-invalid.n3
+      :cwm_includes_uri-startswith.n3
+      :cwm_includes_xsd.n3
+      :cwm_list_append-ref.n3
+      :cwm_list_append.n3
+      :cwm_list_bnode_in_list_in_list.n3
+      :cwm_list_builtin_generated_match-ref.n3
+      :cwm_list_builtin_generated_match.n3
+      :cwm_list_construct.n3
+      :cwm_list_double.n3
+      :cwm_list_last.n3
+      :cwm_list_list-bug1-ref.n3
+      :cwm_list_list-bug1.n3
+      :cwm_list_list-bug2-ref.n3
+      :cwm_list_list-bug2.n3
+      :cwm_list_r1-ref.n3
+      :cwm_list_r1.n3
+      :cwm_list_unify1.n3
+      :cwm_list_unify2-ref.n3
+      :cwm_list_unify2.n3
+      :cwm_list_unify3-ref.n3
+      :cwm_list_unify3.n3
+      :cwm_list_unify4-ref.n3
+      :cwm_list_unify4.n3
+      :cwm_list_unify5-ref.n3
+      :cwm_list_unify5.n3
+      :cwm_math_long.n3
+      :cwm_math_math-test.n3
+      :cwm_math_quotient_string.n3
+      :cwm_math_trigo-test.n3
+      :cwm_math_trigo.ref.n3
+      :cwm_norm_av-ref.n3
+      :cwm_norm_av.n3
+      :cwm_os_argv.n3
+      :cwm_os_environ.n3
+      :cwm_other_anon-prop.n3
+      :cwm_other_anonymous_loop.n3
+      :cwm_other_classes.n3 # Uses explicit quantifiers
+      :cwm_other_contexts.n3
+      :cwm_other_daml-ex.n3
+      :cwm_other_daml-ont.n3
+      :cwm_other_daml-pref.n3
+      :cwm_other_dec-div.n3
+      :cwm_other_equiv-syntax.n3
+      :cwm_other_filter-bnodes.n3
+      :cwm_other_forgetDups.n3
+      :cwm_other_invalid-ex.n3
+      :cwm_other_kb1.n3
+      :cwm_other_lists-simple.n3
+      :cwm_other_lists.n3
+      :cwm_other_log-filter.n3
+      :cwm_other_rdfcore-tests.n3
+      :cwm_other_reflexive-ref.n3
+      :cwm_other_reflexive.n3
+      :cwm_other_regression.n3
+      :cwm_other_reluri-1.n3
+      :cwm_other_resolves-rdf.n3
+      :cwm_other_rules12.n3
+      :cwm_other_rules13.n3
+      :cwm_other_sameDan.n3
+      :cwm_other_sameThing.n3
+      :cwm_other_schema-filter.n3
+      :cwm_other_schema-rules.n3
+      :cwm_other_smush-query.n3
+      :cwm_other_smush-schema.n3
+      :cwm_other_strquot.n3
+      :cwm_other_t00-ref.n3
+      :cwm_other_t00.n3
+      :cwm_other_t01-ref.n3
+      :cwm_other_t01.n3
+      :cwm_other_testmeta.n3
+      :cwm_other_trivial-filter.n3
+      :cwm_other_two-route.n3
+      :cwm_other_underbarscope.n3 # Uses explicit quantifiers
+      :cwm_other_vblsNotURIs.n3
+      :cwm_reason_danc.n3
+      :cwm_reason_double-ref.n3
+      :cwm_reason_double.n3
+      :cwm_reason_f9.n3
+      :cwm_reason_poor-urop.n3
+      :cwm_reason_rename-loop.n3
+      :cwm_reason_single_gen.n3
+      :cwm_reason_socrates-ref.n3
+      :cwm_reason_socrates.n3
+      :cwm_reason_t1-ref.n3
+      :cwm_reason_t1.n3
+      :cwm_reason_t2-ref.n3
+      :cwm_reason_t2.n3
+      :cwm_reason_t3-ref.n3
+      :cwm_reason_t3.n3
+      :cwm_reason_t4-ref.n3
+      :cwm_reason_t4.n3
+      :cwm_reason_t5-ref.n3
+      :cwm_reason_t5.n3
+      :cwm_reason_t6-ref.n3
+      :cwm_reason_t6.n3
+      :cwm_reason_t8-ref.n3
+      :cwm_reason_t8.n3
+      :cwm_reason_t9-ref.n3
+      :cwm_reason_t9.n3
+      :cwm_reason_timbl.n3
+      :cwm_string_endsWith-out.n3
+      :cwm_string_endsWith.n3
+      :cwm_string_roughly-out.n3
+      :cwm_string_roughly.n3
+      :cwm_string_uriEncode-out.n3
+      :cwm_string_uriEncode.n3
+      :cwm_supports_simple-ref.n3
+      :cwm_supports_simple.n3
+      :cwm_syntax_a1.n3
+      :cwm_syntax_bad-preds-formula.n3
+      :cwm_syntax_bad-preds-literal.n3
+      :cwm_syntax_bad-preds.n3
+      :cwm_syntax_base-ref.n3
+      :cwm_syntax_base.n3
+      :cwm_syntax_BnodeAcrossFormulae.n3
+      :cwm_syntax_boolean-ref.n3
+      :cwm_syntax_boolean.n3
+      :cwm_syntax_colon-no-qname.n3
+      :cwm_syntax_decimal-ref.n3
+      :cwm_syntax_decimal.n3
+      :cwm_syntax_djb1.n3
+      :cwm_syntax_djb1a.n3
+      :cwm_syntax_dot-dash.n3
+      :cwm_syntax_embedded-dot-in-qname.n3
+      :cwm_syntax_equals1.n3
+      :cwm_syntax_equals2.n3
+      :cwm_syntax_formula-simple-1.n3
+      :cwm_syntax_formula-subject.n3
+      :cwm_syntax_formula_bnode.n3
+      :cwm_syntax_graph-as-object.n3
+      :cwm_syntax_keywords1.n3 # Uses explicit quantifiers
+      :cwm_syntax_keywords2.n3 # Uses explicit quantifiers
+      :cwm_syntax_lstring.n3
+      :cwm_syntax_neg-keywords3.n3
+      :cwm_syntax_neg-literal-predicate.n3
+      :cwm_syntax_neg-single-quote.n3
+      :cwm_syntax_neg-thisadoc.n3
+      :cwm_syntax_nested.n3
+      :cwm_syntax_no-last-nl.n3
+      :cwm_syntax_numbers.n3
+      :cwm_syntax_one-bnode.n3
+      :cwm_syntax_path1.n3
+      :cwm_syntax_path2.n3
+      :cwm_syntax_qname-as-prefix-in-decl.n3
+      :cwm_syntax_qual-after-user.n3
+      :cwm_syntax_qvars1.n3
+      :cwm_syntax_qvars2.n3
+      :cwm_syntax_qvars3.n3 # Uses explicit quantifiers
+      :cwm_syntax_qvars4.n3 # Uses explicit quantifiers
+      :cwm_syntax_sep-term.n3
+      :cwm_syntax_sib.n3
+      :cwm_syntax_space-in-uri-ref.n3
+      :cwm_syntax_space-in-uri.n3
+      :cwm_syntax_newline-in-uri.n3
+      :cwm_syntax_this-quantifiers-ref.n3 # Uses explicit quantifiers
+      :cwm_syntax_this-quantifiers-ref2.n3
+      :cwm_syntax_this-quantifiers.n3 # Uses explicit quantifiers
+      :cwm_syntax_this-rules-ref.n3 # Uses explicit quantifiers
+      :cwm_syntax_this-rules-ref2.n3
+      :cwm_syntax_this-rules.n3
+      :cwm_syntax_too-nested.n3
+      :cwm_syntax_trailing-dot-in-qname.n3
+      :cwm_syntax_trailing-semicolon-ref.nt
+      :cwm_syntax_trailing-semicolon.n3
+      :cwm_syntax_zero-length-lname.n3
+      :cwm_syntax_zero-objects.n3
+      :cwm_syntax_zero-predicates.n3
+      :cwm_time_t1.n3
+      :cwm_unify_reflexive-ref.n3
+      :cwm_unify_reflexive.n3
+      :cwm_unify_unify1-ref.n3
+      :cwm_unify_unify1.n3
+      :cwm_unify_unify2-ref.n3
+      :cwm_unify_unify2.n3 # Uses explicit quantifiers
+
+      :extra_bad_inverted_resources.n3
+      :extra_bad_prefix.n3
+      :extra_bad_prefix2.n3
+      :extra_good_prefix.n3
+
+      :manifest-parser.ttl
+
+      :new_syntax_caret_neg.n3
+      :new_syntax_caret_pos.n3
+      :new_syntax_inverted_properties.n3
+  ) .
+
+:cwm_andy_D-ref.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_andy/D-ref.n3> ;
+        mf:name        "D-ref" .
+
+:cwm_andy_D.n3  a    test:TestN3PositiveSyntax ;
+        mf:action      <cwm_andy/D.n3> ;
+        mf:name        "D" .
+
+:cwm_i18n_hiragana.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_i18n/hiragana.n3> ;
+        mf:name        "hiragana.n3" ;
+        rdfs:comment   "N3 string, qname and IRI with utf-8 non-ascii characters";
+        rdft:approval  rdft:Approved .
+
+:cwm_i18n_i18n.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_i18n/i18n.n3> ;
+        mf:name        "i18n" .
+
+:cwm_i18n_n3string.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_i18n/n3string.n3> ;
+        mf:name        "n3string" .
+
+:cwm_i18n_umlaut.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_i18n/umlaut.n3> ;
+        mf:name        "umlaut" .
+
+:cwm_includes_bnode-conclude-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/bnode-conclude-ref.n3> ;
+        mf:name        "bnode-conclude-ref" .
+
+:cwm_includes_bnodeConclude.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/bnodeConclude.n3> ;
+        mf:name        "bnodeConclude" .
+
+:cwm_includes_builtins.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/builtins.n3> ;
+        mf:name        "builtins" .
+
+:cwm_includes_concat-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/concat-ref.n3> ;
+        mf:name        "concat-ref" .
+
+:cwm_includes_concat.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/concat.n3> ;
+        mf:name        "concat" .
+
+:cwm_includes_conclusion-simple.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/conclusion-simple.n3> ;
+        mf:name        "conclusion-simple" .
+
+:cwm_includes_conclusion.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/conclusion.n3> ;
+        mf:name        "conclusion" .
+
+:cwm_includes_conjunction-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/conjunction-ref.n3> ;
+        mf:name        "conjunction-ref" .
+
+:cwm_includes_conjunction.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/conjunction.n3> ;
+        mf:name        "conjunction" .
+
+:cwm_includes_foo.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/foo.n3> ;
+        mf:name        "foo" .
+
+:cwm_includes_genBnodeInNestedFormula.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/genBnodeInNestedFormula.n3> ;
+        mf:name        "genBnodeInNestedFormula" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_includes_list-in-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/list-in-ref.n3> ;
+        mf:name        "list-in-ref" .
+
+:cwm_includes_list-in.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/list-in.n3> ;
+        mf:name        "list-in" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_includes_n3ExprFor.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/n3ExprFor.n3> ;
+        mf:name        "n3ExprFor" .
+
+:cwm_includes_quant-implies.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/quant-implies.n3> ;
+        mf:name        "quant-implies" .
+
+:cwm_includes_quantifiers.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/quantifiers.n3> ;
+        mf:name        "quantifiers" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_includes_quantifiers_limited.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/quantifiers_limited.n3> ;
+        mf:name        "quantifiers_limited" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_includes_t1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t1.n3> ;
+        mf:name        "t1" .
+
+:cwm_includes_t10.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t10.n3> ;
+        mf:name        "t10" .
+
+:cwm_includes_t10a.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t10a.n3> ;
+        mf:name        "t10a" .
+
+:cwm_includes_t11.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t11.n3> ;
+        mf:name        "t11" .
+
+:cwm_includes_t2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t2.n3> ;
+        mf:name        "t2" .
+
+:cwm_includes_t3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t3.n3> ;
+        mf:name        "t3" .
+
+:cwm_includes_t4.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t4.n3> ;
+        mf:name        "t4" .
+
+:cwm_includes_t6.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t6.n3> ;
+        mf:name        "t6" .
+
+:cwm_includes_t8.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t8.n3> ;
+        mf:name        "t8" .
+
+:cwm_includes_t9br.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/t9br.n3> ;
+        mf:name        "t9br" .
+
+:cwm_includes_uri-object-invalid.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/uri-object-invalid.n3> ;
+        mf:name        "uri-object-invalid" .
+
+:cwm_includes_uri-startswith.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/uri-startswith.n3> ;
+        mf:name        "uri-startswith" .
+
+:cwm_includes_xsd.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_includes/xsd.n3> ;
+        mf:name        "xsd" .
+
+:cwm_list_append-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/append-ref.n3> ;
+        mf:name        "append-ref" .
+
+:cwm_list_append.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/append.n3> ;
+        mf:name        "append" .
+
+:cwm_list_bnode_in_list_in_list.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/bnode_in_list_in_list.n3> ;
+        mf:name        "bnode_in_list_in_list" .
+
+:cwm_list_builtin_generated_match-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/builtin_generated_match-ref.n3> ;
+        mf:name        "builtin_generated_match-ref" .
+
+:cwm_list_builtin_generated_match.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/builtin_generated_match.n3> ;
+        mf:name        "builtin_generated_match" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_list_construct.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/construct.n3> ;
+        mf:name        "construct" .
+
+:cwm_list_double.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/double.n3> ;
+        mf:name        "double" .
+
+:cwm_list_last.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/last.n3> ;
+        mf:name        "last" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_list_list-bug1-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/list-bug1-ref.n3> ;
+        mf:name        "list-bug1-ref" .
+
+:cwm_list_list-bug1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/list-bug1.n3> ;
+        mf:name        "list-bug1" .
+
+:cwm_list_list-bug2-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/list-bug2-ref.n3> ;
+        mf:name        "list-bug2-ref" .
+
+:cwm_list_list-bug2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/list-bug2.n3> ;
+        mf:name        "list-bug2"  .
+
+:cwm_list_r1-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/r1-ref.n3> ;
+        mf:name        "r1-ref" .
+
+:cwm_list_r1.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/r1.n3> ;
+        mf:name        "r1" .
+
+:cwm_list_unify1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify1.n3> ;
+        mf:name        "unify1" .
+
+:cwm_list_unify2-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify2-ref.n3> ;
+        mf:name        "unify2-ref" .
+
+:cwm_list_unify2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify2.n3> ;
+        mf:name        "unify2" .
+
+:cwm_list_unify3-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify3-ref.n3> ;
+        mf:name        "unify3-ref" .
+
+:cwm_list_unify3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify3.n3> ;
+        mf:name        "unify3" .
+
+:cwm_list_unify4-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify4-ref.n3> ;
+        mf:name        "unify4-ref" .
+
+:cwm_list_unify4.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify4.n3> ;
+        mf:name        "unify4" .
+
+:cwm_list_unify5-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify5-ref.n3> ;
+        mf:name        "unify5-ref" .
+
+:cwm_list_unify5.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_list/unify5.n3> ;
+        mf:name        "unify5" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_math_long.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_math/long.n3> ;
+        mf:name        "long" .
+
+:cwm_math_math-test.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_math/math-test.n3> ;
+        mf:name        "math-test" .
+
+:cwm_math_quotient_string.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_math/quotient_string.n3> ;
+        mf:name        "quotient_string" .
+
+:cwm_math_trigo-test.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_math/trigo-test.n3> ;
+        mf:name        "trigo-test" ;
+        rdfs:comment   "does not declare all referenced prefixes" .
+
+:cwm_math_trigo.ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_math/trigo.ref.n3> ;
+        mf:name        "trigo.ref" .
+
+:cwm_norm_av-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_norm/av-ref.n3> ;
+        mf:name        "av-ref" .
+
+:cwm_norm_av.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <cwm_norm/av.n3> ;
+        mf:name        "av" .
+
+:cwm_os_argv.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <cwm_os/argv.n3> ;
+        mf:name        "argv" .
+
+:cwm_os_environ.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_os/environ.n3> ;
+        mf:name        "environ" .
+
+:cwm_other_anon-prop.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/anon-prop.n3> ;
+        mf:name        "anon-prop.n3" ;
+        rdfs:comment   "Parse and regen anonymous property";
+        rdft:approval  rdft:Approved .
+
+:cwm_other_anonymous_loop.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/anonymous_loop.n3> ;
+        mf:name        "anonymous_loop" .
+
+:cwm_other_classes.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/classes.n3> ;
+        mf:name        "classes" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_other_contexts.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/contexts.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10007.nt> ;
+        mf:name        "contexts.n3" ;
+        rdfs:comment   "Parse and generate simple contexts (this looks like a reasoning test)";
+        rdft:approval  rdft:Approved .
+
+:cwm_other_daml-ex.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/daml-ex.n3> ;
+        mf:name        "daml-ex" .
+
+:cwm_other_daml-ont.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/daml-ont.n3> ;
+        mf:name        "daml-ont" .
+
+:cwm_other_daml-pref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/daml-pref.n3> ;
+        mf:name        "daml-pref" .
+
+:cwm_other_dec-div.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/dec-div.n3> ;
+        mf:name        "dec-div" .
+
+:cwm_other_equiv-syntax.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/equiv-syntax.n3> ;
+        mf:name        "equiv-syntax" .
+
+:cwm_other_filter-bnodes.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/filter-bnodes.n3> ;
+        mf:name        "filter-bnodes" .
+
+:cwm_other_forgetDups.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/forgetDups.n3> ;
+        mf:name        "forgetDups" .
+
+:cwm_other_invalid-ex.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/invalid-ex.n3> ;
+        mf:name        "invalid-ex" .
+
+:cwm_other_kb1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/kb1.n3> ;
+        mf:name        "kb1" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_other_lists-simple.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/lists-simple.n3> ;
+        mf:name        "lists-simple" .
+
+:cwm_other_lists.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/lists.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10017.nt> ;
+        mf:name        "lists.n3" ;
+        rdfs:comment   "parsing and generation of N3 list syntax (seems to be reasoning)";
+        rdft:approval  rdft:Approved .
+
+:cwm_other_log-filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/log-filter.n3> ;
+        mf:name        "log-filter" .
+
+:cwm_other_rdfcore-tests.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/rdfcore-tests.n3> ;
+        mf:name        "rdfcore-tests" .
+
+:cwm_other_reflexive-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/reflexive-ref.n3> ;
+        mf:name        "reflexive-ref" .
+
+:cwm_other_reflexive.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/reflexive.n3> ;
+        mf:name        "reflexive" .
+
+:cwm_other_regression.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/regression.n3> ;
+        mf:name        "regression" .
+
+:cwm_other_reluri-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/reluri-1.n3> ;
+        mf:name        "reluri-1" .
+
+:cwm_other_resolves-rdf.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/resolves-rdf.n3> ;
+        mf:name        "resolves-rdf" .
+
+:cwm_other_rules12.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/rules12.n3> ;
+        mf:name        "rules12" .
+
+:cwm_other_rules13.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/rules13.n3> ;
+        mf:name        "rules13" .
+
+:cwm_other_sameDan.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/sameDan.n3> ;
+        mf:name        "sameDan" .
+
+:cwm_other_sameThing.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/sameThing.n3> ;
+        mf:name        "sameThing" .
+
+:cwm_other_schema-filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/schema-filter.n3> ;
+        mf:name        "schema-filter" .
+
+:cwm_other_schema-rules.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/schema-rules.n3> ;
+        mf:name        "schema-rules" .
+
+:cwm_other_smush-query.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/smush-query.n3> ;
+        mf:name        "smush-query" .
+
+:cwm_other_smush-schema.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/smush-schema.n3> ;
+        mf:name        "smush-schema" .
+
+:cwm_other_strquot.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_other/strquot.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10009.nt> ;
+        mf:name        "strquot.n3" ;
+        rdfs:comment   "N3 string quoting with escaping (new grammar is more restrictive re allowed escapes)" .
+
+:cwm_other_t00-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/t00-ref.n3> ;
+        mf:name        "t00-ref" .
+
+:cwm_other_t00.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/t00.n3> ;
+        mf:name        "t00" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_other_t01-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/t01-ref.n3> ;
+        mf:name        "t01-ref" .
+
+:cwm_other_t01.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/t01.n3> ;
+        mf:name        "t01" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_other_testmeta.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/testmeta.n3> ;
+        mf:name        "testmeta" .
+
+:cwm_other_trivial-filter.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/trivial-filter.n3> ;
+        mf:name        "trivial-filter" .
+
+:cwm_other_two-route.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/two-route.n3> ;
+        mf:name        "two-route" .
+
+:cwm_other_underbarscope.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/underbarscope.n3> ;
+        mf:name        "underbarscope" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_other_vblsNotURIs.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_other/vblsNotURIs.n3> ;
+        mf:name        "vblsNotURIs" .
+
+:cwm_reason_danc.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/danc.n3> ;
+        mf:name        "danc" .
+
+:cwm_reason_double-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/double-ref.n3> ;
+        mf:name        "double-ref" .
+
+:cwm_reason_double.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/double.n3> ;
+        mf:name        "double" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_reason_f9.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/f9.n3> ;
+        mf:name        "f9" .
+
+:cwm_reason_poor-urop.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/poor-urop.n3> ;
+        mf:name        "poor-urop" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_reason_rename-loop.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/rename-loop.n3> ;
+        mf:name        "rename-loop" .
+
+:cwm_reason_single_gen.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/single_gen.n3> ;
+        mf:name        "single_gen" .
+
+:cwm_reason_socrates-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/socrates-ref.n3> ;
+        mf:name        "socrates-ref" .
+
+:cwm_reason_socrates.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/socrates.n3> ;
+        mf:name        "socrates" .
+
+:cwm_reason_t1-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t1-ref.n3> ;
+        mf:name        "t1-ref" .
+
+:cwm_reason_t1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t1.n3> ;
+        mf:name        "t1" .
+
+:cwm_reason_t2-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t2-ref.n3> ;
+        mf:name        "t2-ref" .
+
+:cwm_reason_t2.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t2.n3> ;
+        mf:name        "t2" .
+
+:cwm_reason_t3-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t3-ref.n3> ;
+        mf:name        "t3-ref" .
+
+:cwm_reason_t3.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t3.n3> ;
+        mf:name        "t3" .
+
+:cwm_reason_t4-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t4-ref.n3> ;
+        mf:name        "t4-ref" .
+
+:cwm_reason_t4.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t4.n3> ;
+        mf:name        "t4" .
+
+:cwm_reason_t5-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t5-ref.n3> ;
+        mf:name        "t5-ref" .
+
+:cwm_reason_t5.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t5.n3> ;
+        mf:name        "t5" .
+
+:cwm_reason_t6-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t6-ref.n3> ;
+        mf:name        "t6-ref" .
+
+:cwm_reason_t6.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t6.n3> ;
+        mf:name        "t6" .
+
+:cwm_reason_t8-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t8-ref.n3> ;
+        mf:name        "t8-ref" .
+
+:cwm_reason_t8.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t8.n3> ;
+        mf:name        "t8" .
+
+:cwm_reason_t9-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t9-ref.n3> ;
+        mf:name        "t9-ref" .
+
+:cwm_reason_t9.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/t9.n3> ;
+        mf:name        "t9" .
+
+:cwm_reason_timbl.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_reason/timbl.n3> ;
+        mf:name        "timbl" .
+
+:cwm_string_endsWith-out.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/endsWith-out.n3> ;
+        mf:name        "endsWith-out" .
+
+:cwm_string_endsWith.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/endsWith.n3> ;
+        mf:name        "endsWith" .
+
+:cwm_string_roughly-out.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/roughly-out.n3> ;
+        mf:name        "roughly-out" .
+
+:cwm_string_roughly.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/roughly.n3> ;
+        mf:name        "roughly" .
+
+:cwm_string_uriEncode-out.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/uriEncode-out.n3> ;
+        mf:name        "uriEncode-out" .
+
+:cwm_string_uriEncode.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_string/uriEncode.n3> ;
+        mf:name        "uriEncode" .
+
+:cwm_supports_simple-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_supports/simple-ref.n3> ;
+        mf:name        "simple-ref" .
+
+:cwm_supports_simple.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_supports/simple.n3> ;
+        mf:name        "simple" .
+
+:cwm_syntax_BnodeAcrossFormulae.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/BnodeAcrossFormulae.n3> ;
+        mf:name        "BnodeAcrossFormulae" .
+
+:cwm_syntax_a1.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/a1.n3> ;
+        mf:name        "a1" .
+
+:cwm_syntax_bad-preds-formula.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/bad-preds-formula.n3> ;
+        mf:name        "bad-preds-formula" .
+
+:cwm_syntax_bad-preds-literal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/bad-preds-literal.n3> ;
+        mf:name        "bad-preds-literal" .
+
+:cwm_syntax_bad-preds.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/bad-preds.n3> ;
+        mf:name        "bad-preds" .
+
+:cwm_syntax_base-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/base-ref.n3> ;
+        mf:name        "base-ref" .
+
+:cwm_syntax_base.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/base.n3> ;
+        mf:name        "base" .
+
+:cwm_syntax_boolean-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/boolean-ref.n3> ;
+        mf:name        "boolean-ref" .
+
+:cwm_syntax_boolean.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/boolean.n3> ;
+        mf:name        "boolean" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_syntax_colon-no-qname.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/colon-no-qname.n3> ;
+        mf:name        "colon-no-qname" .
+
+:cwm_syntax_decimal-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/decimal-ref.n3> ;
+        mf:name        "decimal-ref" .
+
+:cwm_syntax_decimal.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/decimal.n3> ;
+        mf:name        "decimal" .
+
+:cwm_syntax_djb1.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/djb1.n3> ;
+        mf:name        "djb1" .
+
+:cwm_syntax_djb1a.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/djb1a.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10005.nt> ;
+        mf:name        "djb1a.n3";
+        rdfs:comment   "djb noticed a:b was parsed as rdf:type token";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_dot-dash.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/dot-dash.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10002.nt> ;
+        mf:name        "dot-dash" ;
+        rdfs:comment  "combinations of - and _ in identifiers";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_embedded-dot-in-qname.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/embedded-dot-in-qname.n3> ;
+        mf:name        "embedded-dot-in-qname" .
+
+:cwm_syntax_equals1.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/equals1.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10025.nt> ;
+        mf:name        "equals1.n3" ;
+        rdfs:comment   "The = keyword";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_equals2.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/equals2.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10026.nt> ;
+        mf:name        "equals2.n3" ;
+        rdfs:comment   "The = keyword";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_formula-simple-1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/formula-simple-1.n3> ;
+        mf:name        "formula-simple-1" .
+
+:cwm_syntax_formula-subject.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/formula-subject.n3> ;
+        mf:name        "formula-subject" .
+
+:cwm_syntax_formula_bnode.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/formula_bnode.n3> ;
+        mf:name        "formula_bnode" .
+
+:cwm_syntax_graph-as-object.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/graph-as-object.n3> ;
+        mf:name        "graph-as-object" .
+
+:cwm_syntax_keywords1.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/keywords1.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10003.nt> ;
+        rdfs:comment   "@keywords in n3 (removing reliance on @keywords breaks test)";
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_keywords2.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/keywords2.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10004.nt> ;
+        mf:name        "keywords2" ;
+        rdfs:comment   "using no keywords in n3 (removing reliance on @keywords breaks test)" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_lstring.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/lstring.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10016.nt> ;
+        mf:name        "lstring.n3" ;
+        rdfs:comment   "N3 string nested triple quoting";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_neg-formula-predicate.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/neg-formula-predicate.n3> ;
+        mf:name        "neg-formula-predicate.n3" ;
+        rdfs:comment   "A predicate cannot be a formula, I hope ; yes it can!";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_neg-keywords3.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/neg-keywords3.n3> ;
+        mf:name        "neg-keywords3.n3" ;
+        rdfs:comment   "@keywords is not a valid predicate";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_neg-literal-predicate.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/neg-literal-predicate.n3> ;
+        mf:name        "neg-literal-predicate.n3" ;
+        rdfs:comment   "A predicate cannot be a literal, I hope ; yes it can!";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_neg-single-quote.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/neg-single-quote.n3> ;
+        mf:name        "neg-single-quote" ;
+        rdfs:comment   "single quoted strings are legal";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_neg-thisadoc.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/neg-thisadoc.n3> ;
+        mf:name        "neg-thisadoc.n3" ;
+        rdfs:comment   "'this' keyword is deprecated - negative test" .
+
+:cwm_syntax_nested.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/nested.n3> ;
+        mf:name        "nested" .
+
+:cwm_syntax_no-last-nl.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/no-last-nl.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10001.nt>;
+        mf:name        "no-last-nl" ;
+        rdfs:comment   "An N3 file with no final newline character";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_numbers.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/numbers.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10013.n3> ;
+        mf:name        "numbers.n3" ;
+        rdfs:comment   "Number syntax";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_one-bnode.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/one-bnode.n3> ;
+        mf:name        "one-bnode" .
+
+:cwm_syntax_path1.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/path1.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10011.nt> ;
+        mf:name        "path1.n3" ;
+        rdfs:comment   "Path syntax, simple";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_path2.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/path2.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10012.nt> ;
+        mf:name        "path2.n3" ;
+        rdfs:comment   "Path syntax, more";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_qname-as-prefix-in-decl.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/qname-as-prefix-in-decl.n3> ;
+        mf:name        "qname-as-prefix-in-decl" .
+
+:cwm_syntax_qual-after-user.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/qual-after-user.n3> ;
+        mf:name        "qual-after-user" .
+
+:cwm_syntax_qvars1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/qvars1.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10014.nt> ;
+        mf:name        "qvars1.n3" ;
+        rdfs:comment   "Quick variable syntax, simple";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_qvars2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/qvars2.n3> ;
+        #mf:result      <cwm_n3/n3parser.tests_n3_10015.nt> ;
+        mf:name        "qvars2.n3" ;
+        rdfs:comment   "Quick variable syntax, more";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_qvars3.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/qvars3.n3> ;
+        mf:name        "qvars3" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_qvars4.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/qvars4.n3> ;
+        mf:name        "qvars4" ;
+        rdfs:comment   "using quick-var syntax within @forAll, @forSome" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_sep-term.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/sep-term.n3> ;
+        mf:name        "sep-term" .
+
+:cwm_syntax_sib.n3  a  test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/sib.n3> ;
+        mf:name        "sib" .
+
+:cwm_syntax_space-in-uri-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/space-in-uri-ref.n3> ;
+        mf:name        "space-in-uri-ref" .
+
+:cwm_syntax_space-in-uri.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/space-in-uri.n3> ;
+        mf:name        "space-in-uri" .
+
+:cwm_syntax_newline-in-uri.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/newline-in-uri.n3> ;
+        mf:name        "newline-in-uri" .
+
+:cwm_syntax_this-quantifiers-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/this-quantifiers-ref.n3> ;
+        mf:name        "this-quantifiers-ref" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_this-quantifiers-ref2.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/this-quantifiers-ref2.n3> ;
+        mf:name        "this-quantifiers-ref2" ;
+        rdfs:comment   "'this' keyword is deprecated" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_this-quantifiers.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/this-quantifiers.n3> ;
+        mf:name        "this-quantifiers" ;
+        rdfs:comment   "'this' keyword is deprecated" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_this-rules-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/this-rules-ref.n3> ;
+        mf:name        "this-rules-ref" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_this-rules-ref2.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/this-rules-ref2.n3> ;
+        mf:name        "this-rules-ref2" ;
+        rdfs:comment   "'this' keyword is deprecated" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_this-rules.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/this-rules.n3> ;
+        mf:name        "this-rules" ;
+        rdfs:comment   "'this' keyword is deprecated" ;
+        rdft:approval  rdft:Rejected .
+
+:cwm_syntax_too-nested.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/too-nested.n3> ;
+        mf:name        "too-nested.n3" ;
+        rdfs:comment   "unclear whether this should be a test - succeeding or failing doesn't prove much" ;
+        rdft:approval  rdft:Proposed .
+
+:cwm_syntax_trailing-dot-in-qname.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/trailing-dot-in-qname.n3> ;
+        mf:name        "trailing-dot-in-qname" .
+
+:cwm_syntax_trailing-semicolon-ref.nt
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/trailing-semicolon-ref.nt> ;
+        mf:name        "trailing-semicolon-ref" .
+
+:cwm_syntax_trailing-semicolon.n3
+        a              test:TestN3Eval ;
+        mf:action      <cwm_syntax/trailing-semicolon.n3> ;
+        mf:result      <cwm_n3/n3parser.tests_n3_10018.nt> ;
+        mf:name        "trailing-semicolon.n3" ;
+        rdfs:comment    "Propertylists can end in trailing semicolon. (edited to remove reliance on @keywords)" .
+
+:cwm_syntax_zero-length-lname.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/zero-length-lname.n3> ;
+        mf:name        "zero-length-lname" .
+
+:cwm_syntax_zero-objects.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <cwm_syntax/zero-objects.n3> ;
+        mf:name        "zero-objects.n3" ;
+        rdfs:comment   "A statement that says nothing at all";
+        rdft:approval  rdft:Approved .
+
+:cwm_syntax_zero-predicates.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_syntax/zero-predicates.n3> ;
+        mf:name        "zero-predicates" ;
+        rdfs:comment   "A statement that says nothing at all";
+        rdft:approval  rdft:Approved .
+
+:cwm_time_t1.n3  a   test:TestN3PositiveSyntax ;
+        mf:action      <cwm_time/t1.n3> ;
+        mf:name        "t1" .
+
+:cwm_unify_reflexive-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/reflexive-ref.n3> ;
+        mf:name        "reflexive-ref" .
+
+:cwm_unify_reflexive.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/reflexive.n3> ;
+        mf:name        "reflexive" .
+
+:cwm_unify_unify1-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/unify1-ref.n3> ;
+        mf:name        "unify1-ref" .
+
+:cwm_unify_unify1.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/unify1.n3> ;
+        mf:name        "unify1" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" .
+
+:cwm_unify_unify2-ref.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/unify2-ref.n3> ;
+        mf:name        "unify2-ref" .
+
+:cwm_unify_unify2.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <cwm_unify/unify2.n3> ;
+        mf:name        "unify2" ;
+        rdfs:comment   "(edited to remove reliance on @keywords)" ;
+        rdft:approval  rdft:Rejected .
+
+:extra_bad_inverted_resources.n3 a test:TestN3NegativeSyntax ;
+        mf:action      <extra/bad_inverted_resources.n3> ;
+        mf:name        "inverted_resources" ;
+        rdfs:comment   "inverted resources (at the start of a path) should not be allowed" .
+
+:extra_bad_prefix.n3 a test:TestN3NegativeSyntax ;
+  mf:action          <extra/bad_prefix.n3> ;
+  mf:name            "bad_prefix" ;
+  rdfs:comment       "prefixes used in prefixed-names should be declared" ;
+  rdft:approval      rdft:Approved .
+
+:extra_bad_prefix2.n3 a test:TestN3NegativeSyntax ;
+  mf:action          <extra/bad_prefix2.n3> ;
+  mf:name            "bad_prefix2" ;
+  rdfs:comment       "prefix declarations should not redefine prior declarations" ;
+  rdft:approval      rdft:Rejected .
+
+:extra_good_prefix.n3 a test:TestN3PositiveSyntax ;
+  mf:action          <extra/good_prefix.n3> ;
+  mf:name            "good_prefix" ;
+  rdft:approval      rdft:Approved .
+
+:manifest-parser.ttl  a     test:TestN3PositiveSyntax ;
+        mf:action      <manifest-parser.ttl> ;
+        mf:name        "manifest-parser" .
+
+:new_syntax_caret_neg.n3
+        a              test:TestN3NegativeSyntax ;
+        mf:action      <new_syntax/caret_neg.n3> ;
+        mf:name        "caret_neg" .
+
+:new_syntax_caret_pos.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <new_syntax/caret_pos.n3> ;
+        mf:name        "caret_pos" .
+
+:new_syntax_inverted_properties.n3
+        a              test:TestN3PositiveSyntax ;
+        mf:action      <new_syntax/inverted_properties.n3> ;
+        mf:name        "inverted_properties" .

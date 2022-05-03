@@ -14,7 +14,9 @@ def test_definednamespace_creator_qb():
         / "tools"
         / "defined_namespace_creator.py"
     )
-    qb_data_file = Path(__file__).parent.parent / "defined_namespaces" / "qb.ttl"
+    qb_data_file = (
+        Path(__file__).parent.parent / "data" / "defined_namespaces" / "qb.ttl"
+    )
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...")
@@ -62,7 +64,9 @@ def test_definednamespace_creator_fake():
         / "tools"
         / "defined_namespace_creator.py"
     )
-    qb_data_file = Path(__file__).parent.parent / "defined_namespaces" / "fake.xxx"
+    qb_data_file = (
+        Path(__file__).parent.parent / "data" / "defined_namespaces" / "fake.xxx"
+    )
     print("\n")
     print(f"Using {definednamespace_script}...")
     print(f"Testing {qb_data_file}...(expected to fail)")

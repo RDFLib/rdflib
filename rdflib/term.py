@@ -486,7 +486,7 @@ class BNode(IdentifiedNode):
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
-        return RDFLibGenid(urljoin(authority, skolem))
+        return URIRef(urljoin(authority, skolem))
 
 
 class Literal(Identifier):
@@ -2133,9 +2133,3 @@ def _isEqualXMLNode(
     else:
         # should not happen, in fact
         raise Exception("I dont know how to compare XML Node type: %s" % node.nodeType)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

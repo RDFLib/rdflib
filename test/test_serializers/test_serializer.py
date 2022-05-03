@@ -1,8 +1,7 @@
 import itertools
 import logging
-import unittest
-from pathlib import Path, PurePath
-from tempfile import TemporaryDirectory
+import re
+from pathlib import Path
 from test.testutils import GraphHelper
 from typing import Tuple, cast
 
@@ -47,55 +46,49 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     GraphHelper.assert_triple_sets_equals(graph, parsed_graph)
 
 
-class TestSerialize(unittest.TestCase):
-    def setUp(self) -> None:
+EG = Namespace("example:")
 
-        graph = Graph()
-        subject = URIRef("example:subject")
-        predicate = URIRef("example:predicate")
-        object = Literal("日本語の表記体系", lang="jpx")
-        self.triple = (
-            subject,
-            predicate,
-            object,
+
+@pytest.fixture
+def simple_graph() -> Graph:
+    graph = Graph()
+    graph.add((EG.subject, EG.predicate, Literal("日本語の表記体系", lang="jpx")))
+    return graph
+
+
+def test_serialize_to_purepath(tmp_path: Path, simple_graph: Graph):
+    tfpath = tmp_path / "out.nt"
+    simple_graph.serialize(destination=tfpath, format="nt", encoding="utf-8")
+    graph_check = Graph()
+    graph_check.parse(source=tfpath, format="nt")
+
+    GraphHelper.assert_triple_sets_equals(simple_graph, graph_check)
+
+
+def test_serialize_to_path(tmp_path: Path, simple_graph: Graph):
+    tfpath = tmp_path / "out.nt"
+    simple_graph.serialize(destination=tfpath, format="nt", encoding="utf-8")
+    graph_check = Graph()
+    graph_check.parse(source=tfpath, format="nt")
+
+    GraphHelper.assert_triple_sets_equals(simple_graph, graph_check)
+
+
+def test_serialize_to_neturl(simple_graph: Graph):
+    with pytest.raises(ValueError) as raised:
+        simple_graph.serialize(
+            destination="http://example.com/", format="nt", encoding="utf-8"
         )
-        graph.add(self.triple)
-        self.graph = graph
-        return super().setUp()
+    assert "destination" in f"{raised.value}"
 
-    def test_serialize_to_purepath(self):
-        with TemporaryDirectory() as td:
-            tfpath = PurePath(td) / "out.nt"
-            self.graph.serialize(destination=tfpath, format="nt", encoding="utf-8")
-            graph_check = Graph()
-            graph_check.parse(source=tfpath, format="nt")
 
-        self.assertEqual(self.triple, next(iter(graph_check)))
-
-    def test_serialize_to_path(self):
-        with TemporaryDirectory() as td:
-            tfpath = Path(td) / "out.nt"
-            self.graph.serialize(destination=tfpath, format="nt", encoding="utf-8")
-            graph_check = Graph()
-            graph_check.parse(source=tfpath, format="nt")
-
-        self.assertEqual(self.triple, next(iter(graph_check)))
-
-    def test_serialize_to_neturl(self):
-        with self.assertRaises(ValueError) as raised:
-            self.graph.serialize(
-                destination="http://example.com/", format="nt", encoding="utf-8"
-            )
-        self.assertIn("destination", f"{raised.exception}")
-
-    def test_serialize_to_fileurl(self):
-        with TemporaryDirectory() as td:
-            tfpath = Path(td) / "out.nt"
-            tfurl = tfpath.as_uri()
-            self.assertRegex(tfurl, r"^file:")
-            self.assertFalse(tfpath.exists())
-            self.graph.serialize(destination=tfurl, format="nt", encoding="utf-8")
-            self.assertTrue(tfpath.exists())
-            graph_check = Graph()
-            graph_check.parse(source=tfpath, format="nt")
-        self.assertEqual(self.triple, next(iter(graph_check)))
+def test_serialize_to_fileurl(tmp_path: Path, simple_graph: Graph):
+    tfpath = tmp_path / "out.nt"
+    tfurl = tfpath.as_uri()
+    assert re.match(r"^file:", tfurl)
+    assert not tfpath.exists()
+    simple_graph.serialize(destination=tfurl, format="nt", encoding="utf-8")
+    assert tfpath.exists()
+    graph_check = Graph()
+    graph_check.parse(source=tfpath, format="nt")
+    GraphHelper.assert_triple_sets_equals(simple_graph, graph_check)

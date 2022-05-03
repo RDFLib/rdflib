@@ -1,0 +1,18 @@
+# Note, different from swap/test/list/append.n3
+@prefix : <#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+
+{ ((1 2 3 4 5) (6)) list:append (1 2 3 4 5 6)} => {:test1 a :success}.
+{ ((1 2 3 4 5) (6)) list:append ?item} => {:test2 :is ?item}.
+
+{ (() (1)) list:append (1)} => {:test3 a :success}.
+{ (() (1)) list:append ?item} => {:test4 :is ?item}.
+
+:thing1 :prop1 ( 1 2 3 ) .
+:thing2 :prop1 ( 4 ) .
+{
+  ([is :prop1 of :thing1]
+   [is :prop1 of :thing2]) list:append ?item
+} => {
+  :test5 :is ?item
+} .

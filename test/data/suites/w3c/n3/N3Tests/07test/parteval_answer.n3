@@ -1,0 +1,12 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/parteval.n3 --query http://eulersharp.sourceforge.net/2007/07test/parteval_query.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+:Xanthippe a :HumanFemale.
+:Xanthippe a :Human.
+:Xanthippe a :Female.
+
+#2018-04-18T08:28:10.326Z in=24 out=3 ent=3 step=8 brake=2 inf=13598 sec=0.020 inf/sec=679900
+#ENDS
+

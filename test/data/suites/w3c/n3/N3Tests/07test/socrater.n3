@@ -1,0 +1,4 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/socrates#>.
+
+:Socrates a :human.
+{?x a :human} => {?x :mother _:y. _:y a :human}.

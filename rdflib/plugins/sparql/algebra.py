@@ -306,7 +306,10 @@ def translateGroupGraphPattern(graphPattern):
         elif p.name in ("BGP", "Extend"):
             G = Join(p1=G, p2=p)
         elif p.name == "Bind":
-            G = Extend(G, p.expr, p.var)
+            # translateExists will translate the expression if it is EXISTS, and otherwise return
+            # the expression as is. This is needed because EXISTS has a graph pattern
+            # which must be translated to work properly during evaluation.
+            G = Extend(G, translateExists(p.expr), p.var)
 
         else:
             raise Exception(
@@ -1461,21 +1464,3 @@ def pprintAlgebra(q):
         # it's update, just a list
         for x in q:
             pp(x)
-
-
-if __name__ == "__main__":
-    import os.path
-    import sys
-
-    from rdflib.plugins.sparql import parser
-
-    if os.path.exists(sys.argv[1]):
-        q = open(sys.argv[1]).read()
-    else:
-        q = sys.argv[1]
-
-    pq = parser.parseQuery(q)
-    print(pq)
-    print("--------")
-    tq = translateQuery(pq)
-    pprintAlgebra(tq)

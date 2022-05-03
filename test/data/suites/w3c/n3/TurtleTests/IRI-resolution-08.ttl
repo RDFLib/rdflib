@@ -1,0 +1,17 @@
+@base <http://abc/def/ghi>.
+<urn:ex:s295> <urn:ex:p> <.>.
+<urn:ex:s296> <urn:ex:p> <.?a=b>.
+<urn:ex:s297> <urn:ex:p> <.#a=b>.
+<urn:ex:s298> <urn:ex:p> <..>.
+<urn:ex:s299> <urn:ex:p> <..?a=b>.
+<urn:ex:s300> <urn:ex:p> <..#a=b>.
+
+@base <http://ab//de//ghi>.
+<urn:ex:s301> <urn:ex:p> <xyz>.
+<urn:ex:s302> <urn:ex:p> <./xyz>.
+<urn:ex:s303> <urn:ex:p> <../xyz>.
+
+@base <http://abc/d:f/ghi>.
+<urn:ex:s304> <urn:ex:p> <xyz>.
+<urn:ex:s305> <urn:ex:p> <./xyz>.
+<urn:ex:s306> <urn:ex:p> <../xyz>.

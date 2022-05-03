@@ -1,0 +1,10 @@
+# $Id: davidQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think davidP.n3 --query davidQ.n3
+# PxButton | cwm | cwm davidP.n3 --think --query"=davidQ.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/davidP#>.
+
+[]
+q:select {?P :myNumberGrade ?N};
+q:where  {?P :myLetterGrade ?L. ?X :letterGrade ?L; :numberGrade ?N}.
