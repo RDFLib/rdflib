@@ -73,11 +73,22 @@ jobs:
       - name: Run validation
         shell: bash
         run: |
-          export TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}"
           task \
+            TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
+            OS=${{ matrix.os }} \
             EXTENSIVE=${{ matrix.extensive-tests }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
-            WITH_GITHUB_ACTIONS=1 \
-            install:system-deps \
-            install:tox \
-            tox
+            gha:validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  finish:
+    permissions:
+      contents: read
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
