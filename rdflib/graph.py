@@ -356,6 +356,9 @@ class Graph(Node):
         self.default_union = False
         sys.setrecursionlimit(recursion_depth)
         
+    def __del__(self):
+        default_recursion_depth = 1000
+        sys.setrecursionlimit(default_recursion_depth)
 
     @property
     def store(self):
