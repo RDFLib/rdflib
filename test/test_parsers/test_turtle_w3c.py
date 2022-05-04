@@ -4,8 +4,8 @@ test suite."""
 import os
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.manifest import RDFT, RDFTest, read_manifest
-from test.testutils import file_uri_to_path
+from test.utils import file_uri_to_path
+from test.utils.manifest import RDFT, RDFTest, read_manifest
 from typing import Callable, Dict, Set
 
 import pytest

@@ -3,7 +3,7 @@ import os.path
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import Callable, Collection, Iterable, List, Optional, Set, Tuple, Union
 from xml.sax import SAXParseException
 

@@ -1,5 +1,5 @@
 import logging
-from test.testutils import eq_
+from test.utils import eq_
 from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
