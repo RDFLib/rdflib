@@ -1,3 +1,10 @@
+"""
+This module contains test utilities.
+
+The tests for test utilities should be placed inside `test.utils.test`
+(``test/utils/tests/``).
+"""
+
 from __future__ import print_function
 
 import datetime

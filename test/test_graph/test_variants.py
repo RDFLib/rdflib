@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from test.data import TEST_DATA_DIR
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import (
     ClassVar,
     Collection,

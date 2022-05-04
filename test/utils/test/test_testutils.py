@@ -1,14 +1,13 @@
 import os
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from typing import Any, List, Optional, Tuple
+from test.utils import GraphHelper, affix_tuples, file_uri_to_path
+from typing import Optional
 
 import pytest
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.term import URIRef
-
-from .testutils import GraphHelper, affix_tuples, file_uri_to_path
 
 
 def check(
