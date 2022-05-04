@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
 from test.utils import GraphHelper, affix_tuples, file_uri_to_path
-from typing import Optional
+from typing import Any, List, Optional, Tuple
 
 import pytest
 

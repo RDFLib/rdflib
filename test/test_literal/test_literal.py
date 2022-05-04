@@ -12,7 +12,7 @@ import logging
 import unittest
 from contextlib import ExitStack
 from decimal import Decimal
-from test.testutils import affix_tuples
+from test.utils import affix_tuples
 from typing import Any, Optional, Sequence, Tuple, Type, Union
 
 import isodate
