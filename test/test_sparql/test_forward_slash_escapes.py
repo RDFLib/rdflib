@@ -197,9 +197,9 @@ def test_query_prepares_expanded() -> None:
     _test_query_prepares(query_string_expanded)
 
 
-@pytest.mark.xfail(reason="Syntax error demonstrated in SPARQL query.", strict=True)
 def test_query_prepares_prefixed() -> None:
-    _test_query_prepares(query_string_prefixed)
+    with pytest.raises(ValueError):
+        _test_query_prepares(query_string_prefixed)
 
 
 def _test_escapes_and_query(
