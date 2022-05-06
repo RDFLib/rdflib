@@ -28,24 +28,18 @@ from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.term import Node
 
-# Determine version to delay a test until a version >= 7
-# (non-alpha/beta) is released.
+# Determine version to delay a test until a version > 6 is being
+# prepared for release.  A 7-point-0-anything, alpha or beta designation
+# should enable some further tests backwards-incompatible with version 6.
 # Treat rdflib.__version__ like it can be compiled into a version_info
 # tuple similar to sys.version_info.
-# TODO: After the release of version 7, this set of version-detection
+# TODO: During the release of version 7, this set of version-detection
 # code and its corresponding skipifs can be deleted.
-_rdflib_version_info_hyphen_parts: List[str] = rdflib.__version__.split("-")
-_rdflib_version_info_strs: List[str] = _rdflib_version_info_hyphen_parts[0].split(".")
-if len(_rdflib_version_info_hyphen_parts) > 1:
-    _rdflib_version_info_release_level = "-".join(_rdflib_version_info_hyphen_parts[1:])
-else:
-    _rdflib_version_info_release_level = ""
-_is_version_7_released = False
+_rdflib_version_info_strs: List[str] = rdflib.__version__.split(".")
+_is_version_7_started = False
 if _rdflib_version_info_strs[0].isdigit():
     if int(_rdflib_version_info_strs[0]) >= 7:
-        if _rdflib_version_info_release_level == "":
-            _is_version_7_released = True
-
+        _is_version_7_started = True
 
 # Note that the data and query strings are Python raw strings, so
 # backslashes won't be escape characters to Python.
@@ -218,7 +212,7 @@ def test_query_prepares_expanded() -> None:
 
 
 @pytest.mark.skipif(
-    not _is_version_7_released,
+    not _is_version_7_started,
     reason="query failure detection delayed until rdflib version 7",
 )
 def test_query_prepares_prefixed() -> None:
@@ -265,7 +259,7 @@ def test_escapes_and_query_turtle_expanded() -> None:
 
 
 @pytest.mark.skipif(
-    not _is_version_7_released,
+    not _is_version_7_started,
     reason="query failure detection delayed until rdflib version 7",
 )
 def test_escapes_and_query_turtle_prefixed() -> None:
@@ -283,7 +277,7 @@ def test_escapes_and_query_jsonld_expanded() -> None:
 
 
 @pytest.mark.skipif(
-    not _is_version_7_released,
+    not _is_version_7_started,
     reason="query failure detection delayed until rdflib version 7",
 )
 def test_escapes_and_query_jsonld_prefixed() -> None:
