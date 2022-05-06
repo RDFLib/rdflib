@@ -2,8 +2,7 @@ import re
 import socket
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test import helper
-from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
+from test.utils import MockHTTPResponse, ServedSimpleHTTPMock, helper
 from threading import Thread
 from typing import Callable, ClassVar, Type
 from unittest.mock import patch

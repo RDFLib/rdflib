@@ -1,5 +1,5 @@
 from functools import partial
-from test.testutils import eq_ as eq
+from test.utils import eq_ as eq
 
 import rdflib.plugins.sparql.parser as p
 from rdflib import Literal, Variable

@@ -106,7 +106,7 @@ Here is the *URIRef* class' auto-built documentation:
 .. code-block:: python
 
     >>> from rdflib import URIRef
-    >>> uri = URIRef()
+    >>> uri = URIRef()  # doctest: +SKIP
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     TypeError: __new__() missing 1 required positional argument: 'value'
@@ -137,9 +137,9 @@ Here is the *BNode* class' auto-built documentation:
 
     >>> from rdflib import BNode
     >>> bn = BNode()
-    >>> bn
+    >>> bn  # doctest: +SKIP
     rdflib.term.BNode('AFwALAKU0')
-    >>> bn.n3()
+    >>> bn.n3()  # doctest: +SKIP
     '_:AFwALAKU0'
     
     

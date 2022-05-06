@@ -5,7 +5,7 @@ import enum
 import logging
 from datetime import datetime
 from pathlib import Path
-from test.manifest import RDFT
+from test.utils.manifest import RDFT
 from typing import TYPE_CHECKING, Generator, Optional, Tuple, cast
 
 import pytest

@@ -2,7 +2,7 @@
 
 RDFLib
 ======
-[![Build Status](https://drone.rdflib.ashs.dev/api/badges/RDFLib/rdflib/status.svg?ref=refs/heads/master)](https://drone.rdflib.ashs.dev/RDFLib/rdflib/branches)
+[![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=master)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amaster)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
 [![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
 [![PyPI](https://img.shields.io/pypi/v/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
@@ -182,22 +182,6 @@ pytest
 Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
 pytest --cov
-```
-
-### Running the tests in a Docker container
-
-Run the test suite inside a Docker container for cross-platform support. This resolves issues such as installing BerkeleyDB on Windows and avoids the host and port issues on macOS.
-```shell
-make tests
-```
-
-Tip: If the underlying Dockerfile for the test runner changes, use `make build`.
-
-### Running the tests in a Docker container with coverage report
-
-Run the test suite inside a Docker container with HTML coverage report.
-```shell
-make coverage
 ```
 
 ### Viewing test coverage

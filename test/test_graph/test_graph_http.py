@@ -1,11 +1,6 @@
 import unittest
 from http.server import BaseHTTPRequestHandler
-from test.testutils import (
-    GraphHelper,
-    MockHTTPResponse,
-    SimpleHTTPMock,
-    ctx_http_server,
-)
+from test.utils import GraphHelper, MockHTTPResponse, SimpleHTTPMock, ctx_http_server
 from urllib.error import HTTPError
 
 from rdflib import Graph, Namespace
