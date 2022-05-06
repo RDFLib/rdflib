@@ -203,7 +203,7 @@ def test_query_prepares_prefixed() -> None:
 
 
 def _test_escapes_and_query(
-    graph: Graph, query_string: str, expected_query_ran: bool
+    graph: Graph, query_string: str, expected_query_compiled: bool
 ) -> None:
     """
     Confirm search-results behavior of SPARQL engine when a concept
@@ -219,15 +219,16 @@ def _test_escapes_and_query(
     }
     computed: Set[str] = set()
 
-    query_ran: bool = False
+    query_compiled: bool = False
     try:
-        for result in graph.query(query_string):
-            query_ran = True
-            computed.add(str(result[0]))
+        query_object = prepareQuery(query_string)
+        query_compiled = True
     except:
         pass
+    assert expected_query_compiled == query_compiled
 
-    assert expected_query_ran == query_ran
+    for result in graph.query(query_object):
+        computed.add(str(result[0]))
 
     assert expected == computed
 
