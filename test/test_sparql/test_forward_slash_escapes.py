@@ -19,13 +19,33 @@ prefixed concepts, e.g. "application/json" somehow being
 "mime:application/json".
 """
 
-from typing import Set, Tuple
+from typing import List, Set, Tuple
 
 import pytest
 
+import rdflib
 from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.term import Node
+
+# Determine version to delay a test until a version >= 7
+# (non-alpha/beta) is released.
+# Treat rdflib.__version__ like it can be compiled into a version_info
+# tuple similar to sys.version_info.
+# TODO: After the release of version 7, this set of version-detection
+# code and its corresponding skipifs can be deleted.
+_rdflib_version_info_hyphen_parts: List[str] = rdflib.__version__.split("-")
+_rdflib_version_info_strs: List[str] = _rdflib_version_info_hyphen_parts[0].split(".")
+if len(_rdflib_version_info_hyphen_parts) > 1:
+    _rdflib_version_info_release_level = "-".join(_rdflib_version_info_hyphen_parts[1:])
+else:
+    _rdflib_version_info_release_level = ""
+_is_version_7_released = False
+if _rdflib_version_info_strs[0].isdigit():
+    if int(_rdflib_version_info_strs[0]) >= 7:
+        if _rdflib_version_info_release_level == "":
+            _is_version_7_released = True
+
 
 # Note that the data and query strings are Python raw strings, so
 # backslashes won't be escape characters to Python.
@@ -197,6 +217,10 @@ def test_query_prepares_expanded() -> None:
     _test_query_prepares(query_string_expanded)
 
 
+@pytest.mark.skipif(
+    not _is_version_7_released,
+    reason="query failure detection delayed until rdflib version 7",
+)
 def test_query_prepares_prefixed() -> None:
     with pytest.raises(ValueError):
         _test_query_prepares(query_string_prefixed)
@@ -240,6 +264,10 @@ def test_escapes_and_query_turtle_expanded() -> None:
     _test_escapes_and_query(graph, query_string_expanded, True)
 
 
+@pytest.mark.skipif(
+    not _is_version_7_released,
+    reason="query failure detection delayed until rdflib version 7",
+)
 def test_escapes_and_query_turtle_prefixed() -> None:
     graph = Graph()
     graph.parse(data=turtle_data_expanded, format="turtle")
@@ -254,6 +282,10 @@ def test_escapes_and_query_jsonld_expanded() -> None:
     _test_escapes_and_query(graph, query_string_expanded, True)
 
 
+@pytest.mark.skipif(
+    not _is_version_7_released,
+    reason="query failure detection delayed until rdflib version 7",
+)
 def test_escapes_and_query_jsonld_prefixed() -> None:
     graph = Graph()
     graph.parse(data=jsonld_data_expanded, format="json-ld")
