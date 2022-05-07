@@ -68,7 +68,7 @@ class TestFileParserGuessFormat:
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
             copyfile(
-                os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdfxml", "Manifest.rdf"),
+                os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdf-xml", "Manifest.rdf"),
                 str(newpath),
             )
             with pytest.raises(ParserError, match=r"Could not guess RDF format"):
