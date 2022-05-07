@@ -113,6 +113,10 @@ turtle_positive_syntax_skipped = [
 
 EXPECTED_FAILURES: Dict[str, str] = {}
 
+if os.name == "nt":
+    for test in ["turtle-subm-15", "turtle-subm-16"]:
+        EXPECTED_FAILURES[test] = "Issue with nt parser and line endings on windows"
+
 for test in turtle_eval_skipped + turtle_positive_syntax_skipped:
     EXPECTED_FAILURES[test] = "Known issue with Turtle parser"
 
