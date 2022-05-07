@@ -1,6 +1,6 @@
 import io
 from pprint import pprint
-from test.testutils import eq_
+from test.utils import eq_
 
 import rdflib
 from rdflib import XSD, BNode, Graph, Literal, URIRef

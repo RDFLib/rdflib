@@ -1,4 +1,4 @@
-from test import helper
+from test.utils import helper
 
 from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.compare import isomorphic

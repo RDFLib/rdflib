@@ -1,5 +1,5 @@
 import unittest
-from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
+from test.utils import MockHTTPResponse, ServedSimpleHTTPMock
 from typing import ClassVar
 
 from rdflib import Namespace

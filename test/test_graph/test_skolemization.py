@@ -1,6 +1,6 @@
 import logging
 import re
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import Pattern, Union
 
 import pytest

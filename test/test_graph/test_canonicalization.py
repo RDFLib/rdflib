@@ -1,7 +1,7 @@
 import unittest
 from collections import Counter
 from io import StringIO
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import Set, Tuple
 
 import pytest

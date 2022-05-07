@@ -9,8 +9,8 @@ from pathlib import PurePath
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
-from test.manifest import MF, UP, RDFTest, ResultType, read_manifest
-from test.testutils import file_uri_to_path
+from test.utils import file_uri_to_path
+from test.utils.manifest import MF, UP, RDFTest, ResultType, read_manifest
 
 import pytest
 

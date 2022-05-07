@@ -2,7 +2,7 @@ import itertools
 import logging
 import re
 from pathlib import Path
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import Tuple, cast
 
 import pytest
