@@ -30,8 +30,8 @@
       :term-3
       :term-4
       :term-5
-#      :term-6 # Not SPARQL 1.1
-#      :term-7 # Not SPARQL 1.1
+      :term-6
+      :term-7
       :term-8
       :term-9
 

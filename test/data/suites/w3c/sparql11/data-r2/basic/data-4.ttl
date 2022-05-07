@@ -8,7 +8,7 @@
 :x rdf:type :C .
 
 :x :n1  "123.0"^^xsd:decimal .
-:x :n2  "456.0"^^xsd:decimal .
+:x :n2  "456."^^xsd:decimal .
 
 :x :n3 "+5"^^xsd:integer .
 :x :n4 "-18"^^xsd:integer .

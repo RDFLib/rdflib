@@ -6,7 +6,7 @@
   <head>
     <variable name="x"/>
   </head>
-  <results>
+  <results ordered="false" distinct="false">
     <result>
       <binding name="x">
         <uri>http://example/x3</uri>

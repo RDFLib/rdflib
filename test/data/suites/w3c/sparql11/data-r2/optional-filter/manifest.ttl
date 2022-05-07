@@ -8,14 +8,7 @@
 <>  rdf:type mf:Manifest ;
     rdfs:comment "OPTIONAL with inner and outer FILTERs" ;
     mf:entries
-    (:dawg-optional-filter-001
-     :dawg-optional-filter-002
-     :dawg-optional-filter-003
-     :dawg-optional-filter-004
-    # The extra two are mutually exclusive : same query, same data, diferent reading of spec.
-    # ARQ implements the intent: simplify after all algebra generation done.
-    #:dawg-optional-filter-005-simplified
-     :dawg-optional-filter-005-not-simplified).
+    (:dawg-optional-filter-001 :dawg-optional-filter-002 :dawg-optional-filter-003 :dawg-optional-filter-004 :dawg-optional-filter-005-simplified :dawg-optional-filter-005-not-simplified).
 
 :dawg-optional-filter-001 a mf:QueryEvaluationTest ;
       mf:name    "OPTIONAL-FILTER" ;

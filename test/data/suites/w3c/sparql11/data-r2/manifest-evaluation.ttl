@@ -26,8 +26,7 @@
         <expr-ops/manifest.ttl>
         <expr-equals/manifest.ttl>
         <regex/manifest.ttl>
-    # Needs the data parser fixing (less strict)
-       # <i18n/manifest.ttl>
+        <i18n/manifest.ttl>
 
         <construct/manifest.ttl>
         <ask/manifest.ttl>
