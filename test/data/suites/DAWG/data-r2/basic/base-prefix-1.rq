@@ -1,4 +1,0 @@
-BASE <http://example.org/x/> 
-PREFIX : <>
-
-SELECT * WHERE { :x ?p ?v } 

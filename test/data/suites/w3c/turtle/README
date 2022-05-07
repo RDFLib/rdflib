@@ -33,12 +33,12 @@ tests have an expected result (mf:result).
 
 RELATIVE IRI RESOLUTION:
 
-The home of the test suite is <http://www.w3.org/2013/TurtleTests/>.
+The home of the test suite is <https://w3c.github.io/N3/tests/TurtleTests/>.
 Per RFC 3986 section 5.1.3, the base IRI for parsing each file is the
 retrieval IRI for that file. For example, the tests turtle-subm-01 and
 turtle-subm-27 require relative IRI resolution against a base of
-<http://www.w3.org/2013/TurtleTests/turtle-subm-01.ttl> and
-<http://www.w3.org/2013/TurtleTests/turtle-subm-27.ttl> respectively.
+<https://w3c.github.io/N3/tests/TurtleTests/turtle-subm-01.ttl> and
+<https://w3c.github.io/N3/tests/TurtleTests/turtle-subm-27.ttl> respectively.
 
 
 CHARACTER ENCODING:

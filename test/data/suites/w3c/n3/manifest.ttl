@@ -10,7 +10,7 @@
     rdfs:comment "This manifest loads additional manifests for specific behavior tests" ;
     mf:include (
       <TurtleTests/manifest.ttl>
-      <N3Tests/manifest.ttl>
+      <N3Tests/manifest-parser.ttl>
       <N3Tests/manifest-reasoner.ttl>
       <N3Tests/manifest-extended.ttl>
     ) .

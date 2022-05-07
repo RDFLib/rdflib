@@ -1,3 +1,0 @@
-BASE <http://example.org/x/>
-
-SELECT * WHERE { <#x> <#p> ?v } 
