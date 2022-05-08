@@ -1,4 +1,5 @@
 from test.utils import helper
+
 from rdflib import Graph, Literal, Variable
 
 
