@@ -16,4 +16,5 @@ WHERE {
         VALUES (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> "c")}
     }
 }"""
+    results = helper.query_with_retry(g, q)
     assert results.bindings[0].get(Variable("o")) == Literal("c")
