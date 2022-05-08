@@ -15,4 +15,4 @@ WHERE {
         VALUES (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> "c")}
     }
 }"""
-    assert results.bindings[0].get(Variable('o')) == Literal('c')
+    assert results.bindings[0].get(Variable("o")) == Literal("c")
