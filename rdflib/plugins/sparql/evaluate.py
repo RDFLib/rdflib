@@ -386,9 +386,13 @@ def _yieldBindingsFromServiceCallResult(ctx: QueryContext, r, variables):
             if t == "uri":
                 res_dict[Variable(var)] = URIRef(d["value"])
             elif t == "literal":
-                res_dict[Variable(var)] = Literal(d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang"))
+                res_dict[Variable(var)] = Literal(
+                    d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang")
+                )
             elif t == "typed-literal":
-                res_dict[Variable(var)] = Literal(d["value"], datatype=URIRef(d["datatype"]))
+                res_dict[Variable(var)] = Literal(
+                    d["value"], datatype=URIRef(d["datatype"])
+                )
             elif t == "bnode":
                 res_dict[Variable(var)] = BNode(d["value"])
             else:
