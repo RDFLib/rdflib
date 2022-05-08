@@ -381,18 +381,18 @@ def _yieldBindingsFromServiceCallResult(ctx: QueryContext, r, variables):
     res_dict: Dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
-            if r[var]["type"] == "uri":
-                res_dict[Variable(var)] = URIRef(r[var]["value"])
-            elif r[var]["type"] == "bnode":
-                res_dict[Variable(var)] = BNode(r[var]["value"])
-            elif r[var]["type"] == "literal" and "datatype" in r[var]:
-                res_dict[Variable(var)] = Literal(
-                    r[var]["value"], datatype=r[var]["datatype"]
-                )
-            elif r[var]["type"] == "literal" and "xml:lang" in r[var]:
-                res_dict[Variable(var)] = Literal(
-                    r[var]["value"], lang=r[var]["xml:lang"]
-                )
+            d = r[var]
+            t = d["type"]
+            if t == "uri":
+                res_dict[Variable(var)] = URIRef(d["value"])
+            elif t == "literal":
+                res_dict[Variable(var)] = Literal(d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang"))
+            elif t == "typed-literal":
+                res_dict[Variable(var)] = Literal(d["value"], datatype=URIRef(d["datatype"]))
+            elif t == "bnode":
+                res_dict[Variable(var)] = BNode(d["value"])
+            else:
+                raise NotImplementedError("json term type %r" % t)
     yield FrozenBindings(ctx, res_dict)
 
 
