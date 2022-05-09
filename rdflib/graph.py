@@ -2002,7 +2002,7 @@ class Dataset(ConjunctiveGraph):
     >>> for c in ds.graphs():  # doctest: +SKIP
     ...     print(c)  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     DEFAULT
-    http://rdlib.net/.well-known/genid/rdflib/N...
+    http://rdflib.net/.well-known/genid/rdflib/N...
     http://www.example.com/gr
     >>> # Note that the Dataset.graphs() call returns names of empty graphs,
     >>> # too. This can be restricted:

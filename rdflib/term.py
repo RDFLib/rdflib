@@ -482,7 +482,7 @@ class BNode(IdentifiedNode):
         .. versionadded:: 4.0
         """
         if authority is None:
-            authority = "http://rdlib.net/"
+            authority = "http://rdflib.net/"
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))
