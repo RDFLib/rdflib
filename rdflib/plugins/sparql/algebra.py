@@ -417,30 +417,44 @@ def _aggs(e, A):
         e["res"] = aggvar
         return aggvar
 
-
 def _findVars(x, res):
     """
     Find all variables in a tree
     """
-    seenVars = set()
     if isinstance(x, Variable):
-        if x not in seenVars:
-            res.append(x)
-            seenVars.add(x)        
+        res.add(x)
     if isinstance(x, CompValue):
         if x.name == "Bind":
-            if x not in seenVars:
-                res.append(x)
-                seenVars.add(x)
+            res.add(x.var)
             return x  # stop recursion and finding vars in the expr
         elif x.name == "SubSelect":
             if x.projection:
-                tempList = [v.var or v.evar for v in x.projection]
-                for a in tempList:
-                    if a not in seenVars:
-                        res.append(a)
-                        seenVars.add(a)
+                res.update(v.var or v.evar for v in x.projection)
             return x
+    
+# def _findVars(x, res):
+#     """
+#     Find all variables in a tree
+#     """
+#     seenVars = set()
+#     if isinstance(x, Variable):
+#         if x not in seenVars:
+#             res.append(x)
+#             seenVars.add(x)        
+#     if isinstance(x, CompValue):
+#         if x.name == "Bind":
+#             if x not in seenVars:
+#                 res.append(x)
+#                 seenVars.add(x)
+#             return x  # stop recursion and finding vars in the expr
+#         elif x.name == "SubSelect":
+#             if x.projection:
+#                 tempList = [v.var or v.evar for v in x.projection]
+#                 for a in tempList:
+#                     if a not in seenVars:
+#                         res.append(a)
+#                         seenVars.add(a)
+#             return x
 
 
 def _addVars(x, children):
@@ -557,7 +571,7 @@ def translate(q):
     q.where = traverse(q.where, visitPost=translatePath)
 
     # TODO: Var scope test
-    VS = []
+    VS = set()
     traverse(q.where, functools.partial(_findVars, res=VS))
 
     # all query types have a where part
