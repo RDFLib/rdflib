@@ -595,6 +595,7 @@ def translate(q):
     if not q.projection:
         # select *
         PV = list(VS)
+        PV.sort()
     else:
         PV = list()
         for v in q.projection:
