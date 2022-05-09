@@ -557,7 +557,7 @@ def translate(q):
     q.where = traverse(q.where, visitPost=translatePath)
 
     # TODO: Var scope test
-    VS = list()
+    VS = []
     traverse(q.where, functools.partial(_findVars, res=VS))
 
     # all query types have a where part
