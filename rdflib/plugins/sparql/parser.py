@@ -1235,6 +1235,16 @@ Modify = Comp(
     + Param("where", GroupGraphPattern),
 )
 
+# [41] WithData ::= ( 'WITH' iri ) ( DeleteData  | InsertData ) ZeroOrMore(UsingClause)
+WithData = Comp(
+    "WithData",
+    Keyword("WITH") + Param("withClause", iri)
+    + (
+        Param("delete", DeleteData) | Param("insert", InsertData)
+    )
+    + ZeroOrMore(ParamList("using", UsingClause)),
+)
+
 
 # [30] Update1 ::= Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify
 Update1 = (
@@ -1249,6 +1259,7 @@ Update1 = (
     | DeleteData
     | DeleteWhere
     | Modify
+    | WithData
 )
 
 

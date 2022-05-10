@@ -731,6 +731,11 @@ def translateUpdate1(u, prologue):
         if u.insert:
             u.insert["triples"], u.insert["quads"] = translateQuads(u.insert.quads)
         u["where"] = translateGroupGraphPattern(u.where)
+    elif u.name == "WithData":
+        if u.delete:
+            u.delete["triples"], u.delete["quads"] = translateQuads(u.delete.quads)
+        if u.insert:
+            u.insert["triples"], u.insert["quads"] = translateQuads(u.insert.quads)
     else:
         raise Exception("Unknown type of update operation: %s" % u)
 

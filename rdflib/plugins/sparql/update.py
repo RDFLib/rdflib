@@ -184,6 +184,57 @@ def evalModify(ctx, u):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 
+def evalWithData(ctx, u):
+    originalctx = ctx
+    # Using replaces the dataset for evaluating the where-clause
+    if u.using:
+        otherDefault = False
+        for d in u.using:
+            if d.default:
+
+                if not otherDefault:
+                    # replace current default graph
+                    dg = Graph()
+                    ctx = ctx.pushGraph(dg)
+                    otherDefault = True
+
+                ctx.load(d.default, default=True)
+
+            elif d.named:
+                g = d.named
+                ctx.load(g, default=False)
+
+    if not u.using and u.withClause:
+        g = ctx.dataset.get_context(u.withClause)
+        ctx = ctx.pushGraph(g)
+
+    if u.using:
+        if otherDefault:
+            ctx = originalctx  # restore original default graph
+        if u.withClause:
+            g = ctx.dataset.get_context(u.withClause)
+            ctx = ctx.pushGraph(g)
+    if u.delete:
+        # remove triples
+        g = ctx.graph
+        g -= u.delete.triples
+
+        # remove quads
+        # u.quads is a dict of graphURI=>[triples]
+        for g in u.delete.quads:
+            cg = ctx.dataset.get_context(g)
+            cg -= u.delete.quads[g]
+    
+    if u.insert:
+        # add triples
+        g = ctx.graph
+        g += u.insert.triples
+
+        # add quads
+        # u.quads is a dict of graphURI=>[triples]
+        for g in u.insert.quads:
+            cg = ctx.dataset.get_context(g)
+            cg += u.insert.quads[g]
 
 def evalAdd(ctx, u):
     """
@@ -303,6 +354,8 @@ def evalUpdate(graph, update, initBindings={}):
                 evalDeleteWhere(ctx, u)
             elif u.name == "Modify":
                 evalModify(ctx, u)
+            elif u.name == "WithData":
+                evalWithData(ctx, u)
             else:
                 raise Exception("Unknown update operation: %s" % (u,))
         except:
