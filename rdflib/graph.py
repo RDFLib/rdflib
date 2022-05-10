@@ -1597,7 +1597,7 @@ class Graph(Node):
 
         return subgraph
 
-    def describe_cbd(self, resource):
+    def describe_cbd(self, resource, subgraph):
         """Retrieves the Concise Bounded Description of a Resource from a Graph
         Concise Bounded Description (CBD) is defined in [1] as:
         Given a particular node (the starting node) in a particular RDF graph (the source graph), a subgraph of that
@@ -1617,7 +1617,6 @@ class Graph(Node):
         :param resource: a URIRef object, of the Resource for queried for
         :return: a Graph, subgraph of self
         """
-        subgraph = Graph()
 
         def add_to_cbd_original(uri):
             for s, p, o in self.triples((uri, None, None)):
