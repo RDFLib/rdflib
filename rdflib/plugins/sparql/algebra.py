@@ -429,9 +429,9 @@ def _findVars(x, res):
             seenVars.add(x)        
     if isinstance(x, CompValue):
         if x.name == "Bind":
-            if x not in seenVars:
-                res.append(x)
-                seenVars.add(x)
+            if x.var not in seenVars:
+                res.append(x.var)
+                seenVars.add(x.var)
             return x  # stop recursion and finding vars in the expr
         elif x.name == "SubSelect":
             if x.projection:
