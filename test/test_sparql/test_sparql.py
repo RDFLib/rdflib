@@ -113,6 +113,7 @@ def test_sparql_update_with_bnode():
         eq_(t[1].n3(), "<urn:type>")
         eq_(t[2].n3(), "<urn:Blank>")
 
+
 def test_sparql_update_with_WITH_1():
     """
     Test if the  node is inserted correctly.
@@ -135,16 +136,23 @@ def test_sparql_update_with_WITH_1():
     PREFIX ex: <{str(ex)}>
     """,
     )
-    g.update("WITH <ex.g1> INSERT DATA { <urn:john> <urn:likes> <urn:surfing> }", initNs={"ex": ex})
+    g.update(
+        "WITH <ex.g1> INSERT DATA { <urn:john> <urn:likes> <urn:surfing> }",
+        initNs={"ex": ex},
+    )
     for t in g.triples((None, None, None)):
         eq_(t[0].n3(), "<urn:john>")
         eq_(t[1].n3(), "<urn:likes>")
         eq_(t[2].n3(), "<urn:surfing>")
-    g.update("WITH <ex.g1> DELETE DATA { <urn:john> <urn:likes> <urn:surfing> }", initNs={"ex": ex})
+    g.update(
+        "WITH <ex.g1> DELETE DATA { <urn:john> <urn:likes> <urn:surfing> }",
+        initNs={"ex": ex},
+    )
     cnt = 0
     for t in g.triples((None, None, None)):
         cnt += 1
-    assert(cnt==0)
+    assert cnt == 0
+
 
 def test_sparql_update_with_WITH_2():
     """
@@ -168,14 +176,24 @@ def test_sparql_update_with_WITH_2():
     PREFIX ex: <{str(ex)}>
     """,
     )
-    g.update("WITH <ex.g1> INSERT DATA { <urn:john> <urn:likes> <urn:surfing> }", initNs={"ex": ex})
-    g.update("WITH <ex.g1> INSERT DATA { <urn:tarek> <urn:likes> <urn:cheese> }", initNs={"ex": ex})
-    g.update("WITH <ex.g1> DELETE DATA { <urn:john> <urn:likes> <urn:surfing> }", initNs={"ex": ex})
+    g.update(
+        "WITH <ex.g1> INSERT DATA { <urn:john> <urn:likes> <urn:surfing> }",
+        initNs={"ex": ex},
+    )
+    g.update(
+        "WITH <ex.g1> INSERT DATA { <urn:tarek> <urn:likes> <urn:cheese> }",
+        initNs={"ex": ex},
+    )
+    g.update(
+        "WITH <ex.g1> DELETE DATA { <urn:john> <urn:likes> <urn:surfing> }",
+        initNs={"ex": ex},
+    )
     for t in g.triples((None, None, None)):
         eq_(t[0].n3(), "<urn:tarek>")
         eq_(t[1].n3(), "<urn:likes>")
         eq_(t[2].n3(), "<urn:cheese>")
-        
+
+
 def test_sparql_update_with_bnode_serialize_parse():
     """
     Test if the blank node is inserted correctly, can be serialized and parsed.

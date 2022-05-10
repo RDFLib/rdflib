@@ -1238,10 +1238,9 @@ Modify = Comp(
 # [41] WithData ::= ( 'WITH' iri ) ( DeleteData  | InsertData ) ZeroOrMore(UsingClause)
 WithData = Comp(
     "WithData",
-    Keyword("WITH") + Param("withClause", iri)
-    + (
-        Param("delete", DeleteData) | Param("insert", InsertData)
-    )
+    Keyword("WITH")
+    + Param("withClause", iri)
+    + (Param("delete", DeleteData) | Param("insert", InsertData))
     + ZeroOrMore(ParamList("using", UsingClause)),
 )
 

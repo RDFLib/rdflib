@@ -184,6 +184,7 @@ def evalModify(ctx, u):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 
+
 def evalWithData(ctx, u):
     originalctx = ctx
     # Using replaces the dataset for evaluating the where-clause
@@ -224,7 +225,7 @@ def evalWithData(ctx, u):
         for g in u.delete.quads:
             cg = ctx.dataset.get_context(g)
             cg -= u.delete.quads[g]
-    
+
     if u.insert:
         # add triples
         g = ctx.graph
@@ -235,6 +236,7 @@ def evalWithData(ctx, u):
         for g in u.insert.quads:
             cg = ctx.dataset.get_context(g)
             cg += u.insert.quads[g]
+
 
 def evalAdd(ctx, u):
     """
