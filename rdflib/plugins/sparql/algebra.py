@@ -416,8 +416,7 @@ def _aggs(e, A):
         aggvar = Variable("__agg_%d__" % len(A))
         e["res"] = aggvar
         return aggvar
-
-
+    
 def _findVars(x, res):
     """
     Find all variables in a tree
@@ -441,7 +440,6 @@ def _findVars(x, res):
                         res.append(a)
                         seenVars.add(a)
             return x
-
 
 def _addVars(x, children):
     """
