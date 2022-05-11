@@ -135,6 +135,32 @@ def test_service_with_implicit_select_and_allcaps():
     assert len(results) == 3
 
 
+def test_service_node_types():
+    """Test if SERVICE properly returns different types of nodes:
+        - URI;
+        - Simple Literal;
+        - Literal with datatype ;
+        - Literal with language tag .
+    """
+
+    g = Graph()
+    q = """
+SELECT ?o
+WHERE {
+    SERVICE <https://dbpedia.org/sparql> {
+        VALUES (?s ?p ?o) {
+            (<http://example.org/a> <http://example.org/uri> <http://example.org/URI>)
+            (<http://example.org/a> <http://example.org/simpleLiteral> "Simple Literal")
+            (<http://example.org/a> <http://example.org/dataType> "String Literal"^^xsd:string)
+            (<http://example.org/a> <http://example.org/language> "String Language"@en)
+        }
+    }
+    FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal", "String Language"@en) )
+}"""
+    results = helper.query_with_retry(g, q)
+    assert len(results.bindings) == 4
+
+
 # def test_with_fixture(httpserver):
 #    httpserver.expect_request("/sparql/?query=SELECT * WHERE ?s ?p ?o").respond_with_json({"vars": ["s","p","o"], "bindings":[]})
 #    test_server = httpserver.url_for('/sparql')
@@ -151,3 +177,4 @@ if __name__ == "__main__":
     test_service_with_implicit_select()
     test_service_with_implicit_select_and_prefix()
     test_service_with_implicit_select_and_base()
+    test_service_node_types()
