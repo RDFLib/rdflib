@@ -137,10 +137,10 @@ def test_service_with_implicit_select_and_allcaps():
 
 def test_service_node_types():
     """Test if SERVICE properly returns different types of nodes:
-        - URI;
-        - Simple Literal;
-        - Literal with datatype ;
-        - Literal with language tag .
+    - URI;
+    - Simple Literal;
+    - Literal with datatype ;
+    - Literal with language tag .
     """
 
     g = Graph()
