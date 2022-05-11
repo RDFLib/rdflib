@@ -203,7 +203,7 @@ RESOURCES: List[Resource] = [
     # NOTE: Commented out as this contains local modifications.
     # ArchiveResource(
     #     remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
-    #     local_path=(DATA_PATH / "suites" / "DAWG" / "data-sparql11"),
+    #     local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
     #     type=ArchiveType.TAR_GZ,
     #     pattern=re.compile(r"^[^\/]+[\/](.+)$"),
     # ),
