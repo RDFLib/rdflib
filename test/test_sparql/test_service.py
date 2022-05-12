@@ -155,10 +155,10 @@ WHERE {
             (<http://example.org/a> <http://example.org/language> "String Language"@en)
         }
     }
-    FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal", "String Language"@en) )
+    FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal"^^xsd:string, "String Language"@en) )
 }"""
     results = helper.query_with_retry(g, q)
-    assert len(results.bindings) == 4
+    assert len(results) == 4
 
 
 # def test_with_fixture(httpserver):
