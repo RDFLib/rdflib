@@ -1,8 +1,31 @@
+import json
+from contextlib import ExitStack
 from test.utils import helper
+from test.utils.httpservermock import (
+    MethodName,
+    MockHTTPResponse,
+    ServedBaseHTTPServerMock,
+)
+from typing import (
+    Dict,
+    FrozenSet,
+    Generator,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
+
+import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.compare import isomorphic
+from rdflib.namespace import XSD
 from rdflib.plugins.sparql import prepareQuery
+from rdflib.term import BNode, Identifier
 
 
 def test_service():
@@ -135,6 +158,15 @@ def test_service_with_implicit_select_and_allcaps():
     assert len(results) == 3
 
 
+def freeze_bindings(
+    bindings: Sequence[Mapping[Variable, Identifier]]
+) -> FrozenSet[FrozenSet[Tuple[Variable, Identifier]]]:
+    result = []
+    for binding in bindings:
+        result.append(frozenset(((key, value)) for key, value in binding.items()))
+    return frozenset(result)
+
+
 def test_simple_not_null():
     """Test service returns simple literals not as NULL.
 
@@ -170,21 +202,127 @@ WHERE {
             (<http://example.org/a> <http://example.org/simpleLiteral> "Simple Literal")
             (<http://example.org/a> <http://example.org/dataType> "String Literal"^^xsd:string)
             (<http://example.org/a> <http://example.org/language> "String Language"@en)
+            (<http://example.org/a> <http://example.org/language> "String Language"@en)
         }
     }
     FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal"^^xsd:string, "String Language"@en) )
 }"""
     results = helper.query_with_retry(g, q)
-    assert len(results) == 4
+
+    expected = freeze_bindings(
+        [
+            {Variable('o'): URIRef('http://example.org/URI')},
+            {Variable('o'): Literal('Simple Literal')},
+            {
+                Variable('o'): Literal(
+                    'String Literal',
+                    datatype=URIRef('http://www.w3.org/2001/XMLSchema#string'),
+                )
+            },
+            {Variable('o'): Literal('String Language', lang='en')},
+        ]
+    )
+    assert expected == freeze_bindings(results.bindings)
 
 
-# def test_with_fixture(httpserver):
-#    httpserver.expect_request("/sparql/?query=SELECT * WHERE ?s ?p ?o").respond_with_json({"vars": ["s","p","o"], "bindings":[]})
-#    test_server = httpserver.url_for('/sparql')
-#    g = Graph()
-#    q = 'SELECT * WHERE {SERVICE <'+test_server+'>{?s ?p ?o} . ?s ?p ?o .}'
-#    results = g.query(q)
-#   assert len(results) == 0
+@pytest.fixture(scope="module")
+def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
+    with ServedBaseHTTPServerMock() as httpmock:
+        yield httpmock
+
+
+@pytest.fixture(scope="function")
+def httpmock(
+    module_httpmock: ServedBaseHTTPServerMock,
+) -> Generator[ServedBaseHTTPServerMock, None, None]:
+    module_httpmock.reset()
+    yield module_httpmock
+
+
+@pytest.mark.parametrize(
+    ("response_bindings", "expected_result"),
+    [
+        (
+            [
+                {"type": "uri", "value": "http://example.org/uri"},
+                {"type": "literal", "value": "literal without type or lang"},
+                {"type": "literal", "value": "literal with lang", "xml:lang": "en"},
+                {
+                    "type": "typed-literal",
+                    "value": "typed-literal with datatype",
+                    "datatype": f"{XSD.string}",
+                },
+                {
+                    "type": "literal",
+                    "value": "literal with datatype",
+                    "datatype": f"{XSD.string}",
+                },
+                {"type": "bnode", "value": "ohci6Te6aidooNgo"},
+            ],
+            [
+                URIRef('http://example.org/uri'),
+                Literal('literal without type or lang'),
+                Literal('literal with lang', lang='en'),
+                Literal(
+                    'typed-literal with datatype',
+                    datatype=URIRef('http://www.w3.org/2001/XMLSchema#string'),
+                ),
+                Literal('literal with datatype', datatype=XSD.string),
+                BNode('ohci6Te6aidooNgo'),
+            ],
+        ),
+        (
+            [
+                {"type": "invalid-type"},
+            ],
+            ValueError,
+        ),
+    ],
+)
+def test_with_mock(
+    httpmock: ServedBaseHTTPServerMock,
+    response_bindings: List[Dict[str, str]],
+    expected_result: Union[List[Identifier], Type[Exception]],
+) -> None:
+    """
+    This tests that bindings for a variable named var
+    """
+    graph = Graph()
+    query = """
+    PREFIX ex: <http://example.org/>
+    SELECT ?var
+    WHERE {
+        SERVICE <REMOTE_URL> {
+            ex:s ex:p ?var
+        }
+    }
+    """
+    query = query.replace("REMOTE_URL", httpmock.url)
+    response = {
+        "head": {"vars": ["var"]},
+        "results": {"bindings": [{"var": item} for item in response_bindings]},
+    }
+    httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            json.dumps(response).encode("utf-8"),
+            {"Content-Type": ["application/sparql-results+json"]},
+        )
+    )
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+
+    with ExitStack() as xstack:
+        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            catcher = xstack.enter_context(pytest.raises(expected_result))
+        else:
+            expected_bindings = [{Variable("var"): item} for item in expected_result]
+        bindings = graph.query(query).bindings
+    if catcher is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+    else:
+        assert expected_bindings == bindings
 
 
 if __name__ == "__main__":
