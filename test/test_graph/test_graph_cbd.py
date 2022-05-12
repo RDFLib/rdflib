@@ -109,3 +109,69 @@ def testCbdReified(get_graph):
     )
 
     assert len(g.cbd(EX.R6)) == (3 + 5 + 5), "cbd() for R6 should return 12 triples"
+
+    # add example from Concise Bounded Description definition at https://www.w3.org/Submission/CBD/#example
+    g.parse(
+        data="""
+            PREFIX ex:    <http://ex/>
+            PREFIX dct:   <http://purl.org/dc/terms/>
+            PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX owl:   <http://www.w3.org/2002/07/owl#>
+            PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+            PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+            PREFIX dc:    <http://purl.org/dc/elements/1.1/>
+
+            ex:aBookCritic  ex:dislikes  ex:anotherGreatBook ;
+                    ex:likes     ex:aReallyGreatBook .
+
+            [ a                 rdf:Statement ;
+            rdf:object        "image/jpeg" ;
+            rdf:predicate     dc:format ;
+            rdf:subject       foaf:Image ;
+            rdfs:isDefinedBy  ex:image-formats.rdf
+            ] .
+
+            foaf:mbox  a    owl:InverseFunctionalProperty , rdf:Property .
+
+            [ a                 rdf:Statement ;
+            rdf:object        "application/pdf" ;
+            rdf:predicate     dc:format ;
+            rdf:subject       ex:aReallyGreatBook ;
+            rdfs:isDefinedBy  ex:book-formats.rdf
+            ] .
+
+            ex:aReallyGreatBook  rdfs:seeAlso  ex:anotherGreatBook ;
+                    dc:contributor  [ a          foaf:Person ;
+                                    foaf:name  "Jane Doe"
+                                    ] ;
+                    dc:creator      [ a           foaf:Person ;
+                                    foaf:img    ex:john.jpg ;
+                                    foaf:mbox   "john@example.com" ;
+                                    foaf:name   "John Doe" ;
+                                    foaf:phone  <tel:+1-999-555-1234>
+                                    ] ;
+                    dc:format       "application/pdf" ;
+                    dc:language     "en" ;
+                    dc:publisher    "Examples-R-Us" ;
+                    dc:rights       "Copyright (C) 2004 Examples-R-Us. All rights reserved." ;
+                    dc:title        "A Really Great Book" ;
+                    dct:issued      "2004-01-19"^^xsd:date .
+
+            ex:anotherGreatBook  rdfs:seeAlso  ex:aReallyGreatBook ;
+                    dc:creator    "June Doe (june@example.com)" ;
+                    dc:format     "application/pdf" ;
+                    dc:language   "en" ;
+                    dc:publisher  "Examples-R-Us" ;
+                    dc:rights     "Copyright (C) 2004 Examples-R-Us. All rights reserved." ;
+                    dc:title      "Another Great Book" ;
+                    dct:issued    "2004-05-03"^^xsd:date .
+
+            ex:john.jpg  a     foaf:Image ;
+                    dc:extent  "1234" ;
+                    dc:format  "image/jpeg" .
+        """,
+        format="turtle",
+    )
+
+    assert len(g.cbd(EX.aReallyGreatBook)) == (21), "cbd() for aReallyGreatBook should return 21 triples"
