@@ -148,10 +148,10 @@ def testCbdDescribeReified(get_graph):
         """,
         format="turtle",
     )
-    print(len(g.describe_cbd(EX.R5)))
+    #print(len(g.describe_cbd(EX.R5,Graph())))
     # this cbd() call should get the 3 basic triples with ex:R5 as subject as well as 5 more from the reified
     # statement
-    assert len(g.describe_cbd(EX.R5)) == (3 + 5 + 8), "describe_cbd() for R5 should return 16 triples"
+    assert len(g.describe_cbd(EX.R5,Graph())) == (3 + 5 + 8), "describe_cbd() for R5 should return 16 triples"
 
     # add crazy reified triples to the testing graph
     g.parse(
@@ -191,5 +191,5 @@ def testCbdDescribeReified(get_graph):
         """,
         format="turtle",
     )
-    print(len(g.describe_cbd(EX.R6)))
-    assert len(g.describe_cbd(EX.R6)) == (3 + 5 + 5 + 2), "describe_cbd() for R6 should return 15 triples"
+    #print(len(g.describe_cbd(EX.R6)))
+    assert len(g.describe_cbd(EX.R6, Graph())) == (3 + 5 + 5 + 2), "describe_cbd() for R6 should return 15 triples"
