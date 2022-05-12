@@ -32,7 +32,6 @@ pycodestyle = ["-E402"]
 [tool.black]
 required-version = "22.3.0"
 line-length = "88"
-skip-string-normalization = true
 target-version = ['py37']
 include = '\.pyi?$'
 exclude = '''
