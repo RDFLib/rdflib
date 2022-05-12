@@ -8,12 +8,8 @@ from rdflib import Graph, Namespace
 from rdflib.compare import isomorphic
 from rdflib.term import URIRef
 
-EXAMPLE_GRAPH_FILE_PATH = os.path.join(
-    *[TEST_DATA_DIR, "spec", "cbd", "example_graph.rdf"]
-)
-EXAMPLE_GRAPH_CBD_FILE_PATH = os.path.join(
-    *[TEST_DATA_DIR, "spec", "cbd", "example_graph_cbd.rdf"]
-)
+EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
+EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"
 
 """Tests the Graph class' cbd() function"""
 
@@ -124,7 +120,7 @@ def testCbdReified(get_graph):
     assert len(g.cbd(EX.R6)) == (3 + 5 + 5), "cbd() for R6 should return 12 triples"
 
 
-def testCbdExample():
+def test_cbd_example():
     """
     Example from Concise Bounded Description definition at https://www.w3.org/Submission/CBD/#example
     """
