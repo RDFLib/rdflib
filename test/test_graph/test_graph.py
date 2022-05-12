@@ -291,14 +291,12 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
     # RDF/XML
     graph.parse(
         os.path.join(
-            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.rdf"
+            TEST_DATA_DIR, "suites", "w3c", "rdf-xml", "datatypes", "test001.rdf"
         )
     )  # XML
     # bad filename but set format
     graph.parse(
-        os.path.join(
-            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.borked"
-        ),
+        os.path.join(TEST_DATA_DIR, "w3c-rdfxml-test001.borked"),
         format="xml",
     )
 
