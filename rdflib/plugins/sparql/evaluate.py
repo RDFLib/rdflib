@@ -18,7 +18,7 @@ import collections
 import itertools
 import json as j
 import re
-from typing import Any, Deque, Dict, List, Union
+from typing import Any, Deque, Dict, Generator, List, Sequence, Union
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -337,7 +337,8 @@ def evalServiceQuery(ctx: QueryContext, part):
             res = json["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
-                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
+                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
+                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
                         yield bound
         else:
             raise Exception(
@@ -377,26 +378,32 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, match):
     return service_query
 
 
-def _yieldBindingsFromServiceCallResult(ctx: QueryContext, r, variables):
+def _yieldBindingsFromServiceCallResult(
+    ctx: QueryContext, r: Dict[str, Dict[str, str]], variables: List[str]
+) -> Generator[FrozenBindings, None, None]:
     res_dict: Dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
-            d = r[var]
-            t = d["type"]
-            if t == "uri":
-                res_dict[Variable(var)] = URIRef(d["value"])
-            elif t == "literal":
+            var_binding = r[var]
+            var_type = var_binding["type"]
+            if var_type == "uri":
+                res_dict[Variable(var)] = URIRef(var_binding["value"])
+            elif var_type == "literal":
                 res_dict[Variable(var)] = Literal(
-                    d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang")
+                    var_binding["value"],
+                    datatype=var_binding.get("datatype"),
+                    lang=var_binding.get("xml:lang"),
                 )
-            elif t == "typed-literal":
+            # This is here because of
+            # https://www.w3.org/TR/2006/NOTE-rdf-sparql-json-res-20061004/#variable-binding-results
+            elif var_type == "typed-literal":
                 res_dict[Variable(var)] = Literal(
-                    d["value"], datatype=URIRef(d["datatype"])
+                    var_binding["value"], datatype=URIRef(var_binding["datatype"])
                 )
-            elif t == "bnode":
-                res_dict[Variable(var)] = BNode(d["value"])
+            elif var_type == "bnode":
+                res_dict[Variable(var)] = BNode(var_binding["value"])
             else:
-                raise NotImplementedError("json term type %r" % t)
+                raise ValueError(f"invalid type {var_type!r} for variable {var!r}")
     yield FrozenBindings(ctx, res_dict)
 
 
