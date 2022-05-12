@@ -1,0 +1,9 @@
+# bad: re-used BNode label after OPTIONAL
+# $Id: syn-bad-OPT-breaks-BGP.rq,v 1.1 2007/02/15 15:14:31 eric Exp $
+
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v . OPTIONAL { ?s ?p ?v } _:a ?q 1
+}

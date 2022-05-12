@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+SELECT ?s WHERE {
+    ?s :p ?o .
+    FILTER(-?o = -2) .
+}

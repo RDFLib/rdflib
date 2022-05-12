@@ -1,0 +1,43 @@
+@prefix :        <http://example/> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "p" ;
+      rs:resultVariable  "g" ;
+      rs:resultVariable  "s" ;
+      rs:resultVariable  "o" ;
+      rs:solution   [ rs:binding    [ rs:value      "2"^^xsd:integer ;
+                                      rs:variable   "o"
+                                    ] ;
+                      rs:binding    [ rs:value      :x ;
+                                      rs:variable   "s"
+                                    ] ;
+                      rs:binding    [ rs:value      :q ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:binding    [ rs:value      <data-g2.ttl> ;
+                                      rs:variable   "g"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :p ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:binding    [ rs:value      "1"^^xsd:integer ;
+                                      rs:variable   "o"
+                                    ] ;
+                      rs:binding    [ rs:value      :x ;
+                                      rs:variable   "s"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :p ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:binding    [ rs:value      "9"^^xsd:integer ;
+                                      rs:variable   "o"
+                                    ] ;
+                      rs:binding    [ rs:value      :a ;
+                                      rs:variable   "s"
+                                    ]
+                    ] .

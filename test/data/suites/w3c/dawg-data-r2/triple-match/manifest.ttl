@@ -1,0 +1,60 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/triple-match/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Some simple DAWG query evaluation test cases" ;
+    mf:entries
+    (
+	:dawg-triple-pattern-001 
+	:dawg-triple-pattern-002 
+	:dawg-triple-pattern-003 
+	:dawg-triple-pattern-004 
+   ).
+
+:dawg-triple-pattern-001  a mf:QueryEvaluationTest ;
+	mf:name "dawg-triple-pattern-001" ;
+        rdfs:comment
+            "Simple triple match" ;
+        mf:action
+            [ qt:query  <dawg-tp-01.rq> ;
+              qt:data   <data-01.ttl> ] ;
+        mf:result  <result-tp-01.ttl> ;
+	dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JanMar/0358> ;
+        dawgt:approval dawgt:Approved .
+
+:dawg-triple-pattern-002  a mf:QueryEvaluationTest ;
+	mf:name "dawg-triple-pattern-002" ;
+        rdfs:comment
+            "Simple triple match" ;
+        mf:action
+            [ qt:query  <dawg-tp-02.rq> ;
+              qt:data   <data-01.ttl> ] ;
+        mf:result  <result-tp-02.ttl> ;
+	dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JanMar/0358> ;
+        dawgt:approval dawgt:Approved .
+    
+:dawg-triple-pattern-003  a mf:QueryEvaluationTest ;
+	mf:name "dawg-triple-pattern-003" ;
+        rdfs:comment
+            "Simple triple match - repeated variable" ;
+        mf:action
+            [ qt:query  <dawg-tp-03.rq> ;
+              qt:data   <data-02.ttl> ] ;
+        mf:result  <result-tp-03.ttl> ;
+	dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JanMar/0358> ;
+        dawgt:approval dawgt:Approved .
+
+:dawg-triple-pattern-004  a mf:QueryEvaluationTest ;
+	mf:name "dawg-triple-pattern-004" ;
+        rdfs:comment
+            "Simple triple match - two triples, common variable" ;
+        mf:action
+            [ qt:query  <dawg-tp-04.rq> ;
+              qt:data   <dawg-data-01.ttl> ] ;
+        mf:result  <result-tp-04.ttl> ;
+	dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JanMar/0358> ;
+        dawgt:approval dawgt:Approved .

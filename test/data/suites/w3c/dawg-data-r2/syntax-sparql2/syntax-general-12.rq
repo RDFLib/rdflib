@@ -1,0 +1,2 @@
+# Legal, if unusual, IRIs
+SELECT * WHERE { <a> <b> <?z> }

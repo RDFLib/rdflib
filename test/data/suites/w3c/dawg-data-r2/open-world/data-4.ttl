@@ -1,0 +1,15 @@
+@prefix     : <http://example/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+:x1 :p [ :v1 "v1" ; :v2 "v2" ] .
+
+:x2 :p [ :v1 "1"^^xsd:integer ; :v2 "v2" ] .
+
+:x3 :p [ :v1 "x"^^:unknown ; :v2 "x"^^:unknown ] .
+
+:x4 :p [ :v1 <test:abc> ; :v2 <test:abc> ] .
+
+:x5 :p [ :v1 "2006-08-23T09:00:00+01:00"^^xsd:dateTime ;
+         :v2 "2006-08-22"^^xsd:date ].

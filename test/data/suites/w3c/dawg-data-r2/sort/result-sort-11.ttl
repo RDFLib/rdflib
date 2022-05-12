@@ -1,0 +1,49 @@
+# sort-11 -- test relative order of plain literals and xsd:strings
+# $Id: result-sort-11.ttl,v 1.1 2007/06/25 11:10:40 jbroekst Exp $
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+
+[]  rdf:type    rs:ResultSet ;
+    rs:resultVariable
+                "name" ;
+    rs:solution [ rs:binding  [ rs:value    "Alice" ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  1
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Bob" ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  2
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Eve" ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  3
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Fred" ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  4
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Alice"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  5
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Bob"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  6
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Eve"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  7
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    "Fred"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                                rs:variable "name"
+                              ] ;
+                  rs:index  8
+                ] .

@@ -1,5 +1,6 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+import itertools
 import os
 from test import TEST_DIR
 from test.data import TEST_DATA_DIR
@@ -123,8 +124,18 @@ for test in turtle_eval_skipped + turtle_positive_syntax_skipped:
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest(
-        os.path.join(TEST_DATA_DIR, "suites", "w3c/n3/manifest.ttl"), legacy=True
+    itertools.chain(
+        *(
+            read_manifest(
+                os.path.join(TEST_DATA_DIR, "suites", f"w3c/n3/{manifest}"), legacy=True
+            )
+            for manifest in [
+                "TurtleTests/manifest.ttl",
+                "N3Tests/manifest-parser.ttl",
+                "N3Tests/manifest-reasoner.ttl",
+                "N3Tests/manifest-extended.ttl",
+            ]
+        )
     ),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):

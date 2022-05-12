@@ -1,0 +1,61 @@
+# Tests: sameTerm and mfx:StringSimpleLiteralCmp .
+# $Id: sameTerm-manifest.ttl,v 1.1 2007/06/18 20:07:56 lfeigenb Exp $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "sameTerm and mfx:StringSimpleLiteralCmp" ;
+    mf:entries
+    ( 
+      [ mf:name    "sameTerm" ;
+	rdfs:comment	"sameTerm('xyz', 'xyz'^^xsd:string)" ;
+        mf:action
+           [ qt:query  <sameTerm.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm.srx>
+      ]
+      [ mf:name    "sameTerm-StringSimpleLiteralCmp" ;
+	rdfs:comment	"sameTerm('xyz', 'xyz'^^xsd:string) with mfx:StringSimpleLiteralCmp" ;
+        mf:action
+           [ qt:query  <sameTerm.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm-StringSimpleLiteralCmp.srx> ;
+	mf:requires mfx:StringSimpleLiteralCmp
+      ]
+      [ mf:name    "sameTerm-eq" ;
+	rdfs:comment	"sameTerm('xyz', 'xyz'^^xsd:string) and 'xyz'='xyz'^^xsd:string" ;
+        mf:action
+           [ qt:query  <sameTerm-eq.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm-eq.srx>
+      ]
+      [ mf:name    "sameTerm-eq-StringSimpleLiteralCmp" ;
+	rdfs:comment	"sameTerm('xyz', 'xyz'^^xsd:string) and 'xyz'='xyz'^^xsd:string with mfx:StringSimpleLiteralCmp" ;
+        mf:action
+           [ qt:query  <sameTerm-eq.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm-eq-StringSimpleLiteralCmp.srx> ;
+	mf:requires mfx:StringSimpleLiteralCmp
+      ]
+      [ mf:name    "sameTerm-not-eq" ;
+	rdfs:comment	"!sameTerm('xyz', 'xyz'^^xsd:string) and 'xyz'='xyz'^^xsd:string" ;
+        mf:action
+           [ qt:query  <sameTerm-not-eq.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm-not-eq.srx>
+      ]
+      [ mf:name    "sameTerm-not-eq-StringSimpleLiteralCmp" ;
+	rdfs:comment	"!sameTerm('xyz', 'xyz'^^xsd:string) and 'xyz'='xyz'^^xsd:string with mfx:StringSimpleLiteralCmp" ;
+        mf:action
+           [ qt:query  <sameTerm-not-eq.rq> ;
+             qt:data   <sameTerm.ttl> ] ;
+        mf:result  <sameTerm-not-eq-StringSimpleLiteralCmp.srx> ;
+	mf:requires mfx:StringSimpleLiteralCmp
+      ]
+    ).

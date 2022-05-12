@@ -1,0 +1,11 @@
+# Test: !sameTerm and eq
+# $Id: sameTerm-not-eq.rq,v 1.1 2007/08/31 14:01:57 eric Exp $
+
+PREFIX     :    <http://example.org/things#>
+
+SELECT *
+{
+    ?x1 :p ?v1 .
+    ?x2 :p ?v2 .
+    FILTER ( !sameTerm(?v1, ?v2) && ?v1 = ?v2 )
+}

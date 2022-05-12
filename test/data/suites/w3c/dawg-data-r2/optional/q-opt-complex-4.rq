@@ -1,0 +1,15 @@
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX    ex:   <http://example.org/things#>
+SELECT ?name ?plan ?dept ?img 
+WHERE 
+{ 
+    ?person foaf:name ?name  
+    { ?person ex:healthplan ?plan } UNION { ?person ex:department ?dept } 
+    OPTIONAL { 
+        ?person a foaf:Person
+        GRAPH ?g { 
+            [] foaf:name ?name;
+               foaf:depiction ?img 
+        } 
+    } 
+}

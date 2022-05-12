@@ -1,0 +1,56 @@
+{
+  "@graph": [
+    {
+      "@graph": [
+        {
+          "@id": "example:s20",
+          "example:p20": {
+            "@id": "example:o20"
+          }
+        },
+        {
+          "@id": "example:s21",
+          "example:p21": {
+            "@id": "example:o21"
+          }
+        }
+      ],
+      "@id": "example:g2"
+    },
+    {
+      "@id": "example:s00",
+      "p00": "example:o02"
+    },
+    {
+      "@id": "example:s01",
+      "p01": "example:o01"
+    },
+    {
+      "@id": "example:s10",
+      "p10": "example:o10"
+    },
+    {
+      "@id": "example:s11",
+      "p11": "example:o11"
+    }
+  ],
+  "@context": {
+    "p10": {
+      "@id": "http://example.org/p10",
+      "@type": "@id"
+    },
+    "p01": {
+      "@id": "http://example.org/p01",
+      "@type": "@id"
+    },
+    "p00": {
+      "@id": "http://example.org/p00",
+      "@type": "@id"
+    },
+    "p11": {
+      "@id": "http://example.org/p11",
+      "@type": "@id"
+    },
+    "example": "http://example.org/"
+  }
+}

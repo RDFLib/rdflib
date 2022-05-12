@@ -1,0 +1,16 @@
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#>.
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "id" ;
+      rs:resultVariable  "ssn" ;
+      rs:solution   [ rs:binding    [ rs:value      "29"^^xsd:integer ;
+                                      rs:variable   "id"
+                                    ] 
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "000000000" ;
+                                      rs:variable   "ssn"
+                                    ]
+                    ] .

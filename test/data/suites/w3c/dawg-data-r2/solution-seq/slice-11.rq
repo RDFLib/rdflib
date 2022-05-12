@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/ns#>
+
+SELECT ?v
+WHERE { [] :num ?v }
+ORDER BY ?v
+OFFSET 0

@@ -1,0 +1,34 @@
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "person" ;
+      rs:resultVariable  "nick" ;
+      rs:resultVariable  "page" ;
+      rs:resultVariable  "img" ;
+      rs:resultVariable  "name" ;
+      rs:resultVariable  "firstN" ;
+      rs:solution   [ rs:binding    [ rs:value      <tag:alice@example:foafUri> ;
+                                      rs:variable   "person"
+                                    ] ;
+                      rs:binding    [ rs:value      "WhoMe?" ;
+                                      rs:variable   "nick"
+                                    ];
+                      rs:binding    [ rs:value      <http://example.com/alice.png> ;
+                                      rs:variable   "img"
+                                    ];
+                      rs:binding    [ rs:value      "Alice" ;
+                                      rs:variable   "name"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      <tag:john@example:foafUri> ;
+                                      rs:variable   "person"
+                                    ] ;
+                      rs:binding    [ rs:value      "jDoe" ;
+                                      rs:variable   "nick"
+                                    ];
+                      rs:binding    [ rs:value      <http://example.com/people/johnDoe> ;
+                                      rs:variable   "page"
+                                    ]
+                    ] .

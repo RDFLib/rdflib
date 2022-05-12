@@ -1,0 +1,8 @@
+# data-langMatches-de.ttl
+# $Id: data-langMatches-de.ttl,v 1.2 2007/08/11 18:30:56 eric Exp $
+
+@prefix : <http://example.org/#> .
+
+:x :p3 "abc"@de .
+:x :p4 "abc"@de-de .
+:x :p5 "abc"@de-latn-de .

@@ -1,0 +1,128 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "DISTINCT" ;
+    mf:entries
+    ( 
+      :no-distinct-1
+      :distinct-1
+      :no-distinct-2
+      :distinct-2
+      :no-distinct-3
+      :distinct-3
+      :no-distinct-4
+      :distinct-4
+      :no-distinct-9
+      :distinct-9
+      :distinct-star-1
+    ) .
+
+:distinct-star-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SELECT DISTINCT *" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+            [ qt:query <distinct-star-1.rq> ;
+              qt:data <data-star.ttl> ] ;
+    mf:result <distinct-star-1.srx> .
+
+:no-distinct-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Numbers: No distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <no-distinct-num.srx> .
+
+:distinct-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Numbers: Distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <distinct-num.srx> .
+
+:no-distinct-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Strings: No distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <no-distinct-str.srx> .
+
+:distinct-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Strings: Distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <distinct-str.srx> .
+
+:no-distinct-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Nodes: No distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <no-distinct-node.srx> .
+
+:distinct-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Nodes: Distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <distinct-node.srx> .
+
+:no-distinct-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Opt: No distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <no-distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <no-distinct-opt.srx> .
+
+:distinct-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Opt: Distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <distinct-opt.srx> .
+
+
+
+:no-distinct-9 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "All: No distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              ##qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> 
+              qt:data <data-all.ttl>
+            ] ;
+    mf:result  <no-distinct-all.srx> .
+
+:distinct-9 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "All: Distinct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/07/17-dawg-minutes> ;
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              ##qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> 
+              qt:data <data-all.ttl>
+            ] ;
+    mf:result  <distinct-all.srx> .
