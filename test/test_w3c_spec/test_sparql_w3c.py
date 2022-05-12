@@ -537,7 +537,7 @@ def handle_flags():
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/suites/w3c/sparql11/data-r2/manifest-evaluation.ttl"),
+    read_manifest("test/data/suites/w3c/dawg-data-r2/manifest-evaluation.ttl"),
 )
 def test_dawg_data_sparql10(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)
