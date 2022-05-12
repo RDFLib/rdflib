@@ -1,4 +1,4 @@
-# '.' property paths are neither Turtle nor N3.
+# = is not Turtle
 @prefix : <http://www.w3.org/2013/TurtleTests/> .
 
 :a.:b.:c .

@@ -22,8 +22,7 @@ def turtle(test: RDFTest):
     g = Graph()
 
     try:
-        # base = "http://www.w3.org/2013/TurtleTests/" + split_uri(test.action)[1]
-        base = "https://w3c.github.io/N3/tests/TurtleTests/" + split_uri(test.action)[1]
+        base = "http://www.w3.org/2013/TurtleTests/" + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format="turtle")
         if not test.syntax:
@@ -69,7 +68,7 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTurtleNegativeEval: turtle,
 }
 
-NAMESPACE = Namespace("https://w3c.github.io/N3/tests/TurtleTests/manifest.ttl#")
+NAMESPACE = Namespace("http://www.w3.org/2013/TurtleTests/manifest.ttl#")
 EXPECTED_FAILURES: Dict[str, str] = {}
 
 if os.name == "nt":
@@ -79,9 +78,7 @@ if os.name == "nt":
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest(
-        os.path.join(TEST_DATA_DIR, "suites/w3c/n3/TurtleTests/manifest.ttl")
-    ),
+    read_manifest(os.path.join(TEST_DATA_DIR, "suites/w3c/turtle/manifest.ttl")),
 )
 def test_manifest(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     suffix = rdf_test_uri.split("#")[1]
