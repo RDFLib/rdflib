@@ -174,4 +174,6 @@ def testCbdReified(get_graph):
         format="turtle",
     )
 
-    assert len(g.cbd(EX.aReallyGreatBook)) == (21), "cbd() for aReallyGreatBook should return 21 triples"
+    assert len(g.cbd(EX.aReallyGreatBook)) == (
+        21
+    ), "cbd() for aReallyGreatBook should return 21 triples"
