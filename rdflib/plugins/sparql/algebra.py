@@ -777,7 +777,7 @@ def translateQuery(q, base=None, initNs=None):
         q[1], visitPost=functools.partial(translatePName, prologue=prologue)
     )
 
-    if(q[1].name!= "DescribeQuery"):
+    if q[1].name != "DescribeQuery":
         P, PV = translate(q[1])
     datasetClause = q[1].datasetClause
     if q[1].name == "ConstructQuery":
@@ -785,7 +785,7 @@ def translateQuery(q, base=None, initNs=None):
         template = triples(q[1].template) if q[1].template else None
 
         res = CompValue(q[1].name, p=P, template=template, datasetClause=datasetClause)
-    elif(q[1].name== "DescribeQuery"):
+    elif q[1].name == "DescribeQuery":
         res = CompValue(q[1].name, p=None, datasetClause=datasetClause, PV=q[1].var)
     else:
         res = CompValue(q[1].name, p=P, datasetClause=datasetClause, PV=PV)

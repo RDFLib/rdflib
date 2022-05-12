@@ -294,13 +294,12 @@ def evalPart(ctx: QueryContext, part: CompValue):
         # raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == "DescribeQuery":
-        subgraph = Graph()     
+        subgraph = Graph()
         for var in part['PV']:
             subgraph = ctx.graph.describe_cbd(var, subgraph)
-        res = {"type_": "DESCRIBE", "graph": subgraph}  
-    
-        return res 
+        res = {"type_": "DESCRIBE", "graph": subgraph}
 
+        return res
 
     else:
         raise Exception("I dont know: %s" % part.name)

@@ -1638,7 +1638,7 @@ class Graph(Node):
 
         def add_to_cbd_reverse(uri):
             for s, p, o in self.triples((None, None, uri)):
-                
+
                 subgraph.add((s, p, o))
                 # recurse 'down' through ll Blank Nodes
                 if type(s) == BNode and not (s, None, None) in subgraph:
@@ -1653,13 +1653,14 @@ class Graph(Node):
             for s, p, o in self.triples((None, RDF.object, uri)):
                 # find all triples with s as the subject and add these to the subgraph
                 for s2, p2, o2 in self.triples((s, None, None)):
-                    
+
                     subgraph.add((s2, p2, o2))
 
         add_to_cbd_original(resource)
         add_to_cbd_reverse(resource)
 
         return subgraph
+
 
 class ConjunctiveGraph(Graph):
     """A ConjunctiveGraph is an (unnamed) aggregation of all the named
