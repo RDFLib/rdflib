@@ -1,0 +1,5 @@
+["urn:example:subject", "example:predicate", "example:subject", "globalId", "", ""]
+["example:subject", "example:predicate", "example:object", "globalId", "", ""]
+["example:object", "http://example.com/predicate", "XSD string", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+["http://example.com/subject", "http://example.com/predicate", "日本語の表記体系", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "jpx", ""]
+["example:subject", "example:predicate", "12", "http://www.w3.org/2001/XMLSchema#integer", "", ""]
