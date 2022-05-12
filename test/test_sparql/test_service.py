@@ -135,6 +135,23 @@ def test_service_with_implicit_select_and_allcaps():
     assert len(results) == 3
 
 
+def test_simple_not_null():
+    """Test service returns simple literals not as NULL.
+
+    Issue: https://github.com/RDFLib/rdflib/issues/1278
+    """
+
+    g = Graph()
+    q = """SELECT ?s ?p ?o
+WHERE {
+    SERVICE <https://DBpedia.org/sparql> {
+        VALUES (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> "c")}
+    }
+}"""
+    results = helper.query_with_retry(g, q)
+    assert results.bindings[0].get(Variable("o")) == Literal("c")
+
+
 def test_service_node_types():
     """Test if SERVICE properly returns different types of nodes:
     - URI;
