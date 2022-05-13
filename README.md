@@ -1,6 +1,7 @@
 ![](docs/_static/RDFlib.png)    
 
 RDFLib
+#checking
 ======
 [![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=master)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amaster)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
