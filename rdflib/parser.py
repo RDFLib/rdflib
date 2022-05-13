@@ -56,7 +56,7 @@ class Parser(object):
     def __init__(self):
         pass
 
-    def parse(self, source: "InputSource", sink: "Graph"):
+    def parse(self, source: "InputSource", sink: "Graph", **kwargs):
         pass
 
 
