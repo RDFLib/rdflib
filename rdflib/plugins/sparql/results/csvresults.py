@@ -62,9 +62,7 @@ class CSVResultSerializer(ResultSerializer):
             raise Exception("CSVSerializer can only serialize select query results")
 
     def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
-
-        print(1)
-
+        print(2)
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards

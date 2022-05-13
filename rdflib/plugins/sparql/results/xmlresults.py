@@ -111,6 +111,7 @@ class XMLResultSerializer(ResultSerializer):
 
     def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
 
+        print(1)
         writer = SPARQLXMLWriter(stream, encoding)
         if self.result.type == "ASK":
             writer.write_header([])
