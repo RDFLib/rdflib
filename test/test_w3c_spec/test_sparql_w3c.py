@@ -101,7 +101,7 @@ def bopen_read_close(fn):
         return f.read()
 
 
-from test.skipped_sparql_tests import skiptests
+from test.test_w3c_spec.test_sparql_w3c_skipped import skiptests
 
 
 def _fmt(f):
