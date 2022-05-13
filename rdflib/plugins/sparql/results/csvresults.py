@@ -72,13 +72,14 @@ class CSVResultSerializer(ResultSerializer):
         stream = codecs.getwriter(encoding)(stream)  # type: ignore[assignment]
 
         out = csv.writer(stream, delimiter=self.delim)
-
+        
         vs = [self.serializeTerm(v, encoding) for v in self.result.vars]  # type: ignore[union-attr]
         out.writerow(vs)
         for row in self.result.bindings:
             out.writerow(
                 [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]  # type: ignore[union-attr]
             )
+        print(1)
 
     def serializeTerm(self, term, encoding):
         if term is None:
