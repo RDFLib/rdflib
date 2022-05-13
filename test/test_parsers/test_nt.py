@@ -1,4 +1,5 @@
 from codecs import ignore_errors
+
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 
@@ -29,14 +30,14 @@ _:list3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/199
 class Test_NT_Parsing:
     def test_nt_1(self):
         ignore_errors = True
-        g = Graph().parse(data=DATA_1, format="nt", ignore_errors = ignore_errors)
+        g = Graph().parse(data=DATA_1, format="nt", ignore_errors=ignore_errors)
         if ignore_errors:
             assert len(g) == 9
         assert False
 
     def test_nt_2(self):
         ignore_errors = True
-        g = Graph().parse(data=DATA_2, format="nt", ignore_errors = ignore_errors)
+        g = Graph().parse(data=DATA_2, format="nt", ignore_errors=ignore_errors)
         if ignore_errors:
             assert len(g) == 5
         assert False

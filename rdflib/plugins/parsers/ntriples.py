@@ -7,10 +7,11 @@ Author: Sean B. Palmer, inamidst.com
 """
 
 import codecs
+import logging
 import re
 from io import BytesIO, StringIO, TextIOBase
 from typing import IO, TYPE_CHECKING, Optional, Pattern, TextIO, Union
-import logging
+
 from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
@@ -116,7 +117,16 @@ class W3CNTriplesParser(object):
     `NTriplesParser`.
     """
 
-    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line", 'ignore_errors', 'line_number', 'current_line')
+    __slots__ = (
+        "_bnode_ids",
+        "sink",
+        "buffer",
+        "file",
+        "line",
+        'ignore_errors',
+        'line_number',
+        'current_line',
+    )
 
     def __init__(
         self, sink: Optional[Union[DummySink, "NTGraphSink"]] = None, bnode_context=None
@@ -138,7 +148,10 @@ class W3CNTriplesParser(object):
         self.ignore_errors = False
 
     def parse(
-        self, f: Union[TextIO, IO[bytes], codecs.StreamReader], bnode_context=None, ignore_errors = False,
+        self,
+        f: Union[TextIO, IO[bytes], codecs.StreamReader],
+        bnode_context=None,
+        ignore_errors=False,
     ):
 
         """
@@ -166,17 +179,21 @@ class W3CNTriplesParser(object):
         self.line_number = 0
         while True:
             self.line = self.readline()
-            self.line_number+=1
+            self.line_number += 1
             self.current_line = self.line
             if self.line is None:
                 break
             try:
                 self.parseline(bnode_context=bnode_context)
             except ParseError:
-            
+
                 if ignore_errors:
-                    #logging the invalid triples in the input file and ignoring them while creating the final graph
-                    logging.warning("Invalid triple at line #{}: {}; IGNORED".format(self.line_number, self.current_line))
+                    # logging the invalid triples in the input file and ignoring them while creating the final graph
+                    logging.warning(
+                        "Invalid triple at line #{}: {}; IGNORED".format(
+                            self.line_number, self.current_line
+                        )
+                    )
                     continue
                 else:
                     raise ParseError("Invalid line: {}".format(self.current_line))
@@ -232,11 +249,19 @@ class W3CNTriplesParser(object):
 
         if self.ignore_errors:
             if self.line == '':
-                logging.warning("Invalid triple at line #{}: {} (There is no full stop); CORRECTED".format(self.line_number, self.current_line))
-            elif self.line!= ".":
-                logging.warning("Invalid triple at line #{}: {} (Extra characters detected at the end of triple); CORRECTED".format(self.line_number, self.current_line))
-            self.line = "."         
-        
+                logging.warning(
+                    "Invalid triple at line #{}: {} (There is no full stop); CORRECTED".format(
+                        self.line_number, self.current_line
+                    )
+                )
+            elif self.line != ".":
+                logging.warning(
+                    "Invalid triple at line #{}: {} (Extra characters detected at the end of triple); CORRECTED".format(
+                        self.line_number, self.current_line
+                    )
+                )
+            self.line = "."
+
         self.eat(r_tail)
 
         if self.line:
@@ -256,7 +281,7 @@ class W3CNTriplesParser(object):
 
     def subject(self, bnode_context=None):
         # @@ Consider using dictionary cases
-        
+
         subj = self.uriref() or self.nodeid(bnode_context)
         if not subj:
             raise ParseError("Subject must be uriref or nodeID")
