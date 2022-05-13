@@ -218,7 +218,7 @@ class Result(object):
         self,
         destination: Optional[Union[str, IO]] = None,
         encoding: str = "utf-8",
-        format: str = "xml",
+        format: str = "ttl",
         **args,
     ) -> Optional[bytes]:
         """
