@@ -302,9 +302,24 @@ def evalPart(ctx: QueryContext, part: CompValue):
 
 def evalServiceQuery(ctx: QueryContext, part):
     res = {}
+    service_string = part.get("service_string", "")
+    match = re.match(
+        "^service (.*):(.*) [ \n]*{(.*)}[ \n]*$",
+        service_string,
+        re.DOTALL | re.I,
+    )
+    if match:
+        _prefix = match.group(1)
+        for prefix, namespace in ctx.graph.namespace_manager.namespaces():
+            if prefix == _prefix:
+                service_string = (
+                    f"SERVICE <{namespace}{match.group(2)}> {{{match.group(3)}}}"
+                )
+                break
+
     match = re.match(
         "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
-        part.get("service_string", ""),
+        service_string,
         re.DOTALL | re.I,
     )
 
