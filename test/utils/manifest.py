@@ -85,6 +85,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
 
                 # run proposed tests
                 # approved |= (e, RDFT.approval, RDFT.Proposed) in g
+                approved |= (e, DAWG.approval, DAWG.Proposed) in g
 
                 # run legacy tests with no approval set
                 if legacy:
