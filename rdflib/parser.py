@@ -306,8 +306,13 @@ class FileInputSource(InputSource):
     def __init__(
         self, file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]
     ):
-        base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        print("Parsing....")
+        # print(os.getcwd())
+        base = pathlib.Path.cwd().as_uri() + "/"
+        file_name = pathlib.Path(file.name).absolute().as_uri()
+        file_ref = file_name[len(str(base)): ]
+        # system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        system_id = URIRef(file_ref, base=base)  # type: ignore[union-attr]
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
