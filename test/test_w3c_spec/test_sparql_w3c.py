@@ -553,7 +553,7 @@ def test_dawg_data_sparql11(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest)
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/rdflib-sparql/manifest.ttl"),
+    read_manifest("test/data/suites/rdflib/sparql/manifest.ttl"),
 )
 def test_dawg_rdflib(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)
