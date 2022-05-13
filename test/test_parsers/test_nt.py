@@ -33,11 +33,9 @@ class Test_NT_Parsing:
         g = Graph().parse(data=DATA_1, format="nt", ignore_errors=ignore_errors)
         if ignore_errors:
             assert len(g) == 9
-        assert False
 
     def test_nt_2(self):
         ignore_errors = True
         g = Graph().parse(data=DATA_2, format="nt", ignore_errors=ignore_errors)
         if ignore_errors:
             assert len(g) == 5
-        assert False
