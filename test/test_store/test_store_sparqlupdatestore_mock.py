@@ -1,5 +1,9 @@
 import unittest
-from test.testutils import MockHTTPResponse, ServedSimpleHTTPMock
+from test.utils.httpservermock import (
+    MethodName,
+    MockHTTPResponse,
+    ServedBaseHTTPServerMock,
+)
 from typing import ClassVar
 
 from rdflib import Namespace
@@ -13,12 +17,12 @@ class TestSPARQLConnector(unittest.TestCase):
     query_endpoint: ClassVar[str]
     update_path: ClassVar[str]
     update_endpoint: ClassVar[str]
-    httpmock: ClassVar[ServedSimpleHTTPMock]
+    httpmock: ClassVar[ServedBaseHTTPServerMock]
 
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.httpmock = ServedSimpleHTTPMock()
+        cls.httpmock = ServedBaseHTTPServerMock()
         cls.query_path = "/db/sparql"
         cls.query_endpoint = f"{cls.httpmock.url}{cls.query_path}"
         cls.update_path = "/db/update"
@@ -40,7 +44,7 @@ class TestSPARQLConnector(unittest.TestCase):
         graph.open((self.query_endpoint, self.update_endpoint))
         update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
 
-        self.httpmock.do_post_responses.append(
+        self.httpmock.responses[MethodName.POST].append(
             MockHTTPResponse(
                 200,
                 "OK",
@@ -54,6 +58,6 @@ class TestSPARQLConnector(unittest.TestCase):
         # to do updates.
         graph.update(update_statement)
         self.assertEqual(self.httpmock.call_count, 1)
-        req = self.httpmock.do_post_requests.pop(0)
+        req = self.httpmock.requests[MethodName.POST].pop(0)
         self.assertEqual(req.parsed_path.path, self.update_path)
         self.assertIn("application/sparql-update", req.headers.get("content-type"))

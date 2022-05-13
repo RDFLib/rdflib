@@ -1,5 +1,5 @@
 import unittest
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import Set, Tuple
 from unittest.case import expectedFailure
 

@@ -2,10 +2,11 @@ import json
 import logging
 import os
 import re
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from test.data import TEST_DATA_DIR
-from test.testutils import GraphHelper
+from test.utils import GraphHelper
 from typing import (
     ClassVar,
     Collection,
@@ -165,7 +166,29 @@ EXPECTED_FAILURES = {
         """,
         raises=AssertionError,
     ),
+    ("variants/diverse_quads"): pytest.mark.xfail(
+        reason="""
+    TriG parsing gets confused about what graph 'XSD string' appears in:
+        (rdflib.term.URIRef('example:subject'),
+        rdflib.term.URIRef('http://example.com/predicate'),
+        rdflib.term.Literal('XSD string'),
+    -   rdflib.term.URIRef('example:graph')),
+    +   rdflib.term.URIRef('urn:example:graph')),
+    ?                       ++++
+        """,
+        raises=AssertionError,
+    ),
 }
+
+if sys.platform == "win32":
+    EXPECTED_FAILURES["variants/diverse_triples"] = pytest.mark.xfail(
+        reason="""
+    Some encoding issue when parsing hext on windows:
+        >       return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+        E       UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 356: character maps to <undefined>
+        """,
+        raises=UnicodeDecodeError,
+    )
 
 
 def tests_found() -> None:

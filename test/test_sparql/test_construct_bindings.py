@@ -1,5 +1,5 @@
 import unittest
-from test.testutils import eq_
+from test.utils import eq_
 
 from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.compare import isomorphic

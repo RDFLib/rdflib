@@ -35,6 +35,7 @@ addopts = [
    "--ignore=admin",
    "--ignore=rdflib/extras/external_graph_libs.py",
    "--ignore-glob=docs/*.py",
+   "--doctest-glob=docs/*.rst",
 ]
 doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [

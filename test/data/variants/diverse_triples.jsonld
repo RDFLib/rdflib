@@ -1,0 +1,40 @@
+{
+  "@graph": [
+    {
+      "@id": "egschema:object",
+      "eghttp:predicate": "XSD string"
+    },
+    {
+      "@id": "egschema:subject",
+      "egschema:predicate": [
+        12,
+        {
+          "@id": "egschema:object"
+        }
+      ]
+    },
+    {
+      "@id": "eghttp:subject",
+      "eghttp:predicate": {
+        "@language": "jpx",
+        "@value": "日本語の表記体系"
+      }
+    },
+    {
+      "@id": "egurn:subject",
+      "egschema:predicate": {
+        "@id": "egschema:subject"
+      }
+    }
+  ],
+  "@context": {
+    "predicate": {
+      "@id": "example:predicate",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "egurn": "urn:example:",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "egschema": "example:",
+    "eghttp": "http://example.com/"
+  }
+}

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from tempfile import mkdtemp, mkstemp
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
-from test.testutils import GraphHelper, get_unique_plugin_names
+from test.utils import GraphHelper, get_unique_plugin_names
 from typing import Callable, Optional, Set
 from urllib.error import HTTPError, URLError
 
@@ -291,14 +291,12 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
     # RDF/XML
     graph.parse(
         os.path.join(
-            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.rdf"
+            TEST_DATA_DIR, "suites", "w3c", "rdf-xml", "datatypes", "test001.rdf"
         )
     )  # XML
     # bad filename but set format
     graph.parse(
-        os.path.join(
-            TEST_DATA_DIR, "suites", "w3c", "rdfxml", "datatypes", "test001.borked"
-        ),
+        os.path.join(TEST_DATA_DIR, "w3c-rdfxml-test001.borked"),
         format="xml",
     )
 

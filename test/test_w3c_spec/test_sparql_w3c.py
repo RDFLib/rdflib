@@ -9,8 +9,8 @@ from pathlib import PurePath
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test import TEST_DIR
-from test.manifest import MF, UP, RDFTest, ResultType, read_manifest
-from test.testutils import file_uri_to_path
+from test.utils import file_uri_to_path
+from test.utils.manifest import MF, UP, RDFTest, ResultType, read_manifest
 
 import pytest
 
@@ -554,7 +554,7 @@ def test_dawg_data_sparql10(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest)
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/suites/DAWG/data-sparql11/manifest-all.ttl"),
+    read_manifest("test/data/suites/w3c/sparql11/manifest-all.ttl"),
 )
 def test_dawg_data_sparql11(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)
