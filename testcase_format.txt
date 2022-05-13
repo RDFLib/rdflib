@@ -1,0 +1,21 @@
+To insert N-triple/N-triple-star, write 3 lines
+
+    line 1: 1
+    line 2: graph_name
+    line 3: n_triple_string
+
+To insert print all statements of a graph, write 2 lines
+
+    line 1: 2
+    line 2: graph_name
+
+To insert N-quad/N-quad-star, write 2 lines
+
+    line 1: 3
+    line 2: n_quad_string
+
+To quit, write 1 line
+
+    line 1: 0
+
+

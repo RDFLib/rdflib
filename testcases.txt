@@ -1,0 +1,27 @@
+1
+g1
+<< :a :name "Alice" >> :reportedBy :charlie
+1
+g2
+<< << << :a :name "Alice" >> :reportedBy :charlie >> :thoughtBy :bob >> :writtenBy :mary
+1
+g3
+:charlie :reported << :a :name "Alice" >>
+1
+g1
+<< :a :name "Alice" >> :reportedBy << :b :name "Bob" >>
+3
+:x :y :z :g4
+3
+<< :x1 :x2 :x3 >> :x4 :x5 :g4
+2
+g1
+2
+g2
+2
+g3
+2
+g4
+2
+g5
+0
