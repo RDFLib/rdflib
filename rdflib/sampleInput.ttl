@@ -1,0 +1,114 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns1: <http://iiitd.ac.in/course/sweb/PrerakMalik/2019378/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+<http://iiitd.ac.in/course/sweb/project/principal> rdfs:subClassOf <http://iiitd.ac.in/course/sweb/project/teacher> .
+
+<http://iiitd.ac.in/course/sweb/project/teacher> rdfs:subClassOf <http://iiitd.ac.in/course/sweb/project/trainer> .
+
+<http://iiitd.ac.in/course/sweb/project/trainer> rdfs:subClassOf <http://iiitd.ac.in/course/sweb/project/human> .
+
+<http://iiitd.ac.in/course/sweb/project/financeManagerOf> rdfs:subPropertyOf <http://iiitd.ac.in/course/sweb/project/managerOf> .
+
+<http://iiitd.ac.in/course/sweb/project/employeeOf> rdfs:subPropertyOf <http://iiitd.ac.in/course/sweb/project/humanOf> .
+
+<http://iiitd.ac.in/course/sweb/project/managerOf> rdfs:subPropertyOf <http://iiitd.ac.in/course/sweb/project/employeeOf> .
+
+
+
+
+ns1:LandCruiser a ns1:Car ;
+    ns1:ChassisStyles ( ns1:Convertible ns1:Hardtop ns1:StationWagon ns1:Cab ) ;
+    ns1:driveType ns1:fourWheel ;
+    ns1:manufacturedBy ns1:Toyota ;
+    ns1:name "Toyota Land Cruiser"@en,
+        "Toyota Rando-Kurūzā"@jp ;
+    ns1:sales [ ns1:NumberOfSales 10000000 ;
+            ns1:year 2019 ] ;
+    rdfs:subClassOf ns1:Vehicle .
+
+ns1:NumberOfSales a rdf:Property ;
+    rdfs:range xsd:positiveInteger .
+
+ns1:competitors a rdf:Property ;
+    rdfs:range xsd:anyURI .
+
+ns1:driveType a rdf:Property ;
+    rdfs:domain ns1:Vehicle .
+
+ns1:founder a rdf:Property ;
+    rdfs:range foaf:Person .
+
+ns1:founding a rdf:Property .
+
+ns1:incorporationDate a rdf:Property ;
+    rdfs:range xsd:date .
+
+ns1:manufacturedBy a rdf:Property ;
+    rdfs:range ns1:Organization .
+
+ns1:markets a rdf:Property .
+
+ns1:name a rdf:Property ;
+    rdfs:range xsd:anyURI .
+
+ns1:order a rdf:Property .
+
+ns1:parameter a rdf:Property .
+
+ns1:sales a rdf:Property .
+
+ns1:year a rdf:Property ;
+    rdfs:range xsd:positiveInteger .
+
+ns1:Asia a ns1:Continent .
+
+ns1:City rdfs:subClassOf ns1:Region .
+
+ns1:Continent rdfs:subClassOf ns1:Region .
+
+ns1:Ford a ns1:Company .
+
+ns1:Hyundai a ns1:Company .
+
+ns1:KiichiroToyoda a foaf:Person .
+
+ns1:NorthAmerica a ns1:Region .
+
+ns1:Toyota a ns1:Company ;
+    ns1:competitors ( ns1:Ford ns1:Hyundai ns1:Volkswagen ) ;
+    ns1:countryOfOrigin ns1:Japan ;
+    ns1:founding [ ns1:founder ns1:KiichiroToyoda ;
+            ns1:incorporationDate "1937-08-28"^^xsd:date ] ;
+    ns1:headquartersIn ns1:ToyotaCity ;
+    ns1:markets [ ns1:order ns1:descending ;
+            ns1:parameter ns1:marketSize ;
+            rdf:first ns1:NorthAmerica ;
+            rdf:rest ( ns1:Japan ns1:Asia ) ] .
+
+ns1:ToyotaCity a ns1:City .
+ns1:Car rdf:type rdfs:Class .
+
+ns1:Volkswagen a ns1:Company .
+
+ns1:countryOfOrigin a rdf:Property ;
+    rdfs:range ns1:Country ;
+    rdfs:subPropertyOf ns1:regionOfOrigin .
+
+ns1:headquartersIn a rdf:Property ;
+    rdfs:range ns1:Region .
+
+ns1:Japan a ns1:Country ;
+    rdfs:subClassOf ns1:Region .
+
+ns1:Organization rdfs:domain ns1:headquartersIn .
+
+xsd:anyURI rdfs:domain ns1:countryOfOrigin .
+
+ns1:Company rdfs:subClassOf ns1:Organization .
+
+
