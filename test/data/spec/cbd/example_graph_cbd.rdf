@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<rdf:RDF
+   xmlns:rdf  ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs ="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:owl  ="http://www.w3.org/2002/07/owl#"
+   xmlns:dc   ="http://purl.org/dc/elements/1.1/"
+   xmlns:dct  ="http://purl.org/dc/terms/"
+   xmlns:xsd  ="http://www.w3.org/2001/XMLSchema#"
+   xmlns:foaf ="http://xmlns.com/foaf/0.1/">
+
+   <rdf:Description rdf:about="http://example.com/aReallyGreatBook">
+      <dc:title>A Really Great Book</dc:title>
+      <dc:publisher>Examples-R-Us</dc:publisher>
+      <dc:creator>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+            <foaf:name>John Doe</foaf:name>
+            <foaf:mbox>john@example.com</foaf:mbox>
+            <foaf:img rdf:resource="http://example.com/john.jpg"/>
+            <foaf:phone rdf:resource="tel:+1-999-555-1234"/>
+         </rdf:Description>
+      </dc:creator>
+      <dc:contributor>
+         <rdf:Description>
+            <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+            <foaf:name>Jane Doe</foaf:name>
+         </rdf:Description>
+      </dc:contributor>
+      <dc:language>en</dc:language>
+      <dc:format>application/pdf</dc:format>
+      <dc:rights>Copyright (C) 2004 Examples-R-Us. All rights reserved.</dc:rights>
+      <dct:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-01-19</dct:issued>
+      <rdfs:seeAlso rdf:resource="http://example.com/anotherGreatBook"/>
+   </rdf:Description>
+
+   <rdf:Statement>
+      <rdf:subject rdf:resource="http://example.com/aReallyGreatBook"/>
+      <rdf:predicate rdf:resource="http://purl.org/dc/elements/1.1/format"/> 
+      <rdf:object>application/pdf</rdf:object>
+      <rdfs:isDefinedBy rdf:resource="http://example.com/book-formats.rdf"/>
+   </rdf:Statement>
+
+</rdf:RDF>
