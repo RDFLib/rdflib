@@ -63,6 +63,8 @@ class CSVResultSerializer(ResultSerializer):
 
     def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
 
+        print(1)
+
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards
@@ -79,7 +81,6 @@ class CSVResultSerializer(ResultSerializer):
             out.writerow(
                 [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]  # type: ignore[union-attr]
             )
-        print(1)
 
     def serializeTerm(self, term, encoding):
         if term is None:
