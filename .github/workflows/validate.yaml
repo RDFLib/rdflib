@@ -10,7 +10,6 @@ env:
   FORCE_COLOR: 1
   XDG_CACHE_HOME: ${{ github.workspace }}/cache
   PIP_CACHE_DIR: ${{ github.workspace }}/pip-cache
-  DEFAULT_PYTHON: "3.7"
 
 jobs:
   validate:
@@ -81,13 +80,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        task: ["gha:flake8"]
+        include:
+        - task: "gha:flake8"
+          python-version: 3.8
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{env.DEFAULT_PYTHON}}
+          python-version: ${{ matrix.python-version }}
       - name: Cache pip
         uses: actions/cache@v2
         with:

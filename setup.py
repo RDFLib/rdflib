@@ -34,7 +34,7 @@ kwargs["extras_require"] = {
     "dev": [
         "black==22.3.0",
         "flake8",
-        "flakeheaven",
+        "flakeheaven; python_version >= '3.8.0'",
         "isort",
         "mypy",
         "pep8-naming",
