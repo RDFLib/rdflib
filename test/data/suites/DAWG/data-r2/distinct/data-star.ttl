@@ -1,8 +1,0 @@
-@prefix :         <http://example/> .
-@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
-
-:x1 :p "abc" .
-:x1 :q "abc" .
-:x2 :p "abc" .
-
-

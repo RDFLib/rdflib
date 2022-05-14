@@ -1,3 +1,0 @@
-# DOT, then triples
-SELECT * WHERE
-{ . ?s ?p ?o }

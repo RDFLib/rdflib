@@ -1,8 +1,0 @@
-# Data: sameTerm tests
-# $Id: sameTerm.ttl,v 1.1 2007/06/18 20:07:56 lfeigenb Exp $
-
-@prefix     : <http://example/> .
-@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
-
-:x1 :p "xyz" .
-:x4 :p "xyz"^^xsd:string .

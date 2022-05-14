@@ -1,5 +1,0 @@
-@prefix : <http://example.org/ns#> .
-@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
-
-:x :p1 "1"^^xsd:integer .
-:x :p1 "2"^^xsd:integer .

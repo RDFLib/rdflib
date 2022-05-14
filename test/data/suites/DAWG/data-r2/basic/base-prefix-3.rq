@@ -1,4 +1,0 @@
-PREFIX ns: <http://example.org/ns#>
-PREFIX x:  <http://example.org/x/>
-
-SELECT * WHERE { x:x ns:p ?v } 
