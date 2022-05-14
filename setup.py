@@ -33,10 +33,11 @@ kwargs["extras_require"] = {
     "networkx": ["networkx"],
     "dev": [
         "black==22.3.0",
-        "mypy",
         "flake8",
-        "flake8-black",
+        "flakeheaven",
         "isort",
+        "mypy",
+        "pep8-naming",
         "types-setuptools",
     ],
 }

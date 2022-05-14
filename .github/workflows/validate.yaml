@@ -9,6 +9,7 @@ on:
 env:
   FORCE_COLOR: 1
   XDG_CACHE_HOME: ${{ github.workspace }}/cache
+  PIP_CACHE_DIR: ${{ github.workspace }}/pip-cache
   DEFAULT_PYTHON: "3.7"
 
 jobs:
@@ -45,16 +46,10 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Get pip cache dir
-        id: pip-cache
-        shell: bash
-        run: |
-          python -m ensurepip
-          echo "::set-output name=dir::$(pip cache dir)"
       - name: Cache pip
         uses: actions/cache@v2
         with:
-          path: ${{ steps.pip-cache.outputs.dir }}
+          path: ${{ env.PIP_CACHE_DIR }}
           key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
             hashFiles('**/setup.py', '**/*requirements*.txt') }}
           restore-keys: |
@@ -81,6 +76,34 @@ jobs:
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  extra-tasks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: ["gha:flake8"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{env.DEFAULT_PYTHON}}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{env.DEFAULT_PYTHON}}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: tox-${{ matrix.task }}-pip-v1-${{
+            hashFiles('**/setup.py', '**/requirements*.txt') }}
+          restore-keys: |
+            tox-${{ matrix.task }}-pip-v1-
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run task
+        shell: bash
+        run: |
+          task ${{ matrix.task }}
   finish:
     permissions:
       contents: read

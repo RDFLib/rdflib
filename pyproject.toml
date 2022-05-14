@@ -1,3 +1,22 @@
+[tool.flakeheaven]
+format = "grouped"
+baseline = ".flakeheaven.baseline"
+
+[tool.flakeheaven.plugins]
+pycodestyle = [
+  "+*",
+  # mirrored from setup.cfg
+  "-E501",
+  "-E203",
+  "-W503"
+]
+pyflakes = [
+  "+*",
+]
+pep8-naming = ["+*"]
+"flake8-*" = ["+*"]
+
+
 [tool.black]
 required-version = "22.3.0"
 line-length = "88"
