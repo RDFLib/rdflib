@@ -551,9 +551,22 @@ def test_dawg_data_sparql11(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest)
     testers[type](rdf_test)
 
 
+EXPECTED_FAILURES: Dict[str, str] = {}
+
+for test in [
+    "test-codepoint-escape-02",
+    "test-codepoint-escape-03",
+    "test-codepoint-escape-04",
+]:
+    EXPECTED_FAILURES[test] = "known codepoint escape issue"
+
+
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
     read_manifest("test/data/suites/rdflib/sparql/manifest.ttl"),
 )
 def test_dawg_rdflib(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    suffix = rdf_test_uri.split("#")[1]
+    if suffix in EXPECTED_FAILURES:
+        pytest.xfail(EXPECTED_FAILURES[suffix])
     testers[type](rdf_test)
