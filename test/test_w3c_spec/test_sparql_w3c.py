@@ -101,7 +101,7 @@ def bopen_read_close(fn):
         return f.read()
 
 
-from test.skipped_sparql_tests import skiptests
+from test.test_w3c_spec.test_sparql_w3c_skipped import skiptests
 
 
 def _fmt(f):
@@ -563,7 +563,7 @@ for test in [
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/rdflib-sparql/manifest.ttl"),
+    read_manifest("test/data/suites/rdflib/sparql/manifest.ttl"),
 )
 def test_dawg_rdflib(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     suffix = rdf_test_uri.split("#")[1]
