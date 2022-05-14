@@ -5,7 +5,7 @@
 
 @prefix dawgt: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 
-@prefix :      <http://raw.github.com/RDFLib/rdflib/master/test/data/rdflib-sparql/manifest.ttl#> .
+@prefix :      <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#> .
 
 <> a mf:Manifest ;
 	rdfs:label "RDFLib Extra SPARQL tests" ;
