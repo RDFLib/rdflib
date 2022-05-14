@@ -2,7 +2,12 @@ import re
 import socket
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test.utils import MockHTTPResponse, ServedSimpleHTTPMock, helper
+from test.utils import helper
+from test.utils.httpservermock import (
+    MethodName,
+    MockHTTPResponse,
+    ServedBaseHTTPServerMock,
+)
 from threading import Thread
 from typing import Callable, ClassVar, Type
 from unittest.mock import patch
@@ -53,12 +58,12 @@ class TestSPARQLStoreGraph:
 class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
     store_name = "SPARQLStore"
     path: ClassVar[str]
-    httpmock: ClassVar[ServedSimpleHTTPMock]
+    httpmock: ClassVar[ServedBaseHTTPServerMock]
 
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.httpmock = ServedSimpleHTTPMock()
+        cls.httpmock = ServedBaseHTTPServerMock()
         cls.path = f"{cls.httpmock.url}/sparql"
 
     @classmethod
@@ -79,7 +84,7 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
     def test_Query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
         _query = SPARQLConnector.query
-        self.httpmock.do_get_responses.append(
+        self.httpmock.responses[MethodName.GET].append(
             MockHTTPResponse(
                 200,
                 "OK",
@@ -116,8 +121,8 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
             (mquery, _, _) = unpacker(*args, *kwargs)
             for _, uri in self.graph.namespaces():
                 assert mquery.count(f"<{uri}>") == 1
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
-        req = self.httpmock.do_get_requests.pop(0)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        req = self.httpmock.requests[MethodName.GET].pop(0)
         self.assertRegex(req.path, r"^/sparql")
         self.assertIn(query, req.path_query["query"][0])
 
@@ -126,7 +131,7 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.httpmock.do_get_responses.append(
+        self.httpmock.responses[MethodName.GET].append(
             MockHTTPResponse(
                 200,
                 "OK",
@@ -179,8 +184,8 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
-        req = self.httpmock.do_get_requests.pop(0)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        req = self.httpmock.requests[MethodName.GET].pop(0)
         self.assertRegex(req.path, r"^/sparql")
         self.assertIn(query, req.path_query["query"][0])
 
@@ -189,7 +194,7 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.httpmock.do_get_responses.append(
+        self.httpmock.responses[MethodName.GET].append(
             MockHTTPResponse(
                 400,
                 "Bad Request",
@@ -203,8 +208,8 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         )
         with self.assertRaises(ValueError):
             self.graph.query(query)
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
-        req = self.httpmock.do_get_requests.pop(0)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        req = self.httpmock.requests[MethodName.GET].pop(0)
         self.assertRegex(req.path, r"^/sparql")
         self.assertIn(query, req.path_query["query"][0])
 
@@ -216,7 +221,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.httpmock.do_get_responses.append(
+        self.httpmock.responses[MethodName.GET].append(
             MockHTTPResponse(
                 200,
                 "OK",
@@ -266,8 +271,8 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
-        req = self.httpmock.do_get_requests.pop(0)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        req = self.httpmock.requests[MethodName.GET].pop(0)
         self.assertRegex(req.path, r"^/sparql")
         self.assertIn(query, req.path_query["query"][0])
 
@@ -280,7 +285,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.httpmock.do_get_responses.append(
+        self.httpmock.responses[MethodName.GET].append(
             MockHTTPResponse(
                 200,
                 "OK",
@@ -330,8 +335,8 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 1)
-        req = self.httpmock.do_get_requests.pop(0)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        req = self.httpmock.requests[MethodName.GET].pop(0)
         self.assertRegex(req.path, r"^/sparql")
         self.assertIn(query, req.path_query["query"][0])
 
@@ -377,7 +382,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
             {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
         )
 
-        self.httpmock.do_get_responses.append(response)
+        self.httpmock.responses[MethodName.GET].append(response)
 
         result = g.query(query)
         for _ in result:
@@ -389,16 +394,16 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
 
         st = SPARQLStore(query_endpoint=self.path)
         count = 0
-        self.httpmock.do_get_responses.append(response)
+        self.httpmock.responses[MethodName.GET].append(response)
         result = st.query(query)
         for _ in result:
             count += 1
 
         assert count == 5, "SPARQLStore() didn't return 5 records"
 
-        self.assertEqual(self.httpmock.do_get_mock.call_count, 2)
+        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 2)
         for _ in range(2):
-            req = self.httpmock.do_get_requests.pop(0)
+            req = self.httpmock.requests[MethodName.GET].pop(0)
             self.assertRegex(req.path, r"^/sparql")
             self.assertIn(query, req.path_query["query"][0])
 
@@ -514,8 +519,8 @@ class SPARQLMockTests(unittest.TestCase):
 
         assert len(list(graph.namespaces())) >= 4
 
-        with ServedSimpleHTTPMock() as httpmock:
-            httpmock.do_get_responses.append(response)
+        with ServedBaseHTTPServerMock() as httpmock:
+            httpmock.responses[MethodName.GET].append(response)
             url = f"{httpmock.url}/query"
             graph.open(url)
             query_result = graph.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o }")
@@ -525,9 +530,9 @@ class SPARQLMockTests(unittest.TestCase):
         for triple in triples:
             assert triple in rows
 
-        httpmock.do_get_mock.assert_called_once()
-        assert len(httpmock.do_get_requests) == 1
-        request = httpmock.do_get_requests.pop()
+        httpmock.mocks[MethodName.GET].assert_called_once()
+        assert len(httpmock.requests[MethodName.GET]) == 1
+        request = httpmock.requests[MethodName.GET].pop()
         assert len(request.path_query["query"]) == 1
         query = request.path_query["query"][0]
 

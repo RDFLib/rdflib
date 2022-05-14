@@ -47,7 +47,7 @@ class TestStore(Graph):
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
-CACHE_DIR = os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdfxml")
+CACHE_DIR = os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdf-xml")
 
 skipped = (
     # "datatypes/Manifest.rdf#test002",

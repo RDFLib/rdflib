@@ -1,6 +1,12 @@
 import unittest
 from http.server import BaseHTTPRequestHandler
-from test.utils import GraphHelper, MockHTTPResponse, SimpleHTTPMock, ctx_http_server
+from test.utils import GraphHelper
+from test.utils.httpservermock import (
+    MethodName,
+    MockHTTPResponse,
+    ServedBaseHTTPServerMock,
+    ctx_http_server,
+)
 from urllib.error import HTTPError
 
 from rdflib import Graph, Namespace
@@ -122,12 +128,10 @@ class TestGraphHTTP(unittest.TestCase):
         expected.add((EG["a"], EG["b"], EG["c"]))
         expected_triples = GraphHelper.triple_set(expected)
 
-        httpmock = SimpleHTTPMock()
-        with ctx_http_server(httpmock.Handler) as server:
-            (host, port) = server.server_address
-            url = f"http://{host}:{port}/"
+        with ServedBaseHTTPServerMock() as httpmock:
+            url = httpmock.url
 
-            httpmock.do_get_responses.append(
+            httpmock.responses[MethodName.GET].append(
                 MockHTTPResponse(
                     200,
                     "OK",
@@ -145,37 +149,38 @@ class TestGraphHTTP(unittest.TestCase):
         expected.add((EG["a"], EG["b"], EG["c"]))
         expected_triples = GraphHelper.triple_set(expected)
 
-        httpmock = SimpleHTTPMock()
-        with ctx_http_server(httpmock.Handler) as server:
-            (host, port) = server.server_address
-            url = f"http://{host}:{port}/"
+        with ServedBaseHTTPServerMock() as httpmock:
+            url = httpmock.url
 
             for idx in range(3):
-                httpmock.do_get_responses.append(
+                httpmock.responses[MethodName.GET].append(
                     MockHTTPResponse(
-                        302, "FOUND", "".encode(), {"Location": [f"{url}loc/302/{idx}"]}
+                        302,
+                        "FOUND",
+                        "".encode(),
+                        {"Location": [f"{url}/loc/302/{idx}"]},
                     )
                 )
             for idx in range(3):
-                httpmock.do_get_responses.append(
+                httpmock.responses[MethodName.GET].append(
                     MockHTTPResponse(
                         303,
                         "See Other",
                         "".encode(),
-                        {"Location": [f"{url}loc/303/{idx}"]},
+                        {"Location": [f"{url}/loc/303/{idx}"]},
                     )
                 )
             for idx in range(3):
-                httpmock.do_get_responses.append(
+                httpmock.responses[MethodName.GET].append(
                     MockHTTPResponse(
                         308,
                         "Permanent Redirect",
                         "".encode(),
-                        {"Location": [f"{url}loc/308/{idx}"]},
+                        {"Location": [f"{url}/loc/308/{idx}"]},
                     )
                 )
 
-            httpmock.do_get_responses.append(
+            httpmock.responses[MethodName.GET].append(
                 MockHTTPResponse(
                     200,
                     "OK",
@@ -188,12 +193,14 @@ class TestGraphHTTP(unittest.TestCase):
             graph.parse(location=url, format="turtle")
             self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
 
-            httpmock.do_get_mock.assert_called()
-            assert len(httpmock.do_get_requests) == 10
-            for request in httpmock.do_get_requests:
+            httpmock.mocks[MethodName.GET].assert_called()
+            assert len(httpmock.requests[MethodName.GET]) == 10
+            for request in httpmock.requests[MethodName.GET]:
                 self.assertRegex(request.headers.get("Accept"), "text/turtle")
 
-            request_paths = [request.path for request in httpmock.do_get_requests]
+            request_paths = [
+                request.path for request in httpmock.requests[MethodName.GET]
+            ]
             self.assertEqual(
                 request_paths,
                 [
@@ -211,12 +218,11 @@ class TestGraphHTTP(unittest.TestCase):
             )
 
     def test_5xx(self):
-        httpmock = SimpleHTTPMock()
-        with ctx_http_server(httpmock.Handler) as server:
-            (host, port) = server.server_address
-            url = f"http://{host}:{port}/"
-            response = MockHTTPResponse(500, "Internal Server Error", "".encode(), {})
-            httpmock.do_get_responses.append(response)
+        with ServedBaseHTTPServerMock() as httpmock:
+            url = httpmock.url
+            httpmock.responses[MethodName.GET].append(
+                MockHTTPResponse(500, "Internal Server Error", "".encode(), {})
+            )
 
             graph = Graph()
 
