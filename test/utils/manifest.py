@@ -139,7 +139,12 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
 
                     res = resdata, resgraphdata
 
-                elif _type in (MF.NegativeSyntaxTest11, MF.PositiveSyntaxTest11):
+                elif _type in (
+                    MF.NegativeSyntaxTest11,
+                    MF.NegativeSyntaxTest,
+                    MF.PositiveSyntaxTest11,
+                    MF.PositiveSyntaxTest,
+                ):
                     query = g.value(e, MF.action)
                     syntax = _type == MF.PositiveSyntaxTest11
 

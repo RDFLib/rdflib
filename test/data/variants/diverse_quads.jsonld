@@ -1,0 +1,73 @@
+{
+  "@graph": [
+    {
+      "@graph": [
+        {
+          "@id": "egschema:subject",
+          "egschema:predicate": [
+            12,
+            {
+              "@id": "egschema:object"
+            }
+          ]
+        },
+        {
+          "@id": "eghttp:subject",
+          "predicate": {
+            "@language": "jpx",
+            "@value": "日本語の表記体系"
+          }
+        },
+        {
+          "@id": "egurn:subject",
+          "egschema:predicate": {
+            "@id": "egschema:subject"
+          }
+        }
+      ],
+      "@id": "egschema:graph"
+    },
+    {
+      "@id": "egschema:subject",
+      "egschema:predicate": {
+        "@id": "egschema:object"
+      }
+    },
+    {
+      "@id": "eghttp:subject",
+      "predicate": "typeless"
+    },
+    {
+      "@graph": [
+        {
+          "@id": "egschema:subject",
+          "egschema:predicate": {
+            "@id": "egschema:object"
+          },
+          "predicate": [
+            "XSD string",
+            {
+              "@id": "eghttp:object"
+            }
+          ]
+        }
+      ],
+      "@id": "egurn:graph"
+    },
+    {
+      "@id": "egurn:subject",
+      "egurn:predicate": {
+        "@id": "egurn:object"
+      }
+    }
+  ],
+  "@context": {
+    "predicate": {
+      "@id": "http://example.com/predicate"
+    },
+    "egurn": "urn:example:",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "egschema": "example:",
+    "eghttp": "http://example.com/"
+  }
+}

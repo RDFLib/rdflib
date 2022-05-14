@@ -1,0 +1,13 @@
+@prefix eghttp: <http://example.com/> .
+@prefix egurn: <urn:example:> .
+@prefix egschema: <example:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+eghttp:subject eghttp:predicate "日本語の表記体系"@jpx .
+
+egurn:subject egschema:predicate egschema:subject .
+
+egschema:object eghttp:predicate "XSD string"^^xsd:string .
+
+egschema:subject egschema:predicate egschema:object,
+        12 .

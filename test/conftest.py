@@ -1,5 +1,7 @@
 import pytest
 
+pytest.register_assert_rewrite("test.utils")
+
 from rdflib import Graph
 
 from .data import TEST_DATA_DIR
@@ -9,7 +11,6 @@ pytest_plugins = [EarlReporter.__module__]
 
 # This is here so that asserts from these modules are formatted for human
 # readibility.
-pytest.register_assert_rewrite("test.utils")
 
 
 @pytest.fixture(scope="session")
