@@ -218,7 +218,11 @@ RESOURCES: List[Resource] = [
         remote=Request(
             "http://www.w3.org/2000/01/rdf-schema#", headers={"Accept": "text/turtle"}
         ),
-        local_path=(DATA_PATH / "rdfs.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/rdfs.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/ns/rdftest.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
     ),
 ]
 

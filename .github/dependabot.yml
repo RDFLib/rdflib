@@ -10,3 +10,7 @@ updates:
     versions:
     - 3.4.3
     - 3.5.2
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
