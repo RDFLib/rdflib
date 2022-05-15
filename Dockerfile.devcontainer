@@ -57,7 +57,7 @@ RUN \
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-COPY requirements.txt requirements.dev.txt requirements.dev-extra.txt /var/tmp/
+COPY requirements*.txt /var/tmp/
 COPY docs/sphinx-requirements.txt /var/tmp/docs/sphinx-requirements.txt
 
 RUN \

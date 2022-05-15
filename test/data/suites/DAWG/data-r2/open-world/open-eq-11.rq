@@ -1,9 +1,0 @@
-PREFIX     :    <http://example/>
-PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
-
-SELECT *
-{
-    ?x :p ?v1 .
-    ?y :q ?v2 .
-    FILTER ( ?v1 != ?v2 || ?v1 = ?v2 )
-}

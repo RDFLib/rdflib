@@ -1,8 +1,0 @@
-# Example 1 from
-# http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096
-# $Id: normalization-02.ttl,v 1.1 2005/08/09 14:35:26 eric Exp $
-@prefix : <http://example/vocab#>.
-
-:s1 :p <example://a/b/c/%7Bfoo%7D#xyz>.
-:s2 :p <eXAMPLE://a/./b/../b/%63/%7bfoo%7d#xyz>.
-
