@@ -12,7 +12,7 @@ import logging
 from contextlib import ExitStack
 from decimal import Decimal
 from test.utils import affix_tuples
-from typing import Any, Optional, Type, Union
+from typing import Any, Generator, Optional, Type, Union
 
 import isodate
 import pytest
@@ -33,10 +33,19 @@ from rdflib.term import (
     _XSD_TIME,
     Literal,
     URIRef,
+    _reset_bindings,
     bind,
 )
 
 EGNS = Namespace("http://example.com/")
+
+
+@pytest.fixture()
+def clear_bindings() -> Generator[None, None, None]:
+    try:
+        yield
+    finally:
+        _reset_bindings()
 
 
 class TestLiteral:
@@ -779,7 +788,7 @@ class TestParseBoolean:
 
 
 class TestBindings:
-    def test_binding(self) -> None:
+    def test_binding(self, clear_bindings: None) -> None:
         class a:
             def __init__(self, v: str) -> None:
                 self.v = v[3:-3]
@@ -814,7 +823,7 @@ class TestBindings:
         assert lb.value == vb
         assert lb.datatype == dtB
 
-    def test_specific_binding(self) -> None:
+    def test_specific_binding(self, clear_bindings: None) -> None:
         def lexify(s: str) -> str:
             return "--%s--" % s
 
@@ -927,3 +936,29 @@ class TestXsdLiterals:
         else:
             assert literal.value is None
         assert lexical == f"{literal}"
+
+
+def test_exception_in_converter(
+    caplog: pytest.LogCaptureFixture, clear_bindings: None
+) -> None:
+    def lexify(s: str) -> str:
+        return "--%s--" % s
+
+    def unlexify(s: str) -> str:
+        raise Exception("TEST_EXCEPTION")
+
+    datatype = rdflib.URIRef("urn:dt:mystring")
+
+    # Datatype-specific rule
+    bind(datatype, str, unlexify, lexify, datatype_specific=True)
+
+    s = "Hello"
+
+    Literal("--%s--" % s, datatype=datatype)
+
+    assert (
+        caplog.record_tuples[0][1] == logging.WARNING
+        and caplog.record_tuples[0][2].startswith("Failed to convert")
+        and caplog.records[0].exc_info
+        and str(caplog.records[0].exc_info[1]) == "TEST_EXCEPTION"
+    )
