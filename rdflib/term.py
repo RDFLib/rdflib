@@ -1962,6 +1962,8 @@ _GenericPythonToXSDRules: List[
     (Fraction, (None, _OWL_RATIONAL)),
 ]
 
+_OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
+
 _SpecificPythonToXSDRules: List[
     Tuple[Tuple[Type[Any], str], Optional[Callable[[Any], Union[str, bytes]]]]
 ] = [
@@ -1972,6 +1974,8 @@ _SpecificPythonToXSDRules: List[
     ((str, _XSD_B64BINARY), b64encode),
     ((bytes, _XSD_B64BINARY), b64encode),
 ]
+
+_OriginalSpecificPythonToXSDRules = list(_SpecificPythonToXSDRules)
 
 XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     None: None,  # plain literals map directly to value space
@@ -2031,6 +2035,20 @@ _toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # no
 _toPythonMapping.update(XSDToPython)
 
 
+def _reset_bindings() -> None:
+    """
+    Reset lexical<->value space binding for `Literal`
+    """
+    _toPythonMapping.clear()
+    _toPythonMapping.update(XSDToPython)
+
+    _GenericPythonToXSDRules.clear()
+    _GenericPythonToXSDRules.extend(_OriginalGenericPythonToXSDRules)
+
+    _SpecificPythonToXSDRules.clear()
+    _SpecificPythonToXSDRules.extend(_OriginalSpecificPythonToXSDRules)
+
+
 def _castLexicalToPython(  # noqa: N802
     lexical: Union[str, bytes], datatype: Optional[str]
 ) -> Any:
@@ -2038,25 +2056,31 @@ def _castLexicalToPython(  # noqa: N802
     Map a lexical form to the value-space for the given datatype
     :returns: a python object for the value or ``None``
     """
-    convFunc = _toPythonMapping.get(datatype, False)  # noqa: N806
-    if convFunc:
-        if TYPE_CHECKING:
-            # NOTE: This is here because convFunc is seen as
-            # Union[Callable[[str], Any], bool, None]
-            # even though it will never have value of True.
-            assert not isinstance(convFunc, bool)
-        convFunc
+    try:
+        conv_func = _toPythonMapping[datatype]
+    except KeyError:
+        # no conv_func -> unknown data-type
+        return None
+
+    if conv_func is not None:
         try:
             # type error: Argument 1 has incompatible type "Union[str, bytes]"; expected "str"
             # NOTE for type ignore: various functions in _toPythonMapping will
             # only work for str, so there is some inconsistency here, the right
             # approach may be to change lexical to be of str type but this will
             # require runtime changes.
-            return convFunc(lexical)  # type: ignore[arg-type]
-        except:
+            return conv_func(lexical)  # type: ignore[arg-type]
+        except Exception:
+            logger.warning(
+                "Failed to convert Literal lexical form to value. Datatype=%s, "
+                "Converter=%s",
+                datatype,
+                conv_func,
+                exc_info=True,
+            )
             # not a valid lexical representation for this dt
             return None
-    elif convFunc is None:
+    else:
         # no conv func means 1-1 lexical<->value-space mapping
         try:
             return str(lexical)
@@ -2065,9 +2089,6 @@ def _castLexicalToPython(  # noqa: N802
             # NOTE for type ignore: code assumes that lexical is of type bytes
             # at this point.
             return str(lexical, "utf-8")  # type: ignore[arg-type]
-    else:
-        # no convFunc - unknown data-type
-        return None
 
 
 _AnyT = TypeVar("_AnyT", bound=Any)
