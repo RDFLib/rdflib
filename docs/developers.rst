@@ -11,7 +11,7 @@ developing RDFLib code.
 
 * Please be as Pythonic as possible (:pep:`8`).
 * Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v22.3.0, with the black config in ``pyproject.toml``.
-* Code should also pass `flake8 <https://github.com/psf/black>`_ linting
+* Code should also pass `flake8 <https://flake8.pycqa.org/en/latest/>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code.
 
@@ -145,11 +145,20 @@ our black.toml config file:
 
     python -m black --config black.toml --check ./rdflib
 
-Check style and conventions with `flake8 <https://github.com/psf/black>`_:
+Check style and conventions with `flake8 <https://flake8.pycqa.org/en/latest/>`_:
 
 .. code-block:: bash
 
     python -m flake8 rdflib
+
+We also provide a `flakeheaven <https://pypi.org/project/flakeheaven/>`_
+baseline that ignores existing flake8 errors and only reports on newly
+introduced flake8 errors:
+
+.. code-block:: bash
+
+    python -m flakeheaven
+
 
 Check types with `mypy <http://mypy-lang.org/>`_:
 
