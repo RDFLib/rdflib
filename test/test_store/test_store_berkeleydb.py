@@ -1,4 +1,4 @@
-from tempfile import mktemp
+import tempfile
 
 import pytest
 
@@ -13,7 +13,7 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture
 def get_graph():
-    path = mktemp()
+    path = tempfile.NamedTemporaryFile().name
     g = ConjunctiveGraph("BerkeleyDB")
     rt = g.open(path, create=True)
     assert rt == VALID_STORE, "The underlying store is corrupt"
