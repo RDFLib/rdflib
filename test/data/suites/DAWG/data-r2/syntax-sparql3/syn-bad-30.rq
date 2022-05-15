@@ -1,2 +1,0 @@
-# Syntactic blank node in a filter.
-SELECT * WHERE { <a><b>_:x FILTER(_:x < 3) }
