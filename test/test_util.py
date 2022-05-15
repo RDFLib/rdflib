@@ -367,7 +367,7 @@ def test__coalesce(params: Collection[Any], expected_result: Any) -> None:
     ["graph_sources", "prop", "roots", "expected_result"],
     [
         (
-            (TEST_DATA_DIR / "rdfs.ttl",),
+            (TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",),
             RDFS.subClassOf,
             None,
             {RDF.Property, RDFS.Resource},
@@ -381,7 +381,7 @@ def test__coalesce(params: Collection[Any], expected_result: Any) -> None:
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFS.subClassOf,
             None,
@@ -429,7 +429,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFT.TestTurtlePositiveSyntax,
             RDFS.subClassOf,
@@ -439,7 +439,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFT.TestTurtlePositiveSyntax,
             RDFS.subClassOf,
@@ -454,7 +454,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFS.Resource,
             RDFS.subClassOf,
@@ -471,7 +471,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFS.Resource,
             RDFS.subClassOf,
@@ -481,7 +481,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFT.Test,
             RDFS.subClassOf,
@@ -517,7 +517,7 @@ def test_find_roots(
         (
             (
                 TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
-                TEST_DATA_DIR / "rdfs.ttl",
+                TEST_DATA_DIR / "defined_namespaces/rdfs.ttl",
             ),
             RDFT.Test,
             RDFS.subClassOf,
