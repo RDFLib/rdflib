@@ -15,4 +15,4 @@ pytest_plugins = [EarlReporter.__module__]
 
 @pytest.fixture(scope="session")
 def rdfs_graph() -> Graph:
-    return Graph().parse(TEST_DATA_DIR / "rdfs.ttl", format="turtle")
+    return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
