@@ -18,12 +18,12 @@ Example 2: larger data
 import os
 from rdflib import ConjunctiveGraph, Namespace, Literal
 from rdflib.store import NO_STORE, VALID_STORE
-from tempfile import mktemp
+import tempfile
 
 
 def example_1():
     """Creates a ConjunctiveGraph and performs some BerkeleyDB tasks with it"""
-    path = mktemp()
+    path = tempfile.NamedTemporaryFile().name
 
     # Declare we are using a BerkeleyDB Store
     graph = ConjunctiveGraph("BerkeleyDB")
