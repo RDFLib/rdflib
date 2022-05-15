@@ -1,3 +1,31 @@
+[tool.flakeheaven]
+format = "grouped"
+baseline = ".flakeheaven.baseline"
+
+[tool.flakeheaven.plugins]
+pycodestyle = [
+  "+*",
+  # mirrored from setup.cfg
+  "-E501",
+  "-E203",
+  "-W503"
+]
+pyflakes = [
+  "+*",
+]
+pep8-naming = ["+*"]
+
+[tool.flakeheaven.exceptions."rdflib/plugins/sparql/*"]
+pep8-naming = [
+  "-N802",
+  "-N803",
+  "-N806",
+  "-N812",
+  "-N816",
+  "-N801",
+]
+
+
 [tool.black]
 required-version = "22.3.0"
 line-length = "88"

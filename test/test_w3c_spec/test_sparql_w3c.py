@@ -101,16 +101,7 @@ def bopen_read_close(fn):
         return f.read()
 
 
-try:
-    with open("skiptests.list") as skip_tests_f:
-        skiptests = dict(
-            [
-                (URIRef(x.strip().split("\t")[0]), x.strip().split("\t")[1])
-                for x in skip_tests_f
-            ]
-        )
-except IOError:
-    skiptests = dict()
+from test.test_w3c_spec.test_sparql_w3c_skipped import skiptests
 
 
 def _fmt(f):
@@ -546,7 +537,7 @@ def handle_flags():
 
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/suites/DAWG/data-r2/manifest-evaluation.ttl"),
+    read_manifest("test/data/suites/w3c/dawg-data-r2/manifest-evaluation.ttl"),
 )
 def test_dawg_data_sparql10(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
     testers[type](rdf_test)
@@ -560,9 +551,22 @@ def test_dawg_data_sparql11(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest)
     testers[type](rdf_test)
 
 
+EXPECTED_FAILURES: Dict[str, str] = {}
+
+for test in [
+    "test-codepoint-escape-02",
+    "test-codepoint-escape-03",
+    "test-codepoint-escape-04",
+]:
+    EXPECTED_FAILURES[test] = "known codepoint escape issue"
+
+
 @pytest.mark.parametrize(
     "rdf_test_uri, type, rdf_test",
-    read_manifest("test/data/suites/DAWG/rdflib/manifest.ttl"),
+    read_manifest("test/data/suites/rdflib/sparql/manifest.ttl"),
 )
 def test_dawg_rdflib(rdf_test_uri: URIRef, type: Node, rdf_test: RDFTest):
+    suffix = rdf_test_uri.split("#")[1]
+    if suffix in EXPECTED_FAILURES:
+        pytest.xfail(EXPECTED_FAILURES[suffix])
     testers[type](rdf_test)

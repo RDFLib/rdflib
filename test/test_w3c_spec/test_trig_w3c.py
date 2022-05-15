@@ -4,7 +4,8 @@
 
 import os
 from test.data import TEST_DATA_DIR
-from test.utils.manifest import RDFT, RDFTest, read_manifest
+from test.utils.manifest import RDFTest, read_manifest
+from test.utils.namespace import RDFT
 from typing import Callable, Dict
 
 import pytest

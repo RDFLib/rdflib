@@ -9,7 +9,7 @@ on:
 env:
   FORCE_COLOR: 1
   XDG_CACHE_HOME: ${{ github.workspace }}/cache
-  DEFAULT_PYTHON: "3.7"
+  PIP_CACHE_DIR: ${{ github.workspace }}/pip-cache
 
 jobs:
   validate:
@@ -35,32 +35,26 @@ jobs:
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Get pip cache dir
-        id: pip-cache
-        shell: bash
-        run: |
-          python -m ensurepip
-          echo "::set-output name=dir::$(pip cache dir)"
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: ${{ steps.pip-cache.outputs.dir }}
+          path: ${{ env.PIP_CACHE_DIR }}
           key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
             hashFiles('**/setup.py', '**/*requirements*.txt') }}
           restore-keys: |
             ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-
       - name: Cache xdg
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ matrix.os }}-xdg-v1-${{ hashFiles('**/with-fuseki.sh') }}
@@ -81,6 +75,36 @@ jobs:
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  extra-tasks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - task: "gha:flake8"
+          python-version: 3.8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{env.DEFAULT_PYTHON}}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: tox-${{ matrix.task }}-pip-v1-${{
+            hashFiles('**/setup.py', '**/requirements*.txt') }}
+          restore-keys: |
+            tox-${{ matrix.task }}-pip-v1-
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run task
+        shell: bash
+        run: |
+          task ${{ matrix.task }}
   finish:
     permissions:
       contents: read
