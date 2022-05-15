@@ -538,14 +538,14 @@ class NamespaceManager(object):
         # only the strict output should bear the overhead
         namespace: str
         prefix: Optional[str]
-        prefix, namespace, name = self.compute_qname(uri)
+        prefix, namespace, name = self.compute_qname(uri, generate)
         if is_ncname(str(name)):
             return prefix, namespace, name
         else:
             if uri not in self.__cache_strict:
                 try:
                     namespace, name = split_uri(uri, NAME_START_CATEGORIES)
-                except ValueError as e:
+                except ValueError:
                     message = (
                         "This graph cannot be serialized to a strict format "
                         "because there is no valid way to shorten {}".format(uri)
