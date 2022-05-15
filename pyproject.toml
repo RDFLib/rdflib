@@ -14,7 +14,16 @@ pyflakes = [
   "+*",
 ]
 pep8-naming = ["+*"]
-"flake8-*" = ["+*"]
+
+[tool.flakeheaven.exceptions."rdflib/plugins/sparql/*"]
+pep8-naming = [
+  "-N802",
+  "-N803",
+  "-N806",
+  "-N812",
+  "-N816",
+  "-N801",
+]
 
 
 [tool.black]
