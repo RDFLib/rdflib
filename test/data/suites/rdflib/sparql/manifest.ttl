@@ -5,7 +5,7 @@
 
 @prefix dawgt: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 
-@prefix :      <http://raw.github.com/RDFLib/rdflib/master/test/DAWG/rdflib/manifest.ttl#> .
+@prefix :      <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#> .
 
 <> a mf:Manifest ;
 	rdfs:label "RDFLib Extra SPARQL tests" ;
@@ -40,6 +40,12 @@
     :bnode-ppath-mix-f
     :bnode-ppath-mix-g
     :bnode-ppath-mix-h
+
+    :test-codepoint-escape-01
+    :test-codepoint-escape-02
+    :test-codepoint-escape-03
+    :test-codepoint-escape-04
+    :test-codepoint-escape-bad
 
 	) .
 
@@ -363,3 +369,35 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
            qt:data <bnode-ppath-mix.ttl> ] ;
     mf:result  <bnode-ppath-mix.srx>
     .
+
+:test-codepoint-escape-01 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "\\U unicode codepoint escaping in literal" ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:action  <syn-codepoint-escape-01.rq> ;.
+
+:test-codepoint-escape-02 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\u unicode codepoint escaping in literal" ;
+    mf:action  <syn-codepoint-escape-02.rq> ;.
+
+:test-codepoint-escape-03 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\u and \\U unicode codepoint escaping in literal" ;
+    mf:action  <syn-codepoint-escape-03.rq> ;.
+
+:test-codepoint-escape-04 rdf:type   mf:PositiveSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "\\U and \\U unicode codepoints escaping in literal" ;
+    mf:action  <syn-codepoint-escape-04.rq> ;.
+
+:test-codepoint-escape-bad rdf:type   mf:NegativeSyntaxTest11 ;
+    dawgt:approval dawgt:Proposed ;
+    rdfs:comment """From https://github.com/RDFLib/rdflib/issues/1884, contributed by https://github.com/gjhiggins""" ;
+    mf:name    "Invalid multi-pass codepoint escaping (\\u then \\U)" ;
+    mf:description "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
+    mf:action  <syn-codepoint-escape-bad.rq> ;.
+

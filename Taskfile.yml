@@ -57,6 +57,11 @@ tasks:
     cmds:
       - "{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if .INSTALL_PIP_EXTRAS}}-r requirements.dev-extras.txt{{end}}"
 
+  install:flake8:
+    desc: Install flake8 dependencies
+    cmds:
+      - "{{._PYTHON}} -m pip install --upgrade -r requirements.flake8.txt"
+
   install:deps:
     desc: Install all dependencies
     cmds:
@@ -96,6 +101,11 @@ tasks:
     cmds:
       - "{{.TEST_HARNESS}}{{._PYTHON}} -m pytest {{if .WITH_COVERAGE}}--cov --cov-report={{end}} {{.CLI_ARGS}}"
 
+  flake8:
+    desc: Run flake8
+    cmds:
+      - "{{._PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}"
+
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
@@ -107,6 +117,8 @@ tasks:
     cmds:
       - "{{._PYTHON}} -m isort --check --diff ."
       - "{{._PYTHON}} -m black --check --diff ."
+      - task: flake8
+
 
   validate:static:
     desc: Perform static validation
@@ -211,6 +223,13 @@ tasks:
         vars:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
+
+
+  gha:flake8:
+    desc: GitHub Actions flake8 workflow
+    cmds:
+      - task: install:flake8
+      - task: flake8
 
   _rimraf:
     # This task is a utility task for recursively removing directories, it is

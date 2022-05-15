@@ -1,8 +1,0 @@
-@prefix ns: <http://example.org/ns#> .
-@prefix x:  <http://example.org/x/> .
-@prefix z:  <http://example.org/x/#> .
-
-x:x ns:p  "d:x ns:p" .
-x:x x:p   "x:x x:p" .
-
-z:x z:p   "z:x z:p" .
