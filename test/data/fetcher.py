@@ -220,6 +220,10 @@ RESOURCES: List[Resource] = [
         ),
         local_path=(DATA_PATH / "defined_namespaces/rdfs.ttl"),
     ),
+    FileResource(
+        remote=Request("https://www.w3.org/ns/rdftest.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
+    ),
 ]
 
 

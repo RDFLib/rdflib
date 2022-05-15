@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import time
-from typing import Any, Collection, Tuple
+from contextlib import ExitStack
+from pathlib import Path
+from test.data import TEST_DATA_DIR
+from test.utils.graph import cached_graph
+from test.utils.namespace import RDFT
+from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
 from unittest.case import expectedFailure
 
 import pytest
 
 from rdflib import XSD, util
 from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
-from rdflib.term import BNode, Literal, URIRef
-from rdflib.util import _coalesce
+from rdflib.namespace import RDF, RDFS
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+from rdflib.util import _coalesce, find_roots, get_tree
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -354,3 +361,190 @@ class TestUtilTermConvert:
 )
 def test__coalesce(params: Collection[Any], expected_result: Any) -> None:
     assert expected_result == _coalesce(*params)
+
+
+@pytest.mark.parametrize(
+    ["graph_sources", "prop", "roots", "expected_result"],
+    [
+        (
+            (TEST_DATA_DIR / "rdfs.ttl",),
+            RDFS.subClassOf,
+            None,
+            {RDF.Property, RDFS.Resource},
+        ),
+        (
+            (TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",),
+            RDFS.subClassOf,
+            None,
+            {RDFT.Approval, RDFT.Test},
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFS.subClassOf,
+            None,
+            {RDFT.Approval, RDFT.Test, RDF.Property, RDFS.Resource},
+        ),
+        (
+            tuple(),
+            RDFS.subClassOf,
+            None,
+            set(),
+        ),
+        (
+            tuple(),
+            RDFS.subClassOf,
+            {RDFS.Resource},
+            {RDFS.Resource},
+        ),
+    ],
+)
+def test_find_roots(
+    graph_sources: Tuple[Path, ...],
+    prop: URIRef,
+    roots: Optional[Set[Node]],
+    expected_result: Union[Set[URIRef], Type[Exception]],
+) -> None:
+
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+
+    graph = cached_graph(graph_sources)
+
+    with ExitStack() as xstack:
+        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            catcher = xstack.enter_context(pytest.raises(expected_result))
+        result = find_roots(graph, prop, roots)
+    if catcher is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+    else:
+        assert expected_result == result
+
+
+@pytest.mark.parametrize(
+    ["graph_sources", "root", "prop", "dir", "expected_result"],
+    [
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFT.TestTurtlePositiveSyntax,
+            RDFS.subClassOf,
+            "down",
+            (RDFT.TestTurtlePositiveSyntax, []),
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFT.TestTurtlePositiveSyntax,
+            RDFS.subClassOf,
+            "up",
+            (
+                RDFT.TestTurtlePositiveSyntax,
+                [
+                    (RDFT.TestSyntax, [(RDFT.Test, [])]),
+                ],
+            ),
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFS.Resource,
+            RDFS.subClassOf,
+            "down",
+            (
+                RDFS.Resource,
+                [
+                    (RDFS.Class, [(RDFS.Datatype, [])]),
+                    (RDFS.Container, []),
+                    (RDFS.Literal, []),
+                ],
+            ),
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFS.Resource,
+            RDFS.subClassOf,
+            "up",
+            (RDFS.Resource, []),
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFT.Test,
+            RDFS.subClassOf,
+            "down",
+            (
+                RDFT.Test,
+                [
+                    (
+                        RDFT.TestEval,
+                        [
+                            (RDFT.TestTrigNegativeEval, []),
+                            (RDFT.TestTurtleEval, []),
+                            (RDFT.TestTurtleNegativeEval, []),
+                            (RDFT.XMLEval, []),
+                        ],
+                    ),
+                    (
+                        RDFT.TestSyntax,
+                        [
+                            (RDFT.TestNQuadsNegativeSyntax, []),
+                            (RDFT.TestNQuadsPositiveSyntax, []),
+                            (RDFT.TestNTriplesNegativeSyntax, []),
+                            (RDFT.TestNTriplesPositiveSyntax, []),
+                            (RDFT.TestTriGNegativeSyntax, []),
+                            (RDFT.TestTriGPositiveSyntax, []),
+                            (RDFT.TestTurtleNegativeSyntax, []),
+                            (RDFT.TestTurtlePositiveSyntax, []),
+                        ],
+                    ),
+                ],
+            ),
+        ),
+        (
+            (
+                TEST_DATA_DIR / "defined_namespaces/rdftest.ttl",
+                TEST_DATA_DIR / "rdfs.ttl",
+            ),
+            RDFT.Test,
+            RDFS.subClassOf,
+            "up",
+            (RDFT.Test, []),
+        ),
+    ],
+)
+def test_get_tree(
+    graph_sources: Tuple[Path, ...],
+    root: IdentifiedNode,
+    prop: URIRef,
+    dir: str,
+    expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
+) -> None:
+
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+
+    graph = cached_graph(graph_sources)
+
+    with ExitStack() as xstack:
+        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            catcher = xstack.enter_context(pytest.raises(expected_result))
+        result = get_tree(graph, root, prop, dir=dir)
+        logging.debug("result = %s", result)
+    if catcher is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+    else:
+        assert expected_result == result
