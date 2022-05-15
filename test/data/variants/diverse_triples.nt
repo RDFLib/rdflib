@@ -1,0 +1,5 @@
+<http://example.com/subject> <http://example.com/predicate> "日本語の表記体系"@jpx .
+<urn:example:subject> <example:predicate> <example:subject> .
+<example:object> <http://example.com/predicate> "XSD string" .
+<example:subject> <example:predicate> <example:object> .
+<example:subject> <example:predicate> "12"^^<http://www.w3.org/2001/XMLSchema#integer> .

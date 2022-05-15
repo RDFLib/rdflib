@@ -164,6 +164,26 @@ XFAILS = {
         """,
         raises=AssertionError,
     ),
+    ("json-ld", "diverse_quads.trig"): pytest.mark.xfail(
+        reason="""
+    jsonld serializer is dropping datatype:
+        only in first:
+            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')))
+        only in second:
+            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string'))
+    """,
+        raises=AssertionError,
+    ),
+    ("hext", "diverse_quads.trig"): pytest.mark.xfail(
+        reason="""
+    hext serializer is dropping datatype:
+        only in first:
+            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#string')))
+        only in second:
+            (rdflib.term.URIRef('example:subject'), rdflib.term.URIRef('http://example.com/predicate'), rdflib.term.Literal('XSD string'))
+    """,
+        raises=AssertionError,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -291,6 +311,9 @@ EXTRA_FILES = [
     (TEST_DATA_DIR / "variants" / "rdf_prefix.jsonld", "json-ld"),
     (TEST_DATA_DIR / "variants" / "simple_quad.trig", "trig"),
     (TEST_DATA_DIR / "variants" / "rdf11trig_eg2.trig", "trig"),
+    (TEST_DATA_DIR / "variants" / "diverse_triples.nt", "ntriples"),
+    (TEST_DATA_DIR / "variants" / "diverse_quads.nq", "nquads"),
+    (TEST_DATA_DIR / "variants" / "diverse_quads.trig", "trig"),
     (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
     (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]

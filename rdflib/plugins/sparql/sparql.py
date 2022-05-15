@@ -1,24 +1,26 @@
 import collections
 import datetime
 import itertools
+import typing as t
+from typing import Any, Container, Dict, Iterable, List, Optional, Tuple, Union
 
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef, Variable
 from rdflib.compat import Mapping, MutableMapping
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
-from rdflib.term import Node
+from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
 
 
 class SPARQLError(Exception):
-    def __init__(self, msg=None):
+    def __init__(self, msg: Optional[str] = None):
         Exception.__init__(self, msg)
 
 
 class NotBoundError(SPARQLError):
-    def __init__(self, msg=None):
+    def __init__(self, msg: Optional[str] = None):
         SPARQLError.__init__(self, msg)
 
 
@@ -30,7 +32,7 @@ class AlreadyBound(SPARQLError):
 
 
 class SPARQLTypeError(SPARQLError):
-    def __init__(self, msg):
+    def __init__(self, msg: Optional[str]):
         SPARQLError.__init__(self, msg)
 
 
@@ -45,11 +47,11 @@ class Bindings(MutableMapping):
     In python 3.3 this could be a collections.ChainMap
     """
 
-    def __init__(self, outer=None, d=[]):
-        self._d = dict(d)
+    def __init__(self, outer: Optional["Bindings"] = None, d=[]):
+        self._d: Dict[str, str] = dict(d)
         self.outer = outer
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> str:
         if key in self._d:
             return self._d[key]
 
@@ -57,26 +59,26 @@ class Bindings(MutableMapping):
             raise KeyError()
         return self.outer[key]
 
-    def __contains__(self, key):
+    def __contains__(self, key: Any) -> bool:
         try:
             self[key]
             return True
         except KeyError:
             return False
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> None:
         self._d[key] = value
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: str) -> None:
         raise Exception("DelItem is not implemented!")
 
     def __len__(self) -> int:
         i = 0
-        d = self
+        d: Optional[Bindings] = self
         while d is not None:
             i += len(d._d)
             d = d.outer
-        return i  # type: ignore[unreachable]
+        return i
 
     def __iter__(self):
         d = self
@@ -84,10 +86,11 @@ class Bindings(MutableMapping):
             yield from d._d
             d = d.outer
 
-    def __str__(self):
-        return "Bindings({" + ", ".join((k, self[k]) for k in self) + "})"
+    def __str__(self) -> str:
+        # type error: Generator has incompatible item type "Tuple[Any, str]"; expected "str"
+        return "Bindings({" + ", ".join((k, self[k]) for k in self) + "})"  # type: ignore[misc]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
 
@@ -99,20 +102,20 @@ class FrozenDict(Mapping):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        self._d = dict(*args, **kwargs)
-        self._hash = None
+    def __init__(self, *args: Any, **kwargs: Any):
+        self._d: Dict[Identifier, Identifier] = dict(*args, **kwargs)
+        self._hash: Optional[int] = None
 
     def __iter__(self):
         return iter(self._d)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._d)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Identifier) -> Identifier:
         return self._d[key]
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         # It would have been simpler and maybe more obvious to
         # use hash(tuple(sorted(self._d.items()))) from this discussion
         # so far, but this solution is O(n). I don't know what kind of
@@ -125,13 +128,13 @@ class FrozenDict(Mapping):
                 self._hash ^= hash(value)
         return self._hash
 
-    def project(self, vars):
+    def project(self, vars: Container[Variable]) -> "FrozenDict":
         return FrozenDict((x for x in self.items() if x[0] in vars))
 
-    def disjointDomain(self, other):
+    def disjointDomain(self, other: t.Mapping[Identifier, Identifier]) -> bool:
         return not bool(set(self).intersection(other))
 
-    def compatible(self, other):
+    def compatible(self, other: t.Mapping[Identifier, Identifier]) -> bool:
         for k in self:
             try:
                 if self[k] != other[k]:
@@ -141,24 +144,24 @@ class FrozenDict(Mapping):
 
         return True
 
-    def merge(self, other):
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenDict":
         res = FrozenDict(itertools.chain(self.items(), other.items()))
 
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._d)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self._d)
 
 
 class FrozenBindings(FrozenDict):
-    def __init__(self, ctx, *args, **kwargs):
+    def __init__(self, ctx: "QueryContext", *args, **kwargs):
         FrozenDict.__init__(self, *args, **kwargs)
         self.ctx = ctx
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Union[Identifier, str]) -> Identifier:
 
         if not isinstance(key, Node):
             key = Variable(key)
@@ -167,30 +170,34 @@ class FrozenBindings(FrozenDict):
             return key
 
         if key not in self._d:
-            return self.ctx.initBindings[key]
+            # type error: Value of type "Optional[Dict[Variable, Identifier]]" is not indexable
+            # type error: Invalid index type "Union[BNode, Variable]" for "Optional[Dict[Variable, Identifier]]"; expected type "Variable"
+            return self.ctx.initBindings[key]  # type: ignore[index]
         else:
             return self._d[key]
 
-    def project(self, vars):
+    def project(self, vars: Container[Variable]) -> "FrozenBindings":
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in vars))
 
-    def merge(self, other):
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenBindings":
         res = FrozenBindings(self.ctx, itertools.chain(self.items(), other.items()))
         return res
 
     @property
-    def now(self):
+    def now(self) -> datetime.datetime:
         return self.ctx.now
 
     @property
-    def bnodes(self):
+    def bnodes(self) -> t.Mapping[Identifier, BNode]:
         return self.ctx.bnodes
 
     @property
-    def prologue(self):
+    def prologue(self) -> Optional["Prologue"]:
         return self.ctx.prologue
 
-    def forget(self, before, _except=None):
+    def forget(
+        self, before: "QueryContext", _except: Optional[Container[Variable]] = None
+    ):
         """
         return a frozen dict only of bindings made in self
         since before
@@ -206,7 +213,8 @@ class FrozenBindings(FrozenDict):
                 for x in self.items()
                 if (
                     x[0] in _except
-                    or x[0] in self.ctx.initBindings
+                    # type error: Unsupported right operand type for in ("Optional[Dict[Variable, Identifier]]")
+                    or x[0] in self.ctx.initBindings  # type: ignore[operator]
                     or before[x[0]] is None
                 )
             ),
@@ -224,12 +232,19 @@ class QueryContext(object):
     Query context - passed along when evaluating the query
     """
 
-    def __init__(self, graph=None, bindings=None, initBindings=None):
+    def __init__(
+        self,
+        graph: Optional[Graph] = None,
+        bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
+        initBindings: Optional[Dict[Variable, Identifier]] = None,
+    ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
         if initBindings:
             self.bindings.update(initBindings)
 
+        self.graph: Optional[Graph]
+        self._dataset: Optional[ConjunctiveGraph]
         if isinstance(graph, ConjunctiveGraph):
             self._dataset = graph
             if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
@@ -240,10 +255,12 @@ class QueryContext(object):
             self._dataset = None
             self.graph = graph
 
-        self.prologue = None
-        self._now = None
+        self.prologue: Optional[Prologue] = None
+        self._now: Optional[datetime.datetime] = None
 
-        self.bnodes = collections.defaultdict(BNode)
+        self.bnodes: t.MutableMapping[Identifier, BNode] = collections.defaultdict(
+            BNode
+        )
 
     @property
     def now(self) -> datetime.datetime:
@@ -251,7 +268,9 @@ class QueryContext(object):
             self._now = datetime.datetime.now(isodate.tzinfo.UTC)
         return self._now
 
-    def clone(self, bindings=None):
+    def clone(
+        self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
+    ) -> "QueryContext":
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
             bindings or self.bindings,
@@ -263,7 +282,7 @@ class QueryContext(object):
         return r
 
     @property
-    def dataset(self):
+    def dataset(self) -> ConjunctiveGraph:
         """ "current dataset"""
         if self._dataset is None:
             raise Exception(
@@ -273,7 +292,7 @@ class QueryContext(object):
             )
         return self._dataset
 
-    def load(self, source, default=False, **kwargs):
+    def load(self, source: URIRef, default: bool = False, **kwargs):
         def _load(graph, source):
             try:
                 return graph.parse(source, format="turtle", **kwargs)
@@ -298,7 +317,8 @@ class QueryContext(object):
             # we are not loading - if we already know the graph
             # being "loaded", just add it to the default-graph
             if default:
-                self.graph += self.dataset.get_context(source)
+                # Unsupported left operand type for + ("None")
+                self.graph += self.dataset.get_context(source)  # type: ignore[operator]
         else:
 
             if default:
@@ -306,7 +326,7 @@ class QueryContext(object):
             else:
                 _load(self.dataset, source)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Any:
         # in SPARQL BNodes are just labels
         if not isinstance(key, (BNode, Variable)):
             return key
@@ -315,13 +335,13 @@ class QueryContext(object):
         except KeyError:
             return None
 
-    def get(self, key, default=None):
+    def get(self, key: Variable, default: Optional[Any] = None):
         try:
             return self[key]
         except KeyError:
             return default
 
-    def solution(self, vars=None):
+    def solution(self, vars: Optional[Iterable[Variable]] = None) -> FrozenBindings:
         """
         Return a static copy of the current variable bindings as dict
         """
@@ -332,25 +352,25 @@ class QueryContext(object):
         else:
             return FrozenBindings(self, self.bindings.items())
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Identifier, value: Identifier) -> None:
         if key in self.bindings and self.bindings[key] != value:
             raise AlreadyBound()
 
         self.bindings[key] = value
 
-    def pushGraph(self, graph):
+    def pushGraph(self, graph: Optional[Graph]) -> "QueryContext":
         r = self.clone()
         r.graph = graph
         return r
 
-    def push(self):
+    def push(self) -> "QueryContext":
         r = self.clone(Bindings(self.bindings))
         return r
 
-    def clean(self):
+    def clean(self) -> "QueryContext":
         return self.clone([])
 
-    def thaw(self, frozenbindings):
+    def thaw(self, frozenbindings: FrozenBindings) -> "QueryContext":
         """
         Create a new read/write query context from the given solution
         """
@@ -365,19 +385,21 @@ class Prologue:
     """
 
     def __init__(self):
-        self.base = None
+        self.base: Optional[str] = None
         self.namespace_manager = NamespaceManager(Graph())  # ns man needs a store
 
-    def resolvePName(self, prefix, localname):
+    def resolvePName(self, prefix: Optional[str], localname: Optional[str]) -> URIRef:
         ns = self.namespace_manager.store.namespace(prefix or "")
         if ns is None:
             raise Exception("Unknown namespace prefix : %s" % prefix)
         return URIRef(ns + (localname or ""))
 
-    def bind(self, prefix, uri):
+    def bind(self, prefix: Optional[str], uri: Any) -> None:
         self.namespace_manager.bind(prefix, uri, replace=True)
 
-    def absolutize(self, iri):
+    def absolutize(
+        self, iri: Optional[Union[CompValue, str]]
+    ) -> Optional[Union[CompValue, str]]:
         """
         Apply BASE / PREFIXes to URIs
         (and to datatypes in Literals)
@@ -389,8 +411,9 @@ class Prologue:
             if iri.name == "pname":
                 return self.resolvePName(iri.prefix, iri.localname)
             if iri.name == "literal":
+                # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, Identifier, None]"; expected "Optional[str]"
                 return Literal(
-                    iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)
+                    iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)  # type: ignore[arg-type]
                 )
         elif isinstance(iri, URIRef) and not ":" in iri:
             return URIRef(iri, base=self.base)
@@ -403,9 +426,10 @@ class Query:
     A parsed and translated query
     """
 
-    def __init__(self, prologue, algebra):
+    def __init__(self, prologue: Prologue, algebra: CompValue):
         self.prologue = prologue
         self.algebra = algebra
+        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
 
 
 class Update:
@@ -413,6 +437,7 @@ class Update:
     A parsed and translated update
     """
 
-    def __init__(self, prologue, algebra):
+    def __init__(self, prologue: Prologue, algebra: List[CompValue]):
         self.prologue = prologue
         self.algebra = algebra
+        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
