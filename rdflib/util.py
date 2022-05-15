@@ -25,12 +25,25 @@ from os.path import splitext
 
 # from time import daylight
 from time import altzone, gmtime, localtime, time, timezone
-from typing import Optional, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+)
 
 import rdflib.graph  # avoid circular dependency
 from rdflib.compat import sign
 from rdflib.namespace import XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, Literal, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
 
 __all__ = [
     "list2set",
@@ -366,7 +379,9 @@ def _get_ext(fpath, lower=True):
     return ext
 
 
-def find_roots(graph, prop, roots=None):
+def find_roots(
+    graph: "Graph", prop: "URIRef", roots: Optional[Set["Node"]] = None
+) -> Set["Node"]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -378,7 +393,7 @@ def find_roots(graph, prop, roots=None):
 
     """
 
-    non_roots = set()
+    non_roots: Set[Node] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -391,8 +406,14 @@ def find_roots(graph, prop, roots=None):
 
 
 def get_tree(
-    graph, root, prop, mapper=lambda x: x, sortkey=None, done=None, dir="down"
-):
+    graph: "Graph",
+    root: "IdentifiedNode",
+    prop: "URIRef",
+    mapper: Callable[["IdentifiedNode"], "IdentifiedNode"] = lambda x: x,
+    sortkey: Optional[Callable[[Any], Any]] = None,
+    done: Optional[Set["IdentifiedNode"]] = None,
+    dir: str = "down",
+) -> Optional[Tuple[IdentifiedNode, List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -414,14 +435,17 @@ def get_tree(
     if done is None:
         done = set()
     if root in done:
-        return
+        # type error: Return value expected
+        return  # type: ignore[return-value]
     done.add(root)
     tree = []
 
+    branches: Iterable[IdentifiedNode]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
-        branches = graph.objects(root, prop)
+        # type error: Incompatible types in assignment (expression has type "Iterable[Node]", variable has type "Iterable[IdentifiedNode]")
+        branches = graph.objects(root, prop)  # type: ignore[assignment]
 
     for branch in branches:
         t = get_tree(graph, branch, prop, mapper, sortkey, done, dir)
