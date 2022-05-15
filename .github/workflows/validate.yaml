@@ -46,7 +46,7 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.PIP_CACHE_DIR }}
           key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
@@ -54,7 +54,7 @@ jobs:
           restore-keys: |
             ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-
       - name: Cache xdg
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ matrix.os }}-xdg-v1-${{ hashFiles('**/with-fuseki.sh') }}
