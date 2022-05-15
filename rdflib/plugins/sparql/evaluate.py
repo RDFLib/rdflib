@@ -405,18 +405,26 @@ def _yieldBindingsFromServiceCallResult(
     res_dict: Dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
-            if r[var]["type"] == "uri":
-                res_dict[Variable(var)] = URIRef(r[var]["value"])
-            elif r[var]["type"] == "bnode":
-                res_dict[Variable(var)] = BNode(r[var]["value"])
-            elif r[var]["type"] == "literal" and "datatype" in r[var]:
+            var_binding = r[var]
+            var_type = var_binding["type"]
+            if var_type == "uri":
+                res_dict[Variable(var)] = URIRef(var_binding["value"])
+            elif var_type == "literal":
                 res_dict[Variable(var)] = Literal(
-                    r[var]["value"], datatype=r[var]["datatype"]
+                    var_binding["value"],
+                    datatype=var_binding.get("datatype"),
+                    lang=var_binding.get("xml:lang"),
                 )
-            elif r[var]["type"] == "literal" and "xml:lang" in r[var]:
+            # This is here because of
+            # https://www.w3.org/TR/2006/NOTE-rdf-sparql-json-res-20061004/#variable-binding-results
+            elif var_type == "typed-literal":
                 res_dict[Variable(var)] = Literal(
-                    r[var]["value"], lang=r[var]["xml:lang"]
+                    var_binding["value"], datatype=URIRef(var_binding["datatype"])
                 )
+            elif var_type == "bnode":
+                res_dict[Variable(var)] = BNode(var_binding["value"])
+            else:
+                raise ValueError(f"invalid type {var_type!r} for variable {var!r}")
     yield FrozenBindings(ctx, res_dict)
 
 
