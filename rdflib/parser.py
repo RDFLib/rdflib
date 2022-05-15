@@ -183,7 +183,8 @@ class StringInputSource(InputSource):
 
 
 headers = {
-    "User-agent": "rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)" % __version__
+    "User-agent": "rdflib-%s (https://rdflib.github.io/; eikeon@eikeon.com)"
+    % __version__
 }
 
 

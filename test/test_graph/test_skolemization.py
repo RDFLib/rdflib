@@ -22,10 +22,15 @@ base_triples = {
     [
         (URIRef("http://example.com"), None),
         (Literal("some string in here ..."), None),
-        (BNode("GMeng4V7"), "http://rdflib.net/.well-known/genid/rdflib/GMeng4V7"),
+        (
+            BNode("GMeng4V7"),
+            "https://rdflib.github.io/.well-known/genid/rdflib/GMeng4V7",
+        ),
         (
             BNode(),
-            re.compile("^" + re.escape("http://rdflib.net/.well-known/genid/rdflib/")),
+            re.compile(
+                "^" + re.escape("https://rdflib.github.io/.well-known/genid/rdflib/")
+            ),
         ),
     ],
 )
@@ -61,9 +66,9 @@ def test_skolemization(
     [
         ("http://example.com", None),
         ("http://example.com/not/.well-known/genid/1", None),
-        ("http://rdflib.net/not/.well-known/genid/1", None),
+        ("https://rdflib.github.io/not/.well-known/genid/1", None),
         ("http://example.com/.well-known/genid/1", re.compile("^N")),
-        ("http://rdflib.net/.well-known/genid/rdflib/GMeng4V7", "GMeng4V7"),
+        ("https://rdflib.github.io/.well-known/genid/rdflib/GMeng4V7", "GMeng4V7"),
     ],
 )
 def test_deskolemization(
