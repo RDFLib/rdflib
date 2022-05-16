@@ -238,7 +238,7 @@ class IdentifiedNode(Identifier):
     def __getnewargs__(self) -> Tuple[str]:
         return (str(self),)
 
-    def toPython(self) -> str:
+    def toPython(self) -> str:  # noqa: N802
         return str(self)
 
 
@@ -317,9 +317,9 @@ class URIRef(IdentifiedNode):
 
     def __repr__(self) -> str:
         if self.__class__ is URIRef:
-            clsName = "rdflib.term.URIRef"
+            clsName = "rdflib.term.URIRef"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
@@ -468,9 +468,9 @@ class BNode(IdentifiedNode):
 
     def __repr__(self) -> str:
         if self.__class__ is BNode:
-            clsName = "rdflib.term.BNode"
+            clsName = "rdflib.term.BNode"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
         return """%s('%s')""" % (clsName, str(self))
 
     def skolemize(
@@ -1603,12 +1603,12 @@ class Literal(Identifier):
         if self.datatype is not None:
             args.append("datatype=%s" % repr(self.datatype))
         if self.__class__ == Literal:
-            clsName = "rdflib.term.Literal"
+            clsName = "rdflib.term.Literal"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
         return """%s(%s)""" % (clsName, ", ".join(args))
 
-    def toPython(self) -> Any:
+    def toPython(self) -> Any:  # noqa: N802
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
@@ -1618,7 +1618,7 @@ class Literal(Identifier):
         return self
 
 
-def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:
+def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
     retval = xml.dom.minidom.parseString(
         "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring
     )
@@ -1626,7 +1626,7 @@ def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:
     return retval
 
 
-def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:
+def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:  # noqa: N802
     try:
         import html5lib
 
@@ -1641,7 +1641,7 @@ def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:
         )
 
 
-def _writeXML(
+def _writeXML(  # noqa: N802
     xmlnode: Union[xml.dom.minidom.Document, xml.dom.minidom.DocumentFragment]
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
@@ -1668,7 +1668,7 @@ def _unhexlify(value: Union[str, bytes, Literal]) -> bytes:
     return unhexlify(value)
 
 
-def _parseBoolean(value: Union[str, bytes]) -> bool:
+def _parseBoolean(value: Union[str, bytes]) -> bool:  # noqa: N802
     """
     Boolean is a datatype with value space {true,false},
     lexical space {"true", "false","1","0"} and
@@ -1895,7 +1895,7 @@ _STRING_LITERAL_TYPES: Tuple[URIRef, ...] = (
 
 def _py2literal(
     obj: Any,
-    pType: Any,
+    pType: Any,  # noqa: N803
     castFunc: Optional[Callable[[Any], Any]],
     dType: Optional[str],
 ) -> Tuple[Any, Optional[str]]:
@@ -1907,20 +1907,20 @@ def _py2literal(
         return obj, None
 
 
-def _castPythonToLiteral(
+def _castPythonToLiteral(  # noqa: N802
     obj: Any, datatype: Optional[str]
 ) -> Tuple[Any, Optional[str]]:
     """
     Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    castFunc: Optional[Callable[[Any], Union[str, bytes]]]
-    dType: Optional[str]
-    for (pType, dType), castFunc in _SpecificPythonToXSDRules:
+    castFunc: Optional[Callable[[Any], Union[str, bytes]]]  # noqa: N806
+    dType: Optional[str]  # noqa: N806
+    for (pType, dType), castFunc in _SpecificPythonToXSDRules:  # noqa: N806
         if isinstance(obj, pType) and dType == datatype:
             return _py2literal(obj, pType, castFunc, dType)
 
-    for pType, (castFunc, dType) in _GenericPythonToXSDRules:
+    for pType, (castFunc, dType) in _GenericPythonToXSDRules:  # noqa: N806
         if isinstance(obj, pType):
             return _py2literal(obj, pType, castFunc, dType)
     return obj, None  # TODO: is this right for the fall through case?
@@ -2024,17 +2024,19 @@ _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]]
     URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
 }
 
-_toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}
+_toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # noqa: N816
 
 _toPythonMapping.update(XSDToPython)
 
 
-def _castLexicalToPython(lexical: Union[str, bytes], datatype: Optional[str]) -> Any:
+def _castLexicalToPython(  # noqa: N802
+    lexical: Union[str, bytes], datatype: Optional[str]
+) -> Any:
     """
     Map a lexical form to the value-space for the given datatype
     :returns: a python object for the value or ``None``
     """
-    convFunc = _toPythonMapping.get(datatype, False)
+    convFunc = _toPythonMapping.get(datatype, False)  # noqa: N806
     if convFunc:
         if TYPE_CHECKING:
             # NOTE: This is here because convFunc is seen as
@@ -2069,7 +2071,7 @@ def _castLexicalToPython(lexical: Union[str, bytes], datatype: Optional[str]) ->
 _AnyT = TypeVar("_AnyT", bound=Any)
 
 
-def _normalise_XSD_STRING(lexical_or_value: _AnyT) -> _AnyT:
+def _normalise_XSD_STRING(lexical_or_value: _AnyT) -> _AnyT:  # noqa: N802
     """
     Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
     """
@@ -2142,13 +2144,13 @@ class Variable(Identifier):
 
     def __repr__(self) -> str:
         if self.__class__ is Variable:
-            clsName = "rdflib.term.Variable"
+            clsName = "rdflib.term.Variable"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
 
         return """%s(%s)""" % (clsName, super(Variable, self).__repr__())
 
-    def toPython(self) -> str:
+    def toPython(self) -> str:  # noqa: N802
         return "?%s" % self
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
@@ -2166,7 +2168,7 @@ _ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 
-def _isEqualXMLNode(
+def _isEqualXMLNode(  # noqa: N802
     node: Union[
         None,
         xml.dom.minidom.Attr,
