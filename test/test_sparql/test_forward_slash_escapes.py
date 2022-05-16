@@ -204,6 +204,8 @@ def _test_query_prepares(query_string: str) -> None:
         "kb": "http://example.org/kb/",
         "owl": "http://www.w3.org/2002/07/owl#",
     }
+    # TODO: A 'strict' flag for prepareQuery is under consideration to
+    # adjust parse behavior around backslash characters.
     query_object = prepareQuery(query_string, initNs=nsdict)
 
 
