@@ -245,7 +245,7 @@ def _test_escapes_and_query(
     try:
         query_object = prepareQuery(query_string)
         query_compiled = True
-    except:
+    except Exception:
         pass
     assert expected_query_compiled == query_compiled
 
