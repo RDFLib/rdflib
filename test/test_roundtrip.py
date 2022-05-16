@@ -373,7 +373,7 @@ def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Pat
 
 N3_W3C_SUITE_DIR = Path(TEST_DATA_DIR) / "suites" / "w3c" / "n3"
 
-"""
+r"""
 List generated with:
 
 sparql --base '.' --query <(echo '
