@@ -1,0 +1,10 @@
+<http://example.com/subject> <http://example.com/predicate> "日本語の表記体系"@jpx <example:graph> .
+<urn:example:subject> <example:predicate> <example:subject> <example:graph> .
+<example:subject> <example:predicate> <example:object> <example:graph> .
+<example:subject> <example:predicate> "12"^^<http://www.w3.org/2001/XMLSchema#integer> <example:graph> .
+<example:subject> <example:predicate> <example:object> <urn:example:graph> .
+<example:subject> <http://example.com/predicate> <http://example.com/object> <urn:example:graph> .
+<example:subject> <http://example.com/predicate> "XSD string" <urn:example:graph> .
+<example:subject> <example:predicate> <example:object> .
+<http://example.com/subject> <http://example.com/predicate> "typeless" .
+<urn:example:subject> <urn:example:predicate> <urn:example:object> .

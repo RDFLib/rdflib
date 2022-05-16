@@ -1,8 +1,0 @@
-# Example 2 from
-# http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096
-# $Id: normalization-03.rq,v 1.1 2005/08/09 14:35:26 eric Exp $
-PREFIX : <http://example/vocab#>
-PREFIX p2: <http://example.com:80/#>
-
-SELECT ?S WHERE { ?S :p p2:abc }
-

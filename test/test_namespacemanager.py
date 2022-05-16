@@ -162,3 +162,11 @@ def test_nman_bind_namespaces(
         graph.namespace_manager = NamespaceManager(graph, selector)
     if isinstance(expected_result, dict):
         check_graph_ns(graph, expected_result)
+
+
+def test_compute_qname_no_generate() -> None:
+    g = Graph()  # 'core' bind_namespaces (default)
+    with pytest.raises(KeyError):
+        g.namespace_manager.compute_qname_strict(
+            'https://example.org/unbound/test', generate=False
+        )
