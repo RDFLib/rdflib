@@ -20,7 +20,7 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-from typing import Set, Tuple, Union
+from typing import Set, Tuple
 
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
 # test is run, but mypy can't tell the symbol is exposed.

@@ -8,12 +8,9 @@ import itertools
 from dataclasses import dataclass, field
 from typing import (
     Callable,
-    Collection,
     Dict,
     Iterator,
     List,
-    NamedTuple,
-    Optional,
     Set,
     Tuple,
     Union,
@@ -21,7 +18,6 @@ from typing import (
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
-from pyparsing import Opt
 
 from rdflib import XSD, Graph, Literal, Namespace
 from rdflib.term import Identifier

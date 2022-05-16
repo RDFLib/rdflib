@@ -1,7 +1,7 @@
 import logging
 import textwrap
 import xml.dom.minidom
-from typing import Callable, Optional, Sequence
+from typing import Callable, Sequence
 
 import pytest
 

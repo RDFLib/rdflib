@@ -1,4 +1,4 @@
-from rdflib import RDFS, URIRef
+from rdflib import URIRef
 from rdflib.paths import ZeroOrMore
 
 
