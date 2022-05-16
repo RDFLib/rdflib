@@ -49,6 +49,7 @@ from nturl2path import url2pathname as nt_url2pathname
 import rdflib.compare
 import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
+from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
 from rdflib.term import Identifier, Literal, Node, URIRef
 
@@ -72,10 +73,6 @@ def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
     for type, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
-
-
-if TYPE_CHECKING:
-    import typing_extensions as te
 
 
 def get_random_ip(parts: List[str] = None) -> str:
@@ -115,12 +112,12 @@ class GraphHelper:
     """
 
     @classmethod
-    def node(self, node: Node, exclude_blanks: bool = False) -> GHNode:
+    def node(cls, node: Node, exclude_blanks: bool = False) -> GHNode:
         """
         Return the identifier of the provided node.
         """
         if isinstance(node, Graph):
-            xset = cast(GHNode, self.triple_or_quad_set(node, exclude_blanks))
+            xset = cast(GHNode, cls.triple_or_quad_set(node, exclude_blanks))
             return xset
 
         return cast(Identifier, node)
@@ -172,13 +169,20 @@ class GraphHelper:
         """
         result: GHQuadSet = set()
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
-            assert isinstance(gn, Graph)
+            if isinstance(graph, Dataset):
+                assert isinstance(gn, Identifier)
+                gn_id = gn
+            elif isinstance(graph, ConjunctiveGraph):
+                assert isinstance(gn, Graph)
+                gn_id = gn.identifier
+            else:
+                raise ValueError(f"invalid graph type {type(graph)}: {graph!r}")
             s, p, o = cls.nodes((sn, pn, on), exclude_blanks)
             if exclude_blanks and (
                 isinstance(s, BNode) or isinstance(p, BNode) or isinstance(o, BNode)
             ):
                 continue
-            quad: GHQuad = (s, p, o, gn.identifier)
+            quad: GHQuad = (s, p, o, gn_id)
             result.add(quad)
         return frozenset(result)
 
