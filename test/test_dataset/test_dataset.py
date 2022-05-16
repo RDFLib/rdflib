@@ -6,9 +6,8 @@ from test.data import context1, likes, pizza, tarek
 
 import pytest
 
-from rdflib import FOAF, XSD, BNode, URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
-from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+from rdflib import URIRef, plugin
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at

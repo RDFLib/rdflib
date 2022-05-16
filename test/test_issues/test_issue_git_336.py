@@ -8,7 +8,6 @@
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
 import rdflib
-from rdflib.plugins.parsers.notation3 import BadSyntax
 
 # Test for https://github.com/RDFLib/rdflib/issues/336
 # and https://github.com/RDFLib/rdflib/issues/345

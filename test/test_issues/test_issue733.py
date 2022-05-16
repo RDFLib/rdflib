@@ -7,8 +7,8 @@ subject or the object.
 
 import unittest
 
-from rdflib import Graph, URIRef
-from rdflib.namespace import RDF, RDFS, Namespace, NamespaceManager
+from rdflib import Graph
+from rdflib.namespace import Namespace
 
 
 class TestIssue733(unittest.TestCase):

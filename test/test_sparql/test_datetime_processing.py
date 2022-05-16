@@ -1,11 +1,8 @@
 import io
-from pprint import pprint
 from test.utils import eq_
 
 import rdflib
-from rdflib import XSD, BNode, Graph, Literal, URIRef
-from rdflib.compare import isomorphic
-from rdflib.plugins.sparql import prepareQuery
+from rdflib import Graph
 
 
 def test_dateTime_dateTime_subs_issue():
