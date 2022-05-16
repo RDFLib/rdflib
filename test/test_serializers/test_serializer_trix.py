@@ -2,7 +2,6 @@
 
 from io import BytesIO
 
-
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.term import Literal, URIRef
 
