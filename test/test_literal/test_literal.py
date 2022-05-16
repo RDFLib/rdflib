@@ -9,11 +9,10 @@
 
 import datetime
 import logging
-import unittest
 from contextlib import ExitStack
 from decimal import Decimal
 from test.utils import affix_tuples
-from typing import Any, Optional, Sequence, Tuple, Type, Union
+from typing import Any, Optional, Type, Union
 
 import isodate
 import pytest
@@ -685,52 +684,51 @@ class TestNewPT:
         assert result == expected, repr(result)
 
 
-class TestNew(unittest.TestCase):
+class TestNew:
     # NOTE: Please use TestNewPT for new tests instead of this which is written
     # for unittest.
-    def testCantPassLangAndDatatype(self) -> None:
-        self.assertRaises(
-            TypeError, Literal, "foo", lang="en", datatype=URIRef("http://example.com/")
-        )
+    def test_cant_pass_lang_and_datatype(self) -> None:
+        with pytest.raises(TypeError):
+            Literal("foo", lang="en", datatype=URIRef("http://example.com/"))
 
-    def testCantPassInvalidLang(self) -> None:
-        self.assertRaises(ValueError, Literal, "foo", lang="999")
+    def test_cant_pass_invalid_lang(self) -> None:
+        with pytest.raises(ValueError):
+            Literal("foo", lang="999")
 
-    def testFromOtherLiteral(self) -> None:
+    def test_from_other_literal(self) -> None:
         l = Literal(1)
         l2 = Literal(l)
-        self.assertTrue(isinstance(l.value, int))
-        self.assertTrue(isinstance(l2.value, int))
+        assert isinstance(l.value, int)
+        assert isinstance(l2.value, int)
 
         # change datatype
         l = Literal("1")
         l2 = Literal(l, datatype=rdflib.XSD.integer)
-        self.assertTrue(isinstance(l2.value, int))
+        assert isinstance(l2.value, int)
 
-    def testDatatypeGetsAutoURIRefConversion(self) -> None:
+    def test_datatype_gets_auto_uri_ref_conversion(self) -> None:
         # drewp disapproves of this behavior, but it should be
         # represented in the tests
         x = Literal("foo", datatype="http://example.com/")
-        self.assertTrue(isinstance(x.datatype, URIRef))
+        assert isinstance(x.datatype, URIRef)
 
         x = Literal("foo", datatype=Literal("pennies"))
-        self.assertEqual(x.datatype, URIRef("pennies"))
+        assert x.datatype == URIRef("pennies")
 
 
-class TestRepr(unittest.TestCase):
-    def testOmitsMissingDatatypeAndLang(self) -> None:
-        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal('foo')")
+class TestRepr:
+    def test_omits_missing_datatype_and_lang(self) -> None:
+        assert repr(Literal("foo")) == "rdflib.term.Literal('foo')"
 
-    def testOmitsMissingDatatype(self) -> None:
-        self.assertEqual(
-            repr(Literal("foo", lang="en")),
-            "rdflib.term.Literal('foo', lang='en')",
+    def test_omits_missing_datatype(self) -> None:
+        assert (
+            repr(Literal("foo", lang="en")) == "rdflib.term.Literal('foo', lang='en')"
         )
 
-    def testOmitsMissingLang(self) -> None:
-        self.assertEqual(
-            repr(Literal("foo", datatype=URIRef("http://example.com/"))),
-            "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))",
+    def test_omits_missing_lang(self) -> None:
+        assert (
+            repr(Literal("foo", datatype=URIRef("http://example.com/")))
+            == "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))"
         )
 
     def test_subclass_name_appears_in_repr(self) -> None:
@@ -741,15 +739,15 @@ class TestRepr(unittest.TestCase):
         assert repr(x) == "MyLiteral('foo')"
 
 
-class TestDoubleOutput(unittest.TestCase):
-    def testNoDanglingPoint(self) -> None:
+class TestDoubleOutput:
+    def test_no_dangling_point(self) -> None:
         """confirms the fix for https://github.com/RDFLib/rdflib/issues/237"""
         vv = Literal("0.88", datatype=_XSD_DOUBLE)
         out = vv._literal_n3(use_plain=True)
         assert out in ["8.8e-01", "0.88"], out
 
 
-class TestParseBoolean(unittest.TestCase):
+class TestParseBoolean:
     """confirms the fix for https://github.com/RDFLib/rdflib/issues/913"""
 
     def test_true_boolean(self) -> None:
@@ -780,8 +778,8 @@ class TestParseBoolean(unittest.TestCase):
         assert test_value.value is False
 
 
-class TestBindings(unittest.TestCase):
-    def testBinding(self) -> None:
+class TestBindings:
+    def test_binding(self) -> None:
         class a:
             def __init__(self, v: str) -> None:
                 self.v = v[3:-3]
@@ -816,7 +814,7 @@ class TestBindings(unittest.TestCase):
         assert lb.value == vb
         assert lb.datatype == dtB
 
-    def testSpecificBinding(self) -> None:
+    def test_specific_binding(self) -> None:
         def lexify(s: str) -> str:
             return "--%s--" % s
 
@@ -840,12 +838,10 @@ class TestBindings(unittest.TestCase):
         assert specific_l.datatype == datatype
 
 
-class TestXsdLiterals(unittest.TestCase):
-    def test_make_literals(self) -> None:
-        """
-        Tests literal construction.
-        """
-        inputs = [
+class TestXsdLiterals:
+    @pytest.mark.parametrize(
+        ["lexical", "literal_type", "value_cls"],
+        [
             # these literals do not get converted to Python types
             ("ABCD", XSD.integer, None),
             ("ABCD", XSD.gYear, None),
@@ -885,41 +881,49 @@ class TestXsdLiterals(unittest.TestCase):
             ("0.0000000000000000000000000000001", XSD.decimal, Decimal),
             ("0.1", XSD.decimal, Decimal),
             ("1", XSD.integer, int),
-        ]
-        self.check_make_literals(inputs)
+        ],
+    )
+    def test_make_literals(
+        self, lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    ) -> None:
+        """
+        Tests literal construction.
+        """
+        self.check_make_literals(lexical, literal_type, value_cls)
 
-    @unittest.expectedFailure
-    def test_make_literals_ki(self) -> None:
+    @pytest.mark.parametrize(
+        ["lexical", "literal_type", "value_cls"],
+        [
+            pytest.param(*params, marks=pytest.mark.xfail(raises=AssertionError))
+            for params in [
+                ("1921-01Z", XSD.gYearMonth, datetime.date),
+                ("1921Z", XSD.gYear, datetime.date),
+                ("1921-00", XSD.gYearMonth, datetime.date),
+                ("1921-05-01Z", XSD.date, datetime.date),
+                ("1921-05-01+00:30", XSD.date, datetime.date),
+                ("1921-05-01+00:30", XSD.date, datetime.date),
+                ("1921-05-01+00:00", XSD.date, datetime.date),
+                ("1921-05-01+00:00", XSD.date, datetime.date),
+                ("1921-05-01T00:00:00Z", XSD.dateTime, datetime.datetime),
+                ("1e-31", XSD.decimal, None),  # This is not a valid decimal value
+            ]
+        ],
+    )
+    def test_make_literals_ki(
+        self, lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    ) -> None:
         """
         Known issues with literal construction.
         """
-        inputs = [
-            ("1921-01Z", XSD.gYearMonth, datetime.date),
-            ("1921Z", XSD.gYear, datetime.date),
-            ("1921-00", XSD.gYearMonth, datetime.date),
-            ("1921-05-01Z", XSD.date, datetime.date),
-            ("1921-05-01+00:30", XSD.date, datetime.date),
-            ("1921-05-01+00:30", XSD.date, datetime.date),
-            ("1921-05-01+00:00", XSD.date, datetime.date),
-            ("1921-05-01+00:00", XSD.date, datetime.date),
-            ("1921-05-01T00:00:00Z", XSD.dateTime, datetime.datetime),
-            ("1e-31", XSD.decimal, None),  # This is not a valid decimal value
-        ]
-        self.check_make_literals(inputs)
+        self.check_make_literals(lexical, literal_type, value_cls)
 
+    @classmethod
     def check_make_literals(
-        self, inputs: Sequence[Tuple[str, URIRef, Optional[type]]]
+        cls, lexical: str, literal_type: URIRef, value_cls: Optional[type]
     ) -> None:
-        for literal_pair in inputs:
-            (lexical, _type, value_cls) = literal_pair
-            with self.subTest(f"testing {literal_pair}"):
-                literal = Literal(lexical, datatype=_type)
-                if value_cls is not None:
-                    self.assertIsInstance(literal.value, value_cls)
-                else:
-                    self.assertIsNone(literal.value)
-                self.assertEqual(lexical, f"{literal}")
-
-
-if __name__ == "__main__":
-    unittest.main()
+        literal = Literal(lexical, datatype=literal_type)
+        if value_cls is not None:
+            assert isinstance(literal.value, value_cls)
+        else:
+            assert literal.value is None
+        assert lexical == f"{literal}"
