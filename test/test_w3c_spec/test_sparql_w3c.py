@@ -21,7 +21,6 @@ from io import BytesIO
 from typing import Callable, Dict, List, Optional, Tuple, cast
 from urllib.parse import urljoin
 
-
 from rdflib import BNode, Dataset, Graph, URIRef
 from rdflib.compare import isomorphic
 from rdflib.compat import bopen, decodeStringEscape

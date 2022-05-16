@@ -1,6 +1,5 @@
 import os
-from test.data import TEST_DATA_DIR, cheese
-from test.data import likes, michel, pizza, tarek
+from test.data import TEST_DATA_DIR, cheese, likes, michel, pizza, tarek
 
 from rdflib import ConjunctiveGraph, Graph
 
