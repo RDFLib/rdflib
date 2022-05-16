@@ -26,6 +26,7 @@ import pytest
 import rdflib
 from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
+from rdflib.plugins.sparql.sparql import Query
 from rdflib.term import Node
 
 # Determine version to delay a test until a version > 6 is being
@@ -207,6 +208,7 @@ def _test_query_prepares(query_string: str) -> None:
     # TODO: A 'strict' flag for prepareQuery is under consideration to
     # adjust parse behavior around backslash characters.
     query_object = prepareQuery(query_string, initNs=nsdict)
+    assert isinstance(query_object, Query)
 
 
 def test_query_prepares_expanded() -> None:
