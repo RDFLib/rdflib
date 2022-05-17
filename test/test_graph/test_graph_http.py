@@ -1,4 +1,4 @@
-import unittest
+import re
 from http.server import BaseHTTPRequestHandler
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
@@ -58,9 +58,11 @@ jsonldtestdoc = """
                 ]
                 """
 
+EG = Namespace("http://example.org/")
+
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def do_GET(self):  # noqa: N802
 
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
@@ -99,9 +101,8 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
         pass
 
 
-class TestGraphHTTP(unittest.TestCase):
+class TestGraphHTTP:
     def test_content_negotiation(self) -> None:
-        EG = Namespace("http://example.org/")
         expected = Graph()
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
@@ -112,10 +113,9 @@ class TestGraphHTTP(unittest.TestCase):
             for format in ("xml", "n3", "nt"):
                 graph = Graph()
                 graph.parse(url, format=format)
-                self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+                assert expected_triples == GraphHelper.triple_set(graph)
 
     def test_content_negotiation_no_format(self) -> None:
-        EG = Namespace("http://example.org/")
         expected = Graph()
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
@@ -125,10 +125,9 @@ class TestGraphHTTP(unittest.TestCase):
             url = f"http://{host}:{port}/foo"
             graph = Graph()
             graph.parse(url)
-            self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+            assert expected_triples == GraphHelper.triple_set(graph)
 
     def test_source(self) -> None:
-        EG = Namespace("http://example.org/")
         expected = Graph()
         expected.add((EG["a"], EG["b"], EG["c"]))
         expected_triples = GraphHelper.triple_set(expected)
@@ -146,10 +145,9 @@ class TestGraphHTTP(unittest.TestCase):
             )
             graph = Graph()
             graph.parse(source=url)
-            self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+            assert expected_triples == GraphHelper.triple_set(graph)
 
     def test_3xx(self) -> None:
-        EG = Namespace("http://example.com/")
         expected = Graph()
         expected.add((EG["a"], EG["b"], EG["c"]))
         expected_triples = GraphHelper.triple_set(expected)
@@ -196,31 +194,28 @@ class TestGraphHTTP(unittest.TestCase):
 
             graph = Graph()
             graph.parse(location=url, format="turtle")
-            self.assertEqual(expected_triples, GraphHelper.triple_set(graph))
+            assert expected_triples == GraphHelper.triple_set(graph)
 
             httpmock.mocks[MethodName.GET].assert_called()
             assert len(httpmock.requests[MethodName.GET]) == 10
             for request in httpmock.requests[MethodName.GET]:
-                self.assertRegex(request.headers.get("Accept"), "text/turtle")
+                assert re.match(r"text/turtle", request.headers.get("Accept"))
 
             request_paths = [
                 request.path for request in httpmock.requests[MethodName.GET]
             ]
-            self.assertEqual(
-                request_paths,
-                [
-                    "/",
-                    "/loc/302/0",
-                    "/loc/302/1",
-                    "/loc/302/2",
-                    "/loc/303/0",
-                    "/loc/303/1",
-                    "/loc/303/2",
-                    "/loc/308/0",
-                    "/loc/308/1",
-                    "/loc/308/2",
-                ],
-            )
+            assert request_paths == [
+                "/",
+                "/loc/302/0",
+                "/loc/302/1",
+                "/loc/302/2",
+                "/loc/303/0",
+                "/loc/303/1",
+                "/loc/303/2",
+                "/loc/308/0",
+                "/loc/308/1",
+                "/loc/308/2",
+            ]
 
     def test_5xx(self):
         with ServedBaseHTTPServerMock() as httpmock:
@@ -231,10 +226,10 @@ class TestGraphHTTP(unittest.TestCase):
 
             graph = Graph()
 
-            with self.assertRaises(HTTPError) as raised:
+            with pytest.raises(HTTPError) as raised:
                 graph.parse(location=url, format="turtle")
 
-            self.assertEqual(raised.exception.code, 500)
+            assert raised.value.code == 500
 
 
 @pytest.fixture(scope="module")
@@ -269,7 +264,3 @@ def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
 
     req = httpmock.requests[MethodName.GET].pop(0)
     assert req.path == "/resource/Almer%C3%ADa"
-
-
-if __name__ == "__main__":
-    unittest.main()
