@@ -6,7 +6,6 @@ from typing import Tuple
 import pytest
 
 import rdflib
-import rdflib.plugins.parsers.jsonld as parser
 from rdflib.term import URIRef
 
 from . import runner

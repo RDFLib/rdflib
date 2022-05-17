@@ -1,7 +1,7 @@
 import unittest
 from fractions import Fraction
 
-from rdflib import ConjunctiveGraph, Graph, Literal, URIRef
+from rdflib import Literal, URIRef
 
 
 class TestIssue953(unittest.TestCase):

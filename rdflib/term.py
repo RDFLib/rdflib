@@ -238,7 +238,7 @@ class IdentifiedNode(Identifier):
     def __getnewargs__(self) -> Tuple[str]:
         return (str(self),)
 
-    def toPython(self) -> str:
+    def toPython(self) -> str:  # noqa: N802
         return str(self)
 
 
@@ -317,9 +317,9 @@ class URIRef(IdentifiedNode):
 
     def __repr__(self) -> str:
         if self.__class__ is URIRef:
-            clsName = "rdflib.term.URIRef"
+            clsName = "rdflib.term.URIRef"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
@@ -468,9 +468,9 @@ class BNode(IdentifiedNode):
 
     def __repr__(self) -> str:
         if self.__class__ is BNode:
-            clsName = "rdflib.term.BNode"
+            clsName = "rdflib.term.BNode"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
         return """%s('%s')""" % (clsName, str(self))
 
     def skolemize(
@@ -736,10 +736,22 @@ class Literal(Identifier):
 
     def __add__(self, val: Any) -> "Literal":
         """
+        >>> from rdflib.namespace import XSD
         >>> Literal(1) + 1
         rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> Literal("1") + "1"
         rdflib.term.Literal(u'11')
+
+        # Handling dateTime/date/time based operations in Literals
+        >>> a = Literal('2006-01-01T20:50:00', datatype=XSD.dateTime)
+        >>> b = Literal('P31D', datatype=XSD.duration)
+        >>> (a + b)
+        rdflib.term.Literal('2006-02-01T20:50:00', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
+        >>> from rdflib.namespace import XSD
+        >>> a = Literal('2006-07-01T20:52:00', datatype=XSD.dateTime)
+        >>> b = Literal('P122DT15H58M', datatype=XSD.duration)
+        >>> (a + b)
+        rdflib.term.Literal('2006-11-01T12:50:00', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
         """
 
         # if no val is supplied, return this Literal
@@ -749,6 +761,45 @@ class Literal(Identifier):
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
+
+        # if self is datetime based and value is duration
+        if (
+            self.datatype in (_XSD_DATETIME, _XSD_DATE)
+            and val.datatype in _TIME_DELTA_TYPES
+        ):
+            date1: Union[datetime, date] = self.toPython()
+            duration: Union[Duration, timedelta] = val.toPython()
+            difference = date1 + duration
+            return Literal(difference, datatype=self.datatype)
+
+        # if self is time based and value is duration
+        elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
+            selfv: time = self.toPython()
+            valv: Union[Duration, timedelta] = val.toPython()
+            sdt = datetime.combine(date(2000, 1, 1), selfv) + valv
+            return Literal(sdt.time(), datatype=self.datatype)
+
+        # if self is datetime based and value is not or vice versa
+        elif (
+            (
+                self.datatype in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype not in _ALL_DATE_AND_TIME_TYPES
+            )
+            or (
+                self.datatype not in _ALL_DATE_AND_TIME_TYPES
+                and val.datatype in _ALL_DATE_AND_TIME_TYPES
+            )
+            or (
+                self.datatype in _TIME_DELTA_TYPES
+                and (
+                    (val.datatype not in _TIME_DELTA_TYPES)
+                    or (self.datatype != val.datatype)
+                )
+            )
+        ):
+            raise TypeError(
+                f"Cannot add a Literal of datatype {str(val.datatype)} to a Literal of datatype {str(self.datatype)}"
+            )
 
         # if the datatypes are the same, just add the Python values and convert back
         if self.datatype == val.datatype:
@@ -787,6 +838,109 @@ class Literal(Identifier):
                 new_datatype = _XSD_STRING
 
             return Literal(s, self.language, datatype=new_datatype)
+
+    def __sub__(self, val: Any) -> "Literal":
+        """
+        >>> from rdflib.namespace import XSD
+        >>> Literal(2) - 1
+        rdflib.term.Literal('1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
+        >>> Literal(1.1) - 1.0
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double'))
+        >>> Literal(1.1) - 1
+        rdflib.term.Literal('0.1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#decimal'))
+        >>> Literal(1.1, datatype=XSD.float) - Literal(1.0, datatype=XSD.float)
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#float'))
+        >>> Literal("1.1") - 1.0 # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        TypeError: Not a number; rdflib.term.Literal('1.1')
+        >>> Literal(1.1, datatype=XSD.integer) - Literal(1.0, datatype=XSD.integer)
+        rdflib.term.Literal('0.10000000000000009', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
+
+        # Handling dateTime/date/time based operations in Literals
+        >>> a = Literal('2006-01-01T20:50:00', datatype=XSD.dateTime)
+        >>> b = Literal('2006-02-01T20:50:00', datatype=XSD.dateTime)
+        >>> (b - a)
+        rdflib.term.Literal('P31D', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        >>> from rdflib.namespace import XSD
+        >>> a = Literal('2006-07-01T20:52:00', datatype=XSD.dateTime)
+        >>> b = Literal('2006-11-01T12:50:00', datatype=XSD.dateTime)
+        >>> (a - b)
+        rdflib.term.Literal('-P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        >>> (b - a)
+        rdflib.term.Literal('P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+
+        """
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
+
+        # convert the val to a Literal, if it isn't already one
+        if not isinstance(val, Literal):
+            val = Literal(val)
+
+        if not getattr(self, "datatype"):
+            raise TypeError(
+                "Minuend Literal must have Numeric, Date, Datetime or Time datatype."
+            )
+        elif not getattr(val, "datatype"):
+            raise TypeError(
+                "Subtrahend Literal must have Numeric, Date, Datetime or Time datatype."
+            )
+
+        if (
+            self.datatype in (_XSD_DATETIME, _XSD_DATE)
+            and val.datatype in _TIME_DELTA_TYPES
+        ):
+            date1: Union[datetime, date] = self.toPython()
+            duration: Union[Duration, timedelta] = val.toPython()
+            difference = date1 - duration
+            return Literal(difference, datatype=self.datatype)
+
+        # if self is time based and value is duration
+        elif self.datatype == _XSD_TIME and val.datatype in _TIME_DELTA_TYPES:
+            selfv: time = self.toPython()
+            valv: Union[Duration, timedelta] = val.toPython()
+            sdt = datetime.combine(date(2000, 1, 1), selfv) - valv
+            return Literal(sdt.time(), datatype=self.datatype)
+
+        # if the datatypes are the same, just subtract the Python values and convert back
+        if self.datatype == val.datatype:
+            if self.datatype == _XSD_TIME:
+                sdt = datetime.combine(date.today(), self.toPython())
+                vdt = datetime.combine(date.today(), val.toPython())
+                return Literal(sdt - vdt, datatype=_XSD_DURATION)
+            else:
+                return Literal(
+                    self.toPython() - val.toPython(),
+                    self.language,
+                    datatype=_XSD_DURATION
+                    if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
+                    else self.datatype,
+                )
+
+        # if the datatypes are not the same but are both numeric, subtract the Python values and strip off decimal junk
+        # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
+        elif (
+            self.datatype in _NUMERIC_LITERAL_TYPES
+            and val.datatype in _NUMERIC_LITERAL_TYPES
+        ):
+            return Literal(
+                Decimal(
+                    (
+                        "%f"
+                        % round(Decimal(self.toPython()) - Decimal(val.toPython()), 15)
+                    )
+                    .rstrip("0")
+                    .rstrip(".")
+                ),
+                datatype=_XSD_DECIMAL,
+            )
+        # in all other cases, perform string concatenation
+        else:
+            raise TypeError(
+                f"Cannot subtract a Literal of datatype {str(val.datatype)} from a Literal of datatype {str(self.datatype)}"
+            )
 
     def __bool__(self) -> bool:
         """
@@ -1449,12 +1603,12 @@ class Literal(Identifier):
         if self.datatype is not None:
             args.append("datatype=%s" % repr(self.datatype))
         if self.__class__ == Literal:
-            clsName = "rdflib.term.Literal"
+            clsName = "rdflib.term.Literal"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
         return """%s(%s)""" % (clsName, ", ".join(args))
 
-    def toPython(self) -> Any:
+    def toPython(self) -> Any:  # noqa: N802
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
@@ -1464,7 +1618,7 @@ class Literal(Identifier):
         return self
 
 
-def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:
+def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
     retval = xml.dom.minidom.parseString(
         "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring
     )
@@ -1472,7 +1626,7 @@ def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:
     return retval
 
 
-def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:
+def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:  # noqa: N802
     try:
         import html5lib
 
@@ -1487,7 +1641,7 @@ def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:
         )
 
 
-def _writeXML(
+def _writeXML(  # noqa: N802
     xmlnode: Union[xml.dom.minidom.Document, xml.dom.minidom.DocumentFragment]
 ) -> bytes:
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
@@ -1514,7 +1668,7 @@ def _unhexlify(value: Union[str, bytes, Literal]) -> bytes:
     return unhexlify(value)
 
 
-def _parseBoolean(value: Union[str, bytes]) -> bool:
+def _parseBoolean(value: Union[str, bytes]) -> bool:  # noqa: N802
     """
     Boolean is a datatype with value space {true,false},
     lexical space {"true", "false","1","0"} and
@@ -1695,6 +1849,23 @@ _NUMERIC_INF_NAN_LITERAL_TYPES: Tuple[URIRef, ...] = (
     _XSD_DECIMAL,
 )
 
+# these need dedicated operators
+_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
+    _XSD_DATETIME,
+    _XSD_DATE,
+    _XSD_TIME,
+)
+
+# These are recognized datatype IRIs
+# (https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris) that
+# represents durations.
+_TIME_DELTA_TYPES: Tuple[URIRef, ...] = (
+    _XSD_DURATION,
+    _XSD_DAYTIMEDURATION,
+)
+
+_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
+
 # the following types need special treatment for reasonable sorting because
 # certain instances can't be compared to each other. We treat this by
 # partitioning and then sorting within those partitions.
@@ -1724,7 +1895,7 @@ _STRING_LITERAL_TYPES: Tuple[URIRef, ...] = (
 
 def _py2literal(
     obj: Any,
-    pType: Any,
+    pType: Any,  # noqa: N803
     castFunc: Optional[Callable[[Any], Any]],
     dType: Optional[str],
 ) -> Tuple[Any, Optional[str]]:
@@ -1736,20 +1907,20 @@ def _py2literal(
         return obj, None
 
 
-def _castPythonToLiteral(
+def _castPythonToLiteral(  # noqa: N802
     obj: Any, datatype: Optional[str]
 ) -> Tuple[Any, Optional[str]]:
     """
     Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    castFunc: Optional[Callable[[Any], Union[str, bytes]]]
-    dType: Optional[str]
-    for (pType, dType), castFunc in _SpecificPythonToXSDRules:
+    castFunc: Optional[Callable[[Any], Union[str, bytes]]]  # noqa: N806
+    dType: Optional[str]  # noqa: N806
+    for (pType, dType), castFunc in _SpecificPythonToXSDRules:  # noqa: N806
         if isinstance(obj, pType) and dType == datatype:
             return _py2literal(obj, pType, castFunc, dType)
 
-    for pType, (castFunc, dType) in _GenericPythonToXSDRules:
+    for pType, (castFunc, dType) in _GenericPythonToXSDRules:  # noqa: N806
         if isinstance(obj, pType):
             return _py2literal(obj, pType, castFunc, dType)
     return obj, None  # TODO: is this right for the fall through case?
@@ -1853,17 +2024,19 @@ _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]]
     URIRef(_XSD_PFX + "unsignedByte"): _well_formed_unsignedbyte,
 }
 
-_toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}
+_toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # noqa: N816
 
 _toPythonMapping.update(XSDToPython)
 
 
-def _castLexicalToPython(lexical: Union[str, bytes], datatype: Optional[str]) -> Any:
+def _castLexicalToPython(  # noqa: N802
+    lexical: Union[str, bytes], datatype: Optional[str]
+) -> Any:
     """
     Map a lexical form to the value-space for the given datatype
     :returns: a python object for the value or ``None``
     """
-    convFunc = _toPythonMapping.get(datatype, False)
+    convFunc = _toPythonMapping.get(datatype, False)  # noqa: N806
     if convFunc:
         if TYPE_CHECKING:
             # NOTE: This is here because convFunc is seen as
@@ -1898,7 +2071,7 @@ def _castLexicalToPython(lexical: Union[str, bytes], datatype: Optional[str]) ->
 _AnyT = TypeVar("_AnyT", bound=Any)
 
 
-def _normalise_XSD_STRING(lexical_or_value: _AnyT) -> _AnyT:
+def _normalise_XSD_STRING(lexical_or_value: _AnyT) -> _AnyT:  # noqa: N802
     """
     Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
     """
@@ -1971,13 +2144,13 @@ class Variable(Identifier):
 
     def __repr__(self) -> str:
         if self.__class__ is Variable:
-            clsName = "rdflib.term.Variable"
+            clsName = "rdflib.term.Variable"  # noqa: N806
         else:
-            clsName = self.__class__.__name__
+            clsName = self.__class__.__name__  # noqa: N806
 
         return """%s(%s)""" % (clsName, super(Variable, self).__repr__())
 
-    def toPython(self) -> str:
+    def toPython(self) -> str:  # noqa: N802
         return "?%s" % self
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
@@ -1995,7 +2168,7 @@ _ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 
-def _isEqualXMLNode(
+def _isEqualXMLNode(  # noqa: N802
     node: Union[
         None,
         xml.dom.minidom.Attr,

@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 import json
-from functools import partial
 
 from rdflib import ConjunctiveGraph
 from rdflib.compare import isomorphic

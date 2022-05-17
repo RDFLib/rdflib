@@ -36,3 +36,13 @@ class TestDuration:
         assert Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration) + Literal(
             "P1Y2M4DT5H6M7S", datatype=XSD.duration
         ).toPython() == Literal("P2Y4M8DT10H12M14S", datatype=XSD.duration)
+
+    def test_duration_sub_pos(self):
+        assert Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration) - Literal(
+            "P1Y2M3DT4H7M8S", datatype=XSD.duration
+        ).toPython() == Literal("P1DT58M59S", datatype=XSD.duration)
+
+    def test_duration_sub_neg(self):
+        assert Literal("P1Y2M3DT4H7M8S", datatype=XSD.duration) - Literal(
+            "P1Y2M4DT5H6M7S", datatype=XSD.duration
+        ).toPython() == Literal("-P1DT58M59S", datatype=XSD.duration)

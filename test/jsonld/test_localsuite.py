@@ -1,6 +1,5 @@
 import json
-import os
-from os import chdir, environ, getcwd
+from os import chdir, getcwd
 from os import path as p
 
 import pytest

@@ -3,8 +3,6 @@ import os
 import os.path
 import sys
 import unittest
-from encodings.utf_8 import StreamWriter
-from io import StringIO
 from test.data import TEST_DATA_DIR
 from typing import ClassVar
 from urllib.request import url2pathname, urlopen

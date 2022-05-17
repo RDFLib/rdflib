@@ -1,4 +1,3 @@
-import sys
 from datetime import datetime
 
 from isodate import UTC, datetime_isoformat

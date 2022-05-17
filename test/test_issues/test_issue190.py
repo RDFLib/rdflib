@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import textwrap
-import unittest
 
 import pytest
 
