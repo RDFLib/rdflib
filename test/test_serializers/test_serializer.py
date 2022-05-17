@@ -1,5 +1,4 @@
 import enum
-import importlib
 import itertools
 import logging
 import re
@@ -28,7 +27,6 @@ import rdflib
 import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
-from rdflib.plugins.sparql.parser import DEBUG
 from rdflib.serializer import Serializer
 
 EGSCHEMA = Namespace("example:")

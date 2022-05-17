@@ -1,7 +1,7 @@
 # test for https://github.com/RDFLib/rdflib/issues/579
 
-from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import FOAF, RDF
+from rdflib import Graph, Literal, Namespace
+from rdflib.namespace import FOAF
 
 
 def test_issue579():

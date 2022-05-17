@@ -3,7 +3,6 @@ import os
 import re
 import unittest
 from pathlib import Path
-from test import TEST_DIR
 from test.data import TEST_DATA_DIR
 from urllib.request import urlopen
 

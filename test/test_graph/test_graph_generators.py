@@ -1,7 +1,7 @@
 import os
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 
-from rdflib import Graph, URIRef
+from rdflib import Graph
 
 timblcardn3 = open(os.path.join(TEST_DATA_DIR, "timbl-card.n3")).read()
 

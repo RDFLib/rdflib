@@ -1,10 +1,10 @@
+import enum
 import logging
 import os.path
-from json.decoder import JSONDecodeError
 from pathlib import Path
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
-from typing import Callable, Collection, Iterable, List, Optional, Set, Tuple, Union
+from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
 from xml.sax import SAXParseException
 
 import pytest
@@ -12,7 +12,9 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
+from rdflib.parser import create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.util import guess_format
 
@@ -184,6 +186,24 @@ XFAILS = {
     """,
         raises=AssertionError,
     ),
+    ("n3", "data/suites/w3c/n3/N3Tests/cwm_syntax/decimal.n3"): pytest.mark.xfail(
+        raises=AssertionError,
+        reason="""double mismatch
+    -            (rdflib.term.Literal('1.328435e+55', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')),
+    +            (rdflib.term.Literal('1.3284347025749857e+55', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')),
+    """,
+    ),
+    ("n3", "data/suites/w3c/n3/N3Tests/cwm_syntax/decimal-ref.n3"): pytest.mark.xfail(
+        raises=AssertionError,
+        reason="""double mismatch
+    -            (rdflib.term.Literal('1.328435e+55', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')),
+    +            (rdflib.term.Literal('1.32843470257e+55', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#double')),
+    """,
+    ),
+    (
+        "n3",
+        "data/suites/w3c/n3/N3Tests/cwm_syntax/neg-single-quote.n3",
+    ): pytest.mark.xfail(raises=BadSyntax, reason="no support for single quotes"),
 }
 
 # This is for files which can only be represented properly in one format
@@ -193,10 +213,10 @@ CONSTRAINED_FORMAT_MAP = {
 
 
 def collect_files(
-    directory: Path, exclude_names: Optional[Set[str]] = None
+    directory: Path, exclude_names: Optional[Set[str]] = None, pattern: str = "**/*"
 ) -> List[Tuple[Path, str]]:
     result = []
-    for path in directory.glob("**/*"):
+    for path in directory.glob(pattern):
         if not path.is_file():
             continue
         if exclude_names is not None and path.name in exclude_names:
@@ -208,20 +228,40 @@ def collect_files(
     return result
 
 
-def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
-    g1 = rdflib.ConjunctiveGraph()
+class Check(enum.Enum):
+    ISOMORPHIC = enum.auto()
+    SET_EQUALS = enum.auto()
+    SET_EQUALS_WITHOUT_BLANKS = enum.auto()
 
-    g1.parse(source, format=infmt)
+
+def roundtrip(
+    infmt: str,
+    testfmt: str,
+    source: Path,
+    graph_type: Type[Graph] = ConjunctiveGraph,
+    checks: Optional[Set[Check]] = None,
+    same_public_id: bool = False,
+) -> None:
+    g1 = graph_type()
+
+    if same_public_id:
+        input_source = create_input_source(source)
+        g1.parse(input_source, format=infmt)
+    else:
+        g1.parse(source, format=infmt)
 
     s = g1.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("serailized = \n%s", s)
+        logger.debug("source = %s, serailized = \n%s", source, s)
 
-    g2 = rdflib.ConjunctiveGraph()
-    g2.parse(data=s, format=testfmt)
+    g2 = graph_type()
+    if same_public_id:
+        g2.parse(data=s, publicID=input_source.getPublicId(), format=testfmt)
+    else:
+        g2.parse(data=s, format=testfmt)
 
-    if testfmt == "hext":
+    if testfmt == "hext" and isinstance(g2, ConjunctiveGraph):
         # HexTuples always sets Literal("abc") -> Literal("abc", datatype=XSD.string)
         # and this prevents roundtripping since most other formats don't equate "" with
         # ""^^xsd:string, at least not in these tests
@@ -239,7 +279,13 @@ def roundtrip(infmt: str, testfmt: str, source: Path) -> None:
         logger.debug("Items in G1 Only:\n%s", GraphHelper.format_graph_set(first))
         logger.debug("Items in G2 Only:\n%s", GraphHelper.format_graph_set(second))
 
-    GraphHelper.assert_isomorphic(g1, g2)
+    if checks is None or Check.ISOMORPHIC in checks:
+        GraphHelper.assert_isomorphic(g1, g2)
+    if checks is not None:
+        if Check.SET_EQUALS in checks:
+            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=False)
+        if Check.SET_EQUALS_WITHOUT_BLANKS in checks:
+            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=True)
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("OK")
@@ -262,9 +308,15 @@ def get_formats() -> Set[str]:
 
 
 def make_cases(
-    files: Collection[Tuple[Path, str]], hext_okay: bool = False
+    files: Iterable[Tuple[Path, str]],
+    formats: Optional[Set[str]] = None,
+    hext_okay: bool = False,
+    checks: Optional[Set[Check]] = None,
+    graph_type: Type[Graph] = ConjunctiveGraph,
+    same_public_id: bool = False,
 ) -> Iterable[ParameterSet]:
-    formats = get_formats()
+    if formats is None:
+        formats = get_formats()
     for testfmt in formats:
         # if testfmt == "hext":
         #     continue
@@ -278,10 +330,24 @@ def make_cases(
                 continue
             marks: List[Union[MarkDecorator, Mark]] = []
             xfail = XFAILS.get((testfmt, f.name))
-            if xfail:
+            if xfail is None:
+                xfail = XFAILS.get(
+                    (testfmt, f"{f.relative_to(TEST_DATA_DIR.parent).as_posix()}")
+                )
+            if xfail is not None:
                 marks.append(xfail)
             id = f"roundtrip_{os.path.basename(f)}_{infmt}_{testfmt}"
-            values = (roundtrip, (infmt, testfmt, f))
+            values = (
+                lambda infmt, testfmt, f: roundtrip(
+                    infmt,
+                    testfmt,
+                    f,
+                    checks=checks,
+                    graph_type=graph_type,
+                    same_public_id=same_public_id,
+                ),
+                (infmt, testfmt, f),
+            )
             logging.debug("values = %s", values)
             yield pytest.param(*values, marks=marks, id=id)
 
@@ -302,6 +368,144 @@ def test_nt(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Pat
 
 @pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
 def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+    checker(*args)
+
+
+N3_W3C_SUITE_DIR = Path(TEST_DATA_DIR) / "suites" / "w3c" / "n3"
+
+r"""
+List generated with:
+
+sparql --base '.' --query <(echo '
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdft:  <http://www.w3.org/ns/rdftest#>
+PREFIX mf:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:  <https://w3c.github.io/N3/tests/test.n3#>
+SELECT DISTINCT ?file WHERE {
+    ?test a test:TestN3PositiveSyntax.
+    ?test mf:action ?file
+}
+') --data test/data/suites/w3c/n3/N3Tests/manifest-parser.ttl --results=TSV \
+  | sed 1d \
+  | sed -E 's,^.*(test/data/suites/.*)>$,\1,g' \
+  | grep -v '/new_syntax/' \
+  | xargs -I{} find {} -printf '%p:%s\n' \
+  | gawk -F: '($2 <= 1024){ print $1 }' \
+  | xargs egrep -c '[?]\S+' | sort \
+  | sed -E -n 's|^test/data/suites/w3c/n3/(.*):0|    (N3_W3C_SUITE_DIR / "\1", "n3"),|gp'
+"""
+
+N3_W3C_SUITE_FILES = [
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_andy/D-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_i18n/hiragana.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_i18n/i18n.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_i18n/umlaut.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/bnode-conclude-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/builtins.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/concat-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/conjunction-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/foo.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/list-in-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/t10a.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/t1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/t2.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_includes/t3.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/append-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/bnode_in_list_in_list.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/builtin_generated_match-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/construct.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/list-bug1-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/list-bug2-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/r1-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/unify2-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/unify3-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/unify4-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_list/unify5-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_math/long.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/anon-prop.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/anonymous_loop.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/classes.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/contexts.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/daml-pref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/equiv-syntax.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/filter-bnodes.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/invalid-ex.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/kb1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/lists.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/lists-simple.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/reluri-1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/t00-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/t01-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_other/underbarscope.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/double-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/socrates-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t1-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t2.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t2-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t3.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t3-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t4-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t5-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t6-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t8-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t9.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/t9-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_reason/timbl.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_string/endsWith-out.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_supports/simple.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_supports/simple-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/a1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/bad-preds-formula.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/bad-preds-literal.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/base.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/base-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/BnodeAcrossFormulae.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/boolean.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/boolean-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/colon-no-qname.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/decimal.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/decimal-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/embedded-dot-in-qname.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/formula_bnode.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/formula-simple-1.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/formula-subject.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/graph-as-object.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/neg-formula-predicate.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/neg-literal-predicate.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/neg-single-quote.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/nested.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/one-bnode.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/qvars3.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/sep-term.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/sib.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/space-in-uri-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/this-rules-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/trailing-semicolon-ref.nt", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/zero-length-lname.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_syntax/zero-predicates.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_unify/reflexive-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_unify/unify1-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_unify/unify2.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/cwm_unify/unify2-ref.n3", "n3"),
+    (N3_W3C_SUITE_DIR / "N3Tests/extra/good_prefix.n3", "n3"),
+]
+
+
+@pytest.mark.parametrize(
+    "checker, args",
+    make_cases(
+        N3_W3C_SUITE_FILES,
+        formats={"n3"},
+        # NOTE: Isomomorphic check does not work on Quoted Graphs
+        checks={Check.SET_EQUALS_WITHOUT_BLANKS},
+        graph_type=Graph,
+        same_public_id=True,
+    ),
+)
+def test_n3_suite(
+    checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]
+):
     checker(*args)
 
 

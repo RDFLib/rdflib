@@ -7,11 +7,9 @@ The tests for test utilities should be placed inside `test.utils.test`
 
 from __future__ import print_function
 
-import datetime
 import email.message
-import os
+import pprint
 import random
-import sys
 import unittest
 from contextlib import AbstractContextManager, contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
@@ -25,6 +23,7 @@ from typing import (
     Callable,
     Collection,
     Dict,
+    FrozenSet,
     Generator,
     Iterable,
     Iterator,
@@ -43,7 +42,6 @@ from urllib.error import HTTPError
 from urllib.parse import ParseResult, parse_qs, unquote, urlparse
 from urllib.request import urlopen
 
-import isodate
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from nturl2path import url2pathname as nt_url2pathname
@@ -51,6 +49,7 @@ from nturl2path import url2pathname as nt_url2pathname
 import rdflib.compare
 import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
+from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
 from rdflib.term import Identifier, Literal, Node, URIRef
 
@@ -76,10 +75,35 @@ def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
     return result
 
 
-IdentifierTriple = Tuple[Identifier, Identifier, Identifier]
-IdentifierTripleSet = Set[IdentifierTriple]
-IdentifierQuad = Tuple[Identifier, Identifier, Identifier, Identifier]
-IdentifierQuadSet = Set[IdentifierQuad]
+def get_random_ip(parts: List[str] = None) -> str:
+    if parts is None:
+        parts = ["127"]
+    for _ in range(4 - len(parts)):
+        parts.append(f"{random.randint(0, 255)}")
+    return ".".join(parts)
+
+
+@contextmanager
+def ctx_http_server(
+    handler: Type[BaseHTTPRequestHandler], host: str = "127.0.0.1"
+) -> Iterator[HTTPServer]:
+    server = HTTPServer((host, 0), handler)
+    server_thread = Thread(target=server.serve_forever)
+    server_thread.daemon = True
+    server_thread.start()
+    yield server
+    server.shutdown()
+    server.socket.close()
+    server_thread.join()
+
+
+GHNode = Union[Identifier, FrozenSet[Tuple[Identifier, Identifier, Identifier]]]
+GHTriple = Tuple[GHNode, GHNode, GHNode]
+GHTripleSet = Set[GHTriple]
+GHTripleFrozenSet = FrozenSet[GHTriple]
+GHQuad = Tuple[GHNode, GHNode, GHNode, Identifier]
+GHQuadSet = Set[GHQuad]
+GHQuadFrozenSet = FrozenSet[GHQuad]
 
 
 class GraphHelper:
@@ -88,47 +112,50 @@ class GraphHelper:
     """
 
     @classmethod
-    def identifier(self, node: Node) -> Identifier:
+    def node(cls, node: Node, exclude_blanks: bool = False) -> GHNode:
         """
         Return the identifier of the provided node.
         """
         if isinstance(node, Graph):
-            return node.identifier
-        else:
-            return cast(Identifier, node)
+            xset = cast(GHNode, cls.triple_or_quad_set(node, exclude_blanks))
+            return xset
+
+        return cast(Identifier, node)
 
     @classmethod
-    def identifiers(cls, nodes: Tuple[Node, ...]) -> Tuple[Identifier, ...]:
+    def nodes(
+        cls, nodes: Tuple[Node, ...], exclude_blanks: bool = False
+    ) -> Tuple[GHNode, ...]:
         """
         Return the identifiers of the provided nodes.
         """
         result = []
         for node in nodes:
-            result.append(cls.identifier(node))
+            result.append(cls.node(node, exclude_blanks))
         return tuple(result)
 
     @classmethod
     def triple_set(
         cls, graph: Graph, exclude_blanks: bool = False
-    ) -> IdentifierTripleSet:
-        result = set()
+    ) -> GHTripleFrozenSet:
+        result: GHTripleSet = set()
         for sn, pn, on in graph.triples((None, None, None)):
-            s, p, o = cls.identifiers((sn, pn, on))
+            s, p, o = cls.nodes((sn, pn, on), exclude_blanks)
             if exclude_blanks and (
                 isinstance(s, BNode) or isinstance(p, BNode) or isinstance(o, BNode)
             ):
                 continue
             result.add((s, p, o))
-        return result
+        return frozenset(result)
 
     @classmethod
     def triple_sets(
         cls, graphs: Iterable[Graph], exclude_blanks: bool = False
-    ) -> List[IdentifierTripleSet]:
+    ) -> List[GHTripleFrozenSet]:
         """
         Extracts the set of all triples from the supplied Graph.
         """
-        result: List[IdentifierTripleSet] = []
+        result: List[GHTripleFrozenSet] = []
         for graph in graphs:
             result.append(cls.triple_set(graph, exclude_blanks))
         return result
@@ -136,27 +163,33 @@ class GraphHelper:
     @classmethod
     def quad_set(
         cls, graph: ConjunctiveGraph, exclude_blanks: bool = False
-    ) -> IdentifierQuadSet:
+    ) -> GHQuadFrozenSet:
         """
         Extracts the set of all quads from the supplied ConjunctiveGraph.
         """
-        result = set()
+        result: GHQuadSet = set()
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
-            s, p, o, g = cls.identifiers((sn, pn, on, gn))
+            if isinstance(graph, Dataset):
+                assert isinstance(gn, Identifier)
+                gn_id = gn
+            elif isinstance(graph, ConjunctiveGraph):
+                assert isinstance(gn, Graph)
+                gn_id = gn.identifier
+            else:
+                raise ValueError(f"invalid graph type {type(graph)}: {graph!r}")
+            s, p, o = cls.nodes((sn, pn, on), exclude_blanks)
             if exclude_blanks and (
-                isinstance(s, BNode)
-                or isinstance(p, BNode)
-                or isinstance(o, BNode)
-                or isinstance(g, BNode)
+                isinstance(s, BNode) or isinstance(p, BNode) or isinstance(o, BNode)
             ):
                 continue
-            result.add((s, p, o, g))
-        return result
+            quad: GHQuad = (s, p, o, gn_id)
+            result.add(quad)
+        return frozenset(result)
 
     @classmethod
     def triple_or_quad_set(
         cls, graph: Graph, exclude_blanks: bool = False
-    ) -> Union[IdentifierQuadSet, IdentifierTripleSet]:
+    ) -> Union[GHQuadFrozenSet, GHTripleFrozenSet]:
         """
         Extracts quad or triple sets depending on whether or not the graph is
         ConjunctiveGraph or a normal Graph.
@@ -172,50 +205,70 @@ class GraphHelper:
         """
         Asserts that the triple sets in the two graphs are equal.
         """
-        lhs_set = cls.triple_set(lhs, exclude_blanks)
-        rhs_set = cls.triple_set(rhs, exclude_blanks)
+        lhs_set = cls.triple_set(lhs, exclude_blanks) if isinstance(lhs, Graph) else lhs
+        rhs_set = cls.triple_set(rhs, exclude_blanks) if isinstance(rhs, Graph) else rhs
         assert lhs_set == rhs_set
 
     @classmethod
     def assert_quad_sets_equals(
-        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph, exclude_blanks: bool = False
+        cls,
+        lhs: Union[ConjunctiveGraph, GHQuadSet],
+        rhs: Union[ConjunctiveGraph, GHQuadSet],
+        exclude_blanks: bool = False,
     ) -> None:
         """
         Asserts that the quads sets in the two graphs are equal.
         """
-        lhs_set = cls.quad_set(lhs, exclude_blanks)
-        rhs_set = cls.quad_set(rhs, exclude_blanks)
+        lhs_set = cls.quad_set(lhs, exclude_blanks) if isinstance(lhs, Graph) else lhs
+        rhs_set = cls.quad_set(rhs, exclude_blanks) if isinstance(rhs, Graph) else rhs
         assert lhs_set == rhs_set
 
     @classmethod
     def assert_sets_equals(
-        cls, lhs: Graph, rhs: Graph, exclude_blanks: bool = False
+        cls,
+        lhs: Union[Graph, GHTripleSet, GHQuadSet],
+        rhs: Union[Graph, GHTripleSet, GHQuadSet],
+        exclude_blanks: bool = False,
     ) -> None:
         """
         Asserts that that ther quad or triple sets from the two graphs are equal.
         """
-        lhs_set = cls.triple_or_quad_set(lhs, exclude_blanks)
-        rhs_set = cls.triple_or_quad_set(rhs, exclude_blanks)
+        lhs_set = (
+            cls.triple_or_quad_set(lhs, exclude_blanks)
+            if isinstance(lhs, Graph)
+            else lhs
+        )
+        rhs_set = (
+            cls.triple_or_quad_set(rhs, exclude_blanks)
+            if isinstance(rhs, Graph)
+            else rhs
+        )
         assert lhs_set == rhs_set
 
     @classmethod
     def format_set(
         cls,
-        item_set: Union[IdentifierQuadSet, IdentifierTripleSet],
-        prefix: str = "  ",
+        item_set: Union[GHQuadSet, GHQuadFrozenSet, GHTripleSet, GHTripleFrozenSet],
+        indent: int = 1,
         sort: bool = False,
     ) -> str:
-        items = []
-        use_item_set = sorted(item_set) if sort else item_set
-        for item in use_item_set:
-            items.append(f"{prefix}{item}")
-        return "\n".join(items)
+        def _key(node: Union[GHTriple, GHQuad, GHNode]):
+            val: Any = node
+            if isinstance(node, tuple):
+                val = tuple(_key(item) for item in node)
+            if isinstance(node, frozenset):
+                for triple in node:
+                    nodes = cls.nodes(triple)
+                    val = tuple(_key(item) for item in nodes)
+            key = (f"{type(node)}", val)
+            return key
+
+        use_item_set = sorted(item_set, key=_key) if sort else item_set
+        return pprint.pformat(use_item_set, indent)
 
     @classmethod
-    def format_graph_set(
-        cls, graph: Graph, prefix: str = "  ", sort: bool = False
-    ) -> str:
-        return cls.format_set(cls.triple_or_quad_set(graph), prefix, sort)
+    def format_graph_set(cls, graph: Graph, indent: int = 1, sort: bool = False) -> str:
+        return cls.format_set(cls.triple_or_quad_set(graph), indent, sort)
 
     @classmethod
     def assert_isomorphic(
@@ -321,3 +374,16 @@ def pytest_mark_filter(
             yield pytest.param(
                 *param_set, marks=mark_dict.get(param_set, cast(Marks, ()))
             )
+
+
+def affix_tuples(
+    prefix: Optional[Tuple[Any, ...]],
+    tuples: Iterable[Tuple[Any, ...]],
+    suffix: Optional[Tuple[Any, ...]],
+) -> Generator[Tuple[Any, ...], None, None]:
+    if prefix is None:
+        prefix = tuple()
+    if suffix is None:
+        suffix = tuple()
+    for item in tuples:
+        yield (*prefix, *item, *suffix)
