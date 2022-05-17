@@ -1,5 +1,7 @@
-import pytest
 import tempfile
+
+import pytest
+
 import rdflib
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
