@@ -65,7 +65,7 @@ def test_xmlwriter_decl():
         ["https://example.org/foo", "ns1:foo"],
     ],
 )
-def test_xmlwriter(uri):
+def test_xmlwriter_qname(uri):
     EXNS = rdflib.Namespace("https://example.org/ns/")
     TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
