@@ -75,6 +75,8 @@ if TYPE_CHECKING:
     from .namespace import NamespaceManager
     from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
+_SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
+
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
@@ -482,7 +484,7 @@ class BNode(IdentifiedNode):
         .. versionadded:: 4.0
         """
         if authority is None:
-            authority = "https://rdflib.github.io/"
+            authority = _SKOLEM_DEFAULT_AUTHORITY
         if basepath is None:
             basepath = rdflib_skolem_genid
         skolem = "%s%s" % (basepath, str(self))

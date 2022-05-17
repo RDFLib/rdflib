@@ -2046,11 +2046,11 @@ class Dataset(ConjunctiveGraph):
 
     def graph(self, identifier=None, base=None):
         if identifier is None:
-            from rdflib.term import rdflib_skolem_genid
+            from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
 
             self.bind(
                 "genid",
-                "https://rdflib.github.io" + rdflib_skolem_genid,
+                _SKOLEM_DEFAULT_AUTHORITY + rdflib_skolem_genid,
                 override=False,
             )
             identifier = BNode().skolemize()
