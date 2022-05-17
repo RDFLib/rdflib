@@ -23,36 +23,6 @@ class N3Serializer(TurtleSerializer):
         super(N3Serializer, self).reset()
         self._stores = {}
 
-    def subjectDone(self, subject):
-        super(N3Serializer, self).subjectDone(subject)
-        if self.parent:
-            self.parent.subjectDone(subject)
-
-    def isDone(self, subject):
-        return super(N3Serializer, self).isDone(subject) and (
-            not self.parent or self.parent.isDone(subject)
-        )
-
-    def startDocument(self):
-        super(N3Serializer, self).startDocument()
-        # if not isinstance(self.store, N3Store):
-        #    return
-        #
-        # all_list = [self.label(var) for var in
-        #        self.store.get_universals(recurse=False)]
-        # all_list.sort()
-        # some_list = [self.label(var) for var in
-        #        self.store.get_existentials(recurse=False)]
-        # some_list.sort()
-        #
-        # for var in all_list:
-        #    self.write('\n'+self.indent()+'@forAll %s. '%var)
-        # for var in some_list:
-        #    self.write('\n'+self.indent()+'@forSome %s. '%var)
-        #
-        # if (len(all_list) + len(some_list)) > 0:
-        #    self.write('\n')
-
     def endDocument(self):
         if not self.parent:
             super(N3Serializer, self).endDocument()
@@ -67,6 +37,9 @@ class N3Serializer(TurtleSerializer):
         super(N3Serializer, self).preprocessTriple(triple)
         if isinstance(triple[0], Graph):
             for t in triple[0]:
+                self.preprocessTriple(t)
+        if isinstance(triple[1], Graph):
+            for t in triple[1]:
                 self.preprocessTriple(t)
         if isinstance(triple[2], Graph):
             for t in triple[2]:
