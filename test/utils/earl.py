@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING, Generator, Optional, Tuple, cast
 import pytest
 from pytest import Item
 
-from rdflib import RDF, BNode, Graph, Literal, Namespace, URIRef
-from rdflib.namespace import DC, DOAP, FOAF, DefinedNamespace
+from rdflib import RDF, BNode, Graph, Literal, URIRef
+from rdflib.namespace import DC, DOAP, FOAF
 from rdflib.term import Node
 
 if TYPE_CHECKING:

@@ -16,14 +16,15 @@ pyflakes = [
 pep8-naming = ["+*"]
 
 [tool.flakeheaven.exceptions."rdflib/plugins/sparql/*"]
-pep8-naming = [
-  "-N802",
-  "-N803",
-  "-N806",
-  "-N812",
-  "-N816",
-  "-N801",
-]
+pep8-naming = ["-N802", "-N803", "-N806", "-N812", "-N816", "-N801"]
+[tool.flakeheaven.exceptions."rdflib/namespace/_*"]
+pep8-naming = ["-N815"]
+[tool.flakeheaven.exceptions."rdflib/extras/infixowl.py"]
+pep8-naming = ["-N802", "-N803", "-N806", "-N815"]
+[tool.flakeheaven.exceptions."rdflib/plugins/parsers/notation3.py"]
+pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
+[tool.flakeheaven.exceptions."rdflib/plugins/serializers/turtle.py"]
+pep8-naming = ["-N802", "-N806", "-N815"]
 
 
 [tool.black]

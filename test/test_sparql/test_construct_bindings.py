@@ -1,8 +1,7 @@
 import unittest
 from test.utils import eq_
 
-from rdflib import BNode, Graph, Literal, URIRef
-from rdflib.compare import isomorphic
+from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.sparql import prepareQuery
 
 
