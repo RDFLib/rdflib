@@ -169,6 +169,7 @@ def test_sparql_for_with_clauses():
         eq_(t[1].n3(), "<urn:likes>")
         eq_(t[2].n3(), "<urn:cheese>")
 
+
 def test_sparql_update_with_bnode_serialize_parse():
     """
     Test if the blank node is inserted correctly, can be serialized and parsed.

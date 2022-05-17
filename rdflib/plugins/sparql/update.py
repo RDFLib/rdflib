@@ -123,6 +123,7 @@ def evalDeleteWhere(ctx, u):
             cg = ctx.dataset.get_context(c.get(g))
             cg -= _fillTemplate(u.quads[g], c)
 
+
 def utilForUsing(ctx, u):
     originalctx = ctx
     # Using replaces the dataset for evaluating the where-clause
@@ -156,8 +157,10 @@ def utilForUsing(ctx, u):
     if not u.using and u.withClause:
         g = ctx.dataset.get_context(u.withClause)
         ctx = ctx.pushGraph(g)
-    
-    res = {} # defining res to be empty because evalWithData could be calling this as well.
+
+    res = (
+        {}
+    )  # defining res to be empty because evalWithData could be calling this as well.
     if u.where:
         res = evalPart(ctx, u.where)
 
@@ -168,7 +171,8 @@ def utilForUsing(ctx, u):
             g = ctx.dataset.get_context(u.withClause)
             ctx = ctx.pushGraph(g)
 
-    return u, ctx, res;
+    return u, ctx, res
+
 
 def evalModify(ctx, u):
 
