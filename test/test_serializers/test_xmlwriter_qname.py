@@ -5,10 +5,11 @@ import pytest
 import rdflib
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
+EXNS = rdflib.Namespace("https://example.org/ns/")
+TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
+
 
 def test_xmlwriter_namespaces():
-    EXNS = rdflib.Namespace("https://example.org/ns/")
-    TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
     g = rdflib.Graph()
 
@@ -33,8 +34,6 @@ def test_xmlwriter_namespaces():
 
 
 def test_xmlwriter_decl():
-    EXNS = rdflib.Namespace("https://example.org/ns/")
-    TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
     g = rdflib.Graph()
 
@@ -68,8 +67,6 @@ def test_xmlwriter_decl():
     ],
 )
 def test_xmlwriter_qname(uri):
-    EXNS = rdflib.Namespace("https://example.org/ns/")
-    TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
     g = rdflib.Graph()
     g.bind("", TRIXNS)
