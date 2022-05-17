@@ -126,7 +126,7 @@ def test_dateTime_duration_subs():
     WHERE {
         VALUES (?duration ?d) {
             ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30T11:12:00"^^xsd:dateTime)
-		    ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
+            ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
         }
     }
     """
