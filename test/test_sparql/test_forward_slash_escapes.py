@@ -48,15 +48,15 @@ WHERE {
   ?nIndividual a ex:core\/MyClassB .
 }"""
 
-PN_LOCAL_BACKSLASH_XFAIL_REASON = """\
-    Contrary to the ratiried SPARQL 1.1.
-    grammar, the RDFlib SPARQL propcessor accepts backslashes as part of
-    PN_LOCAL which it treats as escape charachters.
+PN_LOCAL_BACKSLASH_XFAIL_REASON = """
+    Contrary to the ratified SPARQL 1.1 grammar, the RDFlib SPARQL propcessor
+    accepts backslashes as part of PN_LOCAL which it treats as escape
+    characters.
 
     There should be a way to instruct the SPARQL parser to operate in strict
     mode, and in strict mode backslashes should not be permitted in PN_LOCAL.
 
-    See https://github.com/RDFLib/rdflib/issues/1871\
+    See https://github.com/RDFLib/rdflib/issues/1871
 """
 
 

@@ -4,7 +4,7 @@
     "kb": "http://example.org/kb/",
     "owl": "http://www.w3.org/2002/07/owl#"
   },
-  "@x-comment": [
+  "_comment": [
     "The JSON-LD spec does not provide a grammar production rule set in,",
     "EBNF.  However, the section on compact IRIs indicates that an IRI can",
     "be prefixed at any point that would not result in a suffix starting",
