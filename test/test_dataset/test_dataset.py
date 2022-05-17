@@ -7,7 +7,7 @@ from test.data import context1, likes, pizza, tarek
 import pytest
 
 from rdflib import URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, Namespace
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -231,3 +231,38 @@ def test_iter(get_dataset):
         i_new += 1
 
     assert i_new == i_trad  # both should be 3
+
+
+EGSCHEMA = Namespace("example:")
+
+
+def test_subgraph_without_identifier() -> None:
+    """
+    Graphs with no identifies assigned are identified by Skolem IRIs with a
+    prefix that is bound to `genid`.
+
+    TODO: This is somewhat questionable and arbitrary behaviour and should be
+    reviewed at some point.
+    """
+
+    dataset = Dataset()
+
+    nman = dataset.namespace_manager
+
+    genid_prefix = URIRef("https://rdflib.github.io/.well-known/genid/rdflib/")
+
+    namespaces = set(nman.namespaces())
+    assert (
+        next((namespace for namespace in namespaces if namespace[0] == "genid"), None)
+        is None
+    )
+
+    subgraph: Graph = dataset.graph()
+    subgraph.add((EGSCHEMA["subject"], EGSCHEMA["predicate"], EGSCHEMA["object"]))
+
+    namespaces = set(nman.namespaces())
+    assert next(
+        (namespace for namespace in namespaces if namespace[0] == "genid"), None
+    ) == ("genid", genid_prefix)
+
+    assert f"{subgraph.identifier}".startswith(genid_prefix)
