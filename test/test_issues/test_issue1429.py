@@ -1,7 +1,3 @@
-from urllib.parse import quote, urlsplit, urlunsplit
-
-import pytest
-
 from rdflib import Graph
 from rdflib.parser import iri2uri
 
