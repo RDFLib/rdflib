@@ -114,7 +114,7 @@ def test_sparql_update_with_bnode():
         eq_(t[2].n3(), "<urn:Blank>")
 
 
-def test_sparql_update_with_WITH_1():
+def test_sparql_for_with_clauses():
     """
     Test if the  node is inserted correctly.
     """
@@ -152,30 +152,6 @@ def test_sparql_update_with_WITH_1():
     for t in g.triples((None, None, None)):
         cnt += 1
     assert cnt == 0
-
-
-def test_sparql_update_with_WITH_2():
-    """
-    Test if the  node is inserted correctly.
-    """
-    g = ConjunctiveGraph()
-    g.namespace_manager.bind("rdf", RDF)
-    g.namespace_manager.bind("rdfs", RDFS)
-    ex = Namespace("https://ex.com/")
-    g.namespace_manager.bind("ex", ex)
-    g.get_context(ex.g1).parse(
-        format="turtle",
-        data=f"""
-    PREFIX ex: <{str(ex)}>
-    PREFIX rdfs: <{str(RDFS)}>
-    """,
-    )
-    g.get_context(ex.g2).parse(
-        format="turtle",
-        data=f"""
-    PREFIX ex: <{str(ex)}>
-    """,
-    )
     g.update(
         "WITH <ex.g1> INSERT DATA { <urn:john> <urn:likes> <urn:surfing> }",
         initNs={"ex": ex},
@@ -192,7 +168,6 @@ def test_sparql_update_with_WITH_2():
         eq_(t[0].n3(), "<urn:tarek>")
         eq_(t[1].n3(), "<urn:likes>")
         eq_(t[2].n3(), "<urn:cheese>")
-
 
 def test_sparql_update_with_bnode_serialize_parse():
     """

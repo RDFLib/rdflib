@@ -123,11 +123,8 @@ def evalDeleteWhere(ctx, u):
             cg = ctx.dataset.get_context(c.get(g))
             cg -= _fillTemplate(u.quads[g], c)
 
-
-def evalModify(ctx, u):
-
+def utilForUsing(ctx, u):
     originalctx = ctx
-
     # Using replaces the dataset for evaluating the where-clause
     if u.using:
         otherDefault = False
@@ -155,11 +152,14 @@ def evalModify(ctx, u):
     # graphs referred to in USING clauses and/or USING NAMED clauses,
     # the WITH clause will be ignored while evaluating the WHERE
     # clause."
+
     if not u.using and u.withClause:
         g = ctx.dataset.get_context(u.withClause)
         ctx = ctx.pushGraph(g)
-
-    res = evalPart(ctx, u.where)
+    
+    res = {} # defining res to be empty because evalWithData could be calling this as well.
+    if u.where:
+        res = evalPart(ctx, u.where)
 
     if u.using:
         if otherDefault:
@@ -167,6 +167,12 @@ def evalModify(ctx, u):
         if u.withClause:
             g = ctx.dataset.get_context(u.withClause)
             ctx = ctx.pushGraph(g)
+
+    return u, ctx, res;
+
+def evalModify(ctx, u):
+
+    u, ctx, res = utilForUsing(ctx, u)
 
     for c in res:
         dg = ctx.graph
@@ -186,35 +192,7 @@ def evalModify(ctx, u):
 
 
 def evalWithData(ctx, u):
-    originalctx = ctx
-    # Using replaces the dataset for evaluating the where-clause
-    if u.using:
-        otherDefault = False
-        for d in u.using:
-            if d.default:
-
-                if not otherDefault:
-                    # replace current default graph
-                    dg = Graph()
-                    ctx = ctx.pushGraph(dg)
-                    otherDefault = True
-
-                ctx.load(d.default, default=True)
-
-            elif d.named:
-                g = d.named
-                ctx.load(g, default=False)
-
-    if not u.using and u.withClause:
-        g = ctx.dataset.get_context(u.withClause)
-        ctx = ctx.pushGraph(g)
-
-    if u.using:
-        if otherDefault:
-            ctx = originalctx  # restore original default graph
-        if u.withClause:
-            g = ctx.dataset.get_context(u.withClause)
-            ctx = ctx.pushGraph(g)
+    u, ctx, res = utilForUsing(ctx, u)
     if u.delete:
         # remove triples
         g = ctx.graph
