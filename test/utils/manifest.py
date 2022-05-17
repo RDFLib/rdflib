@@ -2,7 +2,6 @@ from test.utils.namespace import RDFT
 from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
 
 from rdflib import RDF, RDFS, Graph, Namespace
-from rdflib.namespace import DefinedNamespace
 from rdflib.term import Identifier, Node, URIRef
 
 MF = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")

@@ -1,5 +1,4 @@
-from rdflib import BNode, Graph, Literal, Namespace
-from rdflib.compare import isomorphic
+from rdflib import Graph, Literal, Namespace
 
 EX = Namespace("http://example.org/")
 QUERY = """

@@ -1,6 +1,5 @@
 import os
 import unittest
-from test import TEST_DIR
 from test.data import TEST_DATA_DIR
 
 from rdflib import ConjunctiveGraph, Namespace, URIRef

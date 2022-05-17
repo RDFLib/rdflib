@@ -2,12 +2,10 @@
 test suite."""
 
 import os
-from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.utils import file_uri_to_path
 from test.utils.manifest import RDFTest, read_manifest
 from test.utils.namespace import RDFT
-from typing import Callable, Dict, Set
+from typing import Callable, Dict
 
 import pytest
 

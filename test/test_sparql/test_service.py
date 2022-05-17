@@ -22,9 +22,7 @@ from typing import (
 import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable
-from rdflib.compare import isomorphic
 from rdflib.namespace import XSD
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.term import BNode, Identifier
 
 

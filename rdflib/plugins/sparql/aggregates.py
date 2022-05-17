@@ -207,10 +207,17 @@ class GroupConcat(Accumulator):
     def update(self, row, aggregator):
         try:
             value = _eval(self.expr, row)
+            # skip UNDEF
+            if isinstance(value, NotBoundError):
+                return
             self.value.append(value)
             if self.distinct:
                 self.seen.add(value)
         # skip UNDEF
+        # NOTE: It seems like this is not the way undefined values occur, they
+        # come through not as exceptions but as values. This is left here
+        # however as it may occur in some cases.
+        # TODO: Consider removing this.
         except NotBoundError:
             pass
 

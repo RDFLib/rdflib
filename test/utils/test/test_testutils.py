@@ -1,8 +1,8 @@
 import os
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from test.utils import GraphHelper, file_uri_to_path
-from typing import Optional, Tuple, Union
+from test.utils import GraphHelper, affix_tuples, file_uri_to_path
+from typing import Any, List, Optional, Tuple, Union
 
 import pytest
 
@@ -216,6 +216,42 @@ class SetsEqualTestCase:
             }
             """,
         ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { eg:ss0 eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { eg:ss0 eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="n3",
+            ignore_blanks=False,
+            lhs="""
+            { { <example:sss0> <example:ssp0> <example:sso0> } <example:sp0> <example:so0> } <example:p0> {}.
+            """,
+            rhs="""
+            @prefix eg: <example:> .
+            { { eg:sss0 eg:ssp0 eg:sso0 } eg:sp0 eg:so0 } eg:p0 {}.
+            """,
+        ),
     ],
 )
 def test_assert_sets_equal(test_case: SetsEqualTestCase):
@@ -281,3 +317,43 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
         GraphHelper.assert_quad_sets_equals(
             lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
         )
+
+
+@pytest.mark.parametrize(
+    ["tuples", "prefix", "suffix", "expected_result"],
+    [
+        (
+            [("a",), ("b",), ("c",)],
+            None,
+            None,
+            [("a",), ("b",), ("c",)],
+        ),
+        (
+            [("a",), ("b",), ("c",)],
+            (1, 2),
+            None,
+            [
+                (1, 2, "a"),
+                (1, 2, "b"),
+                (1, 2, "c"),
+            ],
+        ),
+        (
+            [("a",), ("b",), ("c",)],
+            None,
+            (3, 4),
+            [
+                ("a", 3, 4),
+                ("b", 3, 4),
+                ("c", 3, 4),
+            ],
+        ),
+    ],
+)
+def test_prefix_tuples(
+    tuples: List[Tuple[Any, ...]],
+    prefix: Tuple[Any, ...],
+    suffix: Tuple[Any, ...],
+    expected_result: List[Tuple[Any, ...]],
+) -> None:
+    assert expected_result == list(affix_tuples(prefix, tuples, suffix))
