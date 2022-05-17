@@ -1,11 +1,8 @@
 import io
-from pprint import pprint
 from test.utils import eq_
 
 import rdflib
-from rdflib import XSD, BNode, Graph, Literal, URIRef
-from rdflib.compare import isomorphic
-from rdflib.plugins.sparql import prepareQuery
+from rdflib import Graph
 
 
 def test_dateTime_dateTime_subs_issue():
@@ -129,7 +126,7 @@ def test_dateTime_duration_subs():
     WHERE {
         VALUES (?duration ?d) {
             ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30T11:12:00"^^xsd:dateTime)
-		    ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
+            ("P3DT1H15M"^^xsd:dayTimeDuration "2000-10-30"^^xsd:date)
         }
     }
     """

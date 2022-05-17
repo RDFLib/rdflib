@@ -1,11 +1,9 @@
-import os
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 
 import pytest
 
 from rdflib import Graph, Namespace
-from rdflib.compare import isomorphic
 from rdflib.term import URIRef
 
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"

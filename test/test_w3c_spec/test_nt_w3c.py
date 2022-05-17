@@ -1,7 +1,6 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
 import os
-from test import TEST_DIR
 from test.data import TEST_DATA_DIR
 from test.utils.manifest import RDFTest, read_manifest
 from test.utils.namespace import RDFT

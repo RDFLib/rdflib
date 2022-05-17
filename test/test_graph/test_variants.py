@@ -26,7 +26,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format

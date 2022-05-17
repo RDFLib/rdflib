@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import shutil
-import sys
-import unittest
 from pathlib import Path
-from tempfile import mkdtemp, mkstemp
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.utils import GraphHelper, get_unique_plugin_names
 from typing import Callable, Optional, Set

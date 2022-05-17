@@ -2,7 +2,6 @@
 Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
-from os import path
 
 import pytest
 

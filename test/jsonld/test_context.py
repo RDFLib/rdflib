@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Any, Dict
 
 from rdflib.plugins.shared.jsonld import context, errors
-from rdflib.plugins.shared.jsonld.context import Context, Term
+from rdflib.plugins.shared.jsonld.context import Context
 
 
 # exception utility (see also nose.tools.raises)

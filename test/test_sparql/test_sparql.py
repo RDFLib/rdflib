@@ -761,6 +761,112 @@ def test_operator_exception(
             [{Variable('bound'): Literal(False)}],
             id="select-bind-notexists-const-true",
         ),
+        pytest.param(
+            """
+            PREFIX dce: <http://purl.org/dc/elements/1.1/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT
+                ?class
+                (
+                    GROUP_CONCAT(
+                        DISTINCT( STR( ?source ) );
+                        separator="|"
+                    ) AS ?sources
+                )
+            {
+                ?class a rdfs:Class.
+                OPTIONAL { ?class dce:source ?source. }
+            }
+            GROUP BY ?class ORDER BY ?class
+            """,
+            [
+                {
+                    Variable("class"): RDFS.Class,
+                    Variable("sources"): Literal(""),
+                },
+                {
+                    Variable("class"): RDFS.Container,
+                    Variable("sources"): Literal(""),
+                },
+                {
+                    Variable("class"): RDFS.ContainerMembershipProperty,
+                    Variable("sources"): Literal(""),
+                },
+                {
+                    Variable("class"): RDFS.Datatype,
+                    Variable("sources"): Literal(""),
+                },
+                {
+                    Variable("class"): RDFS.Literal,
+                    Variable("sources"): Literal(""),
+                },
+                {
+                    Variable("class"): RDFS.Resource,
+                    Variable("sources"): Literal(""),
+                },
+            ],
+            id="select-group-concat-optional-one",
+        ),
+        pytest.param(
+            """
+            PREFIX dce: <http://purl.org/dc/elements/1.1/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT
+                ?vocab
+                (
+                    GROUP_CONCAT(
+                        DISTINCT( STR( ?source ) );
+                        separator="|"
+                    ) AS ?sources
+                )
+            {
+                ?class a rdfs:Class.
+                ?class rdfs:isDefinedBy ?vocab.
+                OPTIONAL { ?class dce:source ?source. }
+            }
+            GROUP BY ?vocab ORDER BY ?vocab
+            """,
+            [
+                {
+                    Variable("vocab"): URIRef(f"{RDFS}"),
+                    Variable("sources"): Literal(""),
+                },
+            ],
+            id="select-group-concat-optional-many",
+        ),
+        pytest.param(
+            """
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            SELECT
+                ?predicate
+                (
+                    GROUP_CONCAT(
+                        DISTINCT( STR( ?vocab ) );
+                        separator="|"
+                    ) AS ?vocabs
+                )
+            {
+
+                VALUES ?types { rdf:Property rdfs:Class }.
+                VALUES ?predicate { rdf:type }.
+                ?thing ?predicate ?types.
+                OPTIONAL {
+                  ?thing rdfs:isDefinedBy ?vocab.
+                }
+            }
+            GROUP BY ?predicate ORDER BY ?predicate
+            """,
+            [
+                {
+                    Variable("predicate"): RDF.type,
+                    Variable("vocabs"): Literal(
+                        "http://www.w3.org/2000/01/rdf-schema#"
+                    ),
+                },
+            ],
+            id="select-group-concat-optional-many",
+        ),
     ],
 )
 def test_queries(
