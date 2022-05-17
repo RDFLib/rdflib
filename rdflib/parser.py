@@ -27,10 +27,11 @@ from typing import (
     Union,
 )
 from urllib.error import HTTPError
-from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
+from urllib.parse import urljoin
 from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
+import rdflib.util
 from rdflib import __version__
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
@@ -47,41 +48,7 @@ __all__ = [
     "URLInputSource",
     "FileInputSource",
     "PythonInputSource",
-    "iri2uri",
 ]
-
-
-def iri2uri(iri: str) -> str:
-    """
-    Convert an IRI to a URI (Python 3).
-    https://stackoverflow.com/a/42309027
-    https://stackoverflow.com/a/40654295
-    netloc should be encoded using IDNA;
-    non-ascii URL path should be encoded to UTF-8 and then percent-escaped;
-    non-ascii query parameters should be encoded to the encoding of a page
-    URL was extracted from (or to the encoding server uses), then
-    percent-escaped.
-    >>> iri2uri("https://dbpedia.org/resource/Almería")
-    'https://dbpedia.org/resource/Almer%C3%ADa'
-    """
-
-    (scheme, netloc, path, query, fragment) = urlsplit(iri)
-
-    # Just support http/https, otherwise return the iri unmolested
-    if scheme not in ["http", "https"]:
-        return iri
-
-    scheme = quote(scheme)
-    netloc = netloc.encode("idna").decode("utf-8")
-    path = quote(path)
-    query = unquote(quote(query))
-    fragment = quote(fragment)
-    uri = urlunsplit((scheme, netloc, path, query, fragment))
-
-    if iri.endswith("#") and not uri.endswith("#"):
-        uri += "#"
-
-    return uri
 
 
 class Parser(object):
@@ -481,7 +448,7 @@ def _create_input_source_from_location(
 
     base = pathlib.Path.cwd().as_uri()
 
-    absolute_location = URIRef(iri2uri(location), base=base)
+    absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
     if absolute_location.startswith("file:///"):
         filename = url2pathname(absolute_location.replace("file:///", "/"))

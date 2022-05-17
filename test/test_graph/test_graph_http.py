@@ -1,13 +1,18 @@
 import unittest
 from http.server import BaseHTTPRequestHandler
+from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
+from test.utils.graph import cached_graph
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
     ServedBaseHTTPServerMock,
     ctx_http_server,
 )
+from typing import Generator
 from urllib.error import HTTPError
+
+import pytest
 
 from rdflib import Graph, Namespace
 
@@ -230,6 +235,40 @@ class TestGraphHTTP(unittest.TestCase):
                 graph.parse(location=url, format="turtle")
 
             self.assertEqual(raised.exception.code, 500)
+
+
+@pytest.fixture(scope="module")
+def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
+    with ServedBaseHTTPServerMock() as httpmock:
+        yield httpmock
+
+
+@pytest.fixture(scope="function")
+def httpmock(
+    module_httpmock: ServedBaseHTTPServerMock,
+) -> Generator[ServedBaseHTTPServerMock, None, None]:
+    module_httpmock.reset()
+    yield module_httpmock
+
+
+def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
+    diverse_triples_path = TEST_DATA_DIR / "variants/diverse_triples.ttl"
+
+    httpmock.responses[MethodName.GET].append(
+        MockHTTPResponse(
+            200,
+            "OK",
+            diverse_triples_path.read_bytes(),
+            {"Content-Type": ["text/turtle"]},
+        )
+    )
+    g = Graph()
+    g.parse(f"{httpmock.url}/resource/Almería")
+    assert httpmock.call_count == 1
+    GraphHelper.assert_triple_sets_equals(cached_graph((diverse_triples_path,)), g)
+
+    req = httpmock.requests[MethodName.GET].pop(0)
+    assert req.path == "/resource/Almer%C3%ADa"
 
 
 if __name__ == "__main__":

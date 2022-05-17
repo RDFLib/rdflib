@@ -24,8 +24,11 @@ from urllib.parse import urlparse
 from urllib.request import url2pathname
 from warnings import warn
 
+import rdflib.exceptions as exceptions
+import rdflib.namespace as namespace  # noqa: F401 # This is here because it is used in a docstring.
+import rdflib.plugin as plugin
+import rdflib.query as query
 import rdflib.util  # avoid circular dependency
-from rdflib import exceptions, namespace, plugin, query
 from rdflib.collection import Collection
 from rdflib.exceptions import ParserError
 from rdflib.namespace import RDF, Namespace, NamespaceManager
