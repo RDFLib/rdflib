@@ -49,14 +49,26 @@ class GraphAsserts:
 
     quad_count: Optional[int] = None
     exact_match: bool = False
+    has_subject_iris: Optional[List[str]] = None
 
     def check(
         self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph
     ) -> None:
+        """
+        if `first_graph` is `None` then this is the first check before any
+        other graphs have been processed.
+        """
         if self.quad_count is not None:
             assert self.quad_count == len(list(graph.quads()))
         if first_graph is not None and self.exact_match:
             GraphHelper.assert_quad_sets_equals(first_graph, graph)
+        if first_graph is None and self.has_subject_iris is not None:
+            subjects_iris = {
+                f"{subject}"
+                for subject in graph.subjects()
+                if isinstance(subject, URIRef)
+            }
+            assert set(self.has_subject_iris) == subjects_iris
 
 
 @dataclass(order=True)
@@ -219,6 +231,8 @@ def test_variants(graph_variant: GraphVariants) -> None:
     assert len(graph_variant.variants) > 0
     first_graph: Optional[ConjunctiveGraph] = None
     first_path: Optional[Path] = None
+    logging.debug("graph_variant.asserts = %s", graph_variant.asserts)
+
     for variant_key, variant_path in graph_variant.variants.items():
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
