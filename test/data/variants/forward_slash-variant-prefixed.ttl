@@ -1,0 +1,18 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix kb: <http://example.org/kb/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# Spell a class name with prefixing, but have the prefixing NOT include
+# one of the forward-slashed path components.
+# The forward slash must be escaped, according to Turtle grammar
+# production rules grammar rules including and between PN_LOCAL and
+# PN_LOCAL_ESC.
+# https://www.w3.org/TR/turtle/#sec-grammar-grammar
+
+ex:core\/MyClassA a owl:Class .
+
+kb:individual-a a ex:core\/MyClassA .
+
+ex:core\/MyClassB a owl:Class .
+
+kb:individual-b a ex:core\/MyClassB .

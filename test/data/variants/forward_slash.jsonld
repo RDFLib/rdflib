@@ -1,0 +1,24 @@
+{
+  "@context": {
+    "kb": "http://example.org/kb/",
+    "owl": "http://www.w3.org/2002/07/owl#"
+  },
+  "@graph": [
+    {
+      "@id": "kb:individual-a",
+      "@type": "http://example.org/ontology/core/MyClassA"
+    },
+    {
+      "@id": "http://example.org/ontology/core/MyClassA",
+      "@type": "owl:Class"
+    },
+    {
+      "@id": "kb:individual-b",
+      "@type": "http://example.org/ontology/core/MyClassB"
+    },
+    {
+      "@id": "http://example.org/ontology/core/MyClassB",
+      "@type": "owl:Class"
+    }
+  ]
+}
