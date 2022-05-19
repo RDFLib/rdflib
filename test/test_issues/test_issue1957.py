@@ -38,7 +38,7 @@ def test_sparql_parse_reserved_char_percent_encoded(reserved_char_percent_encode
             :value_id "01G39WKRH7PVK1DXQHWT08DZA8" ] ."""
 
     q = f"""PREFIX : <https://www.example.co/reserved/language#>
-    SELECT  ?o 
+    SELECT  ?o
     WHERE {{ ?s :transcript{reserved_char_percent_encoded}data/:value ?o . }}"""
 
     g = rdflib.Graph()
