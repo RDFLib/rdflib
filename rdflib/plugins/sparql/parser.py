@@ -227,8 +227,17 @@ PN_LOCAL = Regex(
 )
 
 
+percent_encoded_reserved_chars_re = re.compile(
+    """%2[0-13-9a-cfA-CF]|%3[abdfABDF]|%40|%5[bdBD]"""
+)
+
+
 def _hexExpand(match):
-    return chr(int(match.group(0)[1:], 16))
+    return (
+        match.group(0)
+        if percent_encoded_reserved_chars_re.match(match.group(0))
+        else chr(int(match.group(0)[1:], 16))
+    )
 
 
 PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
