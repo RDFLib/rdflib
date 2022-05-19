@@ -230,7 +230,7 @@ FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 results = Graph()
 
 system = BNode("system")
-results.add((system, FOAF["homepage"], URIRef("http://rdflib.net/")))
+results.add((system, FOAF["homepage"], URIRef("https://rdflib.github.io/")))
 results.add((system, RDFS.label, Literal("RDFLib")))
 results.add((system, RDFS.comment, Literal("")))
 

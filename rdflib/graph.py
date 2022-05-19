@@ -120,13 +120,13 @@ Instantiating Graphs with default store (Memory) and default identifier
     <class 'rdflib.term.BNode'>
 
 Instantiating Graphs with a Memory store and an identifier -
-<http://rdflib.net>:
+<https://rdflib.github.io>:
 
-    >>> g = Graph('Memory', URIRef("http://rdflib.net"))
+    >>> g = Graph('Memory', URIRef("https://rdflib.github.io"))
     >>> g.identifier
-    rdflib.term.URIRef('http://rdflib.net')
+    rdflib.term.URIRef('https://rdflib.github.io')
     >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
-    "<http://rdflib.net> a rdfg:Graph;rdflib:storage
+    "<https://rdflib.github.io> a rdfg:Graph;rdflib:storage
      [a rdflib:Store;rdfs:label 'Memory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
@@ -146,7 +146,7 @@ via triple pattern:
     >>> g.add((statementId, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((statementId, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph"))) # doctest: +ELLIPSIS
+    ...     URIRef("https://rdflib.github.io/store/ConjunctiveGraph"))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((statementId, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -217,7 +217,7 @@ the same store:
     >>> g1.add((stmt1, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -226,7 +226,7 @@ the same store:
     >>> g2.add((stmt2, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g2.add((stmt2, RDF.predicate, RDF.type)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -235,7 +235,7 @@ the same store:
     >>> g3.add((stmt3, RDF.type, RDF.Statement)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
+    ...     URIRef('https://rdflib.github.io/store/ConjunctiveGraph'))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -272,7 +272,7 @@ Parsing N3 from a string
     ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     ... [ a rdf:Statement ;
-    ...   rdf:subject <http://rdflib.net/store#ConjunctiveGraph>;
+    ...   rdf:subject <https://rdflib.github.io/store#ConjunctiveGraph>;
     ...   rdf:predicate rdfs:label;
     ...   rdf:object "Conjunctive Graph" ] .
     ... '''
@@ -282,11 +282,11 @@ Parsing N3 from a string
 
 Using Namespace class:
 
-    >>> RDFLib = Namespace("http://rdflib.net/")
+    >>> RDFLib = Namespace("https://rdflib.github.io/")
     >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef('http://rdflib.net/ConjunctiveGraph')
+    rdflib.term.URIRef('https://rdflib.github.io/ConjunctiveGraph')
     >>> RDFLib["Graph"]
-    rdflib.term.URIRef('http://rdflib.net/Graph')
+    rdflib.term.URIRef('https://rdflib.github.io/Graph')
 
 """
 
@@ -2002,7 +2002,7 @@ class Dataset(ConjunctiveGraph):
     >>> for c in ds.graphs():  # doctest: +SKIP
     ...     print(c)  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     DEFAULT
-    http://rdlib.net/.well-known/genid/rdflib/N...
+    https://rdflib.github.io/.well-known/genid/rdflib/N...
     http://www.example.com/gr
     >>> # Note that the Dataset.graphs() call returns names of empty graphs,
     >>> # too. This can be restricted:
@@ -2046,10 +2046,12 @@ class Dataset(ConjunctiveGraph):
 
     def graph(self, identifier=None, base=None):
         if identifier is None:
-            from rdflib.term import rdflib_skolem_genid
+            from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
 
             self.bind(
-                "genid", "http://rdflib.net" + rdflib_skolem_genid, override=False
+                "genid",
+                _SKOLEM_DEFAULT_AUTHORITY + rdflib_skolem_genid,
+                override=False,
             )
             identifier = BNode().skolemize()
 
