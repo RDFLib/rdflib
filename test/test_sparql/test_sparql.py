@@ -258,28 +258,28 @@ def test_property_bindings(rdfs_graph: Graph) -> None:
     )
     expected_bindings = [
         {
-            Variable('class'): RDFS.Class,
-            Variable('label'): Literal('Class'),
+            Variable("class"): RDFS.Class,
+            Variable("label"): Literal("Class"),
         },
         {
-            Variable('class'): RDFS.Container,
-            Variable('label'): Literal('Container'),
+            Variable("class"): RDFS.Container,
+            Variable("label"): Literal("Container"),
         },
         {
-            Variable('class'): RDFS.ContainerMembershipProperty,
-            Variable('label'): Literal('ContainerMembershipProperty'),
+            Variable("class"): RDFS.ContainerMembershipProperty,
+            Variable("label"): Literal("ContainerMembershipProperty"),
         },
         {
-            Variable('class'): RDFS.Datatype,
-            Variable('label'): Literal('Datatype'),
+            Variable("class"): RDFS.Datatype,
+            Variable("label"): Literal("Datatype"),
         },
         {
-            Variable('class'): RDFS.Literal,
-            Variable('label'): Literal('Literal'),
+            Variable("class"): RDFS.Literal,
+            Variable("label"): Literal("Literal"),
         },
         {
-            Variable('class'): RDFS.Resource,
-            Variable('label'): Literal('Resource'),
+            Variable("class"): RDFS.Resource,
+            Variable("label"): Literal("Resource"),
         },
     ]
 
@@ -499,7 +499,7 @@ def test_operator_exception(
                 }
             }
             """,
-            [{Variable('label'): Literal("The class of classes.")}],
+            [{Variable("label"): Literal("The class of classes.")}],
             id="select-optional",
         ),
         pytest.param(
@@ -510,7 +510,7 @@ def test_operator_exception(
             """,
             [
                 {
-                    Variable('bound'): Literal(
+                    Variable("bound"): Literal(
                         "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
                     )
                 }
@@ -523,7 +523,7 @@ def test_operator_exception(
                 BIND( (1+2) as ?bound )
             }
             """,
-            [{Variable('bound'): Literal(3)}],
+            [{Variable("bound"): Literal(3)}],
             id="select-bind-plus",
         ),
         pytest.param(
@@ -628,7 +628,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable('bound'): Literal(False)}],
+            [{Variable("bound"): Literal(False)}],
             id="select-bind-exists-const-false",
         ),
         pytest.param(
@@ -642,7 +642,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable('bound'): Literal(True)}],
+            [{Variable("bound"): Literal(True)}],
             id="select-bind-exists-const-true",
         ),
         pytest.param(
@@ -657,7 +657,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable("s"): RDFS.Class, Variable('bound'): Literal(True)}],
+            [{Variable("s"): RDFS.Class, Variable("bound"): Literal(True)}],
             id="select-bind-exists-var-true",
         ),
         pytest.param(
@@ -672,7 +672,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable("s"): RDFS.Class, Variable('bound'): Literal(False)}],
+            [{Variable("s"): RDFS.Class, Variable("bound"): Literal(False)}],
             id="select-bind-exists-var-false",
         ),
         pytest.param(
@@ -688,7 +688,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable('bound'): Literal(True)}],
+            [{Variable("bound"): Literal(True)}],
             id="select-bind-notexists-const-false",
         ),
         pytest.param(
@@ -702,7 +702,7 @@ def test_operator_exception(
                 )
             }
             """,
-            [{Variable('bound'): Literal(False)}],
+            [{Variable("bound"): Literal(False)}],
             id="select-bind-notexists-const-true",
         ),
         pytest.param(

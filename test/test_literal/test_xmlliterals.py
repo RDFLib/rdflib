@@ -102,8 +102,8 @@ def testHTML():
     [
         pytest.param(
             [
-                lambda: Literal('<something />', datatype=RDF.XMLLiteral),
-                lambda: Literal('<something/>', datatype=RDF.XMLLiteral),
+                lambda: Literal("<something />", datatype=RDF.XMLLiteral),
+                lambda: Literal("<something/>", datatype=RDF.XMLLiteral),
             ],
             True,
         ),

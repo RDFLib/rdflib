@@ -168,5 +168,5 @@ def test_compute_qname_no_generate() -> None:
     g = Graph()  # 'core' bind_namespaces (default)
     with pytest.raises(KeyError):
         g.namespace_manager.compute_qname_strict(
-            'https://example.org/unbound/test', generate=False
+            "https://example.org/unbound/test", generate=False
         )

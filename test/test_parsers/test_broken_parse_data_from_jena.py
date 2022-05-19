@@ -36,4 +36,4 @@ def test_n3_serializer_roundtrip(testfile) -> None:
 
     g1 = rdflib.ConjunctiveGraph()
 
-    g1.parse(os.path.join(broken_parse_data, testfile), format='n3')
+    g1.parse(os.path.join(broken_parse_data, testfile), format="n3")

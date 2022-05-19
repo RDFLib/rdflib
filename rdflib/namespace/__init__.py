@@ -238,7 +238,7 @@ class DefinedNamespaceMeta(type):
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
-        return f'Namespace({str(cls._NS)!r})'
+        return f"Namespace({str(cls._NS)!r})"
 
     def __str__(cls) -> str:
         return str(cls._NS)
@@ -275,9 +275,9 @@ class DefinedNamespaceMeta(type):
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
             if issubclass(term, URIRef):
-                terms[key] = f'{pfx}:{key}'
+                terms[key] = f"{pfx}:{key}"
 
-        return {'@context': terms}
+        return {"@context": terms}
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
