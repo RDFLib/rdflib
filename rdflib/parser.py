@@ -197,14 +197,14 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: 'HTTPMessage', name):
+    def getallmatchingheaders(cls, message: "HTTPMessage", name):
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
         return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
-    def get_links(cls, response: 'HTTPResponse'):
+    def get_links(cls, response: "HTTPResponse"):
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
         retarray = []
         for linksline in linkslines:
@@ -214,8 +214,8 @@ class URLInputSource(InputSource):
         return retarray
 
     def get_alternates(self, type_: Optional[str] = None) -> List[str]:
-        typestr: Optional[str] = f"type=\"{type_}\"" if type_ else None
-        relstr = "rel=\"alternate\""
+        typestr: Optional[str] = f'type="{type_}"' if type_ else None
+        relstr = 'rel="alternate"'
         alts = []
         for link in self.links:
             parts = [p.strip() for p in link.split(";")]

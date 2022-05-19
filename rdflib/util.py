@@ -194,9 +194,9 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         return Literal(s == "true")
     elif (
         s.lower()
-        .replace('.', '', 1)
-        .replace('-', '', 1)
-        .replace('e', '', 1)
+        .replace(".", "", 1)
+        .replace("-", "", 1)
+        .replace("e", "", 1)
         .isnumeric()
     ):
         if "e" in s.lower():
