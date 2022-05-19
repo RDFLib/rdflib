@@ -84,6 +84,8 @@ __all__ = [
     "VOID",
     "XSD",
     "util",
+    "plugin",
+    "query",
 ]
 
 import logging
@@ -157,7 +159,7 @@ In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
 
-from rdflib import plugin, query
+
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import (
     BRICK,
@@ -190,9 +192,5 @@ from rdflib.namespace import (
 )
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef, Variable
 
-# tedious sop to flake8
-assert plugin
-assert query
-
-from rdflib import util
-from rdflib.container import *
+from rdflib import plugin, query, util  # isort:skip
+from rdflib.container import *  # isort:skip # noqa:F401,F403

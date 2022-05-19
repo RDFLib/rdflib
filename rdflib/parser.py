@@ -31,6 +31,7 @@ from urllib.parse import urljoin
 from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
+import rdflib.util
 from rdflib import __version__
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
@@ -448,7 +449,7 @@ def _create_input_source_from_location(
 
     base = pathlib.Path.cwd().as_uri()
 
-    absolute_location = URIRef(location, base=base)
+    absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
     if absolute_location.startswith("file:///"):
         filename = url2pathname(absolute_location.replace("file:///", "/"))

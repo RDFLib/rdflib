@@ -25,6 +25,8 @@ pep8-naming = ["-N802", "-N803", "-N806", "-N815"]
 pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
 [tool.flakeheaven.exceptions."rdflib/plugins/serializers/turtle.py"]
 pep8-naming = ["-N802", "-N806", "-N815"]
+[tool.flakeheaven.exceptions."rdflib/__init__.py"]
+pycodestyle = ["-E402"]
 
 
 [tool.black]
