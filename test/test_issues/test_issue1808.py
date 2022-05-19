@@ -17,8 +17,8 @@ def test():
     for s, p, o in gs:
         assert isinstance(s, URIRef) and s.__contains__(rdflib_skolem_genid)
 
-    query_with_iri = 'select ?p ?o {{ <{}> ?p ?o }}'.format(s)
-    query_for_all = 'select ?s ?p ?o { ?s ?p ?o }'
+    query_with_iri = "select ?p ?o {{ <{}> ?p ?o }}".format(s)
+    query_for_all = "select ?s ?p ?o { ?s ?p ?o }"
 
     count = 0
     for row in gs.query(query_with_iri):
@@ -31,7 +31,7 @@ def test():
     assert count == 1
 
     gp = Graph()
-    gp.parse(data=gs.serialize(format='turtle'), format='turtle')
+    gp.parse(data=gs.serialize(format="turtle"), format="turtle")
 
     count = 0
     for row in gp.query(query_with_iri):

@@ -390,80 +390,80 @@ class TestNewPT:
                 Literal(datetime.timedelta(days=2)),
             ),
             (
-                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.time.fromisoformat("04:23:01.000384")),
                 Literal(isodate.Duration(hours=1)),
                 "aplusb",
                 Literal("05:23:01.000384", datatype=XSD.time),
             ),
             (
-                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.date.fromisoformat("2011-11-04")),
                 Literal(isodate.Duration(days=1)),
                 "aplusb",
                 Literal("2011-11-05", datatype=XSD.date),
             ),
             (
                 Literal(
-                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                    datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")
                 ),
                 Literal(isodate.Duration(days=1)),
                 "aplusb",
                 Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
             ),
             (
-                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.time.fromisoformat("04:23:01.000384")),
                 Literal(datetime.timedelta(hours=1)),
                 "aplusb",
                 Literal("05:23:01.000384", datatype=XSD.time),
             ),
             (
-                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.date.fromisoformat("2011-11-04")),
                 Literal(datetime.timedelta(days=1)),
                 "aplusb",
                 Literal("2011-11-05", datatype=XSD.date),
             ),
             (
                 Literal(
-                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                    datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")
                 ),
                 Literal(datetime.timedelta(days=1)),
                 "aplusb",
                 Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
             ),
             (
-                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.time.fromisoformat("04:23:01.000384")),
                 Literal(isodate.Duration(hours=1)),
                 "aminusb",
                 Literal("03:23:01.000384", datatype=XSD.time),
             ),
             (
-                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.date.fromisoformat("2011-11-04")),
                 Literal(isodate.Duration(days=1)),
                 "aminusb",
                 Literal("2011-11-03", datatype=XSD.date),
             ),
             (
                 Literal(
-                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                    datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")
                 ),
                 Literal(isodate.Duration(days=1)),
                 "aminusb",
                 Literal("2011-11-03T00:05:23.283000+00:00", datatype=XSD.dateTime),
             ),
             (
-                Literal(datetime.time.fromisoformat('04:23:01.000384')),
+                Literal(datetime.time.fromisoformat("04:23:01.000384")),
                 Literal(datetime.timedelta(hours=1)),
                 "aminusb",
                 Literal("03:23:01.000384", datatype=XSD.time),
             ),
             (
-                Literal(datetime.date.fromisoformat('2011-11-04')),
+                Literal(datetime.date.fromisoformat("2011-11-04")),
                 Literal(datetime.timedelta(days=1)),
                 "aminusb",
                 Literal("2011-11-03", datatype=XSD.date),
             ),
             (
                 Literal(
-                    datetime.datetime.fromisoformat('2011-11-04 00:05:23.283+00:00')
+                    datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")
                 ),
                 Literal(datetime.timedelta(days=1)),
                 "aminusb",

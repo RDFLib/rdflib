@@ -87,7 +87,7 @@ def test_blank_graph_identifier():
     out = g.serialize(format="trig", encoding="latin-1")
     graph_label_line = out.splitlines()[-4]
 
-    assert re.match(br"^_:[a-zA-Z0-9]+ \{", graph_label_line)
+    assert re.match(rb"^_:[a-zA-Z0-9]+ \{", graph_label_line)
 
 
 def test_graph_parsing():
