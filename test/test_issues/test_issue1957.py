@@ -45,4 +45,8 @@ def test_sparql_parse_reserved_char_percent_encoded(reserved_char_percent_encode
     g.parse(data=data, format="ttl")
     res = g.query(q)
 
-    assert list(res) != []
+    assert list(res)[0][0] == rdflib.term.Literal('value')
+
+    assert reserved_char_percent_encoded in str(
+        rdflib.plugins.sparql.parser.parseQuery(q)
+    )
