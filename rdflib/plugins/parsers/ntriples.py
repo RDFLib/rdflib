@@ -15,7 +15,7 @@ from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
-from rdflib.term import Literal, Node
+from rdflib.term import Literal
 from rdflib.term import URIRef as URI
 
 if TYPE_CHECKING:

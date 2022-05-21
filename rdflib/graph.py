@@ -37,25 +37,28 @@ from rdflib.paths import Path
 from rdflib.resource import Resource
 from rdflib.serializer import Serializer
 from rdflib.store import Store
-from rdflib.term import (
-    BNode,
-    Genid,
-    IdentifiedNode,
-    Identifier,
-    Literal,
-    Node,
-    RDFLibGenid,
-    URIRef,
-)
+from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid, URIRef
 
-_SubjectType = IdentifiedNode
-_PredicateType = IdentifiedNode
-_ObjectType = Identifier
+_SubjectType = Node
+_PredicateType = Node
+_ObjectType = Node
 
 _TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
 _QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "Graph"]
+_OptionalQuadType = Tuple[
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["Graph"]
+]
+_OptionalIdentifiedQuadType = Tuple[
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["Node"]
+]
 _TriplePatternType = Tuple[
     Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
+]
+_QuadPatternType = Tuple[
+    Optional["_SubjectType"],
+    Optional["_PredicateType"],
+    Optional["_ObjectType"],
+    Optional["Graph"],
 ]
 _GraphT = TypeVar("_GraphT", bound="Graph")
 
@@ -522,7 +525,9 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
+            # type error: Argument 1 to "triples" of "Store" has incompatible type "Tuple[Optional[Node], Optional[Node], Optional[Node]]"; expected "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]]"
+            # NOTE on type error: This is because the store typing is too narrow, willbe fixed in subsequent PR.
+            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):  # type: ignore  [arg-type]
                 yield _s, _p, _o
 
     def __getitem__(self, item):
@@ -1670,11 +1675,21 @@ class ConjunctiveGraph(Graph):
     def _spoc(
         self,
         triple_or_quad: Union[
-            Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Any]],
-            "_TripleType",
+            Tuple[
+                Optional["_SubjectType"],
+                Optional["_PredicateType"],
+                Optional["_ObjectType"],
+                Optional[Any],
+            ],
+            "_TriplePatternType",
         ],
         default: bool = False,
-    ) -> Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Graph]]:
+    ) -> Tuple[
+        Optional["_SubjectType"],
+        Optional["_PredicateType"],
+        Optional["_ObjectType"],
+        Optional[Graph],
+    ]:
         ...
 
     @overload
@@ -1689,8 +1704,13 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: Optional[
             Union[
-                Tuple["_SubjectType", "_PredicateType", "_ObjectType", Optional[Any]],
-                "_TripleType",
+                Tuple[
+                    Optional["_SubjectType"],
+                    Optional["_PredicateType"],
+                    Optional["_ObjectType"],
+                    Optional[Any],
+                ],
+                "_TriplePatternType",
             ]
         ],
         default: bool = False,
@@ -1738,7 +1758,8 @@ class ConjunctiveGraph(Graph):
 
         _assertnode(s, p, o)
 
-        self.store.add((s, p, o), context=c, quoted=False)
+        # type error: Argument "context" to "add" of "Store" has incompatible type "Optional[Graph]"; expected "Graph"
+        self.store.add((s, p, o), context=c, quoted=False)  # type: ignore[arg-type]
         return self
 
     @overload
@@ -1808,14 +1829,24 @@ class ConjunctiveGraph(Graph):
             for (s, p, o), cg in self.store.triples((s, p, o), context=context):
                 yield s, p, o
 
-    def quads(self, triple_or_quad=None):
+    def quads(
+        self,
+        triple_or_quad: Union[
+            "_TriplePatternType",
+            "_QuadPatternType",
+            None,
+        ] = None,
+    ) -> Generator[_OptionalQuadType, None, None]:
         """Iterate over all the quads in the entire conjunctive graph"""
 
         s, p, o, c = self._spoc(triple_or_quad)
 
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
+        # type error: Argument 1 to "triples" of "Store" has incompatible type "Tuple[Optional[Node], Optional[Node], Optional[Node]]"; expected "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]]"
+        # NOTE on type error: This is because the store typing is too narrow, willbe fixed in subsequent PR.
+        for (s, p, o), cg in self.store.triples((s, p, o), context=c):  # type: ignore[arg-type]
             for ctx in cg:
-                yield s, p, o, ctx
+                # type error: Incompatible types in "yield" (actual type "Tuple[Optional[Node], Optional[Node], Optional[Node], Any]", expected type "Tuple[Node, Node, Node, Optional[Graph]]")
+                yield s, p, o, ctx  # type: ignore[misc]
 
     def triples_choices(self, triple, context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
@@ -2145,17 +2176,27 @@ class Dataset(ConjunctiveGraph):
 
     graphs = contexts
 
-    def quads(self, quad):
+    # type error: Return type "Generator[Tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[Tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
+    def quads(  # type: ignore[override]
+        self,
+        quad: Union[
+            "_TriplePatternType",
+            "_QuadPatternType",
+            None,
+        ] = None,
+    ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         for s, p, o, c in super(Dataset, self).quads(quad):
-            if c.identifier == self.default_context:
+            # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
+            if c.identifier == self.default_context:  # type: ignore[union-attr]
                 yield s, p, o, None
             else:
-                yield s, p, o, c.identifier
+                # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
+                yield s, p, o, c.identifier  # type: ignore[union-attr]
 
     # type error: Return type "Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]" of "__iter__" incompatible with return type "Generator[Tuple[IdentifiedNode, IdentifiedNode, Union[IdentifiedNode, Literal]], None, None]" in supertype "Graph"
     def __iter__(  # type: ignore[override]
         self,
-    ) -> Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]:
+    ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
 

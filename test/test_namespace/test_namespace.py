@@ -279,7 +279,7 @@ class TestNamespacePrefix:
         assert str(e.value) == "Argument must be a string, not BNode."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Graph()) is None
+            assert g.namespace_manager.expand_curie(Graph()) is None  # type: ignore[arg-type]
         assert str(e.value) == "Argument must be a string, not Graph."
 
     @pytest.mark.parametrize(

@@ -169,12 +169,15 @@ class GraphHelper:
         """
         result: GHQuadSet = set()
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
+            gn_id: Identifier
             if isinstance(graph, Dataset):
-                assert isinstance(gn, Identifier)
-                gn_id = gn
+                # type error: Subclass of "Graph" and "Identifier" cannot exist: would have incompatible method signatures
+                assert isinstance(gn, Identifier)  # type: ignore[unreachable]
+                gn_id = gn  # type: ignore[unreachable]
             elif isinstance(graph, ConjunctiveGraph):
                 assert isinstance(gn, Graph)
-                gn_id = gn.identifier
+                # type error: Incompatible types in assignment (expression has type "Node", variable has type "Identifier")
+                gn_id = gn.identifier  # type: ignore[assignment]
             else:
                 raise ValueError(f"invalid graph type {type(graph)}: {graph!r}")
             s, p, o = cls.nodes((sn, pn, on), exclude_blanks)

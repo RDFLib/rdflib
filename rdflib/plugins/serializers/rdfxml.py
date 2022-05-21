@@ -207,7 +207,8 @@ class PrettyXMLSerializer(Serializer):
 
         subject: IdentifiedNode
         # Write out subjects that can not be inline
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -218,7 +219,8 @@ class PrettyXMLSerializer(Serializer):
         # write out BNodes last (to ensure they can be inlined where possible)
         bnodes = set()
 
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue

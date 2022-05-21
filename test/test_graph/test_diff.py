@@ -1,5 +1,4 @@
 import unittest
-from test.testutils import GraphHelper
 from test.utils import GraphHelper
 from typing import TYPE_CHECKING, Set
 from unittest.case import expectedFailure

@@ -1,7 +1,6 @@
 import unittest
 from collections import Counter
 from io import StringIO
-from test.testutils import GraphHelper
 from test.utils import GraphHelper
 from typing import TYPE_CHECKING, Set
 
@@ -12,7 +11,6 @@ from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace, URIR
 from rdflib.compare import to_canonical_graph, to_isomorphic
 from rdflib.namespace import FOAF
 from rdflib.plugins.stores.memory import Memory
-from rdflib.term import Node
 
 if TYPE_CHECKING:
     from rdflib.graph import _TripleType
