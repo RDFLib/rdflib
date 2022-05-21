@@ -964,7 +964,7 @@ def translateAlgebra(query_algebra: Query):
                         )
                     aggr_vars[agg_func.res].append(agg_func.vars)
 
-                    agg_func_name = agg_func.name.split('_')[1]
+                    agg_func_name = agg_func.name.split("_")[1]
                     distinct = ""
                     if agg_func.distinct:
                         distinct = agg_func.distinct + " "

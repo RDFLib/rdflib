@@ -41,9 +41,9 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
         if "httpLink" in options:
             source.links.append(options["httpLink"])
         if "contentType" in options:
-            source.content_type = options['contentType']
+            source.content_type = options["contentType"]
         if "redirectTo" in options:
-            redir = suite_base + options['redirectTo']
+            redir = suite_base + options["redirectTo"]
             local_redirect = redir.replace(
                 "https://w3c.github.io/json-ld-api/tests/", "./"
             )

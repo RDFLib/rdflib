@@ -8,7 +8,7 @@ from rdflib.term import URIRef
 
 from . import runner
 
-TC_BASE = "http://rdflib.net/rdflib-jsonld/local-testsuite/"
+TC_BASE = "https://rdflib.github.io/rdflib-jsonld/local-testsuite/"
 
 
 testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "local-suite")

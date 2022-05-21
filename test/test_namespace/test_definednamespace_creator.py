@@ -41,7 +41,7 @@ def test_definednamespace_creator_qb():
             if '_NS = Namespace("http://purl.org/linked-data/cube#")' in line:
                 has_ns = True
             if (
-                'Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions'
+                "Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions"
                 in line
             ):
                 has_test_class = True

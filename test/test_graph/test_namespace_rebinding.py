@@ -34,7 +34,7 @@ def test_binding_replace():
     g.bind("foaf", FOAF1)
     g.bind("foaf2", FOAF2)
     assert len(list(g.namespaces())) == 2
-    assert list(g.namespaces()) == [('foaf', foaf1_uri), ("foaf2", foaf2_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri), ("foaf2", foaf2_uri)]
 
     # Now you want to "upgrade" to FOAF2=>foaf and try the obvious:
     g.bind("foaf", FOAF2)
@@ -61,7 +61,7 @@ def test_binding_replace():
 
     assert list(g.namespaces()) == [
         ("foaf", foaf2_uri),  # Should be present but has been removed.
-        ('oldfoaf', foaf1_uri),
+        ("oldfoaf", foaf1_uri),
     ]
 
     # 2. Changing the prefix of an existing namespace=>prefix binding:
@@ -72,7 +72,7 @@ def test_binding_replace():
 
     # Which, as things stand, results in:
 
-    assert list(g.namespaces()) == [("foaf", foaf2_uri), ('foaf1', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf2_uri), ("foaf1", foaf1_uri)]
 
     # In which the attempted change from `oldfoaf` to (the already
     # bound-to-a different-namespace `foaf`) was intercepted and
@@ -82,13 +82,13 @@ def test_binding_replace():
     g.bind("oldfoaf", FOAF1, replace=True)
 
     # The bindings are again as desired
-    assert list(g.namespaces()) == [("foaf", foaf2_uri), ('oldfoaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf2_uri), ("oldfoaf", foaf1_uri)]
 
     # Next time through, set override to False
     g.bind("foaf", FOAF1, override=False)
 
     # And the bindings will remain as desired
-    assert list(g.namespaces()) == [("foaf", foaf2_uri), ('oldfoaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf2_uri), ("oldfoaf", foaf1_uri)]
 
     # 3. Parsing data with prefix=>namespace bindings
     # Let's see the situation regarding namespace bindings
@@ -108,7 +108,7 @@ def test_binding_replace():
     # non-clashing prefix of `foaf1` is rebound to FOAF1 in
     # place of the existing `oldfoaf` prefix
 
-    assert list(g.namespaces()) == [("foaf", foaf2_uri), ('foaf1', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf2_uri), ("foaf1", foaf1_uri)]
 
     # Yes, namespace bindings in parsed data replace existing
     # bindings (i.e. `oldfoaf` was replaced by `foaf1`), just
@@ -128,7 +128,7 @@ def test_binding_replace():
     # by the `foaf2=>FOAF2` binding specified in the N3 source
 
     assert list(g.namespaces()) == [
-        ('foaf1', foaf1_uri),
+        ("foaf1", foaf1_uri),
         ("foaf2", foaf2_uri),
     ]
 
@@ -146,7 +146,7 @@ def test_binding_replace():
     # used
 
     assert list(g.namespaces()) == [
-        ('foaf1', foaf1_uri),
+        ("foaf1", foaf1_uri),
         ("foaf2", foaf2_uri),
     ]
 
@@ -161,7 +161,7 @@ def test_binding_replace():
 
     assert list(g.namespaces()) == [
         ("foaf2", foaf2_uri),
-        ('foaf', foaf1_uri),
+        ("foaf", foaf1_uri),
     ]
 
     # Prefixes are bound to namespaces which in turn have a URIRef
@@ -191,11 +191,11 @@ def test_prefix_alias_disallowed():
 
     g = Graph(bind_namespaces="none")
     g.bind("owl", OWL)
-    assert ('owl', URIRef('http://www.w3.org/2002/07/owl#')) in list(g.namespaces())
+    assert ("owl", URIRef("http://www.w3.org/2002/07/owl#")) in list(g.namespaces())
 
     g.bind("wol", OWL, override=False)
-    assert ('owl', URIRef('http://www.w3.org/2002/07/owl#')) in list(g.namespaces())
-    assert ('wol', URIRef('http://www.w3.org/2002/07/owl#')) not in list(g.namespaces())
+    assert ("owl", URIRef("http://www.w3.org/2002/07/owl#")) in list(g.namespaces())
+    assert ("wol", URIRef("http://www.w3.org/2002/07/owl#")) not in list(g.namespaces())
 
 
 def test_rebind_prefix_succeeds():
@@ -204,11 +204,11 @@ def test_rebind_prefix_succeeds():
 
     g = Graph(bind_namespaces="none")
     g.bind("owl", OWL)
-    assert ('owl', URIRef('http://www.w3.org/2002/07/owl#')) in list(g.namespaces())
+    assert ("owl", URIRef("http://www.w3.org/2002/07/owl#")) in list(g.namespaces())
 
     g.bind("wol", OWL)
-    assert ('wol', URIRef('http://www.w3.org/2002/07/owl#')) in list(g.namespaces())
-    assert ('owl', URIRef('http://www.w3.org/2002/07/owl#')) not in list(g.namespaces())
+    assert ("wol", URIRef("http://www.w3.org/2002/07/owl#")) in list(g.namespaces())
+    assert ("owl", URIRef("http://www.w3.org/2002/07/owl#")) not in list(g.namespaces())
 
 
 def test_parse_rebinds_prefix():
@@ -223,14 +223,14 @@ def test_parse_rebinds_prefix():
 
     # Use full set of namespace bindings, including foaf
     g = Graph(bind_namespaces="none")
-    g.bind('foaf', FOAF1)
-    assert ('foaf', foaf1_uri) in list(g.namespaces())
+    g.bind("foaf", FOAF1)
+    assert ("foaf", foaf1_uri) in list(g.namespaces())
 
     g.parse(data=data, format="n3")
 
     # foaf no longer in set of namespace bindings
-    assert ('foaf', foaf1_uri) not in list(g.namespaces())
-    assert ('friend-of-a-friend', foaf1_uri) in list(g.namespaces())
+    assert ("foaf", foaf1_uri) not in list(g.namespaces())
+    assert ("friend-of-a-friend", foaf1_uri) in list(g.namespaces())
 
 
 @pytest.mark.xfail(
@@ -254,7 +254,7 @@ def test_automatic_handling_of_unknown_predicates():
 
     g = Graph(bind_namespaces="none")
 
-    g.add((tarek, URIRef('http://xmlns.com/foaf/0.1/name'), Literal("Tarek")))
+    g.add((tarek, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
 
     assert len(list(g.namespaces())) > 0
 
@@ -263,7 +263,7 @@ def test_automatic_handling_of_unknown_predicates_only_effected_after_serializat
 
     g = Graph(bind_namespaces="none")
 
-    g.add((tarek, URIRef('http://xmlns.com/foaf/0.1/name'), Literal("Tarek")))
+    g.add((tarek, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
 
     assert "@prefix ns1: <http://xmlns.com/foaf/0.1/> ." in g.serialize(format="n3")
 
@@ -282,27 +282,27 @@ def test_multigraph_bindings():
 
     g1 = Graph(store, identifier=context1, bind_namespaces="none")
 
-    g1.bind('foaf', FOAF1)
-    assert list(g1.namespaces()) == [('foaf', foaf1_uri)]
-    assert list(store.namespaces()) == [('foaf', foaf1_uri)]
+    g1.bind("foaf", FOAF1)
+    assert list(g1.namespaces()) == [("foaf", foaf1_uri)]
+    assert list(store.namespaces()) == [("foaf", foaf1_uri)]
 
     g1.add((tarek, FOAF1.name, Literal("tarek")))
 
-    assert list(store.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(store.namespaces()) == [("foaf", foaf1_uri)]
 
     g2 = Graph(store, identifier=context2, bind_namespaces="none")
     g2.parse(data=data, format="n3")
 
     # The parser-caused rebind is in the underlying store and all objects
     # that use the store see the changed binding:
-    assert list(store.namespaces()) == [('friend-of-a-friend', foaf1_uri)]
-    assert list(g1.namespaces()) == [('friend-of-a-friend', foaf1_uri)]
+    assert list(store.namespaces()) == [("friend-of-a-friend", foaf1_uri)]
+    assert list(g1.namespaces()) == [("friend-of-a-friend", foaf1_uri)]
 
     # Including newly-created objects that use the store
     cg = ConjunctiveGraph(store=store)
 
-    assert ('foaf', foaf1_uri) not in list(cg.namespaces())
-    assert ('friend-of-a-friend', foaf1_uri) in list(cg.namespaces())
+    assert ("foaf", foaf1_uri) not in list(cg.namespaces())
+    assert ("friend-of-a-friend", foaf1_uri) in list(cg.namespaces())
 
     assert len(list(g1.namespaces())) == 6
     assert len(list(g2.namespaces())) == 6
@@ -324,24 +324,24 @@ def test_multigraph_bindings():
 
     # Add foaf2 binding if not already bound
     cg.bind("foaf2", FOAF2, override=False)
-    assert ('foaf2', foaf2_uri) in list(cg.namespaces())
+    assert ("foaf2", foaf2_uri) in list(cg.namespaces())
 
     # Impose foaf binding ... if not already bound
     cg.bind("foaf", FOAF1, override=False)
-    assert ('foaf', foaf1_uri) not in list(cg.namespaces())
+    assert ("foaf", foaf1_uri) not in list(cg.namespaces())
 
 
 def test_new_namespace_new_prefix():
     g = Graph(bind_namespaces="none")
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
 
 def test_change_prefix_override_true():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
     g.bind("oldfoaf", FOAF1)
     # Changed
@@ -352,7 +352,7 @@ def test_change_prefix_override_false():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
     g.bind("oldfoaf", FOAF1, override=False)
     # No change
@@ -363,7 +363,7 @@ def test_change_namespace_override_true():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
     g.bind("foaf", FOAF2)
     # Different prefix used
@@ -374,7 +374,7 @@ def test_change_namespace_override_false():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
     # Different namespace so override is irrelevant in this case
     g.bind("foaf", FOAF2, override=False)
@@ -386,14 +386,14 @@ def test_new_namespace_override_false():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF2)
-    assert list(g.namespaces()) == [('foaf', foaf2_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf2_uri)]
 
     # Namespace not already bound so override is irrelevant in this case
     g.bind("owl", OWL, override=False)
     # Given prefix used
     assert list(g.namespaces()) == [
         ("foaf", foaf2_uri),
-        ('owl', URIRef('http://www.w3.org/2002/07/owl#')),
+        ("owl", URIRef("http://www.w3.org/2002/07/owl#")),
     ]
 
 
@@ -406,7 +406,7 @@ def test_change_namespace_and_prefix():
     g = Graph(bind_namespaces="none")
 
     g.bind("foaf", FOAF1)
-    assert list(g.namespaces()) == [('foaf', foaf1_uri)]
+    assert list(g.namespaces()) == [("foaf", foaf1_uri)]
 
     g.bind("foaf", FOAF2, replace=True)
     assert list(g.namespaces()) == [("foaf", foaf2_uri)]

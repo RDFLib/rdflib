@@ -49,9 +49,9 @@ def test_implies():
     graph2 = rdflib.Graph()
     graph2.parse(data=graph1.serialize(format="n3"), format="n3")
     assert (
-        rdflib.term.URIRef('http://test/a'),
-        rdflib.term.URIRef('http://test/d'),
-        rdflib.term.URIRef('http://test/c'),
+        rdflib.term.URIRef("http://test/a"),
+        rdflib.term.URIRef("http://test/d"),
+        rdflib.term.URIRef("http://test/c"),
     ) in graph2
 
 

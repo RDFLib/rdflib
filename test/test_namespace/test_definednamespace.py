@@ -52,7 +52,7 @@ def test_definednamespace_creator_qb():
             if '_NS = Namespace("http://purl.org/linked-data/cube#")' in line:
                 has_ns = True
             if (
-                'Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions'
+                "Attachable: URIRef  # Abstract superclass for everything that can have attributes and dimensions"
                 in line
             ):
                 has_test_class = True
@@ -340,7 +340,7 @@ def test_value(dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool) -
         warnings_record = xstack.enter_context(warnings.catch_warnings(record=True))
         if dfns_info.suffix is None or (not is_defined and dfns._fail is True):
             xstack.enter_context(pytest.raises(AttributeError))
-        resolved = eval(f'dfns.{attr_name}')
+        resolved = eval(f"dfns.{attr_name}")
     if dfns_info.suffix is not None:
         if is_defined or dfns._fail is False:
             assert f"{prefix}{dfns_info.suffix}{attr_name}" == f"{resolved}"
