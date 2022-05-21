@@ -1,9 +1,5 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
-import difflib
-import itertools
-import os
-from pprint import pformat
 from test.data import TEST_DATA_DIR
 from test.utils.manifest import RDFTest, read_manifest
 from test.utils.namespace import RDFT
@@ -63,7 +59,7 @@ def trix(test: RDFTest):
                 res.serialize(format="nquads"),
             )
 
-    except:
+    except Exception:
         if test.syntax:
             raise
 
@@ -72,7 +68,6 @@ testers: Dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTrixPositiveSyntax: trix,
     RDFT.TestTrixNegativeSyntax: trix,
     RDFT.TestTrixEval: trix,
-    RDFT.TestTrixNegativeEval: trix,
 }
 
 
