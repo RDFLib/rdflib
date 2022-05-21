@@ -379,8 +379,8 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
     return G
 
 
-class StopTraversal(Exception):
-    def __init__(self, rv: bool):
+class StopTraversal(Exception):  # noqa: N818
+    def __init__(self, rv):
         self.rv = rv
 
 
@@ -888,7 +888,7 @@ def translateQuery(
     return Query(prologue, res)
 
 
-class ExpressionNotCoveredException(Exception):
+class ExpressionNotCoveredException(Exception):  # noqa: N818
     pass
 
 
@@ -1206,7 +1206,7 @@ def translateAlgebra(query_algebra: Query) -> str:
             elif node.name == "MultiplicativeExpression":
                 left_side = convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):
+                for i, operator in enumerate(node.op):  # noqa: F402
                     multiplication += (
                         operator + " " + convert_node_arg(node.other[i]) + " "
                     )

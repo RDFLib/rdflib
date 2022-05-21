@@ -284,4 +284,4 @@ def prettify_parsetree(t, indent="", depth=0):
 
 
 # hurrah for circular imports
-from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError
+from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError  # noqa: E402
