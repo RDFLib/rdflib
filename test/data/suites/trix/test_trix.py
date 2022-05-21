@@ -20,9 +20,7 @@ def trix(test: RDFTest):
 
     try:
 
-        base = (
-            "https://rdflib.github.io/W3C/tests/TriXTests/" + split_uri(test.action)[1]
-        )
+        base = "https://rdflib.github.io/tests/trix/" + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format="trix")
 
