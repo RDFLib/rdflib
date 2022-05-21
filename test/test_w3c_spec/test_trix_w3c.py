@@ -1,4 +1,4 @@
-"""This runs the nt tests for the W3C RDF Working Group's N-Quads
+"""This runs the TriX tests for RDFLib's informally-assembled TriX
 test suite."""
 from test.data import TEST_DATA_DIR
 from test.utils.manifest import RDFTest, read_manifest
