@@ -1,9 +1,13 @@
 from collections import OrderedDict
 from types import MethodType
+from typing import TYPE_CHECKING, Any
 
 from pyparsing import ParseResults, TokenConverter, originalTextFor
 
 from rdflib import BNode, Variable
+
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
 
 """
 
@@ -38,7 +42,12 @@ the resulting CompValue
 # Comp('Sum')( Param('x')(Number) + '+' + Param('y')(Number) )
 
 
-def value(ctx, val, variables=False, errors=False):
+def value(
+    ctx: "FrozenBindings",
+    val: Any,
+    variables: bool = False,
+    errors: bool = False,
+):
     """
     utility function for evaluating something...
 
@@ -138,7 +147,7 @@ class CompValue(OrderedDict):
 
     """
 
-    def __init__(self, name, **values):
+    def __init__(self, name: str, **values):
         OrderedDict.__init__(self)
         self.name = name
         self.update(values)
@@ -164,7 +173,7 @@ class CompValue(OrderedDict):
     def get(self, a, variables=False, errors=False):
         return self._value(OrderedDict.get(self, a, a), variables, errors)
 
-    def __getattr__(self, a):
+    def __getattr__(self, a: str) -> Any:
         # Hack hack: OrderedDict relies on this
         if a in ("_OrderedDict__root", "_OrderedDict__end"):
             raise AttributeError()
@@ -173,6 +182,11 @@ class CompValue(OrderedDict):
         except KeyError:
             # raise AttributeError('no such attribute '+a)
             return None
+
+    if TYPE_CHECKING:
+        # this is here because properties are dynamically set on CompValue
+        def __setattr__(self, __name: str, __value: Any) -> None:
+            ...
 
 
 class Expr(CompValue):
