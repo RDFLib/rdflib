@@ -11,7 +11,6 @@ from pyparsing import (
     LineEnd,
     Literal,
     Optional,
-    ParseException,
     ParserElement,
     Suppress,
     ZeroOrMore,

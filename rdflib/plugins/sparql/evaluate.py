@@ -28,11 +28,9 @@ from rdflib.graph import Graph
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.evalutils import (
-    _diff,
     _ebv,
     _eval,
     _fillTemplate,
-    _filter,
     _join,
     _minus,
     _val,
@@ -40,7 +38,6 @@ from rdflib.plugins.sparql.evalutils import (
 from rdflib.plugins.sparql.parserutils import CompValue, value
 from rdflib.plugins.sparql.sparql import (
     AlreadyBound,
-    Bindings,
     FrozenBindings,
     FrozenDict,
     Query,
