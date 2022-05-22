@@ -21,8 +21,8 @@ __all__ = ["serialize_in_chunks"]
 
 def serialize_in_chunks(
     g: Graph,
+    max_triples: int = 10000,
     max_file_size_kb: int = None,
-    max_triples: int = None,
     file_name_stem: str = "chunk",
     output_dir: Path = Path(__file__).parent,
     first_file_contains_prefixes: bool = False,
@@ -103,15 +103,17 @@ def serialize_in_chunks(
         with open(Path(output_dir) / f"{file_name_stem}_000000.ttl", "w") as fh:
             fh.write(_serialize_prefixes(g))
 
-    if max_triples is not None:
-        triples_not_bytes = True
-    elif max_file_size_kb is not None:
-        triples_not_bytes = False
-    else:
-        triples_not_bytes = True
-        max_triples = 10000
+    if max_file_size_kb is not None:
+        file_no = 1 if first_file_contains_prefixes else 0
+        for i, t in enumerate(g.triples((None, None, None))):
+            if i == 0:
+                fp, fh = _start_new_file(file_no)
+            elif os.path.getsize(fp) >= max_file_size_kb * 1000:
+                file_no += 1
+                fp, fh = _start_new_file(file_no)
 
-    if triples_not_bytes:
+            fh.write(_nt_row(t))
+    else:
         # count the triples in the graph
         graph_length = len(g)
 
@@ -131,13 +133,3 @@ def serialize_in_chunks(
                     file_no += 1
                 fh.write(_nt_row(t))
         return
-    else:
-        file_no = 1 if first_file_contains_prefixes else 0
-        for i, t in enumerate(g.triples((None, None, None))):
-            if i == 0:
-                fp, fh = _start_new_file(file_no)
-            elif os.path.getsize(fp) >= max_file_size_kb * 1000:
-                file_no += 1
-                fp, fh = _start_new_file(file_no)
-
-            fh.write(_nt_row(t))
