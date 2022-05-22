@@ -1,3 +1,11 @@
+"""
+This file provides a single function `serialize_in_chunks()` which can serialize a
+Graph into a number of NT files with a maximum number of triples or maximum file size.
+
+There is an option to preserve any prefixes declared for the original graph in the first
+file, which will be a Turtle file.
+"""
+
 from pathlib import Path
 import os
 
