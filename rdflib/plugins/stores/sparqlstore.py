@@ -99,7 +99,7 @@ class SPARQLStore(SPARQLConnector, Store):
         sparql11: bool = True,
         context_aware: bool = True,
         node_to_sparql: NodeToSparql = _node_to_sparql,
-        returnFormat: str = "xml",
+        returnFormat: str = "xml",  # noqa: N803
         auth: Optional[Tuple[str, str]] = None,
         **sparqlconnector_kwargs,
     ):
@@ -147,13 +147,20 @@ class SPARQLStore(SPARQLConnector, Store):
     def add(self, _, context=None, quoted=False):
         raise TypeError("The SPARQL store is read only")
 
-    def addN(self, quads):
+    def addN(self, quads):  # noqa: N802
         raise TypeError("The SPARQL store is read only")
 
     def remove(self, _, context):
         raise TypeError("The SPARQL store is read only")
 
-    def update(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
+    def update(
+        self,
+        query,
+        initNs={},  # noqa: N803
+        initBindings={},
+        queryGraph=None,
+        DEBUG=False,
+    ):
         raise TypeError("The SPARQL store is read only")
 
     def _query(self, *args, **kwargs):
@@ -174,7 +181,12 @@ class SPARQLStore(SPARQLConnector, Store):
         )
 
     def query(
-        self, query, initNs=None, initBindings=None, queryGraph=None, DEBUG=False
+        self,
+        query,
+        initNs=None,  # noqa: N803
+        initBindings=None,
+        queryGraph=None,
+        DEBUG=False,
     ):
         self.debug = DEBUG
         assert isinstance(query, str)
@@ -509,7 +521,7 @@ class SPARQLUpdateStore(SPARQLStore):
         update_endpoint: Optional[str] = None,
         sparql11: bool = True,
         context_aware: bool = True,
-        postAsEncoded: bool = True,
+        postAsEncoded: bool = True,  # noqa: N803
         autocommit: bool = True,
         dirty_reads: bool = False,
         **kwds,
@@ -576,7 +588,7 @@ class SPARQLUpdateStore(SPARQLStore):
         return SPARQLStore.__len__(self, *args, **kwargs)
 
     # TODO: FIXME: open is defined twice
-    def open(self, configuration, create=False):  # type: ignore[no-redef]
+    def open(self, configuration, create=False):  # type: ignore[no-redef]  # noqa: F811
         """
         sets the endpoint URLs for this SPARQLStore
 
@@ -634,7 +646,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if self.autocommit:
             self.commit()
 
-    def addN(self, quads):
+    def addN(self, quads):  # noqa: N802
         """Add a list of quads to the store."""
         if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
@@ -684,7 +696,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if self.autocommit:
             self.commit()
 
-    def setTimeout(self, timeout):
+    def setTimeout(self, timeout):  # noqa: N802
         self._timeout = int(timeout)
 
     def _update(self, update):
@@ -693,7 +705,14 @@ class SPARQLUpdateStore(SPARQLStore):
 
         SPARQLConnector.update(self, update)
 
-    def update(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
+    def update(
+        self,
+        query,
+        initNs={},  # noqa: N803
+        initBindings={},
+        queryGraph=None,
+        DEBUG=False,
+    ):
         """
         Perform a SPARQL Update Query against the endpoint,
         INSERT, LOAD, DELETE etc.

@@ -2,7 +2,7 @@ import base64
 import logging
 from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Tuple
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     import typing_extensions as te
 
 
-class SPARQLConnectorException(Exception):
+class SPARQLConnectorException(Exception):  # noqa: N818
     pass
 
 
@@ -38,7 +38,7 @@ class SPARQLConnector(object):
         self,
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
-        returnFormat: str = "xml",
+        returnFormat: str = "xml",  # noqa: N803
         method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
@@ -105,7 +105,7 @@ class SPARQLConnector(object):
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: F841
                 raise ValueError(
                     "You did something wrong formulating either the URI or your SPARQL query"
                 )
@@ -171,7 +171,7 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(
+        res = urlopen(  # noqa: F841
             Request(
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
