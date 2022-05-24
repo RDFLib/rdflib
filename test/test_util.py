@@ -15,7 +15,7 @@ from rdflib import XSD, util
 from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
-from rdflib.util import _coalesce, find_roots, get_tree
+from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -547,3 +547,80 @@ def test_get_tree(
         assert catcher.value is not None
     else:
         assert expected_result == result
+
+
+@pytest.mark.parametrize(
+    ["iri", "expected_result"],
+    [
+        (
+            "https://example.com/resource/Almería",
+            {
+                "https://example.com/resource/Almer%C3%ADa",
+            },
+        ),
+        (
+            "https://example.com/resource/Almeria",
+            {
+                "https://example.com/resource/Almeria",
+            },
+        ),
+        (
+            "https://åæø.example.com/",
+            {
+                "https://xn--5cac8c.example.com/",
+            },
+        ),
+        (
+            # Note: expected result is the same because the function only works
+            # for http and https.
+            "example:é",
+            {
+                "example:é",
+            },
+        ),
+        (
+            # Note: expected result is the same because the function only works
+            # for http and https.
+            "urn:example:é",
+            {
+                "urn:example:é",
+            },
+        ),
+        (
+            "http://example.com/?é=1",
+            {
+                "http://example.com/?%C3%A9=1",
+                "http://example.com/?%C3%A9%3D1",
+            },
+        ),
+        (
+            "http://example.com/#é",
+            {
+                "http://example.com/#%C3%A9",
+            },
+        ),
+        (
+            "http://example.com/é#",
+            {
+                "http://example.com/%C3%A9#",
+            },
+        ),
+    ],
+)
+def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:
+    """
+    Tests that
+    """
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+
+    with ExitStack() as xstack:
+        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            catcher = xstack.enter_context(pytest.raises(expected_result))
+        result = _iri2uri(iri)
+        logging.debug("result = %s", result)
+    if catcher is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+    else:
+        assert isinstance(expected_result, set)
+        assert result in expected_result

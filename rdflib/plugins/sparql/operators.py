@@ -65,7 +65,7 @@ def Builtin_isNUMERIC(expr, ctx):
     try:
         numeric(expr.arg)
         return Literal(True)
-    except:
+    except:  # noqa: E722
         return Literal(False)
 
 
@@ -669,7 +669,7 @@ def default_cast(e, ctx):
     if not isinstance(x, Literal):
         raise SPARQLError("Can only cast Literals to non-string data-types")
 
-    if x.datatype and not x.datatype in XSD_DTs:
+    if x.datatype and not x.datatype in XSD_DTs:  # noqa: E713
         raise SPARQLError("Cannot cast literal with unknown datatype: %r" % x.datatype)
 
     if e.iri == XSD.dateTime:
@@ -677,7 +677,7 @@ def default_cast(e, ctx):
             raise SPARQLError("Cannot cast %r to XSD:dateTime" % x.datatype)
         try:
             return Literal(isodate.parse_datetime(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as datetime" % x)
 
     if x.datatype == XSD.dateTime:
@@ -686,7 +686,7 @@ def default_cast(e, ctx):
     if e.iri in (XSD.float, XSD.double):
         try:
             return Literal(float(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as float" % x)
 
     elif e.iri == XSD.decimal:
@@ -694,13 +694,13 @@ def default_cast(e, ctx):
             raise SPARQLError("Cannot interpret '%r' as decimal" % x)
         try:
             return Literal(Decimal(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as decimal" % x)
 
     elif e.iri == XSD.integer:
         try:
             return Literal(int(x), datatype=XSD.integer)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as int" % x)
 
     elif e.iri == XSD.boolean:
