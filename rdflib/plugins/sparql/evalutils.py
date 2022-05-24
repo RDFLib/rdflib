@@ -53,7 +53,7 @@ def _ebv(expr, ctx):
     elif isinstance(expr, Variable):
         try:
             return EBV(ctx[expr])
-        except:
+        except:  # noqa: E722
             return False
     return False
 

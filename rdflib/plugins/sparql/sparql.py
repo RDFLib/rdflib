@@ -24,7 +24,7 @@ class NotBoundError(SPARQLError):
         SPARQLError.__init__(self, msg)
 
 
-class AlreadyBound(SPARQLError):
+class AlreadyBound(SPARQLError):  # noqa: N818
     """Raised when trying to bind a variable that is already bound!"""
 
     def __init__(self):
@@ -415,7 +415,7 @@ class Prologue:
                 return Literal(
                     iri.string, lang=iri.lang, datatype=self.absolutize(iri.datatype)  # type: ignore[arg-type]
                 )
-        elif isinstance(iri, URIRef) and not ":" in iri:
+        elif isinstance(iri, URIRef) and not ":" in iri:  # noqa: E713
             return URIRef(iri, base=self.base)
 
         return iri

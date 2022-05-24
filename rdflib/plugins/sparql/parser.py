@@ -15,7 +15,6 @@ from pyparsing import (
     Literal,
     OneOrMore,
     Optional,
-    ParseException,
     ParseResults,
     Regex,
     Suppress,
@@ -95,7 +94,7 @@ def expandTriples(terms):
         #       "Length of triple-list is not divisible by 3: %d!"%len(res)
 
         # return [tuple(res[i:i+3]) for i in range(len(res)/3)]
-    except:
+    except:  # noqa: E722
         if DEBUG:
             import traceback
 
@@ -1528,7 +1527,7 @@ def expandUnicodeEscapes(q):
     def expand(m):
         try:
             return chr(int(m.group(1), 16))
-        except:
+        except:  # noqa: E722
             raise Exception("Invalid unicode code point: " + m)
 
     return expandUnicodeEscapes_re.sub(expand, q)

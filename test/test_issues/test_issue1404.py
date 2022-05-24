@@ -8,16 +8,16 @@ def test_skolem_de_skolem_roundtrip():
     Issue: https://github.com/RDFLib/rdflib/issues/1404
     """
 
-    ttl = '''
+    ttl = """
     @prefix wd: <http://www.wikidata.org/entity/> .
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
     wd:Q1203 foaf:knows [ a foaf:Person;
         foaf:name "Ringo" ].
-    '''
+    """
 
     graph = Graph()
-    graph.parse(data=ttl, format='turtle')
+    graph.parse(data=ttl, format="turtle")
 
     query = {
         "subject": URIRef("http://www.wikidata.org/entity/Q1203"),

@@ -209,15 +209,15 @@ WHERE {
 
     expected = freeze_bindings(
         [
-            {Variable('o'): URIRef('http://example.org/URI')},
-            {Variable('o'): Literal('Simple Literal')},
+            {Variable("o"): URIRef("http://example.org/URI")},
+            {Variable("o"): Literal("Simple Literal")},
             {
-                Variable('o'): Literal(
-                    'String Literal',
-                    datatype=URIRef('http://www.w3.org/2001/XMLSchema#string'),
+                Variable("o"): Literal(
+                    "String Literal",
+                    datatype=URIRef("http://www.w3.org/2001/XMLSchema#string"),
                 )
             },
-            {Variable('o'): Literal('String Language', lang='en')},
+            {Variable("o"): Literal("String Language", lang="en")},
         ]
     )
     assert expected == freeze_bindings(results.bindings)
@@ -258,15 +258,15 @@ def httpmock(
                 {"type": "bnode", "value": "ohci6Te6aidooNgo"},
             ],
             [
-                URIRef('http://example.org/uri'),
-                Literal('literal without type or lang'),
-                Literal('literal with lang', lang='en'),
+                URIRef("http://example.org/uri"),
+                Literal("literal without type or lang"),
+                Literal("literal with lang", lang="en"),
                 Literal(
-                    'typed-literal with datatype',
-                    datatype=URIRef('http://www.w3.org/2001/XMLSchema#string'),
+                    "typed-literal with datatype",
+                    datatype=URIRef("http://www.w3.org/2001/XMLSchema#string"),
                 ),
-                Literal('literal with datatype', datatype=XSD.string),
-                BNode('ohci6Te6aidooNgo'),
+                Literal("literal with datatype", datatype=XSD.string),
+                BNode("ohci6Te6aidooNgo"),
             ],
         ),
         (
