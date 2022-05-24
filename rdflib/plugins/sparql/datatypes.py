@@ -29,7 +29,7 @@ XSD_DTs = set(
     )
 )
 
-### adding dateTime datatypes
+# adding dateTime datatypes
 
 XSD_DateTime_DTs = set((XSD.dateTime, XSD.date, XSD.time))
 

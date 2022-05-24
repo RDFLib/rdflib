@@ -31,6 +31,7 @@ from urllib.parse import urljoin
 from urllib.request import Request, url2pathname, urlopen
 from xml.sax import xmlreader
 
+import rdflib.util
 from rdflib import __version__
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
@@ -183,7 +184,8 @@ class StringInputSource(InputSource):
 
 
 headers = {
-    "User-agent": "rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)" % __version__
+    "User-agent": "rdflib-%s (https://rdflib.github.io/; eikeon@eikeon.com)"
+    % __version__
 }
 
 
@@ -195,14 +197,14 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: 'HTTPMessage', name):
+    def getallmatchingheaders(cls, message: "HTTPMessage", name):
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
         return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
-    def get_links(cls, response: 'HTTPResponse'):
+    def get_links(cls, response: "HTTPResponse"):
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
         retarray = []
         for linksline in linkslines:
@@ -212,8 +214,8 @@ class URLInputSource(InputSource):
         return retarray
 
     def get_alternates(self, type_: Optional[str] = None) -> List[str]:
-        typestr: Optional[str] = f"type=\"{type_}\"" if type_ else None
-        relstr = "rel=\"alternate\""
+        typestr: Optional[str] = f'type="{type_}"' if type_ else None
+        relstr = 'rel="alternate"'
         alts = []
         for link in self.links:
             parts = [p.strip() for p in link.split(";")]
@@ -447,7 +449,7 @@ def _create_input_source_from_location(
 
     base = pathlib.Path.cwd().as_uri()
 
-    absolute_location = URIRef(location, base=base)
+    absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
     if absolute_location.startswith("file:///"):
         filename = url2pathname(absolute_location.replace("file:///", "/"))

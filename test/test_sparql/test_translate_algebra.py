@@ -122,12 +122,12 @@ algebra_tests = [
     AlgebraTest(
         "test_graph_patterns__group_and_substr",
         'Test if a query with a variable that is used in the "GROUP BY" clause '
-        'and in the SUBSTR function gets properly translated into the query text.',
+        "and in the SUBSTR function gets properly translated into the query text.",
     ),
     AlgebraTest(
         "test_graph_patterns__group_and_nested_concat",
-        'Test if a query with a nested concat expression in the select clause which '
-        'uses a group variable gets properly translated into the query text.',
+        "Test if a query with a nested concat expression in the select clause which "
+        "uses a group variable gets properly translated into the query text.",
     ),
     AlgebraTest(
         "test_graph_patterns__having",
