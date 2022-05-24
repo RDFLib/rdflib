@@ -267,19 +267,19 @@ class TestNamespacePrefix:
         g = Graph()
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(URIRef("urn:example")) == None
+            assert g.namespace_manager.expand_curie(URIRef("urn:example")) is None
         assert str(e.value) == "Argument must be a string, not URIRef."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Literal("rdf:type")) == None
+            assert g.namespace_manager.expand_curie(Literal("rdf:type")) is None
         assert str(e.value) == "Argument must be a string, not Literal."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(BNode()) == None
+            assert g.namespace_manager.expand_curie(BNode()) is None
         assert str(e.value) == "Argument must be a string, not BNode."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Graph()) == None
+            assert g.namespace_manager.expand_curie(Graph()) is None
         assert str(e.value) == "Argument must be a string, not Graph."
 
     @pytest.mark.parametrize(

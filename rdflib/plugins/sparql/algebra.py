@@ -129,9 +129,9 @@ def reorderTriples(l_):
     return [x[1] for x in l_]
 
 
-def triples(l):
+def triples(l):  # noqa: E741
 
-    l = reduce(lambda x, y: x + y, l)
+    l = reduce(lambda x, y: x + y, l)  # noqa: E741
     if (len(l) % 3) != 0:
         raise Exception("these aint triples")
     return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))
@@ -322,7 +322,7 @@ def translateGroupGraphPattern(graphPattern):
     return G
 
 
-class StopTraversal(Exception):
+class StopTraversal(Exception):  # noqa: N818
     def __init__(self, rv):
         self.rv = rv
 
@@ -794,7 +794,7 @@ def translateQuery(q, base=None, initNs=None):
     return Query(prologue, res)
 
 
-class ExpressionNotCoveredException(Exception):
+class ExpressionNotCoveredException(Exception):  # noqa: N818
     pass
 
 
@@ -1112,7 +1112,7 @@ def translateAlgebra(query_algebra: Query):
             elif node.name == "MultiplicativeExpression":
                 left_side = convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):
+                for i, operator in enumerate(node.op):  # noqa: F402
                     multiplication += (
                         operator + " " + convert_node_arg(node.other[i]) + " "
                     )
