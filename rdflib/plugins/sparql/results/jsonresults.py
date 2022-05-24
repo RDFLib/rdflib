@@ -1,5 +1,5 @@
 import json
-from typing import IO, Any, Dict, Optional, TextIO, Union
+from typing import IO, Any, Dict
 
 from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer

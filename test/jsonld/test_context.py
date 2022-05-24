@@ -196,7 +196,7 @@ def test_ignore_base_remote_context():
     ctx_url = "http://example.org/remote-base.jsonld"
     SOURCES[ctx_url] = {"@context": {"@base": "/remote"}}
     ctx = Context(ctx_url)
-    assert ctx.base == None
+    assert ctx.base is None
 
 
 @_expect_exception(errors.RECURSIVE_CONTEXT_INCLUSION)
