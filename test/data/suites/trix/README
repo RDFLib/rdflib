@@ -1,0 +1,42 @@
+This README is adapted from the README of the W3C RDF Working Group's
+TriG test suite and modified for use with RDFLib's informally-assembled
+TrIX test suite. This test suite contains three kinds of tests:
+
+  Evaluation (rdft:TestTrixEval) - a pair of an input trig file
+  and reference ntriples file.
+
+  Positive syntax (rdft:TestTrixPositiveSyntax) - an input trig
+  file with no syntax errors.
+
+  Negative syntax (rdft:TestTrixNegativeSyntax) - an input trig
+  file with at least one syntax error.
+
+The manifest.ttl file in this directory lists all of the tests in the
+RDFLib TriX test suite. Each test is one of the above tests. All
+tests have a name (mf:name) and an input (mf:action). The Evaluation
+tests have an expected result (mf:result).
+
+• An implementation passes an Evaluation test if it parses the input
+  into a graph, parses the expecte result into another graph, and
+  those two graphs are isomorphic (see
+  <http://www.w3.org/TR/rdf11-concepts/#graph-isomorphism>).
+
+• An implementation passes a positive syntax test if it parses the
+  input.
+
+• An implementation passes a negative syntax test if it fails to parse
+  the input.
+
+The IRI for the test suite is <https://rdflib.github.io/tests/trix/>.
+Per RFC 3986 section 5.1.3, the base IRI for parsing each file is the
+retrieval IRI for that file. For example, the tests trig-subm-01 and
+trig-subm-27 require relative IRI resolution against a base of
+<https://rdflib.github.io/tests/trix/trig-subm-01.trix> and
+<https://rdflib.github.io/tests/trix/strig-subm-27.trix> respectively.
+
+
+Adapted from https://github.com/w3c/rdf-tests/blob/main/trig/README,
+authors:
+
+Eric Prud'hommeaux <eric+turtle@w3.org> - 11 June 2013.
+Gregg Kellogg <gregg@greggkellogg.net> - 12 June 2013.

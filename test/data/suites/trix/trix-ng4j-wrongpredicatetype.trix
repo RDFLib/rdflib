@@ -1,0 +1,9 @@
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.org/#foo</uri>
+      <id>foobar</id>
+      <uri>http://example.org/#baz</uri>
+    </triple>
+  </graph>
+</TriX>
