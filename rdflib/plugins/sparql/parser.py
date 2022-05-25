@@ -226,13 +226,6 @@ PN_LOCAL = Regex(
 )
 
 
-def _hexExpand(match):
-    return chr(int(match.group(0)[1:], 16))
-
-
-PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
-
-
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
 PNAME_LN = PNAME_NS + Param("localname", PN_LOCAL.leaveWhitespace())
 
