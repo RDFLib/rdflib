@@ -6,13 +6,14 @@ There is an option to preserve any prefixes declared for the original graph in t
 file, which will be a Turtle file.
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 try:
     from rdflib import Graph, Literal
 except Exception:
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
     from rdflib import Graph, Literal
 
@@ -54,7 +55,8 @@ def serialize_in_chunks(
 
     if not output_dir.is_dir():
         raise ValueError(
-            "If you specify an output_dir, it must actually be a directory!")
+            "If you specify an output_dir, it must actually be a directory!"
+        )
 
     def _nt_row(triple):
         if isinstance(triple[2], Literal):
@@ -120,8 +122,7 @@ def serialize_in_chunks(
         if graph_length <= max_triples:
             # the graph is less than max so just NT serialize the whole thing
             g.serialize(
-                destination=Path(output_dir) / f"{file_name_stem}_all.nt",
-                format="nt"
+                destination=Path(output_dir) / f"{file_name_stem}_all.nt", format="nt"
             )
         else:
             # graph_length is > max_lines, make enough files for all graph

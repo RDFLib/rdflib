@@ -1,18 +1,21 @@
 import os
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 try:
+    from test.data import TEST_DATA_DIR
+
     from rdflib import Graph
     from rdflib.tools.chunk_serializer import serialize_in_chunks
-    from test.data import TEST_DATA_DIR
 except Exception:
     px = str(Path(__file__).absolute().parent.parent.parent)
     import sys
+
     sys.path.insert(0, px)
+    from test.data import TEST_DATA_DIR
+
     from rdflib import Graph
     from rdflib.tools.chunk_serializer import serialize_in_chunks
-    from test.data import TEST_DATA_DIR
 
 
 def test_chunk_by_triples():
@@ -25,10 +28,7 @@ def test_chunk_by_triples():
 
     # serialize into chunks file with 100 triples each
     serialize_in_chunks(
-        g,
-        max_triples=100,
-        file_name_stem="chunk_100",
-        output_dir=temp_dir_path
+        g, max_triples=100, file_name_stem="chunk_100", output_dir=temp_dir_path
     )
 
     # count the resultant .nt files, should be math.ceil(2848 / 100) = 25
@@ -52,10 +52,7 @@ def test_chunk_by_size():
 
     # serialize into chunks file of > 50kb each
     serialize_in_chunks(
-        g,
-        max_file_size_kb=50,
-        file_name_stem="chunk_50k",
-        output_dir=temp_dir_path
+        g, max_file_size_kb=50, file_name_stem="chunk_50k", output_dir=temp_dir_path
     )
 
     # check all files are size < 50kb, with a margin up to 60kb
