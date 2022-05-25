@@ -6,7 +6,7 @@ try:
     from rdflib import Graph
     from rdflib.tools.chunk_serializer import serialize_in_chunks
     from test.data import TEST_DATA_DIR
-except:
+except Exception:
     px = str(Path(__file__).absolute().parent.parent.parent)
     import sys
     sys.path.insert(0, px)

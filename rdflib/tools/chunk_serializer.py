@@ -11,7 +11,7 @@ import os
 
 try:
     from rdflib import Graph, Literal
-except:
+except Exception:
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
     from rdflib import Graph, Literal
