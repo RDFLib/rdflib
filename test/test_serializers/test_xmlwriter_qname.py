@@ -45,7 +45,7 @@ def test_xmlwriter_decl():
 
         fp.seek(0)
         assert fp.readlines() == [
-            b'\n',
+            b"\n",
             b'  xmlns:owl="http://www.w3.org/2002/07/owl#"\n',
             b'  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n',
             b'  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"\n',
