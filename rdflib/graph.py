@@ -22,7 +22,6 @@ from typing import (
 )
 from urllib.parse import urlparse
 from urllib.request import url2pathname
-from warnings import warn
 
 import rdflib.exceptions as exceptions
 import rdflib.namespace as namespace  # noqa: F401 # This is here because it is used in a docstring.
@@ -390,7 +389,7 @@ class Graph(Node):
                 "[a rdfg:Graph;rdflib:storage " + "[a rdflib:Store;rdfs:label '%s']]."
             ) % self.store.__class__.__name__
 
-    def toPython(self):
+    def toPython(self):  # noqa: N802
         return self
 
     def destroy(self, configuration):
@@ -434,7 +433,7 @@ class Graph(Node):
         self.__store.add((s, p, o), self, quoted=False)
         return self
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.__store.addN(
@@ -919,7 +918,7 @@ class Graph(Node):
                 raise ValueError("List contains a recursive rdf:rest reference")
             chain.add(list)
 
-    def transitiveClosure(self, func, arg, seen=None):
+    def transitiveClosure(self, func, arg, seen=None):  # noqa: N802
         """
         Generates transitive closure of a user-defined
         function against the graph
@@ -1174,7 +1173,7 @@ class Graph(Node):
         source: Optional[
             Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
         ] = None,
-        publicID: Optional[str] = None,
+        publicID: Optional[str] = None,  # noqa: N803
         format: Optional[str] = None,
         location: Optional[str] = None,
         file: Optional[Union[BinaryIO, TextIO]] = None,
@@ -1296,7 +1295,7 @@ class Graph(Node):
         query_object,
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
-        initNs=None,
+        initNs=None,  # noqa: N803
         initBindings=None,
         use_store_provided: bool = True,
         **kwargs,
@@ -1315,8 +1314,8 @@ class Graph(Node):
 
         """
 
-        initBindings = initBindings or {}
-        initNs = initNs or dict(self.namespaces())
+        initBindings = initBindings or {}  # noqa: N806
+        initNs = initNs or dict(self.namespaces())  # noqa: N806
 
         if hasattr(self.store, "query") and use_store_provided:
             try:
@@ -1341,14 +1340,14 @@ class Graph(Node):
         self,
         update_object,
         processor="sparql",
-        initNs=None,
+        initNs=None,  # noqa: N803
         initBindings=None,
         use_store_provided=True,
         **kwargs,
     ):
         """Update this graph with the given update query."""
-        initBindings = initBindings or {}
-        initNs = initNs or dict(self.namespaces())
+        initBindings = initBindings or {}  # noqa: N806
+        initNs = initNs or dict(self.namespaces())  # noqa: N806
 
         if hasattr(self.store, "update") and use_store_provided:
             try:
@@ -1719,7 +1718,7 @@ class ConjunctiveGraph(Graph):
         else:
             return c
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
         """Add a sequence of triples with context"""
 
         self.store.addN(
@@ -1844,7 +1843,7 @@ class ConjunctiveGraph(Graph):
         source: Optional[
             Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
         ] = None,
-        publicID: Optional[str] = None,
+        publicID: Optional[str] = None,  # noqa: N803
         format: Optional[str] = None,
         location: Optional[str] = None,
         file: Optional[Union[BinaryIO, TextIO]] = None,
@@ -2067,7 +2066,7 @@ class Dataset(ConjunctiveGraph):
     def parse(
         self,
         source=None,
-        publicID=None,
+        publicID=None,  # noqa: N803
         format=None,
         location=None,
         file=None,
@@ -2140,7 +2139,7 @@ class QuotedGraph(Graph):
         self.store.add((s, p, o), self, quoted=True)
         return self
 
-    def addN(self, quads: Tuple[Node, Node, Node, Any]) -> "QuotedGraph":  # type: ignore[override]
+    def addN(self, quads: Tuple[Node, Node, Node, Any]) -> "QuotedGraph":  # type: ignore[override]   # noqa: N802
         """Add a sequence of triple with context"""
 
         self.store.addN(
@@ -2198,7 +2197,7 @@ class Seq(object):
         """
 
         _list = self._list = list()
-        LI_INDEX = URIRef(str(RDF) + "_")
+        LI_INDEX = URIRef(str(RDF) + "_")  # noqa: N806
         for (p, o) in graph.predicate_objects(subject):
             if p.startswith(LI_INDEX):  # != RDF.Seq: #
                 i = int(p.replace(LI_INDEX, ""))
@@ -2208,7 +2207,7 @@ class Seq(object):
         # by sorting the keys (by integer) we have what we want!
         _list.sort()
 
-    def toPython(self):
+    def toPython(self):  # noqa: N802
         return self
 
     def __iter__(self):
@@ -2290,7 +2289,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def add(self, triple):
         raise ModificationException()
 
-    def addN(self, quads):
+    def addN(self, quads):  # noqa: N802
         raise ModificationException()
 
     def remove(self, triple):
@@ -2389,7 +2388,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format=None, **args):
+    def parse(self, source, publicID=None, format=None, **args):  # noqa: N803
         raise ModificationException()
 
     def n3(self):
@@ -2460,7 +2459,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad)
         return self
 
-    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):
+    def addN(self, quads: Iterable[Tuple[Node, Node, Node, Any]]):  # noqa: N802
         if self.__batch_addn:
             for q in quads:
                 self.add(q)

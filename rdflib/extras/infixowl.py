@@ -615,8 +615,8 @@ class Ontology(AnnotatableTerms):
 
     def __init__(self, identifier=None, imports=None, comment=None, graph=None):
         super(Ontology, self).__init__(identifier, graph)
-        self.imports = imports and imports or []
-        self.comment = comment and comment or []
+        self.imports = [] if imports is None else imports
+        self.comment = [] if comment is None else comment
         if (self.identifier, RDF.type, OWL.Ontology) not in self.graph:
             self.graph.add((self.identifier, RDF.type, OWL.Ontology))
 
@@ -959,12 +959,12 @@ class Class(AnnotatableTerms):
         ):
             self.graph.add((self.identifier, RDF.type, OWL.Class))
 
-        self.subClassOf = subClassOf and subClassOf or []
-        self.equivalentClass = equivalentClass and equivalentClass or []
-        self.disjointWith = disjointWith and disjointWith or []
+        self.subClassOf = [] if subClassOf is None else subClassOf
+        self.equivalentClass = [] if equivalentClass is None else equivalentClass
+        self.disjointWith = [] if disjointWith is None else disjointWith
         if complementOf:
             self.complementOf = complementOf
-        self.comment = comment and comment or []
+        self.comment = [] if comment is None else comment
 
     def _get_extent(self, graph=None):
         for member in (graph is None and self.graph or graph).subjects(
@@ -1306,7 +1306,7 @@ class OWLRDFListProxy(object):
     def __init__(self, rdfList, members=None, graph=None):
         if graph:
             self.graph = graph
-        members = members and members or []
+        members = [] if members is None else members
         if rdfList:
             self._rdfList = Collection(self.graph, rdfList[0])
             for member in members:
@@ -1418,7 +1418,7 @@ class EnumeratedClass(OWLRDFListProxy, Class):
 
     def __init__(self, identifier=None, members=None, graph=None):
         Class.__init__(self, identifier, graph=graph)
-        members = members and members or []
+        members = [] if members is None else members
         rdfList = list(self.graph.objects(predicate=OWL.oneOf, subject=self.identifier))
         OWLRDFListProxy.__init__(self, rdfList, members)
 
@@ -1985,7 +1985,7 @@ class Property(AnnotatableTerms):
         self.inverseOf = inverseOf
         self.domain = domain
         self.range = range
-        self.comment = comment and comment or []
+        self.comment = [] if comment is None else comment
 
     def serialize(self, graph):
         for fact in self.graph.triples((self.identifier, None, None)):

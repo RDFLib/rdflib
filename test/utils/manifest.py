@@ -1,7 +1,7 @@
 from test.utils.namespace import RDFT
 from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
 
-from rdflib import RDF, RDFS, Graph, Namespace
+from rdflib import RDF, RDFS, Graph, Namespace, logger
 from rdflib.term import Identifier, Node, URIRef
 
 MF = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")
@@ -133,6 +133,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     RDFT.TestNTriplesNegativeSyntax,
                     RDFT.TestTurtlePositiveSyntax,
                     RDFT.TestTurtleNegativeSyntax,
+                    RDFT.TestTrixPositiveSyntax,
+                    RDFT.TestTrixNegativeSyntax,
                 ):
                     query = g.value(e, MF.action)
                     syntax = _type in (
@@ -140,6 +142,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                         RDFT.TestNTriplesPositiveSyntax,
                         RDFT.TestTrigPositiveSyntax,
                         RDFT.TestTurtlePositiveSyntax,
+                        RDFT.TestTrixPositiveSyntax,
                     )
 
                 elif _type in (
@@ -147,12 +150,18 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     RDFT.TestTurtleNegativeEval,
                     RDFT.TestTrigEval,
                     RDFT.TestTrigNegativeEval,
+                    RDFT.TestTrixEval,
                 ):
                     query = g.value(e, MF.action)
                     res = g.value(e, MF.result)
-                    syntax = _type in (RDFT.TestTurtleEval, RDFT.TestTrigEval)
+                    syntax = _type in (
+                        RDFT.TestTurtleEval,
+                        RDFT.TestTrigEval,
+                        RDFT.TestTrixEval,
+                    )
 
                 else:
+                    logger.debug(f"Don't know {_type}")
                     pass
                     print("I dont know DAWG Test Type %s" % _type)
                     continue

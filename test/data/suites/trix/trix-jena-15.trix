@@ -1,0 +1,21 @@
+<!-- rdf:XMLLiteral -->
+
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <plainLiteral>&lt;&amp;&gt;</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <plainLiteral xml:lang="en">&lt;&amp;&gt;</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#string">&lt;&amp;&gt;</typedLiteral>
+    </triple>
+  </graph>
+</TriX>

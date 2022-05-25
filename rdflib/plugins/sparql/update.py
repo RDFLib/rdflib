@@ -305,6 +305,6 @@ def evalUpdate(graph, update, initBindings={}):
                 evalModify(ctx, u)
             else:
                 raise Exception("Unknown update operation: %s" % (u,))
-        except:
+        except:  # noqa: E722
             if not u.silent:
                 raise

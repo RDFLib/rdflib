@@ -56,7 +56,7 @@ class TriXHandler(handler.ContentHandler):
                 % (name[0], TRIXNS)
             )
 
-        if name[1] == "TriX":
+        if name[1].lower() == "trix":
             if self.state == 0:
                 self.state = 1
             else:
@@ -205,7 +205,7 @@ class TriXHandler(handler.ContentHandler):
             self.graph = None
             self.state = 1
 
-        elif name[1] == "TriX":
+        elif name[1].lower() == "trix":
             self.state = 0
 
         else:
