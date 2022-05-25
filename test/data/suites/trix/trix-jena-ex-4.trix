@@ -1,0 +1,34 @@
+<!-- Example 4 in 
+     "TriX : RDF Triples in XML"
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.pdf
+-->
+
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/graph4</uri>
+    <triple>
+      <uri>http://example.org/aBook</uri>
+      <uri>http://purl.org/dc/elements/1.1/title</uri>
+      <typedLiteral
+       datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">
+	<ex:title xmlns:ex="http://example.org/">
+	  A Good Book
+	</ex:title>
+      </typedLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/aBook</uri>
+      <uri>http://www.w3.org/2000/01/rdfschema#comment</uri>
+      <plainLiteral xml:lang="en">This is a really good book!</plainLiteral>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/graph5</uri>
+    <triple>
+      <uri>http://example.org/graph4</uri>
+      <uri>http://example.org/source</uri>
+      <uri>http://example.org/bookdescription.rdf</uri>
+    </triple>
+  </graph>
+</TriX>

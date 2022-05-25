@@ -1,0 +1,15 @@
+<!-- Too many terms -->
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <triple>
+        <uri>http://example/EX-1</uri>
+        <uri>http://example/EX-2</uri>
+        <uri>http://example/EX-3</uri>
+        <uri>http://example/EX-4</uri>
+      </triple>
+      <uri>http://example/p</uri>
+      <uri>http://example/o1</uri>
+    </triple>
+  </graph>
+</trix>

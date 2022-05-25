@@ -36,3 +36,7 @@ class RDFT(DefinedNamespace):
 
     TestTrigPositiveSyntax: URIRef
     TestTrigNegativeSyntax: URIRef
+
+    TestTrixEval: URIRef  # A positive TriX evaluation test.
+    TestTrixNegativeSyntax: URIRef  # A negative TriX syntax test.
+    TestTrixPositiveSyntax: URIRef  # A positive TriX syntax test.

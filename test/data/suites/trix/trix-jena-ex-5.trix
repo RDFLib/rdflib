@@ -1,0 +1,42 @@
+<!-- Example 5 in 
+"TriX : RDF Triples in XML"
+http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html
+http://www.hpl.hp.com/techreports/2004/HPL-2004-56.pdf
+-->
+
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/graph6</uri>
+    <triple>
+      <uri>http://example.org/tests/language-tagcase</uri>
+      <uri>http://example.org/entailmentRules</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/tests/language-tagcase</uri>
+      <uri>http://example.org/premise</uri>
+      <uri>http://example.org/tests/graph1</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/tests/language-tagcase</uri>
+      <uri>http://example.org/conclusion</uri>
+      <uri>http://example.org/tests/graph2</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/tests/graph1</uri>
+    <triple>
+      <id>x</id>
+      <uri>http://example.org/property</uri>
+      <plainLiteral xml:lang="en-us">a</plainLiteral>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/tests/graph2</uri>
+    <triple>
+      <id>x</id>
+      <uri>http://example.org/property</uri>
+      <plainLiteral xml:lang="en-US">a</plainLiteral>
+    </triple>
+  </graph>
+</TriX>
