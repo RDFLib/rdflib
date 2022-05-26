@@ -22,9 +22,12 @@
 
 from typing import Set, Tuple
 
+import rdflib
+
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
 # test is run, but mypy can't tell the symbol is exposed.
 import rdflib.plugins.sparql.processor
+from rdflib.term import Node
 
 
 def test_rdflib_query_exercise() -> None:
@@ -56,8 +59,8 @@ def test_rdflib_query_exercise() -> None:
     graph.add((kb_https_uriref, predicate_q, literal_two))
     graph.add((kb_bnode, predicate_p, literal_one))
 
-    expected_nodes_using_predicate_q: Set[rdflib.IdentifiedNode] = {kb_https_uriref}
-    computed_nodes_using_predicate_q: Set[rdflib.IdentifiedNode] = set()
+    expected_nodes_using_predicate_q: Set[Node] = {kb_https_uriref}
+    computed_nodes_using_predicate_q: Set[Node] = set()
     for triple in graph.triples((None, predicate_q, None)):
         computed_nodes_using_predicate_q.add(triple[0])
     assert expected_nodes_using_predicate_q == computed_nodes_using_predicate_q

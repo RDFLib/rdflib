@@ -15,11 +15,11 @@ from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
-from rdflib.term import Literal, Node
+from rdflib.term import Literal
 from rdflib.term import URIRef as URI
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
+    from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 
 __all__ = ["unquote", "uriquote", "W3CNTriplesParser", "NTGraphSink", "NTParser"]
 
@@ -306,7 +306,7 @@ class NTGraphSink(object):
     def __init__(self, graph: "Graph"):
         self.g = graph
 
-    def triple(self, s: Node, p: Node, o: Node):
+    def triple(self, s: "_SubjectType", p: "_PredicateType", o: "_ObjectType"):
         self.g.add((s, p, o))
 
 

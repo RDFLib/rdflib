@@ -184,10 +184,10 @@ No vars specified:
 from functools import total_ordering
 from typing import TYPE_CHECKING, Callable, Iterator, Optional, Tuple, Union
 
-from rdflib.term import IdentifiedNode, Node, URIRef
+from rdflib.term import Node, URIRef
 
 if TYPE_CHECKING:
-    from rdflib import Graph
+    from rdflib.graph import Graph, _ObjectType, _SubjectType
 
 
 # property paths
@@ -209,9 +209,9 @@ class Path(object):
     def eval(
         self,
         graph: "Graph",
-        subj: Optional[IdentifiedNode] = None,
-        obj: Optional[Node] = None,
-    ) -> Iterator[Tuple[IdentifiedNode, Node]]:
+        subj: Optional["_SubjectType"] = None,
+        obj: Optional["_ObjectType"] = None,
+    ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
         raise NotImplementedError()
 
     def __lt__(self, other):

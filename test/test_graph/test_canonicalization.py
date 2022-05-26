@@ -2,7 +2,7 @@ import unittest
 from collections import Counter
 from io import StringIO
 from test.utils import GraphHelper
-from typing import Set, Tuple
+from typing import TYPE_CHECKING, Set
 
 import pytest
 
@@ -11,7 +11,9 @@ from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace, URIR
 from rdflib.compare import to_canonical_graph, to_isomorphic
 from rdflib.namespace import FOAF
 from rdflib.plugins.stores.memory import Memory
-from rdflib.term import Node
+
+if TYPE_CHECKING:
+    from rdflib.graph import _TripleType
 
 
 def get_digest_value(rdf, mimetype):
@@ -516,8 +518,7 @@ def test_issue725_collapsing_bnodes_2():
     ), "canonicalization changed node position counts"
 
 
-_Triple = Tuple[Node, Node, Node]
-_TripleSet = Set[_Triple]
+_TripleSet = Set["_TripleType"]
 
 
 class TestConsistency(unittest.TestCase):
