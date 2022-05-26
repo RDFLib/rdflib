@@ -6,7 +6,7 @@ There is an option to preserve any prefixes declared for the original graph in t
 file, which will be a Turtle file.
 """
 
-import os
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 
 try:
@@ -89,10 +89,11 @@ def serialize_in_chunks(
             '"', '\\"'
         ).replace("\r", "\\r")
 
+    @contextmanager
     def _start_new_file(file_no):
         fp = Path(output_dir) / f"{file_name_stem}_{str(file_no).zfill(6)}.nt"
-        fh = open(fp, "a")
-        return fp, fh
+        with open(fp, "a", encoding="utf-8") as fh:
+            yield fp, fh
 
     def _serialize_prefixes(g):
         pres = []
@@ -102,35 +103,43 @@ def serialize_in_chunks(
         return "\n".join(sorted(pres)) + "\n"
 
     if first_file_contains_prefixes:
-        with open(Path(output_dir) / f"{file_name_stem}_000000.ttl", "w") as fh:
+        with open(
+            Path(output_dir) / f"{file_name_stem}_000000.ttl", "w", encoding="utf-8"
+        ) as fh:
             fh.write(_serialize_prefixes(g))
 
-    if max_file_size_kb is not None:
-        file_no = 1 if first_file_contains_prefixes else 0
-        for i, t in enumerate(g.triples((None, None, None))):
-            if i == 0:
-                fp, fh = _start_new_file(file_no)
-            elif os.path.getsize(fp) >= max_file_size_kb * 1000:
-                file_no += 1
-                fp, fh = _start_new_file(file_no)
-
-            fh.write(_nt_row(t))
-    else:
-        # count the triples in the graph
-        graph_length = len(g)
-
-        if graph_length <= max_triples:
-            # the graph is less than max so just NT serialize the whole thing
-            g.serialize(
-                destination=Path(output_dir) / f"{file_name_stem}_all.nt", format="nt"
-            )
-        else:
-            # graph_length is > max_lines, make enough files for all graph
-            # no_files = math.ceil(graph_length / max_triples)
+    bytes_written = 0
+    with ExitStack() as xstack:
+        if max_file_size_kb is not None:
             file_no = 1 if first_file_contains_prefixes else 0
             for i, t in enumerate(g.triples((None, None, None))):
-                if i % max_triples == 0:
-                    fp, fh = _start_new_file(file_no)
+                if i == 0:
+                    fp, fh = xstack.enter_context(_start_new_file(file_no))
+                    bytes_written = 0
+                elif bytes_written >= max_file_size_kb * 1000:
                     file_no += 1
-                fh.write(_nt_row(t))
-        return
+                    fp, fh = xstack.enter_context(_start_new_file(file_no))
+                    bytes_written = 0
+
+                bytes_written += fh.write(_nt_row(t))
+        else:
+            # count the triples in the graph
+            graph_length = len(g)
+
+            if graph_length <= max_triples:
+                # the graph is less than max so just NT serialize the whole thing
+                g.serialize(
+                    destination=Path(output_dir) / f"{file_name_stem}_all.nt",
+                    format="nt",
+                )
+            else:
+                # graph_length is > max_lines, make enough files for all graph
+                # no_files = math.ceil(graph_length / max_triples)
+                file_no = 1 if first_file_contains_prefixes else 0
+                for i, t in enumerate(g.triples((None, None, None))):
+                    if i % max_triples == 0:
+                        fp, fh = xstack.enter_context(_start_new_file(file_no))
+                        bytes_written = 0
+                        file_no += 1
+                    bytes_written += fh.write(_nt_row(t))
+            return
