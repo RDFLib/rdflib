@@ -33,7 +33,7 @@ class REGEXTerm(str):
         return (REGEXTerm, (str(""),))
 
 
-def regexCompareQuad(quad, regexQuad):
+def regexCompareQuad(quad, regexQuad):  # noqa: N802, N803
     for index in range(4):
         if isinstance(regexQuad[index], REGEXTerm) and not regexQuad[
             index
@@ -83,7 +83,7 @@ class REGEXMatching(Store):
                 or None
             )
 
-            removeQuadList = []
+            removeQuadList = []  # noqa: N806
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
                 for ctx in cg:
                     ctx = ctx.identifier
@@ -121,7 +121,7 @@ class REGEXMatching(Store):
                 or None
             )
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
-                matchingCtxs = []
+                matchingCtxs = []  # noqa: N806
                 for ctx in cg:
                     if c is None:
                         if context is None or context.identifier.compiledExpr.match(

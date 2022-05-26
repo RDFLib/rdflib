@@ -79,7 +79,7 @@ class BerkeleyDB(Store):
 
     identifier = property(__get_identifier)
 
-    def _init_db_environment(self, homeDir, create=True):
+    def _init_db_environment(self, homeDir, create=True):  # noqa: N803
         if not exists(homeDir):
             if create is True:
                 mkdir(homeDir)
@@ -100,7 +100,7 @@ class BerkeleyDB(Store):
     def open(self, path, create=True):
         if not has_bsddb:
             return NO_STORE
-        homeDir = path
+        homeDir = path  # noqa: N806
 
         if self.__identifier is None:
             self.__identifier = URIRef(pathname2url(abspath(homeDir)))

@@ -220,7 +220,9 @@ class Store(object):
         """
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
-    def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
+    def addN(  # noqa: N802
+        self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]
+    ):
         """
         Adds each item in the list of statements to a specific context. The
         quoted argument is interpreted by formula-aware stores to indicate this
@@ -329,7 +331,7 @@ class Store(object):
         :returns: a generator over Nodes
         """
 
-    def query(self, query, initNs, initBindings, queryGraph, **kwargs):
+    def query(self, query, initNs, initBindings, queryGraph, **kwargs):  # noqa: N803
         """
         If stores provide their own SPARQL implementation, override this.
 
@@ -345,7 +347,7 @@ class Store(object):
 
         raise NotImplementedError
 
-    def update(self, update, initNs, initBindings, queryGraph, **kwargs):
+    def update(self, update, initNs, initBindings, queryGraph, **kwargs):  # noqa: N803
         """
         If stores provide their own (SPARQL) Update implementation,
         override this.

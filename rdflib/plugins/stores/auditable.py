@@ -20,7 +20,7 @@ import threading
 from rdflib import ConjunctiveGraph, Graph
 from rdflib.store import Store
 
-destructiveOpLocks = {
+destructiveOpLocks = {  # noqa: N816
     "add": None,
     "remove": None,
 }
@@ -59,7 +59,7 @@ class AuditableStore(Store):
                 if context is not None
                 else None
             )
-            ctxId = context.identifier if context is not None else None
+            ctxId = context.identifier if context is not None else None  # noqa: N806
             if list(self.store.triples(triple, context)):
                 return  # triple already in store, do nothing
             self.reverseOps.append((s, p, o, ctxId, "remove"))
@@ -81,7 +81,7 @@ class AuditableStore(Store):
                 if context is not None
                 else None
             )
-            ctxId = context.identifier if context is not None else None
+            ctxId = context.identifier if context is not None else None  # noqa: N806
             if None in [subject, predicate, object_, context]:
                 if ctxId:
                     for s, p, o in context.triples((subject, predicate, object_)):
