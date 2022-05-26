@@ -57,7 +57,7 @@ def test_chunk_by_size():
 
     # check all files are size < 50kb, with a margin up to 60kb
     for f in Path(temp_dir_path).glob("*.nt"):
-        assert os.path.getsize(f) < 60000
+        assert os.path.getsize(f) < 50000
 
     # check, when a graph is made from the chunk files, it's isomorphic with original
     g2 = Graph()

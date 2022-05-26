@@ -8,6 +8,7 @@ file, which will be a Turtle file.
 
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
+from typing import BinaryIO, Generator, Tuple
 
 try:
     from rdflib import Graph, Literal
@@ -90,9 +91,9 @@ def serialize_in_chunks(
         ).replace("\r", "\\r")
 
     @contextmanager
-    def _start_new_file(file_no):
+    def _start_new_file(file_no: int) -> Generator[Tuple[Path, BinaryIO], None, None]:
         fp = Path(output_dir) / f"{file_name_stem}_{str(file_no).zfill(6)}.nt"
-        with open(fp, "a", encoding="utf-8") as fh:
+        with open(fp, "ab") as fh:
             yield fp, fh
 
     def _serialize_prefixes(g):
@@ -111,17 +112,24 @@ def serialize_in_chunks(
     bytes_written = 0
     with ExitStack() as xstack:
         if max_file_size_kb is not None:
+            max_file_size = max_file_size_kb * 1000
             file_no = 1 if first_file_contains_prefixes else 0
             for i, t in enumerate(g.triples((None, None, None))):
+                row_bytes = _nt_row(t).encode("utf-8")
+                if len(row_bytes) > max_file_size:
+                    raise ValueError(
+                        f"cannot write triple {t!r} as it's serialized size of {row_bytes / 1000} exceeds max_file_size_kb = {max_file_size_kb}"
+                    )
                 if i == 0:
-                    fp, fh = xstack.enter_context(_start_new_file(file_no))
+                    fp, fhb = xstack.enter_context(_start_new_file(file_no))
                     bytes_written = 0
-                elif bytes_written >= max_file_size_kb * 1000:
+                elif (bytes_written + len(row_bytes)) >= max_file_size:
                     file_no += 1
-                    fp, fh = xstack.enter_context(_start_new_file(file_no))
+                    fp, fhb = xstack.enter_context(_start_new_file(file_no))
                     bytes_written = 0
 
-                bytes_written += fh.write(_nt_row(t))
+                bytes_written += fhb.write(row_bytes)
+
         else:
             # count the triples in the graph
             graph_length = len(g)
@@ -138,8 +146,7 @@ def serialize_in_chunks(
                 file_no = 1 if first_file_contains_prefixes else 0
                 for i, t in enumerate(g.triples((None, None, None))):
                     if i % max_triples == 0:
-                        fp, fh = xstack.enter_context(_start_new_file(file_no))
-                        bytes_written = 0
+                        fp, fhb = xstack.enter_context(_start_new_file(file_no))
                         file_no += 1
-                    bytes_written += fh.write(_nt_row(t))
+                    fhb.write(_nt_row(t).encode("utf-8"))
             return
