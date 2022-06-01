@@ -5,11 +5,12 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 
 from collections import defaultdict
 from functools import cmp_to_key
+from typing import Dict, List
 
 from rdflib.exceptions import Error
 from rdflib.namespace import RDF, RDFS
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, Literal, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -73,9 +74,9 @@ class RecursiveSerializer(Serializer):
         """Return true if subject is serialized"""
         return subject in self._serialized
 
-    def orderSubjects(self):
-        seen = {}
-        subjects = []
+    def orderSubjects(self) -> List[IdentifiedNode]:
+        seen: Dict[IdentifiedNode, bool] = {}
+        subjects: List[IdentifiedNode] = []
 
         for classURI in self.topClasses:
             members = list(self.store.subjects(RDF.type, classURI))
@@ -223,7 +224,15 @@ class TurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(
+        self,
+        stream,
+        base=None,
+        encoding=None,
+        spacious=None,
+        sort: bool = False,
+        **args,
+    ) -> None:
         self.reset()
         self.stream = stream
         # if base is given here, use that, if not and a base is set for the graph use that

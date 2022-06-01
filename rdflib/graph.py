@@ -1081,7 +1081,13 @@ class Graph(Node):
     # no destination and non-None positional encoding
     @overload
     def serialize(
-        self, destination: None, format: str, base: Optional[str], encoding: str, **args
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: str,
+        sort: bool = ...,
+        **args,
     ) -> bytes:
         ...
 
@@ -1094,6 +1100,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         *,
         encoding: str,
+        sort: bool = ...,
         **args,
     ) -> bytes:
         ...
@@ -1106,6 +1113,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: None = ...,
+        sort: bool = ...,
         **args,
     ) -> str:
         ...
@@ -1118,6 +1126,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
+        sort: bool = ...,
         **args,
     ) -> "Graph":
         ...
@@ -1130,6 +1139,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
+        sort: bool = ...,
         **args,
     ) -> Union[bytes, str, "Graph"]:
         ...
@@ -1140,6 +1150,7 @@ class Graph(Node):
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
+        sort: bool = ...,
         **args: Any,
     ) -> Union[bytes, str, "Graph"]:
         """Serialize the Graph to destination
@@ -1165,14 +1176,20 @@ class Graph(Node):
         if destination is None:
             stream = BytesIO()
             if encoding is None:
-                serializer.serialize(stream, base=base, encoding="utf-8", **args)
+                serializer.serialize(
+                    stream, base=base, encoding="utf-8", sort=sort, **args
+                )
                 return stream.getvalue().decode("utf-8")
             else:
-                serializer.serialize(stream, base=base, encoding=encoding, **args)
+                serializer.serialize(
+                    stream, base=base, encoding=encoding, sort=sort, **args
+                )
                 return stream.getvalue()
         if hasattr(destination, "write"):
             stream = cast(IO[bytes], destination)
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            serializer.serialize(
+                stream, base=base, encoding=encoding, sort=sort, **args
+            )
         else:
             if isinstance(destination, pathlib.PurePath):
                 location = str(destination)
@@ -1185,7 +1202,9 @@ class Graph(Node):
                 )
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            serializer.serialize(
+                stream, base=base, encoding=encoding, sort=sort, **args
+            )
             stream.close()
             dest = url2pathname(path) if scheme == "file" else location
             if hasattr(shutil, "move"):
