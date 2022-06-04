@@ -1,10 +1,12 @@
 import collections
 
-from rdflib import URIRef, Graph, Literal
-from rdflib.namespace import VOID, RDF
+from rdflib import Graph, Literal, URIRef
+from rdflib.namespace import RDF, VOID
 
 
-def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
+def generateVoID(  # noqa: N802
+    g, dataset=None, res=None, distinctForPartitions=True  # noqa: N803
+):
     """
     Returns a new graph with a VoID description of the passed dataset
 
@@ -24,8 +26,8 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
 
     """
 
-    typeMap = collections.defaultdict(set)
-    classes = collections.defaultdict(set)
+    typeMap = collections.defaultdict(set)  # noqa: N806
+    classes = collections.defaultdict(set)  # noqa: N806
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)
@@ -34,13 +36,13 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
     subjects = set()
     objects = set()
     properties = set()
-    classCount = collections.defaultdict(int)
-    propCount = collections.defaultdict(int)
+    classCount = collections.defaultdict(int)  # noqa: N806
+    propCount = collections.defaultdict(int)  # noqa: N806
 
-    classProps = collections.defaultdict(set)
-    classObjects = collections.defaultdict(set)
-    propSubjects = collections.defaultdict(set)
-    propObjects = collections.defaultdict(set)
+    classProps = collections.defaultdict(set)  # noqa: N806
+    classObjects = collections.defaultdict(set)  # noqa: N806
+    propSubjects = collections.defaultdict(set)  # noqa: N806
+    propObjects = collections.defaultdict(set)  # noqa: N806
 
     for s, p, o in g:
 
@@ -109,7 +111,7 @@ def generateVoID(g, dataset=None, res=None, distinctForPartitions=True):
         if distinctForPartitions:
 
             entities = 0
-            propClasses = set()
+            propClasses = set()  # noqa: N806
             for s in propSubjects[p]:
                 if s in typeMap:
                     entities += 1

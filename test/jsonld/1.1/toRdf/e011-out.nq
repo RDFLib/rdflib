@@ -1,0 +1,2 @@
+<http://example.org/test#book> <http://example.org/vocab#contains> <http://example.org/test#chapter> .
+<http://example.org/test#book> <http://purl.org/dc/elements/1.1/title> "Title" .

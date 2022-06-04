@@ -1,0 +1,11 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/sudoku-solver.n3 --query http://eulersharp.sourceforge.net/2007/07test/sudoku-query-2.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/sudoku#>.
+
+((5 1 6 4 2 3 7 8 9) (7 3 4 1 8 9 5 2 6) (8 2 9 6 5 7 1 4 3) (3 8 1 7 4 6 2 9 5) (9 7 2 5 3 1 8 6 4) (6 4 5 2 9 8 3 7 1) (2 6 7 9 1 5 4 3 8) (4 5 8 3 6 2 9 1 7) (1 9 3 8 7 4 6 5 2)) a :Solution.
+
+#2018-04-18T08:28:46.150Z in=37 out=1 ent=0 step=0 brake=1 inf=1596782 sec=0.209 inf/sec=7640105
+#ENDS
+

@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example.org/",
+    "included": "@included"
+  }
+}

@@ -1,0 +1,7 @@
+# Throw a type error wenn n3() of the negatedPath class is called. Probably n3() method should be fixed
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select * where
+{
+    ?x !(rdf:type|^rdf:type) ?y
+}
+limit 100

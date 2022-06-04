@@ -1,0 +1,39 @@
+[
+    {
+        "@id": "http://example.com/alice#me",
+        "http://xmlns.com/foaf/0.1/homepage": [
+            {
+                "@id": "http://example.com/alice"
+            }
+        ],
+        "http://xmlns.com/foaf/0.1/name": [
+            {
+                "@value": "Alice"
+            }
+        ]
+    },
+    {
+        "@id": "http://example.com/bob#me",
+        "http://xmlns.com/foaf/0.1/homepage": [
+            {
+                "@id": "http://example.com/bob"
+            }
+        ],
+        "http://xmlns.com/foaf/0.1/name": [
+            {
+                "@value": "Bob"
+            }
+        ]
+    },
+    {
+        "@id": "https://w3c.github.io/json-ld-api/tests/flatten/0005-in.jsonld#me",
+        "http://xmlns.com/foaf/0.1/knows": [
+            {
+                "@id": "http://example.com/bob#me"
+            },
+            {
+                "@id": "http://example.com/alice#me"
+            }
+        ]
+    }
+]

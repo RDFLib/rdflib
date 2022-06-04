@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "number": {"@id": "http://example.com/number"}
+  },
+  "number": [-0e0, 8, 9.9, 1e21 ]
+}

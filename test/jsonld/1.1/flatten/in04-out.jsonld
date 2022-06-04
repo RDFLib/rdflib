@@ -1,0 +1,10 @@
+[{
+  "@id": "_:b0",
+  "http://example.org/prop": [{"@value": "value"}]
+}, {
+  "@id": "_:b1",
+  "http://example.org/prop": [{"@value": "value2"}]
+}, {
+  "@id": "_:b2",
+  "http://example.org/prop": [{"@value": "value3"}]
+}]

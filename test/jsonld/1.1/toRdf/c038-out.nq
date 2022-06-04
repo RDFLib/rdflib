@@ -1,0 +1,7 @@
+<http://example.org/base/book/one> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> .
+<http://example.org/base/book/one> <http://purl.org/dc/terms/published> "1999" .
+<http://example.org/base/book/one> <http://purl.org/ontology/bibo/isbn> "1234567890" .
+<http://example.org/base/book/one> <http://purl.org/dc/terms/creator> _:b0 .
+<http://example.org/base/book/one> <http://purl.org/dc/terms/publisher> _:b1 .
+_:b0 <http://www.w3.org/2000/01/rdf-schema#label> "Some Body" .
+_:b1 <http://www.w3.org/2000/01/rdf-schema#label> "PubCorp" .

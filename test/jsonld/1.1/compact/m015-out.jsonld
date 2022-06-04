@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "ex": "http://example.org/",
+    "typemap": {"@container": "@type"}
+  },
+  "typemap": {
+    "@none": {"label": "Object with no @type"}
+  }
+}

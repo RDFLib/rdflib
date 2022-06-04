@@ -1,0 +1,2 @@
+_:b0 <http://example.org/ns/tag/> "tricky" .
+_:b0 <tag:champin.net,2019:prop> "This is not treated as a Compact IRI" .

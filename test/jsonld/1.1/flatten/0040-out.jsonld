@@ -1,0 +1,21 @@
+[
+    {
+        "@id": "http://example.com/queen",
+        "http://example.com/vocab/index": [
+            {
+                "@value": "No"
+            },
+            {
+                "@value": "indexes"
+            },
+            {
+                "@id": "https://w3c.github.io/json-ld-api/tests/flatten/asTheValueIsntAnObject"
+            }
+        ],
+        "http://example.com/vocab/label": [
+            {
+                "@value": "The Queen"
+            }
+        ]
+    }
+]

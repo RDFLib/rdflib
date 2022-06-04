@@ -1,0 +1,13 @@
+# $Id: unsaidQ.n3 490 2005-03-09 14:25:31Z josd $
+# PxButton | es   | euler --nope --think unsaid.n3 --query unsaidQ.n3
+# PxButton | cwm  | cwm unsaid.n3 --think --query"=unsaidQ.n3"
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://example.org/data#>.
+
+@forAll <#X>.
+[]
+q:select {<> q:answer (<#X>)};
+q:where  {<unsaid.n3>!log:semantics log:notIncludes {:a :p <#X>}.
+          <unsaid.n3>!log:semantics log:includes {:a :q <#X>}}.

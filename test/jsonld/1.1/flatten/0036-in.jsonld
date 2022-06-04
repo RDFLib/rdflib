@@ -1,0 +1,90 @@
+{
+  "@context": {
+    "property": "http://example.com/property",
+    "indexContainer": { "@id": "http://example.com/container", "@container": "@index" }
+  },
+  "@id": "http://example.org/indexTest",
+  "indexContainer": {
+    "A": [
+      {
+        "@id": "http://example.org/nodeWithoutIndexA"
+      },
+      {
+        "@id": "http://example.org/nodeWithIndexA",
+        "@index": "this overrides the 'A' index from the container"
+      },
+      1,
+      true,
+      false,
+      null,
+      "simple string A",
+      {
+        "@value": "typed literal A",
+        "@type": "http://example.org/type"
+      },
+      {
+        "@value": "language-tagged string A",
+        "@language": "en"
+      }
+    ],
+    "B": "simple string B",
+    "C": [
+      {
+        "@id": "http://example.org/nodeWithoutIndexC"
+      },
+      {
+        "@id": "http://example.org/nodeWithIndexC",
+        "@index": "this overrides the 'C' index from the container"
+      },
+      3,
+      true,
+      false,
+      null,
+      "simple string C",
+      {
+        "@value": "typed literal C",
+        "@type": "http://example.org/type"
+      },
+      {
+        "@value": "language-tagged string C",
+        "@language": "en"
+      }
+    ]
+  },
+  "property": [
+    {
+      "@id": "http://example.org/nodeWithoutIndexProp"
+    },
+    {
+      "@id": "http://example.org/nodeWithIndexProp",
+      "@index": "prop"
+    },
+    {
+      "@value": 3,
+      "@index": "prop"
+    },
+    {
+      "@value": true,
+      "@index": "prop"
+    },
+    {
+      "@value": false,
+      "@index": "prop"
+    },
+    {
+      "@value": null,
+      "@index": "prop"
+    },
+    "simple string no index",
+    {
+      "@value": "typed literal Prop",
+      "@type": "http://example.org/type",
+      "@index": "prop"
+    },
+    {
+      "@value": "language-tagged string Prop",
+      "@language": "en",
+      "@index": "prop"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+<ex:inner> <http://example.org/other> "baz" .
+<ex:outer> <http://vocab.org/foo> <ex:inner> .

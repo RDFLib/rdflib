@@ -1,0 +1,10 @@
+# $Id: sameAsQ.n3 473 2005-02-17 14:21:03Z josd $
+# PxButton | es  | euler --nope --think henry.n3 rogier.n3 --query sameAsQ.n3
+# PxButton | cwm | cwm henry.n3 rogier.n3 --query"=sameAsQ.n3"
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+
+[]
+q:select {?X owl:sameAs ?Y};
+q:where {?X owl:sameAs ?Y}.

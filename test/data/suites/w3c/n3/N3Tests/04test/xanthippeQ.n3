@@ -1,0 +1,3 @@
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/xanthippe#>.
+
+{?WHO a ?WHAT} => {?WHO a ?WHAT}.

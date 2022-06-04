@@ -1,0 +1,6 @@
+[{
+  "http://example.org/container": [
+    {"@value": "Die Königin", "@language": "de"},
+    {"@value": "The Queen", "@language": "en"}
+  ]
+}]

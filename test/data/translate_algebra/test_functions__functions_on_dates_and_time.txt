@@ -1,0 +1,5 @@
+select (now() as ?now) (year(now()) as ?year) (month(now()) as ?month) (day(now()) as ?day)
+(hours(now()) as ?hours) (minutes(now()) as ?minutes) (seconds(now()) as ?seconds)
+(timezone(now()) as ?timezone) (tz(now()) as ?tz) where {
+	?s ?p ?o .
+} limit 1

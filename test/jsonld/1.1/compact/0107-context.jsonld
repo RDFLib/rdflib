@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "@base": "http://example.com/some/",
+    "@vocab": "other/"
+  }
+}

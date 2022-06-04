@@ -1,0 +1,435 @@
+{
+  "@context": ["context.jsonld", {"@base": "flatten-manifest"}],
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "Flattening",
+  "description": "These tests implement the requirements for the JSON-LD [Flattening Algorithm](https://www.w3.org/TR/json-ld11-api/#flattening-algorithm).",
+  "baseIri": "https://w3c.github.io/json-ld-api/tests/",
+  "sequence": [
+    {
+      "@id": "#t0001",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "drop free-floating nodes",
+      "purpose": "Flattening drops unreferenced nodes having only @id",
+      "input": "flatten/0001-in.jsonld",
+      "expect": "flatten/0001-out.jsonld"
+    }, {
+      "@id": "#t0002",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "basic",
+      "purpose": "Flattening terms with different types of values",
+      "input": "flatten/0002-in.jsonld",
+      "expect": "flatten/0002-out.jsonld"
+    }, {
+      "@id": "#t0003",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "drop null and unmapped properties",
+      "purpose": "Verifies that null values and unmapped properties are removed from expanded output",
+      "input": "flatten/0003-in.jsonld",
+      "expect": "flatten/0003-out.jsonld"
+    }, {
+      "@id": "#t0004",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "optimize @set, keep empty arrays",
+      "purpose": "Uses of @set are removed in expansion; values of @set, or just plain values which are empty arrays are retained",
+      "input": "flatten/0004-in.jsonld",
+      "expect": "flatten/0004-out.jsonld"
+    }, {
+      "@id": "#t0005",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "do not expand aliased @id/@type",
+      "purpose": "If a keyword is aliased, it is not used when flattening",
+      "input": "flatten/0005-in.jsonld",
+      "expect": "flatten/0005-out.jsonld"
+    }, {
+      "@id": "#t0006",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "alias keywords",
+      "purpose": "Aliased keywords expand in resulting document",
+      "input": "flatten/0006-in.jsonld",
+      "expect": "flatten/0006-out.jsonld"
+    }, {
+      "@id": "#t0007",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "date type-coercion",
+      "purpose": "Expand strings to expanded value with @type: xsd:dateTime",
+      "input": "flatten/0007-in.jsonld",
+      "expect": "flatten/0007-out.jsonld"
+    }, {
+      "@id": "#t0008",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@value with @language",
+      "purpose": "Keep expanded values with @language, drop non-conforming value objects containing just @language",
+      "input": "flatten/0008-in.jsonld",
+      "expect": "flatten/0008-out.jsonld"
+    }, {
+      "@id": "#t0009",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@graph with terms",
+      "purpose": "Use of @graph to contain multiple nodes within array",
+      "input": "flatten/0009-in.jsonld",
+      "expect": "flatten/0009-out.jsonld"
+    }, {
+      "@id": "#t0010",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "native types",
+      "purpose": "Flattening native scalar retains native scalar within expanded value",
+      "input": "flatten/0010-in.jsonld",
+      "expect": "flatten/0010-out.jsonld"
+    }, {
+      "@id": "#t0011",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "coerced @id",
+      "purpose": "A value of a property with @type: @id coercion expands to a node reference",
+      "input": "flatten/0011-in.jsonld",
+      "expect": "flatten/0011-out.jsonld"
+    }, {
+      "@id": "#t0012",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@graph with embed",
+      "purpose": "Flattening objects containing chained objects flattens all objects",
+      "input": "flatten/0012-in.jsonld",
+      "expect": "flatten/0012-out.jsonld"
+    }, {
+      "@id": "#t0013",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "flatten already expanded",
+      "purpose": "Flattening an expanded/flattened document maintains input document",
+      "input": "flatten/0013-in.jsonld",
+      "expect": "flatten/0013-out.jsonld"
+    }, {
+      "@id": "#t0014",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@set of @value objects with keyword aliases",
+      "purpose": "Flattening aliased @set and @value",
+      "input": "flatten/0014-in.jsonld",
+      "expect": "flatten/0014-out.jsonld",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0015",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "collapse set of sets, keep empty lists",
+      "purpose": "An array of multiple @set nodes are collapsed into a single array",
+      "input": "flatten/0015-in.jsonld",
+      "expect": "flatten/0015-out.jsonld"
+    }, {
+      "@id": "#t0016",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "context reset",
+      "purpose": "Setting @context to null within an embedded object resets back to initial context state",
+      "input": "flatten/0016-in.jsonld",
+      "expect": "flatten/0016-out.jsonld"
+    }, {
+      "@id": "#t0017",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@graph and @id aliased",
+      "purpose": "Flattening with @graph and @id aliases",
+      "input": "flatten/0017-in.jsonld",
+      "expect": "flatten/0017-out.jsonld"
+    }, {
+      "@id": "#t0018",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "override default @language",
+      "purpose": "override default @language in terms; only language-tag strings",
+      "input": "flatten/0018-in.jsonld",
+      "expect": "flatten/0018-out.jsonld"
+    }, {
+      "@id": "#t0019",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "remove @value = null",
+      "purpose": "Flattening a value of null removes the value",
+      "input": "flatten/0019-in.jsonld",
+      "expect": "flatten/0019-out.jsonld"
+    }, {
+      "@id": "#t0020",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "do not remove @graph if not at top-level",
+      "purpose": "@graph used under a node is retained",
+      "input": "flatten/0020-in.jsonld",
+      "expect": "flatten/0020-out.jsonld"
+    }, {
+      "@id": "#t0021",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "do not remove @graph at top-level if not only property",
+      "purpose": "@graph used at the top level is retained if there are other properties",
+      "input": "flatten/0021-in.jsonld",
+      "expect": "flatten/0021-out.jsonld"
+    }, {
+      "@id": "#t0022",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "flatten value with default language",
+      "purpose": "Flattening with a default language applies that language to string values",
+      "input": "flatten/0022-in.jsonld",
+      "expect": "flatten/0022-out.jsonld"
+    }, {
+      "@id": "#t0023",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Flattening list/set with coercion",
+      "purpose": "Flattening lists and sets with properties having coercion coerces list/set values",
+      "input": "flatten/0023-in.jsonld",
+      "expect": "flatten/0023-out.jsonld"
+    }, {
+      "@id": "#t0024",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Multiple contexts",
+      "purpose": "Tests that contexts in an array are merged",
+      "input": "flatten/0024-in.jsonld",
+      "expect": "flatten/0024-out.jsonld"
+    }, {
+      "@id": "#t0025",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Problematic IRI flattening tests",
+      "purpose": "Flattening different kinds of terms and Compact IRIs",
+      "input": "flatten/0025-in.jsonld",
+      "expect": "flatten/0025-out.jsonld"
+    }, {
+      "@id": "#t0026",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Term definition with @id: @type",
+      "purpose": "Flattening term mapping to @type uses @type syntax",
+      "input": "flatten/0026-in.jsonld",
+      "expect": "flatten/0026-out.jsonld",
+      "option": {"specVersion": "json-ld-1.0"}
+    }, {
+      "@id": "#t0027",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Duplicate values in @list and @set",
+      "purpose": "Duplicate values in @list and @set are not merged",
+      "input": "flatten/0027-in.jsonld",
+      "expect": "flatten/0027-out.jsonld"
+    }, {
+      "@id": "#t0028",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Use @vocab in properties and @type but not in @id",
+      "purpose": "@vocab is used to compact properties and @type, but is not used for @id",
+      "input": "flatten/0028-in.jsonld",
+      "expect": "flatten/0028-out.jsonld"
+    }, {
+      "@id": "#t0030",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Language maps",
+      "purpose": "Language Maps expand values to include @language",
+      "input": "flatten/0030-in.jsonld",
+      "expect": "flatten/0030-out.jsonld"
+    }, {
+      "@id": "#t0031",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "type-coercion of native types",
+      "purpose": "Flattening native types with type coercion adds the coerced type to an expanded value representation and retains the native value representation",
+      "input": "flatten/0031-in.jsonld",
+      "expect": "flatten/0031-out.jsonld"
+    }, {
+      "@id": "#t0032",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Null term and @vocab",
+      "purpose": "Mapping a term to null decouples it from @vocab",
+      "input": "flatten/0032-in.jsonld",
+      "expect": "flatten/0032-out.jsonld"
+    }, {
+      "@id": "#t0033",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Using @vocab with with type-coercion",
+      "purpose": "Verifies that terms can be defined using @vocab",
+      "input": "flatten/0033-in.jsonld",
+      "expect": "flatten/0033-out.jsonld"
+    }, {
+      "@id": "#t0034",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Multiple properties expanding to the same IRI",
+      "purpose": "Verifies multiple values from separate terms are deterministically made multiple values of the IRI associated with the terms",
+      "input": "flatten/0034-in.jsonld",
+      "expect": "flatten/0034-out.jsonld"
+    }, {
+      "@id": "#t0035",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Language maps with @vocab, default language, and colliding property",
+      "purpose": "Pathological tests of language maps",
+      "input": "flatten/0035-in.jsonld",
+      "expect": "flatten/0035-out.jsonld"
+    }, {
+      "@id": "#t0036",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Flattening @index",
+      "purpose": "Flattening index maps for terms defined with @container: @index",
+      "input": "flatten/0036-in.jsonld",
+      "expect": "flatten/0036-out.jsonld"
+    }, {
+      "@id": "#t0037",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Flattening reverse properties",
+      "purpose": "Flattening @reverse keeps @reverse",
+      "input": "flatten/0037-in.jsonld",
+      "expect": "flatten/0037-out.jsonld"
+    }, {
+      "@id": "#t0038",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Flattening blank node labels",
+      "purpose": "Blank nodes are not relabeled during expansion",
+      "option": {"specVersion": "json-ld-1.0"},
+      "input": "flatten/0038-in.jsonld",
+      "expect": "flatten/0038-out.jsonld"
+    }, {
+      "@id": "#t0039",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Using terms in a reverse-maps",
+      "purpose": "Terms within @reverse are expanded",
+      "input": "flatten/0039-in.jsonld",
+      "expect": "flatten/0039-out.jsonld"
+    }, {
+      "@id": "#t0040",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "language and index expansion on non-objects",
+      "purpose": "Only invoke language and index map expansion if the value is a JSON object",
+      "input": "flatten/0040-in.jsonld",
+      "expect": "flatten/0040-out.jsonld"
+    }, {
+      "@id": "#t0041",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Free-floating sets and lists",
+      "purpose": "Free-floating values in sets are removed, free-floating lists are removed completely",
+      "input": "flatten/0041-in.jsonld",
+      "expect": "flatten/0041-out.jsonld"
+    }, {
+      "@id": "#t0042",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "List objects not equivalent",
+      "purpose": "Lists objects are implicit unlabeled blank nodes and thus never equivalent",
+      "input": "flatten/0042-in.jsonld",
+      "expect": "flatten/0042-out.jsonld"
+    }, {
+      "@id": "#t0043",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Sample test manifest extract",
+      "purpose": "Flatten a test manifest",
+      "input": "flatten/0043-in.jsonld",
+      "expect": "flatten/0043-out.jsonld"
+    }, {
+      "@id": "#t0044",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "compactArrays option",
+      "purpose": "Setting compactArrays to false causes single element arrays to be retained",
+      "option": {
+        "compactArrays": false
+      },
+      "input": "flatten/0044-in.jsonld",
+      "context": "flatten/0044-context.jsonld",
+      "expect": "flatten/0044-out.jsonld"
+    }, {
+      "@id": "#t0045",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Blank nodes with reverse properties",
+      "purpose": "Proper (re-)labeling of blank nodes if used with reverse properties.",
+      "input": "flatten/0045-in.jsonld",
+      "expect": "flatten/0045-out.jsonld"
+    }, {
+      "@id": "#t0046",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Empty string as identifier",
+      "purpose": "Usage of empty strings in identifiers needs special care when constructing the node map.",
+      "input": "flatten/0046-in.jsonld",
+      "expect": "flatten/0046-out.jsonld"
+    }, {
+      "@id": "#t0047",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Flatten using relative fragment identifier properly joins to base",
+      "purpose": "Compacting a relative round-trips",
+      "option": {"base": "http://example.org/"},
+      "input": "flatten/0047-in.jsonld",
+      "expect": "flatten/0047-out.jsonld"
+    }, {
+      "@id": "#t0048",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "@list with embedded object",
+      "purpose": "Node definitions contained within lists are flattend to top level.",
+      "input": "flatten/0048-in.jsonld",
+      "expect": "flatten/0048-out.jsonld"
+    }, {
+      "@id": "#t0049",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "context with JavaScript Object property names",
+      "purpose": "Flatten with context including JavaScript Object property names",
+      "input": "flatten/0049-in.jsonld",
+      "expect": "flatten/0049-out.jsonld"
+    }, {
+      "@id": "#te001",
+      "@type": [ "jld:NegativeEvaluationTest", "jld:FlattenTest" ],
+      "name": "Conflicting indexes",
+      "purpose": "Verifies that an exception is raised in Flattening when conflicting indexes are found",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "flatten/e001-in.jsonld",
+      "expectErrorCode": "conflicting indexes"
+    }, {
+      "@id": "#tin01",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Basic Included array",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in01-in.jsonld",
+      "expect": "flatten/in01-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin02",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Basic Included object",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in02-in.jsonld",
+      "expect": "flatten/in02-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin03",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Multiple properties mapping to @included are folded together",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in03-in.jsonld",
+      "expect": "flatten/in03-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin04",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Included containing @included",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in04-in.jsonld",
+      "expect": "flatten/in04-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin05",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "Property value with @included",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in05-in.jsonld",
+      "expect": "flatten/in05-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tin06",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest"],
+      "name": "json.api example",
+      "purpose": "Tests included blocks.",
+      "input": "flatten/in06-in.jsonld",
+      "expect": "flatten/in06-out.jsonld",
+      "option": {"specVersion": "json-ld-1.1"}
+    }, {
+      "@id": "#tli01",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:FlattenTest" ],
+      "name": "@list containing an deep list",
+      "purpose": "Lists of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "flatten/li01-in.jsonld",
+      "expect": "flatten/li01-out.jsonld"
+    }, {
+      "@id": "#tli02",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:FlattenTest" ],
+      "name": "@list containing empty @list",
+      "purpose": "Lists of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "flatten/li02-in.jsonld",
+      "expect": "flatten/li02-out.jsonld"
+    }, {
+      "@id": "#tli03",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:FlattenTest" ],
+      "name": "@list containing mixed list values",
+      "purpose": "Lists of lists",
+      "option": {"specVersion": "json-ld-1.1"},
+      "input": "flatten/li03-in.jsonld",
+      "expect": "flatten/li03-out.jsonld"
+    }
+  ]
+}

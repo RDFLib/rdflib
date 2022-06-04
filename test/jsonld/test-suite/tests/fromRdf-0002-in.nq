@@ -1,0 +1,5 @@
+<http://example.com/Subj1> <http://example.com/prop> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.com/Subj1> <http://example.com/prop> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.com/Subj1> <http://example.com/prop> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/Subj1> <http://example.com/prop> "1.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.com/Subj1> <http://example.com/prop> "1.1E-1"^^<http://www.w3.org/2001/XMLSchema#double> .

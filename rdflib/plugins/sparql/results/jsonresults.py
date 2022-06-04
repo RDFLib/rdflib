@@ -1,8 +1,8 @@
 import json
+from typing import IO, Any, Dict
 
-from rdflib.query import Result, ResultException, ResultSerializer, ResultParser
-from rdflib import Literal, URIRef, BNode, Variable
-
+from rdflib import BNode, Literal, URIRef, Variable
+from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 
 """A Serializer for SPARQL results in JSON:
 
@@ -28,9 +28,9 @@ class JSONResultSerializer(ResultSerializer):
     def __init__(self, result):
         ResultSerializer.__init__(self, result)
 
-    def serialize(self, stream, encoding=None):
+    def serialize(self, stream: IO, encoding: str = None):  # type: ignore[override]
 
-        res = {}
+        res: Dict[str, Any] = {}
         if self.result.type == "ASK":
             res["head"] = {}
             res["boolean"] = self.result.askAnswer

@@ -1,0 +1,27 @@
+# $Id: ericP.n3 320 2004-06-26 16:23:32Z josd $
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/ericP#>.
+
+:A :p1 :B. # truncates on optional 1 term 1
+:A :p2 :C.
+
+:A2 :p1 :B. # truncates on optional term 2
+:A2 :p2 :C.
+:A2 :p3 :D2.
+
+:D2 :p4 :E2.
+
+:A3 :p1 :B. # eliminates second optional
+:A3 :p2 :C.
+:A3 :p3 :D3.
+
+:D3 :p4 :E3.
+:D3 :p5 :F3.
+
+:A4 :p1 :B. # has all arcs
+:A4 :p2 :C.
+:A4 :p3 :D4.
+
+:D4 :p4 :E4.
+:D4 :p5 :F4.
+:D4 :p6 :F4.

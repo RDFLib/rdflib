@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "foo": {"@context": {"bar": {"@type": "@id"}}},
+    "bar": {"@type": "http://www.w3.org/2001/XMLSchema#string"}
+  },
+  "foo": {
+    "bar": "http://example/baz"
+  }
+}

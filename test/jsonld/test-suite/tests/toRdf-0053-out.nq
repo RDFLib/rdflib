@@ -1,0 +1,7 @@
+<http://example.com/id1> <http://example.com/term1> "v1" .
+<http://example.com/id1> <http://example.com/term2> "v2"^^<http://example.com/t2> .
+<http://example.com/id1> <http://example.com/term3> "v3"@en .
+<http://example.com/id1> <http://example.com/term4> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/id1> <http://example.com/term5> "50"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/id1> <http://example.com/term5> "51"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.com/id1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/t1> .

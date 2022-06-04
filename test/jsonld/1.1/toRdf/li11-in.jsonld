@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@base": "ex:",
+    "list": {
+      "@id": "foo:bar",
+      "@container": "@list",
+      "@type": "@id"
+    }
+  },
+  "list": ["test"]
+}

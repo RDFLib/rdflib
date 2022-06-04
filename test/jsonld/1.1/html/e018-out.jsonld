@@ -1,0 +1,4 @@
+[{
+  "@id": "https://w3c.github.io/json-ld-api/tests/html/e018-in.html",
+  "http://example.com/foo": [{"@value": "bar"}]
+}]

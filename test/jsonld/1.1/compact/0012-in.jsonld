@@ -1,0 +1,5 @@
+{
+  "@id": "http://example.org/test",
+  "http://example.org/vocab#bool": true,
+  "http://example.org/vocab#int": 123
+}

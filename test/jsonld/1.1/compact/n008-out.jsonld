@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "typemap": {"@container": "@type", "@nest": "nestedtypemap"},
+    "nestedtypemap": "@nest"
+  },
+  "nestedtypemap": {
+    "typemap": {
+      "_:bar": {"label": "Object with @type _:bar"},
+      "http://example.org/foo": {"label": "Object with @type <foo>"}
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@prefix : <http://example.org/test#>.
+
+:task1 :subTask :subtask1.
+:subtask1 a :Completed.
+
+:task1 :subTask :subtask2.
+:subtask2 a :Completed.
+
+:task1 :subTask :subtask3.
+:subtask3 a :Completed.
+
+:task2 :subTask :subtask4.
+:subtask4 a :Completed.
+
+:task2 :subTask :subtask5.
+#:subtask5 a :Completed.

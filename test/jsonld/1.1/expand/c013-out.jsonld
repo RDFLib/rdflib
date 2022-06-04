@@ -1,0 +1,12 @@
+[{
+ "@type": ["http://example/Outer"],
+ "http://example/base-foo": [{"@value": "base-foo"}],
+ "http://example/outer-prop": [{
+   "@type": ["http://example/Inner"],
+   "http://example/prop": [{
+     "@id": "http://example/inner-with-index",
+     "@index": "index",
+     "http://example/inner-foo": [{"@value": "inner-foo"}]
+   }]
+ }]
+}]

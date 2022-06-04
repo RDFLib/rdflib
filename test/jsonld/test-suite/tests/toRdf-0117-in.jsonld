@@ -1,0 +1,7 @@
+{
+  "http://example/p0": {"@id": "http://example/o0"},
+  "@graph": {
+    "@id": "http://example/s1",
+    "http://example/p1": {"@id": "http://example/o1"}
+  }
+}

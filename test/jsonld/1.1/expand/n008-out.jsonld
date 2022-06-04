@@ -1,0 +1,4 @@
+[{
+ "@type": ["http://example.org/T1", "http://example.org/T2"],
+ "http://example.org/p1": [{"@value": "v1"}]
+}]

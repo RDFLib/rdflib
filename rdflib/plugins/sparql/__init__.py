@@ -4,6 +4,8 @@ SPARQL implementation for RDFLib
 .. versionadded:: 4.0
 """
 
+import sys
+from typing import TYPE_CHECKING
 
 SPARQL_LOAD_GRAPHS = True
 """
@@ -30,20 +32,26 @@ NotImplementedError if they cannot handle a certain part
 
 PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
-from . import parser
-from . import operators
-from . import parserutils
 
-from .processor import prepareQuery, processUpdate
+from . import operators, parser, parserutils  # noqa: E402
+from .processor import prepareQuery, prepareUpdate, processUpdate  # noqa: F401, E402
 
 assert parser
 assert operators
 assert parserutils
 
-try:
-    from pkg_resources import iter_entry_points
-except ImportError:
-    pass  # TODO: log a message
+if sys.version_info < (3, 8):
+    from importlib_metadata import entry_points
 else:
-    for ep in iter_entry_points(PLUGIN_ENTRY_POINT):
+    from importlib.metadata import entry_points
+
+all_entry_points = entry_points()
+if hasattr(all_entry_points, "select"):
+    for ep in all_entry_points.select(group=PLUGIN_ENTRY_POINT):
+        CUSTOM_EVALS[ep.name] = ep.load()
+else:
+    # Prior to Python 3.10, this returns a dict instead of the selection interface
+    if TYPE_CHECKING:
+        assert isinstance(all_entry_points, dict)
+    for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
         CUSTOM_EVALS[ep.name] = ep.load()

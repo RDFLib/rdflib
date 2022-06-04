@@ -1,9 +1,13 @@
-from rdflib.graph import Graph, ConjunctiveGraph
-import unittest
-from rdflib.term import Literal, URIRef
-from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 import itertools
+import os
+from test import TEST_DIR
 from urllib.error import URLError
+
+import pytest
+
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+from rdflib.term import Literal, URIRef
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -60,14 +64,8 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 """
 
 
-class TestN3Case(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-    def testBaseCumulative(self):
+class TestN3Case:
+    def test_base_cumulative(self):
         """
         Test that the n3 parser supports base declarations
         This is issue #22
@@ -91,12 +89,12 @@ class TestN3Case(unittest.TestCase):
         g = Graph()
         g.parse(data=input, format="n3")
         print(list(g))
-        self.assertTrue((None, None, Literal("Foo")) in g)
-        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
-        self.assertTrue((URIRef("http://example.com/doc/doc2/bing"), None, None) in g)
-        self.assertTrue((URIRef("http://test.com/bong"), None, None) in g)
+        assert (None, None, Literal("Foo")) in g
+        assert (URIRef("http://example.com/doc/bar"), None, None) in g
+        assert (URIRef("http://example.com/doc/doc2/bing"), None, None) in g
+        assert (URIRef("http://test.com/bong"), None, None) in g
 
-    def testBaseExplicit(self):
+    def test_base_explicit(self):
         """
         Test that the n3 parser supports resolving relative URIs
         and that base will override
@@ -113,10 +111,10 @@ class TestN3Case(unittest.TestCase):
         g = Graph()
         g.parse(data=input, publicID="http://blah.com/", format="n3")
         print(list(g))
-        self.assertTrue((URIRef("http://blah.com/foo"), None, Literal("Foo")) in g)
-        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
+        assert (URIRef("http://blah.com/foo"), None, Literal("Foo")) in g
+        assert (URIRef("http://example.com/doc/bar"), None, None) in g
 
-    def testBaseSerialize(self):
+    def test_base_serialize(self):
         g = Graph()
         g.add(
             (
@@ -126,12 +124,12 @@ class TestN3Case(unittest.TestCase):
             )
         )
         s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
-        self.assertTrue(b"<people/Bob>" in s)
+        assert b"<people/Bob>" in s
         g2 = ConjunctiveGraph()
         g2.parse(data=s, publicID="http://example.com/", format="n3")
-        self.assertEqual(list(g), list(g2))
+        assert list(g) == list(g2)
 
-    def testIssue23(self):
+    def test_issue23(self):
         input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201Cquotes\\u201D"."""
 
         g = Graph()
@@ -142,7 +140,7 @@ class TestN3Case(unittest.TestCase):
 
         g.parse(data=input, format="n3")
 
-    def testIssue29(self):
+    def test_issue29(self):
         input = """@prefix foo-bar: <http://example.org/> .
 
 foo-bar:Ex foo-bar:name "Test" . """
@@ -150,20 +148,21 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse(data=input, format="n3")
 
-    def testIssue68(self):
+    def test_issue68(self):
         input = """@prefix : <http://some.url/pome#>.\n\n:Brecon a :Place;\n\t:hasLord\n\t\t:Bernard_of_Neufmarch\xc3\xa9 .\n """
 
         g = Graph()
         g.parse(data=input, format="n3")
 
-    def testIssue156(self):
+    def test_issue156(self):
         """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        g.parse("test/n3/issue156.n3", format="n3")
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "data/issue156.n3", os.curdir))
+        g.parse(n3_path, format="n3")
 
-    def testIssue999(self):
+    def test_issue999(self):
         """
         Make sure the n3 parser does recognize exponent and leading dot in ".171e-11"
         """
@@ -188,31 +187,31 @@ foo-bar:Ex foo-bar:name "Test" . """
         g.parse(data=data, format="n3")
         g.parse(data=data, format="turtle")
 
-    def testDotInPrefix(self):
+    def test_dot_in_prefix(self):
         g = Graph()
         g.parse(
             data="@prefix a.1: <http://example.org/> .\n a.1:cake <urn:x> <urn:y> . \n",
             format="n3",
         )
 
-    def testModel(self):
+    def test_model(self):
         g = ConjunctiveGraph()
         g.parse(data=test_data, format="n3")
         i = 0
         for s, p, o in g:
             if isinstance(s, Graph):
                 i += 1
-        self.assertEqual(i, 3)
-        self.assertEqual(len(list(g.contexts())), 13)
+        assert i == 3
+        assert len(list(g.contexts())) == 13
 
         g.close()
 
-    def testQuotedSerialization(self):
+    def test_quoted_serialization(self):
         g = ConjunctiveGraph()
         g.parse(data=test_data, format="n3")
         g.serialize(format="n3")
 
-    def testParse(self):
+    def test_parse(self):
         g = ConjunctiveGraph()
         try:
             g.parse(
@@ -220,11 +219,9 @@ foo-bar:Ex foo-bar:name "Test" . """
                 format="n3",
             )
         except URLError:
-            from nose import SkipTest
+            pytest.skip("No network to retrieve the information, skipping test")
 
-            raise SkipTest("No network to retrieve the information, skipping test")
-
-    def testSingleQuotedLiterals(self):
+    def test_single_quoted_literals(self):
         test_data = [
             """@prefix : <#> . :s :p 'o' .""",
             """@prefix : <#> . :s :p '''o''' .""",
@@ -233,15 +230,16 @@ foo-bar:Ex foo-bar:name "Test" . """
         for data in test_data:
             # N3 doesn't accept single quotes around string literals
             g = ConjunctiveGraph()
-            self.assertRaises(BadSyntax, g.parse, data=data, format="n3")
+            with pytest.raises(BadSyntax):
+                g.parse(data=data, format="n3")
 
             g = ConjunctiveGraph()
             g.parse(data=data, format="turtle")
-            self.assertEqual(len(g), 1)
+            assert len(g) == 1
             for _, _, o in g:
-                self.assertEqual(o, Literal("o"))
+                assert o == Literal("o")
 
-    def testEmptyPrefix(self):
+    def test_empty_prefix(self):
 
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
@@ -255,8 +253,8 @@ foo-bar:Ex foo-bar:name "Test" . """
         ), "Document with declared empty prefix must match default #"
 
 
-class TestRegularExpressions(unittest.TestCase):
-    def testExponents(self):
+class TestRegularExpressions:
+    def test_exponents(self):
         signs = ("", "+", "-")
         mantissas = (
             "1",
@@ -276,14 +274,10 @@ class TestRegularExpressions(unittest.TestCase):
         exps = ("1", "12", "+1", "-1", "+12", "-12")
         for parts in itertools.product(signs, mantissas, es, exps):
             expstring = "".join(parts)
-            self.assertTrue(exponent_syntax.match(expstring))
+            assert exponent_syntax.match(expstring)
 
-    def testInvalidExponents(self):
+    def test_invalid_exponents(self):
         # Add test cases as needed
         invalid = (".e1",)
         for expstring in invalid:
-            self.assertFalse(exponent_syntax.match(expstring))
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert not exponent_syntax.match(expstring)

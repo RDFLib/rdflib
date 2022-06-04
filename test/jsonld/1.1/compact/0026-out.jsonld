@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/vocab/",
+    "@language": "it",
+    "s": { "@id": "label", "@language": "en" },
+    "label": {
+      "@container": "@language"
+    }
+  },
+  "@id": "http://example.com/queen",
+  "label": {
+    "it": "Il re",
+    "en": [ "The king", "The Queen" ],
+    "de": [ "Die Königin", "Ihre Majestät" ]
+  }
+}

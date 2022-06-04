@@ -1,0 +1,6 @@
+[{
+  "http://example.org/ns/foo": [{
+    "@id": "http://example.org/base/baz",
+    "@type": [ "http://example.org/ns/bar" ]
+  }]
+}]

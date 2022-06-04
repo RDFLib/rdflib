@@ -1,8 +1,0 @@
-# This query uses UNIX line end conventions.
-# It is in CVS in binary.
-PREFIX : <http://example.org/ns#>
-
-SELECT ?x
-{ ?x ?p '''x
-y'''
-}

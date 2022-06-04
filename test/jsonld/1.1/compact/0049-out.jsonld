@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "property": { "@id": "http://example.org", "@type": "@id" }
+  },
+  "property": { "@list": [ "http://example.com/node/a", "http://example.com/node/b", "http://example.com/node/c" ] }
+}

@@ -1,0 +1,9 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+-prolog+-nope+sfcvs%2F2004%2F04test%2Fwet.n3+-query+sfcvs%2F2004%2F04test%2FwetF.n3
+# PxButton | euler5np | bash .euler5 http://localhost/.euler+-prolog+-nope+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Fwet.n3+-query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FwetF.n3 > wetE.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/wet#>.
+
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) () ?Y)} => {(?SCOPE 1) e:bayesian ((?X) () ?Y)}.
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) ((:WetGrass e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((?X) ((:WetGrass e:T)) ?Y)}.
+{?X e:depends ?Z. (?SCOPE 1) e:bayesian ((?X) ((:WetGrass e:T) (:Rain e:T)) ?Y)} => {(?SCOPE 1) e:bayesian ((?X) ((:WetGrass e:T) (:Rain e:T)) ?Y)}.

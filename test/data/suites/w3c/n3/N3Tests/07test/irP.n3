@@ -1,0 +1,22 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+### incomplete and redundant belief rules
+
+{_:b e:true 0.15} => {:P e:boolean e:T}.
+
+{_:b e:true 0.35} => {:Q e:boolean e:T}.
+
+{:P e:boolean e:T. _:b e:true 0.66} => {:C e:boolean e:T}.
+#{:P e:boolean e:F. _:b e:true 0.42} => {:C e:boolean e:T}.
+
+{:Q e:boolean e:T. _:b e:true 0.84} => {:C e:boolean e:T}.
+{:Q e:boolean e:F. _:b e:true 0.74} => {:C e:boolean e:T}.
+{:Q e:boolean e:F. _:b e:true 0.63} => {:C e:boolean e:T}.
+
+{:P e:boolean e:T} => {:Q e:boolean e:T}.
+
+### with loops and calculated belief
+{:C e:boolean e:T. (0.98 0.98) math:product ?B. _:b e:true ?B} => {:P e:boolean e:T}.
+{:C e:boolean e:F. _:b e:true 0.86} => {:P e:boolean e:T}.

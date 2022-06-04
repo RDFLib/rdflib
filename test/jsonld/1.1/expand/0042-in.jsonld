@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "isKnownBy": { "@reverse": "http://xmlns.com/foaf/0.1/knows" }
+  },
+  "@id": "http://example.com/people/markus",
+  "name": "Markus Lanthaler",
+  "isKnownBy": {
+    "@id": "http://example.com/people/dave",
+    "name": "Dave Longley"
+  }
+}

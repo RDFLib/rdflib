@@ -1,0 +1,18 @@
+# $Id: kendallP.n3 598 2005-08-05 19:34:40Z josd $
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix myfoaf: <http://clark.dallas.tx.us/kendall/foaf.rdf#>.
+
+myfoaf:kendall	foaf:name "Kendall Grant Clark";
+		foaf:workplaceHomepage <http://www.mindswap.org/>;
+		foaf:homepage <http://clark.dallas.tx.us/kendall/>;
+		foaf:knows myfoaf:edd;
+		foaf:knows myfoaf:niel;
+		rdf:type foaf:Person.
+
+myfoaf:edd	foaf:mbox <mailto:edd@usefulinc.com>;
+		rdf:type foaf:Person.
+
+myfoaf:niel	rdf:type foaf:Person;
+		foaf:mbox <mailto:niel@bornstein.atlanta.ga.us>.

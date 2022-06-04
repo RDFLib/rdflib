@@ -1,0 +1,14 @@
+[
+  {
+    "@id": "_:b0",
+    "http://example.org/foo": [ { "@value": "Foo" } ]
+  },
+  {
+    "@id": "_:b1",
+    "http://example.org/bar": [ { "@id": "_:b0" } ]
+  },
+  {
+    "@id": "http://example.org/origin",
+    "http://example.org/bar": [ { "@id": "_:b0" } ]
+  }
+]

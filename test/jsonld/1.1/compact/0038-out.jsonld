@@ -1,0 +1,57 @@
+{
+  "@context": {
+    "site": "http://example.com/",
+    "site-cd": "site:site-schema/content-deployment/",
+    "title": {
+      "@id": "site-cd:node/article/title",
+      "@container": "@index"
+    },
+    "body": {
+      "@id": "site-cd:node/article/body",
+      "@container": "@index"
+    },
+    "field_tags": {
+      "@id": "site-cd:node/article/field_tags",
+      "@container": "@index"
+    }
+  },
+  "@id": "site:node/1",
+  "@type": "site-cd:node/article",
+  "title": {
+    "en": {
+        "@type": "site-cd:field-types/title_field",
+        "title:/value": "This is the English title"
+    },
+    "es": {
+      "@type": "site-cd:field-types/title_field",
+      "title:/value": "Este es el t’tulo espa–ol"
+    }
+  },
+  "body": {
+    "en": {
+      "@type": "site-cd:field-types/text_with_summary",
+      "body:/value": "This is the English body. There is no Spanish body, so this will be displayed for both the English and Spanish versions.",
+      "body:/summary": "This is the teaser for the body.",
+      "body:/format": "full_html"
+    }
+  },
+  "field_tags": {
+    "en": {
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/1",
+        "site-cd:taxonomy/term/uuid": "e34b982c-98ac-4862-9b00-fa771a388010"
+    },
+    "es": [
+      {
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/1",
+        "site-cd:taxonomy/term/uuid": "e34b982c-98ac-4862-9b00-fa771a388010"
+      },
+      {
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/2",
+        "site-cd:taxonomy/term/uuid": "a55b982c-58ac-4862-9b00-aa221a388010"
+      }
+    ]
+  }
+}

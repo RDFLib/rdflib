@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "@vocab": "http://xmlns.com/foaf/0.1/",
+    "homepage": {
+      "@type": "@id"
+    },
+    "uri": "@id"
+  },
+  "uri": "http://me.markus-lanthaler.com/",
+  "name": "Markus Lanthaler",
+  "homepage": "http://www.markus-lanthaler.com/"
+}

@@ -1,0 +1,4 @@
+<foo:bar-id> <http://schema.org/term> "is schema.org/term" .
+<foo:bar-id> <foo:bar> "is an absolute iri property" .
+<foo:bar-id> <http://schema.org/:fish> "is schema.org/:fish" .
+<foo:bar-id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <foo:bar-type> .

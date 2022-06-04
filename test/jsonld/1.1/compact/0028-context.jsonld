@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@vocab": "http://xmlns.com/foaf/0.1/",
+    "homepage": {
+      "@type": "@id"
+    },
+    "uri": "@id"
+  }
+}

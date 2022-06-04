@@ -1,0 +1,20 @@
+[
+  {
+    "@id": "ex:outer",
+    "http://vocab.org/foo": [
+      {
+        "@id": "ex:inner",
+        "http://vocab.org/prop1": [
+          {
+            "@value": "baz1"
+          }
+        ],
+        "http://vocab.override.org/prop2": [
+          {
+            "@value": "baz2"
+          }
+        ]
+      }
+    ]
+  }
+]

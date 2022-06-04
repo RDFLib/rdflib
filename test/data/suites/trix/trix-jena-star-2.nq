@@ -1,0 +1,4 @@
+<http://example/rightNestObj> <http://example/right> << <http://example/s> <http://example/p> << <http://example/s1> <http://example/p1> <http://example/o1> >> >> .
+<http://example/leftNestObj> <http://example/left> << << <http://example/s2> <http://example/p2> <http://example/o2> >> <http://example/p> <http://example/o> >> .
+<< <http://example/s> <http://example/p> << <http://example/s1> <http://example/p1> <http://example/o1> >> >> <http://example/right> <http://example/rightNestSubject> <http://example.org/g> .
+<< << <http://example/s2> <http://example/p2> <http://example/o2> >> <http://example/p> <http://example/o> >> <http://example/left> <http://example/leftNestSubject> <http://example.org/g> .

@@ -1,0 +1,4 @@
+<http://example.com/speakers#Alice> <http://www.w3.org/2002/12/cal/ical#location> "Lyon Convention Centre, Lyon, France" .
+<http://example.com/speakers#Alice> <http://www.w3.org/2002/12/cal/ical#summary> "Alice Talk" .
+<http://example.com/speakers#Alice> <http://xmlns.com/foaf/0.1/homepage> <http://xkcd.com/177/> .
+<http://example.com/speakers#Alice> <http://xmlns.com/foaf/0.1/name> "Alice" .

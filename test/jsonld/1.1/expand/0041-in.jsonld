@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "property": "http://example.com/property",
+    "nested": "http://example.com/nested",
+    "@language": "en"
+  },
+  "property": "this is English",
+  "nested": {
+    "@context": {
+      "@language": null
+    },
+    "property": "and this is a plain string"
+  }
+}

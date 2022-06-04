@@ -1,0 +1,10 @@
+# splitting cyclic test case
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/sc#>.
+
+:Xanthippe a :HumanFemale.
+
+{?P a :Human} => ({?P a :HumanFemale} {?P a :HumanMale})!e:disjunction.
+{?P a :Human} <= {?P a :HumanFemale}.
+{?P a :Human} <= {?P a :HumanMale}.

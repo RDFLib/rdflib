@@ -1,0 +1,16 @@
+[
+  {
+    "@id": "_:b0",
+    "http://example.com/foo": [{
+      "@list": [
+        {
+          "@id": "http://example.com/baz"
+        }
+      ]
+    }]
+  },
+  {
+    "@id": "http://example.com/baz",
+    "http://example.com/bar": [{"@value": "buz"}]
+  }
+]

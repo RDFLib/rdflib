@@ -1,0 +1,23 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/gate#>.
+
+((:Input1) e:T) e:depends
+  (() 1).
+
+((:Gate1) e:T) e:depends
+  ((((:Input1) e:T)) 1),
+  ((((:Input1) e:F)) 0).
+
+((:Gate2) e:T) e:depends
+  ((((:Input1) e:T)) 0),
+  ((((:Input1) e:F)) 1).
+
+((:Output1) e:T) e:depends
+  ((((:Gate1) e:T) ((:Gate2) e:T)) 0),
+  ((((:Gate1) e:T) ((:Gate2) e:F)) 1),
+  ((((:Gate1) e:F) ((:Gate2) e:T)) 1),
+  ((((:Gate1) e:F) ((:Gate2) e:F)) 0).
+
+((:Output2) e:T) e:depends
+  ((((:Gate2) e:T)) 1),
+  ((((:Gate2) e:F)) 0).

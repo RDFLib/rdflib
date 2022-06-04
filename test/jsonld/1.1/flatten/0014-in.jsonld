@@ -1,0 +1,50 @@
+{
+  "@context": {
+    "ex": "http://example.org/test#",
+    "property1": {
+      "@id": "http://example.org/test#property1",
+      "@type": "@id"
+    },
+    "property2": {
+      "@id": "ex:property2",
+      "@type": "@id"
+    },
+    "uri": "@id",
+    "set": "@set",
+    "value": "@value",
+    "type": "@type",
+    "xsd": { "@id": "http://www.w3.org/2001/XMLSchema#" }
+  },
+  "property1": {
+    "uri": "ex:example2",
+    "http://example.org/test#property4": "foo"
+  },
+  "property2": "http://example.org/test#example3",
+  "http://example.org/test#property3": {
+    "uri": "http://example.org/test#example4"
+  },
+  "ex:property4": {
+    "uri": "ex:example4",
+    "ex:property5": [
+      {
+        "set": [
+          {
+          "value": "2012-03-31",
+          "type": "xsd:date"
+          }
+        ]
+      }
+    ]
+  },
+  "ex:property6": [
+    {
+      "set": [
+        {
+        "value": null,
+        "type": "xsd:date"
+        }
+      ]
+    }
+  ],
+  "uri": "http://example.org/test#example1"
+}

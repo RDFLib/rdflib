@@ -11,9 +11,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
 import re
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -30,17 +30,25 @@ extensions = [
     "sphinxcontrib.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
+    "sphinx_autodoc_typehints",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
+    "myst_parser",
+    "sphinxcontrib.kroki",
 ]
 
 apidoc_module_dir = "../rdflib"
 apidoc_output_dir = "apidocs"
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_default_options = {"special-members": True}
+
+# https://github.com/tox-dev/sphinx-autodoc-typehints
+always_document_param_types = True
 
 autosummary_generate = True
 
@@ -62,7 +70,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "rdflib"
-copyright = "2009 - 2020, RDFLib Team"
+copyright = "2009 - 2021, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -210,9 +218,9 @@ htmlhelp_basename = "rdflibdoc"
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-    ("index", "rdflib.tex", "rdflib Documentation", "RDFLib Team", "manual"),
-]
+# latex_documents = [
+#     ("index", "rdflib.tex", "rdflib Documentation", "RDFLib Team", "manual"),
+# ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -239,4 +247,10 @@ intersphinx_mapping = {
 
 html_experimental_html5_writer = True
 
-needs_sphinx = "2.4"
+needs_sphinx = "4.1.2"
+
+suppress_warnings = [
+    # This is here to prevent:
+    #  "WARNING: more than one target found for cross-reference"
+    "ref.python",
+]

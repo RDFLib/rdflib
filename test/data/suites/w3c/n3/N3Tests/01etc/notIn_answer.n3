@@ -1,0 +1,14 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid --nope http://josd.github.io/brain/n3c/components.n3 --turtle http://josd.github.io/brain/n3c/tasks.n3 --query http://josd.github.io/brain/n3c/notIn_query.n3
+
+@prefix n3: <https://www.w3.org/ns/n3#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://example.org/test#>.
+
+:task1 a :NotDiscardedTask.
+:task2 a :NotDiscardedTask.
+
+#2020-02-22T21:52:12.365Z in=7 out=2 ent=2 step=2 brake=1 inf=20517 sec=0.086 inf/sec=238570
+#ENDS
+

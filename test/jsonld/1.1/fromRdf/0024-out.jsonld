@@ -1,0 +1,15 @@
+[
+  {
+    "@id": "http://example.com",
+    "http://example.com/label": [
+      {
+        "@value": "test",
+        "@language": "en"
+      },
+      {
+        "@value": "test",
+        "@language": "fr"
+      }
+    ]
+  }
+]

@@ -1,0 +1,3 @@
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+:a :b :c.

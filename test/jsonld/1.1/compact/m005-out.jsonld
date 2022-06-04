@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "ex": "http://example.org/",
+    "idmap": {"@container": "@id"}
+  },
+  "idmap": {
+    "ex:foo": {"label": "Object with @id <foo>"}
+  }
+}

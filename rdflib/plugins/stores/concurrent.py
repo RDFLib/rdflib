@@ -85,7 +85,7 @@ class ConcurrentStore(object):
                 (s, p, o) = pending_removes.pop()
                 try:
                     self.store.remove((s, p, o))
-                except:
+                except:  # noqa: E722
                     # TODO: change to try finally?
                     print(s, p, o, "Not in store to remove")
             pending_adds = self.__pending_adds

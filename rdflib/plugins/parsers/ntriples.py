@@ -6,17 +6,20 @@ License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
 """
 
-import re
 import codecs
+import re
+from io import BytesIO, StringIO, TextIOBase
+from typing import IO, TYPE_CHECKING, Optional, Pattern, TextIO, Union
 
-from rdflib.term import URIRef as URI
+from rdflib.compat import _string_escape_map, decodeUnicodeEscape
+from rdflib.exceptions import ParserError as ParseError
+from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
-from rdflib.compat import decodeUnicodeEscape
-from rdflib.exceptions import ParserError as ParseError
-from rdflib.parser import Parser
+from rdflib.term import URIRef as URI
 
-from io import StringIO, TextIOBase, BytesIO
+if TYPE_CHECKING:
+    from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 
 __all__ = ["unquote", "uriquote", "W3CNTriplesParser", "NTGraphSink", "NTParser"]
 
@@ -45,20 +48,18 @@ class DummySink(object):
         print(s, p, o)
 
 
-quot = {"t": "\t", "n": "\n", "r": "\r", '"': '"', "\\": "\\"}
 r_safe = re.compile(r"([\x20\x21\x23-\x5B\x5D-\x7E]+)")
-r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
+r_quot = re.compile(r"""\\([tbnrf"'\\])""")
+r_uniquot = re.compile(r"\\u([0-9A-Fa-f]{4})|\\U([0-9A-Fa-f]{8})")
 
 
-def unquote(s):
+def unquote(s: str) -> str:
     """Unquote an N-Triples string."""
     if not validate:
-
         if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
-            s = s.decode("unicode-escape")
+            s = s.decode("unicode-escape")  # type: ignore[unreachable]
 
         return s
     else:
@@ -73,7 +74,7 @@ def unquote(s):
             m = r_quot.match(s)
             if m:
                 s = s[2:]
-                result.append(quot[m.group(1)])
+                result.append(_string_escape_map[m.group(1)])
                 continue
 
             m = r_uniquot.match(s)
@@ -105,6 +106,7 @@ class W3CNTriplesParser(object):
     """An N-Triples Parser.
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
+
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
 
@@ -116,22 +118,27 @@ class W3CNTriplesParser(object):
 
     __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
 
-    def __init__(self, sink=None, bnode_context=None):
+    def __init__(
+        self, sink: Optional[Union[DummySink, "NTGraphSink"]] = None, bnode_context=None
+    ):
         if bnode_context is not None:
             self._bnode_ids = bnode_context
         else:
             self._bnode_ids = {}
 
+        self.sink: Union[DummySink, "NTGraphSink"]
         if sink is not None:
             self.sink = sink
         else:
             self.sink = DummySink()
 
-        self.buffer = None
-        self.file = None
-        self.line = ""
+        self.buffer: Optional[str] = None
+        self.file: Optional[Union[TextIO, codecs.StreamReader]] = None
+        self.line: Optional[str] = ""
 
-    def parse(self, f, bnode_context=None):
+    def parse(
+        self, f: Union[TextIO, IO[bytes], codecs.StreamReader], bnode_context=None
+    ):
         """
         Parse f as an N-Triples file.
 
@@ -149,9 +156,9 @@ class W3CNTriplesParser(object):
 
         if not hasattr(f, "encoding") and not hasattr(f, "charbuffer"):
             # someone still using a bytestream here?
-            f = codecs.getreader("utf-8")(f)
+            f = codecs.getreader("utf-8")(f)  # type: ignore[arg-type]
 
-        self.file = f
+        self.file = f  # type: ignore[assignment]
         self.buffer = ""
         while True:
             self.line = self.readline()
@@ -163,10 +170,11 @@ class W3CNTriplesParser(object):
                 raise ParseError("Invalid line: {}".format(self.line))
         return self.sink
 
-    def parsestring(self, s, **kwargs):
+    def parsestring(self, s: Union[bytes, bytearray, str], **kwargs):
         """Parse s as an N-Triples string."""
         if not isinstance(s, (str, bytes, bytearray)):
             raise ParseError("Item to parse must be a string instance.")
+        f: Union[codecs.StreamReader, StringIO]
         if isinstance(s, (bytes, bytearray)):
             f = codecs.getreader("utf-8")(BytesIO(s))
         else:
@@ -215,16 +223,16 @@ class W3CNTriplesParser(object):
             raise ParseError("Trailing garbage: {}".format(self.line))
         self.sink.triple(subject, predicate, object_)
 
-    def peek(self, token):
-        return self.line.startswith(token)
+    def peek(self, token: str):
+        return self.line.startswith(token)  # type: ignore[union-attr]
 
-    def eat(self, pattern):
-        m = pattern.match(self.line)
+    def eat(self, pattern: Pattern[str]):
+        m = pattern.match(self.line)  # type: ignore[arg-type]
         if not m:  # @@ Why can't we get the original pattern?
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
             raise ParseError("Failed to eat %s at %s" % (pattern.pattern, self.line))
-        self.line = self.line[m.end() :]
+        self.line = self.line[m.end() :]  # type: ignore[index]
         return m
 
     def subject(self, bnode_context=None):
@@ -262,7 +270,7 @@ class W3CNTriplesParser(object):
             bnode_id = self.eat(r_nodeid).group(1)
             new_id = bnode_context.get(bnode_id, None)
             if new_id is not None:
-                # Re-map to id specfic to this doc
+                # Re-map to id specific to this doc
                 return bNode(new_id)
             else:
                 # Replace with freshly-generated document-specific BNode id
@@ -295,10 +303,10 @@ class W3CNTriplesParser(object):
 class NTGraphSink(object):
     __slots__ = ("g",)
 
-    def __init__(self, graph):
+    def __init__(self, graph: "Graph"):
         self.g = graph
 
-    def triple(self, s, p, o):
+    def triple(self, s: "_SubjectType", p: "_PredicateType", o: "_ObjectType"):
         self.g.add((s, p, o))
 
 
@@ -307,10 +315,10 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    __slots__ = set()
+    __slots__ = ()
 
     @classmethod
-    def parse(cls, source, sink, **kwargs):
+    def parse(cls, source: InputSource, sink: "Graph", **kwargs):
         """
         Parse the NT format
 
@@ -320,13 +328,14 @@ class NTParser(Parser):
         :param sink: where to send parsed triples
         :param kwargs: Additional arguments to pass to `.NTriplesParser.parse`
         """
+        f: Union[TextIO, IO[bytes], codecs.StreamReader]
         f = source.getCharacterStream()
         if not f:
             b = source.getByteStream()
             # TextIOBase includes: StringIO and TextIOWrapper
             if isinstance(b, TextIOBase):
                 # f is not really a ByteStream, but a CharacterStream
-                f = b
+                f = b  # type: ignore[assignment]
             else:
                 # since N-Triples 1.1 files can and should be utf-8 encoded
                 f = codecs.getreader("utf-8")(b)

@@ -1,0 +1,10 @@
+# $Id: stc1.n3 424 2004-12-06 20:03:44Z josd $
+# PxButton | es  | euler --nope --think u1.n3 u2.n3 --query stc1.n3
+# PxButton | cwm | python /w3ccvs/WWW/2000/10/swap/cwm.py u1.n3 u2.n3 --think --query"=stc1.n3"
+
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://example.org/data#> .
+
+[]
+q:select {<> q:answer (?X ?Y ?Z)};
+q:where  {?X ?Y ?Z}.

@@ -1,0 +1,8 @@
+# PxButton | euler5   | bash .euler5 http://localhost/.euler+--prolog+--nope+sfcvs%2F2004%2F04test%2Fbc.n3+--query+sfcvs%2F2004%2F04test%2FbcF.n3
+# PxButton | euler5p  | bash .euler5 http://localhost/.euler+--prolog+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2Fbc.n3+--query+http%3A%2F%2Feulersharp.sourceforge.net%2F2004%2F04test%2FbcF.n3 > bcE.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/bc#>.
+
+{(?SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) ?X)} => {(?SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T)) ?X)}.
+{(?SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) ?X)} => {(?SCOPE 1) e:bayesian ((((:BreastCancer) e:T)) (((:Mammography) e:T) ((:Ultrasound) e:T)) ?X)}.

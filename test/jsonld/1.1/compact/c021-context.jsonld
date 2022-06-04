@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "ex:",
+    "type": "@type",
+    "prop": "ex:untyped",
+    "Type": {
+      "@context": {
+        "prop": "ex:typed",
+        "value": "@value"
+      }
+    }
+  }
+}

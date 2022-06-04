@@ -1,0 +1,21 @@
+{
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "idlist": {"@id": "http://example.com/idlist", "@container": "@list", "@type": "@id"},
+    "datelist": {"@id": "http://example.com/datelist", "@container": "@list", "@type": "xsd:date"},
+    "idset": {"@id": "http://example.com/idset", "@container": "@set", "@type": "@id"},
+    "dateset": {"@id": "http://example.com/dateset", "@container": "@set", "@type": "xsd:date"},
+    "idprop": {"@id": "http://example.com/idprop", "@type": "@id" },
+    "dateprop": {"@id": "http://example.com/dateprop", "@type": "xsd:date" },
+    "idprop2": {"@id": "http://example.com/idprop2", "@type": "@id" },
+    "dateprop2": {"@id": "http://example.com/dateprop2", "@type": "xsd:date" }
+  },
+  "idlist": ["http://example.org/id"],
+  "datelist": ["2012-04-12"],
+  "idprop": {"@list": ["http://example.org/id"]},
+  "dateprop": {"@list": ["2012-04-12"]},
+  "idset": ["http://example.org/id"],
+  "dateset": ["2012-04-12"],
+  "idprop2": {"@set": ["http://example.org/id"]},
+  "dateprop2": {"@set": ["2012-04-12"]}
+}

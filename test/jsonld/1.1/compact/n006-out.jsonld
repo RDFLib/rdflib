@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "index": {"@container": "@index", "@nest": "nestedindex"},
+    "nestedindex": "@nest"
+  },
+  "nestedindex": {
+    "index": {
+      "A": "a",
+      "B": "b"
+    }
+  }
+}

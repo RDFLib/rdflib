@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "graph": "@graph",
+    "term": "http://example.org/term"
+  }
+}

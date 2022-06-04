@@ -1,0 +1,2 @@
+<http://richard.cyganiak.de/foaf.rdf#RichardCyganiak> <http://xmlns.com/foaf/0.1/name> "Richard Cyganiak" <http://example.org/persons/123> .
+<http://richard.cyganiak.de/foaf.rdf#RichardCyganiak> <http://xmlns.com/foaf/0.1/mbox> <mailto:richard@cyganiak.de> <http://www.bizer.de/InformationAboutRichard> .

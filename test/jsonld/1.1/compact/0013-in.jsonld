@@ -1,0 +1,4 @@
+{
+  "@id": "http://example.org/test",
+  "http://example.org/vocab#test": {"@value": "test", "@language": "en"}
+}

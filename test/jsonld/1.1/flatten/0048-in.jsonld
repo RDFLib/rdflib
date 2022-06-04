@@ -1,0 +1,8 @@
+[{
+  "http://example.com/foo": [{
+    "@list": [{
+      "@id": "http://example.com/baz",
+      "http://example.com/bar": "buz"}
+    ]}
+  ]}
+]

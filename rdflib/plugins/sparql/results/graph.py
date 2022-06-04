@@ -1,5 +1,4 @@
 from rdflib import Graph
-
 from rdflib.query import Result, ResultParser
 
 

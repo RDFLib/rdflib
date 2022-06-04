@@ -1,6 +1,5 @@
+from rdflib import URIRef
 from rdflib.paths import ZeroOrMore
-
-from rdflib import RDFS, URIRef
 
 
 def test_mulpath_n3():

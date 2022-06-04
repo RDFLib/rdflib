@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "e": {"@id": "http://example.org/vocab#c14n", "@type": "@json"}
+  },
+  "e": {
+    "numbers": [333333333.33333329, 1E30, 4.50, 2e-3, 0.000000000000000000000000001],
+    "string": "\u20ac$\u000F\u000aA'\u0042\u0022\u005c\\\"\/",
+    "literals": [null, true, false]
+  }
+}

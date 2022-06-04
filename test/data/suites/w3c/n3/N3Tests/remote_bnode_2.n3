@@ -1,0 +1,3 @@
+prefix : <http://example.org/>
+
+:william :lives _:b0 .

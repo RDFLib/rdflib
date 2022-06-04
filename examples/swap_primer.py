@@ -5,7 +5,7 @@ example stuff in the Primer on N3:
 http://www.w3.org/2000/10/swap/Primer
 """
 
-from rdflib import ConjunctiveGraph, Namespace, Literal, URIRef
+from rdflib import ConjunctiveGraph, Namespace, Literal
 from rdflib.namespace import OWL, DC
 
 if __name__ == "__main__":
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Think of it as a blank piece of graph paper!
 
     primer = ConjunctiveGraph()
-    myNS = Namespace("#")
+    myNS = Namespace("https://example.com/")
 
     primer.add((myNS.pat, myNS.knows, myNS.jo))
     # or:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     # Lets start with a verbatim string straight from the primer text:
 
     mySource = """
-    @prefix : <#> .
+    @prefix : <https://example.com/> .
     @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix owl:  <http://www.w3.org/2002/07/owl#> .
@@ -75,25 +75,25 @@ if __name__ == "__main__":
     <> dc:title
       "Primer - Getting into the Semantic Web and RDF using N3".
 
-    <#pat> <#knows> <#jo> .
-    <#pat> <#age> 24 .
-    <#al> is <#child> of <#pat> .
+    :pat    :knows          :jo .
+    :pat    :age            24 .
+    :al     :is_child_of    :pat .
 
-    <#pat> <#child>  <#al>, <#chaz>, <#mo> ;
-           <#age>    24 ;
-           <#eyecolor> "blue" .
+    :pat    :child          :al, :chaz, :mo ;
+            :age            24 ;
+            :eyecolor       "blue" .
 
 
-    :Person a rdfs:Class.
+    :Person a rdfs:Class .
 
-    :Pat a :Person.
+    :Pat a :Person .
 
     :Woman a rdfs:Class; rdfs:subClassOf :Person .
 
-    :sister a rdf:Property.
+    :sister a rdf:Property .
 
-    :sister rdfs:domain :Person;
-            rdfs:range :Woman.
+    :sister rdfs:domain :Person ;
+            rdfs:range :Woman .
 
     :Woman = foo:FemaleAdult .
     :Title a rdf:Property; = dc:title .
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     print()
     print("Printing bigger example as N3:")
-    print(primer.serialize(format="n3").decode("utf-8"))
+    print(primer.serialize(format="n3"))
 
     # for more insight into things already done, lets see the namespaces
 

@@ -1,0 +1,3 @@
+{
+  "http://example/prop": {"@value": "foo", "@language": true}
+}

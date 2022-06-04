@@ -1,0 +1,9 @@
+_:b0 <http://example.org/vocab#german_ltr> "german ltr"@de .
+_:b0 <http://example.org/vocab#ltr> "ltr en"@en .
+_:b0 <http://example.org/vocab#german_none> "german no direction"@de .
+_:b0 <http://example.org/vocab#nolang> "no language rtl" .
+_:b0 <http://example.org/vocab#nolang_ltr> "no language ltr" .
+_:b0 <http://example.org/vocab#rtl> "rtl en"@en .
+_:b0 <http://example.org/vocab#none_none> "no language or direction" .
+_:b0 <http://example.org/vocab#german> "german rtl"@de .
+_:b0 <http://example.org/vocab#none> "no direction en"@en .

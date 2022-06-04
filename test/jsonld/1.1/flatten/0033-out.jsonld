@@ -1,0 +1,21 @@
+[
+    {
+        "@id": "_:b0",
+        "http://example.com/vocab#created_at": [
+            {
+                "@value": "2012-10-28",
+                "@type": "http://www.w3.org/2001/XMLSchema#date"
+            }
+        ],
+        "http://example.com/vocab#homepage": [
+            {
+                "@id": "http://www.markus-lanthaler.com/"
+            }
+        ],
+        "http://example.com/vocab#name": [
+            {
+                "@value": "Markus Lanthaler"
+            }
+        ]
+    }
+]

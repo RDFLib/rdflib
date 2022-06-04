@@ -1,0 +1,15 @@
+[
+  {
+    "@id": "http://example.com",
+    "http://example.com/label": [
+      {
+        "@value": "test",
+        "@type": "http://example.com/t1"
+      },
+      {
+        "@value": "test",
+        "@type": "http://example.com/t2"
+      }
+    ]
+  }
+]

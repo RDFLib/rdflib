@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "name": {
+      "@type": "@id",
+      "@container": "@list",
+      "@id": "https://schema.org/name"
+    }
+  }
+}

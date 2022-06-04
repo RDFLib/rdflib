@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "ex": "http://example.com/",
+    "colon": "http://example.org/:",
+    "question": "http://example.org/?",
+    "hash": "http://example.org/#",
+    "lbracket": "http://example.org/[",
+    "rbracket": "http://example.org/]",
+    "at": "http://example.org/@"
+  },
+  "ex:foo": "Use term with IRI ending in '/'",
+  "colon:foo": "Use term with IRI ending in ':'",
+  "question:foo": "Use term with IRI ending in '?'",
+  "hash:foo": "Use term with IRI ending in '#'",
+  "lbracket:foo": "Use term with IRI ending in '['",
+  "rbracket:foo": "Use term with IRI ending in ']'",
+  "at:foo": "Use term with IRI ending in '@'"
+}

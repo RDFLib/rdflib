@@ -1,0 +1,17 @@
+{
+   "@context": {
+      "author": {
+         "@id": "http://example.com/vocab/author",
+         "@container": "@index"
+      }
+   },
+   "@id": "http://example.com/article",
+   "author": {
+      "regular": {
+         "@id": "http://example.org/person/1"
+      },
+      "guest": {
+         "@id": "http://example.org/guest/cd24f329aa"
+      }
+   }
+}

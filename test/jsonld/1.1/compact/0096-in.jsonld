@@ -1,0 +1,15 @@
+[{
+  "foo:input": [{
+    "@graph": [{
+      "foo:value": [{
+        "@value": "x"
+      }]
+    }]
+  }, {
+    "@graph": [{
+      "foo:value": [{
+        "@value": "y"
+      }]
+    }]
+  }]
+}]

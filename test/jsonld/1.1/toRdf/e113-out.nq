@@ -1,0 +1,2 @@
+_:b0 <http://example.org/toString> "second" .
+_:b0 <http://example.org/valueOf> "first" .

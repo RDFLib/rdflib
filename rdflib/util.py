@@ -18,39 +18,33 @@ Date/time utilities
 * date_time
 * parse_date_time
 
-Statement and component type checkers
-
-* check_context
-* check_subject
-* check_predicate
-* check_object
-* check_statement
-* check_pattern
-
 """
 
 from calendar import timegm
-from time import altzone
-
-# from time import daylight
-from time import gmtime
-from time import localtime
-from time import time
-from time import timezone
-
 from os.path import splitext
 
-from rdflib.exceptions import ContextTypeError
-from rdflib.exceptions import ObjectTypeError
-from rdflib.exceptions import PredicateTypeError
-from rdflib.exceptions import SubjectTypeError
+# from time import daylight
+from time import altzone, gmtime, localtime, time, timezone
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+)
+from urllib.parse import quote, urlsplit, urlunsplit
+
 import rdflib.graph  # avoid circular dependency
-from rdflib.namespace import Namespace
-from rdflib.namespace import NamespaceManager
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.term import URIRef
 from rdflib.compat import sign
+from rdflib.namespace import XSD, Namespace, NamespaceManager
+from rdflib.term import BNode, Literal, Node, URIRef
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
 
 __all__ = [
     "list2set",
@@ -61,15 +55,11 @@ __all__ = [
     "from_n3",
     "date_time",
     "parse_date_time",
-    "check_context",
-    "check_subject",
-    "check_predicate",
-    "check_object",
-    "check_statement",
-    "check_pattern",
     "guess_format",
     "find_roots",
     "get_tree",
+    "_coalesce",
+    "_iri2uri",
 ]
 
 
@@ -137,7 +127,7 @@ def to_term(s, default=None):
         raise Exception(msg)
 
 
-def from_n3(s, default=None, backend=None, nsm=None):
+def from_n3(s: str, default=None, backend=None, nsm=None):
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
@@ -193,14 +183,28 @@ def from_n3(s, default=None, backend=None, nsm=None):
                 language = rest[1:]  # strip leading at sign
 
         value = value.replace(r"\"", '"')
+        # unicode-escape interprets \xhh as an escape sequence,
+        # but n3 does not define it as such.
+        value = value.replace(r"\x", r"\\x")
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s == "true" or s == "false":
         return Literal(s == "true")
-    elif s.isdigit():
-        return Literal(int(s))
+    elif (
+        s.lower()
+        .replace(".", "", 1)
+        .replace("-", "", 1)
+        .replace("e", "", 1)
+        .isnumeric()
+    ):
+        if "e" in s.lower():
+            return Literal(s, datatype=XSD.double)
+        if "." in s:
+            return Literal(float(s), datatype=XSD.decimal)
+        return Literal(int(s), datatype=XSD.integer)
+
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.QuotedGraph(backend, identifier)
@@ -218,55 +222,6 @@ def from_n3(s, default=None, backend=None, nsm=None):
         return Namespace(ns)[last_part]
     else:
         return BNode(s)
-
-
-def check_context(c):
-    if not (isinstance(c, URIRef) or isinstance(c, BNode)):
-        raise ContextTypeError("%s:%s" % (c, type(c)))
-
-
-def check_subject(s):
-    """ Test that s is a valid subject identifier."""
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-
-def check_predicate(p):
-    """ Test that p is a valid predicate identifier."""
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-
-def check_object(o):
-    """ Test that o is a valid object identifier."""
-    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-
-def check_statement(triple):
-    (s, p, o) = triple
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-
-def check_pattern(triple):
-    (s, p, o) = triple
-    if s and not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if p and not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if o and not (
-        isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)
-    ):
-        raise ObjectTypeError(o)
 
 
 def date_time(t=None, local_time_zone=False):
@@ -360,11 +315,15 @@ SUFFIX_FORMAT_MAP = {
     "html": "rdfa",
     "svg": "rdfa",
     "nq": "nquads",
+    "nquads": "nquads",
     "trig": "trig",
+    "json": "json-ld",
+    "jsonld": "json-ld",
+    "json-ld": "json-ld",
 }
 
 
-def guess_format(fpath, fmap=None):
+def guess_format(fpath, fmap=None) -> Optional[str]:
     """
     Guess RDF serialization based on file suffix. Uses
     ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
@@ -375,6 +334,8 @@ def guess_format(fpath, fmap=None):
         'xml'
         >>> guess_format('path/to/file.ttl')
         'turtle'
+        >>> guess_format('path/to/file.json')
+        'json-ld'
         >>> guess_format('path/to/file.xhtml')
         'rdfa'
         >>> guess_format('path/to/file.svg')
@@ -420,7 +381,9 @@ def _get_ext(fpath, lower=True):
     return ext
 
 
-def find_roots(graph, prop, roots=None):
+def find_roots(
+    graph: "Graph", prop: "URIRef", roots: Optional[Set["Node"]] = None
+) -> Set["Node"]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -432,7 +395,7 @@ def find_roots(graph, prop, roots=None):
 
     """
 
-    non_roots = set()
+    non_roots: Set[Node] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -445,8 +408,14 @@ def find_roots(graph, prop, roots=None):
 
 
 def get_tree(
-    graph, root, prop, mapper=lambda x: x, sortkey=None, done=None, dir="down"
-):
+    graph: "Graph",
+    root: "Node",
+    prop: "URIRef",
+    mapper: Callable[["Node"], "Node"] = lambda x: x,
+    sortkey: Optional[Callable[[Any], Any]] = None,
+    done: Optional[Set["Node"]] = None,
+    dir: str = "down",
+) -> Optional[Tuple[Node, List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -468,10 +437,12 @@ def get_tree(
     if done is None:
         done = set()
     if root in done:
-        return
+        # type error: Return value expected
+        return  # type: ignore[return-value]
     done.add(root)
     tree = []
 
+    branches: Iterator[Node]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
@@ -485,21 +456,57 @@ def get_tree(
     return (mapper(root), sorted(tree, key=sortkey))
 
 
-def test():
-    import doctest
-
-    doctest.testmod()
+_AnyT = TypeVar("_AnyT")
 
 
-if __name__ == "__main__":
-    # try to make the tests work outside of the time zone they were written in
-    # import os, time
-    # os.environ['TZ'] = 'US/Pacific'
-    # try:
-    #    time.tzset()
-    # except AttributeError, e:
-    #    print e
-    # pass
-    # tzset missing! see
-    # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
-    test()  # pragma: no cover
+def _coalesce(*args: Optional[_AnyT]) -> Optional[_AnyT]:
+    """
+    This is a null coalescing function, it will return the first non-`None`
+    argument passed to it, otherwise it will return `None`.
+
+    For more info regarding the rationale of this function see deferred `PEP
+    505 <https://peps.python.org/pep-0505/>`_.
+
+    :param args: Values to consider as candidates to return, the first arg that
+        is not `None` will be returned. If no argument is passed this function
+        will return None.
+    :return: The first ``arg`` that is not `None`, otherwise `None` if there
+        are no args or if all args are `None`.
+    """
+    for arg in args:
+        if arg is not None:
+            return arg
+    return None
+
+
+def _iri2uri(iri: str) -> str:
+    """
+    Convert an IRI to a URI (Python 3).
+    https://stackoverflow.com/a/42309027
+    https://stackoverflow.com/a/40654295
+    netloc should be encoded using IDNA;
+    non-ascii URL path should be encoded to UTF-8 and then percent-escaped;
+    non-ascii query parameters should be encoded to the encoding of a page
+    URL was extracted from (or to the encoding server uses), then
+    percent-escaped.
+    >>> _iri2uri("https://dbpedia.org/resource/Almería")
+    'https://dbpedia.org/resource/Almer%C3%ADa'
+    """
+
+    (scheme, netloc, path, query, fragment) = urlsplit(iri)
+
+    # Just support http/https, otherwise return the iri unmolested
+    if scheme not in ["http", "https"]:
+        return iri
+
+    scheme = quote(scheme)
+    netloc = quote(netloc.encode("idna").decode("utf-8"))
+    path = quote(path)
+    query = quote(query)
+    fragment = quote(fragment)
+    uri = urlunsplit((scheme, netloc, path, query, fragment))
+
+    if iri.endswith("#") and not uri.endswith("#"):
+        uri += "#"
+
+    return uri

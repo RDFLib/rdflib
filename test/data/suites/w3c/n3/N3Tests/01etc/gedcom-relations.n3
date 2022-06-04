@@ -1,0 +1,49 @@
+# $Id: gedcom-relations.n3,v 1.23 2004/04/18 20:03:59 amdus Exp $
+
+# Original http://www.daml.org/2001/01/gedcom/gedcom-relations.xml by Mike Dean (BBN Technologies / Verizon)
+# Rewritten in N3 (Jos De Roo AGFA)
+# state that the rules are true (made by Tim Berners-Lee W3C)
+# see also http://www.w3.org/2000/10/swap/Examples.html
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix gc: <http://www.daml.org/2001/01/gedcom/gedcom#>.
+
+gc:parent owl:inverseOf gc:child.
+gc:grandparent owl:inverseOf gc:grandchild.
+gc:ancestor owl:inverseOf gc:descendent.
+gc:sibling a owl:SymmetricProperty.
+gc:spouse a owl:SymmetricProperty.
+gc:ancestor a owl:TransitiveProperty.
+gc:parent rdfs:subPropertyOf gc:ancestor.
+
+{?C gc:childIn ?F. ?P gc:spouseIn ?F} => {?C gc:parent ?P}.
+{?C gc:parent ?P. ?P gc:sex gc:Male} => {?C gc:father ?P}.
+{?C gc:parent ?P. ?P gc:sex gc:Female} => {?C gc:mother ?P}.
+{?C gc:parent ?P. ?C gc:sex gc:Male} => {?P gc:son ?C}.
+{?C gc:parent ?P. ?C gc:sex gc:Female} => {?P gc:daughter ?C}.
+
+{?C gc:parent ?P. ?P gc:parent ?GP} => {?C gc:grandparent ?GP}.
+{?C gc:grandparent ?GP. ?GP gc:sex gc:Male} => {?C gc:grandfather ?GP}.
+{?C gc:grandparent ?GP. ?GP gc:sex gc:Female} => {?C gc:grandmother ?GP}.
+{?C gc:grandparent ?GP. ?C gc:sex gc:Male} => {?GP gc:grandson ?C}.
+{?C gc:grandparent ?GP. ?C gc:sex gc:Female} => {?GP gc:granddaughter ?C}.
+
+{?C gc:childIn ?F. ?C2 gc:childIn ?F. ?C owl:differentFrom ?C2} => {?C gc:sibling ?C2}.
+{?C gc:sibling ?S. ?S gc:sex gc:Male} => {?C gc:brother ?S}.
+{?C gc:sibling ?S. ?S gc:sex gc:Female} => {?C gc:sister ?S}.
+
+{?SP gc:spouseIn ?F. ?SP2 gc:spouseIn ?F. ?SP owl:differentFrom ?SP2} => {?SP gc:spouse ?SP2}.
+{?SP gc:spouse ?H. ?H gc:sex gc:Male} => {?SP gc:husband ?H}.
+{?SP gc:spouse ?W. ?W gc:sex gc:Female} => {?SP gc:wife ?W}.
+
+{?C gc:parent ?P. ?P gc:brother ?U} => {?C gc:uncle ?U}.
+{?C gc:parent ?P. ?P gc:sister ?A. ?A gc:spouse ?U} => {?C gc:uncle ?U}.
+{?C gc:parent ?P. ?P gc:sister ?A} => {?C gc:aunt ?A}.
+{?C gc:parent ?P. ?P gc:brother ?U. ?U gc:spouse ?A} => {?C gc:aunt ?A}.
+
+{?P gc:daughter ?C. ?P gc:sibling ?S} => {?S gc:niece ?C}.
+{?P gc:son ?C. ?P gc:sibling ?S} => {?S gc:nephew ?C}.
+{?C gc:parent ?S. ?C2 gc:parent ?S2. ?S gc:sibling ?S2} => {?C gc:firstcousin ?C2}.
+{?S gc:sibling ?S2. ?S gc:descendent ?D. ?S2 gc:descendent ?D2} => {?D gc:cousin ?D2}.

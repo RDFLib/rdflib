@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@base": "http://example.org/c/",
+    "inner": {
+      "@id": "http://a.example/in"
+    }
+  }
+}

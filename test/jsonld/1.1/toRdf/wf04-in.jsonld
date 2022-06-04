@@ -1,0 +1,4 @@
+{
+  "@id": "http://example.com/foo",
+  "@type": ["http://example.com/bar", "http://in valid"]
+}

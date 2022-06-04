@@ -6,23 +6,29 @@ These should be automatically registered with RDFLib
 """
 
 
+from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
+from rdflib.plugins.sparql.evaluate import evalQuery
+from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
+from rdflib.plugins.sparql.sparql import Query
+from rdflib.plugins.sparql.update import evalUpdate
 from rdflib.query import Processor, Result, UpdateProcessor
 
-from rdflib.plugins.sparql.sparql import Query
 
-from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
-from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
-
-from rdflib.plugins.sparql.evaluate import evalQuery
-from rdflib.plugins.sparql.update import evalUpdate
-
-
-def prepareQuery(queryString, initNs={}, base=None):
+def prepareQuery(queryString, initNs={}, base=None) -> Query:
     """
     Parse and translate a SPARQL Query
     """
     ret = translateQuery(parseQuery(queryString), base, initNs)
     ret._original_args = (queryString, initNs, base)
+    return ret
+
+
+def prepareUpdate(updateString, initNs={}, base=None):
+    """
+    Parse and translate a SPARQL Update
+    """
+    ret = translateUpdate(parseUpdate(updateString), base, initNs)
+    ret._original_args = (updateString, initNs, base)
     return ret
 
 

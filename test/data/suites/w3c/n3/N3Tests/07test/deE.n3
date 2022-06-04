@@ -1,0 +1,10 @@
+#Processed by EYE v18.0417.2132 josd
+#eye --nope http://eulersharp.sourceforge.net/2007/07test/de.n3 http://eulersharp.sourceforge.net/2007/07test/deA.n3 --query http://eulersharp.sourceforge.net/2007/07test/deQ.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/try#>.
+
+_:t_0 :saying :C.
+
+#2018-04-18T08:27:46.603Z in=22 out=1 ent=6 step=18 brake=3 inf=13856 sec=0.019 inf/sec=729263
+#ENDS
+

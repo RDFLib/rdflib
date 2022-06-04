@@ -1,0 +1,6 @@
+<http://www.example.com/z> <http://www.example.com/q> _:z0 <http://www.example.com/G> .
+_:z0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "cell-A" <http://www.example.com/G> .
+_:z0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:z1 <http://www.example.com/G> .
+_:z1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "cell-B" <http://www.example.com/G> .
+_:z1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> <http://www.example.com/G> .
+<http://www.example.com/x> <http://www.example.com/p> _:z1 <http://www.example.com/G1> .

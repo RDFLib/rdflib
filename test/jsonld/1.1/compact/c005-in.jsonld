@@ -1,0 +1,10 @@
+[{
+  "http://example/a": [{
+    "http://example.com/c": [{"@value": "C in example.com"}],
+    "http://example/b": [{
+      "http://example.com/a": [{"@value": "A in example.com"}],
+      "http://example.org/c": [{"@value": "C in example.org"}]
+    }]
+  }],
+  "http://example/c": [{"@value": "C in example"}]
+}]

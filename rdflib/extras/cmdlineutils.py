@@ -1,9 +1,9 @@
+import codecs
+import getopt
 import sys
 import time
-import getopt
-import rdflib
-import codecs
 
+import rdflib
 from rdflib.util import guess_format
 
 
@@ -49,7 +49,7 @@ def main(target, _help=_help, options="", stdin=True):
     start = time.time()
     if len(files) == 0 and stdin:
         sys.stderr.write("Reading from stdin as %s..." % f)
-        g.load(sys.stdin, format=f)
+        g.parse(sys.stdin, format=f)
         sys.stderr.write("[done]\n")
     else:
         size = 0
@@ -58,7 +58,7 @@ def main(target, _help=_help, options="", stdin=True):
                 f = guess_format(x)
             start1 = time.time()
             sys.stderr.write("Loading %s as %s... " % (x, f))
-            g.load(x, format=f)
+            g.parse(x, format=f)
             sys.stderr.write(
                 "done.\t(%d triples\t%.2f seconds)\n"
                 % (len(g) - size, time.time() - start1)

@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "knows": {"@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id"}
+  },
+  "@id":    "http://greggkellogg.net/foaf#me",
+  "knows":  "http://manu.sporny.org/#me"
+}

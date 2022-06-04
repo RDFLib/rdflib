@@ -1,0 +1,13 @@
+# $Id: SequenceQ.n3 379 2004-09-18 19:11:35Z josd $
+# PxButton | es  | euler --nope --think sample.n3 --query SequenceQ.n3
+# PxButton | cwm | cwm sample.n3 --think --query"=SequenceQ.n3"
+
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/sample#>.
+
+[]
+q:select {?P :firstAuthor ?X};
+q:where  {?P :author ?S. ?S rdf:_1 ?X}.

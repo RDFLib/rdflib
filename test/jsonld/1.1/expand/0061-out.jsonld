@@ -1,0 +1,10 @@
+[
+  {
+    "http://example.com/property": [
+      { "@value": 1, "@type": "http://example.com/datatype" },
+      { "@value": true, "@type": "http://example.com/datatype" },
+      { "@value": false, "@type": "http://example.com/datatype" },
+      { "@value": 5.1, "@type": "http://example.com/datatype" }
+    ]
+  }
+]

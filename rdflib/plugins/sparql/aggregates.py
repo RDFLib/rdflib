@@ -1,11 +1,10 @@
-from rdflib import Literal, XSD
-from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
-from rdflib.plugins.sparql.operators import numeric
-from rdflib.plugins.sparql.datatypes import type_promotion
-
-from rdflib.plugins.sparql.sparql import SPARQLTypeError
-
 from decimal import Decimal
+
+from rdflib import XSD, Literal
+from rdflib.plugins.sparql.datatypes import type_promotion
+from rdflib.plugins.sparql.evalutils import NotBoundError, _eval, _val
+from rdflib.plugins.sparql.operators import numeric
+from rdflib.plugins.sparql.sparql import SPARQLTypeError
 
 """
 Aggregation functions
@@ -13,7 +12,7 @@ Aggregation functions
 
 
 class Accumulator(object):
-    """abstract base class for different aggregation functions """
+    """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation):
         self.var = aggregation.res
@@ -26,11 +25,11 @@ class Accumulator(object):
             self.seen = set()
 
     def dont_care(self, row):
-        """skips distinct test """
+        """skips distinct test"""
         return True
 
     def use_row(self, row):
-        """tests distinct with set """
+        """tests distinct with set"""
         return _eval(self.expr, row) not in self.seen
 
     def set_value(self, bindings):
@@ -177,7 +176,7 @@ class Maximum(Extremum):
 
 
 class Sample(Accumulator):
-    """takes the first eligable value"""
+    """takes the first eligible value"""
 
     def __init__(self, aggregation):
         super(Sample, self).__init__(aggregation)
@@ -201,17 +200,24 @@ class Sample(Accumulator):
 class GroupConcat(Accumulator):
     def __init__(self, aggregation):
         super(GroupConcat, self).__init__(aggregation)
-        # only GROUPCONCAT needs to have a list as accumlator
+        # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
         self.separator = aggregation.separator or " "
 
     def update(self, row, aggregator):
         try:
             value = _eval(self.expr, row)
+            # skip UNDEF
+            if isinstance(value, NotBoundError):
+                return
             self.value.append(value)
             if self.distinct:
                 self.seen.add(value)
         # skip UNDEF
+        # NOTE: It seems like this is not the way undefined values occur, they
+        # come through not as exceptions but as values. This is left here
+        # however as it may occur in some cases.
+        # TODO: Consider removing this.
         except NotBoundError:
             pass
 

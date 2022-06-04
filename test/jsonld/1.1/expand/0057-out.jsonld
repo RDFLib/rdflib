@@ -1,0 +1,5 @@
+[
+  {
+    "http://example.org/term": [ { "@id": "https://w3c.github.io/json-ld-api/tests/expand/not-a-term-thus-a-relative-IRI" } ]
+  }
+]

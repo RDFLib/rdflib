@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "site": "http://example.com/",
+    "site-cd": "site:site-schema/content-deployment/",
+    "title": {
+      "@id": "site-cd:node/article/title",
+      "@container": "@index"
+    },
+    "body": {
+      "@id": "site-cd:node/article/body",
+      "@container": "@index"
+    },
+    "field_tags": {
+      "@id": "site-cd:node/article/field_tags",
+      "@container": "@index"
+    }
+  }
+}

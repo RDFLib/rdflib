@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "rev": {"@reverse": "not an IRI"}
+  },
+  "@id": "http://example.org/foo",
+  "rev": {"@id": "http://example.org/bar"}
+}

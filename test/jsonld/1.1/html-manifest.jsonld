@@ -1,0 +1,473 @@
+{
+  "@context": ["context.jsonld", {"@base": "html-manifest"}],
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "HTML",
+  "description": "These tests implement the requirements for the JSON-LD [HTML Content Algorithms](https://www.w3.org/TR/json-ld11-api/#html-content-algorithms).",
+  "baseIri": "https://w3c.github.io/json-ld-api/tests/",
+  "sequence": [{
+    "@id": "#te001",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e001-in.html",
+    "expect": "html/e001-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tex01",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element (xhtml)",
+    "purpose": "Tests embedded JSON-LD in XHTML",
+    "input": "html/e001-in.html",
+    "expect": "html/e001-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "contentType": "application/xhtml+xml",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te002",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands first embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e002-in.html",
+    "expect": "html/e002-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te003",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands targeted JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/e003-in.html#second",
+    "expect": "html/e003-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te004",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands all embedded JSON-LD script elements with extractAllScripts option",
+    "purpose": "Tests embedded JSON-LD in HTML extracting all elements",
+    "input": "html/e004-in.html",
+    "expect": "html/e004-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te005",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands multiple embedded JSON-LD script elements where one is an array",
+    "purpose": "Tests embedded JSON-LD in HTML extracting all elements with array",
+    "input": "html/e005-in.html",
+    "expect": "html/e005-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te006",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands as empty with no embedded JSON-LD script elements",
+    "purpose": "Tests embedded JSON-LD in HTML when none exist",
+    "input": "html/e006-in.html",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te007",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands as empty with no embedded JSON-LD script elements and extractAllScripts",
+    "purpose": "Tests embedded JSON-LD in HTML when none exist extracting all elements",
+    "input": "html/e007-in.html",
+    "expect": "html/e007-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te010",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element with HTML character references",
+    "purpose": "Tests embedded JSON-LD in HTML with character references",
+    "input": "html/e010-in.html",
+    "expect": "html/e010-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te011",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if no element found at target",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier that doesn't exist",
+    "input": "html/e011-in.html#third",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te012",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if targeted element is not a script element",
+    "purpose": "Tests embedded JSON-LD in HTML which isn't a script element",
+    "input": "html/e012-in.html#first",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te013",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if targeted element does not have type application/ld+json",
+    "purpose": "Tests embedded JSON-LD in HTML with wrong type",
+    "input": "html/e013-in.html#first",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te014",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if uncommented script text contains comment",
+    "purpose": "Tests embedded JSON-LD in HTML with comments leftover",
+    "input": "html/e014-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te015",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if end comment missing",
+    "purpose": "Tests embedded JSON-LD in HTML with unballanced comments",
+    "input": "html/e015-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te016",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if start comment missing",
+    "purpose": "Tests embedded JSON-LD in HTML with unballanced comments",
+    "input": "html/e016-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te017",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Errors if uncommented script is not valid JSON",
+    "purpose": "Tests embedded JSON-LD in HTML which is invalid JSON",
+    "input": "html/e017-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te018",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to document base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e018-in.html",
+    "expect": "html/e018-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#te019",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to base option",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e019-in.html",
+    "expect": "html/e019-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te020",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e020-in.html",
+    "expect": "html/e020-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te021",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to relative HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/e021-in.html",
+    "expect": "html/e021-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#te022",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ExpandTest", "jld:HtmlTest"],
+    "name": "Expands targeted JSON-LD script element with fragment and HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/e022-in.html#second",
+    "expect": "html/e022-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tc001",
+    "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest", "jld:HtmlTest"],
+    "name": "Compacts embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/c001-in.html",
+    "context": "html/c001-context.jsonld",
+    "expect": "html/c001-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tc002",
+    "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest", "jld:HtmlTest"],
+    "name": "Compacts first embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/c002-in.html",
+    "context": "html/c002-context.jsonld",
+    "expect": "html/c002-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tc003",
+    "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest", "jld:HtmlTest"],
+    "name": "Compacts targeted JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/c003-in.html#second",
+    "context": "html/c003-context.jsonld",
+    "expect": "html/c003-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tc004",
+    "@type": ["jld:PositiveEvaluationTest", "jld:CompactTest", "jld:HtmlTest"],
+    "name": "Compacts all embedded JSON-LD script elements with extractAllScripts option",
+    "purpose": "Tests embedded JSON-LD in HTML extracting all elements",
+    "input": "html/c004-in.html",
+    "context": "html/c004-context.jsonld",
+    "expect": "html/c004-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tf001",
+    "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
+    "name": "Flattens embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/f001-in.html",
+    "context": "html/f001-context.jsonld",
+    "expect": "html/f001-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tf002",
+    "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
+    "name": "Flattens first embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/f002-in.html",
+    "context": "html/f002-context.jsonld",
+    "expect": "html/f002-out.jsonld",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": false,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tf003",
+    "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
+    "name": "Flattens targeted JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/f003-in.html#second",
+    "context": "html/f003-context.jsonld",
+    "expect": "html/f003-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tf004",
+    "@type": ["jld:PositiveEvaluationTest", "jld:FlattenTest", "jld:HtmlTest"],
+    "name": "Flattens all script elements by default",
+    "purpose": "Tests embedded JSON-LD in HTML multiple script elements",
+    "input": "html/f004-in.html",
+    "context": "html/f004-context.jsonld",
+    "expect": "html/f004-out.jsonld",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr001",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Transforms embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r001-in.html",
+    "expect": "html/r001-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr002",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Transforms first embedded JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r002-in.html",
+    "expect": "html/r002-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": false,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr003",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Transforms targeted JSON-LD script element",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/r003-in.html#second",
+    "expect": "html/r003-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr004",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands all embedded JSON-LD script elements with extractAllScripts option",
+    "purpose": "Tests embedded JSON-LD in HTML extracting all elements",
+    "input": "html/r004-in.html",
+    "expect": "html/r004-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr005",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands multiple embedded JSON-LD script elements where one is an array",
+    "purpose": "Tests embedded JSON-LD in HTML extracting all elements with array",
+    "input": "html/r005-in.html",
+    "expect": "html/r005-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr006",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands as empty with no embedded JSON-LD script elements",
+    "purpose": "Tests embedded JSON-LD in HTML when none exist",
+    "input": "html/r006-in.html",
+    "expect": "html/r006-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr007",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands as empty with no embedded JSON-LD script elements and extractAllScripts",
+    "purpose": "Tests embedded JSON-LD in HTML when none exist extracting all elements",
+    "input": "html/r007-in.html",
+    "expect": "html/r007-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "extractAllScripts": true,
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr010",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element with HTML character references",
+    "purpose": "Tests embedded JSON-LD in HTML with character references",
+    "input": "html/r010-in.html",
+    "expect": "html/r010-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr011",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if no element found at target",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier that doesn't exist",
+    "input": "html/r011-in.html#third",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr012",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if targeted element is not a script element",
+    "purpose": "Tests embedded JSON-LD in HTML which isn't a script element",
+    "input": "html/r012-in.html#first",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr013",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if targeted element does not have type application/ld+json",
+    "purpose": "Tests embedded JSON-LD in HTML with wrong type",
+    "input": "html/r013-in.html#first",
+    "expectErrorCode": "loading document failed",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr014",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if uncommented script text contains comment",
+    "purpose": "Tests embedded JSON-LD in HTML with comments leftover",
+    "input": "html/r014-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr015",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if end comment missing",
+    "purpose": "Tests embedded JSON-LD in HTML with unballanced comments",
+    "input": "html/r015-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr016",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if start comment missing",
+    "purpose": "Tests embedded JSON-LD in HTML with unballanced comments",
+    "input": "html/r016-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr017",
+    "@type": ["jld:NegativeEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Errors if uncommented script is not valid JSON",
+    "purpose": "Tests embedded JSON-LD in HTML which is invalid JSON",
+    "input": "html/r017-in.html",
+    "expectErrorCode": "invalid script element",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr018",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to document base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r018-in.html",
+    "expect": "html/r018-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }, {
+    "@id": "#tr019",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to base option",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r019-in.html",
+    "expect": "html/r019-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr020",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r020-in.html",
+    "expect": "html/r020-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr021",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands embedded JSON-LD script element relative to relative HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML",
+    "input": "html/r021-in.html",
+    "expect": "html/r021-out.nq",
+    "option": {
+      "specVersion": "json-ld-1.1",
+      "base": "http://a.example.com/doc",
+      "processorFeature": "HTML Script Extraction"
+    }
+  }, {
+    "@id": "#tr022",
+    "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest", "jld:HtmlTest"],
+    "name": "Expands targeted JSON-LD script element with fragment and HTML base",
+    "purpose": "Tests embedded JSON-LD in HTML with fragment identifier",
+    "input": "html/r022-in.html#second",
+    "expect": "html/r022-out.nq",
+    "option": {"specVersion": "json-ld-1.1", "processorFeature": "HTML Script Extraction"}
+  }]
+}

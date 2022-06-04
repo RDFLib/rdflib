@@ -1,0 +1,23 @@
+@prefix plfn: <http://www.w3.org/2009/rdf-PlainLiteral-functions#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test#>.
+
+
+### test cases
+{("Family Guy") plfn:PlainLiteral-from-string-lang "Family Guy"} => {:plfsl1 :result true}.
+{("Family Guy" "EN") plfn:PlainLiteral-from-string-lang "Family Guy"@en} => {:plfsl2 :result true}.
+{("Family Guy") plfn:string-from-PlainLiteral "Family Guy"} => {:sfpl1 :result true}.
+{("Family Guy"@en) plfn:string-from-PlainLiteral "Family Guy"} => {:sfpl2 :result true}.
+{("Family Guy") plfn:lang-from-PlainLiteral ""} => {:lfpl1 :result true}.
+{("Family Guy"@en) plfn:lang-from-PlainLiteral "en"} => {:lfpl2 :result true}.
+{("Family Guy" "Mother") plfn:compare -1} => {:c1 :result true}.
+{("Family Guy"@en "Brother"@en) plfn:compare 1} => {:c2 :result true}.
+{("Family Guy") plfn:length 10} => {:l1 :result true}.
+{("Family Guy"@en) plfn:length 10} => {:l2 :result true}.
+{("Family Guy"@en "en") plfn:matches-language-range true} => {:mlr1 :result true}.
+{("Family Guy"@en-US "en-*") plfn:matches-language-range true} => {:mlr2 :result true}.
+
+
+### test framework
+{?P => {?S :result ?R}. ?S :result ?R} => {?P a :PASS}.
+{?P => {?S :result ?R}. ?SCOPE e:findall ((?R) {?S :result ?R} ())} => {?P a :FAIL}.

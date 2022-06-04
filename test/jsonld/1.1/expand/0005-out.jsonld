@@ -1,0 +1,18 @@
+[{
+  "@id": "https://w3c.github.io/json-ld-api/tests/expand/0005-in.jsonld#me",
+  "http://xmlns.com/foaf/0.1/knows": [
+    {
+      "@id": "http://example.com/bob#me",
+      "http://xmlns.com/foaf/0.1/name": [{"@value": "Bob"}],
+      "http://xmlns.com/foaf/0.1/homepage": [{
+        "@id": "http://example.com/bob"
+      }]
+    }, {
+      "@id": "http://example.com/alice#me",
+      "http://xmlns.com/foaf/0.1/name": [{"@value": "Alice"}],
+      "http://xmlns.com/foaf/0.1/homepage": [{
+        "@id": "http://example.com/alice"
+      }]
+    }
+  ]
+}]

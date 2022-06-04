@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/vocab#",
+    "date": { "@type": "dateTime" }
+  },
+  "@id": "example1",
+  "@type": "test",
+  "date": "2011-01-25T00:00:00Z",
+  "embed": {
+    "@id": "example2",
+    "expandedDate": { "@value": "2012-08-01T00:00:00Z", "@type": "dateTime" }
+  }
+}

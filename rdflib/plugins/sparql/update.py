@@ -5,9 +5,9 @@ Code for carrying out Update Operations
 """
 
 from rdflib import Graph, Variable
-from rdflib.plugins.sparql.sparql import QueryContext
-from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
+from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
+from rdflib.plugins.sparql.sparql import QueryContext
 
 
 def _graphOrDefault(ctx, g):
@@ -273,7 +273,7 @@ def evalUpdate(graph, update, initBindings={}):
 
     """
 
-    for u in update:
+    for u in update.algebra:
 
         initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
@@ -305,6 +305,6 @@ def evalUpdate(graph, update, initBindings={}):
                 evalModify(ctx, u)
             else:
                 raise Exception("Unknown update operation: %s" % (u,))
-        except:
+        except:  # noqa: E722
             if not u.silent:
                 raise

@@ -1,0 +1,17 @@
+[{
+  "@id": "http://example.org/id",
+  "http://example.com/mylist": [{
+    "@list": [
+      {"@value": 1},
+      {"@value": 2},
+      {"@value": 2},
+      {"@value": 3}
+    ]
+  }],
+  "http://example.com/myset": [
+    {"@value": 1},
+    {"@value": 2},
+    {"@value": 2},
+    {"@value": 3}
+  ]
+}]

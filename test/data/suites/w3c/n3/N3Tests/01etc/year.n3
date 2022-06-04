@@ -1,0 +1,9 @@
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://josd.github.io/brain#>.
+
+(1950 2050) :yearsOfInterest true.
+
+{?YEAR a :Year} <= {
+    (?FROM ?TO) :yearsOfInterest true.
+    ("between" ?FROM ?TO ?YEAR) e:derive true.
+}.

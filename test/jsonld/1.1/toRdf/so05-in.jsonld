@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example/",
+    "Foo": {
+      "@context": {
+        "@import": "so05-context.jsonld",
+        "@propagate": true
+      }
+    }
+  },
+  "@type": "Foo",
+  "bar": {"baz": "buzz"}
+}

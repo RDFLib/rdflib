@@ -1,8 +1,0 @@
-# Test matching in a graph pattern
-# Unknown type
-
-PREFIX  :       <http://example/ns#>
-PREFIX  t:      <http://example/t#>
-
-SELECT *
-{ ?x :p "a"^^t:type1 }

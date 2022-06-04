@@ -1,0 +1,5 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+{?C owl:maxCardinality 1. ?C owl:onProperty ?P. ?U a ?C. ?U ?P ?Y. ?U ?P ?Z} => {?Y owl:sameAs ?Z}.
+{?C owl:maxCardinality 0. ?C owl:onProperty ?P. ?X ?P ?Y. ?X a ?C} => false.
+{?C owl:maxCardinality 1. ?C owl:onProperty ?P. ?X ?P ?Y. ?X ?P ?Z. ?X a ?C. ?Z owl:differentFrom ?Y} => false.

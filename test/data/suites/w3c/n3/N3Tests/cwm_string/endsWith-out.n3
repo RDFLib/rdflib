@@ -1,0 +1,22 @@
+#Processed by Id: cwm.py,v 1.197 2007-12-13 15:38:39 syosi Exp 
+        #    using base test-files/string/endsWith.n3
+        
+#  Notation3 generation by
+#       notation3.py,v 1.201 2010-10-23 04:14:48 timbl Exp
+
+#   Base was: file:///Users/gregg/Projects/rdf-n3/spec/test-files/string/endsWith.n3
+@prefix : <endsWith.n3#> .
+
+:test1     a :success .
+
+:test3     a :success .
+
+:test6     a :success .
+
+:test7     a :success .
+
+:test8a    a :success .
+:test8b    a :success .
+:test8c    a :success .
+:test8d    a :success .
+#ENDS

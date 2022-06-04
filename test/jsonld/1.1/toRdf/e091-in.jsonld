@@ -1,0 +1,9 @@
+{
+  "@context": [{
+    "@base": "http://foo.bar/./baz/"
+  }, {
+    "@base": "example/"
+  }],
+  "@id": "relative-iri",
+  "http://prop": "value"
+}

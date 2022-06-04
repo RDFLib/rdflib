@@ -1,0 +1,12 @@
+[{
+  "http://example/typemap": [
+    {
+      "@type": ["_:bar", "_:foo"],
+      "http://example/label": [{"@value": "Object with @type _:bar"}]
+    },
+    {
+      "@type": ["http://example.org/foo", "http://example.org/bar"],
+      "http://example/label": [{"@value": "Object with @type <foo>"}]
+    }
+  ]
+}]

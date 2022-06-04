@@ -1,0 +1,9 @@
+{
+  "@context": [{
+    "@vocab": "http://example.com/",
+    "@version": 1.1,
+    "protected": {"@type": "@id", "@protected": true}
+  }, {
+    "protected": {"@type": "@vocab"}
+  }]
+}

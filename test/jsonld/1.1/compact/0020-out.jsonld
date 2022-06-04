@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "ex": "http://example.org/ns#",
+    "ex:property": {
+      "@container": "@list"
+    }
+  },
+  "@id": "ex:property",
+  "ex:property": [1, 2]
+}

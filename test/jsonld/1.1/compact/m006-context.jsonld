@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "typemap": {"@container": "@type"}
+  }
+}

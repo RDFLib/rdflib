@@ -1,0 +1,162 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix schema: <http://schema.org/> .
+@prefix : <medicalEntity-to-rdfa#>.
+
+
+### rules producing log:outputString
+
+{	?U :header ?V.
+} =>
+{	"alfa" log:outputString ?V.
+}.
+
+{	?S a rdfs:Class.
+	?S log:uri ?S1.
+	?S1 :getLabel ?S2.
+	("""    <div typeof="rdfs:Class" resource="http://schema.org/""" ?S2 """">\n""") string:concatenation ?S3.
+	("""      <span class="h" property="rdfs:label">""" ?S2 """</span>\n""") string:concatenation ?S4.
+	?SCOPE e:findall (
+		?S6
+		{	?S rdfs:comment ?S5.
+			("""      <span property="rdfs:comment">""" ?S5 """</span>\n""") string:concatenation ?S6.
+		}
+		?L
+	).
+	?L string:concatenation ?S7.
+	?SCOPE e:findall (
+		?O3
+		{	?S rdfs:subClassOf ?O.
+			?O log:uri ?O1.
+			?O1 :getLabel ?O2.
+			("""      <span>Subclass of: <a property="rdfs:subClassOf" href=\"""" ?O1 """">""" ?O2 """</a></span>\n""") string:concatenation ?O3.
+		}
+		?L1
+	).
+	?L1 string:concatenation ?S8.
+	(?S3 ?S4 ?S7 ?S8 """    </div>\n\n""") string:concatenation ?S9.
+} =>
+{	"beta" log:outputString ?S9.
+}.
+
+{	?S a rdf:Property.
+	?S log:uri ?S1.
+	?S1 :getLabel ?S2.
+	("""    <div typeof="rdf:Property" resource=\"""" ?S1 """">\n""") string:concatenation ?S3.
+	("""      <span class="h" property="rdfs:label">""" ?S2 """</span>\n""") string:concatenation ?S4.
+	?SCOPE e:findall (
+		?S6
+		{	?S rdfs:comment ?S5.
+			("""      <span property="rdfs:comment">""" ?S5 """</span>\n""") string:concatenation ?S6.
+		}
+		?L
+	).
+	?L string:concatenation ?S7.
+	?SCOPE e:findall (
+		?O1
+		{	?S schema:domainIncludes ?O2.
+			?O2 log:uri ?O3.
+			?O3 :getLabel ?O4.
+			("""      <span>Domain: <a property="http://schema.org/domainIncludes" href=\"""" ?O3 """">""" ?O4 """</a></span>\n""") string:concatenation ?O1.
+		}
+		?L1
+	).
+	?L1 string:concatenation ?S8.
+	?SCOPE e:findall (
+		?O5
+		{	?S schema:rangeIncludes ?O6.
+			?O6 log:uri ?O7.
+			?O7 :getLabel ?O8.
+			("""      <span>Range: <a property="http://schema.org/rangeIncludes" href=\"""" ?O7 """">""" ?O8 """</a></span>\n""") string:concatenation ?O5.
+		}
+		?L2
+	).
+	?L2 string:concatenation ?S9.
+	?SCOPE e:findall (
+		?O9
+		{	?S rdfs:subPropertyOf ?O10.
+			?O10 log:uri ?O11.
+			?O11 :getLabel ?O12.
+			("""      <span>SubProperty of: <a property="rdfs:subPropertyOf" href=\"""" ?O11 """">""" ?O12 """</a></span>\n""") string:concatenation ?O9.
+		}
+		?L3
+	).
+	?L3 string:concatenation ?S10.
+	(?S3 ?S4 ?S7 ?S8 ?S9 ?S10 """    </div>\n\n""") string:concatenation ?S11.
+} =>
+{	"gamma" log:outputString ?S11.
+}.
+
+{	?U :footer ?V.
+} =>
+{	"omega" log:outputString ?V.
+}.
+
+
+### support
+
+{	?S a owl:Class.
+} =>
+{	?S a rdfs:Class.
+}.
+
+{	?S a owl:DatatypeProperty.
+} =>
+{	?S a rdf:Property.
+}.
+
+{	?S a owl:ObjectProperty.
+} =>
+{	?S a rdf:Property.
+}.
+
+{?S1 :getLabel ?S2} <=
+{	(?S1 "#") func:substring-after ?S2.
+}.
+
+{?S1 :getLabel ?S2} <=
+{	(?S1 "http://schema.org/") func:substring-after ?S2.
+}.
+
+{?S1 :getLabel ?S2} <=
+{	(?S1 "http://purl.bioontology.org/ontology/SNOMEDCT/") func:substring-after ?S3.
+	("sctid:" ?S3) string:concatenation ?S2.
+}.
+
+
+### header
+
+:medicalEntity :header """<!DOCTYPE html>
+<html>
+  <head>
+    <title>medicalEntity schema</title>
+    <meta charset="UTF-8" />
+    <style type="text/css">
+      span.h {
+        padding-left: 0px;
+        font-weight: bold;
+      }
+      span {
+        display: block;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>medicalEntity schema</h1>
+    <p>This is an RDFa representation of medicalEntity.
+    </p>
+    <hr />
+""".
+
+### footer
+
+:medicalEntity :footer """  </body>
+</html>
+""".

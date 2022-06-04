@@ -1,0 +1,6 @@
+[{
+  "@type": ["http://example/t2", "http://example/t1"],
+  "http://example.org/foo": [
+    {"@id": "urn:bar"}
+  ]
+}]

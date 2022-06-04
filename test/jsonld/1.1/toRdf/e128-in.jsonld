@@ -1,0 +1,10 @@
+{
+  "@context": [
+    "e128-context-1.jsonld",
+    "e128-context-2.jsonld"
+  ],
+  "@id": "ex:id",
+  "prop": {
+    "value": "v"
+  }
+}

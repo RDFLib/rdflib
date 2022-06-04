@@ -4,9 +4,11 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
 from collections import defaultdict
+from typing import IO, TYPE_CHECKING, Optional, Union
 
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
-from rdflib.term import BNode
+from rdflib.term import BNode, Node
 
 __all__ = ["TrigSerializer"]
 
@@ -16,8 +18,11 @@ class TrigSerializer(TurtleSerializer):
     short_name = "trig"
     indentString = 4 * " "
 
-    def __init__(self, store):
+    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
+        self.default_context: Optional[Node]
         if store.context_aware:
+            if TYPE_CHECKING:
+                assert isinstance(store, ConjunctiveGraph)
             self.contexts = list(store.contexts())
             self.default_context = store.default_context.identifier
             if store.default_context:
@@ -48,7 +53,14 @@ class TrigSerializer(TurtleSerializer):
         super(TrigSerializer, self).reset()
         self._contexts = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
+        **args,
+    ):
         self.reset()
         self.stream = stream
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -77,6 +89,7 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier == self.default_context:
                 self.write(self.indent() + "\n{")
             else:
+                iri: Optional[str]
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
                 else:

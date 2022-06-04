@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "ex": "http://example.org/",
+    "term1": {"@id": "ex:term1", "@type": "ex:datatype"},
+    "term2": {"@id": "ex:term2", "@type": "@id"}
+  },
+  "@id": "ex:id1",
+  "@type": ["ex:Type1", "ex:Type2"],
+  "term1": "v1",
+  "term2": "ex:id2"
+}

@@ -1,0 +1,5 @@
+{
+  "@context": {
+    "links": { "@id": "http://www.example.com/link", "@type": "@id", "@container": "@list" }
+  }
+}

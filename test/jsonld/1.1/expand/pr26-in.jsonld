@@ -1,0 +1,136 @@
+{
+  "@context": [{
+    "@version": 1.1,
+    "@protected": true,
+    "id": "@id",
+    "type": "@type",
+    "foo": {
+      "@id": "http://example/foo",
+      "@container": ["@graph", "@set"]
+    },
+    "bar": {
+      "@id": "http://example/bar",
+      "@type": "@id",
+      "@context": {
+        "@version": 1.1,
+        "@protected": true,
+        "bar-1": {
+          "@id": "http://example/bar-1",
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "bar-2": "http://example/bar-2",
+            "Foo": {
+              "@id": "http://example/Foo",
+              "@context": {
+                "@version": 1.1,
+                "@protected": true,
+                "bar-2": "http://example/bar-2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Bar": {
+      "@id": "http://example/Bar",
+      "@context": {
+        "@version": 1.1,
+        "@protected": true,
+        "bar-1": {
+          "@id": "http://example/bar-1",
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "bar-2": "http://example/bar-2",
+            "Foo": {
+              "@id": "http://example/Foo",
+              "@context": {
+                "@version": 1.1,
+                "@protected": true,
+                "bar-2": "http://example/bar-2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Foo": {
+      "@id": "http://example/Foo",
+      "@context": {
+        "@version": 1.1,
+        "@protected": true,
+        "bar-2": "http://example/bar-2"
+      }
+    }
+  }, {
+    "@version": 1.1,
+    "@protected": true,
+    "id": "@id",
+    "type": "@type",
+    "foo": {
+      "@id": "http://example/foo",
+      "@container": ["@graph", "@set"]
+    },
+    "bar": {
+      "@id": "http://example/bar",
+      "@type": "@id",
+      "@context": {
+        "@version": 1.1,
+        "@protected": true,
+        "bar-1": {
+          "@id": "http://example/bar-1",
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "bar-2": "http://example/bar-2",
+            "Foo": {
+              "@id": "http://example/Foo",
+              "@context": {
+                "@version": 1.1,
+                "@protected": true,
+                "bar-2": "http://example/bar-2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Bar": {
+      "@id": "http://example/Bar",
+      "@context": {
+        "@version": 1.1,
+        "@protected": true,
+        "bar-1": {
+          "@id": "http://example/bar-1",
+          "@context": {
+            "@version": 1.1,
+            "@protected": true,
+            "bar-2": "http://example/bar-2",
+            "Foo": {
+              "@id": "http://example/Foo",
+              "@context": {
+                "@version": 1.1,
+                "@protected": true,
+                "bar-2": "http://example/bar-2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Foo": {
+      "@id": "http://example/Foo"
+    }
+  }],
+  "type": "Bar",
+  "foo": [{
+    "bar": "http://example/"
+  }],
+  "bar-1": {
+    "bar-2": {
+      "type": "Foo",
+      "bar-2": "bar-2"
+    }
+  }
+}

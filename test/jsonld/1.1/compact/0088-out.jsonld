@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "input": {"@container": ["@graph", "@id"]}
+  },
+  "input": {
+    "@none": {"value": "x"}
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "ex:prop": {
+    "@value": "value",
+    "@type": ["ex:a", "ex:b"]
+  }
+}

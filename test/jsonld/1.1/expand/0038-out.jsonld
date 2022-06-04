@@ -1,0 +1,56 @@
+[
+  {
+    "@id": "_:term",
+    "@type": [
+      "_:term"
+    ],
+    "_:term": [
+      {
+        "@id": "_:term",
+        "@type": [
+          "_:term"
+        ]
+      },
+      {
+        "@id": "_:Bx",
+        "_:term": [
+          {
+            "@value": "term"
+          }
+        ]
+      },
+      {
+        "@value": "plain value"
+      },
+      {
+        "@id": "_:term"
+      },
+      {
+        "@id": "_:term",
+        "@type": [
+          "_:term"
+        ]
+      },
+      {
+        "@id": "_:Cx",
+        "_:term": [
+          {
+            "@value": "termId"
+          }
+        ]
+      },
+      {
+        "@id": "_:termAppendedToBlankNode"
+      },
+      {
+        "@id": "_:termAppendedToBlankNode"
+      },
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/relativeIri"
+      },
+      {
+        "@id": "_:term"
+      }
+    ]
+  }
+]

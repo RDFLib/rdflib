@@ -1,0 +1,5 @@
+{
+  "@context": {"b": "http://example.com/b"},
+  "@id": "a",
+  "b": {"@id": "c"}
+}

@@ -1,5 +1,5 @@
 import codecs
-from xml.sax.saxutils import quoteattr, escape
+from xml.sax.saxutils import escape, quoteattr
 
 __all__ = ["XMLWriter"]
 
@@ -100,7 +100,7 @@ class XMLWriter(object):
         for pre, ns in self.extra_ns.items():
             if uri.startswith(ns):
                 if pre != "":
-                    return ":".join(pre, uri[len(ns) :])
+                    return ":".join([pre, uri[len(ns) :]])
                 else:
                     return uri[len(ns) :]
 

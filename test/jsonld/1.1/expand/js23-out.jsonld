@@ -1,0 +1,6 @@
+[{
+  "http://example.org/vocab#null": [{
+    "@value": [],
+    "@type": "@json"
+  }]
+}]

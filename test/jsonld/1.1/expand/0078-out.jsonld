@@ -1,0 +1,26 @@
+[{
+  "@id": "https://w3c.github.io/json-ld-api/tests/expand/0078-in.jsonld#homer",
+  "@reverse": {
+    "http://example.com/vocab#parent": [
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/0078-in.jsonld#bart",
+        "http://example.com/vocab#name": [ { "@value": "Bart" } ]
+      },
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/0078-in.jsonld#lisa",
+        "http://example.com/vocab#name": [ { "@value": "Lisa" } ]
+      }
+    ],
+    "http://example.com/vocab#owner": [
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/0078-in.jsonld#snowball-ii",
+        "http://example.com/vocab#name": [ { "@value": "Snowball II" } ]
+      },
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/0078-in.jsonld#santas-little-helper",
+        "http://example.com/vocab#name": [ { "@value": "Santa's Little Helper" } ]
+      }
+    ]
+  },
+  "http://example.com/vocab#name": [ { "@value": "Homer" } ]
+}]

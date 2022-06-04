@@ -1,0 +1,119 @@
+#Processed by EYE v18.0417.2132 josd
+#eye http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3 http://eulersharp.sourceforge.net/2007/07test/nbbn-model.n3 --query http://eulersharp.sourceforge.net/2007/07test/nbbn-query.n3
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix bbn: <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://wopeg.he.agfa.be/rules/pathFinder#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  };
+  r:evidence (
+    <#lemma2>
+  );
+  r:rule <#lemma3>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional 0.21419642857142857 .
+  };
+  r:evidence (
+    <#lemma4>
+  );
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Extraction;
+  r:gives {
+    {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional ?x_0_1} => {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:biconditional ?x_0_1}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2007/07test/nbbn-query.n3>].
+
+<#lemma4> a r:Inference;
+  r:gives {
+    ((<http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3> <http://eulersharp.sourceforge.net/2007/07test/nbbn-model.n3>) 1) e:call {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+     ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+      ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+     ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+     (e:T) bbn:bval true.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true}.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}))}]
+    [ a r:Fact; r:gives {("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+     ("nb_setval" "bnet" "done") e:derive true}) e:derive true}]
+    [ a r:Fact; r:gives {({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true}]
+    <#lemma6>
+    <#lemma7>
+  );
+  r:rule [ a r:Fact; r:gives {{({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+    ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+     ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+    ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+    (e:T) bbn:bval true.
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true} => {((<http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3> <http://eulersharp.sourceforge.net/2007/07test/nbbn-model.n3>) 1) e:call {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) e:firstRest ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T})).
+     ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+      ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+     ({:Resistance :outcomeOf :FloxacinTreatment}) bbn:bvar true.
+     (e:T) bbn:bval true.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true}}}].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    {?x_1_3 e:biconditional ?x_5_3} <= {?x_0_3 e:call {?x_1_3 e:firstRest ({?x_2_3 e:boolean ?x_3_3} ?x_4_3).
+      ("if_then_else" {("nb_getval" "bnet" "done") e:derive true} true {() bbn:bnet true.
+       ("nb_setval" "bnet" "done") e:derive true}) e:derive true.
+      (?x_2_3) bbn:bvar true.
+      (?x_3_3) bbn:bval true.
+      ({?x_2_3 e:boolean ?x_3_3} ?x_4_3 ?x_5_3) bbn:nb true}}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    (e:T) bbn:bval true.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3>].
+
+<#lemma7> a r:Inference;
+  r:gives {
+    ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.21419642857142857) bbn:nb true.
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {("if_then_else" {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T}) bbn:bcnd 0.17 .
+     ({{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) 0.8660714285714286) bbn:nb true.
+     {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:T} bbn:inverse {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}.
+     ({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} {{:EscherichiaColiInfection :treatedBy :FloxacinTreatment} e:boolean e:F}) bbn:bcnd 0.5 .
+     ("_F*_E+(1-_F)*_H" 0.8660714285714286 0.17 0.5) e:calculate 0.21419642857142857} true {({{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) ?V0) bbn:nc true.
+     {{:Resistance :outcomeOf :FloxacinTreatment} e:boolean e:T} bbn:inverse ?V1.
+     (?V1 ({{:InfectionTreated :outcomeOf :FloxacinTreatment} e:boolean e:T}) ?V2) bbn:nc true.
+     ("1/(1+2**(_K-_I))" ?V2 ?V0) e:calculate 0.21419642857142857}) e:derive true}]
+  );
+  r:rule <#lemma8>.
+
+<#lemma8> a r:Extraction;
+  r:gives {
+    {(?x_0_4 ?x_3_4 ?x_7_4) bbn:nb true} <= {("if_then_else" {(?x_0_4 ?x_1_4) bbn:bcnd ?x_2_4.
+      (?x_1_4 ?x_3_4 ?x_4_4) bbn:nb true.
+      ?x_1_4 bbn:inverse ?x_5_4.
+      (?x_0_4 ?x_5_4) bbn:bcnd ?x_6_4.
+      ("_F*_E+(1-_F)*_H" ?x_4_4 ?x_2_4 ?x_6_4) e:calculate ?x_7_4} true {(?x_0_4 ?x_3_4 ?x_8_4) bbn:nc true.
+      ?x_0_4 bbn:inverse ?x_9_4.
+      (?x_9_4 ?x_3_4 ?x_10_4) bbn:nc true.
+      ("1/(1+2**(_K-_I))" ?x_10_4 ?x_8_4) e:calculate ?x_7_4}) e:derive true}.
+  };
+  r:because [ a r:Parsing; r:source <http://eulersharp.sourceforge.net/2006/02swap/nbbn-plugin.n3>].
+
+#2018-04-18T08:28:09.138Z in=158 out=1 ent=1 step=1 brake=2 inf=70235 sec=0.035 inf/sec=2006714
+#ENDS
+

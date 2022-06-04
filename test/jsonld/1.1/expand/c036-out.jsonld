@@ -1,0 +1,7 @@
+[{
+  "ex:title": [{"@value": "top"}
+  ],
+  "ex:thing": [{
+    "ex:title": [{"@value": "sub"}]
+  }]
+}]

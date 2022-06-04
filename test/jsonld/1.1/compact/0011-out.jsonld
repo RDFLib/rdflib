@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#",
+    "ex:date": {"@type": "xsd:dateTime"},
+    "ex:parent": {"@type": "@id"},
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "http://example.org/test#example1",
+  "ex:date": "2011-01-25T00:00:00Z",
+  "ex:embed": {
+    "@id": "http://example.org/test#example2",
+    "ex:parent": "http://example.org/test#example1"
+  }
+}

@@ -1,0 +1,7 @@
+<http://example.com> <http://example.com/property> _:a .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "a" .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "b" .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "c" .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .

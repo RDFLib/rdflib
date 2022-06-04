@@ -1,0 +1,14 @@
+{
+    "@graph": [
+        { "@id": "http://example.com/free-floating-node" },
+        { "@value": "free-floating value object" },
+        { "@value": "free-floating value language-tagged string",  "@language": "en" },
+        { "@value": "free-floating value typed value",  "@type": "http://example.com/type" },
+        "free-floating plain string",
+        true,
+        false,
+        null,
+        1,
+        1.5
+    ]
+}

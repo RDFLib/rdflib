@@ -1,0 +1,12 @@
+@prefix : <http://josd.github.io/brain#>.
+
+(:i30 :i12 :i33) :p :o.
+(:i61 :i29 :i42) :p :o.
+(:i57 :i46 :i88) :p :o.
+(:i67 :i19 :i73) :p :o.
+(:i90 :i64 :i84) :p :o.
+(:i77 :i39 :i42) :p :o.
+(:i53 :i51 :i62) :p :o.
+(:i22 :i9 :i61) :p :o.
+(:i72 :i12 :i67) :p :o.
+(:i89 :i92 :i38) :p :o.

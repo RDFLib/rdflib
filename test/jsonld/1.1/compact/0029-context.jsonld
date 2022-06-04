@@ -1,0 +1,5 @@
+{
+  "@context": {
+    "author": {"@id": "http://example.com/vocab/author", "@container": "@index" }
+  }
+}

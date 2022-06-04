@@ -1,0 +1,2 @@
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/Type> .
+_:b0 <http://example/v> "value"^^<http://example/value-type> .

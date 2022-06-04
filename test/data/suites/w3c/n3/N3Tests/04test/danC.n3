@@ -1,0 +1,12 @@
+# $Id: danC.n3 1091 2006-09-28 20:42:22Z josd $
+# PxButton | es  | euler --nope --think danP.n3 --filter danC.n3
+# PxButton | cwm | cwm danP.n3 --think --filter"=danC.n3"
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix q: <http://www.w3.org/2004/ql#>.
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/danP#>.
+
+{?C :latitude ?LA; :longitude ?LO; :cityName ?N.
+ ((((?LA 42.3)!math:difference 2)!math:exponentiation ((?LO -71.1)!math:difference 2)!math:exponentiation)!math:sum 0.5)!math:exponentiation math:lessThan 0.5}
+ =>
+{q:result q:is (?N ?LA ?LO)}.

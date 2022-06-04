@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "property": {
+      "@id": "http://example.com/property",
+      "@type": "http://example.com/datatype"
+    }
+  },
+  "property": [ 1, true, false, 5.1 ]
+}

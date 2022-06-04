@@ -1,0 +1,6 @@
+[{
+  "@type": ["http://example.com/IgnoreTest"],
+  "http://example.org/ignoreMe": [{
+    "http://example.org/text": [{"@value": "not reversed"}]
+  }]
+}]

@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@base": "http://example.org/"
+  },
+  "http://example.org/vocab/at": {"@id": "@"},
+  "http://example.org/vocab/foo.bar": {"@id": "@foo.bar"},
+  "http://example.org/vocab/ignoreme": {"@id": "@ignoreMe"}
+}

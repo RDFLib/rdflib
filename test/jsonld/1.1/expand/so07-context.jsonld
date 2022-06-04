@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "protected1": {
+      "@id": "http://example.com/protected1"
+    },
+    "protected2": {
+      "@id": "http://example.com/protected2"
+    }
+  }
+}

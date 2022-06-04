@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name"
+  },
+  "@id": "http://example.com/people/markus",
+  "name": "Markus Lanthaler",
+  "@reverse": {
+    "http://xmlns.com/foaf/0.1/knows": {
+      "@id": "http://example.com/people/dave",
+      "name": "Dave Longley"
+    }
+  }
+}

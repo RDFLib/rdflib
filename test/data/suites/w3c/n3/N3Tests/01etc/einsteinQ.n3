@@ -1,0 +1,4 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix : <http://eulersharp.sourceforge.net/2005/11swap/einstein#>.
+
+{?WHO :eats :fish} => {?WHO :eats :fish}.

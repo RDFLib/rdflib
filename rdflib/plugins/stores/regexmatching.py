@@ -8,11 +8,10 @@ provides the support by replacing the REGEXTerms by wildcards (None) and
 matching against the results from the store it's wrapping.
 """
 
-from rdflib.store import Store
-from rdflib.graph import Graph
-
-
 import re
+
+from rdflib.graph import Graph
+from rdflib.store import Store
 
 # Store is capable of doing its own REGEX matching
 NATIVE_REGEX = 0
@@ -34,7 +33,7 @@ class REGEXTerm(str):
         return (REGEXTerm, (str(""),))
 
 
-def regexCompareQuad(quad, regexQuad):
+def regexCompareQuad(quad, regexQuad):  # noqa: N802, N803
     for index in range(4):
         if isinstance(regexQuad[index], REGEXTerm) and not regexQuad[
             index
@@ -84,7 +83,7 @@ class REGEXMatching(Store):
                 or None
             )
 
-            removeQuadList = []
+            removeQuadList = []  # noqa: N806
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
                 for ctx in cg:
                     ctx = ctx.identifier
@@ -122,7 +121,7 @@ class REGEXMatching(Store):
                 or None
             )
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
-                matchingCtxs = []
+                matchingCtxs = []  # noqa: N806
                 for ctx in cg:
                     if c is None:
                         if context is None or context.identifier.compiledExpr.match(
@@ -156,8 +155,8 @@ class REGEXMatching(Store):
     def remove_context(self, identifier):
         self.storage.remove((None, None, None), identifier)
 
-    def bind(self, prefix, namespace):
-        self.storage.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        self.storage.bind(prefix, namespace, override=override)
 
     def prefix(self, namespace):
         return self.storage.prefix(namespace)

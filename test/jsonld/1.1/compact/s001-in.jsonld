@@ -1,0 +1,9 @@
+{
+  "@id": "http://example.org/id",
+  "http://example.com/mylist": {"@list": ["foo"]},
+  "http://example.com/myset": "foo",
+  "http://example.com/myid": {"@id": "http://example/id", "@type": "http://example/type"},
+  "http://example.com/mytype": {"@id": "http://example/id", "@type": "http://example/type"},
+  "http://example.com/mylanguage": {"@value": "foo", "@language": "en"},
+  "http://example.com/myindex": {"@value": "foo", "@index": "bar"}
+}

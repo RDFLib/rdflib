@@ -1,0 +1,13 @@
+[{
+  "@id": "http://example.org/test#example1",
+  "http://example.org/vocab#date": [{
+    "@value": "2011-01-25T00:00:00Z",
+    "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+  }],
+  "http://example.org/vocab#embed": [{
+    "@id": "http://example.org/test#example2",
+    "http://example.org/vocab#parent": [{
+      "@id": "http://example.org/test#example1"
+    }]
+  }]
+}]

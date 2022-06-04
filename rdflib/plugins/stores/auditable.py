@@ -15,11 +15,12 @@ system fails): A and I out of ACID.
 
 """
 
-from rdflib.store import Store
-from rdflib import Graph, ConjunctiveGraph
 import threading
 
-destructiveOpLocks = {
+from rdflib import ConjunctiveGraph, Graph
+from rdflib.store import Store
+
+destructiveOpLocks = {  # noqa: N816
     "add": None,
     "remove": None,
 }
@@ -58,7 +59,7 @@ class AuditableStore(Store):
                 if context is not None
                 else None
             )
-            ctxId = context.identifier if context is not None else None
+            ctxId = context.identifier if context is not None else None  # noqa: N806
             if list(self.store.triples(triple, context)):
                 return  # triple already in store, do nothing
             self.reverseOps.append((s, p, o, ctxId, "remove"))
@@ -80,7 +81,7 @@ class AuditableStore(Store):
                 if context is not None
                 else None
             )
-            ctxId = context.identifier if context is not None else None
+            ctxId = context.identifier if context is not None else None  # noqa: N806
             if None in [subject, predicate, object_, context]:
                 if ctxId:
                     for s, p, o in context.triples((subject, predicate, object_)):
@@ -129,8 +130,8 @@ class AuditableStore(Store):
         for ctx in self.store.contexts(triple):
             yield ctx
 
-    def bind(self, prefix, namespace):
-        self.store.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        self.store.bind(prefix, namespace, override=override)
 
     def prefix(self, namespace):
         return self.store.prefix(namespace)
@@ -145,7 +146,7 @@ class AuditableStore(Store):
         self.reverseOps = []
 
     def rollback(self):
-        # Aquire Rollback lock and apply reverse operations in the forward
+        # Acquire Rollback lock and apply reverse operations in the forward
         # order
         with self.rollbackLock:
             for subject, predicate, obj, context, op in self.reverseOps:

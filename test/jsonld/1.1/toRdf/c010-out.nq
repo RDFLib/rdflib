@@ -1,0 +1,5 @@
+_:b0 <http://example/a> _:b1 .
+_:b0 <http://example/c> "C in example" .
+_:b1 <http://example.org/c> "C in example.org" .
+_:b1 <http://example.com/a> "A in example.com" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example/B> .

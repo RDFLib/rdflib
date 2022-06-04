@@ -1,0 +1,2 @@
+_:b0 <ex:foo> <ex:Bar> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Type> .

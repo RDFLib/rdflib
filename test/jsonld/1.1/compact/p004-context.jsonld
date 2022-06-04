@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "ex": "http://example.com/",
+    "colon": "http://example.org/:",
+    "question": "http://example.org/?",
+    "hash": "http://example.org/#",
+    "lbracket": "http://example.org/[",
+    "rbracket": "http://example.org/]",
+    "at": "http://example.org/@"
+  }
+}

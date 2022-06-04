@@ -1,0 +1,6 @@
+<http://example.org/id> <http://example.com/mylist1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://example.org/id> <http://example.com/myset3> "be" .
+<http://example.org/id> <http://example.com/myset3> "collapsed" .
+<http://example.org/id> <http://example.com/myset3> "hello" .
+<http://example.org/id> <http://example.com/myset3> "this" .
+<http://example.org/id> <http://example.com/myset3> "will" .

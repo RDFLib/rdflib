@@ -1,0 +1,7 @@
+[{
+  "@id": "foo:bar-id",
+  "@type": ["foo:bar-type"],
+  "foo:bar": [{"@value": "is an absolute iri property"}],
+  "http://schema.org/term": [{"@value": "is schema.org/term"}],
+  "http://schema.org/:fish": [{"@value": "is schema.org/:fish"}]
+}]

@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@base": "https://ex.org/",
+    "u": {"@id": "urn:u:", "@type": "@id"}
+  },
+  "u": ["#Test", "#Test:2"]
+}

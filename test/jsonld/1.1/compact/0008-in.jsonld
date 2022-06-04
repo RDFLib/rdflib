@@ -1,0 +1,13 @@
+[{
+  "@id": "http://example.org/test#example1",
+  "http://example.org/test#property1": [{
+    "@id": "http://example.org/test#example2",
+    "http://example.org/test#property4": ["foo"]
+  }],
+  "http://example.org/test#property2": [{
+    "@id": "http://example.org/test#example3"
+  }],
+  "http://example.org/test#property3": [{
+    "@id": "http://example.org/test#example4"
+  }]
+}]

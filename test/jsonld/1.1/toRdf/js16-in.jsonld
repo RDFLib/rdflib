@@ -1,0 +1,4 @@
+{
+  "@context": {"@version": 1.1, "value": "@value", "type": "@type", "json": "@json"},
+  "http://example.org/vocab#object": [{"value": {"foo": "bar"}, "type": "json"}]
+}

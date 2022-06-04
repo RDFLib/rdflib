@@ -1,0 +1,2 @@
+<http://example/s0> <http://example/p0> <http://example/o0> .
+<http://example/s1> <http://example/p1> <http://example/o1> <http://example/s0> .

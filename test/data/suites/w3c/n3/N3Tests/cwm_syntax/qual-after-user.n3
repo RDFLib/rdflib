@@ -1,0 +1,6 @@
+# See http://www.ilrt.bris.ac.uk/discovery/chatlogs/rdfig/2004-11-21.html#T05-03-02
+#
+
+@prefix : <#>.
+:x = 3.
+{  ?x = ?x } => { ?x = 12 }.

@@ -103,13 +103,9 @@ Follow relations and get more data from their Resources as well::
     >>> for pic in person.objects(FOAF.depiction):
     ...     print(pic.identifier)
     ...     print(pic.value(RDF.type).qname())
-    ...     print(pic.label())
-    ...     print(pic.comment())
     ...     print(pic.value(FOAF.thumbnail).identifier)
     http://example.org/images/person/some1.jpg
     foaf:Image
-    some 1
-    Just an image
     http://example.org/images/person/some1-thumb.jpg
 
     >>> for cv in person.subjects(CV.aboutPerson):
@@ -141,18 +137,6 @@ This is useful for e.g. inspection::
     ...     print(o.qname())
     rdf:type
     foaf:Image
-
-Similarly, adding, setting and removing data is easy::
-
-    >>> thumb.add(RDFS.label, Literal("thumb"))
-    >>> print(thumb.label())
-    thumb
-    >>> thumb.set(RDFS.label, Literal("thumbnail"))
-    >>> print(thumb.label())
-    thumbnail
-    >>> thumb.remove(RDFS.label)
-    >>> list(thumb.objects(RDFS.label))
-    []
 
 
 Schema Example
@@ -199,12 +183,6 @@ Get items from the Choice::
 
     >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    [u'v:One', u'v:Other']
-
-And the sequence of Stuff::
-
-    >>> stuff = Resource(graph, URIRef("http://example.org/def/v#Stuff"))
-    >>> [it.qname() for it in stuff.seq()]
     [u'v:One', u'v:Other']
 
 On add, other resources are auto-unboxed:
@@ -308,9 +286,9 @@ objects::
 
 """
 
-from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
 from rdflib.paths import Path
+from rdflib.term import BNode, Node, URIRef
 
 __all__ = ["Resource"]
 
@@ -320,9 +298,13 @@ class Resource(object):
         self._graph = graph
         self._identifier = subject
 
-    graph = property(lambda self: self._graph)
+    @property
+    def graph(self):
+        return self._graph
 
-    identifier = property(lambda self: self._identifier)
+    @property
+    def identifier(self):
+        return self._identifier
 
     def __hash__(self):
         return hash(Resource) ^ hash(self._graph) ^ hash(self._identifier)
@@ -354,8 +336,6 @@ class Resource(object):
 
     def __unicode__(self):
         return str(self._identifier)
-
-    __str__ = __unicode__
 
     def add(self, p, o):
         if isinstance(o, Resource):
@@ -402,12 +382,6 @@ class Resource(object):
 
         return self._cast(self._graph.value(self._identifier, p, o, default, any))
 
-    def label(self):
-        return self._graph.label(self._identifier)
-
-    def comment(self):
-        return self._graph.comment(self._identifier)
-
     def items(self):
         return self._resources(self._graph.items(self._identifier))
 
@@ -420,9 +394,6 @@ class Resource(object):
         return self._resources(
             self._graph.transitive_subjects(predicate, self._identifier, remember)
         )
-
-    def seq(self):
-        return self._resources(self._graph.seq(self._identifier))
 
     def qname(self):
         return self._graph.qname(self._identifier)

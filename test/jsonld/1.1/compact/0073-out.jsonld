@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "id": {
+      "@type": "@id",
+      "@id": "@id"
+    },
+    "type": {
+      "@type": "@id",
+      "@id": "@type"
+    }
+  },
+  "id": "http://example.org/anno9",
+  "type": "http://example.org/Annotation"
+}

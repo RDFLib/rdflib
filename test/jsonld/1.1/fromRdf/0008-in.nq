@@ -1,0 +1,28 @@
+<http://example.com> <http://example.com/property> _:outerlist .
+_:outerlist <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:lista .
+_:outerlist <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b0 .
+
+_:lista <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "a1" .
+_:lista <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a2 .
+_:a2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "a2" .
+_:a2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a3 .
+_:a3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "a3" .
+_:a3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+
+_:c0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:c1 .
+_:c0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:c1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "c1" .
+_:c1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c2 .
+_:c2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "c2" .
+_:c2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c3 .
+_:c3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "c3" .
+_:c3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c0 .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "b1" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b2 .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "b2" .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "b3" .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .

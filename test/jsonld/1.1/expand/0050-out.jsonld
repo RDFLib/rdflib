@@ -1,0 +1,6 @@
+[
+  {
+    "http://example.com/issue/": [ { "@id": "https://w3c.github.io/issue/1" } ],
+    "http://example.com/issue/raisedBy": [ { "@value": "Markus" } ]
+  }
+]

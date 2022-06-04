@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "myproperty": "http://example.com/myproperty"
+  },
+  "myproperty": { "@value" : null }
+}

@@ -1,0 +1,6 @@
+<http://example.com/alice#me> <http://xmlns.com/foaf/0.1/homepage> <http://example.com/alice> .
+<http://example.com/alice#me> <http://xmlns.com/foaf/0.1/name> "Alice" .
+<http://example.com/bob#me> <http://xmlns.com/foaf/0.1/homepage> <http://example.com/bob> .
+<http://example.com/bob#me> <http://xmlns.com/foaf/0.1/name> "Bob" .
+<http://json-ld.org/test-suite/tests/toRdf-0045-in.jsonld#me> <http://xmlns.com/foaf/0.1/knows> <http://example.com/alice#me> .
+<http://json-ld.org/test-suite/tests/toRdf-0045-in.jsonld#me> <http://xmlns.com/foaf/0.1/knows> <http://example.com/bob#me> .

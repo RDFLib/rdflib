@@ -1,0 +1,36 @@
+@prefix : <concatenation.n3#>.
+
+:s01 :is "https://w3c.github.io/N3/tests/N3Tests/string/concatenation.n3#z" .
+:s02 :is "string" .
+:s03 :is "-10.2E3" .
+:s04 :is "+33.3300" .
+:s05 :is "0.0" .
+:s06 :is "0" .
+:s07 :is "0E1" .
+:s08 :is "1.5" .
+:s09 :is "1" .
+:s10 :is "1E0" .
+:s11 :is "13" .
+:s12 :is "2002-10-10T17:00:00Z" .
+:s13 :is "false" .
+:s14 :is "true" .
+
+:b01 :is "true" .
+:b02 :is "false" .
+:b03 :is "false" .
+
+:n01 :is "0" .
+:n02 :is "1" .
+:n03 :is "-1" .
+:n04 :is "0" .
+:n05 :is "1" .
+:n06 :is "-1" .
+:n07 :is "0" .
+:n08 :is "1" .
+:n09 :is "0" .
+:n10 :is "1" .
+:n11 :is "1.25" .
+:n12 :is "-7.875" .
+:n13 :is "2.5" .
+:n14 :is "-2.5" .
+:n15 :is "1230" .

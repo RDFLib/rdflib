@@ -1,0 +1,4 @@
+<http://example.com/a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/b> .
+<http://example.com/c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/d> .
+<http://example.com/c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/e> .
+<http://example.com/f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/g> .

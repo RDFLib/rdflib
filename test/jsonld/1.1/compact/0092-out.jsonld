@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "input": "foo:input",
+    "value": "foo:value"
+  },
+  "input": [
+    {"@graph": {"value": "x"}},
+    {"@graph": {"value": "y"}}
+  ]
+}

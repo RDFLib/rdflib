@@ -1,0 +1,2 @@
+_:b0 <http://example.org/input> _:b1 .
+_:b3 <http://example.org/value> "x" _:b2 .

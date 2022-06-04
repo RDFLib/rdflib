@@ -5,31 +5,44 @@ Writing RDFLib Documentation
 ================================
 
 
-The docs are generated with Sphinx.
+These docs are generated with Sphinx.
 
 Sphinx makes it very easy to pull in doc-strings from modules,
 classes, methods, etc.  When writing doc-strings, special reST fields
-can be used to annotate parameters, return-types, etc. This make for
-pretty API docs:
-
-http://sphinx-doc.org/domains.html?highlight=param#info-field-lists
+can be used to annotate parameters, return-types, etc. This makes for
+pretty API docs. See `here <https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#info-field-lists>`_
+for the Shinx documentation about these fields.
 
 Building
 --------
 
-To build you must have the `sphinx` package installed:
+To build you must have the ``sphinx`` and some additional package installed. 
+The full set of requirements is listed in the ``sphinx-requirements.txt`` file 
+within the :file:`docs/` directory.
+
+To install the requirements for building documentation run:
 
 .. code-block:: bash
 
-  pip install sphinx
+  pip install -r docs/sphinx-requirements.txt
 
-Then you can do:
+
+Once you have all the requirements installed you can run this command in the 
+rdflib root directory:
 
 .. code-block:: bash
 
   python setup.py build_sphinx
 
-The docs will be generated in :file:`build/sphinx/html/`
+Docs will be generated in :file:`build/sphinx/html/` and API documentation, 
+generated from doc-strings, will be placed in :file:`docs/apidocs/`.
+
+There is also a `tox <https://tox.wiki/en/latest/>`_ environment for building 
+documentation:
+
+.. code-block:: bash
+
+  tox -e docs
 
 API Docs
 --------
@@ -40,8 +53,8 @@ API Docs are automatically generated with ``sphinx-apidoc``:
 
    sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib examples
 
-(then ``rdflib.rst`` was tweaked manually to not include all
-convenience imports that are directly in the ``rdflib/__init__.py``)
+Note that ``rdflib.rst`` was manually tweaked so as to not include all
+ imports in ``rdflib/__init__.py``.
 
 Tables
 ------

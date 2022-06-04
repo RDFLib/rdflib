@@ -1,0 +1,7 @@
+{
+  "@context": [
+    "e054-context-1.jsonld",
+    "e054-context-2.jsonld"
+  ],
+  "@id": "ex:id"
+}

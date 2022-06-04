@@ -1,0 +1,4 @@
+<http://example.com/queen> <http://example.com/vocab/index> "No" .
+<http://example.com/queen> <http://example.com/vocab/index> "indexes" .
+<http://example.com/queen> <http://example.com/vocab/index> <https://w3c.github.io/json-ld-api/tests/toRdf/asTheValueIsntAnObject> .
+<http://example.com/queen> <http://example.com/vocab/label> "The Queen" .

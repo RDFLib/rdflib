@@ -1,0 +1,10 @@
+@prefix : <http://example.org#>.
+
+:s :p :o.
+:ss :p :o.
+
+    @forSome :y.
+
+    {?x :p :o}=>{?x :pp :y}.
+    
+#depending on whether or not the  scope  of the implicit universal is outside of the explicit existential we either get two instances of :y or just one.

@@ -1,0 +1,24 @@
+---
+ci:
+  # https://pre-commit.ci/#configuration
+  autoupdate_schedule: weekly
+  autofix_prs: false
+
+repos:
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    - id: isort
+      # This is here to defer file selection to isort which will do it based on
+      # black config.
+      pass_filenames: false
+      require_serial: true
+      args: ["."]
+  - repo: https://github.com/psf/black
+    # WARNING: version should be the same as in `pyproject.toml` and `requirements.dev.txt`.
+    rev: 'refs/tags/22.3.0:refs/tags/22.3.0'
+    hooks:
+    - id: black
+      pass_filenames: false
+      require_serial: true
+      args: ["."]

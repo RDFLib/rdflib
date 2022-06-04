@@ -1,0 +1,13 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "B": {"@context": {"c": "http://example.org/c"}}
+  },
+  "a": {
+    "@context": {"@vocab": "http://example.com/"},
+    "@type": "B",
+    "a": "A in example.com",
+    "c": "C in example.org"
+  },
+  "c": "C in example"
+}

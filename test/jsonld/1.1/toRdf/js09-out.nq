@@ -1,0 +1,1 @@
+_:b0 <http://example.org/vocab#c14n> "{\"peach\":\"This sorting order\",\"péché\":\"is wrong according to French\",\"pêche\":\"but canonicalization MUST\",\"sin\":\"ignore locale\"}"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON> .

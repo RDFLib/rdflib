@@ -1,18 +1,15 @@
 """
 A TriX parser for RDFLib
 """
-from rdflib.namespace import Namespace
-from rdflib.term import URIRef
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.graph import Graph
-from rdflib.exceptions import ParserError
-from rdflib.parser import Parser
-
-
-from xml.sax.saxutils import handler
 from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
+from xml.sax.saxutils import handler
+
+from rdflib.exceptions import ParserError
+from rdflib.graph import Graph
+from rdflib.namespace import Namespace
+from rdflib.parser import Parser
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["create_parser", "TriXHandler", "TriXParser"]
 
@@ -59,7 +56,7 @@ class TriXHandler(handler.ContentHandler):
                 % (name[0], TRIXNS)
             )
 
-        if name[1] == "TriX":
+        if name[1].lower() == "trix":
             if self.state == 0:
                 self.state = 1
             else:
@@ -208,7 +205,7 @@ class TriXHandler(handler.ContentHandler):
             self.graph = None
             self.state = 1
 
-        elif name[1] == "TriX":
+        elif name[1].lower() == "trix":
             self.state = 0
 
         else:

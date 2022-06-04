@@ -1,0 +1,23 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2007/07test/fdl#>.
+
+
+{:Patient rdfs:subClassOf :PatientWithFlu} e:valuation (0.08 0.14).
+
+{:PatientWithFlu rdfs:subClassOf :PatientWithFever} e:valuation (0.99 0.997).
+{:PatientWithFlu!owl:complementOf rdfs:subClassOf :PatientWithFever} e:valuation (0.032 0.048).
+
+{:PatientWithFlu rdfs:subClassOf :PatientWithHeadache} e:valuation (0.55 0.59).
+{:PatientWithFlu!owl:complementOf rdfs:subClassOf :PatientWithHeadache} e:valuation (0.135 0.145).
+
+{:PatientWithFlu rdfs:subClassOf :PatientWithNausea} e:valuation (0.05 0.055).
+{:PatientWithFlu!owl:complementOf rdfs:subClassOf :PatientWithNausea} e:valuation (0.061 0.074).
+
+{:patient002 a :Patient} e:valuation (1.0 1.0).
+{:patient002 a :PatientWithHeadache} e:valuation (1.0 1.0).
+{:patient002 a :PatientWithNausea} e:valuation (0.0 0.2).

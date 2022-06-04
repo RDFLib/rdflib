@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "compact-iris": {"@id": "http://example.com/compact-iris-", "@prefix": true},
+    "property": "http://example.com/property"
+  }
+}

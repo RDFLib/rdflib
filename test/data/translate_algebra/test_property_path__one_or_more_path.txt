@@ -1,0 +1,7 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+select * where
+{
+    ?x foaf:mbox <mailto:alice@example> .
+    ?x foaf:knows+/foaf:name ?name .
+}
+limit 100

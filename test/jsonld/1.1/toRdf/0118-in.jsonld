@@ -1,0 +1,38 @@
+{
+  "@context": {
+    "term": "_:term",
+    "termId": { "@id": "term", "@type": "@id" }
+  },
+  "@id": "_:term",
+  "@type": "_:term",
+  "term": [
+    {
+      "@id": "_:term",
+      "@type": "term"
+    },
+    {
+      "@id": "_:Bx",
+      "term": "term"
+    },
+    "plain value",
+    {
+      "@id": "_:term"
+    }
+  ],
+  "termId": [
+    {
+      "@id": "_:term",
+      "@type": "term"
+    },
+    {
+      "@id": "_:Cx",
+      "term": "termId"
+    },
+    "term:AppendedToBlankNode",
+    "_:termAppendedToBlankNode",
+    "relativeIri",
+    {
+      "@id": "_:term"
+    }
+  ]
+}

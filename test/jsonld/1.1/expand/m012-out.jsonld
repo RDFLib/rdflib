@@ -1,0 +1,6 @@
+[{
+  "http://example/typemap": [
+    {"http://example/label": [{"@value": "Object with no @type"}]},
+    {"http://example/label": [{"@value": "Another object with no @type"}]}
+  ]
+}]

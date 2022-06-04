@@ -1,0 +1,15 @@
+@prefix example: <http://example.org/>.
+
+example:s00 example:p00 example:o02 .
+example:s01 example:p01 example:o01 .
+
+
+{
+	example:s10 example:p10 example:o10 .
+	example:s11 example:p11 example:o11 .
+}
+
+example:g2 {
+	example:s20 example:p20 example:o20 .
+	example:s21 example:p21 example:o21 .
+}

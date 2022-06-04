@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "mylist": {"@id": "http://example.com/mylist", "@container": "@list"},
+    "myset": {"@id": "http://example.com/myset", "@container": "@set"}
+  },
+  "@id": "http://example.org/id",
+  "mylist": [1, 2, 2, 3],
+  "myset": [1, 2, 2, 3]
+}

@@ -1,0 +1,4 @@
+{
+  "@context": {"@base": true},
+  "@id": "http://example/test#example"
+}

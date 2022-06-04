@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "@ignoreMe": "http://example.org/should-ignore"
+  },
+  "@type": "http://example.com/IgnoreTest",
+  "@ignoreMe": "should not be here"
+}

@@ -1,0 +1,12 @@
+{
+  "@id": "http://example.org/id",
+  "http://example.org/property": null,
+  "regularJson": {
+    "nonJsonLd": "property",
+    "deep": [{
+      "foo": "bar"
+    }, {
+      "bar": "foo"
+    }]
+  }
+}

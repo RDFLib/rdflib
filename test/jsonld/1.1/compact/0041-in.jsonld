@@ -1,0 +1,15 @@
+[
+    {
+      "@id": "http://example.com/node",
+      "http://example.com/property": [
+          {
+            "@index": "an index",
+            "@list": [
+                {
+                  "@value": "one item"
+                }
+            ]
+          }
+      ]
+    }
+]

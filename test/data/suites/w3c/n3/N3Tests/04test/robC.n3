@@ -1,0 +1,6 @@
+# $Id: robC.n3 352 2004-09-03 19:50:53Z josd $
+# PxButton | es  | euler --think robP.n3 robC.n3
+
+@prefix : <http://eulersharp.sourceforge.net/2004/04test/robP#>.
+
+?X :hasGroup :ManagementOrSupport.

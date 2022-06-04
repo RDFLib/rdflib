@@ -1,0 +1,7 @@
+{
+  "@context": {"ex": "http://example.com/"},
+  "@graph": [
+    {"@id": "_:b0", "ex:foo": "foo"},
+    {"@id": "_:b1", "ex:bar": "bar"}
+  ]
+}

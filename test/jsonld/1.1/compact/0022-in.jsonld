@@ -1,0 +1,39 @@
+[
+  {
+    "@id": "https://example.org/ns#Game",
+    "@type": [
+      "http://www.w3.org/2002/07/owl#Class"
+    ],
+    "https://example.org/ns#properties": [
+      {
+        "@list": [
+          {
+            "@id": "https://example.org/ns#title"
+          },
+          {
+            "@id": "https://example.org/ns#slug"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "@id": "https://example.org/ns#properties",
+    "@type": [
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+    ]
+  },
+  {
+    "@id": "https://example.org/ns#slug",
+    "@type": [
+      "http://www.w3.org/2002/07/owl#DataProperty",
+      "http://www.w3.org/2002/07/owl#FunctionalProperty"
+    ]
+  },
+  {
+    "@id": "https://example.org/ns#title",
+    "@type": [
+      "http://www.w3.org/2002/07/owl#DataProperty"
+    ]
+  }
+]

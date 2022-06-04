@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "term5": {"@id": "http://example.com/term", "@direction": null},
+    "@direction": "ltr"
+  },
+  "term5": [ "v5", "plain literal" ]
+}

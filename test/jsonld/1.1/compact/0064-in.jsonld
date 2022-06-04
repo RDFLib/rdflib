@@ -1,0 +1,17 @@
+[
+    {
+      "@id": "http://example.com.com/",
+      "http://example.com/property": [
+          {
+            "@value": "Deutsche Zeichenfolge in @index-map",
+            "@index": "first",
+            "@language": "de"
+          },
+          {
+            "@value": "English string in @index-map",
+            "@index": "second",
+            "@language": "en"
+          }
+      ]
+    }
+]

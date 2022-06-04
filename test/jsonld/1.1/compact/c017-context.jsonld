@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "Bar": {
+      "@context": [
+        {
+          "prop": "http://example/bar-prop"
+        }
+      ]
+    },
+    "Foo": {
+      "@context": [
+        {
+          "prop": "http://example/foo-prop"
+        }
+      ]
+    }
+  }
+}

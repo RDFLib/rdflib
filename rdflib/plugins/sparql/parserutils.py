@@ -1,15 +1,13 @@
-from types import MethodType
-
 from collections import OrderedDict
+from types import MethodType
+from typing import TYPE_CHECKING, Any
 
-from pyparsing import TokenConverter, ParseResults, originalTextFor
+from pyparsing import ParseResults, TokenConverter, originalTextFor
 
 from rdflib import BNode, Variable
 
-DEBUG = True
-DEBUG = False
-if DEBUG:
-    import traceback
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
 
 """
 
@@ -27,7 +25,7 @@ For example:
 BaseDecl = Comp('Base', Keyword('BASE') + Param('iri',IRIREF))
 
 After parsing, this gives you back an CompValue object,
-which is a dict/object with the paramters specified.
+which is a dict/object with the parameters specified.
 So you can access the parameters are attributes or as keys:
 
 baseDecl.iri
@@ -44,7 +42,12 @@ the resulting CompValue
 # Comp('Sum')( Param('x')(Number) + '+' + Param('y')(Number) )
 
 
-def value(ctx, val, variables=False, errors=False):
+def value(
+    ctx: "FrozenBindings",
+    val: Any,
+    variables: bool = False,
+    errors: bool = False,
+):
     """
     utility function for evaluating something...
 
@@ -111,9 +114,9 @@ class Param(TokenConverter):
     """
 
     def __init__(self, name, expr, isList=False):
-        self.name = name
         self.isList = isList
         TokenConverter.__init__(self, expr)
+        self.setName(name)
         self.addParseAction(self.postParse2)
 
     def postParse2(self, tokenList):
@@ -139,12 +142,12 @@ class CompValue(OrderedDict):
 
     """
     The result of parsing a Comp
-    Any included Params are avaiable as Dict keys
+    Any included Params are available as Dict keys
     or as attributes
 
     """
 
-    def __init__(self, name, **values):
+    def __init__(self, name: str, **values):
         OrderedDict.__init__(self)
         self.name = name
         self.update(values)
@@ -170,7 +173,7 @@ class CompValue(OrderedDict):
     def get(self, a, variables=False, errors=False):
         return self._value(OrderedDict.get(self, a, a), variables, errors)
 
-    def __getattr__(self, a):
+    def __getattr__(self, a: str) -> Any:
         # Hack hack: OrderedDict relies on this
         if a in ("_OrderedDict__root", "_OrderedDict__end"):
             raise AttributeError()
@@ -179,6 +182,11 @@ class CompValue(OrderedDict):
         except KeyError:
             # raise AttributeError('no such attribute '+a)
             return None
+
+    if TYPE_CHECKING:
+        # this is here because properties are dynamically set on CompValue
+        def __setattr__(self, __name: str, __value: Any) -> None:
+            ...
 
 
 class Expr(CompValue):
@@ -215,7 +223,7 @@ class Comp(TokenConverter):
     def __init__(self, name, expr):
         self.expr = expr
         TokenConverter.__init__(self, expr)
-        self.name = name
+        self.setName(name)
         self.evalfn = None
 
     def postParse(self, instring, loc, tokenList):
@@ -275,18 +283,5 @@ def prettify_parsetree(t, indent="", depth=0):
     return "".join(out)
 
 
-if __name__ == "__main__":
-    from pyparsing import Word, nums
-    import sys
-
-    Number = Word(nums)
-    Number.setParseAction(lambda x: int(x[0]))
-    Plus = Comp("plus", Param("a", Number) + "+" + Param("b", Number))
-    Plus.setEvalFn(lambda self, ctx: self.a + self.b)
-
-    r = Plus.parseString(sys.argv[1])
-    print(r)
-    print(r[0].eval({}))
-
 # hurrah for circular imports
-from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
+from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError  # noqa: E402

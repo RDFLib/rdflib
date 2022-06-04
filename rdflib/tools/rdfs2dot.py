@@ -9,15 +9,12 @@ You can draw the graph of an RDFS file directly:
    rdf2dot my_rdfs_file.rdf | dot -Tpng | display
 """
 
-import rdflib.extras.cmdlineutils
-
-import sys
-import itertools
 import collections
+import itertools
+import sys
 
-
-from rdflib import XSD, RDF, RDFS
-
+import rdflib.extras.cmdlineutils
+from rdflib import RDF, RDFS, XSD
 
 XSDTERMS = [
     XSD[x]
@@ -80,21 +77,19 @@ def rdfs2dot(g, stream, opts={}):
     fields = collections.defaultdict(set)
     nodes = {}
 
-    def node(x):
+    def node(nd):
+        if nd not in nodes:
+            nodes[nd] = "node%d" % len(nodes)
+        return nodes[nd]
 
-        if x not in nodes:
-            nodes[x] = "node%d" % len(nodes)
-        return nodes[x]
-
-    def label(x, g):
-
-        l_ = g.value(x, RDFS.label)
-        if l_ is None:
+    def label(xx, grf):
+        lbl = grf.value(xx, RDFS.label)
+        if lbl is None:
             try:
-                l_ = g.namespace_manager.compute_qname(x)[2]
+                lbl = grf.namespace_manager.compute_qname(xx)[2]
             except:
                 pass  # bnodes and some weird URIs cannot be split
-        return l_
+        return lbl
 
     stream.write('digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 

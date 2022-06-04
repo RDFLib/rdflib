@@ -1,0 +1,35 @@
+[
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/expand/relativeIris",
+    "@type": [
+      "https://w3c.github.io/json-ld-api/tests/expand/link",
+      "https://w3c.github.io/json-ld-api/tests/expand/0029-in.jsonld#fragment-works",
+      "https://w3c.github.io/json-ld-api/tests/expand/0029-in.jsonld?query=works",
+      "https://w3c.github.io/json-ld-api/tests/expand/",
+      "https://w3c.github.io/json-ld-api/tests/",
+      "https://w3c.github.io/json-ld-api/tests/parent",
+      "https://w3c.github.io/parent-parent-eq-root",
+      "https://w3c.github.io/still-root",
+      "https://w3c.github.io/too-many-dots",
+      "https://w3c.github.io/absolute",
+      "https://example.org/scheme-relative"
+    ],
+    "http://www.example.com/link": [
+      {
+        "@list": [
+          {"@id": "https://w3c.github.io/json-ld-api/tests/expand/link"},
+          {"@id": "https://w3c.github.io/json-ld-api/tests/expand/0029-in.jsonld#fragment-works"},
+          {"@id": "https://w3c.github.io/json-ld-api/tests/expand/0029-in.jsonld?query=works"},
+          {"@id": "https://w3c.github.io/json-ld-api/tests/expand/"},
+          {"@id": "https://w3c.github.io/json-ld-api/tests/"},
+          {"@id": "https://w3c.github.io/json-ld-api/tests/parent"},
+          {"@id": "https://w3c.github.io/parent-parent-eq-root"},
+          {"@id": "https://w3c.github.io/still-root"},
+          {"@id": "https://w3c.github.io/too-many-dots"},
+          {"@id": "https://w3c.github.io/absolute"},
+          {"@id": "https://example.org/scheme-relative"}
+        ]
+      }
+    ]
+  }
+]

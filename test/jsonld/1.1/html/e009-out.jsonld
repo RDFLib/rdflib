@@ -1,0 +1,6 @@
+[{
+  "http://example/comment-start": [{"@value": "<!--"}],
+  "http://example/comment-end": [{"@value": "-->"}],
+  "http://example/script-start": [{"@value": "<ScRiPt>"}],
+  "http://example/script-end": [{"@value": "</sCrIpT>"}]
+}]

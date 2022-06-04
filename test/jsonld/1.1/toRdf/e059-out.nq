@@ -1,0 +1,4 @@
+<https://w3c.github.io/json-ld-api/tests/toRdf/example-vocab-reset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3c.github.io/json-ld-api/tests/toRdf/document-relative> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/example-with-vocab> <http://example.org/vocab#embed> <https://w3c.github.io/json-ld-api/tests/toRdf/example-vocab-reset> .
+<https://w3c.github.io/json-ld-api/tests/toRdf/example-with-vocab> <http://example.org/vocab#property> "property expanded using @vocab" .
+<https://w3c.github.io/json-ld-api/tests/toRdf/example-with-vocab> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/vocab#vocab-prefixed> .

@@ -1,0 +1,22 @@
+[
+  {
+    "@id": "http://www.example.com/G",
+    "@graph": [
+      {
+        "@id": "http://www.example.com/z",
+        "http://www.example.com/q": [
+          {
+            "@list": [
+              {
+                "@value": "cell-A"
+              },
+              {
+                "@value": "cell-B"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

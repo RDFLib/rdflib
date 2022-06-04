@@ -1,0 +1,3 @@
+@prefix : <http://josd.github.io/brain/witch#>.
+
+{?S a :FLOATINGWOMAN} => {?S a :FLOATINGWOMAN}.

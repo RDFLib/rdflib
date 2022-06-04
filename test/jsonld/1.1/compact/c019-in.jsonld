@@ -1,0 +1,26 @@
+[{
+  "@type": [
+    "http://example/Type"
+  ],
+  "http://example/foo": [{
+    "http://example/foo-prop": [
+      {
+        "@value": "foo"
+      }
+    ]
+  }],
+  "http://example/bar": [{
+    "http://example/bar-prop": [
+      {
+        "@value": "bar"
+      }
+    ]
+  }],
+  "http://example/baz": [{
+    "http://example/base-prop": [
+      {
+        "@value": "baz"
+      }
+    ]
+  }]
+}]

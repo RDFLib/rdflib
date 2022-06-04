@@ -1,0 +1,16 @@
+[
+  {
+    "@id": "_:b0",
+    "http://xmlns.com/foaf/0.1/name": [ { "@value": "Dave Longley" } ],
+    "http://xmlns.com/foaf/0.1/knows": [ { "@id": "http://example.com/people/markus" } ]
+  },
+  {
+    "@id": "_:b1",
+    "http://xmlns.com/foaf/0.1/name": [ { "@value": "Gregg Kellogg" } ],
+    "http://xmlns.com/foaf/0.1/knows": [ { "@id": "http://example.com/people/markus" } ]
+  },
+  {
+    "@id": "http://example.com/people/markus",
+    "http://xmlns.com/foaf/0.1/name": [ { "@value": "Markus Lanthaler" } ]
+  }
+]

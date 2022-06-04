@@ -1,0 +1,8 @@
+{
+  "http://example.com/foo": {
+    "@value": "foo-value"
+  },
+  "@context": {
+    "@language": "en"
+  }
+}

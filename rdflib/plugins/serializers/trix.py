@@ -1,11 +1,10 @@
-from rdflib.serializer import Serializer
-from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from typing import IO, Optional
 
-from rdflib.term import URIRef, Literal, BNode
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
-
-from rdflib.graph import Graph, ConjunctiveGraph
-
+from rdflib.plugins.serializers.xmlwriter import XMLWriter
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["TriXSerializer"]
 
@@ -15,14 +14,20 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 
 class TriXSerializer(Serializer):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         super(TriXSerializer, self).__init__(store)
         if not store.context_aware:
             raise Exception(
                 "TriX serialization only makes sense for context-aware stores"
             )
 
-    def serialize(self, stream, base=None, encoding=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args,
+    ):
 
         nm = self.store.namespace_manager
 
@@ -42,7 +47,7 @@ class TriXSerializer(Serializer):
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)
         else:
-            raise Exception("Unknown graph type: " + type(self.store))
+            raise Exception(f"Unknown graph type: {type(self.store)}")
 
         self.writer.pop()
         stream.write("\n".encode("latin-1"))

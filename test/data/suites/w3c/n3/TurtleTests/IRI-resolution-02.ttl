@@ -1,0 +1,45 @@
+@base <http://a/bb/ccc/d/>.
+
+<urn:ex:s043> <urn:ex:p> <g:h>.
+<urn:ex:s044> <urn:ex:p> <g>.
+<urn:ex:s045> <urn:ex:p> <./g>.
+<urn:ex:s046> <urn:ex:p> <g/>.
+<urn:ex:s047> <urn:ex:p> </g>.
+<urn:ex:s048> <urn:ex:p> <//g>.
+<urn:ex:s049> <urn:ex:p> <?y>.
+<urn:ex:s050> <urn:ex:p> <g?y>.
+<urn:ex:s051> <urn:ex:p> <#s>.
+<urn:ex:s052> <urn:ex:p> <g#s>.
+<urn:ex:s053> <urn:ex:p> <g?y#s>.
+<urn:ex:s054> <urn:ex:p> <;x>.
+<urn:ex:s055> <urn:ex:p> <g;x>.
+<urn:ex:s056> <urn:ex:p> <g;x?y#s>.
+<urn:ex:s057> <urn:ex:p> <>.
+<urn:ex:s058> <urn:ex:p> <.>.
+<urn:ex:s059> <urn:ex:p> <./>.
+<urn:ex:s060> <urn:ex:p> <..>.
+<urn:ex:s061> <urn:ex:p> <../>.
+<urn:ex:s062> <urn:ex:p> <../g>.
+<urn:ex:s063> <urn:ex:p> <../..>.
+<urn:ex:s064> <urn:ex:p> <../../>.
+<urn:ex:s065> <urn:ex:p> <../../g>.
+
+<urn:ex:s066> <urn:ex:p> <../../../g>.
+<urn:ex:s067> <urn:ex:p> <../../../../g>.
+<urn:ex:s068> <urn:ex:p> </./g>.
+<urn:ex:s069> <urn:ex:p> </../g>.
+<urn:ex:s070> <urn:ex:p> <g.>.
+<urn:ex:s071> <urn:ex:p> <.g>.
+<urn:ex:s072> <urn:ex:p> <g..>.
+<urn:ex:s073> <urn:ex:p> <..g>.
+<urn:ex:s074> <urn:ex:p> <./../g>.
+<urn:ex:s075> <urn:ex:p> <./g/.>.
+<urn:ex:s076> <urn:ex:p> <g/./h>.
+<urn:ex:s077> <urn:ex:p> <g/../h>.
+<urn:ex:s078> <urn:ex:p> <g;x=1/./y>.
+<urn:ex:s079> <urn:ex:p> <g;x=1/../y>.
+<urn:ex:s080> <urn:ex:p> <g?y/./x>.
+<urn:ex:s081> <urn:ex:p> <g?y/../x>.
+<urn:ex:s082> <urn:ex:p> <g#s/./x>.
+<urn:ex:s083> <urn:ex:p> <g#s/../x>.
+<urn:ex:s084> <urn:ex:p> <http:g>.

@@ -1,0 +1,3 @@
+{
+  "http://example/foo": {"@value": "bar", "@id": "http://example/baz"}
+}

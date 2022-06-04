@@ -1,0 +1,9 @@
+<http://example.com/Subj1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Type> <http://example.com/U> .
+<http://example.com/Subj1> <http://example.com/ref> <http://example.com/U> <http://example.com/U> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "a" <http://example.com/U> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b <http://example.com/U> .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "b" <http://example.com/U> .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> <http://example.com/U> .
+<http://example.com/Subj1> <http://example.com/list> _:a <http://example.com/U> .
+<http://example.com/U> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Graph> .
+<http://example.com/U> <http://example.com/name> "Graph" .

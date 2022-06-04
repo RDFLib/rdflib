@@ -1,0 +1,13 @@
+[
+  {
+    "@id": "http://example.com/some/deep/directory/and/relativePropertyIris",
+    "http://example.com/absolute": [{"@value": "/absolute"}],
+    "http://example.com/some/deep/directory/": [{"@value": "deep/directory"}],
+    "http://example.com/some/deep/directory/and/": [{"@value": "deep/directory/and/"}],
+    "http://example.com/some/#fragment-works": [{"@value": "#fragment-works"}],
+    "http://example.com/some/?query=works": [{"@value": "?query=works"}],
+    "http://example.com/some/link": [{"@value": "link"}],
+    "http://example.com/some/../parent": [{"@value": "../parent"}],
+    "http://example.com/too-many-dots": [{"@value": "too-many-dots"}]
+  }
+]

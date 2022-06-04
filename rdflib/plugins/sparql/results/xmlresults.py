@@ -1,14 +1,12 @@
 import logging
-
-from xml.sax.saxutils import XMLGenerator
+from typing import IO, Optional
 from xml.dom import XML_NAMESPACE
+from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
+from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.compat import etree
-
-from rdflib import Literal, URIRef, BNode, Variable
-from rdflib.query import Result, ResultParser, ResultSerializer, ResultException
-
+from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 
 SPARQL_XML_NAMESPACE = "http://www.w3.org/2005/sparql-results#"
 RESULTS_NS_ET = "{%s}" % SPARQL_XML_NAMESPACE
@@ -28,15 +26,17 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 
 class XMLResultParser(ResultParser):
-    def parse(self, source, content_type=None):
+    # TODO FIXME: content_type should be a keyword only arg.
+    def parse(self, source, content_type: Optional[str] = None):  # type: ignore[override]
         return XMLResult(source)
 
 
 class XMLResult(Result):
-    def __init__(self, source, content_type=None):
+    def __init__(self, source, content_type: Optional[str] = None):
 
         try:
-            parser = etree.XMLParser(huge_tree=True)
+            # try use as if etree is from lxml, and if not use it as normal.
+            parser = etree.XMLParser(huge_tree=True)  # type: ignore[call-arg]
             tree = etree.parse(source, parser)
         except TypeError:
             tree = etree.parse(source)
@@ -55,21 +55,29 @@ class XMLResult(Result):
 
         if type_ == "SELECT":
             self.bindings = []
-            for result in results:
+            for result in results:  # type: ignore[union-attr]
                 r = {}
                 for binding in result:
-                    r[Variable(binding.get("name"))] = parseTerm(binding[0])
+                    # type error: error: Argument 1 to "Variable" has incompatible type "Union[str, None, Any]"; expected "str"
+                    # NOTE on type error: Element.get() can return None, and
+                    # this will invariably fail if passed into Variable
+                    # constructor as value
+                    r[Variable(binding.get("name"))] = parseTerm(binding[0])  # type: ignore[arg-type] # FIXME
                 self.bindings.append(r)
 
             self.vars = [
-                Variable(x.get("name"))
+                # type error: Argument 1 to "Variable" has incompatible type "Optional[str]"; expected "str"
+                # NOTE on type error: Element.get() can return None, and this
+                # will invariably fail if passed into Variable constructor as
+                # value
+                Variable(x.get("name"))  # type: ignore[arg-type] # FIXME
                 for x in tree.findall(
                     "./%shead/%svariable" % (RESULTS_NS_ET, RESULTS_NS_ET)
                 )
             ]
 
         else:
-            self.askAnswer = boolean.text.lower().strip() == "true"
+            self.askAnswer = boolean.text.lower().strip() == "true"  # type: ignore[union-attr]
 
 
 def parseTerm(element):
@@ -101,7 +109,7 @@ class XMLResultSerializer(ResultSerializer):
     def __init__(self, result):
         ResultSerializer.__init__(self, result)
 
-    def serialize(self, stream, encoding="utf-8"):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
 
         writer = SPARQLXMLWriter(stream, encoding)
         if self.result.type == "ASK":

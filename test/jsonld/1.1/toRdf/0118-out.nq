@@ -1,0 +1,9 @@
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:b0 .
+_:b0 _:b0 "plain value" .
+_:b0 _:b0 <https://w3c.github.io/json-ld-api/tests/toRdf/relativeIri> .
+_:b0 _:b0 _:b0 .
+_:b0 _:b0 _:b1 .
+_:b0 _:b0 _:b2 .
+_:b0 _:b0 _:b3 .
+_:b1 _:b0 "term" .
+_:b2 _:b0 "termId" .

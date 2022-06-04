@@ -1,5 +1,4 @@
-from rdflib import Graph, Namespace, RDF, Variable
-
+from rdflib import RDF, Graph, Namespace, Variable
 from rdflib.query import Result, ResultParser
 
 RS = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/result-set#")

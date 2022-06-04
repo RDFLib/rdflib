@@ -1,0 +1,9 @@
+{
+  "@id": "http://example.com/id1",
+  "@type": "t1",
+  "term1": "v1",
+  "term2": {"@value": "v2", "@type": "t2"},
+  "term3": {"@value": "v3", "@language": "en"},
+  "term4": 4,
+  "term5": [50, 51]
+}

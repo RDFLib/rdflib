@@ -6,10 +6,10 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 from collections import defaultdict
 from functools import cmp_to_key
 
-from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
-from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
+from rdflib.serializer import Serializer
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -42,7 +42,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = "  "
-    roundtrip_prefixes = tuple()
+    roundtrip_prefixes = ()
 
     def __init__(self, store):
 
@@ -138,7 +138,7 @@ class RecursiveSerializer(Serializer):
 
     def sortProperties(self, properties):
         """Take a hash from predicate uris to lists of values.
-           Sort the lists of values.  Return a sorted list of properties."""
+        Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
             objects.sort(key=cmp_to_key(_object_comparator))
@@ -257,7 +257,8 @@ class TurtleSerializer(RecursiveSerializer):
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if node in self.keywords:
+            if i == VERB and node in self.keywords:
+                # predicate is a keyword
                 continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
@@ -267,6 +268,7 @@ class TurtleSerializer(RecursiveSerializer):
         if isinstance(p, BNode):  # hmm - when is P ever a bnode?
             self._references[p] += 1
 
+    # TODO: Rename to get_pname
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
             return None
@@ -287,6 +289,8 @@ class TurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
+
+        local = local.replace(r"(", r"\(").replace(r")", r"\)")
 
         # QName cannot end with .
         if local.endswith("."):

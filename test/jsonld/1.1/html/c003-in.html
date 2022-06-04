@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script id="first" type="application/ld+json">
+    {
+      "@context": {
+        "foo": {"@id": "http://example.com/foo", "@container": "@list"}
+      },
+      "foo": [{"@value": "bar"}]
+    }
+    </script>
+    <script id="second" type="application/ld+json">
+    {
+      "@context": {"ex": "http://example.com/"},
+      "@graph": [
+        {"ex:foo": {"@value": "foo"}},
+        {"ex:bar": {"@value": "bar"}}
+      ]
+    }
+    </script>
+  </head>
+</html>

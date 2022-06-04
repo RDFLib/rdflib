@@ -5,7 +5,7 @@ graphs that can be used and queried. The store that backs the graph
 
 >>> from rdflib import ConjunctiveGraph, URIRef, Namespace
 >>> g = ConjunctiveGraph()
->>> data = open("test/nquads.rdflib/example.nquads", "rb")
+>>> data = open("test/data/nquads.rdflib/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
 <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 >>> assert len(g.store) == 449
@@ -28,10 +28,12 @@ from codecs import getreader
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
-from rdflib.plugins.parsers.ntriples import ParseError
-from rdflib.plugins.parsers.ntriples import r_tail
-from rdflib.plugins.parsers.ntriples import r_wspace
+from rdflib.plugins.parsers.ntriples import (
+    ParseError,
+    W3CNTriplesParser,
+    r_tail,
+    r_wspace,
+)
 
 __all__ = ["NQuadsParser"]
 

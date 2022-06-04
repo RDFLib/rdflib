@@ -1,0 +1,6 @@
+{
+  "@id": "http://greggkellogg.net/foaf#me",
+  "http://xmlns.com/foaf/0.1/knows": {
+    "http://xmlns.com/foaf/0.1/name": {"@value": "Herman Iván", "@language": "hu"}
+  }
+}

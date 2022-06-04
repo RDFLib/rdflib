@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "notChosen": {"@id": "http://example.org/term", "@type": "@vocab"},
+    "chosen": {"@id": "http://example.org/term", "@type": "@id"}
+  },
+  "chosen": "http://example.org/enum"
+}

@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "mylist": {"@id": "http://example.com/mylist", "@container": ["@list"]},
+    "myset": {"@id": "http://example.com/myset", "@container": ["@set"]},
+    "myid": {"@id": "http://example.com/myid", "@container": ["@id"]},
+    "mytype": {"@id": "http://example.com/mytype", "@container": ["@type"]},
+    "mylanguage": {"@id": "http://example.com/mylanguage", "@container": ["@language"]},
+    "myindex": {"@id": "http://example.com/myindex", "@container": ["@index"]}
+  },
+  "@id": "http://example.org/id",
+  "mylist": ["foo"],
+  "myset": ["foo"],
+  "myid": {"http://example/id": {"@type": "http://example/type"}},
+  "mytype": {"http://example/type": "http://example/id"},
+  "mylanguage": {"en": "foo"},
+  "myindex": {"bar": "foo"}
+}

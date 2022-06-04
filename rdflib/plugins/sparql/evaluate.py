@@ -16,38 +16,42 @@ also return a dict of list of dicts
 
 import collections
 import itertools
-import re
-from urllib.request import urlopen, Request
-from urllib.parse import urlencode
 import json as j
+import re
+from typing import Any, Deque, Dict, Generator, Iterable, List, Tuple, Union
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
 from pyparsing import ParseException
 
-from rdflib import Variable, Graph, BNode, URIRef, Literal
-from rdflib.plugins.sparql import CUSTOM_EVALS
-from rdflib.plugins.sparql.parserutils import value
-from rdflib.plugins.sparql.sparql import (
-    QueryContext,
-    AlreadyBound,
-    FrozenBindings,
-    Bindings,
-    SPARQLError,
-)
+from rdflib.graph import Graph
+from rdflib.plugins.sparql import CUSTOM_EVALS, parser
+from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.evalutils import (
-    _filter,
-    _eval,
-    _join,
-    _diff,
-    _minus,
-    _fillTemplate,
     _ebv,
+    _eval,
+    _fillTemplate,
+    _join,
+    _minus,
     _val,
 )
+from rdflib.plugins.sparql.parserutils import CompValue, value
+from rdflib.plugins.sparql.sparql import (
+    AlreadyBound,
+    FrozenBindings,
+    FrozenDict,
+    Query,
+    QueryContext,
+    SPARQLError,
+)
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
-from rdflib.plugins.sparql.aggregates import Aggregator
-from rdflib.plugins.sparql import parser
+_Triple = Tuple[Identifier, Identifier, Identifier]
 
 
-def evalBGP(ctx, bgp):
+def evalBGP(
+    ctx: QueryContext, bgp: List[_Triple]
+) -> Generator[FrozenBindings, None, None]:
     """
     A basic graph pattern
     """
@@ -62,7 +66,8 @@ def evalBGP(ctx, bgp):
     _p = ctx[p]
     _o = ctx[o]
 
-    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):
+    # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
+    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr]
         if None in (_s, _p, _o):
             c = ctx.push()
         else:
@@ -87,7 +92,9 @@ def evalBGP(ctx, bgp):
             yield x
 
 
-def evalExtend(ctx, extend):
+def evalExtend(
+    ctx: QueryContext, extend: CompValue
+) -> Generator[FrozenBindings, None, None]:
     # TODO: Deal with dict returned from evalPart from GROUP BY
 
     for c in evalPart(ctx, extend.p):
@@ -102,7 +109,9 @@ def evalExtend(ctx, extend):
             yield c
 
 
-def evalLazyJoin(ctx, join):
+def evalLazyJoin(
+    ctx: QueryContext, join: CompValue
+) -> Generator[FrozenBindings, None, None]:
     """
     A lazy join will push the variables bound
     in the first part to the second part,
@@ -115,7 +124,7 @@ def evalLazyJoin(ctx, join):
             yield b.merge(a)  # merge, as some bindings may have been forgotten
 
 
-def evalJoin(ctx, join):
+def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, None]:
 
     # TODO: Deal with dict returned from evalPart from GROUP BY
     # only ever for join.p1
@@ -128,7 +137,7 @@ def evalJoin(ctx, join):
         return _join(a, b)
 
 
-def evalUnion(ctx, union):
+def evalUnion(ctx: QueryContext, union: CompValue) -> Iterable[FrozenBindings]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)
@@ -137,13 +146,15 @@ def evalUnion(ctx, union):
     return branch1_branch2
 
 
-def evalMinus(ctx, minus):
+def evalMinus(ctx: QueryContext, minus: CompValue) -> Generator[FrozenDict, None, None]:
     a = evalPart(ctx, minus.p1)
     b = set(evalPart(ctx, minus.p2))
     return _minus(a, b)
 
 
-def evalLeftJoin(ctx, join):
+def evalLeftJoin(
+    ctx: QueryContext, join: CompValue
+) -> Generator[FrozenBindings, None, None]:
     # import pdb; pdb.set_trace()
     for a in evalPart(ctx, join.p1):
         ok = False
@@ -167,7 +178,9 @@ def evalLeftJoin(ctx, join):
                 yield a
 
 
-def evalFilter(ctx, part):
+def evalFilter(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
     # TODO: Deal with dict returned from evalPart!
     for c in evalPart(ctx, part.p):
         if _ebv(
@@ -177,7 +190,9 @@ def evalFilter(ctx, part):
             yield c
 
 
-def evalGraph(ctx, part):
+def evalGraph(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
 
     if ctx.dataset is None:
         raise Exception(
@@ -210,7 +225,9 @@ def evalGraph(ctx, part):
             yield x
 
 
-def evalValues(ctx, part):
+def evalValues(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
     for r in part.p.res:
         c = ctx.push()
         try:
@@ -223,7 +240,7 @@ def evalValues(ctx, part):
         yield c.solution()
 
 
-def evalMultiset(ctx, part):
+def evalMultiset(ctx: QueryContext, part: CompValue):
 
     if part.p.name == "values":
         return evalValues(ctx, part)
@@ -231,7 +248,7 @@ def evalMultiset(ctx, part):
     return evalPart(ctx, part.p)
 
 
-def evalPart(ctx, part):
+def evalPart(ctx: QueryContext, part: CompValue):
 
     # try custom evaluation functions
     for name, c in CUSTOM_EVALS.items():
@@ -299,7 +316,7 @@ def evalPart(ctx, part):
         raise Exception("I dont know: %s" % part.name)
 
 
-def evalServiceQuery(ctx, part):
+def evalServiceQuery(ctx: QueryContext, part):
     res = {}
     match = re.match(
         "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
@@ -318,9 +335,17 @@ def evalServiceQuery(ctx, part):
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = urlopen(Request(service_url + "?" + urlencode(query_settings), headers=headers))
+            response = urlopen(
+                Request(service_url + "?" + urlencode(query_settings), headers=headers)
+            )
         else:
-            response = urlopen(Request(service_url, data=urlencode(query_settings).encode(), headers=headers))
+            response = urlopen(
+                Request(
+                    service_url,
+                    data=urlencode(query_settings).encode(),
+                    headers=headers,
+                )
+            )
         if response.status == 200:
             json = j.loads(response.read())
             variables = res["vars_"] = json["head"]["vars"]
@@ -328,7 +353,8 @@ def evalServiceQuery(ctx, part):
             res = json["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
-                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
+                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
+                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
                         yield bound
         else:
             raise Exception(
@@ -337,14 +363,14 @@ def evalServiceQuery(ctx, part):
 
 
 """
-    Build a query string to be used by the service call. 
+    Build a query string to be used by the service call.
     It is supposed to pass in the existing bound solutions.
     Re-adds prefixes if added and sets the base.
     Wraps it in select if needed.
 """
 
 
-def _buildQueryStringForServiceCall(ctx, match):
+def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
 
     service_query = match.group(2)
     try:
@@ -352,10 +378,12 @@ def _buildQueryStringForServiceCall(ctx, match):
     except ParseException:
         # This could be because we don't have a select around the service call.
         service_query = "SELECT REDUCED * WHERE {" + service_query + "}"
-        for p in ctx.prologue.namespace_manager.store.namespaces():
+        # type error: Item "None" of "Optional[Prologue]" has no attribute "namespace_manager"
+        for p in ctx.prologue.namespace_manager.store.namespaces():  # type: ignore[union-attr]
             service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
         # re add the base if one was defined
-        base = ctx.prologue.base
+        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"  [union-attr]
+        base = ctx.prologue.base  # type: ignore[union-attr]
         if base is not None and len(base) > 0:
             service_query = "BASE <" + base + "> " + service_query
     sol = ctx.solution()
@@ -368,26 +396,36 @@ def _buildQueryStringForServiceCall(ctx, match):
     return service_query
 
 
-def _yieldBindingsFromServiceCallResult(ctx, r, variables):
-    res_dict = {}
+def _yieldBindingsFromServiceCallResult(
+    ctx: QueryContext, r: Dict[str, Dict[str, str]], variables: List[str]
+) -> Generator[FrozenBindings, None, None]:
+    res_dict: Dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
-            if r[var]["type"] == "uri":
-                res_dict[Variable(var)] = URIRef(r[var]["value"])
-            elif r[var]["type"] == "bnode":
-                res_dict[Variable(var)] = BNode(r[var]["value"])
-            elif r[var]["type"] == "literal" and "datatype" in r[var]:
+            var_binding = r[var]
+            var_type = var_binding["type"]
+            if var_type == "uri":
+                res_dict[Variable(var)] = URIRef(var_binding["value"])
+            elif var_type == "literal":
                 res_dict[Variable(var)] = Literal(
-                    r[var]["value"], datatype=r[var]["datatype"]
+                    var_binding["value"],
+                    datatype=var_binding.get("datatype"),
+                    lang=var_binding.get("xml:lang"),
                 )
-            elif r[var]["type"] == "literal" and "xml:lang" in r[var]:
+            # This is here because of
+            # https://www.w3.org/TR/2006/NOTE-rdf-sparql-json-res-20061004/#variable-binding-results
+            elif var_type == "typed-literal":
                 res_dict[Variable(var)] = Literal(
-                    r[var]["value"], lang=r[var]["xml:lang"]
+                    var_binding["value"], datatype=URIRef(var_binding["datatype"])
                 )
+            elif var_type == "bnode":
+                res_dict[Variable(var)] = BNode(var_binding["value"])
+            else:
+                raise ValueError(f"invalid type {var_type!r} for variable {var!r}")
     yield FrozenBindings(ctx, res_dict)
 
 
-def evalGroup(ctx, group):
+def evalGroup(ctx: QueryContext, group: CompValue):
     """
     http://www.w3.org/TR/sparql11-query/#defn_algGroup
     """
@@ -395,13 +433,17 @@ def evalGroup(ctx, group):
     return evalPart(ctx, group.p)
 
 
-def evalAggregateJoin(ctx, agg):
+def evalAggregateJoin(
+    ctx: QueryContext, agg: CompValue
+) -> Generator[FrozenBindings, None, None]:
     # import pdb ; pdb.set_trace()
     p = evalPart(ctx, agg.p)
     # p is always a Group, we always get a dict back
 
     group_expr = agg.p.expr
-    res = collections.defaultdict(lambda: Aggregator(aggregations=agg.A))
+    res: Dict[Any, Any] = collections.defaultdict(
+        lambda: Aggregator(aggregations=agg.A)
+    )
 
     if group_expr is None:
         # no grouping, just COUNT in SELECT clause
@@ -424,7 +466,9 @@ def evalAggregateJoin(ctx, agg):
         yield FrozenBindings(ctx)
 
 
-def evalOrderBy(ctx, part):
+def evalOrderBy(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
 
     res = evalPart(ctx, part.p)
 
@@ -438,7 +482,7 @@ def evalOrderBy(ctx, part):
     return res
 
 
-def evalSlice(ctx, slice):
+def evalSlice(ctx: QueryContext, slice: CompValue):
     res = evalPart(ctx, slice.p)
 
     return itertools.islice(
@@ -448,7 +492,9 @@ def evalSlice(ctx, slice):
     )
 
 
-def evalReduced(ctx, part):
+def evalReduced(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
     """apply REDUCED to result
 
     REDUCED is not as strict as DISTINCT, but if the incoming rows were sorted
@@ -469,7 +515,7 @@ def evalReduced(ctx, part):
 
     # mixed data structure: set for lookup, deque for append/pop/remove
     mru_set = set()
-    mru_queue = collections.deque()
+    mru_queue: Deque[Any] = collections.deque()
 
     for row in evalPart(ctx, part.p):
         if row in mru_set:
@@ -486,7 +532,9 @@ def evalReduced(ctx, part):
         mru_queue.appendleft(row)
 
 
-def evalDistinct(ctx, part):
+def evalDistinct(
+    ctx: QueryContext, part: CompValue
+) -> Generator[FrozenBindings, None, None]:
     res = evalPart(ctx, part.p)
 
     done = set()
@@ -496,13 +544,13 @@ def evalDistinct(ctx, part):
             done.add(x)
 
 
-def evalProject(ctx, project):
+def evalProject(ctx: QueryContext, project: CompValue):
     res = evalPart(ctx, project.p)
 
     return (row.project(project.PV) for row in res)
 
 
-def evalSelectQuery(ctx, query):
+def evalSelectQuery(ctx: QueryContext, query: CompValue):
 
     res = {}
     res["type_"] = "SELECT"
@@ -511,8 +559,8 @@ def evalSelectQuery(ctx, query):
     return res
 
 
-def evalAskQuery(ctx, query):
-    res = {}
+def evalAskQuery(ctx: QueryContext, query: CompValue):
+    res: Dict[str, Union[bool, str]] = {}
     res["type_"] = "ASK"
     res["askAnswer"] = False
     for x in evalPart(ctx, query.p):
@@ -522,7 +570,7 @@ def evalAskQuery(ctx, query):
     return res
 
 
-def evalConstructQuery(ctx, query):
+def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
     template = query.template
 
     if not template:
@@ -534,14 +582,14 @@ def evalConstructQuery(ctx, query):
     for c in evalPart(ctx, query.p):
         graph += _fillTemplate(template, c)
 
-    res = {}
+    res: Dict[str, Union[str, Graph]] = {}
     res["type_"] = "CONSTRUCT"
     res["graph"] = graph
 
     return res
 
 
-def evalQuery(graph, query, initBindings, base=None):
+def evalQuery(graph: Graph, query: Query, initBindings, base=None):
 
     initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 

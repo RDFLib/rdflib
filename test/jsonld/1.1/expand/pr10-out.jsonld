@@ -1,0 +1,18 @@
+[
+  {
+    "ex:protected": [
+      {
+        "@value": "p === ex:protected"
+      }
+    ],
+    "ex:unprotected": [
+      {
+        "ex:protected": [
+          {
+            "@value": "p === ex:protected"
+          }
+        ]
+      }
+    ]
+  }
+]

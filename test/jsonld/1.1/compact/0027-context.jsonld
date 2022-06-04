@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "label": "http://example.com/vocab/label",
+    "container": { "@id": "label", "@container": "@set" }
+  }
+}

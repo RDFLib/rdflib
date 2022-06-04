@@ -1,0 +1,12 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "http://example/",
+    "bar": {
+      "@context": {
+        "@propagate": false,
+        "baz": {"@type": "@id"}
+      }
+    }
+  }
+}

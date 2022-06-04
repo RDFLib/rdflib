@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "list": {"@container": "@list", "@nest": "nestedlist"},
+    "nestedlist": "@nest"
+  },
+  "nestedlist": {
+    "list": ["a", "b"]
+  }
+}

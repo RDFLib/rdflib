@@ -1,0 +1,8 @@
+[
+  {
+    "http://example/a": [{
+      "@type": ["http://example/Foo"],
+      "http://example/bar": [{"@id": "http://example/baz"}]
+    }]
+  }
+]

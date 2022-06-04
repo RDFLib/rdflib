@@ -1,0 +1,17 @@
+[
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/flatten/0043-in.jsonld",
+    "http://example/sequence": [
+      {"@list": [{"@id": "https://w3c.github.io/json-ld-api/tests/flatten/0043-in.jsonld#t0001"}]}
+    ]
+  },
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/flatten/0043-in.jsonld#t0001",
+    "http://example/input": [
+      {"@id": "https://w3c.github.io/json-ld-api/tests/flatten/0001-in.jsonld"}
+    ],
+    "http://example/name": [
+      {"@value": "Keywords cannot be aliased to other keywords"}
+    ]
+  }
+]

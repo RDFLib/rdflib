@@ -1,0 +1,26 @@
+<!-- Example 1 in 
+     "TriX : RDF Triples in XML"
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html
+     http://www.hpl.hp.com/techreports/2004/HPL-2004-56.pdf
+-->
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/graph1</uri>
+    <triple>
+      <uri>http://example.org/Bob</uri>
+      <uri>http://example.org/wife</uri>
+      <uri>http://example.org/Mary</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/Bob</uri>
+      <uri>http://example.org/name</uri>
+      <plainLiteral>Bob</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/Mary</uri>
+      <uri>http://example.org/age</uri>
+      <typedLiteral
+      datatype="http://www.w3.org/2001/XMLSchema#integer">32</typedLiteral>
+    </triple>
+  </graph>
+</TriX>

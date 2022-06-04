@@ -1,0 +1,10 @@
+[
+  {
+    "http://example.com/property": [ { "@value": "this is English", "@language": "en" } ],
+    "http://example.com/nested": [
+      {
+        "http://example.com/property": [ { "@value": "and this is a plain string" } ]
+      }
+    ]
+  }
+]

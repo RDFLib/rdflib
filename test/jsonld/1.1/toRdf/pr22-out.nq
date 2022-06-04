@@ -1,0 +1,4 @@
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Child> .
+_:b1 <http://example.com/foo> <http://example.com/test> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Parent> .
+_:b0 <http://example.com/foo> _:b1 .

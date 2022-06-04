@@ -1,0 +1,4 @@
+@prefix log:  <http://www.w3.org/2000/10/swap/log#>.
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+{ ("2005-03-30T11:00:00" xsd:dateTime) log:dtlit ?X } => { ?X a :Answer }.

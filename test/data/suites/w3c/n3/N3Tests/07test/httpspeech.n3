@@ -1,0 +1,52 @@
+@base <http://www.w3.org/2001/tag/dj9/>.
+@prefix : <httpspeech#>.
+
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix ht: <http://www.w3.org/2006/http#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix str: <http://www.w3.org/2000/10/swap/string#>.
+@prefix c: <speech#>.
+
+# A 200 response gives an entity corresponding to a resource.
+{
+  ?RES log:uri ?I.
+  ?CONNECTION ht:requests ?R. ?R list:member ?Q.
+  ?Q ht:methodName "GET";
+    ht:absoluteURI ?I;
+    ht:resp ?A.
+  ?A ht:statusCodeNumber "200".
+# or:    ht:sc <http://www.w3.org/2008/http-statusCodes#statusCode200>
+  ?A :asEntity ?E.
+}
+=> { ?CONNECTION c:says { ?E :corresponds_to ?RES } }.
+
+# origin servers control correspondence in their domain
+{
+  ?CONNECTION c:says { ?E :corresponds_to ?RES }. # needed for fwd chaining
+
+  ?CONNECTION ht:connectionAuthority ?A.
+  ?RES log:uri ?I.
+  (?I "http://([^/]+)/") str:search (?A).
+} => { ?CONNECTION c:controls_spo ( ?E :corresponds_to ?RES )}.
+
+{ 
+ ("http://example.org/1995/manifesto"
+   "http://([^/]+)/") str:search (?A).
+} => { :regexTest :output ?A }.
+
+:corresponds_to s:subPropertyOf [ owl:inverseOf c:says ].
+
+:corresponds_to s:label "corresponds to";
+	      s:isDefinedBy <http://tools.ietf.org/html/draft-ietf-httpbis-p2-semantics-08#section-8.2.1>;
+	      s:domain :Entity;
+	      s:range s:Resource. # content-free
+
+:Entity a owl:Class; s:label "Entity".
+
+:asEntity s:label "as entity";
+  s:domain :Message;
+  s:range :Entity;
+  s:comment "body bytes (after transfer encoding) interpreted as per content headers (e.g. content type) of a message; for RDF, gives a formula".
+

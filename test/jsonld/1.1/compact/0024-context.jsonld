@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "type1": "http://example.com/t1",
+    "type2": "http://example.com/t2",
+    "@language": "de",
+    "termL": { "@id": "http://example.com/termLanguage" },
+    "termLL0": { "@id": "http://example.com/termLanguage", "@container": "@list" },
+    "termLL1": { "@id": "http://example.com/termLanguage", "@container": "@list", "@language": "en" },
+    "termLL2": { "@id": "http://example.com/termLanguage", "@container": "@list", "@language": null },
+    "termT": { "@id": "http://example.com/termType" },
+    "termTL0": { "@id": "http://example.com/termType", "@container": "@list" },
+    "termTL1": { "@id": "http://example.com/termType", "@container": "@list", "@type": "type1" },
+    "termTL2": { "@id": "http://example.com/termType", "@container": "@list", "@type": "type2" }
+  }
+}

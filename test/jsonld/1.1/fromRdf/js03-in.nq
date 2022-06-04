@@ -1,0 +1,1 @@
+<http://example.org/vocab#id> <http://example.org/vocab#double> "1.23"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON> .

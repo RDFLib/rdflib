@@ -1,0 +1,107 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix log:  <http://www.w3.org/2000/10/swap/log#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix dce:  <http://purl.org/dc/elements/1.1/>.
+
+
+<http://eulersharp.sourceforge.net/2003/03swap/skos-rules>
+    dce:title "SKOS rules"@en;
+    dce:creator "Giovanni Mels";
+    dce:publisher "Agfa Healthcare/Belgium"@en;
+    dce:description "SKOS axioms expressed as N3 rules."@en;
+    rdfs:seeAlso <http://www.w3.org/TR/skos-reference>.
+
+
+{ ?c skos:topConceptOf  ?s } => { ?s skos:hasTopConcept ?c }.
+{ ?s skos:hasTopConcept ?c } => { ?c skos:topConceptOf  ?s }.
+
+{ ?x skos:related ?y } => { ?y skos:related ?x }.
+
+{ ?x skos:narrower ?y } => { ?y skos:broader  ?x }.
+{ ?x skos:broader  ?y } => { ?y skos:narrower ?x }.
+{ ?x skos:narrowerTransitive ?y } => { ?y skos:broaderTransitive  ?x }.
+{ ?x skos:broaderTransitive  ?y } => { ?y skos:narrowerTransitive ?x }.
+
+{ ?x skos:narrowerTransitive ?y. ?y skos:narrowerTransitive ?z } => { ?x skos:narrowerTransitive ?z }.
+{ ?x skos:broaderTransitive  ?y. ?y skos:broaderTransitive  ?z } => { ?x skos:broaderTransitive  ?z }.
+
+{ ?x skos:memberList ?L. ?e list:in ?L } => { ?x skos:member ?e }.
+
+{ ?x skos:narrowMatch ?y } => { ?y skos:broadMatch  ?x }.
+{ ?x skos:broadMatch  ?y } => { ?y skos:narrowMatch ?x }.
+
+{ ?x skos:relatedMatch ?y } => { ?y skos:relatedMatch ?x }.
+{ ?x skos:closeMatch   ?y } => { ?y skos:closeMatch   ?x }.
+{ ?x skos:exactMatch   ?y } => { ?y skos:exactMatch   ?x }.
+
+{ ?x skos:exactMatch ?y. ?y skos:exactMatch ?z } => { ?x skos:exactMatch ?z }.
+
+{ ?x skos:broaderTransitive  ?y } => { ?x skos:semanticRelation ?y }.
+{ ?x skos:narrowerTransitive ?y } => { ?x skos:semanticRelation ?y }.
+{ ?x skos:related            ?y } => { ?x skos:semanticRelation ?y }.
+{ ?x skos:mappingRelation    ?y } => { ?x skos:semanticRelation ?y }.
+
+{ ?x skos:broader  ?y } => { ?x skos:broaderTransitive ?y  }.
+{ ?x skos:narrower ?y } => { ?x skos:narrowerTransitive ?y }.
+
+{ ?x skos:closeMatch ?y   } => { ?x skos:mappingRelation ?y }.
+{ ?x skos:broadMatch ?y   } => { ?x skos:mappingRelation ?y }.
+{ ?x skos:narrowMatch ?y  } => { ?x skos:mappingRelation ?y }.
+{ ?x skos:relatedMatch ?y } => { ?x skos:mappingRelation ?y }.
+
+{ ?x skos:broadMatch  ?y } => { ?x skos:broader  ?y }.
+{ ?x skos:narrowMatch ?y } => { ?x skos:narrower ?y }.
+
+{ ?x skos:exactMatch ?y } => { ?x skos:closeMatch ?y }.
+
+{ ?x skos:relatedMatch ?y } => { ?x skos:related ?y }.
+
+{ ?c skos:topConceptOf ?s } => { ?c skos:inScheme ?s }.
+
+{ ?c skos:changeNote    ?n } => { ?c skos:note ?n }.
+{ ?c skos:definition    ?n } => { ?c skos:note ?n }.
+{ ?c skos:editorialNote ?n } => { ?c skos:note ?n }.
+{ ?c skos:example       ?n } => { ?c skos:note ?n }.
+{ ?c skos:historyNote   ?n } => { ?c skos:note ?n }.
+{ ?c skos:scopeNote     ?n } => { ?c skos:note ?n }.
+
+{ ?c skos:inScheme ?s } => { ?s a skos:ConceptScheme }.
+{ ?s skos:hasTopConcept ?c } => { ?s a skos:ConceptScheme. ?c a skos:Concept }.
+{ ?x skos:semanticRelation ?y } => { ?x a skos:Concept. ?y a skos:Concept }.
+{ ?c a skos:OrderedCollection } => { ?c a skos:Collection }.
+{ ?s skos:member ?c } => { ?s a skos:Collection }.
+{ ?s skos:memberList ?L } => { ?s a skos:OrderedCollection. ?L a rdf:List }.
+
+
+
+#
+# integrity constraints
+#
+
+# skos:ConceptScheme, skos:Concept and skos:Collection are all disjoint.
+{ ?x a skos:ConceptScheme, skos:Concept } => @false.
+{ ?x a skos:Collection, skos:Concept } => @false.
+{ ?x a skos:Collection, skos:ConceptScheme } => @false.
+
+# Hierarchical and associative relations are disjoint.
+{ ?x skos:related ?y. ?x skos:broaderTransitive ?y } => @false.
+
+# Exact and hierarchical relations are disjoint.
+{ ?x skos:exactMatch ?y. ?x skos:broadMatch ?y } => @false.
+
+# Exact and associative relations are disjoint.
+{ ?x skos:exactMatch ?y. ?x skos:relatedMatch ?y } => @false.
+
+# skos:memberList is a functional property.
+{ ?c skos:memberList ?L1, ?L2. ?L1 log:notEqualTo ?L2 } => @false.
+
+# skos:prefLabel, skos:altLabel and skos:hiddenLabel are all disjoint.
+{ ?c skos:prefLabel ?l; skos:altLabel ?l } => @false.
+{ ?c skos:prefLabel ?l; skos:hiddenLabel ?l } => @false.
+{ ?c skos:altLabel ?l; skos:hiddenLabel ?l } => @false.
+
+# A resource has no more than one value of skos:prefLabel per language tag.
+{ ?c skos:prefLabel ?x, ?y. ?x log:notEqualTo ?y. (?x) func:lang-from-PlainLiteral ?lang. (?y) func:lang-from-PlainLiteral ?lang } => @false.

@@ -1,0 +1,2 @@
+# Just the projection of variables within the select clause. It is comprised in every other test
+# Nothing to test explicitly

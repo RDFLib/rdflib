@@ -1,0 +1,8 @@
+_:b1 <http://example/label> "Object with @type <foo>" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/foo> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/bar> .
+_:b2 <http://example/label> "Object with @type _:bar" .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:b4 .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:b3 .
+_:b0 <http://example/typemap> _:b1 .
+_:b0 <http://example/typemap> _:b2 .

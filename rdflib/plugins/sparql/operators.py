@@ -6,36 +6,32 @@ using setEvalFn
 
 """
 
-import sys
-import re
-import math
-import random
-import uuid
+import datetime as py_datetime  # naming conflict with function within this module
 import hashlib
-
-from functools import reduce
-
-from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
-
+import math
 import operator as pyop  # python operators
-
-import isodate
-
-from rdflib.plugins.sparql.parserutils import CompValue, Expr
-from rdflib.plugins.sparql.datatypes import XSD_DTs, type_promotion
-from rdflib.plugins.sparql.datatypes import XSD_DateTime_DTs, XSD_Duration_DTs
-from rdflib import URIRef, BNode, Variable, Literal, XSD, RDF
-from rdflib.term import Node
-
+import random
+import re
+import sys
+import uuid
+import warnings
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from functools import reduce
 from urllib.parse import quote
 
+import isodate
 from pyparsing import ParseResults
 
+from rdflib import RDF, XSD, BNode, Literal, URIRef, Variable
+from rdflib.plugins.sparql.datatypes import (
+    XSD_DateTime_DTs,
+    XSD_DTs,
+    XSD_Duration_DTs,
+    type_promotion,
+)
+from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.sparql import SPARQLError, SPARQLTypeError
-
-
-# closed namespace, langString isn't in it
-RDF_langString = URIRef(RDF.uri + "langString")
+from rdflib.term import Node
 
 
 def Builtin_IRI(expr, ctx):
@@ -69,7 +65,7 @@ def Builtin_isNUMERIC(expr, ctx):
     try:
         numeric(expr.arg)
         return Literal(True)
-    except:
+    except:  # noqa: E722
         return Literal(False)
 
 
@@ -449,17 +445,17 @@ def Builtin_NOW(e, ctx):
 
 
 def Builtin_YEAR(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.year)
 
 
 def Builtin_MONTH(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.month)
 
 
 def Builtin_DAY(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.day)
 
 
@@ -552,7 +548,7 @@ def Builtin_DATATYPE(e, ctx):
     if not isinstance(l_, Literal):
         raise SPARQLError("Can only get datatype of literal: %r" % l_)
     if l_.language:
-        return RDF_langString
+        return RDF.langString
     if not l_.datatype and not l_.language:
         return XSD.string
     return l_.datatype
@@ -614,10 +610,17 @@ def custom_function(uri, override=False, raw=False):
     return decorator
 
 
-def unregister_custom_function(uri, func):
-    if _CUSTOM_FUNCTIONS.get(uri, (None, None))[0] != func:
-        raise ValueError("This function is not registered as %s" % uri.n3())
-    del _CUSTOM_FUNCTIONS[uri]
+def unregister_custom_function(uri, func=None):
+    """
+    The 'func' argument is included for compatibility with existing code.
+    A previous implementation checked that the function associated with
+    the given uri was actually 'func', but this is not necessary as the
+    uri should uniquely identify the function.
+    """
+    if _CUSTOM_FUNCTIONS.get(uri):
+        del _CUSTOM_FUNCTIONS[uri]
+    else:
+        warnings.warn("This function is not registered as %s" % uri.n3())
 
 
 def Function(e, ctx):
@@ -666,7 +669,7 @@ def default_cast(e, ctx):
     if not isinstance(x, Literal):
         raise SPARQLError("Can only cast Literals to non-string data-types")
 
-    if x.datatype and not x.datatype in XSD_DTs:
+    if x.datatype and not x.datatype in XSD_DTs:  # noqa: E713
         raise SPARQLError("Cannot cast literal with unknown datatype: %r" % x.datatype)
 
     if e.iri == XSD.dateTime:
@@ -674,7 +677,7 @@ def default_cast(e, ctx):
             raise SPARQLError("Cannot cast %r to XSD:dateTime" % x.datatype)
         try:
             return Literal(isodate.parse_datetime(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as datetime" % x)
 
     if x.datatype == XSD.dateTime:
@@ -683,7 +686,7 @@ def default_cast(e, ctx):
     if e.iri in (XSD.float, XSD.double):
         try:
             return Literal(float(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as float" % x)
 
     elif e.iri == XSD.decimal:
@@ -691,13 +694,13 @@ def default_cast(e, ctx):
             raise SPARQLError("Cannot interpret '%r' as decimal" % x)
         try:
             return Literal(Decimal(x), datatype=e.iri)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as decimal" % x)
 
     elif e.iri == XSD.integer:
         try:
             return Literal(int(x), datatype=XSD.integer)
-        except:
+        except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as int" % x)
 
     elif e.iri == XSD.boolean:
@@ -763,45 +766,47 @@ def AdditiveExpression(e, ctx):
 
     # handling arithmetic(addition/subtraction) of dateTime, date, time
     # and duration datatypes (if any)
-    if hasattr(expr, 'datatype') and (expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
+    if hasattr(expr, "datatype") and (
+        expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs
+    ):
 
-            res = dateTimeObjects(expr)
-            dt = expr.datatype
+        res = dateTimeObjects(expr)
+        dt = expr.datatype
 
-            for op, term in zip(e.op, other):
+        for op, term in zip(e.op, other):
 
-                # check if operation is datetime,date,time operation over
-                # another datetime,date,time datatype
-                if dt in XSD_DateTime_DTs and dt == term.datatype and op == '-':
-                    # checking if there are more than one datetime operands -
-                    # in that case it doesn't make sense for example
-                    # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
-                    if len(other) > 1:
-                        error_message = "Can't evaluate multiple %r arguments"
-                        raise SPARQLError(error_message, dt.datatype)
-                    else:
-                        n = dateTimeObjects(term)
-                        res = calculateDuration(res, n)
-                        return res
+            # check if operation is datetime,date,time operation over
+            # another datetime,date,time datatype
+            if dt in XSD_DateTime_DTs and dt == term.datatype and op == "-":
+                # checking if there are more than one datetime operands -
+                # in that case it doesn't make sense for example
+                # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
+                if len(other) > 1:
+                    error_message = "Can't evaluate multiple %r arguments"
+                    raise SPARQLError(error_message, dt.datatype)
+                else:
+                    n = dateTimeObjects(term)
+                    res = calculateDuration(res, n)
+                    return res
 
-                # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
-                elif (dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs):
+            # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
+            elif dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs:
+                n = dateTimeObjects(term)
+                res = calculateFinalDateTime(res, dt, n, term.datatype, op)
+                return res
+
+            # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
+            elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
+                if op == "+":
                     n = dateTimeObjects(term)
                     res = calculateFinalDateTime(res, dt, n, term.datatype, op)
                     return res
 
-                # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
-                elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
-                    if op == "+":
-                        n = dateTimeObjects(term)
-                        res = calculateFinalDateTime(res, dt, n, term.datatype, op)
-                        return res
+            # rest are invalid types
+            else:
+                raise SPARQLError("Invalid DateTime Operations")
 
-                # rest are invalid types
-                else:
-                    raise SPARQLError('Invalid DateTime Operations')
-
-        # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
+    # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
     else:
         res = numeric(expr)
 
@@ -998,6 +1003,17 @@ def datetime(e):
     return e.toPython()
 
 
+def date(e) -> py_datetime.date:
+    if not isinstance(e, Literal):
+        raise SPARQLError("Non-literal passed as date: %r" % e)
+    if e.datatype not in (XSD.date, XSD.dateTime):
+        raise SPARQLError("Literal with wrong datatype passed as date: %r" % e)
+    result = e.toPython()
+    if isinstance(result, py_datetime.datetime):
+        return result.date()
+    return result
+
+
 def string(s):
     """
     Make sure the passed thing is a string literal
@@ -1054,41 +1070,41 @@ def dateTimeObjects(expr):
 
 def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
     """
-    returns a boolean indicating if first object is compatible
+    Returns a boolean indicating if first object is compatible
     with operation(+/-) over second object.
 
     """
-    if(dt1 == XSD.date):
-        if(dt2 == XSD.yearMonthDuration):
+    if dt1 == XSD.date:
+        if dt2 == XSD.yearMonthDuration:
             return True
-        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+        elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Time Component
             # else it wont be compatible with Date Literal
-            if("T" in str(obj2)):
+            if "T" in str(obj2):
                 return False
             else:
                 return True
 
-    if(dt1 == XSD.time):
-        if(dt2 == XSD.yearMonthDuration):
+    if dt1 == XSD.time:
+        if dt2 == XSD.yearMonthDuration:
             return False
-        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+        elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Date Component
             # (by checking if the format is "PT...." )
             # else it wont be compatible with Time Literal
-            if("T" == str(obj2)[1]):
+            if "T" == str(obj2)[1]:
                 return True
             else:
                 return False
 
-    if(dt1 == XSD.dateTime):
+    if dt1 == XSD.dateTime:
         # compatible with all
         return True
 
 
 def calculateDuration(obj1, obj2):
     """
-        returns the duration Literal between two datetime
+    returns the duration Literal between two datetime
 
     """
     date1 = obj1
@@ -1099,14 +1115,14 @@ def calculateDuration(obj1, obj2):
 
 def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
     """
-        Calculates the final dateTime/date/time resultant after addition/
-        subtraction of duration/dayTimeDuration/yearMonthDuration
+    Calculates the final dateTime/date/time resultant after addition/
+    subtraction of duration/dayTimeDuration/yearMonthDuration
     """
 
     # checking compatibility of datatypes (duration types and date/time/dateTime)
-    if(isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2)):
+    if isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
         # proceed
-        if(operation == "-"):
+        if operation == "-":
             ans = obj1 - obj2
             return Literal(ans, datatype=dt1)
         else:
@@ -1114,7 +1130,7 @@ def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
             return Literal(ans, datatype=dt1)
 
     else:
-        raise SPARQLError('Incompatible Data types to DateTime Operations')
+        raise SPARQLError("Incompatible Data types to DateTime Operations")
 
 
 def EBV(rt):

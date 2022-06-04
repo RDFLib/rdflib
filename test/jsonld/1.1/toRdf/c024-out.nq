@@ -1,0 +1,7 @@
+_:b0 <ex:nested> _:b1 .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Outer> .
+_:b1 <ex:foo> "2"^^<ex:Number> .
+_:b1 <ex:foo> "1" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Inner> .
+_:b1 <ex:bar> <http://example/b> .
+_:b1 <ex:bar> <http://example/a> .

@@ -4,34 +4,33 @@ SPARQL 1.1 Parser
 based on pyparsing
 """
 
-import sys
 import re
+import sys
 
-from pyparsing import (
-    Literal,
-    Regex,
-    Optional,
-    OneOrMore,
-    ZeroOrMore,
-    Forward,
-    ParseException,
-    Suppress,
-    Combine,
-    restOfLine,
-    Group,
-    ParseResults,
-    delimitedList,
-)
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
+from pyparsing import (
+    Combine,
+    Forward,
+    Group,
+    Literal,
+    OneOrMore,
+    Optional,
+    ParseResults,
+    Regex,
+    Suppress,
+    ZeroOrMore,
+    delimitedList,
+    restOfLine,
+)
+
+import rdflib
+from rdflib.compat import decodeUnicodeEscape
+
+from . import operators as op
+from .parserutils import Comp, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
-from .parserutils import Comp, Param, ParamList
-
-from . import operators as op
-from rdflib.compat import decodeUnicodeEscape
-
-import rdflib
 
 DEBUG = False
 
@@ -95,7 +94,7 @@ def expandTriples(terms):
         #       "Length of triple-list is not divisible by 3: %d!"%len(res)
 
         # return [tuple(res[i:i+3]) for i in range(len(res)/3)]
-    except:
+    except:  # noqa: E722
         if DEBUG:
             import traceback
 
@@ -225,13 +224,6 @@ PN_LOCAL = Regex(
     % dict(PN_CHARS_U=PN_CHARS_U_re, PN_CHARS=PN_CHARS_re, PLX=PLX_re),
     flags=re.X | re.UNICODE,
 )
-
-
-def _hexExpand(match):
-    return chr(int(match.group(0)[1:], 16))
-
-
-PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -584,10 +576,15 @@ TriplesNodePath <<= CollectionPath | BlankNodePropertyListPath
 TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + PropertyList
 TriplesSameSubject.setParseAction(expandTriples)
 
-# [52] TriplesTemplate ::= TriplesSameSubject ( '.' Optional(TriplesTemplate) )?
-TriplesTemplate = Forward()
-TriplesTemplate <<= ParamList("triples", TriplesSameSubject) + Optional(
-    Suppress(".") + Optional(TriplesTemplate)
+# [52] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )?
+# NOTE: pyparsing.py handling of recursive rules is limited by python's recursion
+# limit.
+# (https://docs.python.org/3/library/sys.html#sys.setrecursionlimit)
+# To accommodate arbitrary amounts of triples this rule is rewritten to not be
+# recursive:
+# [52*] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesSameSubject? )*
+TriplesTemplate = ParamList("triples", TriplesSameSubject) + ZeroOrMore(
+    Suppress(".") + Optional(ParamList("triples", TriplesSameSubject))
 )
 
 # [51] QuadsNotTriples ::= 'GRAPH' VarOrIri '{' Optional(TriplesTemplate) '}'
@@ -1438,7 +1435,7 @@ SelectQuery = Comp(
 )
 
 # [10] ConstructQuery ::= 'CONSTRUCT' ( ConstructTemplate DatasetClause* WhereClause SolutionModifier | DatasetClause* 'WHERE' '{' TriplesTemplate? '}' SolutionModifier )
-# NOTE: The CONSTRUCT WHERE alternative has unnescessarily many Comp/Param pairs
+# NOTE: The CONSTRUCT WHERE alternative has unnecessarily many Comp/Param pairs
 # to allow it to through the same algebra translation process
 ConstructQuery = Comp(
     "ConstructQuery",
@@ -1498,7 +1495,7 @@ Update <<= ParamList("prologue", Prologue) + Optional(
 # [2] Query ::= Prologue
 # ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 # ValuesClause
-# NOTE: ValuesClause was moved to invidual queries
+# NOTE: ValuesClause was moved to individual queries
 Query = Prologue + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)
 
 # [3] UpdateUnit ::= Update
@@ -1523,7 +1520,7 @@ def expandUnicodeEscapes(q):
     def expand(m):
         try:
             return chr(int(m.group(1), 16))
-        except:
+        except:  # noqa: E722
             raise Exception("Invalid unicode code point: " + m)
 
     return expandUnicodeEscapes_re.sub(expand, q)
@@ -1548,17 +1545,3 @@ def parseUpdate(q):
 
     q = expandUnicodeEscapes(q)
     return UpdateUnit.parseString(q, parseAll=True)[0]
-
-
-if __name__ == "__main__":
-    import sys
-
-    DEBUG = True
-    try:
-        q = Query.parseString(sys.argv[1])
-        print("\nSyntax Tree:\n")
-        print(q)
-    except ParseException as err:
-        print(err.line)
-        print(" " * (err.column - 1) + "^")
-        print(err)

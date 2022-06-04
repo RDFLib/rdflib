@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "foo": {"@context": {"baz": {"@type": "@id"}}}
+  },
+  "foo": {
+    "bar": {
+      "baz": "buzz"
+    }
+  }
+}

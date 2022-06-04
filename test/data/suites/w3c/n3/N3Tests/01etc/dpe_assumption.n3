@@ -1,0 +1,7 @@
+# assuming the negation of the query so that it can be discharged when the query succeeds
+
+@prefix : <dpe#>.
+
+{:b :re ?X} => {:c :not_re ?X}.
+{:c :re ?X} => {:b :not_re ?X}.
+

@@ -1,0 +1,13 @@
+<http://example.org/test#book> <http://example.org/vocab#contains> <http://example.org/test#chapter> _:b0 .
+<http://example.org/test#book> <http://purl.org/dc/elements/1.1/contributor> "Writer" _:b0 .
+<http://example.org/test#book> <http://purl.org/dc/elements/1.1/title> "My Book" _:b0 .
+<http://example.org/test#chapter1> <http://purl.org/dc/elements/1.1/description> "Fun" _:b1 .
+<http://example.org/test#chapter1> <http://purl.org/dc/elements/1.1/title> "Chapter One" _:b1 .
+<http://example.org/test#chapter2> <http://purl.org/dc/elements/1.1/description> "More fun" _:b1 .
+<http://example.org/test#chapter2> <http://purl.org/dc/elements/1.1/title> "Chapter Two" _:b1 .
+<http://example.org/test#chapter3> <http://purl.org/dc/elements/1.1/title> "Chapter Three" _:b1 .
+<http://example.org/test#jane> <http://example.org/vocab#authored> _:b1 _:b0 .
+<http://example.org/test#jane> <http://xmlns.com/foaf/0.1/name> "Jane" _:b0 .
+<http://example.org/test#john> <http://xmlns.com/foaf/0.1/name> "John" _:b0 .
+<http://example.org/test#library> <http://example.org/vocab#contains> <http://example.org/test#book> _:b0 .
+_:b0 <http://purl.org/dc/elements/1.1/title> "My first graph" .

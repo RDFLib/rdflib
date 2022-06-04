@@ -1,0 +1,2 @@
+_:b0 <http://example/b> <http://example.org/bar> .
+_:b0 <http://example/a> <http://example.org/foo> .

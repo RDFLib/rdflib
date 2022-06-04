@@ -1,0 +1,2 @@
+<http://example.org/node1> <http://example.org/property> "all these IRIs remain unchanged because they are interpreted as absolute IRIs" .
+<http://example.org/node1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/type> .

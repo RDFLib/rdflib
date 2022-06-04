@@ -1,0 +1,18 @@
+# $Id: lldmD.n3,v 1.9 2005/05/03 20:20:39 amdus Exp $
+
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix : <http://www.agfa.com/w3c/2002/10/medicad/op/lldmP#>.
+
+
+## measurement data
+
+:meas47 a :Measurement;
+        :p1xCm 10.1; :p1yCm 7.8;
+        :p2xCm 45.1; :p2yCm 5.6;
+        :p3xCm 3.6;  :p3yCm 29.8;
+        :p4xCm 54.7; :p4yCm 28.5.

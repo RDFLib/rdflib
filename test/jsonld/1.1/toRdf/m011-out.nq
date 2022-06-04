@@ -1,0 +1,4 @@
+_:b1 <http://example/label> "Object with no @id" .
+_:b2 <http://example/label> "Another object with no @id" .
+_:b0 <http://example/idmap> _:b1 .
+_:b0 <http://example/idmap> _:b2 .

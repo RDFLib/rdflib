@@ -1,0 +1,1593 @@
+#Processed by EYE v20.0218.2044 josd
+#eye --no-genid http://josd.github.io/brain/swet/swetA.n3 --query http://josd.github.io/brain/swet/swetQ.n3
+
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix : <http://eulersharp.sourceforge.net/2003/03swap/brain#>.
+@prefix r: <http://www.w3.org/2000/10/swap/reason#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix var: <http://josd.github.io/var#>.
+@prefix n3: <http://www.w3.org/2004/06/rei#>.
+
+[] a r:Proof, r:Conjunction;
+  r:component <#lemma1>;
+  r:component <#lemma2>;
+  r:component <#lemma3>;
+  r:gives {
+    {{:obs :ascribed :Rain} :given {:obs :ascribed :WetGrass}} e:possibility 0.6666666666666666 .
+    {{:obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility 0.5679012345679012 .
+    {{:obs :ascribed :Rain.
+      :obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility 0.2345679012345679 .
+  }.
+
+<#lemma1> a r:Inference;
+  r:gives {
+    {{:obs :ascribed :Rain} :given {:obs :ascribed :WetGrass}} e:possibility 0.6666666666666666 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA11.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_1_1> e:answer {:obs001 :ascribed :Rain.
+      :obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_1> e:answer {:obs003 :ascribed :Rain.
+      :obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_1> e:answer {:obs004 :ascribed :Rain.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_1> e:answer {:obs005 :ascribed :Rain.
+      :obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_1> e:answer {:obs006 :ascribed :Rain.
+      :obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_1> e:answer {:obs009 :ascribed :Rain.
+      :obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_1> e:answer {:obs013 :ascribed :Rain.
+      :obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_1> e:answer {:obs014 :ascribed :Rain.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_1> e:answer {:obs016 :ascribed :Rain.
+      :obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_1> e:answer {:obs017 :ascribed :Rain.
+      :obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_1> e:answer {:obs018 :ascribed :Rain.
+      :obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_1> e:answer {:obs019 :ascribed :Rain.
+      :obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_1> e:answer {:obs020 :ascribed :Rain.
+      :obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_1> e:answer {:obs021 :ascribed :Rain.
+      :obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_1> e:answer {:obs023 :ascribed :Rain.
+      :obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_1> e:answer {:obs024 :ascribed :Rain.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_1> e:answer {:obs026 :ascribed :Rain.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_1> e:answer {:obs029 :ascribed :Rain.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_1> e:answer {:obs035 :ascribed :Rain.
+      :obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_1> e:answer {:obs036 :ascribed :Rain.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_1> e:answer {:obs039 :ascribed :Rain.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_1> e:answer {:obs044 :ascribed :Rain.
+      :obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_1> e:answer {:obs046 :ascribed :Rain.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_1> e:answer {:obs048 :ascribed :Rain.
+      :obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_1> e:answer {:obs051 :ascribed :Rain.
+      :obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_1> e:answer {:obs052 :ascribed :Rain.
+      :obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_1> e:answer {:obs053 :ascribed :Rain.
+      :obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_1> e:answer {:obs054 :ascribed :Rain.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_1> e:answer {:obs055 :ascribed :Rain.
+      :obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_1> e:answer {:obs057 :ascribed :Rain.
+      :obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_1> e:answer {:obs058 :ascribed :Rain.
+      :obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_1> e:answer {:obs059 :ascribed :Rain.
+      :obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_1> e:answer {:obs060 :ascribed :Rain.
+      :obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_1> e:answer {:obs061 :ascribed :Rain.
+      :obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_1> e:answer {:obs062 :ascribed :Rain.
+      :obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_1> e:answer {:obs063 :ascribed :Rain.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_1> e:answer {:obs064 :ascribed :Rain.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_1> e:answer {:obs065 :ascribed :Rain.
+      :obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_1> e:answer {:obs067 :ascribed :Rain.
+      :obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_1> e:answer {:obs068 :ascribed :Rain.
+      :obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_1> e:answer {:obs071 :ascribed :Rain.
+      :obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_1> e:answer {:obs072 :ascribed :Rain.
+      :obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_1> e:answer {:obs073 :ascribed :Rain.
+      :obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_1> e:answer {:obs074 :ascribed :Rain.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_1> e:answer {:obs075 :ascribed :Rain.
+      :obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_1> e:answer {:obs076 :ascribed :Rain.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_1> e:answer {:obs078 :ascribed :Rain.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_1> e:answer {:obs079 :ascribed :Rain.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_1> e:answer {:obs085 :ascribed :Rain.
+      :obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_1> e:answer {:obs086 :ascribed :Rain.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_1> e:answer {:obs089 :ascribed :Rain.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_1> e:answer {:obs096 :ascribed :Rain.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_1> e:answer {:obs098 :ascribed :Rain.
+      :obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_1> e:answer {:obs099 :ascribed :Rain.
+      :obs099 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_1_1> e:answer {:obs001 :ascribed :Rain.
+      :obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_1> e:answer {:obs003 :ascribed :Rain.
+      :obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_1> e:answer {:obs004 :ascribed :Rain.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_1> e:answer {:obs005 :ascribed :Rain.
+      :obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_1> e:answer {:obs006 :ascribed :Rain.
+      :obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_1> e:answer {:obs009 :ascribed :Rain.
+      :obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_1> e:answer {:obs013 :ascribed :Rain.
+      :obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_1> e:answer {:obs014 :ascribed :Rain.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_1> e:answer {:obs016 :ascribed :Rain.
+      :obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_1> e:answer {:obs017 :ascribed :Rain.
+      :obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_1> e:answer {:obs018 :ascribed :Rain.
+      :obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_1> e:answer {:obs019 :ascribed :Rain.
+      :obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_1> e:answer {:obs020 :ascribed :Rain.
+      :obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_1> e:answer {:obs021 :ascribed :Rain.
+      :obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_1> e:answer {:obs023 :ascribed :Rain.
+      :obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_1> e:answer {:obs024 :ascribed :Rain.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_1> e:answer {:obs026 :ascribed :Rain.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_1> e:answer {:obs029 :ascribed :Rain.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_1> e:answer {:obs035 :ascribed :Rain.
+      :obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_1> e:answer {:obs036 :ascribed :Rain.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_1> e:answer {:obs039 :ascribed :Rain.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_1> e:answer {:obs044 :ascribed :Rain.
+      :obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_1> e:answer {:obs046 :ascribed :Rain.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_1> e:answer {:obs048 :ascribed :Rain.
+      :obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_1> e:answer {:obs051 :ascribed :Rain.
+      :obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_1> e:answer {:obs052 :ascribed :Rain.
+      :obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_1> e:answer {:obs053 :ascribed :Rain.
+      :obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_1> e:answer {:obs054 :ascribed :Rain.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_1> e:answer {:obs055 :ascribed :Rain.
+      :obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_1> e:answer {:obs057 :ascribed :Rain.
+      :obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_1> e:answer {:obs058 :ascribed :Rain.
+      :obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_1> e:answer {:obs059 :ascribed :Rain.
+      :obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_1> e:answer {:obs060 :ascribed :Rain.
+      :obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_1> e:answer {:obs061 :ascribed :Rain.
+      :obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_1> e:answer {:obs062 :ascribed :Rain.
+      :obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_1> e:answer {:obs063 :ascribed :Rain.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_1> e:answer {:obs064 :ascribed :Rain.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_1> e:answer {:obs065 :ascribed :Rain.
+      :obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_1> e:answer {:obs067 :ascribed :Rain.
+      :obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_1> e:answer {:obs068 :ascribed :Rain.
+      :obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_1> e:answer {:obs071 :ascribed :Rain.
+      :obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_1> e:answer {:obs072 :ascribed :Rain.
+      :obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_1> e:answer {:obs073 :ascribed :Rain.
+      :obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_1> e:answer {:obs074 :ascribed :Rain.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_1> e:answer {:obs075 :ascribed :Rain.
+      :obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_1> e:answer {:obs076 :ascribed :Rain.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_1> e:answer {:obs078 :ascribed :Rain.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_1> e:answer {:obs079 :ascribed :Rain.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_1> e:answer {:obs085 :ascribed :Rain.
+      :obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_1> e:answer {:obs086 :ascribed :Rain.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_1> e:answer {:obs089 :ascribed :Rain.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_1> e:answer {:obs096 :ascribed :Rain.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_1> e:answer {:obs098 :ascribed :Rain.
+      :obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_1> e:answer {:obs099 :ascribed :Rain.
+      :obs099 :ascribed :WetGrass}} math:memberCount 54}]
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA01.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}} math:memberCount 81}]
+    [ a r:Fact; r:gives {(54 81) math:quotient 0.6666666666666666}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_1_1> e:answer {:obs001 :ascribed :Rain.
+    :obs001 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_3_1> e:answer {:obs003 :ascribed :Rain.
+    :obs003 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_4_1> e:answer {:obs004 :ascribed :Rain.
+    :obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_5_1> e:answer {:obs005 :ascribed :Rain.
+    :obs005 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_6_1> e:answer {:obs006 :ascribed :Rain.
+    :obs006 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_9_1> e:answer {:obs009 :ascribed :Rain.
+    :obs009 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_13_1> e:answer {:obs013 :ascribed :Rain.
+    :obs013 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_1> e:answer {:obs014 :ascribed :Rain.
+    :obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_16_1> e:answer {:obs016 :ascribed :Rain.
+    :obs016 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_17_1> e:answer {:obs017 :ascribed :Rain.
+    :obs017 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_18_1> e:answer {:obs018 :ascribed :Rain.
+    :obs018 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_19_1> e:answer {:obs019 :ascribed :Rain.
+    :obs019 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_20_1> e:answer {:obs020 :ascribed :Rain.
+    :obs020 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_21_1> e:answer {:obs021 :ascribed :Rain.
+    :obs021 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_23_1> e:answer {:obs023 :ascribed :Rain.
+    :obs023 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_1> e:answer {:obs024 :ascribed :Rain.
+    :obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_1> e:answer {:obs026 :ascribed :Rain.
+    :obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_1> e:answer {:obs029 :ascribed :Rain.
+    :obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_35_1> e:answer {:obs035 :ascribed :Rain.
+    :obs035 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_1> e:answer {:obs036 :ascribed :Rain.
+    :obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_1> e:answer {:obs039 :ascribed :Rain.
+    :obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_44_1> e:answer {:obs044 :ascribed :Rain.
+    :obs044 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_1> e:answer {:obs046 :ascribed :Rain.
+    :obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_48_1> e:answer {:obs048 :ascribed :Rain.
+    :obs048 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_51_1> e:answer {:obs051 :ascribed :Rain.
+    :obs051 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_52_1> e:answer {:obs052 :ascribed :Rain.
+    :obs052 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_53_1> e:answer {:obs053 :ascribed :Rain.
+    :obs053 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_1> e:answer {:obs054 :ascribed :Rain.
+    :obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_55_1> e:answer {:obs055 :ascribed :Rain.
+    :obs055 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_57_1> e:answer {:obs057 :ascribed :Rain.
+    :obs057 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_58_1> e:answer {:obs058 :ascribed :Rain.
+    :obs058 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_59_1> e:answer {:obs059 :ascribed :Rain.
+    :obs059 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_60_1> e:answer {:obs060 :ascribed :Rain.
+    :obs060 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_61_1> e:answer {:obs061 :ascribed :Rain.
+    :obs061 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_62_1> e:answer {:obs062 :ascribed :Rain.
+    :obs062 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_1> e:answer {:obs063 :ascribed :Rain.
+    :obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_1> e:answer {:obs064 :ascribed :Rain.
+    :obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_65_1> e:answer {:obs065 :ascribed :Rain.
+    :obs065 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_67_1> e:answer {:obs067 :ascribed :Rain.
+    :obs067 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_68_1> e:answer {:obs068 :ascribed :Rain.
+    :obs068 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_71_1> e:answer {:obs071 :ascribed :Rain.
+    :obs071 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_72_1> e:answer {:obs072 :ascribed :Rain.
+    :obs072 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_73_1> e:answer {:obs073 :ascribed :Rain.
+    :obs073 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_1> e:answer {:obs074 :ascribed :Rain.
+    :obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_75_1> e:answer {:obs075 :ascribed :Rain.
+    :obs075 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_1> e:answer {:obs076 :ascribed :Rain.
+    :obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_1> e:answer {:obs078 :ascribed :Rain.
+    :obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_1> e:answer {:obs079 :ascribed :Rain.
+    :obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_85_1> e:answer {:obs085 :ascribed :Rain.
+    :obs085 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_1> e:answer {:obs086 :ascribed :Rain.
+    :obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_1> e:answer {:obs089 :ascribed :Rain.
+    :obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_1> e:answer {:obs096 :ascribed :Rain.
+    :obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_98_1> e:answer {:obs098 :ascribed :Rain.
+    :obs098 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_1> e:answer {:obs099 :ascribed :Rain.
+    :obs099 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 54];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 81];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.6666666666666666];
+  r:rule <#lemma4>.
+
+<#lemma2> a r:Inference;
+  r:gives {
+    {{:obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility 0.5679012345679012 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA21.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_2_2> e:answer {:obs002 :ascribed :Sprinkler.
+      :obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_3> e:answer {:obs004 :ascribed :Sprinkler.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_2> e:answer {:obs012 :ascribed :Sprinkler.
+      :obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_3> e:answer {:obs014 :ascribed :Sprinkler.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_2> e:answer {:obs022 :ascribed :Sprinkler.
+      :obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_3> e:answer {:obs024 :ascribed :Sprinkler.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_3> e:answer {:obs026 :ascribed :Sprinkler.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_3> e:answer {:obs029 :ascribed :Sprinkler.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_2> e:answer {:obs030 :ascribed :Sprinkler.
+      :obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_2> e:answer {:obs031 :ascribed :Sprinkler.
+      :obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_2> e:answer {:obs032 :ascribed :Sprinkler.
+      :obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_2> e:answer {:obs034 :ascribed :Sprinkler.
+      :obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_3> e:answer {:obs036 :ascribed :Sprinkler.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_2> e:answer {:obs037 :ascribed :Sprinkler.
+      :obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_2> e:answer {:obs038 :ascribed :Sprinkler.
+      :obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_3> e:answer {:obs039 :ascribed :Sprinkler.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_2> e:answer {:obs041 :ascribed :Sprinkler.
+      :obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_2> e:answer {:obs042 :ascribed :Sprinkler.
+      :obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_2> e:answer {:obs043 :ascribed :Sprinkler.
+      :obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_3> e:answer {:obs046 :ascribed :Sprinkler.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_2> e:answer {:obs047 :ascribed :Sprinkler.
+      :obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_3> e:answer {:obs054 :ascribed :Sprinkler.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_2> e:answer {:obs056 :ascribed :Sprinkler.
+      :obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_3> e:answer {:obs063 :ascribed :Sprinkler.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_3> e:answer {:obs064 :ascribed :Sprinkler.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_2> e:answer {:obs066 :ascribed :Sprinkler.
+      :obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_3> e:answer {:obs074 :ascribed :Sprinkler.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_3> e:answer {:obs076 :ascribed :Sprinkler.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_2> e:answer {:obs077 :ascribed :Sprinkler.
+      :obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_3> e:answer {:obs078 :ascribed :Sprinkler.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_3> e:answer {:obs079 :ascribed :Sprinkler.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_2> e:answer {:obs080 :ascribed :Sprinkler.
+      :obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_2> e:answer {:obs082 :ascribed :Sprinkler.
+      :obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_2> e:answer {:obs084 :ascribed :Sprinkler.
+      :obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_3> e:answer {:obs086 :ascribed :Sprinkler.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_2> e:answer {:obs087 :ascribed :Sprinkler.
+      :obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_2> e:answer {:obs088 :ascribed :Sprinkler.
+      :obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_3> e:answer {:obs089 :ascribed :Sprinkler.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_2> e:answer {:obs091 :ascribed :Sprinkler.
+      :obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_2> e:answer {:obs092 :ascribed :Sprinkler.
+      :obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_2> e:answer {:obs093 :ascribed :Sprinkler.
+      :obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_2> e:answer {:obs095 :ascribed :Sprinkler.
+      :obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_3> e:answer {:obs096 :ascribed :Sprinkler.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_2> e:answer {:obs097 :ascribed :Sprinkler.
+      :obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_3> e:answer {:obs099 :ascribed :Sprinkler.
+      :obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_2> e:answer {:obs100 :ascribed :Sprinkler.
+      :obs100 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_2_2> e:answer {:obs002 :ascribed :Sprinkler.
+      :obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_3> e:answer {:obs004 :ascribed :Sprinkler.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_2> e:answer {:obs012 :ascribed :Sprinkler.
+      :obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_3> e:answer {:obs014 :ascribed :Sprinkler.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_2> e:answer {:obs022 :ascribed :Sprinkler.
+      :obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_3> e:answer {:obs024 :ascribed :Sprinkler.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_3> e:answer {:obs026 :ascribed :Sprinkler.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_3> e:answer {:obs029 :ascribed :Sprinkler.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_2> e:answer {:obs030 :ascribed :Sprinkler.
+      :obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_2> e:answer {:obs031 :ascribed :Sprinkler.
+      :obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_2> e:answer {:obs032 :ascribed :Sprinkler.
+      :obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_2> e:answer {:obs034 :ascribed :Sprinkler.
+      :obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_3> e:answer {:obs036 :ascribed :Sprinkler.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_2> e:answer {:obs037 :ascribed :Sprinkler.
+      :obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_2> e:answer {:obs038 :ascribed :Sprinkler.
+      :obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_3> e:answer {:obs039 :ascribed :Sprinkler.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_2> e:answer {:obs041 :ascribed :Sprinkler.
+      :obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_2> e:answer {:obs042 :ascribed :Sprinkler.
+      :obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_2> e:answer {:obs043 :ascribed :Sprinkler.
+      :obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_3> e:answer {:obs046 :ascribed :Sprinkler.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_2> e:answer {:obs047 :ascribed :Sprinkler.
+      :obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_3> e:answer {:obs054 :ascribed :Sprinkler.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_2> e:answer {:obs056 :ascribed :Sprinkler.
+      :obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_3> e:answer {:obs063 :ascribed :Sprinkler.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_3> e:answer {:obs064 :ascribed :Sprinkler.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_2> e:answer {:obs066 :ascribed :Sprinkler.
+      :obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_3> e:answer {:obs074 :ascribed :Sprinkler.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_3> e:answer {:obs076 :ascribed :Sprinkler.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_2> e:answer {:obs077 :ascribed :Sprinkler.
+      :obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_3> e:answer {:obs078 :ascribed :Sprinkler.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_3> e:answer {:obs079 :ascribed :Sprinkler.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_2> e:answer {:obs080 :ascribed :Sprinkler.
+      :obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_2> e:answer {:obs082 :ascribed :Sprinkler.
+      :obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_2> e:answer {:obs084 :ascribed :Sprinkler.
+      :obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_3> e:answer {:obs086 :ascribed :Sprinkler.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_2> e:answer {:obs087 :ascribed :Sprinkler.
+      :obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_2> e:answer {:obs088 :ascribed :Sprinkler.
+      :obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_3> e:answer {:obs089 :ascribed :Sprinkler.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_2> e:answer {:obs091 :ascribed :Sprinkler.
+      :obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_2> e:answer {:obs092 :ascribed :Sprinkler.
+      :obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_2> e:answer {:obs093 :ascribed :Sprinkler.
+      :obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_2> e:answer {:obs095 :ascribed :Sprinkler.
+      :obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_3> e:answer {:obs096 :ascribed :Sprinkler.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_2> e:answer {:obs097 :ascribed :Sprinkler.
+      :obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_3> e:answer {:obs099 :ascribed :Sprinkler.
+      :obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_2> e:answer {:obs100 :ascribed :Sprinkler.
+      :obs100 :ascribed :WetGrass}} math:memberCount 46}]
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA01.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}} math:memberCount 81}]
+    [ a r:Fact; r:gives {(46 81) math:quotient 0.5679012345679012}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_2_2> e:answer {:obs002 :ascribed :Sprinkler.
+    :obs002 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_4_3> e:answer {:obs004 :ascribed :Sprinkler.
+    :obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_12_2> e:answer {:obs012 :ascribed :Sprinkler.
+    :obs012 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_3> e:answer {:obs014 :ascribed :Sprinkler.
+    :obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_22_2> e:answer {:obs022 :ascribed :Sprinkler.
+    :obs022 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_3> e:answer {:obs024 :ascribed :Sprinkler.
+    :obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_3> e:answer {:obs026 :ascribed :Sprinkler.
+    :obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_3> e:answer {:obs029 :ascribed :Sprinkler.
+    :obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_30_2> e:answer {:obs030 :ascribed :Sprinkler.
+    :obs030 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_31_2> e:answer {:obs031 :ascribed :Sprinkler.
+    :obs031 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_32_2> e:answer {:obs032 :ascribed :Sprinkler.
+    :obs032 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_34_2> e:answer {:obs034 :ascribed :Sprinkler.
+    :obs034 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_3> e:answer {:obs036 :ascribed :Sprinkler.
+    :obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_37_2> e:answer {:obs037 :ascribed :Sprinkler.
+    :obs037 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_38_2> e:answer {:obs038 :ascribed :Sprinkler.
+    :obs038 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_3> e:answer {:obs039 :ascribed :Sprinkler.
+    :obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_41_2> e:answer {:obs041 :ascribed :Sprinkler.
+    :obs041 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_42_2> e:answer {:obs042 :ascribed :Sprinkler.
+    :obs042 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_43_2> e:answer {:obs043 :ascribed :Sprinkler.
+    :obs043 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_3> e:answer {:obs046 :ascribed :Sprinkler.
+    :obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_47_2> e:answer {:obs047 :ascribed :Sprinkler.
+    :obs047 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_3> e:answer {:obs054 :ascribed :Sprinkler.
+    :obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_56_2> e:answer {:obs056 :ascribed :Sprinkler.
+    :obs056 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_3> e:answer {:obs063 :ascribed :Sprinkler.
+    :obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_3> e:answer {:obs064 :ascribed :Sprinkler.
+    :obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_66_2> e:answer {:obs066 :ascribed :Sprinkler.
+    :obs066 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_3> e:answer {:obs074 :ascribed :Sprinkler.
+    :obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_3> e:answer {:obs076 :ascribed :Sprinkler.
+    :obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_77_2> e:answer {:obs077 :ascribed :Sprinkler.
+    :obs077 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_3> e:answer {:obs078 :ascribed :Sprinkler.
+    :obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_3> e:answer {:obs079 :ascribed :Sprinkler.
+    :obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_80_2> e:answer {:obs080 :ascribed :Sprinkler.
+    :obs080 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_82_2> e:answer {:obs082 :ascribed :Sprinkler.
+    :obs082 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_84_2> e:answer {:obs084 :ascribed :Sprinkler.
+    :obs084 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_3> e:answer {:obs086 :ascribed :Sprinkler.
+    :obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_87_2> e:answer {:obs087 :ascribed :Sprinkler.
+    :obs087 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_88_2> e:answer {:obs088 :ascribed :Sprinkler.
+    :obs088 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_3> e:answer {:obs089 :ascribed :Sprinkler.
+    :obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_91_2> e:answer {:obs091 :ascribed :Sprinkler.
+    :obs091 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_92_2> e:answer {:obs092 :ascribed :Sprinkler.
+    :obs092 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_93_2> e:answer {:obs093 :ascribed :Sprinkler.
+    :obs093 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_95_2> e:answer {:obs095 :ascribed :Sprinkler.
+    :obs095 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_3> e:answer {:obs096 :ascribed :Sprinkler.
+    :obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_97_2> e:answer {:obs097 :ascribed :Sprinkler.
+    :obs097 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_3> e:answer {:obs099 :ascribed :Sprinkler.
+    :obs099 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_100_2> e:answer {:obs100 :ascribed :Sprinkler.
+    :obs100 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 46];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 81];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.5679012345679012];
+  r:rule <#lemma5>.
+
+<#lemma3> a r:Inference;
+  r:gives {
+    {{:obs :ascribed :Rain.
+      :obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility 0.2345679012345679 .
+  };
+  r:evidence (
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA31.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_4_4> e:answer {:obs004 :ascribed :Rain.
+      :obs004 :ascribed :Sprinkler.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_4> e:answer {:obs014 :ascribed :Rain.
+      :obs014 :ascribed :Sprinkler.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_4> e:answer {:obs024 :ascribed :Rain.
+      :obs024 :ascribed :Sprinkler.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_4> e:answer {:obs026 :ascribed :Rain.
+      :obs026 :ascribed :Sprinkler.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_4> e:answer {:obs029 :ascribed :Rain.
+      :obs029 :ascribed :Sprinkler.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_4> e:answer {:obs036 :ascribed :Rain.
+      :obs036 :ascribed :Sprinkler.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_4> e:answer {:obs039 :ascribed :Rain.
+      :obs039 :ascribed :Sprinkler.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_4> e:answer {:obs046 :ascribed :Rain.
+      :obs046 :ascribed :Sprinkler.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_4> e:answer {:obs054 :ascribed :Rain.
+      :obs054 :ascribed :Sprinkler.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_4> e:answer {:obs063 :ascribed :Rain.
+      :obs063 :ascribed :Sprinkler.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_4> e:answer {:obs064 :ascribed :Rain.
+      :obs064 :ascribed :Sprinkler.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_4> e:answer {:obs074 :ascribed :Rain.
+      :obs074 :ascribed :Sprinkler.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_4> e:answer {:obs076 :ascribed :Rain.
+      :obs076 :ascribed :Sprinkler.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_4> e:answer {:obs078 :ascribed :Rain.
+      :obs078 :ascribed :Sprinkler.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_4> e:answer {:obs079 :ascribed :Rain.
+      :obs079 :ascribed :Sprinkler.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_4> e:answer {:obs086 :ascribed :Rain.
+      :obs086 :ascribed :Sprinkler.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_4> e:answer {:obs089 :ascribed :Rain.
+      :obs089 :ascribed :Sprinkler.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_4> e:answer {:obs096 :ascribed :Rain.
+      :obs096 :ascribed :Sprinkler.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_4> e:answer {:obs099 :ascribed :Rain.
+      :obs099 :ascribed :Sprinkler.
+      :obs099 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_4_4> e:answer {:obs004 :ascribed :Rain.
+      :obs004 :ascribed :Sprinkler.
+      :obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_4> e:answer {:obs014 :ascribed :Rain.
+      :obs014 :ascribed :Sprinkler.
+      :obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_4> e:answer {:obs024 :ascribed :Rain.
+      :obs024 :ascribed :Sprinkler.
+      :obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_4> e:answer {:obs026 :ascribed :Rain.
+      :obs026 :ascribed :Sprinkler.
+      :obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_4> e:answer {:obs029 :ascribed :Rain.
+      :obs029 :ascribed :Sprinkler.
+      :obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_4> e:answer {:obs036 :ascribed :Rain.
+      :obs036 :ascribed :Sprinkler.
+      :obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_4> e:answer {:obs039 :ascribed :Rain.
+      :obs039 :ascribed :Sprinkler.
+      :obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_4> e:answer {:obs046 :ascribed :Rain.
+      :obs046 :ascribed :Sprinkler.
+      :obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_4> e:answer {:obs054 :ascribed :Rain.
+      :obs054 :ascribed :Sprinkler.
+      :obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_4> e:answer {:obs063 :ascribed :Rain.
+      :obs063 :ascribed :Sprinkler.
+      :obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_4> e:answer {:obs064 :ascribed :Rain.
+      :obs064 :ascribed :Sprinkler.
+      :obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_4> e:answer {:obs074 :ascribed :Rain.
+      :obs074 :ascribed :Sprinkler.
+      :obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_4> e:answer {:obs076 :ascribed :Rain.
+      :obs076 :ascribed :Sprinkler.
+      :obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_4> e:answer {:obs078 :ascribed :Rain.
+      :obs078 :ascribed :Sprinkler.
+      :obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_4> e:answer {:obs079 :ascribed :Rain.
+      :obs079 :ascribed :Sprinkler.
+      :obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_4> e:answer {:obs086 :ascribed :Rain.
+      :obs086 :ascribed :Sprinkler.
+      :obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_4> e:answer {:obs089 :ascribed :Rain.
+      :obs089 :ascribed :Sprinkler.
+      :obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_4> e:answer {:obs096 :ascribed :Rain.
+      :obs096 :ascribed :Sprinkler.
+      :obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_4> e:answer {:obs099 :ascribed :Rain.
+      :obs099 :ascribed :Sprinkler.
+      :obs099 :ascribed :WetGrass}} math:memberCount 19}]
+    [ a r:Fact; r:gives {<http://josd.github.io/brain/swet/swetA01.n3> log:semantics {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}}]
+    [ a r:Fact; r:gives {{<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+     <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}} math:memberCount 81}]
+    [ a r:Fact; r:gives {(19 81) math:quotient 0.2345679012345679}]
+  );
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_0"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_4_4> e:answer {:obs004 :ascribed :Rain.
+    :obs004 :ascribed :Sprinkler.
+    :obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_4> e:answer {:obs014 :ascribed :Rain.
+    :obs014 :ascribed :Sprinkler.
+    :obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_4> e:answer {:obs024 :ascribed :Rain.
+    :obs024 :ascribed :Sprinkler.
+    :obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_4> e:answer {:obs026 :ascribed :Rain.
+    :obs026 :ascribed :Sprinkler.
+    :obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_4> e:answer {:obs029 :ascribed :Rain.
+    :obs029 :ascribed :Sprinkler.
+    :obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_4> e:answer {:obs036 :ascribed :Rain.
+    :obs036 :ascribed :Sprinkler.
+    :obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_4> e:answer {:obs039 :ascribed :Rain.
+    :obs039 :ascribed :Sprinkler.
+    :obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_4> e:answer {:obs046 :ascribed :Rain.
+    :obs046 :ascribed :Sprinkler.
+    :obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_4> e:answer {:obs054 :ascribed :Rain.
+    :obs054 :ascribed :Sprinkler.
+    :obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_4> e:answer {:obs063 :ascribed :Rain.
+    :obs063 :ascribed :Sprinkler.
+    :obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_4> e:answer {:obs064 :ascribed :Rain.
+    :obs064 :ascribed :Sprinkler.
+    :obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_4> e:answer {:obs074 :ascribed :Rain.
+    :obs074 :ascribed :Sprinkler.
+    :obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_4> e:answer {:obs076 :ascribed :Rain.
+    :obs076 :ascribed :Sprinkler.
+    :obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_4> e:answer {:obs078 :ascribed :Rain.
+    :obs078 :ascribed :Sprinkler.
+    :obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_4> e:answer {:obs079 :ascribed :Rain.
+    :obs079 :ascribed :Sprinkler.
+    :obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_4> e:answer {:obs086 :ascribed :Rain.
+    :obs086 :ascribed :Sprinkler.
+    :obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_4> e:answer {:obs089 :ascribed :Rain.
+    :obs089 :ascribed :Sprinkler.
+    :obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_4> e:answer {:obs096 :ascribed :Rain.
+    :obs096 :ascribed :Sprinkler.
+    :obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_4> e:answer {:obs099 :ascribed :Rain.
+    :obs099 :ascribed :Sprinkler.
+    :obs099 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_1"]; r:boundTo 19];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_2"]; r:boundTo {<http://josd.github.io/.well-known/genid/#e_bn_1_2> e:answer {:obs001 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_2_1> e:answer {:obs002 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_3_2> e:answer {:obs003 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_4_2> e:answer {:obs004 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_5_2> e:answer {:obs005 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_6_2> e:answer {:obs006 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_9_2> e:answer {:obs009 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_12_1> e:answer {:obs012 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_13_2> e:answer {:obs013 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_14_2> e:answer {:obs014 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_16_2> e:answer {:obs016 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_17_2> e:answer {:obs017 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_18_2> e:answer {:obs018 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_19_2> e:answer {:obs019 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_20_2> e:answer {:obs020 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_21_2> e:answer {:obs021 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_22_1> e:answer {:obs022 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_23_2> e:answer {:obs023 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_24_2> e:answer {:obs024 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_26_2> e:answer {:obs026 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_29_2> e:answer {:obs029 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_30_1> e:answer {:obs030 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_31_1> e:answer {:obs031 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_32_1> e:answer {:obs032 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_34_1> e:answer {:obs034 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_35_2> e:answer {:obs035 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_36_2> e:answer {:obs036 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_37_1> e:answer {:obs037 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_38_1> e:answer {:obs038 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_39_2> e:answer {:obs039 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_41_1> e:answer {:obs041 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_42_1> e:answer {:obs042 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_43_1> e:answer {:obs043 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_44_2> e:answer {:obs044 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_46_2> e:answer {:obs046 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_47_1> e:answer {:obs047 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_48_2> e:answer {:obs048 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_51_2> e:answer {:obs051 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_52_2> e:answer {:obs052 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_53_2> e:answer {:obs053 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_54_2> e:answer {:obs054 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_55_2> e:answer {:obs055 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_56_1> e:answer {:obs056 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_57_2> e:answer {:obs057 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_58_2> e:answer {:obs058 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_59_2> e:answer {:obs059 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_60_2> e:answer {:obs060 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_61_2> e:answer {:obs061 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_62_2> e:answer {:obs062 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_63_2> e:answer {:obs063 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_64_2> e:answer {:obs064 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_65_2> e:answer {:obs065 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_66_1> e:answer {:obs066 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_67_2> e:answer {:obs067 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_68_2> e:answer {:obs068 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_71_2> e:answer {:obs071 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_72_2> e:answer {:obs072 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_73_2> e:answer {:obs073 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_74_2> e:answer {:obs074 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_75_2> e:answer {:obs075 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_76_2> e:answer {:obs076 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_77_1> e:answer {:obs077 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_78_2> e:answer {:obs078 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_79_2> e:answer {:obs079 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_80_1> e:answer {:obs080 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_82_1> e:answer {:obs082 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_84_1> e:answer {:obs084 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_85_2> e:answer {:obs085 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_86_2> e:answer {:obs086 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_87_1> e:answer {:obs087 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_88_1> e:answer {:obs088 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_89_2> e:answer {:obs089 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_91_1> e:answer {:obs091 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_92_1> e:answer {:obs092 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_93_1> e:answer {:obs093 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_95_1> e:answer {:obs095 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_96_2> e:answer {:obs096 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_97_1> e:answer {:obs097 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_98_2> e:answer {:obs098 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_99_2> e:answer {:obs099 :ascribed :WetGrass}.
+   <http://josd.github.io/.well-known/genid/#e_bn_100_1> e:answer {:obs100 :ascribed :WetGrass}}];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_3"]; r:boundTo 81];
+  r:binding [ r:variable [ n3:uri "http://josd.github.io/var#x_4"]; r:boundTo 0.2345679012345679];
+  r:rule <#lemma6>.
+
+<#lemma4> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {<http://josd.github.io/brain/swet/swetA11.n3> log:semantics var:x_0.
+     var:x_0 math:memberCount var:x_1.
+     <http://josd.github.io/brain/swet/swetA01.n3> log:semantics var:x_2.
+     var:x_2 math:memberCount var:x_3.
+     (var:x_1 var:x_3) math:quotient var:x_4} => {{{:obs :ascribed :Rain} :given {:obs :ascribed :WetGrass}} e:possibility var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/swet/swetQ.n3>].
+
+<#lemma5> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {<http://josd.github.io/brain/swet/swetA21.n3> log:semantics var:x_0.
+     var:x_0 math:memberCount var:x_1.
+     <http://josd.github.io/brain/swet/swetA01.n3> log:semantics var:x_2.
+     var:x_2 math:memberCount var:x_3.
+     (var:x_1 var:x_3) math:quotient var:x_4} => {{{:obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/swet/swetQ.n3>].
+
+<#lemma6> a r:Extraction;
+  r:gives {
+    @forAll var:x_0, var:x_1, var:x_2, var:x_3, var:x_4. {<http://josd.github.io/brain/swet/swetA31.n3> log:semantics var:x_0.
+     var:x_0 math:memberCount var:x_1.
+     <http://josd.github.io/brain/swet/swetA01.n3> log:semantics var:x_2.
+     var:x_2 math:memberCount var:x_3.
+     (var:x_1 var:x_3) math:quotient var:x_4} => {{{:obs :ascribed :Rain.
+       :obs :ascribed :Sprinkler} :given {:obs :ascribed :WetGrass}} e:possibility var:x_4}.
+  };
+  r:because [ a r:Parsing; r:source <http://josd.github.io/brain/swet/swetQ.n3>].
+
+#2020-02-22T21:53:09.348Z in=303 out=3 ent=3 step=3 brake=1 inf=630430 sec=0.358 inf/sec=1760978
+#ENDS
+

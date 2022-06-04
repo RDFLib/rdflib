@@ -8,7 +8,7 @@ Plugins
    :target: _static/plugins-diagram.svg
 
 
-Many parts of RDFLib are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in RDFLib core.  
+Many parts of RDFLib are extensible with plugins, `see setuptools' 'Creating and discovering plugins' <https://packaging.python.org/guides/creating-and-discovering-plugins/>`_. These pages list the plugins included in RDFLib core.
 
 
 

@@ -1,0 +1,34 @@
+[
+  {
+    "@id": "http://example.com/U",
+    "@graph": [
+      {
+        "@id": "http://example.com/Subj1",
+        "@type": ["http://example.com/Type"],
+        "http://example.com/ref": [{"@id": "http://example.com/U"}],
+        "http://example.com/list": [{
+          "@list": [
+            {"@value": "a"},
+            {"@value": "b"}
+          ]
+        }]
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com/V",
+    "@graph": [
+      {
+        "@id": "http://example.com/Subj1",
+        "@type": ["http://example.com/Type2"],
+        "http://example.com/ref": [{"@id": "http://example.com/V"}],
+        "http://example.com/list": [{
+          "@list": [
+            {"@value": "c"},
+            {"@value": "d"}
+          ]
+        }]
+      }
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+[{
+  "urn:u:": [
+    {"@id": "https://ex.org/#Test"},
+    {"@id": "https://ex.org/#Test:2"}
+  ]
+}]

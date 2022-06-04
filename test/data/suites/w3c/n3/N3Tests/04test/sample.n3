@@ -1,0 +1,113 @@
+# $Id: sample.n3 336 2004-07-06 22:49:40Z josd $
+
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix acm:     <http://daml.umbc.edu/ontologies/topic-ont#> .
+@prefix :        <http://eulersharp.sourceforge.net/2004/04test/sample#> .
+
+:ACMTopic-Information_Systems-Database_Management-Languages
+      a       acm:Topic ;
+      rdfs:label "Sprachen"@de , "Languages"@en ;
+      acm:SubTopic :ACMTopic-Information_Systems-Database_Management-Languages-Query_Languages .
+
+:year
+      a       rdf:Property ;
+      rdfs:domain :Publication .
+
+:InProceedings
+      a       rdfs:Class ;
+      rdfs:subClassOf :Publication .
+
+:email
+      a       rdf:Property ;
+      rdfs:domain :Person ;
+      rdfs:range <http://www.w3.org/2001/XMLSchema#STRING> .
+
+:reified_triple
+      a       rdf:Statement ;
+      rdf:object :ACMTopic-Information_Systems-Database_Management-Languages-Query_Languages ;
+      rdf:predicate :isAbout ;
+      rdf:subject :Paper ;
+      dc:creator <http://www.aifb.uni-karlsruhe.de/WBS/pha> .
+
+<http://www.aifb.uni-karlsruhe.de/WBS/rvo>
+      a       :Human , :Person ;
+      :name   "Raphael Volz" .
+
+:Paper
+      a       :InProceedings ;
+      :author [ a       rdf:Seq ;
+                rdf:_1  <http://www.cs.vu.nl/~jbroeks/> ;
+                rdf:_2  <http://www.aifb.uni-karlsruhe.de/WBS/aeb> ;
+                rdf:_3  <http://www.aifb.uni-karlsruhe.de/WBS/pha> ;
+                rdf:_4  <http://www.aifb.uni-karlsruhe.de/WBS/rvo>
+              ] ;
+      :isAbout :ACMTopic-Information_Systems-Database_Management-Languages-Query_Languages ;
+      :pages  "08" ;
+      :title  "An Overview of RDF Query Languages" ;
+      :year   "2004" .
+
+:author
+      a       rdf:Property ;
+      rdfs:domain :Publication ;
+      rdfs:range rdf:Seq .
+
+:ACMTopic-Information_Systems
+      a       acm:Topic ;
+      rdfs:label "Information Systems"@en , "Informationsysteme"@de ;
+      acm:SubTopic :ACMTopic-Information_Systems-Database_Management .
+
+<http://www.aifb.uni-karlsruhe.de/WBS/aeb>
+      a       :Human ;
+      :name   "Andreas Eberhart" .
+
+:Human
+      a       rdfs:Class ;
+      rdfs:subClassOf :Person .
+
+:Topic
+      a       rdfs:Class .
+
+:title
+      a       rdf:Property ;
+      rdfs:domain :Publication ;
+      rdfs:range <http://www.w3.org/2001/XMLSchema#STRING> .
+
+:name
+      a       rdf:Property ;
+      rdfs:domain :Person ;
+      rdfs:range <http://www.w3.org/2001/XMLSchema#STRING> .
+
+<http://www.cs.vu.nl/~jbroeks/>
+      :email  "jbroeks@cs.vu.nl" ;
+      :name   "Jeen Broekstra" .
+
+<http://www.aifb.uni-karlsruhe.de/WBS/pha>
+      a       :Person ;
+      :name   "Peter Haase" .
+
+:Person
+      a       rdfs:Class ;
+      rdfs:subClassOf :Human .
+
+:ACMTopic-Information_Systems-Database_Management
+      a       acm:Topic ;
+      rdfs:label "Datenbankmanagement"@de , "Database Management"@en ;
+      acm:SubTopic :ACMTopic-Information_Systems-Database_Management-Languages .
+
+:isAbout
+      a       rdf:Property ;
+      rdfs:range :Topic .
+
+:Publication
+      a       rdfs:Class .
+
+:ACMTopic-Information_Systems-Database_Management-Languages-Query_Languages
+      a       acm:Topic ;
+      rdfs:label "Query Languages"@en , "Anfragesprachen"@de .
+
+:pages
+      a       rdf:Property ;
+      rdfs:domain :Publication ;
+      rdfs:range <http://www.w3.org/2001/XMLSchema#INTEGER> .

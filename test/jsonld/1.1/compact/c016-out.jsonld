@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "Type": {
+      "@context": {
+        "@vocab": "http://example.com/"
+      }
+    }
+  },
+  "foo": "org",
+  "p": {
+    "@type": "Type",
+    "foo": "com",
+    "nested": {
+      "nested-prop": "org"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix : <#>.
+
+{ "asdfghjkl" string:matches "jkl" } log:implies { :test1a a :success }.
+{ "asdfghjkl" string:matches "^jkl" } log:implies { :test1b a :FAILURE }.
+{ "asdfghjkl" string:matches "jkl$" } log:implies { :test1c a :success }.
+{ "asdfghjkl" string:matches "asd" } log:implies { :test1d a :success }.
+{ "asdfghjkl" string:matches "^asd" } log:implies { :test1e a :success }.
+{ "asdfghjkl" string:matches "asd$" } log:implies { :test1f a :FAILURE }.
+
+{ "asdfghjkl" string:matches "ass" } log:implies { :test2a a :FAILURE }.
+{ "asdfghjkl" string:matches "..." } log:implies { :test2b a :success }.
+{ "asdfghjkl" string:matches "^a.*l$" } log:implies { :test2c a :success }.
+
+{ "jkl" string:matches "jkl" } log:implies { :test3a a :success }.
+{ "jkl" string:matches "^jkl$" } log:implies { :test3b a :success }.
+
+#ends
+

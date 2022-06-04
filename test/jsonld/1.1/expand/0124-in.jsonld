@@ -1,0 +1,15 @@
+{
+  "@context": [
+    {
+      "@version": 1.1,
+      "ex": {
+        "@id": "http://example.org/",
+        "@prefix": true
+      }
+    },
+    {
+      "@vocab": "ex:ns/"
+    }
+  ],
+  "foo": "bar"
+}

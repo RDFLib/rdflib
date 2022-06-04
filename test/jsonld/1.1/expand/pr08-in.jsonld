@@ -1,0 +1,38 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/",
+    "@version": 1.1,
+    "protected": {
+      "@protected": false
+    },
+    "scope1": {
+      "@protected": false,
+      "@context": {
+        "protected": {
+          "@id": "http://example.com/something-else"
+        }
+      }
+    },
+    "scope2": {
+      "@protected": true,
+      "@context": {
+        "protected": {
+          "@protected": true
+        }
+      }
+    }
+  },
+  "protected": false,
+  "scope1": {
+    "@context": {
+      "protected": "http://example.com/another-thing"
+    },
+    "protected": "property http://example.com/another-thing"
+  },
+  "scope2": {
+    "@context": {
+      "protected": "http://example.com/another-thing"
+    },
+    "protected": "error / property http://example.com/protected"
+  }
+}

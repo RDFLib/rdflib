@@ -1,0 +1,129 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdft: <http://www.w3.org/ns/rdftest#> .
+
+<http://www.w3.org/ns/rdftest> a owl:Ontology;
+   rdfs:label "The RDF 1.1 Test Vocabulary"@en;
+   dcterms:title "The RDF 1.1 Test Vocabulary"@en;
+   dcterms:description """This is a vocabulary document and is used to define classes and properties used in
+      RDF 1.1 Test Cases and associated test manifests.
+      The URI of the vocabulary is http://www.w3.org/ns/rdftest# (abbreviated by rdft: in this document).
+      Turtle and an JSON-LD versions of the vocabulary are also available.
+      The vocabulary is published by W3C.
+    """@en;
+   dcterms:publisher <http://www.w3.org/data#W3C>;
+   rdfs:comment """This is a vocabulary document and is used to define classes and properties used in
+      RDF 1.1 Test Cases and associated test manifests.
+      The URI of the vocabulary is http://www.w3.org/ns/rdftest# (abbreviated by rdft: in this document).
+      Turtle and an JSON-LD versions of the vocabulary are also available.
+      The vocabulary is published by W3C.
+    """@en .
+
+rdft:Approval a rdfs:Class;
+   rdfs:label "Approval"@en;
+   rdfs:comment "The superclass of all test approval statuses."@en .
+
+rdft:Approved a rdfs:Class;
+   rdfs:label "Approved"@en;
+   rdfs:comment "Indicates that a test is approved."@en;
+   rdfs:subClassOf rdft:Approval .
+
+rdft:Proposed a rdfs:Class;
+   rdfs:label "Proposed"@en;
+   rdfs:comment "Indicates that a test is proposed, but not approved."@en;
+   rdfs:subClassOf rdft:Approval .
+
+rdft:Rejected a rdfs:Class;
+   rdfs:label "Rejected"@en;
+   rdfs:comment "Indicates that a test is not approved."@en;
+   rdfs:subClassOf rdft:Approval .
+
+rdft:Test a rdfs:Class;
+   rdfs:label "Test"@en;
+   rdfs:comment "Superclass of all RDF Tests."@en .
+
+rdft:TestEval a rdfs:Class;
+   rdfs:label "Test Evaluation"@en;
+   rdfs:comment "Superclass of all RDF Evaluation Tests."@en;
+   rdfs:subClassOf rdft:Test .
+
+rdft:TestNQuadsNegativeSyntax a rdfs:Class;
+   rdfs:label "N-Quads Negative Syntax"@en;
+   rdfs:comment "A negative N-Quads syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestNQuadsPositiveSyntax a rdfs:Class;
+   rdfs:label "N-Quads Positive Syntax"@en;
+   rdfs:comment "A positive N-Quads syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestNTriplesNegativeSyntax a rdfs:Class;
+   rdfs:label "N-Triples Negative Syntax"@en;
+   rdfs:comment "A negative N-Triples syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestNTriplesPositiveSyntax a rdfs:Class;
+   rdfs:label "N-Triples Positive Syntax"@en;
+   rdfs:comment "A positive N-Triples syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestSyntax a rdfs:Class;
+   rdfs:label "Test Syntax"@en;
+   rdfs:comment "Superclass of all RDF Syntax Tests."@en;
+   rdfs:subClassOf rdft:Test .
+
+rdft:TestTriGNegativeSyntax a rdfs:Class;
+   rdfs:label "TriG Negative Syntax"@en;
+   rdfs:comment "A negative TriG syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestTriGPositiveSyntax a rdfs:Class;
+   rdfs:label "TriG Positive Syntax"@en;
+   rdfs:comment "A positive TriG syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestTrigEval a rdfs:Class;
+   rdfs:label "TriG Positive Evaluation"@en;
+   rdfs:comment "A positive TriG evaluation test."@en .
+
+rdft:TestTrigNegativeEval a rdfs:Class;
+   rdfs:label "TriG Negative Evaluation"@en;
+   rdfs:comment "A negative TriG evaluation test."@en;
+   rdfs:subClassOf rdft:TestEval .
+
+rdft:TestTurtleEval a rdfs:Class;
+   rdfs:label "Turtle Positive Evaluation"@en;
+   rdfs:comment "A positive Turtle evaluation test."@en;
+   rdfs:subClassOf rdft:TestEval .
+
+rdft:TestTurtleNegativeEval a rdfs:Class;
+   rdfs:label "Turtle Negative Evaluation"@en;
+   rdfs:comment "A negative Turtle evaluation test."@en;
+   rdfs:subClassOf rdft:TestEval .
+
+rdft:TestTurtleNegativeSyntax a rdfs:Class;
+   rdfs:label "Turtle Negative Syntax"@en;
+   rdfs:comment "A negative Turtle syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestTurtlePositiveSyntax a rdfs:Class;
+   rdfs:label "Turtle Positive Syntax"@en;
+   rdfs:comment "A positive Turtle syntax test."@en;
+   rdfs:subClassOf rdft:TestSyntax .
+
+rdft:TestXMLNegativeSyntax a rdfs:Class;
+   rdfs:label "RDF/XML Negative Syntax"@en;
+   rdfs:comment "A negative RDF/XML syntax test."@en .
+
+rdft:XMLEval a rdfs:Class;
+   rdfs:label "RDF/XML Evaluation"@en;
+   rdfs:comment "A positive RDF/XML evaluation test."@en;
+   rdfs:subClassOf rdft:TestEval .
+
+rdft:approval a rdf:Property;
+   rdfs:label "approval"@en;
+   rdfs:comment "Approval status of a test."@en;
+   rdfs:domain rdft:Test;
+   rdfs:range rdft:Approval .
