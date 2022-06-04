@@ -1,4 +1,3 @@
-import pytest
 from rdflib import Graph
 
 g = Graph()
