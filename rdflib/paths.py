@@ -64,8 +64,8 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
-Modifiers (?, *, +) are done using * (the multiplication operator) and
-the strings '*', '?', '+', also defined as constants in this file.
+Modifiers (?, \*, +) are done using \* (the multiplication operator) and
+the strings '\*', '?', '+', also defined as constants in this file.
 
 >>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
