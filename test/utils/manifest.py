@@ -1,15 +1,11 @@
-from test.utils.namespace import RDFT
+import logging
+from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
 
-from rdflib import RDF, RDFS, Graph, Namespace, logger
+from rdflib import RDF, RDFS, Graph
 from rdflib.term import Identifier, Node, URIRef
 
-MF = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")
-QT = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#")
-UP = Namespace("http://www.w3.org/2009/sparql/tests/test-update#")
-
-
-DAWG = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#")
+logger = logging.getLogger(__name__)
 
 ResultType = Union[Identifier, Tuple[Identifier, List[Tuple[Identifier, Identifier]]]]
 GraphDataType = Union[List[Identifier], List[Tuple[Identifier, Identifier]]]
@@ -47,8 +43,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
             for e in g.items(col):
 
                 approved = (
-                    (e, DAWG.approval, DAWG.Approved) in g
-                    or (e, DAWG.approval, DAWG.NotClassified) in g
+                    (e, DAWGT.approval, DAWGT.Approved) in g
+                    or (e, DAWGT.approval, DAWGT.NotClassified) in g
                     or (e, RDFT.approval, RDFT.Approved) in g
                 )
 
@@ -57,7 +53,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
 
                 # run legacy tests with no approval set
                 if legacy:
-                    approved |= (e, DAWG.approval, None) not in g and (
+                    approved |= (e, DAWGT.approval, None) not in g and (
                         e,
                         RDFT.approval,
                         None,
@@ -88,22 +84,22 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                         cast(Iterable[Identifier], g.objects(a, QT.graphData))
                     )
                     res = g.value(e, MF.result)
-                elif _type in (MF.UpdateEvaluationTest, UP.UpdateEvaluationTest):
+                elif _type in (MF.UpdateEvaluationTest, UT.UpdateEvaluationTest):
                     a = g.value(e, MF.action)
-                    query = g.value(a, UP.request)
-                    data = g.value(a, UP.data)
+                    query = g.value(a, UT.request)
+                    data = g.value(a, UT.data)
                     graphdata = cast(List[Tuple[Identifier, Identifier]], [])
-                    for gd in g.objects(a, UP.graphData):
+                    for gd in g.objects(a, UT.graphData):
                         graphdata.append(
-                            (g.value(gd, UP.graph), g.value(gd, RDFS.label))
+                            (g.value(gd, UT.graph), g.value(gd, RDFS.label))
                         )
 
                     r = g.value(e, MF.result)
-                    resdata: Identifier = g.value(r, UP.data)
+                    resdata: Identifier = g.value(r, UT.data)
                     resgraphdata: List[Tuple[Identifier, Identifier]] = []
-                    for gd in g.objects(r, UP.graphData):
+                    for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
-                            (g.value(gd, UP.graph), g.value(gd, RDFS.label))
+                            (g.value(gd, UT.graph), g.value(gd, RDFS.label))
                         )
 
                     res = resdata, resgraphdata
