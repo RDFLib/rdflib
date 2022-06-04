@@ -1,4 +1,4 @@
-# $Id: manifest.ttl,v 1.14 2010/11/30 14:17:22 apollere2 Exp $
+# $Id: manifest.ttl,v 1.13 2007/09/05 17:32:28 lfeigenb Exp $
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#> .
@@ -269,3 +269,5 @@
      dawgt:approval dawgt:Approved ;
      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
     mf:result  <result-sameTerm-not-eq.ttl> .
+
+
