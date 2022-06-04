@@ -83,5 +83,7 @@ class CSVResultSerializer(ResultSerializer):
     def serializeTerm(self, term, encoding):
         if term is None:
             return ""
+        elif isinstance(term, BNode):
+            return f"_:{term}"
         else:
             return term

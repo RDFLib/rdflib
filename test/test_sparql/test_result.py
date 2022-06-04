@@ -16,6 +16,7 @@ from typing import (
     Iterator,
     Mapping,
     Optional,
+    Pattern,
     Sequence,
     Set,
     TextIO,
@@ -29,8 +30,9 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from pyparsing import ParseException
 
 from rdflib.graph import Graph
+from rdflib.namespace import Namespace
 from rdflib.query import Result, ResultRow
-from rdflib.term import Identifier, Literal, Node, Variable
+from rdflib.term import BNode, Identifier, Literal, Node, Variable
 
 BindingsType = Sequence[Mapping[Variable, Identifier]]
 ParseOutcomeType = Union[BindingsType, Type[Exception]]
@@ -73,6 +75,43 @@ def test_select_result_parse(
     else:
         parsed_result = Result.parse(StringIO(data), format=format)
         assert parse_outcome == parsed_result.bindings
+
+
+EGSCHEME = Namespace("example:")
+
+
+@pytest.mark.parametrize(
+    ("node", "format", "expected_result"),
+    [
+        (BNode(), "csv", re.compile(r"^_:.*$")),
+        (BNode("a"), "csv", "_:a"),
+        (Literal("x11"), "csv", "x11"),
+    ],
+)
+def test_xsv_serialize(
+    node: Identifier, format: str, expected_result: Union[Pattern[str], str]
+) -> None:
+    graph = Graph()
+    graph.add((EGSCHEME.checkSubject, EGSCHEME.checkPredicate, node))
+    result = graph.query(
+        f"""
+    PREFIX egscheme: <{EGSCHEME}>
+    SELECT ?o {{
+        egscheme:checkSubject egscheme:checkPredicate ?o
+    }}
+    """
+    )
+    assert len(result.bindings) == 1
+    with BytesIO() as bio:
+        result.serialize(bio, format=format)
+        result_text = bio.getvalue().decode("utf-8")
+    result_lines = result_text.splitlines()
+    assert len(result_lines) == 2
+    logging.debug("result_lines[1] = %r", result_lines[1])
+    if isinstance(expected_result, str):
+        assert expected_result == result_lines[1]
+    else:
+        assert expected_result.match(result_lines[1])
 
 
 @pytest.fixture(scope="module")
