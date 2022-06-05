@@ -17,7 +17,6 @@ kwargs["tests_require"] = [
     "html5lib",
     "pytest",
     "pytest-cov",
-    "pytest-subtests",
 ]
 kwargs["extras_require"] = {
     "html": ["html5lib"],
