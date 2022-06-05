@@ -201,19 +201,19 @@ RESOURCES: List[Resource] = [
     #     pattern=re.compile(r"^(.+)$"),
     # ),
     # NOTE: Commented out as this contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
-    #     type=ArchiveType.TAR_GZ,
-    #     pattern=re.compile(r"^[^\/]+[\/](.+)$"),
-    # ),
+    ArchiveResource(
+        remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
+        local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
+        type=ArchiveType.TAR_GZ,
+        pattern=re.compile(r"^[^\/]+[\/](.+)$"),
+    ),
     # NOTE: Commented out as this contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),
-    #     type=ArchiveType.TAR_GZ,
-    #     pattern=re.compile(r"^[^\/]+[\/]data-r2[\/](.+)$"),
-    # ),
+    ArchiveResource(
+        remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
+        local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),
+        type=ArchiveType.TAR_GZ,
+        pattern=re.compile(r"^[^\/]+[\/]data-r2[\/](.+)$"),
+    ),
     FileResource(
         remote=Request(
             "http://www.w3.org/2000/01/rdf-schema#", headers={"Accept": "text/turtle"}
@@ -223,6 +223,22 @@ RESOURCES: List[Resource] = [
     FileResource(
         remote=Request("https://www.w3.org/ns/rdftest.ttl"),
         local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"),
+        local_path=(DATA_PATH / "defined_namespaces/mf.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"),
+        local_path=(DATA_PATH / "defined_namespaces/dawgt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-query#"),
+        local_path=(DATA_PATH / "defined_namespaces/qt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2009/sparql/docs/tests/test-update.n3"),
+        local_path=(DATA_PATH / "defined_namespaces/ut.n3"),
     ),
 ]
 

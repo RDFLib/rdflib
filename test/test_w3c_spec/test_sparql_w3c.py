@@ -8,7 +8,8 @@ from pathlib import PurePath
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
 from test.utils import file_uri_to_path
-from test.utils.manifest import MF, UP, RDFTest, ResultType, read_manifest
+from test.utils.manifest import RDFTest, ResultType, read_manifest
+from test.utils.namespace import MF, UT
 
 import pytest
 
@@ -512,7 +513,7 @@ def query_test(t: RDFTest):
 
 
 testers: Dict[Node, Callable[[RDFTest], None]] = {
-    UP.UpdateEvaluationTest: update_test,
+    UT.UpdateEvaluationTest: update_test,
     MF.UpdateEvaluationTest: update_test,
     MF.PositiveUpdateSyntaxTest11: update_test,
     MF.NegativeUpdateSyntaxTest11: update_test,

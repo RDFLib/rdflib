@@ -1064,7 +1064,7 @@ class Graph(Node):
         # different modes. It seems to just make it more complex to use, maybe
         # it should be clarified when someone will need to use override=False
         # and replace=False. And also why silent failure here is preferred over
-        # raising an excpetion.
+        # raising an exception.
         return self.namespace_manager.bind(
             prefix, namespace, override=override, replace=replace
         )
@@ -1146,18 +1146,36 @@ class Graph(Node):
         encoding: Optional[str] = None,
         **args: Any,
     ) -> Union[bytes, str, "Graph"]:
-        """Serialize the Graph to destination
+        """
+        Serialize the graph.
 
-        If destination is None serialize method returns the serialization as
-        bytes or string.
-
-        If encoding is None and destination is None, returns a string
-        If encoding is set, and Destination is None, returns bytes
-
-        Format defaults to turtle.
-
-        Format support can be extended with plugins,
-        but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
+        :param destination:
+           The destination to serialize the graph to. This can be a path as a
+           :class:`str` or :class:`~pathlib.PurePath` object, or it can be a
+           :class:`~typing.IO[bytes]` like object. If this parameter is not
+           supplied the serialized graph will be returned.
+        :param format:
+           The format that the output should be written in. This value
+           references a :class:`~rdflib.serializer.Serializer` plugin. Format
+           support can be extended with plugins, but ``"xml"``, ``"n3"``,
+           ``"turtle"``, ``"nt"``, ``"pretty-xml"``, ``"trix"``, ``"trig"``,
+           ``"nquads"``, ``"json-ld"`` and ``"hext"`` are built in. Defaults to
+           ``"turtle"``.
+        :param base:
+           The base IRI for formats that support it. For the turtle format this
+           will be used as the ``@base`` directive.
+        :param encoding: Encoding of output.
+        :param args:
+           Additional arguments to pass to the
+           :class:`~rdflib.serializer.Serializer` that will be used.
+        :return: The serialized graph if ``destination`` is `None`. The
+            serialized graph is returned as `str` if no encoding is specified,
+            and as `bytes` if an encoding is specified.
+        :rtype: :class:`bytes` if ``destination`` is `None` and ``encoding`` is not `None`.
+        :rtype: :class:`str` if ``destination`` is `None` and ``encoding`` is `None`.
+        :return: ``self`` (i.e. the :class:`~rdflib.graph.Graph` instance) if
+            ``destination`` is not `None`.
+        :rtype: :class:`~rdflib.graph.Graph` if ``destination`` is not `None`.
         """
 
         # if base is not given as attribute use the base set for the graph
@@ -1348,7 +1366,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.Result
+        :returntype: :class:`~rdflib.query.Result`
 
         """
 
@@ -1952,7 +1970,7 @@ class ConjunctiveGraph(Graph):
         # given that there is no specific mention of type for publicId, it
         # seems reasonable to assume it should also be a string. Furthermore,
         # create_input_source will ensure that publicId is not None, though it
-        # would be good if this guaruntee was made more explicit i.e. by type
+        # would be good if this guarantee was made more explicit i.e. by type
         # hint on InputSource (TODO/FIXME).
         g_id: str = publicID and publicID or source.getPublicId()
         if not isinstance(g_id, Node):

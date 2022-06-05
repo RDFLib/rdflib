@@ -21,7 +21,8 @@
 :dawg-delete-data-01 a mf:UpdateEvaluationTest ;
     mf:name    "Simple DELETE DATA 1" ;
     rdfs:comment "This is a simple delete of an existing triple from the default graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-01.ru> ; 
                 ut:data <delete-pre-01.ttl>
               ] ;
@@ -31,7 +32,8 @@
 :dawg-delete-data-02 a mf:UpdateEvaluationTest ;
     mf:name    "Simple DELETE DATA 2" ;
     rdfs:comment "This is a simple delete of an existing triple from a named graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-02.ru> ; 
                 ut:graphData [ ut:graph <delete-pre-01.ttl> ;
                                rdfs:label "http://example.org/g1" ]
@@ -43,7 +45,8 @@
 :dawg-delete-data-03 a mf:UpdateEvaluationTest ;
     mf:name    "Simple DELETE DATA 3" ;
     rdfs:comment "This is a simple delete of a non-existing triple from the default graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-03.ru> ; 
                 ut:data <delete-pre-01.ttl> 
               ] ;
@@ -53,7 +56,8 @@
 :dawg-delete-data-04 a mf:UpdateEvaluationTest ;
     mf:name    "Simple DELETE DATA 4" ;
     rdfs:comment "This is a simple delete of a non-existing triple from a named graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-04.ru> ; 
                 ut:graphData [ ut:graph <delete-pre-01.ttl> ;
                                rdfs:label "http://example.org/g1" ] 
@@ -65,7 +69,8 @@
 :dawg-delete-data-05 a mf:UpdateEvaluationTest ;
     mf:name    "Graph-specific DELETE DATA 1" ;
     rdfs:comment "Test 1 for DELETE DATA only modifying the desired graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-05.ru> ; 
                 ut:data <delete-pre-01.ttl> ;
                 ut:graphData [ ut:graph <delete-pre-02.ttl> ;
@@ -83,7 +88,8 @@
 :dawg-delete-data-06 a mf:UpdateEvaluationTest ;
     mf:name    "Graph-specific DELETE DATA 2" ;
     rdfs:comment "Test 2 for DELETE DATA only modifying the desired graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [ ut:request <delete-data-06.ru> ; 
                 ut:data <delete-pre-01.ttl> ;
                 ut:graphData [ ut:graph <delete-pre-02.ttl> ;

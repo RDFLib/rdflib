@@ -1,0 +1,178 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix :       <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+
+## A Manifest is typically a list (RDF Collection) of manifest entries.
+## The :entries property has an object of the list.
+## There may be more than one list per file.
+
+:   rdfs:comment     "Manifest vocabulary for test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "W3C RDF Data Access Working Group" ;
+    dc:title         "Test case manifest vocabulary" ;
+    dc:description   "Test case manifest vocabulary" ;
+    dc:date          "2004-07" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+
+## ---- Class declarations ----
+
+:Manifest rdf:type rdfs:Class ;
+    rdfs:comment "The class of manifests" .
+
+:ManifestEntry rdf:type rdfs:Class ;
+    rdfs:comment "One entry in rdf:type list of entries" .
+
+## ---- Property declarations for the manifest ----
+
+:include rdf:type rdf:Property ;
+    rdfs:comment "Connects the manifest resource to rdf:type list of manifests" ;
+    rdfs:domain	 :Manifest ;
+    rdfs:range   rdf:List ;
+    .
+
+:entries rdf:type rdf:Property ;
+    rdfs:comment "Connects the manifest resource to rdf:type list of entries" ;
+    rdfs:domain	 :Manifest ;
+    rdfs:range   rdf:List ;
+
+    .
+	
+## ---- Property declarations for each test ----
+
+:name rdf:type rdf:Property ;
+    rdfs:comment "Optional name of this entry" ;
+    rdfs:domain	 :ManifestEntry ;
+    rdfs:range   rdfs:Literal ;
+    .	
+    
+:action rdf:type rdf:Property ;
+    rdfs:comment "Action to perform" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:result rdf:type rdf:Property ;
+    rdfs:comment "The expected outcome" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:result rdf:type rdf:Property ;
+    rdfs:comment "The test status" ;
+    rdfs:domain	 :ManifestEntry ;
+    rdfs:range   :TestStatus ;
+    .
+
+:requires rdf:type rdf:Property ;
+    rdfs:comment "Required functionality for execution of this test" ;
+    rdfs:domain :ManifestEntry ;
+    rdfs:range	:Requirement .
+
+:notable rdf:type rdf:Property ;
+    rdfs:comment "Notable feature of this test (advisory)" ;
+    rdfs:domain :ManifestEntry .
+
+:resultCardinality rdf:type rdf:Property ;
+    rdfs:comment "Specifies whether passing the test requires strict or lax cardinality adherence" ;
+    rdfs:domain :ManifestEntry ;
+    rdfs:range :ResultCardinality .
+
+## ---- Test Case Type ---
+
+:PositiveSyntaxTest rdf:type rdfs:Class ;
+      rdfs:label "Positive Syntax Test" ;
+      rdfs:comment "A type of test specifically for syntax testing. Syntax tests are not required to have an associated result, only an action." .
+
+:PositiveSyntaxTest11 rdf:type rdfs:Class ;
+      rdfs:label "Positive Syntax Test for SPARQL1.1 Query" ;
+      rdfs:comment "A type of test specifically for syntax testing of new features in the SPARQL1.1 Query Language. Syntax tests are not required to have an associated result, only an action." .
+
+:PositiveUpdateSyntaxTest11 rdf:type rdfs:Class ;
+      rdfs:label "Positive Syntax Test for SPARQL1.1 Update" ;
+      rdfs:comment "A type of test specifically for syntax testing of SPARQL1.1 Update. Syntax tests are not required to have an associated result, only an action." .
+
+
+:NegativeSyntaxTest rdf:type rdfs:Class ;
+      rdfs:label "Negative Syntax Test" ;
+      rdfs:comment "A type of test specifically for syntax testing. Syntax tests are not required to have an associated result, only an action. Negative syntax tests are tests of which the result should be a parser error." .
+
+:NegativeSyntaxTest11 rdf:type rdfs:Class ;
+      rdfs:label "Negative Syntax Test for SPARQL1.1 Query" ;
+      rdfs:comment "A type of test specifically for syntax testing of new features in the SPARQL1.1 Query Language. Syntax tests are not required to have an associated result, only an action. Negative syntax tests are tests of which the result should be a parser error." .
+
+:NegativeUpdateSyntaxTest11 rdf:type rdfs:Class ;
+      rdfs:label "Negative Syntax Test for SPARQL1.1 Update" ;
+      rdfs:comment "A type of test specifically for syntax testing of SPARQL1.1 Update. Syntax tests are not required to have an associated result, only an action. Negative syntax tests are tests of which the result should be a parser error." .
+
+
+:QueryEvaluationTest rdf:type rdfs:Class ;
+      rdfs:label "Query Evaluation Test" ;
+      rdfs:comment "A type of test specifically for query evaluation testing. Query evaluation tests are required to have an associated input dataset, a query, and an expected output dataset." .
+
+:UpdateEvaluationTest rdf:type rdfs:Class ;
+      rdfs:label "Update Evaluation Test" ;
+      rdfs:comment "The class of all SPARQL 1.1 Update evaluation tests" .
+
+## ---- Test Statuses ----
+
+:TestStatus rdf:type rdfs:Class ;
+    rdfs:comment "Statuses a test can have" ;
+    .
+
+:proposed rdf:type :TestStatus ;
+    rdfs:label "proposed" ;
+    .
+
+:accepted rdf:type :TestStatus ;
+    rdfs:label "accepted" ;
+    .
+
+:rejected rdf:type :TestStatus ;
+    rdfs:label "rejected" ;
+    .
+
+## ---- Required functions ----
+
+:Requirement rdf:type rdfs:Class ;
+     rdfs:comment "Requirements for a  particular test" .
+
+:Notable rdf:type rdfs:Class ;
+     rdfs:comment "Requirements for a  particular test" .
+
+
+:XsdDateOperations	rdf:type :Requirement ;
+    rdfs:comment "Tests that require xsd:date operations" .
+	
+:StringSimpleLiteralCmp	rdf:type :Requirement ;
+    rdfs:comment "Tests that require simple literal is the same value as an xsd:string of the same lexicial form" .
+    
+:KnownTypesDefault2Neq	rdf:type :Requirement ;
+    rdfs:comment "Values in disjoint value spaces are not equal" .
+    
+:LangTagAwareness	rdf:type :Requirement ;
+    rdfs:comment "Tests that require langauge tag handling in FILTERs" .
+
+## ---- Notable features ----
+
+:IllFormedLiterals	rdf:type :Notable ;
+    rdfs:comment "Tests that involve lexical forms which are illegal for the datatype" .
+
+## ---- Test cardinality ----
+
+:ResultCardinality rdf:type rdfs:Class ;
+    rdfs:comment "Potential modes of evaluating a test's results with respect to solution cardinality" .
+
+:LaxCardinality rdf:type :ResultCardinality ;
+    rdfs:comment
+"""The given mf:result for a test with an mf:resultCardinality of mf:ReducedCardinalityTest 
+is the results as if the REDUCED keyword were omitted. To pass such
+a test, an implementation must produce a result set 
+with each solution in the expected results appearing at least once and 
+no more than the number of times it appears in the expected results. Of 
+course, there must also be no results produced that are not in the 
+expected results.""" .
+
