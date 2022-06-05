@@ -2,13 +2,12 @@ import logging
 from os import mkdir
 from os.path import abspath, exists
 from threading import Thread
+from typing import Optional
 from urllib.request import pathname2url
 
 from rdflib import Namespace
 from rdflib.store import NO_STORE, VALID_STORE, Store
 from rdflib.term import URIRef
-
-from typing import Optional, Union
 
 
 def bb(u):
