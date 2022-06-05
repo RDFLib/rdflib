@@ -1,5 +1,4 @@
 import logging
-import traceback
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -36,7 +35,6 @@ class GraphSource:
     def from_source(
         cls, source: GraphSourceType, public_id: Optional[str] = None
     ) -> "GraphSource":
-        logging.debug("stack = %s", "".join(traceback.format_stack(limit=8)))
         logging.debug("source(%s) = %r", id(source), source)
         if isinstance(source, Path):
             source = GraphSource.from_path(source)
