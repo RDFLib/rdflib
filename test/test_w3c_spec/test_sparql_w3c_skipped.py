@@ -53,6 +53,7 @@ testlist = {
     "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service5": "service not implemented",
     "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service6": "service not implemented",
     "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service7": "service not implemented",
+    "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-empty-group": "unclear",
 }
 
 skiptests = dict([(URIRef(k), v) for k, v in testlist.items()])
