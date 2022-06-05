@@ -218,7 +218,7 @@ def test_unbind_arity(tmp_path: Path, store_name: str) -> None:
     graph.bind("egsub", EGNSSUB_V0)
     check_ns(graph, {"egsub": EGNSSUB_V0})
     with pytest.raises(TypeError):
-        graph.unbind()
+        graph.unbind()  # type: ignore[call-arg]
     graph.unbind(None)
     check_ns(graph, {"egsub": EGNSSUB_V0})
 
