@@ -12,7 +12,6 @@ import pprint
 import random
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from pathlib import PurePath, PureWindowsPath
 from threading import Thread
 from typing import (
     Any,
@@ -32,11 +31,9 @@ from typing import (
     Union,
     cast,
 )
-from urllib.parse import unquote, urlparse
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
-from nturl2path import url2pathname as nt_url2pathname
 
 import rdflib.compare
 import rdflib.plugin
@@ -46,6 +43,9 @@ from rdflib.plugin import Plugin
 from rdflib.term import Identifier, Literal, Node, URIRef
 
 PluginT = TypeVar("PluginT")
+
+
+__all__ = ["file_uri_to_path"]
 
 
 def get_unique_plugins(
@@ -418,36 +418,6 @@ def eq_(lhs, rhs, msg=None):
         assert lhs == rhs
 
 
-PurePathT = TypeVar("PurePathT", bound=PurePath)
-
-
-def file_uri_to_path(
-    file_uri: str,
-    path_class: Type[PurePathT] = PurePath,  # type: ignore[assignment]
-    url2pathname: Optional[Callable[[str], str]] = None,
-) -> PurePathT:
-    """
-    This function returns a pathlib.PurePath object for the supplied file URI.
-
-    :param str file_uri: The file URI ...
-    :param class path_class: The type of path in the file_uri. By default it uses
-        the system specific path pathlib.PurePath, to force a specific type of path
-        pass pathlib.PureWindowsPath or pathlib.PurePosixPath
-    :returns: the pathlib.PurePath object
-    :rtype: pathlib.PurePath
-    """
-    is_windows_path = isinstance(path_class(), PureWindowsPath)
-    file_uri_parsed = urlparse(file_uri)
-    if url2pathname is None:
-        if is_windows_path:
-            url2pathname = nt_url2pathname
-        else:
-            url2pathname = unquote
-    pathname = url2pathname(file_uri_parsed.path)
-    result = path_class(pathname)
-    return result
-
-
 ParamsT = TypeVar("ParamsT", bound=tuple)
 MarksType = Collection[Union[MarkDecorator, Mark]]
 MarkListType = List[Union[MarkDecorator, Mark]]
@@ -501,3 +471,12 @@ def affix_tuples(
         suffix = tuple()
     for item in tuples:
         yield (*prefix, *item, *suffix)
+
+
+def ensure_suffix(value: str, suffix: str) -> str:
+    if not value.endswith(suffix):
+        value = f"{value}{suffix}"
+    return value
+
+
+from test.utils.iri import file_uri_to_path  # noqa: E402
