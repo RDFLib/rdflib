@@ -618,7 +618,7 @@ class NamespaceManager(object):
                 f"Prefix \"{curie.split(':')[0]}\" not bound to any namespace."
             )
 
-    def unbind(self, prefix: Optional[str]) -> None:
+    def unbind(self, prefix: str) -> None:
         for ns in self.namespaces():
             if ns[0] == prefix:
                 del self.__trie[str(ns[1])]

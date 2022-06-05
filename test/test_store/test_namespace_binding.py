@@ -210,6 +210,19 @@ def test_rebind_prefix_reuse_uri_replace(
     check_ns(graph, {"egsub": EGNSSUB_V1, "egsubv0": EGNSSUB_V0})
 
 
+def test_unbind_arity(tmp_path: Path, store_name: str) -> None:
+    """
+    Check TypeError raised on missing prefix
+    """
+    graph = make_graph(tmp_path, store_name)
+    graph.bind("egsub", EGNSSUB_V0)
+    check_ns(graph, {"egsub": EGNSSUB_V0})
+    with pytest.raises(TypeError):
+        graph.unbind()
+    graph.unbind(None)
+    check_ns(graph, {"egsub": EGNSSUB_V0})
+
+
 def test_simple_unbind(tmp_path: Path, store_name: str) -> None:
     """
     Straightforward bind / unbind.
