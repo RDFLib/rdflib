@@ -473,7 +473,6 @@ class BerkeleyDB(Store):
     def bind(
         self,
         prefix: Optional[str],
-        # namespace: Union[Namespace, URIRef, str],
         namespace: str,
         override: bool = True,
     ) -> None:

@@ -1050,7 +1050,6 @@ class Graph(Node):
     def bind(
         self,
         prefix: str,
-        # namespace: Union[URIRef, Namespace, str],
         namespace: str,
         override=True,
         replace=False,

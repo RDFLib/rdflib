@@ -370,7 +370,7 @@ class Store(object):
     def bind(
         self,
         prefix: Optional[str],
-        namespace: Union["URIRef", "Namespace"],
+        namespace: str,
         override: bool = True,
     ) -> None:
         """
@@ -380,7 +380,7 @@ class Store(object):
     def unbind(self, prefix: str) -> None:
         """"""
 
-    def prefix(self, namespace: Union["URIRef", "Namespace"]) -> Optional["str"]:
+    def prefix(self, namespace: str) -> Optional["str"]:
         """"""
 
     def namespace(self, prefix: str) -> Optional["URIRef"]:
