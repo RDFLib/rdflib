@@ -3,7 +3,7 @@ import logging
 import os.path
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
+from test.utils import BNodeHandling, GraphHelper
 from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
 from xml.sax import SAXParseException
 
@@ -285,9 +285,13 @@ def roundtrip(
         GraphHelper.assert_isomorphic(g1, g2)
     if checks is not None:
         if Check.SET_EQUALS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=False)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
         if Check.SET_EQUALS_WITHOUT_BLANKS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=True)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("OK")
