@@ -224,6 +224,22 @@ RESOURCES: List[Resource] = [
         remote=Request("https://www.w3.org/ns/rdftest.ttl"),
         local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
     ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"),
+        local_path=(DATA_PATH / "defined_namespaces/mf.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"),
+        local_path=(DATA_PATH / "defined_namespaces/dawgt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-query#"),
+        local_path=(DATA_PATH / "defined_namespaces/qt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2009/sparql/docs/tests/test-update.n3"),
+        local_path=(DATA_PATH / "defined_namespaces/ut.n3"),
+    ),
 ]
 
 

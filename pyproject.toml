@@ -27,6 +27,8 @@ pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
 pep8-naming = ["-N802", "-N806", "-N815"]
 [tool.flakeheaven.exceptions."rdflib/__init__.py"]
 pycodestyle = ["-E402"]
+[tool.flakeheaven.exceptions."test/utils/namespace/_*"]
+pep8-naming = ["-N815"]
 
 
 [tool.black]
@@ -76,5 +78,7 @@ filterwarnings = [
 ]
 # log_cli = true
 # log_cli_level = "DEBUG"
-log_cli_format = "%(asctime)s %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
+log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
+log_date_format = "%Y-%m-%dT%H:%M:%S"
+log_cli_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
 log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
