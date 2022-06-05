@@ -35,10 +35,10 @@ class EarlReport:
         asserter_name: Optional[str] = None,
     ) -> None:
         self.graph = graph = Graph()
-        graph.bind("foaf", FOAF)
-        graph.bind("earl", EARL)
-        graph.bind("doap", DOAP)
-        graph.bind("dc", DC)
+        graph.bind("foaf", FOAF)  # type: ignore[arg-type]
+        graph.bind("earl", EARL)  # type: ignore[arg-type]
+        graph.bind("doap", DOAP)  # type: ignore[arg-type]
+        graph.bind("dc", DC)  # type: ignore[arg-type]
 
         self.asserter: IdentifiedNode
         asserter: IdentifiedNode

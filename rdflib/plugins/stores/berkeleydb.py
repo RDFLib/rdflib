@@ -473,7 +473,8 @@ class BerkeleyDB(Store):
     def bind(
         self,
         prefix: Optional[str],
-        namespace: Union[Namespace, URIRef],
+        # namespace: Union[Namespace, URIRef, str],
+        namespace: str,
         override: bool = True,
     ) -> None:
         pfx = prefix.encode("utf-8") if prefix is not None else "".encode("utf-8")
