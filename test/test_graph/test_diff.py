@@ -1,7 +1,7 @@
-import unittest
 from test.utils import GraphHelper
 from typing import TYPE_CHECKING, Set
-from unittest.case import expectedFailure
+
+import pytest
 
 import rdflib
 from rdflib import Graph
@@ -18,26 +18,26 @@ would certainly be possible"""
 _TripleSetT = Set["_TripleType"]
 
 
-class TestDiff(unittest.TestCase):
+class TestDiff:
     """Unicode literals for graph_diff test
     (issue 151)"""
 
-    def testA(self):
+    def test_a(self):
         """with bnode"""
         g = rdflib.Graph()
         g.add((rdflib.BNode(), rdflib.URIRef("urn:p"), rdflib.Literal("\xe9")))
 
-        diff = graph_diff(g, g)
+        graph_diff(g, g)
 
-    def testB(self):
+    def test_b(self):
         """Curiously, this one passes, even before the fix in issue 151"""
 
         g = rdflib.Graph()
         g.add((rdflib.URIRef("urn:a"), rdflib.URIRef("urn:p"), rdflib.Literal("\xe9")))
 
-        diff = graph_diff(g, g)
+        graph_diff(g, g)
 
-    @expectedFailure
+    @pytest.mark.xfail()
     def test_subsets(self) -> None:
         """
         This test verifies that `graph_diff` returns the correct values
@@ -73,10 +73,6 @@ class TestDiff(unittest.TestCase):
 
         result = graph_diff(g0, g1)
         in_both, in_first, in_second = GraphHelper.triple_sets(result)
-        self.assertFalse(in_first)
-        self.assertTrue(in_second)
-        self.assertTrue(in_both)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert in_first == set()
+        assert len(in_second) > 0
+        assert len(in_both) > 0

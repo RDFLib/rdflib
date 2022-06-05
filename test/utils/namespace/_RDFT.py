@@ -3,11 +3,6 @@ from rdflib.term import URIRef
 
 
 class RDFT(DefinedNamespace):
-    """
-    Described at <https://www.w3.org/ns/rdftest#>.
-    Generated from <https://www.w3.org/ns/rdftest.ttl>.
-    """
-
     _fail = True
     _NS = Namespace("http://www.w3.org/ns/rdftest#")
 
@@ -33,6 +28,7 @@ class RDFT(DefinedNamespace):
     Test: URIRef  # Superclass of all RDF Tests.
     TestXMLNegativeSyntax: URIRef  # A negative RDF/XML syntax test.
     XMLEval: URIRef  # A positive RDF/XML evaluation test.
+    TestXMLEval: URIRef
 
     TestTrigPositiveSyntax: URIRef
     TestTrigNegativeSyntax: URIRef

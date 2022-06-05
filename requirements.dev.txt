@@ -6,7 +6,6 @@ isort
 mypy
 pytest
 pytest-cov
-pytest-subtests
 types-setuptools
 -r docs/sphinx-requirements.txt
 -r requirements.flake8.txt
