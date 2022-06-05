@@ -483,6 +483,13 @@ class BerkeleyDB(Store):
             self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
             self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
+    def unbind(self, prefix):
+        prefix = prefix.encode("utf-8")
+        ns = self.__namespace.get(prefix, None)
+        if ns is not None:
+            self.__namespace.delete(prefix)
+            self.__prefix.delete(ns)
+
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")
         ns = self.__namespace.get(prefix, None)

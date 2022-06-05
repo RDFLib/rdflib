@@ -1069,6 +1069,10 @@ class Graph(Node):
             prefix, namespace, override=override, replace=replace
         )
 
+    def unbind(self, prefix) -> None:
+        """Delete binding of prefix to namespace"""
+        return self.namespace_manager.unbind(prefix)
+
     def namespaces(self):
         """Generator over all the prefix, namespace tuples"""
         for prefix, namespace in self.namespace_manager.namespaces():

@@ -208,3 +208,38 @@ def test_rebind_prefix_reuse_uri_replace(
     graph.bind("egsub", EGNSSUB_V1, override=True, replace=True)
     graph.bind("egsubv0", EGNSSUB_V0, override=reuse_override, replace=reuse_replace)
     check_ns(graph, {"egsub": EGNSSUB_V1, "egsubv0": EGNSSUB_V0})
+
+
+def test_simple_unbind(tmp_path: Path, store_name: str) -> None:
+    """
+    Straightforward bind / unbind.
+    """
+    graph = make_graph(tmp_path, store_name)
+    graph.bind("egsub", EGNSSUB_V0)
+    check_ns(graph, {"egsub": EGNSSUB_V0})
+    graph.unbind("egsub")
+    check_ns(graph, {})
+
+
+def test_owl_unbind(tmp_path: Path, store_name: str) -> None:
+    """
+    Unbind core prefix=>namespace
+    """
+    graph = make_graph(tmp_path, store_name)
+    graph.unbind("owl")
+    assert ("owl", URIRef("http://www.w3.org/2002/07/owl#")) not in graph.namespaces()
+    assert (
+        "owl",
+        URIRef("http://www.w3.org/2002/07/owl#"),
+    ) not in graph.store.namespaces()
+
+
+def test_default_unbind(tmp_path: Path, store_name: str) -> None:
+    """
+    Bind / unbind default
+    """
+    graph = make_graph(tmp_path, store_name)
+    graph.bind("", EGNSSUB_V0)
+    check_ns(graph, {"": EGNSSUB_V0})
+    graph.unbind("")
+    check_ns(graph, {})

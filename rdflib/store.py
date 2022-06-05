@@ -371,6 +371,9 @@ class Store(object):
         :param override: rebind, even if the given namespace is already bound to another prefix.
         """
 
+    def unbind(self, prefix: str) -> None:
+        """"""
+
     def prefix(self, namespace: "URIRef") -> Optional["str"]:
         """"""
 

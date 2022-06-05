@@ -383,6 +383,11 @@ class SPARQLStore(SPARQLConnector, Store):
             del self.nsBindings[bound_prefix]
         self.nsBindings[prefix] = namespace
 
+    def unbind(self, prefix):
+        ns = self.nsBindings.get(prefix, None)
+        if ns is not None:
+            del self.nsBindings[prefix]
+
     def prefix(self, namespace):
         """ """
         return dict([(v, k) for k, v in self.nsBindings.items()]).get(namespace)
