@@ -212,13 +212,12 @@ def test_rebind_prefix_reuse_uri_replace(
 
 def test_graph_bind_zero_args(tmp_path: Path, store_name: str) -> None:
     graph = make_graph(tmp_path, store_name)
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(
+        TypeError,
+        match=r"bind\(\) missing 2 required positional arguments: 'prefix' and 'namespace'",
+    ):
         # Missing positional arguments "prefix", "namespace" in call to "bind" of "Graph"
         graph.bind()  # type: ignore[call-arg]
-    assert (
-        exc_info.value.args[0]
-        == "bind() missing 2 required positional arguments: 'prefix' and 'namespace'"
-    )
 
 
 def test_graph_bind_to_none(tmp_path: Path, store_name: str) -> None:
