@@ -1,5 +1,5 @@
 from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
+from test.utils import BNodeHandling, GraphHelper
 
 import pytest
 
@@ -130,7 +130,7 @@ def test_cbd_example():
 
     query = "http://example.com/aReallyGreatBook"
     GraphHelper.assert_isomorphic(g.cbd(URIRef(query)), g_cbd)
-    GraphHelper.assert_sets_equals(g.cbd(URIRef(query)), g_cbd, exclude_blanks=True)
+    GraphHelper.assert_sets_equals(g.cbd(URIRef(query)), g_cbd, BNodeHandling.COLLAPSE)
     assert len(g.cbd(URIRef(query))) == (
         21
     ), "cbd() for aReallyGreatBook should return 21 triples"
