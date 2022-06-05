@@ -1050,7 +1050,7 @@ class Graph(Node):
     def bind(
         self,
         prefix: str,
-        namespace: str,
+        namespace: str,  # noqa: F811
         override=True,
         replace=False,
     ) -> None:
