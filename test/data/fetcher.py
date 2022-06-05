@@ -126,6 +126,23 @@ class ArchiveResource(Resource):
             self.local_path,
         )
 
+        patch_dir = self.local_path.parent / f"{self.local_path.name}.patch"
+        if patch_dir.exists():
+            logging.info(
+                "merging patch content from %s into %s", patch_dir, self.local_path
+            )
+            for child in patch_dir.glob("**/*"):
+                if child.is_dir():
+                    logging.debug("ignoring directory %s", child)
+                    continue
+                if child.name == "README.md" or child.name.endswith(".patch"):
+                    logging.debug("ignoring special %s", child)
+                    continue
+                rel_child = child.relative_to(patch_dir)
+                dest = self.local_path / rel_child
+                logging.info("copying patch content %s to %s", child, dest)
+                shutil.copy2(child, dest)
+
     @classmethod
     def _member_list(
         cls, archive: Union[ZipFile, TarFile]
@@ -193,21 +210,18 @@ RESOURCES: List[Resource] = [
         type=ArchiveType.TAR_GZ,
         pattern=re.compile(r"^(.+)$"),
     ),
-    # NOTE: Commented out as these files contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "rdfxml"),
-    #     type=ArchiveType.ZIP,
-    #     pattern=re.compile(r"^(.+)$"),
-    # ),
-    # NOTE: Commented out as this contains local modifications.
+    ArchiveResource(
+        remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
+        local_path=(DATA_PATH / "suites" / "w3c" / "rdf-xml"),
+        type=ArchiveType.ZIP,
+        pattern=re.compile(r"^(.+)$"),
+    ),
     ArchiveResource(
         remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
         local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
         type=ArchiveType.TAR_GZ,
         pattern=re.compile(r"^[^\/]+[\/](.+)$"),
     ),
-    # NOTE: Commented out as this contains local modifications.
     ArchiveResource(
         remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
         local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),

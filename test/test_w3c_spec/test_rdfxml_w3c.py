@@ -1,275 +1,64 @@
 import logging
-import os
-import os.path
-import sys
-import unittest
+from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
-from typing import ClassVar
-from urllib.request import url2pathname, urlopen
+from test.utils import BNodeHandling, GraphHelper, ensure_suffix
+from test.utils.dawg_manifest import ManifestEntry, params_from_sources
+from test.utils.iri import URIMapper
+from test.utils.namespace import RDFT
+from typing import Optional
 
-from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
-from rdflib.exceptions import ParserError
-from rdflib.plugins.parsers.RDFVOC import RDFVOC
-from rdflib.util import first
+import pytest
 
-_logger = logging.getLogger("parser_rdfcore")
+from rdflib.graph import Graph
 
-verbose = 0
+logger = logging.getLogger(__name__)
 
-
-def write(msg):
-    _logger.info(msg + "\n")
-
-
-class TestStore(Graph):
-    __test__ = False
-
-    def __init__(self, expected):
-        super(TestStore, self).__init__()
-        self.expected = expected
-
-    def add(self, spo):
-        (s, p, o) = spo
-        if not isinstance(s, BNode) and not isinstance(o, BNode):
-            if not (s, p, o) in self.expected:
-                m = "Triple not in expected result: %s, %s, %s" % (
-                    s.n3(),
-                    p.n3(),
-                    o.n3(),
-                )
-                if verbose:
-                    write(m)
-                # raise Exception(m)
-        super(TestStore, self).add((s, p, o))
-
-
-TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
-
-CACHE_DIR = os.path.join(TEST_DATA_DIR, "suites", "w3c", "rdf-xml")
-
-skipped = (
-    # "datatypes/Manifest.rdf#test002",
-    # "rdf-containers-syntax-vs-schema/Manifest.rdf#test004",
-    # "rdfms-xml-literal-namespaces/Manifest.rdf#test001",
-    # "rdfms-xml-literal-namespaces/Manifest.rdf#test002",
-    # "rdfms-xmllang/Manifest.rdf#test001",
-    # "rdfms-xmllang/Manifest.rdf#test002",
-    # "xml-canon/Manifest.rdf#test001"
+REMOTE_BASE_IRI = "http://www.w3.org/2013/RDFXMLTests/"
+LOCAL_BASE_DIR = TEST_DATA_DIR / "suites/w3c/rdf-xml/"
+ENCODING = "utf-8"
+MAPPER = URIMapper.from_mappings(
+    (REMOTE_BASE_IRI, ensure_suffix(LOCAL_BASE_DIR.as_uri(), "/"))
 )
+VALID_TYPES = {RDFT.TestXMLNegativeSyntax, RDFT.TestXMLEval}
 
 
-def cached_file(url):
-    fname = url2pathname(relative(url))
+def check_entry(entry: ManifestEntry) -> None:
+    assert entry.action is not None
+    assert entry.type in VALID_TYPES
+    action_path = entry.uri_mapper.to_local_path(entry.action)
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(
+            "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
+        )
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    graph = Graph()
+    with ExitStack() as xstack:
+        if entry.type == RDFT.TestXMLNegativeSyntax:
+            catcher = xstack.enter_context(pytest.raises(Exception))
+        graph.parse(action_path, publicID=entry.action, format="xml")
 
-    fpath = os.path.join(CACHE_DIR, fname)
-    if not os.path.exists(fpath):
-        print("%s does not exist, fetching from %s" % (fpath, url))
-        folder = os.path.dirname(fpath)
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-        f = open(fpath, "w")
-        try:
-            f.write(urlopen(url).read())
-        finally:
-            f.close()
-    return fpath
+    if catcher is not None:
+        assert catcher.value is not None
 
-
-RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
-
-
-def relative(url):
-    return url[len(RDFCOREBASE) :]
-
-
-def resolve(rel):
-    return RDFCOREBASE + rel
-
-
-def _testPositive(uri, manifest):
-    if verbose:
-        write("TESTING: %s" % uri)
-    result = 0  # 1=failed, 0=passed
-    inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
-    outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
-    expected = Graph()
-    if outDoc[-3:] == ".nt":
-        format = "nt"
-    else:
-        format = "xml"
-    expected.parse(cached_file(outDoc), publicID=outDoc, format=format)
-    store = TestStore(expected)
-    if inDoc[-3:] == ".nt":
-        format = "nt"
-    else:
-        format = "xml"
-
-    try:
-        store.parse(cached_file(inDoc), publicID=inDoc, format=format)
-    except ParserError as pe:
-        write("Failed '")
-        write(inDoc)
-        write("' failed with")
-        raise pe
-    else:
-        if not store.isomorphic(expected):
-            write("""Failed: '%s'""" % uri)
-            if verbose:
-                write("""  In:\n""")
-                for s, p, o in store:
-                    write("%s %s %s." % (repr(s), repr(p), repr(o)))
-                write("""  Out:\n""")
-                for s, p, o in expected:
-                    write("%s %s %s." % (repr(s), repr(p), repr(o)))
-            result += 1
-    return result
-
-
-def _testNegative(uri, manifest):
-    if verbose:
-        write("TESTING: %s" % uri)
-    result = 0  # 1=failed, 0=passed
-    inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
-    if isinstance(inDoc, BNode):
-        inDoc = first(manifest.objects(inDoc, RDFVOC.about))
-    if verbose:
-        write("TESTING: %s" % inDoc)
-    store = Graph()
-
-    test = BNode()
-    results.add((test, RESULT["test"], inDoc))
-    results.add((test, RESULT["system"], system))
-
-    try:
-        if inDoc[-3:] == ".nt":
-            format = "nt"
-        else:
-            format = "xml"
-        store.parse(cached_file(inDoc), publicID=inDoc, format=format)
-    except ParserError:
-        results.add((test, RDF.type, RESULT["PassingRun"]))
-        # pass
-    else:
-        write("""Failed: '%s'""" % inDoc)
-        results.add((test, RDF.type, RESULT["FailingRun"]))
-        result = 1
-    return result
-
-
-class ParserTestCase(unittest.TestCase):
-    store = "default"
-    path = "store"
-    slow = True
-
-    RDF_setting: ClassVar[bool]
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.RDF_setting = RDF._fail
-        RDF._fail = True
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        RDF._fail = cls.RDF_setting
-
-    def setUp(self):
-        self.manifest = manifest = Graph(store=self.store)
-        manifest.open(self.path)
-        manifest.parse(
-            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
-            format="xml",
+    if entry.type == RDFT.TestXMLEval:
+        assert entry.result is not None
+        result_source = entry.uri_mapper.to_local_path(entry.result)
+        result_graph = Graph()
+        result_graph.parse(result_source, publicID=entry.action, format="ntriples")
+        GraphHelper.assert_isomorphic(graph, result_graph)
+        GraphHelper.assert_sets_equals(
+            graph, result_graph, bnode_handling=BNodeHandling.COLLAPSE
         )
 
-    def tearDown(self):
-        self.manifest.close()
 
-    def testNegative(self):
-        manifest = self.manifest
-        num_failed = total = 0
-        negs = list(manifest.subjects(RDF.type, TEST["NegativeParserTest"]))
-        self.assertGreater(len(negs), 1)
-        negs.sort()
-        for neg in negs:
-            status = first(manifest.objects(neg, TEST["status"]))
-            if status == Literal("APPROVED"):
-                result = _testNegative(neg, manifest)
-                total += 1
-                num_failed += result
-        self.assertEqual(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
-
-    def testPositive(self):
-        manifest = self.manifest
-        uris = list(manifest.subjects(RDF.type, TEST["PositiveParserTest"]))
-        self.assertGreater(len(uris), 1)
-        uris.sort()
-        num_failed = total = 0
-        for uri in uris:
-            status = first(manifest.objects(uri, TEST["status"]))
-            # Failing tests, skipped
-            if uri[44:] in skipped:
-                status = Literal("Locally DISAPPROVED")
-                write("Skipping %s" % uri)
-            if status == Literal("APPROVED"):
-                result = _testPositive(uri, manifest)
-                test = BNode()
-                results.add((test, RESULT["test"], uri))
-                results.add((test, RESULT["system"], system))
-                if not result:
-                    results.add((test, RDF.type, RESULT["PassingRun"]))
-                else:
-                    results.add((test, RDF.type, RESULT["FailingRun"]))
-                total += 1
-                num_failed += result
-        self.assertEqual(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
-
-
-RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-
-
-results = Graph()
-
-system = BNode("system")
-results.add((system, FOAF["homepage"], URIRef("https://rdflib.github.io/")))
-results.add((system, RDFS.label, Literal("RDFLib")))
-results.add((system, RDFS.comment, Literal("")))
-
-
-if __name__ == "__main__":
-    manifest = Graph()
-    manifest.parse(
-        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"),
-        format="xml",
-    )
-    import getopt
-    import sys
-
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], "h:", ["help"])
-    except getopt.GetoptError as msg:
-        write(msg)
-        # usage()
-
-    try:
-        argv = sys.argv
-        if len(argv) > 1:
-            _logger.setLevel(logging.INFO)
-            _logger.addHandler(logging.StreamHandler())
-
-        for arg in argv[1:]:
-            verbose = 1
-            case = URIRef(arg)
-            write("Testing: %s" % case)
-            if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
-                result = _testPositive(case, manifest)
-                write("Positive test %s" % ["PASSED", "FAILED"][result])
-            elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
-                result = _testNegative(case, manifest)
-                write("Negative test %s" % ["PASSED", "FAILED"][result])
-            else:
-                write("%s not ??" % case)
-
-        if len(argv) <= 1:
-            unittest.main()
-    finally:
-        results.serialize("results.rdf")
+@pytest.mark.parametrize(
+    ["manifest_entry"],
+    params_from_sources(
+        MAPPER,
+        ManifestEntry,
+        LOCAL_BASE_DIR / "manifest.ttl",
+        report_prefix="rdflib_w3c_rdfxml",
+    ),
+)
+def test_entry(manifest_entry: ManifestEntry) -> None:
+    check_entry(manifest_entry)

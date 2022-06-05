@@ -1,0 +1,205 @@
+--- test/data/suites/w3c/rdf-xml/manifest.ttl	2022-06-05 22:08:54.065110827 +0200
++++ test/data/suites/w3c/rdf-xml.patch/manifest.ttl	2022-06-05 22:02:15.885781127 +0200
+@@ -51,16 +51,16 @@
+     <#rdfms-duplicate-member-props-test001>
+     <#rdfms-empty-property-elements-error001>
+     <#rdfms-empty-property-elements-error002>
+-    #<#rdfms-empty-property-elements-error003>
++    <#rdfms-empty-property-elements-error003>
+     <#rdfms-empty-property-elements-test001>
+     <#rdfms-empty-property-elements-test002>
+-    #<#rdfms-empty-property-elements-test003>
++    <#rdfms-empty-property-elements-test003>
+     <#rdfms-empty-property-elements-test004>
+     <#rdfms-empty-property-elements-test005>
+     <#rdfms-empty-property-elements-test006>
+     <#rdfms-empty-property-elements-test007>
+     <#rdfms-empty-property-elements-test008>
+-    #<#rdfms-empty-property-elements-test009>
++    <#rdfms-empty-property-elements-test009>
+     <#rdfms-empty-property-elements-test010>
+     <#rdfms-empty-property-elements-test011>
+     <#rdfms-empty-property-elements-test012>
+@@ -159,10 +159,10 @@
+     <#rdfms-syntax-incomplete-error005>
+     <#rdfms-syntax-incomplete-error006>
+     <#rdfms-uri-substructure-test001>
+-    #<#rdfms-xml-literal-namespaces-test001>
+-    #<#rdfms-xml-literal-namespaces-test002>
+-    #<#rdfms-xmllang-test001>
+-    #<#rdfms-xmllang-test002>
++    <#rdfms-xml-literal-namespaces-test001>
++    <#rdfms-xml-literal-namespaces-test002>
++    <#rdfms-xmllang-test001>
++    <#rdfms-xmllang-test002>
+     <#rdfms-xmllang-test003>
+     <#rdfms-xmllang-test004>
+     <#rdfms-xmllang-test005>
+@@ -555,16 +555,16 @@
+   rdfs:approval rdft:Approved;
+   mf:action <rdfms-empty-property-elements/error002.rdf> .
+ 
+-#<#rdfms-empty-property-elements-error003> a rdft:TestXMLNegativeSyntax;
+-#  mf:name "rdfms-empty-property-elements-error003";
+-#  rdfs:comment """
+-#    From the original RDFMS document, paragraphs 229-234 and
+-#production [6.12], last clause: rdf:parseType="Literal" is
+-#forbidden here since we're creating an additional resource
+-#node.
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-empty-property-elements/error003.rdf> .
++<#rdfms-empty-property-elements-error003> a rdft:TestXMLNegativeSyntax;
++  mf:name "rdfms-empty-property-elements-error003";
++  rdfs:comment """
++    From the original RDFMS document, paragraphs 229-234 and
++production [6.12], last clause: rdf:parseType="Literal" is
++forbidden here since we're creating an additional resource
++node.
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-empty-property-elements/error003.rdf> .
+ 
+ <#rdfms-empty-property-elements-test001> a rdft:TestXMLEval;
+   mf:name "rdfms-empty-property-elements-test001";
+@@ -586,15 +586,15 @@
+   mf:action <rdfms-empty-property-elements/test002.rdf>;
+   mf:result <rdfms-empty-property-elements/test002.nt> .
+ 
+-#<#rdfms-empty-property-elements-test003> a rdft:TestXMLEval;
+-#  mf:name "rdfms-empty-property-elements-test003";
+-#  rdfs:comment """
+-#    An empty property element just gives an empty literal. Here we
+-#make the parseType explicit.
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-empty-property-elements/test003.rdf>;
+-#  mf:result <rdfms-empty-property-elements/test003.nt> .
++<#rdfms-empty-property-elements-test003> a rdft:TestXMLEval;
++  mf:name "rdfms-empty-property-elements-test003";
++  rdfs:comment """
++    An empty property element just gives an empty literal. Here we
++make the parseType explicit.
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-empty-property-elements/test003.rdf>;
++  mf:result <rdfms-empty-property-elements/test003.nt> .
+ 
+ <#rdfms-empty-property-elements-test004> a rdft:TestXMLEval;
+   mf:name "rdfms-empty-property-elements-test004";
+@@ -645,14 +645,14 @@
+   mf:action <rdfms-empty-property-elements/test008.rdf>;
+   mf:result <rdfms-empty-property-elements/test008.nt> .
+ 
+-#<#rdfms-empty-property-elements-test009> a rdft:TestXMLEval;
+-#  mf:name "rdfms-empty-property-elements-test009";
+-#  rdfs:comment """
+-#    As test003.rdf; this uses an explicit closing tag.
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-empty-property-elements/test009.rdf>;
+-#  mf:result <rdfms-empty-property-elements/test009.nt> .
++<#rdfms-empty-property-elements-test009> a rdft:TestXMLEval;
++  mf:name "rdfms-empty-property-elements-test009";
++  rdfs:comment """
++    As test003.rdf; this uses an explicit closing tag.
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-empty-property-elements/test009.rdf>;
++  mf:result <rdfms-empty-property-elements/test009.nt> .
+ 
+ <#rdfms-empty-property-elements-test010> a rdft:TestXMLEval;
+   mf:name "rdfms-empty-property-elements-test010";
+@@ -1541,49 +1541,49 @@
+   mf:action <rdfms-uri-substructure/test001.rdf>;
+   mf:result <rdfms-uri-substructure/test001.nt> .
+ 
+-#<#rdfms-xml-literal-namespaces-test001> a rdft:TestXMLEval;
+-#  mf:name "rdfms-xml-literal-namespaces-test001";
+-#  rdfs:comment """
+-#    Visibly used namespaces must be included in XML Literal
+-#values. Treatment of namespaces that are not visibly used
+-#(e.g. rdf: in this example) is implementation dependent. Based
+-#on example from Issues List.
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-xml-literal-namespaces/test001.rdf>;
+-#  mf:result <rdfms-xml-literal-namespaces/test001.nt> .
+-
+-#<#rdfms-xml-literal-namespaces-test002> a rdft:TestXMLEval;
+-#  mf:name "rdfms-xml-literal-namespaces-test002";
+-#  rdfs:comment """
+-#    Visibly used namespaces must be included in XML Literal
+-#values. Treatment of namespaces that are not visibly used
+-#(e.g. rdf: in this example) is implementation dependent.
+-#Example from Model Syntax.
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-xml-literal-namespaces/test002.rdf>;
+-#  mf:result <rdfms-xml-literal-namespaces/test002.nt> .
+-
+-#<#rdfms-xmllang-test001> a rdft:TestXMLEval;
+-#  mf:name "rdfms-xmllang-test001";
+-#  rdfs:comment """
+-#    In-scope xml:lang applies to rdf:parseType="Literal" element
+-#content values
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-xmllang/test001.rdf>;
+-#  mf:result <rdfms-xmllang/test001.nt> .
+-
+-#<#rdfms-xmllang-test002> a rdft:TestXMLEval;
+-#  mf:name "rdfms-xmllang-test002";
+-#  rdfs:comment """
+-#    In-scope xml:lang does not apply to rdf:parseType="Literal"
+-#element content values
+-#  """;
+-#  rdfs:approval rdft:Approved;
+-#  mf:action <rdfms-xmllang/test002.rdf>;
+-#  mf:result <rdfms-xmllang/test002.nt> .
++<#rdfms-xml-literal-namespaces-test001> a rdft:TestXMLEval;
++  mf:name "rdfms-xml-literal-namespaces-test001";
++  rdfs:comment """
++    Visibly used namespaces must be included in XML Literal
++values. Treatment of namespaces that are not visibly used
++(e.g. rdf: in this example) is implementation dependent. Based
++on example from Issues List.
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-xml-literal-namespaces/test001.rdf>;
++  mf:result <rdfms-xml-literal-namespaces/test001.nt> .
++
++<#rdfms-xml-literal-namespaces-test002> a rdft:TestXMLEval;
++  mf:name "rdfms-xml-literal-namespaces-test002";
++  rdfs:comment """
++    Visibly used namespaces must be included in XML Literal
++values. Treatment of namespaces that are not visibly used
++(e.g. rdf: in this example) is implementation dependent.
++Example from Model Syntax.
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-xml-literal-namespaces/test002.rdf>;
++  mf:result <rdfms-xml-literal-namespaces/test002.nt> .
++
++<#rdfms-xmllang-test001> a rdft:TestXMLEval;
++  mf:name "rdfms-xmllang-test001";
++  rdfs:comment """
++    In-scope xml:lang applies to rdf:parseType="Literal" element
++content values
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-xmllang/test001.rdf>;
++  mf:result <rdfms-xmllang/test001.nt> .
++
++<#rdfms-xmllang-test002> a rdft:TestXMLEval;
++  mf:name "rdfms-xmllang-test002";
++  rdfs:comment """
++    In-scope xml:lang does not apply to rdf:parseType="Literal"
++element content values
++  """;
++  rdfs:approval rdft:Approved;
++  mf:action <rdfms-xmllang/test002.rdf>;
++  mf:result <rdfms-xmllang/test002.nt> .
+ 
+ <#rdfms-xmllang-test003> a rdft:TestXMLEval;
+   mf:name "rdfms-xmllang-test003";
