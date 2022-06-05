@@ -627,7 +627,7 @@ class NamespaceManager(object):
     def bind(
         self,
         prefix: Optional[str],
-        namespace: Any,
+        namespace: Union[URIRef, Namespace],
         override: bool = True,
         replace: bool = False,
     ) -> None:

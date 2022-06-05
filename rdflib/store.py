@@ -1,10 +1,11 @@
 import pickle
 from io import BytesIO
-from typing import TYPE_CHECKING, Iterable, Optional, Tuple
+from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
 
 from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
+    from rdflib import Namespace
     from rdflib.graph import Graph
     from rdflib.term import IdentifiedNode, Node, URIRef
 
@@ -366,7 +367,12 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(
+        self,
+        prefix: Optional[str],
+        namespace: Union["URIRef", "Namespace"],
+        override: bool = True,
+    ) -> None:
         """
         :param override: rebind, even if the given namespace is already bound to another prefix.
         """
@@ -374,7 +380,7 @@ class Store(object):
     def unbind(self, prefix: str) -> None:
         """"""
 
-    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+    def prefix(self, namespace: Union["URIRef", "Namespace"]) -> Optional["str"]:
         """"""
 
     def namespace(self, prefix: str) -> Optional["URIRef"]:

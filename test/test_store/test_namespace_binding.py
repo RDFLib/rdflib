@@ -210,6 +210,38 @@ def test_rebind_prefix_reuse_uri_replace(
     check_ns(graph, {"egsub": EGNSSUB_V1, "egsubv0": EGNSSUB_V0})
 
 
+def test_graph_bind_zero_args(tmp_path: Path, store_name: str) -> None:
+    graph = make_graph(tmp_path, store_name)
+    with pytest.raises(TypeError) as exc_info:
+        # Missing positional arguments "prefix", "namespace" in call to "bind" of "Graph"
+        graph.bind()  # type: ignore[call-arg]
+    assert (
+        exc_info.value.args[0]
+        == "bind() missing 2 required positional arguments: 'prefix' and 'namespace'"
+    )
+
+
+def test_graph_bind_to_none(tmp_path: Path, store_name: str) -> None:
+    graph = make_graph(tmp_path, store_name)
+    graph.bind("", EGNSSUB_V0)
+    check_ns(graph, {"": EGNSSUB_V0})
+
+    # Argument 2 to "bind" of "Graph" has incompatible type "None"; expected "Union[URIRef, Namespace]"
+    graph.bind("", None)  # type: ignore[arg-type]
+
+    assert list(graph.namespaces()) == [
+        ("", URIRef("http://example.com/sub/v0")),
+        ("default1", URIRef("None")),
+    ]
+
+
+def test_graph_bind_prefix_to_none(tmp_path: Path, store_name: str) -> None:
+    graph = make_graph(tmp_path, store_name)
+    # Argument 2 to "bind" of "Graph" has incompatible type "None"; expected "Union[URIRef, Namespace]"
+    graph.bind("egsub", None)  # type: ignore[arg-type]
+    check_ns(graph, {"egsub": URIRef("None")})
+
+
 def test_unbind_arity(tmp_path: Path, store_name: str) -> None:
     """
     Check TypeError raised on missing prefix
