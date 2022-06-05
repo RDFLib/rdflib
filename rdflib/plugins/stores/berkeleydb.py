@@ -5,7 +5,6 @@ from threading import Thread
 from typing import Optional
 from urllib.request import pathname2url
 
-from rdflib import Namespace
 from rdflib.store import NO_STORE, VALID_STORE, Store
 from rdflib.term import URIRef
 

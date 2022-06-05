@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Iterable, Optional, Tuple
 from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
-    from rdflib import Namespace
     from rdflib.graph import Graph
     from rdflib.term import IdentifiedNode, Node, URIRef
 
