@@ -1,6 +1,6 @@
 import pickle
 from io import BytesIO
-from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Iterable, Optional, Tuple
 
 from rdflib.events import Dispatcher, Event
 
