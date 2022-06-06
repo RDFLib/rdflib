@@ -1,0 +1,104 @@
+# Non-normative RDF/XML Syntax tests
+## Distributed under both the W3C Test Suite License[1] and the W3C 3-
+## clause BSD License[2]. To contribute to a W3C Test Suite, see the
+## policies and contribution forms [3]
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. http://www.w3.org/Consortium/Legal/2008/03-bsd-license
+## 3. http://www.w3.org/2004/10/27-testcases
+
+## This file is based on content commented out in
+## <https://www.w3.org/2013/RDFXMLTests/manifest.ttl>
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<> rdf:type mf:Manifest ;
+  rdfs:comment "RDF/XML Syntax tests" ;
+  mf:entries (
+    <#rdfms-empty-property-elements-error003>
+    <#rdfms-empty-property-elements-test003>
+    <#rdfms-empty-property-elements-test009>
+    <#rdfms-xml-literal-namespaces-test001>
+    <#rdfms-xml-literal-namespaces-test002>
+    <#rdfms-xmllang-test001>
+    <#rdfms-xmllang-test002>
+  ) .
+
+<#rdfms-empty-property-elements-error003> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-empty-property-elements-error003";
+  rdfs:comment """
+    From the original RDFMS document, paragraphs 229-234 and
+production [6.12], last clause: rdf:parseType="Literal" is
+forbidden here since we're creating an additional resource
+node.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/error003.rdf> .
+
+<#rdfms-empty-property-elements-test003> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test003";
+  rdfs:comment """
+    An empty property element just gives an empty literal. Here we
+make the parseType explicit.
+
+Included in the RDFLib test suite to test
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test003.rdf>;
+  mf:result <rdfms-empty-property-elements/test003.nt> .
+
+<#rdfms-empty-property-elements-test009> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test009";
+  rdfs:comment """
+    As test003.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test009.rdf>;
+  mf:result <rdfms-empty-property-elements/test009.nt> .
+
+<#rdfms-xml-literal-namespaces-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-xml-literal-namespaces-test001";
+  rdfs:comment """
+    Visibly used namespaces must be included in XML Literal
+values. Treatment of namespaces that are not visibly used
+(e.g. rdf: in this example) is implementation dependent. Based
+on example from Issues List.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xml-literal-namespaces/test001.rdf>;
+  mf:result <rdfms-xml-literal-namespaces/test001.nt> .
+
+<#rdfms-xml-literal-namespaces-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-xml-literal-namespaces-test002";
+  rdfs:comment """
+    Visibly used namespaces must be included in XML Literal
+values. Treatment of namespaces that are not visibly used
+(e.g. rdf: in this example) is implementation dependent.
+Example from Model Syntax.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xml-literal-namespaces/test002.rdf>;
+  mf:result <rdfms-xml-literal-namespaces/test002.nt> .
+
+<#rdfms-xmllang-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test001";
+  rdfs:comment """
+    In-scope xml:lang applies to rdf:parseType="Literal" element
+content values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test001.rdf>;
+  mf:result <rdfms-xmllang/test001.nt> .
+
+<#rdfms-xmllang-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test002";
+  rdfs:comment """
+    In-scope xml:lang does not apply to rdf:parseType="Literal"
+element content values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test002.rdf>;
+  mf:result <rdfms-xmllang/test002.nt> .
