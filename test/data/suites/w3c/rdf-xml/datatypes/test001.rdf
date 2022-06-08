@@ -12,7 +12,7 @@
 
   Description: A simple datatype production; a language+
 	datatype production. Simply duplicate the constructs under
-	http://www.w3.org/2000/10/rdf-tests/rdfcore/ntriples/test.nt
+	http://www.w3.org/2013/RDFXMLTests/ntriples/test.nt
 
   $Id: test001.rdf,v 1.2 2002/11/20 14:51:34 jgrant Exp $
 

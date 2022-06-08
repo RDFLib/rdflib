@@ -61,9 +61,10 @@ class ArchiveType(enum.Enum):
 class ArchiveResource(Resource):
     type: ArchiveType
     pattern: Pattern[str]
+    clean_local: bool = True
 
     def fetch(self, tmp_path: Path) -> None:
-        if self.local_path.exists():
+        if self.clean_local and self.local_path.exists():
             logging.debug("info %s", self.local_path)
             shutil.rmtree(self.local_path)
         with ExitStack() as xstack:
@@ -125,6 +126,23 @@ class ArchiveResource(Resource):
             self.pattern,
             self.local_path,
         )
+
+        patch_dir = self.local_path.parent / f"{self.local_path.name}.patch"
+        if patch_dir.exists():
+            logging.info(
+                "merging patch content from %s into %s", patch_dir, self.local_path
+            )
+            for child in patch_dir.glob("**/*"):
+                if child.is_dir():
+                    logging.debug("ignoring directory %s", child)
+                    continue
+                if child.name == "README.md" or child.name.endswith(".patch"):
+                    logging.debug("ignoring special %s", child)
+                    continue
+                rel_child = child.relative_to(patch_dir)
+                dest = self.local_path / rel_child
+                logging.info("copying patch content %s to %s", child, dest)
+                shutil.copy2(child, dest)
 
     @classmethod
     def _member_list(
@@ -193,21 +211,31 @@ RESOURCES: List[Resource] = [
         type=ArchiveType.TAR_GZ,
         pattern=re.compile(r"^(.+)$"),
     ),
-    # NOTE: Commented out as these files contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "rdfxml"),
-    #     type=ArchiveType.ZIP,
-    #     pattern=re.compile(r"^(.+)$"),
-    # ),
-    # NOTE: Commented out as this contains local modifications.
+    ArchiveResource(
+        remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
+        local_path=(DATA_PATH / "suites" / "w3c" / "rdf-xml"),
+        type=ArchiveType.ZIP,
+        pattern=re.compile(r"^(.+)$"),
+    ),
+    ArchiveResource(
+        # This is taken from a specific git commit instead of the published
+        # test suite as the tests are non-normative and not considered part of
+        # the test suite, so they could potentially be removed.
+        remote="https://github.com/w3c/rdf-tests/archive/d2cc355bf601d8574116f3ee76ca570925f35ac3.zip",
+        local_path=(DATA_PATH / "suites" / "w3c" / "rdf-xml-non-normative"),
+        type=ArchiveType.ZIP,
+        # Not cleaning local directory as it has a constructed manifest.
+        clean_local=False,
+        pattern=re.compile(
+            r"^[^\/]+[\/]rdf-xml[\/]((?:rdfms-empty-property-elements/error003|rdfms-empty-property-elements/test003|rdfms-empty-property-elements/test009|rdfms-xmllang/test001|rdfms-xmllang/test002|rdfms-xml-literal-namespaces/test001|rdfms-xml-literal-namespaces/test002)[.][^.]+)$"
+        ),
+    ),
     ArchiveResource(
         remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
         local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
         type=ArchiveType.TAR_GZ,
         pattern=re.compile(r"^[^\/]+[\/](.+)$"),
     ),
-    # NOTE: Commented out as this contains local modifications.
     ArchiveResource(
         remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
         local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),
