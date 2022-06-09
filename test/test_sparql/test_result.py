@@ -8,6 +8,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from io import BytesIO, StringIO
 from pathlib import Path
+from test.utils.result import ResultType
 from typing import (
     IO,
     BinaryIO,
@@ -109,13 +110,6 @@ def check_serialized(format: str, result: Result, data: str) -> None:
     else:
         parsed_result = Result.parse(StringIO(data), format=format)
         assert result == parsed_result
-
-
-class ResultType(str, enum.Enum):
-    CONSTRUCT = "CONSTRUCT"
-    DESCRIBE = "DESCRIBE"
-    SELECT = "SELECT"
-    ASK = "ASK"
 
 
 class ResultFormatTrait(enum.Enum):

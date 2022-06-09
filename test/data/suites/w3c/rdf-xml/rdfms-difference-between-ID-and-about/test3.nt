@@ -11,4 +11,4 @@
 # $Id: test3.nt,v 1.1 2002/07/26 04:06:57 jcarroll Exp $
 # 
 #####################################################################
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test3.rdf#D\u00FCrst> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "abc" .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test3.rdf#D\u00FCrst> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "abc" .

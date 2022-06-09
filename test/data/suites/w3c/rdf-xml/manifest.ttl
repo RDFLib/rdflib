@@ -1,0 +1,1777 @@
+# RDF/XML Syntax tests
+## Distributed under both the W3C Test Suite License[1] and the W3C 3-
+## clause BSD License[2]. To contribute to a W3C Test Suite, see the
+## policies and contribution forms [3]
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. http://www.w3.org/Consortium/Legal/2008/03-bsd-license
+## 3. http://www.w3.org/2004/10/27-testcases
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<> rdf:type mf:Manifest ;
+  rdfs:comment "RDF/XML Syntax tests" ;
+  mf:entries (
+    <#amp-in-url-test001>
+    <#datatypes-test001>
+    <#datatypes-test002>
+    <#rdf-charmod-literals-test001>
+    <#rdf-charmod-uris-test001>
+    <#rdf-charmod-uris-test002>
+    <#rdf-containers-syntax-vs-schema-error001>
+    <#rdf-containers-syntax-vs-schema-error002>
+    <#rdf-containers-syntax-vs-schema-test001>
+    <#rdf-containers-syntax-vs-schema-test002>
+    <#rdf-containers-syntax-vs-schema-test003>
+    <#rdf-containers-syntax-vs-schema-test004>
+    <#rdf-containers-syntax-vs-schema-test006>
+    <#rdf-containers-syntax-vs-schema-test007>
+    <#rdf-containers-syntax-vs-schema-test008>
+    <#rdf-element-not-mandatory-test001>
+    <#rdf-ns-prefix-confusion-test0001>
+    <#rdf-ns-prefix-confusion-test0003>
+    <#rdf-ns-prefix-confusion-test0004>
+    <#rdf-ns-prefix-confusion-test0005>
+    <#rdf-ns-prefix-confusion-test0006>
+    <#rdf-ns-prefix-confusion-test0009>
+    <#rdf-ns-prefix-confusion-test0010>
+    <#rdf-ns-prefix-confusion-test0011>
+    <#rdf-ns-prefix-confusion-test0012>
+    <#rdf-ns-prefix-confusion-test0013>
+    <#rdf-ns-prefix-confusion-test0014>
+    <#rdfms-abouteach-error001>
+    <#rdfms-abouteach-error002>
+    <#rdfms-difference-between-ID-and-about-error1>
+    <#rdfms-difference-between-ID-and-about-test1>
+    <#rdfms-difference-between-ID-and-about-test2>
+    <#rdfms-difference-between-ID-and-about-test3>
+    <#rdfms-duplicate-member-props-test001>
+    <#rdfms-empty-property-elements-error001>
+    <#rdfms-empty-property-elements-error002>
+    #<#rdfms-empty-property-elements-error003>
+    <#rdfms-empty-property-elements-test001>
+    <#rdfms-empty-property-elements-test002>
+    #<#rdfms-empty-property-elements-test003>
+    <#rdfms-empty-property-elements-test004>
+    <#rdfms-empty-property-elements-test005>
+    <#rdfms-empty-property-elements-test006>
+    <#rdfms-empty-property-elements-test007>
+    <#rdfms-empty-property-elements-test008>
+    #<#rdfms-empty-property-elements-test009>
+    <#rdfms-empty-property-elements-test010>
+    <#rdfms-empty-property-elements-test011>
+    <#rdfms-empty-property-elements-test012>
+    <#rdfms-empty-property-elements-test013>
+    <#rdfms-empty-property-elements-test014>
+    <#rdfms-empty-property-elements-test015>
+    <#rdfms-empty-property-elements-test016>
+    <#rdfms-empty-property-elements-test017>
+    <#rdfms-identity-anon-resources-test001>
+    <#rdfms-identity-anon-resources-test002>
+    <#rdfms-identity-anon-resources-test003>
+    <#rdfms-identity-anon-resources-test004>
+    <#rdfms-identity-anon-resources-test005>
+    <#rdfms-not-id-and-resource-attr-test001>
+    <#rdfms-not-id-and-resource-attr-test002>
+    <#rdfms-not-id-and-resource-attr-test004>
+    <#rdfms-not-id-and-resource-attr-test005>
+    <#rdfms-para196-test001>
+    <#rdfms-rdf-id-error001>
+    <#rdfms-rdf-id-error002>
+    <#rdfms-rdf-id-error003>
+    <#rdfms-rdf-id-error004>
+    <#rdfms-rdf-id-error005>
+    <#rdfms-rdf-id-error006>
+    <#rdfms-rdf-id-error007>
+    <#rdfms-rdf-names-use-error-001>
+    <#rdfms-rdf-names-use-error-002>
+    <#rdfms-rdf-names-use-error-003>
+    <#rdfms-rdf-names-use-error-004>
+    <#rdfms-rdf-names-use-error-005>
+    <#rdfms-rdf-names-use-error-006>
+    <#rdfms-rdf-names-use-error-007>
+    <#rdfms-rdf-names-use-error-008>
+    <#rdfms-rdf-names-use-error-009>
+    <#rdfms-rdf-names-use-error-010>
+    <#rdfms-rdf-names-use-error-011>
+    <#rdfms-rdf-names-use-error-012>
+    <#rdfms-rdf-names-use-error-013>
+    <#rdfms-rdf-names-use-error-014>
+    <#rdfms-rdf-names-use-error-015>
+    <#rdfms-rdf-names-use-error-016>
+    <#rdfms-rdf-names-use-error-017>
+    <#rdfms-rdf-names-use-error-018>
+    <#rdfms-rdf-names-use-error-019>
+    <#rdfms-rdf-names-use-error-020>
+    <#rdfms-rdf-names-use-test-001>
+    <#rdfms-rdf-names-use-test-002>
+    <#rdfms-rdf-names-use-test-003>
+    <#rdfms-rdf-names-use-test-004>
+    <#rdfms-rdf-names-use-test-005>
+    <#rdfms-rdf-names-use-test-006>
+    <#rdfms-rdf-names-use-test-007>
+    <#rdfms-rdf-names-use-test-008>
+    <#rdfms-rdf-names-use-test-009>
+    <#rdfms-rdf-names-use-test-010>
+    <#rdfms-rdf-names-use-test-011>
+    <#rdfms-rdf-names-use-test-012>
+    <#rdfms-rdf-names-use-test-013>
+    <#rdfms-rdf-names-use-test-014>
+    <#rdfms-rdf-names-use-test-015>
+    <#rdfms-rdf-names-use-test-016>
+    <#rdfms-rdf-names-use-test-017>
+    <#rdfms-rdf-names-use-test-018>
+    <#rdfms-rdf-names-use-test-019>
+    <#rdfms-rdf-names-use-test-020>
+    <#rdfms-rdf-names-use-test-021>
+    <#rdfms-rdf-names-use-test-022>
+    <#rdfms-rdf-names-use-test-023>
+    <#rdfms-rdf-names-use-test-024>
+    <#rdfms-rdf-names-use-test-025>
+    <#rdfms-rdf-names-use-test-026>
+    <#rdfms-rdf-names-use-test-027>
+    <#rdfms-rdf-names-use-test-028>
+    <#rdfms-rdf-names-use-test-029>
+    <#rdfms-rdf-names-use-test-030>
+    <#rdfms-rdf-names-use-test-031>
+    <#rdfms-rdf-names-use-test-032>
+    <#rdfms-rdf-names-use-test-033>
+    <#rdfms-rdf-names-use-test-034>
+    <#rdfms-rdf-names-use-test-035>
+    <#rdfms-rdf-names-use-test-036>
+    <#rdfms-rdf-names-use-test-037>
+    <#rdfms-rdf-names-use-warn-001>
+    <#rdfms-rdf-names-use-warn-002>
+    <#rdfms-rdf-names-use-warn-003>
+    <#rdfms-reification-required-test001>
+    <#rdfms-seq-representation-test001>
+    <#rdfms-syntax-incomplete-test001>
+    <#rdfms-syntax-incomplete-test002>
+    <#rdfms-syntax-incomplete-test003>
+    <#rdfms-syntax-incomplete-test004>
+    <#rdfms-syntax-incomplete-error001>
+    <#rdfms-syntax-incomplete-error002>
+    <#rdfms-syntax-incomplete-error003>
+    <#rdfms-syntax-incomplete-error004>
+    <#rdfms-syntax-incomplete-error005>
+    <#rdfms-syntax-incomplete-error006>
+    <#rdfms-uri-substructure-test001>
+    #<#rdfms-xml-literal-namespaces-test001>
+    #<#rdfms-xml-literal-namespaces-test002>
+    #<#rdfms-xmllang-test001>
+    #<#rdfms-xmllang-test002>
+    <#rdfms-xmllang-test003>
+    <#rdfms-xmllang-test004>
+    <#rdfms-xmllang-test005>
+    <#rdfms-xmllang-test006>
+    <#rdfs-domain-and-range-test001>
+    <#rdfs-domain-and-range-test002>
+    <#unrecognised-xml-attributes-test001>
+    <#unrecognised-xml-attributes-test002>
+    <#xml-canon-test001>
+    <#xmlbase-test001>
+    <#xmlbase-test002>
+    <#xmlbase-test003>
+    <#xmlbase-test004>
+    <#xmlbase-test006>
+    <#xmlbase-test007>
+    <#xmlbase-test008>
+    <#xmlbase-test009>
+    <#xmlbase-test010>
+    <#xmlbase-test011>
+    <#xmlbase-test013>
+    <#xmlbase-test014>
+  ) .
+
+<#amp-in-url-test001> a rdft:TestXMLEval;
+  mf:name "amp-in-url-test001";
+  rdfs:comment """
+    Description: the purpose of this test case is to show how one
+of XML's Predefined Entities - in this case the ampersand - is
+represented when it is used in the value of an rdf:about
+attribute. The ampersand is represented by its numeric
+character reference as specified in:
+http://www.w3.org/TR/REC-xml#sec-predefined-ent In the
+associated N-Triples file, the ampersand will be represented
+with a single ampersand character (and not the ampersand's
+numeric character reference). Note: when a XML/HTML browser is
+used to display this file, a single ampersand character may be
+displayed and not the ampersand's numeric character reference.
+In this case, the browser may provide an alternate way to view
+the file (such as viewing the file's source or saving to a
+file).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <amp-in-url/test001.rdf>;
+  mf:result <amp-in-url/test001.nt> .
+
+<#datatypes-test001> a rdft:TestXMLEval;
+  mf:name "datatypes-test001";
+  rdfs:comment """
+    A simple datatype production; a language+datatype production.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <datatypes/test001.rdf>;
+  mf:result <datatypes/test001.nt> .
+
+<#datatypes-test002> a rdft:TestXMLEval;
+  mf:name "datatypes-test002";
+  rdfs:comment """
+    A parser is not required to know about well-formed datatyped
+literals.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <datatypes/test002.rdf>;
+  mf:result <datatypes/test002.nt> .
+
+<#rdf-charmod-literals-test001> a rdft:TestXMLEval;
+  mf:name "rdf-charmod-literals-test001";
+  rdfs:comment """
+    Does the treatment of literals conform to charmod ? Test for
+success of legal Normal Form C literal
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-charmod-literals/test001.rdf>;
+  mf:result <rdf-charmod-literals/test001.nt> .
+
+<#rdf-charmod-uris-test001> a rdft:TestXMLEval;
+  mf:name "rdf-charmod-uris-test001";
+  rdfs:comment """
+    A uriref is allowed to match non-US ASCII forms conforming to
+Unicode Normal Form C. No escaping algorithm is applied.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-charmod-uris/test001.rdf>;
+  mf:result <rdf-charmod-uris/test001.nt> .
+
+<#rdf-charmod-uris-test002> a rdft:TestXMLEval;
+  mf:name "rdf-charmod-uris-test002";
+  rdfs:comment """
+    A uriref which already has % escaping is permitted. No
+unescaping algorithm is applied.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-charmod-uris/test002.rdf>;
+  mf:result <rdf-charmod-uris/test002.nt> .
+
+<#rdf-containers-syntax-vs-schema-error001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdf-containers-syntax-vs-schema-error001";
+  rdfs:comment """
+    rdf:li is not allowed as as an attribute
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/error001.rdf> .
+
+<#rdf-containers-syntax-vs-schema-error002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdf-containers-syntax-vs-schema-error002";
+  rdfs:comment """
+    rdf:li elements as typed nodes - a bizarre case As specified
+in
+http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2001Nov/0651.html
+is not an error.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/error002.rdf> .
+
+<#rdf-containers-syntax-vs-schema-test001> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test001";
+  rdfs:comment """
+    Simple container
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test001.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test001.nt> .
+
+<#rdf-containers-syntax-vs-schema-test002> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test002";
+  rdfs:comment """
+    rdf:li is unaffected by other rdf:_nnn properties. This test
+case is concerned only with defining the triples that this
+particular example RDF/XML represents. It is not concerned
+with whether that collection of triples violates any other
+constraints, e.g. restrictions on the number of rdf:_1
+properties that may be defined for a resource.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test002.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test002.nt> .
+
+<#rdf-containers-syntax-vs-schema-test003> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test003";
+  rdfs:comment """
+    rdf:li elements can exist in any description element
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test003.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test003.nt> .
+
+<#rdf-containers-syntax-vs-schema-test004> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test004";
+  rdfs:comment """
+    rdf:li elements match any of the property element productions
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test004.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test004.nt> .
+
+<#rdf-containers-syntax-vs-schema-test006> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test006";
+  rdfs:comment """
+    containers match the typed node production
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test006.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test006.nt> .
+
+<#rdf-containers-syntax-vs-schema-test007> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test007";
+  rdfs:comment """
+    rdf:li processing within each element is independent
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test007.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test007.nt> .
+
+<#rdf-containers-syntax-vs-schema-test008> a rdft:TestXMLEval;
+  mf:name "rdf-containers-syntax-vs-schema-test008";
+  rdfs:comment """
+    rdf:li processing is per element, not per resource.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-containers-syntax-vs-schema/test008.rdf>;
+  mf:result <rdf-containers-syntax-vs-schema/test008.nt> .
+
+<#rdf-element-not-mandatory-test001> a rdft:TestXMLEval;
+  mf:name "rdf-element-not-mandatory-test001";
+  rdfs:comment """
+    A surrounding rdf:RDF element is no longer mandatory.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-element-not-mandatory/test001.rdf>;
+  mf:result <rdf-element-not-mandatory/test001.nt> .
+
+<#rdf-ns-prefix-confusion-test0001> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0001";
+  rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0001.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0001.nt> .
+
+<#rdf-ns-prefix-confusion-test0003> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0003";
+  rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0003.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0003.nt> .
+
+<#rdf-ns-prefix-confusion-test0004> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0004";
+  rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0004.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0004.nt> .
+
+<#rdf-ns-prefix-confusion-test0005> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0005";
+  rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0005.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0005.nt> .
+
+<#rdf-ns-prefix-confusion-test0006> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0006";
+  rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0006.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0006.nt> .
+
+<#rdf-ns-prefix-confusion-test0009> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0009";
+  rdfs:comment """
+    Namespace qualification MUST be used for all property
+attributes.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0009.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0009.nt> .
+
+<#rdf-ns-prefix-confusion-test0010> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0010";
+  rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0010.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0010.nt> .
+
+<#rdf-ns-prefix-confusion-test0011> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0011";
+  rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0011.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0011.nt> .
+
+<#rdf-ns-prefix-confusion-test0012> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0012";
+  rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0012.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0012.nt> .
+
+<#rdf-ns-prefix-confusion-test0013> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0013";
+  rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0013.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0013.nt> .
+
+<#rdf-ns-prefix-confusion-test0014> a rdft:TestXMLEval;
+  mf:name "rdf-ns-prefix-confusion-test0014";
+  rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdf-ns-prefix-confusion/test0014.rdf>;
+  mf:result <rdf-ns-prefix-confusion/test0014.nt> .
+
+<#rdfms-abouteach-error001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-abouteach-error001";
+  rdfs:comment """
+    aboutEach removed from the RDF specifications. See URI above
+for further details.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-abouteach/error001.rdf> .
+
+<#rdfms-abouteach-error002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-abouteach-error002";
+  rdfs:comment """
+    aboutEach removed from the RDF specifications. See URI above
+for further details.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-abouteach/error002.rdf> .
+
+<#rdfms-difference-between-ID-and-about-error1> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-difference-between-ID-and-about-error1";
+  rdfs:comment """
+    two elements cannot use the same ID
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-difference-between-ID-and-about/error1.rdf> .
+
+<#rdfms-difference-between-ID-and-about-test1> a rdft:TestXMLEval;
+  mf:name "rdfms-difference-between-ID-and-about-test1";
+  rdfs:comment """
+    A statement with an rdf:ID creates a regular triple.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-difference-between-ID-and-about/test1.rdf>;
+  mf:result <rdfms-difference-between-ID-and-about/test1.nt> .
+
+<#rdfms-difference-between-ID-and-about-test2> a rdft:TestXMLEval;
+  mf:name "rdfms-difference-between-ID-and-about-test2";
+  rdfs:comment """
+    This test shows the treatment of non-ASCII characters in the
+value of rdf:ID attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-difference-between-ID-and-about/test2.rdf>;
+  mf:result <rdfms-difference-between-ID-and-about/test2.nt> .
+
+<#rdfms-difference-between-ID-and-about-test3> a rdft:TestXMLEval;
+  mf:name "rdfms-difference-between-ID-and-about-test3";
+  rdfs:comment """
+    This test shows the treatment of non-ASCII characters in the
+value of rdf:about attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-difference-between-ID-and-about/test3.rdf>;
+  mf:result <rdfms-difference-between-ID-and-about/test3.nt> .
+
+<#rdfms-duplicate-member-props-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-duplicate-member-props-test001";
+  rdfs:comment """
+    The question posed to the RDF WG was: should an RDF document
+containing multiple rdf:_n properties (with the same n) on an
+element be rejected as illegal? The WG decided that a parser
+should accept that case as legal RDF.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-duplicate-member-props/test001.rdf>;
+  mf:result <rdfms-duplicate-member-props/test001.nt> .
+
+<#rdfms-empty-property-elements-error001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-empty-property-elements-error001";
+  rdfs:comment """
+    This is not legal RDF; specifying an rdf:parseType of
+"Literal" and an rdf:resource attribute at the same time is an
+error.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/error001.rdf> .
+
+<#rdfms-empty-property-elements-error002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-empty-property-elements-error002";
+  rdfs:comment """
+    This is not legal RDF; specifying an rdf:parseType of
+"Literal" and an rdf:resource attribute at the same time is an
+error.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/error002.rdf> .
+
+#<#rdfms-empty-property-elements-error003> a rdft:TestXMLNegativeSyntax;
+#  mf:name "rdfms-empty-property-elements-error003";
+#  rdfs:comment """
+#    From the original RDFMS document, paragraphs 229-234 and
+#production [6.12], last clause: rdf:parseType="Literal" is
+#forbidden here since we're creating an additional resource
+#node.
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-empty-property-elements/error003.rdf> .
+
+<#rdfms-empty-property-elements-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test001";
+  rdfs:comment """
+    The rdf:resource attribute means that the value of this
+property element is a resource.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test001.rdf>;
+  mf:result <rdfms-empty-property-elements/test001.nt> .
+
+<#rdfms-empty-property-elements-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test002";
+  rdfs:comment """
+    The basic case. An empty property element just gives an empty
+literal.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test002.rdf>;
+  mf:result <rdfms-empty-property-elements/test002.nt> .
+
+#<#rdfms-empty-property-elements-test003> a rdft:TestXMLEval;
+#  mf:name "rdfms-empty-property-elements-test003";
+#  rdfs:comment """
+#    An empty property element just gives an empty literal. Here we
+#make the parseType explicit.
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-empty-property-elements/test003.rdf>;
+#  mf:result <rdfms-empty-property-elements/test003.nt> .
+
+<#rdfms-empty-property-elements-test004> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test004";
+  rdfs:comment """
+    If the parseType indicates the value is a resource, we must
+create one. With no additional information, the resource is
+anonymous.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test004.rdf>;
+  mf:result <rdfms-empty-property-elements/test004.nt> .
+
+<#rdfms-empty-property-elements-test005> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test005";
+  rdfs:comment """
+    An empty property element just gives an empty literal. We
+reify the statement at the same time.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test005.rdf>;
+  mf:result <rdfms-empty-property-elements/test005.nt> .
+
+<#rdfms-empty-property-elements-test006> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test006";
+  rdfs:comment """
+    Here the parseType indicates that we should create a resource.
+We also reify the generated statement.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test006.rdf>;
+  mf:result <rdfms-empty-property-elements/test006.nt> .
+
+<#rdfms-empty-property-elements-test007> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test007";
+  rdfs:comment """
+    As test001.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test007.rdf>;
+  mf:result <rdfms-empty-property-elements/test007.nt> .
+
+<#rdfms-empty-property-elements-test008> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test008";
+  rdfs:comment """
+    As test002.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test008.rdf>;
+  mf:result <rdfms-empty-property-elements/test008.nt> .
+
+#<#rdfms-empty-property-elements-test009> a rdft:TestXMLEval;
+#  mf:name "rdfms-empty-property-elements-test009";
+#  rdfs:comment """
+#    As test003.rdf; this uses an explicit closing tag.
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-empty-property-elements/test009.rdf>;
+#  mf:result <rdfms-empty-property-elements/test009.nt> .
+
+<#rdfms-empty-property-elements-test010> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test010";
+  rdfs:comment """
+    As test004.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test010.rdf>;
+  mf:result <rdfms-empty-property-elements/test010.nt> .
+
+<#rdfms-empty-property-elements-test011> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test011";
+  rdfs:comment """
+    As test005.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test011.rdf>;
+  mf:result <rdfms-empty-property-elements/test011.nt> .
+
+<#rdfms-empty-property-elements-test012> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test012";
+  rdfs:comment """
+    As test006.rdf; this uses an explicit closing tag.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test012.rdf>;
+  mf:result <rdfms-empty-property-elements/test012.nt> .
+
+<#rdfms-empty-property-elements-test013> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test013";
+  rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test013.rdf>;
+  mf:result <rdfms-empty-property-elements/test013.nt> .
+
+<#rdfms-empty-property-elements-test014> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test014";
+  rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test014.rdf>;
+  mf:result <rdfms-empty-property-elements/test014.nt> .
+
+<#rdfms-empty-property-elements-test015> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test015";
+  rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+Here we have an explicit closing tag. This does not match any
+of the productions in the original document, but is
+indistinguishable from test014 as far as XML is concerned.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test015.rdf>;
+  mf:result <rdfms-empty-property-elements/test015.nt> .
+
+<#rdfms-empty-property-elements-test016> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test016";
+  rdfs:comment """
+    Like rdfms-empty-property-elements/test001.rdf but with a
+processing instruction as the only content of the otherwise
+empty element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test016.rdf>;
+  mf:result <rdfms-empty-property-elements/test016.nt> .
+
+<#rdfms-empty-property-elements-test017> a rdft:TestXMLEval;
+  mf:name "rdfms-empty-property-elements-test017";
+  rdfs:comment """
+    Like rdfms-empty-property-elements/test001.rdf but with a
+comment as the only content of the otherwise empty element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-empty-property-elements/test017.rdf>;
+  mf:result <rdfms-empty-property-elements/test017.nt> .
+
+<#rdfms-identity-anon-resources-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-identity-anon-resources-test001";
+  rdfs:comment """
+    a RDF Description with no ID or about attribute describes an
+un-named resource, aka a bNode.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-identity-anon-resources/test001.rdf>;
+  mf:result <rdfms-identity-anon-resources/test001.nt> .
+
+<#rdfms-identity-anon-resources-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-identity-anon-resources-test002";
+  rdfs:comment """
+    a RDF Description with no ID or about attribute describes an
+un-named resource, aka a bNode.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-identity-anon-resources/test002.rdf>;
+  mf:result <rdfms-identity-anon-resources/test002.nt> .
+
+<#rdfms-identity-anon-resources-test003> a rdft:TestXMLEval;
+  mf:name "rdfms-identity-anon-resources-test003";
+  rdfs:comment """
+    a RDF container (in this case a Bag) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-identity-anon-resources/test003.rdf>;
+  mf:result <rdfms-identity-anon-resources/test003.nt> .
+
+<#rdfms-identity-anon-resources-test004> a rdft:TestXMLEval;
+  mf:name "rdfms-identity-anon-resources-test004";
+  rdfs:comment """
+    a RDF container (in this case an Alt) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-identity-anon-resources/test004.rdf>;
+  mf:result <rdfms-identity-anon-resources/test004.nt> .
+
+<#rdfms-identity-anon-resources-test005> a rdft:TestXMLEval;
+  mf:name "rdfms-identity-anon-resources-test005";
+  rdfs:comment """
+    a RDF container (in this case an Seq) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-identity-anon-resources/test005.rdf>;
+  mf:result <rdfms-identity-anon-resources/test005.nt> .
+
+<#rdfms-not-id-and-resource-attr-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-not-id-and-resource-attr-test001";
+  rdfs:comment """
+    rdf:ID on an empty property element indicates reification.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-not-id-and-resource-attr/test001.rdf>;
+  mf:result <rdfms-not-id-and-resource-attr/test001.nt> .
+
+<#rdfms-not-id-and-resource-attr-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-not-id-and-resource-attr-test002";
+  rdfs:comment """
+    rdf:reource on an empty property element indicates the URI of
+the object.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-not-id-and-resource-attr/test002.rdf>;
+  mf:result <rdfms-not-id-and-resource-attr/test002.nt> .
+
+<#rdfms-not-id-and-resource-attr-test004> a rdft:TestXMLEval;
+  mf:name "rdfms-not-id-and-resource-attr-test004";
+  rdfs:comment """
+    rdf:ID and rdf:resource are allowed together on empty property
+element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-not-id-and-resource-attr/test004.rdf>;
+  mf:result <rdfms-not-id-and-resource-attr/test004.nt> .
+
+<#rdfms-not-id-and-resource-attr-test005> a rdft:TestXMLEval;
+  mf:name "rdfms-not-id-and-resource-attr-test005";
+  rdfs:comment """
+    rdf:ID and rdf:resource are allowed together on empty property
+element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-not-id-and-resource-attr/test005.rdf>;
+  mf:result <rdfms-not-id-and-resource-attr/test005.nt> .
+
+<#rdfms-para196-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-para196-test001";
+  rdfs:comment """
+    test case showing that the 2nd URI in M Paragraph 196 is
+permitted as a namespace URI (and any namespace URI starting
+with that URI)
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-para196/test001.rdf>;
+  mf:result <rdfms-para196/test001.nt> .
+
+<#rdfms-rdf-id-error001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error001";
+  rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error001.rdf> .
+
+<#rdfms-rdf-id-error002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error002";
+  rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error002.rdf> .
+
+<#rdfms-rdf-id-error003> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error003";
+  rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error003.rdf> .
+
+<#rdfms-rdf-id-error004> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error004";
+  rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error004.rdf> .
+
+<#rdfms-rdf-id-error005> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error005";
+  rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error005.rdf> .
+
+<#rdfms-rdf-id-error006> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error006";
+  rdfs:comment """
+    The value of rdf:bagID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error006.rdf> .
+
+<#rdfms-rdf-id-error007> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-id-error007";
+  rdfs:comment """
+    The value of rdf:bagID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-id/error007.rdf> .
+
+<#rdfms-rdf-names-use-error-001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-001";
+  rdfs:comment """
+    RDF is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-001.rdf> .
+
+<#rdfms-rdf-names-use-error-002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-002";
+  rdfs:comment """
+    ID is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-002.rdf> .
+
+<#rdfms-rdf-names-use-error-003> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-003";
+  rdfs:comment """
+    about is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-003.rdf> .
+
+<#rdfms-rdf-names-use-error-004> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-004";
+  rdfs:comment """
+    bagID is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-004.rdf> .
+
+<#rdfms-rdf-names-use-error-005> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-005";
+  rdfs:comment """
+    parseType is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-005.rdf> .
+
+<#rdfms-rdf-names-use-error-006> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-006";
+  rdfs:comment """
+    resource is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-006.rdf> .
+
+<#rdfms-rdf-names-use-error-007> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-007";
+  rdfs:comment """
+    nodeID is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-007.rdf> .
+
+<#rdfms-rdf-names-use-error-008> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-008";
+  rdfs:comment """
+    li is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-008.rdf> .
+
+<#rdfms-rdf-names-use-error-009> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-009";
+  rdfs:comment """
+    aboutEach is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-009.rdf> .
+
+<#rdfms-rdf-names-use-error-010> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-010";
+  rdfs:comment """
+    aboutEachPrefix is forbidden as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-010.rdf> .
+
+<#rdfms-rdf-names-use-error-011> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-011";
+  rdfs:comment """
+    Description is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-011.rdf> .
+
+<#rdfms-rdf-names-use-error-012> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-012";
+  rdfs:comment """
+    RDF is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-012.rdf> .
+
+<#rdfms-rdf-names-use-error-013> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-013";
+  rdfs:comment """
+    ID is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-013.rdf> .
+
+<#rdfms-rdf-names-use-error-014> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-014";
+  rdfs:comment """
+    about is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-014.rdf> .
+
+<#rdfms-rdf-names-use-error-015> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-015";
+  rdfs:comment """
+    bagID is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-015.rdf> .
+
+<#rdfms-rdf-names-use-error-016> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-016";
+  rdfs:comment """
+    parseType is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-016.rdf> .
+
+<#rdfms-rdf-names-use-error-017> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-017";
+  rdfs:comment """
+    resource is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-017.rdf> .
+
+<#rdfms-rdf-names-use-error-018> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-018";
+  rdfs:comment """
+    nodeID is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-018.rdf> .
+
+<#rdfms-rdf-names-use-error-019> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-019";
+  rdfs:comment """
+    aboutEach is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-019.rdf> .
+
+<#rdfms-rdf-names-use-error-020> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-rdf-names-use-error-020";
+  rdfs:comment """
+    aboutEachPrefix is forbidden as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/error-020.rdf> .
+
+<#rdfms-rdf-names-use-test-001> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-001";
+  rdfs:comment """
+    Description is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-001.rdf>;
+  mf:result <rdfms-rdf-names-use/test-001.nt> .
+
+<#rdfms-rdf-names-use-test-002> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-002";
+  rdfs:comment """
+    Seq is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-002.rdf>;
+  mf:result <rdfms-rdf-names-use/test-002.nt> .
+
+<#rdfms-rdf-names-use-test-003> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-003";
+  rdfs:comment """
+    Bag is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-003.rdf>;
+  mf:result <rdfms-rdf-names-use/test-003.nt> .
+
+<#rdfms-rdf-names-use-test-004> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-004";
+  rdfs:comment """
+    Alt is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-004.rdf>;
+  mf:result <rdfms-rdf-names-use/test-004.nt> .
+
+<#rdfms-rdf-names-use-test-005> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-005";
+  rdfs:comment """
+    Statement is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-005.rdf>;
+  mf:result <rdfms-rdf-names-use/test-005.nt> .
+
+<#rdfms-rdf-names-use-test-006> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-006";
+  rdfs:comment """
+    Property is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-006.rdf>;
+  mf:result <rdfms-rdf-names-use/test-006.nt> .
+
+<#rdfms-rdf-names-use-test-007> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-007";
+  rdfs:comment """
+    List is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-007.rdf>;
+  mf:result <rdfms-rdf-names-use/test-007.nt> .
+
+<#rdfms-rdf-names-use-test-008> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-008";
+  rdfs:comment """
+    subject is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-008.rdf>;
+  mf:result <rdfms-rdf-names-use/test-008.nt> .
+
+<#rdfms-rdf-names-use-test-009> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-009";
+  rdfs:comment """
+    predicate is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-009.rdf>;
+  mf:result <rdfms-rdf-names-use/test-009.nt> .
+
+<#rdfms-rdf-names-use-test-010> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-010";
+  rdfs:comment """
+    object is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-010.rdf>;
+  mf:result <rdfms-rdf-names-use/test-010.nt> .
+
+<#rdfms-rdf-names-use-test-011> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-011";
+  rdfs:comment """
+    type is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-011.rdf>;
+  mf:result <rdfms-rdf-names-use/test-011.nt> .
+
+<#rdfms-rdf-names-use-test-012> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-012";
+  rdfs:comment """
+    value is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-012.rdf>;
+  mf:result <rdfms-rdf-names-use/test-012.nt> .
+
+<#rdfms-rdf-names-use-test-013> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-013";
+  rdfs:comment """
+    first is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-013.rdf>;
+  mf:result <rdfms-rdf-names-use/test-013.nt> .
+
+<#rdfms-rdf-names-use-test-014> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-014";
+  rdfs:comment """
+    rest is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-014.rdf>;
+  mf:result <rdfms-rdf-names-use/test-014.nt> .
+
+<#rdfms-rdf-names-use-test-015> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-015";
+  rdfs:comment """
+    _1 is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-015.rdf>;
+  mf:result <rdfms-rdf-names-use/test-015.nt> .
+
+<#rdfms-rdf-names-use-test-016> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-016";
+  rdfs:comment """
+    nil is allowed as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-016.rdf>;
+  mf:result <rdfms-rdf-names-use/test-016.nt> .
+
+<#rdfms-rdf-names-use-test-017> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-017";
+  rdfs:comment """
+    Seq is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-017.rdf>;
+  mf:result <rdfms-rdf-names-use/test-017.nt> .
+
+<#rdfms-rdf-names-use-test-018> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-018";
+  rdfs:comment """
+    Bag is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-018.rdf>;
+  mf:result <rdfms-rdf-names-use/test-018.nt> .
+
+<#rdfms-rdf-names-use-test-019> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-019";
+  rdfs:comment """
+    Alt is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-019.rdf>;
+  mf:result <rdfms-rdf-names-use/test-019.nt> .
+
+<#rdfms-rdf-names-use-test-020> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-020";
+  rdfs:comment """
+    Statement is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-020.rdf>;
+  mf:result <rdfms-rdf-names-use/test-020.nt> .
+
+<#rdfms-rdf-names-use-test-021> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-021";
+  rdfs:comment """
+    Property is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-021.rdf>;
+  mf:result <rdfms-rdf-names-use/test-021.nt> .
+
+<#rdfms-rdf-names-use-test-022> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-022";
+  rdfs:comment """
+    List is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-022.rdf>;
+  mf:result <rdfms-rdf-names-use/test-022.nt> .
+
+<#rdfms-rdf-names-use-test-023> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-023";
+  rdfs:comment """
+    subject is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-023.rdf>;
+  mf:result <rdfms-rdf-names-use/test-023.nt> .
+
+<#rdfms-rdf-names-use-test-024> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-024";
+  rdfs:comment """
+    predicate is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-024.rdf>;
+  mf:result <rdfms-rdf-names-use/test-024.nt> .
+
+<#rdfms-rdf-names-use-test-025> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-025";
+  rdfs:comment """
+    object is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-025.rdf>;
+  mf:result <rdfms-rdf-names-use/test-025.nt> .
+
+<#rdfms-rdf-names-use-test-026> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-026";
+  rdfs:comment """
+    type is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-026.rdf>;
+  mf:result <rdfms-rdf-names-use/test-026.nt> .
+
+<#rdfms-rdf-names-use-test-027> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-027";
+  rdfs:comment """
+    value is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-027.rdf>;
+  mf:result <rdfms-rdf-names-use/test-027.nt> .
+
+<#rdfms-rdf-names-use-test-028> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-028";
+  rdfs:comment """
+    first is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-028.rdf>;
+  mf:result <rdfms-rdf-names-use/test-028.nt> .
+
+<#rdfms-rdf-names-use-test-029> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-029";
+  rdfs:comment """
+    rest is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-029.rdf>;
+  mf:result <rdfms-rdf-names-use/test-029.nt> .
+
+<#rdfms-rdf-names-use-test-030> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-030";
+  rdfs:comment """
+    _1 is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-030.rdf>;
+  mf:result <rdfms-rdf-names-use/test-030.nt> .
+
+<#rdfms-rdf-names-use-test-031> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-031";
+  rdfs:comment """
+    li is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-031.rdf>;
+  mf:result <rdfms-rdf-names-use/test-031.nt> .
+
+<#rdfms-rdf-names-use-test-032> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-032";
+  rdfs:comment """
+    Seq is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-032.rdf>;
+  mf:result <rdfms-rdf-names-use/test-032.nt> .
+
+<#rdfms-rdf-names-use-test-033> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-033";
+  rdfs:comment """
+    Bag is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-033.rdf>;
+  mf:result <rdfms-rdf-names-use/test-033.nt> .
+
+<#rdfms-rdf-names-use-test-034> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-034";
+  rdfs:comment """
+    Alt is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-034.rdf>;
+  mf:result <rdfms-rdf-names-use/test-034.nt> .
+
+<#rdfms-rdf-names-use-test-035> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-035";
+  rdfs:comment """
+    Statement is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-035.rdf>;
+  mf:result <rdfms-rdf-names-use/test-035.nt> .
+
+<#rdfms-rdf-names-use-test-036> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-036";
+  rdfs:comment """
+    Property is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-036.rdf>;
+  mf:result <rdfms-rdf-names-use/test-036.nt> .
+
+<#rdfms-rdf-names-use-test-037> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-test-037";
+  rdfs:comment """
+    List is allowed as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/test-037.rdf>;
+  mf:result <rdfms-rdf-names-use/test-037.nt> .
+
+<#rdfms-rdf-names-use-warn-001> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-warn-001";
+  rdfs:comment """
+    foo is allowed with warnings as a node element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/warn-001.rdf>;
+  mf:result <rdfms-rdf-names-use/warn-001.nt> .
+
+<#rdfms-rdf-names-use-warn-002> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-warn-002";
+  rdfs:comment """
+    foo is allowed with warnings as a property element name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/warn-002.rdf>;
+  mf:result <rdfms-rdf-names-use/warn-002.nt> .
+
+<#rdfms-rdf-names-use-warn-003> a rdft:TestXMLEval;
+  mf:name "rdfms-rdf-names-use-warn-003";
+  rdfs:comment """
+    foo is allowed with warnings as a property attribute name.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-rdf-names-use/warn-003.rdf>;
+  mf:result <rdfms-rdf-names-use/warn-003.nt> .
+
+<#rdfms-reification-required-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-reification-required-test001";
+  rdfs:comment """
+    A parser is not required to generate a bag of reified
+statements for all description elements.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-reification-required/test001.rdf>;
+  mf:result <rdfms-reification-required/test001.nt> .
+
+<#rdfms-seq-representation-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-seq-representation-test001";
+  rdfs:comment """
+    rdf:parseType="Collection" is parsed like the nonstandard
+daml:collection.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-seq-representation/test001.rdf>;
+  mf:result <rdfms-seq-representation/test001.nt> .
+
+<#rdfms-syntax-incomplete-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-syntax-incomplete-test001";
+  rdfs:comment """
+    rdf:nodeID can be used to label a blank node.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/test001.rdf>;
+  mf:result <rdfms-syntax-incomplete/test001.nt> .
+
+<#rdfms-syntax-incomplete-test002> a rdft:TestXMLEval;
+  mf:name "rdfms-syntax-incomplete-test002";
+  rdfs:comment """
+    rdf:nodeID can be used to label a blank node. These have file
+scope and are distinct from any unlabelled blank nodes.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/test002.rdf>;
+  mf:result <rdfms-syntax-incomplete/test002.nt> .
+
+<#rdfms-syntax-incomplete-test003> a rdft:TestXMLEval;
+  mf:name "rdfms-syntax-incomplete-test003";
+  rdfs:comment """
+    On an rdf:Description or typed node rdf:nodeID behaves
+similarly to an rdf:about.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/test003.rdf>;
+  mf:result <rdfms-syntax-incomplete/test003.nt> .
+
+<#rdfms-syntax-incomplete-test004> a rdft:TestXMLEval;
+  mf:name "rdfms-syntax-incomplete-test004";
+  rdfs:comment """
+    On a property element rdf:nodeID behaves similarly to
+rdf:resource.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/test004.rdf>;
+  mf:result <rdfms-syntax-incomplete/test004.nt> .
+
+<#rdfms-syntax-incomplete-error001> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error001";
+  rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error001.rdf> .
+
+<#rdfms-syntax-incomplete-error002> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error002";
+  rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error002.rdf> .
+
+<#rdfms-syntax-incomplete-error003> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error003";
+  rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error003.rdf> .
+
+<#rdfms-syntax-incomplete-error004> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error004";
+  rdfs:comment """
+    Cannot have rdf:nodeID and rdf:ID.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error004.rdf> .
+
+<#rdfms-syntax-incomplete-error005> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error005";
+  rdfs:comment """
+    Cannot have rdf:nodeID and rdf:about.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error005.rdf> .
+
+<#rdfms-syntax-incomplete-error006> a rdft:TestXMLNegativeSyntax;
+  mf:name "rdfms-syntax-incomplete-error006";
+  rdfs:comment """
+    Cannot have rdf:nodeID and rdf:resource.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-syntax-incomplete/error006.rdf> .
+
+<#rdfms-uri-substructure-test001> a rdft:TestXMLEval;
+  mf:name "rdfms-uri-substructure-test001";
+  rdfs:comment """
+    Demonstrates the Recommended partitioning of a URI into a
+namespace part and a localname part
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-uri-substructure/test001.rdf>;
+  mf:result <rdfms-uri-substructure/test001.nt> .
+
+#<#rdfms-xml-literal-namespaces-test001> a rdft:TestXMLEval;
+#  mf:name "rdfms-xml-literal-namespaces-test001";
+#  rdfs:comment """
+#    Visibly used namespaces must be included in XML Literal
+#values. Treatment of namespaces that are not visibly used
+#(e.g. rdf: in this example) is implementation dependent. Based
+#on example from Issues List.
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-xml-literal-namespaces/test001.rdf>;
+#  mf:result <rdfms-xml-literal-namespaces/test001.nt> .
+
+#<#rdfms-xml-literal-namespaces-test002> a rdft:TestXMLEval;
+#  mf:name "rdfms-xml-literal-namespaces-test002";
+#  rdfs:comment """
+#    Visibly used namespaces must be included in XML Literal
+#values. Treatment of namespaces that are not visibly used
+#(e.g. rdf: in this example) is implementation dependent.
+#Example from Model Syntax.
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-xml-literal-namespaces/test002.rdf>;
+#  mf:result <rdfms-xml-literal-namespaces/test002.nt> .
+
+#<#rdfms-xmllang-test001> a rdft:TestXMLEval;
+#  mf:name "rdfms-xmllang-test001";
+#  rdfs:comment """
+#    In-scope xml:lang applies to rdf:parseType="Literal" element
+#content values
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-xmllang/test001.rdf>;
+#  mf:result <rdfms-xmllang/test001.nt> .
+
+#<#rdfms-xmllang-test002> a rdft:TestXMLEval;
+#  mf:name "rdfms-xmllang-test002";
+#  rdfs:comment """
+#    In-scope xml:lang does not apply to rdf:parseType="Literal"
+#element content values
+#  """;
+#  rdfs:approval rdft:Approved;
+#  mf:action <rdfms-xmllang/test002.rdf>;
+#  mf:result <rdfms-xmllang/test002.nt> .
+
+<#rdfms-xmllang-test003> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test003";
+  rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test003.rdf>;
+  mf:result <rdfms-xmllang/test003.nt> .
+
+<#rdfms-xmllang-test004> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test004";
+  rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test004.rdf>;
+  mf:result <rdfms-xmllang/test004.nt> .
+
+<#rdfms-xmllang-test005> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test005";
+  rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test005.rdf>;
+  mf:result <rdfms-xmllang/test005.nt> .
+
+<#rdfms-xmllang-test006> a rdft:TestXMLEval;
+  mf:name "rdfms-xmllang-test006";
+  rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfms-xmllang/test006.rdf>;
+  mf:result <rdfms-xmllang/test006.nt> .
+
+<#rdfs-domain-and-range-test001> a rdft:TestXMLEval;
+  mf:name "rdfs-domain-and-range-test001";
+  rdfs:comment """
+    a RDF Property may have more than one domain property
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfs-domain-and-range/test001.rdf>;
+  mf:result <rdfs-domain-and-range/test001.nt> .
+
+<#rdfs-domain-and-range-test002> a rdft:TestXMLEval;
+  mf:name "rdfs-domain-and-range-test002";
+  rdfs:comment """
+    a RDF Property may have more than one domain property
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <rdfs-domain-and-range/test002.rdf>;
+  mf:result <rdfs-domain-and-range/test002.nt> .
+
+<#unrecognised-xml-attributes-test001> a rdft:TestXMLEval;
+  mf:name "unrecognised-xml-attributes-test001";
+  rdfs:comment """
+    Unrecognized attributes in the xml namespace should be
+ignored.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <unrecognised-xml-attributes/test001.rdf>;
+  mf:result <unrecognised-xml-attributes/test001.nt> .
+
+<#unrecognised-xml-attributes-test002> a rdft:TestXMLEval;
+  mf:name "unrecognised-xml-attributes-test002";
+  rdfs:comment """
+    Unrecognized attributes in the xml namespace should be
+ignored.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <unrecognised-xml-attributes/test002.rdf>;
+  mf:result <unrecognised-xml-attributes/test002.nt> .
+
+<#xml-canon-test001> a rdft:TestXMLEval;
+  mf:name "xml-canon-test001";
+  rdfs:comment """
+    Demonstrating the canonicalisation of XMLLiterals.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xml-canon/test001.rdf>;
+  mf:result <xml-canon/test001.nt> .
+
+<#xmlbase-test001> a rdft:TestXMLEval;
+  mf:name "xmlbase-test001";
+  rdfs:comment """
+    xml:base applies to an rdf:ID on an rdf:Description element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test001.rdf>;
+  mf:result <xmlbase/test001.nt> .
+
+<#xmlbase-test002> a rdft:TestXMLEval;
+  mf:name "xmlbase-test002";
+  rdfs:comment """
+    xml:base applies to an rdf:resource attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test002.rdf>;
+  mf:result <xmlbase/test002.nt> .
+
+<#xmlbase-test003> a rdft:TestXMLEval;
+  mf:name "xmlbase-test003";
+  rdfs:comment """
+    xml:base applies to an rdf:about attribute.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test003.rdf>;
+  mf:result <xmlbase/test003.nt> .
+
+<#xmlbase-test004> a rdft:TestXMLEval;
+  mf:name "xmlbase-test004";
+  rdfs:comment """
+    xml:base applies to an rdf:ID on a property element.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test004.rdf>;
+  mf:result <xmlbase/test004.nt> .
+
+<#xmlbase-test006> a rdft:TestXMLEval;
+  mf:name "xmlbase-test006";
+  rdfs:comment """
+    xml:base scoping.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test006.rdf>;
+  mf:result <xmlbase/test006.nt> .
+
+<#xmlbase-test007> a rdft:TestXMLEval;
+  mf:name "xmlbase-test007";
+  rdfs:comment """
+    example of relative URI resolution.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test007.rdf>;
+  mf:result <xmlbase/test007.nt> .
+
+<#xmlbase-test008> a rdft:TestXMLEval;
+  mf:name "xmlbase-test008";
+  rdfs:comment """
+    example of empty same document ref resolution.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test008.rdf>;
+  mf:result <xmlbase/test008.nt> .
+
+<#xmlbase-test009> a rdft:TestXMLEval;
+  mf:name "xmlbase-test009";
+  rdfs:comment """
+    Example of relative uri with absolute path resolution.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test009.rdf>;
+  mf:result <xmlbase/test009.nt> .
+
+<#xmlbase-test010> a rdft:TestXMLEval;
+  mf:name "xmlbase-test010";
+  rdfs:comment """
+    Example of relative uri with net path resolution.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test010.rdf>;
+  mf:result <xmlbase/test010.nt> .
+
+<#xmlbase-test011> a rdft:TestXMLEval;
+  mf:name "xmlbase-test011";
+  rdfs:comment """
+    Example of xml:base with no path component.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test011.rdf>;
+  mf:result <xmlbase/test011.nt> .
+
+<#xmlbase-test013> a rdft:TestXMLEval;
+  mf:name "xmlbase-test013";
+  rdfs:comment """
+    With an xml:base with fragment the fragment is ignored.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test013.rdf>;
+  mf:result <xmlbase/test013.nt> .
+
+<#xmlbase-test014> a rdft:TestXMLEval;
+  mf:name "xmlbase-test014";
+  rdfs:comment """
+    Test output corrected to use correct base URL.
+  """;
+  rdfs:approval rdft:Approved;
+  mf:action <xmlbase/test014.rdf>;
+  mf:result <xmlbase/test014.nt> .

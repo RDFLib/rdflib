@@ -11,4 +11,4 @@
 # $Id: test1.nt,v 1.2 2001/09/06 21:07:20 barstow Exp $
 # 
 #####################################################################
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test1.rdf#foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "abc" .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test1.rdf#foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "abc" .
