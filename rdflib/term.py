@@ -313,12 +313,12 @@ class URIRef(IdentifiedNode):
             return URIRef(url)
         else:
             return self
-    
+
     @property
     def fragment(self) -> str:
         """
         Return the URL Fragment
-        
+
         >>> URIRef("http://example.com/some/path/#some-fragment").fragment
         'some-fragment'
         >>> URIRef("http://example.com/some/path/").fragment
