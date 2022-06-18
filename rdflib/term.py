@@ -314,6 +314,18 @@ class URIRef(IdentifiedNode):
         else:
             return self
 
+    @property
+    def fragment(self) -> str:
+        """
+        Return the URL Fragment
+
+        >>> URIRef("http://example.com/some/path/#some-fragment").fragment
+        'some-fragment'
+        >>> URIRef("http://example.com/some/path/").fragment
+        ''
+        """
+        return urlparse(self).fragment
+
     def __reduce__(self) -> Tuple[Type["URIRef"], Tuple[str]]:
         return (URIRef, (str(self),))
 
