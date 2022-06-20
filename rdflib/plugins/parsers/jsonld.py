@@ -39,7 +39,7 @@ from typing import Optional
 import rdflib.parser
 from rdflib.graph import ConjunctiveGraph
 from rdflib.namespace import RDF, XSD
-from rdflib.parser import create_input_source, PythonInputSource
+from rdflib.parser import PythonInputSource, create_input_source
 from rdflib.resolver import get_default_resolver
 from rdflib.term import BNode, Literal, URIRef
 

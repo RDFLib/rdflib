@@ -1,11 +1,7 @@
-from rdflib.exceptions import ResolutionForbiddenError
-from rdflib.graph import Graph
-from rdflib.resolver import PermissiveResolver
 import pytest
 
-from test.data import (
-    TEST_DATA_DIR,
-)
+from rdflib.exceptions import ResolutionForbiddenError
+from rdflib.graph import Graph
 
 
 def test_forbidden_resolution():

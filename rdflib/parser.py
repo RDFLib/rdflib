@@ -28,7 +28,7 @@ from typing import (
 )
 from urllib.error import HTTPError
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname, urlopen
+from urllib.request import Request, urlopen
 from xml.sax import xmlreader
 
 import rdflib.util

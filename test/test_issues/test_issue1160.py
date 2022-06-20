@@ -1,7 +1,6 @@
 import unittest
 from unittest import mock
 
-import rdflib
 from rdflib import ConjunctiveGraph
 
 QUERY = """
