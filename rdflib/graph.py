@@ -1327,6 +1327,8 @@ class Graph(Node):
         parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
+            if format not in ["application/ld+json", "json-ld"] and "resolver" in args:
+                del args["resolver"]
             parser.parse(source, self, **args)
         except SyntaxError as se:
             if could_not_guess_format:

@@ -6,7 +6,8 @@ Implementation of the JSON-LD Context structure. See:
 
 """
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
-
+import contextlib
+import json
 from collections import namedtuple
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -41,7 +42,7 @@ from .keys import (
     VERSION,
     VOCAB,
 )
-from .util import norm_url, source_to_json, split_iri, urljoin, urlsplit
+from .util import norm_url, split_iri, urljoin, urlsplit
 
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 
@@ -62,6 +63,8 @@ class Context(object):
         source: Optional[Any] = None,
         base: Optional[str] = None,
         version: Optional[float] = None,
+        *,
+        resolver=None,
     ):
         self.version = version or 1.0
         self.language = None
@@ -78,6 +81,7 @@ class Context(object):
         self.parent = None
         self.propagate = True
         self._context_cache: Dict[str, Any] = {}
+        self.resolver = resolver
         if source:
             self.load(source)
 
@@ -104,7 +108,7 @@ class Context(object):
         return parent._subcontext(source, propagate)
 
     def _subcontext(self, source, propagate):
-        ctx = Context(version=self.version)
+        ctx = Context(version=self.version, resolver=self.resolver)
         ctx.propagate = propagate
         ctx.parent = self
         ctx.language = self.language
@@ -437,7 +441,9 @@ class Context(object):
         if source_url in self._context_cache:
             return self._context_cache[source_url]
 
-        source = source_to_json(source_url)
+        input_source = self.resolver.resolve(source_url, format="json-ld")
+        with contextlib.closing(input_source.getByteStream()) as stream:
+            source = json.load(stream)
         if source and CONTEXT not in source:
             raise INVALID_REMOTE_CONTEXT
         self._context_cache[source_url] = source

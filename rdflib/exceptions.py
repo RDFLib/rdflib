@@ -5,6 +5,8 @@ TODO:
 __all__ = [
     "Error",
     "ParserError",
+    "ResolutionError",
+    "ResolutionForbiddenError",
 ]
 
 
@@ -25,6 +27,31 @@ class ParserError(Error):
 
     def __str__(self):
         return self.msg
+
+
+class ResolutionError(Error):
+    """Resolution error.
+
+    This includes the case when the URI scheme is not supported.
+    """
+
+    def __init__(self, msg):
+        Error.__init__(self, msg)
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+
+class ResolutionForbiddenError(Error):
+    """Resolution of the given URL is not allowed."""
+
+    def __init__(self, url):
+        Error.__init__(self, self.__doc__)
+        self.url = url
+
+    def __str__(self):
+        return f"Resolution of '{self.url}' is not allowed."
 
 
 class UniquenessError(Error):

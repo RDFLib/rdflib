@@ -32,14 +32,15 @@ Example usage::
 
 # NOTE: This code reads the entire JSON object into memory before parsing, but
 # we should consider streaming the input to deal with arbitrarily large graphs.
-
+import contextlib
 import warnings
 from typing import Optional
 
 import rdflib.parser
 from rdflib.graph import ConjunctiveGraph
 from rdflib.namespace import RDF, XSD
-from rdflib.parser import URLInputSource
+from rdflib.parser import create_input_source, PythonInputSource
+from rdflib.resolver import get_default_resolver
 from rdflib.term import BNode, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context, Term
@@ -60,12 +61,7 @@ from ..shared.jsonld.keys import (
     VALUE,
     VOCAB,
 )
-from ..shared.jsonld.util import (
-    VOCAB_DELIMS,
-    context_from_urlinputsource,
-    json,
-    source_to_json,
-)
+from ..shared.jsonld.util import VOCAB_DELIMS, context_from_urlinputsource, json
 
 __all__ = ["JsonLDParser", "to_rdf"]
 
@@ -102,7 +98,12 @@ class JsonLDParser(rdflib.parser.Parser):
 
         generalized_rdf = kwargs.get("generalized_rdf", False)
 
-        data = source_to_json(source)
+        input_source = create_input_source(source)
+        if isinstance(input_source, PythonInputSource):
+            data = input_source.data
+        else:
+            with contextlib.closing(input_source.getByteStream()) as stream:
+                data = json.load(stream)
 
         # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
         # context_aware. Keeping this check in case RDFLib is changed, or
@@ -112,7 +113,15 @@ class JsonLDParser(rdflib.parser.Parser):
         else:
             conj_sink = sink
 
-        to_rdf(data, conj_sink, base, context_data, version, generalized_rdf)
+        to_rdf(
+            data,
+            conj_sink,
+            base,
+            context_data,
+            version,
+            generalized_rdf,
+            resolver=self.resolver,
+        )
 
 
 def to_rdf(
@@ -123,15 +132,18 @@ def to_rdf(
     version: Optional[float] = None,
     generalized_rdf=False,
     allow_lists_of_lists=None,
+    resolver=None,
 ):
+    resolver = resolver or get_default_resolver()
+
     # TODO: docstring w. args and return value
-    context = Context(base=base, version=version)
+    context = Context(base=base, version=version, resolver=resolver)
     if context_data:
         context.load(context_data)
     parser = Parser(
         generalized_rdf=generalized_rdf, allow_lists_of_lists=allow_lists_of_lists
     )
-    return parser.parse(data, context, dataset)
+    return parser.parse(data, context, dataset, resolver=resolver)
 
 
 class Parser(object):
@@ -143,7 +155,7 @@ class Parser(object):
             else ALLOW_LISTS_OF_LISTS
         )
 
-    def parse(self, data, context, dataset):
+    def parse(self, data, context, dataset, resolver):
         topcontext = False
 
         if isinstance(data, list):

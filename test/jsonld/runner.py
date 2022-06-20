@@ -10,6 +10,7 @@ from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
 from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, bNode, r_nodeid
 from rdflib.plugins.serializers.jsonld import from_rdf
 from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
+from rdflib.resolver import PermissiveResolver
 
 
 def _preserving_nodeid(self, bnode_context=None):
@@ -83,6 +84,7 @@ def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options
             base=input_uri,
             context_data=context,
             generalized_rdf=True,
+            resolver=PermissiveResolver(),
         )
     expected_json = _load_json(expectedpath)
     use_native_types = True  # CONTEXT in input_obj
@@ -146,6 +148,7 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
             base=options.get("base", input_uri),
             version=version,
             generalized_rdf=options.get("produceGeneralizedRdf", False),
+            resolver=PermissiveResolver(),
         )
     assert isomorphic(result_graph, expected_graph), "Expected:\n%s\nGot:\n%s" % (
         expected_graph.serialize(),

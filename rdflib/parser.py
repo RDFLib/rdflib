@@ -52,10 +52,16 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = ()
+    __slots__ = ("_resolver",)
 
-    def __init__(self):
-        pass
+    def __init__(self, *, resolver=None):
+        self._resolver = resolver
+
+    @property
+    def resolver(self):
+        from .resolver import get_default_resolver
+
+        return self._resolver or get_default_resolver()
 
     def parse(self, source: "InputSource", sink: "Graph"):
         pass
@@ -439,11 +445,14 @@ def _create_input_source_from_location(
     input_source: Optional[InputSource],
     location: str,
 ) -> Tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
+    from .resolver import get_default_resolver
+
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
     # valid path. However os.path.exists() returns false for a URL on windows
     # which is why it is being used instead.
+
     if os.path.exists(location):
         location = pathlib.Path(location).absolute().as_uri()
 
@@ -451,11 +460,15 @@ def _create_input_source_from_location(
 
     absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
-    if absolute_location.startswith("file:///"):
-        filename = url2pathname(absolute_location.replace("file:///", "/"))
-        file = open(filename, "rb")
-    else:
-        input_source = URLInputSource(absolute_location, format)
+    input_source = get_default_resolver().resolve(
+        format=format,
+        location=absolute_location,
+        trust=True,
+    )
+
+    file = input_source.file if isinstance(input_source, FileInputSource) else file
+
+    absolute_location = input_source.getSystemId()
 
     auto_close = True
     # publicID = publicID or absolute_location  # Further to fix

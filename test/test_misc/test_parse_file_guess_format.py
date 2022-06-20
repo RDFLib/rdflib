@@ -17,7 +17,7 @@ from test.data import TEST_DATA_DIR
 import pytest
 
 from rdflib import Graph
-from rdflib.exceptions import ParserError
+from rdflib.exceptions import ParserError, ResolutionForbiddenError
 from rdflib.util import guess_format
 
 
@@ -39,7 +39,11 @@ class TestFileParserGuessFormat:
 
     def test_jsonld(self) -> None:
         g = Graph()
-        assert isinstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
+        with pytest.raises(
+            ResolutionForbiddenError,
+            match=r"Resolution of '(.*?)/test/jsonld/1\.1/context\.jsonld' is not allowed\.",
+        ):
+            assert isinstance(g.parse("test/jsonld/1.1/manifest.jsonld"), Graph)
         assert isinstance(g.parse("test/jsonld/file_ending_test_01.json"), Graph)
         assert isinstance(g.parse("test/jsonld/file_ending_test_01.json-ld"), Graph)
         assert isinstance(g.parse("test/jsonld/file_ending_test_01.jsonld"), Graph)
