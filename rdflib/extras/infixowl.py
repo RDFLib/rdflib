@@ -1644,6 +1644,7 @@ class Restriction(Class):
                   | 'restriction(' individualvaluedPropertyID
                       individualRestrictionComponent
                       { individualRestrictionComponent } ')'
+
     """
 
     restrictionKinds = [  # noqa: N815
@@ -1967,6 +1968,7 @@ class Property(AnnotatableTerms):
                 [ 'Functional' | 'InverseFunctional' | 'Functional' 'InverseFunctional' |
                   'Transitive' ]
                 { 'domain(' description ')' } { 'range(' description ')' } ')
+
     """
 
     def setupVerbAnnotations(self, verbAnnotations):  # noqa: N802, N803
