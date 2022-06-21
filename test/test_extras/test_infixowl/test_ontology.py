@@ -1,17 +1,9 @@
-import pytest
 from test.data import context0
-from rdflib import (
-    OWL,
-    RDF,
-    XSD,
-    Graph,
-    Literal,
-    Namespace,
-    URIRef,
-)
-from rdflib.extras.infixowl import (
-    Ontology,
-)
+
+import pytest
+
+from rdflib import OWL, RDF, XSD, Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Ontology
 
 EXNS = Namespace("http://example.org/vocab/")
 

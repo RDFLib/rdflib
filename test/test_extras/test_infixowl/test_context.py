@@ -1,10 +1,6 @@
 import pytest
-from rdflib import (
-    OWL,
-    Graph,
-    Literal,
-    Namespace,
-)
+
+from rdflib import OWL, Graph, Literal, Namespace
 from rdflib.extras.infixowl import (
     Class,
     EnumeratedClass,

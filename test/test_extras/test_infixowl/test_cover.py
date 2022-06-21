@@ -1,15 +1,8 @@
+from test.data import TEST_DATA_DIR, bob, michel, tarek
+
 import pytest
-from test.data import TEST_DATA_DIR, tarek, michel, bob
-from rdflib import (
-    OWL,
-    RDF,
-    RDFS,
-    XSD,
-    Graph,
-    Literal,
-    Namespace,
-    URIRef,
-)
+
+from rdflib import OWL, RDF, RDFS, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import (
     AllClasses,
     AllProperties,
@@ -27,13 +20,13 @@ from rdflib.extras.infixowl import (
     Property,
     Restriction,
     classOrTerm,
-    some,
-    only,
+    exactly,
+    generateQName,
     max,
     min,
-    exactly,
+    only,
+    some,
     value,
-    generateQName,
 )
 
 EXNS = Namespace("http://example.org/vocab/")

@@ -1,6 +1,4 @@
-from rdflib import (
-    Namespace,
-)
+from rdflib import Namespace
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(

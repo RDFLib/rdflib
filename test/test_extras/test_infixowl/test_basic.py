@@ -1,3 +1,5 @@
+from test.data import context0
+
 from rdflib import OWL, Graph, Literal, Namespace
 from rdflib.extras.infixowl import (
     Class,
@@ -8,7 +10,6 @@ from rdflib.extras.infixowl import (
     max,
     some,
 )
-from test.data import context0
 
 EXNS = Namespace("http://example.org/vocab/")
 

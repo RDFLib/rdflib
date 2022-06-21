@@ -1,16 +1,9 @@
-import pytest
 from test.data import context0
-from rdflib import (
-    OWL,
-    Graph,
-    Namespace,
-    logger,
-)
-from rdflib.extras.infixowl import (
-    BooleanClass,
-    Class,
-    Individual,
-)
+
+import pytest
+
+from rdflib import OWL, Graph, Namespace, logger
+from rdflib.extras.infixowl import BooleanClass, Class, Individual
 
 EXNS = Namespace("http://example.org/vocab/")
 

@@ -1,18 +1,8 @@
-import pytest
 from test.data import context0, context1
-from rdflib import (
-    OWL,
-    RDFS,
-    BNode,
-    Graph,
-    Literal,
-    Namespace,
-    URIRef,
-    Variable,
-    logger,
-)
-from rdflib.util import first
 
+import pytest
+
+from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable, logger
 from rdflib.extras.infixowl import (
     ACE_NS,
     BooleanClass,
@@ -21,6 +11,7 @@ from rdflib.extras.infixowl import (
     Property,
     max,
 )
+from rdflib.util import first
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(

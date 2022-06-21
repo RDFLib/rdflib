@@ -1,10 +1,6 @@
 import pytest
-from rdflib import (
-    Graph,
-    Literal,
-    Namespace,
-    URIRef,
-)
+
+from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import AnnotatableTerms, Individual
 
 EXNS = Namespace("http://example.org/vocab/")

@@ -1,17 +1,9 @@
-import pytest
 from test.data import TEST_DATA_DIR
-from rdflib import (
-    OWL,
-    RDFS,
-    Graph,
-    Literal,
-    Namespace,
-)
-from rdflib.extras.infixowl import (
-    Class,
-    Individual,
-    manchesterSyntax,
-)
+
+import pytest
+
+from rdflib import OWL, RDFS, Graph, Literal, Namespace
+from rdflib.extras.infixowl import Class, Individual, manchesterSyntax
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(

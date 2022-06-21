@@ -1,13 +1,8 @@
-import pytest
 from test.data import context0
-from rdflib import (
-    OWL,
-    BNode,
-    Graph,
-    Namespace,
-    URIRef,
-)
 
+import pytest
+
+from rdflib import OWL, BNode, Graph, Namespace, URIRef
 from rdflib.extras.infixowl import (
     BooleanClass,
     Class,
