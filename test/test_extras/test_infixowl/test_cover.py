@@ -95,7 +95,7 @@ def test_common_ns_bindings():
 
     bound_namespaces = list(graph.namespace_manager.namespaces())
 
-    assert ("ex1", exns1) in bound_namespaces
+    assert ("ex1", URIRef(str(exns1))) in bound_namespaces
     assert ("owl", URIRef(str(OWL))) in bound_namespaces
 
 
