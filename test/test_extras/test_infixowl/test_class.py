@@ -1,8 +1,8 @@
-from test.data import context0, context1
+from test.data import context1
 
 import pytest
 
-from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable, logger
+from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable
 from rdflib.extras.infixowl import (
     ACE_NS,
     BooleanClass,

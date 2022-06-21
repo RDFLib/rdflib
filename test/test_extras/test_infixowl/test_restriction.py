@@ -1,7 +1,7 @@
 import pytest
 
-from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef, logger
-from rdflib.extras.infixowl import Class, Individual, Property, Restriction, max, some
+from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Class, Individual, Property, Restriction, some
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
@@ -124,7 +124,7 @@ def test_restriction_inputs_with_identifier(graph):
 
 
 @pytest.mark.xfail(reason="_set_allValues fails to handle None")
-def test_restriction_allvalues(graph):
+def test_restriction_allvalues_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,

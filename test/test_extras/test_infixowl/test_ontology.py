@@ -1,5 +1,3 @@
-from test.data import context0
-
 import pytest
 
 from rdflib import OWL, RDF, XSD, Graph, Literal, Namespace, URIRef
