@@ -171,7 +171,7 @@ def test_restriction_allvalues(graph):
 
 
 @pytest.mark.xfail(reason="_set_someValues fails to handle None")
-def test_restriction_somevalues(graph):
+def test_restriction_somevalues_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
@@ -207,7 +207,7 @@ def test_restriction_somevalues(graph):
 
 
 @pytest.mark.xfail(reason="_set_hasValue fails to handle None")
-def test_restriction_hasvalue(graph):
+def test_restriction_hasvalue_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
@@ -241,7 +241,7 @@ def test_restriction_hasvalue(graph):
 
 
 @pytest.mark.xfail(reason="_set_Cardinality fails to handle None")
-def test_restriction_cardinality(graph):
+def test_restriction_cardinality_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
@@ -323,7 +323,7 @@ def test_restriction_cardinality_set_value(graph):
 
 
 @pytest.mark.xfail(reason="_set_cardinality fails to handle Literal")
-def test_restriction_cardinality_set_value(graph):
+def test_restriction_cardinality_set_value_literal_fail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
@@ -339,7 +339,7 @@ def test_restriction_cardinality_set_value(graph):
 
 
 @pytest.mark.xfail(reason="_set_minCardinality fails to handle None")
-def test_restriction_maxcardinality(graph):
+def test_restriction_maxcardinality_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
@@ -370,7 +370,7 @@ def test_restriction_maxcardinality(graph):
 
 
 @pytest.mark.xfail(reason="_set_minCardinality fails to handle None")
-def test_restriction_mincardinality(graph):
+def test_restriction_mincardinality_nonefail(graph):
 
     r = Restriction(
         onProperty=EXNS.hasChild,
