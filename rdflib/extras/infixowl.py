@@ -101,7 +101,7 @@ Python
 >>> exNs.hasParent << some >> Class(exNs.Physician, graph=g)
 ( ex:hasParent SOME ex:Physician )
 
->>> Property(exNs.hasParent,graph=g) << max >> Literal(1)
+>>> Property(exNs.hasParent, graph=g) << max >> Literal(1)
 ( ex:hasParent MAX 1 )
 
 >>> print(g.serialize(format='pretty-xml')) #doctest: +SKIP
@@ -436,7 +436,7 @@ class Individual(object):
     def _delete_type(self):
         """
         >>> g = Graph()
-        >>> b=Individual(OWL.Restriction,g)
+        >>> b = Individual(OWL.Restriction, g)
         >>> b.type = RDFS.Resource
         >>> len(list(b.type))
         1
@@ -614,8 +614,8 @@ class AnnotatableTerms(Individual):
     @TermDeletionHelper(RDFS.label)
     def _delete_label(self):
         """
-        >>> g=Graph()
-        >>> b=Individual(OWL.Restriction,g)
+        >>> g = Graph()
+        >>> b = Individual(OWL.Restriction,g)
         >>> b.label = Literal('boo')
         >>> len(list(b.label))
         1
@@ -1018,8 +1018,8 @@ class Class(AnnotatableTerms):
 
     def __hash__(self):
         """
-        >>> b=Class(OWL.Restriction)
-        >>> c=Class(OWL.Restriction)
+        >>> b = Class(OWL.Restriction)
+        >>> c = Class(OWL.Restriction)
         >>> len(set([b,c]))
         1
         """
@@ -1639,13 +1639,11 @@ def AllDifferent(members):  # noqa: N802
 
 class Restriction(Class):
     """
-    restriction ::= 'restriction('
-    datavaluedPropertyID dataRestrictionComponent
-    { dataRestrictionComponent } ')'
-    | 'restriction(' individualvaluedPropertyID
-    individualRestrictionComponent
-    { individualRestrictionComponent } ')'
-
+    restriction ::= 'restriction(' datavaluedPropertyID dataRestrictionComponent
+                                 { dataRestrictionComponent } ')'
+                  | 'restriction(' individualvaluedPropertyID
+                      individualRestrictionComponent
+                      { individualRestrictionComponent } ')'
     """
 
     restrictionKinds = [  # noqa: N815
@@ -1731,7 +1729,7 @@ class Restriction(Class):
         ...     EX.someProp,baseType=None).type
         ... ) #doctest: +NORMALIZE_WHITESPACE +SKIP
         [rdflib.term.URIRef(
-            u'http://www.w3.org/2002/07/owl#DatatypeProperty')]
+            'http://www.w3.org/2002/07/owl#DatatypeProperty')]
         """
         Property(self.onProperty, graph=self.graph, baseType=None).serialize(graph)
         for s, p, o in self.graph.triples((self.identifier, None, None)):
@@ -1960,19 +1958,15 @@ PropertyAbstractSyntax = """
 
 class Property(AnnotatableTerms):
     """
-    axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated']
-                { annotation }
+    axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated'] { annotation }
                 { 'super(' datavaluedPropertyID ')'} ['Functional']
                 { 'domain(' description ')' } { 'range(' dataRange ')' } ')'
-                | 'ObjectProperty(' individualvaluedPropertyID ['Deprecated']
-                { annotation }
+            | 'ObjectProperty(' individualvaluedPropertyID ['Deprecated'] { annotation }
                 { 'super(' individualvaluedPropertyID ')' }
                 [ 'inverseOf(' individualvaluedPropertyID ')' ] [ 'Symmetric' ]
-                [ 'Functional' | 'InverseFunctional' |
-                'Functional' 'InverseFunctional' |
-                'Transitive' ]
+                [ 'Functional' | 'InverseFunctional' | 'Functional' 'InverseFunctional' |
+                  'Transitive' ]
                 { 'domain(' description ')' } { 'range(' description ')' } ')
-
     """
 
     def setupVerbAnnotations(self, verbAnnotations):  # noqa: N802, N803
