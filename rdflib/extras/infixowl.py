@@ -1639,11 +1639,12 @@ def AllDifferent(members):  # noqa: N802
 
 class Restriction(Class):
     """
-    restriction ::= 'restriction(' datavaluedPropertyID dataRestrictionComponent
-                                 { dataRestrictionComponent } ')'
-                  | 'restriction(' individualvaluedPropertyID
-                      individualRestrictionComponent
-                      { individualRestrictionComponent } ')'
+    restriction ::= 'restriction('
+    datavaluedPropertyID dataRestrictionComponent
+    { dataRestrictionComponent } ')'
+    | 'restriction(' individualvaluedPropertyID
+    individualRestrictionComponent
+    { individualRestrictionComponent } ')'
 
     """
 
@@ -1959,14 +1960,17 @@ PropertyAbstractSyntax = """
 
 class Property(AnnotatableTerms):
     """
-    axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated'] { annotation }
+    axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated']
+                { annotation }
                 { 'super(' datavaluedPropertyID ')'} ['Functional']
                 { 'domain(' description ')' } { 'range(' dataRange ')' } ')'
-            | 'ObjectProperty(' individualvaluedPropertyID ['Deprecated'] { annotation }
+                | 'ObjectProperty(' individualvaluedPropertyID ['Deprecated']
+                { annotation }
                 { 'super(' individualvaluedPropertyID ')' }
                 [ 'inverseOf(' individualvaluedPropertyID ')' ] [ 'Symmetric' ]
-                [ 'Functional' | 'InverseFunctional' | 'Functional' 'InverseFunctional' |
-                  'Transitive' ]
+                [ 'Functional' | 'InverseFunctional' |
+                'Functional' 'InverseFunctional' |
+                'Transitive' ]
                 { 'domain(' description ')' } { 'range(' description ')' } ')
 
     """
