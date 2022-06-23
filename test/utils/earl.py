@@ -121,8 +121,8 @@ def pytest_addoption(parser: _pytest.config.argparsing.Parser):
         action="store",
         dest="earl_output_suffix",
         metavar="path",
-        default="-latest",
-        help="suffix to use for prefix-defined test reports, defaults to '-latest'",
+        default="-HEAD",
+        help="suffix to use for prefix-defined test reports, defaults to '-HEAD'",
     )
 
     group.addoption(
@@ -162,10 +162,10 @@ def pytest_addoption(parser: _pytest.config.argparsing.Parser):
     )
 
     group.addoption(
-        "--earl-omit-datetime",
-        action="store_false",
+        "--earl-add-datetime",
+        action="store_true",
         dest="earl_add_datetime",
-        default=True,
+        default=False,
         help="Don't write datetime to result",
     )
 

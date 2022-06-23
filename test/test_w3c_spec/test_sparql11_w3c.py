@@ -235,12 +235,6 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}syntax-update-1/manifest#test_54": pytest.mark.xfail(
         reason="Parses sucessfully instead of failing."
     ),
-    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#csv01": pytest.mark.xfail(
-        reason="Bug in blank node serialization."
-    ),
-    f"{REMOTE_BASE_IRI}csv-tsv-res/manifest#csv02": pytest.mark.xfail(
-        reason="Bug in blank node serialization."
-    ),
 }
 
 
