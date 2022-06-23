@@ -2,9 +2,11 @@ import logging
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Set, Tuple, Union
 
 from rdflib.graph import Graph
+from rdflib.namespace import RDFS
+from rdflib.term import IdentifiedNode, URIRef
 from rdflib.util import guess_format
 
 GraphSourceType = Union["GraphSource", Path]
@@ -70,3 +72,19 @@ def cached_graph(
     sources: Tuple[Union[GraphSource, Path], ...], public_id: Optional[str] = None
 ) -> Graph:
     return load_sources(*sources, public_id=public_id)
+
+
+def subclasses_of(graph: Graph, node: IdentifiedNode) -> Set[IdentifiedNode]:
+    return set(graph.transitive_subjects(RDFS.subClassOf, node))
+
+
+def superclasses_of(graph: Graph, node: IdentifiedNode) -> Set[IdentifiedNode]:
+    return set(graph.transitive_objects(node, RDFS.subClassOf))
+
+
+def is_subclass_of(graph: Graph, node: IdentifiedNode, cls: URIRef) -> bool:
+    return cls in subclasses_of(graph, node)
+
+
+def is_superclass_of(graph: Graph, node: IdentifiedNode, cls: URIRef) -> bool:
+    return cls in superclasses_of(graph, node)
