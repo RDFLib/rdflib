@@ -10,6 +10,6 @@ def test_1998():
     g = rdflib.Graph()
     bob = rdflib.URIRef("http://example.org/people/Bob")
     g.add((bob, rdflib.RDF.type, rdflib.FOAF.Person))
-    for nt_format in ('nt', 'nt11'):
+    for nt_format in ("nt", "nt11"):
         output = g.serialize(format=nt_format)
-        assert not output.endswith('\n\n')
+        assert not output.endswith("\n\n")
