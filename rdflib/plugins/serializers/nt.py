@@ -39,7 +39,6 @@ class NTSerializer(Serializer):
 
         for triple in self.store:
             stream.write(_nt_row(triple).encode())
-        stream.write("\n".encode())
 
 
 class NT11Serializer(NTSerializer):
