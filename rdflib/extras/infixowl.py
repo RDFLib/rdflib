@@ -215,8 +215,8 @@ nsBinds = {  # noqa: N816
 
 
 def generateQName(graph, uri):  # noqa: N802
-    prefix, uri, localName = graph.compute_qname(classOrIdentifier(uri))  # noqa: N806
-    return ":".join([prefix, localName])
+    prefix, uri, localname = graph.compute_qname(classOrIdentifier(uri))
+    return ":".join([prefix, localname])
 
 
 def classOrTerm(thing):  # noqa: N802
