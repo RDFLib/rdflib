@@ -201,7 +201,7 @@ class Infix:
         return self.function(other)
 
     def __call__(self, value1, value2):
-        return self.function(value1, value2)
+        return self.function(value1, value2)  # pragma: no cover
 
 
 nsBinds = {  # noqa: N816
@@ -400,8 +400,8 @@ class Individual(object):
                     self.identifier
                 )
                 self.qname = ":".join([prefix, localName])
-            except:  # noqa: E722
-                pass
+            except:  # noqa: E722  # pragma: no cover
+                pass  # pragma: no cover
 
     def clearInDegree(self):  # noqa: N802
         self.graph.remove((None, None, self.identifier))
@@ -444,7 +444,7 @@ class Individual(object):
         >>> len(list(b.type))
         0
         """
-        pass
+        pass  # pragma: no cover
 
     type = property(_get_type, _set_type, _delete_type)
 
@@ -473,8 +473,8 @@ class Individual(object):
             try:
                 prefix, uri, localName = self.graph.compute_qname(i)  # noqa: N806
                 self.qname = ":".join([prefix, localName])
-            except:  # noqa: E722
-                pass
+            except:  # noqa: E722  # pragma: no cover
+                pass  # pragma: no cover
 
     identifier = property(_get_identifier, _set_identifier)
 
@@ -494,7 +494,7 @@ class Individual(object):
 
     @TermDeletionHelper(OWL.sameAs)
     def _delete_sameAs(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     sameAs = property(_get_sameAs, _set_sameAs, _delete_sameAs)  # noqa: N815
 
@@ -576,7 +576,7 @@ class AnnotatableTerms(Individual):
 
     @TermDeletionHelper(RDFS.comment)
     def _del_comment(self):
-        pass
+        pass  # pragma: no cover
 
     comment = property(_get_comment, _set_comment, _del_comment)
 
@@ -594,7 +594,7 @@ class AnnotatableTerms(Individual):
 
     @TermDeletionHelper(RDFS.seeAlso)
     def _del_seeAlso(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     seeAlso = property(_get_seeAlso, _set_seeAlso, _del_seeAlso)  # noqa: N815
 
@@ -623,7 +623,7 @@ class AnnotatableTerms(Individual):
         >>> len(list(b.label))
         0
         """
-        pass
+        pass  # pragma: no cover
 
     label = property(_get_label, _set_label, _delete_label)
 
@@ -655,7 +655,7 @@ class Ontology(AnnotatableTerms):
 
     @TermDeletionHelper(OWL["imports"])
     def _del_imports(self):
-        pass
+        pass  # pragma: no cover
 
     imports = property(_get_imports, _set_imports, _del_imports)
 
@@ -750,8 +750,8 @@ def ComponentTerms(cls):  # noqa: N802
                         yield _c
                 else:
                     yield innerCls
-        except:  # noqa: E722
-            pass
+        except:  # noqa: E722  # pragma: no cover
+            pass  # pragma: no cover
     else:
         cls = CastClass(cls, Individual.factoryGraph)
         if isinstance(cls, BooleanClass):
@@ -998,7 +998,7 @@ class Class(AnnotatableTerms):
 
     @TermDeletionHelper(RDF.type)
     def _del_type(self):
-        pass
+        pass  # pragma: no cover
 
     extent = property(_get_extent, _set_extent, _del_type)
 
@@ -1012,7 +1012,7 @@ class Class(AnnotatableTerms):
         return (Variable("CLASS"), RDF.type, self.identifier)
 
     def _set_extentQuery(self, other):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     extentQuery = property(_get_extentQuery, _set_extentQuery)  # noqa: N815
 
@@ -1097,7 +1097,7 @@ class Class(AnnotatableTerms):
 
     @TermDeletionHelper(RDFS.subClassOf)
     def _del_subClassOf(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     subClassOf = property(  # noqa: N815
         _get_subClassOf, _set_subClassOf, _del_subClassOf
@@ -1119,7 +1119,7 @@ class Class(AnnotatableTerms):
 
     @TermDeletionHelper(OWL.equivalentClass)
     def _del_equivalentClass(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     equivalentClass = property(  # noqa: N815
         _get_equivalentClass, _set_equivalentClass, _del_equivalentClass
@@ -1139,7 +1139,7 @@ class Class(AnnotatableTerms):
 
     @TermDeletionHelper(OWL.disjointWith)
     def _del_disjointWith(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     disjointWith = property(  # noqa: N815
         _get_disjointWith, _set_disjointWith, _del_disjointWith
@@ -1163,7 +1163,7 @@ class Class(AnnotatableTerms):
 
     @TermDeletionHelper(OWL.complementOf)
     def _del_complementOf(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     complementOf = property(  # noqa: N815
         _get_complementOf, _set_complementOf, _del_complementOf
@@ -1524,14 +1524,14 @@ class BooleanClass(OWLRDFListProxy, Class):
     @BooleanClassExtentHelper(OWL.intersectionOf)
     @Callable
     def getIntersections():  # type: ignore[misc]  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     getIntersections = Callable(getIntersections)  # noqa: N815
 
     @BooleanClassExtentHelper(OWL.unionOf)
     @Callable
     def getUnions():  # type: ignore[misc]  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     getUnions = Callable(getUnions)  # noqa: N815
 
@@ -1634,7 +1634,7 @@ def AllDifferent(members):  # noqa: N802
     DisjointClasses(' description description { description } ')'
 
     """
-    pass
+    pass  # pragma: no cover
 
 
 class Restriction(Class):
@@ -1775,7 +1775,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.onProperty)
     def _del_onProperty(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     onProperty = property(  # noqa: N815
         _get_onProperty, _set_onProperty, _del_onProperty
@@ -1799,7 +1799,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.allValuesFrom)
     def _del_allValuesFrom(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     allValuesFrom = property(  # noqa: N815
         _get_allValuesFrom, _set_allValuesFrom, _del_allValuesFrom
@@ -1823,7 +1823,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.someValuesFrom)
     def _del_someValuesFrom(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     someValuesFrom = property(  # noqa: N815
         _get_someValuesFrom, _set_someValuesFrom, _del_someValuesFrom
@@ -1845,7 +1845,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.hasValue)
     def _del_hasValue(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     hasValue = property(_get_hasValue, _set_hasValue, _del_hasValue)  # noqa: N815
 
@@ -1865,7 +1865,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.cardinality)
     def _del_cardinality(self):
-        pass
+        pass  # pragma: no cover
 
     cardinality = property(_get_cardinality, _set_cardinality, _del_cardinality)
 
@@ -1887,7 +1887,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.maxCardinality)
     def _del_maxCardinality(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     maxCardinality = property(  # noqa: N815
         _get_maxCardinality, _set_maxCardinality, _del_maxCardinality
@@ -1911,7 +1911,7 @@ class Restriction(Class):
 
     @TermDeletionHelper(OWL.minCardinality)
     def _del_minCardinality(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     minCardinality = property(  # noqa: N815
         _get_minCardinality, _set_minCardinality, _del_minCardinality
@@ -2148,7 +2148,7 @@ class Property(AnnotatableTerms):
 
     @TermDeletionHelper(RDFS.subPropertyOf)
     def _del_subPropertyOf(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     subPropertyOf = property(  # noqa: N815
         _get_subPropertyOf, _set_subPropertyOf, _del_subPropertyOf
@@ -2165,7 +2165,7 @@ class Property(AnnotatableTerms):
 
     @TermDeletionHelper(OWL.inverseOf)
     def _del_inverseOf(self):  # noqa: N802
-        pass
+        pass  # pragma: no cover
 
     inverseOf = property(_get_inverseOf, _set_inverseOf, _del_inverseOf)  # noqa: N815
 
@@ -2184,7 +2184,7 @@ class Property(AnnotatableTerms):
 
     @TermDeletionHelper(RDFS.domain)
     def _del_domain(self):
-        pass
+        pass  # pragma: no cover
 
     domain = property(_get_domain, _set_domain, _del_domain)
 
@@ -2203,7 +2203,7 @@ class Property(AnnotatableTerms):
 
     @TermDeletionHelper(RDFS.range)
     def _del_range(self):
-        pass
+        pass  # pragma: no cover
 
     range = property(_get_range, _set_range, _del_range)
 
