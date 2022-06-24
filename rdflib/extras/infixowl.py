@@ -392,7 +392,7 @@ class Individual(object):
             try:
                 prefix, uri, localname = self.graph.compute_qname(self.identifier)
                 self.qname = ":".join([prefix, localname])
-            except:  # noqa: E722  # pragma: no cover
+            except Exception:  # pragma: no cover
                 pass  # pragma: no cover
 
     def clearInDegree(self):  # noqa: N802
@@ -465,7 +465,7 @@ class Individual(object):
             try:
                 prefix, uri, localname = self.graph.compute_qname(i)
                 self.qname = ":".join([prefix, localname])
-            except:  # noqa: E722  # pragma: no cover
+            except Exception:  # pragma: no cover
                 pass  # pragma: no cover
 
     identifier = property(_get_identifier, _set_identifier)
@@ -742,7 +742,7 @@ def ComponentTerms(cls):  # noqa: N802
                         yield _c
                 else:
                     yield inner_class
-        except:  # noqa: E722  # pragma: no cover
+        except Exception:  # pragma: no cover
             pass  # pragma: no cover
     else:
         cls = CastClass(cls, Individual.factoryGraph)
