@@ -254,7 +254,7 @@ def manchesterSyntax(  # noqa: N802
     assert thing is not None
     if boolean:
         if transientList:
-            liveChildren = iter(thing)  # noqa: N806
+            livechildren = iter(thing)
             children = [manchesterSyntax(child, store) for child in thing]
         else:
             livechildren = iter(Collection(store, thing))
