@@ -46,60 +46,19 @@ test_conneg - test content negotiation when reading remote graphs
 EARL Test Reports
 =================
 
-EARL test reports can be generated using the EARL reporter plugin from ``earl.py``.
+EARL test reports are generated using the EARL reporter plugin from
+``test/utils/earl.py``.
 
-When this plugin is enabled it will create an ``earl:Assertion`` for every test that has a ``rdf_test_uri`` parameter which can be either a string or an ``URIRef``.
+This plugin is enabled by default and writes test reports to
+``test_reports/*-HEAD.ttl`` without timestamps by default.
 
-To enable the EARL reporter plugin an output file path must be supplied to pytest with ``--earl-output-file``. The report will be written to this location in turtle format.
+For EARL reporter plugin options see the output of ``pytest --help``.
 
-Some examples of generating test reports:
+To write reports with timestamps:
 
 .. code-block:: bash
 
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-jsonld-local.ttl \
-      test/jsonld/test_localsuite.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-jsonld-v1.1.ttl \
-      test/jsonld/test_onedotone.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-jsonld-v1.0.ttl \
-      test/jsonld/test_testsuite.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-sparql.ttl \
-      test/test_w3c_spec/test_sparql_w3c.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-nquads.ttl \
-      test/test_w3c_spec/test_nquads_w3c.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-nt.ttl \
-      test/test_w3c_spec/test_nt_w3c.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-trig.ttl \
-      test/test_w3c_spec/test_trig_w3c.py
-
-   pytest \
-      --earl-assertor-homepage=http://example.com \
-      --earl-assertor-name 'Example Name' \
-      --earl-output-file=/var/tmp/earl/earl-turtle.ttl \
-      test/test_w3c_spec/test_turtle_w3c.py
+    pytest \
+      --earl-add-datetime \
+      --earl-output-suffix=-timestamped \
+      test/test_w3c_spec/
