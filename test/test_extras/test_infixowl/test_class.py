@@ -241,14 +241,10 @@ def test_class_serialize(graph):
     tgt = (EXNS.test, pred, Literal("Men"))
     assert tgt in owlc.graph
 
-    assert list(owlc._get_annotation(pred)) == []
-
-    # Not yet:
-    with pytest.raises(AssertionError):
-        assert list(owlc._get_annotation(pred)) == [
-            Literal("Men"),
-            Literal("['Man', 'Men']"),
-        ]
+    assert list(owlc._get_annotation(pred)) == [
+        Literal("Men"),
+        Literal("['Man', 'Men']"),
+    ]
 
     assert owlc.extentQuery == (
         Variable("CLASS"),
@@ -290,11 +286,7 @@ def test_class_nameislabel(graph):
         nameIsLabel=True,
     )
 
-    assert list(owlc.annotation) == []
-
-    # Not yet
-    with pytest.raises(AssertionError):
-        assert list(owlc.annotation) == [Literal("Man")]
+    assert list(owlc.annotation) == [Literal("Man")]
 
     assert graph.serialize(format="ttl") == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
