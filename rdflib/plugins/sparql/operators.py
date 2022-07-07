@@ -298,10 +298,10 @@ def Builtin_CONCAT(expr, ctx):
 
     # dt/lang passed on only if they all match
 
-    dt = set(x.datatype for x in expr.arg)
+    dt = set(x.datatype for x in expr.arg if isinstance(x, Literal))
     dt = dt.pop() if len(dt) == 1 else None
 
-    lang = set(x.language for x in expr.arg)
+    lang = set(x.language for x in expr.arg if isinstance(x, Literal))
     lang = lang.pop() if len(lang) == 1 else None
 
     return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)
