@@ -599,8 +599,8 @@ class Literal(Identifier):
     _language: Optional[str]
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
     _datatype: Optional[str]
-    _ill_formed: Optional[bool]
-    __slots__ = ("_language", "_datatype", "_value", "_ill_formed")
+    _ill_typed: Optional[bool]
+    __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
 
     def __new__(
         cls,
@@ -628,7 +628,7 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-        ill_formed: Optional[bool] = None
+        ill_typed: Optional[bool] = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
@@ -650,7 +650,7 @@ class Literal(Identifier):
                 dt_uri: URIRef = URIRef(datatype)
                 checker = _check_well_formed_types.get(dt_uri, _well_formed_by_value)
                 well_formed = checker(lexical_or_value, value)
-                ill_formed = ill_formed or (not well_formed)
+                ill_typed = ill_typed or (not well_formed)
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -684,7 +684,7 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
-        inst._ill_formed = ill_formed
+        inst._ill_typed = ill_typed
 
         return inst
 
@@ -708,7 +708,7 @@ class Literal(Identifier):
             return self
 
     @property
-    def ill_formed(self) -> Optional[bool]:
+    def ill_typed(self) -> Optional[bool]:
         """
         For `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
@@ -718,7 +718,7 @@ class Literal(Identifier):
         If the literal's datatype is `None` or not in the set of `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
         """
-        return self._ill_formed
+        return self._ill_typed
 
     @property
     def value(self) -> Any:
