@@ -31,7 +31,7 @@ kwargs["extras_require"] = {
     "berkeleydb": ["berkeleydb"],
     "networkx": ["networkx"],
     "dev": [
-        "black==22.3.0",
+        "black==22.6.0",
         "flake8",
         "flakeheaven; python_version >= '3.8.0'",
         "isort",
