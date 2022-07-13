@@ -95,7 +95,7 @@ tasks:
           -m tox \
           {{.CLI_ARGS}}
     env:
-      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{replace "." "" .TOX_PYTHON_VERSION}}{{if .EXTENSIVE}}-extensive{{end}}{{end}}'
+      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if .EXTENSIVE}}-extensive{{end}}{{end}}'
   test:
     desc: Run tests
     cmds:
