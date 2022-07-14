@@ -44,7 +44,7 @@ def serialize_in_chunks(
 
     file_name_stem:
         Prefix of each file name
-        e.g. "chunk" = chunk_001.nt, chunk_002.nt...
+        e.g. "chunk" = chunk_000001.nt, chunk_000002.nt...
 
     output_dir:
         The directory you want the files to be written to
