@@ -26,7 +26,7 @@ def serialize_in_chunks(
     max_triples: int = 10000,
     max_file_size_kb: int = None,
     file_name_stem: str = "chunk",
-    output_dir: Path = Path(__file__).parent,
+    output_dir: Path = Path.cwd(),
     write_prefixes: bool = False,
 ):
     """
