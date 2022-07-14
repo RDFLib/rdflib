@@ -2,6 +2,7 @@ import logging
 from os import mkdir
 from os.path import abspath, exists
 from threading import Thread
+from typing import Optional
 from urllib.request import pathname2url
 
 from rdflib.store import NO_STORE, VALID_STORE, Store
@@ -467,34 +468,47 @@ class BerkeleyDB(Store):
         cursor.close()
         return count
 
-    def bind(self, prefix, namespace, override=True):
-        prefix = prefix.encode("utf-8")
-        namespace = namespace.encode("utf-8")
-        bound_prefix = self.__prefix.get(namespace)
-        bound_namespace = self.__namespace.get(prefix)
+    def bind(
+        self,
+        prefix: Optional[str],
+        namespace: str,
+        override: bool = True,
+    ) -> None:
+        pfx = prefix.encode("utf-8") if prefix is not None else "".encode("utf-8")
+        ns = namespace.encode("utf-8")
+
+        bound_prefix = self.__prefix.get(ns)
+        bound_namespace = self.__namespace.get(pfx)
         if override:
             if bound_prefix:
                 self.__namespace.delete(bound_prefix)
             if bound_namespace:
                 self.__prefix.delete(bound_namespace)
-            self.__prefix[namespace] = prefix
-            self.__namespace[prefix] = namespace
+            self.__prefix[ns] = pfx
+            self.__namespace[pfx] = ns
         else:
-            self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
-            self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
+            self.__prefix[bound_namespace or ns] = bound_prefix or pfx
+            self.__namespace[bound_prefix or pfx] = bound_namespace or ns
+
+    def unbind(self, prefix: str) -> None:
+        pfx = prefix.encode("utf-8") if prefix is not None else "".encode("utf-8")
+        ns = self.__namespace.get(pfx, None)
+        if ns is not None:
+            self.__namespace.delete(pfx)
+            self.__prefix.delete(ns)
 
     def namespace(self, prefix):
-        prefix = prefix.encode("utf-8")
-        ns = self.__namespace.get(prefix, None)
+        pfx = prefix.encode("utf-8")
+        ns = self.__namespace.get(pfx, None)
         if ns is not None:
             return URIRef(ns.decode("utf-8"))
         return None
 
     def prefix(self, namespace):
-        namespace = namespace.encode("utf-8")
-        prefix = self.__prefix.get(namespace, None)
-        if prefix is not None:
-            return prefix.decode("utf-8")
+        ns = namespace.encode("utf-8")
+        pfx = self.__prefix.get(ns, None)
+        if pfx is not None:
+            return pfx.decode("utf-8")
         return None
 
     def namespaces(self):

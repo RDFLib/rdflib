@@ -1047,7 +1047,13 @@ class Graph(Node):
     def compute_qname(self, uri, generate=True):
         return self.namespace_manager.compute_qname(uri, generate)
 
-    def bind(self, prefix, namespace, override=True, replace=False) -> None:
+    def bind(
+        self,
+        prefix: str,
+        namespace: str,  # noqa: F811
+        override=True,
+        replace=False,
+    ) -> None:
         """Bind prefix to namespace
 
         If override is True will bind namespace to given prefix even
@@ -1068,6 +1074,10 @@ class Graph(Node):
         return self.namespace_manager.bind(
             prefix, namespace, override=override, replace=replace
         )
+
+    def unbind(self, prefix: str) -> None:
+        """Delete binding of prefix to namespace"""
+        return self.namespace_manager.unbind(prefix)
 
     def namespaces(self):
         """Generator over all the prefix, namespace tuples"""

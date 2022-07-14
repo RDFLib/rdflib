@@ -171,6 +171,12 @@ class SimpleMemory(Store):
                 bound_namespace, namespace
             )
 
+    def unbind(self, prefix: str) -> None:
+        namespace = self.__namespace.get(prefix, None)
+        if namespace is not None:
+            del self.__prefix[namespace]
+            del self.__namespace[prefix]
+
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)
 
@@ -439,6 +445,12 @@ class Memory(Store):
             self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(
                 bound_namespace, namespace
             )
+
+    def unbind(self, prefix):
+        namespace = self.__namespace.get(prefix, None)
+        if namespace is not None:
+            del self.__prefix[namespace]
+            del self.__namespace[prefix]
 
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)

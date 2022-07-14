@@ -366,12 +366,20 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(
+        self,
+        prefix: Optional[str],
+        namespace: str,
+        override: bool = True,
+    ) -> None:
         """
         :param override: rebind, even if the given namespace is already bound to another prefix.
         """
 
-    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+    def unbind(self, prefix: str) -> None:
+        """"""
+
+    def prefix(self, namespace: str) -> Optional["str"]:
         """"""
 
     def namespace(self, prefix: str) -> Optional["URIRef"]:
