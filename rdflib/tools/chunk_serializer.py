@@ -27,7 +27,7 @@ def serialize_in_chunks(
     max_file_size_kb: int = None,
     file_name_stem: str = "chunk",
     output_dir: Path = Path(__file__).parent,
-    first_file_contains_prefixes: bool = False,
+    write_prefixes: bool = False,
 ):
     """
     Serializes a given Graph into a series of n-triples with a given length
@@ -47,7 +47,7 @@ def serialize_in_chunks(
     output_dir:
         The directory you want the files to be written to
 
-    first_file_contains_prefixes:
+    write_prefixes:
         The first file created is a Turtle file containing original graph prefixes
 
 
@@ -103,7 +103,7 @@ def serialize_in_chunks(
 
         return "\n".join(sorted(pres)) + "\n"
 
-    if first_file_contains_prefixes:
+    if write_prefixes:
         with open(
             Path(output_dir) / f"{file_name_stem}_000000.ttl", "w", encoding="utf-8"
         ) as fh:
@@ -113,7 +113,7 @@ def serialize_in_chunks(
     with ExitStack() as xstack:
         if max_file_size_kb is not None:
             max_file_size = max_file_size_kb * 1000
-            file_no = 1 if first_file_contains_prefixes else 0
+            file_no = 1 if write_prefixes else 0
             for i, t in enumerate(g.triples((None, None, None))):
                 row_bytes = _nt_row(t).encode("utf-8")
                 if len(row_bytes) > max_file_size:
@@ -143,7 +143,7 @@ def serialize_in_chunks(
             else:
                 # graph_length is > max_lines, make enough files for all graph
                 # no_files = math.ceil(graph_length / max_triples)
-                file_no = 1 if first_file_contains_prefixes else 0
+                file_no = 1 if write_prefixes else 0
                 for i, t in enumerate(g.triples((None, None, None))):
                     if i % max_triples == 0:
                         fp, fhb = xstack.enter_context(_start_new_file(file_no))
