@@ -24,7 +24,7 @@ __all__ = ["serialize_in_chunks"]
 def serialize_in_chunks(
     g: Graph,
     max_triples: int = 10000,
-    max_file_size_kb: int = None,
+    max_file_size_kb: Optional[int] = None,
     file_name_stem: str = "chunk",
     output_dir: Path = Path.cwd(),
     write_prefixes: bool = False,
