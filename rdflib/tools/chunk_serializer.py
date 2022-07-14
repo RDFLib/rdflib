@@ -30,15 +30,17 @@ def serialize_in_chunks(
     write_prefixes: bool = False,
 ):
     """
-    Serializes a given Graph into a series of n-triples with a given length
+    Serializes a given Graph into a series of n-triples with a given length.
 
     max_file_size_kb:
-        Maximum size per NT file in MB
-        Equivalent to ~6,000 triples
+        Maximum size per NT file in kB
+        Equivalent to ~6,000 triples, depending on Literal sizes
 
     max_triples:
         Maximum size per NT file in triples
         Equivalent to lines in file
+        
+        If both this parameter and max_file_size_kb are set, max_file_size_kb will be used
 
     file_name_stem:
         Prefix of each file name
