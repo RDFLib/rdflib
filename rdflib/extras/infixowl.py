@@ -486,47 +486,46 @@ class AnnotatableTerms(Individual):
     Terms in an OWL ontology with rdfs:label and rdfs:comment
 
 
-    Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
+    ## Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
 
-    Verbalisation of OWL entity IRIS
-    ================================
+    ### Verbalisation of OWL entity IRIS
 
-    How are OWL entity IRIs verbalized?
-    -----------------------------------
+    #### How are OWL entity IRIs verbalized?
 
     The OWL verbalizer maps OWL entity IRIs to ACE content words such
     that
 
-        OWL individuals map to ACE proper names (PN)
-        OWL classes map to ACE common nouns (CN)
-        OWL properties map to ACE transitive verbs (TV)
+    - OWL individuals map to ACE proper names (PN)
+    - OWL classes map to ACE common nouns (CN)
+    - OWL properties map to ACE transitive verbs (TV)
 
     There are 6 morphological categories that determine the surface form
     of an IRI:
 
-        singular form of a proper name (e.g. John)
-        singular form of a common noun (e.g. man)
-        plural form of a common noun (e.g. men)
-        singular form of a transitive verb (e.g. mans)
-        plural form of a transitive verb (e.g. man)
-        past participle form a transitive verb (e.g. manned)
+    - singular form of a proper name (e.g. John)
+    - singular form of a common noun (e.g. man)
+    - plural form of a common noun (e.g. men)
+    - singular form of a transitive verb (e.g. mans)
+    - plural form of a transitive verb (e.g. man)
+    - past participle form a transitive verb (e.g. manned)
 
     The user has full control over the eventual surface forms of the IRIs
     but has to choose them in terms of the above categories.
     Furthermore,
 
-        - the surface forms must be legal ACE content words (e.g. they
-          should not contain punctuation symbols);
-        - the mapping of IRIs to surface forms must be bidirectional
-          within the same word class, in order to be able to (if needed)
-          parse the verbalization back into OWL in a semantics preserving
-          way.
+    - the surface forms must be legal ACE content words (e.g. they
+      should not contain punctuation symbols);
+    - the mapping of IRIs to surface forms must be bidirectional
+      within the same word class, in order to be able to (if needed)
+      parse the verbalization back into OWL in a semantics preserving
+      way.
 
-    Using the lexicon
-    -----------------
+    ### Using the lexicon
 
     It is possible to specify the mapping of IRIs to surface forms using
     the following annotation properties:
+
+    .. code-block:: none
 
         http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
         http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
@@ -540,17 +539,19 @@ class AnnotatableTerms(Individual):
     verbalizer. If, however, it is used as a singular transitive verb,
     then mans must be used.
 
-    <AnnotationAssertion>
-        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
-        <IRI>#man</IRI>
-        <Literal datatypeIRI="&xsd;string">men</Literal>
-    </AnnotationAssertion>
+    .. code-block:: none
 
-    <AnnotationAssertion>
-        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
-        <IRI>#man</IRI>
-        <Literal datatypeIRI="&xsd;string">mans</Literal>
-    </AnnotationAssertion>
+        <AnnotationAssertion>
+            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
+            <IRI>#man</IRI>
+            <Literal datatypeIRI="&xsd;string">men</Literal>
+        </AnnotationAssertion>
+
+        <AnnotationAssertion>
+            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
+            <IRI>#man</IRI>
+            <Literal datatypeIRI="&xsd;string">mans</Literal>
+        </AnnotationAssertion>
 
     """
 
