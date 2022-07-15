@@ -1,7 +1,7 @@
 import pytest
 
-from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef
-from rdflib.extras.infixowl import Class, Individual, Property, Restriction, some
+from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef, logger
+from rdflib.extras.infixowl import Class, Individual, Property, Restriction, max, some
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
@@ -61,7 +61,6 @@ def test_restriction_range(graph):
     assert r1.__eq__(Class(EXNS.NoClass)) is False
 
 
-@pytest.mark.xfail(reason="assert len(validRestrProps) fails to handle None")
 def test_restriction_onproperty(graph):
 
     r = Restriction(
@@ -123,18 +122,6 @@ def test_restriction_inputs_with_identifier(graph):
     )
 
 
-@pytest.mark.xfail(reason="_set_allValues fails to handle None")
-def test_restriction_allvalues_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        allValuesFrom=EXNS.Human,
-    )
-
-    r.allValuesFrom = None
-
-
 def test_restriction_allvalues(graph):
 
     r = Restriction(
@@ -146,6 +133,8 @@ def test_restriction_allvalues(graph):
     av = r.allValuesFrom
     assert av == Class(EXNS.Human)
 
+    r.allValuesFrom = None
+
     r.allValuesFrom = Class(EXNS.Human)
 
     r.allValuesFrom = Class(EXNS.Parent)
@@ -153,18 +142,6 @@ def test_restriction_allvalues(graph):
     del r.allValuesFrom
 
     assert r.allValuesFrom is None
-
-
-@pytest.mark.xfail(reason="_set_someValues fails to handle None")
-def test_restriction_somevalues_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        someValuesFrom=EXNS.Parent,
-    )
-
-    r.someValuesFrom = None
 
 
 def test_restriction_somevalues(graph):
@@ -184,23 +161,13 @@ def test_restriction_somevalues(graph):
     # Does not need to be Class
     r.someValuesFrom = EXNS.Parent
 
+    r.someValuesFrom = None
+
     r.someValuesFrom = Class(EXNS.Human)
 
     del r.someValuesFrom
 
     assert r.someValuesFrom is None
-
-
-@pytest.mark.xfail(reason="_set_hasValue fails to handle None")
-def test_restriction_hasvalue_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        value=EXNS.Parent,
-    )
-
-    r.hasValue = None
 
 
 def test_restriction_hasvalue(graph):
@@ -216,6 +183,8 @@ def test_restriction_hasvalue(graph):
     # Needs to be Class to match initialisation
     r.hasValue = Class(EXNS.Parent)
 
+    r.hasValue = None
+
     r.hasValue = EXNS.Parent
 
     r.hasValue = EXNS.Human
@@ -223,18 +192,6 @@ def test_restriction_hasvalue(graph):
     del r.hasValue
 
     assert r.hasValue is None
-
-
-@pytest.mark.xfail(reason="_set_Cardinality fails to handle None")
-def test_restriction_cardinality_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        cardinality=OWL.cardinality,
-    )
-
-    r.cardinality = None
 
 
 def test_restriction_cardinality(graph):
@@ -248,6 +205,8 @@ def test_restriction_cardinality(graph):
     assert str(r.cardinality) == "Class: owl:cardinality "
 
     r.cardinality = OWL.cardinality
+
+    r.cardinality = None
 
     r.cardinality = EXNS.foo
 
@@ -282,6 +241,7 @@ def test_restriction_cardinality_value(graph):
     assert str(r.cardinality) == "Some Class "
 
 
+@pytest.mark.xfail(reason="_set_cardinality fails to handle Literal")
 def test_restriction_cardinality_set_value(graph):
 
     r = Restriction(
@@ -306,33 +266,11 @@ def test_restriction_cardinality_set_value(graph):
 
     assert str(r.cardinality) == "Class: owl:cardinality "
 
-
-@pytest.mark.xfail(reason="_set_cardinality fails to handle Literal")
-def test_restriction_cardinality_set_value_literal_fail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        cardinality=OWL.cardinality,
-    )
-
     r.cardinality = Literal("0", datatype=XSD.nonNegativeInteger)
 
     assert (
         str(r) == '( ex:hasChild EQUALS owl:cardinality "0"^^xsd:nonNegativeInteger )'
     )
-
-
-@pytest.mark.xfail(reason="_set_minCardinality fails to handle None")
-def test_restriction_maxcardinality_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        maxCardinality=OWL.maxCardinality,
-    )
-
-    r.maxCardinality = None
 
 
 def test_restriction_maxcardinality(graph):
@@ -347,23 +285,13 @@ def test_restriction_maxcardinality(graph):
 
     r.maxCardinality = OWL.maxCardinality
 
+    r.maxCardinality = None
+
     r.maxCardinality = EXNS.foo
 
     del r.maxCardinality
 
     assert r.maxCardinality is None
-
-
-@pytest.mark.xfail(reason="_set_minCardinality fails to handle None")
-def test_restriction_mincardinality_nonefail(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        minCardinality=OWL.minCardinality,
-    )
-
-    r.minCardinality = None
 
 
 def test_restriction_mincardinality(graph):
@@ -378,6 +306,8 @@ def test_restriction_mincardinality(graph):
 
     r.minCardinality = OWL.minCardinality
 
+    r.minCardinality = None
+
     r.minCardinality = EXNS.foo
 
     del r.minCardinality
@@ -385,7 +315,6 @@ def test_restriction_mincardinality(graph):
     assert r.minCardinality is None
 
 
-@pytest.mark.xfail(reason="graph.triple_choices() call misspelt")
 def test_restriction_kind(graph):
 
     r = Restriction(
@@ -396,7 +325,6 @@ def test_restriction_kind(graph):
     assert r.restrictionKind() == "minCardinality"
 
 
-@pytest.mark.xfail(reason="graph.triple_choices() call misspelt")
 def test_deleted_restriction_kind(graph):
 
     r = Restriction(

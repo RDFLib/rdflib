@@ -1,10 +1,12 @@
-from rdflib import Namespace
+from rdflib import BNode, ConjunctiveGraph, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Class, Property, classOrTerm
+from rdflib.extras.infixowl import generateQName as generate_qname  # noqa: N813
+from rdflib.extras.infixowl import propertyOrIdentifier
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
     "http://www.co-ode.org/ontologies/pizza/2005/10/18/classified/pizza.owl#"
 )
-
 
 mansyn = """
     Prefix: : <http://ex.com/owl/families#>
@@ -102,219 +104,89 @@ mansynt_class = """
     NonVegetarianPizza
 """
 
-"""
-class Infix:
-    def __init__(self, function):
-    def __rlshift__(self, other):
-    def __rshift__(self, other):
-    def __rmatmul__(self, other):
-    def __matmul__(self, other):
-    def __call__(self, value1, value2):
 
-def generateQName(graph, uri):  # noqa: N802
+def test_generateqname_using_conjunctivegraph() -> None:
+    g = ConjunctiveGraph()
+    g.bind("ex", EXNS)
 
-def classOrTerm(thing):  # noqa: N802
-
-def classOrIdentifier(thing):  # noqa: N802
-
-def propertyOrIdentifier(thing):  # noqa: N802
-
-def manchesterSyntax(  # noqa: N802
-
-def GetIdentifiedClasses(graph):  # noqa: N802
-
-class TermDeletionHelper:
-    def someFunc(func):  # noqa: N802
-
-def termDeletionDecorator(prop):  # noqa: N802
-    def __init__(self, prop):
-    def __call__(self, f):
-
-class Individual(object):
-    def serialize(self, graph):
-    def __init__(self, identifier=None, graph=None):
-    def clearInDegree(self):  # noqa: N802
-    def clearOutDegree(self):  # noqa: N802
-    def delete(self):
-    def replace(self, other):
-    def _get_type(self):
-    def _set_type(self, kind):
-    def _delete_type(self):
-    def _get_identifier(self):
-    def _set_identifier(self, i):
-    def _get_sameAs(self):  # noqa: N802
-    def _set_sameAs(self, term):  # noqa: N802
-    def _delete_sameAs(self):  # noqa: N802
-
-class AnnotatableTerms(Individual):
-    def __init__(
-    def handleAnnotation(self, val):  # noqa: N802
-    def setupACEAnnotations(self):  # noqa: N802
-    def _get_comment(self):
-    def _set_comment(self, comment):
-    def _del_comment(self):
-    def _get_seeAlso(self):  # noqa: N802
-    def _set_seeAlso(self, seeAlsos):  # noqa: N802, N803
-    def _del_seeAlso(self):  # noqa: N802
-    def _get_label(self):
-    def _set_label(self, label):
-    def _delete_label(self):
-
-class Ontology(AnnotatableTerms):
-    def __init__(self, identifier=None, imports=None, comment=None, graph=None):
-    def setVersion(self, version):  # noqa: N802
-    def _get_imports(self):
-    def _set_imports(self, other):
-    def _del_imports(self):
-
-def AllClasses(graph):  # noqa: N802
-
-def AllProperties(graph):  # noqa: N802
-
-class ClassNamespaceFactory(Namespace):
-    def term(self, name):
-    def __getitem__(self, key, default=None):
-    def __getattr__(self, name):
-
-def ComponentTerms(cls):  # noqa: N802
-
-def DeepClassClear(classToPrune):  # noqa: N802, N803
-    def deepClearIfBNode(_class):  # noqa: N802
-
-class MalformedClassError(Exception):
-    def __init__(self, msg):
-    def __repr__(self):
-
-def CastClass(c, graph=None):  # noqa: N802
-
-class Class(AnnotatableTerms):
-    def _serialize(self, graph):
-    def serialize(self, graph):
-    def setupNounAnnotations(self, nounAnnotations):  # noqa: N802, N803
-    def __init__(
-    def _get_extent(self, graph=None):
-    def _set_extent(self, other):
-    def _del_type(self):
-    def _get_annotation(self, term=RDFS.label):
-    def _get_extentQuery(self):  # noqa: N802
-    def _set_extentQuery(self, other):  # noqa: N802
-    def __hash__(self):
-    def __eq__(self, other):
-    def __iadd__(self, other):
-    def __isub__(self, other):
-    def __invert__(self):
-    def __or__(self, other):
-    def __and__(self, other):
-    def _get_subClassOf(self):  # noqa: N802
-    def _set_subClassOf(self, other):  # noqa: N802
-    def _del_subClassOf(self):  # noqa: N802
-    def _get_equivalentClass(self):  # noqa: N802
-    def _set_equivalentClass(self, other):  # noqa: N802
-    def _del_equivalentClass(self):  # noqa: N802
-    def _get_disjointWith(self):  # noqa: N802
-    def _set_disjointWith(self, other):  # noqa: N802
-    def _del_disjointWith(self):  # noqa: N802
-    def _get_complementOf(self):  # noqa: N802
-    def _set_complementOf(self, other):  # noqa: N802
-    def _del_complementOf(self):  # noqa: N802
-    def _get_parents(self):
-    def isPrimitive(self):  # noqa: N802
-    def subSumpteeIds(self):  # noqa: N802
-    def __repr__(self, full=False, normalization=True):
+    assert (
+        generate_qname(g, URIRef("http://example.org/vocab/ontology")) == "ex:ontology"
+    )
 
 
-class OWLRDFListProxy(object):
-    def __init__(self, rdfList, members=None, graph=None):  # noqa: N803
-    def __eq__(self, other):
-    def __len__(self):
-    def index(self, item):
-    def __getitem__(self, key):
-    def __setitem__(self, key, value):
-    def __delitem__(self, key):
-    def clear(self):
-    def __iter__(self):
-    def __contains__(self, item):
-    def append(self, item):
-    def __iadd__(self, other):
+def test_generateqname_using_dataset() -> None:
+    g = Dataset()  # type: ignore[no-untyped-call]
+    g.bind("ex", EXNS)
 
-class EnumeratedClass(OWLRDFListProxy, Class):
-    def isPrimitive(self):  # noqa: N802
-    def __init__(self, identifier=None, members=None, graph=None):
-    def __repr__(self):
-    def serialize(self, graph):
+    assert (
+        generate_qname(g, URIRef("http://example.org/vocab/ontology")) == "ex:ontology"
+    )
 
 
-class BooleanClassExtentHelper:
-    def __init__(self, operator):
-    def __call__(self, f):
+def test_generateqname_using_graph() -> None:
+    g = Graph()
+    g.bind("ex", EXNS)
 
-class Callable:
-    def __init__(self, anycallable):
+    assert (
+        generate_qname(g, URIRef("http://example.org/vocab/ontology")) == "ex:ontology"
+    )
 
-class BooleanClass(OWLRDFListProxy, Class):
-    def getIntersections():  # type: ignore[misc]  # noqa: N802
-    def getUnions():  # type: ignore[misc]  # noqa: N802
-    def __init__(
-    def copy(self):
-    def serialize(self, graph):
-    def isPrimitive(self):  # noqa: N802
-    def changeOperator(self, newOperator):  # noqa: N802, N803
-    def __repr__(self):
-    def __or__(self, other):
 
-def AllDifferent(members):  # noqa: N802
+def test_generateqname_using_graph_and_uriref() -> None:
+    g = Graph()
+    g.bind("ex", EXNS)
 
-class Restriction(Class):
-    def __init__(
-    def serialize(self, graph):
-    def isPrimitive(self):  # noqa: N802
-    def __hash__(self):
-    def __eq__(self, other):
-    def _get_onProperty(self):  # noqa: N802
-    def _set_onProperty(self, prop):  # noqa: N802
-    def _del_onProperty(self):  # noqa: N802
-    def _get_allValuesFrom(self):  # noqa: N802
-    def _set_allValuesFrom(self, other):  # noqa: N802
-    def _del_allValuesFrom(self):  # noqa: N802
-    def _get_someValuesFrom(self):  # noqa: N802
-    def _set_someValuesFrom(self, other):  # noqa: N802
-    def _del_someValuesFrom(self):  # noqa: N802
-    def _get_hasValue(self):  # noqa: N802
-    def _set_hasValue(self, other):  # noqa: N802
-    def _del_hasValue(self):  # noqa: N802
-    def _get_cardinality(self):
-    def _set_cardinality(self, other):
-    def _del_cardinality(self):
-    def _get_maxCardinality(self):  # noqa: N802
-    def _set_maxCardinality(self, other):  # noqa: N802
-    def _del_maxCardinality(self):  # noqa: N802
-    def _get_minCardinality(self):  # noqa: N802
-    def _set_minCardinality(self, other):  # noqa: N802
-    def _del_minCardinality(self):  # noqa: N802
-    def restrictionKind(self):  # noqa: N802
-    def __repr__(self):
+    res = generate_qname(g, URIRef("http://example.org/vocab/ontology"))
 
-class Property(AnnotatableTerms):
-    def setupVerbAnnotations(self, verbAnnotations):  # noqa: N802, N803
-    def __init__(
-    def serialize(self, graph):
-    def _get_extent(self, graph=None):
-    def _set_extent(self, other):
-    def __repr__(self):
-    def _get_subPropertyOf(self):  # noqa: N802
-    def _set_subPropertyOf(self, other):  # noqa: N802
-    def _del_subPropertyOf(self):  # noqa: N802
-    def _get_inverseOf(self):  # noqa: N802
-    def _set_inverseOf(self, other):  # noqa: N802
-    def _del_inverseOf(self):  # noqa: N802
-    def _get_domain(self):
-    def _set_domain(self, other):
-    def _del_domain(self):
-    def _get_range(self):
-    def _set_range(self, ranges):
-    def _del_range(self):
-    def replace(self, other):
+    assert res == "ex:ontology"
 
-def CommonNSBindings(graph, additionalNS={}):  # noqa: N802, N803
 
-"""
+def test_generateqname_using_graph_and_bnode() -> None:
+    g = Graph()
+    g.bind("ex", EXNS)
+
+    res = generate_qname(g, BNode("http://example.org/vocab/ontology"))
+
+    assert res == "ex:ontology"
+
+    res = generate_qname(g, BNode("urn:example:foo"))
+
+    assert res == "ns1:foo"
+
+
+def test_generateqname_using_graph_and_property() -> None:
+    g = Graph()
+    g.bind("ex", EXNS)
+
+    iswoman_property = Property(identifier=EXNS.iswoman, graph=g)
+
+    res = generate_qname(g, iswoman_property)
+
+    assert res == "ex:iswoman"
+
+
+def test_class_or_term() -> None:
+    uriref_term = URIRef("http://example.org/vocab/D")
+    bnode_term = BNode("http://example.org/vocab/D")
+    literal_term = Literal("http://example.org/vocab/D")
+
+    assert classOrTerm(Class(EXNS.D)) == uriref_term
+    assert classOrTerm(uriref_term) == uriref_term
+    assert classOrTerm(bnode_term) == bnode_term
+    assert classOrTerm(literal_term) == literal_term
+
+
+def test_property_or_identifier() -> None:
+
+    g = Graph()
+    g.bind("ex", EXNS)
+
+    is_a_woman = Property(identifier=EXNS.iswoman, graph=g)
+
+    assert propertyOrIdentifier(is_a_woman) == URIRef(
+        "http://example.org/vocab/iswoman"
+    )
+
+    uriref_term = URIRef("http://example.org/vocab/D")
+
+    assert propertyOrIdentifier(uriref_term) == URIRef("http://example.org/vocab/D")
