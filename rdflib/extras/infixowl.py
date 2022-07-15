@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __doc__ = """RDFLib Python binding for OWL Abstract Syntax
@@ -111,10 +110,10 @@ Python
 import itertools
 import logging
 
-from rdflib import RDF, RDFS, BNode, Literal, Namespace, URIRef, Variable
+from rdflib import OWL, RDF, RDFS, XSD, BNode, Literal, Namespace, URIRef, Variable
 from rdflib.collection import Collection
 from rdflib.graph import Graph
-from rdflib.namespace import OWL, XSD, NamespaceManager
+from rdflib.namespace import NamespaceManager
 from rdflib.term import Identifier
 from rdflib.util import first
 
@@ -173,20 +172,14 @@ __all__ = [
 # definition of an Infix operator class
 # this recipe also works in jython
 # calling sequence for the infix is either:
-#  x |op| y
+#  x << op >> y
 # or:
-# x <<op>> y
+#  x @ op @ y
 
 
 class Infix:
     def __init__(self, function):
         self.function = function
-
-    def __ror__(self, other):
-        return Infix(lambda x, self=self, other=other: self.function(other, x))
-
-    def __or__(self, other):
-        return self.function(other)
 
     def __rlshift__(self, other):
         return Infix(lambda x, self=self, other=other: self.function(other, x))
@@ -349,14 +342,6 @@ def GetIdentifiedClasses(graph):  # noqa: N802
     for c in graph.subjects(predicate=RDF.type, object=OWL.Class):
         if isinstance(c, URIRef):
             yield Class(c)
-
-
-def termDeletionDecorator(prop):  # noqa: N802
-    def someFunc(func):  # noqa: N802
-        func.property = prop
-        return func
-
-    return someFunc
 
 
 class TermDeletionHelper:
@@ -841,7 +826,7 @@ def DeepClassClear(class_to_prune):  # noqa: N802
         )
 
 
-class MalformedClass(Exception):
+class MalformedClassError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
@@ -865,7 +850,7 @@ def CastClass(c, graph=None):  # noqa: N802
             if not set(
                 [str(i.split(str(OWL))[-1]) for i in Restriction.restrictionKinds]
             ).intersection(kwargs):
-                raise MalformedClass("Malformed owl:Restriction")
+                raise MalformedClassError("Malformed owl:Restriction")
             return Restriction(**kwargs)
         else:
             for s, p, o in graph.triples_choices(
@@ -1585,13 +1570,15 @@ class BooleanClass(OWLRDFListProxy, Class):
         >>> fire = Class(EX.Fire)
         >>> water = Class(EX.Water)
         >>> testClass = BooleanClass(members=[fire,water])
-        >>> testClass #doctest: +SKIP
+        >>> testClass
         ( ex:Fire AND ex:Water )
         >>> testClass.changeOperator(OWL.unionOf)
-        >>> testClass #doctest: +SKIP
+        >>> testClass
         ( ex:Fire OR ex:Water )
-        >>> try: testClass.changeOperator(OWL.unionOf)
-        ... except Exception as e: print(e)
+        >>> try:
+        ...     testClass.changeOperator(OWL.unionOf)
+        ... except Exception as e:
+        ...     print(e) #doctest: +SKIP
         The new operator is already being used!
 
         """
@@ -1617,6 +1604,8 @@ class BooleanClass(OWLRDFListProxy, Class):
 
 def AllDifferent(members):  # noqa: N802
     """
+    TODO: implement this function
+
     DisjointClasses(' description description { description } ')'
 
     """
@@ -2068,7 +2057,7 @@ class Property(AnnotatableTerms):
                     ],
                 )
             ):
-                rt.append(str(roletype.split(OWL)[-1]))
+                rt.append(str(roletype.split(str(OWL))[-1]))
         else:
             rt.append(
                 "DatatypeProperty( %s %s"
