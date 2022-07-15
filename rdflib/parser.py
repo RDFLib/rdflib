@@ -140,16 +140,16 @@ class PythonInputSource(InputSource):
         self.system_id = system_id
         self.data = data
 
-    def getPublicId(self):
+    def getPublicId(self):  # noqa: N802
         return self.public_id
 
-    def setPublicId(self, public_id):
+    def setPublicId(self, public_id):  # noqa: N802
         self.public_id = public_id
 
-    def getSystemId(self):
+    def getSystemId(self):  # noqa: N802
         return self.system_id
 
-    def setSystemId(self, system_id):
+    def setSystemId(self, system_id):  # noqa: N802
         self.system_id = system_id
 
     def close(self):
@@ -208,7 +208,7 @@ class URLInputSource(InputSource):
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
         retarray = []
         for linksline in linkslines:
-            links = [l.strip() for l in linksline.split(",")]
+            links = [linkstr.strip() for linkstr in linksline.split(",")]
             for link in links:
                 retarray.append(link)
         return retarray
@@ -333,7 +333,7 @@ def create_input_source(
     source: Optional[
         Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
     ] = None,
-    publicID: Optional[str] = None,
+    publicID: Optional[str] = None,  # noqa: N803
     location: Optional[str] = None,
     file: Optional[Union[BinaryIO, TextIO]] = None,
     data: Union[str, bytes, dict] = None,

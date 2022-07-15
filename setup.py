@@ -31,7 +31,7 @@ kwargs["extras_require"] = {
     "berkeleydb": ["berkeleydb"],
     "networkx": ["networkx"],
     "dev": [
-        "black==22.3.0",
+        "black==22.6.0",
         "flake8",
         "flakeheaven; python_version >= '3.8.0'",
         "isort",
@@ -87,6 +87,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent",

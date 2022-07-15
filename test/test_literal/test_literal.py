@@ -107,7 +107,7 @@ class TestNewPT:
             Literal("foo", lang=lang)
 
     @pytest.mark.parametrize(
-        "lexical, datatype, is_ill_formed",
+        "lexical, datatype, is_ill_typed",
         [
             ("true", XSD.boolean, False),
             ("1", XSD.boolean, False),
@@ -145,19 +145,19 @@ class TestNewPT:
             ("[p]", EGNS.unrecognized, None),
         ],
     )
-    def test_ill_formed_literals(
+    def test_ill_typed_literals(
         self,
         lexical: Union[bytes, str],
         datatype: Optional[URIRef],
-        is_ill_formed: Optional[bool],
+        is_ill_typed: Optional[bool],
     ) -> None:
         """
-        ill_formed has the correct value.
+        ill_typed has the correct value.
         """
         lit = Literal(lexical, datatype=datatype)
-        assert lit.ill_formed is is_ill_formed
-        if is_ill_formed is False:
-            # If the literal is not ill formed it should have a value associated with it.
+        assert lit.ill_typed is is_ill_typed
+        if is_ill_typed is False:
+            # If the literal is not ill typed it should have a value associated with it.
             assert lit.value is not None
 
     @pytest.mark.parametrize(
