@@ -1,7 +1,7 @@
 import pytest
 
-from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef, logger
-from rdflib.extras.infixowl import Class, Individual, Property, Restriction, max, some
+from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Class, Individual, Property, Restriction, some
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
