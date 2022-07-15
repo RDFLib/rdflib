@@ -115,7 +115,7 @@ def test_generateqname_using_conjunctivegraph() -> None:
 
 
 def test_generateqname_using_dataset() -> None:
-    g = Dataset()  # type: ignore[no-untyped-call]
+    g = Dataset()
     g.bind("ex", EXNS)
 
     assert (
