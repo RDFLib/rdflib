@@ -148,6 +148,7 @@ __all__ = [
     "GetIdentifiedClasses",
     "Individual",
     "Infix",
+    "MalformedClass",
     "MalformedClassError",
     "OWLRDFListProxy",
     "Ontology",
@@ -894,7 +895,16 @@ def DeepClassClear(class_to_prune):  # noqa: N802
         )
 
 
-class MalformedClassError(Exception):
+class MalformedClass(ValueError):
+    """
+    .. deprecated:: TODO-NEXT-VERSION
+       This class will be removed in version ``7.0.0``.
+    """
+
+    pass
+
+
+class MalformedClassError(MalformedClass):
     def __init__(self, msg):
         self.msg = msg
 
