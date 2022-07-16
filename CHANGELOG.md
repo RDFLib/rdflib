@@ -11,7 +11,7 @@ changes with no user impact are not included in this section.
   [issue #936](https://github.com/RDFLib/rdflib/issues/936) and [issue
   #935](https://github.com/RDFLib/rdflib/pull/935), [PR
   #1093](https://github.com/RDFLib/rdflib/pull/1093).
-- JSON-LD parser: better support for content negotiation. Fixes [issue
+- JSON-LD parser: better support for content negotiation. Closed [issue
   #1423](https://github.com/RDFLib/rdflib/issues/1423), [PR
   #1436](https://github.com/RDFLib/rdflib/pull/1436).
 - Removed the following functions that were marked as deprecated and scheduled
@@ -70,7 +70,7 @@ changes with no user impact are not included in this section.
   takes for these parsers to parse strings with escape sequences will be
   increased, and the increase will be correlated with the amount of escape
   sequences that occur in a string. For strings with many escape sequences the
-  parsing speed seems to be almost 4 times slower. Fixes [issue
+  parsing speed seems to be almost 4 times slower. Closed [issue
   #1655](https://github.com/RDFLib/rdflib/issues/1655), [PR
   #1663](https://github.com/RDFLib/rdflib/pull/1663).
   - Also marked `rdflib.compat.decodeStringEscape` as deprecated as this
@@ -85,17 +85,16 @@ changes with no user impact are not included in this section.
 - Fixed turtle serialization of PNames that contain brackets. Closed [issue
   #1661](https://github.com/RDFLib/rdflib/issues/1661), [PR
   #1678](https://github.com/RDFLib/rdflib/pull/1678).
-- Added support for selecting which namespace prefixes to bind. Closes [issue
-  #1679](https://github.com/RDFLib/rdflib/issues/1679), [PR
-  #1686](https://github.com/RDFLib/rdflib/pull/1686) and [PR
-  #1845](https://github.com/RDFLib/rdflib/pull/1845).
+- Added support for selecting which namespace prefixes to bind. Closed [issue
+  #1679](https://github.com/RDFLib/rdflib/issues/1679) and [issue #1880](https://github.com/RDFLib/rdflib/pull/1880), [PR
+  #1686](https://github.com/RDFLib/rdflib/pull/1686), [PR
+  #1845](https://github.com/RDFLib/rdflib/pull/1845) and [PR
+    #2018](https://github.com/RDFLib/rdflib/pull/2018).
   - Also added `ConjunctiveGraph.get_graph`.
   - Also added an `override` argument to `Store.bind` which behaves similarly to
     the `override` parameter for `NamespaceManager.bind`.
   - Also fixed handing of support of the `override` parameter to
     `NamespaceManager.bind` by passing.
-  - See also: [issue #1880](https://github.com/RDFLib/rdflib/pull/1880) and [PR
-    #2018](https://github.com/RDFLib/rdflib/pull/2018).
 - Eliminated a `DeprecationWarning` related to plugin loading [issue
   #1631](https://github.com/RDFLib/rdflib/issues/1631), [PR
   #1694](https://github.com/RDFLib/rdflib/pull/1694).
@@ -105,20 +104,20 @@ changes with no user impact are not included in this section.
 - Added `DefinedNamespace.as_jsonld_context`. [PR
   #1706](https://github.com/RDFLib/rdflib/pull/1706).
 - Added `rdflib.namespace.WGS` for WGS84. Closed [issue
-  #1709](https://github.com/RDFLib/rdflib/issues/1709) [PR
+  #1709](https://github.com/RDFLib/rdflib/issues/1709),  [PR
   #1710](https://github.com/RDFLib/rdflib/pull/1710).
-- Improved performance of `DefinedNamespace` by caching attribute values [PR
+- Improved performance of `DefinedNamespace` by caching attribute values. [PR
   #1718](https://github.com/RDFLib/rdflib/pull/1718).
 - Only configure python logging if `sys.stderr` has a `isatty` attribute. Closed
   [issue #1760](https://github.com/RDFLib/rdflib/issues/1760), [PR
   #1761](https://github.com/RDFLib/rdflib/pull/1761).
-- Removed unused `rdflib.compat.etree_register_namespace`. (PR
-  #1768)[https://github.com/RDFLib/rdflib/pull/1768].
+- Removed unused `rdflib.compat.etree_register_namespace`. [PR
+  #1768](https://github.com/RDFLib/rdflib/pull/1768).
 - Fixed numeric shortcut handling in `rdflib.util.from_n3`. Closed [issue
   #1769](https://github.com/RDFLib/rdflib/issues/1769), [PR
   #1771](https://github.com/RDFLib/rdflib/pull/1771).
 - Add ability to detect and mark ill-typed literals. Closed [issue
-  #1757](https://github.com/RDFLib/rdflib/issues/1757), [issue
+  #1757](https://github.com/RDFLib/rdflib/issues/1757) and [issue
   #848](https://github.com/RDFLib/rdflib/issues/848), [PR
   #1773](https://github.com/RDFLib/rdflib/pull/1773) and [PR
   #2003](https://github.com/RDFLib/rdflib/pull/2003).
@@ -139,7 +138,7 @@ changes with no user impact are not included in this section.
   `inspect.signature` works correctly on defined namespaces. [PR
   #1825](https://github.com/RDFLib/rdflib/pull/1825).
 - Fixed namespace rebinding in `Memory`, `SimpleMemory` and `BerkelyDB` stores.
-  Closes [issue #1826](https://github.com/RDFLib/rdflib/issues/1826), [PR
+  Closed [issue #1826](https://github.com/RDFLib/rdflib/issues/1826), [PR
   #1843](https://github.com/RDFLib/rdflib/pull/1843).
 - Fixed issues with the N3 serializer. Closed [issue
   #1701](https://github.com/RDFLib/rdflib/issues/1701) and [issue
@@ -157,7 +156,7 @@ be a graph.
   #1467](https://github.com/RDFLib/rdflib/issues/1467), [PR
   #1887](https://github.com/RDFLib/rdflib/pull/1887).
 - SPARQL: Fixed result handling for `SERVICE` directive. Closed [issue
-  #1278](https://github.com/RDFLib/rdflib/issues/1278) [PR
+  #1278](https://github.com/RDFLib/rdflib/issues/1278),  [PR
   #1894](https://github.com/RDFLib/rdflib/pull/1894).
 - Change the skolem default authority for RDFLib from `http://rdlib.net/` to
   `https://rdflib.github.io` and also change other uses of `http://rdlib.net/`
