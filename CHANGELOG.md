@@ -1,3 +1,49 @@
+# 2022-10-16 RELEASE MAJOR.MINOR.PATCH
+
+## User facing changes
+
+This section lists changes that have a potential impact on users of RDFLib,
+changes with no user impact are not included in this section.
+
+<!--
+CHANGE BARRIER is intended to reduce the potential for merge conflicts
+and will be removed for release.
+-->
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
+- Description of changes.
+  Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
+  [PR #....](https://ichard26.github.io/next-pr-number/?owner=RDFLib&name=rdflib).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
+## Other changes
+
+This section lists changes that have no impact on the users of RDFLib.
+
+- ...
+  Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
+  [PR #....](https://ichard26.github.io/next-pr-number/?owner=RDFLib&name=rdflib).
+
+## PRs merged since last release
+
+<!-- This will be auto generated with
+
+gh search prs --repo RDFLib/rdflib --merged --base master --json assignees,author,authorAssociation,body,closedAt,commentsCount,createdAt,id,isLocked,isPullRequest,labels,number,repository,state,title,updatedAt,url --limit 1000 --jq '[.[] | select(.closedAt >= "2022-07-17T00:00:00Z")]' | jq '(. |= sort_by(.closedAt)) | reverse' > /var/tmp/merged-prs.json
+
+jq -r '.[] | [ .url, .title ] | @tsv' /var/tmp/merged-prs.json | head -n -3 | sort -r | awk -F$'\t' '(match($1, "^.*/([^/]+)$", matches)){printf("* %s\n  [PR #%s](%s)\n", $2, matches[1], $1)}'
+
+-->
+
 # 2022-07-16 RELEASE 6.2.0
 
 This is a minor release that includes bug fixes and features.
