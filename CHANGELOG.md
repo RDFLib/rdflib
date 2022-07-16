@@ -1,6 +1,6 @@
 # 2022-07-16 RELEASE 6.2.0
 
-Bug fixes and minor features.
+This is a minor release that includes bug fixes and features.
 
 ## User facing changes
 
