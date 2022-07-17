@@ -1,10 +1,12 @@
-from rdflib import Namespace
+from rdflib import BNode, ConjunctiveGraph, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Class, Property, classOrTerm
+from rdflib.extras.infixowl import generateQName as generate_qname  # noqa: N813
+from rdflib.extras.infixowl import propertyOrIdentifier
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
     "http://www.co-ode.org/ontologies/pizza/2005/10/18/classified/pizza.owl#"
 )
-
 
 mansyn = """
     Prefix: : <http://ex.com/owl/families#>
