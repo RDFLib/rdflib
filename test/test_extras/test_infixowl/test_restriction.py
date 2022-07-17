@@ -36,7 +36,12 @@ def test_restriction_str_and_hash(graph):
     r1.serialize(sg)
 
     assert r1.isPrimitive() is False
-    assert len(str(r1.__hash__())) > 17
+
+    r1hashfirstrun = r1.__hash__()
+
+    r1hashsecondrun = r1.__hash__()
+
+    assert r1hashfirstrun == r1hashsecondrun
 
     assert list(Property(EXNS.someProp, baseType=None).type) == [
         URIRef("http://www.w3.org/2002/07/owl#DatatypeProperty")
