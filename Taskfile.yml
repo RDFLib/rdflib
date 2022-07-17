@@ -1,32 +1,41 @@
+# https://taskfile.dev/usage/
+# https://pkg.go.dev/text/template
+# https://go-task.github.io/slim-sprig/
 version: "3"
 
 vars:
+  TASKFILE_DIR:
+    sh: pwd
   # The path to the virtual environment to use when using a virtual
   # environment.
-  VENV_PATH: '{{default ".venv" (env "VENV_PATH")}}'
+  VENV_PATH: '{{(env "VENV_PATH") | default (osClean (print .TASKFILE_DIR "/.venv"))}}'
   # Non empty string results in tasks using a virtual environment.
-  WITH_VENV: '{{env "WITH_VENV"}}'
+  WITH_VENV: '{{env "WITH_VENV" | default "false"}}'
   # The virtual environemtn specific python interpreter to use.
-  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/python.exe{{else}}{{.VENV_PATH}}/bin/python{{end}}'
+  VENV_BINPREFIX: '{{if (mustFromJson .WITH_VENV)}}{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/{{else}}{{.VENV_PATH}}/bin/{{end}}{{end}}'
+  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_BINPREFIX}}python.exe{{else}}{{.VENV_BINPREFIX}}python{{end}}'
   # The python interpreter to use.
   PYTHON: python
-  _PYTHON: '{{if .WITH_VENV}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
-  # Non empty string results in java being installed as a system dependency.
-  INSTALL_SYSTEM_DEPS_JAVA: ""
-  # Non empty string results in extras being installed with pip.
-  INSTALL_PIP_EXTRAS: ""
-  # Non empty string results in extensive tests being ran and dependencies for
-  # extensive tests being installed.
-  EXTENSIVE: ""
+  _PYTHON: '{{if (mustFromJson .WITH_VENV)}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
+  # Truthish values ("true", "1", etc.) results in java being installed as a
+  # system dependency.
+  INSTALL_SYSTEM_DEPS_JAVA: "false"
+  # Truthish values ("true", "1", etc.) results in extras being installed with
+  # pip.
+  INSTALL_PIP_EXTRAS: "false"
+  # Truthish values ("true", "1", etc.) results in extensive tests being ran and
+  # dependencies for extensive tests being installed.
+  EXTENSIVE: "false"
   # The python version for which tox should run, empty string does not restrict
   # python versions.
   TOX_PYTHON_VERSION: ""
-  TEST_HARNESS: '{{if (and .EXTENSIVE (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
-  # A non empty string results in github specific things being done.
-  WITH_GITHUB_ACTIONS: ""
-  # A non empty string results in coverage being generated for relevant
-  # commands.
-  WITH_COVERAGE: ""
+  TEST_HARNESS: '{{if (and (mustFromJson .EXTENSIVE) (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
+  # Truthish values ("true", "1", etc.) results in github specific things being
+  # done.
+  WITH_GITHUB_ACTIONS: "false"
+  # Truthish values ("true", "1", etc.) results in coverage being generated for
+  # relevant commands.
+  WITH_COVERAGE: "false"
 
 tasks:
   install:system-deps:
@@ -35,7 +44,7 @@ tasks:
       - echo "OS = {{OS}}"
       - echo "ARCH = {{ARCH}}"
       - |
-        {{if (and .EXTENSIVE (eq OS "linux"))}}
+        {{if (and (mustFromJson .EXTENSIVE) (eq OS "linux"))}}
           if type apt-get >/dev/null 2>&1
           then
             sudo apt-get install -y libdb-dev
@@ -43,19 +52,19 @@ tasks:
           then
             sudo dnf install -y libdb-devel
           fi
-        {{else if (and .EXTENSIVE (eq OS "darwin"))}}
+        {{else if (and (mustFromJson .EXTENSIVE) (eq OS "darwin"))}}
           brew install berkeley-db@4
         {{end}}
 
   install:tox:
     desc: Install tox
     cmds:
-      - "{{._PYTHON}} -m pip install tox {{if .WITH_GITHUB_ACTIONS}}tox-gh-actions{{end}}"
+      - '{{._PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}'
 
   install:pip-deps:
     desc: Install pip dependencies
     cmds:
-      - "{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if .INSTALL_PIP_EXTRAS}}-r requirements.dev-extras.txt{{end}}"
+      - '{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extras.txt{{end}}'
 
   install:flake8:
     desc: Install flake8 dependencies
@@ -82,6 +91,22 @@ tasks:
       - task: _rimraf
         vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
 
+  venv:run:
+    desc: Run a command inside the venv
+    cmds:
+      - cmd: |
+          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
+
+  run:
+    desc: Run a command. If WITH_VENV is truthish, the command will be run inside the virtual environment.
+    cmds:
+      - cmd: |
+          {{if (mustFromJson .WITH_VENV)}}
+          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
+          {{else}}
+          {{.CLI_ARGS}}
+          {{end}}
+
   tox:
     desc: Run tox
     cmds:
@@ -95,36 +120,50 @@ tasks:
           -m tox \
           {{.CLI_ARGS}}
     env:
-      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if .EXTENSIVE}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
+      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if (mustFromJson .EXTENSIVE)}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
   test:
     desc: Run tests
     cmds:
-      - "{{.TEST_HARNESS}}{{._PYTHON}} -m pytest {{if .WITH_COVERAGE}}--cov --cov-report={{end}} {{.CLI_ARGS}}"
+      - '{{.TEST_HARNESS}}{{.VENV_BINPREFIX}}pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
 
   flake8:
     desc: Run flake8
     cmds:
       - "{{._PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}"
 
+  black:
+    desc: Run black
+    cmds:
+      - '{{._PYTHON}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+  isort:
+    desc: Run isort
+    cmds:
+      - '{{._PYTHON}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+  mypy:
+    desc: Run mypy
+    cmds:
+      - "{{._PYTHON}} -m mypy --show-error-context --show-error-codes"
+
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
-      - "{{._PYTHON}} -m black ."
-      - "{{._PYTHON}} -m isort ."
+      - task: isort
+      - task: black
 
   lint:
     desc: Perform linting
     cmds:
-      - "{{._PYTHON}} -m isort --check --diff ."
-      - "{{._PYTHON}} -m black --check --diff ."
+      - task: isort
+        vars: { CHECK: true }
+      - task: black
+        vars: { CHECK: true }
       - task: flake8
-
 
   validate:static:
     desc: Perform static validation
     cmds:
       - task: lint
-      - "{{._PYTHON}} -m mypy --show-error-context --show-error-codes"
+      - task: mypy
 
   validate:fix:
     desc: Fix auto-fixable validation errors.
@@ -217,7 +256,7 @@ tasks:
       - task: install:system-deps
       - task: install:tox
         vars:
-          WITH_GITHUB_ACTIONS: 1
+          WITH_GITHUB_ACTIONS: true
       - cmd: "{{._PYTHON}} -m pip install coveralls"
       - task: tox
         vars:
