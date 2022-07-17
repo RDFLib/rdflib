@@ -306,8 +306,8 @@ To use the development container directly:
     # Run the validate task inside the devtools container.
     docker-compose run --rm devcontainer task validate
 
-    # Run tox for python 3.11 inside the devtools container,
-    docker-compose run --rm devcontainer task tox -- -e py311
+    # Run extensive tests inside the devtools container.
+    docker-compose run --rm devcontainer task EXTENSIVE=true test
 
     # To get a shell into the devcontainer docker image.
     docker-compose run --rm devcontainer bash
