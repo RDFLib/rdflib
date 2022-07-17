@@ -1,4 +1,4 @@
-from test.data import context1
+from test.data import context0, context1
 
 import pytest
 
@@ -274,13 +274,16 @@ def test_class_serialize(graph):
         assert owlc.complementOf == sister
 
 
-def test_class_nameislabel(graph):
+def test_class_nameislabel():
+    g = Graph(identifier=context0)
+    g.bind("ex", EXNS)
 
+    Individual.factoryGraph = g
     nameannotation = Literal("Man")
 
     owlc = Class(
         EXNS.test,
-        graph=graph,
+        graph=g,
         comment=Literal("This is a Man"),
         nameAnnotation=nameannotation,
         nameIsLabel=True,
@@ -288,7 +291,7 @@ def test_class_nameislabel(graph):
 
     assert list(owlc.annotation) == [Literal("Man")]
 
-    assert graph.serialize(format="ttl") == (
+    assert g.serialize(format="ttl") == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
@@ -314,20 +317,23 @@ def test_class_nameislabel(graph):
     )
 
 
-def test_class_nameisnotlabel(graph):
+def test_class_nameisnotlabel():
+    g = Graph(identifier=context0)
+    g.bind("ex", EXNS)
 
+    Individual.factoryGraph = g
     nameannotation = Literal("Man")
 
     owlc = Class(
         EXNS.test,
-        graph=graph,
+        graph=g,
         comment=Literal("This is a Man"),
         nameAnnotation=nameannotation,
     )
 
     assert list(owlc.annotation) == []
 
-    assert graph.serialize(format="ttl") == (
+    assert g.serialize(format="ttl") == (
         "@prefix ace: <http://attempto.ifi.uzh.ch/ace_lexicon#> .\n"
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
@@ -351,4 +357,4 @@ def test_class_nameisnotlabel(graph):
         "\n"
     )
 
-    assert (EXNS.test, RDFS.label, nameannotation) not in graph
+    assert (EXNS.test, RDFS.label, nameannotation) not in g

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __doc__ = """RDFLib Python binding for OWL Abstract Syntax
@@ -111,10 +110,10 @@ Python
 import itertools
 import logging
 
-from rdflib import RDF, RDFS, BNode, Literal, Namespace, URIRef, Variable
+from rdflib import OWL, RDF, RDFS, XSD, BNode, Literal, Namespace, URIRef, Variable
 from rdflib.collection import Collection
 from rdflib.graph import Graph
-from rdflib.namespace import OWL, XSD, NamespaceManager
+from rdflib.namespace import NamespaceManager
 from rdflib.term import Identifier
 from rdflib.util import first
 
@@ -131,62 +130,56 @@ operators can be defined.
 """
 
 __all__ = [
-    "nsBinds",
     "ACE_NS",
-    "CLASS_RELATIONS",
-    "some",
-    "only",
-    "max",
-    "min",
-    "exactly",
-    "value",
-    "PropertyAbstractSyntax",
     "AllClasses",
     "AllDifferent",
     "AllProperties",
     "AnnotatableTerms",
     "BooleanClass",
+    "CLASS_RELATIONS",
     "Callable",
     "CastClass",
     "Class",
     "ClassNamespaceFactory",
-    "classOrIdentifier",
-    "classOrTerm",
     "CommonNSBindings",
     "ComponentTerms",
     "DeepClassClear",
     "EnumeratedClass",
-    "generateQName",
     "GetIdentifiedClasses",
     "Individual",
     "Infix",
     "MalformedClass",
-    "manchesterSyntax",
-    "Ontology",
+    "MalformedClassError",
     "OWLRDFListProxy",
+    "Ontology",
     "Property",
-    "propertyOrIdentifier",
+    "PropertyAbstractSyntax",
     "Restriction",
-    "termDeletionDecorator",
+    "classOrIdentifier",
+    "classOrTerm",
+    "exactly",
+    "generateQName",
+    "manchesterSyntax",
+    "max",
+    "min",
+    "nsBinds",
+    "only",
+    "propertyOrIdentifier",
+    "some",
+    "value",
 ]
 
 # definition of an Infix operator class
 # this recipe also works in jython
 # calling sequence for the infix is either:
-#  x |op| y
+#  x << op >> y
 # or:
-# x <<op>> y
+#  x @ op @ y
 
 
 class Infix:
     def __init__(self, function):
         self.function = function
-
-    def __ror__(self, other):
-        return Infix(lambda x, self=self, other=other: self.function(other, x))
-
-    def __or__(self, other):
-        return self.function(other)
 
     def __rlshift__(self, other):
         return Infix(lambda x, self=self, other=other: self.function(other, x))
@@ -250,6 +243,8 @@ def manchesterSyntax(  # noqa: N802
 ):
     """
     Core serialization
+    thing is a Class and is processed as a subject
+    store is an RDFLib Graph to be queried about thing
     """
     assert thing is not None
     if boolean:
@@ -317,6 +312,7 @@ def manchesterSyntax(  # noqa: N802
         }
         for s, p, o in store.triples_choices((thing, list(cardlookup.keys()), None)):
             return "( %s %s %s )" % (propstring, cardlookup[p], o)
+    # is thing a complement of anything
     compl = list(store.objects(subject=thing, predicate=OWL.complementOf))
     if compl:
         return "( NOT %s )" % (manchesterSyntax(compl[0], store))
@@ -349,14 +345,6 @@ def GetIdentifiedClasses(graph):  # noqa: N802
     for c in graph.subjects(predicate=RDF.type, object=OWL.Class):
         if isinstance(c, URIRef):
             yield Class(c)
-
-
-def termDeletionDecorator(prop):  # noqa: N802
-    def someFunc(func):  # noqa: N802
-        func.property = prop
-        return func
-
-    return someFunc
 
 
 class TermDeletionHelper:
@@ -497,6 +485,75 @@ ACE_NS = Namespace("http://attempto.ifi.uzh.ch/ace_lexicon#")
 class AnnotatableTerms(Individual):
     """
     Terms in an OWL ontology with rdfs:label and rdfs:comment
+
+
+    ## Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
+
+    ### Verbalisation of OWL entity IRIS
+
+    #### How are OWL entity IRIs verbalized?
+
+    The OWL verbalizer maps OWL entity IRIs to ACE content words such
+    that
+
+    - OWL individuals map to ACE proper names (PN)
+    - OWL classes map to ACE common nouns (CN)
+    - OWL properties map to ACE transitive verbs (TV)
+
+    There are 6 morphological categories that determine the surface form
+    of an IRI:
+
+    - singular form of a proper name (e.g. John)
+    - singular form of a common noun (e.g. man)
+    - plural form of a common noun (e.g. men)
+    - singular form of a transitive verb (e.g. mans)
+    - plural form of a transitive verb (e.g. man)
+    - past participle form a transitive verb (e.g. manned)
+
+    The user has full control over the eventual surface forms of the IRIs
+    but has to choose them in terms of the above categories.
+    Furthermore,
+
+    - the surface forms must be legal ACE content words (e.g. they
+      should not contain punctuation symbols);
+    - the mapping of IRIs to surface forms must be bidirectional
+      within the same word class, in order to be able to (if needed)
+      parse the verbalization back into OWL in a semantics preserving
+      way.
+
+    ### Using the lexicon
+
+    It is possible to specify the mapping of IRIs to surface forms using
+    the following annotation properties:
+
+    .. code-block:: none
+
+        http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
+        http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
+        http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl
+        http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+        http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+        http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+
+    For example, the following axioms state that if the IRI "#man" is used
+    as a plural common noun, then the wordform men must be used by the
+    verbalizer. If, however, it is used as a singular transitive verb,
+    then mans must be used.
+
+    .. code-block:: none
+
+        <AnnotationAssertion>
+            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
+            <IRI>#man</IRI>
+            <Literal datatypeIRI="&xsd;string">men</Literal>
+        </AnnotationAssertion>
+
+        <AnnotationAssertion>
+            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
+            <IRI>#man</IRI>
+            <Literal datatypeIRI="&xsd;string">mans</Literal>
+        </AnnotationAssertion>
+
     """
 
     def __init__(
@@ -653,11 +710,8 @@ class Ontology(AnnotatableTerms):
 
 
 def AllClasses(graph):  # noqa: N802
-    prevclasses = set()
-    for c in graph.subjects(predicate=RDF.type, object=OWL.Class):
-        if c not in prevclasses:
-            prevclasses.add(c)
-            yield Class(c)
+    for c in set(graph.subjects(predicate=RDF.type, object=OWL.Class)):
+        yield Class(c)
 
 
 def AllProperties(graph):  # noqa: N802
@@ -841,7 +895,16 @@ def DeepClassClear(class_to_prune):  # noqa: N802
         )
 
 
-class MalformedClass(Exception):
+class MalformedClass(ValueError):
+    """
+    .. deprecated:: TODO-NEXT-VERSION
+       This class will be removed in version ``7.0.0``.
+    """
+
+    pass
+
+
+class MalformedClassError(MalformedClass):
     def __init__(self, msg):
         self.msg = msg
 
@@ -865,7 +928,7 @@ def CastClass(c, graph=None):  # noqa: N802
             if not set(
                 [str(i.split(str(OWL))[-1]) for i in Restriction.restrictionKinds]
             ).intersection(kwargs):
-                raise MalformedClass("Malformed owl:Restriction")
+                raise MalformedClassError("Malformed owl:Restriction")
             return Restriction(**kwargs)
         else:
             for s, p, o in graph.triples_choices(
@@ -1585,13 +1648,15 @@ class BooleanClass(OWLRDFListProxy, Class):
         >>> fire = Class(EX.Fire)
         >>> water = Class(EX.Water)
         >>> testClass = BooleanClass(members=[fire,water])
-        >>> testClass #doctest: +SKIP
+        >>> testClass
         ( ex:Fire AND ex:Water )
         >>> testClass.changeOperator(OWL.unionOf)
-        >>> testClass #doctest: +SKIP
+        >>> testClass
         ( ex:Fire OR ex:Water )
-        >>> try: testClass.changeOperator(OWL.unionOf)
-        ... except Exception as e: print(e)
+        >>> try:
+        ...     testClass.changeOperator(OWL.unionOf)
+        ... except Exception as e:
+        ...     print(e) #doctest: +SKIP
         The new operator is already being used!
 
         """
@@ -1617,6 +1682,8 @@ class BooleanClass(OWLRDFListProxy, Class):
 
 def AllDifferent(members):  # noqa: N802
     """
+    TODO: implement this function
+
     DisjointClasses(' description description { description } ')'
 
     """
@@ -1675,7 +1742,12 @@ class Restriction(Class):
             (minCardinality, OWL.minCardinality),
         ]
         valid_restr_props = [(i, oterm) for (i, oterm) in restr_types if i is not None]
-        assert len(valid_restr_props)
+        if not len(valid_restr_props):
+            raise ValueError(
+                "Missing value. One of: allValuesFrom, someValuesFrom,"
+                "value, cardinality, maxCardinality or minCardinality"
+                "must have a value."
+            )
         restriction_range, restriction_type = valid_restr_props.pop()
         self.restrictionType = restriction_type
         if isinstance(restriction_range, Identifier):
@@ -1753,10 +1825,10 @@ class Restriction(Class):
         )[0]
 
     def _set_onproperty(self, prop):
-        triple = (self.identifier, OWL.onProperty, propertyOrIdentifier(prop))
         if not prop:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.onProperty, propertyOrIdentifier(prop))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1777,10 +1849,10 @@ class Restriction(Class):
         return None
 
     def _set_allvaluesfrom(self, other):
-        triple = (self.identifier, OWL.allValuesFrom, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.allValuesFrom, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1801,10 +1873,10 @@ class Restriction(Class):
         return None
 
     def _set_somevaluesfrom(self, other):
-        triple = (self.identifier, OWL.someValuesFrom, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.someValuesFrom, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1823,10 +1895,10 @@ class Restriction(Class):
         return None
 
     def _set_hasvalue(self, other):
-        triple = (self.identifier, OWL.hasValue, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.hasValue, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1843,10 +1915,10 @@ class Restriction(Class):
         return None
 
     def _set_cardinality(self, other):
-        triple = (self.identifier, OWL.cardinality, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.cardinality, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1865,10 +1937,10 @@ class Restriction(Class):
         return None
 
     def _set_maxcardinality(self, other):
-        triple = (self.identifier, OWL.maxCardinality, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.maxCardinality, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1889,10 +1961,10 @@ class Restriction(Class):
         return None
 
     def _set_mincardinality(self, other):
-        triple = (self.identifier, OWL.minCardinality, classOrIdentifier(other))
         if not other:
             return
-        elif triple in self.graph:
+        triple = (self.identifier, OWL.minCardinality, classOrIdentifier(other))
+        if triple in self.graph:
             return
         else:
             self.graph.set(triple)
@@ -1906,11 +1978,11 @@ class Restriction(Class):
     )
 
     def restrictionKind(self):  # noqa: N802
-        for p in self.graph.triple_choices(
+        for (s, p, o) in self.graph.triples_choices(
             (self.identifier, self.restrictionKinds, None)
         ):
-            return p.split(OWL)[-1]
-        raise
+            return p.split(str(OWL))[-1]
+        return None
 
     def __repr__(self):
         """
@@ -1939,6 +2011,7 @@ exactly = Infix(
 )
 value = Infix(lambda prop, _class: Restriction(prop, graph=prop.graph, value=_class))
 
+# Unused
 PropertyAbstractSyntax = """
 %s( %s { %s }
 %s
@@ -1964,6 +2037,23 @@ class Property(AnnotatableTerms):
     """
 
     def setupVerbAnnotations(self, verb_annotations):  # noqa: N802
+        """
+
+        OWL properties map to ACE transitive verbs (TV)
+
+        There are 6 morphological categories that determine the surface form
+        of an IRI:
+
+            singular form of a transitive verb (e.g. mans)
+            plural form of a transitive verb (e.g. man)
+            past participle form a transitive verb (e.g. manned)
+
+            http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+            http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+            http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+
+        """
+
         if isinstance(verb_annotations, tuple):
             tv_sgprop, tv_plprop, tv_vbg = verb_annotations
         else:
@@ -2068,7 +2158,7 @@ class Property(AnnotatableTerms):
                     ],
                 )
             ):
-                rt.append(str(roletype.split(OWL)[-1]))
+                rt.append(str(roletype.split(str(OWL))[-1]))
         else:
             rt.append(
                 "DatatypeProperty( %s %s"

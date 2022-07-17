@@ -1,8 +1,8 @@
-from test.data import TEST_DATA_DIR, bob, michel, tarek
+from test.data import TEST_DATA_DIR, context0
 
 import pytest
 
-from rdflib import OWL, RDF, RDFS, XSD, Graph, Literal, Namespace, URIRef
+from rdflib import OWL, RDF, RDFS, XSD, Graph, Literal, Namespace, URIRef, logger
 from rdflib.extras.infixowl import (
     AllClasses,
     AllProperties,
@@ -16,7 +16,7 @@ from rdflib.extras.infixowl import (
     GetIdentifiedClasses,
     Individual,
     Infix,
-    MalformedClass,
+    MalformedClassError,
     Property,
     Restriction,
     classOrTerm,
@@ -35,25 +35,12 @@ PZNS = Namespace(
 )
 
 
-@pytest.fixture(scope="function")
-def graph():
-    g = Graph()
-    g.bind("ex", EXNS)
-    Individual.factoryGraph = g
-
-    yield g
-
-    del g
-
-
 def test_infix_operators_dunders():
     def fn(other, arg=""):
         return None
 
     i = Infix(fn)
 
-    assert i.__ror__("foo") is not None
-    assert i.__or__("foo") is None
     assert i.__rlshift__("foo") is not None
     assert i.__rshift__("foo") is None
     assert i.__rmatmul__("foo") is not None
@@ -61,97 +48,86 @@ def test_infix_operators_dunders():
     assert i.__call__("foo", "baz") is None
 
 
-@pytest.mark.xfail(reason="__or__/__ror__ operators broken for years")
-def test_or_ror_operators(graph):
+def test_infix_operators():
+    g = Graph()
+    g.bind("ex", EXNS)
 
+    # Broken since forever
     with pytest.raises(Exception, match="Only URIRefs or Paths can be in paths!"):
-        EXNS.hasParent | some | Class(EXNS.Physician, graph=graph)
+        EXNS.hasParent | some | Class(EXNS.Physician, graph=g)
 
-    EXNS.hasParent | some | Class(EXNS.Physician, graph=graph)
+    # Will break when RDF Star syntax is added
+    res = EXNS.hasParent << some >> Class(EXNS.Physician, graph=g)
+    assert str(res) == "( ex:hasParent SOME ex:Physician )"
 
-
-@pytest.mark.xfail(
-    reason="__lshift__/__rlshift__ operators expected to break when RDF Star work is merged in autumn 2022"
-)
-def test_lshift_rlshift_infix_operators(graph):
-
-    res = EXNS.hasParent << some >> Class(EXNS.Physician, graph=graph)
-
+    res = EXNS.hasParent @ some @ Class(EXNS.Physician, graph=g)
     assert str(res) == "( ex:hasParent SOME ex:Physician )"
 
 
-def test_matmul_infix_operators(graph):
-
-    res = EXNS.hasParent @ some @ Class(EXNS.Physician, graph=graph)
-
-    assert str(res) == "( ex:hasParent SOME ex:Physician )"
-
-
-def test_common_ns_bindings():
-    graph = Graph(bind_namespaces=None)
-    exns1 = Namespace("http://example.com")
-
-    CommonNSBindings(graph, additionalNS={"ex1": exns1})
-
-    bound_namespaces = list(graph.namespace_manager.namespaces())
-
-    assert ("ex1", URIRef(str(exns1))) in bound_namespaces
-    assert ("owl", URIRef(str(OWL))) in bound_namespaces
+def test_generateqname():
+    g = Graph()
+    g.bind("ex", EXNS)
+    assert (
+        generateQName(g, URIRef("http://example.org/vocab/ontology")) == "ex:ontology"
+    )
 
 
 def test_classorterm():
     term = URIRef("http://example.org/vocab/D")
-
     assert classOrTerm(Class(EXNS.D)) == term
     assert classOrTerm(term) == term
 
 
-def test_generateqname(graph):
-
-    assert (
-        generateQName(graph, URIRef("http://example.org/vocab/ontology"))
-        == "ex:ontology"
-    )
-
-
-def test_getidentifiedclasses(graph):
-
-    graph.bind("ex", PZNS)
-    graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
-
-    assert len(list(GetIdentifiedClasses(graph))) == 97
+def test_getidentifiedclasses():
+    g = Graph()
+    g.bind("ex", PZNS)
+    g.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
+    assert len(list(GetIdentifiedClasses(g))) == 97
 
 
-def test_allclasses(graph):
+class Foo:
+    pass
 
-    graph.bind("ex", PZNS)
-    graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
 
-    for c in AllClasses(graph):
+def test_common_ns_bindings():
+    g = Graph(bind_namespaces=None)
+    CommonNSBindings(g, additionalNS={"ex": EXNS})
+
+
+def test_allclasses():
+    g = Graph()
+    g.bind("ex", PZNS)
+
+    g.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
+
+    for c in AllClasses(g):
         assert isinstance(c, Class)
 
 
-def test_check_allclasses(graph):
+def test_check_allclasses():
+    from test.data import bob, michel, tarek
 
-    graph.bind("ex", PZNS)
+    g = Graph()
+    g.bind("ex", PZNS)
 
-    graph.add((tarek, RDF.type, OWL.Class))
-    graph.add((michel, RDF.type, OWL.Class))
-    graph.add((bob, RDF.type, OWL.Class))
+    g.add((tarek, RDF.type, OWL.Class))
+    g.add((michel, RDF.type, OWL.Class))
+    g.add((bob, RDF.type, OWL.Class))
 
-    assert set(graph.subjects(predicate=RDF.type, object=OWL.Class)) == {
+    assert set(g.subjects(predicate=RDF.type, object=OWL.Class)) == {
         URIRef("urn:example:bob"),
         URIRef("urn:example:michel"),
         URIRef("urn:example:tarek"),
     }
 
 
-def test_check_allproperties(graph):
+def test_check_allproperties():
+    g = Graph()
+    g.bind("ex", PZNS)
 
-    graph.bind("ex", PZNS)
-    graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
+    g.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
 
-    for p in AllProperties(graph):
+    for p in AllProperties(g):
         assert isinstance(p, Property)
 
 
@@ -167,12 +143,15 @@ def test_classnamespacefactory():
     assert x is not None
 
 
-def test_componentterms(graph):
+def test_componentterms():
+    g = Graph()
+    g.bind("ex", PZNS)
 
-    graph.bind("ex", PZNS)
-    graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
+    Individual.factoryGraph = g
 
-    owlcls = list(AllClasses(graph))[-1]
+    g.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
+
+    owlcls = list(AllClasses(g))[-1]
 
     assert isinstance(owlcls, Class)
 
@@ -180,13 +159,16 @@ def test_componentterms(graph):
         assert isinstance(c, Class)
 
 
-def test_componentterms_extended(graph):
+def test_componentterms_extended():
+    g = Graph()
+    g.bind("ex", PZNS)
+    Individual.factoryGraph = g
 
     isPartOf = Property(EXNS.isPartOf)  # noqa: N806
-    graph.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
+    g.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
 
     hasLocation = Property(EXNS.hasLocation, subPropertyOf=[isPartOf])  # noqa: N806
-    graph.add((hasLocation.identifier, RDFS.subPropertyOf, isPartOf.identifier))
+    g.add((hasLocation.identifier, RDFS.subPropertyOf, isPartOf.identifier))
 
     leg = EXCL.Leg
     knee = EXCL.Knee
@@ -212,17 +194,22 @@ def test_componentterms_extended(graph):
     for c in ComponentTerms(legStructure):
         assert isinstance(c, Class)
 
+    logger.debug(f"G\n{g.serialize(format='ttl')}")
+
 
 def test_raise_malformedclasserror():
-    e = MalformedClass("Malformed owl:Restriction")
+    e = MalformedClassError("Malformed owl:Restriction")
 
     assert str(repr(e)) == "Malformed owl:Restriction"
 
-    with pytest.raises(MalformedClass, match="Malformed owl:Restriction"):
+    with pytest.raises(MalformedClassError, match="Malformed owl:Restriction"):
         raise e
 
 
-def test_owlrdfproxylist(graph):
+def test_owlrdfproxylist():
+    g = Graph()
+    g.bind("ex", EXNS)
+    Individual.factoryGraph = g
 
     ogbujiBros = EnumeratedClass(  # noqa: N806
         EXNS.ogbujiBros, members=[EXNS.chime, EXNS.uche, EXNS.ejike]
@@ -258,11 +245,11 @@ def test_owlrdfproxylist(graph):
 
     assert len(ogbujiBros) == 5
 
-    male = Class(EXNS.Male, graph=graph)
-    female = Class(EXNS.Female, graph=graph)
-    human = Class(EXNS.Human, graph=graph)
+    male = Class(EXNS.Male, graph=g)
+    female = Class(EXNS.Female, graph=g)
+    human = Class(EXNS.Human, graph=g)
 
-    youngPerson = Class(EXNS.YoungPerson, graph=graph)  # noqa: N806
+    youngPerson = Class(EXNS.YoungPerson, graph=g)  # noqa: N806
 
     youngWoman = female & human & youngPerson  # noqa: N806
     assert isinstance(youngWoman, BooleanClass)
@@ -276,7 +263,10 @@ def test_owlrdfproxylist(graph):
     assert res is False
 
 
-def test_deepclassclear(graph):
+def test_deepclassclear():
+    g = Graph()
+    g.bind("ex", EXNS)
+    Individual.factoryGraph = g
 
     classB = Class(EXNS.B)  # noqa: N806
     classC = Class(EXNS.C)  # noqa: N806
@@ -290,6 +280,7 @@ def test_deepclassclear(graph):
     assert str(classF) == "Class: ex:F "
 
     classF += anonClass  # noqa: N806
+
     assert str(list(anonClass.subClassOf)) == "[Class: ex:F ]"
 
     classA = classE | classF | anonClass  # noqa: N806
@@ -316,10 +307,14 @@ def test_deepclassclear(graph):
     assert str(otherClass) == "(  )"
 
     otherClass.delete()
-    assert list(graph.triples((otherClass.identifier, None, None))) == []
+    assert list(g.triples((otherClass.identifier, None, None))) == []
 
 
-def test_booleanclassextenthelper(graph):
+def test_booleanclassextenthelper():
+    g = Graph()
+    g.bind("ex", EXNS)
+
+    Individual.factoryGraph = g
 
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
@@ -331,9 +326,13 @@ def test_booleanclassextenthelper(graph):
     assert str(tc2) == "( ex:Fire OR ex:Water )"
 
 
-def test_changeoperator(graph):
+def test_changeoperator():
     # Converts a unionOf / intersectionOf class expression into one
     # that instead uses the given operator
+
+    g = Graph(identifier=context0)
+    g.bind("ex", EXNS)
+    Individual.factoryGraph = g
 
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
@@ -351,20 +350,26 @@ def test_changeoperator(graph):
         assert str(e) == "The new operator is already being used!"
 
 
-def test_cardinality_zero(graph):
+def test_cardinality_zero():
+
+    g = Graph()
+    g.bind("ex", EXNS)
 
     prop = Property(EXNS.someProp, baseType=OWL.DatatypeProperty)
     r = Restriction(
-        prop, graph=graph, cardinality=Literal(0, datatype=XSD.nonNegativeInteger)
+        prop, graph=g, cardinality=Literal(0, datatype=XSD.nonNegativeInteger)
     )
 
     assert str(r) == "( ex:someProp EQUALS 0 )"
 
 
-def test_textual_infix_operators(graph):
+def test_textual_infix_operators():
+    g = Graph()
+    g.bind("ex", EXNS)
+    Individual.factoryGraph = g
 
     isPartOf = Property(EXNS.isPartOf)  # noqa: N806
-    graph.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
+    g.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
 
     knee = EXCL.Knee
 

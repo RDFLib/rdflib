@@ -16,6 +16,34 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+- InfixOWL fixes and cleanup.
+  [PR #2024](https://github.com/RDFLib/rdflib/pull/2024).
+  - `rdflib.extras.infixowl.Restriction.__init__` will now raise a `ValueError`
+    if there is no restriction value instead of an `AssertionError`.
+  - Fixed numerous issues with
+    `rdflib.extras.infixowl.Restriction.restrictionKind` which was essentially
+    not working at all.
+  - Fixed how `rdflib.extras.infixowl.Property.__repr__` uses
+    `rdflib.namespace.OWL`. 
+  - Removed `rdflib.extras.infixowl.Infix.__ror__` and
+    `rdflib.extras.infixowl.Infix.__or__` as they were broken.
+  - Removed unused `rdflib.extras.infixowl.termDeletionDecorator`.
+  - Added `rdflib.extras.infixowl.MalformedClassError` which will replace
+    `rdflib.extras.infixowl.MalformedClass` (which is an exception) in the next
+    major version.
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
 - Description of changes.
   Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
   [PR #....](https://ichard26.github.io/next-pr-number/?owner=RDFLib&name=rdflib).
