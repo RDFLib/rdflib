@@ -2299,11 +2299,11 @@ def CommonNSBindings(graph, additionalNS=None):  # noqa: N802, N803
     """
     Takes a graph and binds the common namespaces (rdf,rdfs, & owl)
     """
-    additionalNS = {} if additionalNS is None else additionalNS
+    additional_ns = {} if additionalNS is None else additionalNS
     namespace_manager = NamespaceManager(graph)
     namespace_manager.bind("rdfs", RDFS)
     namespace_manager.bind("rdf", RDF)
     namespace_manager.bind("owl", OWL)
-    for prefix, uri in list(additionalNS.items()):
+    for prefix, uri in list(additional_ns.items()):
         namespace_manager.bind(prefix, uri, override=False)
     graph.namespace_manager = namespace_manager
