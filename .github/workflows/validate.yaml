@@ -73,7 +73,7 @@ jobs:
           task \
             TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
             OS=${{ matrix.os }} \
-            EXTENSIVE=${{ matrix.extensive-tests }} \
+            EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
             TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
             gha:validate
@@ -85,8 +85,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - task: "gha:flake8"
-          python-version: 3.8
+          - task: "gha:flake8"
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
