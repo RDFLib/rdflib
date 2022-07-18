@@ -21,7 +21,14 @@ from rdflib.term import URIRef as URI
 if TYPE_CHECKING:
     from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 
-__all__ = ["unquote", "uriquote", "W3CNTriplesParser", "NTGraphSink", "NTParser"]
+__all__ = [
+    "unquote",
+    "uriquote",
+    "W3CNTriplesParser",
+    "NTGraphSink",
+    "NTParser",
+    "DummySink",
+]
 
 uriref = r'<([^:]+:[^\s"<>]*)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
@@ -107,13 +114,13 @@ class W3CNTriplesParser(object):
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
 
-          p = NTriplesParser(sink=MySink())
+          p = W3CNTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
 
     To define a context in which blank node identifiers refer to the same blank node
-    across instances of NTriplesParser, pass the same dict as `bnode_context` to each
+    across instances of NTriplesParser, pass the same dict as ``bnode_context`` to each
     instance. By default, a new blank node context is created for each instance of
-    `NTriplesParser`.
+    `W3CNTriplesParser`.
     """
 
     __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
@@ -326,7 +333,7 @@ class NTParser(Parser):
         :param source: the source of NT-formatted data
         :type sink: `rdflib.graph.Graph`
         :param sink: where to send parsed triples
-        :param kwargs: Additional arguments to pass to `.NTriplesParser.parse`
+        :param kwargs: Additional arguments to pass to `.W3CNTriplesParser.parse`
         """
         f: Union[TextIO, IO[bytes], codecs.StreamReader]
         f = source.getCharacterStream()

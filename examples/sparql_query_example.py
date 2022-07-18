@@ -8,7 +8,7 @@ The variable bindings can be accessed as attributes of the row objects
 For variable names that are not valid python identifiers, dict access
 (i.e. with ``row[var] / __getitem__``) is also possible.
 
-:attr:`~rdflib.query.ResultRow.vars` contains the variables
+:attr:`~rdflib.query.Result.vars` contains the variables
 """
 
 import rdflib

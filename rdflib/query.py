@@ -8,7 +8,16 @@ from io import BytesIO
 from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 from urllib.parse import urlparse
 
-__all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
+__all__ = [
+    "Processor",
+    "UpdateProcessor",
+    "Result",
+    "ResultRow",
+    "ResultParser",
+    "ResultSerializer",
+    "ResultException",
+    "EncodeOnlyUnicode",
+]
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -169,6 +178,7 @@ class Result(object):
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
+        #: variables contained in the result.
         self.vars: Optional[List["Variable"]] = None
         self._bindings = None
         self._genbindings = None

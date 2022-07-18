@@ -25,15 +25,18 @@ jobs:
           - python-version: "3.7"
             os: ubuntu-latest
             extensive-tests: true
+            TOXENV_SUFFIX: "-docs"
           - python-version: "3.8"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
+            TOXENV_SUFFIX: "-docs"
           - python-version: "3.9"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
+            TOXENV_SUFFIX: "-docs"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -72,6 +75,7 @@ jobs:
             OS=${{ matrix.os }} \
             EXTENSIVE=${{ matrix.extensive-tests }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
+            TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

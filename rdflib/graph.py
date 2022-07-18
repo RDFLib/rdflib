@@ -95,10 +95,10 @@ A Conjunctive Graph is the most relevant collection of graphs that are
 considered to be the boundary for closed world assumptions.  This
 boundary is equivalent to that of the store instance (which is itself
 uniquely identified and distinct from other instances of
-:class:`Store` that signify other Conjunctive Graphs).  It is
+:class:`~rdflib.store.Store` that signify other Conjunctive Graphs).  It is
 equivalent to all the named graphs within it and associated with a
-``_default_`` graph which is automatically assigned a :class:`BNode`
-for an identifier - if one isn't given.
+``_default_`` graph which is automatically assigned a
+:class:`~rdflib.term.BNode` for an identifier - if one isn't given.
 
 see :class:`~rdflib.graph.ConjunctiveGraph`
 
@@ -327,6 +327,15 @@ __all__ = [
     "UnSupportedAggregateOperation",
     "ReadOnlyGraphAggregate",
     "BatchAddGraph",
+    "_TriplePatternType",
+    "_TripleType",
+    "_SubjectType",
+    "_ObjectType",
+    "_PredicateType",
+    "_QuadPatternType",
+    "_OptionalIdentifiedQuadType",
+    "_OptionalQuadType",
+    "_QuadType",
 ]
 
 
@@ -417,7 +426,7 @@ class Graph(Node):
         return self
 
     def destroy(self, configuration):
-        """Destroy the store identified by `configuration` if supported"""
+        """Destroy the store identified by ``configuration`` if supported"""
         self.__store.destroy(configuration)
         return self
 
@@ -1240,18 +1249,18 @@ class Graph(Node):
 
         :Parameters:
 
-          - `source`: An InputSource, file-like object, or string. In the case
+          - ``source``: An InputSource, file-like object, or string. In the case
             of a string the string is the location of the source.
-          - `location`: A string indicating the relative or absolute URL of the
+          - ``location``: A string indicating the relative or absolute URL of the
             source. Graph's absolutize method is used if a relative location
             is specified.
-          - `file`: A file-like object.
-          - `data`: A string containing the data to be parsed.
-          - `format`: Used if format can not be determined from source, e.g. file
+          - ``file``: A file-like object.
+          - ``data``: A string containing the data to be parsed.
+          - ``format``: Used if format can not be determined from source, e.g. file
             extension or Media Type. Defaults to text/turtle. Format support can
             be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
             "trix" are built in.
-          - `publicID`: the logical URI to use as the document base. If None
+          - ``publicID``: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
 

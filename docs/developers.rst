@@ -132,7 +132,7 @@ ideally be updated to the pytest test-style when they are touched.
 Test should go into the ``test/`` directory, either into an existing test file
 with a name that is applicable to the test being written, or into a new test
 file with a name that is descriptive of the tests placed in it. Test files
-should be named `test_*.py` so that `pytest can discover them
+should be named ``test_*.py`` so that `pytest can discover them
 <https://docs.pytest.org/en/latest/explanation/goodpractices.html#conventions-for-python-test-discovery>`_.
 
 Running static checks
@@ -399,6 +399,6 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
   # WARNING: once uploaded can never be modified, only deleted!
   twine upload dist/rdflib-X.X.X[.-]*
 
-Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
+Set new dev version number in the above locations, i.e. next release ``-dev``: ``5.0.1-dev`` and commit again.
 
 Tweet, email mailing list and inform members in the chat.

@@ -86,7 +86,7 @@ def rdflib_to_networkx_multidigraph(
 
             By default this will include setting the MultiDiGraph key=p here.
             If you don't want to be able to re-identify the edge later on, you
-            can set this to `lambda s, p, o: {}`. In this case MultiDiGraph's
+            can set this to ``lambda s, p, o: {}``. In this case MultiDiGraph's
             default (increasing ints) will be used.
 
     Returns:
@@ -115,7 +115,7 @@ def rdflib_to_networkx_multidigraph(
     True
     >>> mdg.has_edge(a, b, key=1)
     True
-    """
+    """  # noqa: W605
     import networkx as nx
 
     mdg = nx.MultiDiGraph()
@@ -138,9 +138,9 @@ def rdflib_to_networkx_digraph(
 
     :Parameters:
 
-        - `graph`: a rdflib.Graph.
-        - `calc_weights`: If true calculate multi-graph edge-count as edge 'weight'
-        - `edge_attrs`: Callable to construct later edge_attributes. It receives
+        - ``graph``: a rdflib.Graph.
+        - ``calc_weights``: If true calculate multi-graph edge-count as edge 'weight'
+        - ``edge_attrs``: Callable to construct later edge_attributes. It receives
             3 variables (s, p, o) and should construct a dictionary that is passed to
             networkx's add_edge(s, o, \*\*attrs) function.
 
@@ -148,7 +148,7 @@ def rdflib_to_networkx_digraph(
             which is treated specially by us to be merged. Other attributes of
             multi-edges will only contain the attributes of the first edge.
             If you don't want the 'triples' attribute for tracking, set this to
-            `lambda s, p, o: {}`.
+            ``lambda s, p, o: {}``.
 
     Returns: networkx.DiGraph
 
@@ -178,7 +178,7 @@ def rdflib_to_networkx_digraph(
     >>> 'triples' in dg[a][b]
     False
 
-    """
+    """  # noqa: W605
     import networkx as nx
 
     dg = nx.DiGraph()
@@ -211,7 +211,7 @@ def rdflib_to_networkx_graph(
                     which is treated specially by us to be merged. Other attributes of
                     multi-edges will only contain the attributes of the first edge.
                     If you don't want the 'triples' attribute for tracking, set this to
-                    `lambda s, p, o: {}`.
+                    ``lambda s, p, o: {}``.
 
     Returns:
         networkx.Graph
@@ -241,7 +241,7 @@ def rdflib_to_networkx_graph(
     False
     >>> 'triples' in ug[a][b]
     False
-    """
+    """  # noqa: W605
     import networkx as nx
 
     g = nx.Graph()

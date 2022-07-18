@@ -254,3 +254,42 @@ suppress_warnings = [
     #  "WARNING: more than one target found for cross-reference"
     "ref.python",
 ]
+
+nitpicky = True
+
+nitpick_ignore = [
+    ("py:data", "typing.Literal"),
+    ("py:class", "typing.IO[bytes]"),
+    ("py:class", "http.client.HTTPMessage"),
+    ("py:class", "importlib.metadata.EntryPoint"),
+    ("py:class", "xml.dom.minidom.Document"),
+    ("py:class", "xml.dom.minidom.DocumentFragment"),
+    # sphinx-autodoc-typehints has some issues with TypeVars.
+    # https://github.com/tox-dev/sphinx-autodoc-typehints/issues/39
+    ("py:class", "rdflib.plugin.PluginT"),
+    # These are related to pyparsing.
+    ("py:class", "Diagnostics"),
+    ("py:class", "ParseAction"),
+    ("py:class", "ParseFailAction"),
+    ("py:class", "pyparsing.core.TokenConverter"),
+    ("py:class", "pyparsing.results.ParseResults"),
+]
+
+if sys.version_info < (3, 9):
+    nitpick_ignore.extend(
+        [
+            ("py:class", "_TriplePatternType"),
+            ("py:class", "_TripleType"),
+            ("py:class", "_ObjectType"),
+            ("py:class", "_PredicateType"),
+            ("py:class", "_SubjectType"),
+            ("py:class", "TextIO"),
+        ]
+    )
+
+if sys.version_info < (3, 8):
+    nitpick_ignore.extend(
+        [
+            ("py:class", "importlib_metadata.EntryPoint"),
+        ]
+    )
