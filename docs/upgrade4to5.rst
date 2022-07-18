@@ -78,7 +78,7 @@ General Bugs Fixed:
   `PR #649 <https://github.com/RDFLib/rdflib/pull/649>`_
 * RDFa parsing Error! ``__init__()`` got an unexpected keyword argument 'encoding'
   `ISSUE #639 <https://github.com/RDFLib/rdflib/issues/639>`_
-* Bugfix: ``term.Literal.__add__```
+* Bugfix: ``term.Literal.__add__``
   `PR #451 <https://github.com/RDFLib/rdflib/pull/451>`_
 * fixup of #443
   `PR #445 <https://github.com/RDFLib/rdflib/pull/445>`_
