@@ -25,7 +25,7 @@ pretty-xml :class:`~rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer`
 trig       :class:`~rdflib.plugins.serializers.trig.TrigSerializer`
 trix       :class:`~rdflib.plugins.serializers.trix.TriXSerializer`
 turtle     :class:`~rdflib.plugins.serializers.turtle.TurtleSerializer`
-longturtle :class:`~rdflib.plugins.serializers.turtle.LongTurtleSerializer`
+longturtle :class:`~rdflib.plugins.serializers.longturtle.LongTurtleSerializer`
 xml        :class:`~rdflib.plugins.serializers.rdfxml.XMLSerializer`
 ========== ===============================================================
 

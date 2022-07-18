@@ -58,6 +58,22 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+- Fixed some cross-referencing issues in RDFLib documentation.
+  Closed [issue #1878](https://github.com/RDFLib/rdflib/issues/1878).
+  [PR #2036](https://github.com/RDFLib/rdflib/pull/2036).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
 - PLACEHOLDER.
   Description of changes.
   Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).

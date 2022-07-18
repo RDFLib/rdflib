@@ -6,7 +6,7 @@ A Describer is a stateful utility for creating RDF statements in a
 semi-declarative manner. It has methods for creating literal values, rel and
 rev resource relations (somewhat resembling RDFa).
 
-The `rel` and ``rev`` methods return a context manager which sets the current
+The `Describer.rel` and `Describer.rev` methods return a context manager which sets the current
 about to the referenced resource for the context scope (for use with the
 ``with`` statement).
 

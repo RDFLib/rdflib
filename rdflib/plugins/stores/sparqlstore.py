@@ -736,8 +736,8 @@ class SPARQLUpdateStore(SPARQLStore):
               except if the block is empty.
               This basically causes INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE to operate
               only on the context.
-            - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
-              `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
+            - **Example:** ``"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"`` is converted into
+              ``"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"``.
             - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
               For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
             - **Warning:** A simplified grammar is used that should tolerate

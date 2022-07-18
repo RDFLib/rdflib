@@ -76,9 +76,9 @@ General Bugs Fixed:
   `PR #663 <https://github.com/RDFLib/rdflib/pull/663>`_
 * namespace.py fix compute_qname missing namespaces
   `PR #649 <https://github.com/RDFLib/rdflib/pull/649>`_
-* RDFa parsing Error! `__init__()` got an unexpected keyword argument 'encoding'
+* RDFa parsing Error! ``__init__()`` got an unexpected keyword argument 'encoding'
   `ISSUE #639 <https://github.com/RDFLib/rdflib/issues/639>`_
-* Bugfix: `term.Literal.__add__`
+* Bugfix: ``term.Literal.__add__```
   `PR #451 <https://github.com/RDFLib/rdflib/pull/451>`_
 * fixup of #443
   `PR #445 <https://github.com/RDFLib/rdflib/pull/445>`_
@@ -204,7 +204,7 @@ Documentation Fixes:
   `PR #712 <https://github.com/RDFLib/rdflib/pull/712>`_
 * make doctest support py2/py3
   `ISSUE #707 <https://github.com/RDFLib/rdflib/issues/707>`_
-* `pip install rdflib` (as per README.md) gets OSError on Mint 18.1
+* ``pip install rdflib`` (as per README.md) gets OSError on Mint 18.1
   `ISSUE #704 <https://github.com/RDFLib/rdflib/issues/704>`_
   `PR #717 <https://github.com/RDFLib/rdflib/pull/717>`_
 * Use <<= instead of deprecated << in SPARQL parser
@@ -261,6 +261,6 @@ Documentation Fixes:
   `PR #712 <https://github.com/RDFLib/rdflib/pull/712>`_
 * make doctest support py2/py3
   `ISSUE #707 <https://github.com/RDFLib/rdflib/issues/707>`_
-* `pip install rdflib` (as per README.md) gets OSError on Mint 18.1
+* ``pip install rdflib`` (as per README.md) gets OSError on Mint 18.1
   `ISSUE #704 <https://github.com/RDFLib/rdflib/issues/704>`_
 

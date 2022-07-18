@@ -56,7 +56,15 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import EntryPoint, entry_points
 
-__all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
+__all__ = [
+    "register",
+    "get",
+    "plugins",
+    "PluginException",
+    "Plugin",
+    "PluginT",
+    "PKGPlugin",
+]
 
 rdflib_entry_points = {
     "rdf.plugins.store": Store,
@@ -76,6 +84,7 @@ class PluginException(Error):
     pass
 
 
+#: A generic type variable for plugins
 PluginT = TypeVar("PluginT")
 
 

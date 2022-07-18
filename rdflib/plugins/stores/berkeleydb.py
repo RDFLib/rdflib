@@ -47,16 +47,16 @@ class BerkeleyDB(Store):
     for BerkeleyDB.
 
     This store allows for quads as well as triples. See examples of use
-    in both the `examples.berkeleydb_example` and `test.test_store_berkeleydb`
+    in both the `examples.berkeleydb_example` and ``test/test_store/test_store_berkeleydb.py``
     files.
 
     **NOTE on installation**:
 
     To use this store, you must have BerkeleyDB installed on your system
-    separately to Python (`brew install berkeley-db` on a Mac) and also have
-    the BerkeleyDB Python wrapper installed (`pip install berkeleydb`).
+    separately to Python (``brew install berkeley-db`` on a Mac) and also have
+    the BerkeleyDB Python wrapper installed (``pip install berkeleydb``).
     You may need to install BerkeleyDB Python wrapper like this:
-    `YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1 pip install berkeleydb`
+    ``YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1 pip install berkeleydb``
     """
 
     context_aware = True

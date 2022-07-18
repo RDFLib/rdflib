@@ -55,3 +55,13 @@ else:
         assert isinstance(all_entry_points, dict)
     for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
         CUSTOM_EVALS[ep.name] = ep.load()
+
+__all__ = [
+    "prepareQuery",
+    "prepareUpdate",
+    "processUpdate",
+    "operators",
+    "parser",
+    "parserutils",
+    "CUSTOM_EVALS",
+]
