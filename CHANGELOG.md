@@ -6,6 +6,17 @@ This section lists changes that have a potential impact on users of RDFLib,
 changes with no user impact are not included in this section.
 
 <!--
+Please add an entry for user facing changes in this section.
+
+New changes should go at the bottom of the list but the placeholder should
+remain.
+
+Non user-facing changes does not have to be recorded in the changelog. This
+includes changes to CI, testing, etc. These changes will show up in the "PRs
+merged since last release" section but they are somewhat irrelevant to users.
+-->
+
+<!--
 CHANGE BARRIER is intended to reduce the potential for merge conflicts
 and will be removed for release.
 -->
@@ -47,7 +58,8 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
-- Description of changes.
+- PLACEHOLDER.
+  Description of changes.
   Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
   [PR #....](https://ichard26.github.io/next-pr-number/?owner=RDFLib&name=rdflib).
 
@@ -57,21 +69,13 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
-## Other changes
-
-This section lists changes that have no impact on the users of RDFLib.
-
-- ...
-  Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
-  [PR #....](https://ichard26.github.io/next-pr-number/?owner=RDFLib&name=rdflib).
-
 ## PRs merged since last release
 
-<!-- This will be auto generated with
+<!-- This will be auto generated with:
 
-gh search prs --repo RDFLib/rdflib --merged --base master --json assignees,author,authorAssociation,body,closedAt,commentsCount,createdAt,id,isLocked,isPullRequest,labels,number,repository,state,title,updatedAt,url --limit 1000 --jq '[.[] | select(.closedAt >= "2022-07-17T00:00:00Z")]' | jq '(. |= sort_by(.closedAt)) | reverse' > /var/tmp/merged-prs.json
+gh search prs --repo RDFLib/rdflib --merged --base master --json assignees,author,authorAssociation,body,closedAt,commentsCount,createdAt,id,isLocked,isPullRequest,labels,number,repository,state,title,updatedAt,url --limit 1000 --jq '[.[] | select(.closedAt >= "2022-07-17T00:00:00Z")]' | jq '(. |= sort_by(.closedAt)) | reverse' | tee /var/tmp/merged-prs.json
 
-jq -r '.[] | [ .url, .title ] | @tsv' /var/tmp/merged-prs.json | head -n -3 | sort -r | awk -F$'\t' '(match($1, "^.*/([^/]+)$", matches)){printf("* %s\n  [PR #%s](%s)\n", $2, matches[1], $1)}'
+jq -r '.[] | [ .url, .title ] | @tsv' /var/tmp/merged-prs.json | sort -r | awk -F$'\t' '(match($1, "^.*/([^/]+)$", matches)){printf("* %s\n  [PR #%s](%s)\n", $2, matches[1], $1)}'
 
 -->
 
