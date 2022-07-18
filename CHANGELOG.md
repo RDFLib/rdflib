@@ -17,6 +17,7 @@ and will be removed for release.
 <!-- -->
 
 - InfixOWL fixes and cleanup.
+  Closed [issue #2030](https://github.com/RDFLib/rdflib/issues/2030).
   [PR #2024](https://github.com/RDFLib/rdflib/pull/2024),
   and [PR #2033](https://github.com/RDFLib/rdflib/pull/2033).
   - `rdflib.extras.infixowl.Restriction.__init__` will now raise a `ValueError`
