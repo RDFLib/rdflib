@@ -310,7 +310,7 @@ def manchesterSyntax(  # noqa: N802
             OWL.minCardinality: "MIN",
             OWL.cardinality: "EQUALS",
         }
-        for s, p, o in store.triples_choices((thing, list(cardlookup.keys()), None)):
+        for _s, p, o in store.triples_choices((thing, list(cardlookup.keys()), None)):
             return "( %s %s %s )" % (propstring, cardlookup[p], o)
     # is thing a complement of anything
     compl = list(store.objects(subject=thing, predicate=OWL.complementOf))
@@ -394,7 +394,7 @@ class Individual(object):
         self.clearOutDegree()
 
     def replace(self, other):
-        for s, p, o in self.graph.triples((None, None, self.identifier)):
+        for s, p, _o in self.graph.triples((None, None, self.identifier)):
             self.graph.add((s, p, classOrIdentifier(other)))
         self.delete()
 
@@ -716,7 +716,7 @@ def AllClasses(graph):  # noqa: N802
 
 def AllProperties(graph):  # noqa: N802
     prevprops = set()
-    for s, p, o in graph.triples_choices(
+    for s, _p, o in graph.triples_choices(
         (
             None,
             RDF.type,
@@ -787,7 +787,7 @@ def ComponentTerms(cls):  # noqa: N802
     if OWL.Restriction in cls.type:
         try:
             cls = CastClass(cls, Individual.factoryGraph)
-            for s, p, inner_class_id in cls.factoryGraph.triples_choices(
+            for _s, _p, inner_class_id in cls.factoryGraph.triples_choices(
                 (cls.identifier, [OWL.allValuesFrom, OWL.someValuesFrom], None)
             ):
                 inner_class = Class(inner_class_id, skipOWLClassMembership=True)
@@ -815,7 +815,7 @@ def ComponentTerms(cls):  # noqa: N802
                         yield _c
                 else:
                     yield inner_class
-            for s, p, o in cls.factoryGraph.triples_choices(
+            for _s, _p, o in cls.factoryGraph.triples_choices(
                 (classOrIdentifier(cls), CLASS_RELATIONS, None)
             ):
                 if isinstance(o, BNode):
@@ -917,7 +917,7 @@ def CastClass(c, graph=None):  # noqa: N802
     for kind in graph.objects(subject=classOrIdentifier(c), predicate=RDF.type):
         if kind == OWL.Restriction:
             kwargs = {"identifier": classOrIdentifier(c), "graph": graph}
-            for s, p, o in graph.triples((classOrIdentifier(c), None, None)):
+            for _s, p, o in graph.triples((classOrIdentifier(c), None, None)):
                 if p != RDF.type:
                     if p == OWL.onProperty:
                         kwargs["onProperty"] = o
@@ -931,7 +931,7 @@ def CastClass(c, graph=None):  # noqa: N802
                 raise MalformedClassError("Malformed owl:Restriction")
             return Restriction(**kwargs)
         else:
-            for s, p, o in graph.triples_choices(
+            for _s, p, _o in graph.triples_choices(
                 (
                     classOrIdentifier(c),
                     [OWL.intersectionOf, OWL.unionOf, OWL.oneOf],
@@ -1280,11 +1280,11 @@ class Class(AnnotatableTerms):
             return False
         # sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
-        for boolclass, p, rdf_list in self.graph.triples_choices(
+        for _boolclass, p, rdf_list in self.graph.triples_choices(
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
-        for e in ec:
+        for _e in ec:
             return False
         if self.complementOf:
             return False
@@ -1306,7 +1306,7 @@ class Class(AnnotatableTerms):
         exprs = []
         sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
-        for boolclass, p, rdf_list in self.graph.triples_choices(
+        for _boolclass, p, rdf_list in self.graph.triples_choices(
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1591,7 +1591,7 @@ class BooleanClass(OWLRDFListProxy, Class):
     ):
         if operator is None:
             props = []
-            for s, p, o in graph.triples_choices(
+            for _s, p, _o in graph.triples_choices(
                 (identifier, [OWL.intersectionOf, OWL.unionOf], None)
             ):
                 props.append(p)
@@ -1712,7 +1712,7 @@ class Restriction(Class):
     def __init__(
         self,
         onProperty,  # noqa: N803
-        graph=Graph(),
+        graph=None,
         allValuesFrom=None,
         someValuesFrom=None,
         value=None,
@@ -1721,6 +1721,7 @@ class Restriction(Class):
         minCardinality=None,
         identifier=None,
     ):
+        graph = Graph() if graph is None else graph
         super(Restriction, self).__init__(
             identifier, graph=graph, skipOWLClassMembership=True
         )
@@ -2147,7 +2148,7 @@ class Property(AnnotatableTerms):
                         OWL.SymmetricProperty in self.type and " Symmetric" or "",
                     )
                 )
-            for s, p, roletype in self.graph.triples_choices(
+            for _s, _p, roletype in self.graph.triples_choices(
                 (
                     self.identifier,
                     RDF.type,
@@ -2164,7 +2165,7 @@ class Property(AnnotatableTerms):
                 "DatatypeProperty( %s %s"
                 % (self.qname, first(self.comment) and first(self.comment) or "")
             )
-            for s, p, roletype in self.graph.triples(
+            for _s, _p, roletype in self.graph.triples(
                 (self.identifier, RDF.type, OWL.FunctionalProperty)
             ):
                 rt.append("   Functional")
@@ -2289,19 +2290,20 @@ class Property(AnnotatableTerms):
 
     def replace(self, other):
         # extension = []
-        for s, p, o in self.extent:
+        for s, _p, o in self.extent:
             self.graph.add((s, propertyOrIdentifier(other), o))
         self.graph.remove((None, self.identifier, None))
 
 
-def CommonNSBindings(graph, additionalNS={}):  # noqa: N802, N803
+def CommonNSBindings(graph, additionalNS=None):  # noqa: N802, N803
     """
     Takes a graph and binds the common namespaces (rdf,rdfs, & owl)
     """
+    additional_ns = {} if additionalNS is None else additionalNS
     namespace_manager = NamespaceManager(graph)
     namespace_manager.bind("rdfs", RDFS)
     namespace_manager.bind("rdf", RDF)
     namespace_manager.bind("owl", OWL)
-    for prefix, uri in list(additionalNS.items()):
+    for prefix, uri in list(additional_ns.items()):
         namespace_manager.bind(prefix, uri, override=False)
     graph.namespace_manager = namespace_manager
