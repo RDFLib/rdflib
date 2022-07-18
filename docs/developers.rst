@@ -342,12 +342,12 @@ We use sphinx for generating HTML docs, see :ref:`docs`.
 Continuous Integration
 ----------------------
 
-We used Drone for CI, see:
+We used GitHub Actions for CI, see:
 
-  https://drone.rdflib.ashs.dev/RDFLib/rdflib
+  https://github.com/RDFLib/rdflib/actions
 
-If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
-passing all tests.
+If you make a pull-request to RDFLib on GitHub, GitHub Actions will
+automatically test your code and we will only merge code passing all tests.
 
 Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
 flag them as expecting to fail.
