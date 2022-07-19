@@ -1,5 +1,4 @@
 import os
-import sys
 
 import pytest
 
@@ -125,13 +124,7 @@ def get_cases():
         else:
             e.skip = False
         # e.skip = True
-        if sys.version_info[:2] == (2, 4):
-            import pickle
-
-            gjt = pickle.dumps(generictest)
-            gt = pickle.loads(gjt)
-        else:
-            gt = deepcopy(generictest)
+        gt = deepcopy(generictest)
         gt.__doc__ = tfile
         yield gt, e
 
