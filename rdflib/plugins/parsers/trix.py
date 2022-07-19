@@ -1,8 +1,9 @@
 """
 A TriX parser for RDFLib
 """
-from xml.sax import handler, make_parser
+from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
+from xml.sax.saxutils import handler
 
 from rdflib.exceptions import ParserError
 from rdflib.graph import Graph

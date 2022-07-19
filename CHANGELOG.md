@@ -74,22 +74,6 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
-- Fixed import of `xml.sax.handler` in `rdflib.plugins.parsers.trix` so that it
-  no longer tries to import it from `xml.sax.saxutils`.
-  [PR #2041](https://github.com/RDFLib/rdflib/pull/2041).
-
-<!-- -->
-<!-- -->
-<!-- CHANGE BARRIER: END -->
-<!-- -->
-<!-- -->
-
-<!-- -->
-<!-- -->
-<!-- CHANGE BARRIER: START -->
-<!-- -->
-<!-- -->
-
 - PLACEHOLDER.
   Description of changes.
   Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
