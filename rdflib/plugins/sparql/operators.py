@@ -12,7 +12,6 @@ import math
 import operator as pyop  # python operators
 import random
 import re
-import sys
 import uuid
 import warnings
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
@@ -227,28 +226,6 @@ def Builtin_REPLACE(expr, ctx):
     # python uses \1, xpath/sparql uses $1
     replacement = re.sub("\\$([0-9]*)", r"\\\1", replacement)
 
-    def _r(m):
-
-        # Now this is ugly.
-        # Python has a "feature" where unmatched groups return None
-        # then re.sub chokes on this.
-        # see http://bugs.python.org/issue1519638 , fixed and errs in py3.5
-
-        # this works around and hooks into the internal of the re module...
-
-        # the match object is replaced with a wrapper that
-        # returns "" instead of None for unmatched groups
-
-        class _m:
-            def __init__(self, m):
-                self.m = m
-                self.string = m.string
-
-            def group(self, n):
-                return m.group(n) or ""
-
-        return re._expand(pattern, _m(m), replacement)
-
     cFlag = 0
     if flags:
         # Maps XPath REGEX flags (http://www.w3.org/TR/xpath-functions/#flags)
@@ -258,12 +235,8 @@ def Builtin_REPLACE(expr, ctx):
 
         # @@FIXME@@ either datatype OR lang, NOT both
 
-    # this is necessary due to different treatment of unmatched groups in
-    # python versions. see comments above in _r(m).
-    compat_r = str(replacement) if sys.version_info[:2] >= (3, 5) else _r
-
     return Literal(
-        re.sub(str(pattern), compat_r, text, cFlag),
+        re.sub(str(pattern), replacement, text, cFlag),
         datatype=text.datatype,
         lang=text.language,
     )

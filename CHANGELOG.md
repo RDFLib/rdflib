@@ -90,6 +90,22 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+- Removed a pre python 3.5 regex related workaround in the REPLACE SPARQL
+  function.
+  [PR #2042](https://github.com/RDFLib/rdflib/pull/2042).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
 - PLACEHOLDER.
   Description of changes.
   Closed [issue #....](https://github.com/RDFLib/rdflib/issues/).
