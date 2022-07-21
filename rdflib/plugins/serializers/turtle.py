@@ -284,6 +284,26 @@ class TurtleSerializer(RecursiveSerializer):
 
             if pfx is not None:
                 parts = (pfx, uri, "")
+
+            # Does the uri contain chars that need to be escaped?
+            elif len(self.namespaces) > 0:
+                for prefix, local in [
+                    (_prefix, uri.split(_namespace)[1])
+                    for _prefix, _namespace in self.namespaces.items()
+                    if uri.startswith(_namespace)
+                ]:
+                    return "{prefix}:{escaped_local}".format(
+                        prefix=prefix,
+                        escaped_local="".join(
+                            [
+                                f"\\{char}" if char in "_~.-!$&'()*+,;=/?#@%" else char
+                                for char in local
+                            ]
+                        ),
+                    )
+                # Was worth a try
+                return None
+
             else:
                 # nothing worked
                 return None
