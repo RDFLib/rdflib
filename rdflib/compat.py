@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     import xml.etree.ElementTree as etree
 else:
     try:
-        from lxml import etree  # nqqa: N813
+        from lxml import etree  # n0qa: N813
     except ImportError:
-        import xml.etree.ElementTree as etree  # noqa: N813 F401
+        import xml.etree.ElementTree as etree  # noqa: N813
 
 
 def cast_bytes(s, enc="utf-8"):
