@@ -57,7 +57,7 @@ class UpdateProcessor(object):
     def __init__(self, graph):
         pass
 
-    def update(self, str_or_query, initBindings={}, initNs={})::  # noqa: N803
+    def update(self, str_or_query, initBindings={}, initNs={}):  # noqa: N803
         pass
 
 
