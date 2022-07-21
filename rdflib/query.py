@@ -37,7 +37,7 @@ class Processor(object):
     def __init__(self, graph):
         pass
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
+    def query(self, str_or_query, initBindings={}, initNs={}, DEBUG=False):
         pass
 
 
@@ -57,7 +57,7 @@ class UpdateProcessor(object):
     def __init__(self, graph):
         pass
 
-    def update(self, strOrQuery, initBindings={}, initNs={}):
+    def update(self, str_or_query, initBindings={}, initNs={}):
         pass
 
 

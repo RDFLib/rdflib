@@ -103,74 +103,74 @@ Graph generator functions, triples, subjects, objects, etc. :
 
 A more complete set of tests:
 
->>> list(evalPath(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
+>>> list(evalpath(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
 True
->>> list(evalPath(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
+>>> list(evalpath(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
 True
->>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
+>>> list(evalpath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
+>>> list(evalpath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
 True
->>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
+>>> list(evalpath(g, (e.c, e.p3*OneOrMore, None))) == [
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
+>>> list(evalpath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
+>>> list(evalpath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
 True
->>> list(evalPath(g, (e.a, -(e.p1|e.p2), None))) == []
+>>> list(evalpath(g, (e.a, -(e.p1|e.p2), None))) == []
 True
->>> list(evalPath(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
+>>> list(evalpath(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
 True
->>> list(evalPath(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
+>>> list(evalpath(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
 True
->>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
+>>> list(evalpath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
+>>> list(evalpath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
+>>> list(evalpath(g, (None, e.p1|e.p2, e.c)))
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
+>>> list(evalpath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(evalpath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
  (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(evalpath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(evalpath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
+>>> list(evalpath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
 True
->>> list(evalPath(g, (None, -(e.p1|e.p2), e.c))) == []
+>>> list(evalpath(g, (None, -(e.p1|e.p2), e.c))) == []
 True
->>> list(evalPath(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
+>>> list(evalpath(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
 True
->>> list(evalPath(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
+>>> list(evalpath(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
 True
->>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
+>>> list(evalpath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
+>>> list(evalpath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
+>>> list(evalpath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified:
 
->>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
+>>> sorted(list(evalpath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
@@ -180,7 +180,7 @@ No vars specified:
 
 """
 
-
+import warnings
 from functools import total_ordering
 from typing import TYPE_CHECKING, Callable, Iterator, Optional, Tuple, Union
 
@@ -462,6 +462,17 @@ def path_sequence(self, other):
 
 
 def evalPath(graph, t):
+    warnings.warn(
+        DeprecationWarning(
+            "rdflib.path.evalPath() is deprecated, use the (all-lowercase) evalpath(). "
+            "The mixed-case evalPath() function name is incompatible with PEP8 "
+            "recommendations and will be replaced by evalpath() in rdflib 7.0.0."
+        )
+    )
+    return evalpath(graph, t)
+
+
+def evalpath(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
 
