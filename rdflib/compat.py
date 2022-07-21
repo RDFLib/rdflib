@@ -14,7 +14,7 @@ else:
     try:
         from lxml import etree  # nqqa: N813
     except ImportError:
-        import xml.etree.ElementTree as etree  # noqa: N813
+        import xml.etree.ElementTree as etree  # noqa: N813 F401
 
 
 def cast_bytes(s, enc="utf-8"):
