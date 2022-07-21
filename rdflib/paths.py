@@ -469,10 +469,10 @@ def evalPath(graph, t):
             "recommendations and will be replaced by evalpath() in rdflib 7.0.0."
         )
     )
-    return evalpath(graph, t)
+    return eval_path(graph, t)
 
 
-def evalpath(graph, t):
+def eval_path(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
 
