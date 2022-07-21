@@ -464,7 +464,7 @@ def path_sequence(self, other):
 def evalPath(graph, t):
     warnings.warn(
         DeprecationWarning(
-            "rdflib.path.evalPath() is deprecated, use the (all-lowercase) eval_path(). "
+            "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
             "The mixed-case evalPath() function name is incompatible with PEP8 "
             "recommendations and will be replaced by eval_path() in rdflib 7.0.0."
         )
