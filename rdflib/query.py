@@ -37,9 +37,7 @@ class Processor(object):
     def __init__(self, graph):
         pass
 
-    def query(
-        self, str_or_query, initBindings={}, initNs={}, DEBUG=False  # noqa: N803
-    ):
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):  # noqa: N803
         pass
 
 
@@ -59,7 +57,7 @@ class UpdateProcessor(object):
     def __init__(self, graph):
         pass
 
-    def update(self, str_or_query, initBindings={}, initNs={}):  # noqa: N803
+    def update(self, strOrQuery, initBindings={}, initNs={}):  # noqa: N803
         pass
 
 
