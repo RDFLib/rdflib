@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     import xml.etree.ElementTree as etree
 else:
     try:
-        from lxml import etree  # n0qa: N813
+        from lxml import etree  # noqa: N813
     except ImportError:
         import xml.etree.ElementTree as etree  # noqa: N813 F401
 
