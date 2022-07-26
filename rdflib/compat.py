@@ -6,15 +6,7 @@ and different versions of support libraries.
 import codecs
 import re
 import warnings
-from typing import TYPE_CHECKING, Match
-
-if TYPE_CHECKING:
-    import xml.etree.ElementTree as etree
-else:
-    try:
-        from lxml import etree
-    except ImportError:
-        import xml.etree.ElementTree as etree
+from typing import Match
 
 
 def cast_bytes(s, enc="utf-8"):
