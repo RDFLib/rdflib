@@ -100,6 +100,31 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2044 -->
+<!-- -->
+<!-- -->
+
+- Fixed some issues with SPARQL XML result parsing that caused problems with
+  [`lxml`](https://lxml.de/). Closed [issue #2035](https://github.com/RDFLib/rdflib/issues/2035),
+  [issue #1847](https://github.com/RDFLib/rdflib/issues/1847).
+  [PR #2044](https://github.com/RDFLib/rdflib/pull/2044).
+  - Result parsing from
+    [`TextIO`](https://docs.python.org/3/library/typing.html#typing.TextIO)
+    streams now work correctly with `lxml` installed and with XML documents that
+    are not `utf-8` encoded.
+  - Elements inside `<results>` that are not `<result>` are now ignored.
+  - Elements inside `<result>` that are not `<binding>` are now ignored.
+  - Also added type hints to `rdflib.plugins.sparql.results.xmlresults`.
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->

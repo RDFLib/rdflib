@@ -33,6 +33,7 @@ jobs:
           - python-version: "3.9"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+            TOXENV_SUFFIX: "-lxml"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
