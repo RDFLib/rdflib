@@ -267,12 +267,16 @@ nitpick_ignore = [
     # sphinx-autodoc-typehints has some issues with TypeVars.
     # https://github.com/tox-dev/sphinx-autodoc-typehints/issues/39
     ("py:class", "rdflib.plugin.PluginT"),
+    # sphinx-autodoc-typehints does not like generic parmaeters in inheritance it seems
+    ("py:class", "Identifier"),
     # These are related to pyparsing.
     ("py:class", "Diagnostics"),
     ("py:class", "ParseAction"),
     ("py:class", "ParseFailAction"),
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
+    # These are related to BerkeleyDB
+    ("py:class", "db.DBEnv"),
 ]
 
 if sys.version_info < (3, 9):
@@ -283,6 +287,8 @@ if sys.version_info < (3, 9):
             ("py:class", "_ObjectType"),
             ("py:class", "_PredicateType"),
             ("py:class", "_SubjectType"),
+            ("py:class", "_ContextType"),
+            ("py:class", "_ContextIdentifierType"),
             ("py:class", "TextIO"),
         ]
     )
