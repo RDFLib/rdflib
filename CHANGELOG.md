@@ -127,6 +127,23 @@ and will be removed for release.
 
 <!-- -->
 <!-- -->
+<!-- CHANGE BARRIER: START PR #2066 -->
+<!-- -->
+<!-- -->
+
+- Removed pre python 3.7 compatibility code.
+  [PR #2066](https://github.com/RDFLib/rdflib/pull/2066).
+  - Removed fallback in case the `shutil` module does not have the `move`
+    function.
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2066 -->
+<!-- -->
+<!-- -->
+
+<!-- -->
+<!-- -->
 <!-- CHANGE BARRIER: START -->
 <!-- -->
 <!-- -->

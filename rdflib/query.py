@@ -276,11 +276,7 @@ class Result(object):
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, encoding=encoding, **args)
             stream.close()
-            if hasattr(shutil, "move"):
-                shutil.move(name, path)
-            else:
-                shutil.copy(name, path)
-                os.remove(name)
+            shutil.move(name, path)
         return None
 
     def __len__(self):

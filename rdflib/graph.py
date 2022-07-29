@@ -1215,11 +1215,7 @@ class Graph(Node):
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             dest = url2pathname(path) if scheme == "file" else location
-            if hasattr(shutil, "move"):
-                shutil.move(name, dest)
-            else:
-                shutil.copy(name, dest)
-                os.remove(name)
+            shutil.move(name, dest)
         return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
