@@ -1,9 +1,6 @@
 import logging
-import os
 import pathlib
 import random
-import shutil
-import tempfile
 from io import BytesIO
 from typing import (
     IO,
@@ -1201,20 +1198,20 @@ class Graph(Node):
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
             if isinstance(destination, pathlib.PurePath):
-                location = str(destination)
+                os_path = str(destination)
             else:
                 location = cast(str, destination)
-            scheme, netloc, path, params, _query, fragment = urlparse(location)
-            if netloc != "":
-                raise ValueError(
-                    f"destination {destination} is not a local file reference"
-                )
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
-            stream.close()
-            dest = url2pathname(path) if scheme == "file" else location
-            shutil.move(name, dest)
+                scheme, netloc, path, params, _query, fragment = urlparse(location)
+                if scheme == "file":
+                    if netloc != "":
+                        raise ValueError(
+                            f"the file URI {location!r} has an authority component which is not supported"
+                        )
+                    os_path = url2pathname(path)
+                else:
+                    os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
         return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
@@ -1276,7 +1273,7 @@ class Graph(Node):
         ...   </rdf:Description>
         ... </rdf:RDF>
         ... '''
-        >>> import tempfile
+        >>> import os, tempfile
         >>> fd, file_name = tempfile.mkstemp()
         >>> f = os.fdopen(fd, "w")
         >>> dummy = f.write(my_data)  # Returns num bytes written

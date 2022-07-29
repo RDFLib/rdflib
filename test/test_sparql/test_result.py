@@ -3,12 +3,17 @@ import inspect
 import itertools
 import logging
 import re
-import sys
-from contextlib import contextmanager
-from dataclasses import dataclass
+import socket
+from contextlib import ExitStack
 from io import BytesIO, StringIO
-from pathlib import Path
-from test.utils.result import ResultType
+from pathlib import Path, PosixPath, PurePath
+from test.utils.destination import DestinationType, DestParmType
+from test.utils.result import (
+    ResultFormat,
+    ResultFormatInfo,
+    ResultFormatTrait,
+    ResultType,
+)
 from typing import (
     IO,
     BinaryIO,
@@ -24,6 +29,7 @@ from typing import (
     Type,
     Union,
 )
+from urllib.parse import urlsplit, urlunsplit
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -151,117 +157,29 @@ def check_serialized(format: str, result: Result, data: str) -> None:
         assert result == parsed_result
 
 
-class ResultFormatTrait(enum.Enum):
-    HAS_SERIALIZER = enum.auto()
-    HAS_PARSER = enum.auto()
-
-
-@dataclass(frozen=True)
-class ResultFormat:
-    name: str
-    supported_types: Set[ResultType]
-    traits: Set[ResultFormatTrait]
-    encodings: Set[str]
-
-
-class ResultFormats(Dict[str, ResultFormat]):
-    @classmethod
-    def make(cls, *result_format: ResultFormat) -> "ResultFormats":
-        result = cls()
-        for item in result_format:
-            result[item.name] = item
-        return result
-
-
-result_formats = ResultFormats.make(
-    ResultFormat(
-        "csv",
-        {ResultType.SELECT},
-        {
-            ResultFormatTrait.HAS_PARSER,
-            ResultFormatTrait.HAS_SERIALIZER,
-        },
-        {"utf-8", "utf-16"},
-    ),
-    ResultFormat(
-        "txt",
-        {ResultType.SELECT},
-        {
-            ResultFormatTrait.HAS_SERIALIZER,
-        },
-        {"utf-8"},
-    ),
-    ResultFormat(
-        "json",
-        {ResultType.SELECT},
-        {
-            ResultFormatTrait.HAS_PARSER,
-            ResultFormatTrait.HAS_SERIALIZER,
-        },
-        {"utf-8", "utf-16"},
-    ),
-    ResultFormat(
-        "xml",
-        {ResultType.SELECT},
-        {
-            ResultFormatTrait.HAS_PARSER,
-            ResultFormatTrait.HAS_SERIALIZER,
-        },
-        {"utf-8", "utf-16"},
-    ),
-    ResultFormat(
-        "tsv",
-        {ResultType.SELECT},
-        {
-            ResultFormatTrait.HAS_PARSER,
-        },
-        {"utf-8", "utf-16"},
-    ),
-)
-
-
-class DestinationType(enum.Enum):
-    TEXT_IO = enum.auto()
-    BINARY_IO = enum.auto()
-    STR_PATH = enum.auto()
-
-
 class SourceType(enum.Enum):
     TEXT_IO = enum.auto()
     BINARY_IO = enum.auto()
 
 
-@dataclass(frozen=True)
-class DestRef:
-    param: Union[str, IO[bytes], TextIO]
-    path: Path
+DESTINATION_TYPES = {
+    DestinationType.TEXT_IO,
+    DestinationType.BINARY_IO,
+    DestinationType.STR_PATH,
+    DestinationType.FILE_URI,
+    DestinationType.RETURN,
+}
+
+ResultDestParamType = Union[str, IO[bytes], TextIO]
 
 
-@contextmanager
-def make_dest(
-    tmp_path: Path, type: Optional[DestinationType], encoding: str
-) -> Iterator[Optional[DestRef]]:
-    if type is None:
-        yield None
-        return
-    path = tmp_path / f"file-{type}"
-    if type is DestinationType.STR_PATH:
-        yield DestRef(f"{path}", path)
-    elif type is DestinationType.BINARY_IO:
-        with path.open("wb") as bfh:
-            yield DestRef(bfh, path)
-    elif type is DestinationType.TEXT_IO:
-        assert encoding is not None
-        with path.open("w", encoding=encoding) as fh:
-            yield DestRef(fh, path)
-    else:
-        raise ValueError(f"unsupported type {type}")
+def narrow_dest_param(param: DestParmType) -> ResultDestParamType:
+    assert not isinstance(param, PurePath)
+    return param
 
 
 def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
-    xfails: Dict[
-        Tuple[str, Optional[DestinationType], str], Union[MarkDecorator, Mark]
-    ] = {
+    xfails: Dict[Tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {
         ("csv", DestinationType.TEXT_IO, "utf-8"): pytest.mark.xfail(raises=TypeError),
         ("csv", DestinationType.TEXT_IO, "utf-16"): pytest.mark.xfail(raises=TypeError),
         ("json", DestinationType.TEXT_IO, "utf-8"): pytest.mark.xfail(raises=TypeError),
@@ -271,77 +189,47 @@ def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
         ("txt", DestinationType.BINARY_IO, "utf-8"): pytest.mark.xfail(
             raises=TypeError
         ),
-        ("txt", DestinationType.BINARY_IO, "utf-16"): pytest.mark.xfail(
-            raises=TypeError
-        ),
         ("txt", DestinationType.STR_PATH, "utf-8"): pytest.mark.xfail(raises=TypeError),
-        ("txt", DestinationType.STR_PATH, "utf-16"): pytest.mark.xfail(
-            raises=TypeError
-        ),
+        ("txt", DestinationType.FILE_URI, "utf-8"): pytest.mark.xfail(raises=TypeError),
     }
-    if sys.platform == "win32":
-        xfails[("csv", DestinationType.STR_PATH, "utf-8")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-        xfails[("csv", DestinationType.STR_PATH, "utf-16")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-        xfails[("json", DestinationType.STR_PATH, "utf-8")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-        xfails[("json", DestinationType.STR_PATH, "utf-16")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-        xfails[("xml", DestinationType.STR_PATH, "utf-8")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-        xfails[("xml", DestinationType.STR_PATH, "utf-16")] = pytest.mark.xfail(
-            raises=FileNotFoundError,
-            reason="string path handling does not work on windows",
-        )
-    formats = [
-        format
-        for format in result_formats.values()
-        if ResultFormatTrait.HAS_SERIALIZER in format.traits
-        and ResultType.SELECT in format.supported_types
+    format_infos = [
+        format_info
+        for format_info in ResultFormat.info_set()
+        if ResultFormatTrait.HAS_SERIALIZER in format_info.traits
+        and ResultType.SELECT in format_info.supported_types
     ]
-    destination_types: Set[Optional[DestinationType]] = {None}
-    destination_types.update(set(DestinationType))
-    for format, destination_type in itertools.product(formats, destination_types):
-        for encoding in format.encodings:
-            xfail = xfails.get((format.name, destination_type, encoding))
+    for format_info, destination_type in itertools.product(
+        format_infos, DESTINATION_TYPES
+    ):
+        for encoding in format_info.encodings:
+            xfail = xfails.get((format_info.name, destination_type, encoding))
             marks = (xfail,) if xfail is not None else ()
             yield pytest.param(
-                (format, destination_type, encoding),
-                id=f"{format.name}-{None if destination_type is None else destination_type.name}-{encoding}",
+                (format_info, destination_type, encoding),
+                id=f"{format_info.name}-{destination_type.name}-{encoding}",
                 marks=marks,
             )
 
 
 @pytest.mark.parametrize(
-    ["args"],
+    ["test_args"],
     make_select_result_serialize_parse_tests(),
 )
 def test_select_result_serialize_parse(
     tmp_path: Path,
     select_result: Result,
-    args: Tuple[ResultFormat, Optional[DestinationType], str],
+    test_args: Tuple[ResultFormatInfo, DestinationType, str],
 ) -> None:
     """
     Round tripping of a select query through the serializer and parser of a
     specific format results in an equivalent result object.
     """
-    format, destination_type, encoding = args
-    with make_dest(tmp_path, destination_type, encoding) as dest_ref:
-        destination = None if dest_ref is None else dest_ref.param
+    format_info, destination_type, encoding = test_args
+    with destination_type.make_ref(tmp_path, encoding) as dest_ref:
+        destination = None if dest_ref is None else narrow_dest_param(dest_ref.param)
         serialize_result = select_result.serialize(
             destination=destination,
-            format=format.name,
+            format=format_info.name,
             encoding=encoding,
         )
 
@@ -354,7 +242,7 @@ def test_select_result_serialize_parse(
         serialized_data = dest_bytes.decode(encoding)
 
     logging.debug("serialized_data = %s", serialized_data)
-    check_serialized(format.name, select_result, serialized_data)
+    check_serialized(format_info.name, select_result, serialized_data)
 
 
 def serialize_select(select_result: Result, format: str, encoding: str) -> bytes:
@@ -376,11 +264,11 @@ def serialize_select(select_result: Result, format: str, encoding: str) -> bytes
 
 def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
     xfails: Dict[Tuple[str, Optional[SourceType], str], Union[MarkDecorator, Mark]] = {}
-    formats = [
-        format
-        for format in result_formats.values()
-        if ResultFormatTrait.HAS_PARSER in format.traits
-        and ResultType.SELECT in format.supported_types
+    format_infos = [
+        format_info
+        for format_info in ResultFormat.info_set()
+        if ResultFormatTrait.HAS_PARSER in format_info.traits
+        and ResultType.SELECT in format_info.supported_types
     ]
     source_types = set(SourceType)
     xfails[("csv", SourceType.BINARY_IO, "utf-16")] = pytest.mark.xfail(
@@ -392,32 +280,32 @@ def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
     xfails[("tsv", SourceType.BINARY_IO, "utf-16")] = pytest.mark.xfail(
         raises=UnicodeDecodeError,
     )
-    for format, destination_type in itertools.product(formats, source_types):
-        for encoding in format.encodings:
-            xfail = xfails.get((format.name, destination_type, encoding))
+    for format_info, destination_type in itertools.product(format_infos, source_types):
+        for encoding in format_info.encodings:
+            xfail = xfails.get((format_info.format, destination_type, encoding))
             marks = (xfail,) if xfail is not None else ()
             yield pytest.param(
-                (format, destination_type, encoding),
-                id=f"{format.name}-{None if destination_type is None else destination_type.name}-{encoding}",
+                (format_info, destination_type, encoding),
+                id=f"{format_info.name}-{None if destination_type is None else destination_type.name}-{encoding}",
                 marks=marks,
             )
 
 
 @pytest.mark.parametrize(
-    ["args"],
+    ["test_args"],
     make_select_result_parse_serialized_tests(),
 )
 def test_select_result_parse_serialized(
     tmp_path: Path,
     select_result: Result,
-    args: Tuple[ResultFormat, SourceType, str],
+    test_args: Tuple[ResultFormatInfo, SourceType, str],
 ) -> None:
     """
     Parsing a serialized result produces the expected result object.
     """
-    format, source_type, encoding = args
+    format_info, source_type, encoding = test_args
 
-    serialized_data = serialize_select(select_result, format.name, encoding)
+    serialized_data = serialize_select(select_result, format_info.name, encoding)
 
     logging.debug("serialized_data = %s", serialized_data.decode(encoding))
 
@@ -429,6 +317,126 @@ def test_select_result_parse_serialized(
     else:
         raise ValueError(f"Invalid source_type {source_type}")
 
-    parsed_result = Result.parse(source, format=format.name)
+    parsed_result = Result.parse(source, format=format_info.name)
 
     assert select_result == parsed_result
+
+
+def make_test_serialize_to_strdest_tests() -> Iterator[ParameterSet]:
+    destination_types: Set[DestinationType] = {
+        DestinationType.FILE_URI,
+        DestinationType.STR_PATH,
+    }
+    name_prefixes = [
+        r"a_b-",
+        r"a%b-",
+        r"a%20b-",
+        r"a b-",
+        r"a b-",
+        r"a@b",
+        r"a$b",
+        r"a!b",
+    ]
+    if isinstance(Path.cwd(), PosixPath):
+        # not valid on windows https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
+        name_prefixes.extend(
+            [
+                r"a:b-",
+                r"a|b",
+            ]
+        )
+    for destination_type, name_prefix in itertools.product(
+        destination_types, name_prefixes
+    ):
+        yield pytest.param(
+            destination_type,
+            name_prefix,
+            id=f"{destination_type.name}-{name_prefix}",
+        )
+
+
+@pytest.mark.parametrize(
+    ["destination_type", "name_prefix"],
+    make_test_serialize_to_strdest_tests(),
+)
+def test_serialize_to_strdest(
+    tmp_path: Path,
+    select_result: Result,
+    destination_type: DestinationType,
+    name_prefix: str,
+) -> None:
+    """
+    Various ways of specifying the destination argument of ``Result.serialize``
+    as a string works correctly.
+    """
+    format_info = ResultFormat.JSON.info
+    encoding = "utf-8"
+
+    def path_factory(
+        tmp_path: Path, type: DestinationType, encoding: Optional[str]
+    ) -> Path:
+        return tmp_path / f"{name_prefix}file-{type.name}-{encoding}"
+
+    with destination_type.make_ref(
+        tmp_path,
+        encoding=encoding,
+        path_factory=path_factory,
+    ) as dest_ref:
+        assert dest_ref is not None
+        destination = narrow_dest_param(dest_ref.param)
+        serialize_result = select_result.serialize(
+            destination=destination,
+            format=format_info.name,
+            encoding=encoding,
+        )
+
+    assert serialize_result is None
+    dest_bytes = dest_ref.path.read_bytes()
+    serialized_data = dest_bytes.decode(encoding)
+
+    logging.debug("serialized_data = %s", serialized_data)
+    check_serialized(format_info.name, select_result, serialized_data)
+
+
+@pytest.mark.parametrize(
+    ["authority"],
+    [
+        ("localhost",),
+        ("127.0.0.1",),
+        ("example.com",),
+        (socket.gethostname(),),
+        (socket.getfqdn(),),
+    ],
+)
+def test_serialize_to_fileuri_with_authortiy(
+    tmp_path: Path,
+    select_result: Result,
+    authority: str,
+) -> None:
+    """
+    Serializing to a file URI with authority raises an error.
+    """
+    destination_type = DestinationType.FILE_URI
+    format_info = ResultFormat.JSON.info
+    encoding = "utf-8"
+
+    with ExitStack() as exit_stack:
+        dest_ref = exit_stack.enter_context(
+            destination_type.make_ref(
+                tmp_path,
+                encoding=encoding,
+            )
+        )
+        assert dest_ref is not None
+        assert isinstance(dest_ref.param, str)
+        urlparts = urlsplit(dest_ref.param)._replace(netloc=authority)
+        use_url = urlunsplit(urlparts)
+        logging.debug("use_url = %s", use_url)
+        catcher = exit_stack.enter_context(pytest.raises(ValueError))
+        select_result.serialize(
+            destination=use_url,
+            format=format_info.name,
+            encoding=encoding,
+        )
+        assert False  # this should never happen as serialize should always fail
+    assert catcher.value is not None

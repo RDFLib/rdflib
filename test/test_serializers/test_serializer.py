@@ -2,11 +2,13 @@ import enum
 import itertools
 import logging
 import re
-from contextlib import contextmanager
+import socket
+from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
-from pathlib import Path, PurePath
+from pathlib import Path, PosixPath, PurePath
 from test.utils import GraphHelper, get_unique_plugins
+from test.utils.destination import DestinationType, DestParmType, DestRef
 from typing import (
     IO,
     Callable,
@@ -15,10 +17,12 @@ from typing import (
     List,
     Optional,
     Set,
+    TextIO,
     Tuple,
     Union,
     cast,
 )
+from urllib.parse import urlsplit, urlunsplit
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -154,11 +158,17 @@ def test_serialize_to_path(tmp_path: Path, simple_graph: Graph):
 
 
 def test_serialize_to_neturl(simple_graph: Graph):
-    with pytest.raises(ValueError) as raised:
+    with pytest.raises(Exception) as raised:
         simple_graph.serialize(
             destination="http://example.com/", format="nt", encoding="utf-8"
         )
-    assert "destination" in f"{raised.value}"
+    assert isinstance(
+        raised.value,
+        (
+            FileNotFoundError,  # This is for Posix
+            OSError,  # This is for Windows
+        ),
+    )
 
 
 def test_serialize_to_fileurl(tmp_path: Path, simple_graph: Graph):
@@ -182,35 +192,23 @@ def test_serialize_badformat(simple_graph: Graph) -> None:
     assert "badformat" in f"{ctx.value}"
 
 
-@dataclass(frozen=True)
-class DestRef:
-    param: Union[Path, PurePath, str, IO[bytes]]
-    path: Path
+DESTINATION_TYPES = {
+    DestinationType.RETURN,
+    DestinationType.PATH,
+    DestinationType.PURE_PATH,
+    DestinationType.STR_PATH,
+    DestinationType.FILE_URI,
+    DestinationType.BINARY_IO,
+}
 
 
-class DestinationType(str, enum.Enum):
-    PATH = enum.auto()
-    PURE_PATH = enum.auto()
-    STR_PATH = enum.auto()
-    BINARY_IO = enum.auto()
-    RETURN = enum.auto()
+GraphDestParamType = Union[Path, PurePath, str, IO[bytes]]
 
-    @contextmanager
-    def make_ref(self, tmp_path: Path) -> Generator[Optional[DestRef], None, None]:
-        path = tmp_path / f"file-{self.name}"
-        if self is DestinationType.RETURN:
-            yield None
-        elif self is DestinationType.PATH:
-            yield DestRef(path, path)
-        elif self is DestinationType.PURE_PATH:
-            yield DestRef(PurePath(path), path)
-        elif self is DestinationType.STR_PATH:
-            yield DestRef(f"{path}", path)
-        elif self is DestinationType.BINARY_IO:
-            with path.open("wb") as bfh:
-                yield DestRef(bfh, path)
-        else:
-            raise ValueError(f"unsupported type {type!r}")
+
+def narrow_dest_param(param: DestParmType) -> GraphDestParamType:
+    assert not (hasattr(param, "write") and hasattr(param, "encoding"))
+    assert not isinstance(param, TextIO)
+    return param
 
 
 class GraphType(str, enum.Enum):
@@ -382,9 +380,8 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
         Tuple[str, GraphType, DestinationType, Optional[str]],
         Union[MarkDecorator, Mark],
     ] = {}
-    destination_types = set(DestinationType)
     for serializer_name, destination_type in itertools.product(
-        serializer_dict.keys(), destination_types
+        serializer_dict.keys(), DESTINATION_TYPES
     ):
         format = serializer_dict[serializer_name]
         encodings: Set[Optional[str]] = {*format.info.encodings, None}
@@ -456,7 +453,7 @@ def test_serialize_parse(
     else:
         raise ValueError(f"graph_type {graph_type!r} is not supported")
     with destination_type.make_ref(tmp_path) as dest_ref:
-        destination = None if dest_ref is None else dest_ref.param
+        destination = None if dest_ref is None else narrow_dest_param(dest_ref.param)
         serialize_result = graph.serialize(
             destination=destination,
             format=serializer_name,
@@ -507,6 +504,12 @@ class SerializeArgs:
             raise RuntimeError("dest_ref is None")
         return self.opt_dest_ref
 
+    @property
+    def dest_param(self) -> GraphDestParamType:
+        if self.opt_dest_ref is None:
+            raise RuntimeError("dest_ref is None")
+        return narrow_dest_param(self.opt_dest_ref.param)
+
 
 SerializeFunctionType = Callable[[Graph, SerializeArgs], SerializeResultType]
 StrSerializeFunctionType = Callable[[Graph, SerializeArgs], str]
@@ -536,23 +539,17 @@ bytes_serialize_functions: List[BytesSerializeFunctionType] = [
 
 
 file_serialize_functions: List[FileSerializeFunctionType] = [
-    lambda graph, args: graph.serialize(args.dest_ref.param),
-    lambda graph, args: graph.serialize(args.dest_ref.param, encoding=None),
-    lambda graph, args: graph.serialize(args.dest_ref.param, encoding="utf-8"),
-    lambda graph, args: graph.serialize(args.dest_ref.param, args.format),
+    lambda graph, args: graph.serialize(args.dest_param),
+    lambda graph, args: graph.serialize(args.dest_param, encoding=None),
+    lambda graph, args: graph.serialize(args.dest_param, encoding="utf-8"),
+    lambda graph, args: graph.serialize(args.dest_param, args.format),
+    lambda graph, args: graph.serialize(args.dest_param, args.format, encoding=None),
+    lambda graph, args: graph.serialize(args.dest_param, args.format, None, None),
+    lambda graph, args: graph.serialize(args.dest_param, args.format, encoding="utf-8"),
     lambda graph, args: graph.serialize(
-        args.dest_ref.param, args.format, encoding=None
+        args.dest_param, args.format, None, encoding="utf-8"
     ),
-    lambda graph, args: graph.serialize(args.dest_ref.param, args.format, None, None),
-    lambda graph, args: graph.serialize(
-        args.dest_ref.param, args.format, encoding="utf-8"
-    ),
-    lambda graph, args: graph.serialize(
-        args.dest_ref.param, args.format, None, encoding="utf-8"
-    ),
-    lambda graph, args: graph.serialize(
-        args.dest_ref.param, args.format, None, "utf-8"
-    ),
+    lambda graph, args: graph.serialize(args.dest_param, args.format, None, "utf-8"),
 ]
 
 
@@ -585,7 +582,6 @@ def test_serialize_overloads(
     serialize_function: SerializeFunctionType,
 ) -> None:
     format = GraphFormat.TURTLE
-    serializer = format.info.serializer
 
     with destination_type.make_ref(tmp_path) as dest_ref:
         serialize_result = serialize_function(
@@ -603,3 +599,124 @@ def test_serialize_overloads(
         serialized_data = dest_ref.path.read_text(encoding="utf-8")
 
     check_serialized(format, simple_graph, serialized_data)
+
+
+def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None]:
+    destination_types: Set[DestinationType] = {
+        DestinationType.FILE_URI,
+        DestinationType.STR_PATH,
+    }
+    name_prefixes = [
+        r"a_b-",
+        r"a%b-",
+        r"a%20b-",
+        r"a b-",
+        r"a b-",
+        r"a@b",
+        r"a$b",
+        r"a!b",
+    ]
+    if isinstance(Path.cwd(), PosixPath):
+        # not valid on windows https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
+        name_prefixes.extend(
+            [
+                r"a:b-",
+                r"a|b",
+            ]
+        )
+    for destination_type, name_prefix in itertools.product(
+        destination_types, name_prefixes
+    ):
+        yield pytest.param(
+            destination_type,
+            name_prefix,
+            id=f"{destination_type.name}-{name_prefix}",
+        )
+
+
+@pytest.mark.parametrize(
+    ["destination_type", "name_prefix"],
+    make_test_serialize_to_strdest_tests(),
+)
+def test_serialize_to_strdest(
+    tmp_path: Path,
+    simple_graph: Graph,
+    destination_type: DestinationType,
+    name_prefix: str,
+) -> None:
+    """
+    Serialization works correctly with the given arguments and generates output
+    that can be parsed to a graph that is identical to the original graph.
+    """
+    format = GraphFormat.TURTLE
+    encoding = "utf-8"
+
+    def path_factory(
+        tmp_path: Path, type: DestinationType, encoding: Optional[str]
+    ) -> Path:
+        return tmp_path / f"{name_prefix}file-{type.name}-{encoding}"
+
+    with destination_type.make_ref(
+        tmp_path,
+        encoding=encoding,
+        path_factory=path_factory,
+    ) as dest_ref:
+        assert dest_ref is not None
+        destination = narrow_dest_param(dest_ref.param)
+        serialize_result = simple_graph.serialize(
+            destination=destination,
+            format=format.info.serializer,
+            encoding=encoding,
+        )
+
+    logging.debug("serialize_result = %r, dest_ref = %s", serialize_result, dest_ref)
+
+    assert isinstance(serialize_result, Graph)
+    assert dest_ref.path.exists()
+    serialized_data = dest_ref.path.read_bytes().decode(
+        "utf-8" if encoding is None else encoding
+    )
+
+    logging.debug("serialized_data = %s", serialized_data)
+    check_serialized(format, simple_graph, serialized_data)
+
+
+@pytest.mark.parametrize(
+    ["authority"],
+    [
+        ("localhost",),
+        ("127.0.0.1",),
+        ("example.com",),
+        (socket.gethostname(),),
+        (socket.getfqdn(),),
+    ],
+)
+def test_serialize_to_fileuri_with_authortiy(
+    tmp_path: Path,
+    simple_graph: Graph,
+    authority: str,
+) -> None:
+    """
+    Serializing to a file URI with authority raises an error.
+    """
+    destination_type = DestinationType.FILE_URI
+    format = GraphFormat.TURTLE
+
+    with ExitStack() as exit_stack:
+        dest_ref = exit_stack.enter_context(
+            destination_type.make_ref(
+                tmp_path,
+            )
+        )
+        assert dest_ref is not None
+        assert isinstance(dest_ref.param, str)
+        urlparts = urlsplit(dest_ref.param)._replace(netloc=authority)
+        use_url = urlunsplit(urlparts)
+        logging.debug("use_url = %s", use_url)
+        catcher = exit_stack.enter_context(pytest.raises(ValueError))
+        simple_graph.serialize(
+            destination=use_url,
+            format=format.info.serializer,
+        )
+        assert False  # this should never happen as serialize should always fail
+    assert catcher.value is not None

@@ -145,3 +145,108 @@ def assert_bindings_sequences_equal(
         assert lhs_only == []
         assert rhs_only == []
         assert (len(common) == len(lhs)) and (len(common) == len(rhs))
+
+
+ResultFormatInfoDict = Dict["ResultFormat", "ResultFormatInfo"]
+
+
+class ResultFormatTrait(enum.Enum):
+    HAS_SERIALIZER = enum.auto()
+    HAS_PARSER = enum.auto()
+
+
+class ResultFormat(str, enum.Enum):
+    CSV = "csv"
+    TXT = "txt"
+    JSON = "json"
+    XML = "xml"
+    TSV = "tsv"
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def info_dict(cls) -> "ResultFormatInfoDict":
+        return ResultFormatInfo.make_dict(
+            ResultFormatInfo(
+                ResultFormat.CSV,
+                frozenset({ResultType.SELECT}),
+                frozenset(
+                    {
+                        ResultFormatTrait.HAS_PARSER,
+                        ResultFormatTrait.HAS_SERIALIZER,
+                    }
+                ),
+                frozenset({"utf-8", "utf-16"}),
+            ),
+            ResultFormatInfo(
+                ResultFormat.TXT,
+                frozenset({ResultType.SELECT}),
+                frozenset(
+                    {
+                        ResultFormatTrait.HAS_SERIALIZER,
+                    }
+                ),
+                frozenset({"utf-8"}),
+            ),
+            ResultFormatInfo(
+                ResultFormat.JSON,
+                frozenset({ResultType.SELECT}),
+                frozenset(
+                    {
+                        ResultFormatTrait.HAS_PARSER,
+                        ResultFormatTrait.HAS_SERIALIZER,
+                    }
+                ),
+                frozenset({"utf-8", "utf-16"}),
+            ),
+            ResultFormatInfo(
+                ResultFormat.XML,
+                frozenset({ResultType.SELECT}),
+                frozenset(
+                    {
+                        ResultFormatTrait.HAS_PARSER,
+                        ResultFormatTrait.HAS_SERIALIZER,
+                    }
+                ),
+                frozenset({"utf-8", "utf-16"}),
+            ),
+            ResultFormatInfo(
+                ResultFormat.TSV,
+                frozenset({ResultType.SELECT}),
+                frozenset(
+                    {
+                        ResultFormatTrait.HAS_PARSER,
+                    }
+                ),
+                frozenset({"utf-8", "utf-16"}),
+            ),
+        )
+
+    @property
+    def info(self) -> "ResultFormatInfo":
+        return self.info_dict()[self]
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def set(cls) -> Set["ResultFormat"]:
+        return set(cls)
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def info_set(cls) -> Set["ResultFormatInfo"]:
+        return {format.info for format in cls.set()}
+
+
+@dataclass(frozen=True)
+class ResultFormatInfo:
+    format: ResultFormat
+    supported_types: FrozenSet[ResultType]
+    traits: FrozenSet[ResultFormatTrait]
+    encodings: FrozenSet[str]
+
+    @classmethod
+    def make_dict(cls, *items: "ResultFormatInfo") -> ResultFormatInfoDict:
+        return dict((info.format, info) for info in items)
+
+    @property
+    def name(self) -> "str":
+        return f"{self.format.value}"
