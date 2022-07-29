@@ -1,11 +1,8 @@
-import unittest
-from test.utils import eq_
-
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.sparql import prepareQuery
 
 
-class TestConstructInitBindings(unittest.TestCase):
+class TestConstructInitBindings:
     def test_construct_init_bindings(self):
         """
         This is issue https://github.com/RDFLib/rdflib/issues/1001
@@ -35,4 +32,4 @@ class TestConstructInitBindings(unittest.TestCase):
             initBindings={"a": Literal("A"), "b": Literal("B"), "c": Literal("C")},
         )
 
-        eq_(sorted(results, key=lambda x: str(x[1])), expected)
+        assert sorted(results, key=lambda x: str(x[1])) == expected
