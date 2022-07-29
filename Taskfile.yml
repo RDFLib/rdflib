@@ -59,17 +59,17 @@ tasks:
   install:tox:
     desc: Install tox
     cmds:
-      - '{{._PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}'
+      - '{{._PYTHON | shellQuote}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}'
 
   install:pip-deps:
     desc: Install pip dependencies
     cmds:
-      - '{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extras.txt{{end}}'
+      - '{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}'
 
   install:flake8:
     desc: Install flake8 dependencies
     cmds:
-      - "{{._PYTHON}} -m pip install --upgrade -r requirements.flake8.txt"
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.flake8.txt"
 
   install:deps:
     desc: Install all dependencies
@@ -78,10 +78,16 @@ tasks:
       - task: install:tox
       - task: install:pip-deps
 
-  venv:install:
-    desc: Install a venv to VENV_PATH(={{.VENV_PATH}})
+
+  venv:create:
+    desc: Create a venv to VENV_PATH(={{.VENV_PATH}})
     cmds:
-      - "{{.PYTHON}} -m venv {{.VENV_PATH}}"
+      - "{{.PYTHON | shellQuote}} -m venv {{.VENV_PATH}}"
+
+  venv:install:
+    desc: Create and install a venv to VENV_PATH(={{.VENV_PATH}})
+    cmds:
+      - task: venv:create
       - task: install:pip-deps
         vars: { _PYTHON: "{{.VENV_PYTHON}}" }
 
@@ -116,7 +122,7 @@ tasks:
         {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
-        {{._PYTHON}} \
+        {{._PYTHON | shellQuote}} \
           -m tox \
           {{.CLI_ARGS}}
     env:
@@ -124,25 +130,25 @@ tasks:
   test:
     desc: Run tests
     cmds:
-      - '{{.TEST_HARNESS}}{{.VENV_BINPREFIX}}pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
+      - '{{.TEST_HARNESS}}{{print .VENV_BINPREFIX "pytest" | shellQuote}} {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
 
   flake8:
     desc: Run flake8
     cmds:
-      - "{{._PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}"
+      - "{{._PYTHON | shellQuote}} -m flakeheaven lint {{.CLI_ARGS}}"
 
   black:
     desc: Run black
     cmds:
-      - '{{._PYTHON}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{._PYTHON | shellQuote}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   isort:
     desc: Run isort
     cmds:
-      - '{{._PYTHON}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{._PYTHON | shellQuote}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   mypy:
     desc: Run mypy
     cmds:
-      - "{{._PYTHON}} -m mypy --show-error-context --show-error-codes"
+      - "{{._PYTHON | shellQuote}} -m mypy --show-error-context --show-error-codes"
 
   lint:fix:
     desc: Fix auto-fixable linting errors
@@ -186,7 +192,7 @@ tasks:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{._PYTHON}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
+      - "{{._PYTHON | shellQuote}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
@@ -257,7 +263,7 @@ tasks:
       - task: install:tox
         vars:
           WITH_GITHUB_ACTIONS: true
-      - cmd: "{{._PYTHON}} -m pip install coveralls"
+      - cmd: "{{._PYTHON | shellQuote}} -m pip install coveralls"
       - task: tox
         vars:
           COVERAGE_FILE: ".coverage"
@@ -276,7 +282,7 @@ tasks:
     # a python interpreter. The name is inspired by
     # <https://www.npmjs.com/package/rimraf>.
     - cmd: |
-        {{._PYTHON}} -c '
+        {{._PYTHON | shellQuote}} -c '
         from pathlib import Path;
         import sys, shutil;
         for path in sys.argv[1:]:
