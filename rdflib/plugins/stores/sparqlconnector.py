@@ -6,8 +6,8 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from rdflib import BNode
 from rdflib.query import Result
+from rdflib.term import BNode
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class SPARQLConnector(object):
 
         Any additional keyword arguments will be passed to to the request, and can be used to setup timesouts etc.
         """
-
+        self._method: str
         self.returnFormat = returnFormat
         self.query_endpoint = query_endpoint
         self.update_endpoint = update_endpoint
@@ -66,11 +66,11 @@ class SPARQLConnector(object):
             )
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
     @method.setter
-    def method(self, method):
+    def method(self, method: str) -> None:
         if method not in ("GET", "POST", "POST_FORM"):
             raise SPARQLConnectorException(
                 'Method must be "GET", "POST", or "POST_FORM"'
@@ -78,7 +78,12 @@ class SPARQLConnector(object):
 
         self._method = method
 
-    def query(self, query, default_graph: str = None, named_graph: str = None):
+    def query(
+        self,
+        query: str,
+        default_graph: Optional[str] = None,
+        named_graph: Optional[str] = None,
+    ) -> "Result":
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
@@ -121,7 +126,8 @@ class SPARQLConnector(object):
                     )
                 )
             except HTTPError as e:
-                return e.code, str(e), None
+                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                return e.code, str(e), None  # type: ignore[return-value]
         elif self.method == "POST_FORM":
             params["query"] = query
             args["params"].update(params)
@@ -134,7 +140,8 @@ class SPARQLConnector(object):
                     )
                 )
             except HTTPError as e:
-                return e.code, str(e), None
+                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                return e.code, str(e), None  # type: ignore[return-value]
         else:
             raise SPARQLConnectorException("Unknown method %s" % self.method)
         return Result.parse(
@@ -143,10 +150,10 @@ class SPARQLConnector(object):
 
     def update(
         self,
-        query,
+        query: str,
         default_graph: Optional[str] = None,
         named_graph: Optional[str] = None,
-    ):
+    ) -> None:
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 

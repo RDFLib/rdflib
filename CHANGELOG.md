@@ -125,6 +125,23 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2057 -->
+<!-- -->
+<!-- -->
+
+- Added type hints.
+  [PR #2057](https://github.com/RDFLib/rdflib/pull/2057).
+  - `rdflib.store` and builtin stores have mostly complete type hints.
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2057 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START PR #2066 -->

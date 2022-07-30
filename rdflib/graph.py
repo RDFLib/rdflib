@@ -42,14 +42,15 @@ from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid
 _SubjectType = Node
 _PredicateType = Node
 _ObjectType = Node
+_ContextIdentifierType = Node
 
 _TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
-_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "Graph"]
+_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
 _OptionalQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["Graph"]
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
 ]
 _OptionalIdentifiedQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["Node"]
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
 ]
 _TriplePatternType = Tuple[
     Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
@@ -393,7 +394,7 @@ class Graph(Node):
         return self.__store
 
     @property
-    def identifier(self) -> Node:
+    def identifier(self) -> "_ContextIdentifierType":
         return self.__identifier
 
     @property
@@ -534,9 +535,7 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            # type error: Argument 1 to "triples" of "Store" has incompatible type "Tuple[Optional[Node], Optional[Node], Optional[Node]]"; expected "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]]"
-            # NOTE on type error: This is because the store typing is too narrow, willbe fixed in subsequent PR.
-            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):  # type: ignore  [arg-type]
+            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
                 yield _s, _p, _o
 
     def __getitem__(self, item):
@@ -1380,7 +1379,8 @@ class Graph(Node):
                     query_object,
                     initNs,
                     initBindings,
-                    self.default_union and "__UNION__" or self.identifier,
+                    # type error: Argument 4 to "query" of "Store" has incompatible type "Union[Literal['__UNION__'], Node]"; expected "Identifier"
+                    self.default_union and "__UNION__" or self.identifier,  # type: ignore[arg-type]
                     **kwargs,
                 )
             except NotImplementedError:
@@ -1657,6 +1657,9 @@ class Graph(Node):
         return subgraph
 
 
+_ContextType = Graph
+
+
 class ConjunctiveGraph(Graph):
     """A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
@@ -1864,12 +1867,9 @@ class ConjunctiveGraph(Graph):
 
         s, p, o, c = self._spoc(triple_or_quad)
 
-        # type error: Argument 1 to "triples" of "Store" has incompatible type "Tuple[Optional[Node], Optional[Node], Optional[Node]]"; expected "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Node]]"
-        # NOTE on type error: This is because the store typing is too narrow, willbe fixed in subsequent PR.
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):  # type: ignore[arg-type]
+        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
             for ctx in cg:
-                # type error: Incompatible types in "yield" (actual type "Tuple[Optional[Node], Optional[Node], Optional[Node], Any]", expected type "Tuple[Node, Node, Node, Optional[Graph]]")
-                yield s, p, o, ctx  # type: ignore[misc]
+                yield s, p, o, ctx
 
     def triples_choices(self, triple, context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
@@ -1901,7 +1901,8 @@ class ConjunctiveGraph(Graph):
                 # the weirdness - see #225
                 yield context
             else:
-                yield self.get_context(context)
+                # type error: Statement is unreachable
+                yield self.get_context(context)  # type: ignore[unreachable]
 
     def get_graph(self, identifier: Union[URIRef, BNode]) -> Union[Graph, None]:
         """Returns the graph identified by given identifier"""
