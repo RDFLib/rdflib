@@ -79,9 +79,8 @@ class AuditableStore(Store):
         lock = destructiveOpLocks["add"]
         lock = lock if lock else threading.RLock()
         with lock:
-            # type error: Argument 2 to "Graph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
             context = (
-                context.__class__(self.store, context.identifier)  # type: ignore[arg-type]
+                context.__class__(self.store, context.identifier)
                 if context is not None
                 else None
             )
@@ -104,9 +103,8 @@ class AuditableStore(Store):
         with lock:
             # Need to determine which quads will be removed if any term is a
             # wildcard
-            # type error: error: Argument 2 to "Graph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
             context = (
-                context.__class__(self.store, context.identifier)  # type: ignore[arg-type]
+                context.__class__(self.store, context.identifier)
                 if context is not None
                 else None
             )
@@ -144,9 +142,8 @@ class AuditableStore(Store):
         self, triple: "_TriplePatternType", context: Optional["_ContextType"] = None
     ) -> Iterator[Tuple["_TripleType", Iterator[Optional["_ContextType"]]]]:
         (su, pr, ob) = triple
-        # type error: Argument 2 to "Graph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
         context = (
-            context.__class__(self.store, context.identifier)  # type: ignore[arg-type]
+            context.__class__(self.store, context.identifier)
             if context is not None
             else None
         )
@@ -154,9 +151,8 @@ class AuditableStore(Store):
             yield (s, p, o), cg
 
     def __len__(self, context: Optional["_ContextType"] = None):
-        # type error: Argument 2 to "Graph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
         context = (
-            context.__class__(self.store, context.identifier)  # type: ignore[arg-type]
+            context.__class__(self.store, context.identifier)
             if context is not None
             else None
         )
@@ -194,9 +190,8 @@ class AuditableStore(Store):
                         (subject, predicate, obj), Graph(self.store, context)  # type: ignore[arg-type]
                     )
                 else:
-                    # type error: Argument 2 to "Graph" has incompatible type "Optional[Node]"; expected "Union[IdentifiedNode, str, None]"
                     self.store.remove(
-                        (subject, predicate, obj), Graph(self.store, context)  # type: ignore[arg-type]
+                        (subject, predicate, obj), Graph(self.store, context)
                     )
 
             self.reverseOps = []

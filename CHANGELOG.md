@@ -181,6 +181,24 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2069 -->
+<!-- -->
+<!-- -->
+
+- Narrow the type of context-identifiers/graph-names from `rdflib.term.Node` to
+  `rdflib.term.IdentifiedNode` as no supported abstract syntax allows for other
+  types of context-identifiers.
+  [PR #2069](https://github.com/RDFLib/rdflib/pull/2069).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2069 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
