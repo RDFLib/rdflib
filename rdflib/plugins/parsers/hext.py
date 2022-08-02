@@ -87,7 +87,7 @@ class HextuplesParser(Parser):
 
         # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
-            with open(source.file.name) as fp:
+            with open(source.file.name, encoding="utf-8") as fp:
                 for l in fp:
                     self._parse_hextuple(cg, self._load_json_line(l))
         elif hasattr(source, "_InputSource__bytefile"):
