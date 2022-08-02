@@ -223,8 +223,7 @@ class GraphHelper:
                 gn_id = gn  # type: ignore[unreachable]
             elif isinstance(graph, ConjunctiveGraph):
                 assert isinstance(gn, Graph)
-                # type error: Incompatible types in assignment (expression has type "Node", variable has type "Identifier")
-                gn_id = gn.identifier  # type: ignore[assignment]
+                gn_id = gn.identifier
             else:
                 raise ValueError(f"invalid graph type {type(graph)}: {graph!r}")
             s, p, o = cls.nodes((sn, pn, on), bnode_handling)

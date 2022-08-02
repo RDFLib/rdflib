@@ -39,7 +39,7 @@ from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid
 _SubjectType = Node
 _PredicateType = Node
 _ObjectType = Node
-_ContextIdentifierType = Node
+_ContextIdentifierType = IdentifiedNode
 
 _TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
 _QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
@@ -370,9 +370,9 @@ class Graph(Node):
     ):
         super(Graph, self).__init__()
         self.base = base
-        self.__identifier: Node
+        self.__identifier: _ContextIdentifierType
         self.__identifier = identifier or BNode()  # type: ignore[assignment]
-        if not isinstance(self.__identifier, Node):
+        if not isinstance(self.__identifier, IdentifiedNode):
             self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
         self.__store: Store
         if not isinstance(store, Store):
