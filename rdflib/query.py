@@ -1,12 +1,10 @@
 import itertools
-import os
-import shutil
-import tempfile
 import types
 import warnings
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 __all__ = [
     "Processor",
@@ -267,16 +265,16 @@ class Result(object):
         else:
             location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc != "":
-                print(
-                    "WARNING: not saving as location" + "is not a local file reference"
-                )
-                return None
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, encoding=encoding, **args)
-            stream.close()
-            shutil.move(name, path)
+            if scheme == "file":
+                if netloc != "":
+                    raise ValueError(
+                        f"the file URI {location!r} has an authority component which is not supported"
+                    )
+                os_path = url2pathname(path)
+            else:
+                os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
         return None
 
     def __len__(self):

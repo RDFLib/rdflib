@@ -1,9 +1,6 @@
 import logging
-import os
 import pathlib
 import random
-import shutil
-import tempfile
 from io import BytesIO
 from typing import (
     IO,
@@ -42,7 +39,7 @@ from rdflib.term import BNode, Genid, IdentifiedNode, Literal, Node, RDFLibGenid
 _SubjectType = Node
 _PredicateType = Node
 _ObjectType = Node
-_ContextIdentifierType = Node
+_ContextIdentifierType = IdentifiedNode
 
 _TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
 _QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
@@ -373,9 +370,9 @@ class Graph(Node):
     ):
         super(Graph, self).__init__()
         self.base = base
-        self.__identifier: Node
+        self.__identifier: _ContextIdentifierType
         self.__identifier = identifier or BNode()  # type: ignore[assignment]
-        if not isinstance(self.__identifier, Node):
+        if not isinstance(self.__identifier, IdentifiedNode):
             self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
         self.__store: Store
         if not isinstance(store, Store):
@@ -1201,20 +1198,20 @@ class Graph(Node):
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
             if isinstance(destination, pathlib.PurePath):
-                location = str(destination)
+                os_path = str(destination)
             else:
                 location = cast(str, destination)
-            scheme, netloc, path, params, _query, fragment = urlparse(location)
-            if netloc != "":
-                raise ValueError(
-                    f"destination {destination} is not a local file reference"
-                )
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
-            stream.close()
-            dest = url2pathname(path) if scheme == "file" else location
-            shutil.move(name, dest)
+                scheme, netloc, path, params, _query, fragment = urlparse(location)
+                if scheme == "file":
+                    if netloc != "":
+                        raise ValueError(
+                            f"the file URI {location!r} has an authority component which is not supported"
+                        )
+                    os_path = url2pathname(path)
+                else:
+                    os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
         return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
@@ -1276,7 +1273,7 @@ class Graph(Node):
         ...   </rdf:Description>
         ... </rdf:RDF>
         ... '''
-        >>> import tempfile
+        >>> import os, tempfile
         >>> fd, file_name = tempfile.mkstemp()
         >>> f = os.fdopen(fd, "w")
         >>> dummy = f.write(my_data)  # Returns num bytes written

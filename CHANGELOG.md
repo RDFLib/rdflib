@@ -159,6 +159,46 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START #2068 -->
+<!-- -->
+<!-- -->
+
+- Improve file-URI and path handling in `Graph.serialize` and `Result.serialize` to
+  address problems with windows path handling in `Result.serialize` and to make
+  the behavior between `Graph.serialize` and `Result.serialie` more consistent.
+  Closed [issue #2067](https://github.com/RDFLib/rdflib/issues/2067).
+  [PR #2068](https://github.com/RDFLib/rdflib/pull/2068).
+  - String values for the `destination` argument will now only be treated as
+    file URIs if `urllib.parse.urlparse` returns their schema as `file`.
+  - Simplified file writing to avoid a temporary file.
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END #2068 -->
+<!-- -->
+<!-- -->
+
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2069 -->
+<!-- -->
+<!-- -->
+
+- Narrow the type of context-identifiers/graph-names from `rdflib.term.Node` to
+  `rdflib.term.IdentifiedNode` as no supported abstract syntax allows for other
+  types of context-identifiers.
+  [PR #2069](https://github.com/RDFLib/rdflib/pull/2069).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2069 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
