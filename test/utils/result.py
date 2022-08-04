@@ -3,7 +3,7 @@ import logging
 import pprint
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Dict, FrozenSet, Mapping, Optional, Sequence, Set, Tuple, Union
+from typing import Collection, Dict, FrozenSet, Mapping, Optional, Set, Tuple, Union
 
 from rdflib.term import BNode, Identifier, Literal, Variable
 
@@ -54,14 +54,14 @@ class ResultTypeInfo:
 
 
 BindingsType = Mapping[Variable, Optional[Identifier]]
-BindingsSequenceType = Sequence[BindingsType]
+BindingsCollectionType = Collection[BindingsType]
 CLiteralType = Union["CLiteral", "CLiteral"]
 
 
 CIdentifier = Union[Identifier, CLiteralType]
 CBindingSetType = FrozenSet[Tuple[Variable, CIdentifier]]
 CBindingsType = Mapping[Variable, Optional[CIdentifier]]
-CBindingsSequenceType = Sequence[CBindingsType]
+CBindingsCollectionType = Collection[CBindingsType]
 
 
 @dataclass
@@ -98,8 +98,8 @@ def comparable_bindings(
 
 
 def bindings_diff(
-    lhs: CBindingsSequenceType, rhs: CBindingsSequenceType
-) -> Tuple[CBindingsSequenceType, CBindingsSequenceType, CBindingsSequenceType]:
+    lhs: CBindingsCollectionType, rhs: CBindingsCollectionType
+) -> Tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
     rhs_only = []
     common = []
     lhs_matched = set()
@@ -126,13 +126,37 @@ def bindings_diff(
     return lhs_only, rhs_only, common
 
 
-def assert_bindings_sequences_equal(
-    lhs: BindingsSequenceType,
-    rhs: BindingsSequenceType,
+def comparable_collection(
+    bcollection: BindingsCollectionType, skip_duplicates: bool = False
+) -> CBindingsCollectionType:
+    result = []
+    for bindings in bcollection:
+        cbindings = comparable_bindings(bindings)
+        if skip_duplicates:
+            if cbindings in result:
+                continue
+        result.append(cbindings)
+    return result
+
+
+def assert_bindings_collections_equal(
+    lhs: BindingsCollectionType,
+    rhs: BindingsCollectionType,
     invert: bool = False,
+    skip_duplicates: bool = False,
 ) -> None:
-    clhs = [comparable_bindings(item) for item in lhs]
-    crhs = [comparable_bindings(item) for item in rhs]
+    clhs = comparable_collection(lhs, skip_duplicates=skip_duplicates)
+    crhs = comparable_collection(rhs, skip_duplicates=skip_duplicates)
+    if skip_duplicates:
+        if len(lhs) > 0:
+            assert len(clhs) > 0
+        if len(rhs) > 0:
+            assert len(crhs) > 0
+        assert len(clhs) < len(lhs)
+        assert len(crhs) < len(rhs)
+    else:
+        assert len(lhs) == len(clhs)
+        assert len(rhs) == len(crhs)
     lhs_only, rhs_only, common = bindings_diff(clhs, crhs)
     if logger.isEnabledFor(logging.DEBUG):
         logging.debug("common = \n%s", pprint.pformat(common, indent=1, width=80))
@@ -140,11 +164,11 @@ def assert_bindings_sequences_equal(
         logging.debug("rhs_only = \n%s", pprint.pformat(rhs_only, indent=1, width=80))
     if invert:
         assert lhs_only != [] or rhs_only != []
-        assert (len(common) != len(lhs)) or (len(common) != len(rhs))
+        assert (len(common) != len(clhs)) or (len(common) != len(crhs))
     else:
         assert lhs_only == []
         assert rhs_only == []
-        assert (len(common) == len(lhs)) and (len(common) == len(rhs))
+        assert (len(common) == len(clhs)) and (len(common) == len(crhs))
 
 
 ResultFormatInfoDict = Dict["ResultFormat", "ResultFormatInfo"]

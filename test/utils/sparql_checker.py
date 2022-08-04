@@ -11,7 +11,7 @@ from test.utils import BNodeHandling, GraphHelper
 from test.utils.dawg_manifest import Manifest, ManifestEntry
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF, QT, UT
-from test.utils.result import ResultType, assert_bindings_sequences_equal
+from test.utils.result import ResultType, assert_bindings_collections_equal
 from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, Type, Union
 from urllib.parse import urljoin
 
@@ -375,7 +375,8 @@ def check_query(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
     if result.type == ResultType.SELECT:
         if logger.isEnabledFor(logging.DEBUG):
             logging.debug(
-                "result.bindings = \n%s",
+                "entry.result_cardinality = %s, result.bindings = \n%s",
+                entry.result_cardinality,
                 pprint.pformat(result.bindings, indent=2, width=80),
             )
         if expected_result_format == "csv":
@@ -387,7 +388,12 @@ def check_query(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
                     bio.getvalue().decode("utf-8"),
                 )
                 result = Result.parse(bio, format="csv")
-        assert_bindings_sequences_equal(expected_result.bindings, result.bindings)
+        lax_cardinality = entry.result_cardinality == MF.LaxCardinality
+        assert_bindings_collections_equal(
+            expected_result.bindings,
+            result.bindings,
+            skip_duplicates=lax_cardinality,
+        )
     elif result.type == ResultType.ASK:
         assert expected_result.askAnswer == result.askAnswer
     else:
