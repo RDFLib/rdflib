@@ -21,6 +21,22 @@ CHANGE BARRIER is intended to reduce the potential for merge conflicts
 and will be removed for release.
 -->
 
+ <!-- --> 
+ <!-- --> 
+ <!-- CHANGE BARRIER: START --> 
+ <!-- --> 
+ <!-- --> 
+
+ - Fixes passing `NamespaceManager` in `ConjunctiveGraph`'s method `get_context()`. 
+   The `get_context()` method will now pass the `NamespaceManager` of `ConjunctiveGraph` to the `namespace_manager` attribute of the newly created context graph, instead of the `ConjunctiveGraph` object itself. This cleans up an old FIXME commment.
+   [PR #2073](https://github.com/RDFLib/rdflib/pull/2073). 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->

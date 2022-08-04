@@ -6,6 +6,7 @@ Tests for ConjunctiveGraph that do not depend on the underlying store
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph
+from rdflib.namespace import NamespaceManager
 from rdflib.parser import StringInputSource
 from rdflib.term import BNode, Identifier, URIRef
 
@@ -45,6 +46,17 @@ def test_quad_contexts():
     assert set(g) == set([(a, a, a), (b, b, b)])
     for q in g.quads():
         assert isinstance(q[3], Graph)
+
+
+def test_context_namespaces():
+    cg = ConjunctiveGraph()
+    a = URIRef("urn:a")
+    ns = URIRef("http://example.org/")
+    cg.bind("ex", ns)
+    g = cg.get_context(a)
+
+    assert type(g.namespace_manager) is NamespaceManager
+    assert ("ex", ns) in g.namespace_manager.namespaces()
 
 
 def get_graph_ids_tests():

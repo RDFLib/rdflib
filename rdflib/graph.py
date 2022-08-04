@@ -1915,9 +1915,8 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        # TODO: FIXME - why is ConjunctiveGraph passed as namespace_manager?
         return Graph(
-            store=self.store, identifier=identifier, namespace_manager=self, base=base  # type: ignore[arg-type]
+            store=self.store, identifier=identifier, namespace_manager=self.namespace_manager, base=base  # type: ignore[arg-type]
         )
 
     def remove_context(self, context):
