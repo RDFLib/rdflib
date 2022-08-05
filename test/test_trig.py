@@ -1,5 +1,6 @@
 import re
-import unittest
+
+import pytest
 
 import rdflib
 
@@ -124,8 +125,12 @@ def test_graph_parsing():
     assert len(list(g.contexts())) == 2
 
 
-@unittest.skipIf(
-    True, "Iterative serialization currently produces 16 copies of everything"
+@pytest.mark.xfail(
+    raises=AssertionError,
+    reason="""
+    This is failing because conjuncitve graph assigns things in the default graph to
+    a graph with a bnode as name. On every parse iteration a new BNode is generated
+    resulting in the default graph content appearing multipile times in the output.""",
 )
 def test_round_trips():
 
@@ -141,7 +146,7 @@ def test_round_trips():
     g = rdflib.ConjunctiveGraph()
     for i in range(5):
         g.parse(data=data, format="trig")
-        data = g.serialize(format="trig").decode()
+        data = g.serialize(format="trig")
 
     # output should only contain 1 mention of each resource/graph name
     assert data.count("thing_a") == 1

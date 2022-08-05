@@ -1,6 +1,5 @@
 import os.path
 import pkgutil
-import unittest
 
 import rdflib
 
@@ -11,7 +10,7 @@ modules should all be lower-case initial
 """
 
 
-class A(unittest.TestCase):
+class TestA:
     def module_names(self, path=None, names=None, parent=""):
 
         skip_as_ignorably_private = ["embeddedRDF", "OpenID", "DublinCore", "RDFVOC"]
@@ -45,8 +44,4 @@ class A(unittest.TestCase):
 
     def test_module_names(self):
         names = self.module_names()
-        self.assertTrue(names == set(), "module names '%s' are not lower case" % names)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert names == set(), "module names '%s' are not lower case" % names

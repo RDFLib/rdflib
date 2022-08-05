@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import binascii
-import unittest
 
 from rdflib import XSD, Literal
 
 
-class HexBinaryTestCase(unittest.TestCase):
+class TestHexBinaryCase:
     def test_int(self):
         self._test_integer(5)
         self._test_integer(3452)
@@ -20,12 +19,12 @@ class HexBinaryTestCase(unittest.TestCase):
 
         l = Literal(hex_i, datatype=XSD.hexBinary)
         bin_i = l.toPython()
-        self.assertEqual(int(binascii.hexlify(bin_i), 16), i)
+        assert int(binascii.hexlify(bin_i), 16) == i
 
-        self.assertEqual(str(l), hex_i)
-        self.assertEqual(int(hex_i, 16), i)
-        self.assertEqual(int(l, 16), i)
-        self.assertEqual(int(str(l), 16), i)
+        assert str(l) == hex_i
+        assert int(hex_i, 16) == i
+        assert int(l, 16) == i
+        assert int(str(l), 16) == i
 
     def test_unicode(self):
         str1 = "Test utf-8 string éàë"
@@ -33,17 +32,13 @@ class HexBinaryTestCase(unittest.TestCase):
         hex_str1 = binascii.hexlify(str1.encode("utf-8")).decode()
         l1 = Literal(hex_str1, datatype=XSD.hexBinary)
         b_str1 = l1.toPython()
-        self.assertEqual(b_str1.decode("utf-8"), str1)
-        self.assertEqual(str(l1), hex_str1)
+        assert b_str1.decode("utf-8") == str1
+        assert str(l1) == hex_str1
 
         # b hexstring
         hex_str1b = binascii.hexlify(str1.encode("utf-8"))
         l1b = Literal(hex_str1b, datatype=XSD.hexBinary)
         b_str1b = l1b.toPython()
-        self.assertEqual(b_str1, b_str1b)
-        self.assertEqual(b_str1b.decode("utf-8"), str1)
-        self.assertEqual(str(l1b), hex_str1)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert b_str1 == b_str1b
+        assert b_str1b.decode("utf-8") == str1
+        assert str(l1b) == hex_str1

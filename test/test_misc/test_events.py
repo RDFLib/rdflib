@@ -1,5 +1,3 @@
-import unittest
-
 from rdflib import events
 
 
@@ -52,7 +50,7 @@ class Cache(events.Dispatcher):
     has_key = __contains__
 
 
-class EventTestCase(unittest.TestCase):
+class TestEvent:
     def testEvents(self):
         c1 = Cache()
         c2 = Cache()
@@ -64,7 +62,3 @@ class EventTestCase(unittest.TestCase):
         del c3["bob"]
         assert ("bob" in c1) == False
         assert ("bob" in c2) == False
-
-
-if __name__ == "__main__":
-    unittest.main()
