@@ -38,9 +38,6 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}optional-filter/manifest#dawg-optional-filter-005-simplified": pytest.mark.xfail(
         reason="one row is missing a column"
     ),
-    f"{REMOTE_BASE_IRI}reduced/manifest#reduced-2": pytest.mark.xfail(
-        reason="fails 2/3rds or the time"
-    ),
     f"{REMOTE_BASE_IRI}syntax-sparql1/manifest#syntax-bnodes-03": pytest.mark.xfail(
         reason="Issue with bnodes in query."
     ),

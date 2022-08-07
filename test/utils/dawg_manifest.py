@@ -43,6 +43,7 @@ class ManifestEntry:
     type: IdentifiedNode = field(init=False)
     action: Optional[IdentifiedNode] = field(init=False)
     result: Optional[IdentifiedNode] = field(init=False)
+    result_cardinality: Optional[URIRef] = field(init=False)
 
     def __post_init__(self) -> None:
         type = self.value(RDF.type, IdentifiedNode)
@@ -51,6 +52,9 @@ class ManifestEntry:
 
         self.action = self.value(MF.action, IdentifiedNode)
         self.result = self.value(MF.result, IdentifiedNode)
+        self.result_cardinality = self.value(MF.resultCardinality, URIRef)
+        if self.result_cardinality is not None:
+            assert self.result_cardinality == MF.LaxCardinality
 
     @property
     def graph(self) -> Graph:

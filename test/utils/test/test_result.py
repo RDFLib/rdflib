@@ -1,5 +1,5 @@
 from contextlib import ExitStack
-from test.utils.result import BindingsSequenceType, assert_bindings_sequences_equal
+from test.utils.result import BindingsCollectionType, assert_bindings_collections_equal
 from typing import Type, Union
 
 import pytest
@@ -227,8 +227,8 @@ from rdflib.term import BNode, Literal, URIRef, Variable
     ],
 )
 def test_bindings_equal(
-    lhs: BindingsSequenceType,
-    rhs: BindingsSequenceType,
+    lhs: BindingsCollectionType,
+    rhs: BindingsCollectionType,
     expected_result: Union[bool, Type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
@@ -236,6 +236,6 @@ def test_bindings_equal(
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):
             catcher = xstack.enter_context(pytest.raises(expected_result))
-        assert_bindings_sequences_equal(lhs, rhs, not expected_result)
+        assert_bindings_collections_equal(lhs, rhs, not expected_result)
     if catcher is not None:
         assert isinstance(catcher.value, Exception)
