@@ -215,6 +215,22 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2070 -->
+<!-- -->
+<!-- -->
+
+- Always parse HexTuple files as utf-8. 
+  [PR #2070](https://github.com/RDFLib/rdflib/pull/2070).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2070 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
