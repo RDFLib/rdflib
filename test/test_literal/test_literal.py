@@ -12,7 +12,8 @@ import logging
 from contextlib import ExitStack
 from decimal import Decimal
 from test.utils import affix_tuples
-from typing import Any, Generator, Optional, Type, Union
+from test.utils.literal import LiteralChecker
+from typing import Any, Callable, Generator, Iterable, Optional, Type, Union
 
 import isodate
 import pytest
@@ -962,3 +963,74 @@ def test_exception_in_converter(
         and caplog.records[0].exc_info
         and str(caplog.records[0].exc_info[1]) == "TEST_EXCEPTION"
     )
+
+
+@pytest.mark.parametrize(
+    ["literal_maker", "checks"],
+    [
+        (
+            lambda: Literal("foo"),
+            LiteralChecker("foo", None, None, None, "foo"),
+        ),
+        (
+            lambda: Literal("foo", None, ""),
+            LiteralChecker(None, None, URIRef(""), None, "foo"),
+        ),
+        (
+            lambda: Literal("foo", None, XSD.string),
+            LiteralChecker("foo", None, XSD.string, False, "foo"),
+        ),
+        (
+            lambda: Literal("1", None, XSD.integer),
+            LiteralChecker(1, None, XSD.integer, False, "1"),
+        ),
+        (
+            lambda: Literal("1", "en", XSD.integer),
+            TypeError,
+        ),
+        (
+            lambda: Literal(Literal("1", None, XSD.integer)),
+            Literal("1", None, XSD.integer),
+        ),
+        (
+            lambda: Literal(Literal("1", None, "")),
+            [LiteralChecker(None, None, URIRef(""), None, "1"), Literal("1", None, "")],
+        ),
+        (lambda: Literal(Literal("1")), Literal("1")),
+        (
+            lambda: Literal(Literal("blue sky", "en")),
+            Literal("blue sky", "en"),
+        ),
+    ],
+)
+def test_literal_construction(
+    literal_maker: Callable[[], Literal],
+    checks: Union[
+        Iterable[Union[LiteralChecker, Literal]],
+        LiteralChecker,
+        Literal,
+        Type[Exception],
+    ],
+) -> None:
+    check_error: Optional[Type[Exception]] = None
+    if isinstance(checks, type) and issubclass(checks, Exception):
+        check_error = checks
+        checks = []
+    elif not isinstance(checks, Iterable):
+        checks = [checks]
+
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    with ExitStack() as xstack:
+        if check_error is not None:
+            catcher = xstack.enter_context(pytest.raises(check_error))
+        literal = literal_maker()
+
+    if check_error is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+
+    for check in checks:
+        if isinstance(check, LiteralChecker):
+            check.check(literal)
+        else:
+            check = literal

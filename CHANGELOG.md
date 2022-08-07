@@ -231,6 +231,25 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2076 -->
+<!-- -->
+<!-- -->
+
+- Fixed handling of `Literal` `datatype` to correctly differentiate between
+  blank string values and undefined values, also changed the datatype of
+  `rdflib.term.Literal.datatype` from `Optional[str]` to `Optional[URIRef]` now
+  that all non-`URIRef` `str` values will be converted to `URIRef`.
+  [PR #2076](https://github.com/RDFLib/rdflib/pull/2076).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2076 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
