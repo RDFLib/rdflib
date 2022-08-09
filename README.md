@@ -3,10 +3,18 @@
 RDFLib
 ======
 [![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=master)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amaster)
+[![Documentation Status](https://readthedocs.org/projects/rdflib/badge/?version=latest)](https://rdflib.readthedocs.io/en/latest/?badge=latest)
 [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
+
 [![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
+[![Downloads](https://pepy.tech/badge/rdflib/week)](https://pepy.tech/project/rdflib)
 [![PyPI](https://img.shields.io/pypi/v/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
 [![PyPI](https://img.shields.io/pypi/pyversions/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6845245.svg)](https://doi.org/10.5281/zenodo.6845245)
+
+[![Contribute with Gitpod](https://img.shields.io/badge/Contribute%20with-Gitpod-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/RDFLib/rdflib)
+[![Gitter](https://badges.gitter.im/RDFLib/rdflib.svg)](https://gitter.im/RDFLib/rdflib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Matrix](https://img.shields.io/matrix/rdflib:matrix.org?label=matrix.org%20chat)](https://matrix.to/#/#RDFLib_rdflib:gitter.im)
 
 RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). RDFLib contains most things you need to work with RDF, including:
 
@@ -35,7 +43,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `6.2.0-alpha` current `master` branch
+* `6.3.0a0` current `master` branch
 * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
@@ -53,7 +61,7 @@ The stable release of RDFLib may be installed with Python's package management t
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.1.1, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 6.2.0, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current master branch (for developers)
 
@@ -199,6 +207,11 @@ Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/dev
 Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>
+
+To get a development environment consider using Gitpod or Google Cloud Shell.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RDFLib/rdflib)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FRDFLib%2Frdflib&cloudshell_git_branch=master&cloudshell_open_in_editor=README.md)
 
 You can also raise issues here:
 

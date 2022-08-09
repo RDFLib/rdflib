@@ -1,0 +1,3593 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "RDFLib" ;
+    doap:programming-language "Python" .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-nested-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-nested-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-place-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-place-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-place-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-scope-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#join-combo-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#join-combo-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#join-scope-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#nested-opt-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#nested-opt-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#opt-filter-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#opt-filter-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#opt-filter-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/ask/manifest#ask-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/ask/manifest#ask-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/ask/manifest#ask-7> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/ask/manifest#ask-8> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#base-prefix-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#base-prefix-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#base-prefix-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#base-prefix-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#base-prefix-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#bgp-no-match> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#list-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#list-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#list-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#list-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#prefix-name-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#quotes-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#quotes-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#quotes-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#quotes-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#spoo-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-6> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-7> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-8> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#term-9> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#var-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#var-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/bnode-coreference/manifest#dawg-bnode-coref-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-bev-6> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#dawg-boolean-literal> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/bound/manifest#dawg-bound-query-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-bool> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-dT> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-dbl> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-dec> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-flt> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-int> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#cast-str> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/construct/manifest#construct-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/construct/manifest#construct-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/construct/manifest#construct-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/construct/manifest#construct-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/construct/manifest#construct-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-09b> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-10b> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-12b> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-9> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#distinct-star-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#no-distinct-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#no-distinct-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#no-distinct-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#no-distinct-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/distinct/manifest#no-distinct-9> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-datatype-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-datatype-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-datatype-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-isBlank-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-isIRI-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-isLiteral-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-isURI-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-lang-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-lang-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-lang-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-langMatches-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-langMatches-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-langMatches-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-langMatches-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-langMatches-basic> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-str-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-str-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-str-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#dawg-str-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#lang-case-insensitive-eq> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#lang-case-insensitive-ne> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#sameTerm-eq> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#sameTerm-not-eq> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#sameTerm-simple> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-2-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-2-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-graph-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-graph-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-graph-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-graph-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-equals/manifest#eq-graph-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#ge-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#le-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#minus-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#mul-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#plus-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#unminus-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-ops/manifest#unplus-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-10b> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#kanji-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#kanji-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#normalization-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#normalization-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#normalization-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-005-not-simplified> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-005-simplified> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-complex-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-complex-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-complex-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-optional-complex-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#dawg-union-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/reduced/manifest#reduced-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/reduced/manifest#reduced-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/regex/manifest#dawg-regex-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/regex/manifest#dawg-regex-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/regex/manifest#dawg-regex-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/regex/manifest#dawg-regex-004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#limit-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#limit-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#limit-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#limit-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#offset-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#slice-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#slice-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#slice-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#slice-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#slice-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-4> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-5> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-6> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-7> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-8> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-9> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-builtin> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-function> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/sort/manifest#dawg-sort-numbers> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-basic-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-expr-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-expr-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-expr-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-expr-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-expr-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-forms-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-forms-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-limit-offset-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-limit-offset-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-limit-offset-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-limit-offset-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:untested ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-13> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-14> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-15> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-16> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-17> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-18> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-19> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lit-20> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-order-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-pat-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-pat-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-pat-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-pat-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-qname-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-13> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-struct-14> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-union-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-union-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-bnode-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-bnode-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-bnode-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-dataset-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-dataset-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-dataset-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-dataset-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-esc-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-esc-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-esc-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-esc-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-esc-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-ask-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-construct01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-construct02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-construct03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-construct04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-construct06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-describe01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-describe02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-select-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-form-select-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-function-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-function-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-function-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-function-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-13> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-general-14> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-graph-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-graph-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-graph-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-graph-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-graph-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-keywords-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-keywords-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-keywords-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#blabel-cross-filter> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#blabel-cross-graph-bad> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#blabel-cross-optional-bad> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#blabel-cross-union-bad> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#bnode-dot> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#bnodes-missing-pvalues-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#bnodes-missing-pvalues-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#empty-optional-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#empty-optional-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#filter-missing-parens> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#lone-list> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#lone-node> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-13> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-14> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-15> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-16> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-17> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-18> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-19> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-20> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-21> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-22> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-23> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-24> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-25> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-26> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-27> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-28> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-29> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-30> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql3/manifest#syn-bad-31> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-34> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-35> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-36> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-37> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-38> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-GRAPH-breaks-BGP> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-OPT-breaks-BGP> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-bad-UNION-breaks-BGP> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql4/manifest#syn-leading-digits-in-prefixed-names> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql5/manifest#syntax-reduced-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql5/manifest#syntax-reduced-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/triple-match/manifest#dawg-triple-pattern-001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/triple-match/manifest#dawg-triple-pattern-002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/triple-match/manifest#dawg-triple-pattern-003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/triple-match/manifest#dawg-triple-pattern-004> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-05> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-06> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-07> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-08> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-09> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-10> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-11> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-12> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-13> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-14> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-15> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-16> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-17> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-18> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-19> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-20> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-21> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-22> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-23> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-24> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-25> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-26> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-27> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-28> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-29> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/type-promotion/manifest#type-promotion-30> .
+

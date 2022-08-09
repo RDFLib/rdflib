@@ -3,7 +3,7 @@ import logging
 import os.path
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
+from test.utils import BNodeHandling, GraphHelper
 from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
 from xml.sax import SAXParseException
 
@@ -268,10 +268,12 @@ def roundtrip(
         #
         # So we have to scrub the literals' string datatype declarations...
         for c in g2.contexts():
-            for s, p, o in c.triples((None, None, None)):
+            # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
+            for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
                 if type(o) == rdflib.Literal and o.datatype == XSD.string:
                     c.remove((s, p, o))
-                    c.add((s, p, rdflib.Literal(str(o))))
+                    # type error: Argument 1 to "add" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Node, Node, Node]"
+                    c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
 
     if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)
@@ -283,9 +285,13 @@ def roundtrip(
         GraphHelper.assert_isomorphic(g1, g2)
     if checks is not None:
         if Check.SET_EQUALS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=False)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
         if Check.SET_EQUALS_WITHOUT_BLANKS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=True)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("OK")

@@ -1,14 +1,21 @@
 import itertools
-import os
-import shutil
-import tempfile
 import types
 import warnings
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
 from urllib.parse import urlparse
+from urllib.request import url2pathname
 
-__all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
+__all__ = [
+    "Processor",
+    "UpdateProcessor",
+    "Result",
+    "ResultRow",
+    "ResultParser",
+    "ResultSerializer",
+    "ResultException",
+    "EncodeOnlyUnicode",
+]
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -28,7 +35,7 @@ class Processor(object):
     def __init__(self, graph):
         pass
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):  # noqa: N803
         pass
 
 
@@ -48,7 +55,7 @@ class UpdateProcessor(object):
     def __init__(self, graph):
         pass
 
-    def update(self, strOrQuery, initBindings={}, initNs={}):
+    def update(self, strOrQuery, initBindings={}, initNs={}):  # noqa: N803
         pass
 
 
@@ -169,6 +176,7 @@ class Result(object):
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
+        #: variables contained in the result.
         self.vars: Optional[List["Variable"]] = None
         self._bindings = None
         self._genbindings = None
@@ -257,20 +265,16 @@ class Result(object):
         else:
             location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc != "":
-                print(
-                    "WARNING: not saving as location" + "is not a local file reference"
-                )
-                return None
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, encoding=encoding, **args)
-            stream.close()
-            if hasattr(shutil, "move"):
-                shutil.move(name, path)
+            if scheme == "file":
+                if netloc != "":
+                    raise ValueError(
+                        f"the file URI {location!r} has an authority component which is not supported"
+                    )
+                os_path = url2pathname(path)
             else:
-                shutil.copy(name, path)
-                os.remove(name)
+                os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
         return None
 
     def __len__(self):

@@ -1,7 +1,5 @@
-import unittest
 from contextlib import ExitStack
 from typing import Any, Optional, Type, Union
-from unittest.case import expectedFailure
 from warnings import warn
 
 import pytest
@@ -22,7 +20,7 @@ from rdflib.namespace import (
 from rdflib.term import URIRef
 
 
-class NamespaceTest(unittest.TestCase):
+class TestNamespace:
     def setup_method(self, method):
         self.ns_str = "http://example.com/name/space/"
         self.ns = Namespace(self.ns_str)
@@ -48,7 +46,7 @@ class NamespaceTest(unittest.TestCase):
         assert ns["jörn"].startswith(ns)
 
 
-class ClosedNamespaceTest(unittest.TestCase):
+class TestClosedNamespace:
     def setup_method(self, method):
         self.ns_str = "http://example.com/name/space/"
         self.ns = ClosedNamespace(self.ns_str, ["a", "b", "c"])
@@ -57,7 +55,7 @@ class ClosedNamespaceTest(unittest.TestCase):
         # NOTE: this assumes ns_str has no characthers that need escaping
         assert self.ns_str in f"{self.ns!r}"
 
-    @expectedFailure
+    @pytest.mark.xfail
     def test_repr_ef(self):
         """
         This fails because ClosedNamespace repr does not represent the second argument
@@ -279,7 +277,7 @@ class TestNamespacePrefix:
         assert str(e.value) == "Argument must be a string, not BNode."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Graph()) is None
+            assert g.namespace_manager.expand_curie(Graph()) is None  # type: ignore[arg-type]
         assert str(e.value) == "Argument must be a string, not Graph."
 
     @pytest.mark.parametrize(

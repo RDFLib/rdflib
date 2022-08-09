@@ -92,11 +92,11 @@ class Container(object):
         pred = self.graph.predicates(self.uri, item)
         if not pred:
             raise ValueError("%s is not in %s" % (item, "container"))
-        LI_INDEX = URIRef(str(RDF) + "_")
+        li_index = URIRef(str(RDF) + "_")
 
         i = None
         for p in pred:
-            i = int(p.replace(LI_INDEX, ""))
+            i = int(p.replace(li_index, ""))
         return i
 
     def __getitem__(self, key):

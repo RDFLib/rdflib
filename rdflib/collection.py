@@ -11,13 +11,13 @@ class Collection(object):
 
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
-    >>> listName = BNode()
+    >>> listname = BNode()
     >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
-    >>> g.add((listName, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+    >>> g.add((listname, RDF.first, Literal(1))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> g.add((listName, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+    >>> g.add((listname, RDF.rest, listItem1)) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -27,7 +27,7 @@ class Collection(object):
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-    >>> c = Collection(g,listName)
+    >>> c = Collection(g,listname)
     >>> pprint([term.n3() for term in c])
     [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
      u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
@@ -51,13 +51,13 @@ class Collection(object):
     def n3(self):
         """
         >>> from rdflib.graph import Graph
-        >>> listName = BNode()
+        >>> listname = BNode()
         >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
-        >>> g.add((listName, RDF.first, Literal(1))) # doctest: +ELLIPSIS
+        >>> g.add((listname, RDF.first, Literal(1))) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-        >>> g.add((listName, RDF.rest, listItem1)) # doctest: +ELLIPSIS
+        >>> g.add((listname, RDF.rest, listItem1)) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> g.add((listItem1, RDF.first, Literal(2))) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
@@ -67,7 +67,7 @@ class Collection(object):
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> g.add((listItem2, RDF.first, Literal(3))) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
-        >>> c = Collection(g, listName)
+        >>> c = Collection(g, listname)
         >>> print(c.n3()) #doctest: +NORMALIZE_WHITESPACE
         ( "1"^^<http://www.w3.org/2001/XMLSchema#integer>
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
@@ -96,21 +96,21 @@ class Collection(object):
         """
         Returns the 0-based numerical index of the item in the list
         """
-        listName = self.uri
+        listname = self.uri
         index = 0
         while True:
-            if (listName, RDF.first, item) in self.graph:
+            if (listname, RDF.first, item) in self.graph:
                 return index
             else:
-                newLink = list(self.graph.objects(listName, RDF.rest))
+                newlink = list(self.graph.objects(listname, RDF.rest))
                 index += 1
-                if newLink == [RDF.nil]:
+                if newlink == [RDF.nil]:
                     raise ValueError("%s is not in %s" % (item, self.uri))
-                elif not newLink:
+                elif not newlink:
                     raise Exception("Malformed RDF Collection: %s" % self.uri)
                 else:
-                    assert len(newLink) == 1, "Malformed RDF Collection: %s" % self.uri
-                    listName = newLink[0]
+                    assert len(newlink) == 1, "Malformed RDF Collection: %s" % self.uri
+                    listname = newlink[0]
 
     def __getitem__(self, key):
         """TODO"""
@@ -183,8 +183,8 @@ class Collection(object):
             pass
         elif key == len(self) - 1:
             # the tail
-            priorLink = self._get_container(key - 1)
-            self.graph.set((priorLink, RDF.rest, RDF.nil))
+            priorlink = self._get_container(key - 1)
+            self.graph.set((priorlink, RDF.rest, RDF.nil))
             graph.remove((current, None, None))
         else:
             next = self._get_container(key + 1)
@@ -210,9 +210,9 @@ class Collection(object):
     def append(self, item):
         """
         >>> from rdflib.graph import Graph
-        >>> listName = BNode()
+        >>> listname = BNode()
         >>> g = Graph()
-        >>> c = Collection(g,listName,[Literal(1),Literal(2)])
+        >>> c = Collection(g,listname,[Literal(1),Literal(2)])
         >>> links = [
         ...     list(g.subjects(object=i, predicate=RDF.first))[0] for i in c]
         >>> len([i for i in links if (i, RDF.rest, RDF.nil) in g])

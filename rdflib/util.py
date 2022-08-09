@@ -29,7 +29,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Iterable,
+    Iterator,
     List,
     Optional,
     Set,
@@ -41,7 +41,7 @@ from urllib.parse import quote, urlsplit, urlunsplit
 import rdflib.graph  # avoid circular dependency
 from rdflib.compat import sign
 from rdflib.namespace import XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, Literal, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -409,13 +409,13 @@ def find_roots(
 
 def get_tree(
     graph: "Graph",
-    root: "IdentifiedNode",
+    root: "Node",
     prop: "URIRef",
-    mapper: Callable[["IdentifiedNode"], "IdentifiedNode"] = lambda x: x,
+    mapper: Callable[["Node"], "Node"] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set["IdentifiedNode"]] = None,
+    done: Optional[Set["Node"]] = None,
     dir: str = "down",
-) -> Optional[Tuple[IdentifiedNode, List[Any]]]:
+) -> Optional[Tuple[Node, List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -442,12 +442,11 @@ def get_tree(
     done.add(root)
     tree = []
 
-    branches: Iterable[IdentifiedNode]
+    branches: Iterator[Node]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
-        # type error: Incompatible types in assignment (expression has type "Iterable[Node]", variable has type "Iterable[IdentifiedNode]")
-        branches = graph.objects(root, prop)  # type: ignore[assignment]
+        branches = graph.objects(root, prop)
 
     for branch in branches:
         t = get_tree(graph, branch, prop, mapper, sortkey, done, dir)

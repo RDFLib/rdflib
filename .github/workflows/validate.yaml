@@ -19,25 +19,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta.4"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - python-version: "3.7"
             os: ubuntu-latest
             extensive-tests: true
+            TOXENV_SUFFIX: "-docs"
           - python-version: "3.8"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
+            TOXENV_SUFFIX: "-docs"
           - python-version: "3.9"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+            TOXENV_SUFFIX: "-lxml"
           - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
+            TOXENV_SUFFIX: "-docs"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/setup-java@v3
@@ -70,8 +74,9 @@ jobs:
           task \
             TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
             OS=${{ matrix.os }} \
-            EXTENSIVE=${{ matrix.extensive-tests }} \
+            EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
+            TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -81,12 +86,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - task: "gha:flake8"
-          python-version: 3.8
+          - task: "gha:flake8"
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache pip

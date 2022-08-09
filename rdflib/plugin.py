@@ -56,7 +56,15 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import EntryPoint, entry_points
 
-__all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
+__all__ = [
+    "register",
+    "get",
+    "plugins",
+    "PluginException",
+    "Plugin",
+    "PluginT",
+    "PKGPlugin",
+]
 
 rdflib_entry_points = {
     "rdf.plugins.store": Store,
@@ -76,6 +84,7 @@ class PluginException(Error):
     pass
 
 
+#: A generic type variable for plugins
 PluginT = TypeVar("PluginT")
 
 
@@ -89,7 +98,7 @@ class Plugin(Generic[PluginT]):
         self.class_name = class_name
         self._class: Optional[Type[PluginT]] = None
 
-    def getClass(self) -> Type[PluginT]:
+    def getClass(self) -> Type[PluginT]:  # noqa: N802
         if self._class is None:
             module = __import__(self.module_path, globals(), locals(), [""])
             self._class = getattr(module, self.class_name)
@@ -103,7 +112,7 @@ class PKGPlugin(Plugin[PluginT]):
         self.ep = ep
         self._class: Optional[Type[PluginT]] = None
 
-    def getClass(self) -> Type[PluginT]:
+    def getClass(self) -> Type[PluginT]:  # noqa: N802
         if self._class is None:
             self._class = self.ep.load()
         return self._class

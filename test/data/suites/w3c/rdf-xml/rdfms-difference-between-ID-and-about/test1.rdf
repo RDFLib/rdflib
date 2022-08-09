@@ -11,7 +11,7 @@
   $Id$
 -->
 <!--  
-Base URI: http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test1.rdf
+Base URI: http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test1.rdf
 
 A statement with an rdf:ID creates a regular triple.
 --> 

@@ -22,7 +22,6 @@ Name      Class
 ========= ====================================================================
 json-ld   :class:`~rdflib.plugins.parsers.jsonld.JsonLDParser`
 hext      :class:`~rdflib.plugins.parsers.hext.HextuplesParser`
-html      :class:`~rdflib.plugins.parsers.structureddata.StructuredDataParser`
 n3        :class:`~rdflib.plugins.parsers.notation3.N3Parser`
 nquads    :class:`~rdflib.plugins.parsers.nquads.NQuadsParser`
 nt        :class:`~rdflib.plugins.parsers.ntriples.NTParser`

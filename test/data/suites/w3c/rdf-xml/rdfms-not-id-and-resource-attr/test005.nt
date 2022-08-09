@@ -13,7 +13,7 @@
 #####################################################################
 <http://example.org/object> <http://example.org/prop2> "val" .
 _:j88106 <http://example.org/prop1> <http://example.org/object> .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j88106 .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop1> .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/object> .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j88106 .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop1> .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/object> .
