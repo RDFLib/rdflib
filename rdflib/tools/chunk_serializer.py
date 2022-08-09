@@ -39,7 +39,7 @@ def serialize_in_chunks(
     max_triples:
         Maximum size per NT file in triples
         Equivalent to lines in file
-        
+
         If both this parameter and max_file_size_kb are set, max_file_size_kb will be used
 
     file_name_stem:
