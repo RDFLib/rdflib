@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 N-Triples RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
@@ -5,11 +7,14 @@ format.
 """
 import codecs
 import warnings
-from typing import IO, Optional
+from typing import IO, TYPE_CHECKING, Optional, Tuple, Union
 
 from rdflib.graph import Graph
 from rdflib.serializer import Serializer
 from rdflib.term import Literal
+
+if TYPE_CHECKING:
+    from rdflib.graph import _TripleType
 
 __all__ = ["NTSerializer"]
 
@@ -52,18 +57,20 @@ class NT11Serializer(NTSerializer):
         Serializer.__init__(self, store)  # default to utf-8
 
 
-def _nt_row(triple):
+def _nt_row(triple: _TripleType):
     if isinstance(triple[2], Literal):
         return "%s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
+            # type error: "Node" has no attribute "n3"
+            triple[0].n3(),  # type: ignore[attr-defined]
+            triple[1].n3(),  # type: ignore[attr-defined]
             _quoteLiteral(triple[2]),
         )
     else:
-        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
+        # type error: "Node" has no attribute "n3"
+        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())  # type: ignore[attr-defined]
 
 
-def _quoteLiteral(l_):
+def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
     """
     a simpler version of term.Literal.n3()
     """
@@ -80,13 +87,15 @@ def _quoteLiteral(l_):
         return "%s" % encoded
 
 
-def _quote_encode(l_):
+def _quote_encode(l_: str) -> str:
     return '"%s"' % l_.replace("\\", "\\\\").replace("\n", "\\n").replace(
         '"', '\\"'
     ).replace("\r", "\\r")
 
 
-def _nt_unicode_error_resolver(err):
+def _nt_unicode_error_resolver(
+    err: UnicodeEncodeError,
+) -> Tuple[Union[str, bytes], int]:
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
     """
@@ -100,4 +109,6 @@ def _nt_unicode_error_resolver(err):
     return "".join(_replace_single(c) for c in string), err.end
 
 
-codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)
+# type error: Argument 2 to "register_error" has incompatible type "Callable[[UnicodeEncodeError], Tuple[Union[str, bytes], int]]"; expected "Callable[[UnicodeError], Tuple[Union[str, bytes], int]]"
+# type error note: this is a suspected error in typeshed https://github.com/python/typeshed/issues/8514
+codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)  # type: ignore[arg-type]

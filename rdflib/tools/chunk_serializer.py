@@ -8,15 +8,15 @@ file, which will be a Turtle file.
 
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import BinaryIO, Generator, Tuple
+from typing import TYPE_CHECKING, BinaryIO, Generator, Optional, Tuple
 
-try:
-    from rdflib import Graph, Literal
-except Exception:
-    import sys
+from rdflib.graph import Graph
+from rdflib.plugins.serializers.nt import _nt_row
 
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
-    from rdflib import Graph, Literal
+# from rdflib.term import Literal
+
+# if TYPE_CHECKING:
+#     from rdflib.graph import _TriplePatternType
 
 __all__ = ["serialize_in_chunks"]
 
@@ -26,79 +26,57 @@ def serialize_in_chunks(
     max_triples: int = 10000,
     max_file_size_kb: Optional[int] = None,
     file_name_stem: str = "chunk",
-    output_dir: Path = Path.cwd(),
+    output_dir: Optional[Path] = None,
     write_prefixes: bool = False,
-):
+) -> None:
     """
     Serializes a given Graph into a series of n-triples with a given length.
 
-    max_file_size_kb:
-        Maximum size per NT file in kB
-        Equivalent to ~6,000 triples, depending on Literal sizes
+    :param g:
+        The graph to serialize.
 
-    max_triples:
+    :param max_file_size_kb:
+        Maximum size per NT file in kB (1,000 bytes)
+        Equivalent to ~6,000 triples, depending on Literal sizes.
+
+    :param max_triples:
         Maximum size per NT file in triples
-        Equivalent to lines in file
+        Equivalent to lines in file.
 
-        If both this parameter and max_file_size_kb are set, max_file_size_kb will be used
+        If both this parameter and max_file_size_kb are set, max_file_size_kb will be used.
 
-    file_name_stem:
-        Prefix of each file name
+    :param file_name_stem:
+        Prefix of each file name.
         e.g. "chunk" = chunk_000001.nt, chunk_000002.nt...
 
-    output_dir:
-        The directory you want the files to be written to
+    :param output_dir:
+        The directory you want the files to be written to.
 
-    write_prefixes:
-        The first file created is a Turtle file containing original graph prefixes
+    :param write_prefixes:
+        The first file created is a Turtle file containing original graph prefixes.
 
 
-    See ../test/test_tools/test_chunk_serializer.py for examples of this in use.
+    See ``../test/test_tools/test_chunk_serializer.py`` for examples of this in use.
     """
+
+    if output_dir is None:
+        output_dir = Path.cwd()
 
     if not output_dir.is_dir():
         raise ValueError(
             "If you specify an output_dir, it must actually be a directory!"
         )
 
-    def _nt_row(triple):
-        if isinstance(triple[2], Literal):
-            return "%s %s %s .\n" % (
-                triple[0].n3(),
-                triple[1].n3(),
-                _quote_literal(triple[2]),
-            )
-        else:
-            return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
-
-    def _quote_literal(l_):
-        """
-        a simpler version of term.Literal.n3()
-        """
-
-        encoded = _quote_encode(l_)
-
-        if l_.language:
-            if l_.datatype:
-                raise Exception("Literal has datatype AND language!")
-            return "%s@%s" % (encoded, l_.language)
-        elif l_.datatype:
-            return "%s^^<%s>" % (encoded, l_.datatype)
-        else:
-            return "%s" % encoded
-
-    def _quote_encode(l_):
-        return '"%s"' % l_.replace("\\", "\\\\").replace("\n", "\\n").replace(
-            '"', '\\"'
-        ).replace("\r", "\\r")
-
     @contextmanager
     def _start_new_file(file_no: int) -> Generator[Tuple[Path, BinaryIO], None, None]:
+        if TYPE_CHECKING:
+            # this is here because mypy gets a bit confused
+            assert output_dir is not None
         fp = Path(output_dir) / f"{file_name_stem}_{str(file_no).zfill(6)}.nt"
         with open(fp, "ab") as fh:
             yield fp, fh
 
-    def _serialize_prefixes(g):
+    def _serialize_prefixes(g: Graph) -> str:
         pres = []
         for k, v in g.namespace_manager.namespaces():
             pres.append(f"PREFIX {k}: <{v}>")
