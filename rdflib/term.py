@@ -662,7 +662,7 @@ class Literal(Identifier):
             value = lexical_or_value
             _value, _datatype = _castPythonToLiteral(lexical_or_value, datatype)
 
-            _datatype = rdflib.util._convert_optional(URIRef, _datatype)
+            _datatype = None if _datatype is None else URIRef(_datatype)
 
             datatype = rdflib.util._coalesce(datatype, _datatype)
             if _value is not None:

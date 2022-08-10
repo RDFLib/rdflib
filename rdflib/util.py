@@ -63,7 +63,6 @@ __all__ = [
     "get_tree",
     "_coalesce",
     "_iri2uri",
-    "_convert_optional",
 ]
 
 
@@ -464,30 +463,6 @@ def get_tree(
             tree.append(t)
 
     return (mapper(root), sorted(tree, key=sortkey))
-
-
-_InputT = TypeVar("_InputT")
-_OutputT = TypeVar("_OutputT")
-
-
-def _convert_optional(
-    converter: Callable[[_InputT], _OutputT],
-    input: Optional[_InputT],
-) -> Optional[_OutputT]:
-    """
-    Convert ``input`` to ``output`` using ``converter`` if ``input`` is not
-    `None`, otherwise return `None`.
-
-    :param converter: The callable to use to conver a non-None input value to an
-        output value.
-    :param input: The value to pass to the provided ``converter`` if it is not
-        None.
-    :return: The value of ``converter(input)`` if ``input`` is not `None`, else
-        `None`.
-    """
-    if input is None:
-        return None
-    return converter(input)
 
 
 _AnyT = TypeVar("_AnyT")
