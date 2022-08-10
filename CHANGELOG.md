@@ -21,6 +21,23 @@ CHANGE BARRIER is intended to reduce the potential for merge conflicts
 and will be removed for release.
 -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
+- Add chunk serializer that facilitates the encoding of a graph into multiple
+  N-Triples encoded chunks.
+  [PR #1968](https://github.com/RDFLib/rdflib/pull/1968).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
  <!-- --> 
  <!-- --> 
  <!-- CHANGE BARRIER: START --> 
