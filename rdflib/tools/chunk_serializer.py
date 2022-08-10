@@ -73,7 +73,7 @@ def serialize_in_chunks(
             # this is here because mypy gets a bit confused
             assert output_dir is not None
         fp = Path(output_dir) / f"{file_name_stem}_{str(file_no).zfill(6)}.nt"
-        with open(fp, "ab") as fh:
+        with open(fp, "wb") as fh:
             yield fp, fh
 
     def _serialize_prefixes(g: Graph) -> str:
