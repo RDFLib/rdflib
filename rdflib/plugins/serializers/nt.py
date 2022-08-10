@@ -94,7 +94,7 @@ def _quote_encode(l_: str) -> str:
 
 
 def _nt_unicode_error_resolver(
-    err: UnicodeEncodeError,
+    err: UnicodeError,
 ) -> Tuple[Union[str, bytes], int]:
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
@@ -105,10 +105,12 @@ def _nt_unicode_error_resolver(
         fmt = "\\u%04X" if c <= 0xFFFF else "\\U%08X"
         return fmt % c
 
-    string = err.object[err.start : err.end]
-    return "".join(_replace_single(c) for c in string), err.end
+    # type error: "UnicodeError" has no attribute "object"
+    # type error: "UnicodeError" has no attribute "start"
+    # type error: "UnicodeError" has no attribute "end"
+    string = err.object[err.start : err.end]  # type: ignore[attr-defined]
+    # type error: "UnicodeError" has no attribute "end"
+    return "".join(_replace_single(c) for c in string), err.end  # type: ignore[attr-defined]
 
 
-# type error: Argument 2 to "register_error" has incompatible type "Callable[[UnicodeEncodeError], Tuple[Union[str, bytes], int]]"; expected "Callable[[UnicodeError], Tuple[Union[str, bytes], int]]"
-# type error note: this is a suspected error in typeshed https://github.com/python/typeshed/issues/8514
-codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)  # type: ignore[arg-type]
+codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)
