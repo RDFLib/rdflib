@@ -2,6 +2,7 @@ RDFLib.sublime-project
 /docs/_build/
 RDFLib.sublime-workspace
 coverage/
+cov.xml
 /.hgtags
 /.hgignore
 build/

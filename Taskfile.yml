@@ -148,7 +148,7 @@ tasks:
   mypy:
     desc: Run mypy
     cmds:
-      - "{{._PYTHON | shellQuote}} -m mypy --show-error-context --show-error-codes"
+      - "{{._PYTHON | shellQuote}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
 
   lint:fix:
     desc: Fix auto-fixable linting errors

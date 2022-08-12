@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Some utility functions.
 
@@ -35,13 +37,14 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
+    overload,
 )
 from urllib.parse import quote, urlsplit, urlunsplit
 
 import rdflib.graph  # avoid circular dependency
+import rdflib.namespace
+import rdflib.term
 from rdflib.compat import sign
-from rdflib.namespace import XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, Literal, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -117,11 +120,11 @@ def to_term(s, default=None):
     if not s:
         return default
     elif s.startswith("<") and s.endswith(">"):
-        return URIRef(s[1:-1])
+        return rdflib.term.URIRef(s[1:-1])
     elif s.startswith('"') and s.endswith('"'):
-        return Literal(s[1:-1])
+        return rdflib.term.Literal(s[1:-1])
     elif s.startswith("_"):
-        return BNode(s)
+        return rdflib.term.BNode(s)
     else:
         msg = "Unrecognised term syntax: '%s'" % s
         raise Exception(msg)
@@ -131,6 +134,8 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
+        >>> from rdflib.term import URIRef, Literal
+        >>> from rdflib.namespace import NamespaceManager
         >>> from_n3('<http://ex.com/foo>') == URIRef('http://ex.com/foo')
         True
         >>> from_n3('"foo"@de') == Literal('foo', lang='de')
@@ -159,7 +164,9 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
     if s.startswith("<"):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
-        return URIRef(s[1:-1].encode("raw-unicode-escape").decode("unicode-escape"))
+        return rdflib.term.URIRef(
+            s[1:-1].encode("raw-unicode-escape").decode("unicode-escape")
+        )
     elif s.startswith('"'):
         if s.startswith('"""'):
             quotes = '"""'
@@ -189,9 +196,9 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
-        return Literal(value, language, datatype)
+        return rdflib.term.Literal(value, language, datatype)
     elif s == "true" or s == "false":
-        return Literal(s == "true")
+        return rdflib.term.Literal(s == "true")
     elif (
         s.lower()
         .replace(".", "", 1)
@@ -200,10 +207,10 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         .isnumeric()
     ):
         if "e" in s.lower():
-            return Literal(s, datatype=XSD.double)
+            return rdflib.term.Literal(s, datatype=rdflib.namespace.XSD.double)
         if "." in s:
-            return Literal(float(s), datatype=XSD.decimal)
-        return Literal(int(s), datatype=XSD.integer)
+            return rdflib.term.Literal(float(s), datatype=rdflib.namespace.XSD.decimal)
+        return rdflib.term.Literal(int(s), datatype=rdflib.namespace.XSD.integer)
 
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
@@ -212,16 +219,16 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.Graph(backend, identifier)
     elif s.startswith("_:"):
-        return BNode(s[2:])
+        return rdflib.term.BNode(s[2:])
     elif ":" in s:
         if nsm is None:
             # instantiate default NamespaceManager and rely on its defaults
-            nsm = NamespaceManager(rdflib.graph.Graph())
+            nsm = rdflib.namespace.NamespaceManager(rdflib.graph.Graph())
         prefix, last_part = s.split(":", 1)
         ns = dict(nsm.namespaces())[prefix]
-        return Namespace(ns)[last_part]
+        return rdflib.namespace.Namespace(ns)[last_part]
     else:
-        return BNode(s)
+        return rdflib.term.BNode(s)
 
 
 def date_time(t=None, local_time_zone=False):
@@ -382,8 +389,10 @@ def _get_ext(fpath, lower=True):
 
 
 def find_roots(
-    graph: "Graph", prop: "URIRef", roots: Optional[Set["Node"]] = None
-) -> Set["Node"]:
+    graph: "Graph",
+    prop: "rdflib.term.URIRef",
+    roots: Optional[Set["rdflib.term.Node"]] = None,
+) -> Set["rdflib.term.Node"]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -395,7 +404,7 @@ def find_roots(
 
     """
 
-    non_roots: Set[Node] = set()
+    non_roots: Set[rdflib.term.Node] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -409,13 +418,13 @@ def find_roots(
 
 def get_tree(
     graph: "Graph",
-    root: "Node",
-    prop: "URIRef",
-    mapper: Callable[["Node"], "Node"] = lambda x: x,
+    root: "rdflib.term.Node",
+    prop: "rdflib.term.URIRef",
+    mapper: Callable[["rdflib.term.Node"], "rdflib.term.Node"] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set["Node"]] = None,
+    done: Optional[Set["rdflib.term.Node"]] = None,
     dir: str = "down",
-) -> Optional[Tuple[Node, List[Any]]]:
+) -> Optional[Tuple["rdflib.term.Node", List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -442,7 +451,7 @@ def get_tree(
     done.add(root)
     tree = []
 
-    branches: Iterator[Node]
+    branches: Iterator[rdflib.term.Node]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
@@ -459,24 +468,41 @@ def get_tree(
 _AnyT = TypeVar("_AnyT")
 
 
-def _coalesce(*args: Optional[_AnyT]) -> Optional[_AnyT]:
+@overload
+def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT:
+    ...
+
+
+@overload
+def _coalesce(
+    *args: Optional[_AnyT], default: Optional[_AnyT] = ...
+) -> Optional[_AnyT]:
+    ...
+
+
+def _coalesce(
+    *args: Optional[_AnyT], default: Optional[_AnyT] = None
+) -> Optional[_AnyT]:
     """
     This is a null coalescing function, it will return the first non-`None`
-    argument passed to it, otherwise it will return `None`.
+    argument passed to it, otherwise it will return ``default`` which is `None`
+    by default.
 
-    For more info regarding the rationale of this function see deferred `PEP
-    505 <https://peps.python.org/pep-0505/>`_.
+    For more info regarding the rationale of this function see deferred `PEP 505
+    <https://peps.python.org/pep-0505/>`_.
 
     :param args: Values to consider as candidates to return, the first arg that
         is not `None` will be returned. If no argument is passed this function
         will return None.
-    :return: The first ``arg`` that is not `None`, otherwise `None` if there
-        are no args or if all args are `None`.
+    :param default: The default value to return if none of the args are not
+        `None`.
+    :return: The first ``args`` that is not `None`, otherwise the value of
+        ``default`` if there are no ``args`` or if all ``args`` are `None`.
     """
     for arg in args:
         if arg is not None:
             return arg
-    return None
+    return default
 
 
 def _iri2uri(iri: str) -> str:

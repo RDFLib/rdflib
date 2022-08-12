@@ -217,14 +217,12 @@ class SimpleMemory(Store):
             self.__namespace[prefix] = namespace
         else:
             # type error: Invalid index type "Optional[URIRef]" for "Dict[URIRef, str]"; expected type "URIRef"
-            # type error: Incompatible types in assignment (expression has type "Optional[str]", target has type "str")
-            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index, assignment]
-                bound_prefix, prefix
+            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index]
+                bound_prefix, default=prefix
             )
             # type error: Invalid index type "Optional[str]" for "Dict[str, URIRef]"; expected type "str"
-            # type error: Incompatible types in assignment (expression has type "Optional[URIRef]", target has type "URIRef")
-            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index, assignment]
-                bound_namespace, namespace
+            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index]
+                bound_namespace, default=namespace
             )
 
     def namespace(self, prefix: str) -> Optional["URIRef"]:
@@ -538,14 +536,13 @@ class Memory(Store):
             self.__namespace[prefix] = namespace
         else:
             # type error: Invalid index type "Optional[URIRef]" for "Dict[URIRef, str]"; expected type "URIRef"
-            # type error: Incompatible types in assignment (expression has type "Optional[str]", target has type "str")
-            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index, assignment]
-                bound_prefix, prefix
+            self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index]
+                bound_prefix, default=prefix
             )
             # type error: Invalid index type "Optional[str]" for "Dict[str, URIRef]"; expected type "str"
             # type error: Incompatible types in assignment (expression has type "Optional[URIRef]", target has type "URIRef")
-            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index, assignment]
-                bound_namespace, namespace
+            self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index]
+                bound_namespace, default=namespace
             )
 
     def namespace(self, prefix: str) -> Optional["URIRef"]:
