@@ -12,7 +12,18 @@ from test.utils.dawg_manifest import Manifest, ManifestEntry
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF, QT, UT
 from test.utils.result import ResultType, assert_bindings_collections_equal
-from typing import Any, Callable, Dict, Generator, Optional, Set, Tuple, Type, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 from urllib.parse import urljoin
 
 import pytest
@@ -147,12 +158,19 @@ class SPARQLEntry(ManifestEntry):
 
         if self.type_info.query_type is not None:
             assert self.result is not None
-            self.query = self.graph.value(self.action, self.type_info.query_property)
+            self.query = cast(
+                Optional[IdentifiedNode],
+                self.graph.value(self.action, self.type_info.query_property),
+            )
             assert isinstance(self.query, URIRef)
             assert self.type_info.ns is not None
-            self.action_data = self.graph.value(self.action, self.type_info.ns.data)
-            self.expected_outcome = self.graph.value(
-                self.action, self.type_info.expected_outcome_property
+            self.action_data = cast(
+                Optional[IdentifiedNode],
+                self.graph.value(self.action, self.type_info.ns.data),
+            )
+            self.expected_outcome = cast(
+                Optional[URIRef],
+                self.graph.value(self.action, self.type_info.expected_outcome_property),
             )
             for action_graph_data_id in self.graph.objects(
                 self.action, self.type_info.ns.graphData
@@ -163,7 +181,10 @@ class SPARQLEntry(ManifestEntry):
                     self.action_graph_data = set()
                 self.action_graph_data.add(graph_data)
             if isinstance(self.result, BNode):
-                self.result_data = self.graph.value(self.result, self.type_info.ns.data)
+                self.result_data = cast(
+                    Optional[IdentifiedNode],
+                    self.graph.value(self.result, self.type_info.ns.data),
+                )
             else:
                 self.result_data = self.result
                 assert isinstance(self.result_data, URIRef)

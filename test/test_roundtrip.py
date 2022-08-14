@@ -271,7 +271,8 @@ def roundtrip(
             # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
             for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
                 if type(o) == rdflib.Literal and o.datatype == XSD.string:
-                    c.remove((s, p, o))
+                    # type error: Argument 1 to "remove" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
+                    c.remove((s, p, o))  # type: ignore[arg-type]
                     # type error: Argument 1 to "add" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Node, Node, Node]"
                     c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
 

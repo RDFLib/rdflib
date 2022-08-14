@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Generator,
     Iterator,
+    Mapping,
     Optional,
     Set,
     Tuple,
@@ -244,9 +245,9 @@ class SimpleMemory(Store):
     def query(  # type: ignore[return]
         self,
         query: Union["Query", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",  # noqa: N803
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: "str",  # noqa: N803
         **kwargs: Any,
     ) -> "Result":
         super(SimpleMemory, self).query(
@@ -256,9 +257,9 @@ class SimpleMemory(Store):
     def update(
         self,
         update: Union["Update", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",  # noqa: N803
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: "str",  # noqa: N803
         **kwargs: Any,
     ) -> None:
         super(SimpleMemory, self).update(
@@ -720,19 +721,19 @@ class Memory(Store):
     def query(  # type: ignore[return]
         self,
         query: Union["Query", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: "str",
         **kwargs,
     ) -> "Result":
         super(Memory, self).query(query, initNs, initBindings, queryGraph, **kwargs)
 
     def update(
         self,
-        update: Union["Update", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",
+        update: Union["Update", Any],
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: "str",
         **kwargs,
     ) -> None:
         super(Memory, self).update(update, initNs, initBindings, queryGraph, **kwargs)

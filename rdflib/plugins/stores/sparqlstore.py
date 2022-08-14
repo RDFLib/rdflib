@@ -16,6 +16,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Mapping,
     Optional,
     Tuple,
     Union,
@@ -191,7 +192,7 @@ class SPARQLStore(SPARQLConnector, Store):
     def update(  # type: ignore[override]
         self,
         query: Union["Update", str],
-        initNs: Dict[str, str] = {},  # noqa: N803
+        initNs: Dict[str, Any] = {},  # noqa: N803
         initBindings: Dict["Variable", "Identifier"] = {},
         queryGraph: "Identifier" = None,
         DEBUG: bool = False,
@@ -203,7 +204,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
         return super(SPARQLStore, self).query(*args, **kwargs)
 
-    def _inject_prefixes(self, query: str, extra_bindings: Dict[str, str]) -> str:
+    def _inject_prefixes(self, query: str, extra_bindings: Mapping[str, Any]) -> str:
         bindings = set(list(self.nsBindings.items()) + list(extra_bindings.items()))
         if not bindings:
             return query
@@ -220,9 +221,9 @@ class SPARQLStore(SPARQLConnector, Store):
     def query(  # type: ignore[override]
         self,
         query: Union["Query", str],
-        initNs: Optional[Dict[str, str]] = None,  # noqa: N803
-        initBindings: Optional[Dict["Variable", "Identifier"]] = None,
-        queryGraph: Optional["Identifier"] = None,
+        initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
+        initBindings: Optional[Mapping["Variable", "Identifier"]] = None,
+        queryGraph: Optional["str"] = None,
         DEBUG: bool = False,
     ) -> "Result":
         self.debug = DEBUG
@@ -821,9 +822,9 @@ class SPARQLUpdateStore(SPARQLStore):
     def update(  # type: ignore[override]
         self,
         query: Union["Update", str],
-        initNs: Dict[str, str] = {},  # noqa: N803
+        initNs: Dict[str, Any] = {},  # noqa: N803
         initBindings: Dict["Variable", "Identifier"] = {},
-        queryGraph: Optional["Identifier"] = None,
+        queryGraph: Optional[str] = None,
         DEBUG: bool = False,
     ):
         """

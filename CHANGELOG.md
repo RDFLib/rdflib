@@ -166,8 +166,10 @@ and will be removed for release.
 <!-- -->
 
 - Added type hints.
-  [PR #2057](https://github.com/RDFLib/rdflib/pull/2057).
   - `rdflib.store` and builtin stores have mostly complete type hints.
+    [PR #2057](https://github.com/RDFLib/rdflib/pull/2057).
+  - `rdflib.graph` have mostly complete type hints.
+    [PR #2080](https://github.com/RDFLib/rdflib/pull/2080).
 
 <!-- -->
 <!-- -->

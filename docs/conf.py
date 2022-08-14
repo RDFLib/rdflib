@@ -264,6 +264,7 @@ nitpick_ignore = [
     ("py:class", "importlib.metadata.EntryPoint"),
     ("py:class", "xml.dom.minidom.Document"),
     ("py:class", "xml.dom.minidom.DocumentFragment"),
+    ("py:class", "isodate.duration.Duration"),
     # sphinx-autodoc-typehints has some issues with TypeVars.
     # https://github.com/tox-dev/sphinx-autodoc-typehints/issues/39
     ("py:class", "rdflib.plugin.PluginT"),
@@ -282,13 +283,23 @@ nitpick_ignore = [
 if sys.version_info < (3, 9):
     nitpick_ignore.extend(
         [
-            ("py:class", "_TriplePatternType"),
-            ("py:class", "_TripleType"),
+            ("py:class", "_ContextIdentifierType"),
+            ("py:class", "_ContextType"),
+            ("py:class", "_GraphT"),
+            ("py:class", "_NamespaceSetString"),
             ("py:class", "_ObjectType"),
             ("py:class", "_PredicateType"),
+            ("py:class", "_QuadSelectorType"),
             ("py:class", "_SubjectType"),
-            ("py:class", "_ContextType"),
-            ("py:class", "_ContextIdentifierType"),
+            ("py:class", "_TripleOrPathTripleType"),
+            ("py:class", "_TripleOrQuadPathPatternType"),
+            ("py:class", "_TripleOrQuadPatternType"),
+            ("py:class", "_TriplePathPatternType"),
+            ("py:class", "_TriplePathType"),
+            ("py:class", "_TriplePatternType"),
+            ("py:class", "_TripleSelectorType"),
+            ("py:class", "_TripleType"),
+            ("py:class", "_TripleOrTriplePathType"),
             ("py:class", "TextIO"),
         ]
     )

@@ -151,6 +151,7 @@ class Manifest:
     def included(self) -> Generator["Manifest", None, None]:
         for includes in self.graph.objects(self.identifier, MF.include):
             for include in self.graph.items(includes):
+                assert isinstance(include, str)
                 include_local_path = self.uri_mapper.to_local_path(include)
                 yield from Manifest.from_sources(
                     self.uri_mapper,
@@ -166,6 +167,7 @@ class Manifest:
     ) -> Generator["ManifestEntryT", None, None]:
         for entries in self.graph.objects(self.identifier, MF.entries):
             for entry_iri in self.graph.items(entries):
+                assert isinstance(entry_iri, URIRef)
                 entry = entry_type(self, entry_iri)
                 if exclude is not None and entry.check_filters(exclude):
                     continue

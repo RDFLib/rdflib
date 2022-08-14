@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
@@ -7,8 +9,10 @@ from rdflib.term import Identifier, Node, URIRef
 
 logger = logging.getLogger(__name__)
 
-ResultType = Union[Identifier, Tuple[Identifier, List[Tuple[Identifier, Identifier]]]]
-GraphDataType = Union[List[Identifier], List[Tuple[Identifier, Identifier]]]
+ResultType = Union[
+    Identifier, Tuple[Optional[Node], List[Tuple[Optional[Node], Optional[Node]]]]
+]
+GraphDataType = Union[List[Optional[Node]], List[Tuple[Optional[Node], Optional[Node]]]]
 
 
 class RDFTest(NamedTuple):
@@ -22,7 +26,9 @@ class RDFTest(NamedTuple):
     syntax: bool
 
 
-def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RDFTest]]:
+def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFTest]]:
+    """read a manifest file"""
+
     def _str(x):
         if x is not None:
             return str(x)
@@ -39,7 +45,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     yield x
 
         for col in g.objects(m, MF.entries):
-            e: URIRef
+            e: Node
             for e in g.items(col):
 
                 approved = (
@@ -81,22 +87,22 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     # NOTE: Casting to identifier because g.objects return Node
                     # but should probably return identifier instead.
                     graphdata = list(
-                        cast(Iterable[Identifier], g.objects(a, QT.graphData))
+                        cast(Iterable[Optional[Node]], g.objects(a, QT.graphData))
                     )
-                    res = g.value(e, MF.result)
+                    res = cast(Optional[ResultType], g.value(e, MF.result))
                 elif _type in (MF.UpdateEvaluationTest, UT.UpdateEvaluationTest):
                     a = g.value(e, MF.action)
                     query = g.value(a, UT.request)
                     data = g.value(a, UT.data)
-                    graphdata = cast(List[Tuple[Identifier, Identifier]], [])
+                    graphdata = cast(List[Tuple[Optional[Node], Optional[Node]]], [])
                     for gd in g.objects(a, UT.graphData):
                         graphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))
                         )
 
                     r = g.value(e, MF.result)
-                    resdata: Identifier = g.value(r, UT.data)
-                    resgraphdata: List[Tuple[Identifier, Identifier]] = []
+                    resdata: Optional[Node] = g.value(r, UT.data)
+                    resgraphdata: List[Tuple[Optional[Node], Optional[Node]]] = []
                     for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))
@@ -149,7 +155,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     RDFT.TestTrixEval,
                 ):
                     query = g.value(e, MF.action)
-                    res = g.value(e, MF.result)
+                    res = cast(Identifier, g.value(e, MF.result))
                     syntax = _type in (
                         RDFT.TestTurtleEval,
                         RDFT.TestTrigEval,
@@ -161,6 +167,8 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, URIRef, RD
                     pass
                     print("I dont know DAWG Test Type %s" % _type)
                     continue
+
+                assert isinstance(e, URIRef)
 
                 yield e, _type, RDFTest(
                     e,
