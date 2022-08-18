@@ -309,6 +309,27 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2085 -->
+<!-- -->
+<!-- -->
+
+- Fixed serialization of BNodes in TriG.
+  The TriG serializer was only considering BNode references inside a single
+  graph and not counting the BNodes subjects as references when considering if a
+  BNode should be serialized as unlabeled blank nodes (i.e. `[ ]`), and as a
+  result it was serializing BNodes as unlabeled if they were in fact referencing
+  BNodes in other graphs.
+  [PR #2085](https://github.com/RDFLib/rdflib/pull/2085).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2085 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
