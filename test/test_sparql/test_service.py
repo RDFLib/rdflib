@@ -70,6 +70,41 @@ def test_service_with_bind():
         assert len(r) == 3
 
 
+def test_service_with_bound_solutions():
+    g = Graph()
+    g.update(
+        """
+        INSERT DATA {
+          []
+            <http://www.w3.org/2002/07/owl#sameAs> <http://de.dbpedia.org/resource/John_Lilburne> ;
+            <http://purl.org/dc/terms/subject> <http://dbpedia.org/resource/Category:1614_births> .
+        }
+        """
+    )
+    q = """
+        SELECT ?sameAs ?dbpComment ?subject WHERE {
+          []
+            <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+            <http://purl.org/dc/terms/subject> ?subject .
+
+          SERVICE <http://DBpedia.org/sparql> {
+            SELECT ?sameAs ?dbpComment ?subject WHERE {
+              <http://dbpedia.org/resource/John_Lilburne>
+                <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+                <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
+                <http://purl.org/dc/terms/subject> ?subject .
+            }
+          }
+        }
+        LIMIT 2
+        """
+    results = helper.query_with_retry(g, q)
+    assert len(results) == 2
+
+    for r in results:
+        assert len(r) == 3
+
+
 def test_service_with_values():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -326,6 +361,7 @@ def test_with_mock(
 if __name__ == "__main__":
     test_service()
     test_service_with_bind()
+    test_service_with_bound_solutions()
     test_service_with_values()
     test_service_with_implicit_select()
     test_service_with_implicit_select_and_prefix()
