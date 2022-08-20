@@ -85,12 +85,12 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: mypy-junit.xml
+          name: mypy-junit-xml-${{ matrix.python-version }}-${{ matrix.os }}
           path: test_reports/mypy-junit.xml
       - uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: pytest-junit.xml
+          name: pytest-junit-xml-${{ matrix.python-version }}-${{ matrix.os }}
           path: test_reports/pytest-junit.xml
 
       # - name: Run validation

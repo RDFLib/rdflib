@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: dorny/test-reporter@v1
         with:
-          artifact: mypy-junit.xml
+          artifact: /mypy-junit-xml-(.*)$/
           name: mypy checks
           path: "*.xml"
           reporter: java-junit
       - uses: dorny/test-reporter@v1
         with:
-          artifact: pytest-junit.xml
+          artifact: /pytest-junit-xml-(.*)$/
           name: pytest tests
           path: "*.xml"
           reporter: java-junit
