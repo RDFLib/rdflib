@@ -13,11 +13,11 @@ env:
 
 jobs:
   validate:
-    permissions:
-      id-token: write
-      contents: read
-      checks: write
-      statuses: write
+    # permissions:
+    #   id-token: write
+    #   contents: read
+    #   checks: write
+    #   statuses: write
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
