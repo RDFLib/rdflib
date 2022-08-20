@@ -4,6 +4,7 @@ on:
     workflows: ["Validate"]
     types:
       - completed
+
 jobs:
   report:
     runs-on: ubuntu-latest
