@@ -77,9 +77,20 @@ jobs:
             EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
             TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
+            TOX_JUNIT_XML_PREFIX=${{ matrix.python-version }}-${{ matrix.os }}- \
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ (success() || failure()) }}
+        with:
+          name: ${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit.xml
+      - uses: actions/upload-artifact@v2
+        if: ${{ (success() || failure()) }}
+        with:
+          name: ${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit.xml
   extra-tasks:
     runs-on: ubuntu-latest
     strategy:
