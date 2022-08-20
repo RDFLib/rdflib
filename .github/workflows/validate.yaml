@@ -19,25 +19,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta.4"]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - python-version: "3.7"
-            os: ubuntu-latest
-            extensive-tests: true
-            TOXENV_SUFFIX: "-docs"
-          - python-version: "3.8"
-            os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
-            TOXENV_SUFFIX: "-docs"
-          - python-version: "3.9"
-            os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
-            TOXENV_SUFFIX: "-lxml"
-          - python-version: "3.10"
-            os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
-            TOXENV_SUFFIX: "-docs"
+        python-version: ["3.7"]
+        os: [ubuntu-latest]
+        # python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-beta.4"]
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+        # include:
+        #   - python-version: "3.7"
+        #     os: ubuntu-latest
+        #     extensive-tests: true
+        #     TOXENV_SUFFIX: "-docs"
+        #   - python-version: "3.8"
+        #     os: ubuntu-latest
+        #     TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
+        #     TOXENV_SUFFIX: "-docs"
+        #   - python-version: "3.9"
+        #     os: ubuntu-latest
+        #     TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+        #     TOXENV_SUFFIX: "-lxml"
+        #   - python-version: "3.10"
+        #     os: ubuntu-latest
+        #     TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
+        #     TOXENV_SUFFIX: "-docs"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -80,6 +82,12 @@ jobs:
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run validation
+        if: success() || failure()
+        shell: bash
+        run: |
+          ls -al test_reports/mypy-junit.xml test_reports/pytest-junit.xml
+          exit 0
       - name: mypy report
         uses: dorny/test-reporter@v1
         if: success() || failure()
