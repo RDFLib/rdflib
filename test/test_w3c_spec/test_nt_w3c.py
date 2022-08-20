@@ -73,9 +73,9 @@ MARK_DICT = {
     f"{REMOTE_BASE_IRI}#nt-syntax-bad-esc-03": pytest.mark.xfail(
         reason="accepts badly escaped literal"
     ),
-    f"{REMOTE_BASE_IRI}#nt-syntax-bad-esc-04": pytest.mark.xfail(
-        reason="accepts badly escaped literal"
-    ),
+    # f"{REMOTE_BASE_IRI}#nt-syntax-bad-esc-04": pytest.mark.xfail(
+    #     reason="accepts badly escaped literal"
+    # ),
     f"{REMOTE_BASE_IRI}#minimal_whitespace": pytest.mark.xfail(
         reason="Not parsing valid N-Triples syntax."
     ),

@@ -4,7 +4,6 @@ on:
     workflows: ["Validate"]
     types:
       - completed
-
 jobs:
   report:
     runs-on: ubuntu-latest
@@ -24,28 +23,3 @@ jobs:
           name: pytest tests
           path: "*.xml"
           reporter: java-junit
-        # - name: mypy report
-        #   uses: dorny/test-reporter@v1
-        #   if: success() || failure()
-        #   with:
-        #     name: mypy checks
-        #     path: test_reports/mypy-junit.xml
-        #     reporter: java-junit
-        # - name: pytest report
-        #   uses: dorny/test-reporter@v1
-        #   if: success() || failure()
-        #   with:
-        #     name: pytest tests
-        #     path: test_reports/pytest-junit.xml
-        #     reporter: java-junit
-
-        # - uses: actions/upload-artifact@v2
-        #   if: success() || failure()
-        #   with:
-        #     name: mypy-junit.xml
-        #     path: test_reports/mypy-junit.xml
-        # - uses: actions/upload-artifact@v2
-        #   if: success() || failure()
-        #   with:
-        #     name: pytest-junit.xml
-        #     path: test_reports/pytest-junit.xml
