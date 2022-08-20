@@ -14,7 +14,7 @@ env:
 jobs:
   validate:
     permissions:
-      # id-token: write
+      id-token: write
       contents: read
       checks: write
       statuses: write
