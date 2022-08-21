@@ -267,6 +267,24 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START PR #2079 -->
+<!-- -->
+<!-- -->
+
+- Fixed the generation of VALUES block for federated queries.
+  The values block was including non-variable values like BNodes which resulted
+  in invalid queries.
+  [PR #2079](https://github.com/RDFLib/rdflib/pull/2079).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END PR #2079 -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->
