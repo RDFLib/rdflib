@@ -170,6 +170,10 @@ and will be removed for release.
     [PR #2057](https://github.com/RDFLib/rdflib/pull/2057).
   - `rdflib.graph` have mostly complete type hints.
     [PR #2080](https://github.com/RDFLib/rdflib/pull/2080).
+  - `rdflib.plugins.sparql.algebra` amd `rdflib.plugins.sparql.operators` have
+     mostly complete type hints.
+    [PR #2094](https://github.com/RDFLib/rdflib/pull/2094).
+
 
 <!-- -->
 <!-- -->
