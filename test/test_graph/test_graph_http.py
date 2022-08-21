@@ -9,7 +9,6 @@ from test.utils.httpservermock import (
     ServedBaseHTTPServerMock,
     ctx_http_server,
 )
-from typing import Generator
 from urllib.error import HTTPError
 
 import pytest
@@ -232,24 +231,10 @@ class TestGraphHTTP:
             assert raised.value.code == 500
 
 
-@pytest.fixture(scope="module")
-def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
-    with ServedBaseHTTPServerMock() as httpmock:
-        yield httpmock
-
-
-@pytest.fixture(scope="function")
-def httpmock(
-    module_httpmock: ServedBaseHTTPServerMock,
-) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    module_httpmock.reset()
-    yield module_httpmock
-
-
-def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
+def test_iri_source(function_httpmock: ServedBaseHTTPServerMock) -> None:
     diverse_triples_path = TEST_DATA_DIR / "variants/diverse_triples.ttl"
 
-    httpmock.responses[MethodName.GET].append(
+    function_httpmock.responses[MethodName.GET].append(
         MockHTTPResponse(
             200,
             "OK",
@@ -258,9 +243,9 @@ def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
         )
     )
     g = Graph()
-    g.parse(f"{httpmock.url}/resource/Almería")
-    assert httpmock.call_count == 1
+    g.parse(f"{function_httpmock.url}/resource/Almería")
+    assert function_httpmock.call_count == 1
     GraphHelper.assert_triple_sets_equals(cached_graph((diverse_triples_path,)), g)
 
-    req = httpmock.requests[MethodName.GET].pop(0)
+    req = function_httpmock.requests[MethodName.GET].pop(0)
     assert req.path == "/resource/Almer%C3%ADa"
