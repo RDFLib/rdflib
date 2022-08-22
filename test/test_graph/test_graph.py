@@ -76,7 +76,6 @@ def get_store_names() -> Set[Optional[str]]:
     )
     names.add(None)
 
-
     logging.debug("names = %s", names)
     return names
 
