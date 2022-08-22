@@ -180,6 +180,15 @@ def plugins(
 
 
 # Register Stores
+
+if rdflib.plugins.stores.berkeleydb.has_bsddb:
+    # Checks for BerkeleyDB before registering it
+    register(
+        "BerkeleyDB",
+        Store,
+        "rdflib.plugins.stores.berkeleydb",
+        "BerkeleyDB",
+    )
 register(
     "default",
     Store,
@@ -210,13 +219,7 @@ register(
     "rdflib.plugins.stores.concurrent",
     "ConcurrentStore",
 )
-if rdflib.plugins.stores.berkeleydb.has_bsddb == True:
-    register(
-        "BerkeleyDB",
-        Store,
-        "rdflib.plugins.stores.berkeleydb",
-        "BerkeleyDB",
-    )
+
 register(
     "SPARQLStore",
     Store,
