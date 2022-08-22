@@ -39,6 +39,7 @@ from typing import (
     overload,
 )
 
+import rdflib.plugins.stores.berkeleydb
 from rdflib.exceptions import Error
 from rdflib.parser import Parser
 from rdflib.query import (
@@ -209,12 +210,13 @@ register(
     "rdflib.plugins.stores.concurrent",
     "ConcurrentStore",
 )
-register(
-    "BerkeleyDB",
-    Store,
-    "rdflib.plugins.stores.berkeleydb",
-    "BerkeleyDB",
-)
+if rdflib.plugins.stores.berkeleydb.has_bsddb == True:
+    register(
+        "BerkeleyDB",
+        Store,
+        "rdflib.plugins.stores.berkeleydb",
+        "BerkeleyDB",
+    )
 register(
     "SPARQLStore",
     Store,
@@ -613,3 +615,5 @@ register(
     "rdflib.plugins.sparql.results.tsvresults",
     "TSVResultParser",
 )
+
+# if plugins whatever doesn't have bddb, unregister it

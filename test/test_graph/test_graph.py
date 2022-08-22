@@ -75,8 +75,7 @@ def get_store_names() -> Set[Optional[str]]:
         }
     )
     names.add(None)
-    if not has_bsddb:
-        names.remove("BerkeleyDB")
+
 
     logging.debug("names = %s", names)
     return names
