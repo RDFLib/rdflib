@@ -13,7 +13,6 @@ from rdflib import Graph, URIRef, plugin
 from rdflib.exceptions import ParserError
 from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
-from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import Store
 from rdflib.term import BNode
 
