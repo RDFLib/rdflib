@@ -291,6 +291,24 @@ and will be removed for release.
 <!-- -->
 <!-- -->
 
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: START -->
+<!-- -->
+<!-- -->
+
+- Only register the `rdflib.plugins.stores.berkeleydb.BerkeleyDB` as a store
+  plugin if the `berkeleydb` module is present.
+  Closed [issue #1816](https://github.com/RDFLib/rdflib/issues/1816).
+  [PR #2096](https://github.com/RDFLib/rdflib/pull/2096).
+
+<!-- -->
+<!-- -->
+<!-- CHANGE BARRIER: END -->
+<!-- -->
+<!-- -->
+
 <!-- -->
 <!-- -->
 <!-- CHANGE BARRIER: START -->

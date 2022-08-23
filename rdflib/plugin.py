@@ -39,6 +39,7 @@ from typing import (
     overload,
 )
 
+import rdflib.plugins.stores.berkeleydb
 from rdflib.exceptions import Error
 from rdflib.parser import Parser
 from rdflib.query import (
@@ -179,6 +180,15 @@ def plugins(
 
 
 # Register Stores
+
+if rdflib.plugins.stores.berkeleydb.has_bsddb:
+    # Checks for BerkeleyDB before registering it
+    register(
+        "BerkeleyDB",
+        Store,
+        "rdflib.plugins.stores.berkeleydb",
+        "BerkeleyDB",
+    )
 register(
     "default",
     Store,
@@ -209,12 +219,7 @@ register(
     "rdflib.plugins.stores.concurrent",
     "ConcurrentStore",
 )
-register(
-    "BerkeleyDB",
-    Store,
-    "rdflib.plugins.stores.berkeleydb",
-    "BerkeleyDB",
-)
+
 register(
     "SPARQLStore",
     Store,
