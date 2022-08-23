@@ -32,8 +32,16 @@ import python_minifier
 from strip_hints import strip_string_to_string
 
 
-def clean_python(code: str) -> str:
-    code = strip_string_to_string(code, to_empty=True, strip_nl=True)
+def clean_python(input: Path) -> str:
+    code = input.read_text()
+    try:
+        code = strip_string_to_string(code, to_empty=True, strip_nl=True)
+    except Exception:
+        logging.warning(
+            "failed to strip type hints from %s, falling back to using with type hints",
+            input,
+        )
+        code = code
     code = python_minifier.minify(
         code,
         remove_annotations=True,
@@ -106,12 +114,12 @@ class Application:
             "base = %s, lhs_file = %s, rhs_file = %s", base, lhs_file, rhs_file
         )
 
-        lhs_file_content = lhs_file.read_text()
-        rhs_file_content = rhs_file.read_text()
-
         if lhs_file.name.endswith(".py") and rhs_file.name.endswith(".py"):
-            lhs_file_content = clean_python(lhs_file_content)
-            rhs_file_content = clean_python(rhs_file_content)
+            lhs_file_content = clean_python(lhs_file)
+            rhs_file_content = clean_python(rhs_file)
+        else:
+            lhs_file_content = lhs_file.read_text()
+            rhs_file_content = rhs_file.read_text()
 
         lhs_file_lines = lhs_file_content.splitlines(keepends=True)
         rhs_file_lines = rhs_file_content.splitlines(keepends=True)

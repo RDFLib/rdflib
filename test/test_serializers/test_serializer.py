@@ -60,7 +60,8 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
     quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    graph.add(quad)
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+    graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
     assert NS in data

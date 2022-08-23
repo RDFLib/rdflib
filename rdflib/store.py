@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pickle
 from io import BytesIO
 from typing import (
@@ -12,7 +14,6 @@ from typing import (
     Optional,
     Tuple,
     Union,
-    overload,
 )
 
 from rdflib.events import Dispatcher, Event
@@ -278,59 +279,17 @@ class Store(object):
         """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
-    @overload
     def triples_choices(
         self,
-        triple: Tuple[List["_SubjectType"], "_PredicateType", "_ObjectType"],
-        context: Optional["_ContextType"] = None,
-    ) -> Generator[
-        Tuple["_TripleType", Iterator[Optional["_ContextType"]]],
-        None,
-        None,
-    ]:
-        ...
-
-    @overload
-    def triples_choices(
-        self,
-        triple: Tuple["_SubjectType", List["_PredicateType"], "_ObjectType"],
-        context: Optional["_ContextType"] = None,
-    ) -> Generator[
-        Tuple[
-            Tuple["_SubjectType", "_PredicateType", "_ObjectType"],
-            Iterator[Optional["_ContextType"]],
-        ],
-        None,
-        None,
-    ]:
-        ...
-
-    @overload
-    def triples_choices(
-        self,
-        triple: Tuple["_SubjectType", "_PredicateType", List["_ObjectType"]],
-        context: Optional["_ContextType"] = None,
-    ) -> Generator[
-        Tuple[
-            Tuple["_SubjectType", "_PredicateType", "_ObjectType"],
-            Iterator[Optional["_ContextType"]],
-        ],
-        None,
-        None,
-    ]:
-        ...
-
-    def triples_choices(
-        self,
-        triple: Tuple[
-            Union["_SubjectType", List["_SubjectType"]],
-            Union["_PredicateType", List["_PredicateType"]],
-            Union["_ObjectType", List["_ObjectType"]],
+        triple: Union[
+            Tuple[List["_SubjectType"], "_PredicateType", "_ObjectType"],
+            Tuple["_SubjectType", List["_PredicateType"], "_ObjectType"],
+            Tuple["_SubjectType", "_PredicateType", List["_ObjectType"]],
         ],
         context: Optional["_ContextType"] = None,
     ) -> Generator[
         Tuple[
-            Tuple["_SubjectType", "_PredicateType", "_ObjectType"],
+            _TripleType,
             Iterator[Optional["_ContextType"]],
         ],
         None,
@@ -430,9 +389,9 @@ class Store(object):
     def query(
         self,
         query: Union["Query", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",  # noqa: N803
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> "Result":
         """
@@ -453,9 +412,9 @@ class Store(object):
     def update(
         self,
         update: Union["Update", str],
-        initNs: Dict[str, str],  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"],  # noqa: N803
-        queryGraph: "Identifier",  # noqa: N803
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> None:
         """
