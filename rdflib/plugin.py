@@ -618,5 +618,3 @@ register(
     "rdflib.plugins.sparql.results.tsvresults",
     "TSVResultParser",
 )
-
-# if plugins whatever doesn't have bddb, unregister it
