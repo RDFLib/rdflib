@@ -9,7 +9,6 @@ from test.utils.httpservermock import (
 from typing import (
     Dict,
     FrozenSet,
-    Generator,
     List,
     Mapping,
     Optional,
@@ -258,20 +257,6 @@ WHERE {
     assert expected == freeze_bindings(results.bindings)
 
 
-@pytest.fixture(scope="module")
-def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
-    with ServedBaseHTTPServerMock() as httpmock:
-        yield httpmock
-
-
-@pytest.fixture(scope="function")
-def httpmock(
-    module_httpmock: ServedBaseHTTPServerMock,
-) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    module_httpmock.reset()
-    yield module_httpmock
-
-
 @pytest.mark.parametrize(
     ("response_bindings", "expected_result"),
     [
@@ -313,7 +298,7 @@ def httpmock(
     ],
 )
 def test_with_mock(
-    httpmock: ServedBaseHTTPServerMock,
+    function_httpmock: ServedBaseHTTPServerMock,
     response_bindings: List[Dict[str, str]],
     expected_result: Union[List[Identifier], Type[Exception]],
 ) -> None:
@@ -330,12 +315,12 @@ def test_with_mock(
         }
     }
     """
-    query = query.replace("REMOTE_URL", httpmock.url)
+    query = query.replace("REMOTE_URL", function_httpmock.url)
     response = {
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": item} for item in response_bindings]},
     }
-    httpmock.responses[MethodName.GET].append(
+    function_httpmock.responses[MethodName.GET].append(
         MockHTTPResponse(
             200,
             "OK",
