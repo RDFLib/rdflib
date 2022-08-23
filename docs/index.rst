@@ -88,6 +88,7 @@ For developers
    docs
    persisting_n3_terms
    type_hints
+   CONTRIBUTING
 
 Source Code
 -----------
