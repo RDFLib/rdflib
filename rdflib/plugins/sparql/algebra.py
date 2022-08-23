@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
@@ -48,9 +50,7 @@ def OrderBy(p: CompValue, expr: List[CompValue]) -> CompValue:
     return CompValue("OrderBy", p=p, expr=expr)
 
 
-def ToMultiSet(
-    p: typing.Union[List[Dict[Variable, Identifier]], CompValue]
-) -> CompValue:
+def ToMultiSet(p: typing.Union[List[Dict[Variable, str]], CompValue]) -> CompValue:
     return CompValue("ToMultiSet", p=p)
 
 
@@ -66,11 +66,13 @@ def Minus(p1: CompValue, p2: CompValue) -> CompValue:
     return CompValue("Minus", p1=p1, p2=p2)
 
 
-def Graph(term, graph) -> CompValue:
+def Graph(term: Identifier, graph: CompValue) -> CompValue:
     return CompValue("Graph", term=term, p=graph)
 
 
-def BGP(triples=None) -> CompValue:
+def BGP(
+    triples: Optional[List[Tuple[Identifier, Identifier, Identifier]]] = None
+) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
 
@@ -78,19 +80,21 @@ def LeftJoin(p1: CompValue, p2: CompValue, expr) -> CompValue:
     return CompValue("LeftJoin", p1=p1, p2=p2, expr=expr)
 
 
-def Filter(expr, p: CompValue) -> CompValue:
+def Filter(expr: Expr, p: CompValue) -> CompValue:
     return CompValue("Filter", expr=expr, p=p)
 
 
-def Extend(p: CompValue, expr, var) -> CompValue:
+def Extend(
+    p: CompValue, expr: typing.Union[Identifier, Expr], var: Variable
+) -> CompValue:
     return CompValue("Extend", p=p, expr=expr, var=var)
 
 
-def Values(res) -> CompValue:
+def Values(res: List[Dict[Variable, str]]) -> CompValue:
     return CompValue("values", res=res)
 
 
-def Project(p: CompValue, PV) -> CompValue:
+def Project(p: CompValue, PV: List[Variable]) -> CompValue:
     return CompValue("Project", p=p, PV=PV)
 
 
@@ -102,7 +106,7 @@ def _knownTerms(
     triple: Tuple[Identifier, Identifier, Identifier],
     varsknown: Set[typing.Union[BNode, Variable]],
     varscount: Dict[Identifier, int],
-):
+) -> Tuple[int, int, bool]:
     return (
         len(
             [
@@ -124,7 +128,7 @@ def reorderTriples(
     ones with most bindings first
     """
 
-    def _addvar(term, varsknown):
+    def _addvar(term: str, varsknown: Set[typing.Union[Variable, BNode]]):
         if isinstance(term, (Variable, BNode)):
             varsknown.add(term)
 
@@ -180,20 +184,25 @@ def triples(
     return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))  # type: ignore[misc]
 
 
-def translatePName(p: typing.Union[CompValue, str], prologue: Prologue):
+# type error: Missing return statement
+def translatePName(  # type: ignore[return]
+    p: typing.Union[CompValue, str], prologue: Prologue
+) -> Optional[Identifier]:
     """
     Expand prefixed/relative URIs
     """
     if isinstance(p, CompValue):
         if p.name == "pname":
-            return prologue.absolutize(p)
+            # type error: Incompatible return value type (got "Union[CompValue, str, None]", expected "Optional[Identifier]")
+            return prologue.absolutize(p)  # type: ignore[return-value]
         if p.name == "literal":
             # type error: Argument "datatype" to "Literal" has incompatible type "Union[CompValue, str, None]"; expected "Optional[str]"
             return Literal(
                 p.string, lang=p.lang, datatype=prologue.absolutize(p.datatype)  # type: ignore[arg-type]
             )
     elif isinstance(p, URIRef):
-        return prologue.absolutize(p)
+        # type error: Incompatible return value type (got "Union[CompValue, str, None]", expected "Optional[Identifier]")
+        return prologue.absolutize(p)  # type: ignore[return-value]
 
 
 @overload
@@ -253,8 +262,8 @@ def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional["Path"]:  # ty
 
 
 def translateExists(
-    e: typing.Union[Expr, Literal, Variable]
-) -> typing.Union[Expr, Literal, Variable]:
+    e: typing.Union[Expr, Literal, Variable, URIRef]
+) -> typing.Union[Expr, Literal, Variable, URIRef]:
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS
     http://www.w3.org/TR/sparql11-query/#sparqlCollectFilters
@@ -273,7 +282,7 @@ def translateExists(
     return e
 
 
-def collectAndRemoveFilters(parts):
+def collectAndRemoveFilters(parts: List[CompValue]) -> Optional[Expr]:
     """
 
     FILTER expressions apply to the whole group graph pattern in which
@@ -294,7 +303,8 @@ def collectAndRemoveFilters(parts):
             i += 1
 
     if filters:
-        return and_(*filters)
+        # type error: Argument 1 to "and_" has incompatible type "*List[Union[Expr, Literal, Variable]]"; expected "Expr"
+        return and_(*filters)  # type: ignore[arg-type]
 
     return None
 
@@ -380,7 +390,7 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
 
 
 class StopTraversal(Exception):  # noqa: N818
-    def __init__(self, rv):
+    def __init__(self, rv: bool):
         self.rv = rv
 
 
@@ -444,7 +454,7 @@ def traverse(
     visitPre: Callable[[Any], Any] = lambda n: None,
     visitPost: Callable[[Any], Any] = lambda n: None,
     complete: Optional[bool] = None,
-):
+) -> Any:
     """
     Traverse tree, visit each node with visit function
     visit function may raise StopTraversal to stop traversal
@@ -504,7 +514,7 @@ def _findVars(x, res: Set[Variable]) -> Optional[CompValue]:  # type: ignore[ret
             return x
 
 
-def _addVars(x, children) -> Set[Variable]:
+def _addVars(x, children: List[Set[Variable]]) -> Set[Variable]:
     """
     find which variables may be bound by this part of the query
     """
@@ -549,7 +559,7 @@ def _sample(e: typing.Union[CompValue, List[Expr], Expr, List[str], Variable], v
         return CompValue("Aggregate_Sample", vars=e)
 
 
-def _simplifyFilters(e):
+def _simplifyFilters(e: Any) -> Any:
     if isinstance(e, Expr):
         return simplifyFilters(e)
 
@@ -592,11 +602,11 @@ def translateAggregates(
 
 def translateValues(
     v: CompValue,
-) -> typing.Union[List[Dict[Variable, Identifier]], CompValue]:
+) -> typing.Union[List[Dict[Variable, str]], CompValue]:
     # if len(v.var)!=len(v.value):
     #     raise Exception("Unmatched vars and values in ValueClause: "+str(v))
 
-    res: List[Dict[Variable, Identifier]] = []
+    res: List[Dict[Variable, str]] = []
     if not v.var:
         return res
     if not v.value:
@@ -722,7 +732,7 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
 
 
 # type error: Missing return statement
-def simplify(n) -> Optional[CompValue]:  # type: ignore[return]
+def simplify(n: Any) -> Optional[CompValue]:  # type: ignore[return]
     """Remove joins to empty BGPs"""
     if isinstance(n, CompValue):
         if n.name == "Join":
@@ -735,7 +745,7 @@ def simplify(n) -> Optional[CompValue]:  # type: ignore[return]
             return n
 
 
-def analyse(n, children):
+def analyse(n: Any, children: Any) -> bool:
     """
     Some things can be lazily joined.
     This propegates whether they can up the tree
@@ -757,7 +767,7 @@ def analyse(n, children):
 def translatePrologue(
     p: ParseResults,
     base: Optional[str],
-    initNs: Optional[Mapping[str, str]] = None,
+    initNs: Optional[Mapping[str, Any]] = None,
     prologue: Optional[Prologue] = None,
 ) -> Prologue:
 
@@ -780,7 +790,12 @@ def translatePrologue(
     return prologue
 
 
-def translateQuads(quads: CompValue):
+def translateQuads(
+    quads: CompValue,
+) -> Tuple[
+    List[Tuple[Identifier, Identifier, Identifier]],
+    DefaultDict[str, List[Tuple[Identifier, Identifier, Identifier]]],
+]:
     if quads.triples:
         alltriples = triples(quads.triples)
     else:
@@ -825,7 +840,7 @@ def translateUpdate1(u: CompValue, prologue: Prologue) -> CompValue:
 def translateUpdate(
     q: CompValue,
     base: Optional[str] = None,
-    initNs: Optional[Mapping[str, str]] = None,
+    initNs: Optional[Mapping[str, Any]] = None,
 ) -> Update:
     """
     Returns a list of SPARQL Update Algebra expressions
@@ -854,7 +869,7 @@ def translateUpdate(
 def translateQuery(
     q: ParseResults,
     base: Optional[str] = None,
-    initNs: Optional[Mapping[str, str]] = None,
+    initNs: Optional[Mapping[str, Any]] = None,
 ) -> Query:
     """
     Translate a query-parsetree to a SPARQL Algebra Expression
@@ -901,7 +916,7 @@ def translateAlgebra(query_algebra: Query) -> str:
     """
     import os
 
-    def overwrite(text):
+    def overwrite(text: str):
         file = open("query.txt", "w+")
         file.write(text)
         file.close()
@@ -938,19 +953,26 @@ def translateAlgebra(query_algebra: Query) -> str:
         with open("query.txt", "w") as file:
             file.write(filedata)
 
-    aggr_vars = collections.defaultdict(list)  # type: dict
+    aggr_vars: DefaultDict[Identifier, List[Identifier]] = collections.defaultdict(list)
 
-    def convert_node_arg(node_arg):
+    def convert_node_arg(
+        node_arg: typing.Union[Identifier, CompValue, Expr, str]
+    ) -> str:
         if isinstance(node_arg, Identifier):
             if node_arg in aggr_vars.keys():
-                grp_var = aggr_vars[node_arg].pop(0).n3()
+                # type error: "Identifier" has no attribute "n3"
+                grp_var = aggr_vars[node_arg].pop(0).n3()  # type: ignore[attr-defined]
                 return grp_var
             else:
-                return node_arg.n3()
+                # type error: "Identifier" has no attribute "n3"
+                return node_arg.n3()  # type: ignore[attr-defined]
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):
-            return "{" + node_arg.name + "}"
+        # type error notes: this is because Expr is a subclass of CompValue
+        # type error: Subclass of "str" and "Expr" cannot exist: would have incompatible method signatures
+        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
+            # type error: Statement is unreachable
+            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
         elif isinstance(node_arg, str):
             return node_arg
         else:
@@ -1529,7 +1551,7 @@ def translateAlgebra(query_algebra: Query) -> str:
     return query_from_algebra
 
 
-def pprintAlgebra(q):
+def pprintAlgebra(q) -> None:
     def pp(p, ind="    "):
         # if isinstance(p, list):
         #     print "[ "

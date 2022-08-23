@@ -132,12 +132,17 @@ tasks:
     desc: Run tests
     cmds:
       - '{{.TEST_HARNESS}}{{print .VENV_BINPREFIX "pytest" | shellQuote}} {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
-
   flake8:
     desc: Run flake8
     cmds:
-      - "{{._PYTHON | shellQuote}} -m flakeheaven lint {{.CLI_ARGS}}"
-
+      - |
+        if {{._PYTHON | shellQuote}} -c 'import importlib; exit(0 if importlib.util.find_spec("flakeheaven") is not None else 1)'
+        then
+          1>&2 echo "running flakeheaven"
+          {{._PYTHON | shellQuote}} -m flakeheaven lint {{.CLI_ARGS}}
+        else
+          1>&2 echo "skipping flakeheaven as it is not installed, likely because python version is older than 3.8"
+        fi
   black:
     desc: Run black
     cmds:
