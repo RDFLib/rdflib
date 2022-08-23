@@ -27,7 +27,8 @@ import rdflib
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
 # test is run, but mypy can't tell the symbol is exposed.
 import rdflib.plugins.sparql.processor
-from rdflib.term import Node
+from rdflib.query import ResultRow
+from rdflib.term import IdentifiedNode, Identifier, Node
 
 
 def test_rdflib_query_exercise() -> None:
@@ -78,8 +79,9 @@ WHERE {
         kb_https_uriref,
         kb_urn_uriref,
     }
-    computed_one_usage: Set[rdflib.IdentifiedNode] = set()
+    computed_one_usage: Set[Identifier] = set()
     for one_usage_result in graph.query(one_usage_query):
+        assert isinstance(one_usage_result, ResultRow)
         computed_one_usage.add(one_usage_result[0])
     assert expected_one_usage == computed_one_usage
 
@@ -95,19 +97,13 @@ WHERE {
 }
 """
 
-    expected_two_usage: Set[
-        Tuple[
-            rdflib.IdentifiedNode,
-            rdflib.IdentifiedNode,
-        ]
-    ] = {(kb_https_uriref, predicate_p), (kb_https_uriref, predicate_q)}
-    computed_two_usage: Set[
-        Tuple[
-            rdflib.IdentifiedNode,
-            rdflib.IdentifiedNode,
-        ]
-    ] = set()
+    expected_two_usage: Set[Tuple[Identifier, ...]] = {
+        (kb_https_uriref, predicate_p),
+        (kb_https_uriref, predicate_q),
+    }
+    computed_two_usage: Set[Tuple[Identifier, ...]] = set()
     for two_usage_result in graph.query(two_usage_query):
+        assert isinstance(two_usage_result, ResultRow)
         computed_two_usage.add(two_usage_result)
     assert expected_two_usage == computed_two_usage
 
@@ -116,12 +112,14 @@ WHERE {
     prepared_one_usage_query = rdflib.plugins.sparql.processor.prepareQuery(
         one_usage_query, initNs=nsdict
     )
-    computed_one_usage_from_prepared_query: Set[rdflib.IdentifiedNode] = set()
+    computed_one_usage_from_prepared_query: Set[Identifier] = set()
     for prepared_one_usage_result in graph.query(prepared_one_usage_query):
+        assert isinstance(prepared_one_usage_result, ResultRow)
         computed_one_usage_from_prepared_query.add(prepared_one_usage_result[0])
     assert expected_one_usage == computed_one_usage_from_prepared_query
 
     for node_using_one in sorted(computed_one_usage):
+        assert isinstance(node_using_one, IdentifiedNode)
         graph.add((node_using_one, predicate_r, literal_true))
 
     python_one: int = literal_one.toPython()

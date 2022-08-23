@@ -18,7 +18,7 @@ from rdflib.plugins.sparql.evalutils import _eval
 from rdflib.plugins.sparql.parser import parseQuery
 from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
-from rdflib.query import Result
+from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
 
 
@@ -303,6 +303,7 @@ def test_call_function() -> None:
     assert result.type == "SELECT"
     rows = list(result)
     assert len(rows) == 1
+    assert isinstance(rows[0], ResultRow)
     assert len(rows[0]) == 1
     assert rows[0][0] == Literal("a + b")
 
@@ -353,6 +354,7 @@ def test_custom_eval() -> None:
         assert result.type == "SELECT"
         rows = list(result)
         assert len(rows) == 1
+        assert isinstance(rows[0], ResultRow)
         assert len(rows[0]) == 2
         assert rows[0][0] == Literal("a + b")
         assert rows[0][1] == custom_function_result

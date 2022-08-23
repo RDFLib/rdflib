@@ -418,6 +418,8 @@ def check_query(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
     elif result.type == ResultType.ASK:
         assert expected_result.askAnswer == result.askAnswer
     else:
+        assert expected_result.graph is not None
+        assert result.graph is not None
         logging.debug(
             "expected_result.graph = %s, result.graph = %s\n%s",
             expected_result.graph,

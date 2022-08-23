@@ -5,6 +5,8 @@ It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 """
 
 import codecs
+import typing
+from typing import IO, Union
 
 from pyparsing import (
     FollowedBy,
@@ -16,7 +18,6 @@ from pyparsing import (
     ZeroOrMore,
 )
 
-from rdflib import Literal as RDFLiteral
 from rdflib.plugins.sparql.parser import (
     BLANK_NODE_LABEL,
     IRIREF,
@@ -29,6 +30,9 @@ from rdflib.plugins.sparql.parser import (
 )
 from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
 from rdflib.query import Result, ResultParser
+from rdflib.term import BNode
+from rdflib.term import Literal as RDFLiteral
+from rdflib.term import URIRef
 
 ParserElement.setDefaultWhitespaceChars(" \n")
 
@@ -59,11 +63,13 @@ HEADER.parseWithTabs()
 
 
 class TSVResultParser(ResultParser):
-    def parse(self, source, content_type=None):
+    # type error: Signature of "parse" incompatible with supertype "ResultParser"  [override]
+    def parse(self, source: IO, content_type: typing.Optional[str] = None) -> Result:  # type: ignore[override]
 
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
-            source = codecs.getreader("utf-8")(source)
+            # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
+            source = codecs.getreader("utf-8")(source)  # type: ignore[assignment]
 
         r = Result("SELECT")
 
@@ -80,11 +86,14 @@ class TSVResultParser(ResultParser):
                 continue
 
             row = ROW.parseString(line, parseAll=True)
-            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))
+            # type error: Generator has incompatible item type "object"; expected "Identifier"
+            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))  # type: ignore[misc]
 
         return r
 
-    def convertTerm(self, t):
+    def convertTerm(
+        self, t: Union[object, RDFLiteral, BNode, CompValue, URIRef]
+    ) -> typing.Optional[Union[object, BNode, URIRef, RDFLiteral]]:
         if t is NONE_VALUE:
             return None
         if isinstance(t, CompValue):

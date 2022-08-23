@@ -356,9 +356,10 @@ class SPARQLStore(SPARQLConnector, Store):
                     # the query will be a SELECT query.
                     assert isinstance(row, ResultRow)
                 yield (
-                    row.get(s, s),
-                    row.get(p, p),
-                    row.get(o, o),
+                    # type error: No overload variant of "get" of "ResultRow" matches argument types "Node", "Node"
+                    row.get(s, s),  # type: ignore[call-overload]
+                    row.get(p, p),  # type: ignore[call-overload]
+                    row.get(o, o),  # type: ignore[call-overload]
                 ), None  # why is the context here not the passed in graph 'context'?
         else:
             if result.askAnswer:
@@ -405,7 +406,8 @@ class SPARQLStore(SPARQLConnector, Store):
                 if self._is_contextual(context)
                 else None,
             )
-            return int(next(iter(result)).c)
+            # type error: Item "Tuple[Node, ...]" of "Union[Tuple[Node, Node, Node], bool, ResultRow]" has no attribute "c"
+            return int(next(iter(result)).c)  # type: ignore[union-attr]
 
     # type error: Return type "Generator[Identifier, None, None]" of "contexts" incompatible with return type "Generator[Graph, None, None]" in supertype "Store"
     def contexts(  # type: ignore[override]
@@ -438,7 +440,9 @@ class SPARQLStore(SPARQLConnector, Store):
             q = "SELECT ?name WHERE { GRAPH ?name {} }"
 
         result = self._query(q)
-        return (row.name for row in result)
+        # type error: Item "bool" of "Union[Tuple[Node, Node, Node], bool, ResultRow]" has no attribute "name"
+        # error: Generator has incompatible item type "Union[Any, Identifier]"; expected "IdentifiedNode"
+        return (row.name for row in result)  # type: ignore[union-attr,misc]
 
     # Namespace persistence interface implementation
     def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
