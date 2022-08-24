@@ -144,28 +144,6 @@ XFAILS = {
         reason="results in invalid xml element name: <ns1:name(s)/>",
         raises=SAXParseException,
     ),
-    ("trig", "rdf11trig_eg2.trig"): pytest.mark.xfail(
-        reason="""
-    Something is going wrong here with blank node serialization. In the second
-    graph below bob knows someone who does not exist, while in first he knows
-    someone that does exist and has the name Alice.
-
-    AssertionError: in both:
-        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:alice@work.example.org'))
-        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Alice'))
-        (rdflib.term.URIRef('http://example.org/alice'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Alice'))
-        (rdflib.term.URIRef('http://example.org/bob'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Bob'))
-    only in first:
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'))
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:bob@oldcorp.example.org'))
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Bob'))
-    only in second:
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cb0'))
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:bob@oldcorp.example.org'))
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Bob'))
-        """,
-        raises=AssertionError,
-    ),
     ("json-ld", "diverse_quads.trig"): pytest.mark.xfail(
         reason="""
     jsonld serializer is dropping datatype:
@@ -204,6 +182,10 @@ XFAILS = {
         "n3",
         "data/suites/w3c/n3/N3Tests/cwm_syntax/neg-single-quote.n3",
     ): pytest.mark.xfail(raises=BadSyntax, reason="no support for single quotes"),
+    ("json-ld", "bnode_refs.trig"): pytest.mark.xfail(
+        reason="a whole bunch of triples with bnode as subject is not in the reconstituted graph",
+        raises=AssertionError,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -253,7 +235,13 @@ def roundtrip(
     s = g1.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("source = %s, serailized = \n%s", source, s)
+        logger.debug(
+            "infmt = %s, testfmt = %s, source = %s, serailized = \n%s",
+            infmt,
+            testfmt,
+            source,
+            s,
+        )
 
     g2 = graph_type()
     if same_public_id:
@@ -525,6 +513,7 @@ EXTRA_FILES = [
     (TEST_DATA_DIR / "variants" / "diverse_triples.nt", "ntriples"),
     (TEST_DATA_DIR / "variants" / "diverse_quads.nq", "nquads"),
     (TEST_DATA_DIR / "variants" / "diverse_quads.trig", "trig"),
+    (TEST_DATA_DIR / "roundtrip" / "bnode_refs.trig", "trig"),
     (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
     (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]

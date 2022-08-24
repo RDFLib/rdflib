@@ -282,6 +282,11 @@ tasks:
       - task: install:flake8
       - task: flake8
 
+  cmd:rdfpipe:
+    desc: Run rdfpipe
+    cmds:
+      - cmd: "{{._PYTHON | shellQuote}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
+
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is

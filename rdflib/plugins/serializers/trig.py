@@ -3,7 +3,6 @@ Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
-from collections import defaultdict
 from typing import IO, TYPE_CHECKING, Optional, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
@@ -37,17 +36,15 @@ class TrigSerializer(TurtleSerializer):
         for context in self.contexts:
             self.store = context
             self.getQName(context.identifier)
-            self._references = defaultdict(int)
             self._subjects = {}
 
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context] = (
-                self.orderSubjects(),
-                self._subjects,
-                self._references,
-            )
+            for subject in self._subjects.keys():
+                self._references[subject] += 1
+
+            self._contexts[context] = (self.orderSubjects(), self._subjects)
 
     def reset(self):
         super(TrigSerializer, self).reset()
@@ -77,11 +74,10 @@ class TrigSerializer(TurtleSerializer):
         self.startDocument()
 
         firstTime = True
-        for store, (ordered_subjects, subjects, ref) in self._contexts.items():
+        for store, (ordered_subjects, subjects) in self._contexts.items():
             if not ordered_subjects:
                 continue
 
-            self._references = ref
             self._serialized = {}
             self.store = store
             self._subjects = subjects
