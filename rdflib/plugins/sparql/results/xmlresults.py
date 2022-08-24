@@ -18,9 +18,8 @@ from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
-from rdflib import BNode, Literal, URIRef, Variable
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
-from rdflib.term import Identifier
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 try:
     # https://adamj.eu/tech/2021/12/29/python-type-hints-optional-imports/
@@ -49,7 +48,7 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 class XMLResultParser(ResultParser):
     # TODO FIXME: content_type should be a keyword only arg.
-    def parse(self, source: IO, content_type: Optional[str] = None):  # type: ignore[override]
+    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
         return XMLResult(source)
 
 
@@ -153,14 +152,15 @@ def parseTerm(element: xml_etree.Element) -> Union[URIRef, Literal, BNode]:
 
 
 class XMLResultSerializer(ResultSerializer):
-    def __init__(self, result):
+    def __init__(self, result: Result):
         ResultSerializer.__init__(self, result)
 
     def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs: Any) -> None:
         writer = SPARQLXMLWriter(stream, encoding)
         if self.result.type == "ASK":
             writer.write_header([])
-            writer.write_ask(self.result.askAnswer)
+            # type error: Argument 1 to "write_ask" of "SPARQLXMLWriter" has incompatible type "Optional[bool]"; expected "bool"
+            writer.write_ask(self.result.askAnswer)  # type: ignore[arg-type]
         else:
             # type error: Argument 1 to "write_header" of "SPARQLXMLWriter" has incompatible type "Optional[List[Variable]]"; expected "Sequence[Variable]"
             writer.write_header(self.result.vars)  # type: ignore[arg-type]
@@ -239,7 +239,7 @@ class SPARQLXMLWriter:
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "result"), "result")
         self._resultStarted = False
 
-    def write_binding(self, name: Variable, val: Identifier):
+    def write_binding(self, name: Variable, val: Identifier) -> None:
         assert self._resultStarted
 
         attr_vals: Dict[Tuple[Optional[str], str], str] = {

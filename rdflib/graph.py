@@ -1534,12 +1534,14 @@ class Graph(Node):
             except NotImplementedError:
                 pass  # store has no own implementation
 
-        if not isinstance(result, query.Result):
+        # type error: Subclass of "str" and "Result" cannot exist: would have incompatible method signatures
+        if not isinstance(result, query.Result):  # type: ignore[unreachable]
             result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
-        return result(processor.query(query_object, initBindings, initNs, **kwargs))
+        # type error: Argument 1 to "Result" has incompatible type "Mapping[str, Any]"; expected "str"
+        return result(processor.query(query_object, initBindings, initNs, **kwargs))  # type: ignore[arg-type]
 
     def update(
         self,

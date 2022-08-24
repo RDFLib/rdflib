@@ -168,7 +168,7 @@ def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]:
 
 def plugins(
     name: Optional[str] = None, kind: Optional[Type[PluginT]] = None
-) -> Iterator[Plugin]:
+) -> Iterator[Plugin[PluginT]]:
     """
     A generator of the plugins.
 
