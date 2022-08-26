@@ -236,7 +236,7 @@ def roundtrip(
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
-            "infmt = %s, testfmt = %s, source = %s, serailized = \n%s",
+            "infmt = %s, testfmt = %s, source = %s, serialized = \n%s",
             infmt,
             testfmt,
             source,
