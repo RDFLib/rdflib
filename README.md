@@ -2,9 +2,9 @@
 
 RDFLib
 ======
-[![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=master)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amaster)
+[![Build Status](https://github.com/RDFLib/rdflib/actions/workflows/validate.yaml/badge.svg?branch=main)](https://github.com/RDFLib/rdflib/actions?query=branch%3Amain)
 [![Documentation Status](https://readthedocs.org/projects/rdflib/badge/?version=latest)](https://rdflib.readthedocs.io/en/latest/?badge=latest)
-[![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
+[![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/main.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=main)
 
 [![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
 [![Downloads](https://pepy.tech/badge/rdflib/week)](https://pepy.tech/project/rdflib)
@@ -43,7 +43,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `6.3.0a0` current `master` branch
+* `6.3.0a0` current `main` branch
 * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
@@ -63,15 +63,15 @@ Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
 The current version of RDFLib is 6.2.0, see the ``CHANGELOG.md`` file for what's new in this release.
 
-### Installation of the current master branch (for developers)
+### Installation of the current main branch (for developers)
 
 With *pip* you can also install rdflib from the git repository with one of the following options:
 
-    $ pip install git+https://github.com/rdflib/rdflib@master
+    $ pip install git+https://github.com/rdflib/rdflib@main
 
 or
 
-    $ pip install -e git+https://github.com/rdflib/rdflib@master#egg=rdflib
+    $ pip install -e git+https://github.com/rdflib/rdflib@main#egg=rdflib
 
 or from your locally cloned repository you can install it with one of the following options:
 
@@ -211,7 +211,7 @@ Please consider lodging Pull Requests here:
 To get a development environment consider using Gitpod or Google Cloud Shell.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RDFLib/rdflib)
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FRDFLib%2Frdflib&cloudshell_git_branch=master&cloudshell_open_in_editor=README.md)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2FRDFLib%2Frdflib&cloudshell_git_branch=main&cloudshell_open_in_editor=README.md)
 
 You can also raise issues here:
 

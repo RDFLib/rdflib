@@ -17,7 +17,7 @@ import pytest
 from pytest import MonkeyPatch
 
 REMOTE_BASE_IRI = (
-    "http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/"
+    "http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/"
 )
 LOCAL_BASE_DIR = TEST_DATA_DIR / "suites/rdflib/sparql/"
 MAPPER = URIMapper.from_mappings(

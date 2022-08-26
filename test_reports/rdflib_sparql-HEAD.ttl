@@ -13,7 +13,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bindscope> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bindscope> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -21,7 +21,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bindscope2> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bindscope2> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -29,7 +29,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-a> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-a> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -37,7 +37,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-b> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-b> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -45,7 +45,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-c> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-c> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -53,7 +53,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-d> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-d> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -61,7 +61,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-e> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-e> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -69,7 +69,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-f> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-f> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -77,7 +77,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-g> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-g> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -85,7 +85,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-h> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-h> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -93,7 +93,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#filteroptional> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filteroptional> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -101,7 +101,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery1> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery1> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -109,7 +109,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery2> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery2> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -117,7 +117,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery3> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery3> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -125,7 +125,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#minusfilter> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#minusfilter> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -133,7 +133,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#nestedbnode> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#nestedbnode> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -141,7 +141,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#notexistsfilter> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#notexistsfilter> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -149,7 +149,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#subquery1> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery1> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -157,7 +157,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#subquery2> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery2> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -165,7 +165,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#subquery3> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery3> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -173,7 +173,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg1> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg1> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -181,7 +181,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg2> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg2> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -189,7 +189,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-01> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-01> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -197,7 +197,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-02> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-02> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -205,7 +205,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-03> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-03> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -213,7 +213,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-04> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-04> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -221,7 +221,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-bad> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-bad> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -229,7 +229,7 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#unicode> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#unicode> .
 
 [] a earl:Assertion ;
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
@@ -237,5 +237,5 @@
     earl:result [ a earl:TestResult ;
             earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
-    earl:test <http://raw.github.com/RDFLib/rdflib/master/test/data/suites/rdflib/sparql/manifest.ttl#whitespacedot> .
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#whitespacedot> .
 

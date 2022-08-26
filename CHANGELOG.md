@@ -354,7 +354,7 @@ and will be removed for release.
 
 <!-- This will be auto generated with:
 
-gh search prs --repo RDFLib/rdflib --merged --base master --json assignees,author,authorAssociation,body,closedAt,commentsCount,createdAt,id,isLocked,isPullRequest,labels,number,repository,state,title,updatedAt,url --limit 1000 --jq '[.[] | select(.closedAt >= "2022-07-17T00:00:00Z")]' | jq '(. |= sort_by(.closedAt)) | reverse' | tee /var/tmp/merged-prs.json
+gh search prs --repo RDFLib/rdflib --merged --base main --json assignees,author,authorAssociation,body,closedAt,commentsCount,createdAt,id,isLocked,isPullRequest,labels,number,repository,state,title,updatedAt,url --limit 1000 --jq '[.[] | select(.closedAt >= "2022-07-17T00:00:00Z")]' | jq '(. |= sort_by(.closedAt)) | reverse' | tee /var/tmp/merged-prs.json
 
 jq -r '.[] | [ .url, .title ] | @tsv' /var/tmp/merged-prs.json | sort -r | awk -F$'\t' '(match($1, "^.*/([^/]+)$", matches)){printf("* %s\n  [PR #%s](%s)\n", $2, matches[1], $1)}'
 
