@@ -84,6 +84,7 @@ For developers
    :maxdepth: 1
 
    developers
+   interface_guidelines
    CODE_OF_CONDUCT
    docs
    persisting_n3_terms
