@@ -81,12 +81,12 @@ jobs:
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit-xml
           path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit.xml
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit-xml
