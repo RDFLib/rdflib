@@ -1,6 +1,6 @@
 import json
 from io import BufferedReader, StringIO
-from typing import Union, List
+from typing import Union, List, Optional
 
 import rdflib.plugins.parsers.pyld.pyld as pyld
 from rdflib.plugins.parsers.pyld.pyld import jsonld
@@ -19,10 +19,26 @@ from .to_rdf import to_rdf
 # Monkey patch pyld.
 pyld.jsonld.JsonLdProcessor.to_rdf = to_rdf  # type: ignore
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 
 def _get_object(object):
     if object["type"] == "IRI":
-        o = URIRef(object["value"])
+        value: str = object["value"]
+        # if value.startswith("xsd:"):
+        #     value = value.replace("xsd:", "http://www.w3.org/2001/XMLSchema#")
+        # elif (
+        #     value.startswith("http://")
+        #     or value.startswith("https://")
+        #     or value.startswith("urn:")
+        # ):
+        #     pass
+        # else:
+        #     raise ValueError(f"Unhandled IRI value prefix. Got {value}")
+        o = URIRef(value)
     elif object["type"] == "blank node":
         o = BNode(object["value"][2:])
     else:
@@ -39,7 +55,9 @@ def _get_object(object):
 
 
 class JSONLDParser(Parser):
-    def parse(self, source: InputSource, sink: Graph) -> None:
+    def parse(
+        self, source: InputSource, sink: Graph, options: Optional[dict] = None
+    ) -> None:
         # TODO: Do we need to set up a document loader?
         #       See https://github.com/digitalbazaar/pyld#document-loader
         #       Using a document loader requires either Requests or aiohttp
@@ -107,8 +125,10 @@ class JSONLDParser(Parser):
                         )
 
                         # skip None objects (they are relative IRIs)
+                        logger.debug(f"{subject} {predicate} {object} {graph_name}")
                         if object is not None:
                             o = _get_object(object)
+                            # logger.debug(f"{subject} {predicate} {o} {graph_name}")
 
                             sink.store.add(
                                 (
@@ -133,6 +153,7 @@ class JSONLDParser(Parser):
                         else BNode(triple["predicate"]["value"][2:])
                     )
                     o = _get_object(triple["object"])
+                    # logger.debug(f"{s} {p} {o} {graph_name}")
                     sink.store.add((s, p, o), graph_name)
 
         # Monkey patch pyld.
@@ -140,7 +161,7 @@ class JSONLDParser(Parser):
 
         if isinstance(source, PythonInputSource):
             data = source.data
-            jsonld.to_rdf(data)
+            jsonld.to_rdf(data, options=options)
         else:
             stream: Union[
                 StringIO, BytesIOWrapper, BufferedReader
@@ -152,6 +173,6 @@ class JSONLDParser(Parser):
                 raise TypeError(f"Unhandled type for 'stream' as {type(stream)}.")
 
             try:
-                jsonld.to_rdf(data)
+                jsonld.to_rdf(data, options=options)
             finally:
                 stream.close()

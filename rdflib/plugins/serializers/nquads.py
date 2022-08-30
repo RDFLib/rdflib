@@ -1,10 +1,10 @@
 import warnings
 from typing import IO, Optional
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.plugins.serializers.nt import _quoteLiteral
 from rdflib.serializer import Serializer
-from rdflib.term import Literal
+from rdflib.term import BNode, Literal
 
 __all__ = ["NQuadsSerializer"]
 
@@ -34,26 +34,28 @@ class NQuadsSerializer(Serializer):
                 f"Given encoding was: {encoding}"
             )
         encoding = self.encoding
-        for context in self.store.contexts():
-            for triple in context:
-                stream.write(
-                    _nq_row(triple, context.identifier).encode(encoding, "replace")
-                )
-        stream.write("\n".encode("latin-1"))
+        for context in list(self.store.contexts()):
+            graph = self.store.graph(context)
+            for triple in graph:
+                stream.write(self._nq_row(triple, context).encode(encoding, "replace"))
+        stream.write("".encode("latin-1"))
 
+    def _nq_row(self, quad, context):
+        subj, pred, obj = quad
 
-def _nq_row(triple, context):
-    if isinstance(triple[2], Literal):
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            _quoteLiteral(triple[2]),
-            context.n3(),
-        )
-    else:
-        return "%s %s %s %s .\n" % (
-            triple[0].n3(),
-            triple[1].n3(),
-            triple[2].n3(),
-            context.n3(),
+        if isinstance(subj, QuotedGraph):
+            subj = BNode(subj.identifier)
+
+        if isinstance(obj, QuotedGraph):
+            obj = BNode(obj.identifier)
+
+        # TODO: Remove in 7.0
+        if isinstance(context, Graph):
+            context = context.identifier
+
+        return "%s %s %s%s .\n" % (
+            subj.n3(),
+            pred.n3(),
+            _quoteLiteral(obj) if isinstance(obj, Literal) else obj.n3(),
+            " " + context.n3() if context and context != DATASET_DEFAULT_GRAPH_ID else "",
         )
