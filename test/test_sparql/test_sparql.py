@@ -89,6 +89,7 @@ def test_sparql_bnodelist():
     prepareQuery("select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }")
     prepareQuery("select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }")
 
+
 @pytest.mark.xfail
 def test_sparql_polist():
     """
@@ -110,9 +111,14 @@ def test_sparql_polist():
     qres2 = g.query("PREFIX : <urn:ns1:> select * where { ?s :p [ ]; :p [ ] . }")
     assert len(qres1) == len(qres2)
 
-    qres3 = g.query("PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ], [ :v ?v2] . }")
-    qres4 = g.query("PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ]; :p [ :v ?v2 ] . }")
+    qres3 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ], [ :v ?v2] . }"
+    )
+    qres4 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ]; :p [ :v ?v2 ] . }"
+    )
     assert len(qres3) == len(qres4)
+
 
 def test_complex_sparql_construct():
 
