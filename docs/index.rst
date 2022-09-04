@@ -1,4 +1,4 @@
-.. rdflib documentation documentation master file
+.. rdflib documentation documentation main file
 
 ================
 rdflib |release|
@@ -89,6 +89,7 @@ For developers
    persisting_n3_terms
    type_hints
    CONTRIBUTING
+   decisions/index
 
 Source Code
 -----------
@@ -99,14 +100,20 @@ The RDFlib organisation on GitHub at `<https://github.com/RDFLib>`__ maintains t
 and RDFlib-related packaged that you might also find useful.
 
 
+.. _further_help_and_contact:
+
 Further help & Contact
 ----------------------
 
-If you would like more help with using rdflib, rather than developing it, please post a question on StackOverflow using
-the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept there at:
+If you would like help with using RDFlib, rather than developing it, please post
+a question on StackOverflow using the tag ``[rdflib]``. A list of existing
+``[rdflib]`` tagged questions can be found 
+`here <https://stackoverflow.com/questions/tagged/rdflib>`_.
 
-* `<https://stackoverflow.com/questions/tagged/rdflib>`__
+You might also like to join RDFlib's `dev mailing list
+<https://groups.google.com/group/rdflib-dev>`_ or use RDFLib's `GitHub
+discussions section <https://github.com/RDFLib/rdflib/discussions>`_.
 
-You might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
-
-The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via matrix `#RDFLib_rdflib:gitter.im <https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.
+The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via
+matrix `#RDFLib_rdflib:gitter.im
+<https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.

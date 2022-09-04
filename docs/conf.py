@@ -39,6 +39,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "myst_parser",
     "sphinxcontrib.kroki",
+    "sphinx.ext.autosectionlabel",
 ]
 
 apidoc_module_dir = "../rdflib"
@@ -51,6 +52,8 @@ autodoc_default_options = {"special-members": True}
 always_document_param_types = True
 
 autosummary_generate = True
+
+autosectionlabel_prefix_document = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

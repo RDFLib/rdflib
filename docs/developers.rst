@@ -54,7 +54,7 @@ PRs if possible. No PR is too small.
 
 For PRs that introduce breaking changes, it is even more critical that they are
 limited in size and scope, as they will likely have to be kept up to date with
-the master branch of this project for some time before they are merged.
+the ``main`` branch of this project for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why
 it does it, and how the change will impact the users of this project, for this

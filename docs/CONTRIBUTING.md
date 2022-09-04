@@ -18,7 +18,7 @@ Some ways in which you can contribute to RDFLib are:
   tests for open issues:
   [![GitHub issues](https://img.shields.io/github/issues/RDFLib/rdflib)](https://github.com/RDFLib/rdflib/issues)
 - Add tests for untested code:
-  [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
+  [![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/main.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=main)
 - Review pull requests marked with the
   [![review wanted](https://img.shields.io/badge/-review%20wanted-28ead2)](https://github.com/RDFLib/rdflib/labels/review%20wanted)
   label.

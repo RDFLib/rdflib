@@ -17,12 +17,12 @@ The best way to install RDFLib is to use ``pip`` (sudo as required):
 
     $ pip install rdflib
 
-If you want the latest code to run, clone the master branch of the GitHub repo and use that or you can  ``pip install``
+If you want the latest code to run, clone the ``main`` branch of the GitHub repo and use that or you can  ``pip install``
 directly from GitHub:
 
 .. code-block :: bash
 
-    $ pip install git+https://github.com/RDFLib/rdflib.git@master#egg=rdflib
+    $ pip install git+https://github.com/RDFLib/rdflib.git@main#egg=rdflib
 
 
 Support

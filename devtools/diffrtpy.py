@@ -12,7 +12,7 @@ To use this script
 
 .. code-block:: bash
     task run -- python -m pip install --upgrade strip-hints black python-minifier
-    PYLOGGING_LEVEL=INFO task run -- git difftool -y -x $(readlink -f devtools/diffrtpy.py) upstream/master | tee /var/tmp/compact.diff
+    PYLOGGING_LEVEL=INFO task run -- git difftool -y -x $(readlink -f devtools/diffrtpy.py) upstream/main | tee /var/tmp/compact.diff
 
 Then attach ``/var/tmp/compact.diff`` to the PR.
 """
