@@ -518,6 +518,7 @@ def _iri2uri(iri: str) -> str:
     >>> _iri2uri("https://dbpedia.org/resource/Almería")
     'https://dbpedia.org/resource/Almer%C3%ADa'
     """
+    # https://datatracker.ietf.org/doc/html/rfc3305
 
     (scheme, netloc, path, query, fragment) = urlsplit(iri)
 
@@ -526,7 +527,7 @@ def _iri2uri(iri: str) -> str:
         return iri
 
     scheme = quote(scheme)
-    netloc = quote(netloc.encode("idna").decode("utf-8"))
+    netloc = netloc.encode("idna").decode("utf-8")
     path = quote(path)
     query = quote(query)
     fragment = quote(fragment)

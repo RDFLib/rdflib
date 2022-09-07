@@ -12,6 +12,7 @@ want to do so through the Graph class parse method.
 from __future__ import annotations
 
 import codecs
+import logging
 import os
 import pathlib
 import sys
@@ -27,15 +28,17 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.error import HTTPError
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname, urlopen
+from urllib.request import Request, url2pathname
 from xml.sax import xmlreader
 
 import rdflib.util
 from rdflib import __version__
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
+
+# from ._network import _URLOPENER, _get_accept_header
+from rdflib.uri_handling import _get_accept_header, _urlopen_shim
 
 if TYPE_CHECKING:
     from email.message import Message
@@ -230,58 +233,24 @@ class URLInputSource(InputSource):
                 alts.append(parts[0].strip("<>"))
         return alts
 
-    def __init__(self, system_id: Optional[str] = None, format: Optional[str] = None):
+    def __init__(
+        self,
+        system_id: Optional[str] = None,
+        format: Optional[str] = None,
+    ):
+        logging.info("entry: system_id=%s, format=%s", system_id, format)
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
 
         # copy headers to change
         myheaders = dict(headers)
-        if format == "xml":
-            myheaders["Accept"] = "application/rdf+xml, */*;q=0.1"
-        elif format == "n3":
-            myheaders["Accept"] = "text/n3, */*;q=0.1"
-        elif format in ["turtle", "ttl"]:
-            myheaders["Accept"] = "text/turtle, application/x-turtle, */*;q=0.1"
-        elif format == "nt":
-            myheaders["Accept"] = "text/plain, */*;q=0.1"
-        elif format == "trig":
-            myheaders["Accept"] = "application/trig, */*;q=0.1"
-        elif format == "trix":
-            myheaders["Accept"] = "application/trix, */*;q=0.1"
-        elif format == "json-ld":
-            myheaders[
-                "Accept"
-            ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
-        else:
-            # if format not given, create an Accept header from all registered
-            # parser Media Types
-            from rdflib.parser import Parser
-            from rdflib.plugin import plugins
 
-            acc = []
-            for p in plugins(kind=Parser):  # only get parsers
-                if "/" in p.name:  # all Media Types known have a / in them
-                    acc.append(p.name)
-
-            myheaders["Accept"] = ", ".join(acc)
+        myheaders["Accept"] = _get_accept_header(format)
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
 
-        def _urlopen(req: Request) -> Any:
-            try:
-                return urlopen(req)
-            except HTTPError as ex:
-                # 308 (Permanent Redirect) is not supported by current python version(s)
-                # See https://bugs.python.org/issue40321
-                # This custom error handling should be removed once all
-                # supported versions of python support 308.
-                if ex.code == 308:
-                    req.full_url = ex.headers.get("Location")
-                    return _urlopen(req)
-                else:
-                    raise
-
-        response: addinfourl = _urlopen(req)
+        response = _urlopen_shim(req)
+        response.code
         self.url = response.geturl()  # in case redirections took place
         self.links = self.get_links(response)
         if format in ("json-ld", "application/ld+json"):
@@ -289,7 +258,7 @@ class URLInputSource(InputSource):
             for link in alts:
                 full_link = urljoin(self.url, link)
                 if full_link != self.url and full_link != system_id:
-                    response = _urlopen(Request(full_link))
+                    response = _urlopen_shim(Request(full_link))
                     self.url = response.geturl()  # in case redirections took place
                     break
 
@@ -309,10 +278,14 @@ class URLInputSource(InputSource):
 
 class FileInputSource(InputSource):
     def __init__(
-        self, file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]
+        self,
+        file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase],
+        # system_id: Optional[str] = None,
     ):
         base = pathlib.Path.cwd().as_uri()
         system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
+        # if system_id is None:
+        #     system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -379,7 +352,7 @@ def create_input_source(
                     input_source.setCharacterStream(source)
                     input_source.setEncoding(source.encoding)
                     try:
-                        b = file.buffer  # type: ignore[union-attr]
+                        b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
                         input_source.setByteStream(source)
@@ -424,6 +397,8 @@ def create_input_source(
         else:
             raise RuntimeError(f"parse data can only str, or bytes. not: {type(data)}")
 
+    logging.debug("absolute_location = %s", absolute_location)
+
     if input_source is None:
         raise Exception("could not create InputSource")
     else:
@@ -442,6 +417,7 @@ def _create_input_source_from_location(
     input_source: Optional[InputSource],
     location: str,
 ) -> Tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
+    logging.info("entry: location = %s", location)
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
@@ -454,11 +430,14 @@ def _create_input_source_from_location(
 
     absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
-    if absolute_location.startswith("file:///"):
-        filename = url2pathname(absolute_location.replace("file:///", "/"))
-        file = open(filename, "rb")
-    else:
-        input_source = URLInputSource(absolute_location, format)
+    # if absolute_location.startswith("file:///"):
+    #     filename = url2pathname(absolute_location.replace("file:///", "/"))
+    #     # file = open(filename, "rb")
+    #     file = _urlopen_shim(Request(absolute_location))
+    #     file.name = filename
+    # else:
+    #     input_source = URLInputSource(absolute_location, format)
+    input_source = URLInputSource(absolute_location, format)
 
     auto_close = True
     # publicID = publicID or absolute_location  # Further to fix

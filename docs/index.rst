@@ -77,6 +77,24 @@ API reference:
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 
+Provisional functionality is available in the :py:mod:`rdflib._provisional` module.
+
+.. toctree::
+   :maxdepth: 1
+
+   apidocs/rdflib._provisional
+
+Provisional functionality is not part of the public API and is not subject to
+semantic versioning guarantees. The functionality may be removed or changed at
+any time, however we will try to avoid doing so as much as possible.
+
+Once provisional functionality is ready to be integrated into the public RDFLib
+API it will be moved to the :py:mod:`rdflib` package and aliased into the
+:py:mod:`rdflib._provisional` module for backwards compatibility of anything
+that may have been using it.
+
+Provisional functionality is provided to allow early access to new and
+experimental features while the APIs are being finalized.
 
 For developers
 --------------

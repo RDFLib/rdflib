@@ -7,10 +7,10 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.parser import FileInputSource, InputSource, Parser
+from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["HextuplesParser"]
@@ -92,19 +92,10 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
-        # handle different source types - only file and string (data) for now
-        if hasattr(source, "file"):
-            if TYPE_CHECKING:
-                assert isinstance(source, FileInputSource)
-            # type error: Item "TextIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            # type error: Item "RawIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            # type error: Item "BufferedIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            with open(source.file.name, encoding="utf-8") as fp:  # type: ignore[union-attr]
-                for l in fp:  # noqa: E741
-                    self._parse_hextuple(cg, self._load_json_line(l))
-        elif hasattr(source, "_InputSource__bytefile"):
-            if hasattr(source._InputSource__bytefile, "wrapped"):
-                for (
-                    l  # noqa: E741
-                ) in source._InputSource__bytefile.wrapped.strip().splitlines():
-                    self._parse_hextuple(cg, self._load_json_line(l))
+        stream = source.getCharacterStream()
+        if stream is None:
+            stream = source.getByteStream()
+            if stream is None:
+                raise ValueError(f"Unsupported source type: {type(source)}")
+            else:
+                stream = stream.decode("utf-8")

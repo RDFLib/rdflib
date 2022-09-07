@@ -13,12 +13,14 @@ be imported inside ``TYPE_CHECKING`` guards.
     Things inside this module are not for use outside of RDFLib
     and this module is not part the the RDFLib public API.
 """
+from __future__ import annotations
 
 import sys
+from typing import Callable
+from urllib.request import Request
+from urllib.response import addinfourl
 
-__all__ = [
-    "_NamespaceSetString",
-]
+__all__ = ["_NamespaceSetString", "_URLOpenerType"]
 
 
 if sys.version_info >= (3, 8):
@@ -27,3 +29,5 @@ else:
     from typing_extensions import Literal as PyLiteral
 
 _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
+_URLOpenerType = Callable[[Request], addinfourl]
+# _URLOpenerT = TypeVar("_URLOpenerT", bound=_URLOpenerType)

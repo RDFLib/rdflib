@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import base64
 import copy
 import logging
@@ -5,10 +7,11 @@ from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Tuple
 from urllib.error import HTTPError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import Request
 
 from rdflib.query import Result
 from rdflib.term import BNode
+from rdflib.uri_handling import _urlopen_shim
 
 log = logging.getLogger(__name__)
 
@@ -108,8 +111,8 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
-                res = urlopen(
-                    Request(self.query_endpoint + qsa, headers=args["headers"])
+                res = _urlopen_shim(
+                    Request(self.query_endpoint + qsa, headers=args["headers"]),
                 )
             except Exception as e:  # noqa: F841
                 raise ValueError(
@@ -120,12 +123,12 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
-                res = urlopen(
+                res = _urlopen_shim(
                     Request(
                         self.query_endpoint + qsa,
                         data=query.encode(),
                         headers=args["headers"],
-                    )
+                    ),
                 )
             except HTTPError as e:
                 # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
@@ -134,12 +137,12 @@ class SPARQLConnector(object):
             params["query"] = query
             args["params"].update(params)
             try:
-                res = urlopen(
+                res = _urlopen_shim(
                     Request(
                         self.query_endpoint,
                         data=urlencode(args["params"]).encode(),
                         headers=args["headers"],
-                    )
+                    ),
                 )
             except HTTPError as e:
                 # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
@@ -180,7 +183,7 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(  # noqa: F841
+        res = _urlopen_shim(  # noqa: F841
             Request(
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )

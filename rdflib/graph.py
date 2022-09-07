@@ -1479,6 +1479,15 @@ class Graph(Node):
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True
+        logging.debug(
+            "source = %s / %r / %s, format = %s / %r / %s",
+            source,
+            source,
+            type(source),
+            format,
+            format,
+            type(format),
+        )
         parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.

@@ -35,6 +35,7 @@ vars:
   PIP_COMPILE: pip-compile
   DOCKER: docker
   OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  PIP_INSTALL_EXTRA_ARGS: ""
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -153,8 +154,8 @@ tasks:
   validate:static:
     desc: Perform static validation
     cmds:
-      - task: lint
       - task: mypy
+      - task: lint
 
   validate:fix:
     desc: Fix auto-fixable validation errors.

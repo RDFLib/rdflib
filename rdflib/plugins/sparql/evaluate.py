@@ -20,7 +20,7 @@ import json as j
 import re
 from typing import Any, Deque, Dict, Generator, Iterable, List, Tuple, Union
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import Request
 
 from pyparsing import ParseException
 
@@ -45,6 +45,7 @@ from rdflib.plugins.sparql.sparql import (
     SPARQLError,
 )
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+from rdflib.uri_handling import _urlopen_shim
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 
@@ -334,18 +335,18 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = urlopen(
-                Request(service_url + "?" + urlencode(query_settings), headers=headers)
+            response = _urlopen_shim(
+                Request(service_url + "?" + urlencode(query_settings), headers=headers),
             )
         else:
-            response = urlopen(
+            response = _urlopen_shim(
                 Request(
                     service_url,
                     data=urlencode(query_settings).encode(),
                     headers=headers,
-                )
+                ),
             )
-        if response.status == 200:
+        if response.code == 200:
             json = j.loads(response.read())
             variables = res["vars_"] = json["head"]["vars"]
             # or just return the bindings?
@@ -357,7 +358,7 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
                         yield bound
         else:
             raise Exception(
-                "Service: %s responded with code: %s", service_url, response.status
+                "Service: %s responded with code: %s", service_url, response.code
             )
 
 
