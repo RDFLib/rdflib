@@ -16,7 +16,8 @@ repos:
       args: ["."]
   - repo: https://github.com/psf/black
     # WARNING: version should be the same as in `pyproject.toml` and `requirements.dev.txt`.
-    rev: 'refs/tags/22.6.0:refs/tags/22.6.0'
+    # Using git ref spec because of https://github.com/psf/black/issues/2493
+    rev: 'refs/tags/22.8.0:refs/tags/22.8.0'
     hooks:
     - id: black
       pass_filenames: false
