@@ -167,7 +167,7 @@ class SPARQLConnector(object):
 
         headers = {
             "Accept": _response_mime_types[self.returnFormat],
-            "Content-Type": "application/sparql-update",
+            "Content-Type": "application/sparql-update; charset=UTF-8",
         }
 
         args = dict(self.kwargs)  # other QSAs
