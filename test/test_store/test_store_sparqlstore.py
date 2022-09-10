@@ -1,3 +1,4 @@
+import logging
 import re
 import socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -457,22 +458,23 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         print(body)
         ```
         """
-        contenttype = self.headers.get("Content-Type")
+        contenttype = [part.strip() for part in f"{self.headers.get('Content-Type')}".split(";")]
+        logging.debug("contenttype = %s", contenttype)
         if self.path == "/query" or self.path == "/query?":
-            if self.headers.get("Content-Type") == "application/sparql-query":
+            if "application/sparql-query" in contenttype:
                 pass
             elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
+                "application/x-www-form-urlencoded" in contenttype
             ):
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
                 self.end_headers()
         elif self.path == "/update" or self.path == "/update?":
-            if self.headers.get("Content-Type") == "application/sparql-update":
+            if "application/sparql-update" in contenttype:
                 pass
             elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
+                "application/x-www-form-urlencoded" in contenttype
             ):
                 pass
             else:
