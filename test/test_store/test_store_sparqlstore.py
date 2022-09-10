@@ -458,14 +458,14 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         print(body)
         ```
         """
-        contenttype = [part.strip() for part in f"{self.headers.get('Content-Type')}".split(";")]
+        contenttype = [
+            part.strip() for part in f"{self.headers.get('Content-Type')}".split(";")
+        ]
         logging.debug("contenttype = %s", contenttype)
         if self.path == "/query" or self.path == "/query?":
             if "application/sparql-query" in contenttype:
                 pass
-            elif (
-                "application/x-www-form-urlencoded" in contenttype
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
@@ -473,9 +473,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         elif self.path == "/update" or self.path == "/update?":
             if "application/sparql-update" in contenttype:
                 pass
-            elif (
-                "application/x-www-form-urlencoded" in contenttype
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
