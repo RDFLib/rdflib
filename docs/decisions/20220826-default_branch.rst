@@ -1,5 +1,5 @@
 Default Branch Name
-===========================
+===================
 
 .. admonition:: Status
 
