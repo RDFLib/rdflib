@@ -1,0 +1,2 @@
+_:b0 <http://example/p> <http://example/o> .
+<< _:b0 <http://example/p> <http://example/o> >> <http://example/q> "ABC" .

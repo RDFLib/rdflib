@@ -265,6 +265,24 @@ register(
     "N3Serializer",
 )
 register(
+    "ntstar",
+    Serializer,
+    "rdflib.plugins.serializers.ntriples-star",
+    "NtriplesStarSerializer"
+)
+register(
+    "ttlstar",
+    Serializer,
+    "rdflib.plugins.serializers.turtlestar",
+    "TurtlestarSerializer"
+)
+register(
+    "trigstar",
+    Serializer,
+    "rdflib.plugins.serializers.trigstar",
+    "TrigstarSerializer"
+)
+register(
     "text/turtle",
     Serializer,
     "rdflib.plugins.serializers.turtle",
@@ -393,6 +411,24 @@ register(
     Parser,
     "rdflib.plugins.parsers.notation3",
     "N3Parser",
+)
+register(
+    "ntstar",
+    Parser,
+    "rdflib.plugins.parsers.ntriples-star",
+    "NtriplesStarParser",
+)
+register(
+    "ttls",
+    Parser,
+    "rdflib.plugins.parsers.turtlestar",
+    "TurtleParser",
+)
+register(
+    "trigs",
+    Parser,
+    "rdflib.plugins.parsers.trigstar",
+    "TrigParser",
 )
 register(
     "text/turtle",
