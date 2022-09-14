@@ -11,6 +11,10 @@ env:
   XDG_CACHE_HOME: ${{ github.workspace }}/cache
   PIP_CACHE_DIR: ${{ github.workspace }}/pip-cache
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     permissions:

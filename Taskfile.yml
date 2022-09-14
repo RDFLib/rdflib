@@ -16,7 +16,7 @@ vars:
   VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_BINPREFIX}}python.exe{{else}}{{.VENV_BINPREFIX}}python{{end}}'
   # The python interpreter to use.
   PYTHON: python
-  _PYTHON: '{{if (mustFromJson .WITH_VENV)}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
+  _PYTHON: "{{if (mustFromJson .WITH_VENV)}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}"
   # Truthish values ("true", "1", etc.) results in java being installed as a
   # system dependency.
   INSTALL_SYSTEM_DEPS_JAVA: "false"
@@ -36,7 +36,9 @@ vars:
   # Truthish values ("true", "1", etc.) results in coverage being generated for
   # relevant commands.
   WITH_COVERAGE: "false"
-
+  PIP_COMPILE: pip-compile
+  DOCKER: docker
+  OCI_REFERENCE: ghcr.io/rdflib/rdflib
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -59,12 +61,12 @@ tasks:
   install:tox:
     desc: Install tox
     cmds:
-      - '{{._PYTHON | shellQuote}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}'
+      - "{{._PYTHON | shellQuote}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
 
   install:pip-deps:
     desc: Install pip dependencies
     cmds:
-      - '{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}'
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}"
 
   install:flake8:
     desc: Install flake8 dependencies
@@ -77,7 +79,6 @@ tasks:
       - task: install:system-deps
       - task: install:tox
       - task: install:pip-deps
-
 
   venv:create:
     desc: Create a venv to VENV_PATH(={{.VENV_PATH}})
@@ -275,7 +276,6 @@ tasks:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
 
-
   gha:flake8:
     desc: GitHub Actions flake8 workflow
     cmds:
@@ -287,6 +287,67 @@ tasks:
     cmds:
       - cmd: "{{._PYTHON | shellQuote}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
 
+  pip-compile:
+    cmds:
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options {{.CLI_ARGS}}"
+  docker:prepare:
+    cmds:
+      - task: pip-compile
+        vars:
+          { CLI_ARGS: "-o docker/unstable/requirements.txt requirements.txt" }
+      - task: pip-compile
+        vars: { CLI_ARGS: "docker/latest/requirements.in" }
+  docker:unstable:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:unstable || :
+
+          set -eo pipefail
+
+          pipx run --spec=build build --wheel
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
+            --tag {{.OCI_REFERENCE}}:unstable \
+            --progress plain \
+            -f docker/unstable/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:unstable
+          fi
+  docker:latest:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:latest || :
+
+          set -eo pipefail
+
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:latest \
+            --tag {{.OCI_REFERENCE}}:latest \
+            --progress plain \
+            -f docker/latest/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          _latest_rdflib_version=$({{.DOCKER}} run --entrypoint= {{.OCI_REFERENCE}}:latest bash -c 'pip show rdflib | sed -n "s/^Version: //gp"')
+          echo "_latest_rdflib_version=${_latest_rdflib_version}"
+
+          {{.DOCKER}} image tag {{.OCI_REFERENCE}}:latest {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+          fi
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is
