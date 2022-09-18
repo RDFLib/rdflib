@@ -3,7 +3,7 @@ HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
 # from this import d
-from typing import IO, Optional, Type, Union
+from typing import IO, Optional, Type, Union, TYPE_CHECKING
 import json
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import Literal, URIRef, Node, BNode, RdfstarTriple
@@ -27,18 +27,18 @@ class TrigstarSerializer(Serializer):
 
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
         self.default_context: Optional[Node]
-        self.graph_type: Type[Graph]
-        if isinstance(store, ConjunctiveGraph):
-            self.graph_type = ConjunctiveGraph
+        # print("init", list(store.contexts()))
+        if store.context_aware:
+            if TYPE_CHECKING:
+                assert isinstance(store, ConjunctiveGraph)
             self.contexts = list(store.contexts())
+            # print("sadasd", [store])
+            self.default_context = store.default_context.identifier
             if store.default_context:
-                self.default_context = store.default_context
                 self.contexts.append(store.default_context)
-            else:
-                self.default_context = None
         else:
-            self.graph_type = Graph
             self.contexts = [store]
+            # print("asdasdas", store.default_context.identifier)
             self.default_context = None
 
         Serializer.__init__(self, store)
@@ -527,11 +527,9 @@ class TrigstarSerializer(Serializer):
                         if(isinstance(predicate, rdflib.term.URIRef)):
                             predicate = "<"+str(predicate)+">"
 
-                        output = output+subject+" "+predicate+" "+object+" ."+"\n"
-
-        if output is not None:
-            output = "_:"+str(myHash(output))+ "{\n"+ output + "}"
-            stream.write(output.encode())
+                        output = subject+" "+predicate+" "+object+" <"+str(g.identifier)+"> "" ."+"\n"
+                        if output is not None:
+                            stream.write(output.encode())
 
     def _iri_or_bn(self, i_):
         if isinstance(i_, URIRef):
