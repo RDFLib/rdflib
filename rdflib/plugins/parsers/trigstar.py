@@ -2720,7 +2720,7 @@ class TrigSinkParser(SinkParser):
         reason2 = self._reason2
         self._reason2 = becauseSubGraph
         self._context = self._store.newGraph(graph)
-        print(self._context)
+        # print(self._context)
         while 1:
             i = self.skipSpace(argstr, j)
             if i < 0:
@@ -2764,7 +2764,7 @@ class TrigParser(Parser):
             )
 
         # we're currently being handed a Graph, not a ConjunctiveGraph
-        print("Contextawareasdasdasdasd\n\n\n\n", graph.store.context_aware)
+        # print("Contextawareasdasdasdasd\n\n\n\n", graph.store.context_aware)
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
         conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
