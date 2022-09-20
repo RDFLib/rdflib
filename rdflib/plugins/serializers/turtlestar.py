@@ -68,16 +68,6 @@ class TurtlestarSerializer(Serializer):
         result_subject = ""
         result_object = ""
 
-        def serializing_spo(term):
-            if isinstance(term, rdflib.term.URIRef):
-                output = "<"+str(term)+">"
-            elif isinstance(term, rdflib.term.Literal):
-                output = term._literal_n3(use_plain=True)
-            elif isinstance(term, rdflib.term.BNode):
-                output = "_:"+str(term)
-
-            return output
-
         def update_dictionary_RdfstarTriple(node, g, dictionary, properties, collection_or_not, quoted_Bnode_or_not, blanknode_dictionary):
             quoted_Bnode_or_not = False
             if type(node) == rdflib.term.BNode:
@@ -85,9 +75,20 @@ class TurtlestarSerializer(Serializer):
                     if (isinstance(s, rdflib.term.BNode) & (not isinstance(o, rdflib.term.BNode)) & (not isinstance(o, rdflib.term.RdfstarTriple)) & ((not isinstance(p, rdflib.term.BNode)) & (not isinstance(p, rdflib.term.RdfstarTriple)))):
                         pass
 
-                        p = serializing_spo(p)
-                        s = serializing_spo(s)
-                        o = serializing_spo(o)
+                        if isinstance(p, rdflib.term.URIRef):
+                            p = "<"+str(p)+">"
+                        elif isinstance(p, rdflib.term.Literal):
+                            p = p._literal_n3(use_plain=True)
+
+                        if isinstance(s, rdflib.term.BNode):
+                            s = "_:"+str(s)
+
+                        if isinstance(o, rdflib.term.URIRef):
+                            o = "<"+str(o)+">"
+                        elif isinstance(o, rdflib.term.Literal):
+                            o = o._literal_n3(use_plain=True)
+                        elif isinstance(o, rdflib.term.BNode):
+                            o = "_:"+str(o)
 
                         if not (node in blanknode_dictionary):
 
@@ -169,9 +170,21 @@ class TurtlestarSerializer(Serializer):
                     subjectexpandable = ((type(subject) == rdflib.term.BNode) or (type(subject) == rdflib.term.RdfstarTriple))
                     objectexpandable = ((type(object) == rdflib.term.BNode) or (type(object) == rdflib.term.RdfstarTriple))
 
-                    subject = serializing_spo(subject)
+                    if (isinstance(subject, rdflib.term.URIRef)):
 
-                    object = serializing_spo(object)
+                        subject = "<"+str(subject)+">"
+                    elif isinstance(subject, rdflib.term.BNode):
+                        subject = "_:"+str(subject)
+                    elif isinstance(subject, rdflib.term.Literal):
+                        subject = subject._literal_n3(use_plain=True)
+
+                    if (isinstance(object, rdflib.term.URIRef)):
+
+                        object = "<"+str(object)+">"
+                    elif isinstance(object, rdflib.term.Literal):
+                        object = object._literal_n3(use_plain=True)
+                    elif isinstance(object, rdflib.term.BNode):
+                       object = "_:"+str(object)
 
                     if isinstance(predicate, rdflib.term.URIRef):
                         predicate = "<"+str(predicate)+">"
@@ -191,7 +204,6 @@ class TurtlestarSerializer(Serializer):
                             object = "_:"+str(object)
 
                     if ((not subjectexpandable) and (not objectexpandable)):
-
 
                         dictionary[node] = "<<" + " "+str(subject)+ " "+str(predicate) + " "+str(object) + " "+">>"
 
@@ -282,6 +294,7 @@ class TurtlestarSerializer(Serializer):
                     elif isinstance(subject, rdflib.term.Literal):
                         subject = subject._literal_n3(use_plain=True)
                     elif isinstance(subject, rdflib.term.RdfstarTriple):
+                        print("rdfstartriple", dictionary)
                         subject = dictionary[subject]
                     elif isinstance(subject, rdflib.term.BNode):
 
@@ -355,7 +368,7 @@ class TurtlestarSerializer(Serializer):
                                 result_subject.insert(0, "(")
                                 result_subject.append(")")
                             elif subject in blanknode_dictionary:
-                                subject = "["+"".join(blanknode_dictionary[subject])+"]"
+                                subject = "_:" + thenode_id
                             elif ifquotedBnode:
                                 pass
                             else:
