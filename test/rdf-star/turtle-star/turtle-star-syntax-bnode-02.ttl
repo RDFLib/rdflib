@@ -1,4 +1,0 @@
-PREFIX : <http://example/>
-
-:s :p _:a .
-<<:s :p _:a >> :q 456 .

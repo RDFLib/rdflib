@@ -1,4 +1,0 @@
-PREFIX : <http://example/>
-
-:s :p :o .
-:x :p <<:s :p :o>> .

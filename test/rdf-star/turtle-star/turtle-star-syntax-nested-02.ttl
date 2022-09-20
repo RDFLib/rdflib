@@ -1,5 +1,0 @@
-PREFIX : <http://example/>
-
-:s :p :o .
-:a :q <<:s :p :o >> .
-<< :a :q <<:s :p :o >>>> :r :z .
