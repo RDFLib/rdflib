@@ -64,11 +64,13 @@ class TrigstarSerializer(Serializer):
             raise Exception(
                 "Hextuple serialization can't (yet) handle formula-aware stores"
             )
+
         dictionary = {}
         blanknode_dictionary = {}
         result_subject = ""
         result_object = ""
         output = ""
+
         def update_dictionary_RdfstarTriple(node, g, dictionary, properties, collection_or_not, quoted_Bnode_or_not, blanknode_dictionary):
             quoted_Bnode_or_not = False
             if type(node) == rdflib.term.BNode:
@@ -100,9 +102,7 @@ class TrigstarSerializer(Serializer):
 
                             if not [p,o] in blanknode_dictionary[node]:
                                 blanknode_dictionary[node].append([p,o])
-
                     else:
-
                         if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#first" in p) or ("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest" in p):
                             collection_or_not  =  True
                             quoted_Bnode_or_not = False
@@ -124,40 +124,29 @@ class TrigstarSerializer(Serializer):
 
                             if ((not isinstance(o, rdflib.term.BNode)) & (not isinstance(o, rdflib.term.RdfstarTriple)) & ((not isinstance(p, rdflib.term.BNode)) & (not isinstance(p, rdflib.term.RdfstarTriple)))):
                                 pass
-
                             else:
                                 collection_or_not = False
                                 quoted_Bnode_or_not = False
-
                                 if (isinstance(p, rdflib.term.URIRef)):
                                     p = "<"+str(p)+">"
                                 elif isinstance(p, rdflib.term.Literal):
                                     p = p._literal_n3(use_plain=True)
-
-
                                     pass
                                 properties.append(p)
                                 if o in dictionary:
                                     properties.append(dictionary[o])
-
                                 else:
-
                                     update_dictionary_RdfstarTriple(o, g, dictionary,properties, collection_or_not, quoted_Bnode_or_not, blanknode_dictionary)
 
-
             if type(node) == rdflib.term.RdfstarTriple:
-
                 collection_or_not = False
                 quoted_Bnode_or_not = True
                 if node in dictionary:
-
                     pass
                 else:
-
                     subject = node.subject()
                     predicate = node.predicate()
                     object = node.object()
-
                     if subject in dictionary:
 
                         subject = dictionary[subject]
@@ -207,7 +196,6 @@ class TrigstarSerializer(Serializer):
                     if node not in dictionary:
 
                         dictionary[node] = "<<" + " "+str(subject)+ " "+str(predicate) + " "+str(object) + " "+">>"
-
                     else:
 
                         pass
