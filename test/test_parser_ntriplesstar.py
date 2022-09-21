@@ -14,13 +14,6 @@ from rdflib.util import guess_format
 from rdflib.plugin import register
 from rdflib.parser import Parser
 
-register(
-    "ntstar",
-    Parser,
-    "rdflib.plugins.parsers.ntriples-star",
-    "NtriplesStarParser",
-)
-
 # tests should be past
 def test_NtriplesPositiveSyntax_subject():
     g = Graph()
@@ -46,9 +39,6 @@ def test_NtriplesPositiveSyntax_nestedquotedtriplesubjectposition():
 def test_NtriplesPositiveSyntax_nestedquotedtripleobjectposition():
     g = Graph()
     assert isinstance(g.parse("ntriples-star/ntriples-star-bnode-1.nt", format = "ntstar"), Graph)
-    print(g.serialize())
-    # for s, p, o, g in g.quads((None, RDF.type, None, None)):
-    #     print(s)
 
 def test_NtriplesPositiveSyntax_compoundforms():
     g = Graph()

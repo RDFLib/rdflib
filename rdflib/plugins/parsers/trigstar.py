@@ -631,6 +631,7 @@ class FindVariables(Visitor):
             vblist.append([tri])
         else:
             tri = tri.replace(";", "")
+            tri = tri.replace(" ", "")
             if not (tri in assertedtriplelist):
                 assertedtriplelist.append(tri)
             for x in var.children:
@@ -756,12 +757,12 @@ def RDFstarParsings(rdfstarstring):
     if ":G {  }\n" in output_tree:
         output_tree = output_tree.replace(":G {  }\n", ":G {")
         output_tree = output_tree+ "}"
-
+    # print("test output tree", output_tree)
 
     tree = trig_lark.parse(output_tree)
 
     at = FindVariables().visit(tree)
-
+    # print("asserted, quoted", assertedtriplelist, quotation_list)
     for y in vblist:
 
         for element_index in range(0, len(y)):

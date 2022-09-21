@@ -631,6 +631,7 @@ class FindVariables(Visitor):
 
         else:
             tri = tri.replace(";", "")
+            tri = tri.replace(" ", "")
             if not (tri in assertedtriplelist):
                 assertedtriplelist.append(tri)
             for x in var.children:
