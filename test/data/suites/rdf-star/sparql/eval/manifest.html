@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>SPARQL-star Evaluation Tests</title>
+<h1>SPARQL-star Evaluation Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-star/tests/sparql/eval/README">https://w3c.github.io/rdf-star/tests/sparql/eval/README</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#sparql-star-results-1j">SPARQL-star - all graph triples (JSON results)</a>
+<li class="proposed"><a href="#sparql-star-results-1x">SPARQL-star - all graph triples (XML results)</a>
+<li class="proposed"><a href="#sparql-star-basic-2">SPARQL-star - match constant quoted triple</a>
+<li class="proposed"><a href="#sparql-star-basic-3">SPARQL-star - match quoted triple, var subject</a>
+<li class="proposed"><a href="#sparql-star-basic-4">SPARQL-star - match quoted triple, var predicate</a>
+<li class="proposed"><a href="#sparql-star-basic-5">SPARQL-star - match quoted triple, var object</a>
+<li class="proposed"><a href="#sparql-star-basic-6">SPARQL-star - no match of quoted triple</a>
+<li class="proposed"><a href="#sparql-star-pattern-1">SPARQL-star - Asserted and quoted triple</a>
+<li class="proposed"><a href="#sparql-star-pattern-2">SPARQL-star -  Asserted and quoted triple</a>
+<li class="proposed"><a href="#sparql-star-pattern-3">SPARQL-star - Pattern - Variable for quoted triple</a>
+<li class="proposed"><a href="#sparql-star-pattern-4">SPARQL-star - Pattern - No match</a>
+<li class="proposed"><a href="#sparql-star-pattern-5">SPARQL-star - Pattern - match variables in triple terms</a>
+<li class="proposed"><a href="#sparql-star-pattern-6">SPARQL-star - Pattern - Nesting 1</a>
+<li class="proposed"><a href="#sparql-star-pattern-7">SPARQL-star - Pattern - Nesting - 2</a>
+<li class="proposed"><a href="#sparql-star-pattern-8">SPARQL-star - Pattern - Match and nesting</a>
+<li class="proposed"><a href="#sparql-star-pattern-9">SPARQL-star - Pattern - Same variable</a>
+<li class="proposed"><a href="#sparql-star-construct-1">SPARQL-star - CONSTRUCT with constant template</a>
+<li class="proposed"><a href="#sparql-star-construct-2">SPARQL-star - CONSTRUCT WHERE with constant template</a>
+<li class="proposed"><a href="#sparql-star-construct-3">SPARQL-star - CONSTRUCT - about every triple</a>
+<li class="proposed"><a href="#sparql-star-construct-4">SPARQL-star - CONSTRUCT with annotation syntax</a>
+<li class="proposed"><a href="#sparql-star-construct-5">SPARQL-star - CONSTRUCT WHERE with annotation syntax</a>
+<li class="proposed"><a href="#sparql-star-graphs-1">SPARQL-star - GRAPH</a>
+<li class="proposed"><a href="#sparql-star-graphs-2">SPARQL-star - GRAPHs with blank node</a>
+<li class="proposed"><a href="#sparql-star-expr-1">SPARQL-star - Embedded triple - BIND - CONSTRUCT</a>
+<li class="proposed"><a href="#sparql-star-expr-2">SPARQL-star - Embedded triple - Functions</a>
+<li class="proposed"><a href="#sparql-star-op-1">SPARQL-star - Embedded triple - sameTerm</a>
+<li class="proposed"><a href="#sparql-star-op-2">SPARQL-star - Embedded triple - value-equality</a>
+<li class="proposed"><a href="#sparql-star-op-3">SPARQL-star - Embedded triple - value-inequality</a>
+<li class="proposed"><a href="#sparql-star-op-4">SPARQL-star - Embedded triple - value-inequality</a>
+<li class="proposed"><a href="#sparql-star-order-1">SPARQL-star - Embedded triple - ORDER BY</a>
+<li class="proposed"><a href="#sparql-star-order-2">SPARQL-star - Embedded triple - ordering</a>
+<li class="proposed"><a href="#sparql-star-update-1">SPARQL-star - Update</a>
+<li class="proposed"><a href="#sparql-star-update-2">SPARQL-star - Update - annotation</a>
+<li class="proposed"><a href="#sparql-star-update-3">SPARQL-star - Update - data</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-star/tests/sparql/eval/README">https://w3c.github.io/rdf-star/tests/sparql/eval/README</a>
+<section id="sparql-star-results-1j" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - all graph triples (JSON results) <a href="#sparql-star-results-1j">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-results-1.rq">sparql-star-results-1.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    ?s ?p ?o
+}
+</pre>
+<div>Data: <code><a href="data-0.ttl">data-0.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+:a :q &lt;&lt;:a :b :c&gt;&gt; .
+
+:f :g &lt;&lt; &lt;&lt;:x1 :y1 123 &gt;&gt; :p :o &gt;&gt; .
+
+:f :g &lt;&lt; :s :p &lt;&lt;:x2 :y3 123 &gt;&gt; &gt;&gt; .
+
+&lt;&lt; :s1 :p1 :o1 &gt;&gt; :q &lt;&lt; :s1 :p1 :o1 &gt;&gt; .
+
+:a :b :c {| :q1 :z1 |} .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-results-1.srj">sparql-star-results-1.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q1" } ,
+        "o": { "type": "uri" , "value": "http://example/z1" }
+      } ,
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": { "type": "uri" , "value": "http://example/z" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/b" } ,
+        "o": { "type": "uri" , "value": "http://example/c" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/f" } ,
+        "p": { "type": "uri" , "value": "http://example/g" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/x2" } ,
+                "predicate": { "type": "uri" , "value": "http://example/y3" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            }
+          }
+        }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/f" } ,
+        "p": { "type": "uri" , "value": "http://example/g" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/x1" } ,
+                "predicate": { "type": "uri" , "value": "http://example/y1" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        }
+      } ,
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o1" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o1" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-results-1x" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - all graph triples (XML results) <a href="#sparql-star-results-1x">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-results-1.rq">sparql-star-results-1.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    ?s ?p ?o
+}
+</pre>
+<div>Data: <code><a href="data-0.ttl">data-0.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+:a :q &lt;&lt;:a :b :c&gt;&gt; .
+
+:f :g &lt;&lt; &lt;&lt;:x1 :y1 123 &gt;&gt; :p :o &gt;&gt; .
+
+:f :g &lt;&lt; :s :p &lt;&lt;:x2 :y3 123 &gt;&gt; &gt;&gt; .
+
+&lt;&lt; :s1 :p1 :o1 &gt;&gt; :q &lt;&lt; :s1 :p1 :o1 &gt;&gt; .
+
+:a :b :c {| :q1 :z1 |} .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-results-1.srx">sparql-star-results-1.srx</a></code></div>
+<pre class="result">
+&lt;?xml version="1.0"?&gt;
+&lt;sparql xmlns="http://www.w3.org/2005/sparql-results#"&gt;
+  &lt;head&gt;
+    &lt;variable name="s"/&gt;
+    &lt;variable name="p"/&gt;
+    &lt;variable name="o"/&gt;
+  &lt;/head&gt;
+  &lt;results&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/a&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/b&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/c&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/q1&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;uri&gt;http://example/z1&lt;/uri&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/a&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/b&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/c&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/q&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;uri&gt;http://example/z&lt;/uri&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;uri&gt;http://example/a&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/b&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;uri&gt;http://example/c&lt;/uri&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;uri&gt;http://example/a&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/q&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/a&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/b&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/c&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;uri&gt;http://example/f&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/g&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/s&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/p&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;triple&gt;
+              &lt;subject&gt;
+                &lt;uri&gt;http://example/x2&lt;/uri&gt;
+              &lt;/subject&gt;
+              &lt;predicate&gt;
+                &lt;uri&gt;http://example/y3&lt;/uri&gt;
+              &lt;/predicate&gt;
+              &lt;object&gt;
+                &lt;literal datatype="http://www.w3.org/2001/XMLSchema#integer"&gt;123&lt;/literal&gt;
+              &lt;/object&gt;
+            &lt;/triple&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;uri&gt;http://example/f&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/g&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;triple&gt;
+              &lt;subject&gt;
+                &lt;uri&gt;http://example/x1&lt;/uri&gt;
+              &lt;/subject&gt;
+              &lt;predicate&gt;
+                &lt;uri&gt;http://example/y1&lt;/uri&gt;
+              &lt;/predicate&gt;
+              &lt;object&gt;
+                &lt;literal datatype="http://www.w3.org/2001/XMLSchema#integer"&gt;123&lt;/literal&gt;
+              &lt;/object&gt;
+            &lt;/triple&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/p&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/o&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+    &lt;result&gt;
+      &lt;binding name="s"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/s1&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/p1&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/o1&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+      &lt;binding name="p"&gt;
+        &lt;uri&gt;http://example/q&lt;/uri&gt;
+      &lt;/binding&gt;
+      &lt;binding name="o"&gt;
+        &lt;triple&gt;
+          &lt;subject&gt;
+            &lt;uri&gt;http://example/s1&lt;/uri&gt;
+          &lt;/subject&gt;
+          &lt;predicate&gt;
+            &lt;uri&gt;http://example/p1&lt;/uri&gt;
+          &lt;/predicate&gt;
+          &lt;object&gt;
+            &lt;uri&gt;http://example/o1&lt;/uri&gt;
+          &lt;/object&gt;
+        &lt;/triple&gt;
+      &lt;/binding&gt;
+    &lt;/result&gt;
+  &lt;/results&gt;
+&lt;/sparql&gt;
+</pre>
+</section><section id="sparql-star-basic-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - match constant quoted triple <a href="#sparql-star-basic-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-basic-2.rq">sparql-star-basic-2.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    &lt;&lt;:a :b :c&gt;&gt; ?p ?o
+}
+</pre>
+<div>Data: <code><a href="data-1.ttl">data-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-basic-2.srj">sparql-star-basic-2.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": { "type": "uri" , "value": "http://example/z" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-basic-3" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - match quoted triple, var subject <a href="#sparql-star-basic-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-basic-3.rq">sparql-star-basic-3.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    &lt;&lt;?s :b :c&gt;&gt; ?p ?o
+}
+</pre>
+<div>Data: <code><a href="data-1.ttl">data-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-basic-3.srj">sparql-star-basic-3.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": { "type": "uri" , "value": "http://example/z" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-basic-4" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - match quoted triple, var predicate <a href="#sparql-star-basic-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-basic-4.rq">sparql-star-basic-4.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    &lt;&lt;:a ?p :c&gt;&gt; ?q :z .
+}
+</pre>
+<div>Data: <code><a href="data-1.ttl">data-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-basic-4.srj">sparql-star-basic-4.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "p" , "q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "p": { "type": "uri" , "value": "http://example/b" } ,
+        "q": { "type": "uri" , "value": "http://example/q" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-basic-5" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - match quoted triple, var object <a href="#sparql-star-basic-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-basic-5.rq">sparql-star-basic-5.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    &lt;&lt;:a :b ?o&gt;&gt; ?q :z .
+}
+</pre>
+<div>Data: <code><a href="data-1.ttl">data-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-basic-5.srj">sparql-star-basic-5.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "o" , "q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "o": { "type": "uri" , "value": "http://example/c" } ,
+        "q": { "type": "uri" , "value": "http://example/q" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-basic-6" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - no match of quoted triple <a href="#sparql-star-basic-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-basic-6.rq">sparql-star-basic-6.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    &lt;&lt;?a ?b :nomatch &gt;&gt; ?q :z .
+}
+</pre>
+<div>Data: <code><a href="data-1.ttl">data-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:a :b :c&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-basic-6.srj">sparql-star-basic-6.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "a" , "b" , "q" ]
+  } ,
+  "results": {
+    "bindings": [
+      
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Asserted and quoted triple <a href="#sparql-star-pattern-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-01.rq">sparql-star-pattern-01.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+ :s :p1 ?o .
+ &lt;&lt;:s :p1 ?o&gt;&gt; ?q ?z .
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-01.srj">sparql-star-pattern-01.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "o" , "q" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "q": { "type": "uri" , "value": "http://example/b" } ,
+        "z": { "type": "uri" , "value": "http://example/a2" }
+      } ,
+      { 
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "q": { "type": "uri" , "value": "http://example/q" } ,
+        "z": { "type": "uri" , "value": "http://example/z" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star -  Asserted and quoted triple <a href="#sparql-star-pattern-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-02.rq">sparql-star-pattern-02.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  &lt;&lt;:s :p1 ?o&gt;&gt; ?q ?z .
+  :s :p1 ?o .
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-02.srj">sparql-star-pattern-02.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "o" , "q" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "q": { "type": "uri" , "value": "http://example/b" } ,
+        "z": { "type": "uri" , "value": "http://example/a2" }
+      } ,
+      { 
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "q": { "type": "uri" , "value": "http://example/q" } ,
+        "z": { "type": "uri" , "value": "http://example/z" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-3" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - Variable for quoted triple <a href="#sparql-star-pattern-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-03.rq">sparql-star-pattern-03.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+## Connected via triple term
+SELECT * {
+ ?s :b ?o .
+ ?o :b ?z .
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-03.srj">sparql-star-pattern-03.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "o" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/a1" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":   { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":    { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "z": { "type": "uri" , "value": "http://example/a2" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-4" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - No match <a href="#sparql-star-pattern-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-04.rq">sparql-star-pattern-04.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+## No match
+SELECT * {
+   ?s ?p &lt;&lt; :s :p1 :zz &gt;&gt; .
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-04.srj">sparql-star-pattern-04.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" ]
+  } ,
+  "results": {
+    "bindings": [
+      
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-5" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - match variables in triple terms <a href="#sparql-star-pattern-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-05.rq">sparql-star-pattern-05.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+# Matching Variables
+SELECT * {
+   &lt;&lt;?s ?p ?o&gt;&gt; ?Q &lt;&lt;?s ?p ?o&gt;&gt;
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-05.srj">sparql-star-pattern-05.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" , "o" , "Q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s" } ,
+        "p": { "type": "uri" , "value": "http://example/p2" } ,
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "Q": { "type": "uri" , "value": "http://example/sym" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-6" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - Nesting 1 <a href="#sparql-star-pattern-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-06.rq">sparql-star-pattern-06.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+# Nesting
+SELECT * {
+  &lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z&gt;&gt; :q  ?q .
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-06.srj">sparql-star-pattern-06.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "q": { "type": "uri" , "value": "http://example/o" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-7" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - Nesting - 2 <a href="#sparql-star-pattern-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-07.rq">sparql-star-pattern-07.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+# Nesting
+SELECT * {
+  &lt;&lt; &lt;&lt;?s :p2 :o&gt;&gt; :p3 ?x&gt;&gt; :q ?q 
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-07.srj">sparql-star-pattern-07.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "x" , "q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s" } ,
+        "x": { "type": "uri" , "value": "http://example/z" } ,
+        "q": { "type": "uri" , "value": "http://example/o" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-8" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - Match and nesting <a href="#sparql-star-pattern-8">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-08.rq">sparql-star-pattern-08.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+# Nesting via match
+SELECT * {
+  ?t :p3 :z .
+  &lt;&lt; ?t  :p3 :z &gt;&gt; :q :o . 
+}
+</pre>
+<div>Data: <code><a href="data-2.ttl">data-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+:s :p1 :o .
+&lt;&lt;:s :p1 :o&gt;&gt; :q :z .
+
+# pattern-3
+:a1 :b &lt;&lt;:s :p1 :o&gt;&gt;  .
+&lt;&lt;:s :p1 :o&gt;&gt; :b :a2 .
+
+# pattern-5
+:s :p2 :o .
+&lt;&lt;:s :p2 :o&gt;&gt; :sym &lt;&lt;:s :p2 :o&gt;&gt; .
+
+# pattern-6
+&lt;&lt;:s :p2 :o&gt;&gt; :p3 :z .
+&lt;&lt; &lt;&lt;:s :p2 :o&gt;&gt; :p3 :z &gt;&gt; :q :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-08.srj">sparql-star-pattern-08.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "t" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "t": {
+          "type": "triple" , 
+          "value": {
+            "subject":   { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p2" } ,
+            "object":    { "type": "uri" , "value": "http://example/o" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-pattern-9" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Pattern - Same variable <a href="#sparql-star-pattern-9">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-pattern-09.rq">sparql-star-pattern-09.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+    { &lt;&lt;?s ?p :o&gt;&gt; ?p ?z }
+    UNION
+    { ?z ?p  &lt;&lt;?s ?p :o&gt;&gt; }
+}
+</pre>
+<div>Data: <code><a href="data-5.ttl">data-5.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+&lt;&lt;:s1 :p :o&gt;&gt; :q :z .
+&lt;&lt;:s2 :p :o&gt;&gt; :p "same-p" .
+&lt;&lt;:s3 :p :o&gt;&gt; : "same-p" .
+
+
+:z1 :q &lt;&lt; :s1 :p :o &gt;&gt; .
+:z2 :p &lt;&lt; :s2 :p :o &gt;&gt; .
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-pattern-09.srj">sparql-star-pattern-09.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "p": { "type": "uri" , "value": "http://example/p" } ,
+        "z": { "type": "literal" , "value": "same-p" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "p": { "type": "uri" , "value": "http://example/p" } ,
+        "z": { "type": "uri" , "value": "http://example/z2" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-construct-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - CONSTRUCT with constant template <a href="#sparql-star-construct-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-construct-1.rq">sparql-star-construct-1.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+CONSTRUCT {
+  &lt;&lt;:a :b :c &gt;&gt; :q :z .
+} WHERE { }
+</pre>
+<div>Data: <code><a href="data-3.ttl">data-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :b :c {| :q :z |} .
+:s :p :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-construct-1.ttl">sparql-star-construct-1.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+&lt;&lt; :a :b :c &gt;&gt;  :q  :z .
+</pre>
+</section><section id="sparql-star-construct-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - CONSTRUCT WHERE with constant template <a href="#sparql-star-construct-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-construct-2.rq">sparql-star-construct-2.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+CONSTRUCT WHERE {
+  &lt;&lt;:a :b :c &gt;&gt; :q :z .
+}
+</pre>
+<div>Data: <code><a href="data-3.ttl">data-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :b :c {| :q :z |} .
+:s :p :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-construct-2.ttl">sparql-star-construct-2.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+&lt;&lt; :a :b :c &gt;&gt;  :q  :z .
+</pre>
+</section><section id="sparql-star-construct-3" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - CONSTRUCT - about every triple <a href="#sparql-star-construct-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-construct-3.rq">sparql-star-construct-3.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+CONSTRUCT {
+   &lt;&lt; ?s ?p ?o &gt;&gt; :source :ABC .
+} WHERE {
+   ?s ?p ?o .
+}
+</pre>
+<div>Data: <code><a href="data-3.ttl">data-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :b :c {| :q :z |} .
+:s :p :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-construct-3.ttl">sparql-star-construct-3.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+&lt;&lt; &lt;&lt; :a :b :c &gt;&gt; :q :z &gt;&gt;
+        :source  :ABC .
+
+&lt;&lt; :a :b :c &gt;&gt;  :source  :ABC .
+
+&lt;&lt; :s :p :o &gt;&gt;  :source  :ABC .
+</pre>
+</section><section id="sparql-star-construct-4" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - CONSTRUCT with annotation syntax <a href="#sparql-star-construct-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-construct-4.rq">sparql-star-construct-4.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+CONSTRUCT {
+   :a :b ?c {| :source :ABC |} .
+} WHERE {
+   :a :b ?c .
+}
+</pre>
+<div>Data: <code><a href="data-3.ttl">data-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :b :c {| :q :z |} .
+:s :p :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-construct-4.ttl">sparql-star-construct-4.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+:a      :b      :c .
+
+&lt;&lt; :a :b :c &gt;&gt;  :source  :ABC .
+</pre>
+</section><section id="sparql-star-construct-5" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - CONSTRUCT WHERE with annotation syntax <a href="#sparql-star-construct-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-construct-5.rq">sparql-star-construct-5.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+CONSTRUCT WHERE {
+   :a :b ?c {| ?q ?z |} .
+}
+</pre>
+<div>Data: <code><a href="data-3.ttl">data-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :b :c {| :q :z |} .
+:s :p :o .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-construct-5.ttl">sparql-star-construct-5.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+:a      :b      :c .
+
+&lt;&lt; :a :b :c &gt;&gt;  :q  :z .
+</pre>
+</section><section id="sparql-star-graphs-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - GRAPH <a href="#sparql-star-graphs-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-graphs-1.rq">sparql-star-graphs-1.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+   :s :p ?o .
+   GRAPH ?g { &lt;&lt;:s :p ?o&gt;&gt; ?q ?z }
+}
+</pre>
+<div>Data: <code><a href="data-4.trig">data-4.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o1 .
+
+GRAPH :g {
+     &lt;&lt;:s :p :o1 &gt;&gt; :q1 :z1 .
+     &lt;&lt;:s :p :o2 &gt;&gt; :q2 :z2 .
+}
+
+GRAPH :g1 { _:b :r :o3 . _:b :r :o4 . }
+
+GRAPH :g2 { &lt;&lt; _:b :r :o3 &gt;&gt; :pb "abc" . }
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-graphs-1.srj">sparql-star-graphs-1.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "o" , "q" , "z" , "g" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "o": { "type": "uri" , "value": "http://example/o1" } ,
+        "q": { "type": "uri" , "value": "http://example/q1" } ,
+        "z": { "type": "uri" , "value": "http://example/z1" } ,
+        "g": { "type": "uri" , "value": "http://example/g" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-graphs-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - GRAPHs with blank node <a href="#sparql-star-graphs-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-graphs-2.rq">sparql-star-graphs-2.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+   GRAPH ?g1 { ?s ?p ?o }
+   GRAPH ?g2 { &lt;&lt; ?s ?p ?o &gt;&gt; ?q ?z }
+}
+</pre>
+<div>Data: <code><a href="data-4.trig">data-4.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o1 .
+
+GRAPH :g {
+     &lt;&lt;:s :p :o1 &gt;&gt; :q1 :z1 .
+     &lt;&lt;:s :p :o2 &gt;&gt; :q2 :z2 .
+}
+
+GRAPH :g1 { _:b :r :o3 . _:b :r :o4 . }
+
+GRAPH :g2 { &lt;&lt; _:b :r :o3 &gt;&gt; :pb "abc" . }
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-graphs-2.srj">sparql-star-graphs-2.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "s" , "p" , "o" , "g1" , "q" , "z" , "g2" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "bnode" , "value": "b0" } ,
+        "p": { "type": "uri" , "value": "http://example/r" } ,
+        "o": { "type": "uri" , "value": "http://example/o3" } ,
+        "g1": { "type": "uri" , "value": "http://example/g1" } ,
+        "q": { "type": "uri" , "value": "http://example/pb" } ,
+        "z": { "type": "literal" , "value": "abc" } ,
+        "g2": { "type": "uri" , "value": "http://example/g2" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-expr-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - BIND - CONSTRUCT <a href="#sparql-star-expr-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-expr-01.rq">sparql-star-expr-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+CONSTRUCT {
+  ?t :graph ?g .
+} WHERE {
+  GRAPH ?g {
+    ?s ?p ?o .
+    BIND(&lt;&lt;?s ?p  ?o&gt;&gt; AS ?t)
+  }
+}
+</pre>
+<div>Data: <code><a href="data-4.trig">data-4.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o1 .
+
+GRAPH :g {
+     &lt;&lt;:s :p :o1 &gt;&gt; :q1 :z1 .
+     &lt;&lt;:s :p :o2 &gt;&gt; :q2 :z2 .
+}
+
+GRAPH :g1 { _:b :r :o3 . _:b :r :o4 . }
+
+GRAPH :g2 { &lt;&lt; _:b :r :o3 &gt;&gt; :pb "abc" . }
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-expr-01.ttl">sparql-star-expr-01.ttl</a></code></div>
+<pre class="result">
+PREFIX :      &lt;http://example/&gt;
+
+&lt;&lt; &lt;&lt; :s :p :o2 &gt;&gt; :q2 :z2 &gt;&gt;
+        :graph  :g .
+
+&lt;&lt; _:b0 :r :o4 &gt;&gt;  :graph  :g1 .
+
+&lt;&lt; _:b0 :r :o3 &gt;&gt;  :graph  :g1 .
+
+&lt;&lt; &lt;&lt; :s :p :o1 &gt;&gt; :q1 :z1 &gt;&gt;
+        :graph  :g .
+
+&lt;&lt; &lt;&lt; _:b0 :r :o3 &gt;&gt; :pb "abc" &gt;&gt;
+        :graph  :g2 .
+</pre>
+</section><section id="sparql-star-expr-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - Functions <a href="#sparql-star-expr-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-expr-02.rq">sparql-star-expr-02.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  VALUES ?t {
+         &lt;&lt;:s :p :o &gt;&gt;
+         :x
+          &lt;&lt;:s :p :o1 &gt;&gt;
+          }
+  FILTER(isTriple(?t))
+  FILTER(SUBJECT(?t) = :s)
+  FILTER(PREDICATE(?t) = :p)
+  FILTER(OBJECT(?t) = :o)
+}
+</pre>
+<div>Data: <code><a href="empty.nq">empty.nq</a></code></div>
+<pre>
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-expr-02.srj">sparql-star-expr-02.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "t" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "t": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-op-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - sameTerm <a href="#sparql-star-op-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-op-1.rq">sparql-star-op-1.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  ?x :left ?left .
+  ?x :right ?right .
+  FILTER( sameTerm(?left, ?right) )
+}
+</pre>
+<div>Data: <code><a href="data-7.ttl">data-7.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:x1 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x1 :right &lt;&lt; :a :b 123.0 &gt;&gt; .
+
+:x2 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x2 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+:x3 :left  &lt;&lt; &lt;&lt; :a :b 123 &gt;&gt; :q 999 &gt;&gt; .
+:x3 :right &lt;&lt; &lt;&lt; :a :b 123.0 &gt;&gt; :q 999 &gt;&gt; .
+
+:x4 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x4 :right &lt;&lt; :c :d 123 &gt;&gt; .
+
+:x5 :left  &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+:x5 :right &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+
+:x6 :left  &lt;&lt; _:bnode2 :b 123e0 &gt;&gt; .
+:x6 :right &lt;&lt; _:bnode2 :b 123 &gt;&gt; .
+
+:x7 :left  &lt;&lt; :a :b 9 &gt;&gt; .
+:x7 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-op-1.srj">sparql-star-op-1.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "x" , "left" , "right" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-op-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - value-equality <a href="#sparql-star-op-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-op-2.rq">sparql-star-op-2.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  ?x :left ?left .
+  ?x :right ?right .
+  FILTER( ! sameTerm(?left, ?right) )
+  FILTER(?left = ?right)
+}
+</pre>
+<div>Data: <code><a href="data-7.ttl">data-7.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:x1 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x1 :right &lt;&lt; :a :b 123.0 &gt;&gt; .
+
+:x2 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x2 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+:x3 :left  &lt;&lt; &lt;&lt; :a :b 123 &gt;&gt; :q 999 &gt;&gt; .
+:x3 :right &lt;&lt; &lt;&lt; :a :b 123.0 &gt;&gt; :q 999 &gt;&gt; .
+
+:x4 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x4 :right &lt;&lt; :c :d 123 &gt;&gt; .
+
+:x5 :left  &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+:x5 :right &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+
+:x6 :left  &lt;&lt; _:bnode2 :b 123e0 &gt;&gt; .
+:x6 :right &lt;&lt; _:bnode2 :b 123 &gt;&gt; .
+
+:x7 :left  &lt;&lt; :a :b 9 &gt;&gt; .
+:x7 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-op-2.srj">sparql-star-op-2.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "x" , "left" , "right" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x6" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#double" , "value": "123e0" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "value": "123.0" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/a" } ,
+                "predicate": { "type": "uri" , "value": "http://example/b" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/q" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/a" } ,
+                "predicate": { "type": "uri" , "value": "http://example/b" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "value": "123.0" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/q" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-op-3" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - value-inequality <a href="#sparql-star-op-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-op-3.rq">sparql-star-op-3.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  ?x :left ?left .
+  ?x :right ?right .
+  FILTER ( ?left &lt; ?right )
+  FILTER ( ?right &gt; ?left )
+}
+</pre>
+<div>Data: <code><a href="data-7.ttl">data-7.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:x1 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x1 :right &lt;&lt; :a :b 123.0 &gt;&gt; .
+
+:x2 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x2 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+:x3 :left  &lt;&lt; &lt;&lt; :a :b 123 &gt;&gt; :q 999 &gt;&gt; .
+:x3 :right &lt;&lt; &lt;&lt; :a :b 123.0 &gt;&gt; :q 999 &gt;&gt; .
+
+:x4 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x4 :right &lt;&lt; :c :d 123 &gt;&gt; .
+
+:x5 :left  &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+:x5 :right &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+
+:x6 :left  &lt;&lt; _:bnode2 :b 123e0 &gt;&gt; .
+:x6 :right &lt;&lt; _:bnode2 :b 123 &gt;&gt; .
+
+:x7 :left  &lt;&lt; :a :b 9 &gt;&gt; .
+:x7 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-op-3.srj">sparql-star-op-3.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "x" , "left" , "right" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x7" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "9" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-op-4" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - value-inequality <a href="#sparql-star-op-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-op-4.rq">sparql-star-op-4.rq</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+SELECT * {
+  ?x :left ?left .
+  ?x :right ?right .
+  FILTER ( ?left &lt;= ?right )
+  FILTER ( ?right &gt;= ?left )
+}
+</pre>
+<div>Data: <code><a href="data-7.ttl">data-7.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:x1 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x1 :right &lt;&lt; :a :b 123.0 &gt;&gt; .
+
+:x2 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x2 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+:x3 :left  &lt;&lt; &lt;&lt; :a :b 123 &gt;&gt; :q 999 &gt;&gt; .
+:x3 :right &lt;&lt; &lt;&lt; :a :b 123.0 &gt;&gt; :q 999 &gt;&gt; .
+
+:x4 :left  &lt;&lt; :a :b 123 &gt;&gt; .
+:x4 :right &lt;&lt; :c :d 123 &gt;&gt; .
+
+:x5 :left  &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+:x5 :right &lt;&lt; _:bnode1 :b 123 &gt;&gt; .
+
+:x6 :left  &lt;&lt; _:bnode2 :b 123e0 &gt;&gt; .
+:x6 :right &lt;&lt; _:bnode2 :b 123 &gt;&gt; .
+
+:x7 :left  &lt;&lt; :a :b 9 &gt;&gt; .
+:x7 :right &lt;&lt; :a :b 123 &gt;&gt; .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-op-4.srj">sparql-star-op-4.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "x" , "left" , "right" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x7" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "9" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "value": "123.0" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/a" } ,
+                "predicate": { "type": "uri" , "value": "http://example/b" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/q" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/a" } ,
+                "predicate": { "type": "uri" , "value": "http://example/b" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "value": "123.0" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/q" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x6" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#double" , "value": "123e0" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-order-1" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - ORDER BY <a href="#sparql-star-order-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-order-by.rq">sparql-star-order-by.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT *
+WHERE {
+   # Record ORDER BY for up to 20 items.
+   # Each clause slices one ?v and sets ?index.
+   # ?index is a unique string which is not in the same order.
+   {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 0 LIMIT 1 }
+     BIND( "B-1" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 1 LIMIT 1 }
+     BIND( "B-2" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 2 LIMIT 1 }
+     BIND( "A-3" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 3 LIMIT 1 }
+     BIND( "C-4" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 4 LIMIT 1 }
+     BIND( "B-5" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 5 LIMIT 1 }
+     BIND( "B-6" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 6 LIMIT 1 }
+     BIND( "C-7" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 7 LIMIT 1 }
+     BIND( "C-8" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 8 LIMIT 1 }
+     BIND( "A-9" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 9 LIMIT 1 }
+     BIND( "C-10" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 10 LIMIT 1 }
+     BIND( "C-11" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 11 LIMIT 1 }
+     BIND( "A-12" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 12 LIMIT 1 }
+     BIND( "B-13" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 13 LIMIT 1 }
+     BIND( "A-14" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 14 LIMIT 1 }
+     BIND( "B-15" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 15 LIMIT 1 }
+     BIND( "C-16" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 16 LIMIT 1 }
+     BIND( "C-17" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 17 LIMIT 1 }
+     BIND( "B-18" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 18 LIMIT 1 }
+     BIND( "A-19" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 19 LIMIT 1 }
+     BIND( "A-20" AS ?index )
+   }
+}
+</pre>
+<div>Data: <code><a href="data-order-kind.ttl">data-order-kind.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+# The different kinds of orderable items.
+# (Not in collation order).
+
+:item :p :x .
+
+:item :p &lt;&lt; :s :p :o &gt;&gt; .
+
+:item :p "abc" .
+
+:item :p _:b .
+
+##     (Lowest) no value assigned to the variable or expression in this solution.
+##     Blank nodes
+##     IRIs
+##     RDF literals
+##     RDF-star embedded triple terms
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-order-1.srj">sparql-star-order-1.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "v" , "index" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "v": { "type": "bnode" , "value": "b0" } ,
+        "index": { "type": "literal" , "value": "B-1" }
+      } ,
+      { 
+        "v": { "type": "uri" , "value": "http://example/x" } ,
+        "index": { "type": "literal" , "value": "B-2" }
+      } ,
+      { 
+        "v": { "type": "literal" , "value": "abc" } ,
+        "index": { "type": "literal" , "value": "A-3" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-4" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-order-2" class="entry proposed QueryEvaluationTest">
+<h2>SPARQL-star - Embedded triple - ordering <a href="#sparql-star-order-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>QueryEvaluationTest</td>
+</table>
+<div>Query: <code><a href="sparql-star-order-by.rq">sparql-star-order-by.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT *
+WHERE {
+   # Record ORDER BY for up to 20 items.
+   # Each clause slices one ?v and sets ?index.
+   # ?index is a unique string which is not in the same order.
+   {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 0 LIMIT 1 }
+     BIND( "B-1" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 1 LIMIT 1 }
+     BIND( "B-2" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 2 LIMIT 1 }
+     BIND( "A-3" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 3 LIMIT 1 }
+     BIND( "C-4" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 4 LIMIT 1 }
+     BIND( "B-5" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 5 LIMIT 1 }
+     BIND( "B-6" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 6 LIMIT 1 }
+     BIND( "C-7" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 7 LIMIT 1 }
+     BIND( "C-8" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 8 LIMIT 1 }
+     BIND( "A-9" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 9 LIMIT 1 }
+     BIND( "C-10" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 10 LIMIT 1 }
+     BIND( "C-11" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 11 LIMIT 1 }
+     BIND( "A-12" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 12 LIMIT 1 }
+     BIND( "B-13" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 13 LIMIT 1 }
+     BIND( "A-14" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 14 LIMIT 1 }
+     BIND( "B-15" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 15 LIMIT 1 }
+     BIND( "C-16" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 16 LIMIT 1 }
+     BIND( "C-17" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 17 LIMIT 1 }
+     BIND( "B-18" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 18 LIMIT 1 }
+     BIND( "A-19" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 19 LIMIT 1 }
+     BIND( "A-20" AS ?index )
+   }
+}
+</pre>
+<div>Data: <code><a href="data-order.ttl">data-order.ttl</a></code></div>
+<pre>
+PREFIX :        &lt;http://example.com/&gt;
+
+# Items that can be ordered
+# The test query deals with up to 20 items.
+# The integer in the subject does not correspond to expected order.
+
+:s-01 :p &lt;&lt;:s :p 123&gt;&gt; .
+:s-02 :p &lt;&lt;:s :p -456&gt;&gt; .
+
+:s-03 :p _:blank-node .
+
+:s-04 :p &lt;&lt;:s2 :p 900&gt;&gt; .
+:s-05 :p &lt;&lt;:s1 :p 999&gt;&gt; .
+:s-06 :p &lt;&lt;:s1 :a 999&gt;&gt; .
+
+:s-07  :p "string" .
+
+:s-08 :p &lt;&lt; &lt;&lt;:x :y :z &gt;&gt; :q :r &gt;&gt; .
+:s-09 :p &lt;&lt; :s :p &lt;&lt;:x :y :z&gt;&gt; &gt;&gt; .
+:s-10 :p &lt;&lt; &lt;&lt;:x :y :z&gt;&gt; :q &lt;&lt;:x :y :z&gt;&gt; &gt;&gt; .
+
+:s-11 :p &lt;&lt; &lt;&lt;:s1 :a :o&gt;&gt; :q :r &gt;&gt; .
+
+:s-12 :p &lt;http://host/entity&gt; .
+
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="sparql-star-order-2.srj">sparql-star-order-2.srj</a></code></div>
+<pre class="result">
+{ "head": {
+    "vars": [ "v" , "index" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "v": { "type": "bnode" , "value": "b0" } ,
+        "index": { "type": "literal" , "value": "B-1" }
+      } ,
+      { 
+        "v": { "type": "uri" , "value": "http://host/entity" } ,
+        "index": { "type": "literal" , "value": "B-2" }
+      } ,
+      { 
+        "v": { "type": "literal" , "value": "string" } ,
+        "index": { "type": "literal" , "value": "A-3" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/p" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "-456" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-4" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/p" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "B-5" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/p" } ,
+            "object":   {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example.com/x" } ,
+                "predicate": { "type": "uri" , "value": "http://example.com/y" } ,
+                "object":   { "type": "uri" , "value": "http://example.com/z" }
+              }
+            }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "B-6" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/a" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-7" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/p" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "999" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-8" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example.com/s2" } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/p" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "900" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "A-9" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example.com/s1" } ,
+                "predicate": { "type": "uri" , "value": "http://example.com/a" } ,
+                "object":   { "type": "uri" , "value": "http://example.com/o" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/q" } ,
+            "object":   { "type": "uri" , "value": "http://example.com/r" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-10" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example.com/x" } ,
+                "predicate": { "type": "uri" , "value": "http://example.com/y" } ,
+                "object":   { "type": "uri" , "value": "http://example.com/z" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/q" } ,
+            "object":   { "type": "uri" , "value": "http://example.com/r" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-11" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example.com/x" } ,
+                "predicate": { "type": "uri" , "value": "http://example.com/y" } ,
+                "object":   { "type": "uri" , "value": "http://example.com/z" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example.com/q" } ,
+            "object":   {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example.com/x" } ,
+                "predicate": { "type": "uri" , "value": "http://example.com/y" } ,
+                "object":   { "type": "uri" , "value": "http://example.com/z" }
+              }
+            }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "A-12" }
+      }
+    ]
+  }
+}
+</pre>
+</section><section id="sparql-star-update-1" class="entry proposed UpdateEvaluationTest">
+<h2>SPARQL-star - Update <a href="#sparql-star-update-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>UpdateEvaluationTest</td>
+</table>
+<div>Request: <code><a href="sparql-star-update-1.ru">sparql-star-update-1.ru</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+INSERT {
+  &lt;&lt; ?s ?p ?o &gt;&gt; :source ?g
+} WHERE {
+  GRAPH ?g { ?s ?p ?o }
+}
+</pre>
+<div>Data: <code><a href="data-6.trig">data-6.trig</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+GRAPH :g1 { :s1 :p1 :o1 }
+GRAPH :g2 { :s2 :p2 :o2 }
+</pre>
+<div>MUST result into</div>
+<div><code><a href="update-result-1.trig">update-result-1.trig</a></code></div>
+<pre class="result">
+PREFIX :       &lt;http://example/&gt;
+
+GRAPH :g1 { :s1 :p1 :o1 }
+GRAPH :g2 { :s2 :p2 :o2 }
+
+&lt;&lt; :s2 :p2 :o2 &gt;&gt; :source :g2 .
+&lt;&lt; :s1 :p1 :o1 &gt;&gt; :source :g1 .
+</pre>
+</section><section id="sparql-star-update-2" class="entry proposed UpdateEvaluationTest">
+<h2>SPARQL-star - Update - annotation <a href="#sparql-star-update-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>UpdateEvaluationTest</td>
+</table>
+<div>Request: <code><a href="sparql-star-update-2.ru">sparql-star-update-2.ru</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+DELETE { GRAPH ?g { ?s ?p ?o } }
+INSERT { ?s ?p ?o {| :source ?g |} }
+WHERE {
+  GRAPH ?g { ?s ?p ?o }
+}
+</pre>
+<div>Data: <code><a href="data-6.trig">data-6.trig</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+GRAPH :g1 { :s1 :p1 :o1 }
+GRAPH :g2 { :s2 :p2 :o2 }
+</pre>
+<div>MUST result into</div>
+<div><code><a href="update-result-2.trig">update-result-2.trig</a></code></div>
+<pre class="result">
+PREFIX : &lt;http://example/&gt;
+
+:s1 :p1 :o1 .
+:s2 :p2 :o2 .
+&lt;&lt; :s1 :p1 :o1 &gt;&gt; :source :g1 .
+&lt;&lt; :s2 :p2 :o2 &gt;&gt; :source :g2.
+</pre>
+</section><section id="sparql-star-update-3" class="entry proposed UpdateEvaluationTest">
+<h2>SPARQL-star - Update - data <a href="#sparql-star-update-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>UpdateEvaluationTest</td>
+</table>
+<div>Request: <code><a href="sparql-star-update-3.ru">sparql-star-update-3.ru</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+
+INSERT DATA {
+   :s :p :o {| :source :faraway |}
+}
+;
+DELETE DATA { :s :p :o }
+</pre>
+<div>Data: <code><a href="empty.nq">empty.nq</a></code></div>
+<pre>
+</pre>
+<div>MUST result into</div>
+<div><code><a href="update-result-3.trig">update-result-3.trig</a></code></div>
+<pre class="result">
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt;
+        &lt;http://example/source&gt;  &lt;http://example/faraway&gt; .
+</pre>
+</section></html>

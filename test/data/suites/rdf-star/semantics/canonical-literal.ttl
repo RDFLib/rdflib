@@ -1,0 +1,4 @@
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<< :a :b "42"^^xsd:integer >> :p1 :o1.

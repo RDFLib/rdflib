@@ -1,0 +1,197 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/trig/syntax#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+    rdfs:label "TriG-star Syntax Tests"@en ;
+    skos:prefLabel "La suite des tests pour la syntaxe de TriG-star"@fr ;
+    skos:prefLabel "Conjunto de pruebas para la sintaxis de Trig-star"@es ;
+    dct:issued "2021-06-21"^^xsd:date ;
+    rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+    dct:modified "2021-07-18"^^xsd:date ;
+    dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+    dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
+    mf:entries
+    (
+        trs:trig-star-1
+        trs:trig-star-2
+
+        trs:trig-star-inside-1
+        trs:trig-star-inside-2
+
+        trs:trig-star-nested-1
+        trs:trig-star-nested-2
+
+        trs:trig-star-compound-1
+
+        trs:trig-star-bnode-1
+        trs:trig-star-bnode-2
+        trs:trig-star-bnode-3
+
+        trs:trig-star-bad-1
+        trs:trig-star-bad-2
+        trs:trig-star-bad-3
+        trs:trig-star-bad-4
+        trs:trig-star-bad-5
+        trs:trig-star-bad-6
+        trs:trig-star-bad-7
+        trs:trig-star-bad-8
+
+        trs:trig-star-ann-1
+        trs:trig-star-ann-2
+
+        trs:trig-star-bad-ann-1
+        trs:trig-star-bad-ann-2
+    ) .
+
+## Good Syntax
+
+trs:trig-star-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - subject quoted triple" ;
+   mf:action    <trig-star-syntax-basic-01.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - object quoted triple" ;
+   mf:action    <trig-star-syntax-basic-02.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-inside-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - quoted triple inside blankNodePropertyList" ;
+   mf:action    <trig-star-syntax-inside-01.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-inside-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - quoted triple inside collection" ;
+   mf:action    <trig-star-syntax-inside-02.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-nested-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - nested quoted triple, subject position" ;
+   mf:action    <trig-star-syntax-nested-01.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-nested-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - nested quoted triple, object position" ;
+   mf:action     <trig-star-syntax-nested-02.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-compound-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - compound forms" ;
+   mf:action    <trig-star-syntax-compound.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-bnode-1 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node subject" ;
+   mf:action    <trig-star-syntax-bnode-01.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-bnode-2 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node object" ;
+   mf:action    <trig-star-syntax-bnode-02.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-bnode-3 rdf:type rdft:TestTrigPositiveSyntax ;
+   mf:name      "TriG-star - blank node" ;
+   mf:action    <trig-star-syntax-bnode-03.trig> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## Bad Syntax
+
+trs:trig-star-bad-1 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - quoted triple as predicate" ;
+    mf:action    <trig-star-syntax-bad-01.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-2 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - quoted triple outside triple" ;
+    mf:action    <trig-star-syntax-bad-02.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-3 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - collection list in quoted triple" ;
+    mf:action    <trig-star-syntax-bad-03.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-4 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - literal in subject position of quoted triple" ;
+    mf:action    <trig-star-syntax-bad-04.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-5 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - blank node  as predicate in quoted triple";
+    mf:action    <trig-star-syntax-bad-05.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-6 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - compound blank node expression";
+    mf:action    <trig-star-syntax-bad-06.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-7 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - incomplete quoted triple";
+    mf:action    <trig-star-syntax-bad-07.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-8 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - over-long quoted triple";
+    mf:action    <trig-star-syntax-bad-08.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+## Annotation syntax
+
+trs:trig-star-ann-1 rdf:type rdft:TestTrigPositiveSyntax ;
+    mf:name      "TriG-star - Annotation form" ;
+    mf:action    <trig-star-annotation-1.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-ann-2 rdf:type rdft:TestTrigPositiveSyntax ;
+    mf:name      "TriG-star - Annotation example" ;
+    mf:action    <trig-star-annotation-2.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+## Bad annotation syntax
+
+trs:trig-star-bad-ann-1 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - empty annotation" ;
+    mf:action    <trig-star-syntax-bad-ann-1.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+
+trs:trig-star-bad-ann-2 rdf:type rdft:TestTrigNegativeSyntax ;
+    mf:name      "TriG-star - bad - triple as annotation" ;
+    mf:action    <trig-star-syntax-bad-ann-2.trig> ;
+    rdft:approval rdft:Proposed ;
+    .
+

@@ -1,0 +1,7 @@
+PREFIX :       <http://example/>
+
+## Connected via triple term
+SELECT * {
+ ?s :b ?o .
+ ?o :b ?z .
+}

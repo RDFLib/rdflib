@@ -1,0 +1,7 @@
+<http://example/s> <http://example/p> <http://example/o> .
+_:b1 <http://example/graph> <http://host1/> .
+_:b1 <http://example/date> "2020-01-20"^^<http://www.w3.org/2001/XMLSchema#date> .
+<< <http://example/s> <http://example/p> <http://example/o> >> <http://example/source> _:b1 .
+_:b2 <http://example/graph> <http://host2/> .
+_:b2 <http://example/date> "2020-12-31"^^<http://www.w3.org/2001/XMLSchema#date> .
+<< <http://example/s> <http://example/p> <http://example/o> >> <http://example/source> _:b2 .

@@ -1,0 +1,6 @@
+PREFIX :        <http://example.com/ns#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+SELECT * {
+   <<?s :p1 :o1>> ?p ?o {| :r ?Z |} .
+}

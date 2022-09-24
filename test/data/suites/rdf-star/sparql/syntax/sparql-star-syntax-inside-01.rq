@@ -1,0 +1,5 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+    [ ?Q <<:s ?P :o>> ] :b :c .
+}

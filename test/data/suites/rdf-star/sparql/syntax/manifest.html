@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>SPARQL-star Syntax Tests</title>
+<h1>SPARQL-star Syntax Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#sparql-star-1">SPARQL-star - subject quoted triple</a>
+<li class="proposed"><a href="#sparql-star-2">SPARQL-star - object quoted triple</a>
+<li class="proposed"><a href="#sparql-star-3">SPARQL-star - subject quoted triple - vars</a>
+<li class="proposed"><a href="#sparql-star-4">SPARQL-star - object quoted triple - vars</a>
+<li class="proposed"><a href="#sparql-star-5">SPARQL-star - Embedded triple in VALUES</a>
+<li class="proposed"><a href="#sparql-star-6">SPARQL-star - Embedded triple in CONSTRUCT</a>
+<li class="proposed"><a href="#sparql-star-7">SPARQL-star - Embedded triples in CONSTRUCT WHERE</a>
+<li class="proposed"><a href="#sparql-star-inside-1">SPARQL-star - quoted triple inside blankNodePropertyList</a>
+<li class="proposed"><a href="#sparql-star-inside-2">SPARQL-star - quoted triple inside collection</a>
+<li class="proposed"><a href="#sparql-star-nested-1">SPARQL-star - nested quoted triple, subject position</a>
+<li class="proposed"><a href="#sparql-star-nested-2">SPARQL-star - nested quoted triple, object position</a>
+<li class="proposed"><a href="#sparql-star-compound-1">SPARQL-star - compound forms</a>
+<li class="proposed"><a href="#sparql-star-bnode-1">SPARQL-star - blank node subject</a>
+<li class="proposed"><a href="#sparql-star-bnode-2">SPARQL-star - blank node object</a>
+<li class="proposed"><a href="#sparql-star-bnode-3">SPARQL-star - blank node</a>
+<li class="proposed"><a href="#sparql-star-ann-01">SPARQL-star - Annotation form</a>
+<li class="proposed"><a href="#sparql-star-ann-02">SPARQL-star - Annotation example</a>
+<li class="proposed"><a href="#sparql-star-ann-03">SPARQL-star - Annotation example</a>
+<li class="proposed"><a href="#sparql-star-ann-04">SPARQL-star - Annotation with quoting</a>
+<li class="proposed"><a href="#sparql-star-ann-05">SPARQL-star - Annotation on triple with quoted object</a>
+<li class="proposed"><a href="#sparql-star-ann-06">SPARQL-star - Annotation with path</a>
+<li class="proposed"><a href="#sparql-star-ann-07">SPARQL-star - Annotation with nested path</a>
+<li class="proposed"><a href="#sparql-star-ann-08">SPARQL-star - Annotation in CONSTRUCT </a>
+<li class="proposed"><a href="#sparql-star-ann-09">SPARQL-star - Annotation in CONSTRUCT WHERE</a>
+<li class="proposed"><a href="#sparql-star-expr-1">SPARQL-star - Expressions - Embedded triple</a>
+<li class="proposed"><a href="#sparql-star-expr-2">SPARQL-star - Expressions - Embedded triple</a>
+<li class="proposed"><a href="#sparql-star-expr-3">SPARQL-star - Expressions - Functions</a>
+<li class="proposed"><a href="#sparql-star-expr-4">SPARQL-star - Expressions - TRIPLE</a>
+<li class="proposed"><a href="#sparql-star-expr-5">SPARQL-star - Expressions - Functions</a>
+<li class="proposed"><a href="#sparql-star-expr-6">SPARQL-star - Expressions - BIND - CONSTRUCT</a>
+<li class="proposed"><a href="#sparql-star-bad-1">SPARQL-star - bad - quoted triple as predicate</a>
+<li class="proposed"><a href="#sparql-star-bad-2">SPARQL-star - bad - quoted triple outside triple</a>
+<li class="proposed"><a href="#sparql-star-bad-3">SPARQL-star - bad - collection list in quoted triple</a>
+<li class="proposed"><a href="#sparql-star-bad-4">SPARQL-star - bad - literal in subject position of quoted triple</a>
+<li class="proposed"><a href="#sparql-star-bad-5">SPARQL-star - bad - blank node  as predicate in quoted triple</a>
+<li class="proposed"><a href="#sparql-star-bad-6">SPARQL-star - bad - compound blank node expression</a>
+<li class="proposed"><a href="#sparql-star-bad-7">SPARQL-star - bad - incomplete quoted triple</a>
+<li class="proposed"><a href="#sparql-star-bad-8">SPARQL-star - bad - quad quoted triple</a>
+<li class="proposed"><a href="#sparql-star-bad-9">SPARQL-star - bad - variable in quoted triple in VALUES </a>
+<li class="proposed"><a href="#sparql-star-bad-10">SPARQL-star - bad - blank node in quoted triple in VALUES </a>
+<li class="proposed"><a href="#sparql-star-bad-11">SPARQL-star - bad - blank node in quoted triple in FILTER</a>
+<li class="proposed"><a href="#sparql-star-bad-12">SPARQL-star - bad - blank node in quoted triple in BIND</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-1">SPARQL-star - bad - empty annotation</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-2">SPARQL-star - bad - triples in annotation</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-1">SPARQL-star - bad - path - seq</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-2">SPARQL-star - bad - path - alt</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-3">SPARQL-star - bad - path - p*</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-4">SPARQL-star - bad - path - p+</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-5">SPARQL-star - bad - path - p?</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-6">SPARQL-star - bad - path in CONSTRUCT</a>
+<li class="proposed"><a href="#sparql-star-bad-ann-path-7">SPARQL-star - bad - path in CONSTRUCT</a>
+<li class="proposed"><a href="#sparql-star-update-1">SPARQL-star - update</a>
+<li class="proposed"><a href="#sparql-star-update-2">SPARQL-star - update</a>
+<li class="proposed"><a href="#sparql-star-update-3">SPARQL-star - update</a>
+<li class="proposed"><a href="#sparql-star-update-4">SPARQL-star - update with quoting</a>
+<li class="proposed"><a href="#sparql-star-update-5">SPARQL-star - update with quoted object</a>
+<li class="proposed"><a href="#sparql-star-update-6">SPARQL-star - update with annotation template</a>
+<li class="proposed"><a href="#sparql-star-update-7">SPARQL-star - update with annotation, template and pattern</a>
+<li class="proposed"><a href="#sparql-star-update-8">SPARQL-star - update DATA with annotation</a>
+<li class="proposed"><a href="#sparql-star-bad-update-1">SPARQL-star - update - bad syntax</a>
+<li class="proposed"><a href="#sparql-star-bad-update-2">SPARQL-star - update - bad syntax</a>
+<li class="proposed"><a href="#sparql-star-bad-update-3">SPARQL-star - update - bad syntax</a>
+<li class="proposed"><a href="#sparql-star-bad-update-4">SPARQL-star - update - bad syntax</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a>
+<section id="sparql-star-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - subject quoted triple <a href="#sparql-star-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-01.rq">sparql-star-syntax-basic-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    &lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-2" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - object quoted triple <a href="#sparql-star-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-02.rq">sparql-star-syntax-basic-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    :s :p &lt;&lt; :a :b "c" &gt;&gt; .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-3" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - subject quoted triple - vars <a href="#sparql-star-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-03.rq">sparql-star-syntax-basic-03.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    &lt;&lt; ?s ?p ?o &gt;&gt; ?Y ?Z .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-4" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - object quoted triple - vars <a href="#sparql-star-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-04.rq">sparql-star-syntax-basic-04.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    ?S ?P &lt;&lt; ?a ?b ?c &gt;&gt; .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-5" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Embedded triple in VALUES <a href="#sparql-star-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-05.rq">sparql-star-syntax-basic-05.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    VALUES ?x {
+        &lt;&lt;:s :p :o &gt;&gt;
+        &lt;&lt; &lt;&lt;:s :p :o &gt;&gt; :q :z &gt;&gt;
+    }
+    VALUES (?y ?z) { (&lt;&lt;:s :p :o &gt;&gt; 123 )
+                      (123 &lt;&lt;:s :p :o &gt;&gt; ) }
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-6" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Embedded triple in CONSTRUCT <a href="#sparql-star-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-06.rq">sparql-star-syntax-basic-06.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT { &lt;&lt;:s :p :o &gt;&gt; :q :z }
+WHERE {}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-7" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Embedded triples in CONSTRUCT WHERE <a href="#sparql-star-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-basic-07.rq">sparql-star-syntax-basic-07.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT WHERE {
+   &lt;&lt;?s ?p ?o &gt;&gt; ?q ?z .
+   ?a ?b &lt;&lt;?s ?p ?o &gt;&gt; .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-inside-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - quoted triple inside blankNodePropertyList <a href="#sparql-star-inside-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-inside-01.rq">sparql-star-syntax-inside-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    [ ?Q &lt;&lt;:s ?P :o&gt;&gt; ] :b :c .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-inside-2" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - quoted triple inside collection <a href="#sparql-star-inside-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-inside-02.rq">sparql-star-syntax-inside-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ( &lt;&lt;?S1 :p :o1&gt;&gt; &lt;&lt;?S2 :p :o2&gt;&gt; )  :q 123 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-nested-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - nested quoted triple, subject position <a href="#sparql-star-nested-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-nested-01.rq">sparql-star-syntax-nested-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt;?S :p :o &gt;&gt; :r :z .
+  &lt;&lt; &lt;&lt;?S :p :o &gt;&gt; :r :z &gt;&gt; :q 1 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-nested-2" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - nested quoted triple, object position <a href="#sparql-star-nested-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-nested-02.rq">sparql-star-syntax-nested-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :a :q &lt;&lt;:s :p ?O &gt;&gt; .
+  &lt;&lt; :a :q &lt;&lt;:s :p ?O &gt;&gt;&gt;&gt; :r :z .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-compound-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - compound forms <a href="#sparql-star-compound-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-compound.rq">sparql-star-syntax-compound.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+
+  &lt;&lt;:x ?R :z &gt;&gt; :p &lt;&lt;:a :b ?C &gt;&gt; .
+
+  &lt;&lt; &lt;&lt;:x ?R :z &gt;&gt; :p &lt;&lt;:a :b [] &gt;&gt; &gt;&gt;
+     :q
+  &lt;&lt; &lt;&lt;[] ?R :z &gt;&gt; :p &lt;&lt;:a :b [] &gt;&gt; &gt;&gt; .
+}</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-bnode-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - blank node subject <a href="#sparql-star-bnode-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bnode-01.rq">sparql-star-syntax-bnode-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+   &lt;&lt;_:a :p :o &gt;&gt; :q 456 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-bnode-2" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - blank node object <a href="#sparql-star-bnode-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bnode-02.rq">sparql-star-syntax-bnode-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+   &lt;&lt;:s :p _:a &gt;&gt; :q 456 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-bnode-3" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - blank node <a href="#sparql-star-bnode-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bnode-03.rq">sparql-star-syntax-bnode-03.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+    &lt;&lt;[] :p [] &gt;&gt; :q :z .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-01" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation form <a href="#sparql-star-ann-01">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-01.rq">sparql-star-annotation-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o {| :r ?Z |} .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-02" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation example <a href="#sparql-star-ann-02">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-02.rq">sparql-star-annotation-02.rq</a></code></div>
+<pre>
+PREFIX :        &lt;http://example.com/ns#&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+SELECT * {
+   :s :p :o {| :source [ :graph &lt;http://host1/&gt; ;
+                         :date "2020-01-20"^^xsd:date
+                       ] ;
+               ?source [ :graph &lt;http://host2/&gt; ;
+                         :date "2020-12-31"^^xsd:date
+                       ]
+             |}
+}</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-03" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation example <a href="#sparql-star-ann-03">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-03.rq">sparql-star-annotation-03.rq</a></code></div>
+<pre>
+PREFIX :        &lt;http://example.com/ns#&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+SELECT * {
+   :s :p &lt;&lt;:a :b :c&gt;&gt; {| ?q ?z |}
+}</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-04" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation with quoting <a href="#sparql-star-ann-04">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-04.rq">sparql-star-annotation-04.rq</a></code></div>
+<pre>
+PREFIX :        &lt;http://example.com/ns#&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+SELECT * {
+   :s :p &lt;&lt;:a :b :c&gt;&gt; {| ?q &lt;&lt;:s1 :p1 ?z&gt;&gt; |}
+}</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-05" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation on triple with quoted object <a href="#sparql-star-ann-05">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-05.rq">sparql-star-annotation-05.rq</a></code></div>
+<pre>
+PREFIX :        &lt;http://example.com/ns#&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+SELECT * {
+   &lt;&lt;?s :p1 :o1&gt;&gt; ?p ?o {| :r ?Z |} .
+}</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-06" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation with path <a href="#sparql-star-ann-06">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-06.rq">sparql-star-annotation-06.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o {| :r/:q 'ABC' |} .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-07" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation with nested path <a href="#sparql-star-ann-07">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-07.rq">sparql-star-annotation-07.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o {| :r [ :p1|:p2 'ABC'] |} .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-08" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation in CONSTRUCT  <a href="#sparql-star-ann-08">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-08.rq">sparql-star-annotation-08.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT {
+      ?s ?p ?o {| :source ?g |}
+}
+WHERE { GRAPH ?g { ?s ?p ?o } }
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-ann-09" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Annotation in CONSTRUCT WHERE <a href="#sparql-star-ann-09">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-annotation-09.rq">sparql-star-annotation-09.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT WHERE {
+  ?s :p ?o {| :q1 ?z |} 
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-1" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - Embedded triple <a href="#sparql-star-expr-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-01.rq">sparql-star-syntax-expr-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o .
+  BIND(&lt;&lt;?s ?p ?o&gt;&gt; AS ?t)
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-2" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - Embedded triple <a href="#sparql-star-expr-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-02.rq">sparql-star-syntax-expr-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o .
+  BIND(&lt;&lt; &lt;&lt;?s ?p ?o&gt;&gt; :q :z &gt;&gt; AS ?t)
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-3" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - Functions <a href="#sparql-star-expr-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-03.rq">sparql-star-syntax-expr-03.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o .
+  BIND(TRIPLE(?s, ?p, ?o) AS ?t1)
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-4" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - TRIPLE <a href="#sparql-star-expr-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-04.rq">sparql-star-syntax-expr-04.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?s ?p ?o .
+  BIND(TRIPLE(?s, ?p, str(?o)) AS ?t2)
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-5" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - Functions <a href="#sparql-star-expr-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-05.rq">sparql-star-syntax-expr-05.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?t :source :g
+  FILTER(isTriple(?t))
+  FILTER(SUBJECT(?t) = :s)
+  FILTER(PREDICATE(?t) = :p)
+  FILTER(OBJECT(?t) = :o)
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-expr-6" class="entry proposed PositiveSyntaxTest11">
+<h2>SPARQL-star - Expressions - BIND - CONSTRUCT <a href="#sparql-star-expr-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-expr-06.rq">sparql-star-syntax-expr-06.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT {
+  ?t :graph ?g .
+} WHERE {
+  GRAPH ?g {
+    ?s ?p ?o .
+    BIND(&lt;&lt;?s ?p  ?o&gt;&gt; AS ?t)
+  }
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="sparql-star-bad-1" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - quoted triple as predicate <a href="#sparql-star-bad-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-01.rq">sparql-star-syntax-bad-01.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+   :x &lt;&lt;:s :p :o&gt;&gt; 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-2" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - quoted triple outside triple <a href="#sparql-star-bad-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-02.rq">sparql-star-syntax-bad-02.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt;?s ?p ?o&gt;&gt;
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-3" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - collection list in quoted triple <a href="#sparql-star-bad-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-03.rq">sparql-star-syntax-bad-03.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+   &lt;&lt;?s :p ("abc") &gt;&gt; :q 123 .
+}</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-4" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - literal in subject position of quoted triple <a href="#sparql-star-bad-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-04.rq">sparql-star-syntax-bad-04.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt;:s 3 :o &gt;&gt; :q ?z .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-5" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - blank node  as predicate in quoted triple <a href="#sparql-star-bad-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-05.rq">sparql-star-syntax-bad-05.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt;:s [] :o&gt;&gt; :q 123 .
+}</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-6" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - compound blank node expression <a href="#sparql-star-bad-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-06.rq">sparql-star-syntax-bad-06.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt;:s :p [ :p1 :o1 ]  &gt;&gt; :q 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-7" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - incomplete quoted triple <a href="#sparql-star-bad-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-07.rq">sparql-star-syntax-bad-07.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt; :s :p &gt;&gt; :q :o .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-8" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - quad quoted triple <a href="#sparql-star-bad-8">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-08.rq">sparql-star-syntax-bad-08.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  &lt;&lt; :g :s :p :o &gt;&gt; :q :o .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-9" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - variable in quoted triple in VALUES  <a href="#sparql-star-bad-9">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-09.rq">sparql-star-syntax-bad-09.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT * {
+    VALUES ?x { &lt;&lt; :s :p ?o &gt;&gt; }
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-10" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - blank node in quoted triple in VALUES  <a href="#sparql-star-bad-10">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-10.rq">sparql-star-syntax-bad-10.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT * {
+    VALUES ?x { &lt;&lt; :s :p [] &gt;&gt; }
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-11" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - blank node in quoted triple in FILTER <a href="#sparql-star-bad-11">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-11.rq">sparql-star-syntax-bad-11.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT * {
+    ?s ?p ?o .
+    BIND(&lt;&lt; [] ?p ?o &gt;&gt; AS ?t )
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-12" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - blank node in quoted triple in BIND <a href="#sparql-star-bad-12">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-12.rq">sparql-star-syntax-bad-12.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/&gt;
+
+SELECT * {
+    ?s ?p ?o .
+    FILTER ( isTRIPLE(&lt;&lt; ?s ?p [] &gt;&gt;) )
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-1" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - empty annotation <a href="#sparql-star-bad-ann-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-1.rq">sparql-star-syntax-bad-ann-1.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :s :p :o {|  |} .
+}
+
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-2" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - triples in annotation <a href="#sparql-star-bad-ann-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-2.rq">sparql-star-syntax-bad-ann-2.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :a :b ?X {| :s :p ?O  |} .
+}
+
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-1" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path - seq <a href="#sparql-star-bad-ann-path-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-1.rq">sparql-star-syntax-bad-ann-path-1.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :x :p/:q :o {| ?p ?o |}
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-2" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path - alt <a href="#sparql-star-bad-ann-path-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-2.rq">sparql-star-syntax-bad-ann-path-2.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :x (:p|:q) {| ?p ?o |}
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-3" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path - p* <a href="#sparql-star-bad-ann-path-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-3.rq">sparql-star-syntax-bad-ann-path-3.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :x :p* {| ?p ?o |}
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-4" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path - p+ <a href="#sparql-star-bad-ann-path-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-4.rq">sparql-star-syntax-bad-ann-path-4.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  :x :p+ {| ?p ?o |}
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-5" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path - p? <a href="#sparql-star-bad-ann-path-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-5.rq">sparql-star-syntax-bad-ann-path-5.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+SELECT * {
+  ?X :p? {| ?p ?o |} 
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-6" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path in CONSTRUCT <a href="#sparql-star-bad-ann-path-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-6.rq">sparql-star-syntax-bad-ann-path-6.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT {
+  ?s :p {| (:q1|:q2) :o |} 
+} WHERE
+  ?s :p ?o 
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-bad-ann-path-7" class="entry proposed NegativeSyntaxTest11">
+<h2>SPARQL-star - bad - path in CONSTRUCT <a href="#sparql-star-bad-ann-path-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-ann-path-7.rq">sparql-star-syntax-bad-ann-path-7.rq</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+CONSTRUCT WHERE {
+  ?s :p :z {| (:q1|:q2) ?o |} 
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="sparql-star-update-1" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update <a href="#sparql-star-update-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-1.ru">sparql-star-syntax-update-1.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    &lt;&lt; :a :b :c &gt;&gt; :p :o .
+}
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-2" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update <a href="#sparql-star-update-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-2.ru">sparql-star-syntax-update-2.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    :s :p :o {| :y :z |}
+}
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-3" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update <a href="#sparql-star-update-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-3.ru">sparql-star-syntax-update-3.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT {
+    &lt;&lt; :a :b :c &gt;&gt; ?P :o2  {| ?Y ?Z |}
+} WHERE {
+   &lt;&lt; :a :b :c &gt;&gt; ?P :o1 {| ?Y ?Z |}
+}
+
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-4" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update with quoting <a href="#sparql-star-update-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-4.ru">sparql-star-syntax-update-4.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT {
+    &lt;&lt; :a :b :c &gt;&gt; ?P :o2  {| ?Y &lt;&lt;:s1 :p1 ?Z&gt;&gt; |}
+} WHERE {
+   &lt;&lt; :a :b :c &gt;&gt; ?P :o1 {| ?Y &lt;&lt;:s1 :p1 ?Z&gt;&gt; |}
+}
+
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-5" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update with quoted object <a href="#sparql-star-update-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-5.ru">sparql-star-syntax-update-5.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT {
+    ?S ?P &lt;&lt; :a :b ?O &gt;&gt; {| ?Y ?Z |}
+} WHERE {
+   ?S ?P &lt;&lt; :a :b ?O &gt;&gt; {| ?Y ?Z |}
+}
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-6" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update with annotation template <a href="#sparql-star-update-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-6.ru">sparql-star-syntax-update-6.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT {
+    ?s :r ?o {| :added 'Property :r' |}
+} WHERE {
+   ?s :p/:q ?o .
+}
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-7" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update with annotation, template and pattern <a href="#sparql-star-update-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-7.ru">sparql-star-syntax-update-7.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+DELETE {
+    ?s :r ?o {| :added 'Property :r' |}
+} WHERE {
+   ?s :p ?o {| :q1+ 'ABC' |}
+}
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-update-8" class="entry proposed PositiveUpdateSyntaxTest11">
+<h2>SPARQL-star - update DATA with annotation <a href="#sparql-star-update-8">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>PositiveUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-update-8.ru">sparql-star-syntax-update-8.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+DELETE DATA  {
+    :s :p :o1  {| :added 'Test' |}
+}
+;
+INSERT DATA  {
+    :s :p :o2  {| :added 'Test' |}
+}
+
+
+</pre>
+<div>MUST result into</div>
+</section><section id="sparql-star-bad-update-1" class="entry proposed NegativeUpdateSyntaxTest11">
+<h2>SPARQL-star - update - bad syntax <a href="#sparql-star-bad-update-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-update-1.ru">sparql-star-syntax-bad-update-1.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    &lt;&lt; :a :b :c &gt;&gt; .
+}
+</pre>
+<div>MUST NOT result into</div>
+</section><section id="sparql-star-bad-update-2" class="entry proposed NegativeUpdateSyntaxTest11">
+<h2>SPARQL-star - update - bad syntax <a href="#sparql-star-bad-update-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-update-2.ru">sparql-star-syntax-bad-update-2.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    &lt;&lt; :g :a :b :c &gt;&gt; :p :o .
+}
+</pre>
+<div>MUST NOT result into</div>
+</section><section id="sparql-star-bad-update-3" class="entry proposed NegativeUpdateSyntaxTest11">
+<h2>SPARQL-star - update - bad syntax <a href="#sparql-star-bad-update-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-update-3.ru">sparql-star-syntax-bad-update-3.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    :s :p :o {| :p/:q :z |}
+}
+</pre>
+<div>MUST NOT result into</div>
+</section><section id="sparql-star-bad-update-4" class="entry proposed NegativeUpdateSyntaxTest11">
+<h2>SPARQL-star - update - bad syntax <a href="#sparql-star-bad-update-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>NegativeUpdateSyntaxTest11</td>
+</table>
+<div><code><a href="sparql-star-syntax-bad-update-4.ru">sparql-star-syntax-bad-update-4.ru</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+INSERT DATA {
+    {| :p :z |}
+}
+</pre>
+<div>MUST NOT result into</div>
+</section></html>

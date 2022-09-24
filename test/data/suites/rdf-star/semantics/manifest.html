@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>RDF-star Semantics tests</title>
+<h1>RDF-star Semantics tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-star/tests/semantics/README">https://w3c.github.io/rdf-star/tests/semantics/README</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#all-identical-quoted-triples-are-the-same">all-identical-quoted-triples-are-the-same</a>
+<li class="proposed"><a href="#quoted-triples-no-spurious">quoted-triples-no-spurious</a>
+<li class="proposed"><a href="#bnodes-in-quoted-subject">bnodes-in-quoted-subject</a>
+<li class="proposed"><a href="#bnodes-in-quoted-object">bnodes-in-quoted-object</a>
+<li class="proposed"><a href="#bnodes-in-quoted-subject-and-object">bnodes-in-quoted-subject-and-object</a>
+<li class="proposed"><a href="#bnodes-in-quoted-subject-and-object-fail">bnodes-in-quoted-subject-and-object-fail</a>
+<li class="proposed"><a href="#same-bnode-same-quoted-term">same-bnode-same-quoted-term</a>
+<li class="proposed"><a href="#different-bnodes-same-quoted-term">different-bnodes-same-quoted-term</a>
+<li class="proposed"><a href="#constrained-bnodes-in-quoted-subject">constrained-bnodes-in-quoted-subject</a>
+<li class="proposed"><a href="#constrained-bnodes-in-quoted-object">constrained-bnodes-in-quoted-object</a>
+<li class="proposed"><a href="#constrained-bnodes-in-quoted-fail">constrained-bnodes-in-quoted-fail</a>
+<li class="proposed"><a href="#constrained-bnodes-on-literal">constrained-bnodes-on-literal</a>
+<li class="proposed"><a href="#malformed-literal-control">malformed-literal-control</a>
+<li class="proposed"><a href="#malformed-literal">malformed-literal</a>
+<li class="proposed"><a href="#malformed-literal-accepted">malformed-literal-accepted</a>
+<li class="proposed"><a href="#malformed-literal-no-spurious">malformed-literal-no-spurious</a>
+<li class="proposed"><a href="#malformed-literal-bnode-neg">malformed-literal-bnode</a>
+<li class="proposed"><a href="#opaque-literal-control">opaque-literal-control</a>
+<li class="proposed"><a href="#opaque-literal">opaque-literal</a>
+<li class="proposed"><a href="#opaque-language-string-control">opaque-language-string-control</a>
+<li class="proposed"><a href="#opaque-language-string">opaque-language-string</a>
+<li class="proposed"><a href="#opaque-iri-control">opaque-iri-control</a>
+<li class="proposed"><a href="#opaque-iri">opaque-iri</a>
+<li class="proposed"><a href="#quoted-not-asserted">quoted-not-asserted</a>
+<li class="proposed"><a href="#annotated-asserted">annotated-asserted</a>
+<li class="proposed"><a href="#annotation">annotation</a>
+<li class="proposed"><a href="#annotation-unfolded">annotation-unfolded</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-star/tests/semantics/README">https://w3c.github.io/rdf-star/tests/semantics/README</a>
+<section id="all-identical-quoted-triples-are-the-same" class="entry proposed PositiveEntailmentTest">
+<h2>all-identical-quoted-triples-are-the-same <a href="#all-identical-quoted-triples-are-the-same">🔗</a></h2>
+<p>Multiple occurences of the same quoted triples are undistinguishable in the abstract model.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test001a.ttl">test001a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+&lt;&lt; :a :b :c &gt;&gt; :p2 :o2.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test001r.ttl">test001r.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1; :p2 :o2.
+</pre>
+</section><section id="quoted-triples-no-spurious" class="entry proposed NegativeEntailmentTest">
+<h2>quoted-triples-no-spurious <a href="#quoted-triples-no-spurious">🔗</a></h2>
+<p>This test ensures that other entailments are not spurious.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="test005.ttl">test005.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :d &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="bnodes-in-quoted-subject" class="entry proposed PositiveEntailmentTest">
+<h2>bnodes-in-quoted-subject <a href="#bnodes-in-quoted-subject">🔗</a></h2>
+<p>Terms inside quoted triples can be replaced by fresh bnodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test002sr.ttl">test002sr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b :c &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="bnodes-in-quoted-object" class="entry proposed PositiveEntailmentTest">
+<h2>bnodes-in-quoted-object <a href="#bnodes-in-quoted-object">🔗</a></h2>
+<p>Terms inside quoted triples can be replaced by fresh bnodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test002or.ttl">test002or.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b _:x &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="bnodes-in-quoted-subject-and-object" class="entry proposed PositiveEntailmentTest">
+<h2>bnodes-in-quoted-subject-and-object <a href="#bnodes-in-quoted-subject-and-object">🔗</a></h2>
+<p>Terms inside quoted triples can be replaced by fresh bnodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test002sor.ttl">test002sor.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b _:y &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="bnodes-in-quoted-subject-and-object-fail" class="entry proposed NegativeEntailmentTest">
+<h2>bnodes-in-quoted-subject-and-object-fail <a href="#bnodes-in-quoted-subject-and-object-fail">🔗</a></h2>
+<p>The same bnode can not match different quoted terms.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="test002sbr.ttl">test002sbr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b _:x &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="same-bnode-same-quoted-term" class="entry proposed PositiveEntailmentTest">
+<h2>same-bnode-same-quoted-term <a href="#same-bnode-same-quoted-term">🔗</a></h2>
+<p>Identical quoted term can be replaced by the same fresh bnode multiple times.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test003a.ttl">test003a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :a &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test002sbr.ttl">test002sbr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b _:x &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="different-bnodes-same-quoted-term" class="entry proposed PositiveEntailmentTest">
+<h2>different-bnodes-same-quoted-term <a href="#different-bnodes-same-quoted-term">🔗</a></h2>
+<p>Different bnodes can match identical quoted terms.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test003a.ttl">test003a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :a &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test002sor.ttl">test002sor.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b _:y &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="constrained-bnodes-in-quoted-subject" class="entry proposed PositiveEntailmentTest">
+<h2>constrained-bnodes-in-quoted-subject <a href="#constrained-bnodes-in-quoted-subject">🔗</a></h2>
+<p>Terms inside and outside quoted triples can be replaced by fresh bnodes</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test004a.ttl">test004a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+:a :label "A".
+:c :label "C".</pre>
+<div>MUST entail</div>
+<div><code><a href="test004sr.ttl">test004sr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b :c &gt;&gt; :p1 :o1.
+_:x :label "A".
+</pre>
+</section><section id="constrained-bnodes-in-quoted-object" class="entry proposed PositiveEntailmentTest">
+<h2>constrained-bnodes-in-quoted-object <a href="#constrained-bnodes-in-quoted-object">🔗</a></h2>
+<p>Terms inside and outside quoted triples can be replaced by fresh bnodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test004a.ttl">test004a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+:a :label "A".
+:c :label "C".</pre>
+<div>MUST entail</div>
+<div><code><a href="test004or.ttl">test004or.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b _:x &gt;&gt; :p1 :o1.
+_:x :label "C".
+</pre>
+</section><section id="constrained-bnodes-in-quoted-fail" class="entry proposed NegativeEntailmentTest">
+<h2>constrained-bnodes-in-quoted-fail <a href="#constrained-bnodes-in-quoted-fail">🔗</a></h2>
+<p>Quoted bnode identifiers share the same scope as non-quoted ones. A bnode that occurs both inside quoted triples and inside asserted triples must satisfy all occurrences at the same time.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test004a.ttl">test004a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+:a :label "A".
+:c :label "C".</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="test004fr.ttl">test004fr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; _:x :b :c &gt;&gt; :p1 :o1.
+_:x :label "C".
+</pre>
+</section><section id="constrained-bnodes-on-literal" class="entry proposed PositiveEntailmentTest">
+<h2>constrained-bnodes-on-literal <a href="#constrained-bnodes-on-literal">🔗</a></h2>
+<p>Literals inside and outside quoted triples can be replaced by fresh bnodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test006a.ttl">test006a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "42"^^xsd:integer &gt;&gt; :p1 :o1.
+:s2 :p2 "42"^^xsd:integer.</pre>
+<div>MUST entail</div>
+<div><code><a href="test006r.ttl">test006r.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b _:x &gt;&gt; :p1 :o1.
+:s2 :p2 _:x.</pre>
+</section><section id="malformed-literal-control" class="entry proposed PositiveEntailmentTest">
+<h2>malformed-literal-control <a href="#malformed-literal-control">🔗</a></h2>
+<p>Checks that xsd:integer is indeed recognized, to ensure that malformed-literal-* tests do not pass spuriously.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="malformed-literal-control.ttl">malformed-literal-control.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:a :b "c"^^xsd:integer.</pre>
+<div>MUST entail</div>
+<div>a contradiction</div></section><section id="malformed-literal" class="entry proposed NegativeEntailmentTest">
+<h2>malformed-literal <a href="#malformed-literal">🔗</a></h2>
+<p>Malformed literals are allowed when quoted.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="malformed-literal.ttl">malformed-literal.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "c"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+<div>MUST NOT entail</div>
+<div>a contradiction</div></section><section id="malformed-literal-accepted" class="entry proposed PositiveEntailmentTest">
+<h2>malformed-literal-accepted <a href="#malformed-literal-accepted">🔗</a></h2>
+<p>Malformed literals are allowed when quoted.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="malformed-literal.ttl">malformed-literal.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "c"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+<div>MUST entail</div>
+<div><code><a href="malformed-literal.ttl">malformed-literal.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "c"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+</section><section id="malformed-literal-no-spurious" class="entry proposed NegativeEntailmentTest">
+<h2>malformed-literal-no-spurious <a href="#malformed-literal-no-spurious">🔗</a></h2>
+<p>Quoted malformed literals do not lead to spurious entailment.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="malformed-literal.ttl">malformed-literal.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "c"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="malformed-literal-other.ttl">malformed-literal-other.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "d"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+</section><section id="malformed-literal-bnode-neg" class="entry proposed NegativeEntailmentTest">
+<h2>malformed-literal-bnode <a href="#malformed-literal-bnode-neg">🔗</a></h2>
+<p>Malformed literals can not be replaced by blank nodes.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="malformed-literal.ttl">malformed-literal.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "c"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="test002or.ttl">test002or.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b _:x &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="opaque-literal-control" class="entry proposed PositiveEntailmentTest">
+<h2>opaque-literal-control <a href="#opaque-literal-control">🔗</a></h2>
+<p>Checks that xsd:integer is indeed recognized, to ensure that opaque-literal does not pass spuriously.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="non-canonical-literal-control.ttl">non-canonical-literal-control.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:a :b "042"^^xsd:integer.</pre>
+<div>MUST entail</div>
+<div><code><a href="canonical-literal-control.ttl">canonical-literal-control.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:a :b "42"^^xsd:integer.</pre>
+</section><section id="opaque-literal" class="entry proposed NegativeEntailmentTest">
+<h2>opaque-literal <a href="#opaque-literal">🔗</a></h2>
+<p>Quoted literals are opaque, even when their datatype is recognized.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+<tr class="recognized"><th>recognizing:</th><td>xsd:integer</td>
+</table>
+<div><code><a href="non-canonical-literal.ttl">non-canonical-literal.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "042"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="canonical-literal.ttl">canonical-literal.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "42"^^xsd:integer &gt;&gt; :p1 :o1.</pre>
+</section><section id="opaque-language-string-control" class="entry proposed PositiveEntailmentTest">
+<h2>opaque-language-string-control <a href="#opaque-language-string-control">🔗</a></h2>
+<p>Checks that language strings are indeed recognized, to ensure that opaque-language-string does not pass spuriously.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+</table>
+<div><code><a href="lowercase-language-string-control.ttl">lowercase-language-string-control.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:a :b "hello"@en-us.</pre>
+<div>MUST entail</div>
+<div><code><a href="upercase-language-string-control.ttl">upercase-language-string-control.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b "hello"@en-US.</pre>
+</section><section id="opaque-language-string" class="entry proposed NegativeEntailmentTest">
+<h2>opaque-language-string <a href="#opaque-language-string">🔗</a></h2>
+<p>Quoted literals (including language strings) are opaque, even when their datatype is recognized.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDF</td>
+</table>
+<div><code><a href="lowercase-language-string.ttl">lowercase-language-string.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+&lt;&lt; :a :b "hello"@en-us &gt;&gt; :p1 :o1.</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="upercase-language-string.ttl">upercase-language-string.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b "hello"@en-US &gt;&gt; :p1 :o1.</pre>
+</section><section id="opaque-iri-control" class="entry proposed PositiveEntailmentTest">
+<h2>opaque-iri-control <a href="#opaque-iri-control">🔗</a></h2>
+<p>Check that owl:sameAs works as expected, to ensure that opaque-iri does not pass spuriously.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDFS-Plus</td>
+</table>
+<div><code><a href="control-sameas-a.ttl">control-sameas-a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt;
+
+:superman :can :fly .
+:clark owl:sameAs :superman.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="control-sameas-r.ttl">control-sameas-r.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+:clark :can :fly .
+</pre>
+</section><section id="opaque-iri" class="entry proposed NegativeEntailmentTest">
+<h2>opaque-iri <a href="#opaque-iri">🔗</a></h2>
+<p>Quoted IRIs are opaque.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>RDFS-Plus</td>
+</table>
+<div><code><a href="superman.ttl">superman.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt;
+
+&lt;&lt; :superman :can :fly &gt;&gt; :reportedBy :clark.
+:clark owl:sameAs :superman.</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="superman_undesired_entailment.ttl">superman_undesired_entailment.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :clark :can :fly &gt;&gt; :reportedBy :clark.
+</pre>
+</section><section id="quoted-not-asserted" class="entry proposed NegativeEntailmentTest">
+<h2>quoted-not-asserted <a href="#quoted-not-asserted">🔗</a></h2>
+<p>Quoted triples are not asserted.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>negative entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test002a.ttl">test002a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST NOT entail</div>
+<div><code><a href="test002pgr.ttl">test002pgr.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c.
+</pre>
+</section><section id="annotated-asserted" class="entry proposed PositiveEntailmentTest">
+<h2>annotated-asserted <a href="#annotated-asserted">🔗</a></h2>
+<p>Annotated triples are asserted.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test007a.ttl">test007a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c {| :p1 :o1 |}.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test007r1.ttl">test007r1.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c.
+</pre>
+</section><section id="annotation" class="entry proposed PositiveEntailmentTest">
+<h2>annotation <a href="#annotation">🔗</a></h2>
+<p>Annotation are about the annotated triple.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test007a.ttl">test007a.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c {| :p1 :o1 |}.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test007r2.ttl">test007r2.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+</section><section id="annotation-unfolded" class="entry proposed PositiveEntailmentTest">
+<h2>annotation-unfolded <a href="#annotation-unfolded">🔗</a></h2>
+<p>Annotation is the same as separate assertions.</p>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>positive entailment test</td>
+<tr class="regime"><th>regime:</th><td>simple</td>
+</table>
+<div><code><a href="test007a2.ttl">test007a2.ttl</a></code></div>
+<pre>
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c.
+&lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</pre>
+<div>MUST entail</div>
+<div><code><a href="test007a.ttl">test007a.ttl</a></code></div>
+<pre class="result">
+prefix : &lt;http://example.com/ns#&gt;
+
+:a :b :c {| :p1 :o1 |}.
+</pre>
+</section></html>

@@ -1,0 +1,6 @@
+PREFIX : <http://example.com/>
+
+SELECT * {
+    ?s ?p ?o .
+    BIND(<< [] ?p ?o >> AS ?t )
+}

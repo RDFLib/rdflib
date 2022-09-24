@@ -1,0 +1,8 @@
+PREFIX :      <http://example/>
+
+<< << :a :b :c >> :q :z >>
+        :source  :ABC .
+
+<< :a :b :c >>  :source  :ABC .
+
+<< :s :p :o >>  :source  :ABC .

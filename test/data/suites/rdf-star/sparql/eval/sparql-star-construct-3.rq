@@ -1,0 +1,7 @@
+PREFIX :       <http://example/>
+
+CONSTRUCT {
+   << ?s ?p ?o >> :source :ABC .
+} WHERE {
+   ?s ?p ?o .
+}

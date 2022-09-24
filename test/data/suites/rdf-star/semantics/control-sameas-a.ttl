@@ -1,0 +1,5 @@
+prefix : <http://example.com/ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+:superman :can :fly .
+:clark owl:sameAs :superman.

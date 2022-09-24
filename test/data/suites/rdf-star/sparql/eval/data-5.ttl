@@ -1,0 +1,10 @@
+PREFIX :       <http://example/>
+
+<<:s1 :p :o>> :q :z .
+<<:s2 :p :o>> :p "same-p" .
+<<:s3 :p :o>> : "same-p" .
+
+
+:z1 :q << :s1 :p :o >> .
+:z2 :p << :s2 :p :o >> .
+

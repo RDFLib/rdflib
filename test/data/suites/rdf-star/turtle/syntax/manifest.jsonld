@@ -1,0 +1,333 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "qt": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "ut": "http://www.w3.org/2009/sparql/tests/test-update#",
+    "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "trs": "https://w3c.github.io/rdf-star/tests/turtle/syntax#",
+    "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "@base": "https://w3c.github.io/rdf-star/tests/turtle/syntax/",
+    "include": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "entries": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "recognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "unrecognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "action": {
+      "@type": "@id"
+    },
+    "qt:query": {
+      "@type": "@id"
+    },
+    "qt:data": {
+      "@type": "@id"
+    },
+    "ut:request": {
+      "@type": "@id"
+    },
+    "ut:data": {
+      "@type": "@id"
+    },
+    "result": {
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
+    "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@vocab"
+    },
+    "approval": {
+      "@id": "test:approval",
+      "@type": "@vocab",
+      "@context": {
+        "Approved": "test:Approved",
+        "Proposed": "test:NotClassified",
+        "NotClassified": "test:NotClassified",
+        "Rejected": "test:Rejected",
+        "Obsoleted": "test:Obsoleted",
+        "Withdrawn": "test:Withdrawn"
+      }
+    },
+    "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+    "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+    "statusOf": {
+      "@reverse": "test:approval"
+    }
+  },
+  "@id": "trs:manifest",
+  "@type": "Manifest",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "Turtle-star Syntax Tests"
+  },
+  "entries": [
+    {
+      "@id": "trs:turtle-star-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-basic-01.ttl",
+      "name": "Turtle-star - subject quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-basic-02.ttl",
+      "name": "Turtle-star - object quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-inside-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-inside-01.ttl",
+      "name": "Turtle-star - quoted triple inside blankNodePropertyList"
+    },
+    {
+      "@id": "trs:turtle-star-inside-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-inside-02.ttl",
+      "name": "Turtle-star - quoted triple inside collection"
+    },
+    {
+      "@id": "trs:turtle-star-nested-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-nested-01.ttl",
+      "name": "Turtle-star - nested quoted triple, subject position"
+    },
+    {
+      "@id": "trs:turtle-star-nested-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-nested-02.ttl",
+      "name": "Turtle-star - nested quoted triple, object position"
+    },
+    {
+      "@id": "trs:turtle-star-compound-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-compound.ttl",
+      "name": "Turtle-star - compound forms"
+    },
+    {
+      "@id": "trs:turtle-star-bnode-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-bnode-01.ttl",
+      "name": "Turtle-star - blank node subject"
+    },
+    {
+      "@id": "trs:turtle-star-bnode-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-bnode-02.ttl",
+      "name": "Turtle-star - blank node object"
+    },
+    {
+      "@id": "trs:turtle-star-bnode-3",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-syntax-bnode-03.ttl",
+      "name": "Turtle-star - blank node"
+    },
+    {
+      "@id": "trs:turtle-star-bad-1",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-01.ttl",
+      "name": "Turtle-star - bad - quoted triple as predicate"
+    },
+    {
+      "@id": "trs:turtle-star-bad-2",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-02.ttl",
+      "name": "Turtle-star - bad - quoted triple outside triple"
+    },
+    {
+      "@id": "trs:turtle-star-bad-3",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-03.ttl",
+      "name": "Turtle-star - bad - collection list in quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-bad-4",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-04.ttl",
+      "name": "Turtle-star - bad - literal in subject position of quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-bad-5",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-05.ttl",
+      "name": "Turtle-star - bad - blank node  as predicate in quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-bad-6",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-06.ttl",
+      "name": "Turtle-star - bad - compound blank node expression"
+    },
+    {
+      "@id": "trs:turtle-star-bad-7",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-07.ttl",
+      "name": "Turtle-star - bad - incomplete quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-bad-8",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-08.ttl",
+      "name": "Turtle-star - bad - over-long quoted triple"
+    },
+    {
+      "@id": "trs:turtle-star-ann-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-annotation-1.ttl",
+      "name": "Turtle-star - Annotation form"
+    },
+    {
+      "@id": "trs:turtle-star-ann-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "turtle-star-annotation-2.ttl",
+      "name": "Turtle-star - Annotation example"
+    },
+    {
+      "@id": "trs:turtle-star-bad-ann-1",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-ann-1.ttl",
+      "name": "Turtle-star - bad - empty annotation"
+    },
+    {
+      "@id": "trs:turtle-star-bad-ann-2",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "turtle-star-syntax-bad-ann-2.ttl",
+      "name": "Turtle-star - bad - triple as annotation"
+    },
+    {
+      "@id": "trs:nt-ttl-star-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-syntax-1.ttl",
+      "name": "N-Triples-star as Turtle-star - subject quoted triple"
+    },
+    {
+      "@id": "trs:nt-ttl-star-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-syntax-2.ttl",
+      "name": "N-Triples-star as Turtle-star - object quoted triple"
+    },
+    {
+      "@id": "trs:nt-ttl-star-3",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-syntax-3.ttl",
+      "name": "N-Triples-star as Turtle-star - subject and object quoted triples"
+    },
+    {
+      "@id": "trs:nt-ttl-star-4",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-syntax-4.ttl",
+      "name": "N-Triples-star as Turtle-star - whitespace and terms"
+    },
+    {
+      "@id": "trs:nt-ttl-star-5",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-syntax-5.ttl",
+      "name": "N-Triples-star as Turtle-star - Nested, no whitespace"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bnode-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-bnode-1.ttl",
+      "name": "N-Triples-star as Turtle-star - Blank node subject"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bnode-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-bnode-2.ttl",
+      "name": "N-Triples-star as Turtle-star - Blank node object"
+    },
+    {
+      "@id": "trs:nt-ttl-star-nested-1",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-nested-1.ttl",
+      "name": "N-Triples-star as Turtle-star - Nested subject term"
+    },
+    {
+      "@id": "trs:nt-ttl-star-nested-2",
+      "@type": "TestTurtlePositiveSyntax",
+      "action": "nt-ttl-star-nested-2.ttl",
+      "name": "N-Triples-star as Turtle-star - Nested object term"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bad-1",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "nt-ttl-star-bad-syntax-1.ttl",
+      "name": "N-Triples-star as Turtle-star - Bad - quoted triple as predicate"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bad-2",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "nt-ttl-star-bad-syntax-2.ttl",
+      "name": "N-Triples-star as Turtle-star - Bad - quoted triple, literal subject"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bad-3",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "nt-ttl-star-bad-syntax-3.ttl",
+      "name": "N-Triples-star as Turtle-star - Bad - quoted triple, literal predicate"
+    },
+    {
+      "@id": "trs:nt-ttl-star-bad-4",
+      "@type": "TestTurtleNegativeSyntax",
+      "action": "nt-ttl-star-bad-syntax-4.ttl",
+      "name": "N-Triples-star as Turtle-star - Bad - quoted triple, blank node predicate"
+    }
+  ],
+  "prefLabel": {
+    "es": "Conjunto de pruebas para la sintaxis Turtle-star",
+    "fr": "La suite des tests pour la syntaxe Turtle-star"
+  }
+}

@@ -1,0 +1,13 @@
+PREFIX :       <http://example/>
+
+SELECT * {
+  VALUES ?t {
+         <<:s :p :o >>
+         :x
+          <<:s :p :o1 >>
+          }
+  FILTER(isTriple(?t))
+  FILTER(SUBJECT(?t) = :s)
+  FILTER(PREDICATE(?t) = :p)
+  FILTER(OBJECT(?t) = :o)
+}

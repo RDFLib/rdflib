@@ -1,0 +1,124 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/trig/eval#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "TriG-star Evaluation Tests"@en ;
+   skos:prefLabel "La suite des tests pour évaluation de TriG-star"@fr;
+   skos:prefLabel "Conjunto de pruebas para evaluar Trig-star"@es;
+   dct:issued "2021-06-21"^^xsd:date ;
+   rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+   dct:modified "2021-07-18"^^xsd:date ;
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
+   mf:entries
+    (
+        trs:trig-star-eval-1
+        trs:trig-star-eval-2
+        trs:trig-star-bnode-1
+        trs:trig-star-bnode-2
+        trs:trig-star-annotation-1
+        trs:trig-star-annotation-2
+        trs:trig-star-annotation-3
+        trs:trig-star-annotation-4
+        trs:trig-star-annotation-5
+        trs:trig-star-quoted-annotation-1
+        trs:trig-star-quoted-annotation-2
+        trs:trig-star-quoted-annotation-3
+    ) .
+
+trs:trig-star-eval-1 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - subject quoted triple" ;
+   mf:action    <trig-star-eval-01.trig> ;
+   mf:result    <trig-star-eval-01.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-eval-2 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - object quoted triple" ;
+   mf:action    <trig-star-eval-02.trig> ;
+   mf:result    <trig-star-eval-02.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-bnode-1 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - blank node label" ;
+   mf:action    <trig-star-eval-bnode-1.trig> ;
+   mf:result    <trig-star-eval-bnode-1.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-bnode-2 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - blank node labels" ;
+   mf:action    <trig-star-eval-bnode-2.trig> ;
+   mf:result    <trig-star-eval-bnode-2.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-annotation-1 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation form" ;
+   mf:action    <trig-star-eval-annotation-1.trig> ;
+   mf:result    <trig-star-eval-annotation-1.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-annotation-2 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation example" ;
+   mf:action    <trig-star-eval-annotation-2.trig> ;
+   mf:result    <trig-star-eval-annotation-2.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-annotation-3 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation - predicate and object lists" ;
+   mf:action    <trig-star-eval-annotation-3.trig> ;
+   mf:result    <trig-star-eval-annotation-3.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-annotation-4 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation - nested" ;
+   mf:action    <trig-star-eval-annotation-4.trig> ;
+   mf:result    <trig-star-eval-annotation-4.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-annotation-5 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation object list" ;
+   mf:action    <trig-star-eval-annotation-5.trig> ;
+   mf:result    <trig-star-eval-annotation-5.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:trig-star-quoted-annotation-1 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation with quoting" ;
+   mf:action    <trig-star-eval-quoted-annotation-1.trig> ;
+   mf:result    <trig-star-eval-quoted-annotation-1.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+   
+trs:trig-star-quoted-annotation-2 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation on triple with quoted subject" ;
+   mf:action    <trig-star-eval-quoted-annotation-2.trig> ;
+   mf:result    <trig-star-eval-quoted-annotation-2.nq> ;
+   rdft:approval rdft:Proposed ;
+   .
+   
+trs:trig-star-quoted-annotation-3 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG-star - Annotation on triple with quoted object" ;
+   mf:action    <trig-star-eval-quoted-annotation-3.trig> ;
+   mf:result    <trig-star-eval-quoted-annotation-3.nq> ;
+   rdft:approval rdft:Proposed ;
+   .

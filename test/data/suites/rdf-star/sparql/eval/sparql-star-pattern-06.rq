@@ -1,0 +1,6 @@
+PREFIX :       <http://example/>
+
+# Nesting
+SELECT * {
+  << <<:s :p2 :o>> :p3 :z>> :q  ?q .
+}

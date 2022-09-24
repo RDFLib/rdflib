@@ -1,0 +1,6 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+  ?s ?p ?o .
+  BIND(TRIPLE(?s, ?p, ?o) AS ?t1)
+}

@@ -1,0 +1,3 @@
+prefix : <http://example.com/ns#>
+
+<< :a :b "hello"@en-US >> :p1 :o1.

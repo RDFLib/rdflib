@@ -1,0 +1,208 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "qt": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "ut": "http://www.w3.org/2009/sparql/tests/test-update#",
+    "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "trs": "https://w3c.github.io/rdf-star/tests/turtle/eval#",
+    "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "@base": "https://w3c.github.io/rdf-star/tests/turtle/eval/",
+    "include": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "entries": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "recognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "unrecognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "action": {
+      "@type": "@id"
+    },
+    "qt:query": {
+      "@type": "@id"
+    },
+    "qt:data": {
+      "@type": "@id"
+    },
+    "ut:request": {
+      "@type": "@id"
+    },
+    "ut:data": {
+      "@type": "@id"
+    },
+    "result": {
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
+    "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@vocab"
+    },
+    "approval": {
+      "@id": "test:approval",
+      "@type": "@vocab",
+      "@context": {
+        "Approved": "test:Approved",
+        "Proposed": "test:NotClassified",
+        "NotClassified": "test:NotClassified",
+        "Rejected": "test:Rejected",
+        "Obsoleted": "test:Obsoleted",
+        "Withdrawn": "test:Withdrawn"
+      }
+    },
+    "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+    "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+    "statusOf": {
+      "@reverse": "test:approval"
+    }
+  },
+  "@id": "trs:manifest",
+  "@type": "Manifest",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "Turtle-star Evaluation Tests"
+  },
+  "seeAlso": "https://w3c.github.io/rdf-tests/",
+  "entries": [
+    {
+      "@id": "trs:turtle-star-1",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-01.ttl",
+      "name": "Turtle-star - subject quoted triple",
+      "result": "turtle-star-eval-01.nt"
+    },
+    {
+      "@id": "trs:turtle-star-2",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-02.ttl",
+      "name": "Turtle-star - object quoted triple",
+      "result": "turtle-star-eval-02.nt"
+    },
+    {
+      "@id": "trs:turtle-star-bnode-1",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-bnode-1.ttl",
+      "name": "Turtle-star - blank node label",
+      "result": "turtle-star-eval-bnode-1.nt"
+    },
+    {
+      "@id": "trs:turtle-star-bnode-2",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-bnode-2.ttl",
+      "name": "Turtle-star - blank node labels",
+      "result": "turtle-star-eval-bnode-2.nt"
+    },
+    {
+      "@id": "trs:turtle-star-annotation-1",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-annotation-1.ttl",
+      "name": "Turtle-star - Annotation form",
+      "result": "turtle-star-eval-annotation-1.nt"
+    },
+    {
+      "@id": "trs:turtle-star-annotation-2",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-annotation-2.ttl",
+      "name": "Turtle-star - Annotation example",
+      "result": "turtle-star-eval-annotation-2.nt"
+    },
+    {
+      "@id": "trs:turtle-star-annotation-3",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-annotation-3.ttl",
+      "name": "Turtle-star - Annotation - predicate and object lists",
+      "result": "turtle-star-eval-annotation-3.nt"
+    },
+    {
+      "@id": "trs:turtle-star-annotation-4",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-annotation-4.ttl",
+      "name": "Turtle-star - Annotation - nested",
+      "result": "turtle-star-eval-annotation-4.nt"
+    },
+    {
+      "@id": "trs:turtle-star-annotation-5",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-annotation-5.ttl",
+      "name": "Turtle-star - Annotation object list",
+      "result": "turtle-star-eval-annotation-5.nt"
+    },
+    {
+      "@id": "trs:turtle-star-quoted-annotation-1",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-quoted-annotation-1.ttl",
+      "name": "Turtle-star - Annotation with quoting",
+      "result": "turtle-star-eval-quoted-annotation-1.nt"
+    },
+    {
+      "@id": "trs:turtle-star-quoted-annotation-2",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-quoted-annotation-2.ttl",
+      "name": "Turtle-star - Annotation on triple with quoted subject",
+      "result": "turtle-star-eval-quoted-annotation-2.nt"
+    },
+    {
+      "@id": "trs:turtle-star-quoted-annotation-3",
+      "@type": "rdft:TestTurtleEval",
+      "action": "turtle-star-eval-quoted-annotation-3.ttl",
+      "name": "Turtle-star - Annotation on triple with quoted object",
+      "result": "turtle-star-eval-quoted-annotation-3.nt"
+    }
+  ],
+  "prefLabel": {
+    "es": "Conjunto de pruebas para Turtle-star",
+    "fr": "La suite des tests pour Turtle-star"
+  }
+}

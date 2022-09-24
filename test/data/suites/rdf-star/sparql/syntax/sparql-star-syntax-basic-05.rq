@@ -1,0 +1,10 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+    VALUES ?x {
+        <<:s :p :o >>
+        << <<:s :p :o >> :q :z >>
+    }
+    VALUES (?y ?z) { (<<:s :p :o >> 123 )
+                      (123 <<:s :p :o >> ) }
+}

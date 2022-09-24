@@ -1,0 +1,17 @@
+{ "head": {
+    "vars": [ "s" , "p" , "o" , "g1" , "q" , "z" , "g2" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "bnode" , "value": "b0" } ,
+        "p": { "type": "uri" , "value": "http://example/r" } ,
+        "o": { "type": "uri" , "value": "http://example/o3" } ,
+        "g1": { "type": "uri" , "value": "http://example/g1" } ,
+        "q": { "type": "uri" , "value": "http://example/pb" } ,
+        "z": { "type": "literal" , "value": "abc" } ,
+        "g2": { "type": "uri" , "value": "http://example/g2" }
+      }
+    ]
+  }
+}

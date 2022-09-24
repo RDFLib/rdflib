@@ -1,0 +1,5 @@
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+<< :a :b _:x >> :p1 :o1.
+<< :d :b _:x >> :p2 :o2.

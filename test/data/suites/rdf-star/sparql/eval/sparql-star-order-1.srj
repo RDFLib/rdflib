@@ -1,0 +1,31 @@
+{ "head": {
+    "vars": [ "v" , "index" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "v": { "type": "bnode" , "value": "b0" } ,
+        "index": { "type": "literal" , "value": "B-1" }
+      } ,
+      { 
+        "v": { "type": "uri" , "value": "http://example/x" } ,
+        "index": { "type": "literal" , "value": "B-2" }
+      } ,
+      { 
+        "v": { "type": "literal" , "value": "abc" } ,
+        "index": { "type": "literal" , "value": "A-3" }
+      } ,
+      { 
+        "v": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "index": { "type": "literal" , "value": "C-4" }
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{ "head": {
+    "vars": [ "x" , "left" , "right" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "left": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        } ,
+        "right": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "bnode" , "value": "b0" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+<http://example/s>  <http://example/p>  _:b0 .
+
+<< <http://example/s> <http://example/p> _:b0 >>
+        <http://example/q>  456 .

@@ -1,0 +1,202 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "qt": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "ut": "http://www.w3.org/2009/sparql/tests/test-update#",
+    "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "trs": "https://w3c.github.io/rdf-star/tests/nt/syntax#",
+    "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "@base": "https://w3c.github.io/rdf-star/tests/nt/syntax/",
+    "include": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "entries": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "recognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "unrecognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "action": {
+      "@type": "@id"
+    },
+    "qt:query": {
+      "@type": "@id"
+    },
+    "qt:data": {
+      "@type": "@id"
+    },
+    "ut:request": {
+      "@type": "@id"
+    },
+    "ut:data": {
+      "@type": "@id"
+    },
+    "result": {
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
+    "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@vocab"
+    },
+    "approval": {
+      "@id": "test:approval",
+      "@type": "@vocab",
+      "@context": {
+        "Approved": "test:Approved",
+        "Proposed": "test:NotClassified",
+        "NotClassified": "test:NotClassified",
+        "Rejected": "test:Rejected",
+        "Obsoleted": "test:Obsoleted",
+        "Withdrawn": "test:Withdrawn"
+      }
+    },
+    "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+    "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+    "statusOf": {
+      "@reverse": "test:approval"
+    }
+  },
+  "@id": "trs:manifest",
+  "@type": "Manifest",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "N-Triples-star Syntax Tests"
+  },
+  "seeAlso": "https://w3c.github.io/rdf-star/tests/nt/syntax/README",
+  "entries": [
+    {
+      "@id": "trs:ntriples-star-1",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-syntax-1.nt",
+      "name": "N-Triples-star - subject quoted triple"
+    },
+    {
+      "@id": "trs:ntriples-star-2",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-syntax-2.nt",
+      "name": "N-Triples-star - object quoted triple"
+    },
+    {
+      "@id": "trs:ntriples-star-3",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-syntax-3.nt",
+      "name": "N-Triples-star - subject and object quoted triples"
+    },
+    {
+      "@id": "trs:ntriples-star-4",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-syntax-4.nt",
+      "name": "N-Triples-star - whitespace and terms"
+    },
+    {
+      "@id": "trs:ntriples-star-5",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-syntax-5.nt",
+      "name": "N-Triples-star - Nested, no whitespace"
+    },
+    {
+      "@id": "trs:ntriples-star-bnode-1",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-bnode-1.nt",
+      "name": "N-Triples-star - Blank node subject"
+    },
+    {
+      "@id": "trs:ntriples-star-bnode-2",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-bnode-2.nt",
+      "name": "N-Triples-star - Blank node object"
+    },
+    {
+      "@id": "trs:ntriples-star-nested-1",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-nested-1.nt",
+      "name": "N-Triples-star - Nested subject term"
+    },
+    {
+      "@id": "trs:ntriples-star-nested-2",
+      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "action": "ntriples-star-nested-2.nt",
+      "name": "N-Triples-star - Nested object term"
+    },
+    {
+      "@id": "trs:ntriples-star-bad-1",
+      "@type": "rdft:TestNTriplesNegativeSyntax",
+      "action": "ntriples-star-bad-syntax-1.nt",
+      "name": "N-Triples-star - Bad - quoted triple as predicate"
+    },
+    {
+      "@id": "trs:ntriples-star-bad-2",
+      "@type": "rdft:TestNTriplesNegativeSyntax",
+      "action": "ntriples-star-bad-syntax-2.nt",
+      "name": "N-Triples-star - Bad - quoted triple, literal subject"
+    },
+    {
+      "@id": "trs:ntriples-star-bad-3",
+      "@type": "rdft:TestNTriplesNegativeSyntax",
+      "action": "ntriples-star-bad-syntax-3.nt",
+      "name": "N-Triples-star - Bad - quoted triple, literal predicate"
+    },
+    {
+      "@id": "trs:ntriples-star-bad-4",
+      "@type": "rdft:TestNTriplesNegativeSyntax",
+      "action": "ntriples-star-bad-syntax-4.nt",
+      "name": "N-Triples-star - Bad - quoted triple, blank node predicate"
+    }
+  ],
+  "prefLabel": {
+    "es": "Conjunto de pruebas para N-Triples-star",
+    "fr": "La suite des tests pour N-Triples-star"
+  }
+}

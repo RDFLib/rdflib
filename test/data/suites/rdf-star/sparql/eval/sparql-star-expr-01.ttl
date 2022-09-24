@@ -1,0 +1,14 @@
+PREFIX :      <http://example/>
+
+<< << :s :p :o2 >> :q2 :z2 >>
+        :graph  :g .
+
+<< _:b0 :r :o4 >>  :graph  :g1 .
+
+<< _:b0 :r :o3 >>  :graph  :g1 .
+
+<< << :s :p :o1 >> :q1 :z1 >>
+        :graph  :g .
+
+<< << _:b0 :r :o3 >> :pb "abc" >>
+        :graph  :g2 .

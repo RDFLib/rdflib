@@ -1,0 +1,256 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "qt": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "ut": "http://www.w3.org/2009/sparql/tests/test-update#",
+    "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "trs": "https://w3c.github.io/rdf-star/tests/trig/syntax#",
+    "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "@base": "https://w3c.github.io/rdf-star/tests/trig/syntax/",
+    "include": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "entries": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "recognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "unrecognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "action": {
+      "@type": "@id"
+    },
+    "qt:query": {
+      "@type": "@id"
+    },
+    "qt:data": {
+      "@type": "@id"
+    },
+    "ut:request": {
+      "@type": "@id"
+    },
+    "ut:data": {
+      "@type": "@id"
+    },
+    "result": {
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
+    "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@vocab"
+    },
+    "approval": {
+      "@id": "test:approval",
+      "@type": "@vocab",
+      "@context": {
+        "Approved": "test:Approved",
+        "Proposed": "test:NotClassified",
+        "NotClassified": "test:NotClassified",
+        "Rejected": "test:Rejected",
+        "Obsoleted": "test:Obsoleted",
+        "Withdrawn": "test:Withdrawn"
+      }
+    },
+    "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+    "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+    "statusOf": {
+      "@reverse": "test:approval"
+    }
+  },
+  "@id": "trs:manifest",
+  "@type": "Manifest",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "TriG-star Syntax Tests"
+  },
+  "seeAlso": "https://w3c.github.io/rdf-tests/",
+  "entries": [
+    {
+      "@id": "trs:trig-star-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-basic-01.trig",
+      "name": "TriG-star - subject quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-2",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-basic-02.trig",
+      "name": "TriG-star - object quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-inside-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-inside-01.trig",
+      "name": "TriG-star - quoted triple inside blankNodePropertyList"
+    },
+    {
+      "@id": "trs:trig-star-inside-2",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-inside-02.trig",
+      "name": "TriG-star - quoted triple inside collection"
+    },
+    {
+      "@id": "trs:trig-star-nested-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-nested-01.trig",
+      "name": "TriG-star - nested quoted triple, subject position"
+    },
+    {
+      "@id": "trs:trig-star-nested-2",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-nested-02.trig",
+      "name": "TriG-star - nested quoted triple, object position"
+    },
+    {
+      "@id": "trs:trig-star-compound-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-compound.trig",
+      "name": "TriG-star - compound forms"
+    },
+    {
+      "@id": "trs:trig-star-bnode-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-bnode-01.trig",
+      "name": "TriG-star - blank node subject"
+    },
+    {
+      "@id": "trs:trig-star-bnode-2",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-bnode-02.trig",
+      "name": "TriG-star - blank node object"
+    },
+    {
+      "@id": "trs:trig-star-bnode-3",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-syntax-bnode-03.trig",
+      "name": "TriG-star - blank node"
+    },
+    {
+      "@id": "trs:trig-star-bad-1",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-01.trig",
+      "name": "TriG-star - bad - quoted triple as predicate"
+    },
+    {
+      "@id": "trs:trig-star-bad-2",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-02.trig",
+      "name": "TriG-star - bad - quoted triple outside triple"
+    },
+    {
+      "@id": "trs:trig-star-bad-3",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-03.trig",
+      "name": "TriG-star - bad - collection list in quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-bad-4",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-04.trig",
+      "name": "TriG-star - bad - literal in subject position of quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-bad-5",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-05.trig",
+      "name": "TriG-star - bad - blank node  as predicate in quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-bad-6",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-06.trig",
+      "name": "TriG-star - bad - compound blank node expression"
+    },
+    {
+      "@id": "trs:trig-star-bad-7",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-07.trig",
+      "name": "TriG-star - bad - incomplete quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-bad-8",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-08.trig",
+      "name": "TriG-star - bad - over-long quoted triple"
+    },
+    {
+      "@id": "trs:trig-star-ann-1",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-annotation-1.trig",
+      "name": "TriG-star - Annotation form"
+    },
+    {
+      "@id": "trs:trig-star-ann-2",
+      "@type": "rdft:TestTrigPositiveSyntax",
+      "action": "trig-star-annotation-2.trig",
+      "name": "TriG-star - Annotation example"
+    },
+    {
+      "@id": "trs:trig-star-bad-ann-1",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-ann-1.trig",
+      "name": "TriG-star - bad - empty annotation"
+    },
+    {
+      "@id": "trs:trig-star-bad-ann-2",
+      "@type": "rdft:TestTrigNegativeSyntax",
+      "action": "trig-star-syntax-bad-ann-2.trig",
+      "name": "TriG-star - bad - triple as annotation"
+    }
+  ],
+  "prefLabel": {
+    "es": "Conjunto de pruebas para la sintaxis de Trig-star",
+    "fr": "La suite des tests pour la syntaxe de TriG-star"
+  }
+}

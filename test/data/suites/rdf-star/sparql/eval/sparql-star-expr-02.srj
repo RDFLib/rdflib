@@ -1,0 +1,18 @@
+{ "head": {
+    "vars": [ "t" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "t": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        }
+      }
+    ]
+  }
+}

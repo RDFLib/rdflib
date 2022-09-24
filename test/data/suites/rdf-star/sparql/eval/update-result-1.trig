@@ -1,0 +1,7 @@
+PREFIX :       <http://example/>
+
+GRAPH :g1 { :s1 :p1 :o1 }
+GRAPH :g2 { :s2 :p2 :o2 }
+
+<< :s2 :p2 :o2 >> :source :g2 .
+<< :s1 :p1 :o1 >> :source :g1 .
