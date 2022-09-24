@@ -1,7 +1,6 @@
 import time
 from test.data import TEST_DATA_DIR
 
-
 import rdflib
 from rdflib import Graph
 
