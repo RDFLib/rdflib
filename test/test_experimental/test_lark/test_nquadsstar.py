@@ -1,4 +1,3 @@
-
 import rdflib
 from rdflib.experimental.plugins.parsers.larknquadsstar import LarkNQuadsStarParser
 

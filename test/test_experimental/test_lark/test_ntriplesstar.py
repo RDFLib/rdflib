@@ -1,4 +1,3 @@
-
 import rdflib
 
 rdflib.plugin.register(
