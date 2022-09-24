@@ -7,15 +7,12 @@ memory and parsed there.
 
 """
 import os
-from pprint import pformat
-import re
 
 import lark_cython
 from lark import Lark, Transformer, Tree
 from lark.lexer import Token
 
 import rdflib
-
 from rdflib.plugins.parsers.parserutil import (
     BaseParser,
     decode_literal,

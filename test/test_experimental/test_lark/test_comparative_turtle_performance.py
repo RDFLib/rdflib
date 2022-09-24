@@ -1,9 +1,9 @@
-import pytest
 import time
 from test.data import TEST_DATA_DIR
 
+
 import rdflib
-from rdflib import Graph, Literal, URIRef, logger
+from rdflib import Graph
 
 rdflib.plugin.register(
     "larkttl",

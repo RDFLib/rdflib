@@ -1,7 +1,5 @@
-import pytest
 
 import rdflib
-
 from rdflib.experimental.plugins.parsers.larknquadsstar import LarkNQuadsStarParser
 
 rdflib.plugin.register(

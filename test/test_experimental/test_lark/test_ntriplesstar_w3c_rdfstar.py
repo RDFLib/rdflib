@@ -3,7 +3,7 @@ test suite."""
 import logging
 from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper, ensure_suffix
+from test.utils import ensure_suffix
 from test.utils.dawg_manifest import ManifestEntry, params_from_sources
 from test.utils.iri import URIMapper
 from test.utils.namespace import RDFT

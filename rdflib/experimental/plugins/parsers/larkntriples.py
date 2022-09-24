@@ -5,9 +5,7 @@ Usage::
 If ``.parse()`` is called with a file-like object implementing ``readline``,
 it will efficiently parse line by line rather than parsing the entire file.
 """
-import logging
 import os
-import re
 from urllib.parse import urlparse
 
 import lark_cython

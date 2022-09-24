@@ -1,7 +1,6 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Triples
 test suite."""
 import logging
-import rdflib
 from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper, ensure_suffix
@@ -11,6 +10,8 @@ from test.utils.namespace import RDFT
 from typing import Optional
 
 import pytest
+
+import rdflib
 
 rdflib.plugin.register(
     "larknqstar",

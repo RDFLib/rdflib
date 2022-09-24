@@ -22,13 +22,10 @@ from typing import (
     Union,
 )
 
-from rdflib import RDF, XSD, logger
-from rdflib.compat import decodeUnicodeEscape
 from rdflib.graph import Dataset, QuotedGraph
-from rdflib.paths import Path
 from rdflib.plugins.serializers.nt import _quoteLiteral
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, Literal, Node, URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 if TYPE_CHECKING:
     from _hashlib import HASH  # pragma: no cover

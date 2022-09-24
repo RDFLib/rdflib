@@ -1,6 +1,5 @@
-import pytest
+
 import rdflib
-from rdflib import Graph, Literal, URIRef
 
 rdflib.plugin.register(
     "larkntstar",

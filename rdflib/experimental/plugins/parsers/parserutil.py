@@ -1,13 +1,11 @@
 """Utility functions used to support lark parsing."""
 
-import hashlib
-import re
 import collections
+import logging
+import re
 from threading import local
 
 import rdflib
-
-import logging
 
 __all__ = [
     "BaseParser",

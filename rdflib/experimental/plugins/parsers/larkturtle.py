@@ -13,7 +13,6 @@ from lark import Lark, Transformer, Tree
 from lark.lexer import Token
 
 import rdflib
-
 from rdflib.experimental.plugins.parsers.parserutil import (
     BaseParser,
     decode_literal,

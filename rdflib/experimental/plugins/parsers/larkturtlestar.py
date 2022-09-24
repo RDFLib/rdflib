@@ -11,12 +11,8 @@ import os
 
 import lark_cython
 from lark import Lark, Transformer, Tree
-from lark.lexer import Token
-from pprint import pformat
 
 import rdflib
-
-from rdflib.experimental.term import RDFStarTriple
 from rdflib.experimental.plugins.parsers.parserutil import (
     BaseParser,
     decode_literal,
@@ -24,6 +20,7 @@ from rdflib.experimental.plugins.parsers.parserutil import (
     smart_urljoin,
     validate_iri,
 )
+from rdflib.experimental.term import RDFStarTriple
 
 RDF_TYPE = rdflib.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
 RDF_NIL = rdflib.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil")

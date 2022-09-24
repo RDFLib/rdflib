@@ -11,8 +11,8 @@ from typing import Optional
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph
 import rdflib
+from rdflib.graph import ConjunctiveGraph
 
 rdflib.plugin.register(
     "larknquads",
