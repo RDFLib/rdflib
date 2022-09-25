@@ -33,7 +33,7 @@ XSD_BOOLEAN = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#boolean")
 XSD_STRING = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#string")
 
 
-def unpack_predicate_object_list(subject, pol):
+def unpack_predicateobjectlist(subject, pol):
     if not isinstance(subject, (rdflib.URIRef, rdflib.BNode)):
         for triple_or_node in subject:
             if isinstance(triple_or_node, tuple):
@@ -103,7 +103,7 @@ class TurtleTransformer(BaseParser, Transformer):
     def triples(self, children):
         if len(children) == 2:
             subject = children[0]
-            for triple in unpack_predicate_object_list(subject, children[1]):
+            for triple in unpack_predicateobjectlist(subject, children[1]):
                 self._call_state.graph.add(triple)
                 yield triple
         elif len(children) == 1:
@@ -152,7 +152,7 @@ class TurtleTransformer(BaseParser, Transformer):
 
     def blanknodepropertylist(self, children):
         pl_root = self.make_blank_node()
-        for pl_item in unpack_predicate_object_list(pl_root, children[0]):
+        for pl_item in unpack_predicateobjectlist(pl_root, children[0]):
             yield pl_item
         yield pl_root
 

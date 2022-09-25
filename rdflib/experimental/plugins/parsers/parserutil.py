@@ -1,6 +1,7 @@
 """Utility functions used to support lark parsing."""
 
 import collections
+import hashlib
 import logging
 import re
 from threading import local
@@ -115,11 +116,19 @@ class BaseParser:
             self._call_state.bnodes[node.n3()] = node
         return node
 
-    def make_quotedgraph(self, store):
+    def make_quotedgraph(self, store=None):
         self._call_state.formulacounter += 1
         return rdflib.graph.QuotedGraph(
-            store=store, identifier=f"_:Formula{self._call_state.formulacounter}"
+            store=self._call_state.graph.store if store is None else store,
+            identifier=f"Formula{self._call_state.formulacounter}",
         )
+
+    def make_rdfstartriple(self, subject, predicate, object):
+        rdflib.logger.info(f"make_rdfstartriple: ({subject}, {predicate}, {object})")
+        sid = str(
+            hashlib.md5((subject + predicate + object).encode("utf-8")).hexdigest()
+        )
+        return rdflib.experimental.term.RDFStarTriple(sid, subject, predicate, object)
 
     def _prepare_parse(self, graph):
         self._call_state.bnodes = collections.defaultdict(rdflib.term.BNode)

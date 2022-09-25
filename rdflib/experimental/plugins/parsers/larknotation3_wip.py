@@ -7,12 +7,15 @@ memory and parsed there.
 
 """
 import os
+from pprint import pformat
+import re
 
 import lark_cython
 from lark import Lark, Transformer, Tree
 from lark.lexer import Token
 
 import rdflib
+
 from rdflib.plugins.parsers.parserutil import (
     BaseParser,
     decode_literal,
@@ -32,110 +35,79 @@ XSD_INTEGER = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#integer")
 XSD_BOOLEAN = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#boolean")
 XSD_STRING = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#string")
 
+LOG_NS = rdflib.Namespace("http://www.w3.org/2000/10/swap/log#")
 
-def unpack_predicate_object_list(subject, pol):
-    # rdflib.logger.info(f"subject = {subject} pol = {pol}")
+RDFLIB_OBJECTS = (
+    rdflib.graph.QuotedGraph,
+    rdflib.BNode,
+    rdflib.Literal,
+    rdflib.URIRef,
+    rdflib.Variable,
+)
+
+
+def unpack_formulacontent(graph, content):
+    rdflib.logger.info(f"graph = {graph.identifier} content = {content}")
+    for triplesgenerator in content:
+        if isinstance(triplesgenerator, list):
+            graph = unpack_formulacontent(graph, triplesgenerator)
+        else:
+            for triple in triplesgenerator:
+                graph.add(triple)
+    return graph
+
+
+def unpack_predicateobjectlist(subject, pol):
+    rdflib.logger.info(f"subject = {subject} pol = {pol}")
     if not isinstance(subject, (rdflib.URIRef, rdflib.BNode)):
+        rdflib.logger.info(f"UPOL SUBJECT {subject} ({type(subject)})")
+    # if not isinstance(subject, RDFLIB_OBJECTS):
+    if not isinstance(subject, (rdflib.URIRef, rdflib.BNode, rdflib.Variable)):
         for triple_or_node in subject:
             if isinstance(triple_or_node, tuple):
-                rdflib.logger.info(f"UPOL 1 YIELDING 1 triple_or_node {triple_or_node}")
+                rdflib.logger.info(f"AA UPOL YIELDING {triple_or_node}")
                 yield triple_or_node
             else:
-                rdflib.logger.info(
-                    f"UPOL 1 SETTING subject from triple_or_node {triple_or_node}"
-                )
+                rdflib.logger.info(f"AA UPOL SETTING subject from {triple_or_node}")
                 subject = triple_or_node
                 break
 
     for predicate, object_ in grouper(pol, 2):
 
-        rdflib.logger.info(f"UPOL GROUPED: s={subject} p={predicate}, o={object_}")
+        rdflib.logger.info(f"BB UPOL GROUPED: s={subject} p={predicate}, o={object_}")
 
-        if isinstance(predicate, (lark_cython.Token, Token)):
-            if predicate.value != "a":
-                raise ValueError(predicate)
-            predicate = RDF_TYPE
+        assert not isinstance(predicate, (lark_cython.Token, Token))
+        # Maybe no longer neccessary with !rule
+        # if isinstance(predicate, (lark_cython.Token, Token)):
+        #     raise Exception(f"BB NEVER GETS TO HERE {predicate}")
+        #     if predicate.value != "a":
+        #         raise ValueError(predicate)
+        #     predicate = RDF_TYPE
 
-        if isinstance(object_, (rdflib.URIRef, rdflib.Literal, rdflib.BNode)):
-            rdflib.logger.info(f"UPOL 2 YIELDING ({subject}, {predicate}, {object_})")
-            yield (
-                subject,
-                predicate,
-                object_,
-            )
+        assert not isinstance(object_, Tree)
+        # if isinstance(object_, Tree):
+        #     raise Exception(f"BB NEVER GETS TO HERE {predicate}")
+        #     rdflib.logger.info(f"BB HAD TO DEAL WITH TREE: {object_}")
+        #     object_ = object_.children
 
-        else:
-
-            if isinstance(object_, Tree):
-                rdflib.logger.info(f"HAD TO DEAL WITH TREE: {object_}")
-                object_ = object_.children
-
-            rdflib.logger.info(f"UPOL 3 ITERATING OVER {object_}")
+        for obj in object_:
+            rdflib.logger.info(f"BB UPOL ITERATING OVER {object_}")
 
             for object_item in object_:
 
                 rdflib.logger.info(
-                    f"UPOL START LOOP, PROCESSING object_item: {object_item} ({type(object_item)})"
+                    f"CC UPOL PROCESSING {object_item} ({type(object_item)})"
                 )
 
-                if isinstance(object_item, tuple):
-                    rdflib.logger.info(f"UPOL PROCESSING TUPLE, YIELDING {object_item}")
-
-                    yield object_item
-
-                elif isinstance(
-                    object_item, (rdflib.URIRef, rdflib.BNode, rdflib.Literal)
-                ):
-                    rdflib.logger.info(f"SUBPROCESSING1 {object_item} as OBJECT")
-                    object_ = object_item
-                    rdflib.logger.info(
-                        f"UPOL 2B YIELDING Triple {subject} {predicate} {object_}"
-                    )
-                    yield (
-                        subject,
-                        predicate,
-                        object_,
-                    )
-
-                else:
-                    rdflib.logger.info(f"UPOL SUBPROCESSING2 {object_item} as OBJECT")
-
-                    for item in object_item:
-
-                        rdflib.logger.info(f"SUBPROCESSING3 {item}")
-
-                        if len(item) == 3:
-                            (subj, pred, obj) = item
-                            object_ = object_item
-                            rdflib.logger.info(
-                                f"UPOL 2C YIELDING triple {subj} {pred} {obj}"
-                            )
-                            yield (
-                                subj,
-                                pred,
-                                obj,
-                            )
-
-                        else:
-
-                            rdflib.logger.info(
-                                f"UPOL 2D EXAMINING {subject} {predicate} {item}"
-                            )
-
-                            if predicate == rdflib.URIRef(
-                                "http://www.w3.org/2000/10/swap/log#implies"
-                            ):
-                                yield (
-                                    subject[0],
-                                    predicate,
-                                    object_[0],
-                                )
-                            else:
-                                yield (
-                                    subject,
-                                    predicate,
-                                    item,
-                                )
+                object_ = object_item
+                rdflib.logger.info(
+                    f"CC UPOL YIELDING triple ({subject} {predicate} {object_})"
+                )
+                yield (
+                    subject,
+                    predicate,
+                    object_item,
+                )
 
 
 class Notation3Transformer(BaseParser, Transformer):
@@ -150,6 +122,15 @@ class Notation3Transformer(BaseParser, Transformer):
         (bn_label,) = children
         return self.make_blank_node(bn_label.value)
 
+    def inneroperator(self, children):
+        (child,) = children
+        ops = {"=>": LOG_NS.implies, "=": rdflib.OWL.sameAs, "<=": LOG_NS.implies}
+        op = ops.get(child, None)
+        if op is not None:
+            return rdflib.term.URIRef(op)
+        else:
+            return child
+
     def decode_iriref(self, iriref):
         iriref = (
             iriref.value
@@ -159,7 +140,7 @@ class Notation3Transformer(BaseParser, Transformer):
         return validate_iri(decode_literal(iriref[1:-1]))
 
     def iri(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (iriref_or_pname,) = children
         iriref_or_pname = (
             iriref_or_pname
@@ -178,57 +159,39 @@ class Notation3Transformer(BaseParser, Transformer):
         return children
 
     def predicateobjectlist(self, children):
-        rdflib.logger.info(f"{children}")
-        # The Lark parser consumes string tokesn unless the reule is refixed with "!"
-        if isinstance(children[0], (lark_cython.Token, Token)) and children[0] == "=>":
-            children = [
-                rdflib.term.URIRef("http://www.w3.org/2000/10/swap/log#implies")
-            ] + children[:1]
+        # rdflib.logger.info(f"{children}")
         return children
+
+    def formula(self, children):
+        # rdflib.logger.info(f"{children}")
+        formulagraph = unpack_formulacontent(self.make_quotedgraph(), children)
+        # rdflib.logger.info(f"{formulagraph}")
+        return formulagraph
 
     def triples(self, children):
         rdflib.logger.info(f"{children}")
         if len(children) == 1:
-
-            rdflib.logger.info(f"UNPACKING CHILDREN")
-
+            rdflib.logger.info(f"UNPACKING CHILD TRIPLES")
             for triple_or_node in children[0]:
-
                 if isinstance(triple_or_node, tuple):
-
                     rdflib.logger.info(f"TRIPLES YIELDING {triple_or_node}")
-
                     self._call_state.graph.add(triple_or_node)
                     yield triple_or_node
 
         elif len(children) == 2:
-
             subject = children[0]
-
             rdflib.logger.info(f"CALLING UPOL WITH {subject} {children[1]}")
-
-            for triple in unpack_predicate_object_list(subject, children[1]):
-
-                rdflib.logger.info(
-                    f"PROCESSING UPOL YIELD {triple} {type(triple)} AS TRIPLE"
-                )
-
+            for triple in unpack_predicateobjectlist(subject, children[1]):
+                rdflib.logger.info(f"PROCESSING UPOL YIELD {triple} AS TRIPLE")
                 self._call_state.graph.add(triple)
-
                 yield triple
 
     def objectlist(self, children):
-        rdflib.logger.info(f"{children}")
-        # for child in children:
-        #     yield child
-        return children
-
-    def formula(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         return children
 
     def formulacontent(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         return children
 
     def forall(self, children):
@@ -240,66 +203,67 @@ class Notation3Transformer(BaseParser, Transformer):
         return children
 
     def n3statement(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def verb(self, children):
-        rdflib.logger.info(f"{children}")
-        if len(children) > 0:
+        # rdflib.logger.info(f"{children} -> {children[0]}")
+        if len(children) == 1:
             return children[0]
         else:
+            rdflib.logger.info(f"VERB PASSTHROUGH {children[0]}")
             return children
 
     def subject(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def predicate(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def object(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def expression(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def path(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def pathitem(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def literal(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} -> {children[0]}")
         return children[0]
 
     def quickvar(self, children):
-        rdflib.logger.info(f"{children}")
-        return children
+        # rdflib.logger.info(f"{children} -> {children[0].value}")
+        return rdflib.term.Variable(children[0].value)
 
     def n3directive(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} BYCHILD")
         for child in children:
             yield child
 
     def sparql_directive(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children} BYCHILD")
         for child in children:
             yield child
 
     def prefixedname(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (pname,) = children
         ns, _, ln = pname.value.partition(":")
         return rdflib.URIRef(self.prefixes[ns] + decode_literal(ln))
 
     def prefixid(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         ns, iriref = children
         iri = smart_urljoin(self.base_iri, self.decode_iriref(iriref))
         ns = ns.value[:-1]  # Drop trailing : from namespace
@@ -326,7 +290,7 @@ class Notation3Transformer(BaseParser, Transformer):
         return self.base(children)
 
     def blanknode(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (bn,) = children
 
         if bn.type == "ANON":
@@ -339,8 +303,8 @@ class Notation3Transformer(BaseParser, Transformer):
     def blanknodepropertylist(self, children):
         rdflib.logger.info(f"{children}")
         pl_root = self.make_blank_node()
-        for pl_item in unpack_predicate_object_list(pl_root, children[0]):
-            rdflib.logger.info(f"YIELDING plitem {pl_item}")
+        for pl_item in unpack_predicateobjectlist(pl_root, children[0]):
+            rdflib.logger.info(f"BNPL YIELDING plitem {pl_item}")
             yield pl_item
         yield pl_root
 
@@ -386,7 +350,7 @@ class Notation3Transformer(BaseParser, Transformer):
         yield prev_node
 
     def numericliteral(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (numeric,) = children
 
         if numeric.type == "DECIMAL":
@@ -399,7 +363,7 @@ class Notation3Transformer(BaseParser, Transformer):
             raise NotImplementedError(f"{numeric} {type(numeric)} {repr(numeric)}")
 
     def rdfliteral(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         literal_string = children[0]
         lang = None
         type_ = None
@@ -413,12 +377,12 @@ class Notation3Transformer(BaseParser, Transformer):
             return rdflib.Literal(literal_string, datatype=None)
 
     def booleanliteral(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (boolean,) = children
         return rdflib.Literal(boolean, datatype=XSD_BOOLEAN)
 
     def astring(self, children):
-        rdflib.logger.info(f"{children}")
+        # rdflib.logger.info(f"{children}")
         (literal,) = children
         if literal.type in (
             "STRING_LITERAL_QUOTE",
@@ -445,7 +409,7 @@ class Notation3Transformer(BaseParser, Transformer):
 notation3_lark = Lark(
     open(
         os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "grammar", "notation3.lark")
+            os.path.join(os.path.dirname(__file__), "grammar", "notation3speedup.lark")
         ),
         "r",
     ).read(),
@@ -513,36 +477,13 @@ class LarkN3Parser(rdflib.parser.Parser):
 
         tf._prepare_parse(graph)
 
-        statements = list(notation3_lark.parse(string))
+        list(notation3_lark.parse(string))
 
-        # for statement in statements:
-        #     rdflib.logger.info(f"STATEMENT {statement}")
-
-        #     try:
-        #         if isinstance(statement, tuple):
-        #             graph.add(statement)
-
-        #         else:
-        #             rdflib.logger.info(f"ITERATING OVER STATEMENT {statement}")
-        #             for triple in statement:
-
-        #                 rdflib.logger.info(f"TRIPLE IN STATEMENT {triple}")
-
-        #                 if isinstance(triple, list):
-        #                     for i in triple:
-        #                         rdflib.logger.info(f"i\n“{i}”")
-        #                         graph.add((i.subject, i.predicate, i.object))
-
-        #                 else:
-        #                     try:
-        #                         graph.add(
-        #                             (triple.subject, triple.predicate, triple.object)
-        #                         )
-        #                     except:
-        #                         pass
-
-        #     except Exception as e:
-        #         raise Exception(f"Tried to add {statement}, triggered {e}")
+        # Nononono BUT, illuminates the issue
+        for (f1, f2) in graph.subject_objects(LOG_NS.implies):
+            for triple in f1:
+                rdflib.logger.info(f"TRIPLE {triple}")
+                graph.store.remove(triple, context=graph.identifier)
 
         tf._cleanup_parse()
 

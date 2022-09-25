@@ -11,9 +11,9 @@ triples:                    subject predicateobjectlist?
 predicateobjectlist:        verb objectlist (";" (verb objectlist)?)*
 objectlist:                 object ("," object)*
 verb:                       predicate | "is" expression "of" | inneroperator
-!inneroperator:             "has" expression | EQ | NE | LT | LE | GT | GE
+!inneroperator:             "has" expression | EQUALS | SEILPMI | IMPLIES
 subject:                    expression
-predicate:                  (expression | "<-" expression) // allow inverting first predicate in a path
+predicate:                  (expression | "<-" expression)
 object:                     expression
 expression:                 path
 path:                       pathitem ("!" path | "^" path)?
@@ -36,12 +36,9 @@ booleanliteral:             "true"| "false"| "@true"| "@false"
 astring:                    STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
 
 // terminals
-EQ: "="
-NE: "!="
-LT: "<"
-LE: "<="
-GT: ">"
-GE: ">="
+EQUALS: "="
+SEILPMI: "<="
+IMPLIES: "=>"
 BASE: ("B"|"b") ("A"|"a") ("S"|"s") ("E"|"e")
 PREFIX: ("P"|"p") ("R"|"r") ("E"|"e") ("F"|"f") ("I"|"i") ("X"|"x")
 IRIREF: "<" (/[^\x00-\x20<>"{}|^`\\]/ | UCHAR)* ">"

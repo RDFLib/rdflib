@@ -33,21 +33,19 @@ XSD_INTEGER = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#integer")
 XSD_BOOLEAN = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#boolean")
 XSD_STRING = rdflib.URIRef("http://www.w3.org/2001/XMLSchema#string")
 
+RDFLIB_OBJECTS = (
+    rdflib.BNode,
+    rdflib.Literal,
+    rdflib.URIRef,
+    RDFStarTriple,
+)
 
 annotatables = []
 
 
-def unpack_predicate_object_list(subject, pol):
+def unpack_predicateobjectlist(subject, pol):
     global annotatables
-    if not isinstance(
-        subject,
-        (
-            rdflib.URIRef,
-            rdflib.Literal,
-            rdflib.BNode,
-            RDFStarTriple,
-        ),
-    ):
+    if not isinstance(subject, RDFLIB_OBJECTS):
         for triple_or_node in subject:
             if isinstance(triple_or_node, tuple):
                 yield triple_or_node
@@ -62,15 +60,7 @@ def unpack_predicate_object_list(subject, pol):
                 raise ValueError(predicate)
             predicate = RDF_TYPE
 
-        if isinstance(
-            object_,
-            (
-                rdflib.URIRef,
-                rdflib.Literal,
-                rdflib.BNode,
-                RDFStarTriple,
-            ),
-        ):
+        if isinstance(object_, RDFLIB_OBJECTS):
             yield (subject, predicate, object_)
 
         else:
@@ -172,14 +162,14 @@ class TurtleStarTransformer(BaseParser, Transformer):
 
         elif len(children) == 2:
             if isinstance(children[0], RDFStarTriple):
-                for triple in unpack_predicate_object_list(children[0], children[1]):
+                for triple in unpack_predicateobjectlist(children[0], children[1]):
                     self._call_state.graph.add(triple)
 
             else:
                 subject = children[0]
                 assertions = []
 
-                for item in unpack_predicate_object_list(subject, children[1]):
+                for item in unpack_predicateobjectlist(subject, children[1]):
 
                     if isinstance(item, tuple):
                         self._call_state.graph.add(item)
@@ -199,7 +189,7 @@ class TurtleStarTransformer(BaseParser, Transformer):
                             q.setobject(assertion[2])
                             self.rdfstar_triples[hashid] = q
 
-                        for triple in unpack_predicate_object_list(q, item[1]):
+                        for triple in unpack_predicateobjectlist(q, item[1]):
                             self._call_state.graph.add(triple)
                             yield triple
 
@@ -243,7 +233,7 @@ class TurtleStarTransformer(BaseParser, Transformer):
 
     def blanknodepropertylist(self, children):
         pl_root = self.make_blank_node()
-        for pl_item in unpack_predicate_object_list(pl_root, children[0]):
+        for pl_item in unpack_predicateobjectlist(pl_root, children[0]):
             yield pl_item
         yield pl_root
 
