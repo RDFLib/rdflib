@@ -313,7 +313,6 @@ string: STRING_LITERAL_QUOTE
 iri: IRIREF | prefixed_name
 prefixed_name: PNAME_LN | PNAME_NS
 blank_node: BLANK_NODE_LABEL | ANON
-
 BASE_DIRECTIVE: "@base"
 IRIREF: "<" (/[^\x00-\x20<>"{}|^`\\]/ | UCHAR)* ">"
 PNAME_NS: PN_PREFIX? ":"
@@ -342,7 +341,6 @@ PLX: PERCENT | PN_LOCAL_ESC
 PERCENT: "%" HEX~2
 HEX: /[0-9A-Fa-f]/
 PN_LOCAL_ESC: "\\" /[_~\.\-!$&'()*+,;=\/?#@%]/
-
 %ignore WS
 COMMENT: "#" /[^\n]/*
 %ignore COMMENT
@@ -2351,6 +2349,10 @@ class NtriplesStarParser(Parser):
                 f.close()
 
         bp = rdbytes.decode("utf-8")
+        if "<<" or "{|" in bp:
+            ou = RDFstarParsings(bp)
+        else:
+            ou = bp
         ou = RDFstarParsings(bp)
         p.feed(ou)
         p.endDoc()
