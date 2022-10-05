@@ -12,4 +12,4 @@
 #
 #####################################################################
 <http://example.org/dir/file#frag> <http://example.org/value> "v" .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test014.rdf#frag> <http://example.org/value> "v" .
+<http://www.w3.org/2013/RDFXMLTests/xmlbase/test014.rdf#frag> <http://example.org/value> "v" .

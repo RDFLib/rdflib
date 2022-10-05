@@ -66,7 +66,8 @@ class HextuplesParser(Parser):
         # 6 - context
         if tup[5] is not None:
             c = URIRef(tup[5])
-            cg.add((s, p, o, c))
+            # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+            cg.add((s, p, o, c))  # type: ignore[arg-type]
         else:
             cg.add((s, p, o))
 
@@ -87,7 +88,7 @@ class HextuplesParser(Parser):
 
         # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
-            with open(source.file.name) as fp:
+            with open(source.file.name, encoding="utf-8") as fp:
                 for l in fp:
                     self._parse_hextuple(cg, self._load_json_line(l))
         elif hasattr(source, "_InputSource__bytefile"):

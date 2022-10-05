@@ -39,6 +39,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "myst_parser",
     "sphinxcontrib.kroki",
+    "sphinx.ext.autosectionlabel",
 ]
 
 apidoc_module_dir = "../rdflib"
@@ -51,6 +52,8 @@ autodoc_default_options = {"special-members": True}
 always_document_param_types = True
 
 autosummary_generate = True
+
+autosectionlabel_prefix_document = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -70,7 +73,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "rdflib"
-copyright = "2009 - 2021, RDFLib Team"
+copyright = "2009 - 2022, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -254,3 +257,59 @@ suppress_warnings = [
     #  "WARNING: more than one target found for cross-reference"
     "ref.python",
 ]
+
+nitpicky = True
+
+nitpick_ignore = [
+    ("py:data", "typing.Literal"),
+    ("py:class", "typing.IO[bytes]"),
+    ("py:class", "http.client.HTTPMessage"),
+    ("py:class", "importlib.metadata.EntryPoint"),
+    ("py:class", "xml.dom.minidom.Document"),
+    ("py:class", "xml.dom.minidom.DocumentFragment"),
+    ("py:class", "isodate.duration.Duration"),
+    # sphinx-autodoc-typehints has some issues with TypeVars.
+    # https://github.com/tox-dev/sphinx-autodoc-typehints/issues/39
+    ("py:class", "rdflib.plugin.PluginT"),
+    # sphinx-autodoc-typehints does not like generic parmaeters in inheritance it seems
+    ("py:class", "Identifier"),
+    # These are related to pyparsing.
+    ("py:class", "Diagnostics"),
+    ("py:class", "ParseAction"),
+    ("py:class", "ParseFailAction"),
+    ("py:class", "pyparsing.core.TokenConverter"),
+    ("py:class", "pyparsing.results.ParseResults"),
+    # These are related to BerkeleyDB
+    ("py:class", "db.DBEnv"),
+]
+
+if sys.version_info < (3, 9):
+    nitpick_ignore.extend(
+        [
+            ("py:class", "_ContextIdentifierType"),
+            ("py:class", "_ContextType"),
+            ("py:class", "_GraphT"),
+            ("py:class", "_NamespaceSetString"),
+            ("py:class", "_ObjectType"),
+            ("py:class", "_PredicateType"),
+            ("py:class", "_QuadSelectorType"),
+            ("py:class", "_SubjectType"),
+            ("py:class", "_TripleOrPathTripleType"),
+            ("py:class", "_TripleOrQuadPathPatternType"),
+            ("py:class", "_TripleOrQuadPatternType"),
+            ("py:class", "_TriplePathPatternType"),
+            ("py:class", "_TriplePathType"),
+            ("py:class", "_TriplePatternType"),
+            ("py:class", "_TripleSelectorType"),
+            ("py:class", "_TripleType"),
+            ("py:class", "_TripleOrTriplePathType"),
+            ("py:class", "TextIO"),
+        ]
+    )
+
+if sys.version_info < (3, 8):
+    nitpick_ignore.extend(
+        [
+            ("py:class", "importlib_metadata.EntryPoint"),
+        ]
+    )

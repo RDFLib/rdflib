@@ -62,6 +62,9 @@ __all__ = [
     "runNamespace",
     "uniqueURI",
     "hexify",
+    "Formula",
+    "RDFSink",
+    "SinkParser",
 ]
 
 from rdflib.parser import Parser

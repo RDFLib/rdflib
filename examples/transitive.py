@@ -32,8 +32,8 @@ parent path between the node and the person). So, say that your URI is
 This example would get all of your (known) ancestors, and then get all
 the (known) descendants of your maternal grandmother.
 
-.. warning:: The :meth:`transitive_objects` method has the start node
-    as the *first* argument, but the :meth:`transitive_subjects`
+.. warning:: The :meth:`~rdflib.graph.Graph.transitive_objects` method has the start node
+    as the *first* argument, but the :meth:`~rdflib.graph.Graph.transitive_subjects`
     method has the start node as the *second* argument.
 
 User-defined transitive closures

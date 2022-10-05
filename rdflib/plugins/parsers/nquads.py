@@ -49,7 +49,7 @@ class NQuadsParser(W3CNTriplesParser):
         :param sink: where to send parsed triples
         :type bnode_context: `dict`, optional
         :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
-                              See `.NTriplesParser.parse`
+                              See `.W3CNTriplesParser.parse`
         """
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."

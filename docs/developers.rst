@@ -10,7 +10,7 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible (:pep:`8`).
-* Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v22.3.0, with the black config in ``pyproject.toml``.
+* Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v22.8.0, with the black config in ``pyproject.toml``.
 * Code should also pass `flake8 <https://flake8.pycqa.org/en/latest/>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code.
@@ -54,7 +54,7 @@ PRs if possible. No PR is too small.
 
 For PRs that introduce breaking changes, it is even more critical that they are
 limited in size and scope, as they will likely have to be kept up to date with
-the master branch of this project for some time before they are merged.
+the ``main`` branch of this project for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why
 it does it, and how the change will impact the users of this project, for this
@@ -132,7 +132,7 @@ ideally be updated to the pytest test-style when they are touched.
 Test should go into the ``test/`` directory, either into an existing test file
 with a name that is applicable to the test being written, or into a new test
 file with a name that is descriptive of the tests placed in it. Test files
-should be named `test_*.py` so that `pytest can discover them
+should be named ``test_*.py`` so that `pytest can discover them
 <https://docs.pytest.org/en/latest/explanation/goodpractices.html#conventions-for-python-test-discovery>`_.
 
 Running static checks
@@ -306,8 +306,8 @@ To use the development container directly:
     # Run the validate task inside the devtools container.
     docker-compose run --rm devcontainer task validate
 
-    # Run tox for python 3.11 inside the devtools container,
-    docker-compose run --rm devcontainer task tox -- -e py311
+    # Run extensive tests inside the devtools container.
+    docker-compose run --rm devcontainer task EXTENSIVE=true test
 
     # To get a shell into the devcontainer docker image.
     docker-compose run --rm devcontainer bash
@@ -342,12 +342,12 @@ We use sphinx for generating HTML docs, see :ref:`docs`.
 Continuous Integration
 ----------------------
 
-We used Drone for CI, see:
+We used GitHub Actions for CI, see:
 
-  https://drone.rdflib.ashs.dev/RDFLib/rdflib
+  https://github.com/RDFLib/rdflib/actions
 
-If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
-passing all tests.
+If you make a pull-request to RDFLib on GitHub, GitHub Actions will
+automatically test your code and we will only merge code passing all tests.
 
 Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
 flag them as expecting to fail.
@@ -399,6 +399,6 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
   # WARNING: once uploaded can never be modified, only deleted!
   twine upload dist/rdflib-X.X.X[.-]*
 
-Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
+Set new dev version number in the above locations, i.e. next release ``-dev``: ``5.0.1-dev`` and commit again.
 
 Tweet, email mailing list and inform members in the chat.

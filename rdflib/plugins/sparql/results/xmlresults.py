@@ -1,12 +1,33 @@
 import logging
-from typing import IO, Optional
+import xml.etree.ElementTree as xml_etree  # noqa: N813
+from io import BytesIO
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    BinaryIO,
+    Dict,
+    Optional,
+    Sequence,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
-from rdflib import BNode, Literal, URIRef, Variable
-from rdflib.compat import etree
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+
+try:
+    # https://adamj.eu/tech/2021/12/29/python-type-hints-optional-imports/
+    import lxml.etree as lxml_etree
+
+    FOUND_LXML = True
+except ImportError:
+    FOUND_LXML = False
 
 SPARQL_XML_NAMESPACE = "http://www.w3.org/2005/sparql-results#"
 RESULTS_NS_ET = "{%s}" % SPARQL_XML_NAMESPACE
@@ -27,19 +48,32 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 class XMLResultParser(ResultParser):
     # TODO FIXME: content_type should be a keyword only arg.
-    def parse(self, source, content_type: Optional[str] = None):  # type: ignore[override]
+    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
         return XMLResult(source)
 
 
 class XMLResult(Result):
-    def __init__(self, source, content_type: Optional[str] = None):
+    def __init__(self, source: IO, content_type: Optional[str] = None):
+        parser_encoding: Optional[str] = None
+        if hasattr(source, "encoding"):
+            if TYPE_CHECKING:
+                assert isinstance(source, TextIO)
+            parser_encoding = "utf-8"
+            source_str = source.read()
+            source = BytesIO(source_str.encode(parser_encoding))
+        else:
+            if TYPE_CHECKING:
+                assert isinstance(source, BinaryIO)
 
-        try:
-            # try use as if etree is from lxml, and if not use it as normal.
-            parser = etree.XMLParser(huge_tree=True)  # type: ignore[call-arg]
-            tree = etree.parse(source, parser)
-        except TypeError:
-            tree = etree.parse(source)
+        if FOUND_LXML:
+            lxml_parser = lxml_etree.XMLParser(huge_tree=True, encoding=parser_encoding)
+            tree = cast(
+                xml_etree.ElementTree,
+                lxml_etree.parse(source, parser=lxml_parser),
+            )
+        else:
+            xml_parser = xml_etree.XMLParser(encoding=parser_encoding)
+            tree = xml_etree.parse(source, parser=xml_parser)
 
         boolean = tree.find(RESULTS_NS_ET + "boolean")
         results = tree.find(RESULTS_NS_ET + "results")
@@ -56,8 +90,18 @@ class XMLResult(Result):
         if type_ == "SELECT":
             self.bindings = []
             for result in results:  # type: ignore[union-attr]
+                if result.tag != f"{RESULTS_NS_ET}result":
+                    # This is here because with lxml this also gets comments,
+                    # not just elements. Also this should not operate on non
+                    # "result" elements.
+                    continue
                 r = {}
                 for binding in result:
+                    if binding.tag != f"{RESULTS_NS_ET}binding":
+                        # This is here because with lxml this also gets
+                        # comments, not just elements. Also this should not
+                        # operate on non "binding" elements.
+                        continue
                     # type error: error: Argument 1 to "Variable" has incompatible type "Union[str, None, Any]"; expected "str"
                     # NOTE on type error: Element.get() can return None, and
                     # this will invariably fail if passed into Variable
@@ -80,7 +124,7 @@ class XMLResult(Result):
             self.askAnswer = boolean.text.lower().strip() == "true"  # type: ignore[union-attr]
 
 
-def parseTerm(element):
+def parseTerm(element: xml_etree.Element) -> Union[URIRef, Literal, BNode]:
     """rdflib object (Literal, URIRef, BNode) for the given
     elementtree element"""
     tag, text = element.tag, element.text
@@ -90,7 +134,8 @@ def parseTerm(element):
         datatype = None
         lang = None
         if element.get("datatype", None):
-            datatype = URIRef(element.get("datatype"))
+            # type error: Argument 1 to "URIRef" has incompatible type "Optional[str]"; expected "str"
+            datatype = URIRef(element.get("datatype"))  # type: ignore[arg-type]
         elif element.get("{%s}lang" % XML_NAMESPACE, None):
             lang = element.get("{%s}lang" % XML_NAMESPACE)
 
@@ -98,7 +143,8 @@ def parseTerm(element):
 
         return ret
     elif tag == RESULTS_NS_ET + "uri":
-        return URIRef(text)
+        # type error: Argument 1 to "URIRef" has incompatible type "Optional[str]"; expected "str"
+        return URIRef(text)  # type: ignore[arg-type]
     elif tag == RESULTS_NS_ET + "bnode":
         return BNode(text)
     else:
@@ -106,17 +152,18 @@ def parseTerm(element):
 
 
 class XMLResultSerializer(ResultSerializer):
-    def __init__(self, result):
+    def __init__(self, result: Result):
         ResultSerializer.__init__(self, result)
 
-    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
-
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs: Any) -> None:
         writer = SPARQLXMLWriter(stream, encoding)
         if self.result.type == "ASK":
             writer.write_header([])
-            writer.write_ask(self.result.askAnswer)
+            # type error: Argument 1 to "write_ask" of "SPARQLXMLWriter" has incompatible type "Optional[bool]"; expected "bool"
+            writer.write_ask(self.result.askAnswer)  # type: ignore[arg-type]
         else:
-            writer.write_header(self.result.vars)
+            # type error: Argument 1 to "write_header" of "SPARQLXMLWriter" has incompatible type "Optional[List[Variable]]"; expected "Sequence[Variable]"
+            writer.write_header(self.result.vars)  # type: ignore[arg-type]
             writer.write_results_header()
             for b in self.result.bindings:
                 writer.write_start_result()
@@ -134,7 +181,7 @@ class SPARQLXMLWriter:
     Python saxutils-based SPARQL XML Writer
     """
 
-    def __init__(self, output, encoding="utf-8"):
+    def __init__(self, output: IO, encoding: str = "utf-8"):
         writer = XMLGenerator(output, encoding)
         writer.startDocument()
         writer.startPrefixMapping("", SPARQL_XML_NAMESPACE)
@@ -147,7 +194,7 @@ class SPARQLXMLWriter:
         self._encoding = encoding
         self._results = False
 
-    def write_header(self, allvarsL):
+    def write_header(self, allvarsL: Sequence[Variable]) -> None:
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "head"), "head", AttributesNSImpl({}, {})
         )
@@ -161,48 +208,52 @@ class SPARQLXMLWriter:
             self.writer.startElementNS(
                 (SPARQL_XML_NAMESPACE, "variable"),
                 "variable",
-                AttributesNSImpl(attr_vals, attr_qnames),
+                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
+                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"  [arg-type]
+                AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
             )
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "variable"), "variable")
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "head"), "head")
 
-    def write_ask(self, val):
+    def write_ask(self, val: bool) -> None:
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "boolean"), "boolean", AttributesNSImpl({}, {})
         )
         self.writer.characters(str(val).lower())
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "boolean"), "boolean")
 
-    def write_results_header(self):
+    def write_results_header(self) -> None:
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "results"), "results", AttributesNSImpl({}, {})
         )
         self._results = True
 
-    def write_start_result(self):
+    def write_start_result(self) -> None:
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "result"), "result", AttributesNSImpl({}, {})
         )
         self._resultStarted = True
 
-    def write_end_result(self):
+    def write_end_result(self) -> None:
         assert self._resultStarted
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "result"), "result")
         self._resultStarted = False
 
-    def write_binding(self, name, val):
+    def write_binding(self, name: Variable, val: Identifier) -> None:
         assert self._resultStarted
 
-        attr_vals = {
+        attr_vals: Dict[Tuple[Optional[str], str], str] = {
             (None, "name"): str(name),
         }
-        attr_qnames = {
+        attr_qnames: Dict[Tuple[Optional[str], str], str] = {
             (None, "name"): "name",
         }
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "binding"),
             "binding",
-            AttributesNSImpl(attr_vals, attr_qnames),
+            # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
+            # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
+            AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
         )
 
         if isinstance(val, URIRef):
@@ -230,7 +281,9 @@ class SPARQLXMLWriter:
             self.writer.startElementNS(
                 (SPARQL_XML_NAMESPACE, "literal"),
                 "literal",
-                AttributesNSImpl(attr_vals, attr_qnames),
+                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
+                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
+                AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
             )
             self.writer.characters(val)
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "literal"), "literal")
@@ -240,7 +293,7 @@ class SPARQLXMLWriter:
 
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "binding"), "binding")
 
-    def close(self):
+    def close(self) -> None:
         if self._results:
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "results"), "results")
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, "sparql"), "sparql")

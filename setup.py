@@ -17,14 +17,13 @@ kwargs["tests_require"] = [
     "html5lib",
     "pytest",
     "pytest-cov",
-    "pytest-subtests",
 ]
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
     "docs": [
         "myst-parser",
-        "sphinx < 5",
+        "sphinx < 6",
         "sphinxcontrib-apidoc",
         "sphinxcontrib-kroki",
         "sphinx-autodoc-typehints",
@@ -32,9 +31,9 @@ kwargs["extras_require"] = {
     "berkeleydb": ["berkeleydb"],
     "networkx": ["networkx"],
     "dev": [
-        "black==22.3.0",
+        "black==22.8.0",
         "flake8",
-        "flakeheaven; python_version >= '3.8.0'",
+        "flakeheaven >= 2.1.3; python_version >= '3.8.0'",
         "isort",
         "mypy",
         "pep8-naming",
@@ -88,6 +87,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent",

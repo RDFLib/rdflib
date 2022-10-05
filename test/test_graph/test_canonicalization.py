@@ -1,4 +1,3 @@
-import unittest
 from collections import Counter
 from io import StringIO
 from test.utils import GraphHelper
@@ -521,7 +520,7 @@ def test_issue725_collapsing_bnodes_2():
 _TripleSet = Set["_TripleType"]
 
 
-class TestConsistency(unittest.TestCase):
+class TestConsistency:
     @pytest.mark.xfail
     def test_consistent_ids(self) -> None:
         """

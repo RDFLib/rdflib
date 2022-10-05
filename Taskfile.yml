@@ -1,33 +1,44 @@
+# https://taskfile.dev/usage/
+# https://pkg.go.dev/text/template
+# https://go-task.github.io/slim-sprig/
 version: "3"
 
 vars:
+  TASKFILE_DIR:
+    sh: pwd
   # The path to the virtual environment to use when using a virtual
   # environment.
-  VENV_PATH: '{{default ".venv" (env "VENV_PATH")}}'
+  VENV_PATH: '{{(env "VENV_PATH") | default (osClean (print .TASKFILE_DIR "/.venv"))}}'
   # Non empty string results in tasks using a virtual environment.
-  WITH_VENV: '{{env "WITH_VENV"}}'
+  WITH_VENV: '{{env "WITH_VENV" | default "false"}}'
   # The virtual environemtn specific python interpreter to use.
-  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/python.exe{{else}}{{.VENV_PATH}}/bin/python{{end}}'
+  VENV_BINPREFIX: '{{if (mustFromJson .WITH_VENV)}}{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/{{else}}{{.VENV_PATH}}/bin/{{end}}{{end}}'
+  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_BINPREFIX}}python.exe{{else}}{{.VENV_BINPREFIX}}python{{end}}'
   # The python interpreter to use.
   PYTHON: python
-  _PYTHON: '{{if .WITH_VENV}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
-  # Non empty string results in java being installed as a system dependency.
-  INSTALL_SYSTEM_DEPS_JAVA: ""
-  # Non empty string results in extras being installed with pip.
-  INSTALL_PIP_EXTRAS: ""
-  # Non empty string results in extensive tests being ran and dependencies for
-  # extensive tests being installed.
-  EXTENSIVE: ""
+  _PYTHON: "{{if (mustFromJson .WITH_VENV)}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}"
+  # Truthish values ("true", "1", etc.) results in java being installed as a
+  # system dependency.
+  INSTALL_SYSTEM_DEPS_JAVA: "false"
+  # Truthish values ("true", "1", etc.) results in extras being installed with
+  # pip.
+  INSTALL_PIP_EXTRAS: "false"
+  # Truthish values ("true", "1", etc.) results in extensive tests being ran and
+  # dependencies for extensive tests being installed.
+  EXTENSIVE: "false"
   # The python version for which tox should run, empty string does not restrict
   # python versions.
   TOX_PYTHON_VERSION: ""
-  TEST_HARNESS: '{{if (and .EXTENSIVE (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
-  # A non empty string results in github specific things being done.
-  WITH_GITHUB_ACTIONS: ""
-  # A non empty string results in coverage being generated for relevant
-  # commands.
-  WITH_COVERAGE: ""
-
+  TEST_HARNESS: '{{if (and (mustFromJson .EXTENSIVE) (not (eq OS "windows")))}}./with-fuseki.sh{{end}} '
+  # Truthish values ("true", "1", etc.) results in github specific things being
+  # done.
+  WITH_GITHUB_ACTIONS: "false"
+  # Truthish values ("true", "1", etc.) results in coverage being generated for
+  # relevant commands.
+  WITH_COVERAGE: "false"
+  PIP_COMPILE: pip-compile
+  DOCKER: docker
+  OCI_REFERENCE: ghcr.io/rdflib/rdflib
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -35,7 +46,7 @@ tasks:
       - echo "OS = {{OS}}"
       - echo "ARCH = {{ARCH}}"
       - |
-        {{if (and .EXTENSIVE (eq OS "linux"))}}
+        {{if (and (mustFromJson .EXTENSIVE) (eq OS "linux"))}}
           if type apt-get >/dev/null 2>&1
           then
             sudo apt-get install -y libdb-dev
@@ -43,24 +54,24 @@ tasks:
           then
             sudo dnf install -y libdb-devel
           fi
-        {{else if (and .EXTENSIVE (eq OS "darwin"))}}
+        {{else if (and (mustFromJson .EXTENSIVE) (eq OS "darwin"))}}
           brew install berkeley-db@4
         {{end}}
 
   install:tox:
     desc: Install tox
     cmds:
-      - "{{._PYTHON}} -m pip install tox {{if .WITH_GITHUB_ACTIONS}}tox-gh-actions{{end}}"
+      - "{{._PYTHON | shellQuote}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
 
   install:pip-deps:
     desc: Install pip dependencies
     cmds:
-      - "{{._PYTHON}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if .INSTALL_PIP_EXTRAS}}-r requirements.dev-extras.txt{{end}}"
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}"
 
   install:flake8:
     desc: Install flake8 dependencies
     cmds:
-      - "{{._PYTHON}} -m pip install --upgrade -r requirements.flake8.txt"
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.flake8.txt"
 
   install:deps:
     desc: Install all dependencies
@@ -69,10 +80,15 @@ tasks:
       - task: install:tox
       - task: install:pip-deps
 
-  venv:install:
-    desc: Install a venv to VENV_PATH(={{.VENV_PATH}})
+  venv:create:
+    desc: Create a venv to VENV_PATH(={{.VENV_PATH}})
     cmds:
-      - "{{.PYTHON}} -m venv {{.VENV_PATH}}"
+      - "{{.PYTHON | shellQuote}} -m venv {{.VENV_PATH}}"
+
+  venv:install:
+    desc: Create and install a venv to VENV_PATH(={{.VENV_PATH}})
+    cmds:
+      - task: venv:create
       - task: install:pip-deps
         vars: { _PYTHON: "{{.VENV_PYTHON}}" }
 
@@ -82,6 +98,22 @@ tasks:
       - task: _rimraf
         vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
 
+  venv:run:
+    desc: Run a command inside the venv
+    cmds:
+      - cmd: |
+          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
+
+  run:
+    desc: Run a command. If WITH_VENV is truthish, the command will be run inside the virtual environment.
+    cmds:
+      - cmd: |
+          {{if (mustFromJson .WITH_VENV)}}
+          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
+          {{else}}
+          {{.CLI_ARGS}}
+          {{end}}
+
   tox:
     desc: Run tox
     cmds:
@@ -89,42 +121,62 @@ tasks:
       - |
         {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
         {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
+        {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
-        {{._PYTHON}} \
+        {{._PYTHON | shellQuote}} \
           -m tox \
           {{.CLI_ARGS}}
     env:
-      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{replace "." "" .TOX_PYTHON_VERSION}}{{if .EXTENSIVE}}-extensive{{end}}{{end}}'
+      TOXENV: '{{if .TOX_PYTHON_VERSION}}py{{mustRegexReplaceAll "^([0-9]+)[.]([0-9]+).*" .TOX_PYTHON_VERSION "${1}${2}"}}{{if (mustFromJson .EXTENSIVE)}}-extensive{{end}}{{.TOXENV_SUFFIX | default ""}}{{end}}'
   test:
     desc: Run tests
     cmds:
-      - "{{.TEST_HARNESS}}{{._PYTHON}} -m pytest {{if .WITH_COVERAGE}}--cov --cov-report={{end}} {{.CLI_ARGS}}"
-
+      - '{{.TEST_HARNESS}}{{print .VENV_BINPREFIX "pytest" | shellQuote}} {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
   flake8:
     desc: Run flake8
     cmds:
-      - "{{._PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}"
+      - |
+        if {{._PYTHON | shellQuote}} -c 'import importlib; exit(0 if importlib.util.find_spec("flakeheaven") is not None else 1)'
+        then
+          1>&2 echo "running flakeheaven"
+          {{._PYTHON | shellQuote}} -m flakeheaven lint {{.CLI_ARGS}}
+        else
+          1>&2 echo "skipping flakeheaven as it is not installed, likely because python version is older than 3.8"
+        fi
+  black:
+    desc: Run black
+    cmds:
+      - '{{._PYTHON | shellQuote}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+  isort:
+    desc: Run isort
+    cmds:
+      - '{{._PYTHON | shellQuote}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+  mypy:
+    desc: Run mypy
+    cmds:
+      - "{{._PYTHON | shellQuote}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
 
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
-      - "{{._PYTHON}} -m black ."
-      - "{{._PYTHON}} -m isort ."
+      - task: isort
+      - task: black
 
   lint:
     desc: Perform linting
     cmds:
-      - "{{._PYTHON}} -m isort --check --diff ."
-      - "{{._PYTHON}} -m black --check --diff ."
+      - task: isort
+        vars: { CHECK: true }
+      - task: black
+        vars: { CHECK: true }
       - task: flake8
-
 
   validate:static:
     desc: Perform static validation
     cmds:
       - task: lint
-      - "{{._PYTHON}} -m mypy --show-error-context --show-error-codes"
+      - task: mypy
 
   validate:fix:
     desc: Fix auto-fixable validation errors.
@@ -147,7 +199,7 @@ tasks:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{._PYTHON}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
+      - "{{._PYTHON | shellQuote}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
@@ -217,13 +269,12 @@ tasks:
       - task: install:system-deps
       - task: install:tox
         vars:
-          WITH_GITHUB_ACTIONS: 1
-      - cmd: "{{._PYTHON}} -m pip install coveralls"
+          WITH_GITHUB_ACTIONS: true
+      - cmd: "{{._PYTHON | shellQuote}} -m pip install coveralls"
       - task: tox
         vars:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
-
 
   gha:flake8:
     desc: GitHub Actions flake8 workflow
@@ -231,13 +282,79 @@ tasks:
       - task: install:flake8
       - task: flake8
 
+  cmd:rdfpipe:
+    desc: Run rdfpipe
+    cmds:
+      - cmd: "{{._PYTHON | shellQuote}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
+
+  pip-compile:
+    cmds:
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options {{.CLI_ARGS}}"
+  docker:prepare:
+    cmds:
+      - task: pip-compile
+        vars:
+          { CLI_ARGS: "-o docker/unstable/requirements.txt requirements.txt" }
+      - task: pip-compile
+        vars: { CLI_ARGS: "docker/latest/requirements.in" }
+  docker:unstable:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:unstable || :
+
+          set -eo pipefail
+
+          pipx run --spec=build build --wheel
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
+            --tag {{.OCI_REFERENCE}}:unstable \
+            --progress plain \
+            -f docker/unstable/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:unstable
+          fi
+  docker:latest:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:latest || :
+
+          set -eo pipefail
+
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:latest \
+            --tag {{.OCI_REFERENCE}}:latest \
+            --progress plain \
+            -f docker/latest/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          _latest_rdflib_version=$({{.DOCKER}} run --entrypoint= {{.OCI_REFERENCE}}:latest bash -c 'pip show rdflib | sed -n "s/^Version: //gp"')
+          echo "_latest_rdflib_version=${_latest_rdflib_version}"
+
+          {{.DOCKER}} image tag {{.OCI_REFERENCE}}:latest {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+          fi
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is
     # a python interpreter. The name is inspired by
     # <https://www.npmjs.com/package/rimraf>.
     - cmd: |
-        {{._PYTHON}} -c '
+        {{._PYTHON | shellQuote}} -c '
         from pathlib import Path;
         import sys, shutil;
         for path in sys.argv[1:]:

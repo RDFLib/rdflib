@@ -8,7 +8,8 @@ pycodestyle = [
   # mirrored from setup.cfg
   "-E501",
   "-E203",
-  "-W503"
+  "-W503",
+  "-E231",
 ]
 pyflakes = [
   "+*",
@@ -19,18 +20,18 @@ pep8-naming = ["+*"]
 pep8-naming = ["-N802", "-N803", "-N806", "-N812", "-N816", "-N801"]
 [tool.flakeheaven.exceptions."rdflib/namespace/_*"]
 pep8-naming = ["-N815"]
-[tool.flakeheaven.exceptions."rdflib/extras/infixowl.py"]
-pep8-naming = ["-N802", "-N803", "-N806", "-N815"]
 [tool.flakeheaven.exceptions."rdflib/plugins/parsers/notation3.py"]
 pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
 [tool.flakeheaven.exceptions."rdflib/plugins/serializers/turtle.py"]
 pep8-naming = ["-N802", "-N806", "-N815"]
 [tool.flakeheaven.exceptions."rdflib/__init__.py"]
 pycodestyle = ["-E402"]
+[tool.flakeheaven.exceptions."test/utils/namespace/_*"]
+pep8-naming = ["-N815"]
 
 
 [tool.black]
-required-version = "22.3.0"
+required-version = "22.8.0"
 line-length = "88"
 target-version = ['py37']
 include = '\.pyi?$'
@@ -63,6 +64,7 @@ exclude = '''
 addopts = [
    "--doctest-modules",
    "--ignore=admin",
+   "--ignore=devtools",
    "--ignore=rdflib/extras/external_graph_libs.py",
    "--ignore-glob=docs/*.py",
    "--doctest-glob=docs/*.rst",
@@ -76,5 +78,7 @@ filterwarnings = [
 ]
 # log_cli = true
 # log_cli_level = "DEBUG"
-log_cli_format = "%(asctime)s %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
+log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
+log_date_format = "%Y-%m-%dT%H:%M:%S"
+log_cli_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)-12s %(filename)s:%(lineno)s:%(funcName)s %(message)s"
 log_cli_date_format = "%Y-%m-%dT%H:%M:%S"

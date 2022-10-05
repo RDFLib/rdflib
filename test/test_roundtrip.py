@@ -3,7 +3,7 @@ import logging
 import os.path
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
+from test.utils import BNodeHandling, GraphHelper
 from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
 from xml.sax import SAXParseException
 
@@ -144,28 +144,6 @@ XFAILS = {
         reason="results in invalid xml element name: <ns1:name(s)/>",
         raises=SAXParseException,
     ),
-    ("trig", "rdf11trig_eg2.trig"): pytest.mark.xfail(
-        reason="""
-    Something is going wrong here with blank node serialization. In the second
-    graph below bob knows someone who does not exist, while in first he knows
-    someone that does exist and has the name Alice.
-
-    AssertionError: in both:
-        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:alice@work.example.org'))
-        (rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Alice'))
-        (rdflib.term.URIRef('http://example.org/alice'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Alice'))
-        (rdflib.term.URIRef('http://example.org/bob'), rdflib.term.URIRef('http://purl.org/dc/terms/publisher'), rdflib.term.Literal('Bob'))
-    only in first:
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cbb5eb12b5dcf688537b0298cce144c6dd68cf047530d0b4a455a8f31f314244fd'))
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:bob@oldcorp.example.org'))
-        (rdflib.term.BNode('cb0'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Bob'))
-    only in second:
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/knows'), rdflib.term.BNode('cb0'))
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.term.URIRef('mailto:bob@oldcorp.example.org'))
-        (rdflib.term.BNode('cb7be1d0397a49ddd4ae8aa96acc7b6135903c5f3fa5e47bf619c0e4b438aafcc1'), rdflib.term.URIRef('http://xmlns.com/foaf/0.1/name'), rdflib.term.Literal('Bob'))
-        """,
-        raises=AssertionError,
-    ),
     ("json-ld", "diverse_quads.trig"): pytest.mark.xfail(
         reason="""
     jsonld serializer is dropping datatype:
@@ -204,6 +182,10 @@ XFAILS = {
         "n3",
         "data/suites/w3c/n3/N3Tests/cwm_syntax/neg-single-quote.n3",
     ): pytest.mark.xfail(raises=BadSyntax, reason="no support for single quotes"),
+    ("json-ld", "bnode_refs.trig"): pytest.mark.xfail(
+        reason="a whole bunch of triples with bnode as subject is not in the reconstituted graph",
+        raises=AssertionError,
+    ),
 }
 
 # This is for files which can only be represented properly in one format
@@ -253,7 +235,13 @@ def roundtrip(
     s = g1.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
-        logger.debug("source = %s, serailized = \n%s", source, s)
+        logger.debug(
+            "infmt = %s, testfmt = %s, source = %s, serialized = \n%s",
+            infmt,
+            testfmt,
+            source,
+            s,
+        )
 
     g2 = graph_type()
     if same_public_id:
@@ -271,7 +259,8 @@ def roundtrip(
             # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
             for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
                 if type(o) == rdflib.Literal and o.datatype == XSD.string:
-                    c.remove((s, p, o))
+                    # type error: Argument 1 to "remove" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
+                    c.remove((s, p, o))  # type: ignore[arg-type]
                     # type error: Argument 1 to "add" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Node, Node, Node]"
                     c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
 
@@ -285,9 +274,13 @@ def roundtrip(
         GraphHelper.assert_isomorphic(g1, g2)
     if checks is not None:
         if Check.SET_EQUALS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=False)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
         if Check.SET_EQUALS_WITHOUT_BLANKS in checks:
-            GraphHelper.assert_sets_equals(g1, g2, exclude_blanks=True)
+            GraphHelper.assert_sets_equals(
+                g1, g2, bnode_handling=BNodeHandling.COLLAPSE
+            )
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug("OK")
@@ -520,6 +513,7 @@ EXTRA_FILES = [
     (TEST_DATA_DIR / "variants" / "diverse_triples.nt", "ntriples"),
     (TEST_DATA_DIR / "variants" / "diverse_quads.nq", "nquads"),
     (TEST_DATA_DIR / "variants" / "diverse_quads.trig", "trig"),
+    (TEST_DATA_DIR / "roundtrip" / "bnode_refs.trig", "trig"),
     (TEST_DATA_DIR / "example-lots_of_graphs.n3", "n3"),
     (TEST_DATA_DIR / "issue156.n3", "n3"),
 ]

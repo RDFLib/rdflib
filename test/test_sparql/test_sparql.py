@@ -1,5 +1,6 @@
 import logging
 from test.utils import eq_
+from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
@@ -18,7 +19,7 @@ from rdflib.plugins.sparql.evalutils import _eval
 from rdflib.plugins.sparql.parser import parseQuery
 from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
-from rdflib.query import Result
+from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
 
 
@@ -88,6 +89,39 @@ def test_sparql_bnodelist():
     prepareQuery("select * where { ?s ?p ( [ ?p2 ?o2 ] ) . }")
     prepareQuery("select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }")
     prepareQuery("select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }")
+
+
+@pytest.mark.xfail(
+    raises=AssertionError,
+    reason="Object lists combined with predicate-object lists does not seem to work.",
+)
+def test_sparql_polist():
+    """
+
+    syntax tests for equivalence object and predicate-object lists
+
+    """
+
+    g = Graph()
+    g.parse(
+        data="""
+    @prefix : <urn:ns1:> .
+    :s :p [ :v 1 ], [ :v 2].
+    """,
+        format="turtle",
+    )
+
+    qres1 = g.query("PREFIX : <urn:ns1:> select * where { ?s :p [ ], [ ] . }")
+    qres2 = g.query("PREFIX : <urn:ns1:> select * where { ?s :p [ ]; :p [ ] . }")
+    assert_bindings_collections_equal(qres1.bindings, qres2.bindings)
+
+    qres3 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ], [ :v ?v2] . }"
+    )
+    qres4 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ]; :p [ :v ?v2 ] . }"
+    )
+    assert_bindings_collections_equal(qres3.bindings, qres4.bindings)
 
 
 def test_complex_sparql_construct():
@@ -303,6 +337,7 @@ def test_call_function() -> None:
     assert result.type == "SELECT"
     rows = list(result)
     assert len(rows) == 1
+    assert isinstance(rows[0], ResultRow)
     assert len(rows[0]) == 1
     assert rows[0][0] == Literal("a + b")
 
@@ -353,6 +388,7 @@ def test_custom_eval() -> None:
         assert result.type == "SELECT"
         rows = list(result)
         assert len(rows) == 1
+        assert isinstance(rows[0], ResultRow)
         assert len(rows[0]) == 2
         assert rows[0][0] == Literal("a + b")
         assert rows[0][1] == custom_function_result

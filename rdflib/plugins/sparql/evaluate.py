@@ -386,7 +386,7 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
         base = ctx.prologue.base  # type: ignore[union-attr]
         if base is not None and len(base) > 0:
             service_query = "BASE <" + base + "> " + service_query
-    sol = ctx.solution()
+    sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
         variables_bound = " ".join([ctx.get(v).n3() for v in sol])

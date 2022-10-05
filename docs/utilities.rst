@@ -55,7 +55,7 @@ RDFLib graphs override ``__getitem__`` and we pervert the slice triple
 to be a RDF triple instead. This lets slice syntax be a shortcut for
 :meth:`~rdflib.graph.Graph.triples`,
 :meth:`~rdflib.graph.Graph.subject_predicates`,
-:meth:`~rdflib.graph.Graph.contains`, and other Graph query-methods:
+:meth:`~rdflib.graph.Graph.__contains__`, and other Graph query-methods:
 
 .. code-block:: python
 

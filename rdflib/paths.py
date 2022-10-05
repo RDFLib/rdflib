@@ -64,8 +64,8 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
-Modifiers (?, *, +) are done using * (the multiplication operator) and
-the strings '*', '?', '+', also defined as constants in this file.
+Modifiers (?, \*, +) are done using \* (the multiplication operator) and
+the strings '\*', '?', '+', also defined as constants in this file.
 
 >>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
@@ -103,74 +103,74 @@ Graph generator functions, triples, subjects, objects, etc. :
 
 A more complete set of tests:
 
->>> list(evalPath(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
+>>> list(eval_path(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
 True
->>> list(evalPath(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
+>>> list(eval_path(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
 True
->>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
+>>> list(eval_path(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
+>>> list(eval_path(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
 True
->>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
+>>> list(eval_path(g, (e.c, e.p3*OneOrMore, None))) == [
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
+>>> list(eval_path(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
+>>> list(eval_path(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
 True
->>> list(evalPath(g, (e.a, -(e.p1|e.p2), None))) == []
+>>> list(eval_path(g, (e.a, -(e.p1|e.p2), None))) == []
 True
->>> list(evalPath(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
+>>> list(eval_path(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
 True
->>> list(evalPath(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
+>>> list(eval_path(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
 True
->>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
+>>> list(eval_path(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
+>>> list(eval_path(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
+>>> list(eval_path(g, (None, e.p1|e.p2, e.c)))
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
+>>> list(eval_path(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(eval_path(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
  (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(eval_path(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
+>>> list(eval_path(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
+>>> list(eval_path(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
 True
->>> list(evalPath(g, (None, -(e.p1|e.p2), e.c))) == []
+>>> list(eval_path(g, (None, -(e.p1|e.p2), e.c))) == []
 True
->>> list(evalPath(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
+>>> list(eval_path(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
 True
->>> list(evalPath(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
+>>> list(eval_path(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
 True
->>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
+>>> list(eval_path(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
+>>> list(eval_path(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
+>>> list(eval_path(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified:
 
->>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
+>>> sorted(list(eval_path(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
@@ -180,7 +180,7 @@ No vars specified:
 
 """
 
-
+import warnings
 from functools import total_ordering
 from typing import TYPE_CHECKING, Callable, Iterator, Optional, Tuple, Union
 
@@ -462,6 +462,17 @@ def path_sequence(self, other):
 
 
 def evalPath(graph, t):
+    warnings.warn(
+        DeprecationWarning(
+            "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
+            "The mixed-case evalPath() function name is incompatible with PEP8 "
+            "recommendations and will be replaced by eval_path() in rdflib 7.0.0."
+        )
+    )
+    return eval_path(graph, t)
+
+
+def eval_path(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
 

@@ -191,7 +191,7 @@ A literal in an RDF graph contains one or two named components.
     
 All literals have a lexical form being a Unicode string, which SHOULD be in Normal Form C.
     
-Plain literals have a lexical form and optionally a language tag as defined by :rfc:`3066`, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__init__`.
+Plain literals have a lexical form and optionally a language tag as defined by :rfc:`3066`, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__new__`.
     
 Typed literals have a lexical form and a datatype URI being an RDF URI reference.
     

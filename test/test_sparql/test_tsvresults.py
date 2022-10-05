@@ -1,6 +1,7 @@
 from io import StringIO
 
 from rdflib.plugins.sparql.results.tsvresults import TSVResultParser
+from rdflib.query import ResultRow
 
 
 def test_empty_tsvresults_bindings() -> None:
@@ -15,4 +16,5 @@ def test_empty_tsvresults_bindings() -> None:
     result = parser.parse(source_io)
 
     for idx, row in enumerate(result):
+        assert isinstance(row, ResultRow)
         assert row[idx] is None

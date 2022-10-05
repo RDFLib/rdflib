@@ -1,3 +1,4 @@
 html5lib
 isodate
 pyparsing
+importlib-metadata; python_version < '3.8.0'

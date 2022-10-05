@@ -346,6 +346,8 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 if TYPE_CHECKING:
     from rdflib._type_checking import _NamespaceSetString
 
+_with_bind_override_fix = True
+
 
 class NamespaceManager(object):
     """Class for managing prefix => namespace mappings
@@ -618,6 +620,22 @@ class NamespaceManager(object):
                 f"Prefix \"{curie.split(':')[0]}\" not bound to any namespace."
             )
 
+    def _store_bind(self, prefix: str, namespace: URIRef, override: bool) -> None:
+        if not _with_bind_override_fix:
+            return self.store.bind(prefix, namespace)
+        try:
+            return self.store.bind(prefix, namespace, override=override)
+        except TypeError as error:
+            if "override" in str(error):
+                logger.warning(
+                    "caught a TypeError, "
+                    "retrying call to %s.bind without override, "
+                    "see https://github.com/RDFLib/rdflib/issues/1880 for more info",
+                    type(self.store),
+                    exc_info=True,
+                )
+                return self.store.bind(prefix, namespace)
+
     def bind(
         self,
         prefix: Optional[str],
@@ -652,7 +670,7 @@ class NamespaceManager(object):
         if bound_namespace and bound_namespace != namespace:
 
             if replace:
-                self.store.bind(prefix, namespace, override=override)
+                self._store_bind(prefix, namespace, override=override)
                 insert_trie(self.__trie, str(namespace))
                 return
             # prefix already in use for different namespace
@@ -673,16 +691,16 @@ class NamespaceManager(object):
                 if not self.store.namespace(new_prefix):
                     break
                 num += 1
-            self.store.bind(new_prefix, namespace, override=override)
+            self._store_bind(new_prefix, namespace, override=override)
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
-                self.store.bind(prefix, namespace, override=override)
+                self._store_bind(prefix, namespace, override=override)
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
-                    self.store.bind(prefix, namespace, override=override)
+                    self._store_bind(prefix, namespace, override=override)
 
         insert_trie(self.__trie, str(namespace))
 

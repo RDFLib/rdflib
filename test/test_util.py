@@ -347,19 +347,45 @@ class TestUtilTermConvert:
 
 
 @pytest.mark.parametrize(
-    ["params", "expected_result"],
+    ["params", "default", "expected_result"],
     [
-        ([], None),
-        (["something"], "something"),
-        ([False, "something"], False),
-        (["", "something"], ""),
-        ([0, "something"], 0),
-        ([None, "something", 1], "something"),
-        (["something", None, 1], "something"),
+        ([], ..., None),
+        (["something"], ..., "something"),
+        ([False, "something"], ..., False),
+        (["", "something"], ..., ""),
+        ([0, "something"], ..., 0),
+        ([None, "something", 1], ..., "something"),
+        (["something", None, 1], ..., "something"),
+        (["something", None, 1], 5, "something"),
+        ([], 5, 5),
+        ([None], 5, 5),
+        ([None, None], 5, 5),
+        ([None, None], 5, 5),
     ],
 )
-def test__coalesce(params: Collection[Any], expected_result: Any) -> None:
-    assert expected_result == _coalesce(*params)
+def test__coalesce(params: Collection[Any], default: Any, expected_result: Any) -> None:
+    if default == Ellipsis:
+        result = _coalesce(*params)
+    else:
+        result = _coalesce(*params, default)
+    assert expected_result == result
+
+
+def test__coalesce_typing() -> None:
+    """
+    type checking for _coalesce behaves as expected.
+    """
+    str_value: str
+    optional_str_value: Optional[str]
+
+    optional_str_value = _coalesce(None, "a", None)
+    assert optional_str_value == "a"
+
+    str_value = _coalesce(None, "a", None)  # type: ignore[assignment]
+    assert str_value == "a"
+
+    str_value = _coalesce(None, "a", None, default="3")
+    assert str_value == "a"
 
 
 @pytest.mark.parametrize(
