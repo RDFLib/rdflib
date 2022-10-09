@@ -307,7 +307,6 @@ def evalPart(ctx: QueryContext, part: CompValue):
 
     elif part.name == "ServiceGraphPattern":
         return evalServiceQuery(ctx, part)
-        # raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == "DescribeQuery":
         raise Exception("DESCRIBE not implemented")
