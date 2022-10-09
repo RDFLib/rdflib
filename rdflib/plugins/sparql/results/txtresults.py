@@ -59,11 +59,11 @@ class TXTResultSerializer(ResultSerializer):
             keys: List[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
             b = [
-                # type error: Value of type "Union[Tuple[IdentifiedNode, IdentifiedNode, Identifier], bool, ResultRow]" is not indexable
-                # type error: Invalid tuple index type (actual type "Variable", expected type "Union[int, slice]")
-                # error: Argument 1 to "_termString" has incompatible type "Union[Any, Identifier]"; expected "Union[URIRef, Literal, BNode, None]"
+                # type error: Value of type "Union[Tuple[Node, Node, Node], bool, ResultRow]" is not indexable
+                # type error: Argument 1 to "_termString" has incompatible type "Union[Node, Any]"; expected "Union[URIRef, Literal, BNode, None]"  [arg-type]
+                # type error: No overload variant of "__getitem__" of "tuple" matches argument type "Variable"
                 # NOTE on type error: The problem here is that r can be more types than _termString expects because result can be a result of multiple types.
-                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index,misc,arg-type]
+                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index, arg-type, call-overload]
                 for r in self.result
             ]
             for r in b:
