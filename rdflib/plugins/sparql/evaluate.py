@@ -325,7 +325,7 @@ def evalServiceQuery(ctx: QueryContext, part):
 
     if match:
         service_url = match.group(1)
-        service_query = _buildQueryStringForServiceCall(ctx, match)
+        service_query = _buildQueryStringForServiceCall(ctx, match.group(2))
 
         query_settings = {"query": service_query, "output": "json"}
         headers = {
@@ -369,9 +369,7 @@ def evalServiceQuery(ctx: QueryContext, part):
 """
 
 
-def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
-
-    service_query = match.group(2)
+def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> str:
     try:
         parser.parseQuery(service_query)
     except ParseException:
