@@ -315,7 +315,7 @@ def evalPart(ctx: QueryContext, part: CompValue):
         raise Exception("I dont know: %s" % part.name)
 
 
-def evalServiceQuery(ctx: QueryContext, part):
+def evalServiceQuery(ctx: QueryContext, part: CompValue):
     res = {}
     match = re.match(
         "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
