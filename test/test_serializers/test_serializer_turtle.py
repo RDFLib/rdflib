@@ -113,3 +113,24 @@ def test_turtle_namespace():
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
     assert r"EX:name_with_\(parenthesis\)" in output
+
+
+def test_issue948_escapeturtleprefixname():
+    foo = Namespace("http://www.example.com/foo/")
+    g = Graph()
+    g.bind("foo", foo)
+    g.add((foo["subj"], foo["pred"], foo["obj"]))
+    g.add((foo["subj"], foo["pred"], foo["obj/bar"]))
+    g.add((foo["subj"], foo["pred"], foo["obj#boo"]))
+    g1 = Graph()
+    g1.bind("foo", foo)
+    g1.parse(data=g.serialize(format="turtle"), format="turtle")
+    expected = r"""@prefix foo: <http://www.example.com/foo/> .
+
+foo:subj foo:pred foo:obj,
+        foo:obj\#boo,
+        foo:obj\/bar .
+
+"""
+    assert g.serialize(format="turtle") == expected
+    assert g1.serialize(format="turtle") == expected
