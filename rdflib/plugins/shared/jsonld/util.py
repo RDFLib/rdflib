@@ -13,8 +13,8 @@ else:
         import simplejson as json
 
 from io import TextIOBase, TextIOWrapper
-from posixpath import normpath
 from os import sep
+from posixpath import normpath
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from rdflib.parser import (
