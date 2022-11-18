@@ -968,11 +968,8 @@ def translateAlgebra(query_algebra: Query) -> str:
                 return node_arg.n3()  # type: ignore[attr-defined]
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        # type error notes: this is because Expr is a subclass of CompValue
-        # type error: Subclass of "str" and "Expr" cannot exist: would have incompatible method signatures
-        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
-            # type error: Statement is unreachable
-            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
+        elif isinstance(node_arg, Expr):
+            return "{" + node_arg.name + "}"
         elif isinstance(node_arg, str):
             return node_arg
         else:
