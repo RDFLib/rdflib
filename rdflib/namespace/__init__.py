@@ -122,8 +122,9 @@ class Namespace(str):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
+    # type error: Signature of "title" incompatible with supertype "str"
     @property
-    def title(self) -> URIRef:
+    def title(self) -> URIRef:  # type: ignore[override]
         # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 

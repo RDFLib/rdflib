@@ -113,8 +113,10 @@ _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
 _DatasetT = TypeVar("_DatasetT", bound="Dataset")
 
-assert Literal  # avoid warning
-assert Namespace  # avoid warning
+# type error: Function "Type[Literal]" could always be true in boolean contex
+assert Literal  # type: ignore[truthy-function] # avoid warning
+# type error: Function "Type[Namespace]" could always be true in boolean context
+assert Namespace  # type: ignore[truthy-function] # avoid warning
 
 if TYPE_CHECKING:
     from rdflib._type_checking import _NamespaceSetString
@@ -1470,10 +1472,10 @@ class Graph(Node):
         if format is None:
             if (
                 hasattr(source, "file")
-                and getattr(source.file, "name", None)  # type: ignore[attr-defined]
-                and isinstance(source.file.name, str)  # type: ignore[attr-defined]
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
             ):
-                format = rdflib.util.guess_format(source.file.name)  # type: ignore[attr-defined]
+                format = rdflib.util.guess_format(source.file.name)
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True

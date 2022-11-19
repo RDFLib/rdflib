@@ -114,7 +114,7 @@ class TripleRemovedEvent(Event):
 
 
 class NodePickler(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self._objects: Dict[str, Any] = {}
         self._ids: Dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
@@ -363,7 +363,8 @@ class Store(object):
 
     # variants of triples will be done if / when optimization is needed
 
-    def __len__(self, context: Optional["_ContextType"] = None) -> int:
+    # type error: Missing return statement
+    def __len__(self, context: Optional["_ContextType"] = None) -> int:  # type: ignore[empty-body]
         """
         Number of statements in the store. This should only account for non-
         quoted (asserted) statements if the context is not specified,
@@ -373,7 +374,8 @@ class Store(object):
         :param context: a graph instance to query or None
         """
 
-    def contexts(
+    # type error: Missing return statement
+    def contexts(  # type: ignore[empty-body]
         self, triple: Optional["_TripleType"] = None
     ) -> Generator["_ContextType", None, None]:
         """

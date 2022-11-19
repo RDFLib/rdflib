@@ -163,7 +163,7 @@ class W3CNTriplesParser(object):
 
         if not hasattr(f, "encoding") and not hasattr(f, "charbuffer"):
             # someone still using a bytestream here?
-            f = codecs.getreader("utf-8")(f)  # type: ignore[arg-type]
+            f = codecs.getreader("utf-8")(f)
 
         self.file = f  # type: ignore[assignment]
         self.buffer = ""

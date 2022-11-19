@@ -374,7 +374,7 @@ def create_input_source(
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
                     input_source.setCharacterStream(source)
-                    input_source.setEncoding(source.encoding)  # type: ignore[union-attr]
+                    input_source.setEncoding(source.encoding)
                     try:
                         b = file.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)

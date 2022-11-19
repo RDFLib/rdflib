@@ -53,7 +53,8 @@ class Processor(object):
     def __init__(self, graph: "Graph"):
         pass
 
-    def query(
+    # type error: Missing return statement
+    def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, "Query"],  # noqa: N803
         initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
@@ -417,7 +418,8 @@ class ResultParser(object):
     def __init__(self):
         pass
 
-    def parse(self, source: IO, **kwargs: Any) -> Result:
+    # type error: Missing return statement
+    def parse(self, source: IO, **kwargs: Any) -> Result:  # type: ignore[empty-body]
         """return a Result object"""
         pass  # abstract
 
