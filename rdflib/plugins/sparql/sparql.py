@@ -384,7 +384,7 @@ class Prologue:
     A class for holding prefixing bindings and base URI information
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.base: Optional[str] = None
         self.namespace_manager = NamespaceManager(Graph())  # ns man needs a store
 
