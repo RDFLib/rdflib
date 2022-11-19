@@ -208,7 +208,8 @@ GraphDestParamType = Union[Path, PurePath, str, IO[bytes]]
 
 def narrow_dest_param(param: DestParmType) -> GraphDestParamType:
     assert not (hasattr(param, "write") and hasattr(param, "encoding"))
-    assert not isinstance(param, TextIO)
+    # type error: Subclass of "IO[bytes]" and "TextIO" cannot exist: would have inconsistent method resolution order
+    assert not isinstance(param, TextIO)  # type: ignore[unreachable]
     return param
 
 
