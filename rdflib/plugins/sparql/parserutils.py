@@ -224,11 +224,10 @@ class Comp(TokenConverter):
         for t in tokenList:
             if isinstance(t, ParseResults):
                 for i in t:
-                    if not isinstance(i, ParamValue):
-                        raise TypeError("ParseResult must be a ParamValue")
-                    if i.name not in res:
-                        res[i.name] = []
-                    res[i.name].append(i.tokenList)
+                    if isinstance(i, ParamValue):
+                        if i.name not in res:
+                            res[i.name] = []
+                        res[i.name].append(i.tokenList)
             elif isinstance(t, ParamValue):
                 res[t.name] = t.tokenList
         return res
