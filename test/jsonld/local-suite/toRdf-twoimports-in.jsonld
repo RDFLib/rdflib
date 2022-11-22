@@ -1,0 +1,6 @@
+{
+  "@context": [
+    "local-suite/contexts/import.jsonld",
+    "local-suite/contexts/import.jsonld"
+  ]
+}
