@@ -404,6 +404,7 @@ class Context(object):
                 new_ctx = self._fetch_context(
                     source, source_doc_base, referenced_contexts
                 )
+                new_base = base
                 if new_ctx is None:
                     continue
                 else:
