@@ -412,7 +412,7 @@ class Context(object):
                             # if base is not None, then source_doc_base won't be
                             # none due to how it is assigned.
                             assert source_doc_base is not None
-                        base = urljoin(source_doc_base, source_url)
+                        new_base = urljoin(source_doc_base, source_url)
                     source = new_ctx
 
             if isinstance(source, dict):
@@ -422,7 +422,7 @@ class Context(object):
 
             if isinstance(source, list):
                 self._prep_sources(
-                    base, source, sources, referenced_contexts, source_url
+                    new_base, source, sources, referenced_contexts, source_url
                 )
             else:
                 sources.append((source_url, source))
