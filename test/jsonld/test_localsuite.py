@@ -13,7 +13,6 @@ testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "local-suite")
 TC_BASE = testsuite_dir + os.sep
 
 
-
 def read_manifest():
     f = open(p.join(testsuite_dir, "manifest.jsonld"), "r")
     manifestdata = json.load(f)
