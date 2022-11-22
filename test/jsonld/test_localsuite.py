@@ -1,4 +1,5 @@
 import json
+import os
 from os import chdir, getcwd
 from os import path as p
 
@@ -8,10 +9,9 @@ from rdflib.term import URIRef
 
 from . import runner
 
-TC_BASE = "https://rdflib.github.io/rdflib-jsonld/local-testsuite/"
-
-
 testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "local-suite")
+TC_BASE = testsuite_dir + os.sep
+
 
 
 def read_manifest():
