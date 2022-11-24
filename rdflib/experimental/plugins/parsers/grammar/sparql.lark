@@ -1,0 +1,159 @@
+start: prologue ( query | update )
+queryunit: prologue query
+query: selectquery | constructquery | describequery | askquery
+prologue: basedecl? prefixdecl*
+basedecl: "BASE" IRIREF
+prefixdecl: "PREFIX" PNAME_NS IRIREF
+selectquery: project datasetclause* whereclause solutionmodifier
+subselect: project whereclause solutionmodifier
+project: "SELECT" ( "DISTINCT"| "REDUCED" )? ( ( var | aggregate | builtincall | functioncall | ( "(" expression ( "AS" var )? ")" ) )+ | "*" )
+constructquery: "CONSTRUCT" constructtemplate datasetclause* whereclause solutionmodifier
+describequery: "DESCRIBE" ( varoririref+ | "*" ) datasetclause* whereclause? solutionmodifier
+askquery: "ASK" datasetclause* whereclause
+datasetclause: "FROM" ( defaultgraphclause | namedgraphclause )
+defaultgraphclause: sourceselector
+namedgraphclause: "NAMED" sourceselector
+sourceselector: iriref
+whereclause: "WHERE"? groupgraphpattern
+solutionmodifier: groupclause? havingclause? orderclause? limitoffsetclauses?
+groupclause: "GROUP" "BY" groupcondition+
+groupcondition: ( builtincall | functioncall | "(" expression ( "AS" var )? ")"| var )
+havingclause: "HAVING" havingcondition+
+havingcondition: constraint
+orderclause: "ORDER" "BY" ordercondition+
+ordercondition: ( ( "ASC"| "DESC" ) brackettedexpression ) | ( constraint | var )
+limitoffsetclauses: ( limitclause offsetclause? | offsetclause limitclause? )
+limitclause: "LIMIT" INTEGER
+offsetclause: "OFFSET" INTEGER
+updateunit: prologue update
+update: update1+
+update1: modify | insert | delete | load | clear | create | drop
+modify: "MODIFY" graphiri* "DELETE" constructtemplate "INSERT" constructtemplate updatepattern?
+delete: "DELETE" ( deletedata | deletetemplate )
+deletedata: "DATA" ( "FROM"? iriref )* constructtemplate
+deletetemplate: ( "FROM"? iriref )* constructtemplate updatepattern?
+insert: "INSERT" ( insertdata | inserttemplate )
+insertdata: "DATA" ( "INTO"? iriref )* constructtemplate
+inserttemplate: ( "INTO"? iriref )* constructtemplate updatepattern?
+graphiri: "GRAPH" iriref
+load: "LOAD" iriref+ ( "INTO" iriref )?
+clear: "CLEAR" graphiri?
+create: "CREATE" "SILENT"? graphiri
+drop: "DROP" "SILENT"? graphiri
+updatepattern: "WHERE"? groupgraphpattern
+groupgraphpattern: "{" ( subselect | groupgraphpatternsub ) "}"
+groupgraphpatternsub: triplesblock? ( ( graphpatternnottriples | filter ) "."? triplesblock? )*
+triplesblock: triplessamesubjectpath ( "." triplesblock? )?
+graphpatternnottriples: optionalgraphpattern | grouporuniongraphpattern | graphgraphpattern | existselt | notexistselt
+optionalgraphpattern: "OPTIONAL" groupgraphpattern
+graphgraphpattern: "GRAPH" varoririref groupgraphpattern
+existselt: "EXISTS" groupgraphpattern
+notexistselt: ( "UNSAID" | "NOT EXISTS" ) groupgraphpattern
+grouporuniongraphpattern: groupgraphpattern ( "UNION" groupgraphpattern )*
+filter: "FILTER" constraint
+constraint: brackettedexpression | builtincall | functioncall
+functioncall: iriref arglist
+arglist: ( NIL | "(" expression ( "," expression )* ")" )
+constructtemplate: "{" constructtriples? "}"
+constructtriples: triplessamesubject ( "." triplessamesubject )* "."?
+triplessamesubject: varorterm propertylistnotempty | triplesnode propertylist
+propertylistnotempty: verb objectlist ( ";" ( verb objectlist )? )*
+propertylist: propertylistnotempty?
+objectlist: object ( "," object )*
+object: graphnode
+verb: varoririref | "a"
+triplessamesubjectpath: varorterm propertylistnotemptypath | triplesnode propertylistpath
+propertylistnotemptypath: ( verbpath | verbsimple ) objectlist ( ";" ( ( verbpath | verbsimple ) objectlist )? )*
+propertylistpath: propertylistnotempty?
+verbpath: path
+verbsimple: var
+path: pathalternative
+pathalternative: pathsequence ( "|" pathsequence )*
+pathsequence: patheltorreverse ( "/" patheltorreverse | "^" pathelt )*
+pathelt: pathprimary pathmod?
+patheltorreverse: pathelt | "^" pathelt
+pathmod: ( "*"| "?"| "+"| "{" ( integer ( "," ( "}"| integer "}" ) | "}" ) ) )
+pathprimary: ( iriref | "a"| "(" path ")" )
+integer: INTEGER
+triplesnode: collection | blanknodepropertylist
+blanknodepropertylist: "[" propertylistnotempty "]"
+collection: "(" graphnode+ ")"
+graphnode: varorterm | triplesnode
+varorterm: var | graphterm
+varoririref: var | iriref
+var: VAR1 | VAR2
+graphterm: iriref | rdfliteral | numericliteral | booleanliteral | blanknode | NIL
+expression: conditionalorexpression
+conditionalorexpression: conditionalandexpression ( "||" conditionalandexpression )*
+conditionalandexpression: valuelogical ( "&&" valuelogical )*
+valuelogical: relationalexpression
+relationalexpression: numericexpression ( "=" numericexpression | "!=" numericexpression | "<" numericexpression | ">" numericexpression | "<=" numericexpression | ">=" numericexpression )?
+numericexpression: additiveexpression
+additiveexpression: multiplicativeexpression ( "+" multiplicativeexpression | "-" multiplicativeexpression | ( numericliteralpositive | numericliteralnegative ) ( ( "*" unaryexpression ) | ( "/" unaryexpression ) )? )*
+multiplicativeexpression: unaryexpression ( "*" unaryexpression | "/" unaryexpression )*
+unaryexpression: "!" primaryexpression | "+" primaryexpression | "-" primaryexpression | primaryexpression
+primaryexpression: brackettedexpression | builtincall | irireforfunction | rdfliteral | numericliteral | booleanliteral | var | aggregate
+brackettedexpression: "(" expression ")"
+builtincall: "STR" "(" expression ")" | "LANG" "(" expression ")"| "LANGMATCHES" "(" expression "," expression ")"| "DATATYPE" "(" expression ")"| "BOUND" "(" var ")"| "COALESCE" arglist | "IF" "(" expression "," expression "," expression ")"| "sameTerm" "(" expression "," expression ")"| "isIRI" "(" expression ")"| "isURI" "(" expression ")"| "isBLANK" "(" expression ")"| "isLITERAL" "(" expression ")"| regexexpression | existsfunc | notexistsfunc
+regexexpression: "REGEX" "(" expression "," expression ( "," expression )? ")"
+existsfunc: "EXISTS" groupgraphpattern
+notexistsfunc: ( "UNSAID" | "NOT EXISTS" ) groupgraphpattern
+aggregate: ( "COUNT" "(" ( "*"| var | "DISTINCT" ( "*"| var ) ) ")"| "SUM" "(" expression ")"| "MIN" "(" expression ")"| "MAX" "(" expression ")"| "AVG" "(" expression ")" )
+irireforfunction: iriref arglist?
+rdfliteral: string ( LANGTAG | ( "^^" iriref ) )?
+numericliteral: numericliteralunsigned | numericliteralpositive | numericliteralnegative
+numericliteralunsigned: INTEGER | DECIMAL | DOUBLE
+numericliteralpositive: INTEGER_POSITIVE | DECIMAL_POSITIVE | DOUBLE_POSITIVE
+numericliteralnegative: INTEGER_NEGATIVE | DECIMAL_NEGATIVE | DOUBLE_NEGATIVE
+booleanliteral: "true" | "false"
+string: STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
+iriref: IRIREF | prefixedname
+prefixedname: PNAME_LN | PNAME_NS
+blanknode: BLANK_NODE_LABEL | ANON
+
+// @terminals # Productions for terminals //
+IRIREF: "<" (PN_CHARS | "." | ":" | "/" | "\\" | "#" | "@" | "%" | "&" | UCHAR )* ">"
+VAR1: "?" VARNAME
+VAR2: "$" VARNAME
+INTEGER: /[+-]?["0".."9"]+/
+DECIMAL: /[+-]?["0".."9"]*/ "." /["0".."9"]+/
+DOUBLE: /[+-]?/ ( ["0".."9"]+ "." ["0".."9"]* EXPONENT | "." ["0".."9"]+ EXPONENT | ["0".."9"]+ EXPONENT)
+EXPONENT: ("e"|"E") ["+" | "-"] ["0".."9"]+
+INTEGER_POSITIVE: "+" INTEGER
+DECIMAL_POSITIVE: "+" DECIMAL
+DOUBLE_POSITIVE: "+" DOUBLE
+INTEGER_NEGATIVE: "-" INTEGER
+DECIMAL_NEGATIVE: "-" DECIMAL
+DOUBLE_NEGATIVE: "-" DOUBLE
+STRING: /([ubf]?r?|r[ubf])("(?!"").*?(?<!\\)(\\\\)*?"|'(?!'').*?(?<!\\)(\\\\)*?')/i
+LONG_STRING: /([ubf]?r?|r[ubf])(""".*?(?<!\\)(\\\\)*?"""|'''.*?(?<!\\)(\\\\)*?''')/is
+EOL: /[\r\n]+/
+LANGTAG: "@" ["a".."z""A".."Z"] + ("-" ["a".."z""A".."Z""0".."9"]+)*
+PN_PREFIX: PN_CHARS_BASE ((PN_CHARS | ".")* PN_CHARS)?
+
+PNAME_NS: PN_PREFIX? ":"
+PNAME_LN: PNAME_NS PN_LOCAL
+STRING_LITERAL_LONG_SINGLE_QUOTE: "'''" ( ("'" | "''")? (/[^"'"]/ | ECHAR | UCHAR | "'"))* "''''"
+STRING_LITERAL_LONG_QUOTE: "\"\"\"" (("\"" | "\"\"")? (/[^\"\\]/ | ECHAR | UCHAR | "\""))* "\"\"\""
+STRING_LITERAL_QUOTE: "\"" (/[^\"\\\r\n]/ | "'" | "\"")* "\""
+STRING_LITERAL_SINGLE_QUOTE: "'" (/[^\u0027\u005C\u000A\u000D]/ | ECHAR | UCHAR | "\"")* "'"
+UCHAR: "\\u" HEX HEX HEX HEX | "\\U" HEX HEX HEX HEX HEX HEX HEX HEX
+ECHAR: "\\" /[\t\b\n\r\f\"\'\\]/
+ANON_WS: " " | "\t" | "\r" | "\n"
+ANON: "[" ANON_WS* "]"
+BLANK_NODE_LABEL: "_:" PN_LOCAL
+VARNAME: (PN_CHARS_U | /[0-9]/) (PN_CHARS_U | /[0-9]/ | "\u00B7"| ["\u0300".."\u036F"] | ["\u203F".."\u2040"] )*
+PN_LOCAL_ESC: "\\" ("_~.-!$&'()*+,;=/?#@%")
+PN_CHARS_BASE: "A".."Z" | "a".."z" | "\u00C0".."\u00D6"| "\u00D8".."\u00F6"| "\u00F8".."\u02FF"| "\u0370".."\u037D"| "\u037F".."\u1FFF"| "\u200C".."\u200D"| "\u2070".."\u218F"| "\u2C00".."\u2FEF"| "\u3001".."\uD7FF"| "\uF900".."\uFDCF"| "\uFDF0".."\uFFFD"
+PN_CHARS_U: PN_CHARS_BASE | "_"
+PN_CHARS: PN_CHARS_U | "-"| /[0-9]/ | "\u00B7"| ["\u0300".."\u036F"] | ["\u203F".."\u2040"]
+PN_LOCAL: (PN_CHARS_U | ":" | /[0-9]/ | PLX) ((PN_CHARS | "." | ":" | PLX)* (PN_CHARS | ":" | PLX))?
+PLX: PERCENT | PN_LOCAL_ESC
+PERCENT: "%" HEX HEX
+HEX: /[0-9]/ | /[A-F]/ | /[a-f]/
+WS: (/[\t\r\n\u000C]/ | " ")+
+NIL: "(" WS* ")"
+%ignore " "
+%ignore WS
+COMMENT: "#" /[^\n]/*
+%ignore COMMENT

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>Turtle-star Evaluation Tests</title>
+<h1>Turtle-star Evaluation Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#turtle-star-1">Turtle-star - subject quoted triple</a>
+<li class="proposed"><a href="#turtle-star-2">Turtle-star - object quoted triple</a>
+<li class="proposed"><a href="#turtle-star-bnode-1">Turtle-star - blank node label</a>
+<li class="proposed"><a href="#turtle-star-bnode-2">Turtle-star - blank node labels</a>
+<li class="proposed"><a href="#turtle-star-annotation-1">Turtle-star - Annotation form</a>
+<li class="proposed"><a href="#turtle-star-annotation-2">Turtle-star - Annotation example</a>
+<li class="proposed"><a href="#turtle-star-annotation-3">Turtle-star - Annotation - predicate and object lists</a>
+<li class="proposed"><a href="#turtle-star-annotation-4">Turtle-star - Annotation - nested</a>
+<li class="proposed"><a href="#turtle-star-annotation-5">Turtle-star - Annotation object list</a>
+<li class="proposed"><a href="#turtle-star-quoted-annotation-1">Turtle-star - Annotation with quoting</a>
+<li class="proposed"><a href="#turtle-star-quoted-annotation-2">Turtle-star - Annotation on triple with quoted subject</a>
+<li class="proposed"><a href="#turtle-star-quoted-annotation-3">Turtle-star - Annotation on triple with quoted object</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a>
+<section id="turtle-star-1" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - subject quoted triple <a href="#turtle-star-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-01.ttl">turtle-star-eval-01.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:s :p :o&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-01.nt">turtle-star-eval-01.nt</a></code></div>
+<pre class="result">
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+</section><section id="turtle-star-2" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - object quoted triple <a href="#turtle-star-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-02.ttl">turtle-star-eval-02.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:a :q &lt;&lt;:s :p :o&gt;&gt; .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-02.nt">turtle-star-eval-02.nt</a></code></div>
+<pre class="result">
+&lt;http://example/a&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; .
+</pre>
+</section><section id="turtle-star-bnode-1" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - blank node label <a href="#turtle-star-bnode-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-bnode-1.ttl">turtle-star-eval-bnode-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+_:b :p :o .
+&lt;&lt;_:b :p :o&gt;&gt; :q :z .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-bnode-1.nt">turtle-star-eval-bnode-1.nt</a></code></div>
+<pre class="result">
+_:b9 &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; _:b9 &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+</section><section id="turtle-star-bnode-2" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - blank node labels <a href="#turtle-star-bnode-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-bnode-2.ttl">turtle-star-eval-bnode-2.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+_:a :p1 _:a .
+&lt;&lt;_:a :p1 _:a &gt;&gt; :q &lt;&lt;_:a :p2 :o&gt;&gt; .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-bnode-2.nt">turtle-star-eval-bnode-2.nt</a></code></div>
+<pre class="result">
+_:label1 &lt;http://example/p1&gt; _:label1 .
+&lt;&lt; _:label1 &lt;http://example/p1&gt; _:label1 &gt;&gt; &lt;http://example/q&gt; &lt;&lt; _:label1 &lt;http://example/p2&gt; &lt;http://example/o&gt; &gt;&gt; .
+</pre>
+</section><section id="turtle-star-annotation-1" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation form <a href="#turtle-star-annotation-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-annotation-1.ttl">turtle-star-eval-annotation-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o {| :r :z |} .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-annotation-1.nt">turtle-star-eval-annotation-1.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; .
+</pre>
+</section><section id="turtle-star-annotation-2" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation example <a href="#turtle-star-annotation-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-annotation-2.ttl">turtle-star-eval-annotation-2.ttl</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:s :p :o {| :source [ :graph &lt;http://host1/&gt; ;
+                      :date "2020-01-20"^^xsd:date
+                    ] ;
+            :source [ :graph &lt;http://host2/&gt; ;
+                      :date "2020-12-31"^^xsd:date
+                    ]
+          |} .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-annotation-2.nt">turtle-star-eval-annotation-2.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+_:b1 &lt;http://example/graph&gt; &lt;http://host1/&gt; .
+_:b1 &lt;http://example/date&gt; "2020-01-20"^^&lt;http://www.w3.org/2001/XMLSchema#date&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/source&gt; _:b1 .
+_:b2 &lt;http://example/graph&gt; &lt;http://host2/&gt; .
+_:b2 &lt;http://example/date&gt; "2020-12-31"^^&lt;http://www.w3.org/2001/XMLSchema#date&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/source&gt; _:b2 .
+</pre>
+</section><section id="turtle-star-annotation-3" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation - predicate and object lists <a href="#turtle-star-annotation-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-annotation-3.ttl">turtle-star-eval-annotation-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o {| :a :b |};
+    :p2 :o2 {| :a2 :b2 |},
+        :o3 {| :a3 :b3 |}.
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-annotation-3.nt">turtle-star-eval-annotation-3.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; .
+&lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; &gt;&gt; &lt;http://example/a2&gt; &lt;http://example/b2&gt; .
+&lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o3&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o3&gt; &gt;&gt; &lt;http://example/a3&gt; &lt;http://example/b3&gt; .
+</pre>
+</section><section id="turtle-star-annotation-4" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation - nested <a href="#turtle-star-annotation-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-annotation-4.ttl">turtle-star-eval-annotation-4.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o {| :a :b {| :a2 :b2 |} |}.
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-annotation-4.nt">turtle-star-eval-annotation-4.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; .
+&lt;&lt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; &gt;&gt; &lt;http://example/a2&gt; &lt;http://example/b2&gt; .
+</pre>
+</section><section id="turtle-star-annotation-5" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation object list <a href="#turtle-star-annotation-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-annotation-5.ttl">turtle-star-eval-annotation-5.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o1, :o2 {| :a :b |} .
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-annotation-5.nt">turtle-star-eval-annotation-5.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o1&gt; .
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o2&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o2&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; .
+</pre>
+</section><section id="turtle-star-quoted-annotation-1" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation with quoting <a href="#turtle-star-quoted-annotation-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-quoted-annotation-1.ttl">turtle-star-eval-quoted-annotation-1.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p :o {| :r &lt;&lt;:s1 :p1 :o1&gt;&gt; |} .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-quoted-annotation-1.nt">turtle-star-eval-quoted-annotation-1.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt;&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt;&gt;&gt; &lt;http://example/r&gt; &lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; .
+</pre>
+</section><section id="turtle-star-quoted-annotation-2" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation on triple with quoted subject <a href="#turtle-star-quoted-annotation-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-quoted-annotation-2.ttl">turtle-star-eval-quoted-annotation-2.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+&lt;&lt;:s1 :p1 :o1&gt;&gt; :p :o {| :r :z |} .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-quoted-annotation-2.nt">turtle-star-eval-quoted-annotation-2.nt</a></code></div>
+<pre class="result">
+&lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt;&lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; &lt;http://example/p&gt; &lt;http://example/o&gt;&gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; .
+</pre>
+</section><section id="turtle-star-quoted-annotation-3" class="entry proposed rdft:TestTurtleEval">
+<h2>Turtle-star - Annotation on triple with quoted object <a href="#turtle-star-quoted-annotation-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTurtleEval</td>
+</table>
+<div><code><a href="turtle-star-eval-quoted-annotation-3.ttl">turtle-star-eval-quoted-annotation-3.ttl</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:s :p &lt;&lt;:s2 :p2 :o2&gt;&gt; {| :r :z |} .
+</pre>
+<div>MUST result into</div>
+<div><code><a href="turtle-star-eval-quoted-annotation-3.nt">turtle-star-eval-quoted-annotation-3.nt</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;&lt;&lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt;&gt;&gt; .
+&lt;&lt;&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;&lt;&lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt;&gt;&gt;&gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; .
+</pre>
+</section></html>

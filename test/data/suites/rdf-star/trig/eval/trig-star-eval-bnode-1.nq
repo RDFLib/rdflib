@@ -1,0 +1,2 @@
+_:b9 <http://example/p> <http://example/o> <http://example/G> .
+<< _:b9 <http://example/p> <http://example/o> >> <http://example/q> <http://example/z> <http://example/G> .

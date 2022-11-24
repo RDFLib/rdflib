@@ -1,0 +1,9 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+  ?t :source :g
+  FILTER(isTriple(?t))
+  FILTER(SUBJECT(?t) = :s)
+  FILTER(PREDICATE(?t) = :p)
+  FILTER(OBJECT(?t) = :o)
+}

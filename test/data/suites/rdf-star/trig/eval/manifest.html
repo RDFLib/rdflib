@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>TriG-star Evaluation Tests</title>
+<h1>TriG-star Evaluation Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#trig-star-1">TriG-star - subject quoted triple</a>
+<li class="proposed"><a href="#trig-star-2">TriG-star - object quoted triple</a>
+<li class="proposed"><a href="#trig-star-bnode-1">TriG-star - blank node label</a>
+<li class="proposed"><a href="#trig-star-bnode-2">TriG-star - blank node labels</a>
+<li class="proposed"><a href="#trig-star-annotation-1">TriG-star - Annotation form</a>
+<li class="proposed"><a href="#trig-star-annotation-2">TriG-star - Annotation example</a>
+<li class="proposed"><a href="#trig-star-annotation-3">TriG-star - Annotation - predicate and object lists</a>
+<li class="proposed"><a href="#trig-star-annotation-4">TriG-star - Annotation - nested</a>
+<li class="proposed"><a href="#trig-star-annotation-5">TriG-star - Annotation object list</a>
+<li class="proposed"><a href="#trig-star-quoted-annotation-1">TriG-star - Annotation with quoting</a>
+<li class="proposed"><a href="#trig-star-quoted-annotation-2">TriG-star - Annotation on triple with quoted subject</a>
+<li class="proposed"><a href="#trig-star-quoted-annotation-3">TriG-star - Annotation on triple with quoted object</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a>
+<section id="trig-star-1" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - subject quoted triple <a href="#trig-star-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-01.trig">trig-star-eval-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {&lt;&lt;:s :p :o&gt;&gt; :q :z .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-01.nq">trig-star-eval-01.nq</a></code></div>
+<pre class="result">
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-2" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - object quoted triple <a href="#trig-star-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-02.trig">trig-star-eval-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:a :q &lt;&lt;:s :p :o&gt;&gt; .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-02.nq">trig-star-eval-02.nq</a></code></div>
+<pre class="result">
+&lt;http://example/a&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-bnode-1" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - blank node label <a href="#trig-star-bnode-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-bnode-1.trig">trig-star-eval-bnode-1.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  _:b :p :o .
+  &lt;&lt;_:b :p :o&gt;&gt; :q :z .
+}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-bnode-1.nq">trig-star-eval-bnode-1.nq</a></code></div>
+<pre class="result">
+_:b9 &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt; _:b9 &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-bnode-2" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - blank node labels <a href="#trig-star-bnode-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-bnode-2.trig">trig-star-eval-bnode-2.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  _:a :p1 _:a .
+  &lt;&lt;_:a :p1 _:a &gt;&gt; :q &lt;&lt;_:a :p2 :o&gt;&gt; .
+}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-bnode-2.nq">trig-star-eval-bnode-2.nq</a></code></div>
+<pre class="result">
+_:label1 &lt;http://example/p1&gt; _:label1 &lt;http://example/G&gt; .
+&lt;&lt; _:label1 &lt;http://example/p1&gt; _:label1 &gt;&gt; &lt;http://example/q&gt; &lt;&lt; _:label1 &lt;http://example/p2&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-annotation-1" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation form <a href="#trig-star-annotation-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-annotation-1.trig">trig-star-eval-annotation-1.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p :o {| :r :z |} .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-annotation-1.nq">trig-star-eval-annotation-1.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-annotation-2" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation example <a href="#trig-star-annotation-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-annotation-2.trig">trig-star-eval-annotation-2.trig</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:G {
+  :s :p :o {| :source [ :graph &lt;http://host1/&gt; ;
+                        :date "2020-01-20"^^xsd:date
+                      ] ;
+              :source [ :graph &lt;http://host2/&gt; ;
+                        :date "2020-12-31"^^xsd:date
+                      ]
+            |} .
+}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-annotation-2.nq">trig-star-eval-annotation-2.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+_:b1 &lt;http://example/graph&gt; &lt;http://host1/&gt; &lt;http://example/G&gt; .
+_:b1 &lt;http://example/date&gt; "2020-01-20"^^&lt;http://www.w3.org/2001/XMLSchema#date&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/source&gt; _:b1 &lt;http://example/G&gt; .
+_:b2 &lt;http://example/graph&gt; &lt;http://host2/&gt; &lt;http://example/G&gt; .
+_:b2 &lt;http://example/date&gt; "2020-12-31"^^&lt;http://www.w3.org/2001/XMLSchema#date&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/source&gt; _:b2 &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-annotation-3" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation - predicate and object lists <a href="#trig-star-annotation-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-annotation-3.trig">trig-star-eval-annotation-3.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o {| :a :b |};
+      :p2 :o2 {| :a2 :b2 |},
+          :o3 {| :a3 :b3 |}.
+}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-annotation-3.nq">trig-star-eval-annotation-3.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; &lt;http://example/G&gt; .
+&lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; &gt;&gt; &lt;http://example/a2&gt; &lt;http://example/b2&gt; &lt;http://example/G&gt; .
+&lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o3&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p2&gt; &lt;http://example/o3&gt; &gt;&gt; &lt;http://example/a3&gt; &lt;http://example/b3&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-annotation-4" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation - nested <a href="#trig-star-annotation-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-annotation-4.trig">trig-star-eval-annotation-4.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p :o {| :a :b {| :a2 :b2 |} |}.}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-annotation-4.nq">trig-star-eval-annotation-4.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; &gt;&gt; &lt;http://example/a2&gt; &lt;http://example/b2&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-annotation-5" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation object list <a href="#trig-star-annotation-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-annotation-5.trig">trig-star-eval-annotation-5.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p :o1, :o2 {| :a :b |} .}
+
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-annotation-5.nq">trig-star-eval-annotation-5.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o1&gt; &lt;http://example/G&gt; .
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o2&gt; &lt;http://example/G&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o2&gt; &gt;&gt; &lt;http://example/a&gt; &lt;http://example/b&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-quoted-annotation-1" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation with quoting <a href="#trig-star-quoted-annotation-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-quoted-annotation-1.trig">trig-star-eval-quoted-annotation-1.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p :o {| :r &lt;&lt;:s1 :p1 :o1&gt;&gt; |} .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-quoted-annotation-1.nq">trig-star-eval-quoted-annotation-1.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt;&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt;&gt;&gt; &lt;http://example/r&gt; &lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-quoted-annotation-2" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation on triple with quoted subject <a href="#trig-star-quoted-annotation-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-quoted-annotation-2.trig">trig-star-eval-quoted-annotation-2.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {&lt;&lt;:s1 :p1 :o1&gt;&gt; :p :o {| :r :z |} .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-quoted-annotation-2.nq">trig-star-eval-quoted-annotation-2.nq</a></code></div>
+<pre class="result">
+&lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/G&gt; .
+&lt;&lt;&lt;&lt;&lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt;&gt;&gt; &lt;http://example/p&gt; &lt;http://example/o&gt;&gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; &lt;http://example/G&gt; .
+</pre>
+</section><section id="trig-star-quoted-annotation-3" class="entry proposed rdft:TestTrigEval">
+<h2>TriG-star - Annotation on triple with quoted object <a href="#trig-star-quoted-annotation-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigEval</td>
+</table>
+<div><code><a href="trig-star-eval-quoted-annotation-3.trig">trig-star-eval-quoted-annotation-3.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p &lt;&lt;:s2 :p2 :o2&gt;&gt; {| :r :z |} .}
+</pre>
+<div>MUST result into</div>
+<div><code><a href="trig-star-eval-quoted-annotation-3.nq">trig-star-eval-quoted-annotation-3.nq</a></code></div>
+<pre class="result">
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;&lt;&lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt;&gt;&gt; &lt;http://example/G&gt; .
+&lt;&lt;&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;&lt;&lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt;&gt;&gt;&gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; &lt;http://example/G&gt; .
+</pre>
+</section></html>

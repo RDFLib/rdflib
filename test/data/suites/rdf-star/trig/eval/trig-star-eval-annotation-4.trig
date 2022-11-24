@@ -1,0 +1,3 @@
+PREFIX : <http://example/>
+
+:G {:s :p :o {| :a :b {| :a2 :b2 |} |}.}

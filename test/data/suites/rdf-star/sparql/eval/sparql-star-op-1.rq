@@ -1,0 +1,7 @@
+PREFIX :       <http://example/>
+
+SELECT * {
+  ?x :left ?left .
+  ?x :right ?right .
+  FILTER( sameTerm(?left, ?right) )
+}

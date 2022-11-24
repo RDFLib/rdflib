@@ -1,0 +1,2 @@
+_:label1 <http://example/p1> _:label1 <http://example/G> .
+<< _:label1 <http://example/p1> _:label1 >> <http://example/q> << _:label1 <http://example/p2> <http://example/o> >> <http://example/G> .

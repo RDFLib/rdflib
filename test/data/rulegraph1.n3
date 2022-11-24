@@ -1,0 +1,7 @@
+@prefix : <urn:example:> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+:bob :hasmother :alice .
+:john :hasmother :alice .
+
+@forAll :x, :y, :z .
+{ :x :hasmother :z . :y :hasmother :z } log:implies { :x :issibling :y } .

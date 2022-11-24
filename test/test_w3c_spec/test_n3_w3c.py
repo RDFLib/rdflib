@@ -132,8 +132,8 @@ for test in turtle_eval_skipped + turtle_positive_syntax_skipped:
             for manifest in [
                 "TurtleTests/manifest.ttl",
                 "N3Tests/manifest-parser.ttl",
-                "N3Tests/manifest-reasoner.ttl",
-                "N3Tests/manifest-extended.ttl",
+                # "N3Tests/manifest-reasoner.ttl",
+                # "N3Tests/manifest-extended.ttl",
             ]
         )
     ),

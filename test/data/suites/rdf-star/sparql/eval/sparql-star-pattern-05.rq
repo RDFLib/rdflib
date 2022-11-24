@@ -1,0 +1,6 @@
+PREFIX :       <http://example/>
+
+# Matching Variables
+SELECT * {
+   <<?s ?p ?o>> ?Q <<?s ?p ?o>>
+}

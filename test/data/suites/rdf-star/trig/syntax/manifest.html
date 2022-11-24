@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>TriG-star Syntax Tests</title>
+<h1>TriG-star Syntax Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#trig-star-1">TriG-star - subject quoted triple</a>
+<li class="proposed"><a href="#trig-star-2">TriG-star - object quoted triple</a>
+<li class="proposed"><a href="#trig-star-inside-1">TriG-star - quoted triple inside blankNodePropertyList</a>
+<li class="proposed"><a href="#trig-star-inside-2">TriG-star - quoted triple inside collection</a>
+<li class="proposed"><a href="#trig-star-nested-1">TriG-star - nested quoted triple, subject position</a>
+<li class="proposed"><a href="#trig-star-nested-2">TriG-star - nested quoted triple, object position</a>
+<li class="proposed"><a href="#trig-star-compound-1">TriG-star - compound forms</a>
+<li class="proposed"><a href="#trig-star-bnode-1">TriG-star - blank node subject</a>
+<li class="proposed"><a href="#trig-star-bnode-2">TriG-star - blank node object</a>
+<li class="proposed"><a href="#trig-star-bnode-3">TriG-star - blank node</a>
+<li class="proposed"><a href="#trig-star-bad-1">TriG-star - bad - quoted triple as predicate</a>
+<li class="proposed"><a href="#trig-star-bad-2">TriG-star - bad - quoted triple outside triple</a>
+<li class="proposed"><a href="#trig-star-bad-3">TriG-star - bad - collection list in quoted triple</a>
+<li class="proposed"><a href="#trig-star-bad-4">TriG-star - bad - literal in subject position of quoted triple</a>
+<li class="proposed"><a href="#trig-star-bad-5">TriG-star - bad - blank node  as predicate in quoted triple</a>
+<li class="proposed"><a href="#trig-star-bad-6">TriG-star - bad - compound blank node expression</a>
+<li class="proposed"><a href="#trig-star-bad-7">TriG-star - bad - incomplete quoted triple</a>
+<li class="proposed"><a href="#trig-star-bad-8">TriG-star - bad - over-long quoted triple</a>
+<li class="proposed"><a href="#trig-star-ann-1">TriG-star - Annotation form</a>
+<li class="proposed"><a href="#trig-star-ann-2">TriG-star - Annotation example</a>
+<li class="proposed"><a href="#trig-star-bad-ann-1">TriG-star - bad - empty annotation</a>
+<li class="proposed"><a href="#trig-star-bad-ann-2">TriG-star - bad - triple as annotation</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-tests/">https://w3c.github.io/rdf-tests/</a>
+<section id="trig-star-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - subject quoted triple <a href="#trig-star-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-basic-01.trig">trig-star-syntax-basic-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  &lt;&lt;:s :p :o&gt;&gt; :q 123 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-2" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - object quoted triple <a href="#trig-star-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-basic-02.trig">trig-star-syntax-basic-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  :x :p &lt;&lt;:s :p :o&gt;&gt; .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-inside-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - quoted triple inside blankNodePropertyList <a href="#trig-star-inside-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-inside-01.trig">trig-star-syntax-inside-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  [ :q &lt;&lt;:s :p :o&gt;&gt; ] :b :c .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-inside-2" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - quoted triple inside collection <a href="#trig-star-inside-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-inside-02.trig">trig-star-syntax-inside-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o1 .
+  :s :p :o2 .
+  ( &lt;&lt;:s :p :o1&gt;&gt; &lt;&lt;:s :p :o2&gt;&gt; )  :q 123 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-nested-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - nested quoted triple, subject position <a href="#trig-star-nested-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-nested-01.trig">trig-star-syntax-nested-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+
+  &lt;&lt;:s :p :o &gt;&gt; :r :z .
+
+  &lt;&lt; &lt;&lt;:s :p :o &gt;&gt; :r :z &gt;&gt; :q 1 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-nested-2" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - nested quoted triple, object position <a href="#trig-star-nested-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-nested-02.trig">trig-star-syntax-nested-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  :a :q &lt;&lt;:s :p :o &gt;&gt; .
+  &lt;&lt; :a :q &lt;&lt;:s :p :o &gt;&gt;&gt;&gt; :r :z .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-compound-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - compound forms <a href="#trig-star-compound-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-compound.trig">trig-star-syntax-compound.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :x :r :z .
+  :a :b :c .
+  &lt;&lt;:a :b :c&gt;&gt; :r :z .
+  &lt;&lt;:x :r :z &gt;&gt; :p &lt;&lt;:a :b :c&gt;&gt; .
+
+  &lt;&lt; &lt;&lt;:x :r :z &gt;&gt; :p &lt;&lt;:a :b :c&gt;&gt; &gt;&gt;
+     :q
+  &lt;&lt; &lt;&lt;:x :r :z &gt;&gt; :p &lt;&lt;:a :b :c&gt;&gt; &gt;&gt; .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-bnode-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - blank node subject <a href="#trig-star-bnode-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bnode-01.trig">trig-star-syntax-bnode-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  _:a :p :o .
+  &lt;&lt;_:a :p :o &gt;&gt; :q 456 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-bnode-2" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - blank node object <a href="#trig-star-bnode-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bnode-02.trig">trig-star-syntax-bnode-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p _:a .
+  &lt;&lt;:s :p _:a &gt;&gt; :q 456 .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-bnode-3" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - blank node <a href="#trig-star-bnode-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bnode-03.trig">trig-star-syntax-bnode-03.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {&lt;&lt;[] :p [] &gt;&gt; :q :z .}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-bad-1" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - quoted triple as predicate <a href="#trig-star-bad-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-01.trig">trig-star-syntax-bad-01.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  :x &lt;&lt;:s :p :o&gt;&gt; 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-2" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - quoted triple outside triple <a href="#trig-star-bad-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-02.trig">trig-star-syntax-bad-02.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  &lt;&lt;:s :p :o&gt;&gt; .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-3" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - collection list in quoted triple <a href="#trig-star-bad-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-03.trig">trig-star-syntax-bad-03.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p ("abc") .
+  &lt;&lt;:s :p ("abc") &gt;&gt; :q 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-4" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - literal in subject position of quoted triple <a href="#trig-star-bad-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-04.trig">trig-star-syntax-bad-04.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  :s :p :o .
+  &lt;&lt;3 :p :o &gt;&gt; :q :z .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-5" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - blank node  as predicate in quoted triple <a href="#trig-star-bad-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-05.trig">trig-star-syntax-bad-05.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  &lt;&lt;:s [] :o&gt;&gt; :q 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-6" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - compound blank node expression <a href="#trig-star-bad-6">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-06.trig">trig-star-syntax-bad-06.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {
+  &lt;&lt;:s :p [ :p1 :o1 ]  &gt;&gt; :q 123 .
+}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-7" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - incomplete quoted triple <a href="#trig-star-bad-7">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-07.trig">trig-star-syntax-bad-07.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+
+:G {:s :p &lt;&lt; :p :r &gt;&gt; .}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-8" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - over-long quoted triple <a href="#trig-star-bad-8">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-08.trig">trig-star-syntax-bad-08.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p &lt;&lt; :g :s :p :o &gt;&gt; .}
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-ann-1" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - Annotation form <a href="#trig-star-ann-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-annotation-1.trig">trig-star-annotation-1.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example/&gt;
+
+:G {:s :p :o {| :r :z |} }
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-ann-2" class="entry proposed rdft:TestTrigPositiveSyntax">
+<h2>TriG-star - Annotation example <a href="#trig-star-ann-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigPositiveSyntax</td>
+</table>
+<div><code><a href="trig-star-annotation-2.trig">trig-star-annotation-2.trig</a></code></div>
+<pre>
+PREFIX :       &lt;http://example/&gt;
+PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;
+
+:G {
+  :s :p :o {| :source [ :graph &lt;http://host1/&gt; ;
+                        :date "2020-01-20"^^xsd:date
+                      ] ;
+              :source [ :graph &lt;http://host2/&gt; ;
+                        :date "2020-12-31"^^xsd:date
+                      ]
+            |} .
+}
+</pre>
+<div>MUST be accepted</div>
+</section><section id="trig-star-bad-ann-1" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - empty annotation <a href="#trig-star-bad-ann-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-ann-1.trig">trig-star-syntax-bad-ann-1.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+:G {:s :p :o {|  |} .}
+
+</pre>
+<div>MUST be rejected</div>
+</section><section id="trig-star-bad-ann-2" class="entry proposed rdft:TestTrigNegativeSyntax">
+<h2>TriG-star - bad - triple as annotation <a href="#trig-star-bad-ann-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestTrigNegativeSyntax</td>
+</table>
+<div><code><a href="trig-star-syntax-bad-ann-2.trig">trig-star-syntax-bad-ann-2.trig</a></code></div>
+<pre>
+PREFIX : &lt;http://example.com/ns#&gt;
+
+:G {:a :b :c {| :s :p :o |} .}
+</pre>
+<div>MUST be rejected</div>
+</section></html>

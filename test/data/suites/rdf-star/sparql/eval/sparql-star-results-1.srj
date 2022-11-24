@@ -1,0 +1,106 @@
+{ "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q1" } ,
+        "o": { "type": "uri" , "value": "http://example/z1" }
+      } ,
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": { "type": "uri" , "value": "http://example/z" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/b" } ,
+        "o": { "type": "uri" , "value": "http://example/c" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/f" } ,
+        "p": { "type": "uri" , "value": "http://example/g" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/x2" } ,
+                "predicate": { "type": "uri" , "value": "http://example/y3" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            }
+          }
+        }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/f" } ,
+        "p": { "type": "uri" , "value": "http://example/g" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/x1" } ,
+                "predicate": { "type": "uri" , "value": "http://example/y1" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   { "type": "uri" , "value": "http://example/o" }
+          }
+        }
+      } ,
+      { 
+        "s": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o1" }
+          }
+        } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s1" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":   { "type": "uri" , "value": "http://example/o1" }
+          }
+        }
+      }
+    ]
+  }
+}

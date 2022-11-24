@@ -1,0 +1,18 @@
+PREFIX : <http://example/>
+
+# The different kinds of orderable items.
+# (Not in collation order).
+
+:item :p :x .
+
+:item :p << :s :p :o >> .
+
+:item :p "abc" .
+
+:item :p _:b .
+
+##     (Lowest) no value assigned to the variable or expression in this solution.
+##     Blank nodes
+##     IRIs
+##     RDF literals
+##     RDF-star embedded triple terms

@@ -1,0 +1,49 @@
+This README is for the RDF-star Semantics test suite,
+by the W3C RDF-DEV Community Group task force on RDF*.
+This test suite contains two kinds of tests:
+
+  Positive Entailment Tests (PositiveEntailmentTest)
+  Negative Entailment Tests (NegativeEntailmentTest)
+
+The manifest.jsonld file in this directory lists all of the approved tests in the
+RDF WG's RDF Entailment test suite.
+
+Each test is one of the above kinds of tests. All tests have
+- a name (name),
+- an input RDF graph URL (action),
+- an output RDF graph URL or the special marker false (result),
+- an entailment regime, which is "simple", "RDF", "RDFS" or "RDFS-Plus" (entailmentRegime),
+- a list of recognized datatypes (recognizedDatatypes),
+- a list of unrecognized datatypes (unrecognizedDatatypes).
+
+An implementation passes a Positive (Negative) Entailment Test if, when
+configured to
+1/ perform entailment under the entailment regime of the test or some
+   entailment regime that is stronger (weaker) than the entailment regime and
+2/ recognize all the datatypes in the list of recognized datatypes and
+   none of the datatypes in the list of unrecognized datatypes,
+- for tests that have an output graph, determines that the input RDF graph
+  entails (does not entail) the output RDF graph
+- for tests that have false as output, either determines that the input
+  RDF graph entails (does not entail) an inconsistent RDF graph or that the
+  input RDF graph is inconsistent (consistent).
+
+An implementation also passes a test if when configured differently from a
+correct configuration as given above nonetheless produces the given result,
+and the result is correct in the configured entailment regime with the
+configured recognized datatypes.
+
+The home of the test suite should eventually be
+<http://w3c.github.io/rdf-star/tests/semantics/>.
+Per RFC 3986 section 5.1.3, the base IRI for parsing each file is the
+retrieval IRI for that file, but changing base IRIs should not affect any
+testing results.
+
+
+Test results should be submitted as EARL reports.   See
+http://www.w3.org/TR/EARL10-Schema/ for information on EARL.
+
+A document on the results of the testing will eventually be at
+http://w3c.github.io/rdf-star/tests/reports.html .
+This document will have more information on submitting reports, including examples
+of what the reports should contain.

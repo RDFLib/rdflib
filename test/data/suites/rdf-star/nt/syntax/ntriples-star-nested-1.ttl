@@ -1,0 +1,4 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example/s> <http://example/p> <http://example/o> {| <http://example/r> <http://example/z> {| <http://example/q> 1 |} |} .
+

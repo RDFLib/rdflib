@@ -1,0 +1,14 @@
+{ "head": {
+    "vars": [ "s" , "p" , "o" , "Q" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s" } ,
+        "p": { "type": "uri" , "value": "http://example/p2" } ,
+        "o": { "type": "uri" , "value": "http://example/o" } ,
+        "Q": { "type": "uri" , "value": "http://example/sym" }
+      }
+    ]
+  }
+}

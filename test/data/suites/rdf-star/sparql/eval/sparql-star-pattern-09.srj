@@ -1,0 +1,18 @@
+{ "head": {
+    "vars": [ "s" , "p" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "p": { "type": "uri" , "value": "http://example/p" } ,
+        "z": { "type": "literal" , "value": "same-p" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "p": { "type": "uri" , "value": "http://example/p" } ,
+        "z": { "type": "uri" , "value": "http://example/z2" }
+      }
+    ]
+  }
+}

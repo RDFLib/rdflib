@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="s"/>
+    <variable name="p"/>
+    <variable name="o"/>
+  </head>
+  <results>
+    <result>
+      <binding name="s">
+        <triple>
+          <subject>
+            <uri>http://example/a</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/b</uri>
+          </predicate>
+          <object>
+            <uri>http://example/c</uri>
+          </object>
+        </triple>
+      </binding>
+      <binding name="p">
+        <uri>http://example/q1</uri>
+      </binding>
+      <binding name="o">
+        <uri>http://example/z1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <triple>
+          <subject>
+            <uri>http://example/a</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/b</uri>
+          </predicate>
+          <object>
+            <uri>http://example/c</uri>
+          </object>
+        </triple>
+      </binding>
+      <binding name="p">
+        <uri>http://example/q</uri>
+      </binding>
+      <binding name="o">
+        <uri>http://example/z</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example/a</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example/b</uri>
+      </binding>
+      <binding name="o">
+        <uri>http://example/c</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example/a</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example/q</uri>
+      </binding>
+      <binding name="o">
+        <triple>
+          <subject>
+            <uri>http://example/a</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/b</uri>
+          </predicate>
+          <object>
+            <uri>http://example/c</uri>
+          </object>
+        </triple>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example/f</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example/g</uri>
+      </binding>
+      <binding name="o">
+        <triple>
+          <subject>
+            <uri>http://example/s</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/p</uri>
+          </predicate>
+          <object>
+            <triple>
+              <subject>
+                <uri>http://example/x2</uri>
+              </subject>
+              <predicate>
+                <uri>http://example/y3</uri>
+              </predicate>
+              <object>
+                <literal datatype="http://www.w3.org/2001/XMLSchema#integer">123</literal>
+              </object>
+            </triple>
+          </object>
+        </triple>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example/f</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example/g</uri>
+      </binding>
+      <binding name="o">
+        <triple>
+          <subject>
+            <triple>
+              <subject>
+                <uri>http://example/x1</uri>
+              </subject>
+              <predicate>
+                <uri>http://example/y1</uri>
+              </predicate>
+              <object>
+                <literal datatype="http://www.w3.org/2001/XMLSchema#integer">123</literal>
+              </object>
+            </triple>
+          </subject>
+          <predicate>
+            <uri>http://example/p</uri>
+          </predicate>
+          <object>
+            <uri>http://example/o</uri>
+          </object>
+        </triple>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <triple>
+          <subject>
+            <uri>http://example/s1</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/p1</uri>
+          </predicate>
+          <object>
+            <uri>http://example/o1</uri>
+          </object>
+        </triple>
+      </binding>
+      <binding name="p">
+        <uri>http://example/q</uri>
+      </binding>
+      <binding name="o">
+        <triple>
+          <subject>
+            <uri>http://example/s1</uri>
+          </subject>
+          <predicate>
+            <uri>http://example/p1</uri>
+          </predicate>
+          <object>
+            <uri>http://example/o1</uri>
+          </object>
+        </triple>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,125 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/turtle/eval#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "Turtle-star Evaluation Tests"@en ;
+   skos:prefLabel "La suite des tests pour Turtle-star"@fr;
+   skos:prefLabel "Conjunto de pruebas para Turtle-star"@es;
+   dct:issued "2021-06-21"^^xsd:date ;
+   rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+   dct:modified "2021-07-18"^^xsd:date ;
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
+    mf:entries
+    (
+        trs:turtle-star-1
+        trs:turtle-star-2
+        trs:turtle-star-bnode-1
+        trs:turtle-star-bnode-2
+        trs:turtle-star-annotation-1
+        trs:turtle-star-annotation-2
+        trs:turtle-star-annotation-3
+        trs:turtle-star-annotation-4
+        trs:turtle-star-annotation-5
+        trs:turtle-star-quoted-annotation-1
+        trs:turtle-star-quoted-annotation-2
+        trs:turtle-star-quoted-annotation-3
+    ) .
+
+trs:turtle-star-1 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - subject quoted triple" ;
+   mf:action    <turtle-star-eval-01.ttl> ;
+   mf:result    <turtle-star-eval-01.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-2 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - object quoted triple" ;
+   mf:action    <turtle-star-eval-02.ttl> ;
+   mf:result    <turtle-star-eval-02.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bnode-1 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - blank node label" ;
+   mf:action    <turtle-star-eval-bnode-1.ttl> ;
+   mf:result    <turtle-star-eval-bnode-1.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bnode-2 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - blank node labels" ;
+   mf:action    <turtle-star-eval-bnode-2.ttl> ;
+   mf:result    <turtle-star-eval-bnode-2.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-annotation-1 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation form" ;
+   mf:action    <turtle-star-eval-annotation-1.ttl> ;
+   mf:result    <turtle-star-eval-annotation-1.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-annotation-2 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation example" ;
+   mf:action    <turtle-star-eval-annotation-2.ttl> ;
+   mf:result    <turtle-star-eval-annotation-2.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-annotation-3 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation - predicate and object lists" ;
+   mf:action    <turtle-star-eval-annotation-3.ttl> ;
+   mf:result    <turtle-star-eval-annotation-3.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-annotation-4 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation - nested" ;
+   mf:action    <turtle-star-eval-annotation-4.ttl> ;
+   mf:result    <turtle-star-eval-annotation-4.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-annotation-5 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation object list" ;
+   mf:action    <turtle-star-eval-annotation-5.ttl> ;
+   mf:result    <turtle-star-eval-annotation-5.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-quoted-annotation-1 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation with quoting" ;
+   mf:action    <turtle-star-eval-quoted-annotation-1.ttl> ;
+   mf:result    <turtle-star-eval-quoted-annotation-1.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+   
+trs:turtle-star-quoted-annotation-2 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation on triple with quoted subject" ;
+   mf:action    <turtle-star-eval-quoted-annotation-2.ttl> ;
+   mf:result    <turtle-star-eval-quoted-annotation-2.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+   
+trs:turtle-star-quoted-annotation-3 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle-star - Annotation on triple with quoted object" ;
+   mf:action    <turtle-star-eval-quoted-annotation-3.ttl> ;
+   mf:result    <turtle-star-eval-quoted-annotation-3.nt> ;
+   rdft:approval rdft:Proposed ;
+   .
+

@@ -1,0 +1,69 @@
+PREFIX : <http://example.com/>
+
+SELECT *
+WHERE {
+   # Record ORDER BY for up to 20 items.
+   # Each clause slices one ?v and sets ?index.
+   # ?index is a unique string which is not in the same order.
+   {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 0 LIMIT 1 }
+     BIND( "B-1" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 1 LIMIT 1 }
+     BIND( "B-2" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 2 LIMIT 1 }
+     BIND( "A-3" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 3 LIMIT 1 }
+     BIND( "C-4" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 4 LIMIT 1 }
+     BIND( "B-5" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 5 LIMIT 1 }
+     BIND( "B-6" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 6 LIMIT 1 }
+     BIND( "C-7" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 7 LIMIT 1 }
+     BIND( "C-8" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 8 LIMIT 1 }
+     BIND( "A-9" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 9 LIMIT 1 }
+     BIND( "C-10" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 10 LIMIT 1 }
+     BIND( "C-11" as ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 11 LIMIT 1 }
+     BIND( "A-12" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 12 LIMIT 1 }
+     BIND( "B-13" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 13 LIMIT 1 }
+     BIND( "A-14" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 14 LIMIT 1 }
+     BIND( "B-15" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 15 LIMIT 1 }
+     BIND( "C-16" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 16 LIMIT 1 }
+     BIND( "C-17" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 17 LIMIT 1 }
+     BIND( "B-18" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 18 LIMIT 1 }
+     BIND( "A-19" AS ?index )
+   } UNION {
+     { SELECT ?v { ?s ?p ?v } ORDER BY ?v OFFSET 19 LIMIT 1 }
+     BIND( "A-20" AS ?index )
+   }
+}

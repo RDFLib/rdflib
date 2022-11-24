@@ -1,0 +1,26 @@
+PREFIX :        <http://example.com/>
+
+# Items that can be ordered
+# The test query deals with up to 20 items.
+# The integer in the subject does not correspond to expected order.
+
+:s-01 :p <<:s :p 123>> .
+:s-02 :p <<:s :p -456>> .
+
+:s-03 :p _:blank-node .
+
+:s-04 :p <<:s2 :p 900>> .
+:s-05 :p <<:s1 :p 999>> .
+:s-06 :p <<:s1 :a 999>> .
+
+:s-07  :p "string" .
+
+:s-08 :p << <<:x :y :z >> :q :r >> .
+:s-09 :p << :s :p <<:x :y :z>> >> .
+:s-10 :p << <<:x :y :z>> :q <<:x :y :z>> >> .
+
+:s-11 :p << <<:s1 :a :o>> :q :r >> .
+
+:s-12 :p <http://host/entity> .
+
+

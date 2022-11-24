@@ -1,0 +1,303 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#> 
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/turtle/syntax#> 
+PREFIX dct:    <http://purl.org/dc/terms/> 
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#> 
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/> 
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "Turtle-star Syntax Tests"@en ;
+   skos:prefLabel "La suite des tests pour la syntaxe Turtle-star"@fr ;
+   skos:prefLabel "Conjunto de pruebas para la sintaxis Turtle-star"@es ;
+   dct:issued "2021-06-21"^^xsd:date ; 
+   dct:modified "2021-07-18"^^xsd:date ; 
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
+    mf:entries
+    (
+        trs:turtle-star-1
+        trs:turtle-star-2
+
+        trs:turtle-star-inside-1
+        trs:turtle-star-inside-2
+
+        trs:turtle-star-nested-1
+        trs:turtle-star-nested-2
+
+        trs:turtle-star-compound-1
+
+        trs:turtle-star-bnode-1
+        trs:turtle-star-bnode-2
+        trs:turtle-star-bnode-3
+
+        trs:turtle-star-bad-1
+        trs:turtle-star-bad-2
+        trs:turtle-star-bad-3
+        trs:turtle-star-bad-4
+        trs:turtle-star-bad-5
+        trs:turtle-star-bad-6
+        trs:turtle-star-bad-7
+        trs:turtle-star-bad-8
+
+        trs:turtle-star-ann-1
+        trs:turtle-star-ann-2
+        
+        trs:turtle-star-bad-ann-1
+        trs:turtle-star-bad-ann-2
+
+## The same data as the N-Triples-star syntax tests,
+## except in file *.ttl and "TestTurtle"
+
+        trs:nt-ttl-star-1
+        trs:nt-ttl-star-2
+        trs:nt-ttl-star-3
+        trs:nt-ttl-star-4
+        trs:nt-ttl-star-5
+
+        trs:nt-ttl-star-bnode-1
+        trs:nt-ttl-star-bnode-2
+
+        trs:nt-ttl-star-nested-1
+        trs:nt-ttl-star-nested-2
+
+        trs:nt-ttl-star-bad-1
+        trs:nt-ttl-star-bad-2
+        trs:nt-ttl-star-bad-3
+        trs:nt-ttl-star-bad-4
+    ) .
+
+## Good Syntax
+
+trs:turtle-star-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - subject quoted triple" ;
+   mf:action    <turtle-star-syntax-basic-01.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - object quoted triple" ;
+   mf:action    <turtle-star-syntax-basic-02.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-inside-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - quoted triple inside blankNodePropertyList" ;
+   mf:action    <turtle-star-syntax-inside-01.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-inside-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - quoted triple inside collection" ;
+   mf:action    <turtle-star-syntax-inside-02.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-nested-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - nested quoted triple, subject position" ;
+   mf:action    <turtle-star-syntax-nested-01.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-nested-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - nested quoted triple, object position" ;
+   mf:action     <turtle-star-syntax-nested-02.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-compound-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - compound forms" ;
+   mf:action    <turtle-star-syntax-compound.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bnode-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - blank node subject" ;
+   mf:action    <turtle-star-syntax-bnode-01.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bnode-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - blank node object" ;
+   mf:action    <turtle-star-syntax-bnode-02.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bnode-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - blank node" ;
+   mf:action    <turtle-star-syntax-bnode-03.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## Bad Syntax
+
+trs:turtle-star-bad-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - quoted triple as predicate" ;
+   mf:action    <turtle-star-syntax-bad-01.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - quoted triple outside triple" ;
+   mf:action    <turtle-star-syntax-bad-02.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-3 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - collection list in quoted triple" ;
+   mf:action    <turtle-star-syntax-bad-03.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-4 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - literal in subject position of quoted triple" ;
+   mf:action    <turtle-star-syntax-bad-04.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-5 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - blank node  as predicate in quoted triple";
+   mf:action    <turtle-star-syntax-bad-05.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-6 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - compound blank node expression";
+   mf:action    <turtle-star-syntax-bad-06.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-7 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - incomplete quoted triple";
+   mf:action    <turtle-star-syntax-bad-07.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-8 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - over-long quoted triple";
+   mf:action    <turtle-star-syntax-bad-08.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## Annotation syntax
+
+trs:turtle-star-ann-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - Annotation form" ;
+   mf:action    <turtle-star-annotation-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-ann-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle-star - Annotation example" ;
+   mf:action    <turtle-star-annotation-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## Bad annotation syntax
+
+trs:turtle-star-bad-ann-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - empty annotation" ;
+   mf:action    <turtle-star-syntax-bad-ann-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:turtle-star-bad-ann-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle-star - bad - triple as annotation" ;
+   mf:action    <turtle-star-syntax-bad-ann-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## --------------------------------------------------
+## Same data as the N-triples-star tests.
+## N-Triples is a subset of Turtle, and the same is true for the "star" feature.
+
+## Good Syntax
+
+trs:nt-ttl-star-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - subject quoted triple" ;
+   mf:action    <nt-ttl-star-syntax-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - object quoted triple" ;
+   mf:action    <nt-ttl-star-syntax-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - subject and object quoted triples" ;
+   mf:action    <nt-ttl-star-syntax-3.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-4 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - whitespace and terms" ;
+   mf:action    <nt-ttl-star-syntax-4.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-5 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Nested, no whitespace" ;
+   mf:action    <nt-ttl-star-syntax-5.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+# Blank nodes
+
+trs:nt-ttl-star-bnode-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Blank node subject" ;
+   mf:action    <nt-ttl-star-bnode-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-bnode-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Blank node object" ;
+   mf:action    <nt-ttl-star-bnode-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+   
+trs:nt-ttl-star-nested-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Nested subject term" ;
+   mf:action    <nt-ttl-star-nested-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-nested-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Nested object term" ;
+   mf:action    <nt-ttl-star-nested-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+## Bad syntax
+ 
+trs:nt-ttl-star-bad-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Bad - quoted triple as predicate" ;
+   mf:action    <nt-ttl-star-bad-syntax-1.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+    
+trs:nt-ttl-star-bad-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Bad - quoted triple, literal subject" ;
+   mf:action    <nt-ttl-star-bad-syntax-2.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-bad-3 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Bad - quoted triple, literal predicate" ;
+   mf:action    <nt-ttl-star-bad-syntax-3.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .
+
+trs:nt-ttl-star-bad-4 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples-star as Turtle-star - Bad - quoted triple, blank node predicate" ;
+   mf:action    <nt-ttl-star-bad-syntax-4.ttl> ;
+   rdft:approval rdft:Proposed ;
+   .

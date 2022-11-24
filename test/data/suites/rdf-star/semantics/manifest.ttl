@@ -1,0 +1,375 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/semantics#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX test:    <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+
+trs:manifest a mf:Manifest;
+  rdfs:label "RDF-star Semantics tests"@en ;
+  skos:prefLabel "La suite des tests pour la sémantique de RDF-star"@fr;
+  skos:prefLabel "Conjunto de pruebas para la semántica de RDF-star"@es;
+  dct:issued "2021-06-21"^^xsd:date ;
+  dct:modified "2021-07-18"^^xsd:date ;
+  dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+  dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
+  rdfs:seeAlso <README>;
+  mf:entries (
+    trs:all-identical-quoted-triples-are-the-same
+    trs:quoted-triples-no-spurious
+    trs:bnodes-in-quoted-subject
+    trs:bnodes-in-quoted-object
+    trs:bnodes-in-quoted-subject-and-object
+    trs:bnodes-in-quoted-subject-and-object-fail
+    trs:same-bnode-same-quoted-term
+    trs:different-bnodes-same-quoted-term
+    trs:constrained-bnodes-in-quoted-subject
+    trs:constrained-bnodes-in-quoted-object
+    trs:constrained-bnodes-in-quoted-fail
+    trs:constrained-bnodes-on-literal
+    trs:malformed-literal-control
+    trs:malformed-literal
+    trs:malformed-literal-accepted
+    trs:malformed-literal-no-spurious
+    trs:malformed-literal-bnode-neg
+    trs:opaque-literal-control
+    trs:opaque-literal
+    trs:opaque-language-string-control
+    trs:opaque-language-string
+    trs:opaque-iri-control
+    trs:opaque-iri
+    trs:quoted-not-asserted
+    trs:annotated-asserted
+    trs:annotation
+    trs:annotation-unfolded
+  ) .
+
+trs:all-identical-quoted-triples-are-the-same a mf:PositiveEntailmentTest;
+  rdfs:comment "Multiple occurences of the same quoted triples are undistinguishable in the abstract model.";
+  mf:action <test001a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "all-identical-quoted-triples-are-the-same";
+  mf:recognizedDatatypes ();
+  mf:result <test001r.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:annotated-asserted a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotated triples are asserted.";
+  mf:action <test007a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotated-asserted";
+  mf:recognizedDatatypes ();
+  mf:result <test007r1.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:annotation a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotation are about the annotated triple.";
+  mf:action <test007a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotation";
+  mf:recognizedDatatypes ();
+  mf:result <test007r2.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:annotation-unfolded a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotation is the same as separate assertions.";
+  mf:action <test007a2.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotation-unfolded";
+  mf:recognizedDatatypes ();
+  mf:result <test007a.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:bnodes-in-quoted-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside quoted triples can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-quoted-object";
+  mf:recognizedDatatypes ();
+  mf:result <test002or.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:bnodes-in-quoted-subject a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside quoted triples can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-quoted-subject";
+  mf:recognizedDatatypes ();
+  mf:result <test002sr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:bnodes-in-quoted-subject-and-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside quoted triples can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-quoted-subject-and-object";
+  mf:recognizedDatatypes ();
+  mf:result <test002sor.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:bnodes-in-quoted-subject-and-object-fail a mf:NegativeEntailmentTest;
+  rdfs:comment "The same bnode can not match different quoted terms.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-quoted-subject-and-object-fail";
+  mf:recognizedDatatypes ();
+  mf:result <test002sbr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:constrained-bnodes-in-quoted-fail a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted bnode identifiers share the same scope as non-quoted ones. A bnode that occurs both inside quoted triples and inside asserted triples must satisfy all occurrences at the same time.";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-quoted-fail";
+  mf:recognizedDatatypes ();
+  mf:result <test004fr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:constrained-bnodes-in-quoted-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside and outside quoted triples can be replaced by fresh bnodes.";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-quoted-object";
+  mf:recognizedDatatypes ();
+  mf:result <test004or.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:constrained-bnodes-in-quoted-subject a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside and outside quoted triples can be replaced by fresh bnodes";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-quoted-subject";
+  mf:recognizedDatatypes ();
+  mf:result <test004sr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:constrained-bnodes-on-literal a mf:PositiveEntailmentTest;
+  rdfs:comment "Literals inside and outside quoted triples can be replaced by fresh bnodes.";
+  mf:action <test006a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-on-literal";
+  mf:recognizedDatatypes ();
+  mf:result <test006r.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:different-bnodes-same-quoted-term a mf:PositiveEntailmentTest;
+  rdfs:comment "Different bnodes can match identical quoted terms.";
+  mf:action <test003a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "different-bnodes-same-quoted-term";
+  mf:recognizedDatatypes ();
+  mf:result <test002sor.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:quoted-not-asserted a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted triples are not asserted.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "quoted-not-asserted";
+  mf:recognizedDatatypes ();
+  mf:result <test002pgr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:quoted-triples-no-spurious a mf:NegativeEntailmentTest;
+  rdfs:comment "This test ensures that other entailments are not spurious.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "quoted-triples-no-spurious";
+  mf:recognizedDatatypes ();
+  mf:result <test005.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:malformed-literal a mf:NegativeEntailmentTest;
+  rdfs:comment "Malformed literals are allowed when quoted.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result false;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:malformed-literal-accepted a mf:PositiveEntailmentTest;
+  rdfs:comment "Malformed literals are allowed when quoted.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-accepted";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:malformed-literal-bnode a mf:PositiveEntailmentTest;
+  rdfs:comment "Malformed literals can be replaced by blank nodes (withdrawn as the current semantics does not enforce this).";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-bnode";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <test002or.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:Withdrawn .
+
+trs:malformed-literal-bnode-neg a mf:NegativeEntailmentTest;
+  rdfs:comment "Malformed literals can not be replaced by blank nodes.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-bnode";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <test002or.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:malformed-literal-bnode-2 a mf:PositiveEntailmentTest;
+  rdfs:comment "Identical malformed literals can be replaced with the same blank node  (withdrawn as the current semantics does not enforce this).";
+  mf:action <malformed-literal-2a.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-bnode-2";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal-2r.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:Withdrawn .
+
+trs:malformed-literal-bnode-3 a mf:NegativeEntailmentTest;
+  rdfs:comment "Identical malformed literals can not be replaced with the same blank node (withdrawn as the current semantics does not enforce this).";
+  mf:action <malformed-literal-3a.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-bnode-3";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal-3r.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:Withdrawn .
+
+trs:malformed-literal-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that xsd:integer is indeed recognized, to ensure that malformed-literal-* tests do not pass spuriously.";
+  mf:action <malformed-literal-control.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-control";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result false;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:malformed-literal-no-spurious a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted malformed literals do not lead to spurious entailment.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-no-spurious";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal-other.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-iri a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted IRIs are opaque.";
+  mf:action <superman.ttl>;
+  mf:entailmentRegime "RDFS-Plus";
+  mf:name "opaque-iri";
+  mf:recognizedDatatypes ();
+  mf:result <superman_undesired_entailment.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-iri-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Check that owl:sameAs works as expected, to ensure that opaque-iri does not pass spuriously.";
+  mf:action <control-sameas-a.ttl>;
+  mf:entailmentRegime "RDFS-Plus";
+  mf:name "opaque-iri-control";
+  mf:recognizedDatatypes ();
+  mf:result <control-sameas-r.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-language-string a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted literals (including language strings) are opaque, even when their datatype is recognized.";
+  mf:action <lowercase-language-string.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "opaque-language-string";
+  mf:recognizedDatatypes ();
+  mf:result <upercase-language-string.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-language-string-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that language strings are indeed recognized, to ensure that opaque-language-string does not pass spuriously.";
+  mf:action <lowercase-language-string-control.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "opaque-language-string-control";
+  mf:recognizedDatatypes ();
+  mf:result <upercase-language-string-control.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-literal a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted literals are opaque, even when their datatype is recognized.";
+  mf:action <non-canonical-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "opaque-literal";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <canonical-literal.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:opaque-literal-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that xsd:integer is indeed recognized, to ensure that opaque-literal does not pass spuriously.";
+  mf:action <non-canonical-literal-control.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "opaque-literal-control";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <canonical-literal-control.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:same-bnode-same-quoted-term a mf:PositiveEntailmentTest;
+  rdfs:comment "Identical quoted term can be replaced by the same fresh bnode multiple times.";
+  mf:action <test003a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "same-bnode-same-quoted-term";
+  mf:recognizedDatatypes ();
+  mf:result <test002sbr.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:NotClassified .
+
+trs:triple-in-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Quoted triples can appear in object position (withdrawn, as it belongs to concrete syntax test-suites).";
+  mf:action <test000o.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "triple-in-object";
+  mf:recognizedDatatypes ();
+  mf:result <test000o.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:Withdrawn .
+
+trs:triple-in-subject a mf:PositiveEntailmentTest;
+  rdfs:comment "Quoted triples can appear in subject position (withdrawn, as it belongs to concrete syntax test-suites).";
+  mf:action <test000s.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "triple-in-subject";
+  mf:recognizedDatatypes ();
+  mf:result <test000s.ttl>;
+  mf:unrecognizedDatatypes ();
+  test:approval test:Withdrawn .

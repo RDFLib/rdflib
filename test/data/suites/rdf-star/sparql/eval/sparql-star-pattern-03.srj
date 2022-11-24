@@ -1,0 +1,20 @@
+{ "head": {
+    "vars": [ "s" , "o" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/a1" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":   { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p1" } ,
+            "object":    { "type": "uri" , "value": "http://example/o" }
+          }
+        } ,
+        "z": { "type": "uri" , "value": "http://example/a2" }
+      }
+    ]
+  }
+}

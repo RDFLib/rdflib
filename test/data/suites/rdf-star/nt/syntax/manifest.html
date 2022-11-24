@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="UTF-8">
+<style>
+    .included a, .entries a {
+        text-decoration: none;
+    }
+
+    .included a:hover, .entries a:hover {
+        text-decoration: underline;
+    }
+
+    .entries .rejected {
+        text-decoration: line-through red;
+    }
+
+    .entries .approved::after {
+        content: "✓";
+    }
+
+    .entry h2 a {
+        text-decoration: none;
+    }
+
+    .approved tr.status td {
+        color: darkGreen;
+    }
+
+    .proposed tr.status td {
+        color: orange;
+    }
+
+    .rejected tr.status td {
+        color: red;
+    }
+
+    tr.recognized td, tr.unrecognized td {
+        font-family: monospace;
+    }
+
+    pre {
+        border: thin solid black;
+        background-color: lightYellow;
+        padding: .6em 1em;
+        max-height: 25em;
+        overflow-y: scroll;
+    }
+
+    .TestTurtleNegativeSyntax pre,
+    .NegativeSyntaxTest11 pre,
+    .NegativeUpdateSyntaxTest11 pre,
+    .NegativeEntailmentTest pre.result {
+        background-color: lightPink;
+    }
+</style>
+<title>N-Triples-star Syntax Tests</title>
+<h1>N-Triples-star Syntax Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+<tr class="seeAlso"><th>see also:</th><td><a href="https://w3c.github.io/rdf-star/tests/nt/syntax/README">https://w3c.github.io/rdf-star/tests/nt/syntax/README</a></td></tr>
+</table>
+<p><strong>Entries:</strong></p>
+<ul class="entries">
+<li class="proposed"><a href="#ntriples-star-1">N-Triples-star - subject quoted triple</a>
+<li class="proposed"><a href="#ntriples-star-2">N-Triples-star - object quoted triple</a>
+<li class="proposed"><a href="#ntriples-star-3">N-Triples-star - subject and object quoted triples</a>
+<li class="proposed"><a href="#ntriples-star-4">N-Triples-star - whitespace and terms</a>
+<li class="proposed"><a href="#ntriples-star-5">N-Triples-star - Nested, no whitespace</a>
+<li class="proposed"><a href="#ntriples-star-bnode-1">N-Triples-star - Blank node subject</a>
+<li class="proposed"><a href="#ntriples-star-bnode-2">N-Triples-star - Blank node object</a>
+<li class="proposed"><a href="#ntriples-star-nested-1">N-Triples-star - Nested subject term</a>
+<li class="proposed"><a href="#ntriples-star-nested-2">N-Triples-star - Nested object term</a>
+<li class="proposed"><a href="#ntriples-star-bad-1">N-Triples-star - Bad - quoted triple as predicate</a>
+<li class="proposed"><a href="#ntriples-star-bad-2">N-Triples-star - Bad - quoted triple, literal subject</a>
+<li class="proposed"><a href="#ntriples-star-bad-3">N-Triples-star - Bad - quoted triple, literal predicate</a>
+<li class="proposed"><a href="#ntriples-star-bad-4">N-Triples-star - Bad - quoted triple, blank node predicate</a>
+</ul>
+<h2>About this test suite</h2>
+<a href="https://w3c.github.io/rdf-star/tests/nt/syntax/README">https://w3c.github.io/rdf-star/tests/nt/syntax/README</a>
+<section id="ntriples-star-1" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - subject quoted triple <a href="#ntriples-star-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-syntax-1.nt">ntriples-star-syntax-1.nt</a></code></div>
+<pre>
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-2" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - object quoted triple <a href="#ntriples-star-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-syntax-2.nt">ntriples-star-syntax-2.nt</a></code></div>
+<pre>
+&lt;http://example/x&gt; &lt;http://example/p&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-3" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - subject and object quoted triples <a href="#ntriples-star-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-syntax-3.nt">ntriples-star-syntax-3.nt</a></code></div>
+<pre>
+&lt;&lt; &lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt; &gt;&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; &gt;&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-4" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - whitespace and terms <a href="#ntriples-star-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-syntax-4.nt">ntriples-star-syntax-4.nt</a></code></div>
+<pre>
+&lt;&lt;&lt;http://example/s1&gt;&lt;http://example/p1&gt;&lt;http://example/o1&gt;&gt;&gt;&lt;http://example/q&gt;&lt;&lt;&lt;http://example/s2&gt;&lt;http://example/p2&gt;&lt;http://example/o2&gt;&gt;&gt;.
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-5" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - Nested, no whitespace <a href="#ntriples-star-5">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-syntax-5.nt">ntriples-star-syntax-5.nt</a></code></div>
+<pre>
+&lt;&lt;&lt;&lt;&lt;http://example/s1&gt;&lt;http://example/p1&gt;&lt;http://example/o1&gt;&gt;&gt;&lt;http://example/q1&gt;&lt;&lt;&lt;http://example/s2&gt;&lt;http://example/p2&gt;&lt;http://example/o2&gt;&gt;&gt;&gt;&gt;&lt;http://example/q2&gt;&lt;&lt;&lt;&lt;&lt;http://example/s3&gt;&lt;http://example/p3&gt;&lt;http://example/o3&gt;&gt;&gt;&lt;http://example/q3&gt;&lt;&lt;&lt;http://example/s4&gt;&lt;http://example/p4&gt;&lt;http://example/o4&gt;&gt;&gt;&gt;&gt;.</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-bnode-1" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - Blank node subject <a href="#ntriples-star-bnode-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bnode-1.nt">ntriples-star-bnode-1.nt</a></code></div>
+<pre>
+_:b0 &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; _:b0 &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; "ABC" .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-bnode-2" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - Blank node object <a href="#ntriples-star-bnode-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bnode-2.nt">ntriples-star-bnode-2.nt</a></code></div>
+<pre>
+&lt;http://example/s&gt; &lt;http://example/p&gt; _:b1 .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; _:b1 &gt;&gt; &lt;http://example/q&gt; "456"^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-nested-1" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - Nested subject term <a href="#ntriples-star-nested-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-nested-1.nt">ntriples-star-nested-1.nt</a></code></div>
+<pre>
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; .
+&lt;&lt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; &gt;&gt; &lt;http://example/q&gt; "1"^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-nested-2" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+<h2>N-Triples-star - Nested object term <a href="#ntriples-star-nested-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+</table>
+<div><code><a href="ntriples-star-nested-2.nt">ntriples-star-nested-2.nt</a></code></div>
+<pre>
+&lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; .
+&lt;http://example/a&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; .
+&lt;&lt; &lt;http://example/a&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &gt;&gt; &lt;http://example/r&gt; &lt;http://example/z&gt; .
+</pre>
+<div>MUST be accepted</div>
+</section><section id="ntriples-star-bad-1" class="entry proposed rdft:TestNTriplesNegativeSyntax">
+<h2>N-Triples-star - Bad - quoted triple as predicate <a href="#ntriples-star-bad-1">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesNegativeSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bad-syntax-1.nt">ntriples-star-bad-syntax-1.nt</a></code></div>
+<pre>
+&lt;http://example/a&gt; &lt;&lt; &lt;http://example/s&gt; &lt;http://example/p&gt;  &lt;http://example/o&gt; &gt;&gt;  &lt;http://example/z&gt; .
+</pre>
+<div>MUST be rejected</div>
+</section><section id="ntriples-star-bad-2" class="entry proposed rdft:TestNTriplesNegativeSyntax">
+<h2>N-Triples-star - Bad - quoted triple, literal subject <a href="#ntriples-star-bad-2">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesNegativeSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bad-syntax-2.nt">ntriples-star-bad-syntax-2.nt</a></code></div>
+<pre>
+&lt;&lt; "XYZ" &lt;http://example/p&gt; &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+<div>MUST be rejected</div>
+</section><section id="ntriples-star-bad-3" class="entry proposed rdft:TestNTriplesNegativeSyntax">
+<h2>N-Triples-star - Bad - quoted triple, literal predicate <a href="#ntriples-star-bad-3">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesNegativeSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bad-syntax-3.nt">ntriples-star-bad-syntax-3.nt</a></code></div>
+<pre>
+&lt;&lt; &lt;http://example/s&gt; "XYZ" &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+<div>MUST be rejected</div>
+</section><section id="ntriples-star-bad-4" class="entry proposed rdft:TestNTriplesNegativeSyntax">
+<h2>N-Triples-star - Bad - quoted triple, blank node predicate <a href="#ntriples-star-bad-4">🔗</a></h2>
+<table class="properties">
+<tr class="status"><th>status:</th><td>proposed</td>
+<tr class="type"><th>type:</th><td>rdft:TestNTriplesNegativeSyntax</td>
+</table>
+<div><code><a href="ntriples-star-bad-syntax-4.nt">ntriples-star-bad-syntax-4.nt</a></code></div>
+<pre>
+&lt;&lt; &lt;http://example/s&gt; _:label &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
+</pre>
+<div>MUST be rejected</div>
+</section></html>

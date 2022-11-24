@@ -1,0 +1,24 @@
+PREFIX : <http://example/>
+
+:x1 :left  << :a :b 123 >> .
+:x1 :right << :a :b 123.0 >> .
+
+:x2 :left  << :a :b 123 >> .
+:x2 :right << :a :b 123 >> .
+
+:x3 :left  << << :a :b 123 >> :q 999 >> .
+:x3 :right << << :a :b 123.0 >> :q 999 >> .
+
+:x4 :left  << :a :b 123 >> .
+:x4 :right << :c :d 123 >> .
+
+:x5 :left  << _:bnode1 :b 123 >> .
+:x5 :right << _:bnode1 :b 123 >> .
+
+:x6 :left  << _:bnode2 :b 123e0 >> .
+:x6 :right << _:bnode2 :b 123 >> .
+
+:x7 :left  << :a :b 9 >> .
+:x7 :right << :a :b 123 >> .
+
+
