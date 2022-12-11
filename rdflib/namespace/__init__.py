@@ -394,6 +394,7 @@ class NamespaceManager(object):
     """
 
     def __init__(self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "core"):
+        logging.debug("self = %r", self)
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -468,6 +469,7 @@ class NamespaceManager(object):
         registered prefix) or (unlike compute_qname) the Notation 3
         form for URIs: <...URI...>
         """
+        logging.debug("normalizeUri: rdfTerm = %s", rdfTerm)
         try:
             namespace, name = split_uri(rdfTerm)
             if namespace not in self.__strie:
@@ -502,19 +504,25 @@ class NamespaceManager(object):
             try:
                 namespace, name = split_uri(uri)
             except ValueError as e:
+                logging.debug("caught, uri=%s, generate=%s", uri, generate, exc_info=True)
                 namespace = URIRef(uri)
                 prefix = self.store.prefix(namespace)
-                name = ""  # empty prefix case, safe since not prefix is error
+                # name = ""  # empty prefix case, safe since not prefix is error
                 if not prefix:
                     raise e
             if namespace not in self.__strie:
+                logging.debug("namespace %r was not already in __strie", namespace)
                 insert_strie(self.__strie, self.__trie, namespace)
+            else:
+                logging.debug("namespace %r was already in __strie", namespace)
 
             if self.__strie[namespace]:
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
                     name = uri[len(namespace) :]
+            else:
+                logging.debug("self.__strie[namespace] is not truthish ...")
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -531,7 +539,13 @@ class NamespaceManager(object):
                         break
                     num += 1
                 self.bind(prefix, namespace)
+            try:
+                logging.debug("prefix = %s, namespace = %s, name = %s", prefix, namespace, name)
+            except:
+                logging.debug("caught (12zasda)", exc_info=True)
             self.__cache[uri] = (prefix, namespace, name)
+        else:
+            logging.debug("cache hit for %r", uri)
         return self.__cache[uri]
 
     def compute_qname_strict(
@@ -838,6 +852,7 @@ def insert_trie(
 
 def insert_strie(strie: Dict[str, Any], trie: Dict[str, Any], value: str) -> None:
     if value not in strie:
+        logging.debug("inserting (%r, %r) under %r", trie, value, value)
         strie[value] = insert_trie(trie, value)
 
 

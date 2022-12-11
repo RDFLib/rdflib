@@ -1,13 +1,20 @@
+from __future__ import annotations
 import logging
+from multiprocessing.sharedctypes import Value
+import re
 import sys
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
 
 from rdflib.graph import Dataset
-from rdflib.term import URIRef
+from rdflib.term import URIRef, bind
+
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
+
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
@@ -16,6 +23,7 @@ from rdflib.namespace import (
     _NAMESPACE_PREFIXES_RDFLIB,
     OWL,
     RDFS,
+    Namespace,
     NamespaceManager,
 )
 
@@ -170,3 +178,119 @@ def test_compute_qname_no_generate() -> None:
         g.namespace_manager.compute_qname_strict(
             "https://example.org/unbound/test", generate=False
         )
+
+
+@pytest.mark.parametrize(
+    ["uri", "generate", "bind_namespaces", "additional_prefixes", "expected_result"],
+    [
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            {"here": Namespace("http://example.org/here#")},
+            ("here", URIRef("http://example.org/here#"), ""),
+        ),
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            None,
+            ValueError("Can't split"),
+        ),
+    ],
+)
+def test_compute_qname(
+    uri: str,
+    generate: bool,
+    bind_namespaces: _NamespaceSetString,
+    additional_prefixes: Optional[Mapping[str, Namespace]],
+    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+) -> None:
+    graph = Graph(bind_namespaces=bind_namespaces)
+    nm = graph.namespace_manager
+
+    if additional_prefixes is not None:
+        for prefix, ns in additional_prefixes.items():
+            nm.bind(prefix, ns)
+
+    def check() -> None:
+        logging.debug("%r in nm._NamespaceManager__cache = %s", uri, uri in nm._NamespaceManager__cache)
+        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+        with ExitStack() as xstack:
+            if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+                catcher = xstack.enter_context(pytest.raises(expected_result))
+            if isinstance(expected_result, Exception):
+                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+            actual_result = nm.compute_qname(uri, generate)
+            logging.debug("actual_result = %s", actual_result)
+        if catcher is not None:
+            assert catcher is not None
+            assert catcher.value is not None
+            if isinstance(expected_result, Exception):
+                assert re.match(expected_result.args[0], f"{catcher.value}")
+        else:
+            assert isinstance(expected_result, tuple)
+            assert isinstance(actual_result, tuple)
+            assert actual_result == expected_result
+
+    check()
+    # Run a second time to check caching
+    check()
+
+
+@pytest.mark.parametrize(
+    ["uri", "generate", "bind_namespaces", "additional_prefixes", "expected_result"],
+    [
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            {"here": Namespace("http://example.org/here#")},
+            ("here", URIRef("http://example.org/here#"), ""),
+        ),
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            None,
+            ValueError("Can't split"),
+        ),
+    ],
+)
+def test_compute_qname_strict(
+    uri: str,
+    generate: bool,
+    bind_namespaces: _NamespaceSetString,
+    additional_prefixes: Optional[Mapping[str, Namespace]],
+    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+) -> None:
+    graph = Graph(bind_namespaces=bind_namespaces)
+    nm = graph.namespace_manager
+
+    if additional_prefixes is not None:
+        for prefix, ns in additional_prefixes.items():
+            nm.bind(prefix, ns)
+
+    def check() -> None:
+        logging.debug("%r in nm._NamespaceManager__cache = %s", uri, uri in nm._NamespaceManager__cache)
+        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+        with ExitStack() as xstack:
+            if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+                catcher = xstack.enter_context(pytest.raises(expected_result))
+            if isinstance(expected_result, Exception):
+                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+            actual_result = nm.compute_qname_strict(uri, generate)
+            logging.debug("actual_result = %s", actual_result)
+        if catcher is not None:
+            assert catcher is not None
+            assert catcher.value is not None
+            if isinstance(expected_result, Exception):
+                assert re.match(expected_result.args[0], f"{catcher.value}")
+        else:
+            assert isinstance(expected_result, tuple)
+            assert isinstance(actual_result, tuple)
+            assert actual_result == expected_result
+
+    check()
+    # Run a second time to check caching
+    check()
