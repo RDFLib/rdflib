@@ -1,4 +1,4 @@
-black==22.10.0
+black==22.12.0
 coverage
 doctest-ignore-unicode==0.1.2
 html5lib
