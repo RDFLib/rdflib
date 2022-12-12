@@ -234,7 +234,7 @@ class InvPath(Path):
     def __repr__(self):
         return "Path(~%s)" % (self.arg,)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None):
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         return "^%s" % self.arg.n3(namespace_manager)
 
 
@@ -278,7 +278,7 @@ class SequencePath(Path):
     def __repr__(self):
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None):
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         return "/".join(a.n3(namespace_manager) for a in self.args)
 
 
@@ -299,7 +299,7 @@ class AlternativePath(Path):
     def __repr__(self):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None):
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         return "|".join(a.n3(namespace_manager) for a in self.args)
 
 
@@ -403,7 +403,7 @@ class MulPath(Path):
     def __repr__(self):
         return "Path(%s%s)" % (self.path, self.mod)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None):
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         return "%s%s" % (self.path.n3(namespace_manager), self.mod)
 
 
@@ -436,7 +436,7 @@ class NegatedPath(Path):
     def __repr__(self):
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None):
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         return "!(%s)" % ("|".join(arg.n3(namespace_manager) for arg in self.args))
 
 
