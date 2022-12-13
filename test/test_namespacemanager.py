@@ -4,14 +4,13 @@ import logging
 import re
 import sys
 from contextlib import ExitStack
-from multiprocessing.sharedctypes import Value
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
 
 from rdflib.graph import Dataset
-from rdflib.term import URIRef, bind
+from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from rdflib._type_checking import _NamespaceSetString
@@ -266,11 +265,6 @@ def test_compute_qname(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        logging.debug(
-            "%r in nm._NamespaceManager__cache = %s",
-            uri,
-            uri in nm._NamespaceManager__cache,
-        )
         catcher: Optional[pytest.ExceptionInfo[Exception]] = None
         with ExitStack() as xstack:
             if isinstance(expected_result, type) and issubclass(
@@ -330,11 +324,6 @@ def test_compute_qname_strict(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        logging.debug(
-            "%r in nm._NamespaceManager__cache = %s",
-            uri,
-            uri in nm._NamespaceManager__cache,
-        )
         catcher: Optional[pytest.ExceptionInfo[Exception]] = None
         with ExitStack() as xstack:
             if isinstance(expected_result, type) and issubclass(
