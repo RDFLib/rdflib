@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 import logging
-from multiprocessing.sharedctypes import Value
 import re
 import sys
 from contextlib import ExitStack
+from multiprocessing.sharedctypes import Value
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
@@ -181,12 +182,40 @@ def test_compute_qname_no_generate() -> None:
 
 
 @pytest.mark.parametrize(
-    ["uri", "generate", "bind_namespaces", "additional_prefixes", "expected_result"],
+    [
+        "uri",
+        "generate",
+        "bind_namespaces",
+        "manager_prefixes",
+        "graph_prefixes",
+        "store_prefixes",
+        "expected_result",
+    ],
     [
         (
             "http://example.org/here#",
             True,
             "none",
+            {"here": Namespace("http://example.org/here#")},
+            None,
+            None,
+            ("here", URIRef("http://example.org/here#"), ""),
+        ),
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            None,
+            {"here": Namespace("http://example.org/here#")},
+            None,
+            ("here", URIRef("http://example.org/here#"), ""),
+        ),
+        (
+            "http://example.org/here#",
+            True,
+            "none",
+            None,
+            None,
             {"here": Namespace("http://example.org/here#")},
             ("here", URIRef("http://example.org/here#"), ""),
         ),
@@ -194,6 +223,8 @@ def test_compute_qname_no_generate() -> None:
             "http://example.org/here#",
             True,
             "none",
+            None,
+            None,
             None,
             ValueError("Can't split"),
         ),
@@ -203,21 +234,48 @@ def test_compute_qname(
     uri: str,
     generate: bool,
     bind_namespaces: _NamespaceSetString,
-    additional_prefixes: Optional[Mapping[str, Namespace]],
+    manager_prefixes: Optional[Mapping[str, Namespace]],
+    graph_prefixes: Optional[Mapping[str, Namespace]],
+    store_prefixes: Optional[Mapping[str, Namespace]],
     expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
 ) -> None:
-    graph = Graph(bind_namespaces=bind_namespaces)
-    nm = graph.namespace_manager
+    """
+    :param uri: argument to compute_qname()
+    :param generate: argument to compute_qname()
+    :param bind_namespaces: argument to Graph()
 
-    if additional_prefixes is not None:
-        for prefix, ns in additional_prefixes.items():
+    :param manager_prefixes: additional namespaces to bind on NamespaceManager.
+    :param graph_prefixes: additional namespaces to bind on Graph.
+    :param store_prefixes: additional namespaces to bind on Store.
+
+    :param expected_result: Expected result tuple or exception.
+    """
+    graph = Graph(bind_namespaces=bind_namespaces)
+    if graph_prefixes is not None:
+        for prefix, ns in graph_prefixes.items():
+            graph.bind(prefix, ns)
+
+    store = graph.store
+    if store_prefixes is not None:
+        for prefix, ns in store_prefixes.items():
+            store.bind(prefix, URIRef(f"{ns}"))
+
+    nm = graph.namespace_manager
+    if manager_prefixes is not None:
+        for prefix, ns in manager_prefixes.items():
             nm.bind(prefix, ns)
 
     def check() -> None:
-        logging.debug("%r in nm._NamespaceManager__cache = %s", uri, uri in nm._NamespaceManager__cache)
+        logging.debug(
+            "%r in nm._NamespaceManager__cache = %s",
+            uri,
+            uri in nm._NamespaceManager__cache,
+        )
         catcher: Optional[pytest.ExceptionInfo[Exception]] = None
         with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            if isinstance(expected_result, type) and issubclass(
+                expected_result, Exception
+            ):
                 catcher = xstack.enter_context(pytest.raises(expected_result))
             if isinstance(expected_result, Exception):
                 catcher = xstack.enter_context(pytest.raises(type(expected_result)))
@@ -246,7 +304,7 @@ def test_compute_qname(
             True,
             "none",
             {"here": Namespace("http://example.org/here#")},
-            ("here", URIRef("http://example.org/here#"), ""),
+            ValueError(".*there is no valid way to shorten"),
         ),
         (
             "http://example.org/here#",
@@ -272,10 +330,16 @@ def test_compute_qname_strict(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        logging.debug("%r in nm._NamespaceManager__cache = %s", uri, uri in nm._NamespaceManager__cache)
+        logging.debug(
+            "%r in nm._NamespaceManager__cache = %s",
+            uri,
+            uri in nm._NamespaceManager__cache,
+        )
         catcher: Optional[pytest.ExceptionInfo[Exception]] = None
         with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(expected_result, Exception):
+            if isinstance(expected_result, type) and issubclass(
+                expected_result, Exception
+            ):
                 catcher = xstack.enter_context(pytest.raises(expected_result))
             if isinstance(expected_result, Exception):
                 catcher = xstack.enter_context(pytest.raises(type(expected_result)))
