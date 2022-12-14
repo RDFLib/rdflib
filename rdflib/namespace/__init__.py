@@ -504,6 +504,7 @@ class NamespaceManager(object):
             except ValueError as e:
                 namespace = URIRef(uri)
                 prefix = self.store.prefix(namespace)
+                name = ""  # empty prefix case, safe since not prefix is error
                 if not prefix:
                     raise e
             if namespace not in self.__strie:
