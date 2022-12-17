@@ -119,6 +119,5 @@ class TestSPARQLConnector:
         # Now make GET request and check that Content-Type header is not "application/sparql-update"
         query_statement = "ASK { ?s ?p ?o }"
         store.query(query_statement)
-        print(store.kwargs)
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert "application/sparql-update" not in req.headers.get("Content-Type")
