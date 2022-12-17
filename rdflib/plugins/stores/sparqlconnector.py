@@ -94,7 +94,7 @@ class SPARQLConnector(object):
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
 
-        args = dict(self.kwargs)
+        args = dict(self.kwargs).copy()
 
         # merge params/headers dicts
         args.setdefault("params", {})
