@@ -84,7 +84,9 @@ class TestSPARQLConnector:
         assert "charset=UTF-8" in req.headers.get("content-type")
 
     def test_content_type(self):
-        store = SPARQLUpdateStore(self.query_endpoint, self.update_endpoint, auth=("admin","admin"))
+        store = SPARQLUpdateStore(
+            self.query_endpoint, self.update_endpoint, auth=("admin", "admin")
+        )
         update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
 
         self.httpmock.responses[MethodName.POST].append(
