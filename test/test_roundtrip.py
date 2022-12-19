@@ -76,6 +76,10 @@ XFAILS = {
         reason="has predicates that cannot be shortened to strict qnames",
         raises=ValueError,
     ),
+    ("xml", "n3-writer-test-32.n3",): pytest.mark.xfail(
+        reason="has a predicate that cannot be shortened to strict qnames",
+        raises=ValueError,
+    ),
     ("xml", "qname-02.nt"): pytest.mark.xfail(
         reason="uses a property that cannot be qname'd",
         raises=ValueError,
