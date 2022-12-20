@@ -1,7 +1,7 @@
 import json
-import os
 from os import chdir, getcwd
 from os import path as p
+from pathlib import Path
 
 import pytest
 
@@ -9,8 +9,14 @@ from rdflib.term import URIRef
 
 from . import runner
 
+# TODO FIXME: We should be using this URI instead of a file URI, but as there is
+# no way to customize URI loading yet this will not work, so instead TC_BASE is
+# set to a file-uri further down.
+# TC_BASE = "https://rdflib.github.io/rdflib-jsonld/local-testsuite/"
+
+TC_BASE = (Path(__file__).parent / "local-suite").absolute().as_uri() + "/"
+
 testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "local-suite")
-TC_BASE = testsuite_dir + os.sep
 
 
 def read_manifest():
