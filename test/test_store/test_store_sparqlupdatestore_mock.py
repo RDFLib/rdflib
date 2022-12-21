@@ -1,4 +1,3 @@
-import logging
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
@@ -125,4 +124,6 @@ class TestSPARQLConnector:
             query_statement = "ASK { ?s ?p ?o }"
             store.query(query_statement)
             req = self.httpmock.requests[MethodName.GET].pop(0)
-            assert "application/sparql-update" not in req.headers.get("Content-Type", "")
+            assert "application/sparql-update" not in req.headers.get(
+                "Content-Type", ""
+            )
