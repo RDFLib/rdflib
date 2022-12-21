@@ -1,3 +1,4 @@
+import logging
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
@@ -89,37 +90,39 @@ class TestSPARQLConnector:
         )
         update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
 
-        self.httpmock.responses[MethodName.POST].append(
-            MockHTTPResponse(
-                200,
-                "OK",
-                b"Update succeeded",
-                {"Content-Type": ["text/plain; charset=UTF-8"]},
+        for _ in range(2):
+            # run it twice so we can pick up issues with order both ways.
+            self.httpmock.responses[MethodName.POST].append(
+                MockHTTPResponse(
+                    200,
+                    "OK",
+                    b"Update succeeded",
+                    {"Content-Type": ["text/plain; charset=UTF-8"]},
+                )
             )
-        )
 
-        self.httpmock.responses[MethodName.GET].append(
-            MockHTTPResponse(
-                200,
-                "OK",
-                b"""<?xml version="1.0"?>
-<sparql xmlns="http://www.w3.org/2005/sparql-results#"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
-  <boolean>true</boolean>
-</sparql>
-""",
-                {"Content-Type": ["application/sparql-results+xml"]},
+            self.httpmock.responses[MethodName.GET].append(
+                MockHTTPResponse(
+                    200,
+                    "OK",
+                    b"""<?xml version="1.0"?>
+    <sparql xmlns="http://www.w3.org/2005/sparql-results#"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+    <boolean>true</boolean>
+    </sparql>
+    """,
+                    {"Content-Type": ["application/sparql-results+xml"]},
+                )
             )
-        )
 
-        # First make update request and check if Content-Type header is set
-        store.update(update_statement)
-        req = self.httpmock.requests[MethodName.POST].pop(0)
-        assert "application/sparql-update" in req.headers.get("Content-Type")
+            # First make update request and check if Content-Type header is set
+            store.update(update_statement)
+            req = self.httpmock.requests[MethodName.POST].pop(0)
+            assert "application/sparql-update" in req.headers.get("Content-Type")
 
-        # Now make GET request and check that Content-Type header is not "application/sparql-update"
-        query_statement = "ASK { ?s ?p ?o }"
-        store.query(query_statement)
-        req = self.httpmock.requests[MethodName.GET].pop(0)
-        assert "application/sparql-update" not in req.headers.get("Content-Type")
+            # Now make GET request and check that Content-Type header is not "application/sparql-update"
+            query_statement = "ASK { ?s ?p ?o }"
+            store.query(query_statement)
+            req = self.httpmock.requests[MethodName.GET].pop(0)
+            assert "application/sparql-update" not in req.headers.get("Content-Type", "")

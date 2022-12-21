@@ -145,6 +145,7 @@ class BaseHTTPServerMock:
                 body,
             )
             logging.debug("handling %s request: %s", method_name, request)
+            logging.debug("headers %s", request.headers)
             requests[method_name].append(request)
 
             response = responses[method_name].pop(0)
