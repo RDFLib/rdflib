@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.11.1-slim@sha256:555dcc94587b4101de48664b45b19f17e099a3ab236dec629791f366e2f2e83c
+FROM docker.io/library/python:3.11.1-slim@sha256:8f3997244336ad0f067ad693f85906263a21a7f571b6577a64134aba889bc95e
 
 COPY docker/unstable/requirements.txt /var/tmp/build/
 
