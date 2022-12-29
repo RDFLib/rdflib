@@ -1,6 +1,6 @@
 import pytest
 
-from rdflib import Graph, Literal, Variable, URIRef, RDFS
+from rdflib import RDFS, Graph, Literal, URIRef, Variable
 
 query_tpl = """
 SELECT ?x (%s(?y_) as ?y) {
