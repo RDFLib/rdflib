@@ -542,7 +542,7 @@ def evalDistinct(
 
 
 def evalProject(ctx: QueryContext, project: CompValue):
-    res = evalPart(ctx, project.p)
+    res = list(evalPart(ctx, project.p))
 
     return (row.project(project.PV) for row in res)
 

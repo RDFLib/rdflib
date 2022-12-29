@@ -2,10 +2,10 @@ import math
 import sys
 from typing import Set, Tuple
 
-from rdflib import Graph, Literal
+from rdflib import Graph, Literal, RDFS
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
-from rdflib.term import Node
+from rdflib.term import Node, URIRef
 
 
 def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:
@@ -42,3 +42,36 @@ class TestSPARQLParser:
         processUpdate(g1, f"INSERT DATA {{ {g0ntriples!s} }}")
 
         assert triple_set(g0) == triple_set(g1)
+
+
+def test_thingy():
+    graph = Graph()
+    graph.add(
+        (URIRef("http://example.com/something"), RDFS.label, Literal("Some label"))
+    )
+
+    results = list(
+        graph.query(
+            """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+    SELECT *
+    WHERE {
+        {
+            SELECT *
+            WHERE {
+                    {
+                        SELECT ?label
+                        WHERE {
+                            [] rdfs:label ?label.
+                        }
+                    }
+            }
+        }
+    }
+            """
+        )
+    )
+
+    assert len(results) == 1
+    assert results[0][0] == Literal("Some label")
