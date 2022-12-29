@@ -665,9 +665,14 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
         aggregate = True
 
     if aggregate:
-        M, E = translateAggregates(q, M)
+        M, aggregateAliases = translateAggregates(q, M)
     else:
-        E = []
+        aggregateAliases = []
+
+    # Need to remove the aggregate var aliases before joining to VALUES;
+    # else the variable names won't match up correctly when aggregating.
+    for alias, var in aggregateAliases:
+        M = Extend(M, alias, var)
 
     # HAVING
     if q.having:
@@ -681,21 +686,22 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
         # select *
         PV = list(VS)
     else:
+        E = list()
         PV = list()
-        for v in q.projection:
-            if v.var:
-                if v not in PV:
-                    PV.append(v.var)
-            elif v.evar:
-                if v not in PV:
-                    PV.append(v.evar)
+        for var in q.projection:
+            if var.var:
+                if var not in PV:
+                    PV.append(var.var)
+            elif var.evar:
+                if var not in PV:
+                    PV.append(var.evar)
 
-                E.append((v.expr, v.evar))
+                E.append((var.expr, var.evar))
             else:
                 raise Exception("I expected a var or evar here!")
 
-    for e, v in E:
-        M = Extend(M, e, v)
+        for alias, var in E:
+            M = Extend(M, alias, var)
 
     # ORDER BY
     if q.orderby:

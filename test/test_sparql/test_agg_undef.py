@@ -1,6 +1,6 @@
 import pytest
 
-from rdflib import Graph, Literal, Variable
+from rdflib import Graph, Literal, Variable, URIRef, RDFS
 
 query_tpl = """
 SELECT ?x (%s(?y_) as ?y) {
@@ -61,3 +61,42 @@ def test_group_by_null():
     assert len(results) == 2
     assert results[0][0] == Literal(1)
     assert results[1][0] == Literal(2)
+
+
+def test_values_outside_group_by():
+    """
+    Ensure that VALUES defined outside an aggregate (group by) query join and filter
+     on the user-defined variable names.
+    """
+    g = Graph()
+    g.add(
+        (URIRef("http://example.com/something"), RDFS.label, Literal("Match on this."))
+    )
+    g.add(
+        (
+            URIRef("http://example.com/something-else"),
+            RDFS.label,
+            Literal("Don't match on this."),
+        )
+    )
+
+    results = list(
+        g.query(
+            """
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+    SELECT ?obj ?label
+    WHERE {
+        ?obj rdfs:label ?label
+    }
+    GROUP BY ?obj ?label
+    VALUES ( ?obj ) {
+        ( <http://example.com/something> )
+    }
+    """
+        )
+    )
+
+    assert len(results) == 1
+    assert results[0][0] == URIRef("http://example.com/something")
+    assert results[0][1] == Literal("Match on this.")
