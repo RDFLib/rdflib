@@ -688,20 +688,20 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
     else:
         E = list()
         PV = list()
-        for var in q.projection:
-            if var.var:
-                if var not in PV:
-                    PV.append(var.var)
-            elif var.evar:
-                if var not in PV:
-                    PV.append(var.evar)
+        for v in q.projection:
+            if v.var:
+                if v not in PV:
+                    PV.append(v.var)
+            elif v.evar:
+                if v not in PV:
+                    PV.append(v.evar)
 
-                E.append((var.expr, var.evar))
+                E.append((v.expr, v.evar))
             else:
                 raise Exception("I expected a var or evar here!")
 
-        for alias, var in E:
-            M = Extend(M, alias, var)
+        for e, v in E:
+            M = Extend(M, e, v)
 
     # ORDER BY
     if q.orderby:
