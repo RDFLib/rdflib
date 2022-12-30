@@ -1285,7 +1285,6 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 berkeleydb = ["berkeleydb"]
 dev = ["black", "flake8", "flakeheaven", "isort", "mypy", "pep8-naming"]
 docs = ["sphinx", "myst-parser", "sphinxcontrib-apidoc", "sphinxcontrib-kroki", "sphinx-autodoc-typehints"]
-flake8 = ["flake8", "flakeheaven", "pep8-naming"]
 html = ["html5lib"]
 networkx = ["networkx", "networkx"]
 tests = ["html5lib", "pytest", "pytest-cov"]
@@ -1293,4 +1292,4 @@ tests = ["html5lib", "pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "9b0729735bacb98dc3197f02dd2943241261e70a5bf874a4ea768db531ba0d06"
+content-hash = "94b3ed7e64811e501fd6d8577f7a84961edc038cf0ac1d04b856ba7de43e1f1d"

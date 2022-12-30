@@ -62,7 +62,6 @@ berkeleydb = ["berkeleydb"]
 networkx = ["networkx"]
 html = ["html5lib"]
 dev = ["black", "flake8", "flakeheaven", "isort", "mypy", "pep8-naming"]
-flake8 = ["flake8", "flakeheaven", "pep8-naming"]
 docs = [
     "sphinx",
     "myst-parser",
@@ -73,7 +72,7 @@ docs = [
 tests = ["html5lib", "pytest", "pytest-cov"]
 
 [build-system]
-requires = ["poetry-core>=1.1.0"]
+requires = ["poetry-core>=1.4.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flakeheaven]
