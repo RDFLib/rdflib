@@ -511,6 +511,7 @@ def _findVars(x, res: Set[Variable]) -> Optional[CompValue]:  # type: ignore[ret
         elif x.name == "SubSelect":
             if x.projection:
                 res.update(v.var or v.evar for v in x.projection)
+
             return x
 
 
@@ -637,6 +638,7 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
     traverse(q.where, functools.partial(_findVars, res=VS))
 
     # all query types have a where part
+    # depth-first recursive generation of mapped query tree
     M = translateGroupGraphPattern(q.where)
 
     aggregate = False
@@ -679,6 +681,14 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
 
     if not q.projection:
         # select *
+
+        if not any(VS):
+            # Find the first child projection in the mapped query tree (if it exists),
+            # then select out the variables it is selecting out.
+            maybe_child_projection = _find_first_child_projection(M)
+            if maybe_child_projection is not None:
+                VS = maybe_child_projection.PV
+
         PV = list(VS)
     else:
         PV = list()
@@ -729,6 +739,20 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
             M = CompValue("Slice", p=M, start=offset)
 
     return M, PV
+
+
+def _find_first_child_projection(M: CompValue) -> Optional[CompValue]:
+    if M.name == "Project":
+        return M
+
+    for child_item in M.values():
+        if isinstance(child_item, CompValue):
+            maybe_item = _find_first_child_projection(child_item)
+            if maybe_item is not None:
+                return maybe_item
+
+    # Didn't find a `Project` part within this part of the query.
+    return None
 
 
 # type error: Missing return statement

@@ -2,10 +2,10 @@ import math
 import sys
 from typing import Set, Tuple
 
-from rdflib import Graph, Literal
+from rdflib import RDFS, Graph, Literal
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
-from rdflib.term import Node
+from rdflib.term import Node, URIRef
 
 
 def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:
