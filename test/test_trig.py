@@ -192,3 +192,9 @@ def test_prefixes():
     assert "ns2: <http://ex.org/docs/".encode("latin-1") in data, data
     assert "<ns2:document1>".encode("latin-1") not in data, data
     assert "ns2:document1".encode("latin-1") in data, data
+
+
+def test_issue_2154():
+    ds = rdflib.Dataset()
+    sg = ds.serialize(format="trig")
+    assert "prefix" not in sg, sg
