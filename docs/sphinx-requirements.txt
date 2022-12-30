@@ -1,6 +1,6 @@
 git+https://github.com/gniezen/n3pygments.git
 myst-parser
-sphinx<6
+sphinx>=5,<6
 sphinxcontrib-apidoc
 sphinxcontrib-kroki
 sphinx-autodoc-typehints
