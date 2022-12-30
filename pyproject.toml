@@ -47,22 +47,29 @@ networkx = [
 html5lib = "^1.1"
 pytest = "^7.1.3"
 pytest-cov = "^4.0.0"
-myst-parser = "^0.18.0"
-sphinx = ">4.0.0"
-sphinxcontrib-apidoc = "^0.3.0"
-sphinxcontrib-kroki = "*"
-sphinx-autodoc-typehints = "*"
 black = "22.12.0"
-flake8 = [
-    {version = "^5.0.0", python = ">=3.7,<3.8"},
-    {version = "^6.0.0", python = ">=3.8.1"},
-]
 isort = "^5.10.0"
 mypy = "0.991"
+
+[tool.poetry.group.flake8.dependencies]
+flake8 = ">=4.0.1"  # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
+flakeheaven = "^3.2.1"
+pep8-naming = "^0.13.2"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = ">4.0.0"
+myst-parser = "^0.18.0"
+sphinxcontrib-apidoc = "^0.3.0"
+sphinxcontrib-kroki = "^1.3.0"
+sphinx-autodoc-typehints = "^1.17.1"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
 networkx = ["networkx"]
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.flakeheaven]
 format = "grouped"

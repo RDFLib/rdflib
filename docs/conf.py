@@ -15,6 +15,8 @@ import os
 import re
 import sys
 
+import rdflib
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -82,6 +84,8 @@ copyright = "2009 - 2022, RDFLib Team"
 
 # Find version. We have to do this because we can't import it in Python 3 until
 # its been automatically converted in the setup process.
+# UPDATE: This function is no longer used; once builds are confirmed to succeed, it
+#         can/should be removed. --JCL 2022-12-30
 def find_version(filename):
     _version_re = re.compile(r'__version__ = "(.*)"')
     for line in open(filename):
@@ -91,7 +95,7 @@ def find_version(filename):
 
 
 # The full version, including alpha/beta/rc tags.
-release = find_version("../rdflib/__init__.py")
+release = rdflib.__version__
 # The short X.Y version.
 version = re.sub("[0-9]+\\.[0-9]\\..*", "\1", release)
 
