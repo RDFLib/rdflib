@@ -4,8 +4,8 @@
 name = "alabaster"
 version = "0.7.12"
 description = "A configurable sidebar-enabled Sphinx theme"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
@@ -16,8 +16,8 @@ files = [
 name = "attrs"
 version = "22.2.0"
 description = "Classes Without Boilerplate"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "attrs-22.2.0-py3-none-any.whl", hash = "sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836"},
@@ -35,8 +35,8 @@ tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy
 name = "babel"
 version = "2.11.0"
 description = "Internationalization utilities"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "Babel-2.11.0-py3-none-any.whl", hash = "sha256:1ad3eca1c885218f6dce2ab67291178944f810a10a9b5f3cb8382a5a232b64fe"},
@@ -61,8 +61,8 @@ files = [
 name = "black"
 version = "22.12.0"
 description = "The uncompromising code formatter."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "black-22.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9eedd20838bd5d75b80c9f5487dbcb06836a43833a37846cf1d8c1cc01cef59d"},
@@ -98,8 +98,8 @@ uvloop = ["uvloop (>=0.15.2)"]
 name = "certifi"
 version = "2022.12.7"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "certifi-2022.12.7-py3-none-any.whl", hash = "sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18"},
@@ -110,8 +110,8 @@ files = [
 name = "charset-normalizer"
 version = "2.1.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6.0"
 files = [
     {file = "charset-normalizer-2.1.1.tar.gz", hash = "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845"},
@@ -125,8 +125,8 @@ unicode-backport = ["unicodedata2"]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},
@@ -141,8 +141,8 @@ importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
@@ -153,8 +153,8 @@ files = [
 name = "coverage"
 version = "7.0.1"
 description = "Code coverage measurement for Python"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "coverage-7.0.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:b3695c4f4750bca943b3e1f74ad4be8d29e4aeab927d50772c41359107bd5d5c"},
@@ -220,8 +220,8 @@ toml = ["tomli"]
 name = "docutils"
 version = "0.17.1"
 description = "Docutils -- Python Documentation Utilities"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
     {file = "docutils-0.17.1-py2.py3-none-any.whl", hash = "sha256:cf316c8370a737a022b72b56874f6602acf974a37a9fba42ec2876387549fc61"},
@@ -232,8 +232,8 @@ files = [
 name = "entrypoints"
 version = "0.4"
 description = "Discover and load entry points from installed packages."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "entrypoints-0.4-py3-none-any.whl", hash = "sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f"},
@@ -244,8 +244,8 @@ files = [
 name = "exceptiongroup"
 version = "1.1.0"
 description = "Backport of PEP 654 (exception groups)"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "exceptiongroup-1.1.0-py3-none-any.whl", hash = "sha256:327cbda3da756e2de031a3107b81ab7b3770a602c4d16ca618298c526f4bec1e"},
@@ -259,8 +259,8 @@ test = ["pytest (>=6)"]
 name = "flake8"
 version = "4.0.1"
 description = "the modular source code checker: pep8 pyflakes and co"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "flake8-4.0.1-py2.py3-none-any.whl", hash = "sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d"},
@@ -277,8 +277,8 @@ pyflakes = ">=2.4.0,<2.5.0"
 name = "flakeheaven"
 version = "3.2.1"
 description = "FlakeHeaven is a [Flake8](https://gitlab.com/pycqa/flake8) wrapper to make it cool."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7,<4.0"
 files = [
     {file = "flakeheaven-3.2.1-py3-none-any.whl", hash = "sha256:fdae542414a8cd327dbbc969bb18d5972379570f6562af21b4a83f67bdd6b87c"},
@@ -323,8 +323,8 @@ lxml = ["lxml"]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
@@ -335,8 +335,8 @@ files = [
 name = "imagesize"
 version = "1.4.1"
 description = "Getting image size from png/jpeg/jpeg2000/gif file"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "imagesize-1.4.1-py2.py3-none-any.whl", hash = "sha256:0d8d18d08f840c19d0ee7ca1fd82490fdc3729b7ac93f49870406ddde8ef8d8b"},
@@ -367,8 +367,8 @@ testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pep517",
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
@@ -394,8 +394,8 @@ six = "*"
 name = "isort"
 version = "5.11.4"
 description = "A Python utility / library to sort Python imports."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7.0"
 files = [
     {file = "isort-5.11.4-py3-none-any.whl", hash = "sha256:c033fd0edb91000a7f09527fe5c75321878f98322a77ddcc81adbd83724afb7b"},
@@ -412,8 +412,8 @@ requirements-deprecated-finder = ["pip-api", "pipreqs"]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
@@ -430,8 +430,8 @@ i18n = ["Babel (>=2.7)"]
 name = "markdown-it-py"
 version = "2.1.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "markdown-it-py-2.1.0.tar.gz", hash = "sha256:cf7e59fed14b5ae17c0006eff14a2d9a00ed5f3a846148153899a0224e2c07da"},
@@ -456,8 +456,8 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "markupsafe"
 version = "2.1.1"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "MarkupSafe-2.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812"},
@@ -506,8 +506,8 @@ files = [
 name = "mccabe"
 version = "0.6.1"
 description = "McCabe checker, plugin for flake8"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
@@ -518,8 +518,8 @@ files = [
 name = "mdit-py-plugins"
 version = "0.3.3"
 description = "Collection of plugins for markdown-it-py"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "mdit-py-plugins-0.3.3.tar.gz", hash = "sha256:5cfd7e7ac582a594e23ba6546a2f406e94e42eb33ae596d0734781261c251260"},
@@ -538,8 +538,8 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "mdurl"
 version = "0.1.2"
 description = "Markdown URL utilities"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
@@ -550,8 +550,8 @@ files = [
 name = "mypy"
 version = "0.991"
 description = "Optional static typing for Python"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "mypy-0.991-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:7d17e0a9707d0772f4a7b878f04b4fd11f6f5bcb9b3813975a9b13c9332153ab"},
@@ -602,8 +602,8 @@ reports = ["lxml"]
 name = "mypy-extensions"
 version = "0.4.3"
 description = "Experimental type system extensions for programs checked with the mypy typechecker."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
@@ -614,8 +614,8 @@ files = [
 name = "myst-parser"
 version = "0.18.1"
 description = "An extended commonmark compliant parser, with bridges to docutils & sphinx."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "myst-parser-0.18.1.tar.gz", hash = "sha256:79317f4bb2c13053dd6e64f9da1ba1da6cd9c40c8a430c447a7b146a594c246d"},
@@ -679,8 +679,8 @@ test = ["codecov (>=2.1)", "pytest (>=7.2)", "pytest-cov (>=4.0)"]
 name = "packaging"
 version = "22.0"
 description = "Core utilities for Python packages"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "packaging-22.0-py3-none-any.whl", hash = "sha256:957e2148ba0e1a3b282772e791ef1d8083648bc131c8ab0c1feba110ce1146c3"},
@@ -691,8 +691,8 @@ files = [
 name = "pathspec"
 version = "0.10.3"
 description = "Utility library for gitignore style pattern matching of file paths."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "pathspec-0.10.3-py3-none-any.whl", hash = "sha256:3c95343af8b756205e2aba76e843ba9520a24dd84f68c22b9f93251507509dd6"},
@@ -703,8 +703,8 @@ files = [
 name = "pbr"
 version = "5.11.0"
 description = "Python Build Reasonableness"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.6"
 files = [
     {file = "pbr-5.11.0-py2.py3-none-any.whl", hash = "sha256:db2317ff07c84c4c63648c9064a79fe9d9f5c7ce85a9099d4b6258b3db83225a"},
@@ -715,8 +715,8 @@ files = [
 name = "pep8-naming"
 version = "0.13.2"
 description = "Check PEP-8 naming conventions, plugin for flake8"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "pep8-naming-0.13.2.tar.gz", hash = "sha256:93eef62f525fd12a6f8c98f4dcc17fa70baae2f37fa1f73bec00e3e44392fa48"},
@@ -730,8 +730,8 @@ flake8 = ">=3.9.1"
 name = "platformdirs"
 version = "2.6.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "platformdirs-2.6.2-py3-none-any.whl", hash = "sha256:83c8f6d04389165de7c9b6f0c682439697887bca0aa2f1c87ef1826be3584490"},
@@ -749,8 +749,8 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.2.2)", "pytest (>=7.2)", "pytest-
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
@@ -768,8 +768,8 @@ testing = ["pytest", "pytest-benchmark"]
 name = "pycodestyle"
 version = "2.8.0"
 description = "Python style guide checker"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
     {file = "pycodestyle-2.8.0-py2.py3-none-any.whl", hash = "sha256:720f8b39dde8b293825e7ff02c475f3077124006db4f440dcbc9a20b76548a20"},
@@ -780,8 +780,8 @@ files = [
 name = "pyflakes"
 version = "2.4.0"
 description = "passive checker of Python programs"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pyflakes-2.4.0-py2.py3-none-any.whl", hash = "sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e"},
@@ -792,8 +792,8 @@ files = [
 name = "pygments"
 version = "2.13.0"
 description = "Pygments is a syntax highlighting package written in Python."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "Pygments-2.13.0-py3-none-any.whl", hash = "sha256:f643f331ab57ba3c9d89212ee4a2dabc6e94f117cf4eefde99a0574720d14c42"},
@@ -822,8 +822,8 @@ diagrams = ["jinja2", "railroad-diagrams"]
 name = "pytest"
 version = "7.2.0"
 description = "pytest: simple powerful testing with Python"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "pytest-7.2.0-py3-none-any.whl", hash = "sha256:892f933d339f068883b6fd5a459f03d85bfcb355e4981e146d2c7616c21fef71"},
@@ -847,8 +847,8 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 name = "pytest-cov"
 version = "4.0.0"
 description = "Pytest plugin for measuring coverage."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "pytest-cov-4.0.0.tar.gz", hash = "sha256:996b79efde6433cdbd0088872dbc5fb3ed7fe1578b68cdbba634f14bb8dd0470"},
@@ -866,8 +866,8 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtuale
 name = "pytz"
 version = "2022.7"
 description = "World timezone definitions, modern and historical"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "pytz-2022.7-py2.py3-none-any.whl", hash = "sha256:93007def75ae22f7cd991c84e02d434876818661f8df9ad5df9e950ff4e52cfd"},
@@ -878,8 +878,8 @@ files = [
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},
@@ -921,8 +921,8 @@ files = [
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7, <4"
 files = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
@@ -943,8 +943,8 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "setuptools"
 version = "65.6.3"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "setuptools-65.6.3-py3-none-any.whl", hash = "sha256:57f6f22bde4e042978bcd50176fdb381d7c21a9efa4041202288d3737a0c6a54"},
@@ -972,8 +972,8 @@ files = [
 name = "snowballstemmer"
 version = "2.2.0"
 description = "This package provides 29 stemmers for 28 languages generated from Snowball algorithms."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "snowballstemmer-2.2.0-py2.py3-none-any.whl", hash = "sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a"},
@@ -984,8 +984,8 @@ files = [
 name = "sphinx"
 version = "4.3.2"
 description = "Python documentation generator"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "Sphinx-4.3.2-py3-none-any.whl", hash = "sha256:6a11ea5dd0bdb197f9c2abc2e0ce73e01340464feaece525e64036546d24c851"},
@@ -1020,8 +1020,8 @@ test = ["cython", "html5lib", "pytest", "pytest-cov", "typed-ast"]
 name = "sphinx-autodoc-typehints"
 version = "1.17.1"
 description = "Type hints (PEP 484) support for the Sphinx autodoc extension"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "sphinx_autodoc_typehints-1.17.1-py3-none-any.whl", hash = "sha256:f16491cad05a13f4825ecdf9ee4ff02925d9a3b1cf103d4d02f2f81802cce653"},
@@ -1039,8 +1039,8 @@ type-comments = ["typed-ast (>=1.4.0)"]
 name = "sphinxcontrib-apidoc"
 version = "0.3.0"
 description = "A Sphinx extension for running 'sphinx-apidoc' on each build"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = "*"
 files = [
     {file = "sphinxcontrib-apidoc-0.3.0.tar.gz", hash = "sha256:729bf592cf7b7dd57c4c05794f732dc026127275d785c2a5494521fdde773fb9"},
@@ -1055,8 +1055,8 @@ Sphinx = ">=1.6.0"
 name = "sphinxcontrib-applehelp"
 version = "1.0.2"
 description = "sphinxcontrib-applehelp is a sphinx extension which outputs Apple help books"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
@@ -1071,8 +1071,8 @@ test = ["pytest"]
 name = "sphinxcontrib-devhelp"
 version = "1.0.2"
 description = "sphinxcontrib-devhelp is a sphinx extension which outputs Devhelp document."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "sphinxcontrib-devhelp-1.0.2.tar.gz", hash = "sha256:ff7f1afa7b9642e7060379360a67e9c41e8f3121f2ce9164266f61b9f4b338e4"},
@@ -1087,8 +1087,8 @@ test = ["pytest"]
 name = "sphinxcontrib-htmlhelp"
 version = "2.0.0"
 description = "sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "sphinxcontrib-htmlhelp-2.0.0.tar.gz", hash = "sha256:f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2"},
@@ -1103,8 +1103,8 @@ test = ["html5lib", "pytest"]
 name = "sphinxcontrib-jsmath"
 version = "1.0.1"
 description = "A sphinx extension which renders display math in HTML via JavaScript"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "sphinxcontrib-jsmath-1.0.1.tar.gz", hash = "sha256:a9925e4a4587247ed2191a22df5f6970656cb8ca2bd6284309578f2153e0c4b8"},
@@ -1118,8 +1118,8 @@ test = ["flake8", "mypy", "pytest"]
 name = "sphinxcontrib-kroki"
 version = "1.3.0"
 description = "Kroki integration into sphinx"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "sphinxcontrib-kroki-1.3.0.tar.gz", hash = "sha256:90ce45e1f5822443772d4df8ddf031746101dc1fd5a0a831a1db7e0886c49b6a"},
@@ -1138,8 +1138,8 @@ test = ["coverage", "pytest", "pytest-cov"]
 name = "sphinxcontrib-qthelp"
 version = "1.0.3"
 description = "sphinxcontrib-qthelp is a sphinx extension which outputs QtHelp document."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "sphinxcontrib-qthelp-1.0.3.tar.gz", hash = "sha256:4c33767ee058b70dba89a6fc5c1892c0d57a54be67ddd3e7875a18d14cba5a72"},
@@ -1154,8 +1154,8 @@ test = ["pytest"]
 name = "sphinxcontrib-serializinghtml"
 version = "1.1.5"
 description = "sphinxcontrib-serializinghtml is a sphinx extension which outputs \"serialized\" HTML files (json and pickle)."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "sphinxcontrib-serializinghtml-1.1.5.tar.gz", hash = "sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952"},
@@ -1170,8 +1170,8 @@ test = ["pytest"]
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
@@ -1182,8 +1182,8 @@ files = [
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
@@ -1194,8 +1194,8 @@ files = [
 name = "typed-ast"
 version = "1.5.4"
 description = "a fork of Python 2 and 3 ast modules with type comment support"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "typed_ast-1.5.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:669dd0c4167f6f2cd9f57041e03c3c2ebf9063d0757dc89f79ba1daa2bfca9d4"},
@@ -1240,8 +1240,8 @@ files = [
 name = "urllib3"
 version = "1.26.13"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 files = [
     {file = "urllib3-1.26.13-py2.py3-none-any.whl", hash = "sha256:47cc05d99aaa09c9e72ed5809b60e7ba354e64b59c9c173ac3018642d8bb41fc"},
@@ -1283,10 +1283,14 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [extras]
 berkeleydb = ["berkeleydb"]
+dev = ["black", "flake8", "flakeheaven", "isort", "mypy", "pep8-naming"]
+docs = ["sphinx", "myst-parser", "sphinxcontrib-apidoc", "sphinxcontrib-kroki", "sphinx-autodoc-typehints"]
+flake8 = ["flake8", "flakeheaven", "pep8-naming"]
 html = ["html5lib"]
 networkx = ["networkx", "networkx"]
+tests = ["html5lib", "pytest", "pytest-cov"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "bed3b691d13e8b9e22c01369025e2ca3540dcf15914a6b3a425cf06a5266ee23"
+content-hash = "9b0729735bacb98dc3197f02dd2943241261e70a5bf874a4ea768db531ba0d06"
