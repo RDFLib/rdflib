@@ -682,12 +682,10 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
     if not q.projection:
         # select *
 
-        if not any(VS):
-            # Find the first child projection in the mapped query tree (if it exists),
-            # then select out the variables it is selecting out.
-            maybe_child_projection = _find_first_child_projection(M)
-            if maybe_child_projection is not None:
-                VS = maybe_child_projection.PV
+        # Find the first child projection in each branch of the mapped query tree,
+        # then include the variables it projects out in our projected variables.
+        for child_projection in _find_first_child_projections(M):
+            VS |= set(child_projection.PV)
 
         PV = list(VS)
     else:
@@ -741,18 +739,19 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
     return M, PV
 
 
-def _find_first_child_projection(M: CompValue) -> Optional[CompValue]:
-    if M.name == "Project":
-        return M
+def _find_first_child_projections(M: CompValue) -> Iterable[CompValue]:
+    """
+    Recursively find the first child instance of a Projection operation in each of
+      the branches of the query execution plan/tree.
+    """
 
-    for child_item in M.values():
-        if isinstance(child_item, CompValue):
-            maybe_item = _find_first_child_projection(child_item)
-            if maybe_item is not None:
-                return maybe_item
-
-    # Didn't find a `Project` part within this part of the query.
-    return None
+    for child_op in M.values():
+        if isinstance(child_op, CompValue):
+            if child_op.name == "Project":
+                yield child_op
+            else:
+                for child_projection in _find_first_child_projections(child_op):
+                    yield child_projection
 
 
 # type error: Missing return statement
