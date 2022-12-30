@@ -117,6 +117,7 @@ class SPARQLConnector(object):
                 )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
+            args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
                 res = urlopen(
