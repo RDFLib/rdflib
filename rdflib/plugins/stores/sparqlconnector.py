@@ -1,4 +1,5 @@
 import base64
+import copy
 import logging
 from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Tuple
@@ -94,7 +95,7 @@ class SPARQLConnector(object):
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
 
-        args = dict(self.kwargs)
+        args = copy.deepcopy(self.kwargs)
 
         # merge params/headers dicts
         args.setdefault("params", {})
@@ -170,7 +171,7 @@ class SPARQLConnector(object):
             "Content-Type": "application/sparql-update; charset=UTF-8",
         }
 
-        args = dict(self.kwargs)  # other QSAs
+        args = copy.deepcopy(self.kwargs)  # other QSAs
 
         args.setdefault("params", {})
         args["params"].update(params)

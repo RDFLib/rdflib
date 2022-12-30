@@ -1,0 +1,6 @@
+{
+  "@context": [
+    "contexts/import1.jsonld",
+    "contexts/import2.jsonld"
+  ]
+}
