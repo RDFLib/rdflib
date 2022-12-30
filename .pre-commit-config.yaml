@@ -6,7 +6,7 @@ ci:
 
 repos:
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.11.4
     hooks:
     - id: isort
       # This is here to defer file selection to isort which will do it based on
