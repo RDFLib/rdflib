@@ -56,6 +56,7 @@ sphinxcontrib-kroki = {version = "^1.3.0", optional = true}
 sphinx-autodoc-typehints = {version = "^1.17.1", optional = true}
 pytest = {version = "^7.1.3", optional = true}
 pytest-cov = {version = "^4.0.0", optional = true}
+coverage = {version = "^7.0.1", extras = ["toml"], optional = true}
 
 [tool.poetry.group.flake8.dependencies]
 flake8 = ">=4.0.1" # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
@@ -74,7 +75,7 @@ docs = [
     "sphinxcontrib-kroki",
     "sphinx-autodoc-typehints"
 ]
-tests = ["html5lib", "pytest", "pytest-cov"]
+tests = ["html5lib", "pytest", "pytest-cov", "coverage"]
 
 [build-system]
 requires = ["poetry-core>=1.4.0"]
@@ -208,3 +209,25 @@ module = "pyparsing.*"
 # https://github.com/pyparsing/pyparsing/issues/385
 # Once the issue is fixed this should be removed.
 follow_imports = "skip"
+
+[tool.coverage.run]
+branch = true
+source = ["rdflib"]
+omit = ["*/_type_checking.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+
+    # TYPE_CHECKING guarded code only affects type checkers.
+    "^ *if (False|TYPE_CHECKING):",
+    # constant used in protocols and abstract methods, does not run anything
+    # and has no side effects.
+    '^ +\.\.\.$',
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if __name__==.__main__.:"
+]

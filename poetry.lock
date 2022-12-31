@@ -1287,9 +1287,9 @@ dev = ["black", "flake8", "flakeheaven", "isort", "mypy", "pep8-naming"]
 docs = ["sphinx", "myst-parser", "sphinxcontrib-apidoc", "sphinxcontrib-kroki", "sphinx-autodoc-typehints"]
 html = ["html5lib"]
 networkx = ["networkx", "networkx"]
-tests = ["html5lib", "pytest", "pytest-cov"]
+tests = ["html5lib", "pytest", "pytest-cov", "coverage"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "aaaac45b73e63496bcc30e210fdfd6a466ba8f91a8a4afb5103b302955d5097a"
+content-hash = "11a38283a275d65d5f3a7f2c550155ed797e78c5c1b4bb0838ed9d95b5d1bed0"
