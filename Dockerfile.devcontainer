@@ -50,13 +50,13 @@ RUN \
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry export -f requirements.txt \
+RUN poetry export \
     -E dev \
     -E tests \
     -E docs \
-    --output /var/tmp/requirements-via-poetry.txt
+    --output /var/tmp/requirements-via-poetry-including-all-dev.txt
 RUN \
     python -m pip install \
-        -r /var/tmp/requirements-via-poetry.txt \
+        -r /var/tmp/requirements-via-poetry-including-all-dev.txt \
         && \
     true

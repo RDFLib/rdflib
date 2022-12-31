@@ -66,12 +66,14 @@ tasks:
   install:pip-deps:
     desc: Install pip dependencies
     cmds:
-      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}"
+      - "poetry export -E dev -E tests -E docs {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-E berkeleydb -E networkx{{end}} --output /var/tmp/requirements-via-poetry-incl-dev.txt"
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r /var/tmp/requirements-via-poetry-incl-dev.txt"
 
   install:flake8:
     desc: Install flake8 dependencies
     cmds:
-      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.flake8.txt"
+      - poetry export --only flake8 --output /var/tmp/requirements.flake8.txt
+      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r /var/tmp/requirements.flake8.txt"
 
   install:deps:
     desc: Install all dependencies
