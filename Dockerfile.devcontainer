@@ -41,17 +41,22 @@ RUN \
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-COPY requirements*.txt /var/tmp/
-COPY docs/sphinx-requirements.txt /var/tmp/docs/sphinx-requirements.txt
-
 RUN \
-    cd /var/tmp/ && \
-    grep -H . requirements*.txt docs/sphinx-requirements.txt && \
     python -m pip install --upgrade \
-        -r requirements.txt \
-        -r requirements.dev.txt \
-        -r requirements.dev-extra.txt \
-        -r docs/sphinx-requirements.txt \
         tox \
+        poetry==1.3.1 \
+        && \
+    true
+
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry export -f requirements.txt \
+    -E dev \
+    -E tests \
+    -E docs \
+    --output /var/tmp/requirements-via-poetry.txt
+RUN \
+    python -m pip install \
+        -r /var/tmp/requirements-via-poetry.txt \
         && \
     true
