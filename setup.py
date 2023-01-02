@@ -23,7 +23,7 @@ kwargs["extras_require"] = {
     "tests": kwargs["tests_require"],
     "docs": [
         "myst-parser",
-        "sphinx>=5,<6",
+        "sphinx>=5,<7",
         "sphinxcontrib-apidoc",
         "sphinxcontrib-kroki",
         "sphinx-autodoc-typehints",
