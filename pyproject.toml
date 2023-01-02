@@ -1,8 +1,7 @@
 [tool.poetry]
 name = "rdflib"
 version = "6.3.0a0"
-description = """
-RDFLib is a Python library for working with RDF, \
+description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
 maintainers = ["RDFLib Team <rdflib-dev@googlegroups.com>"]
