@@ -34,6 +34,9 @@ class TrigSerializer(TurtleSerializer):
 
     def preprocess(self):
         for context in self.contexts:
+            # do not write unnecessary prefix (ex: for an empty default graph)
+            if len(context) == 0:
+                continue
             self.store = context
             self.getQName(context.identifier)
             self._subjects = {}
