@@ -103,7 +103,7 @@ Specific tests can be run by file name. For example:
 
 .. code-block:: console
 
-  $ poetry run test/test_graph/test_graph.py
+  $ poetry run pytest test/test_graph/test_graph.py
 
 For more extensive tests, including tests for the `berkleydb
 <https://www.oracle.com/database/technologies/related/berkeleydb.html>`_
