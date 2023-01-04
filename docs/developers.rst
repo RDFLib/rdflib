@@ -14,6 +14,7 @@ developing RDFLib code.
 * Code should also pass `flake8 <https://flake8.pycqa.org/en/latest/>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code.
+* RDFLib uses `Poetry <https://python-poetry.org/docs/master/>`_ for dependency management and packaging.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
 
@@ -95,25 +96,24 @@ To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
 .. code-block:: console
 
-   $ pip install -r requirements.txt -r requirements.dev.txt
-   $ pytest
+   $ poetry install
+   $ poetry run pytest
 
 Specific tests can be run by file name. For example:
 
 .. code-block:: console
 
-  $ pytest test/test_graph.py
+  $ poetry run test/test_graph/test_graph.py
 
 For more extensive tests, including tests for the `berkleydb
 <https://www.oracle.com/database/technologies/related/berkeleydb.html>`_
-backend, install the requirements from ``requirements.dev-extra.txt`` before
+backend, install extra requirements before
 executing the tests.
 
 .. code-block:: console
 
-   $ pip install -r requirements.txt -r requirements.dev.txt
-   $ pip install -r requirements.dev-extra.txt
-   $ pytest
+   $ poetry install --all-extras
+   $ poetry run pytest
 
 Writing tests
 ~~~~~~~~~~~~~
@@ -143,13 +143,13 @@ our black.toml config file:
 
 .. code-block:: bash
 
-    python -m black --config black.toml --check ./rdflib
+    poetry run black .
 
 Check style and conventions with `flake8 <https://flake8.pycqa.org/en/latest/>`_:
 
 .. code-block:: bash
 
-    python -m flake8 rdflib
+    poetry run flake8 rdflib
 
 We also provide a `flakeheaven <https://pypi.org/project/flakeheaven/>`_
 baseline that ignores existing flake8 errors and only reports on newly
@@ -157,14 +157,14 @@ introduced flake8 errors:
 
 .. code-block:: bash
 
-    python -m flakeheaven
+    poetry run flakeheaven
 
 
 Check types with `mypy <http://mypy-lang.org/>`_:
 
 .. code-block:: bash
 
-    python -m mypy --show-error-context --show-error-codes rdflib
+    poetry run mypy --show-error-context --show-error-codes
 
 pre-commit and pre-commit ci
 ----------------------------
@@ -252,21 +252,14 @@ Some useful commands for working with the task in the taskfile is given below:
     # List available tasks.
     task -l
 
-    # Install pip dependencies
-    task install:pip-deps
+    # Configure the environment for development
+    task configure
 
     # Run basic validation
     task validate
 
-    # Install a venv and run validation inside venv
-    task venv:install
-    task WITH_VENV=1 validate
-
-    # Fix all auto-fixable validation errors (i.e. run black and isort) using venv
-    task WITH_VENV=1 validate:fix
-
-    # Build docs inside venv
-    task WITH_VENV=1 docs:build
+    # Build docs
+    task docs:build
 
     # Run live-preview on the docs
     task docs:live-server
@@ -302,6 +295,9 @@ To use the development container directly:
 
     # Build the devcontainer docker image.
     docker-compose build
+
+    # Configure the system for development.
+    docker-compose run --rm devcontainer task configure
 
     # Run the validate task inside the devtools container.
     docker-compose run --rm devcontainer task validate

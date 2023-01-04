@@ -262,7 +262,12 @@ suppress_warnings = [
     "ref.python",
 ]
 
-nitpicky = True
+if sys.version_info < (3, 8):
+    # Being nitpicky on python 3.7 causes lots of problems with Sphinx 4, so
+    # turn it off there.
+    nitpicky = False
+else:
+    nitpicky = True
 
 nitpick_ignore = [
     ("py:data", "typing.Literal"),
@@ -308,12 +313,5 @@ if sys.version_info < (3, 9):
             ("py:class", "_TripleType"),
             ("py:class", "_TripleOrTriplePathType"),
             ("py:class", "TextIO"),
-        ]
-    )
-
-if sys.version_info < (3, 8):
-    nitpick_ignore.extend(
-        [
-            ("py:class", "importlib_metadata.EntryPoint"),
         ]
     )

@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile.devcontainer
     working_dir: /srv/workspace
+    environment:
+      - POETRY_VIRTUALENVS_IN_PROJECT=1
     volumes:
       - .:/srv/workspace:z,cached
       - xdg-cache-home:/root/.cache
