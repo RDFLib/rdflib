@@ -10,10 +10,14 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import logging
 import os
 import re
 import sys
+
+import sphinx
 
 import rdflib
 
@@ -262,12 +266,17 @@ suppress_warnings = [
     "ref.python",
 ]
 
-if sys.version_info < (3, 8):
-    # Being nitpicky on python 3.7 causes lots of problems with Sphinx 4, so
-    # turn it off there.
+sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
+
+
+nitpicky = True
+
+if sphinx_version < (5,):
+    # Being nitpicky on Sphinx 4.x causes lots of problems.
+    logging.warning(
+        "disabling nitpicky because sphinx is too old: %s", sphinx.__version__
+    )
     nitpicky = False
-else:
-    nitpicky = True
 
 nitpick_ignore = [
     ("py:data", "typing.Literal"),

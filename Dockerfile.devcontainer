@@ -41,9 +41,11 @@ RUN \
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
+COPY devtools/requirements-poetry.in /var/tmp/
+
 RUN \
     python -m pip install --upgrade \
         tox \
-        poetry==1.3.1 \
+        -r /var/tmp/requirements-poetry.in \
         && \
     true
