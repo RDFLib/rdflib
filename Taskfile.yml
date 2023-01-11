@@ -259,7 +259,7 @@ tasks:
     cmds:
       - task: poetry:configure
         vars:
-          .CLI_ARGS: --no-root --only=flake8
+          CLI_ARGS: --no-root --only=flake8
       - task: flake8
 
   cmd:rdfpipe:
@@ -269,12 +269,10 @@ tasks:
 
   pip-compile:
     cmds:
-      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options {{.CLI_ARGS}}"
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking {{.CLI_ARGS}}"
+
   docker:prepare:
     cmds:
-      - task: pip-compile
-        vars:
-          { CLI_ARGS: "-o docker/unstable/requirements.txt requirements.txt" }
       - task: pip-compile
         vars: { CLI_ARGS: "docker/latest/requirements.in" }
   docker:unstable:
@@ -285,7 +283,8 @@ tasks:
           {{.DOCKER}} image pull {{.OCI_REFERENCE}}:unstable || :
 
           set -eo pipefail
-
+          mkdir -vp var
+          {{.POETRY}} export -o var/requirements.txt
           pipx run --spec=build build --wheel
           {{.DOCKER}} buildx build \
             --cache-to=type=inline \
