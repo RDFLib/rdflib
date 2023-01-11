@@ -47,3 +47,17 @@ RUN \
         poetry==1.3.1 \
         && \
     true
+
+RUN \
+    mkdir -p \
+        /srv/workspace/.venv \
+        /srv/workspace/.tox \
+        /srv/workspace/.mypy_cache \
+        /srv/workspace/.pytest_cache
+
+RUN \
+    chown -R 1000:1000 \
+        /srv/workspace/.venv \
+        /srv/workspace/.tox \
+        /srv/workspace/.mypy_cache \
+        /srv/workspace/.pytest_cache
