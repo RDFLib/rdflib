@@ -241,7 +241,7 @@ tasks:
     desc: GitHub Actions Validation Workflow
     env:
       COVERALLS_PARALLEL: true
-      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}"
+      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}{{.MATRIX_SUFFIX}}"
       COVERALLS_SERVICE_NAME: '{{.COVERALLS_SERVICE_NAME | default (env "COVERALLS_SERVICE_NAME") | default "github"}}'
     cmds:
       - task: install:system-deps

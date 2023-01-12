@@ -76,10 +76,10 @@ def blank_graph() -> Graph:
     ["pname_ns", "pname", "expected_result"],
     itertools.chain(
         [
-            ("eg", "invalid/PN_PREFIX", pyparsing.exceptions.ParseException),
+            ("eg", "invalid/PN_PREFIX", pyparsing.ParseException),
             ("", "eg:a", Exception),
-            ("", ":invalid PN_LOCAL", pyparsing.exceptions.ParseException),
-            ("", ":invalid/PN_LOCAL", pyparsing.exceptions.ParseException),
+            ("", ":invalid PN_LOCAL", pyparsing.ParseException),
+            ("", ":invalid/PN_LOCAL", pyparsing.ParseException),
             ("", ":a:b:c", PNAME_PREFIX["a:b:c"]),
             ("", ":", URIRef(f"{PNAME_PREFIX}")),
             ("", ":a", PNAME_PREFIX.a),
