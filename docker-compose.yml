@@ -10,17 +10,27 @@ services:
       - POETRY_VIRTUALENVS_IN_PROJECT=1
     volumes:
       - .:/srv/workspace:z,cached
-      - xdg-cache-home:/root/.cache
-      - dot-venv:/srv/workspace/.venv
-      - dot-tox:/srv/workspace/.tox
-      - dot-mypy-cache:/srv/workspace/.mypy_cache
-      - dot-pytest-cache:/srv/workspace/.pytest_cache
     command:
      - /bin/sh
      - -c
      - |
        echo Waiting for shutdown... override the command if this is not what you want. 1>&2
        while sleep 1000; do :; done
+
+  run:
+    build:
+      context: .
+      dockerfile: Dockerfile.devcontainer
+    working_dir: /srv/workspace
+    environment:
+      - POETRY_VIRTUALENVS_IN_PROJECT=1
+    volumes:
+      - .:/srv/workspace:z,cached
+      - xdg-cache-home:/root/.cache
+      - dot-venv:/srv/workspace/.venv
+      - dot-tox:/srv/workspace/.tox
+      - dot-mypy-cache:/srv/workspace/.mypy_cache
+      - dot-pytest-cache:/srv/workspace/.pytest_cache
 volumes:
     xdg-cache-home: {}
     dot-venv: {}
