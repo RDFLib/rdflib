@@ -1,5 +1,5 @@
 {
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "docker-compose.devcontainer.yml",
   "service": "devcontainer",
   "workspaceFolder": "/srv/workspace/",
   "shutdownAction": "stopCompose",
@@ -19,5 +19,6 @@
     "EditorConfig.EditorConfig",
     "paulvarache.vscode-taskfile",
     "stardog-union.vscode-stardog-languages"
-  ]
+  ],
+  "postCreateCommand": "poetry install --all-extras"
 }
