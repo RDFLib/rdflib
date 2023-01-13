@@ -27,11 +27,19 @@ jobs:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-latest, macos-latest, windows-latest]
+        # This is used for injecting additional tests for a specific python
+        # version and OS.
+        suffix: [""]
         include:
           - python-version: "3.7"
             os: ubuntu-latest
             extensive-tests: true
             TOXENV_SUFFIX: "-docs"
+          - python-version: "3.7"
+            os: ubuntu-latest
+            extensive-tests: true
+            suffix: "-min"
+            TOXENV_SUFFIX: "-min"
           - python-version: "3.8"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
@@ -80,23 +88,24 @@ jobs:
           task \
             TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
             OS=${{ matrix.os }} \
+            MATRIX_SUFFIX=${{ matrix.suffix }} \
             EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
             TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
-            TOX_JUNIT_XML_PREFIX=${{ matrix.python-version }}-${{ matrix.os }}- \
+            TOX_JUNIT_XML_PREFIX=${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}- \
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v3
         if: ${{ (success() || failure()) }}
         with:
-          name: ${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit-xml
-          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit.xml
+          name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit.xml
       - uses: actions/upload-artifact@v3
         if: ${{ (success() || failure()) }}
         with:
-          name: ${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit-xml
-          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit.xml
+          name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit.xml
   extra-tasks:
     permissions:
       contents: read
