@@ -216,6 +216,8 @@ tasks:
       - task: clean:tox
       - task: clean:mypy
       - task: venv:clean
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".var/devcontainer" }
 
   test:data:fetch:
     desc: Fetch test data.

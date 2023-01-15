@@ -46,6 +46,9 @@ COPY devtools/requirements-poetry.in /var/tmp/
 RUN \
     python -m pip install --upgrade \
         tox \
+        pre-commit \
         -r /var/tmp/requirements-poetry.in \
         && \
     true
+
+RUN git config --system --add safe.directory /srv/workspace
