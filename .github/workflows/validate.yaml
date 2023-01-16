@@ -8,9 +8,9 @@ on:
 
 env:
   FORCE_COLOR: 1
-  XDG_CACHE_HOME: ${{ github.workspace }}/.cache
-  POETRY_CACHE_DIR: ${{ github.workspace }}/.cache/pypoetry
-  PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip
+  XDG_CACHE_HOME: ${{ github.workspace }}/.var/cache
+  POETRY_CACHE_DIR: ${{ github.workspace }}/.var/cache/pypoetry
+  PIP_CACHE_DIR: ${{ github.workspace }}/.var/cache/pip
 
 
 concurrency:
@@ -121,7 +121,7 @@ jobs:
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v3
         with:
-          path: ~/.cache
+          path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt') }}
           restore-keys: |
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-

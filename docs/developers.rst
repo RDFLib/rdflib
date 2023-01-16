@@ -297,16 +297,16 @@ To use the development container directly:
     docker-compose build
 
     # Configure the system for development.
-    docker-compose run --rm devcontainer task configure
+    docker-compose run --rm run task configure
 
     # Run the validate task inside the devtools container.
-    docker-compose run --rm devcontainer task validate
+    docker-compose run --rm run task validate
 
     # Run extensive tests inside the devtools container.
-    docker-compose run --rm devcontainer task EXTENSIVE=true test
+    docker-compose run --rm run task EXTENSIVE=true test
 
     # To get a shell into the devcontainer docker image.
-    docker-compose run --rm devcontainer bash
+    docker-compose run --rm run bash
 
 The devcontainer also works with `Podman Compose
 <https://github.com/containers/podman-compose>`_.
