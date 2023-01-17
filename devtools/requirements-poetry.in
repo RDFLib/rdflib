@@ -1,0 +1,3 @@
+# Fixing this here as readthedocs can't use the compiled requirements-poetry.txt
+# due to conflicts.
+poetry==1.3.2
