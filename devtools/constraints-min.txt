@@ -2,7 +2,7 @@
 # these versions.
 isodate==0.6.0
 pyparsing==2.1.0
-importlib-metadata==4.0.0
+importlib-metadata==6.0.0
 berkeleydb==18.1.2
 networkx==2.0
 html5lib==1.0.1
