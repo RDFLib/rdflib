@@ -180,7 +180,7 @@ skip = [
     '_build',
     'htmlcov',
     'benchmarks',
-    'examples',       # No need to Black examples
+    'examples',       # No need to isort examples
     'test_reports',
     'rdflib.egg-info',
     'buck-out',
