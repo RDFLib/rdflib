@@ -94,8 +94,7 @@ class ParamValue(object):
     All cleverness is in the CompValue
     """
 
-    def __init__(self, name, tokenList, isList):
-        self.isList = isList
+    def __init__(self, name, tokenList):
         self.name = name
         if isinstance(tokenList, (list, ParseResults)) and len(tokenList) == 1:
             tokenList = tokenList[0]
@@ -109,27 +108,15 @@ class ParamValue(object):
 class Param(TokenConverter):
     """
     A pyparsing token for labelling a part of the parse-tree
-    if isList is true repeat occurrences of ParamList have
-    their values merged in a list
     """
 
-    def __init__(self, name, expr, isList=False):
-        self.isList = isList
+    def __init__(self, name, expr):
         TokenConverter.__init__(self, expr)
         self.setName(name)
         self.addParseAction(self.postParse2)
 
     def postParse2(self, tokenList):
-        return ParamValue(self.name, tokenList, self.isList)
-
-
-class ParamList(Param):
-    """
-    A shortcut for a Param with isList=True
-    """
-
-    def __init__(self, name, expr):
-        Param.__init__(self, name, expr, True)
+        return ParamValue(self.name, tokenList)
 
 
 class CompValue(OrderedDict):
@@ -235,16 +222,14 @@ class Comp(TokenConverter):
                 res["service_string"] = service_string
 
         for t in tokenList:
-            if isinstance(t, ParamValue):
-                if t.isList:
-                    if t.name not in res:
-                        res[t.name] = []
-                    res[t.name].append(t.tokenList)
-                else:
-                    res[t.name] = t.tokenList
-                # res.append(t.tokenList)
-            # if isinstance(t,CompValue):
-            #    res.update(t)
+            if isinstance(t, ParseResults):
+                for i in t:
+                    if isinstance(i, ParamValue):
+                        if i.name not in res:
+                            res[i.name] = []
+                        res[i.name].append(i.tokenList)
+            elif isinstance(t, ParamValue):
+                res[t.name] = t.tokenList
         return res
 
     def setEvalFn(self, evalfn):
