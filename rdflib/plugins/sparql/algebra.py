@@ -623,7 +623,7 @@ def translateValues(
     return Values(res)
 
 
-def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
+def translate(q: CompValue) -> Tuple[Optional[CompValue], List[Variable]]:
     """
     http://www.w3.org/TR/sparql11-query/#convertSolMod
 
@@ -635,9 +635,27 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
 
     # TODO: Var scope test
     VS: Set[Variable] = set()
-    traverse(q.where, functools.partial(_findVars, res=VS))
 
-    # all query types have a where part
+    # All query types have a WHERE clause EXCEPT some DESCRIBE queries
+    # where only explicit IRIs are provided.
+    if q.name == "DescribeQuery":
+        # For DESCRIBE queries, use the vars provided in q.var.
+        # If there is no WHERE clause, vars should be explicit IRIs to describe.
+        # If there is a WHERE clause, vars can be any combination of explicit IRIs
+        # and variables.
+        VS = set(q.var)
+
+        # If there is no WHERE clause, just return the vars projected
+        if q.where is None:
+            return None, list(VS)
+
+        # Otherwise, evaluate the WHERE clause like SELECT DISTINCT
+        else:
+            q.modifier = "DISTINCT"
+
+    else:
+        traverse(q.where, functools.partial(_findVars, res=VS))
+
     # depth-first recursive generation of mapped query tree
     M = translateGroupGraphPattern(q.where)
 

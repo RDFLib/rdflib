@@ -1479,7 +1479,7 @@ DescribeQuery = Comp(
     "DescribeQuery",
     Keyword("DESCRIBE")
     + (OneOrMore(ParamList("var", VarOrIri)) | "*")
-    + Param("datasetClause", ZeroOrMore(DatasetClause))
+    + ZeroOrMore(ParamList("datasetClause", DatasetClause))
     + Optional(WhereClause)
     + SolutionModifier
     + ValuesClause,

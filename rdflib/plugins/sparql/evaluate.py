@@ -309,7 +309,7 @@ def evalPart(ctx: QueryContext, part: CompValue):
         return evalServiceQuery(ctx, part)
 
     elif part.name == "DescribeQuery":
-        raise Exception("DESCRIBE not implemented")
+        return evalDescribeQuery(ctx, part)
 
     else:
         raise Exception("I dont know: %s" % part.name)
@@ -580,6 +580,39 @@ def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]
 
     res: Dict[str, Union[str, Graph]] = {}
     res["type_"] = "CONSTRUCT"
+    res["graph"] = graph
+
+    return res
+
+
+def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+    # Create a result graph and bind namespaces from the graph being queried
+    graph = Graph()
+    for pfx, ns in ctx.graph.namespaces():
+        graph.bind(pfx, ns)
+
+    to_describe = set()
+
+    # Explicit IRIs may be provided to a DESCRIBE query.
+    # If there is a WHERE clause, explicit IRIs may be provided in
+    # addition to projected variables. Find those explicit IRIs and
+    # prepare to describe them.
+    for iri in query.PV:
+        if isinstance(iri, URIRef):
+            to_describe.add(iri)
+
+    # If there is a WHERE clause, evaluate it then find the unique set of
+    # resources to describe across all bindings and projected variables
+    if query.p is not None:
+        bindings = evalPart(ctx, query.p)
+        to_describe.update(*(set(binding.values()) for binding in bindings))
+
+    # Get a CBD for all resources identified to describe
+    for resource in to_describe:
+        graph += ctx.graph.cbd(resource)
+
+    res: Dict[str, Union[str, Graph]] = {}
+    res["type_"] = "DESCRIBE"
     res["graph"] = graph
 
     return res
