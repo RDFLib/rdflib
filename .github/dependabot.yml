@@ -27,6 +27,6 @@ updates:
     schedule:
       interval: weekly
   - package-ecosystem: pip
-    directory: docker/unstable/
+    directory: devtools/
     schedule:
       interval: weekly
