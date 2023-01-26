@@ -18,14 +18,14 @@ repos:
   - repo: https://github.com/psf/black
     # WARNING: version should be the same as in `pyproject.toml`
     # Using git ref spec because of https://github.com/psf/black/issues/2493
-    rev: '22.12.0'
+    rev: 'refs/tags/22.12.0:refs/tags/22.12.0'
     hooks:
     - id: black
       pass_filenames: false
       require_serial: true
       args: ["."]
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.3.0
+    rev: 1.3.2
     hooks:
     - id: poetry-check
     - id: poetry-lock
