@@ -16,25 +16,18 @@ for the Shinx documentation about these fields.
 Building
 --------
 
-To build you must have the ``sphinx`` and some additional package installed. 
-The full set of requirements is listed in the ``sphinx-requirements.txt`` file 
-within the :file:`docs/` directory.
-
-To install the requirements for building documentation run:
+To build the documentation you can use Sphinx from within the poetry environment. To do this, run the following commands:
 
 .. code-block:: bash
 
-  pip install -r docs/sphinx-requirements.txt
+    # Install poetry venv
+    poetry install
+
+    # Build the sphinx docs
+    poetry run sphinx-build -b html -d docs/_build/doctrees docs docs/_build/html
 
 
-Once you have all the requirements installed you can run this command in the 
-rdflib root directory:
-
-.. code-block:: bash
-
-  python setup.py build_sphinx
-
-Docs will be generated in :file:`build/sphinx/html/` and API documentation, 
+Docs will be generated in :file:`docs/_build/html` and API documentation, 
 generated from doc-strings, will be placed in :file:`docs/apidocs/`.
 
 There is also a `tox <https://tox.wiki/en/latest/>`_ environment for building 
@@ -51,7 +44,7 @@ API Docs are automatically generated with ``sphinx-apidoc``:
 
 .. code-block:: bash
 
-   sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib examples
+   poetry run sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib examples
 
 Note that ``rdflib.rst`` was manually tweaked so as to not include all
  imports in ``rdflib/__init__.py``.

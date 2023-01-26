@@ -75,7 +75,7 @@ or
 
 or from your locally cloned repository you can install it with one of the following options:
 
-    $ python setup.py install
+    $ poetry install  # installs into a poetry-managed venv
 
 or
 
@@ -182,21 +182,22 @@ Multiple other projects are contained within the RDFlib "family", see <https://g
 
 Run the test suite with `pytest`.
 ```shell
-pytest
+poetry install
+poetry run pytest
 ```
 
 ### Running test coverage on the host with coverage report
 
 Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
-pytest --cov
+poetry run pytest --cov
 ```
 
 ### Viewing test coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
 ```shell
-pytest --cov --cov-report term --cov-report html
+poetry run pytest --cov --cov-report term --cov-report html
 python -m http.server --directory=htmlcov
 ```
 

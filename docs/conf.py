@@ -10,10 +10,16 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import logging
 import os
 import re
 import sys
+
+import sphinx
+
+import rdflib
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -82,6 +88,8 @@ copyright = "2009 - 2022, RDFLib Team"
 
 # Find version. We have to do this because we can't import it in Python 3 until
 # its been automatically converted in the setup process.
+# UPDATE: This function is no longer used; once builds are confirmed to succeed, it
+#         can/should be removed. --JCL 2022-12-30
 def find_version(filename):
     _version_re = re.compile(r'__version__ = "(.*)"')
     for line in open(filename):
@@ -91,7 +99,7 @@ def find_version(filename):
 
 
 # The full version, including alpha/beta/rc tags.
-release = find_version("../rdflib/__init__.py")
+release = rdflib.__version__
 # The short X.Y version.
 version = re.sub("[0-9]+\\.[0-9]\\..*", "\1", release)
 
@@ -258,7 +266,17 @@ suppress_warnings = [
     "ref.python",
 ]
 
+sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
+
+
 nitpicky = True
+
+if sphinx_version < (5,):
+    # Being nitpicky on Sphinx 4.x causes lots of problems.
+    logging.warning(
+        "disabling nitpicky because sphinx is too old: %s", sphinx.__version__
+    )
+    nitpicky = False
 
 nitpick_ignore = [
     ("py:data", "typing.Literal"),
@@ -304,12 +322,5 @@ if sys.version_info < (3, 9):
             ("py:class", "_TripleType"),
             ("py:class", "_TripleOrTriplePathType"),
             ("py:class", "TextIO"),
-        ]
-    )
-
-if sys.version_info < (3, 8):
-    nitpick_ignore.extend(
-        [
-            ("py:class", "importlib_metadata.EntryPoint"),
         ]
     )
