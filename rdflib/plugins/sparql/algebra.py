@@ -511,6 +511,7 @@ def _findVars(x, res: Set[Variable]) -> Optional[CompValue]:  # type: ignore[ret
         elif x.name == "SubSelect":
             if x.projection:
                 res.update(v.var or v.evar for v in x.projection)
+
             return x
 
 
@@ -637,6 +638,7 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
     traverse(q.where, functools.partial(_findVars, res=VS))
 
     # all query types have a where part
+    # depth-first recursive generation of mapped query tree
     M = translateGroupGraphPattern(q.where)
 
     aggregate = False
@@ -679,6 +681,12 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
 
     if not q.projection:
         # select *
+
+        # Find the first child projection in each branch of the mapped query tree,
+        # then include the variables it projects out in our projected variables.
+        for child_projection in _find_first_child_projections(M):
+            VS |= set(child_projection.PV)
+
         PV = list(VS)
     else:
         PV = list()
@@ -729,6 +737,21 @@ def translate(q: CompValue) -> Tuple[CompValue, List[Variable]]:
             M = CompValue("Slice", p=M, start=offset)
 
     return M, PV
+
+
+def _find_first_child_projections(M: CompValue) -> Iterable[CompValue]:
+    """
+    Recursively find the first child instance of a Projection operation in each of
+      the branches of the query execution plan/tree.
+    """
+
+    for child_op in M.values():
+        if isinstance(child_op, CompValue):
+            if child_op.name == "Project":
+                yield child_op
+            else:
+                for child_projection in _find_first_child_projections(child_op):
+                    yield child_projection
 
 
 # type error: Missing return statement
