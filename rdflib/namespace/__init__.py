@@ -842,7 +842,7 @@ def insert_strie(strie: Dict[str, Any], trie: Dict[str, Any], value: str) -> Non
 
 
 def get_longest_namespace(trie: Dict[str, Any], value: str) -> Optional[str]:
-    for key in trie:
+    for key in trie.keys():
         if value.startswith(key):
             out = get_longest_namespace(trie[key], value)
             if out is None:
