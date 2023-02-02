@@ -335,7 +335,11 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
     """
 
     if graphPattern.name == "SubSelect":
-        return ToMultiSet(translate(graphPattern)[0])
+        # The first output from translate cannot be None for a subselect query
+        # as it can only be None for certain DESCRIBE queries.
+        # type error: Argument 1 to "ToMultiSet" has incompatible type "Optional[CompValue]";
+        #   expected "Union[List[Dict[Variable, str]], CompValue]"
+        return ToMultiSet(translate(graphPattern)[0])  # type: ignore[arg-type]
 
     if not graphPattern.part:
         graphPattern.part = []  # empty { }

@@ -946,7 +946,7 @@ def test_queries(
 )
 def test_sparql_describe(
     query_string: str,
-    expected_subjects: set[Identifier],
+    expected_subjects: set,
     expected_size: int,
     rdfs_graph: Graph,
 ) -> None:

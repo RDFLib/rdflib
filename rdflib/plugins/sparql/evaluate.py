@@ -588,7 +588,8 @@ def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]
 def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
     # Create a result graph and bind namespaces from the graph being queried
     graph = Graph()
-    for pfx, ns in ctx.graph.namespaces():
+    # type error: Item "None" of "Optional[Graph]" has no attribute "namespaces"
+    for pfx, ns in ctx.graph.namespaces():  # type: ignore[union-attr]
         graph.bind(pfx, ns)
 
     to_describe = set()
@@ -609,7 +610,8 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 
     # Get a CBD for all resources identified to describe
     for resource in to_describe:
-        graph += ctx.graph.cbd(resource)
+        # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
+        graph += ctx.graph.cbd(resource)  # type: ignore[union-attr]
 
     res: Dict[str, Union[str, Graph]] = {}
     res["type_"] = "DESCRIBE"
