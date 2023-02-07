@@ -867,3 +867,95 @@ def test_queries(
     result = rdfs_graph.query(query)
     logging.debug("result = %s", result)
     assert expected_bindings == result.bindings
+
+
+@pytest.mark.parametrize(
+    ["query_string", "expected_subjects", "expected_size"],
+    [
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class
+            """,
+            {RDFS.Class},
+            5,
+            id="1-explicit",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="2-explict",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf owl:Class
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="3-explict-1-missing",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?prop
+            WHERE {
+                ?prop a rdf:Property
+            }
+            """,
+            {
+                RDFS.seeAlso,
+                RDFS.member,
+                RDFS.subPropertyOf,
+                RDFS.subClassOf,
+                RDFS.domain,
+                RDFS.range,
+                RDFS.label,
+                RDFS.comment,
+                RDFS.isDefinedBy,
+            },
+            55,
+            id="1-var",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype},
+            5,
+            id="2-var-1-projected",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s rdfs:Class
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype, RDFS.Class},
+            10,
+            id="2-var-1-projected-1-explicit",
+        ),
+        pytest.param("DESCRIBE ?s", set(), 0, id="empty"),
+    ],
+)
+def test_sparql_describe(
+    query_string: str,
+    expected_subjects: set,
+    expected_size: int,
+    rdfs_graph: Graph,
+) -> None:
+    """
+    Check results of DESCRIBE queries against rdfs.ttl to ensure
+    the subjects described and the number of triples returned are correct.
+    """
+    r = rdfs_graph.query(query_string)
+    assert r.graph is not None
+    subjects = {s for s in r.graph.subjects() if not isinstance(s, BNode)}
+    assert subjects == expected_subjects
+    assert len(r.graph) == expected_size
