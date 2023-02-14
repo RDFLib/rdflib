@@ -7,7 +7,7 @@ ci:
 # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 repos:
   - repo: https://github.com/pycqa/isort
-    rev: 5.11.4
+    rev: 5.11.5
     hooks:
     - id: isort
       # This is here to defer file selection to isort which will do it based on
