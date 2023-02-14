@@ -21,6 +21,48 @@ from rdflib import Graph, URIRef
 from rdflib.query import ResultRow
 
 
+def test_nested_filter_outer_binding_propagation() -> None:
+    expected: Set[URIRef] = {
+        URIRef("http://example.org/Superclass"),
+    }
+    computed: Set[URIRef] = set()
+    graph_data = """\
+@prefix ex: <http://example.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:Superclass
+  a owl:Class ;
+.
+ex:Subclass1
+  a owl:Class ;
+  rdfs:subClassOf ex:Superclass ;
+.
+ex:Subclass2
+  a owl:Class ;
+  rdfs:subClassOf ex:Superclass ;
+  owl:deprecated true ;
+.
+"""
+    query = """\
+SELECT ?class
+WHERE {
+  ?class a owl:Class .
+  FILTER EXISTS {
+    ?subclass rdfs:subClassOf ?class .
+    FILTER NOT EXISTS { ?subclass owl:deprecated true }
+  }
+}
+"""
+    graph = Graph()
+    graph.parse(data=graph_data)
+    for result in graph.query(query):
+        assert isinstance(result, ResultRow)
+        assert isinstance(result[0], URIRef)
+        computed.add(result[0])
+    assert expected == computed
+
+
 def test_nested_filter_outermost_binding_propagation() -> None:
     """
     This test implements a query that requires functionality of nested FILTER NOT EXISTS query components.
