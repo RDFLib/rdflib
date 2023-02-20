@@ -105,7 +105,10 @@ pep8-naming = ["-N802", "-N806", "-N815"]
 pycodestyle = ["-E402"]
 [tool.flakeheaven.exceptions."test/utils/namespace/_*"]
 pep8-naming = ["-N815"]
-
+[tool.flakeheaven.exceptions."rdflib/plugins/parsers/rdfxml.py"]
+pep8-naming = ["-N802"]
+[tool.flakeheaven.exceptions."rdflib/plugins/parsers/trix.py"]
+pep8-naming = ["-N802"]
 
 [tool.black]
 required-version = "22.12.0"
