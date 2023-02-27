@@ -149,6 +149,25 @@ def test_graph_bind_namespaces(
         assert namespaces is None
 
 
+def test_graph_bind_cc():
+    """Test binding Prefix.cc.
+
+    Note that since prefix.cc is an inherently dynamic resource,
+    that checking an exact equivalence is not applicable.
+    """
+    graph = Graph(bind_namespaces="cc")
+    namespaces = {*graph.namespaces()}
+    for namespaces in [
+        _NAMESPACE_PREFIXES_CORE,
+        _NAMESPACE_PREFIXES_RDFLIB,
+        {"go", "atcc"}, # represent some prefixes in Prefix.cc
+    ]:
+        assert all(
+            ns in namespaces
+            for ns in _NAMESPACE_PREFIXES_CORE
+        )
+
+
 @pytest.mark.parametrize(
     ["selector", "expected_result"],
     [

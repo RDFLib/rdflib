@@ -424,9 +424,7 @@ class NamespaceManager(object):
             for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
             # bind any prefix that can be found with lookups to prefix.cc
-            response = urlopen("https://prefix.cc/context.jsonld")
-            context = json.loads(response.read())
-            for prefix, ns in context["@context"].items():
+            for prefix, ns in _get_prefix_cc().items():
                 # note that prefixes are lowercase-only in prefix.cc
                 self.bind(prefix, ns)
         elif bind_namespaces == "core":
@@ -726,6 +724,13 @@ class NamespaceManager(object):
             if uri and uri[-1] == "#" and result[-1] != "#":
                 result = "%s#" % result
         return URIRef(result)
+
+
+def _get_prefix_cc():
+    """Get the context from Prefix.cc."""
+    response = urlopen("https://prefix.cc/context.jsonld")
+    context = json.loads(response.read())
+    return context["@context"]
 
 
 # From: http://www.w3.org/TR/REC-xml#NT-CombiningChar
