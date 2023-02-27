@@ -6,8 +6,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from unicodedata import category
-from urllib.request import urlopen
 from urllib.parse import urldefrag, urljoin
+from urllib.request import urlopen
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
 
