@@ -6,6 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from unicodedata import category
+from urllib.request import urlopen
 from urllib.parse import urldefrag, urljoin
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
@@ -418,11 +419,16 @@ class NamespaceManager(object):
             for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
         elif bind_namespaces == "cc":
+            for prefix, ns in _NAMESPACE_PREFIXES_RDFLIB.items():
+                self.bind(prefix, ns)
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
+                self.bind(prefix, ns)
             # bind any prefix that can be found with lookups to prefix.cc
-            # first bind core and rdflib ones
-            # work out remainder - namespaces without prefixes
-            # only look those ones up
-            raise NotImplementedError("Haven't got to this option yet")
+            response = urlopen("https://prefix.cc/context.jsonld")
+            context = json.loads(response.read())
+            for prefix, ns in context["@context"].items():
+                # note that prefixes are lowercase-only in prefix.cc
+                self.bind(prefix, ns)
         elif bind_namespaces == "core":
             # bind a few core RDF namespaces - default
             for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
