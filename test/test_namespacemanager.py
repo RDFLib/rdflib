@@ -160,12 +160,9 @@ def test_graph_bind_cc():
     for namespaces in [
         _NAMESPACE_PREFIXES_CORE,
         _NAMESPACE_PREFIXES_RDFLIB,
-        {"go", "atcc"}, # represent some prefixes in Prefix.cc
+        {"go", "atcc"},  # represent some prefixes in Prefix.cc
     ]:
-        assert all(
-            ns in namespaces
-            for ns in _NAMESPACE_PREFIXES_CORE
-        )
+        assert all(ns in namespaces for ns in _NAMESPACE_PREFIXES_CORE)
 
 
 @pytest.mark.parametrize(
