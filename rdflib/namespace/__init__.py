@@ -373,7 +373,6 @@ class NamespaceManager(object):
         * note this is NOT default behaviour
     * cc:
         * using prefix bindings from prefix.cc which is a online prefixes database
-        * not implemented yet - this is aspirational
 
     See the
     Sample usage
