@@ -26,4 +26,4 @@ if sys.version_info >= (3, 8):
 else:
     from typing_extensions import Literal as PyLiteral
 
-_NamespaceSetString = PyLiteral["core", "rdflib", "none"]
+_NamespaceSetString = PyLiteral["core", "rdflib", "none", "cc"]
