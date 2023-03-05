@@ -279,6 +279,7 @@ if sphinx_version < (5,):
     nitpicky = False
 
 nitpick_ignore = [
+    ("py:class", "urllib.response.addinfourl"),
     ("py:data", "typing.Literal"),
     ("py:class", "typing.IO[bytes]"),
     ("py:class", "http.client.HTTPMessage"),

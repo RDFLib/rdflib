@@ -3,12 +3,15 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 (ndjson) files, into Conjunctive. The store that backs the graph *must* be able to
 handle contexts, i.e. multiple graphs.
 """
+from __future__ import annotations
+
 import json
 import warnings
-from typing import List, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
-from rdflib import BNode, ConjunctiveGraph, Literal, URIRef
-from rdflib.parser import Parser
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.parser import FileInputSource, InputSource, Parser
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["HextuplesParser"]
 
@@ -22,7 +25,7 @@ class HextuplesParser(Parser):
     def __init__(self):
         pass
 
-    def _load_json_line(self, line: str):
+    def _load_json_line(self, line: str) -> List[Optional[Any]]:
         # this complex handing is because the 'value' component is
         # allowed to be "" but not None
         # all other "" values are treated as None
@@ -32,7 +35,9 @@ class HextuplesParser(Parser):
             ret2[2] = ""
         return ret2
 
-    def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
+    def _parse_hextuple(
+        self, cg: ConjunctiveGraph, tup: List[Union[str, None]]
+    ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
@@ -71,7 +76,8 @@ class HextuplesParser(Parser):
         else:
             cg.add((s, p, o))
 
-    def parse(self, source, graph, **kwargs):
+    # type error: Signature of "parse" incompatible with supertype "Parser"
+    def parse(self, source: InputSource, graph: Graph, **kwargs: Any) -> None:  # type: ignore[override]
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -88,10 +94,17 @@ class HextuplesParser(Parser):
 
         # handle different source types - only file and string (data) for now
         if hasattr(source, "file"):
-            with open(source.file.name, encoding="utf-8") as fp:
-                for l in fp:
+            if TYPE_CHECKING:
+                assert isinstance(source, FileInputSource)
+            # type error: Item "TextIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
+            # type error: Item "RawIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
+            # type error: Item "BufferedIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
+            with open(source.file.name, encoding="utf-8") as fp:  # type: ignore[union-attr]
+                for l in fp:  # noqa: E741
                     self._parse_hextuple(cg, self._load_json_line(l))
         elif hasattr(source, "_InputSource__bytefile"):
             if hasattr(source._InputSource__bytefile, "wrapped"):
-                for l in source._InputSource__bytefile.wrapped.strip().splitlines():
+                for (
+                    l  # noqa: E741
+                ) in source._InputSource__bytefile.wrapped.strip().splitlines():
                     self._parse_hextuple(cg, self._load_json_line(l))
