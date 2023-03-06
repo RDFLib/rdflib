@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import Any, List, Optional, Union
+from io import TextIOWrapper
+from typing import Any, BinaryIO, List, Optional, TextIO, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.parser import InputSource, Parser
@@ -92,10 +93,12 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
-        stream = source.getCharacterStream()
-        if stream is None:
-            stream = source.getByteStream()
-            if stream is None:
+        text_stream: Optional[TextIO] = source.getCharacterStream()
+        if text_stream is None:
+            binary_stream: Optional[BinaryIO] = source.getByteStream()
+            if binary_stream is None:
                 raise ValueError(f"Unsupported source type: {type(source)}")
             else:
-                stream = stream.decode("utf-8")
+                text_stream = TextIOWrapper(binary_stream, encoding="utf-8")
+        for l in text_stream:  # noqa: E741
+            self._parse_hextuple(cg, self._load_json_line(l))

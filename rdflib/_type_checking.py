@@ -16,18 +16,28 @@ be imported inside ``TYPE_CHECKING`` guards.
 from __future__ import annotations
 
 import sys
-from typing import Callable
+from typing import Any, BinaryIO, Callable
 from urllib.request import Request
 from urllib.response import addinfourl
 
-__all__ = ["_NamespaceSetString", "_URLOpenerType"]
+__all__ = ["_NamespaceSetString", "_URLOpenerType", "_FileURIOpener"]
 
 
 if sys.version_info >= (3, 8):
-    from typing import Literal as PyLiteral
+    from typing import Literal as PyLiteral, Protocol
 else:
-    from typing_extensions import Literal as PyLiteral
+    from typing_extensions import Literal as PyLiteral, Protocol
 
 _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
 _URLOpenerType = Callable[[Request], addinfourl]
-# _URLOpenerT = TypeVar("_URLOpenerT", bound=_URLOpenerType)
+_FileURIOpener = Callable[[str], BinaryIO]
+
+
+# class _URLOpenerType(Protocol):
+#     def __call__(self, url: Request) -> addinfourl:
+#         ...
+
+
+# class _FileURIOpener(Protocol):
+#     def __call__(self, url: str) -> BinaryIO:
+#         ...

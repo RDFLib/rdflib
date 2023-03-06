@@ -29,7 +29,7 @@ from typing import (
     Union,
 )
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname
+from urllib.request import Request
 from xml.sax import xmlreader
 
 import rdflib.util
@@ -38,7 +38,7 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
 # from ._network import _URLOPENER, _get_accept_header
-from rdflib.uri_handling import _get_accept_header, _urlopen_shim
+from rdflib.uri_handling import _get_accept_header, _urlopen_shim, _fileuri_open_shim
 
 if TYPE_CHECKING:
     from email.message import Message
@@ -430,14 +430,15 @@ def _create_input_source_from_location(
 
     absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
-    # if absolute_location.startswith("file:///"):
-    #     filename = url2pathname(absolute_location.replace("file:///", "/"))
-    #     # file = open(filename, "rb")
-    #     file = _urlopen_shim(Request(absolute_location))
-    #     file.name = filename
-    # else:
-    #     input_source = URLInputSource(absolute_location, format)
-    input_source = URLInputSource(absolute_location, format)
+    if absolute_location.startswith("file:///"):
+        file = _fileuri_open_shim(absolute_location)
+        # filename = url2pathname(absolute_location.replace("file:///", "/"))
+        # # file = open(filename, "rb")
+        # file = _urlopen_shim(Request(absolute_location))
+        # file.name = filename
+    else:
+        input_source = URLInputSource(absolute_location, format)
+    # input_source = URLInputSource(absolute_location, format)
 
     auto_close = True
     # publicID = publicID or absolute_location  # Further to fix

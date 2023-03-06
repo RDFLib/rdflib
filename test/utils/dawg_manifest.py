@@ -98,7 +98,7 @@ class ManifestEntry:
 
 @dataclass
 class Manifest:
-    uri_mapper: URIMapper
+    uri_mapper: Optional[URIMapper]
     graph: Graph
     identifier: IdentifiedNode
     report_prefix: Optional[str] = None
@@ -106,7 +106,7 @@ class Manifest:
     @classmethod
     def from_graph(
         cls,
-        uri_mapper: URIMapper,
+        uri_mapper: Optional[URIMapper],
         graph: Graph,
         report_prefix: Optional[str] = None,
     ) -> Generator["Manifest", None, None]:
@@ -124,7 +124,7 @@ class Manifest:
     @classmethod
     def from_sources(
         cls,
-        uri_mapper: URIMapper,
+        uri_mapper: Optional[URIMapper],
         *sources: GraphSourceType,
         report_prefix: Optional[str] = None,
     ) -> Generator["Manifest", None, None]:
@@ -188,7 +188,7 @@ class Manifest:
 
 
 def params_from_sources(
-    uri_mapper: URIMapper,
+    uri_mapper: Optional[URIMapper],
     entry_type: Type["ManifestEntryT"],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,

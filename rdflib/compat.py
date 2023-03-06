@@ -19,10 +19,6 @@ def ascii(stream):
     return codecs.getreader("ascii")(stream)
 
 
-def bopen(*args, **kwargs):
-    return open(*args, mode="rb", **kwargs)
-
-
 long_type = int
 
 

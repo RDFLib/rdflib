@@ -2,7 +2,7 @@ from __future__ import annotations
 
 # from rdflib._provisional.uri_handling import URI_MAPPER
 import urllib.request
-from typing import TYPE_CHECKING, Callable, Optional, Union
+from typing import TYPE_CHECKING, BinaryIO, Optional
 from urllib.error import HTTPError
 
 if TYPE_CHECKING:
@@ -11,7 +11,8 @@ if TYPE_CHECKING:
     from urllib.response import addinfourl
 
     # from rdflib import Graph
-    _URLOpenerType = Callable[[Request], addinfourl]
+    # _URLOpenerType = Callable[[Request], addinfourl]
+    from rdflib._type_checking import _FileURIOpener, _URLOpenerType
 
 
 __all__ = ["_get_accept_header", "URL_OPENER", "_urlopen_shim"]
@@ -35,7 +36,34 @@ __all__ = ["_get_accept_header", "URL_OPENER", "_urlopen_shim"]
 #     )
 
 
-def _urlopen(req: Request) -> addinfourl:
+def _fileuri_open(url: str) -> BinaryIO:
+    if not url.startswith("file://"):
+        raise ValueError(f"invalid file URI {url}")
+    url_path = url[7:]
+    path = urllib.request.url2pathname(url_path)
+    return open(path, "rb")
+
+
+FILEURI_OPENER: _FileURIOpener = _fileuri_open
+
+
+def _fileuri_open_shim(
+    file_uri: str, *, _opener: Optional[_FileURIOpener] = None
+) -> BinaryIO:
+    """
+    Shim that either calls the provided URL opener if it is not `None` or
+    `URL_OPENER` if the provided URL opener is `None`.
+
+    :param url_opener: The URL opener to use if it is not `None`.
+    :param req: The request to open.
+    :return: The response which is the same as :py:func:`urllib.request.urlopen`
+    """
+    if _opener is None:
+        return FILEURI_OPENER(file_uri)
+    return _opener(file_uri)
+
+
+def _urlopen(url: Request) -> addinfourl:
     """
     Wrapper around urllib.request.urlopen that handles HTTP 308 redirects.
 
@@ -46,15 +74,15 @@ def _urlopen(req: Request) -> addinfourl:
         responses.
     """
     try:
-        return urllib.request.urlopen(req)
+        return urllib.request.urlopen(url)
     except HTTPError as ex:
         # 308 (Permanent Redirect) is not supported by current python version(s)
         # See https://bugs.python.org/issue40321
         # This custom error handling should be removed once all
         # supported versions of python support 308.
         if ex.code == 308:
-            req.full_url = ex.headers.get("Location")
-            return _urlopen(req)
+            url.full_url = ex.headers.get("Location")
+            return _urlopen(url)
         else:
             raise
 
@@ -67,7 +95,7 @@ The function used by RDFLib to open URLs. This is compatible with
 
 
 def _urlopen_shim(
-    req: Request, *, url_opener: Optional[_URLOpenerType] = None
+    req: Request, *, _opener: Optional[_URLOpenerType] = None
 ) -> addinfourl:
     """
     Shim that either calls the provided URL opener if it is not `None` or
@@ -77,9 +105,9 @@ def _urlopen_shim(
     :param req: The request to open.
     :return: The response which is the same as :py:func:`urllib.request.urlopen`
     """
-    if url_opener is None:
+    if _opener is None:
         return URL_OPENER(req)
-    return url_opener(req)
+    return _opener(req)
 
 
 # _URLOPENER: _URLOpenerType = _urlopen

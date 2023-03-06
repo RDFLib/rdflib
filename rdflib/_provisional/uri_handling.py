@@ -4,12 +4,14 @@ import abc
 from dataclasses import dataclass, field
 from typing import (
     TYPE_CHECKING,
+    Any,
     Callable,
     MutableMapping,
     MutableSequence,
     Optional,
     Pattern,
     Tuple,
+    TypeVar,
     Union,
 )
 from urllib.error import URLError
@@ -19,13 +21,18 @@ from urllib.error import URLError
 if TYPE_CHECKING:
     # # from http.client import HTTPMessage, HTTPResponse
     from urllib.request import Request
-    from urllib.response import addinfourl
 
-    from rdflib._type_checking import _URLOpenerType
+    # from urllib.response import addinfourl
+
+    from rdflib._type_checking import _FileURIOpener, _URLOpenerType
 
     # # from rdflib import Graph
     # _URLOpenerType = Callable[[Request], addinfourl]
 
+    _URIOpenType = Union[_URLOpenerType, _FileURIOpener]
+    _URIOpenT = TypeVar("_URIOpenT", bound=_URIOpenType)
+    _URIArgType = Union[str, Request]
+    _URIArgT = TypeVar("_URIArgT", bound=_URIArgType)
 
 # class URIForbiddenError(ValueError):
 #     """
@@ -39,6 +46,19 @@ if TYPE_CHECKING:
 #             reason,
 #             *args,
 #         )
+
+# def _wrap_opener(urlopener: _URIOpenT, pre: Callable[[Union[Request, str]], Union[Request, str]]) -> _URIOpenT:
+#         def _wrapper(url: Union[Request, str]) -> Any:
+#             if isinstance(url, Request):
+#                 uri_string = url.full_url
+#             else:
+#                 uri_string = url
+#             result = self.check_uri(uri_string)
+#             if isinstance(result, URIFilterForbidden):
+#                 raise URIForbiddenError(result.reason, uri_string)
+#             return urlopener(url, *args, **kwargs)  # type: ignore
+
+#         return _wrapper  # type: ignore
 
 
 class URIForbiddenError(URLError):
@@ -204,6 +224,9 @@ class URIFilterAllowed(URIFilterResult):
     pass
 
 
+URI_FILTER_ALLOWED = URIFilterAllowed()
+
+
 @dataclass
 class URIFilterForbidden(URIFilterResult):
     """
@@ -253,14 +276,18 @@ class URIFitler(abc.ABC):
         """
         ...
 
-    def wrap_opener(self, urlopener: _URLOpenerType) -> _URLOpenerType:
-        def _wrapper(request: Request) -> addinfourl:
-            result = self.check_uri(request.full_url)
+    def wrap_opener(self, urlopener: _URIOpenT) -> _URIOpenT:
+        def _wrapper(url: Union[Request, str], *args, **kwargs) -> Any:
+            if isinstance(url, Request):
+                uri_string = url.full_url
+            else:
+                uri_string = url
+            result = self.check_uri(uri_string)
             if isinstance(result, URIFilterForbidden):
-                raise URIForbiddenError(result.reason, request.full_url)
-            return urlopener(request)
+                raise URIForbiddenError(result.reason, uri_string)
+            return urlopener(url, *args, **kwargs)  # type: ignore
 
-        return _wrapper
+        return _wrapper  # type: ignore
 
 
 # class MappedURI(abc.ABC):
@@ -307,14 +334,14 @@ class URIMapper(abc.ABC):
         mapped_uri = self.map_uri(uri)
         return uri if mapped_uri is None else mapped_uri
 
-    def wrap_opener(self, urlopener: _URLOpenerType) -> _URLOpenerType:
-        def _wrapper(request: Request) -> addinfourl:
-            mapped_uri = self.map_uri(request.full_url)
-            if mapped_uri is not None:
-                request = _copy_request(request, url=mapped_uri)
-            return urlopener(request)
+    # def wrap_opener(self, urlopener: _URLOpenerType) -> _URLOpenerType:
+    #     def _wrapper(request: Request) -> addinfourl:
+    #         mapped_uri = self.map_uri(request.full_url)
+    #         if mapped_uri is not None:
+    #             request = _copy_request(request, url=mapped_uri)
+    #         return urlopener(request)
 
-        return _wrapper
+    #     return _wrapper
 
 
 @dataclass
@@ -330,8 +357,8 @@ class URIFitlerSequence(URIFitler):
     :param default_result: The result to return if no filters return a result.
     """
 
+    default_result: URIFilterResult = URI_FILTER_ALLOWED
     filters: MutableSequence[OptionalURIFitler] = field(default_factory=list)
-    default_result: URIFilterResult = field(default_factory=URIFilterAllowed)
 
     def check_uri(self, uri: str) -> URIFilterResult:
         """
@@ -347,9 +374,18 @@ class URIFitlerSequence(URIFitler):
                 return result
         return self.default_result
 
+    def with_filter(self, filter: OptionalURIFitler):
+        """
+        Adds a filter to the sequence.
+
+        :param filter: The filter to add.
+        """
+        self.filters.append(filter)
+        return self
+
 
 @dataclass
-class GenericURIFitler(OptionalURIFitler):
+class GenericOptionalURIFitler(OptionalURIFitler):
     """
     A generic URI filter that uses a callable to determine if a URI is allowed
     or forbidden.
@@ -361,10 +397,10 @@ class GenericURIFitler(OptionalURIFitler):
         URI.
     """
 
-    filter: Callable[[str, Optional[str]], Optional[URIFilterResult]]
+    filter: Callable[[str], Optional[URIFilterResult]]
 
     def check_uri(
-        self, uri: str, mime_type: Optional[str] = None
+        self, uri: str
     ) -> Optional[URIFilterResult]:
         """
         Determines if an URI is allowed or forbidden.
@@ -375,11 +411,11 @@ class GenericURIFitler(OptionalURIFitler):
             :py:obj:`None` if the filter makes no pronouncement on the supplied
             URI.
         """
-        return self.filter(uri, mime_type)
+        return self.filter(uri)
 
     @classmethod
     def from_regex(
-        cls, pattern: Pattern[str], result: URIFilterResult
+        cls, pattern: Pattern[str], result: Optional[URIFilterResult]
     ) -> OptionalURIFitler:
         """
         Creates a URI filter from a regular expression.
@@ -388,25 +424,23 @@ class GenericURIFitler(OptionalURIFitler):
         :param result: The result to return if the URI matches the regular
             expression.
         """
-        return GenericURIFitler(
-            lambda uri, mime_type: result if pattern.match(uri) else None
-        )
+        return cls(lambda uri: result if pattern.match(uri) else None)
 
     @classmethod
-    def from_prefix(cls, prefix: str, result: URIFilterResult) -> OptionalURIFitler:
+    def from_prefix(
+        cls, prefix: str, result: Optional[URIFilterResult]
+    ) -> OptionalURIFitler:
         """
         Creates a URI filter from a prefix.
 
         :param prefix: The prefix to match against.
         :param result: The result to return if the URI starts with the prefix.
         """
-        return GenericURIFitler(
-            lambda uri, mime_type: result if uri.startswith(prefix) else None
-        )
+        return cls(lambda uri: result if uri.startswith(prefix) else None)
 
     @classmethod
     def from_string(
-        cls, string: Pattern[str], result: URIFilterResult
+        cls, string: str, result: Optional[URIFilterResult]
     ) -> OptionalURIFitler:
         """
         Creates a URI filter from a string.
@@ -416,9 +450,55 @@ class GenericURIFitler(OptionalURIFitler):
         :param string: The string to match against.
         :param result: The result to return if the URI is equal to the string.
         """
-        return GenericURIFitler(
-            lambda uri, mime_type: result if uri == string else None
-        )
+        return cls(lambda uri: result if uri == string else None)
+
+
+class GenericURIFitler(URIFitlerSequence):
+    def with_callable(
+        self, filter: Callable[[str], Optional[URIFilterResult]]
+    ) -> GenericURIFitler:
+        """
+        Adds a callable filter to the sequence.
+
+        :param filter: A callable that takes a URI and returns
+            :py:class:`URIFilterAllowed` if the URI is allowed,
+            :py:class:`URIFilterForbidden` if the URI is forbidden, or
+            :py:obj:`None` if the filter makes no pronouncement on the supplied
+            URI.
+        """
+        return self.with_filter(GenericOptionalURIFitler(filter))
+
+    def with_regex(
+        self, pattern: Pattern[str], result: URIFilterResult
+    ) -> GenericURIFitler:
+        """
+        Adds a regular expression filter to the sequence.
+
+        :param pattern: The regular expression to match against.
+        :param result: The result to return if the URI matches the regular
+            expression.
+        """
+        return self.with_filter(GenericOptionalURIFitler.from_regex(pattern, result))
+
+    def with_prefix(self, prefix: str, result: URIFilterResult) -> GenericURIFitler:
+        """
+        Adds a prefix filter to the sequence.
+
+        :param prefix: The prefix to match against.
+        :param result: The result to return if the URI starts with the prefix.
+        """
+        return self.with_filter(GenericOptionalURIFitler.from_prefix(prefix, result))
+
+    def with_string(self, string: str, result: URIFilterResult) -> GenericURIFitler:
+        """
+        Adds a string filter to the sequence.
+
+        This is useful for allowlisting or denylisting a specific URI.
+
+        :param string: The string to match against.
+        :param result: The result to return if the URI is equal to the string.
+        """
+        return self.with_filter(GenericOptionalURIFitler.from_string(string, result))
 
 
 def _replace_prefix(value: str, prefix: str, replacement: str) -> Optional[str]:
@@ -426,7 +506,7 @@ def _replace_prefix(value: str, prefix: str, replacement: str) -> Optional[str]:
     Replaces the prefix of a string with a replacement.
     """
     if value.startswith(prefix):
-        return f"{replacement}:{value[len(prefix):]}"
+        return f"{replacement}{value[len(prefix):]}"
     return None
 
 
@@ -435,6 +515,13 @@ class GenericURIMapper(URIMapper):
     """
     A generic URI mapper that maps a URI to another URI based on fixed string
     mappings or prefix mappings.
+
+    The mapper first tries to find an exact mapping for the URI in
+    ``uri_mappings`` and if that fails it tries to find a prefix mapping in
+    ``prefix_mappings``.
+
+    The first matching mapping is used and the result from that mapping is not
+    mapped further.s
 
     :param uri_mappings: A mapping of URIs to URIs.
     :param prefix_mappings: A sequence of prefix mappings. Each prefix mapping
@@ -445,7 +532,7 @@ class GenericURIMapper(URIMapper):
     uri_mappings: MutableMapping[str, str] = field(default_factory=dict)
     prefix_mappings: MutableSequence[Tuple[str, str]] = field(default_factory=list)
 
-    def map_uri(self, uri: str) -> str:
+    def map_uri(self, uri: str) -> Optional[str]:
         """
         Maps one URI to another.
 
@@ -461,7 +548,7 @@ class GenericURIMapper(URIMapper):
             replaced = _replace_prefix(uri, prefix, replacement)
             if replaced is not None:
                 return replaced
-        return uri
+        return None
 
 
 # @dataclass
@@ -535,3 +622,17 @@ class GenericURIMapper(URIMapper):
 #     opener_director = OpenerDirector()
 #     result = opener_director.open("http://example.com")
 #     result.read()
+
+__all__ = [
+    "URIForbiddenError",
+    "URIFilterResult",
+    "URIFilterAllowed",
+    "URI_FILTER_ALLOWED",
+    "URIFilterForbidden",
+    "OptionalURIFitler",
+    "URIFitler",
+    "URIMapper",
+    "URIFitlerSequence",
+    "GenericOptionalURIFitler",
+    "GenericURIMapper",
+]

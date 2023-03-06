@@ -158,7 +158,7 @@ MARK_DICT = {
 @pytest.mark.parametrize(
     ["manifest_entry"],
     params_from_sources(
-        MAPPER,
+        None,
         ManifestEntry,
         LOCAL_BASE_DIR / "manifest.ttl",
         mark_dict=MARK_DICT,
