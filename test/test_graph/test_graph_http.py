@@ -108,6 +108,8 @@ class TestGraphHTTP:
 
         with ctx_http_server(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             for format in ("xml", "n3", "nt"):
                 graph = Graph()
@@ -121,6 +123,8 @@ class TestGraphHTTP:
 
         with ctx_http_server(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             graph = Graph()
             graph.parse(url)

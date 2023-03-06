@@ -218,8 +218,7 @@ class GraphHelper:
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
             gn_id: Identifier
             if isinstance(graph, Dataset):
-                # type error: Subclass of "Graph" and "Identifier" cannot exist: would have incompatible method signatures
-                assert isinstance(gn, Identifier)  # type: ignore[unreachable]
+                assert isinstance(gn, Identifier)
                 gn_id = gn  # type: ignore[unreachable]
             elif isinstance(graph, ConjunctiveGraph):
                 assert isinstance(gn, Graph)
