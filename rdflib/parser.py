@@ -372,7 +372,7 @@ def create_input_source(
                 location = str(source)
             elif isinstance(source, bytes):
                 data = source
-            elif hasattr(source, "read") and not isinstance(source, Namespace):  # type: ignore[unreachable]
+            elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):

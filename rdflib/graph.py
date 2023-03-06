@@ -1536,8 +1536,7 @@ class Graph(Node):
             except NotImplementedError:
                 pass  # store has no own implementation
 
-        # type error: Subclass of "str" and "Result" cannot exist: would have incompatible method signatures
-        if not isinstance(result, query.Result):  # type: ignore[unreachable]
+        if not isinstance(result, query.Result):
             result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)

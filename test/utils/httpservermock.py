@@ -191,6 +191,8 @@ class ServedBaseHTTPServerMock(
     @property
     def address_string(self) -> str:
         (host, port) = self.server.server_address
+        if isinstance(host, (bytes, bytearray)):
+            host = host.decode("utf-8")
         return f"{host}:{port}"
 
     @property
