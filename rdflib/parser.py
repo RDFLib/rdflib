@@ -38,7 +38,7 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
 # from ._network import _URLOPENER, _get_accept_header
-from rdflib.uri_handling import _get_accept_header, _urlopen_shim, _fileuri_open_shim
+from rdflib.uri_handling import _fileuri_open_shim, _get_accept_header, _urlopen_shim
 
 if TYPE_CHECKING:
     from email.message import Message

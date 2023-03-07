@@ -23,7 +23,6 @@ if TYPE_CHECKING:
     from urllib.request import Request
 
     # from urllib.response import addinfourl
-
     from rdflib._type_checking import _FileURIOpener, _URLOpenerType
 
     # # from rdflib import Graph
@@ -399,9 +398,7 @@ class GenericOptionalURIFitler(OptionalURIFitler):
 
     filter: Callable[[str], Optional[URIFilterResult]]
 
-    def check_uri(
-        self, uri: str
-    ) -> Optional[URIFilterResult]:
+    def check_uri(self, uri: str) -> Optional[URIFilterResult]:
         """
         Determines if an URI is allowed or forbidden.
 

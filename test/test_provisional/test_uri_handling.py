@@ -1,15 +1,16 @@
 import re
 from typing import Optional
+
 import pytest
+
 from rdflib._provisional.uri_handling import (
     URI_FILTER_ALLOWED,
     GenericURIFitler,
     GenericURIMapper,
     URIFilterForbidden,
-    URIFitler,
-    URIMapper,
     URIFilterResult,
     URIFitler,
+    URIMapper,
     _replace_prefix,
 )
 
@@ -143,6 +144,10 @@ def test__replace_prefix(
     """
     assert expected_result == _replace_prefix(value, prefix, replacement)
 
-def _file_uri_open()
+
+def _file_uri_open() -> None:
+    pass
+
 
 def test_filter_wrapper() -> None:
+    pass

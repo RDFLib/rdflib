@@ -24,9 +24,11 @@ __all__ = ["_NamespaceSetString", "_URLOpenerType", "_FileURIOpener"]
 
 
 if sys.version_info >= (3, 8):
-    from typing import Literal as PyLiteral, Protocol
+    from typing import Literal as PyLiteral
+    from typing import Protocol
 else:
-    from typing_extensions import Literal as PyLiteral, Protocol
+    from typing_extensions import Literal as PyLiteral
+    from typing_extensions import Protocol
 
 _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
 _URLOpenerType = Callable[[Request], addinfourl]
