@@ -69,7 +69,7 @@ def validate_object_id(object_id):
 def get_target_namespace_elements(g, target_namespace):
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
-        SELECT DISTINCT ?s ?def
+        SELECT ?s (GROUP_CONCAT(DISTINCT ?def) AS ?defs)
         WHERE {
             # all things in the RDF data (anything RDF.type...)
             ?s a ?o .
@@ -82,6 +82,7 @@ def get_target_namespace_elements(g, target_namespace):
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
         }
+        GROUP BY ?s
         """.replace(
         "xxx", target_namespace
     )
