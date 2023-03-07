@@ -29,7 +29,7 @@ from typing import (
     Union,
 )
 from urllib.parse import urljoin
-from urllib.request import Request
+from urllib.request import Request, url2pathname
 from xml.sax import xmlreader
 
 import rdflib.util
@@ -336,6 +336,10 @@ def create_input_source(
     input_source = None
 
     if source is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert location is None
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -348,15 +352,21 @@ def create_input_source(
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
                 input_source = InputSource()
+                logging.info("source = %s, file = %s", source, file)
+
                 if hasattr(source, "encoding"):
+                    logging.info("source has encoding ...")
                     input_source.setCharacterStream(source)
                     input_source.setEncoding(source.encoding)
                     try:
+                        logging.info("trying to get source buffer ...")
                         b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
+                        logging.info("problems getting source buffer", exc_info=True)
                         input_source.setByteStream(source)
                 else:
+                    logging.info("source has no encoding ...")
                     input_source.setByteStream(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
@@ -372,6 +382,10 @@ def create_input_source(
     auto_close = False  # make sure we close all file handles we open
 
     if location is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert source is None
         (
             absolute_location,
             auto_close,
@@ -385,9 +399,17 @@ def create_input_source(
         )
 
     if file is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert data is None
+            assert source is None
         input_source = FileInputSource(file)
 
     if data is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert file is None
+            assert source is None
         if isinstance(data, dict):
             input_source = PythonInputSource(data)
             auto_close = True
@@ -431,9 +453,10 @@ def _create_input_source_from_location(
     absolute_location = URIRef(rdflib.util._iri2uri(location), base=base)
 
     if absolute_location.startswith("file:///"):
-        file = _fileuri_open_shim(absolute_location)
-        # filename = url2pathname(absolute_location.replace("file:///", "/"))
-        # # file = open(filename, "rb")
+        # file = _fileuri_open_shim(absolute_location)
+        logging.debug("absolute_location = %s", absolute_location)
+        filename = url2pathname(absolute_location.replace("file:///", "/"))
+        file = open(filename, "rb")
         # file = _urlopen_shim(Request(absolute_location))
         # file.name = filename
     else:
