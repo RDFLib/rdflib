@@ -587,19 +587,6 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
             # should, but they don't.
             continue
 
-        if stream_check is StreamCheck.CHAR and param in (
-            SourceParam.BINARY_IO,
-            SourceParam.PATH,
-            SourceParam.PATH_STRING,
-            SourceParam.FILE_URI,
-            LocationParam.FILE_URI,
-            LocationParam.HTTP_URI,
-            FileParam.BINARY_IO,
-        ):
-            # These do not have working characther streams. Maybe they
-            # should, but they don't.
-            continue
-
         expected_encoding: Optional[Holder[Optional[str]]]
         if param in (
             SourceParam.PATH,
