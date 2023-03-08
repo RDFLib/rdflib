@@ -631,6 +631,12 @@ def test_get_tree(
                 "http://example.com/%C3%A9#",
             },
         ),
+        (
+            "http://example.com:1231/",
+            {
+                "http://example.com:1231/",
+            },
+        ),
     ],
 )
 def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:

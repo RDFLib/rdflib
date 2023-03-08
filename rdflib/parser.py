@@ -363,6 +363,10 @@ def create_input_source(
     input_source = None
 
     if source is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert location is None
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -379,7 +383,7 @@ def create_input_source(
                     input_source.setCharacterStream(source)
                     input_source.setEncoding(source.encoding)
                     try:
-                        b = file.buffer  # type: ignore[union-attr]
+                        b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
                         input_source.setByteStream(source)
@@ -399,6 +403,10 @@ def create_input_source(
     auto_close = False  # make sure we close all file handles we open
 
     if location is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert source is None
         (
             absolute_location,
             auto_close,
@@ -412,9 +420,17 @@ def create_input_source(
         )
 
     if file is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert data is None
+            assert source is None
         input_source = FileInputSource(file)
 
     if data is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert file is None
+            assert source is None
         if isinstance(data, dict):
             input_source = PythonInputSource(data)
             auto_close = True

@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.utils import GraphHelper, get_unique_plugin_names
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
 from typing import Callable, Optional, Set
 from urllib.error import HTTPError, URLError
 
@@ -272,7 +273,9 @@ def test_graph_intersection(make_graph: GraphFactory):
     assert (michel, likes, cheese) in g1
 
 
-def test_guess_format_for_parse(make_graph: GraphFactory):
+def test_guess_format_for_parse(
+    make_graph: GraphFactory, http_file_server: HTTPFileServer
+):
     graph = make_graph()
 
     # files
@@ -329,10 +332,16 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
     graph.parse(data=rdf, format="xml")
 
     # URI
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(
+            (("Content-Type", "text/html; charset=UTF-8"),),
+            TEST_DATA_DIR / "html5lib_tests1.html",
+        ),
+    )
 
     # only getting HTML
     with pytest.raises(PluginException):
-        graph.parse(location="https://www.google.com")
+        graph.parse(location=file_info.request_url)
 
     try:
         graph.parse(location="http://www.w3.org/ns/adms.ttl")

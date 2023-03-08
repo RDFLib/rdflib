@@ -7,10 +7,11 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from io import TextIOWrapper
+from typing import Any, BinaryIO, List, Optional, TextIO, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.parser import FileInputSource, InputSource, Parser
+from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["HextuplesParser"]
@@ -92,19 +93,19 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
-        # handle different source types - only file and string (data) for now
-        if hasattr(source, "file"):
-            if TYPE_CHECKING:
-                assert isinstance(source, FileInputSource)
-            # type error: Item "TextIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            # type error: Item "RawIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            # type error: Item "BufferedIOBase" of "Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]" has no attribute "name"
-            with open(source.file.name, encoding="utf-8") as fp:  # type: ignore[union-attr]
-                for l in fp:  # noqa: E741
-                    self._parse_hextuple(cg, self._load_json_line(l))
-        elif hasattr(source, "_InputSource__bytefile"):
-            if hasattr(source._InputSource__bytefile, "wrapped"):
-                for (
-                    l  # noqa: E741
-                ) in source._InputSource__bytefile.wrapped.strip().splitlines():
-                    self._parse_hextuple(cg, self._load_json_line(l))
+        text_stream: Optional[TextIO] = source.getCharacterStream()
+        if text_stream is None:
+            binary_stream: Optional[BinaryIO] = source.getByteStream()
+            if binary_stream is None:
+                raise ValueError(
+                    f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
+                )
+            text_stream = TextIOWrapper(binary_stream, encoding="utf-8")
+
+        for line in text_stream:
+            if len(line) == 0 or line.isspace():
+                # Skipping empty lines because this is what was being done before for the first and last lines, albeit in an rather indirect way.
+                # The result is that we accept input that would otherwise be invalid.
+                # Possibly we should just let this result in an error.
+                continue
+            self._parse_hextuple(cg, self._load_json_line(line))
