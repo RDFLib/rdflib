@@ -162,7 +162,6 @@ class FrozenBindings(FrozenDict):
         self.ctx = ctx
 
     def __getitem__(self, key: Union[Identifier, str]) -> Identifier:
-
         if not isinstance(key, Node):
             key = Variable(key)
 
@@ -320,7 +319,6 @@ class QueryContext(object):
                 # Unsupported left operand type for + ("None")
                 self.graph += self.dataset.get_context(source)  # type: ignore[operator]
         else:
-
             if default:
                 _load(self.graph, source)
             else:

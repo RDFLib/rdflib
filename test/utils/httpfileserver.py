@@ -47,7 +47,6 @@ class Resource(ProtoResource):
 
 @dataclass(frozen=True)
 class ProtoRedirectResource(ProtoResource):
-
     status: int
     location_type: LocationType
 
@@ -59,7 +58,6 @@ class ProtoFileResource(ProtoResource):
 
 @dataclass(frozen=True)
 class RedirectResource(Resource, ProtoRedirectResource):
-
     location: str
 
 

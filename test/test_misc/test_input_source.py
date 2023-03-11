@@ -220,7 +220,6 @@ def call_create_input_source(
         input_path = input
 
     with ExitStack() as xstack:
-
         if source_param is not None:
             source = xstack.enter_context(source_param.from_path(input_path))
         if location_param is not None:
@@ -535,7 +534,7 @@ def generate_create_input_source_cases() -> Iterable[ParameterSet]:
             ),
         ).as_pytest_param(marks, id)
 
-    for (param, stream_check, format) in itertools.product(
+    for param, stream_check, format in itertools.product(
         itertools.chain(SourceParam, LocationParam, FileParam, DataParam),
         StreamCheck,
         formats,

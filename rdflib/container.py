@@ -64,10 +64,8 @@ class Container(object):
         self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
 
     def n3(self):
-
         items = []
         for i in range(len(self)):
-
             v = self[i + 1]
             items.append(v)
 
@@ -163,7 +161,6 @@ class Container(object):
         return l_
 
     def end(self):  #
-
         # find end index (1-based) of container
 
         container = self.uri
@@ -194,7 +191,6 @@ class Container(object):
 
         container = self.uri
         for item in other:
-
             end += 1
             self._len += 1
             elem_uri = str(RDF) + "_" + str(end)

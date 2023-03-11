@@ -638,7 +638,6 @@ class Graph(Node):
         """
 
         if isinstance(item, slice):
-
             s, p, o = item.start, item.stop, item.step
             if s is None and p is None and o is None:
                 return self.triples((s, p, o))
@@ -659,7 +658,6 @@ class Graph(Node):
                 return (s, p, o) in self
 
         elif isinstance(item, (Path, Node)):
-
             return self.predicate_objects(item)
 
         else:
@@ -741,7 +739,7 @@ class Graph(Node):
             retval = type(self)()
         except TypeError:
             retval = Graph()
-        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+        for prefix, uri in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
             retval.add(x)
@@ -2548,7 +2546,7 @@ class Seq(object):
         self._list: List[Tuple[int, _ObjectType]]
         _list = self._list = list()
         LI_INDEX = URIRef(str(RDF) + "_")  # noqa: N806
-        for (p, o) in graph.predicate_objects(subject):
+        for p, o in graph.predicate_objects(subject):
             # type error: "Node" has no attribute "startswith"
             if p.startswith(LI_INDEX):  # type: ignore[attr-defined] # != RDF.Seq:
                 # type error: "Node" has no attribute "replace"
@@ -2764,7 +2762,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
             # type error note: unpacking discards type info
             choices = graph.triples_choices((subject, predicate, object_))  # type: ignore[arg-type]
-            for (s, p, o) in choices:
+            for s, p, o in choices:
                 yield s, p, o
 
     def qname(self, uri: str) -> str:

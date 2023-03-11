@@ -58,7 +58,6 @@ class TriXHandler(handler.ContentHandler):
     def startElementNS(
         self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
     ) -> None:
-
         if name[0] != str(TRIXNS):
             self.error(
                 "Only elements in the TriX namespace are allowed. %s!=%s"
@@ -256,7 +255,6 @@ class TriXHandler(handler.ContentHandler):
 def create_parser(store: Store) -> XMLReader:
     parser = make_parser()
     try:
-
         # Workaround for bug in expatreader.py. Needed when
         # expatreader is trying to guess a prefix.
         # type error: "XMLReader" has no attribute "start_namespace_decl"

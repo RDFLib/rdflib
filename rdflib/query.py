@@ -221,7 +221,6 @@ class Result(object):
     """
 
     def __init__(self, type_: str):
-
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
@@ -252,7 +251,6 @@ class Result(object):
             Iterator[Mapping[Variable, Identifier]],
         ],
     ) -> None:
-
         if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []

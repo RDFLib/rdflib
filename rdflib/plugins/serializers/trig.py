@@ -13,7 +13,6 @@ __all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
-
     short_name = "trig"
     indentString = 4 * " "
 

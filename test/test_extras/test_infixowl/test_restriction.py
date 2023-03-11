@@ -21,7 +21,6 @@ def graph():
 
 
 def test_restriction_str_and_hash(graph):
-
     r1 = (
         (Property(EXNS.someProp, baseType=OWL.DatatypeProperty))
         @ some
@@ -49,7 +48,6 @@ def test_restriction_str_and_hash(graph):
 
 
 def test_restriction_range(graph):
-
     r1 = Restriction(
         onProperty=EXNS.hasParent,
         graph=graph,
@@ -67,7 +65,6 @@ def test_restriction_range(graph):
 
 
 def test_restriction_onproperty(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -80,7 +77,6 @@ def test_restriction_onproperty(graph):
 
 
 def test_restriction_inputs_bnode(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -104,7 +100,6 @@ def test_restriction_inputs_bnode(graph):
 
 
 def test_restriction_inputs_with_identifier(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -128,7 +123,6 @@ def test_restriction_inputs_with_identifier(graph):
 
 
 def test_restriction_allvalues(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -150,7 +144,6 @@ def test_restriction_allvalues(graph):
 
 
 def test_restriction_somevalues(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -176,7 +169,6 @@ def test_restriction_somevalues(graph):
 
 
 def test_restriction_hasvalue(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -200,7 +192,6 @@ def test_restriction_hasvalue(graph):
 
 
 def test_restriction_cardinality(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -221,7 +212,6 @@ def test_restriction_cardinality(graph):
 
 
 def test_restriction_cardinality_value(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -248,7 +238,6 @@ def test_restriction_cardinality_value(graph):
 
 @pytest.mark.xfail(reason="_set_cardinality fails to handle Literal")
 def test_restriction_cardinality_set_value(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -279,7 +268,6 @@ def test_restriction_cardinality_set_value(graph):
 
 
 def test_restriction_maxcardinality(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -300,7 +288,6 @@ def test_restriction_maxcardinality(graph):
 
 
 def test_restriction_mincardinality(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -321,7 +308,6 @@ def test_restriction_mincardinality(graph):
 
 
 def test_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -331,7 +317,6 @@ def test_restriction_kind(graph):
 
 
 def test_deleted_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -346,7 +331,6 @@ def test_deleted_restriction_kind(graph):
 
 @pytest.mark.xfail(reason="assert len(validRestrProps) fails to handle None")
 def test_omitted_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,

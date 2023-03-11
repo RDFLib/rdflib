@@ -44,7 +44,6 @@ def test_manchester_syntax(graph):
 
 
 def test_manchester_syntax_parse_with_transientlist(graph):
-
     graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
 
     res = manchesterSyntax(

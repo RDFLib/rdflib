@@ -125,7 +125,6 @@ def evalDeleteWhere(ctx, u):
 
 
 def evalModify(ctx, u):
-
     originalctx = ctx
 
     # Using replaces the dataset for evaluating the where-clause
@@ -133,7 +132,6 @@ def evalModify(ctx, u):
         otherDefault = False
         for d in u.using:
             if d.default:
-
                 if not otherDefault:
                     # replace current default graph
                     dg = Graph()
@@ -274,7 +272,6 @@ def evalUpdate(graph, update, initBindings={}):
     """
 
     for u in update.algebra:
-
         initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
         ctx = QueryContext(graph, initBindings=initBindings)

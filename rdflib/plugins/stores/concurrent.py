@@ -58,7 +58,7 @@ class ConcurrentStore(object):
             if not (s, p, o) in pending_removes:
                 yield s, p, o
 
-        for (s, p, o) in self.__pending_adds:
+        for s, p, o in self.__pending_adds:
             if (
                 (su is None or su == s)
                 and (pr is None or pr == p)
