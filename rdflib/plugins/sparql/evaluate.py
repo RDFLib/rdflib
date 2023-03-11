@@ -125,7 +125,6 @@ def evalLazyJoin(
 
 
 def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, None]:
-
     # TODO: Deal with dict returned from evalPart from GROUP BY
     # only ever for join.p1
 
@@ -174,7 +173,6 @@ def evalLeftJoin(
                 _ebv(join.expr, b)
                 for b in evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)
             ):
-
                 yield a
 
 
@@ -193,7 +191,6 @@ def evalFilter(
 def evalGraph(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     if ctx.dataset is None:
         raise Exception(
             "Non-conjunctive-graph doesn't know about "
@@ -204,9 +201,7 @@ def evalGraph(
     graph = ctx[part.term]
     prev_graph = ctx.graph
     if graph is None:
-
         for graph in ctx.dataset.contexts():
-
             # in SPARQL the default graph is NOT a named graph
             if graph == ctx.dataset.default_context:
                 continue
@@ -241,7 +236,6 @@ def evalValues(
 
 
 def evalMultiset(ctx: QueryContext, part: CompValue):
-
     if part.p.name == "values":
         return evalValues(ctx, part)
 
@@ -249,7 +243,6 @@ def evalMultiset(ctx: QueryContext, part: CompValue):
 
 
 def evalPart(ctx: QueryContext, part: CompValue):
-
     # try custom evaluation functions
     for name, c in CUSTOM_EVALS.items():
         try:
@@ -466,11 +459,9 @@ def evalAggregateJoin(
 def evalOrderBy(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     res = evalPart(ctx, part.p)
 
     for e in reversed(part.expr):
-
         reverse = bool(e.order and e.order == "DESC")
         res = sorted(
             res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
@@ -547,7 +538,6 @@ def evalProject(ctx: QueryContext, project: CompValue):
 
 
 def evalSelectQuery(ctx: QueryContext, query: CompValue):
-
     res = {}
     res["type_"] = "SELECT"
     res["bindings"] = evalPart(ctx, query.p)
@@ -621,7 +611,6 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 
 
 def evalQuery(graph: Graph, query: Query, initBindings, base=None):
-
     initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
@@ -641,7 +630,6 @@ def evalQuery(graph: Graph, query: Query, initBindings, base=None):
         firstDefault = False
         for d in main.datasetClause:
             if d.default:
-
                 if firstDefault:
                     # replace current default graph
                     dg = ctx.dataset.get_context(BNode())

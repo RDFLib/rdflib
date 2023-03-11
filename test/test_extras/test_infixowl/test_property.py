@@ -20,7 +20,6 @@ def graph():
 
 
 def test_property(graph):
-
     comment = Literal("This is a woman")
     verbannotations = ("woman", "Women", "Womens")
     nameannotation = Literal("Woman")

@@ -7,7 +7,6 @@ from rdflib.term import BNode, URIRef
 
 
 class SerializerTestBase(object):
-
     repeats = 8
 
     def setup(self):
@@ -74,7 +73,6 @@ def serialize_and_load(sourceGraph, makeSerializer):
 
 
 class TestXMLSerializer(SerializerTestBase):
-
     serializer = XMLSerializer
 
     testContent = """

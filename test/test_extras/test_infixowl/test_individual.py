@@ -20,7 +20,6 @@ def graph():
 
 
 def test_infixowl_individual_type(graph):
-
     b = Individual(OWL.Restriction, graph)
     b.type = RDFS.Resource
     assert len(list(b.type)) == 1
@@ -30,7 +29,6 @@ def test_infixowl_individual_type(graph):
 
 
 def test_infixowl_individual_label(graph):
-
     b = Individual(OWL.Restriction, graph)
     b.label = Literal("boo")
 
@@ -41,7 +39,6 @@ def test_infixowl_individual_label(graph):
 
 
 def test_individual_type_settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     b.type = OWL.Restriction
@@ -72,7 +69,6 @@ def test_individual_type_settergetter(graph):
 
 
 def test_individual_identity__settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     assert b.identifier == URIRef("http://www.w3.org/2002/07/owl#Restriction")
@@ -93,7 +89,6 @@ def test_individual_identity__settergetter(graph):
 
 
 def test_individual_sameas__settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     assert list(b.sameAs) == []

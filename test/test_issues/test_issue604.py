@@ -3,7 +3,6 @@ from rdflib.collection import Collection
 
 
 def test_issue604():
-
     EX = Namespace("http://ex.co/")
     g = Graph()
     bn = BNode()

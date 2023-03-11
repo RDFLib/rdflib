@@ -232,7 +232,6 @@ class Collection(object):
         return self
 
     def __iadd__(self, other):
-
         end = self._end()
         self.graph.remove((end, RDF.rest, None))
 

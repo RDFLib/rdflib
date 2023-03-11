@@ -617,7 +617,6 @@ def translateValues(
     if not v.value:
         return res
     if not isinstance(v.value[0], list):
-
         for val in v.value:
             res.append({v.var[0]: val})
     else:
@@ -821,7 +820,6 @@ def translatePrologue(
     initNs: Optional[Mapping[str, Any]] = None,
     prologue: Optional[Prologue] = None,
 ) -> Prologue:
-
     if prologue is None:
         prologue = Prologue()
         prologue.base = ""
@@ -940,7 +938,6 @@ def translateQuery(
     P, PV = translate(q[1])
     datasetClause = q[1].datasetClause
     if q[1].name == "ConstructQuery":
-
         template = triples(q[1].template) if q[1].template else None
 
         res = CompValue(q[1].name, p=P, template=template, datasetClause=datasetClause)

@@ -80,7 +80,6 @@ def test_infixowl_serialization():
 
 
 def test_infix_owl_example1():
-
     g = Graph(identifier=context0)
     g.bind("ex", EXNS)
 

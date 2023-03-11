@@ -104,7 +104,6 @@ def _fillTemplate(template, solution):
         ]
 
         if _s is not None and _p is not None and _o is not None:
-
             yield (_s, _p, _o)
 
 

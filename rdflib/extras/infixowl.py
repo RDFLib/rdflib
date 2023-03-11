@@ -1979,7 +1979,7 @@ class Restriction(Class):
     )
 
     def restrictionKind(self):  # noqa: N802
-        for (s, p, o) in self.graph.triples_choices(
+        for s, p, o in self.graph.triples_choices(
             (self.identifier, self.restrictionKinds, None)
         ):
             return p.split(str(OWL))[-1]

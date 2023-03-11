@@ -14,7 +14,6 @@ def becauseSubGraph(*args, **kwargs):
 
 class TrigSinkParser(SinkParser):
     def directiveOrStatement(self, argstr: str, h: int) -> int:  # noqa: N802
-
         # import pdb; pdb.set_trace()
 
         i = self.skipSpace(argstr, h)
@@ -88,7 +87,6 @@ class TrigSinkParser(SinkParser):
             self.BadSyntax(argstr, i, "EOF found when expected graph")
 
         if argstr[j : j + 1] == "=":  # optional = for legacy support
-
             i = self.skipSpace(argstr, j + 1)
             if i < 0:
                 self.BadSyntax(argstr, i, "EOF found when expecting '{'")
@@ -137,7 +135,6 @@ class TrigParser(Parser):
         pass
 
     def parse(self, source: InputSource, graph: Graph, encoding: str = "utf-8") -> None:
-
         if encoding not in [None, "utf-8"]:
             raise Exception(
                 # type error: Unsupported left operand type for % ("Tuple[str, str]")

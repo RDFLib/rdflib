@@ -8,7 +8,6 @@ from rdflib.term import BNode, Literal, URIRef
 
 
 class SerializerTestBase(object):
-
     repeats = 8
 
     def setup(self):
@@ -75,7 +74,6 @@ def serialize_and_load(sourceGraph, makeSerializer):
 
 
 class TestPrettyXmlSerializer(SerializerTestBase):
-
     serializer = PrettyXMLSerializer
 
     testContent = """

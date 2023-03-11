@@ -135,7 +135,6 @@ class XMLSerializer(Serializer):
                 % (indent, qname, attributes, escape(object, ESCAPE_ENTITIES), qname)
             )
         else:
-
             if isinstance(object, BNode):
                 write('%s<%s rdf:nodeID="%s"/>\n' % (indent, qname, object))
             else:
@@ -309,7 +308,6 @@ class PrettyXMLSerializer(Serializer):
                 writer.text(object)
 
         elif object in self.__serialized or not (object, None, None) in store:
-
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDFVOC.nodeID, fix(object))
@@ -337,7 +335,6 @@ class PrettyXMLSerializer(Serializer):
                 col = Collection(store, object)
 
                 for item in col:
-
                     if isinstance(item, URIRef):
                         self.forceRDFAbout.add(item)
                     self.subject(item)
@@ -356,7 +353,6 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(object, depth + 1)
 
                 elif isinstance(object, BNode):
-
                     if (
                         object not in self.__serialized
                         and (object, None, None) in store

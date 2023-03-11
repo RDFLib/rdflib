@@ -816,7 +816,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self._timeout = int(timeout)
 
     def _update(self, update):
-
         self._updates += 1
 
         SPARQLConnector.update(self, update)

@@ -12,7 +12,6 @@ modules should all be lower-case initial
 
 class TestA:
     def module_names(self, path=None, names=None, parent=""):
-
         skip_as_ignorably_private = ["embeddedRDF", "OpenID", "DublinCore", "RDFVOC"]
 
         if path is None:

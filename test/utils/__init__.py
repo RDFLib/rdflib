@@ -316,6 +316,7 @@ class GraphHelper:
         This asserts that the two graphs are isomorphic, providing a nicely
         formatted error message if they are not.
         """
+
         # TODO FIXME: This should possibly raise an error when used on a ConjunctiveGraph
         def format_report(message: Optional[str] = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)

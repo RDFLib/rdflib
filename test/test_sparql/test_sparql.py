@@ -65,7 +65,6 @@ def test_graph_prefix():
 
 
 def test_variable_order():
-
     g = Graph()
     g.add((URIRef("http://foo"), URIRef("http://bar"), URIRef("http://baz")))
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
@@ -125,7 +124,6 @@ def test_sparql_polist():
 
 
 def test_complex_sparql_construct():
-
     g = Graph()
     q = """select ?subject ?study ?id where {
     ?s a <urn:Person>;

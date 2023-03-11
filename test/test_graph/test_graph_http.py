@@ -62,7 +62,6 @@ EG = Namespace("http://example.org/")
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
-
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
 

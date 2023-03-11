@@ -432,7 +432,6 @@ def test_find_roots(
     roots: Optional[Set[Node]],
     expected_result: Union[Set[URIRef], Type[Exception]],
 ) -> None:
-
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     graph = cached_graph(graph_sources)
@@ -558,7 +557,6 @@ def test_get_tree(
     dir: str,
     expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
 ) -> None:
-
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     graph = cached_graph(graph_sources)
