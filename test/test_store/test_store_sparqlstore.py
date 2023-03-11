@@ -431,7 +431,7 @@ class TestSPARQLStoreUpdate:
         # Start running mock server in a separate thread.
         # Daemon threads automatically shut down when the main process exits.
         mock_server_thread = Thread(target=mock_server.serve_forever)
-        mock_server_thread.setDaemon(True)
+        mock_server_thread.daemon = True
         mock_server_thread.start()
         print(
             "Started mocked sparql endpoint on http://localhost:{port}/".format(
