@@ -111,7 +111,7 @@ pep8-naming = ["-N802"]
 pep8-naming = ["-N802"]
 
 [tool.black]
-required-version = "22.12.0"
+required-version = "23.1.0"
 line-length = "88"
 target-version = ['py37']
 include = '\.pyi?$'
