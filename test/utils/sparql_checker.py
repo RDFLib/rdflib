@@ -132,7 +132,10 @@ class GraphData:
             "public_id = %s - graph = %s\n%s", public_id, graph_path, graph_text
         )
         dataset.parse(
-            data=graph_text, publicID=public_id, format=guess_format(graph_path)
+            # type error: Argument 1 to "guess_format" has incompatible type "Path"; expected "str"
+            data=graph_text,
+            publicID=public_id,
+            format=guess_format(graph_path),  # type: ignore[arg-type]
         )
 
 
@@ -211,7 +214,9 @@ class SPARQLEntry(ManifestEntry):
                 data_text,
             )
             dataset.default_context.parse(
-                data=data_text, format=guess_format(data_path)
+                # type error: Argument 1 to "guess_format" has incompatible type "Path"; expected "str"
+                data=data_text,
+                format=guess_format(data_path),  # type: ignore[arg-type]
             )
         if graph_data_set is not None:
             for graph_data in graph_data_set:
@@ -352,7 +357,8 @@ def patched_query_context_load(uri_mapper: URIMapper) -> Callable[..., Any]:
     ) -> None:
         public_id = None
         use_source: Union[URIRef, Path] = source
-        format = guess_format(use_source)
+        # type error: Argument 1 to "guess_format" has incompatible type "Union[URIRef, Path]"; expected "str"
+        format = guess_format(use_source)  # type: ignore[arg-type]
         if f"{source}".startswith(("https://", "http://")):
             use_source = uri_mapper.to_local_path(source)
             public_id = source
