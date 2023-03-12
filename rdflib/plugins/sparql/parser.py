@@ -6,9 +6,9 @@ based on pyparsing
 
 import re
 import sys
-from typing import Any
+from typing import IO, Any
 from typing import Optional as OptionalType
-from typing import IO, Tuple, Union
+from typing import Tuple, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -1537,7 +1537,8 @@ def parseQuery(q: Union[str, bytes, IO]) -> ParseResults:
     if isinstance(q, bytes):
         q = q.decode("utf-8")
 
-    q = expandUnicodeEscapes(q)
+    # type error: Argument 1 to "expandUnicodeEscapes" has incompatible type "Union[str, IO[Any]]"; expected "str"
+    q = expandUnicodeEscapes(q)  # type: ignore[arg-type]
     return Query.parseString(q, parseAll=True)
 
 
@@ -1548,5 +1549,6 @@ def parseUpdate(q: Union[str, bytes, IO]):
     if isinstance(q, bytes):
         q = q.decode("utf-8")
 
-    q = expandUnicodeEscapes(q)
+    # type error: Argument 1 to "expandUnicodeEscapes" has incompatible type "Union[str, IO[Any]]"; expected "str"
+    q = expandUnicodeEscapes(q)  # type: ignore[arg-type]
     return UpdateUnit.parseString(q, parseAll=True)[0]
