@@ -51,7 +51,6 @@ from rdflib.term import (
     Node,
     RDFLibGenid,
     URIRef,
-    Variable,
 )
 
 if TYPE_CHECKING:
@@ -1501,7 +1500,7 @@ class Graph(Node):
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> query.Result:
@@ -1547,7 +1546,7 @@ class Graph(Node):
         update_object: Union[Update, str],
         processor: Union[str, rdflib.query.UpdateProcessor] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> None:
