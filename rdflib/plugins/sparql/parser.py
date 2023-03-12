@@ -6,6 +6,9 @@ based on pyparsing
 
 import re
 import sys
+from typing import Any
+from typing import Optional as OptionalType
+from typing import TextIO, Tuple, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -37,15 +40,15 @@ DEBUG = False
 # ---------------- ACTIONS
 
 
-def neg(literal):
+def neg(literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
-def setLanguage(terms):
+def setLanguage(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], lang=terms[1])
 
 
-def setDataType(terms):
+def setDataType(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 
@@ -1508,25 +1511,27 @@ QueryUnit.ignore("#" + restOfLine)
 UpdateUnit.ignore("#" + restOfLine)
 
 
-expandUnicodeEscapes_re = re.compile(r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I)
+expandUnicodeEscapes_re: re.Pattern = re.compile(
+    r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I
+)
 
 
-def expandUnicodeEscapes(q):
+def expandUnicodeEscapes(q: str) -> str:
     r"""
     The syntax of the SPARQL Query Language is expressed over code points in Unicode [UNICODE]. The encoding is always UTF-8 [RFC3629].
     Unicode code points may also be expressed using an \ uXXXX (U+0 to U+FFFF) or \ UXXXXXXXX syntax (for U+10000 onwards) where X is a hexadecimal digit [0-9A-F]
     """
 
-    def expand(m):
+    def expand(m: re.Match) -> str:
         try:
             return chr(int(m.group(1), 16))
-        except:  # noqa: E722
-            raise Exception("Invalid unicode code point: " + m)
+        except (ValueError, OverflowError) as e:
+            raise ValueError("Invalid unicode code point: " + m.group(1)) from e
 
     return expandUnicodeEscapes_re.sub(expand, q)
 
 
-def parseQuery(q):
+def parseQuery(q: Union[str, bytes, TextIO]) -> ParseResults:
     if hasattr(q, "read"):
         q = q.read()
     if isinstance(q, bytes):
@@ -1536,7 +1541,7 @@ def parseQuery(q):
     return Query.parseString(q, parseAll=True)
 
 
-def parseUpdate(q):
+def parseUpdate(q: Union[str, bytes, TextIO]):
     if hasattr(q, "read"):
         q = q.read()
 
