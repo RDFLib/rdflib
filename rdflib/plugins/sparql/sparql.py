@@ -1,8 +1,22 @@
+from __future__ import annotations
+
 import collections
 import datetime
 import itertools
 import typing as t
-from typing import Any, Container, Dict, Iterable, List, Optional, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Container,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import isodate
 
@@ -12,6 +26,12 @@ from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
+
+if TYPE_CHECKING:
+    from rdflib.paths import Path
+
+
+_AnyT = TypeVar("_AnyT")
 
 
 class SPARQLError(Exception):
@@ -80,8 +100,8 @@ class Bindings(MutableMapping):
             d = d.outer
         return i
 
-    def __iter__(self):
-        d = self
+    def __iter__(self) -> Generator[str, None, None]:
+        d: Optional[Bindings] = self
         while d is not None:
             yield from d._d
             d = d.outer
@@ -196,7 +216,7 @@ class FrozenBindings(FrozenDict):
 
     def forget(
         self, before: "QueryContext", _except: Optional[Container[Variable]] = None
-    ):
+    ) -> FrozenBindings:
         """
         return a frozen dict only of bindings made in self
         since before
@@ -219,7 +239,7 @@ class FrozenBindings(FrozenDict):
             ),
         )
 
-    def remember(self, these):
+    def remember(self, these) -> FrozenBindings:
         """
         return a frozen dict only of bindings in these
         """
@@ -235,7 +255,7 @@ class QueryContext(object):
         self,
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
-        initBindings: Optional[Dict[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -291,7 +311,7 @@ class QueryContext(object):
             )
         return self._dataset
 
-    def load(self, source: URIRef, default: bool = False, **kwargs):
+    def load(self, source: URIRef, default: bool = False, **kwargs: Any) -> None:
         def _load(graph, source):
             try:
                 return graph.parse(source, format="turtle", **kwargs)
@@ -324,7 +344,7 @@ class QueryContext(object):
             else:
                 _load(self.dataset, source)
 
-    def __getitem__(self, key) -> Any:
+    def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
         # in SPARQL BNodes are just labels
         if not isinstance(key, (BNode, Variable)):
             return key
@@ -333,7 +353,7 @@ class QueryContext(object):
         except KeyError:
             return None
 
-    def get(self, key: Variable, default: Optional[Any] = None):
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
         try:
             return self[key]
         except KeyError:
@@ -350,7 +370,7 @@ class QueryContext(object):
         else:
             return FrozenBindings(self, self.bindings.items())
 
-    def __setitem__(self, key: Identifier, value: Identifier) -> None:
+    def __setitem__(self, key: str, value: str) -> None:
         if key in self.bindings and self.bindings[key] != value:
             raise AlreadyBound()
 

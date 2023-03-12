@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
-    from rdflib.term import Identifier, URIRef, Variable
+    from rdflib.term import Identifier, URIRef
 
 __all__ = ["SimpleMemory", "Memory"]
 
@@ -246,7 +246,7 @@ class SimpleMemory(Store):
         self,
         query: Union["Query", str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: "str",  # noqa: N803
         **kwargs: Any,
     ) -> "Result":
@@ -258,7 +258,7 @@ class SimpleMemory(Store):
         self,
         update: Union["Update", str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: "str",  # noqa: N803
         **kwargs: Any,
     ) -> None:
@@ -722,7 +722,7 @@ class Memory(Store):
         self,
         query: Union["Query", str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: "str",
         **kwargs,
     ) -> "Result":
@@ -732,7 +732,7 @@ class Memory(Store):
         self,
         update: Union["Update", Any],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: "str",
         **kwargs,
     ) -> None:
