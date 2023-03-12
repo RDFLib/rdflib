@@ -8,7 +8,7 @@ import re
 import sys
 from typing import Any
 from typing import Optional as OptionalType
-from typing import TextIO, Tuple, Union
+from typing import IO, Tuple, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -1531,7 +1531,7 @@ def expandUnicodeEscapes(q: str) -> str:
     return expandUnicodeEscapes_re.sub(expand, q)
 
 
-def parseQuery(q: Union[str, bytes, TextIO]) -> ParseResults:
+def parseQuery(q: Union[str, bytes, IO]) -> ParseResults:
     if hasattr(q, "read"):
         q = q.read()
     if isinstance(q, bytes):
@@ -1541,7 +1541,7 @@ def parseQuery(q: Union[str, bytes, TextIO]) -> ParseResults:
     return Query.parseString(q, parseAll=True)
 
 
-def parseUpdate(q: Union[str, bytes, TextIO]):
+def parseUpdate(q: Union[str, bytes, IO]):
     if hasattr(q, "read"):
         q = q.read()
 
