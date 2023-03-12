@@ -247,7 +247,7 @@ class InvPath(Path):
         subj: Optional["_SubjectType"] = None,
         obj: Optional["_ObjectType"] = None,
     ) -> Generator[Tuple[_ObjectType, _SubjectType], None, None]:
-        for s, o in evalPath(graph, (obj, self.arg, subj)):
+        for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
 
     def __repr__(self) -> str:
@@ -279,12 +279,12 @@ class SequencePath(Path):
             obj: Optional[_ObjectType],
         ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
             if paths[1:]:
-                for s, o in evalPath(graph, (subj, paths[0], None)):
+                for s, o in eval_path(graph, (subj, paths[0], None)):
                     for r in _eval_seq(paths[1:], o, obj):
                         yield s, r[1]
 
             else:
-                for s, o in evalPath(graph, (subj, paths[0], obj)):
+                for s, o in eval_path(graph, (subj, paths[0], obj)):
                     yield s, o
 
         def _eval_seq_bw(
@@ -293,12 +293,12 @@ class SequencePath(Path):
             obj: _ObjectType,
         ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
             if paths[:-1]:
-                for s, o in evalPath(graph, (None, paths[-1], obj)):
+                for s, o in eval_path(graph, (None, paths[-1], obj)):
                     for r in _eval_seq(paths[:-1], subj, s):
                         yield r[0], o
 
             else:
-                for s, o in evalPath(graph, (subj, paths[0], obj)):
+                for s, o in eval_path(graph, (subj, paths[0], obj)):
                     yield s, o
 
         if subj:
@@ -332,7 +332,7 @@ class AlternativePath(Path):
         obj: Optional["_ObjectType"] = None,
     ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         for x in self.args:
-            for y in evalPath(graph, (subj, x, obj)):
+            for y in eval_path(graph, (subj, x, obj)):
                 yield y
 
     def __repr__(self) -> str:
@@ -385,7 +385,7 @@ class MulPath(Path):
             # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
             seen.add(subj)  # type: ignore[union-attr, arg-type]
 
-            for s, o in evalPath(graph, (subj, self.path, None)):
+            for s, o in eval_path(graph, (subj, self.path, None)):
                 if not obj or o == obj:
                     yield s, o
                 if self.more:
@@ -404,7 +404,7 @@ class MulPath(Path):
             # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
             seen.add(obj)  # type: ignore[union-attr, arg-type]
 
-            for s, o in evalPath(graph, (None, self.path, obj)):
+            for s, o in eval_path(graph, (None, self.path, obj)):
                 if not subj or subj == s:
                     yield s, o
                 if self.more:
@@ -432,7 +432,7 @@ class MulPath(Path):
                         yield o, o
 
             seen = set()
-            for s, o in evalPath(graph, (None, self.path, None)):
+            for s, o in eval_path(graph, (None, self.path, None)):
                 if not self.more:
                     yield s, o
                 else:
