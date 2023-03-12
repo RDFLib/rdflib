@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __doc__ = r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
@@ -180,14 +182,27 @@ No vars specified:
 
 """
 
+
 import warnings
 from functools import total_ordering
-from typing import TYPE_CHECKING, Callable, Iterator, Optional, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generator,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 from rdflib.term import Node, URIRef
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph, _ObjectType, _SubjectType
+    from rdflib._type_checking import _MulPathMod
+    from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
     from rdflib.namespace import NamespaceManager
 
 
@@ -214,7 +229,7 @@ class Path(object):
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
         raise NotImplementedError()
 
-    def __lt__(self, other):
+    def __lt__(self, other: Any) -> bool:
         if not isinstance(other, (Path, Node)):
             raise TypeError(
                 "unorderable types: %s() < %s()" % (repr(self), repr(other))
@@ -223,48 +238,67 @@ class Path(object):
 
 
 class InvPath(Path):
-    def __init__(self, arg):
+    def __init__(self, arg: Union[Path, URIRef]):
         self.arg = arg
 
-    def eval(self, graph, subj=None, obj=None):
-        for s, o in evalPath(graph, (obj, self.arg, subj)):
+    def eval(
+        self,
+        graph: "Graph",
+        subj: Optional["_SubjectType"] = None,
+        obj: Optional["_ObjectType"] = None,
+    ) -> Generator[Tuple[_ObjectType, _SubjectType], None, None]:
+        for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        return "^%s" % self.arg.n3(namespace_manager)
+        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
+        return "^%s" % self.arg.n3(namespace_manager)  # type: ignore[union-attr]
 
 
 class SequencePath(Path):
-    def __init__(self, *args):
-        self.args = []
+    def __init__(self, *args: Union[Path, URIRef]):
+        self.args: List[Union[Path, URIRef]] = []
         for a in args:
             if isinstance(a, SequencePath):
                 self.args += a.args
             else:
                 self.args.append(a)
 
-    def eval(self, graph, subj=None, obj=None):
-        def _eval_seq(paths, subj, obj):
+    def eval(
+        self,
+        graph: "Graph",
+        subj: Optional["_SubjectType"] = None,
+        obj: Optional["_ObjectType"] = None,
+    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+        def _eval_seq(
+            paths: List[Union[Path, URIRef]],
+            subj: Optional[_SubjectType],
+            obj: Optional[_ObjectType],
+        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
             if paths[1:]:
-                for s, o in evalPath(graph, (subj, paths[0], None)):
+                for s, o in eval_path(graph, (subj, paths[0], None)):
                     for r in _eval_seq(paths[1:], o, obj):
                         yield s, r[1]
 
             else:
-                for s, o in evalPath(graph, (subj, paths[0], obj)):
+                for s, o in eval_path(graph, (subj, paths[0], obj)):
                     yield s, o
 
-        def _eval_seq_bw(paths, subj, obj):
+        def _eval_seq_bw(
+            paths: List[Union[Path, URIRef]],
+            subj: Optional[_SubjectType],
+            obj: _ObjectType,
+        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
             if paths[:-1]:
-                for s, o in evalPath(graph, (None, paths[-1], obj)):
+                for s, o in eval_path(graph, (None, paths[-1], obj)):
                     for r in _eval_seq(paths[:-1], subj, s):
                         yield r[0], o
 
             else:
-                for s, o in evalPath(graph, (subj, paths[0], obj)):
+                for s, o in eval_path(graph, (subj, paths[0], obj)):
                     yield s, o
 
         if subj:
@@ -274,36 +308,43 @@ class SequencePath(Path):
         else:  # no vars bound, we can start anywhere
             return _eval_seq(self.args, subj, obj)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        return "/".join(a.n3(namespace_manager) for a in self.args)
+        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
+        return "/".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
 
 
 class AlternativePath(Path):
-    def __init__(self, *args):
-        self.args = []
+    def __init__(self, *args: Union[Path, URIRef]):
+        self.args: List[Union[Path, URIRef]] = []
         for a in args:
             if isinstance(a, AlternativePath):
                 self.args += a.args
             else:
                 self.args.append(a)
 
-    def eval(self, graph, subj=None, obj=None):
+    def eval(
+        self,
+        graph: "Graph",
+        subj: Optional["_SubjectType"] = None,
+        obj: Optional["_ObjectType"] = None,
+    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         for x in self.args:
-            for y in evalPath(graph, (subj, x, obj)):
+            for y in eval_path(graph, (subj, x, obj)):
                 yield y
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        return "|".join(a.n3(namespace_manager) for a in self.args)
+        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
+        return "|".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
 
 
 class MulPath(Path):
-    def __init__(self, path, mod):
+    def __init__(self, path: Union[Path, URIRef], mod: _MulPathMod):
         self.path = path
         self.mod = mod
 
@@ -319,7 +360,13 @@ class MulPath(Path):
         else:
             raise Exception("Unknown modifier %s" % mod)
 
-    def eval(self, graph, subj=None, obj=None, first=True):
+    def eval(
+        self,
+        graph: "Graph",
+        subj: Optional["_SubjectType"] = None,
+        obj: Optional["_ObjectType"] = None,
+        first: bool = True,
+    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
@@ -329,32 +376,46 @@ class MulPath(Path):
             elif obj:
                 yield obj, obj
 
-        def _fwd(subj=None, obj=None, seen=None):
-            seen.add(subj)
+        def _fwd(
+            subj: Optional[_SubjectType] = None,
+            obj: Optional[_ObjectType] = None,
+            seen: Optional[Set[_SubjectType]] = None,
+        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
+            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
+            seen.add(subj)  # type: ignore[union-attr, arg-type]
 
-            for s, o in evalPath(graph, (subj, self.path, None)):
+            for s, o in eval_path(graph, (subj, self.path, None)):
                 if not obj or o == obj:
                     yield s, o
                 if self.more:
-                    if o in seen:
+                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
+                    if o in seen:  # type: ignore[operator]
                         continue
                     for s2, o2 in _fwd(o, obj, seen):
                         yield s, o2
 
-        def _bwd(subj=None, obj=None, seen=None):
-            seen.add(obj)
+        def _bwd(
+            subj: Optional[_SubjectType] = None,
+            obj: Optional[_ObjectType] = None,
+            seen: Optional[Set[_ObjectType]] = None,
+        ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
+            # type error: Item "None" of "Optional[Set[Node]]" has no attribute "add"
+            # type error: Argument 1 to "add" of "set" has incompatible type "Optional[Node]"; expected "Node"
+            seen.add(obj)  # type: ignore[union-attr, arg-type]
 
-            for s, o in evalPath(graph, (None, self.path, obj)):
+            for s, o in eval_path(graph, (None, self.path, obj)):
                 if not subj or subj == s:
                     yield s, o
                 if self.more:
-                    if s in seen:
+                    # type error: Unsupported right operand type for in ("Optional[Set[Node]]")
+                    if s in seen:  # type: ignore[operator]
                         continue
 
                     for s2, o2 in _bwd(None, s, seen):
                         yield s2, o
 
-        def _all_fwd_paths():
+        def _all_fwd_paths() -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
             if self.zero:
                 seen1 = set()
                 # According to the spec, ALL nodes are possible solutions
@@ -371,7 +432,7 @@ class MulPath(Path):
                         yield o, o
 
             seen = set()
-            for s, o in evalPath(graph, (None, self.path, None)):
+            for s, o in eval_path(graph, (None, self.path, None)):
                 if not self.more:
                     yield s, o
                 else:
@@ -399,15 +460,17 @@ class MulPath(Path):
                     done.add(x)
                     yield x
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        return "%s%s" % (self.path.n3(namespace_manager), self.mod)
+        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
+        return "%s%s" % (self.path.n3(namespace_manager), self.mod)  # type: ignore[union-attr]
 
 
 class NegatedPath(Path):
-    def __init__(self, arg):
+    def __init__(self, arg: Union[AlternativePath, InvPath, URIRef]):
+        self.args: List[Union[URIRef, Path]]
         if isinstance(arg, (URIRef, InvPath)):
             self.args = [arg]
         elif isinstance(arg, AlternativePath):
@@ -432,18 +495,19 @@ class NegatedPath(Path):
             else:
                 yield s, o
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        return "!(%s)" % ("|".join(arg.n3(namespace_manager) for arg in self.args))
+        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
+        return "!(%s)" % ("|".join(arg.n3(namespace_manager) for arg in self.args))  # type: ignore[union-attr]
 
 
 class PathList(list):
     pass
 
 
-def path_alternative(self, other):
+def path_alternative(self: Union[URIRef, Path], other: Union[URIRef, Path]):
     """
     alternative path
     """
@@ -452,7 +516,7 @@ def path_alternative(self, other):
     return AlternativePath(self, other)
 
 
-def path_sequence(self, other):
+def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
     """
     sequence path
     """
@@ -461,7 +525,14 @@ def path_sequence(self, other):
     return SequencePath(self, other)
 
 
-def evalPath(graph, t):
+def evalPath(  # noqa: N802
+    graph: Graph,
+    t: Tuple[
+        Optional["_SubjectType"],
+        Union[None, Path, _PredicateType],
+        Optional["_ObjectType"],
+    ],
+) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
     warnings.warn(
         DeprecationWarning(
             "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
@@ -472,25 +543,32 @@ def evalPath(graph, t):
     return eval_path(graph, t)
 
 
-def eval_path(graph, t):
+def eval_path(
+    graph: Graph,
+    t: Tuple[
+        Optional["_SubjectType"],
+        Union[None, Path, _PredicateType],
+        Optional["_ObjectType"],
+    ],
+) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))
 
 
-def mul_path(p, mul):
+def mul_path(p: Union[URIRef, Path], mul: _MulPathMod) -> MulPath:
     """
     cardinality path
     """
     return MulPath(p, mul)
 
 
-def inv_path(p):
+def inv_path(p: Union[URIRef, Path]) -> InvPath:
     """
     inverse path
     """
     return InvPath(p)
 
 
-def neg_path(p):
+def neg_path(p: Union[URIRef, AlternativePath, InvPath]) -> NegatedPath:
     """
     negated path
     """
@@ -513,7 +591,9 @@ else:
     URIRef.__truediv__ = path_sequence
 
     Path.__invert__ = inv_path
-    Path.__neg__ = neg_path
-    Path.__mul__ = mul_path
+    # type error: Incompatible types in assignment (expression has type "Callable[[Union[URIRef, AlternativePath, InvPath]], NegatedPath]", variable has type "Callable[[Path], NegatedPath]")
+    Path.__neg__ = neg_path  # type: ignore[assignment]
+    # type error: Incompatible types in assignment (expression has type "Callable[[Union[URIRef, Path], Literal['*', '+', '?']], MulPath]", variable has type "Callable[[Path, str], MulPath]")
+    Path.__mul__ = mul_path  # type: ignore[assignment]
     Path.__or__ = path_alternative
     Path.__truediv__ = path_sequence

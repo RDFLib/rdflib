@@ -592,7 +592,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def expand_curie(self, curie: str) -> Union[URIRef, None]:
+    def expand_curie(self, curie: str) -> URIRef:
         """
         Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:

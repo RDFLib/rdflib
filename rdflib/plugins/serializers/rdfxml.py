@@ -251,7 +251,8 @@ class PrettyXMLSerializer(Serializer):
             type = first(store.objects(subject, RDF.type))
 
             try:
-                self.nm.qname(type)
+                # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname(type)  # type: ignore[arg-type]
             except:
                 type = None
 

@@ -78,7 +78,8 @@ def parse_identifier(identifier_string: str, format: str) -> Identifier:
 
 
 def parse_n3_identifier(identifier_string: str, format: str) -> Identifier:
-    return from_n3(identifier_string)
+    # type error: Incompatible return value type (got "Union[Node, str, None]", expected "Identifier")
+    return from_n3(identifier_string)  # type: ignore[return-value]
 
 
 ParseFunction = Callable[[str, str], Identifier]

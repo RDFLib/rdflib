@@ -3,11 +3,14 @@ Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
-from typing import IO, TYPE_CHECKING, Optional, Union
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ContextType, _SubjectType
 
 __all__ = ["TrigSerializer"]
 
@@ -31,7 +34,7 @@ class TrigSerializer(TurtleSerializer):
 
         super(TrigSerializer, self).__init__(store)
 
-    def preprocess(self):
+    def preprocess(self) -> None:
         for context in self.contexts:
             # do not write unnecessary prefix (ex: for an empty default graph)
             if len(context) == 0:
@@ -48,9 +51,12 @@ class TrigSerializer(TurtleSerializer):
 
             self._contexts[context] = (self.orderSubjects(), self._subjects)
 
-    def reset(self):
+    def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts = {}
+        self._contexts: Dict[
+            _ContextType,
+            Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
+        ] = {}
 
     def serialize(
         self,
@@ -93,7 +99,8 @@ class TrigSerializer(TurtleSerializer):
                 else:
                     iri = self.getQName(store.identifier)
                     if iri is None:
-                        iri = store.identifier.n3()
+                        # type error: "IdentifiedNode" has no attribute "n3"
+                        iri = store.identifier.n3()  # type: ignore[attr-defined]
                 self.write(self.indent() + "\n%s {" % iri)
 
             self.depth += 1
