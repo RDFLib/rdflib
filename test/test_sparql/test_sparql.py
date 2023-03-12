@@ -972,7 +972,7 @@ def test_sparql_describe(
         (r"1234\u001000e5", "1234\U001000e5", True),
     ],
 )
-def test_expandUnicodeEscapes(arg: str, expected_result: str, expected_valid: bool):
+def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: bool):
     if expected_valid:
         actual_result = expandUnicodeEscapes(arg)
         assert actual_result == expected_result

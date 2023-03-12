@@ -18,6 +18,7 @@ import sys
 
 __all__ = [
     "_NamespaceSetString",
+    "_MulPathMod",
 ]
 
 
@@ -27,3 +28,4 @@ else:
     from typing_extensions import Literal as PyLiteral
 
 _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
+_MulPathMod = PyLiteral["*", "+", "?"]  # noqa: F722
