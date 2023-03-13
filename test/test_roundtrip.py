@@ -72,11 +72,17 @@ INVALID_NT_FILES = {
 N3_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "n3roundtrip"
 
 XFAILS = {
-    ("xml", "n3-writer-test-29.n3",): pytest.mark.xfail(
+    (
+        "xml",
+        "n3-writer-test-29.n3",
+    ): pytest.mark.xfail(
         reason="has predicates that cannot be shortened to strict qnames",
         raises=ValueError,
     ),
-    ("xml", "n3-writer-test-32.n3",): pytest.mark.xfail(
+    (
+        "xml",
+        "n3-writer-test-32.n3",
+    ): pytest.mark.xfail(
         reason="has a predicate that cannot be shortened to strict qnames",
         raises=ValueError,
     ),

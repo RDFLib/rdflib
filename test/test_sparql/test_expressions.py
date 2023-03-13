@@ -26,7 +26,6 @@ def _translate(e):
 
 
 def testRegex():
-
     assert _eval(_translate((p.Expression.parseString('REGEX("zxcabczxc","abc")')[0])))
 
     eq(
@@ -40,7 +39,6 @@ def testRegex():
 
 
 def test_arithmetic():
-
     eq(_eval(_translate((p.Expression.parseString("2+3")[0]))).value, 5)
     eq(_eval(_translate((p.Expression.parseString("3-2")[0]))).value, 1)
 
@@ -91,7 +89,6 @@ def test_arithmetic_var():
 
 
 def test_comparisons():
-
     eq(bool(_eval(_translate((p.Expression.parseString("2<3")[0])))), True)
     eq(bool(_eval(_translate((p.Expression.parseString("2<3.0")[0])))), True)
     eq(bool(_eval(_translate((p.Expression.parseString("2<3e0")[0])))), True)
@@ -110,7 +107,6 @@ def test_comparisons():
 
 
 def test_comparisons_var():
-
     ctx = QueryContext()
     ctx[Variable("x")] = Literal(2)
 

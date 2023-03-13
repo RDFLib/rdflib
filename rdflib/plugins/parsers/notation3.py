@@ -514,7 +514,6 @@ class SinkParser:
                 self.BadSyntax(s, j, "expected directive or statement")
 
     def directiveOrStatement(self, argstr: str, h: int) -> int:
-
         i = self.skipSpace(argstr, h)
         if i < 0:
             return i  # EOF
@@ -680,7 +679,6 @@ class SinkParser:
         return -1  # Not a directive, could be something else.
 
     def sparqlDirective(self, argstr: str, i: int) -> int:
-
         """
         turtle and trig support BASE/PREFIX without @ and without
         terminating .
@@ -1811,7 +1809,6 @@ class Formula(object):
         self.existentials[x] = self.newBlankNode()
 
     def close(self) -> QuotedGraph:
-
         return self.quotedgraph
 
 

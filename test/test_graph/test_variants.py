@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 import os
@@ -69,6 +71,11 @@ class GraphAsserts:
             }
             assert set(self.has_subject_iris) == subjects_iris
 
+    @classmethod
+    def from_path(cls, path: Path) -> GraphAsserts:
+        with path.open("r") as f:
+            return cls(**json.load(f))
+
 
 @dataclass(order=True)
 class GraphVariants:
@@ -122,9 +129,7 @@ class GraphVariants:
             else:
                 graph_variant = graph_varaint_dict[file_key]
             if variant_key.endswith("-asserts.json"):
-                graph_variant.asserts = GraphAsserts(
-                    **json.loads(file_path.read_text())
-                )
+                graph_variant.asserts = GraphAsserts.from_path(file_path)
             else:
                 graph_variant.variants[variant_key] = file_path
         return graph_varaint_dict

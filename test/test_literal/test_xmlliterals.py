@@ -92,7 +92,6 @@ def testRoundtrip():
 
 @pytest.mark.skipif(not have_html5lib, reason="requires html5lib")
 def testHTML():
-
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
     assert l1.datatype == RDF.XMLLiteral, "literal must have right datatype"

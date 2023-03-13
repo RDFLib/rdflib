@@ -3,11 +3,11 @@ from http.server import BaseHTTPRequestHandler
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
+from test.utils.http import ctx_http_handler
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
     ServedBaseHTTPServerMock,
-    ctx_http_server,
 )
 from urllib.error import HTTPError
 
@@ -62,7 +62,6 @@ EG = Namespace("http://example.org/")
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
-
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
 
@@ -106,8 +105,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             for format in ("xml", "n3", "nt"):
                 graph = Graph()
@@ -119,8 +120,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             graph = Graph()
             graph.parse(url)

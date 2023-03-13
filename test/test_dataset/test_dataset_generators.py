@@ -69,7 +69,6 @@ no_of_unique_objects = 62
 
 
 def test_parse_berners_lee_card_into_dataset_default():
-
     # Workaround pending completion of identifier-as-context work
     # current W-I-P allows parsing direct to Dataset default context
     # and doesn't require the dubious creation of a graph with the

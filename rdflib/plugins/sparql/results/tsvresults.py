@@ -65,7 +65,6 @@ HEADER.parseWithTabs()
 class TSVResultParser(ResultParser):
     # type error: Signature of "parse" incompatible with supertype "ResultParser"  [override]
     def parse(self, source: IO, content_type: typing.Optional[str] = None) -> Result:  # type: ignore[override]
-
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
             # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")

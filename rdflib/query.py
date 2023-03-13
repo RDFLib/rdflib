@@ -57,7 +57,7 @@ class Processor(object):
     def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, "Query"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
@@ -83,7 +83,7 @@ class UpdateProcessor(object):
     def update(
         self,
         strOrQuery: Union[str, "Update"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},
     ) -> None:
         pass
@@ -221,7 +221,6 @@ class Result(object):
     """
 
     def __init__(self, type_: str):
-
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
@@ -252,7 +251,6 @@ class Result(object):
             Iterator[Mapping[Variable, Identifier]],
         ],
     ) -> None:
-
         if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []

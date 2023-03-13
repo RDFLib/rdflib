@@ -177,7 +177,6 @@ def test_class_or_term() -> None:
 
 
 def test_property_or_identifier() -> None:
-
     g = Graph()
     g.bind("ex", EXNS)
 
