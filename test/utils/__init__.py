@@ -9,10 +9,6 @@ from __future__ import print_function
 
 import enum
 import pprint
-import random
-from contextlib import contextmanager
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from threading import Thread
 from typing import (
     Any,
     Callable,
@@ -21,7 +17,6 @@ from typing import (
     FrozenSet,
     Generator,
     Iterable,
-    Iterator,
     List,
     Optional,
     Set,
@@ -65,28 +60,6 @@ def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
     for type, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
-
-
-def get_random_ip(parts: List[str] = None) -> str:
-    if parts is None:
-        parts = ["127"]
-    for _ in range(4 - len(parts)):
-        parts.append(f"{random.randint(0, 255)}")
-    return ".".join(parts)
-
-
-@contextmanager
-def ctx_http_server(
-    handler: Type[BaseHTTPRequestHandler], host: str = "127.0.0.1"
-) -> Iterator[HTTPServer]:
-    server = HTTPServer((host, 0), handler)
-    server_thread = Thread(target=server.serve_forever)
-    server_thread.daemon = True
-    server_thread.start()
-    yield server
-    server.shutdown()
-    server.socket.close()
-    server_thread.join()
 
 
 GHNode = Union[Identifier, FrozenSet[Tuple[Identifier, Identifier, Identifier]]]
@@ -343,6 +316,7 @@ class GraphHelper:
         This asserts that the two graphs are isomorphic, providing a nicely
         formatted error message if they are not.
         """
+
         # TODO FIXME: This should possibly raise an error when used on a ConjunctiveGraph
         def format_report(message: Optional[str] = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)

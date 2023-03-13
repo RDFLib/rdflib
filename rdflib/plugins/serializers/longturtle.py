@@ -33,7 +33,6 @@ _SPACIOUS_OUTPUT = False
 
 
 class LongTurtleSerializer(RecursiveSerializer):
-
     short_name = "longturtle"
     indentString = "    "
 
@@ -58,7 +57,6 @@ class LongTurtleSerializer(RecursiveSerializer):
         if (prefix > "" and prefix[0] == "_") or self.namespaces.get(
             prefix, namespace
         ) != namespace:
-
             if prefix not in self._ns_rewrite:
                 p = "p" + prefix
                 while p in self.namespaces:

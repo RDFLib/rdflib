@@ -1,8 +1,10 @@
-from rdflib import Graph, Literal, BNode, RDF
-from rdflib.namespace import FOAF, DC
+import os.path
+from tempfile import TemporaryDirectory
+
+from rdflib import RDF, BNode, Graph, Literal
+from rdflib.namespace import DC, FOAF
 
 if __name__ == "__main__":
-
     store = Graph()
 
     # Bind a few prefix, namespace pairs for pretty output
@@ -29,9 +31,11 @@ if __name__ == "__main__":
         for mbox in store.objects(person, FOAF["mbox"]):
             print(mbox)
 
-    print("--- saving RDF to a file (donna_foaf.rdf) ---")
+    tmp_dir = TemporaryDirectory()
+    output_file = os.path.join(tmp_dir.name, "donna_foaf.rdf")
+    print(f"--- saving RDF to a file ({output_file}) ---")
     # Serialize the store as RDF/XML to the file donna_foaf.rdf.
-    store.serialize("donna_foaf.rdf", format="pretty-xml", max_depth=3)
+    store.serialize(f"{output_file}", format="pretty-xml", max_depth=3)
 
     # Let's show off the serializers
     print()

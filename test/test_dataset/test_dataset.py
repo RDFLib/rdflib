@@ -108,7 +108,6 @@ def get_dataset(request):
 
 
 def test_graph_aware(get_dataset):
-
     store, dataset = get_dataset
 
     if not dataset.store.graph_aware:
@@ -184,7 +183,6 @@ def test_default_graph(get_dataset):
 
 
 def test_not_union(get_dataset):
-
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
     if store == "SPARQLUpdateStore":
@@ -201,7 +199,6 @@ def test_not_union(get_dataset):
 
 
 def test_iter(get_dataset):
-
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
     uri_a = URIRef("https://example.com/a")

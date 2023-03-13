@@ -270,7 +270,6 @@ class Parser(object):
         reverse: bool = False,
         no_id: bool = False,
     ) -> None:
-
         if isinstance(obj, list):
             obj_nodes = obj
         else:

@@ -19,7 +19,6 @@ def graph():
 
 @pytest.mark.xfail(reason="assert len(props) == 1, repr(props), so AssertionError: []")
 def test_booleanclass_operator_as_none(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -30,7 +29,6 @@ def test_booleanclass_operator_as_none(graph):
 
 @pytest.mark.xfail(reason="This is a previous boolean class description!'(  )")
 def test_booleanclass_operator_as_none_with_intersection(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -42,7 +40,6 @@ def test_booleanclass_operator_as_none_with_intersection(graph):
 
 
 def test_booleanclass_default_and_operator(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -54,7 +51,6 @@ def test_booleanclass_default_and_operator(graph):
 
 
 def test_booleanclass_with_or_operator(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -71,7 +67,6 @@ def test_booleanclass_with_or_operator(graph):
     reason="BooleanClass.getIntersections() - TypeError: 'Callable' object is not callable"
 )
 def test_getintersections(graph):
-
     _ = BooleanClass.getIntersections()
 
 
@@ -79,12 +74,10 @@ def test_getintersections(graph):
     reason="BooleanClass.getUnions() - TypeError: 'Callable' object is not callable"
 )
 def test_getunions(graph):
-
     _ = BooleanClass.getUnions()
 
 
 def test_booleanclass_copy(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -98,7 +91,6 @@ def test_booleanclass_copy(graph):
 
 
 def test_booleanclass_serialize(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 

@@ -16,7 +16,7 @@ from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
-from rdflib.plugins.sparql.parser import parseQuery
+from rdflib.plugins.sparql.parser import expandUnicodeEscapes, parseQuery
 from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
 from rdflib.query import Result, ResultRow
@@ -65,7 +65,6 @@ def test_graph_prefix():
 
 
 def test_variable_order():
-
     g = Graph()
     g.add((URIRef("http://foo"), URIRef("http://bar"), URIRef("http://baz")))
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
@@ -125,7 +124,6 @@ def test_sparql_polist():
 
 
 def test_complex_sparql_construct():
-
     g = Graph()
     q = """select ?subject ?study ?id where {
     ?s a <urn:Person>;
@@ -959,3 +957,25 @@ def test_sparql_describe(
     subjects = {s for s in r.graph.subjects() if not isinstance(s, BNode)}
     assert subjects == expected_subjects
     assert len(r.graph) == expected_size
+
+
+@pytest.mark.parametrize(
+    "arg, expected_result, expected_valid",
+    [
+        ("abc", "abc", True),
+        ("1234", "1234", True),
+        (r"1234\u0050", "1234P", True),
+        (r"1234\u00e3", "1234\u00e3", True),
+        (r"1234\u00e3\u00e5", "1234ãå", True),
+        (r"1234\u900000e5", "", False),
+        (r"1234\u010000e5", "", False),
+        (r"1234\u001000e5", "1234\U001000e5", True),
+    ],
+)
+def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: bool):
+    if expected_valid:
+        actual_result = expandUnicodeEscapes(arg)
+        assert actual_result == expected_result
+    else:
+        with pytest.raises(ValueError, match="Invalid unicode code point"):
+            _ = expandUnicodeEscapes(arg)

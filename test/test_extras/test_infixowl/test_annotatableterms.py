@@ -21,7 +21,6 @@ def graph():
 
 
 def test_annotatableterms_comment_gettersetter(graph):
-
     u = URIRef(EXNS.foo)
 
     at = AnnotatableTerms(u, graph, EXNS.foo, True)
@@ -38,7 +37,6 @@ def test_annotatableterms_comment_gettersetter(graph):
 
 
 def test_annotatableterms_seealso_gettersetter(graph):
-
     u = URIRef(EXNS.foo)
 
     at = AnnotatableTerms(u, graph, EXNS.foo, True)
@@ -54,7 +52,6 @@ def test_annotatableterms_seealso_gettersetter(graph):
 
 
 def test_annotatableterms_label_gettersetter(graph):
-
     u = URIRef(EXNS.foo)
 
     at = AnnotatableTerms(u, graph, EXNS.foo, True)

@@ -38,7 +38,6 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
     g.parse(f, publicID=base, format="turtle")
 
     for m in g.subjects(RDF.type, MF.Manifest):
-
         for col in g.objects(m, MF.include):
             for i in g.items(col):
                 for x in read_manifest(i):
@@ -47,7 +46,6 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
         for col in g.objects(m, MF.entries):
             e: Node
             for e in g.items(col):
-
                 approved = (
                     (e, DAWGT.approval, DAWGT.Approved) in g
                     or (e, DAWGT.approval, DAWGT.NotClassified) in g

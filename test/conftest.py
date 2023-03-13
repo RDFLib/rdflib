@@ -2,6 +2,8 @@ import pytest
 
 pytest.register_assert_rewrite("test.utils")
 
+from test.utils.http import ctx_http_server  # noqa: E402
+from test.utils.httpfileserver import HTTPFileServer  # noqa: E402
 from typing import Generator  # noqa: E402
 
 from rdflib import Graph
@@ -17,19 +19,31 @@ pytest_plugins = [EARLReporter.__module__]
 
 
 @pytest.fixture(scope="session")
+def http_file_server() -> Generator[HTTPFileServer, None, None]:
+    host = "127.0.0.1"
+    server = HTTPFileServer((host, 0))
+    with ctx_http_server(server) as served:
+        yield served
+
+
+@pytest.fixture(scope="session")
 def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
 @pytest.fixture(scope="session")
-def session_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
+def _session_function_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
+    """
+    This fixture is session scoped, but it is reset for each function in
+    :func:`function_httpmock`. This should not be used directly.
+    """
     with ServedBaseHTTPServerMock() as httpmock:
         yield httpmock
 
 
 @pytest.fixture(scope="function")
 def function_httpmock(
-    session_httpmock: ServedBaseHTTPServerMock,
+    _session_function_httpmock: ServedBaseHTTPServerMock,
 ) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    session_httpmock.reset()
-    yield session_httpmock
+    _session_function_httpmock.reset()
+    yield _session_function_httpmock

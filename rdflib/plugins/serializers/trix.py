@@ -28,7 +28,6 @@ class TriXSerializer(Serializer):
         encoding: Optional[str] = None,
         **args,
     ):
-
         nm = self.store.namespace_manager
 
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})

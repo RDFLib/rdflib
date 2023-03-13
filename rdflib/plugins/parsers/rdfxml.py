@@ -272,7 +272,7 @@ class RDFXMLHandler(handler.ContentHandler):
             # type error: Argument 1 to "join" of "str" has incompatible type "Tuple[Optional[str], str]"; expected "Iterable[str]"
             name = URIRef("".join(name))  # type: ignore[assignment, arg-type]
         atts = {}
-        for (n, v) in attrs.items():
+        for n, v in attrs.items():
             if n[0] is None:
                 att = n[1]
             else:
@@ -390,7 +390,6 @@ class RDFXMLHandler(handler.ContentHandler):
         # at at top-level
 
         if self.parent.object and self.current != self.stack[2]:
-
             self.error(
                 "Repeat node-elements inside property elements: %s" % "".join(name)
             )
@@ -588,7 +587,7 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             current.object = "<%s" % name[1]
 
-        for (name, value) in attrs.items():
+        for name, value in attrs.items():
             if name[0]:
                 if not name[0] in current.declared:
                     current.declared[name[0]] = self._current_context[name[0]]

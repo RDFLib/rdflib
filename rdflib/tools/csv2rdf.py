@@ -122,7 +122,6 @@ def index(l_, i):
 
 
 def csv_reader(csv_data, dialect=csv.excel, **kwargs):
-
     csv_reader = csv.reader(csv_data, dialect=dialect, **kwargs)
     for row in csv_reader:
         yield row
@@ -299,7 +298,6 @@ def column(v):
 
 class CSV2RDF(object):
     def __init__(self):
-
         self.CLASS = None
         self.BASE = None
         self.PROPBASE = None
@@ -322,7 +320,6 @@ class CSV2RDF(object):
         self.triples += 1
 
     def convert(self, csvreader):
-
         start = time.time()
 
         if self.OUT:

@@ -18,7 +18,6 @@ PUBLIC_ID = "http://example.org/record/1"
 
 
 def test_bnode_publicid():
-
     g = ConjunctiveGraph()
     b = BNode()
     data = "<d:d> <e:e> <f:f> ."

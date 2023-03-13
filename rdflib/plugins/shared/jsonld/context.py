@@ -419,7 +419,6 @@ class Context(object):
         referenced_contexts: Set[str],
         in_source_url: Optional[str] = None,
     ):
-
         for source in inputs:
             source_url = in_source_url
             if isinstance(source, str):

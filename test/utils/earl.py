@@ -186,7 +186,6 @@ PYTEST_PLUGIN_NAME = "rdflib_earl_reporter"
 
 
 def pytest_configure(config: pytest.Config):
-
     if config.option.earl_log_level is not None:
         log_level = config.option.earl_log_level
         logger.setLevel(log_level)

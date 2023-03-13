@@ -133,7 +133,6 @@ def test_graph_parsing():
     resulting in the default graph content appearing multipile times in the output.""",
 )
 def test_round_trips():
-
     data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
 
@@ -172,7 +171,6 @@ def test_default_graph_serializes_without_name():
 
 
 def test_prefixes():
-
     data = """
     @prefix ns1: <http://ex.org/schema#> .
     <http://ex.org/docs/document1> = {

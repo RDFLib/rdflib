@@ -33,7 +33,6 @@ class JSONResultSerializer(ResultSerializer):
 
     # type error: Signature of "serialize" incompatible with supertype "ResultSerializer"
     def serialize(self, stream: IO, encoding: str = None) -> None:  # type: ignore[override]
-
         res: Dict[str, Any] = {}
         if self.result.type == "ASK":
             res["head"] = {}

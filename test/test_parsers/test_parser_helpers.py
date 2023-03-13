@@ -9,7 +9,6 @@ def pt(ts):
 
 
 def test_1():
-
     t0 = TriplesSameSubject.parseString("[] ?p ?o ")
     print(t0, len(t0))
     assert len(t0) % 3 == 0

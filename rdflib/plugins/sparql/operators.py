@@ -669,7 +669,6 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
     x = e.expr[0]
 
     if e.iri == XSD.string:
-
         if isinstance(x, (URIRef, Literal)):
             return Literal(x, datatype=XSD.string)
         else:
@@ -739,7 +738,6 @@ def UnaryPlus(expr: Expr, ctx: FrozenBindings) -> Literal:
 def MultiplicativeExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     expr = e.expr
     other = e.other
 
@@ -768,7 +766,6 @@ def MultiplicativeExpression(
 
 # type error: Missing return statement
 def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:  # type: ignore[return]
-
     expr = e.expr
     other = e.other
 
@@ -782,12 +779,10 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
     if hasattr(expr, "datatype") and (
         expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs
     ):
-
         res = dateTimeObjects(expr)
         dt = expr.datatype
 
         for op, term in zip(e.op, other):
-
             # check if operation is datetime,date,time operation over
             # another datetime,date,time datatype
             if dt in XSD_DateTime_DTs and dt == term.datatype and op == "-":
@@ -844,7 +839,6 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
 
 
 def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:
-
     expr = e.expr
     other = e.other
     op = e.op
@@ -868,7 +862,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
     )
 
     if op in ("IN", "NOT IN"):
-
         res = op == "NOT IN"
 
         error: Union[bool, SPARQLError] = False
@@ -905,7 +898,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
             raise SPARQLError("I cannot compare this non-node: %r" % other)
 
     if isinstance(expr, Literal) and isinstance(other, Literal):
-
         if (
             expr.datatype is not None
             and expr.datatype not in XSD_DTs
@@ -928,7 +920,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
 def ConditionalAndExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     # TODO: handle returned errors
 
     expr = e.expr
@@ -945,7 +936,6 @@ def ConditionalAndExpression(
 def ConditionalOrExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     # TODO: handle errors
 
     expr = e.expr
@@ -1202,7 +1192,6 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
     """
 
     if isinstance(rt, Literal):
-
         if rt.datatype == XSD.boolean:
             return rt.toPython()
 
