@@ -130,7 +130,6 @@ exclude = '''
     | _build
     | htmlcov
     | benchmarks
-    | examples       # No need to Black examples
     | test_reports
     | rdflib.egg-info
     | buck-out
@@ -168,7 +167,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 profile = "black"
 py_version = 37
 line_length = 88
-src_paths= ["rdflib", "test"]
+src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
 skip = [
     '.eggs',         # exclude a few common directories in the
@@ -183,7 +182,6 @@ skip = [
     '_build',
     'htmlcov',
     'benchmarks',
-    'examples',       # No need to isort examples
     'test_reports',
     'rdflib.egg-info',
     'buck-out',
@@ -193,7 +191,7 @@ skip = [
 ]
 
 [tool.mypy]
-files = ['rdflib', 'test', 'devtools']
+files = ['rdflib', 'test', 'devtools', 'examples']
 python_version = "3.7"
 warn_unused_configs = true
 ignore_missing_imports = true
