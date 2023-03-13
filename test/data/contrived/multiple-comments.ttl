@@ -2,6 +2,10 @@
 @prefix owl:            <http://www.w3.org/2002/07/owl#> .
 @prefix ex:             <http://example.org/multiline-string-example#> .
 
+# This file contains a RDF class with multiple rdfs:comment properties and is
+# used to verify the RDFLib defined namespace creator. It is used in
+# </test/test_namespace/test_definednamespace_creator.py>.
+
 <http://example.org/multiline-string-example>
     a owl:Ontology .
 

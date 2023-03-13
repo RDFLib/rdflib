@@ -129,10 +129,7 @@ def test_definednamespace_creator_multiple_comments():
         / "defined_namespace_creator.py"
     )
     multiple_comments_data_file = (
-        Path(__file__).parent.parent
-        / "data"
-        / "defined_namespaces"
-        / "multiple-comments.ttl"
+        Path(__file__).parent.parent / "data" / "contrived" / "multiple-comments.ttl"
     )
     print("\n")
     print(f"Using {definednamespace_script}...")
