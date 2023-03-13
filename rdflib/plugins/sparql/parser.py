@@ -3,10 +3,11 @@ SPARQL 1.1 Parser
 
 based on pyparsing
 """
+from __future__ import annotations
 
 import re
 import sys
-from typing import Any, BinaryIO
+from typing import Any, BinaryIO, List
 from typing import Optional as OptionalType
 from typing import TextIO, Tuple, Union
 
@@ -30,7 +31,7 @@ import rdflib
 from rdflib.compat import decodeUnicodeEscape
 
 from . import operators as op
-from .parserutils import Comp, Param, ParamList
+from .parserutils import Comp, CompValue, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
@@ -40,7 +41,7 @@ DEBUG = False
 # ---------------- ACTIONS
 
 
-def neg(literal) -> rdflib.Literal:
+def neg(literal: rdflib.Literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
@@ -52,13 +53,13 @@ def setDataType(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 
-def expandTriples(terms):
+def expandTriples(terms: ParseResults) -> List[Any]:
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
     # import pdb; pdb.set_trace()
     try:
-        res = []
+        res: List[Any] = []
         if DEBUG:
             print("Terms", terms)
         l_ = len(terms)
@@ -105,7 +106,7 @@ def expandTriples(terms):
         raise
 
 
-def expandBNodeTriples(terms):
+def expandBNodeTriples(terms: ParseResults) -> List[Any]:
     """
     expand [ ?p ?o ] syntax for implicit bnodes
     """
@@ -122,14 +123,14 @@ def expandBNodeTriples(terms):
         raise
 
 
-def expandCollection(terms):
+def expandCollection(terms: ParseResults) -> List[List[Any]]:
     """
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
         print("Collection: ", terms)
 
-    res = []
+    res: List[Any] = []
     other = []
     for x in terms:
         if isinstance(x, list):  # is this a [ .. ] ?
@@ -1541,7 +1542,7 @@ def parseQuery(q: Union[str, bytes, TextIO, BinaryIO]) -> ParseResults:
     return Query.parseString(q, parseAll=True)
 
 
-def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]):
+def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]) -> CompValue:
     if hasattr(q, "read"):
         q = q.read()
 

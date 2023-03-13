@@ -1,6 +1,18 @@
+from __future__ import annotations
+
 from collections import OrderedDict
 from types import MethodType
-from typing import TYPE_CHECKING, Any, List, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 from pyparsing import ParseResults, TokenConverter, originalTextFor
 
@@ -48,7 +60,7 @@ def value(
     val: Any,
     variables: bool = False,
     errors: bool = False,
-):
+) -> Any:
     """
     utility function for evaluating something...
 
@@ -95,7 +107,9 @@ class ParamValue(object):
     All cleverness is in the CompValue
     """
 
-    def __init__(self, name, tokenList, isList):
+    def __init__(
+        self, name: str, tokenList: Union[List[Any], ParseResults], isList: bool
+    ):
         self.isList = isList
         self.name = name
         if isinstance(tokenList, (list, ParseResults)) and len(tokenList) == 1:
@@ -103,7 +117,7 @@ class ParamValue(object):
 
         self.tokenList = tokenList
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Param(%s, %s)" % (self.name, self.tokenList)
 
 
@@ -114,13 +128,13 @@ class Param(TokenConverter):
     their values merged in a list
     """
 
-    def __init__(self, name, expr, isList=False):
+    def __init__(self, name: str, expr, isList: bool = False):
         self.isList = isList
         TokenConverter.__init__(self, expr)
         self.setName(name)
         self.addParseAction(self.postParse2)
 
-    def postParse2(self, tokenList):
+    def postParse2(self, tokenList: Union[List[Any], ParseResults]) -> ParamValue:
         return ParamValue(self.name, tokenList, self.isList)
 
 
@@ -129,8 +143,11 @@ class ParamList(Param):
     A shortcut for a Param with isList=True
     """
 
-    def __init__(self, name, expr):
+    def __init__(self, name: str, expr):
         Param.__init__(self, name, expr, True)
+
+
+_ValT = TypeVar("_ValT")
 
 
 class CompValue(OrderedDict):
@@ -147,16 +164,18 @@ class CompValue(OrderedDict):
         self.name = name
         self.update(values)
 
-    def clone(self):
+    def clone(self) -> CompValue:
         return CompValue(self.name, **self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name + "_" + OrderedDict.__str__(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name + "_" + dict.__repr__(self)
 
-    def _value(self, val, variables=False, errors=False):
+    def _value(
+        self, val: _ValT, variables: bool = False, errors: bool = False
+    ) -> Union[_ValT, Any]:
         if self.ctx is not None:
             return value(self.ctx, val, variables)
         else:
@@ -165,7 +184,9 @@ class CompValue(OrderedDict):
     def __getitem__(self, a):
         return self._value(OrderedDict.__getitem__(self, a))
 
-    def get(self, a, variables=False, errors=False):
+    # type error: Signature of "get" incompatible with supertype "dict"
+    # type error: Signature of "get" incompatible with supertype "Mapping"  [override]
+    def get(self, a, variables: bool = False, errors: bool = False):  # type: ignore[override]
         return self._value(OrderedDict.get(self, a, a), variables, errors)
 
     def __getattr__(self, a: str) -> Any:
@@ -189,17 +210,23 @@ class Expr(CompValue):
     A CompValue that is evaluatable
     """
 
-    def __init__(self, name, evalfn=None, **values):
+    def __init__(
+        self,
+        name: str,
+        evalfn: Optional[Callable[[Any, Any], Any]] = None,
+        **values,
+    ):
         super(Expr, self).__init__(name, **values)
 
         self._evalfn = None
         if evalfn:
             self._evalfn = MethodType(evalfn, self)
 
-    def eval(self, ctx={}):
+    def eval(self, ctx: Any = {}) -> Union[SPARQLError, Any]:
         try:
-            self.ctx = ctx
-            return self._evalfn(ctx)
+            self.ctx: Optional[Union[Mapping, FrozenBindings]] = ctx
+            # type error: "None" not callable
+            return self._evalfn(ctx)  # type: ignore[misc]
         except SPARQLError as e:
             return e
         finally:
@@ -215,13 +242,16 @@ class Comp(TokenConverter):
     Returns CompValue / Expr objects - depending on whether evalFn is set.
     """
 
-    def __init__(self, name, expr):
+    def __init__(self, name: str, expr):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.setName(name)
-        self.evalfn = None
+        self.evalfn: Optional[Callable[[Any, Any], Any]] = None
 
-    def postParse(self, instring, loc, tokenList):
+    def postParse(
+        self, instring: str, loc: int, tokenList: ParseResults
+    ) -> Union[Expr, CompValue]:
+        res: Union[Expr, CompValue]
         if self.evalfn:
             res = Expr(self.name)
             res._evalfn = MethodType(self.evalfn, res)
@@ -248,7 +278,7 @@ class Comp(TokenConverter):
             #    res.update(t)
         return res
 
-    def setEvalFn(self, evalfn):
+    def setEvalFn(self, evalfn: Callable[[Any, Any], Any]) -> Comp:
         self.evalfn = evalfn
         return self
 

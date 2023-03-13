@@ -193,7 +193,7 @@ class SPARQLStore(SPARQLConnector, Store):
         self,
         query: Union["Update", str],
         initNs: Dict[str, Any] = {},  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"] = {},
+        initBindings: Dict["str", "Identifier"] = {},
         queryGraph: "Identifier" = None,
         DEBUG: bool = False,
     ) -> None:
@@ -222,7 +222,7 @@ class SPARQLStore(SPARQLConnector, Store):
         self,
         query: Union["Query", str],
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping["Variable", "Identifier"]] = None,
+        initBindings: Optional[Mapping["str", "Identifier"]] = None,
         queryGraph: Optional["str"] = None,
         DEBUG: bool = False,
     ) -> "Result":
@@ -826,7 +826,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self,
         query: Union["Update", str],
         initNs: Dict[str, Any] = {},  # noqa: N803
-        initBindings: Dict["Variable", "Identifier"] = {},
+        initBindings: Dict["str", "Identifier"] = {},
         queryGraph: Optional[str] = None,
         DEBUG: bool = False,
     ):

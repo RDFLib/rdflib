@@ -57,7 +57,7 @@ class Processor(object):
     def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, "Query"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
@@ -83,7 +83,7 @@ class UpdateProcessor(object):
     def update(
         self,
         strOrQuery: Union[str, "Update"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},
     ) -> None:
         pass

@@ -7,7 +7,18 @@ This example file shows how to decalre a Dataset, add content to it, serialise i
 and remove things from it.
 """
 
-from rdflib import Dataset, URIRef, Literal, Namespace
+from rdflib import Dataset, Literal, Namespace, URIRef
+
+# Note regarding `mypy: ignore_errors=true`:
+#
+# This example is using URIRef values as context identifiers. This is contrary
+# to the type hints, but it does work. Most likely the type hints are wrong.
+# Ideally we should just use `# type: ignore` comments for the lines that are
+# causing problems, but for some reason the error occurs on different lines with
+# different python versions, so the only option is to ignore errors for the
+# whole file.
+
+# mypy: ignore_errors=true
 
 #
 #   Create & Add
@@ -99,7 +110,7 @@ print()
 """
 print("Printing all triple from one Graph in the Dataset:")
 print("---")
-for triple in d.triples((None, None, None, graph_1)):
+for triple in d.triples((None, None, None, graph_1)):  # type: ignore[arg-type]
     print(triple)
 print("---")
 print()
