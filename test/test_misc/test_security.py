@@ -113,16 +113,12 @@ def test_block_file(
     data_file = tmp_path / "data.jsonld"
     data_file.write_text(dedent(data))
 
-    # audit_hook: Optional[AuditHookType] = None
-
     if defence == Defence.AUDIT_HOOK and uri_kind == URIKind.FILE:
 
         def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
             logging.info("block_file_access: name = %s, args = %s", name, args)
             if name == "open" and args[0] == f"{context_file.absolute()}":
                 raise PermissionError("access blocked")
-
-        # audit_hook = block_file_access
 
         exit_stack.enter_context(audit_hook_dispatcher.ctx_hook("open", audit_hook))
 
@@ -132,8 +128,6 @@ def test_block_file(
             logging.info("block_file_access: name = %s, args = %s", name, args)
             if name == "open" and args[0] == f"{Path.cwd() / context_file.name}":
                 raise PermissionError("access blocked")
-
-        # audit_hook = block_file_access
 
         exit_stack.enter_context(audit_hook_dispatcher.ctx_hook("open", audit_hook))
 
@@ -176,15 +170,3 @@ def test_block_file(
     else:
         graph.parse(format="json-ld", data=data)
         GraphHelper.assert_sets_equals(EXPECTED_GRAPH, graph)
-
-    # audit_hook = block_http_access
-
-    # if audit_hook is not None:
-    #     with audit_hook_dispatcher.ctx_hook("open", audit_hook):
-    #         graph = Graph()
-    #         with pytest.raises(PermissionError):
-    #             graph.parse(format="json-ld", data=data)
-    #         assert len(graph) == 0
-
-    # graph.parse(format="json-ld", data=data)
-    # assert len(graph) == 1
