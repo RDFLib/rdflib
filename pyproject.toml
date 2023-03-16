@@ -22,6 +22,9 @@ classifiers=[
     "Natural Language :: English"
 ]
 readme = "README.md"
+packages = [
+    { include = "rdflib" },
+]
 
 [tool.poetry.scripts]
 rdfpipe = 'rdflib.tools.rdfpipe:main'
