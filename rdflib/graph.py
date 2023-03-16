@@ -1387,22 +1387,34 @@ class Graph(Node):
         """
         Parse an RDF source adding the resulting triples to the Graph.
 
-        The source is specified using one of source, location, file or
-        data.
+        The source is specified using one of source, location, file or data.
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
 
         :Parameters:
 
           - ``source``: An InputSource, file-like object, or string. In the case
             of a string the string is the location of the source.
-          - ``location``: A string indicating the relative or absolute URL of the
-            source. Graph's absolutize method is used if a relative location
+          - ``location``: A string indicating the relative or absolute URL of
+            the source. Graph's absolutize method is used if a relative location
             is specified.
           - ``file``: A file-like object.
           - ``data``: A string containing the data to be parsed.
-          - ``format``: Used if format can not be determined from source, e.g. file
-            extension or Media Type. Defaults to text/turtle. Format support can
-            be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
-            "trix" are built in.
+          - ``format``: Used if format can not be determined from source, e.g.
+            file extension or Media Type. Defaults to text/turtle. Format
+            support can be extended with plugins, but "xml", "n3" (use for
+            turtle), "nt" & "trix" are built in.
           - ``publicID``: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
@@ -1507,12 +1519,25 @@ class Graph(Node):
         """
         Query this graph.
 
-        A type of 'prepared queries' can be realised by providing
-        initial variable bindings with initBindings
+        A type of 'prepared queries' can be realised by providing initial
+        variable bindings with initBindings
 
-        Initial namespaces are used to resolve prefixes used in the query,
-        if none are given, the namespaces from the graph's namespace manager
-        are used.
+        Initial namespaces are used to resolve prefixes used in the query, if
+        none are given, the namespaces from the graph's namespace manager are
+        used.
+
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
 
         :returntype: :class:`~rdflib.query.Result`
 
@@ -1550,7 +1575,22 @@ class Graph(Node):
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> None:
-        """Update this graph with the given update query."""
+        """
+        Update this graph with the given update query.
+
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
+        """
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
@@ -2171,6 +2211,19 @@ class ConjunctiveGraph(Graph):
 
         The graph into which the source was parsed. In the case of n3
         it returns the root context.
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
         """
 
         source = create_input_source(
@@ -2401,6 +2454,22 @@ class Dataset(ConjunctiveGraph):
         data: Optional[Union[str, bytes]] = None,
         **args: Any,
     ) -> "Graph":
+        """
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
+        """
+
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )

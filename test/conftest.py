@@ -1,10 +1,14 @@
+import sys
+from contextlib import ExitStack
+
 import pytest
 
 pytest.register_assert_rewrite("test.utils")
 
+from test.utils.audit import AuditHookDispatcher  # noqa: E402
 from test.utils.http import ctx_http_server  # noqa: E402
 from test.utils.httpfileserver import HTTPFileServer  # noqa: E402
-from typing import Generator  # noqa: E402
+from typing import Generator, Optional  # noqa: E402
 
 from rdflib import Graph
 
@@ -47,3 +51,19 @@ def function_httpmock(
 ) -> Generator[ServedBaseHTTPServerMock, None, None]:
     _session_function_httpmock.reset()
     yield _session_function_httpmock
+
+
+@pytest.fixture(scope="session", autouse=True)
+def audit_hook_dispatcher() -> Generator[Optional[AuditHookDispatcher], None, None]:
+    if sys.version_info >= (3, 8):
+        dispatcher = AuditHookDispatcher()
+        sys.addaudithook(dispatcher.audit)
+        yield dispatcher
+    else:
+        yield None
+
+
+@pytest.fixture(scope="function")
+def exit_stack() -> Generator[ExitStack, None, None]:
+    with ExitStack() as stack:
+        yield stack
