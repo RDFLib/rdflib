@@ -76,6 +76,21 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         initBindings: Mapping[str, Identifier] = {},
         initNs: Mapping[str, Any] = {},
     ) -> None:
+        """
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
+        """
+
         if isinstance(strOrQuery, str):
             strOrQuery = translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
 
@@ -102,6 +117,19 @@ class SPARQLProcessor(Processor):
         Evaluate a query with the given initial bindings, and initial
         namespaces. The given base is used to resolve relative URIs in
         the query and will be overridden by any BASE given in the query.
+
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
         """
 
         if not isinstance(strOrQuery, Query):

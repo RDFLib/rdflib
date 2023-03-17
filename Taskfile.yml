@@ -329,6 +329,19 @@ tasks:
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
           fi
+
+  docs:build-diagrams:
+    desc: Build documentation diagrams
+    cmds:
+      - cmd: |
+          shopt -s globstar;
+          for plantuml_file in ./**/*.plantuml
+          do
+            cat "${plantuml_file}" \
+              | docker run --rm -i plantuml/plantuml -tsvg -pipe \
+              > "${plantuml_file%.*}.svg"
+          done
+
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is
