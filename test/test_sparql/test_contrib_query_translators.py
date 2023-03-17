@@ -3,7 +3,7 @@ from rdflib.plugins.sparql.parser import *
 # from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.plugins.sparql.processor import translateQuery
 from rdflib.plugins.sparql.processor import parseQuery
-from rdflib.plugins.sparql.optimizer import ValuesToTheLeftOfTheJoin, RegexAsStringFunctionsOptimizer
+from rdflib.plugins.sparql._contrib.valuesToTheLeftOfTheJoins import ValuesToTheLeftOfTheJoin
 
 query_slow = """
 PREFIX ex:<https://example.org/>
@@ -54,7 +54,7 @@ def test_values_to_left():
     qs = _prepare_query(query_slow)
     qf = _prepare_query(query_fast)
     assert qs != qf
-    qso = ValuesToTheLeftOfTheJoin().optimize(qs)
+    qso = ValuesToTheLeftOfTheJoin.translate(qs)
 
     assert qso.algebra == qf.algebra
 

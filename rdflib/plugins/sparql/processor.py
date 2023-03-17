@@ -10,10 +10,11 @@ from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
 from rdflib.plugins.sparql.evaluate import evalQuery
 from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.sparql import Query
-from rdflib.plugins.sparql.optimizer import SPARQLOptimizer
 from rdflib.plugins.sparql.update import evalUpdate
 from rdflib.query import Processor, Result, UpdateProcessor
-from typing import List
+from typing import List, Callable, Optional
+
+
 
 def prepareQuery(queryString, initNs={}, base=None) -> Query:
     """
@@ -63,10 +64,13 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         return evalUpdate(self.graph, strOrQuery, initBindings)
 
 
+_QueryTranslatorType = Callable[[Query], Query]
+
+
 class SPARQLProcessor(Processor):
-    def __init__(self, graph, optimizers: List[SPARQLOptimizer] = None):
+    def __init__(self, graph, translators: Optional[List[_QueryTranslatorType]] = None):
         self.graph = graph
-        self.optimizers = optimizers
+        self.translators = translators
 
     def query(self, strOrQuery, initBindings={}, initNs={}, base=None, DEBUG=False):
         """
@@ -81,7 +85,7 @@ class SPARQLProcessor(Processor):
         else:
             query = strOrQuery
 
-        for optimizer in self.optimizers:
-            query = optimizer.optimize(query)
+        for translator in self.translators:
+            query = translator(query)
 
         return evalQuery(self.graph, query, initBindings, base)
