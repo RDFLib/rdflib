@@ -2,4 +2,4 @@
 # can build with a more up to date Sphinx than is in `poetry.lock`. This file
 # should be eliminated once we can get a more up-to-date version of sphinx in
 # poetry.lock. It is kept here so that dependabot can update it.
-Sphinx==5.3.0
+Sphinx==6.1.3
