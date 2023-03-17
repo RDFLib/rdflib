@@ -44,7 +44,6 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
     "myst_parser",
-    "sphinxcontrib.kroki",
     "sphinx.ext.autosectionlabel",
 ]
 
