@@ -25,6 +25,9 @@ readme = "README.md"
 packages = [
     { include = "rdflib" },
 ]
+include = [
+    { path = "test", format = "sdist" },
+]
 
 [tool.poetry.scripts]
 rdfpipe = 'rdflib.tools.rdfpipe:main'
