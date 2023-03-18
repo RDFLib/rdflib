@@ -61,7 +61,7 @@ The stable release of RDFLib may be installed with Python's package management t
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.3.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 6.3.1, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current main branch (for developers)
 

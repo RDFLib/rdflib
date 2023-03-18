@@ -1,3 +1,44 @@
+# 2023-03-18 RELEASE 6.3.1
+
+
+This is a patch release that includes a singular user facing fix, which is the
+inclusion of the `test` directory in the `sdist` release artifact.
+
+The following sections describe the changes included in this version.
+
+## build: explicitly specify `packages` in `pyproject.toml` (#2280)
+
+Commit [334787b](https://github.com/RDFLib/rdflib/commit/334787b), closes [#2280](https://github.com/RDFLib/rdflib/issues/2280).
+
+
+The default behaviour makes it more of a hassle to republish RDFLib to
+a separate package, something which I plan to do for testing purposes
+and possibly other reasons.
+
+More changes may follow in a similar vein.
+
+
+## build: include test in sdist (#2282)
+
+Commit [e3884b7](https://github.com/RDFLib/rdflib/commit/e3884b7), closes [#2282](https://github.com/RDFLib/rdflib/issues/2282).
+
+
+A perhaps minor regression from earlier versions is that the sdist does not include the test folder, which makes it harder for downstreams to use a single source of truth to build and test a reliable package. This restores the test folder for sdists.
+
+## docs: don't use kroki (#2284)
+
+Commit [bea782f](https://github.com/RDFLib/rdflib/commit/bea782f), closes [#2284](https://github.com/RDFLib/rdflib/issues/2284).
+
+
+The Kroki server is currently experiencing some issues which breaks our
+build, this change eliminates the use of Kroki in favour of directly
+using the generated SVG images which is checked into git alongside the
+PlantUML sources.
+
+I also added a task to the Taskfile to re-generate the SVG images from
+the PlantUML sources by calling docker.
+
+
 # 2023-03-16 RELEASE 6.3.0
 
 This is a minor release that includes bug fixes and features.
