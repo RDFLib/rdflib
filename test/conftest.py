@@ -5,10 +5,19 @@ import pytest
 
 pytest.register_assert_rewrite("test.utils")
 
+from pathlib import Path  # noqa: E402
 from test.utils.audit import AuditHookDispatcher  # noqa: E402
 from test.utils.http import ctx_http_server  # noqa: E402
 from test.utils.httpfileserver import HTTPFileServer  # noqa: E402
-from typing import Generator, Optional  # noqa: E402
+from typing import (  # noqa: E402
+    Collection,
+    Dict,
+    Generator,
+    Iterable,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from rdflib import Graph
 
@@ -67,3 +76,31 @@ def audit_hook_dispatcher() -> Generator[Optional[AuditHookDispatcher], None, No
 def exit_stack() -> Generator[ExitStack, None, None]:
     with ExitStack() as stack:
         yield stack
+
+
+EXTRA_MARKERS: Dict[
+    Tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
+] = {
+    ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
+    ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],
+    ("rdflib/extras/infixowl.py", "rdflib.extras.infixowl"): [pytest.mark.webtest],
+}
+
+
+PROJECT_ROOT = Path(__file__).parent.parent
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_collection_modifyitems(items: Iterable[pytest.Item]):
+    for item in items:
+        parent_name = (
+            str(Path(item.parent.module.__file__).relative_to(PROJECT_ROOT))
+            if item.parent is not None
+            and isinstance(item.parent, pytest.Module)
+            and item.parent.module is not None
+            else None
+        )
+        if (parent_name, item.name) in EXTRA_MARKERS:
+            extra_markers = EXTRA_MARKERS[(parent_name, item.name)]
+            for extra_marker in extra_markers:
+                item.add_marker(extra_marker)
