@@ -1468,4 +1468,4 @@ networkx = ["networkx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "72c977e279b46a3fea8d2acd5ceb17848a9956157f60367b5f1339ccc33318b2"
+content-hash = "940136a9541866fcffc6802a11b864dff2a2ad1d138a900c4140bd49044f6eb3"
