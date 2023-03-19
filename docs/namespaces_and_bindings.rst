@@ -70,7 +70,7 @@ Valid strategies are:
 * rdflib:
     * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
     * all the core namespaces and all the following: brick, csvw, dc, dcat
-    * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+    * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
     * sh, skos, sosa, ssn, time, vann, void
     * see the NAMESPACE_PREFIXES_RDFLIB object in :class:`rdflib.namespace` for up-to-date list
 * none:
