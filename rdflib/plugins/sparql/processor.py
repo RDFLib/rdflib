@@ -132,12 +132,11 @@ class SPARQLProcessor(Processor):
            documentation.
         """
 
-        if not isinstance(strOrQuery, Query):
+        if isinstance(strOrQuery, str):
             parsetree = parseQuery(strOrQuery)
-            query = translateQuery(parsetree, base, initNs)
-        else:
-            query = strOrQuery
-        return self.evaluate_query(query, initBindings, base)
+            strOrQuery = translateQuery(parsetree, base, initNs)
+
+        return self.evaluate_query(strOrQuery, initBindings, base)
 
     def evaluate_query(
         self, 
