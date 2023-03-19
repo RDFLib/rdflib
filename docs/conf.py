@@ -322,5 +322,9 @@ if sys.version_info < (3, 9):
             ("py:class", "_TripleType"),
             ("py:class", "_TripleOrTriplePathType"),
             ("py:class", "TextIO"),
+            ("py:class", "Message"),
         ]
     )
+
+if sys.version_info < (3, 8):
+    nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])
