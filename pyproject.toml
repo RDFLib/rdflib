@@ -27,6 +27,8 @@ packages = [
 ]
 include = [
     { path = "test", format = "sdist" },
+    { path = "docs", format = "sdist" },
+    { path = "examples", format = "sdist" },
 ]
 
 [tool.poetry.scripts]
