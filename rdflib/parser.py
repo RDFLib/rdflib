@@ -276,7 +276,8 @@ class URLInputSource(InputSource):
                 # This custom error handling should be removed once all
                 # supported versions of python support 308.
                 if ex.code == 308:
-                    req.full_url = ex.headers.get("Location")
+                    # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
+                    req.full_url = ex.headers.get("Location")  # type: ignore[assignment]
                     return _urlopen(req)
                 else:
                     raise

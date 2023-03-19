@@ -201,7 +201,8 @@ class TestGraphHTTP:
             httpmock.mocks[MethodName.GET].assert_called()
             assert len(httpmock.requests[MethodName.GET]) == 10
             for request in httpmock.requests[MethodName.GET]:
-                assert re.match(r"text/turtle", request.headers.get("Accept"))
+                # type error: Argument 2 to "match" has incompatible type "Optional[Any]"; expected "str"
+                assert re.match(r"text/turtle", request.headers.get("Accept"))  # type: ignore[arg-type]
 
             request_paths = [
                 request.path for request in httpmock.requests[MethodName.GET]
