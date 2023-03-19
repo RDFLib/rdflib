@@ -10,7 +10,7 @@ isodate==0.6.1
     # via rdflib
 pyparsing==3.0.9
     # via rdflib
-rdflib==6.3.0
+rdflib==6.3.1
     # via -r docker/latest/requirements.in
 six==1.16.0
     # via
