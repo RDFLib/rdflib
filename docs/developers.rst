@@ -358,43 +358,53 @@ RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3
 Releasing
 ---------
 
-Set to-be-released version number in :file:`rdflib/__init__.py` and
-:file:`README.md`. Check date in :file:`LICENSE`.
+Create a release-preparation pull request with the following changes:
 
-Add :file:`CHANGELOG.md` entry.
+* Updated copyright year in the ``LICENSE`` file.
+* Updated copyright year in the ``docs/conf.py`` file.
+* Updated main branch version and current version in the ``README.md`` file. The
+  main branch version should be the next major version with an ``a0`` suffix to
+  indicate it is alpha 0. When releasing 6.3.1, the main branch version in the
+  README should be 6.4.0a0.
+* Updated version in the ``pyproject.toml`` file.
+* Updated ``__date__`` in the ``rdflib/__init__.py`` file.
+* Accurate ``CHANGELOG.md`` entry for the release.
 
-Commit this change. It's preferable make the release tag via
-https://github.com/RDFLib/rdflib/releases/new ::
-Our Tag versions aren't started with 'v', so just use a plain 5.0.0 like
-version. Release title is like "RDFLib 5.0.0", the description a copy of your
-:file:`CHANGELOG.md` entry.
-This gives us a nice release page like this::
-https://github.com/RDFLib/rdflib/releases/tag/4.2.2
+Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
 
-If for whatever reason you don't want to take this approach, the old one is::
+.. code-block:: bash
+    
+    # Clean up any previous builds
+    \rm -vf dist/*
 
-    Tagging the release commit with::
+    # Build artifacts
+    poetry build
 
-      git tag -am 'tagged version' X.X.X
+    # Check that the built wheel works correctly:
+    pipx run --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
 
-    When pushing, remember to do::
+    # Publish to PyPI
+    poetry publish
+    
 
-      git push --tags
+Once this is done, create a release tag from `GitHub releases
+<https://github.com/RDFLib/rdflib/releases/new>`_. For a release of version
+6.3.1 the tag should be ``6.3.1`` (without a "v" prefix), and the release title
+should be "RDFLib 6.3.1". The release notes for the latest version be added to
+the release description. The artifacts built with ``poetry build`` should be
+uploaded to the release as release artifacts.
 
+The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
-No matter how you create the release tag, remember to upload tarball to pypi with::
+Once this is done announce the release at the following locations:
 
-  rm -r dist/X.X.X[.-]*  # delete all previous builds for this release, just in case
+* Twitter: Just make a tweet from your own account linking to the latest release.
+* RDFLib mailing list.
+* RDFLib Gitter / matrix.org chat room.
 
-  rm -r build
-  python setup.py sdist
-  python setup.py bdist_wheel
-  ls dist
+Once this is all done, create another post-release pull request with the following changes:
 
-  # upload with twine
-  # WARNING: once uploaded can never be modified, only deleted!
-  twine upload dist/rdflib-X.X.X[.-]*
-
-Set new dev version number in the above locations, i.e. next release ``-dev``: ``5.0.1-dev`` and commit again.
-
-Tweet, email mailing list and inform members in the chat.
+* Set the just released version in ``docker/latest/requirements.in`` and run
+  ``task docker:prepare`` to update the ``docker/latest/requirements.txt`` file.
+* Set the version in the ``pyproject.toml`` file to the next minor release with
+  a ``a0`` suffix to indicate alpha 0.
