@@ -29,7 +29,7 @@ def prepareQuery(
     if initNs is None:
         initNs = {}
     ret = translateQuery(parseQuery(queryString), base, initNs)
-    ret._original_args = (queryString, initNs or {}, base)
+    ret._original_args = (queryString, initNs, base)
     return ret
 
 
