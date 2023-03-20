@@ -133,16 +133,6 @@ class SPARQLProcessor(Processor):
         """
 
         if isinstance(strOrQuery, str):
-            parsetree = parseQuery(strOrQuery)
-            strOrQuery = translateQuery(parsetree, base, initNs)
+            strOrQuery = translateQuery(parseQuery(strOrQuery), base, initNs)
 
-        return self.evaluate_query(strOrQuery, initBindings, base)
-
-    def evaluate_query(
-        self, 
-        query: Query, 
-        initBindings: Optional[Mapping[str, Identifier]] = None, 
-        base: Optional[str] = None,
-    ) -> Mapping[str, Any]:
-        """Evaluate a query with given initial bindings and base."""
         return evalQuery(self.graph, query, initBindings, base)
