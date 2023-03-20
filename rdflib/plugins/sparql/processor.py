@@ -109,7 +109,7 @@ class SPARQLProcessor(Processor):
         self,
         strOrQuery: Union[str, Query],
         initBindings: Optional[Mapping[str, Identifier]] = None,
-        initNs: Mapping[str, Any] = {},
+        initNs: Optional[Mapping[str, Any]] = None,
         base: Optional[str] = None,
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
@@ -135,4 +135,4 @@ class SPARQLProcessor(Processor):
         if isinstance(strOrQuery, str):
             strOrQuery = translateQuery(parseQuery(strOrQuery), base, initNs)
 
-        return evalQuery(self.graph, query, initBindings, base)
+        return evalQuery(self.graph, strOrQuery, initBindings, base)
