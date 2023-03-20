@@ -76,7 +76,6 @@ class SPARQLResult(Result):
 
 class SPARQLUpdateProcessor(UpdateProcessor):
     def __init__(self, graph):
-        super().__init__(graph)
         self.graph = graph
 
     def update(
@@ -108,7 +107,6 @@ class SPARQLUpdateProcessor(UpdateProcessor):
 
 class SPARQLProcessor(Processor):
     def __init__(self, graph):
-        super().__init__(graph)
         self.graph = graph
 
     # NOTE on type error: this is because the super type constructor does not
