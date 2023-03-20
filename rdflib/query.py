@@ -57,8 +57,8 @@ class Processor(object):
     def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, "Query"],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
-        initNs: Mapping[str, Any] = {},  # noqa: N803
+        initBindings: Optional[Mapping["str", "Identifier"]] = None,  # noqa: N803
+        initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
         pass
