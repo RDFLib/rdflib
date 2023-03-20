@@ -280,7 +280,7 @@ def evalCopy(ctx: QueryContext, u: CompValue) -> None:
 
 
 def evalUpdate(
-    graph: Graph, update: Update, initBindings: Mapping[str, Identifier] = {}
+    graph: Graph, update: Update, initBindings: Optional[Mapping[str, Identifier]] = None
 ) -> None:
     """
 
@@ -315,7 +315,7 @@ def evalUpdate(
     """
 
     for u in update.algebra:
-        initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+        initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
