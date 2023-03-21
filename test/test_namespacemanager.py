@@ -172,6 +172,57 @@ def test_nman_bind_namespaces(
         check_graph_ns(graph, expected_result)
 
 
+@pytest.mark.parametrize(
+    ["selector", "expected_bindings"],
+    [
+        (
+            "rdflib",
+            {
+                "brick": "https://brickschema.org/schema/Brick#",
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "dcmitype": "http://purl.org/dc/dcmitype/",
+                "dcterms": "http://purl.org/dc/terms/",
+                "dcam": "http://purl.org/dc/dcam/",
+                "doap": "http://usefulinc.com/ns/doap#",
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "odrl": "http://www.w3.org/ns/odrl/2/",
+                "geo": "http://www.opengis.net/ont/geosparql#",
+                "org": "http://www.w3.org/ns/org#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "prof": "http://www.w3.org/ns/dx/prof/",
+                "prov": "http://www.w3.org/ns/prov#",
+                "qb": "http://purl.org/linked-data/cube#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "sdo": "https://schema.org/",
+                "sh": "http://www.w3.org/ns/shacl#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sosa": "http://www.w3.org/ns/sosa/",
+                "ssn": "http://www.w3.org/ns/ssn/",
+                "time": "http://www.w3.org/2006/time#",
+                "vann": "http://purl.org/vocab/vann/",
+                "void": "http://rdfs.org/ns/void#",
+                "wgs": "https://www.w3.org/2003/01/geo/wgs84_pos#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "xml": "http://www.w3.org/XML/1998/namespace",
+            },
+        )
+    ],
+)
+def test_bound_namespaces_subset(
+    selector: Any, expected_bindings: Dict[str, str]
+) -> None:
+    graph = Graph(bind_namespaces=selector)
+    bound_namespaces = dict(
+        (key, str(value)) for key, value in graph.namespace_manager.namespaces()
+    )
+    assert (
+        expected_bindings.items() <= bound_namespaces.items()
+    ), f"missing items {expected_bindings.items() - bound_namespaces.items()}"
+
+
 def test_compute_qname_no_generate() -> None:
     g = Graph()  # 'core' bind_namespaces (default)
     with pytest.raises(KeyError):

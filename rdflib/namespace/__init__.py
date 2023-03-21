@@ -365,7 +365,7 @@ class NamespaceManager(object):
         * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
         * all the core namespaces and all the following: brick, csvw, dc, dcat
         * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
-        * sh, skos, sosa, ssn, time, vann, void
+        * sh, skos, sosa, ssn, time, vann, void, wgs
         * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
     * none:
         * binds no namespaces to prefixes
@@ -914,4 +914,5 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "time": TIME,
     "vann": VANN,
     "void": VOID,
+    "wgs": WGS,
 }
