@@ -3,13 +3,15 @@ from typing import Union
 
 import pytest
 
-from rdflib import RDF, RDFS, Graph
+from rdflib import RDF, RDFS, Graph, URIRef
+from rdflib.namespace import DCAT, DCTERMS
 from rdflib.paths import (
     AlternativePath,
     InvPath,
     MulPath,
     NegatedPath,
     OneOrMore,
+    Path,
     SequencePath,
     ZeroOrMore,
     ZeroOrOne,
@@ -71,3 +73,45 @@ def test_paths_n3(
     logging.debug("path = %s", path)
     assert path.n3() == no_nsm
     assert path.n3(nsm) == with_nsm
+
+
+def test_mulpath_n3():
+    uri = "http://example.com/foo"
+    n3 = (URIRef(uri) * ZeroOrMore).n3()
+    assert n3 == "<" + uri + ">*"
+
+
+@pytest.mark.parametrize(
+    ["lhs", "rhs"],
+    [
+        (DCTERMS.temporal / DCAT.endDate, DCTERMS.temporal / DCAT.endDate),
+        (SequencePath(DCTERMS.temporal, DCAT.endDate), DCTERMS.temporal / DCAT.endDate),
+    ],
+)
+def test_eq(lhs: Path, rhs: Path) -> None:
+    logging.debug("lhs = %s/%r, rhs = %s/%r", type(lhs), lhs, type(rhs), rhs)
+    assert lhs == rhs
+
+
+@pytest.mark.parametrize(
+    ["lhs", "rhs"],
+    [
+        (DCTERMS.temporal / DCAT.endDate, DCTERMS.temporal / DCAT.endDate),
+        (SequencePath(DCTERMS.temporal, DCAT.endDate), DCTERMS.temporal / DCAT.endDate),
+    ],
+)
+def test_hash(lhs: Path, rhs: Path) -> None:
+    logging.debug("lhs = %s/%r, rhs = %s/%r", type(lhs), lhs, type(rhs), rhs)
+    assert hash(lhs) == hash(rhs)
+
+
+@pytest.mark.parametrize(
+    ["insert_path", "check_path"],
+    [
+        (DCTERMS.temporal / DCAT.endDate, DCTERMS.temporal / DCAT.endDate),
+        (SequencePath(DCTERMS.temporal, DCAT.endDate), DCTERMS.temporal / DCAT.endDate),
+    ],
+)
+def test_dict_key(insert_path: Path, check_path: Path) -> None:
+    d = {insert_path: "foo"}
+    assert d[check_path] == "foo"
