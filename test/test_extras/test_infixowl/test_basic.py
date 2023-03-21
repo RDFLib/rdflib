@@ -1,5 +1,7 @@
 from test.data import context0
 
+import pytest
+
 from rdflib import OWL, Graph, Literal, Namespace
 from rdflib.extras.infixowl import (
     Class,
@@ -79,6 +81,7 @@ def test_infixowl_serialization():
     )
 
 
+@pytest.mark.webtest
 def test_infix_owl_example1():
     g = Graph(identifier=context0)
     g.bind("ex", EXNS)
