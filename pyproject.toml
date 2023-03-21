@@ -27,6 +27,8 @@ packages = [
 ]
 include = [
     { path = "test", format = "sdist" },
+    { path = "docs", format = "sdist" },
+    { path = "examples", format = "sdist" },
 ]
 
 [tool.poetry.scripts]
@@ -49,7 +51,7 @@ lxml = {version = "^4.3.0", optional = true}
 [tool.poetry.group.dev.dependencies]
 black = "23.1.0"
 isort = "^5.10.0"
-mypy = "1.0.1"
+mypy = "^1.1.0"
 lxml-stubs = "^0.4.0"
 
 [tool.poetry.group.tests.dependencies]

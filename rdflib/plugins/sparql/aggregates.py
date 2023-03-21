@@ -40,7 +40,7 @@ class Accumulator(object):
         self.expr = aggregation.vars
         if not aggregation.distinct:
             # type error: Cannot assign to a method
-            self.use_row = self.dont_care  # type: ignore[assignment]
+            self.use_row = self.dont_care  # type: ignore[method-assign]
             self.distinct = False
         else:
             self.distinct = aggregation.distinct
@@ -184,7 +184,7 @@ class Extremum(Accumulator):
         self.value: Any = None
         # DISTINCT would not change the value for MIN or MAX
         # type error: Cannot assign to a method
-        self.use_row = self.dont_care  # type: ignore[assignment]
+        self.use_row = self.dont_care  # type: ignore[method-assign]
 
     def set_value(self, bindings: MutableMapping[Variable, Identifier]) -> None:
         if self.value is not None:
