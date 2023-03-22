@@ -12,12 +12,9 @@ Named class description of type 2 (with owl:oneOf) or type 4-6
 
 Uses Manchester Syntax for __repr__
 
->>> exNs = Namespace('http://example.com/')
->>> namespace_manager = NamespaceManager(Graph())
->>> namespace_manager.bind('ex', exNs, override=False)
->>> namespace_manager.bind('owl', OWL, override=False)
+>>> exNs = Namespace("http://example.com/")
 >>> g = Graph()
->>> g.namespace_manager = namespace_manager
+>>> g.bind("ex", exNs, override=False)
 
 Now we have an empty graph, we can construct OWL classes in it
 using the Python classes defined in this module
@@ -39,8 +36,6 @@ We can then access the rdfs:subClassOf relationships
 This can also be used against already populated graphs:
 
 >>> owlGraph = Graph().parse(str(OWL))
->>> namespace_manager.bind('owl', OWL, override=False)
->>> owlGraph.namespace_manager = namespace_manager
 >>> list(Class(OWL.Class, graph=owlGraph).subClassOf)
 [Class: rdfs:Class ]
 
@@ -830,12 +825,9 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     Recursively clear the given class, continuing
     where any related class is an anonymous class
 
-    >>> EX = Namespace('http://example.com/')
-    >>> namespace_manager = NamespaceManager(Graph())
-    >>> namespace_manager.bind('ex', EX, override=False)
-    >>> namespace_manager.bind('owl', OWL, override=False)
+    >>> EX = Namespace("http://example.com/")
     >>> g = Graph()
-    >>> g.namespace_manager = namespace_manager
+    >>> g.bind("ex", EX, override=False)
     >>> Individual.factoryGraph = g
     >>> classB = Class(EX.B)
     >>> classC = Class(EX.C)
@@ -1114,20 +1106,16 @@ class Class(AnnotatableTerms):
         Construct an anonymous class description consisting of the
         intersection of this class and 'other' and return it
 
-        >>> exNs = Namespace('http://example.com/')
-        >>> namespace_manager = NamespaceManager(Graph())
-        >>> namespace_manager.bind('ex', exNs, override=False)
-        >>> namespace_manager.bind('owl', OWL, override=False)
-        >>> g = Graph()
-        >>> g.namespace_manager = namespace_manager
-
         Chaining 3 intersections
 
+        >>> exNs = Namespace("http://example.com/")
+        >>> g = Graph()
+        >>> g.bind("ex", exNs, override=False)
         >>> female = Class(exNs.Female, graph=g)
         >>> human = Class(exNs.Human, graph=g)
         >>> youngPerson = Class(exNs.YoungPerson, graph=g)
         >>> youngWoman = female & human & youngPerson
-        >>> youngWoman #doctest: +SKIP
+        >>> youngWoman  #doctest: +SKIP
         ex:YoungPerson THAT ( ex:Female AND ex:Human )
         >>> isinstance(youngWoman, BooleanClass)
         True
@@ -1231,11 +1219,8 @@ class Class(AnnotatableTerms):
 
         >>> from rdflib.util import first
         >>> exNs = Namespace('http://example.com/')
-        >>> namespace_manager = NamespaceManager(Graph())
-        >>> namespace_manager.bind('ex', exNs, override=False)
-        >>> namespace_manager.bind('owl', OWL, override=False)
         >>> g = Graph()
-        >>> g.namespace_manager = namespace_manager
+        >>> g.bind("ex", exNs, override=False)
         >>> Individual.factoryGraph = g
         >>> brother = Class(exNs.Brother)
         >>> sister = Class(exNs.Sister)
@@ -1463,25 +1448,21 @@ class EnumeratedClass(OWLRDFListProxy, Class):
     axiom ::= 'EnumeratedClass('
         classID ['Deprecated'] { annotation } { individualID } ')'
 
-
-    >>> exNs = Namespace('http://example.com/')
-    >>> namespace_manager = NamespaceManager(Graph())
-    >>> namespace_manager.bind('ex', exNs, override=False)
-    >>> namespace_manager.bind('owl', OWL, override=False)
+    >>> exNs = Namespace("http://example.com/")
     >>> g = Graph()
-    >>> g.namespace_manager = namespace_manager
+    >>> g.bind("ex", exNs, override=False)
     >>> Individual.factoryGraph = g
     >>> ogbujiBros = EnumeratedClass(exNs.ogbujicBros,
     ...                              members=[exNs.chime,
     ...                                       exNs.uche,
     ...                                       exNs.ejike])
-    >>> ogbujiBros #doctest: +SKIP
+    >>> ogbujiBros  # doctest: +SKIP
     { ex:chime ex:uche ex:ejike }
     >>> col = Collection(g, first(
     ...    g.objects(predicate=OWL.oneOf, subject=ogbujiBros.identifier)))
     >>> sorted([g.qname(item) for item in col])
     ['ex:chime', 'ex:ejike', 'ex:uche']
-    >>> print(g.serialize(format='n3')) #doctest: +SKIP
+    >>> print(g.serialize(format='n3'))  # doctest: +SKIP
     @prefix ex: <http://example.com/> .
     @prefix owl: <http://www.w3.org/2002/07/owl#> .
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -1532,16 +1513,14 @@ class BooleanClassExtentHelper:
     >>> testGraph = Graph()
     >>> Individual.factoryGraph = testGraph
     >>> EX = Namespace("http://example.com/")
-    >>> namespace_manager = NamespaceManager(Graph())
-    >>> namespace_manager.bind('ex', EX, override=False)
-    >>> testGraph.namespace_manager = namespace_manager
+    >>> testGraph.bind("ex", EX, override=False)
     >>> fire = Class(EX.Fire)
     >>> water = Class(EX.Water)
     >>> testClass = BooleanClass(members=[fire, water])
     >>> testClass2 = BooleanClass(
     ...     operator=OWL.unionOf, members=[fire, water])
     >>> for c in BooleanClass.getIntersections():
-    ...     print(c) #doctest: +SKIP
+    ...     print(c)  # doctest: +SKIP
     ( ex:Fire AND ex:Water )
     >>> for c in BooleanClass.getUnions():
     ...     print(c) #doctest: +SKIP
@@ -1638,13 +1617,10 @@ class BooleanClass(OWLRDFListProxy, Class):
         Converts a unionOf / intersectionOf class expression into one
         that instead uses the given operator
 
-
         >>> testGraph = Graph()
         >>> Individual.factoryGraph = testGraph
         >>> EX = Namespace("http://example.com/")
-        >>> namespace_manager = NamespaceManager(Graph())
-        >>> namespace_manager.bind('ex', EX, override=False)
-        >>> testGraph.namespace_manager = namespace_manager
+        >>> testGraph.bind("ex", EX, override=False)
         >>> fire = Class(EX.Fire)
         >>> water = Class(EX.Water)
         >>> testClass = BooleanClass(members=[fire,water])
@@ -1656,7 +1632,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         >>> try:
         ...     testClass.changeOperator(OWL.unionOf)
         ... except Exception as e:
-        ...     print(e) #doctest: +SKIP
+        ...     print(e)  # doctest: +SKIP
         The new operator is already being used!
 
         """
@@ -1775,16 +1751,14 @@ class Restriction(Class):
         >>> g1 = Graph()
         >>> g2 = Graph()
         >>> EX = Namespace("http://example.com/")
-        >>> namespace_manager = NamespaceManager(g1)
-        >>> namespace_manager.bind('ex', EX, override=False)
-        >>> namespace_manager = NamespaceManager(g2)
-        >>> namespace_manager.bind('ex', EX, override=False)
+        >>> g1.bind("ex", EX, override=False)
+        >>> g2.bind("ex", EX, override=False)
         >>> Individual.factoryGraph = g1
         >>> prop = Property(EX.someProp, baseType=OWL.DatatypeProperty)
         >>> restr1 = (Property(
         ...    EX.someProp,
         ...    baseType=OWL.DatatypeProperty)) << some >> (Class(EX.Foo))
-        >>> restr1 #doctest: +SKIP
+        >>> restr1  # doctest: +SKIP
         ( ex:someProp SOME ex:Foo )
         >>> restr1.serialize(g2)
         >>> Individual.factoryGraph = g2
