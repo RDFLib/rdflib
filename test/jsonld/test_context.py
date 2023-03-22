@@ -3,6 +3,7 @@ JSON-LD Context Spec
 """
 
 from functools import wraps
+from pathlib import Path
 from typing import Any, Dict
 
 from rdflib.plugins.shared.jsonld import context, errors
@@ -213,3 +214,23 @@ def test_invalid_remote_context():
     ctx_url = "http://example.org/recursive.jsonld"
     SOURCES[ctx_url] = {"key": "value"}
     ctx = Context(ctx_url)
+
+
+def test_file_source(tmp_path: Path) -> None:
+    """
+    A file URI source to `Context` gets processed correctly.
+    """
+    file = tmp_path / "context.jsonld"
+    file.write_text(r"""{ "@context": { "ex": "http://example.com/" } }""")
+    ctx = Context(source=file.as_uri())
+    assert "http://example.com/" == ctx.terms["ex"].id
+
+
+def test_dict_source(tmp_path: Path) -> None:
+    """
+    A dictionary source to `Context` gets processed correctly.
+    """
+    file = tmp_path / "context.jsonld"
+    file.write_text(r"""{ "@context": { "ex": "http://example.com/" } }""")
+    ctx = Context(source=[{"@context": file.as_uri()}])
+    assert "http://example.com/" == ctx.terms["ex"].id
