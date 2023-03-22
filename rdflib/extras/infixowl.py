@@ -1417,7 +1417,9 @@ class Class(AnnotatableTerms):
         ) + klassdescr
 
 
-class OWLRDFListProxy(object):
+class OWLRDFListProxy:
+    _rdfList: list = []  # noqa: N815
+
     def __init__(self, rdf_list, members=None, graph=None):
         if graph:
             self.graph = graph
