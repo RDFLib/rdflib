@@ -92,13 +92,13 @@ owl:Restrictions can also be instantiated:
 
 Restrictions can also be created using Manchester OWL syntax in 'colloquial'
 Python
->>> exNs.hasParent << some >> Class(exNs.Physician, graph=g)
+>>> exNs.hasParent @ some @ Class(exNs.Physician, graph=g)
 ( ex:hasParent SOME ex:Physician )
 
->>> Property(exNs.hasParent, graph=g) << max >> Literal(1)
+>>> Property(exNs.hasParent, graph=g) @ max @ Literal(1)
 ( ex:hasParent MAX 1 )
 
->>> print(g.serialize(format='pretty-xml')) #doctest: +SKIP
+>>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
 
 """
 
@@ -166,9 +166,7 @@ __all__ = [
 
 # definition of an Infix operator class
 # this recipe also works in jython
-# calling sequence for the infix is either:
-#  x << op >> y
-# or:
+# calling sequence for the infix is:
 #  x @ op @ y
 
 
@@ -834,14 +832,14 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     >>> classD = Class(EX.D)
     >>> classE = Class(EX.E)
     >>> classF = Class(EX.F)
-    >>> anonClass = EX.someProp << some >> classD
+    >>> anonClass = EX.someProp @ some @ classD
     >>> classF += anonClass
     >>> list(anonClass.subClassOf)
     [Class: ex:F ]
     >>> classA = classE | classF | anonClass
     >>> classB += classA
     >>> classA.equivalentClass = [Class()]
-    >>> classB.subClassOf = [EX.someProp << some >> classC]
+    >>> classB.subClassOf = [EX.someProp @ some @ classC]
     >>> classA
     ( ex:E OR ex:F OR ( ex:someProp SOME ex:D ) )
     >>> DeepClassClear(classA)
@@ -1757,7 +1755,7 @@ class Restriction(Class):
         >>> prop = Property(EX.someProp, baseType=OWL.DatatypeProperty)
         >>> restr1 = (Property(
         ...    EX.someProp,
-        ...    baseType=OWL.DatatypeProperty)) << some >> (Class(EX.Foo))
+        ...    baseType=OWL.DatatypeProperty)) @ some @ (Class(EX.Foo))
         >>> restr1  # doctest: +SKIP
         ( ex:someProp SOME ex:Foo )
         >>> restr1.serialize(g2)
