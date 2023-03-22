@@ -1749,6 +1749,7 @@ class Restriction(Class):
         OWL.allValuesFrom,
         OWL.someValuesFrom,
         OWL.hasValue,
+        OWL.cardinality,
         OWL.maxCardinality,
         OWL.minCardinality,
     ]
@@ -1960,7 +1961,7 @@ class Restriction(Class):
     def _set_cardinality(self, other):
         if not other:
             return
-        triple = (self.identifier, OWL.cardinality, classOrIdentifier(other))
+        triple = (self.identifier, OWL.cardinality, classOrTerm(other))
         if triple in self.graph:
             return
         else:
@@ -1982,7 +1983,7 @@ class Restriction(Class):
     def _set_maxcardinality(self, other):
         if not other:
             return
-        triple = (self.identifier, OWL.maxCardinality, classOrIdentifier(other))
+        triple = (self.identifier, OWL.maxCardinality, classOrTerm(other))
         if triple in self.graph:
             return
         else:
