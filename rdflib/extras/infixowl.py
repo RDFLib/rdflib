@@ -351,16 +351,13 @@ class TermDeletionHelper:
         return _remover
 
 
-class Individual(object):
+class Individual:
     """
-    A typed individual
+    A typed individual, the base class of the InfixOWL classes.
+
     """
 
     factoryGraph = Graph()  # noqa: N815
-
-    def serialize(self, graph):
-        for fact in self.factoryGraph.triples((self.identifier, None, None)):
-            graph.add(fact)
 
     def __init__(self, identifier=None, graph=None):
         self.__identifier = identifier is not None and identifier or BNode()
@@ -376,17 +373,71 @@ class Individual(object):
             except Exception:  # pragma: no cover
                 pass  # pragma: no cover
 
+    def snc(self, graph, bnc=False):
+        """
+        Take terms referencing this individual as a subject and
+        add them to the provided graph.
+        """
+        for fact in self.factoryGraph.triples((self.identifier, None, None)):
+            graph.add(fact)
+
+        return graph
+
+    def bnc(self, graph, bnc=False):
+        """
+        Take terms related to this individual using a blank node
+        closure and add them to the provided graph.
+        """
+        for fact in self.factoryGraph.triples((self.identifier, None, None)):
+            graph.add(fact)
+            if (
+                isinstance(fact[2], BNode)
+                and (fact[2], None, None) not in self.factoryGraph
+            ):
+                graph += self.factoryGraph.triples((fact[2], None, None))
+
+        return graph
+
     def clearInDegree(self):  # noqa: N802
+        """
+        Remove references to this individual as an object in the
+        backing store.
+        """
         self.graph.remove((None, None, self.identifier))
 
     def clearOutDegree(self):  # noqa: N802
+        """
+        Remove all statements to this individual as a subject in the
+        backing store. Note that this only removes the statements
+        themselves, not the blank node closure so there is a chance
+        that this will cause orphaned blank nodes to remain in the
+        graph.
+        """
         self.graph.remove((self.identifier, None, None))
 
     def delete(self):
+        """
+        Delete the individual from the graph, clearing the in and
+        out degrees.
+        """
         self.clearInDegree()
         self.clearOutDegree()
 
     def replace(self, other):
+        """
+        Replace the individual in the graph with the given other,
+        causing all triples that refer to it to be changed and then
+        delete the individual.
+
+        >>> g = Graph()
+        >>> b = Individual(OWL.Restriction, g)
+        >>> b.type = RDFS.Resource
+        >>> len(list(b.type))
+        1
+        >>> del b.type
+        >>> len(list(b.type))
+        0
+        """
         for s, p, _o in self.graph.triples((None, None, self.identifier)):
             self.graph.add((s, p, classOrIdentifier(other)))
         self.delete()
