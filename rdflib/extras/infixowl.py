@@ -1643,16 +1643,17 @@ class BooleanClass(OWLRDFListProxy, Class):
             ):
                 props.append(p)
                 operator = p
-            assert len(props) == 1, repr(props)
+            if len(props) != 1:
+                raise Exception(
+                    f"Cannot create a BooleanClass for {identifier} with the given graph."
+                )
         Class.__init__(self, identifier, graph=graph)
         assert operator in [OWL.intersectionOf, OWL.unionOf], str(operator)
         self._operator = operator
         rdf_list = list(self.graph.objects(predicate=operator, subject=self.identifier))
-        assert (
-            not members or not rdf_list
-        ), "This is a previous boolean class description!" + repr(
-            Collection(self.graph, rdf_list[0]).n3()
-        )
+        if members != [] and rdf_list != []:
+            c = Collection(self.graph, rdf_list[0])
+            raise Exception(f"This is a previous boolean class description {c.n3()}.")
         OWLRDFListProxy.__init__(self, rdf_list, members)
 
     def copy(self):
