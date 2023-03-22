@@ -2,6 +2,19 @@
 
 __doc__ = """RDFLib Python binding for OWL Abstract Syntax
 
+OWL Constructor     DL Syntax       Manchester OWL Syntax   Example
+====================================================================================
+intersectionOf      C ∩ D              C AND D             Human AND Male
+unionOf             C ∪ D              C OR D              Man OR Woman
+complementOf         ¬ C               NOT C               NOT Male
+oneOf             {a} ∪ {b}...        {a b ...}            {England Italy Spain}
+someValuesFrom      ∃ R C              R SOME C            hasColleague SOME Professor
+allValuesFrom       ∀ R C              R ONLY C            hasColleague ONLY Professor
+minCardinality      ≥ N R              R MIN 3             hasColleague MIN 3
+maxCardinality      ≤ N R              R MAX 3             hasColleague MAX 3
+cardinality         = N R              R EXACTLY 3         hasColleague EXACTLY 3
+hasValue             ∃ R               {a} R VALUE a       hasColleague VALUE Matthew
+
 see: http://www.w3.org/TR/owl-semantics/syntax.html
      http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf
 
