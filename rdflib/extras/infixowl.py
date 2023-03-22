@@ -326,7 +326,8 @@ def manchesterSyntax(  # noqa: N802
         except Exception:
             if isinstance(thing, BNode):
                 return thing.n3()
-            return "<" + thing + ">"
+            # Expect the unexpected
+            return thing.identifier if not isinstance(thing, str) else thing
         label = first(Class(thing, graph=store).label)
         if label:
             return label
