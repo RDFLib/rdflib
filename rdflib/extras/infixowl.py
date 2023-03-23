@@ -1432,8 +1432,6 @@ class Class(AnnotatableTerms):
 
 
 class OWLRDFListProxy:
-    _rdfList: "Collection" = None  # noqa: N815
-
     def __init__(self, rdf_list, members=None, graph=None):
         if graph:
             self.graph = graph
