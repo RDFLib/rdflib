@@ -1,6 +1,6 @@
 import pytest
 
-from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, RDF, URIRef
+from rdflib import OWL, RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import Class, Individual, Property, Restriction, some
 
 EXNS = Namespace("http://example.org/vocab/")

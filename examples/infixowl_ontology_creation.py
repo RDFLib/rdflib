@@ -1,12 +1,5 @@
-from rdflib import Graph, Namespace, Literal, URIRef
-from rdflib.extras.infixowl import (
-    Class,
-    Property,
-    Ontology,
-    some,
-    only,
-    min,
-)
+from rdflib import Graph, Literal, Namespace, URIRef
+from rdflib.extras.infixowl import Class, Ontology, Property, min, only, some
 
 CPR = Namespace("http://purl.org/cpr/0.75#")
 INF = Namespace("http://www.loa-cnr.it/ontologies/InformationObjects.owl#")
