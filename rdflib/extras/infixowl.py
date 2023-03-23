@@ -1432,7 +1432,7 @@ class Class(AnnotatableTerms):
 
 
 class OWLRDFListProxy:
-    _rdfList: list = []  # noqa: N815
+    _rdfList: "Collection" = None  # noqa: N815
 
     def __init__(self, rdf_list, members=None, graph=None):
         if graph:
@@ -1643,17 +1643,14 @@ class BooleanClass(OWLRDFListProxy, Class):
             ):
                 props.append(p)
                 operator = p
-            if len(props) != 1:
-                raise Exception(
-                    f"Cannot create a BooleanClass for {identifier} with the given graph."
-                )
+            assert len(props) == 1, repr(props)
         Class.__init__(self, identifier, graph=graph)
         assert operator in [OWL.intersectionOf, OWL.unionOf], str(operator)
         self._operator = operator
         rdf_list = list(self.graph.objects(predicate=operator, subject=self.identifier))
-        if members != [] and rdf_list != []:
-            c = Collection(self.graph, rdf_list[0])
-            raise Exception(f"This is a previous boolean class description {c.n3()}.")
+        assert (
+            not members or not rdf_list
+        ), "This is a previous boolean class description."
         OWLRDFListProxy.__init__(self, rdf_list, members)
 
     def copy(self):
@@ -1714,7 +1711,11 @@ class BooleanClass(OWLRDFListProxy, Class):
         """
         Returns the Manchester Syntax equivalent for this class
         """
-        return manchesterSyntax(self._rdfList.uri, self.graph, boolean=self._operator)
+        return manchesterSyntax(
+            self._rdfList.uri if isinstance(self._rdfList, Collection) else BNode(),
+            self.graph,
+            boolean=self._operator,
+        )
 
     def __or__(self, other):
         """
