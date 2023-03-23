@@ -17,7 +17,7 @@ def graph():
     del g
 
 
-@pytest.mark.xfail(reason="assert len(props) == 1, repr(props), so AssertionError: []")
+@pytest.mark.xfail(reason="AssertionError, len(props) != 1")
 def test_booleanclass_operator_as_none(graph):
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
@@ -63,16 +63,10 @@ def test_booleanclass_with_or_operator(graph):
     assert str(c) == "( ex:Fire OR ex:Water )"
 
 
-@pytest.mark.xfail(
-    reason="BooleanClass.getIntersections() - TypeError: 'Callable' object is not callable"
-)
 def test_getintersections(graph):
     _ = BooleanClass.getIntersections()
 
 
-@pytest.mark.xfail(
-    reason="BooleanClass.getUnions() - TypeError: 'Callable' object is not callable"
-)
 def test_getunions(graph):
     _ = BooleanClass.getUnions()
 
