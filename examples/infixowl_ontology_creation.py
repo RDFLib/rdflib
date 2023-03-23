@@ -25,7 +25,7 @@ def infixowl_example():
     Property.factoryGraph = g
     Ontology.factoryGraph = g
 
-    cprOntology = Ontology(URIRef("http://purl.org/cpr/owl"))
+    cprOntology = Ontology(URIRef("http://purl.org/cpr/owl"))  # noqa: N806
     cprOntology.imports = [
         URIRef("http://obo.sourceforge.net/relationship/relationship.owl"),
         URIRef(DOLCE),
@@ -47,7 +47,7 @@ def infixowl_example():
 
     # Relations
     # represented-by
-    representationOf = Property(
+    representationOf = Property(  # noqa: N806
         CPR["representation-of"],
         inverseOf=Property(CPR["represented-by"]),
         comment=[
@@ -57,9 +57,11 @@ def infixowl_example():
             )
         ],
     )
-    representedBy = Property(CPR["represented-by"], inverseOf=representationOf)
+    representedBy = Property(  # noqa: F841, N806
+        CPR["represented-by"], inverseOf=representationOf
+    )
     # description-of
-    descrOf = Property(
+    descrOf = Property(  # noqa: N806
         CPR["description-of"],
         comment=[
             Literal(
@@ -70,7 +72,7 @@ def infixowl_example():
         domain=[Class(CPR["clinical-description"])],
     )
     # cpr:interpreted-by
-    interpretedBy = Property(
+    interpretedBy = Property(  # noqa: F841, N806
         CPR["interpreted-by"],
         comment=[
             Literal(
@@ -81,8 +83,8 @@ def infixowl_example():
         domain=[Class(CPR["medical-sign"]) | Class(CPR["symptom"])],
         range=[Class(CPR.person)],
     )
-    ##cpr:realized-by
-    realizedBy = Property(
+    # cpr:realized-by
+    realizedBy = Property(  # noqa: N806
         CPR["realized-by"],
         comment=[
             Literal(
@@ -94,10 +96,10 @@ def infixowl_example():
         domain=[Class(CPR["medical-problem"])],
         range=[Class(CPR["screening-act"])],
     )
-    ##cpr:realizes
-    realizes = Property(CPR["realizes"], inverseOf=realizedBy)
+    # cpr:realizes
+    realizes = Property(CPR["realizes"], inverseOf=realizedBy)  # noqa: F841
 
-    ##Classes
+    # Classes
     # cpr:person
     person = Class(CPR.person)
     person.comment = [
@@ -142,7 +144,7 @@ def infixowl_example():
     bytes.subClassOf = [DOLCE["non-agentive-physical-object"]]
 
     # cpr:patient-record
-    patientRecord = Class(CPR["patient-record"])
+    patientRecord = Class(CPR["patient-record"])  # noqa: N806
     patientRecord.comment = [
         Literal(
             """a class (a representational artifact [REFTERM]) depicting
@@ -159,7 +161,7 @@ def infixowl_example():
         REL.OBO_REL_has_proper_part @ some @ Class(CPR["clinical-description"]),
     ]
 
-    ##cpr:medical-problem
+    # cpr:medical-problem
     problem = Class(
         CPR["medical-problem"],
         subClassOf=[
@@ -177,7 +179,7 @@ def infixowl_example():
     ]
 
     # cpr:clinical-description
-    clinDescr = Class(CPR["clinical-description"])
+    clinDescr = Class(CPR["clinical-description"])  # noqa: N806
     clinDescr.disjointWith = [CPR["patient-record"]]
     clinDescr.comment = [
         Literal(
@@ -231,7 +233,9 @@ def infixowl_example():
     ]
 
     # clinical-act heriarchy
-    clinicalAct = Class(CPR["clinical-act"], subClassOf=[Class(EDNS.activity)])
+    clinicalAct = Class(  # noqa: N806
+        CPR["clinical-act"], subClassOf=[Class(EDNS.activity)]
+    )
 
     therapy = Class(CPR["therapeutic-act"], subClassOf=[clinicalAct])
     therapy += Class(CPR["physical-therapy"], disjointWith=[CPR["medical-therapy"]])
@@ -240,17 +244,17 @@ def infixowl_example():
         disjointWith=[CPR["medical-therapy"], CPR["physical-therapy"]],
     )
 
-    medicalTherapy = Class(
+    medicalTherapy = Class(  # noqa: N806
         CPR["medical-therapy"],
         disjointWith=[CPR["physical-therapy"], CPR["psychological-therapy"]],
     )
     therapy += medicalTherapy
     medicalTherapy += Class(CPR["substance-administration"])
 
-    diagnosticAct = Class(CPR["diagnostic-act"], subClassOf=[clinicalAct])
+    diagnosticAct = Class(CPR["diagnostic-act"], subClassOf=[clinicalAct])  # noqa: N806
     diagnosticAct.disjointWith = [CPR["therapeutic-act"]]
 
-    screeningAct = Class(CPR["screening-act"])
+    screeningAct = Class(CPR["screening-act"])  # noqa: N806
     screeningAct += Class(CPR["laboratory-test"])
 
     diagnosticAct += screeningAct
@@ -265,7 +269,9 @@ def infixowl_example():
         disjointWith=[CPR["laboratory-test"], CPR["medical-history-screening-act"]],
     )
 
-    device = Class(CPR["medical-device"], subClassOf=[Class(GALEN.Device)])
+    device = Class(  # noqa: F841
+        CPR["medical-device"], subClassOf=[Class(GALEN.Device)]
+    )
 
     print(g.serialize(format="turtle"))
 
