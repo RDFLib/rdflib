@@ -4,6 +4,7 @@ import enum
 import random
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from test.utils.wildcard import EQ_WILDCARD
 from threading import Thread
 from typing import (
     Dict,
@@ -60,6 +61,14 @@ class MockHTTPRequest(NamedTuple):
     path_query: PathQueryT
     headers: email.message.Message
     body: Optional[bytes]
+
+
+MOCK_HTTP_REQUEST_WILDCARD = MockHTTPRequest(
+    EQ_WILDCARD, EQ_WILDCARD, EQ_WILDCARD, EQ_WILDCARD, EQ_WILDCARD, EQ_WILDCARD
+)
+"""
+This object should be equal to any `MockHTTPRequest` object.
+"""
 
 
 class MockHTTPResponse(NamedTuple):

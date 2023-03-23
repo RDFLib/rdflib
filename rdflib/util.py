@@ -522,32 +522,92 @@ def _coalesce(
     return default
 
 
+_RFC3986_SUBDELIMS = "!$&'()*+,;="
+"""
+``sub-delims`` production from `RFC 3986, section 2.2
+<https://www.rfc-editor.org/rfc/rfc3986.html#section-2.2>`_.
+"""
+
+_RFC3986_PCHAR_NU = "%" + _RFC3986_SUBDELIMS + ":@"
+"""
+The non-unreserved characters in the ``pchar`` production from RFC 3986.
+"""
+
+_QUERY_SAFE_CHARS = _RFC3986_PCHAR_NU + "/?"
+"""
+The non-unreserved characters that are safe to use in in the query and fragment
+components.
+
+.. code-block::
+
+   pchar         = unreserved / pct-encoded / sub-delims / ":" / "@" query
+   = *( pchar / "/" / "?" ) fragment      = *( pchar / "/" / "?" )
+"""
+
+_USERNAME_SAFE_CHARS = _RFC3986_SUBDELIMS + "%"
+"""
+The non-unreserved characters that are safe to use in the username and password
+components.
+
+.. code-block::
+
+   userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
+
+":" is excluded as this is only used for the username and password components,
+and they are treated separately.
+"""
+
+_PATH_SAFE_CHARS = _RFC3986_PCHAR_NU + "/"
+"""
+The non-unreserved characters that are safe to use in the path component.
+
+
+This is based on various path-related productions from RFC 3986.
+"""
+
+
 def _iri2uri(iri: str) -> str:
     """
-    Convert an IRI to a URI (Python 3).
-    https://stackoverflow.com/a/42309027
-    https://stackoverflow.com/a/40654295
-    netloc should be encoded using IDNA;
-    non-ascii URL path should be encoded to UTF-8 and then percent-escaped;
-    non-ascii query parameters should be encoded to the encoding of a page
-    URL was extracted from (or to the encoding server uses), then
-    percent-escaped.
+    Prior art:
+
+    * `iri_to_uri from Werkzeug <https://github.com/pallets/werkzeug/blob/92c6380248c7272ee668e1f8bbd80447027ccce2/src/werkzeug/urls.py#L926-L931>`_
+
     >>> _iri2uri("https://dbpedia.org/resource/Almería")
     'https://dbpedia.org/resource/Almer%C3%ADa'
     """
+    # https://datatracker.ietf.org/doc/html/rfc3986
     # https://datatracker.ietf.org/doc/html/rfc3305
 
-    (scheme, netloc, path, query, fragment) = urlsplit(iri)
+    parts = urlsplit(iri)
+    (scheme, netloc, path, query, fragment) = parts
 
-    # Just support http/https, otherwise return the iri unmolested
+    # Just support http/https, otherwise return the iri unaltered
     if scheme not in ["http", "https"]:
         return iri
 
-    scheme = quote(scheme)
-    netloc = netloc.encode("idna").decode("utf-8")
-    path = quote(path)
-    query = quote(query)
-    fragment = quote(fragment)
+    path = quote(path, safe=_PATH_SAFE_CHARS)
+    query = quote(query, safe=_QUERY_SAFE_CHARS)
+    fragment = quote(fragment, safe=_QUERY_SAFE_CHARS)
+
+    if parts.hostname:
+        netloc = parts.hostname.encode("idna").decode("ascii")
+    else:
+        netloc = ""
+
+    if ":" in netloc:
+        # Quote IPv6 addresses
+        netloc = f"[{netloc}]"
+
+    if parts.port:
+        netloc = f"{netloc}:{parts.port}"
+
+    if parts.username:
+        auth = quote(parts.username, safe=_USERNAME_SAFE_CHARS)
+        if parts.password:
+            pass_quoted = quote(parts.password, safe=_USERNAME_SAFE_CHARS)
+            auth = f"{auth}:{pass_quoted}"
+        netloc = f"{auth}@{netloc}"
+
     uri = urlunsplit((scheme, netloc, path, query, fragment))
 
     if iri.endswith("#") and not uri.endswith("#"):
