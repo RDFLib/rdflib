@@ -617,6 +617,29 @@ class Context(object):
             term = term.get(ID)
         return term
 
+    def _term_dict(self, term):
+        tdict = {ID: self.shrink_iri(term.id)}
+        if term.type != UNDEF:
+            tdict[TYPE] = self.shrink_iri(term.type)
+        if term.container != UNDEF:
+            tdict[CONTAINER] = term.container
+        if term.language != UNDEF:
+            tdict[LANG] = term.language
+        if term.reverse:
+            tdict[REV] = term.reverse
+        if len(tdict) == 1:
+            return tdict[ID]
+        return tdict
+
+    def to_dict(self):
+        r = {v: k for (k, v) in self._prefixes.items()}
+        r.update({t.name: self._term_dict(t) for t in self._lookup.values()})
+        if self.base:
+            r[BASE] = self.base
+        if self.language:
+            r[LANG] = self.language
+        return r
+
 
 Term = namedtuple(
     "Term",
