@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Graph
-from rdflib.namespace import (
+from rdflib import Graph  # noqa: E402
+from rdflib.namespace import (  # noqa: E402
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,
     OWL,
@@ -196,7 +196,7 @@ def test_nman_bind_namespaces(
                 "qb": "http://purl.org/linked-data/cube#",
                 "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "sdo": "https://schema.org/",
+                "schema": "https://schema.org/",
                 "sh": "http://www.w3.org/ns/shacl#",
                 "skos": "http://www.w3.org/2004/02/skos/core#",
                 "sosa": "http://www.w3.org/ns/sosa/",
