@@ -106,7 +106,7 @@ def get_target_namespace_elements(
     for e in elements:
         desc = e[1].replace("\n", " ")
         elements_strs.append(
-            f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
+            f"    {e[0].replace(target_namespace, '')}: URIRef  # {desc}\n"
         )
 
     return elements, elements_strs
