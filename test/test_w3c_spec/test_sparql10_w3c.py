@@ -48,9 +48,6 @@ MARK_DICT: MarksDictType = {
     f"{REMOTE_BASE_IRI}syntax-sparql1/manifest#syntax-lit-08": pytest.mark.skip(
         reason="bad test, positive syntax has invalid syntax."
     ),
-    f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-form-describe01": pytest.mark.xfail(
-        reason="Describe not supported."
-    ),
     f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-general-08": pytest.mark.xfail(
         reason="Not parsing with no spaces."
     ),
