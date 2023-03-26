@@ -282,7 +282,7 @@ def evalCopy(ctx: QueryContext, u: CompValue) -> None:
 def evalUpdate(
     graph: Graph,
     update: Update,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
+    initBindings: Optional[Mapping[str, Identifier]] = {},
 ) -> None:
     """
 

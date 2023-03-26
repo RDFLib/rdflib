@@ -20,7 +20,7 @@ from rdflib.term import Identifier
 
 def prepareQuery(
     queryString: str,
-    initNs: Optional[Mapping[str, Any]] = None,
+    initNs: Optional[Mapping[str, Any]] = {},
     base: Optional[str] = None,
 ) -> Query:
     """
@@ -35,7 +35,7 @@ def prepareQuery(
 
 def prepareUpdate(
     updateString: str,
-    initNs: Optional[Mapping[str, Any]] = None,
+    initNs: Optional[Mapping[str, Any]] = {},
     base: Optional[str] = None,
 ) -> Update:
     """
@@ -51,8 +51,8 @@ def prepareUpdate(
 def processUpdate(
     graph: Graph,
     updateString: str,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
-    initNs: Optional[Mapping[str, Any]] = None,
+    initBindings: Optional[Mapping[str, Identifier]] = {},
+    initNs: Optional[Mapping[str, Any]] = {},
     base: Optional[str] = None,
 ) -> None:
     """
@@ -81,8 +81,8 @@ class SPARQLUpdateProcessor(UpdateProcessor):
     def update(
         self,
         strOrQuery: Union[str, Update],
-        initBindings: Optional[Mapping[str, Identifier]] = None,
-        initNs: Optional[Mapping[str, Any]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = {},
+        initNs: Optional[Mapping[str, Any]] = {},
     ) -> None:
         """
         .. caution::
@@ -116,8 +116,8 @@ class SPARQLProcessor(Processor):
     def query(  # type: ignore[override]
         self,
         strOrQuery: Union[str, Query],
-        initBindings: Optional[Mapping[str, Identifier]] = None,
-        initNs: Optional[Mapping[str, Any]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = {},
+        initNs: Optional[Mapping[str, Any]] = {},
         base: Optional[str] = None,
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
