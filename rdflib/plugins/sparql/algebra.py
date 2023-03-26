@@ -955,17 +955,22 @@ class ExpressionNotCoveredException(Exception):  # noqa: N818
     pass
 
 
-class AlgebraTranslator:
-    """Translator of a Query's algebra to its equivalent SPARQL (string).
+class _AlgebraTranslator:
+    """
+    Translator of a Query's algebra to its equivalent SPARQL (string).
 
-    Coded as a class to support storage of state during the translation process, without
-    use of a file.
+    Coded as a class to support storage of state during the translation process,
+    without use of a file.
 
-    Anticipated Usage: translated_query = AlgebraTranslator(query).translateAlgebra()
+    Anticipated Usage:
 
-    An external convenience function which wraps the above call, algebra.translateAlgebra(),
-    is supplied, so this class does not need to be referenced by client code at all in
-    normal use.
+    .. code-block:: python
+
+        translated_query = _AlgebraTranslator(query).translateAlgebra()
+
+    An external convenience function which wraps the above call,
+    `translateAlgebra`, is supplied, so this class does not need to be
+    referenced by client code at all in normal use.
     """
 
     def __init__(self, query_algebra: Query):
@@ -1655,12 +1660,13 @@ class AlgebraTranslator:
 
 def translateAlgebra(query_algebra: Query) -> str:
     """
+    Translates a SPARQL 1.1 algebra tree into the corresponding query string.
 
-    :param query_algebra: An algebra returned by the function call algebra.translateQuery(parse_tree).
-    :return: The query form generated from the SPARQL 1.1 algebra tree for select queries.
-
+    :param query_algebra: An algebra returned by `translateQuery`.
+    :return: The query form generated from the SPARQL 1.1 algebra tree for
+        SELECT queries.
     """
-    query_from_algebra = AlgebraTranslator(
+    query_from_algebra = _AlgebraTranslator(
         query_algebra=query_algebra
     ).translateAlgebra()
     return query_from_algebra
