@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Graph
-from rdflib.namespace import (
+from rdflib import Graph  # noqa: E402
+from rdflib.namespace import (  # noqa: E402
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,
     OWL,
@@ -33,9 +33,41 @@ def test_core_prefixes_bound():
     g = Graph()
 
     # prefixes in Graph
-    assert len(list(g.namespaces())) == len(_NAMESPACE_PREFIXES_CORE)
+    assert len(list(g.namespaces())) == len(
+        {**_NAMESPACE_PREFIXES_RDFLIB, **_NAMESPACE_PREFIXES_CORE}
+    )
     pre = sorted([x[0] for x in list(g.namespaces())])
-    assert pre == ["owl", "rdf", "rdfs", "xml", "xsd"]
+    assert pre == [
+        "brick",
+        "csvw",
+        "dc",
+        "dcam",
+        "dcat",
+        "dcmitype",
+        "dcterms",
+        "doap",
+        "foaf",
+        "geo",
+        "odrl",
+        "org",
+        "owl",
+        "prof",
+        "prov",
+        "qb",
+        "rdf",
+        "rdfs",
+        "schema",
+        "sh",
+        "skos",
+        "sosa",
+        "ssn",
+        "time",
+        "vann",
+        "void",
+        "wgs",
+        "xml",
+        "xsd",
+    ]
 
 
 def test_rdflib_prefixes_bound():
@@ -170,6 +202,111 @@ def test_nman_bind_namespaces(
         graph.namespace_manager = NamespaceManager(graph, selector)
     if isinstance(expected_result, dict):
         check_graph_ns(graph, expected_result)
+
+
+@pytest.mark.parametrize(
+    ["selector", "expected_bindings"],
+    [
+        (
+            None,
+            {
+                "brick": "https://brickschema.org/schema/Brick#",
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "dcmitype": "http://purl.org/dc/dcmitype/",
+                "dcterms": "http://purl.org/dc/terms/",
+                "dcam": "http://purl.org/dc/dcam/",
+                "doap": "http://usefulinc.com/ns/doap#",
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "odrl": "http://www.w3.org/ns/odrl/2/",
+                "geo": "http://www.opengis.net/ont/geosparql#",
+                "org": "http://www.w3.org/ns/org#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "prof": "http://www.w3.org/ns/dx/prof/",
+                "prov": "http://www.w3.org/ns/prov#",
+                "qb": "http://purl.org/linked-data/cube#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "schema": "https://schema.org/",
+                "sh": "http://www.w3.org/ns/shacl#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sosa": "http://www.w3.org/ns/sosa/",
+                "ssn": "http://www.w3.org/ns/ssn/",
+                "time": "http://www.w3.org/2006/time#",
+                "vann": "http://purl.org/vocab/vann/",
+                "void": "http://rdfs.org/ns/void#",
+                "wgs": "https://www.w3.org/2003/01/geo/wgs84_pos#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "xml": "http://www.w3.org/XML/1998/namespace",
+            },
+        ),
+        (
+            "rdflib",
+            {
+                "brick": "https://brickschema.org/schema/Brick#",
+                "csvw": "http://www.w3.org/ns/csvw#",
+                "dc": "http://purl.org/dc/elements/1.1/",
+                "dcat": "http://www.w3.org/ns/dcat#",
+                "dcmitype": "http://purl.org/dc/dcmitype/",
+                "dcterms": "http://purl.org/dc/terms/",
+                "dcam": "http://purl.org/dc/dcam/",
+                "doap": "http://usefulinc.com/ns/doap#",
+                "foaf": "http://xmlns.com/foaf/0.1/",
+                "odrl": "http://www.w3.org/ns/odrl/2/",
+                "geo": "http://www.opengis.net/ont/geosparql#",
+                "org": "http://www.w3.org/ns/org#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "prof": "http://www.w3.org/ns/dx/prof/",
+                "prov": "http://www.w3.org/ns/prov#",
+                "qb": "http://purl.org/linked-data/cube#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "schema": "https://schema.org/",
+                "sh": "http://www.w3.org/ns/shacl#",
+                "skos": "http://www.w3.org/2004/02/skos/core#",
+                "sosa": "http://www.w3.org/ns/sosa/",
+                "ssn": "http://www.w3.org/ns/ssn/",
+                "time": "http://www.w3.org/2006/time#",
+                "vann": "http://purl.org/vocab/vann/",
+                "void": "http://rdfs.org/ns/void#",
+                "wgs": "https://www.w3.org/2003/01/geo/wgs84_pos#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "xml": "http://www.w3.org/XML/1998/namespace",
+            },
+        ),
+        (
+            "core",
+            {
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "xml": "http://www.w3.org/XML/1998/namespace",
+            },
+        ),
+    ],
+)
+def test_bound_namespaces_subset(
+    selector: Optional[Any], expected_bindings: Dict[str, str]
+) -> None:
+    if selector is not None:
+        graph = Graph(bind_namespaces=selector)
+    else:
+        graph = Graph()
+    bound_namespaces = dict(
+        (key, str(value)) for key, value in graph.namespace_manager.namespaces()
+    )
+    assert (
+        expected_bindings.items() <= bound_namespaces.items()
+    ), f"missing items {expected_bindings.items() - bound_namespaces.items()}"
+    empty_graph = Graph(bind_namespaces="none")
+    if selector is not None:
+        nman = NamespaceManager(empty_graph, bind_namespaces=selector)
+    else:
+        nman = NamespaceManager(empty_graph)
+    nman_bound_namespaces = dict((key, str(value)) for key, value in nman.namespaces())
+    assert bound_namespaces == nman_bound_namespaces
 
 
 def test_compute_qname_no_generate() -> None:

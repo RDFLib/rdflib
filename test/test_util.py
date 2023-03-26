@@ -635,6 +635,24 @@ def test_get_tree(
                 "http://example.com:1231/",
             },
         ),
+        (
+            "http://example.com:1231/a=b",
+            {
+                "http://example.com:1231/a=b",
+            },
+        ),
+        (
+            "http://aé:aé@example.com:1231/bé/a=bé&c=d#a=bé&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            },
+        ),
+        (
+            "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            },
+        ),
     ],
 )
 def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:

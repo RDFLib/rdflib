@@ -19,6 +19,7 @@ def generate_example_cases() -> Iterable[ParameterSet]:
         yield pytest.param(example_file, id=f"{example_file.relative_to(EXAMPLES_DIR)}")
 
 
+@pytest.mark.webtest
 @pytest.mark.parametrize(["example_file"], generate_example_cases())
 def test_example(example_file: Path) -> None:
     """

@@ -229,6 +229,12 @@ class Path(object):
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
         raise NotImplementedError()
 
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
     def __lt__(self, other: Any) -> bool:
         if not isinstance(other, (Path, Node)):
             raise TypeError(

@@ -2,9 +2,12 @@
 JSON-LD Context Spec
 """
 
+import json
 from functools import wraps
+from pathlib import Path
 from typing import Any, Dict
 
+from rdflib.namespace import PROV, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors
 from rdflib.plugins.shared.jsonld.context import Context
 
@@ -213,3 +216,72 @@ def test_invalid_remote_context():
     ctx_url = "http://example.org/recursive.jsonld"
     SOURCES[ctx_url] = {"key": "value"}
     ctx = Context(ctx_url)
+
+
+def test_file_source(tmp_path: Path) -> None:
+    """
+    A file URI source to `Context` gets processed correctly.
+    """
+    file = tmp_path / "context.jsonld"
+    file.write_text(r"""{ "@context": { "ex": "http://example.com/" } }""")
+    ctx = Context(source=file.as_uri())
+    assert "http://example.com/" == ctx.terms["ex"].id
+
+
+def test_dict_source(tmp_path: Path) -> None:
+    """
+    A dictionary source to `Context` gets processed correctly.
+    """
+    file = tmp_path / "context.jsonld"
+    file.write_text(r"""{ "@context": { "ex": "http://example.com/" } }""")
+    ctx = Context(source=[{"@context": file.as_uri()}])
+    assert "http://example.com/" == ctx.terms["ex"].id
+
+
+EG = Namespace("https://example.com/")
+
+DIVERSE_CONTEXT = json.loads(
+    """
+        {
+            "@context": {
+                "ex": "https://example.com/",
+                "generatedAt": { "@id": "http://www.w3.org/ns/prov#generatedAtTime", "@type": "http://www.w3.org/2001/XMLSchema#dateTime" },
+                "graphMap": { "@id": "https://example.com/graphMap", "@container": ["@graph", "@id"] },
+                "occupation_en": { "@id": "https://example.com/occupation", "@language": "en" },
+                "children": { "@reverse": "https://example.com/parent" }
+            }
+        }
+        """
+)
+
+
+def test_parsing() -> None:
+    """
+    A `Context` can be parsed from a dict.
+    """
+    ctx = Context(DIVERSE_CONTEXT)
+    assert f"{EG}" == ctx.terms["ex"].id
+    assert f"{PROV.generatedAtTime}" == ctx.terms["generatedAt"].id
+    assert f"{XSD.dateTime}" == ctx.terms["generatedAt"].type
+    assert f"{EG.graphMap}" == ctx.terms["graphMap"].id
+    assert {"@graph", "@id"} == ctx.terms["graphMap"].container
+    assert f"{EG.occupation}" == ctx.terms["occupation_en"].id
+    assert "en" == ctx.terms["occupation_en"].language
+    assert False is ctx.terms["occupation_en"].reverse
+    assert True is ctx.terms["children"].reverse
+    assert f"{EG.parent}" == ctx.terms["children"].id
+
+
+def test_to_dict() -> None:
+    """
+    A `Context` can be converted to a dictionary.
+    """
+    ctx = Context()
+    ctx.add_term("ex", f"{EG}")
+    ctx.add_term("generatedAt", f"{PROV.generatedAtTime}", coercion=f"{XSD.dateTime}")
+    ctx.add_term("graphMap", f"{EG.graphMap}", container=["@graph", "@id"])
+    ctx.add_term("occupation_en", f"{EG.occupation}", language="en")
+    ctx.add_term("children", f"{EG.parent}", reverse=True)
+    result = ctx.to_dict()
+    result["graphMap"]["@container"] = sorted(result["graphMap"]["@container"])
+    assert DIVERSE_CONTEXT["@context"] == result
