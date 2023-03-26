@@ -96,7 +96,10 @@ class BaseHTTPServerMock:
             logging.debug("headers %s", request.headers)
             requests[method_name].append(request)
 
-            response = responses[method_name].pop(0)
+            try:
+                response = responses[method_name].pop(0)
+            except IndexError as error:
+                raise ValueError(f"No response for {method_name} request") from error
             handler.send_response(response.status_code, response.reason_phrase)
             apply_headers_to(response.headers, handler)
             handler.end_headers()

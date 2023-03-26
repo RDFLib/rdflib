@@ -10,7 +10,7 @@ TRIXNS = rdflib.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
 
 def test_xmlwriter_namespaces():
-    g = rdflib.Graph()
+    g = rdflib.Graph(bind_namespaces="core")
 
     with tempfile.TemporaryFile() as fp:
         xmlwr = XMLWriter(fp, g.namespace_manager, extra_ns={"": TRIXNS, "ex": EXNS})
@@ -32,7 +32,7 @@ def test_xmlwriter_namespaces():
 
 
 def test_xmlwriter_decl():
-    g = rdflib.Graph()
+    g = rdflib.Graph(bind_namespaces="core")
 
     with tempfile.TemporaryFile() as fp:
         xmlwr = XMLWriter(fp, g.namespace_manager, decl=0, extra_ns={"": TRIXNS})

@@ -437,7 +437,7 @@ class Graph(Node):
         identifier: Optional[Union[_ContextIdentifierType, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
-        bind_namespaces: "_NamespaceSetString" = "core",
+        bind_namespaces: "_NamespaceSetString" = "rdflib",
     ):
         super(Graph, self).__init__()
         self.base = base
