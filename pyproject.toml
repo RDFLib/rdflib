@@ -62,15 +62,16 @@ types-setuptools = ">=65.6.0.3,<68.0.0.0"
 setuptools = ">=65.6.3,<68.0.0"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = ">4.0.0"
-myst-parser = "^0.18.0"
+sphinx = "^5.3.0"
+myst-parser = "^1.0.0"
 sphinxcontrib-apidoc = "^0.3.0"
 sphinx-autodoc-typehints = "^1.17.1"
+typing-extensions = "^4.5.0"
 
 [tool.poetry.group.flake8.dependencies]
-flake8 = ">=4.0.1" # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
-flakeheaven = "^3.2.1"
-pep8-naming = "^0.13.2"
+flake8 = {version = ">=4.0.1", python = ">=3.8"} # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
+flakeheaven = {version = "^3.2.1", python = ">=3.8"}
+pep8-naming = {version = "^0.13.2", python = ">=3.8"}
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -155,6 +156,7 @@ addopts = [
    "--ignore=rdflib/extras/external_graph_libs.py",
    "--ignore-glob=docs/*.py",
    "--doctest-glob=docs/*.rst",
+   "--strict-markers",
 ]
 doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
@@ -162,6 +164,9 @@ filterwarnings = [
     "ignore:Code. pytest_mock_example_attribute_that_shouldnt_exist is not defined in namespace .*:UserWarning",
     # The below warning is a consequence of how pytest detects fixtures and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. _pytestfixturefunction is not defined in namespace .*:UserWarning",
+]
+markers = [
+    "webtest: mark a test as using the internet",
 ]
 # log_cli = true
 # log_cli_level = "DEBUG"

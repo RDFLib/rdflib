@@ -52,6 +52,10 @@ jobs:
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
             TOXENV_SUFFIX: "-docs"
+            PREPARATION: "sudo apt-get install -y firejail"
+            extensive-tests: true
+            TOX_TEST_HARNESS: "firejail --net=none --"
+            TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
           - python-version: "3.11"
             os: ubuntu-latest
             TOXENV_SUFFIX: "-docs"
@@ -82,11 +86,15 @@ jobs:
         uses: arduino/setup-task@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run preparation
+        if: ${{ matrix.PREPARATION }}
+        shell: bash
+        run: |
+          ${{ matrix.PREPARATION }}
       - name: Run validation
         shell: bash
         run: |
           task \
-            TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
             OS=${{ matrix.os }} \
             MATRIX_SUFFIX=${{ matrix.suffix }} \
             EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
@@ -96,6 +104,9 @@ jobs:
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOX_PYTEST_EXTRA_ARGS: ${{ matrix.TOX_PYTEST_EXTRA_ARGS }}
+          TOX_TEST_HARNESS: ${{ matrix.TOX_TEST_HARNESS }}
+          TOX_EXTRA_COMMAND: ${{ matrix.TOX_EXTRA_COMMAND }}
       - uses: actions/upload-artifact@v3
         if: ${{ (success() || failure()) }}
         with:

@@ -85,7 +85,7 @@ class Context(object):
         self.terms: Dict[str, Any] = {}
         # _alias maps NODE_KEY to list of aliases
         self._alias: Dict[str, List[str]] = {}
-        self._lookup: Dict[Tuple[str, Any, Union[Defined, str], bool], Any] = {}
+        self._lookup: Dict[Tuple[str, Any, Union[Defined, str], bool], Term] = {}
         self._prefixes: Dict[str, Any] = {}
         self.active = False
         self.parent: Optional[Context] = None
@@ -243,8 +243,10 @@ class Context(object):
 
         if isinstance(container, (list, set, tuple)):
             container = set(container)
-        else:
+        elif container is not UNDEF:
             container = set([container])
+        else:
+            container = set()
 
         term = Term(
             idref,
@@ -421,13 +423,13 @@ class Context(object):
     ):
         for source in inputs:
             source_url = in_source_url
+            new_base = base
             if isinstance(source, str):
                 source_url = source
                 source_doc_base = base or self.doc_base
                 new_ctx = self._fetch_context(
                     source, source_doc_base, referenced_contexts
                 )
-                new_base = base
                 if new_ctx is None:
                     continue
                 else:
@@ -616,6 +618,37 @@ class Context(object):
         elif isinstance(term, dict):
             term = term.get(ID)
         return term
+
+    def _term_dict(self, term: Term) -> Union[Dict[str, Any], str]:
+        tdict: Dict[str, Any] = {}
+        if term.type != UNDEF:
+            tdict[TYPE] = self.shrink_iri(term.type)
+        if term.container:
+            tdict[CONTAINER] = list(term.container)
+        if term.language != UNDEF:
+            tdict[LANG] = term.language
+        if term.reverse:
+            tdict[REV] = term.id
+        else:
+            tdict[ID] = term.id
+        if tdict.keys() == {ID}:
+            return tdict[ID]
+        return tdict
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Returns a dictionary representation of the context that can be
+        serialized to JSON.
+
+        :return: a dictionary representation of the context.
+        """
+        r = {v: k for (k, v) in self._prefixes.items()}
+        r.update({term.name: self._term_dict(term) for term in self._lookup.values()})
+        if self.base:
+            r[BASE] = self.base
+        if self.language:
+            r[LANG] = self.language
+        return r
 
 
 Term = namedtuple(

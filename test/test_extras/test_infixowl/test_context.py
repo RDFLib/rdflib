@@ -28,6 +28,7 @@ def graph():
     del g
 
 
+@pytest.mark.webtest
 def test_context(graph):
     # Now we have an empty graph, we can construct OWL classes in it
     # using the Python classes defined in this module
