@@ -330,14 +330,16 @@ def test_with_mock(
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": item} for item in response_bindings]},
     }
-    function_httpmock.responses[MethodName.GET].append(
-        MockHTTPResponse(
-            200,
-            "OK",
-            json.dumps(response).encode("utf-8"),
-            {"Content-Type": ["application/sparql-results+json"]},
-        )
+    mock_response = MockHTTPResponse(
+        200,
+        "OK",
+        json.dumps(response).encode("utf-8"),
+        {"Content-Type": ["application/sparql-results+json"]},
     )
+    # Adding the same response for GET and POST as the method used by RDFLib is
+    # dependent on the size of the service query.
+    function_httpmock.responses[MethodName.GET].append(mock_response)
+    function_httpmock.responses[MethodName.POST].append(mock_response)
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     with ExitStack() as xstack:
