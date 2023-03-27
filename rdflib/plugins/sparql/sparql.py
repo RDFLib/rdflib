@@ -450,6 +450,22 @@ class Query:
         self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
 
 
+class AskQuery(Query):
+    pass
+
+
+class ConstructQuery(Query):
+    pass
+
+
+class DescribeQuery(Query):
+    pass
+
+
+class SelectQuery(Query):
+    pass
+
+
 class Update:
     """
     A parsed and translated update

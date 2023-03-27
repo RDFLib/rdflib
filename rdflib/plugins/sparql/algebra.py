@@ -39,7 +39,15 @@ from rdflib.paths import (
 from rdflib.plugins.sparql.operators import TrueFilter, and_
 from rdflib.plugins.sparql.operators import simplify as simplifyFilters
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
-from rdflib.plugins.sparql.sparql import Prologue, Query, Update
+from rdflib.plugins.sparql.sparql import (
+    AskQuery,
+    ConstructQuery,
+    DescribeQuery,
+    Prologue,
+    SelectQuery,
+    Query,
+    Update,
+)
 
 # ---------------------------
 # Some convenience methods
@@ -948,7 +956,16 @@ def translateQuery(
     _traverseAgg(res, visitor=analyse)
     _traverseAgg(res, _addVars)
 
-    return Query(prologue, res)
+    if q[1].name == "AskQuery":
+        return AskQuery(prologue, res)
+    elif q[1].name == "ConstructQuery":
+        return ConstructQuery(prologue, res)
+    elif q[1].name == "DescribeQuery":
+        return DescribeQuery(prologue, res)
+    elif q[1].name == "SelectQuery":
+        return SelectQuery(prologue, res)
+    else:
+        return Query(prologue, res)
 
 
 class ExpressionNotCoveredException(Exception):  # noqa: N818
