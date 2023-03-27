@@ -42,7 +42,7 @@ rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 python = "^3.7"
 isodate = "^0.6.0"
 pyparsing = ">=2.1.0,<4"
-importlib-metadata = {version = "^4.0.0", python = ">=3.7,<3.8"}
+importlib-metadata = {version = ">=4,<7", python = ">=3.7,<3.8"}
 berkeleydb = {version = "^18.1.0", optional = true}
 networkx = {version = "^2.0.0", optional = true}
 html5lib = {version = "^1.0", optional = true}
