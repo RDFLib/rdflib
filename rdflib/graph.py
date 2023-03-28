@@ -675,7 +675,7 @@ class Graph(Node):
         """Iterates over all triples in the store"""
         return self.triples((None, None, None))
 
-    def __contains__(self, triple: _TriplePatternType) -> bool:
+    def __contains__(self, triple: _TripleSelectorType) -> bool:
         """Support for 'triple in graph' syntax"""
         for triple in self.triples(triple):
             return True
@@ -1977,7 +1977,7 @@ class ConjunctiveGraph(Graph):
             c = self._graph(c)
         return s, p, o, c
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         """Support for 'triple/quad in graph' syntax"""
         s, p, o, c = self._spoc(triple_or_quad)
         for t in self.triples((s, p, o), context=c):
@@ -2751,7 +2751,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 for s1, p1, o1 in graph.triples((s, p, o)):
                     yield s1, p1, o1
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         context = None
         if len(triple_or_quad) == 4:
             # type error: Tuple index out of range
