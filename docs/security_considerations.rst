@@ -8,7 +8,7 @@ RDFLib is designed to access arbitrary network and file resources, in some cases
 these are directly requested resources, in other cases they are indirectly
 referenced resources.
 
-An example of where indirect resources are access is JSON-LD processing, where
+An example of where indirect resources are accessed is JSON-LD processing, where
 network or file resources referenced by ``@context`` values will be loaded and
 processed.
 
