@@ -17,68 +17,11 @@ Class hierarchy
 All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class. A class diagram of the various terms is:
 
 .. _term_class_hierarchy:
-.. kroki::
-   :caption: Term Class Hierarchy
-   :type: plantuml
+.. figure:: /_static/term_class_hierarchy.svg
+   :alt: Term Class Hierarchy
 
-    @startuml
-    skinparam shadowing false
-    skinparam monochrome true
-    skinparam packageStyle rectangle
-    skinparam backgroundColor FFFFFE
-    
-    class Node
-    
-    class Identifier {
-        eq(other) -> bool
-        neq(other) -> bool
-        startswith(prefix: str, start, end) -> bool
-    }
-    Identifier -up-|> Node
-    
-    class IdentifiedNode {
-        toPython() -> str
-    }
-    IdentifiedNode -up-|> Identifier
-    
-    class URIRef {
-        n3(namespace_manager) -> str
-        defrag() -> URIRef
-        de_skolemize() -> BNode
-    }
-    URIRef -up-|> IdentifiedNode
-    
-    
-    class Genid
-    Genid -up-|> URIRef
-    
-    class RDFLibGenid
-    RDFLibGenid -up-|> Genid
-    
-    class BNode {
-        n3(namespace_manager) -> str
-        skolemize(authority, basepath) -> RDFLibGenid
-    }
-    BNode -up-|> IdentifiedNode
-    
-    class Literal {
-        datatype: Optional[str]
-        lang: Optional[str]
-        value: Any
-    
-        normalize() -> Literal
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Literal -up-|> Identifier
-    
-    class Variable {
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Variable -up-|> Identifier
-    
-    @enduml
+   Term Class Hierarchy
+
 
 Nodes are a subset of the Terms that underlying stores actually persist.
 

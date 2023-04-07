@@ -432,7 +432,6 @@ def test_find_roots(
     roots: Optional[Set[Node]],
     expected_result: Union[Set[URIRef], Type[Exception]],
 ) -> None:
-
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     graph = cached_graph(graph_sources)
@@ -558,7 +557,6 @@ def test_get_tree(
     dir: str,
     expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
 ) -> None:
-
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     graph = cached_graph(graph_sources)
@@ -629,6 +627,30 @@ def test_get_tree(
             "http://example.com/é#",
             {
                 "http://example.com/%C3%A9#",
+            },
+        ),
+        (
+            "http://example.com:1231/",
+            {
+                "http://example.com:1231/",
+            },
+        ),
+        (
+            "http://example.com:1231/a=b",
+            {
+                "http://example.com:1231/a=b",
+            },
+        ),
+        (
+            "http://aé:aé@example.com:1231/bé/a=bé&c=d#a=bé&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            },
+        ),
+        (
+            "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
             },
         ),
     ],

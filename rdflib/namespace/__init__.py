@@ -360,19 +360,27 @@ class NamespaceManager(object):
     * core:
         * binds several core RDF prefixes only
         * owl, rdf, rdfs, xsd, xml from the NAMESPACE_PREFIXES_CORE object
-        * this is default
     * rdflib:
         * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
         * all the core namespaces and all the following: brick, csvw, dc, dcat
-        * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+        * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, schema
         * sh, skos, sosa, ssn, time, vann, void
         * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
+        * this is default
     * none:
         * binds no namespaces to prefixes
         * note this is NOT default behaviour
     * cc:
         * using prefix bindings from prefix.cc which is a online prefixes database
         * not implemented yet - this is aspirational
+
+    .. attention::
+
+        The namespaces bound for specific values of ``bind_namespaces``
+        constitute part of RDFLib's public interface, so changes to them should
+        only be additive within the same minor version. Removing values, or
+        removing namespaces that are bound by default, constitutes a breaking
+        change.
 
     See the
     Sample usage
@@ -390,10 +398,11 @@ class NamespaceManager(object):
         >>> all_ns = [n for n in g.namespace_manager.namespaces()]
         >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
         >>>
-
     """
 
-    def __init__(self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "core"):
+    def __init__(
+        self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "rdflib"
+    ):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -488,10 +497,8 @@ class NamespaceManager(object):
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
-
         prefix: Optional[str]
         if uri not in self.__cache:
-
             if not _is_valid_uri(uri):
                 raise ValueError(
                     '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
@@ -594,7 +601,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def expand_curie(self, curie: str) -> Union[URIRef, None]:
+    def expand_curie(self, curie: str) -> URIRef:
         """
         Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
@@ -670,7 +677,6 @@ class NamespaceManager(object):
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
         if bound_namespace and bound_namespace != namespace:
-
             if replace:
                 self._store_bind(prefix, namespace, override=override)
                 insert_trie(self.__trie, str(namespace))
@@ -909,7 +915,7 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "prof": PROF,
     "prov": PROV,
     "qb": QB,
-    "sdo": SDO,
+    "schema": SDO,
     "sh": SH,
     "skos": SKOS,
     "sosa": SOSA,
@@ -917,4 +923,5 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "time": TIME,
     "vann": VANN,
     "void": VOID,
+    "wgs": WGS,
 }

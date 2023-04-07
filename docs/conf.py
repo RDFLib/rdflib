@@ -44,7 +44,6 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
     "myst_parser",
-    "sphinxcontrib.kroki",
     "sphinx.ext.autosectionlabel",
 ]
 
@@ -79,7 +78,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "rdflib"
-copyright = "2009 - 2022, RDFLib Team"
+copyright = "2009 - 2023, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -279,6 +278,7 @@ if sphinx_version < (5,):
     nitpicky = False
 
 nitpick_ignore = [
+    ("py:class", "urllib.response.addinfourl"),
     ("py:data", "typing.Literal"),
     ("py:class", "typing.IO[bytes]"),
     ("py:class", "http.client.HTTPMessage"),
@@ -322,5 +322,9 @@ if sys.version_info < (3, 9):
             ("py:class", "_TripleType"),
             ("py:class", "_TripleOrTriplePathType"),
             ("py:class", "TextIO"),
+            ("py:class", "Message"),
         ]
     )
+
+if sys.version_info < (3, 8):
+    nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])

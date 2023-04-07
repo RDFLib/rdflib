@@ -7,7 +7,6 @@ sportquadstrig = open(os.path.join(TEST_DATA_DIR, "sportquads.trig")).read()
 
 
 def test_operators_with_conjunctivegraph_and_graph():
-
     cg = ConjunctiveGraph()
     cg.add((tarek, likes, pizza))
     cg.add((tarek, likes, michel))
@@ -26,7 +25,6 @@ def test_operators_with_conjunctivegraph_and_graph():
 
 
 def test_reversed_operators_with_conjunctivegraph_and_graph():
-
     cg = ConjunctiveGraph()
     cg.add((tarek, likes, pizza))
     cg.add((tarek, likes, michel))
@@ -45,7 +43,6 @@ def test_reversed_operators_with_conjunctivegraph_and_graph():
 
 
 def test_reversed_operators_with_conjunctivegraph_with_contexts_and_graph():
-
     cg = ConjunctiveGraph()
     cg.add((tarek, likes, pizza))
     cg.add((tarek, likes, michel))
@@ -67,7 +64,6 @@ def test_reversed_operators_with_conjunctivegraph_with_contexts_and_graph():
 
 
 def test_operators_with_two_conjunctivegraphs():
-
     cg1 = ConjunctiveGraph()
     cg1.add([tarek, likes, pizza])
     cg1.add([tarek, likes, michel])
@@ -88,7 +84,6 @@ def test_operators_with_two_conjunctivegraphs():
 
 
 def test_operators_with_two_conjunctivegraphs_one_with_contexts():
-
     cg1 = ConjunctiveGraph()
     cg1.add([tarek, likes, pizza])
     cg1.add([tarek, likes, michel])

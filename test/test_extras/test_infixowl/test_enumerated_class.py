@@ -52,7 +52,6 @@ def test_enumerated_class(graph):
 
 
 def test_enumerated_class_serialize(graph):
-
     sg = Graph()
 
     contlist = [Class(EXNS.Africa, graph=graph), Class(EXNS.NorthAmerica, graph=graph)]

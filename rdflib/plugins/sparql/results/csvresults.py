@@ -24,7 +24,6 @@ class CSVResultParser(ResultParser):
 
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
     def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
-
         r = Result("SELECT")
 
         # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
@@ -70,7 +69,6 @@ class CSVResultSerializer(ResultSerializer):
             raise Exception("CSVSerializer can only serialize select query results")
 
     def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs) -> None:
-
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards

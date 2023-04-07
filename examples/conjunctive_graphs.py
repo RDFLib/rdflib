@@ -8,12 +8,11 @@ This example shows how to create Named Graphs and work with the
 conjunction (union) of all the graphs.
 """
 
-from rdflib import Namespace, Literal, URIRef
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib import Literal, Namespace, URIRef
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.stores.memory import Memory
 
 if __name__ == "__main__":
-
     LOVE = Namespace("http://love.com#")
     LOVERS = Namespace("http://love.com/lovers/")
 
@@ -59,7 +58,7 @@ if __name__ == "__main__":
 
     print("Query the conjunction of all graphs:")
     xx = None
-    for x in g[mary : LOVE.loves / LOVE.hasCuteName]:
+    for x in g[mary : LOVE.loves / LOVE.hasCuteName]:  # type: ignore[misc]
         xx = x
     print("Q: Who does Mary love?")
     print("A: Mary loves {}".format(xx))

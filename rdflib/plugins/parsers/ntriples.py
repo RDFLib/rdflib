@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 
 __doc__ = """\
 N-Triples Parser
@@ -9,16 +10,29 @@ Author: Sean B. Palmer, inamidst.com
 import codecs
 import re
 from io import BytesIO, StringIO, TextIOBase
-from typing import IO, TYPE_CHECKING, Optional, Pattern, TextIO, Union
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    Match,
+    MutableMapping,
+    Optional,
+    Pattern,
+    TextIO,
+    Union,
+)
 
 from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
+from rdflib.term import URIRef
 from rdflib.term import URIRef as URI
 
 if TYPE_CHECKING:
+    import typing_extensions as te
+
     from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 
 __all__ = [
@@ -102,11 +116,14 @@ def unquote(s: str) -> str:
 r_hibyte = re.compile(r"([\x80-\xFF])")
 
 
-def uriquote(uri):
+def uriquote(uri: str) -> str:
     if not validate:
         return uri
     else:
         return r_hibyte.sub(lambda m: "%%%02X" % ord(m.group(1)), uri)
+
+
+_BNodeContextType = MutableMapping[str, bNode]
 
 
 class W3CNTriplesParser(object):
@@ -126,7 +143,9 @@ class W3CNTriplesParser(object):
     __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
 
     def __init__(
-        self, sink: Optional[Union[DummySink, "NTGraphSink"]] = None, bnode_context=None
+        self,
+        sink: Optional[Union[DummySink, "NTGraphSink"]] = None,
+        bnode_context: Optional[_BNodeContextType] = None,
     ):
         if bnode_context is not None:
             self._bnode_ids = bnode_context
@@ -144,8 +163,10 @@ class W3CNTriplesParser(object):
         self.line: Optional[str] = ""
 
     def parse(
-        self, f: Union[TextIO, IO[bytes], codecs.StreamReader], bnode_context=None
-    ):
+        self,
+        f: Union[TextIO, IO[bytes], codecs.StreamReader],
+        bnode_context: Optional[_BNodeContextType] = None,
+    ) -> Union[DummySink, "NTGraphSink"]:
         """
         Parse f as an N-Triples file.
 
@@ -177,7 +198,7 @@ class W3CNTriplesParser(object):
                 raise ParseError("Invalid line: {}".format(self.line))
         return self.sink
 
-    def parsestring(self, s: Union[bytes, bytearray, str], **kwargs):
+    def parsestring(self, s: Union[bytes, bytearray, str], **kwargs) -> None:
         """Parse s as an N-Triples string."""
         if not isinstance(s, (str, bytes, bytearray)):
             raise ParseError("Item to parse must be a string instance.")
@@ -188,12 +209,13 @@ class W3CNTriplesParser(object):
             f = StringIO(s)
         self.parse(f, **kwargs)
 
-    def readline(self):
+    def readline(self) -> Optional[str]:
         """Read an N-Triples line from buffered input."""
         # N-Triples lines end in either CRLF, CR, or LF
         # Therefore, we can't just use f.readline()
         if not self.buffer:
-            buffer = self.file.read(bufsiz)
+            # type error: Item "None" of "Union[TextIO, StreamReader, None]" has no attribute "read"
+            buffer = self.file.read(bufsiz)  # type: ignore[union-attr]
             if not buffer:
                 return None
             self.buffer = buffer
@@ -204,7 +226,8 @@ class W3CNTriplesParser(object):
                 self.buffer = self.buffer[m.end() :]
                 return m.group(1)
             else:
-                buffer = self.file.read(bufsiz)
+                # type error: Item "None" of "Union[TextIO, StreamReader, None]" has no attribute "read"
+                buffer = self.file.read(bufsiz)  # type: ignore[union-attr]
                 if not buffer and not self.buffer.isspace():
                     # Last line does not need to be terminated with a newline
                     buffer += "\n"
@@ -212,7 +235,7 @@ class W3CNTriplesParser(object):
                     return None
                 self.buffer += buffer
 
-    def parseline(self, bnode_context=None):
+    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
@@ -230,10 +253,10 @@ class W3CNTriplesParser(object):
             raise ParseError("Trailing garbage: {}".format(self.line))
         self.sink.triple(subject, predicate, object_)
 
-    def peek(self, token: str):
+    def peek(self, token: str) -> bool:
         return self.line.startswith(token)  # type: ignore[union-attr]
 
-    def eat(self, pattern: Pattern[str]):
+    def eat(self, pattern: Pattern[str]) -> Match[str]:
         m = pattern.match(self.line)  # type: ignore[arg-type]
         if not m:  # @@ Why can't we get the original pattern?
             # print(dir(pattern))
@@ -242,26 +265,28 @@ class W3CNTriplesParser(object):
         self.line = self.line[m.end() :]  # type: ignore[index]
         return m
 
-    def subject(self, bnode_context=None):
+    def subject(self, bnode_context=None) -> Union[bNode, URIRef]:
         # @@ Consider using dictionary cases
         subj = self.uriref() or self.nodeid(bnode_context)
         if not subj:
             raise ParseError("Subject must be uriref or nodeID")
         return subj
 
-    def predicate(self):
+    def predicate(self) -> URIRef:
         pred = self.uriref()
         if not pred:
             raise ParseError("Predicate must be uriref")
         return pred
 
-    def object(self, bnode_context=None):
+    def object(
+        self, bnode_context: Optional[_BNodeContextType] = None
+    ) -> Union[URI, bNode, Literal]:
         objt = self.uriref() or self.nodeid(bnode_context) or self.literal()
         if objt is False:
             raise ParseError("Unrecognised object type")
         return objt
 
-    def uriref(self):
+    def uriref(self) -> Union["te.Literal[False]", URI]:
         if self.peek("<"):
             uri = self.eat(r_uriref).group(1)
             uri = unquote(uri)
@@ -269,7 +294,9 @@ class W3CNTriplesParser(object):
             return URI(uri)
         return False
 
-    def nodeid(self, bnode_context=None):
+    def nodeid(
+        self, bnode_context: Optional[_BNodeContextType] = None
+    ) -> Union["te.Literal[False]", bNode]:
         if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
             if bnode_context is None:
@@ -287,7 +314,7 @@ class W3CNTriplesParser(object):
                 return bnode
         return False
 
-    def literal(self):
+    def literal(self) -> Union["te.Literal[False]", Literal]:
         if self.peek('"'):
             lit, lang, dtype = self.eat(r_literal).groups()
             if lang:
@@ -313,7 +340,7 @@ class NTGraphSink(object):
     def __init__(self, graph: "Graph"):
         self.g = graph
 
-    def triple(self, s: "_SubjectType", p: "_PredicateType", o: "_ObjectType"):
+    def triple(self, s: "_SubjectType", p: "_PredicateType", o: "_ObjectType") -> None:
         self.g.add((s, p, o))
 
 
@@ -325,7 +352,7 @@ class NTParser(Parser):
     __slots__ = ()
 
     @classmethod
-    def parse(cls, source: InputSource, sink: "Graph", **kwargs):
+    def parse(cls, source: InputSource, sink: "Graph", **kwargs: Any) -> None:
         """
         Parse the NT format
 

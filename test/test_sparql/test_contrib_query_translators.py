@@ -1,9 +1,11 @@
 from rdflib import Graph
+from rdflib.plugins.sparql._contrib.valuesToTheLeftOfTheJoins import (
+    ValuesToTheLeftOfTheJoin,
+)
 from rdflib.plugins.sparql.parser import *
+
 # from rdflib.plugins.sparql.processor import prepareQuery
-from rdflib.plugins.sparql.processor import translateQuery
-from rdflib.plugins.sparql.processor import parseQuery
-from rdflib.plugins.sparql._contrib.valuesToTheLeftOfTheJoins import ValuesToTheLeftOfTheJoin
+from rdflib.plugins.sparql.processor import parseQuery, translateQuery
 
 query_slow = """
 PREFIX ex:<https://example.org/>
@@ -67,4 +69,3 @@ def _prepare_query(str_or_query):
 
 if __name__ == "__main__":
     test_values_to_left()
-

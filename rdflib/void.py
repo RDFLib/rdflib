@@ -45,7 +45,6 @@ def generateVoID(  # noqa: N802
     propObjects = collections.defaultdict(set)  # noqa: N806
 
     for s, p, o in g:
-
         triples += 1
         subjects.add(s)
         properties.add(p)
@@ -109,7 +108,6 @@ def generateVoID(  # noqa: N802
         res.add((part, VOID.property, p))
 
         if distinctForPartitions:
-
             entities = 0
             propClasses = set()  # noqa: N806
             for s in propSubjects[p]:

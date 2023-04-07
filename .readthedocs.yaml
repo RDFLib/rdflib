@@ -24,11 +24,6 @@ build:
     - poetry config virtualenvs.create false
     - poetry install --only=main --only=docs --extras=html
     - poetry env info
-    # This will patch Sphinx to a later version than is in poetry.lock so that
-    # we build with a more up to date Sphinx. This should be eliminated when
-    # possible in favor of having a more up to date Sphinx in poetry.lock.
-    - pip install -r devtools/requirements-rtd.txt
-
 
 sphinx:
   fail_on_warning: true

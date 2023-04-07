@@ -4,12 +4,12 @@ This is normally smart as this is often a much shorter list than what is generat
 by the other expression.
 """
 
-from rdflib.plugins.sparql.sparql import Query
 from typing import Any
+
+from rdflib.plugins.sparql.sparql import Query
 
 
 class ValuesToTheLeftOfTheJoin:
-
     @classmethod
     def translate(cls, query: Query) -> Query:
         main = query.algebra
@@ -22,7 +22,7 @@ class ValuesToTheLeftOfTheJoin:
             if cv.p1.name != "ToMultiSet" and "ToMultiSet" == cv.p2.name:
                 cv.update(p1=cv.p2, p2=cv.p1)
             else:
-                op1 = ValuesToTheLeftOfTheJoin._optimize_node(cv.p1);
+                op1 = ValuesToTheLeftOfTheJoin._optimize_node(cv.p1)
                 op2 = ValuesToTheLeftOfTheJoin._optimize_node(cv.p2)
                 cv.update(op1, op2)
             return cv

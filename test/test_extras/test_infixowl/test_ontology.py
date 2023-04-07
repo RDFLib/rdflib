@@ -17,7 +17,6 @@ def graph():
 
 
 def test_ontology_instantiation(graph):
-
     name = Literal("TestOntology", lang="en")
 
     pizza = URIRef("http://example.org/ontologies/pizza.owl")
@@ -66,7 +65,6 @@ def test_ontology_instantiation(graph):
 
 
 def test_ontology_instantiation_exists_in_graph(graph):
-
     name = Literal("TestOntology", lang="en")
 
     graph.add((URIRef(name), RDF.type, OWL.Ontology))

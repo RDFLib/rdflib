@@ -268,6 +268,12 @@ RESOURCES: List[Resource] = [
         remote=Request("https://www.w3.org/2009/sparql/docs/tests/test-update.n3"),
         local_path=(DATA_PATH / "defined_namespaces/ut.n3"),
     ),
+    FileResource(
+        remote=Request(
+            "https://github.com/web-platform-tests/wpt/raw/9d13065419df90d2ad71f3c6b78cc12e7800dae4/html/syntax/parsing/html5lib_tests1.html"
+        ),
+        local_path=(DATA_PATH / "html5lib_tests1.html"),
+    ),
 ]
 
 

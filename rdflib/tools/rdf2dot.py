@@ -87,7 +87,6 @@ def rdf2dot(g, stream, opts={}):
     nodes = {}
 
     def node(x):
-
         if x not in nodes:
             nodes[x] = "node%d" % len(nodes)
         return nodes[x]

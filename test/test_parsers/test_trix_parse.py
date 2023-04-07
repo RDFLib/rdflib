@@ -13,7 +13,6 @@ class TestTrixParse:
         pass
 
     def testAperture(self):
-
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(
@@ -31,7 +30,6 @@ class TestTrixParse:
         # print "Parsed %d triples"%t
 
     def testSpec(self):
-
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(
@@ -43,7 +41,6 @@ class TestTrixParse:
         # print "Parsed %d triples"%len(g)
 
     def testNG4j(self):
-
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(

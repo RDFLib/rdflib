@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
-    from rdflib.term import Identifier, Node, URIRef, Variable
+    from rdflib.term import Identifier, Node, URIRef
 
 """
 ============
@@ -392,7 +392,7 @@ class Store(object):
         self,
         query: Union["Query", str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> "Result":
@@ -415,7 +415,7 @@ class Store(object):
         self,
         update: Union["Update", str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
         queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> None:

@@ -98,7 +98,6 @@ tasks:
       - echo "TOXENV=${TOXENV}"
       - |
         {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
-        {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
         {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
@@ -218,6 +217,8 @@ tasks:
       - task: venv:clean
       - task: _rimraf
         vars: { RIMRAF_TARGET: ".var/devcontainer" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
 
   test:data:fetch:
     desc: Fetch test data.
@@ -329,6 +330,40 @@ tasks:
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
           fi
+
+  docs:build-diagrams:
+    desc: Build documentation diagrams
+    cmds:
+      - cmd: |
+          shopt -s globstar;
+          for plantuml_file in ./**/*.plantuml
+          do
+            cat "${plantuml_file}" \
+              | docker run --rm -i plantuml/plantuml -tsvg -pipe \
+              > "${plantuml_file%.*}.svg"
+          done
+
+  test:sdist:
+    desc: Run tests on the sdist artifact
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "dist" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
+      - poetry build
+      - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
+      - |
+        cd var/test-sdist/rdflib-*
+        poetry install
+        poetry run mypy --show-error-context --show-error-codes -p rdflib
+        poetry run sphinx-build -T -W -b html -d docs/_build/doctree docs docs/_build/html
+        poetry run pytest
+
+  test:no_internet:
+    desc: Run tests without internet access
+    cmds:
+      - |
+        {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is

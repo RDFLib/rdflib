@@ -3,7 +3,7 @@ from test.data import context1, context2, tarek
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph, Literal
-from rdflib.namespace import OWL, Namespace
+from rdflib.namespace import OWL, Namespace, NamespaceManager
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import URIRef
 
@@ -15,7 +15,6 @@ FOAF2 = Namespace(foaf2_uri)
 
 
 def test_binding_replace():
-
     # The confusion here is in the two arguments “override” and “replace” and
     # how they serve two different purposes --- changing a prefix already bound
     # to a namespace versus changing a namespace already bound to a prefix.
@@ -186,7 +185,6 @@ def test_binding_replace():
 
 
 def test_prefix_alias_disallowed():
-
     # CANNOT BIND A PREFIX ALIASED TO AN EXISTING BOUND NAMESPACE
 
     g = Graph(bind_namespaces="none")
@@ -199,7 +197,6 @@ def test_prefix_alias_disallowed():
 
 
 def test_rebind_prefix_succeeds():
-
     # CAN REPLACE A PREFIX-NAMESPACE BINDING
 
     g = Graph(bind_namespaces="none")
@@ -212,7 +209,6 @@ def test_rebind_prefix_succeeds():
 
 
 def test_parse_rebinds_prefix():
-
     # PARSED PREFIX-NAMESPACE BINDINGS REPLACE EXISTING BINDINGS
 
     data = """@prefix friend-of-a-friend: <http://xmlns.com/foaf/0.1/> .
@@ -241,7 +237,6 @@ def test_parse_rebinds_prefix():
     """
 )
 def test_automatic_handling_of_unknown_predicates():
-
     # AUTOMATIC HANDLING OF UNKNOWN PREDICATES
 
     """
@@ -260,7 +255,6 @@ def test_automatic_handling_of_unknown_predicates():
 
 
 def test_automatic_handling_of_unknown_predicates_only_effected_after_serialization():
-
     g = Graph(bind_namespaces="none")
 
     g.add((tarek, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
@@ -300,6 +294,7 @@ def test_multigraph_bindings():
 
     # Including newly-created objects that use the store
     cg = ConjunctiveGraph(store=store)
+    cg.namespace_manager = NamespaceManager(cg, bind_namespaces="core")
 
     assert ("foaf", foaf1_uri) not in list(cg.namespaces())
     assert ("friend-of-a-friend", foaf1_uri) in list(cg.namespaces())
@@ -398,7 +393,6 @@ def test_new_namespace_override_false():
 
 
 def test_change_namespace_and_prefix():
-
     # A more extensive illustration of attempted rebinds of
     # `foaf` being intercepted and changed to a non-clashing
     # prefix of `foafN` (where N is an incrementing integer) ...
