@@ -642,7 +642,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Mapping[str, Identifier],
+    initBindings: Optional[Mapping[str, Identifier]] = None,
     base: Optional[str] = None,
 ) -> Mapping[Any, Any]:
     """
@@ -661,7 +661,7 @@ def evalQuery(
         documentation.
     """
 
-    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+    initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

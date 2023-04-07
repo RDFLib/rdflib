@@ -231,6 +231,10 @@ def global_state():
     chdir(old_cwd)
 
 
+@pytest.mark.webtest
+# TODO: apply webtest marker to individual tests
+# Marking this whole function as webtest is too broad, as many tests don't
+# require the web, but making it narrower requires more refactoring.
 @pytest.mark.parametrize(
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
     get_test_suite_cases(),
