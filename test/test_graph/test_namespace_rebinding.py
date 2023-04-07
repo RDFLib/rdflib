@@ -3,7 +3,7 @@ from test.data import context1, context2, tarek
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph, Literal
-from rdflib.namespace import OWL, Namespace
+from rdflib.namespace import OWL, Namespace, NamespaceManager
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import URIRef
 
@@ -294,6 +294,7 @@ def test_multigraph_bindings():
 
     # Including newly-created objects that use the store
     cg = ConjunctiveGraph(store=store)
+    cg.namespace_manager = NamespaceManager(cg, bind_namespaces="core")
 
     assert ("foaf", foaf1_uri) not in list(cg.namespaces())
     assert ("friend-of-a-friend", foaf1_uri) in list(cg.namespaces())
