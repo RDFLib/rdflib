@@ -20,7 +20,6 @@ def graph():
     del g
 
 
-@pytest.mark.xfail(reason="Harness oddity, passes if run individually")
 def test_restriction_str_and_hash(graph):
     r1 = Property(EXNS.someProp, baseType=OWL.DatatypeProperty) @ some @ Class(EXNS.Foo)
 

@@ -19,7 +19,6 @@ def graph():
     del g
 
 
-@pytest.mark.xfail(reason="Harness oddity, passes if run individually")
 def test_logic_structuring(graph):
     isPartOf = Property(EXNS.isPartOf)  # noqa: N806
     graph.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))

@@ -43,7 +43,6 @@ def test_manchester_syntax(graph):
     assert res == Literal("Caprina", lang="pt")
 
 
-@pytest.mark.xfail(reason="Harness oddity, passes if run individually")
 def test_manchester_syntax_parse_with_transientlist(graph):
     graph.parse(TEST_DATA_DIR / "owl" / "pizza.owl", format="xml")
 
