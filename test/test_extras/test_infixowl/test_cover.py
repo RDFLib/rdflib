@@ -135,7 +135,6 @@ EXCL = ClassNamespaceFactory(EXNS)
 
 
 def test_classnamespacefactory():
-
     leg = EXCL.Leg
 
     x = EXCL.__getitem__(leg.identifier)
@@ -351,7 +350,6 @@ def test_changeoperator():
 
 
 def test_cardinality_zero():
-
     g = Graph()
     g.bind("ex", EXNS)
 

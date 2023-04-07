@@ -25,6 +25,7 @@ from rdflib.namespace import XSD
 from rdflib.term import BNode, Identifier
 
 
+@pytest.mark.webtest
 def test_service():
     g = Graph()
     q = """select ?sameAs ?dbpComment
@@ -47,6 +48,7 @@ def test_service():
         assert len(r) == 2
 
 
+@pytest.mark.webtest
 def test_service_with_bind():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -69,6 +71,7 @@ def test_service_with_bind():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_bound_solutions():
     g = Graph()
     g.update(
@@ -104,6 +107,7 @@ def test_service_with_bound_solutions():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_values():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -126,6 +130,7 @@ def test_service_with_values():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select():
     g = Graph()
     q = """select ?s ?p ?o
@@ -142,6 +147,7 @@ def test_service_with_implicit_select():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_prefix():
     g = Graph()
     q = """prefix ex:<http://example.org/>
@@ -159,6 +165,7 @@ def test_service_with_implicit_select_and_prefix():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_base():
     g = Graph()
     q = """base <http://example.org/>
@@ -176,6 +183,7 @@ def test_service_with_implicit_select_and_base():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_allcaps():
     g = Graph()
     q = """SELECT ?s
@@ -199,6 +207,7 @@ def freeze_bindings(
     return frozenset(result)
 
 
+@pytest.mark.webtest
 def test_simple_not_null():
     """Test service returns simple literals not as NULL.
 
@@ -216,6 +225,7 @@ WHERE {
     assert results.bindings[0].get(Variable("o")) == Literal("c")
 
 
+@pytest.mark.webtest
 def test_service_node_types():
     """Test if SERVICE properly returns different types of nodes:
     - URI;
@@ -320,14 +330,16 @@ def test_with_mock(
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": item} for item in response_bindings]},
     }
-    function_httpmock.responses[MethodName.GET].append(
-        MockHTTPResponse(
-            200,
-            "OK",
-            json.dumps(response).encode("utf-8"),
-            {"Content-Type": ["application/sparql-results+json"]},
-        )
+    mock_response = MockHTTPResponse(
+        200,
+        "OK",
+        json.dumps(response).encode("utf-8"),
+        {"Content-Type": ["application/sparql-results+json"]},
     )
+    # Adding the same response for GET and POST as the method used by RDFLib is
+    # dependent on the size of the service query.
+    function_httpmock.responses[MethodName.GET].append(mock_response)
+    function_httpmock.responses[MethodName.POST].append(mock_response)
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
     with ExitStack() as xstack:

@@ -45,9 +45,9 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.2.0
+        uses: abatilo/actions-poetry@v2.3.0
         with:
-          poetry-version: 1.3.2
+          poetry-version: 1.4.0
       - name: Build images
         shell: bash
         run: |
@@ -71,9 +71,9 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.2.0
+        uses: abatilo/actions-poetry@v2.3.0
         with:
-          poetry-version: 1.3.2
+          poetry-version: 1.4.0
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:

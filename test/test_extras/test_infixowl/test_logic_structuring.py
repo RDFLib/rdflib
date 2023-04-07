@@ -20,7 +20,6 @@ def graph():
 
 
 def test_logic_structuring(graph):
-
     isPartOf = Property(EXNS.isPartOf)  # noqa: N806
     graph.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
 

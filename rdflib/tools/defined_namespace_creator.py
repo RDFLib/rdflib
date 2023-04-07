@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 This rdflib Python script creates a DefinedNamespace Python file from a given RDF file
 
@@ -14,20 +16,24 @@ import argparse
 import datetime
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Iterable, List, Tuple
 
 sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
 
-from rdflib import Graph
-from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
-from rdflib.util import guess_format
+from rdflib.graph import Graph  # noqa: E402
+from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS  # noqa: E402
+from rdflib.util import guess_format  # noqa: E402
+
+if TYPE_CHECKING:
+    from rdflib.query import ResultRow
 
 
-def validate_namespace(namespace):
+def validate_namespace(namespace: str) -> None:
     if not namespace.endswith(("/", "#")):
         raise ValueError("The supplied namespace must end with '/' or '#'")
 
 
-def validate_object_id(object_id):
+def validate_object_id(object_id: str) -> None:
     for c in object_id:
         if not c.isupper():
             raise ValueError("The supplied object_id must be an all-capitals string")
@@ -66,10 +72,12 @@ def validate_object_id(object_id):
 #     return classes
 
 
-def get_target_namespace_elements(g, target_namespace):
+def get_target_namespace_elements(
+    g: Graph, target_namespace: str
+) -> Tuple[List[Tuple[str, str]], List[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
-        SELECT DISTINCT ?s ?def
+        SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
         WHERE {
             # all things in the RDF data (anything RDF.type...)
             ?s a ?o .
@@ -82,26 +90,35 @@ def get_target_namespace_elements(g, target_namespace):
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
         }
+        GROUP BY ?s
         """.replace(
         "xxx", target_namespace
     )
-    elements = []
+    elements: List[Tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
+        if TYPE_CHECKING:
+            assert isinstance(r, ResultRow)
         elements.append((str(r[0]), str(r[1])))
 
     elements.sort(key=lambda tup: tup[0])
 
-    elements_strs = []
+    elements_strs: List[str] = []
     for e in elements:
         desc = e[1].replace("\n", " ")
         elements_strs.append(
-            f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
+            f"    {e[0].replace(target_namespace, '')}: URIRef  # {desc}\n"
         )
 
     return elements, elements_strs
 
 
-def make_dn_file(output_file_name, target_namespace, elements_strs, object_id, fail):
+def make_dn_file(
+    output_file_name: Path,
+    target_namespace: str,
+    elements_strs: Iterable[str],
+    object_id: str,
+    fail: bool,
+) -> None:
     header = f'''from rdflib.term import URIRef
 from rdflib.namespace import DefinedNamespace, Namespace
 

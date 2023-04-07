@@ -1,14 +1,20 @@
+import logging
 import re
 from http.server import BaseHTTPRequestHandler
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
+from test.utils.http import (
+    MOCK_HTTP_REQUEST_WILDCARD,
+    MockHTTPRequest,
+    ctx_http_handler,
+)
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
     ServedBaseHTTPServerMock,
-    ctx_http_server,
 )
+from test.utils.wildcard import URL_PARSE_RESULT_WILDCARD
 from urllib.error import HTTPError
 
 import pytest
@@ -62,7 +68,6 @@ EG = Namespace("http://example.org/")
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
-
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
 
@@ -106,8 +111,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             for format in ("xml", "n3", "nt"):
                 graph = Graph()
@@ -119,8 +126,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             graph = Graph()
             graph.parse(url)
@@ -198,7 +207,8 @@ class TestGraphHTTP:
             httpmock.mocks[MethodName.GET].assert_called()
             assert len(httpmock.requests[MethodName.GET]) == 10
             for request in httpmock.requests[MethodName.GET]:
-                assert re.match(r"text/turtle", request.headers.get("Accept"))
+                # type error: Argument 2 to "match" has incompatible type "Optional[Any]"; expected "str"
+                assert re.match(r"text/turtle", request.headers.get("Accept"))  # type: ignore[arg-type]
 
             request_paths = [
                 request.path for request in httpmock.requests[MethodName.GET]
@@ -231,7 +241,34 @@ class TestGraphHTTP:
             assert raised.value.code == 500
 
 
-def test_iri_source(function_httpmock: ServedBaseHTTPServerMock) -> None:
+@pytest.mark.parametrize(
+    ["url_suffix", "expected_request"],
+    [
+        (
+            "/resource/Almería",
+            MOCK_HTTP_REQUEST_WILDCARD._replace(
+                path="/resource/Almer%C3%ADa",
+                parsed_path=URL_PARSE_RESULT_WILDCARD._replace(
+                    path="/resource/Almer%C3%ADa"
+                ),
+            ),
+        ),
+        (
+            "/resource/Almería?foo=bar",
+            MOCK_HTTP_REQUEST_WILDCARD._replace(
+                parsed_path=URL_PARSE_RESULT_WILDCARD._replace(
+                    path="/resource/Almer%C3%ADa"
+                ),
+                path_query={"foo": ["bar"]},
+            ),
+        ),
+    ],
+)
+def test_iri_source(
+    url_suffix: str,
+    expected_request: MockHTTPRequest,
+    function_httpmock: ServedBaseHTTPServerMock,
+) -> None:
     diverse_triples_path = TEST_DATA_DIR / "variants/diverse_triples.ttl"
 
     function_httpmock.responses[MethodName.GET].append(
@@ -243,9 +280,11 @@ def test_iri_source(function_httpmock: ServedBaseHTTPServerMock) -> None:
         )
     )
     g = Graph()
-    g.parse(f"{function_httpmock.url}/resource/Almería")
+    g.parse(f"{function_httpmock.url}{url_suffix}")
     assert function_httpmock.call_count == 1
     GraphHelper.assert_triple_sets_equals(cached_graph((diverse_triples_path,)), g)
+    assert len(g) > 1
 
     req = function_httpmock.requests[MethodName.GET].pop(0)
-    assert req.path == "/resource/Almer%C3%ADa"
+    logging.debug("req = %s", req)
+    assert expected_request == req

@@ -1,0 +1,17 @@
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:            <http://www.w3.org/2002/07/owl#> .
+@prefix ex:             <http://example.org/multiline-string-example#> .
+
+# This file contains a RDF class with multiple rdfs:comment properties and is
+# used to verify the RDFLib defined namespace creator. It is used in
+# </test/test_namespace/test_definednamespace_creator.py>.
+
+<http://example.org/multiline-string-example>
+    a owl:Ontology .
+
+ex:SomeClass a rdfs:Class, owl:Class;
+    rdfs:label "Some class"@en;
+    rdfs:comment "If one uses multiple comment properties, "@en;
+    rdfs:comment "then it should still only create a single class variable."@en;
+    rdfs:isDefinedBy <http://example.org/multiline-string-example>;
+.

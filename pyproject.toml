@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "6.3.0a0"
+version = "6.4.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -22,6 +22,14 @@ classifiers=[
     "Natural Language :: English"
 ]
 readme = "README.md"
+packages = [
+    { include = "rdflib" },
+]
+include = [
+    { path = "test", format = "sdist" },
+    { path = "docs", format = "sdist" },
+    { path = "examples", format = "sdist" },
+]
 
 [tool.poetry.scripts]
 rdfpipe = 'rdflib.tools.rdfpipe:main'
@@ -34,36 +42,36 @@ rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 python = "^3.7"
 isodate = "^0.6.0"
 pyparsing = ">=2.1.0,<4"
-importlib-metadata = {version = "^4.0.0", python = ">=3.7,<3.8"}
+importlib-metadata = {version = ">=4,<7", python = ">=3.7,<3.8"}
 berkeleydb = {version = "^18.1.0", optional = true}
 networkx = {version = "^2.0.0", optional = true}
 html5lib = {version = "^1.0", optional = true}
 lxml = {version = "^4.3.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "22.12.0"
+black = "23.1.0"
 isort = "^5.10.0"
-mypy = "0.991"
+mypy = "^1.1.0"
 lxml-stubs = "^0.4.0"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^7.1.3"
 pytest-cov = "^4.0.0"
 coverage = {version = "^7.0.1", extras = ["toml"]}
-types-setuptools = "^65.6.0.3"
-setuptools = "^65.6.3"
+types-setuptools = ">=65.6.0.3,<68.0.0.0"
+setuptools = ">=65.6.3,<68.0.0"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = ">4.0.0"
-myst-parser = "^0.18.0"
+sphinx = "^5.3.0"
+myst-parser = "^1.0.0"
 sphinxcontrib-apidoc = "^0.3.0"
-sphinxcontrib-kroki = "^1.3.0"
 sphinx-autodoc-typehints = "^1.17.1"
+typing-extensions = "^4.5.0"
 
 [tool.poetry.group.flake8.dependencies]
-flake8 = ">=4.0.1" # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
-flakeheaven = "^3.2.1"
-pep8-naming = "^0.13.2"
+flake8 = {version = ">=4.0.1", python = ">=3.8"} # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
+flakeheaven = {version = "^3.2.1", python = ">=3.8"}
+pep8-naming = {version = "^0.13.2", python = ">=3.8"}
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -105,10 +113,13 @@ pep8-naming = ["-N802", "-N806", "-N815"]
 pycodestyle = ["-E402"]
 [tool.flakeheaven.exceptions."test/utils/namespace/_*"]
 pep8-naming = ["-N815"]
-
+[tool.flakeheaven.exceptions."rdflib/plugins/parsers/rdfxml.py"]
+pep8-naming = ["-N802"]
+[tool.flakeheaven.exceptions."rdflib/plugins/parsers/trix.py"]
+pep8-naming = ["-N802"]
 
 [tool.black]
-required-version = "22.12.0"
+required-version = "23.1.0"
 line-length = "88"
 target-version = ['py37']
 include = '\.pyi?$'
@@ -127,7 +138,6 @@ exclude = '''
     | _build
     | htmlcov
     | benchmarks
-    | examples       # No need to Black examples
     | test_reports
     | rdflib.egg-info
     | buck-out
@@ -146,6 +156,7 @@ addopts = [
    "--ignore=rdflib/extras/external_graph_libs.py",
    "--ignore-glob=docs/*.py",
    "--doctest-glob=docs/*.rst",
+   "--strict-markers",
 ]
 doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
@@ -153,6 +164,9 @@ filterwarnings = [
     "ignore:Code. pytest_mock_example_attribute_that_shouldnt_exist is not defined in namespace .*:UserWarning",
     # The below warning is a consequence of how pytest detects fixtures and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. _pytestfixturefunction is not defined in namespace .*:UserWarning",
+]
+markers = [
+    "webtest: mark a test as using the internet",
 ]
 # log_cli = true
 # log_cli_level = "DEBUG"
@@ -165,7 +179,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 profile = "black"
 py_version = 37
 line_length = 88
-src_paths= ["rdflib", "test"]
+src_paths= ["rdflib", "test", "devtools", "examples"]
 supported_extensions = ["pyw", "pyi", "py"]
 skip = [
     '.eggs',         # exclude a few common directories in the
@@ -180,7 +194,6 @@ skip = [
     '_build',
     'htmlcov',
     'benchmarks',
-    'examples',       # No need to isort examples
     'test_reports',
     'rdflib.egg-info',
     'buck-out',
@@ -190,7 +203,7 @@ skip = [
 ]
 
 [tool.mypy]
-files = ['rdflib', 'test', 'devtools']
+files = ['rdflib', 'test', 'devtools', 'examples']
 python_version = "3.7"
 warn_unused_configs = true
 ignore_missing_imports = true

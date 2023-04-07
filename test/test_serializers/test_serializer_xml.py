@@ -7,10 +7,9 @@ from rdflib.term import BNode, URIRef
 
 
 class SerializerTestBase(object):
-
     repeats = 8
 
-    def setup(self):
+    def setup_method(self):
         graph = ConjunctiveGraph()
         graph.parse(data=self.testContent, format=self.testContentFormat)
         self.sourceGraph = graph
@@ -74,7 +73,6 @@ def serialize_and_load(sourceGraph, makeSerializer):
 
 
 class TestXMLSerializer(SerializerTestBase):
-
     serializer = XMLSerializer
 
     testContent = """

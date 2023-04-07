@@ -31,7 +31,6 @@ def graph():
 
 
 def test_class_instantiation(graph):
-
     name = EXNS.Man
     assert isinstance(name, URIRef)
 
@@ -195,7 +194,6 @@ def test_class_getparents(graph):
 
 
 def test_class_serialize(graph):
-
     father = Class(EXNS.Father)
     sister = Class(EXNS.Sister)
     parent = Class(EXNS.Parent)

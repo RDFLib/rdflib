@@ -33,7 +33,7 @@ class NTSerializer(Serializer):
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
         **args,
-    ):
+    ) -> None:
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
         if encoding != "utf-8":
@@ -57,7 +57,7 @@ class NT11Serializer(NTSerializer):
         Serializer.__init__(self, store)  # default to utf-8
 
 
-def _nt_row(triple: _TripleType):
+def _nt_row(triple: _TripleType) -> str:
     if isinstance(triple[2], Literal):
         return "%s %s %s .\n" % (
             # type error: "Node" has no attribute "n3"

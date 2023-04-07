@@ -610,7 +610,6 @@ class Literal(Identifier):
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
     ) -> "Literal":
-
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
@@ -1090,7 +1089,6 @@ class Literal(Identifier):
         if other is None:
             return True  # Everything is greater than None
         if isinstance(other, Literal):
-
             if (
                 self.datatype in _NUMERIC_LITERAL_TYPES
                 and other.datatype in _NUMERIC_LITERAL_TYPES
@@ -1328,7 +1326,6 @@ class Literal(Identifier):
 
         """
         if isinstance(other, Literal):
-
             if (
                 self.datatype in _NUMERIC_LITERAL_TYPES
                 and other.datatype in _NUMERIC_LITERAL_TYPES
@@ -1366,13 +1363,11 @@ class Literal(Identifier):
             # maybe there are counter examples
 
             if self.value is not None and other.value is not None:
-
                 if self.datatype in (_RDF_XMLLITERAL, _RDF_HTMLLITERAL):
                     return _isEqualXMLNode(self.value, other.value)
 
                 return self.value == other.value
             else:
-
                 if str.__eq__(self, other):
                     return True
 
@@ -2248,7 +2243,7 @@ def _isEqualXMLNode(  # noqa: N802
         # for the length becomes necessary...
         if len(node.childNodes) != len(other.childNodes):
             return False
-        for (nc, oc) in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
+        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
             if not _isEqualXMLNode(nc, oc):
                 return False
         # if we got here then everything is fine:

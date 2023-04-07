@@ -57,7 +57,7 @@ class Processor(object):
     def query(  # type: ignore[empty-body]
         self,
         strOrQuery: Union[str, "Query"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
@@ -83,7 +83,7 @@ class UpdateProcessor(object):
     def update(
         self,
         strOrQuery: Union[str, "Update"],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"] = {},  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},
     ) -> None:
         pass
@@ -155,8 +155,9 @@ class ResultRow(Tuple["Identifier", ...]):
     def __new__(
         cls, values: Mapping["Variable", "Identifier"], labels: List["Variable"]
     ):
-        # type error: Generator has incompatible item type "Optional[Any]"; expected "_T_co"
-        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[misc]
+        # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
+        # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc]
         instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
@@ -221,7 +222,6 @@ class Result(object):
     """
 
     def __init__(self, type_: str):
-
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
@@ -252,7 +252,6 @@ class Result(object):
             Iterator[Mapping[Variable, Identifier]],
         ],
     ) -> None:
-
         if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []

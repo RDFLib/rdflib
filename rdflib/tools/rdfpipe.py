@@ -31,7 +31,6 @@ def parse_and_serialize(
     store_conn="",
     store_type=None,
 ):
-
     if store_type:
         store = plugin.get(store_type, Store)()
         store.open(store_conn)

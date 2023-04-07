@@ -51,7 +51,6 @@ from rdflib.term import (
     Node,
     RDFLibGenid,
     URIRef,
-    Variable,
 )
 
 if TYPE_CHECKING:
@@ -106,8 +105,6 @@ _QuadSelectorType = Tuple[
 _TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
 _TriplePathType = Tuple["_SubjectType", Path, "_ObjectType"]
 _TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
-# _QuadPathType = Tuple["_SubjectType", Path, "_ObjectType", "_ContextType"]
-# _QuadOrQuadPathType = Union["_QuadType", "_QuadPathType"]
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
@@ -438,7 +435,7 @@ class Graph(Node):
         identifier: Optional[Union[_ContextIdentifierType, str]] = None,
         namespace_manager: Optional[NamespaceManager] = None,
         base: Optional[str] = None,
-        bind_namespaces: "_NamespaceSetString" = "core",
+        bind_namespaces: "_NamespaceSetString" = "rdflib",
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -638,7 +635,6 @@ class Graph(Node):
         """
 
         if isinstance(item, slice):
-
             s, p, o = item.start, item.stop, item.step
             if s is None and p is None and o is None:
                 return self.triples((s, p, o))
@@ -659,7 +655,6 @@ class Graph(Node):
                 return (s, p, o) in self
 
         elif isinstance(item, (Path, Node)):
-
             return self.predicate_objects(item)
 
         else:
@@ -680,7 +675,7 @@ class Graph(Node):
         """Iterates over all triples in the store"""
         return self.triples((None, None, None))
 
-    def __contains__(self, triple: _TriplePatternType) -> bool:
+    def __contains__(self, triple: _TripleSelectorType) -> bool:
         """Support for 'triple in graph' syntax"""
         for triple in self.triples(triple):
             return True
@@ -741,7 +736,7 @@ class Graph(Node):
             retval = type(self)()
         except TypeError:
             retval = Graph()
-        for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
+        for prefix, uri in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
             retval.add(x)
@@ -1390,22 +1385,34 @@ class Graph(Node):
         """
         Parse an RDF source adding the resulting triples to the Graph.
 
-        The source is specified using one of source, location, file or
-        data.
+        The source is specified using one of source, location, file or data.
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
 
         :Parameters:
 
           - ``source``: An InputSource, file-like object, or string. In the case
             of a string the string is the location of the source.
-          - ``location``: A string indicating the relative or absolute URL of the
-            source. Graph's absolutize method is used if a relative location
+          - ``location``: A string indicating the relative or absolute URL of
+            the source. Graph's absolutize method is used if a relative location
             is specified.
           - ``file``: A file-like object.
           - ``data``: A string containing the data to be parsed.
-          - ``format``: Used if format can not be determined from source, e.g. file
-            extension or Media Type. Defaults to text/turtle. Format support can
-            be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
-            "trix" are built in.
+          - ``format``: Used if format can not be determined from source, e.g.
+            file extension or Media Type. Defaults to text/turtle. Format
+            support can be extended with plugins, but "xml", "n3" (use for
+            turtle), "nt" & "trix" are built in.
           - ``publicID``: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
@@ -1503,19 +1510,32 @@ class Graph(Node):
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> query.Result:
         """
         Query this graph.
 
-        A type of 'prepared queries' can be realised by providing
-        initial variable bindings with initBindings
+        A type of 'prepared queries' can be realised by providing initial
+        variable bindings with initBindings
 
-        Initial namespaces are used to resolve prefixes used in the query,
-        if none are given, the namespaces from the graph's namespace manager
-        are used.
+        Initial namespaces are used to resolve prefixes used in the query, if
+        none are given, the namespaces from the graph's namespace manager are
+        used.
+
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
 
         :returntype: :class:`~rdflib.query.Result`
 
@@ -1536,8 +1556,7 @@ class Graph(Node):
             except NotImplementedError:
                 pass  # store has no own implementation
 
-        # type error: Subclass of "str" and "Result" cannot exist: would have incompatible method signatures
-        if not isinstance(result, query.Result):  # type: ignore[unreachable]
+        if not isinstance(result, query.Result):
             result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
@@ -1550,11 +1569,26 @@ class Graph(Node):
         update_object: Union[Update, str],
         processor: Union[str, rdflib.query.UpdateProcessor] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> None:
-        """Update this graph with the given update query."""
+        """
+        Update this graph with the given update query.
+
+        .. caution::
+
+           This method can access indirectly requested network endpoints, for
+           example, query processing will attempt to access network endpoints
+           specified in ``SERVICE`` directives.
+
+           When processing untrusted or potentially malicious queries, measures
+           should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
+        """
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
@@ -1943,7 +1977,7 @@ class ConjunctiveGraph(Graph):
             c = self._graph(c)
         return s, p, o, c
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         """Support for 'triple/quad in graph' syntax"""
         s, p, o, c = self._spoc(triple_or_quad)
         for t in self.triples((s, p, o), context=c):
@@ -2175,6 +2209,19 @@ class ConjunctiveGraph(Graph):
 
         The graph into which the source was parsed. In the case of n3
         it returns the root context.
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
         """
 
         source = create_input_source(
@@ -2405,6 +2452,22 @@ class Dataset(ConjunctiveGraph):
         data: Optional[Union[str, bytes]] = None,
         **args: Any,
     ) -> "Graph":
+        """
+
+        .. caution::
+
+           This method can access directly or indirectly requested network or
+           file resources, for example, when parsing JSON-LD documents with
+           ``@context`` directives that point to a network location.
+
+           When processing untrusted or potentially malicious documents,
+           measures should be taken to restrict network and file access.
+
+           For information on available security measures, see the RDFLib
+           :doc:`Security Considerations </security_considerations>`
+           documentation.
+        """
+
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )
@@ -2549,7 +2612,7 @@ class Seq(object):
         self._list: List[Tuple[int, _ObjectType]]
         _list = self._list = list()
         LI_INDEX = URIRef(str(RDF) + "_")  # noqa: N806
-        for (p, o) in graph.predicate_objects(subject):
+        for p, o in graph.predicate_objects(subject):
             # type error: "Node" has no attribute "startswith"
             if p.startswith(LI_INDEX):  # type: ignore[attr-defined] # != RDF.Seq:
                 # type error: "Node" has no attribute "replace"
@@ -2688,7 +2751,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 for s1, p1, o1 in graph.triples((s, p, o)):
                     yield s1, p1, o1
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         context = None
         if len(triple_or_quad) == 4:
             # type error: Tuple index out of range
@@ -2765,7 +2828,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
             # type error note: unpacking discards type info
             choices = graph.triples_choices((subject, predicate, object_))  # type: ignore[arg-type]
-            for (s, p, o) in choices:
+            for s, p, o in choices:
                 yield s, p, o
 
     def qname(self, uri: str) -> str:
