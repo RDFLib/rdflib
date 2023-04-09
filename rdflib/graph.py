@@ -1817,7 +1817,7 @@ class Graph(Node):
         return retval
 
     def cbd(
-        self, resource: _SubjectType, target_graph: Optional[Graph] = None
+        self, resource: _SubjectType, *, target_graph: Optional[Graph] = None
     ) -> Graph:
         """Retrieves the Concise Bounded Description of a Resource from a Graph
 

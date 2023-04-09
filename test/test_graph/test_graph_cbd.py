@@ -4,7 +4,8 @@ from test.utils import BNodeHandling, GraphHelper
 import pytest
 
 from rdflib import Graph, Namespace
-from rdflib.term import URIRef
+from rdflib.namespace import RDF, RDFS
+from rdflib.term import Literal, URIRef
 
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
 EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"
@@ -134,3 +135,27 @@ def test_cbd_example():
     assert len(g.cbd(URIRef(query))) == (
         21
     ), "cbd() for aReallyGreatBook should return 21 triples"
+
+
+def test_cbd_target(rdfs_graph: Graph):
+    """
+    `Graph.cbd` places the Concise Bounded Description in the target graph.
+    """
+
+    target = Graph()
+    result = rdfs_graph.cbd(RDFS.Literal, target_graph=target)
+
+    expected_result = {
+        (RDFS.Literal, RDFS.subClassOf, RDFS.Resource),
+        (RDFS.Literal, RDF.type, RDFS.Class),
+        (RDFS.Literal, RDFS.label, Literal("Literal")),
+        (
+            RDFS.Literal,
+            RDFS.comment,
+            Literal("The class of literal values, eg. textual strings and integers."),
+        ),
+        (RDFS.Literal, RDFS.isDefinedBy, URIRef(f"{RDFS}")),
+    }
+
+    assert result is target
+    assert expected_result == set(result.triples((None, None, None)))
