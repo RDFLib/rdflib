@@ -9,18 +9,20 @@ class GEO(DefinedNamespace):
     Generated from: http://schemas.opengis.net/geosparql/1.0/geosparql_vocab_all.rdf
     Date: 2021-12-27 17:38:15.101187
 
-    <http://www.opengis.net/ont/geosparql> dc:creator "Open Geospatial Consortium"^^xsd:string
-    dc:date "2012-04-30"^^xsd:date
-    dc:source <http://www.opengis.net/doc/IS/geosparql/1.0>
-        "OGC GeoSPARQL – A Geographic Query Language for RDF Data OGC 11-052r5"^^xsd:string
-    rdfs:seeAlso <http://www.opengis.net/def/function/ogc-geosparql/1.0>
-        <http://www.opengis.net/def/rule/ogc-geosparql/1.0>
-        <http://www.opengis.net/doc/IS/geosparql/1.0>
-    owl:imports dc:
-        <http://www.opengis.net/ont/gml>
-        <http://www.opengis.net/ont/sf>
-        <http://www.w3.org/2004/02/skos/core>
-    owl:versionInfo "OGC GeoSPARQL 1.0"^^xsd:string
+    .. code-block:: Turtle
+
+        <http://www.opengis.net/ont/geosparql> dc:creator "Open Geospatial Consortium"^^xsd:string
+        dc:date "2012-04-30"^^xsd:date
+        dc:source <http://www.opengis.net/doc/IS/geosparql/1.0>
+            "OGC GeoSPARQL – A Geographic Query Language for RDF Data OGC 11-052r5"^^xsd:string
+        rdfs:seeAlso <http://www.opengis.net/def/function/ogc-geosparql/1.0>
+            <http://www.opengis.net/def/rule/ogc-geosparql/1.0>
+            <http://www.opengis.net/doc/IS/geosparql/1.0>
+        owl:imports dc:
+            <http://www.opengis.net/ont/gml>
+            <http://www.opengis.net/ont/sf>
+            <http://www.w3.org/2004/02/skos/core>
+        owl:versionInfo "OGC GeoSPARQL 1.0"^^xsd:string
     """
 
     # http://www.w3.org/2000/01/rdf-schema#Datatype

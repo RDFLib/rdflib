@@ -1011,3 +1011,6 @@ class SPARQLUpdateStore(SPARQLStore):
         """A generator of (predicate, object) tuples for the given subject"""
         for t, c in self.triples((subject, None, None)):
             yield t[1], t[2]
+
+
+__all__ = ["SPARQLUpdateStore", "SPARQLStore"]

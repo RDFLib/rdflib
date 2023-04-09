@@ -7,7 +7,8 @@ import re
 import pytest
 
 from rdflib import Graph
-from rdflib.plugin import Serializer, register
+from rdflib.plugin import register
+from rdflib.serializer import Serializer
 
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 

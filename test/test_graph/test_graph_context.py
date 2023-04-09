@@ -7,6 +7,7 @@ from tempfile import mkdtemp, mkstemp
 import pytest
 
 from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
+from rdflib.store import Store
 
 
 class ContextTestCase(unittest.TestCase):
@@ -367,7 +368,7 @@ if __name__ == "__main__":
         pluginname = sys.argv[1]
 
 tests = 0
-for s in plugin.plugins(pluginname, plugin.Store):
+for s in plugin.plugins(pluginname, Store):
     if s.name in (
         "default",
         "Memory",
