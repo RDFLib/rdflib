@@ -268,7 +268,7 @@ class TestBNodeContext:
         assert len(my_sink.subs) == 1
 
 
-class FakeSink(object):
+class FakeSink:
     def __init__(self):
         self.subs = set()
 

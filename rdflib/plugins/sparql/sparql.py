@@ -246,7 +246,7 @@ class FrozenBindings(FrozenDict):
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
-class QueryContext(object):
+class QueryContext:
     """
     Query context - passed along when evaluating the query
     """

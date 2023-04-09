@@ -69,7 +69,7 @@ UNDEF = Defined(0)
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
 
-class Context(object):
+class Context:
     def __init__(
         self,
         source: Optional[Any] = None,
