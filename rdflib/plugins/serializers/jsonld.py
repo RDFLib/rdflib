@@ -138,7 +138,7 @@ def from_rdf(
     return result
 
 
-class Converter(object):
+class Converter:
     def __init__(self, context, use_native_types, use_rdf_type):
         self.context = context
         self.use_native_types = context.active or use_native_types

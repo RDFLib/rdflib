@@ -357,7 +357,7 @@ class TermDeletionHelper:
         return _remover
 
 
-class Individual(object):
+class Individual:
     """
     A typed individual
     """
@@ -1382,7 +1382,7 @@ class Class(AnnotatableTerms):
         ) + klassdescr
 
 
-class OWLRDFListProxy(object):
+class OWLRDFListProxy:
     def __init__(self, rdf_list, members=None, graph=None):
         if graph:
             self.graph = graph

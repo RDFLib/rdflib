@@ -1773,7 +1773,7 @@ class BadSyntax(SyntaxError):
 
 
 ###############################################################################
-class Formula(object):
+class Formula:
     number = 0
 
     def __init__(self, parent: Graph):
@@ -1815,7 +1815,7 @@ class Formula(object):
 r_hibyte = re.compile(r"([\x80-\xff])")
 
 
-class RDFSink(object):
+class RDFSink:
     def __init__(self, graph: Graph):
         self.rootFormula: Optional[Formula] = None
         self.uuid = uuid4().hex

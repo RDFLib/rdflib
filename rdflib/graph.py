@@ -2588,7 +2588,7 @@ class QuotedGraph(Graph):
 rdflib.term._ORDERING[QuotedGraph] = 11
 
 
-class Seq(object):
+class Seq:
     """Wrapper around an RDF Seq resource
 
     It implements a container type in Python with the order of the items
@@ -2894,7 +2894,7 @@ def _assertnode(*terms: Any) -> bool:
     return True
 
 
-class BatchAddGraph(object):
+class BatchAddGraph:
     """
     Wrapper around graph that turns batches of calls to Graph's add
     (and optionally, addN) into calls to batched calls to addN`.

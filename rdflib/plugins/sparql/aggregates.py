@@ -30,7 +30,7 @@ Aggregation functions
 """
 
 
-class Accumulator(object):
+class Accumulator:
     """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation: CompValue):
@@ -268,7 +268,7 @@ class GroupConcat(Accumulator):
         return Literal(self.separator.join(str(v) for v in self.value))
 
 
-class Aggregator(object):
+class Aggregator:
     """combines different Accumulator objects"""
 
     accumulator_classes = {

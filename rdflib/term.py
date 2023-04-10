@@ -119,7 +119,7 @@ def _is_valid_unicode(value: Union[str, bytes]) -> bool:
     return True
 
 
-class Node(object):
+class Node:
     """
     A Node in the Graph.
     """

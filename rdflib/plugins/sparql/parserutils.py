@@ -99,7 +99,7 @@ def value(
         return val
 
 
-class ParamValue(object):
+class ParamValue:
     """
     The result of parsing a Param
     This just keeps the name/value

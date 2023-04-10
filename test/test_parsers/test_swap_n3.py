@@ -60,7 +60,7 @@ skiptests = [
 ]
 
 
-class Envelope(object):
+class Envelope:
     def __init__(self, n, f):
         self.name = n
         self.file = f

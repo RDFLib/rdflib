@@ -348,7 +348,7 @@ if TYPE_CHECKING:
 _with_bind_override_fix = True
 
 
-class NamespaceManager(object):
+class NamespaceManager:
     """Class for managing prefix => namespace mappings
 
     This class requires an RDFlib Graph as an input parameter and may optionally have

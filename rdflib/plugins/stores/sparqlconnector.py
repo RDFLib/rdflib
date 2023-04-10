@@ -30,7 +30,7 @@ _response_mime_types = {
 }
 
 
-class SPARQLConnector(object):
+class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
     """
