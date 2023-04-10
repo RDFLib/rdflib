@@ -16,8 +16,7 @@ from typing import (
 
 from pyparsing import ParseResults, TokenConverter, originalTextFor
 
-from rdflib import BNode, Variable
-from rdflib.term import Identifier
+from rdflib.term import BNode, Identifier, Variable
 
 if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import FrozenBindings
