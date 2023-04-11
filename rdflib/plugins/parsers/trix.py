@@ -105,7 +105,7 @@ class TriXHandler(handler.ContentHandler):
 
                 try:
                     self.lang = attrs.getValue((str(XMLNS), "lang"))
-                except:
+                except Exception:
                     # language not required - ignore
                     pass
                 try:
@@ -122,7 +122,7 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype = None
                 try:
                     self.lang = attrs.getValue((str(XMLNS), "lang"))
-                except:
+                except Exception:
                     # language not required - ignore
                     pass
 

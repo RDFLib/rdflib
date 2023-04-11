@@ -409,7 +409,7 @@ class Result:
                 return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-        except:
+        except Exception:
             return False
 
 

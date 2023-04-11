@@ -87,7 +87,7 @@ def rdfs2dot(g, stream, opts={}):
         if lbl is None:
             try:
                 lbl = grf.namespace_manager.compute_qname(xx)[2]
-            except:
+            except Exception:
                 pass  # bnodes and some weird URIs cannot be split
         return lbl
 

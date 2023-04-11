@@ -353,7 +353,7 @@ numberCharsPlus = numberChars | {"+", "."}
 def unicodeExpand(m: Match) -> str:
     try:
         return chr(int(m.group(1), 16))
-    except:
+    except Exception:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 
@@ -1711,7 +1711,7 @@ class SinkParser:
             )
         try:
             return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
-        except:
+        except Exception:
             raise BadSyntax(
                 self._thisDoc,
                 startline,

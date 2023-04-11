@@ -414,7 +414,7 @@ class CSV2RDF:
                         "%d rows, %d triples, elapsed %.2fs.\n"
                         % (rows, self.triples, time.time() - start)
                     )
-            except:
+            except Exception:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise
 
