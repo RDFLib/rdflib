@@ -1493,7 +1493,7 @@ class Literal(Identifier):
     def _literal_n3(
         self,
         use_plain: bool = False,
-        qname_callback: Optional[Callable[[str], str]] = None,
+        qname_callback: Optional[Callable[[URIRef], Optional[str]]] = None,
     ) -> str:
         """
         Using plain literal (shorthand) output::
@@ -2283,9 +2283,11 @@ def _isEqualXMLNode(  # noqa: N802
         # length would be unnecessary. In Python 3,
         # the semantics of map has changed (why, oh why???) and the check
         # for the length becomes necessary...
-        if len(node.childNodes) != len(other.childNodes):
+        # type error: Item "None" of "Union[None, Attr, Comment, Document, DocumentFragment, DocumentType, Element, Entity, Notation, ProcessingInstruction, Text]" has no attribute "childNodes"
+        if len(node.childNodes) != len(other.childNodes):  # type: ignore[union-attr]
             return False
-        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
+        # type error: Item "None" of "Union[None, Attr, Comment, Document, DocumentFragment, DocumentType, Element, Entity, Notation, ProcessingInstruction, Text]" has no attribute "childNodes"
+        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):  # type: ignore[union-attr]
             if not _isEqualXMLNode(nc, oc):
                 return False
         # if we got here then everything is fine:

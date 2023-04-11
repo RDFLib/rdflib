@@ -255,6 +255,11 @@ no_implicit_optional = false
 implicit_reexport = false
 
 
+[[tool.mypy.overrides]]
+module = "rdflib.*"
+check_untyped_defs = true
+
+
 [tool.coverage.run]
 branch = true
 source = ["rdflib"]

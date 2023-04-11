@@ -1,7 +1,7 @@
 import json
 
-from rdflib import BNode, ConjunctiveGraph
 from rdflib.compare import isomorphic
+from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import InputSource
 from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
 
@@ -9,6 +9,7 @@ from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
 from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_nodeid
 from rdflib.plugins.serializers.jsonld import from_rdf
 from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
+from rdflib.term import BNode
 
 
 def _preserving_nodeid(self, bnode_context=None):

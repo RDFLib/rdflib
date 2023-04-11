@@ -14,7 +14,7 @@ from test.utils.iri import URIMapper
 from test.utils.namespace import MF, QT, UT
 from test.utils.result import ResultType, assert_bindings_collections_equal
 from test.utils.urlopen import context_urlopener
-from typing import Dict, Generator, Optional, Set, Tuple, Type, Union, cast
+from typing import Dict, Generator, Optional, Set, Tuple, Type, TypeVar, Union, cast
 from urllib.parse import urljoin
 
 import pytest
@@ -127,6 +127,16 @@ class GraphData:
             publicID=public_id,
             format=guess_format(graph_path),  # type: ignore[arg-type]
         )
+
+
+# def inode(node: Optional[Node]) -> IdentifiedNode:
+#     if not isinstance(node, IdentifiedNode):
+#         raise ValueError(f"{node!r} is not an {IdentifiedNode}")
+#     return node
+
+
+FromT = TypeVar("FromT")
+ToT = TypeVar("ToT")
 
 
 @dataclass

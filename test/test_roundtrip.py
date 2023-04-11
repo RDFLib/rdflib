@@ -35,6 +35,8 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib
 import rdflib.compare
+import rdflib.parser
+import rdflib.serializer
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
 from rdflib.parser import Parser, create_input_source

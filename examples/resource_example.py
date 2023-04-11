@@ -25,7 +25,8 @@ if __name__ == "__main__":
     bill.add(RDF.type, FOAF.Agent)
     bill.set(RDFS.label, Literal("Bill"))
 
-    bill.add(FOAF.knows, bob)
+    # type error: Argument 2 to "add" of "Resource" has incompatible type "Resource"; expected "Node"  [arg-type]
+    bill.add(FOAF.knows, bob)  # type: ignore[arg-type]
 
     # Resources returned when querying are 'auto-boxed' as resources:
     print(f"Bill knows: {bill.value(FOAF.knows).value(FOAF.name)}")
