@@ -2254,7 +2254,7 @@ class ConjunctiveGraph(Graph):
         context.remove((None, None, None))  # hmm ?
         context.parse(source, publicID=publicID, format=format, **args)
         # TODO: FIXME: This should not return context, but self.
-        return context
+        return self
 
     def __reduce__(self) -> Tuple[Type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return ConjunctiveGraph, (self.store, self.identifier)
