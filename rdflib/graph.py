@@ -1814,7 +1814,9 @@ class Graph(Node):
 
         return retval
 
-    def cbd(self, resource: _SubjectType) -> Graph:
+    def cbd(
+        self, resource: _SubjectType, *, target_graph: Optional[Graph] = None
+    ) -> Graph:
         """Retrieves the Concise Bounded Description of a Resource from a Graph
 
         Concise Bounded Description (CBD) is defined in [1] as:
@@ -1840,10 +1842,14 @@ class Graph(Node):
         [1] https://www.w3.org/Submission/CBD/
 
         :param resource: a URIRef object, of the Resource for queried for
-        :return: a Graph, subgraph of self
+        :param target_graph: Optionally, a graph to add the CBD to; otherwise, a new graph is created for the CBD
+        :return: a Graph, subgraph of self if no graph was provided otherwise the provided graph
 
         """
-        subgraph = Graph()
+        if target_graph is None:
+            subgraph = Graph()
+        else:
+            subgraph = target_graph
 
         def add_to_cbd(uri: _SubjectType) -> None:
             for s, p, o in self.triples((uri, None, None)):
