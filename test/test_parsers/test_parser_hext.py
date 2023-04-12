@@ -1,7 +1,5 @@
-import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import ConjunctiveGraph, Dataset, Literal
 from rdflib.namespace import XSD
 
@@ -116,8 +114,8 @@ def test_roundtrip():
             try:
                 cg = ConjunctiveGraph().parse(f, format="nt")
                 # print(cg.serialize(format="n3"))
-            except:
-                print(f"Skipping: could not NT parse")
+            except Exception:
+                print("Skipping: could not NT parse")
                 skipped += 1
                 skip = True
             if not skip:

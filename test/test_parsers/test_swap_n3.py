@@ -1,9 +1,7 @@
 import os
+from test.data import TEST_DATA_DIR
 
 import pytest
-
-maketrans = str.maketrans
-from test.data import TEST_DATA_DIR
 
 import rdflib
 
@@ -116,7 +114,7 @@ def get_cases():
         tfiles += files
     for tfile in set(tfiles):
         gname = tfile.split("/swap-n3/swap/test/")[1][:-3].translate(
-            maketrans("-/", "__")
+            str.maketrans("-/", "__")
         )
         e = Envelope(gname, tfile)
         if gname in skiptests:
