@@ -508,7 +508,7 @@ class NamespaceManager:
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(str(namespace))
-        except:
+        except Exception:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
             else:

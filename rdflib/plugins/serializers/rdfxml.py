@@ -253,7 +253,7 @@ class PrettyXMLSerializer(Serializer):
             try:
                 # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
                 self.nm.qname(type)  # type: ignore[arg-type]
-            except:
+            except Exception:
                 type = None
 
             element = type or RDFVOC.Description
