@@ -5,7 +5,7 @@ from warnings import warn
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import BNode, Graph, Literal
+from rdflib.graph import Graph
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -17,7 +17,7 @@ from rdflib.namespace import (
     Namespace,
     URIPattern,
 )
-from rdflib.term import URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 
 class TestNamespace:

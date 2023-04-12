@@ -10,7 +10,7 @@ from urllib.error import HTTPError, URLError
 
 import pytest
 
-from rdflib import Graph, URIRef, plugin
+from rdflib import Graph, URIRef
 from rdflib.exceptions import ParserError
 from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
@@ -62,7 +62,7 @@ def test_property_namespace_manager() -> None:
 
 
 def get_store_names() -> Set[Optional[str]]:
-    names: Set[Optional[str]] = {*get_unique_plugin_names(plugin.Store)}
+    names: Set[Optional[str]] = {*get_unique_plugin_names(Store)}
     names.difference_update(
         {
             "default",

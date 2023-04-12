@@ -185,3 +185,6 @@ class SPARQLConnector:
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
         )
+
+
+__all__ = ["SPARQLConnector", "SPARQLConnectorException"]

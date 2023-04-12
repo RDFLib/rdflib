@@ -3,11 +3,8 @@ from __future__ import annotations
 import itertools
 import logging
 from test.utils import GraphHelper
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import pytest

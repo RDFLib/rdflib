@@ -14,8 +14,9 @@ import rdflib
 import rdflib.compare
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
-from rdflib.parser import create_input_source
+from rdflib.parser import Parser, create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.serializer import Serializer
 from rdflib.util import guess_format
 
 logger = logging.getLogger(__name__)
@@ -302,10 +303,8 @@ _formats: Optional[Set[str]] = None
 def get_formats() -> Set[str]:
     global _formats
     if not _formats:
-        serializers = set(
-            x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Serializer)
-        )
-        parsers = set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Parser))
+        serializers = set(x.name for x in rdflib.plugin.plugins(None, Serializer))
+        parsers = set(x.name for x in rdflib.plugin.plugins(None, Parser))
         _formats = {
             format for format in parsers.intersection(serializers) if "/" not in format
         }
