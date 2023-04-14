@@ -253,7 +253,7 @@ class TestLiteral:
             if not case_passed:
                 try:
                     case_passed = isclose((case[1] + case[2].value), case[3].value)
-                except:
+                except Exception:
                     pass
 
             if not case_passed:

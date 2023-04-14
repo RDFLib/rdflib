@@ -28,7 +28,7 @@ othergraphuri = URIRef("urn:example:othergraph")
 
 try:
     assert len(urlopen(HOST).read()) > 0
-except:
+except Exception:
     pytest.skip(f"{HOST} is unavailable.", allow_module_level=True)
 
 

@@ -1,11 +1,4 @@
 # -*- coding: UTF-8 -*-
-from rdflib.parser import Parser
-from rdflib.plugin import register
-from rdflib.serializer import Serializer
-
-register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
-register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
-
 from rdflib import Graph, Literal, URIRef
 
 

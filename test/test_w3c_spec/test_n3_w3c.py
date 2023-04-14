@@ -55,7 +55,7 @@ def n3(test: RDFTest):
                 res.serialize(),
             )
 
-    except:
+    except Exception:
         if test.syntax:
             raise
 

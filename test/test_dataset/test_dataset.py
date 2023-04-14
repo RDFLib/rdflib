@@ -105,7 +105,7 @@ def get_dataset(request):
         else:
             try:
                 os.remove(path)
-            except:
+            except Exception:
                 pass
 
 
