@@ -3,11 +3,12 @@
 import atheris
 
 with atheris.instrument_imports():
-    from rdflib import Graph
-    from rdflib.plugins.parsers.notation3 import BadSyntax
-    from rdflib.exceptions import ParserError
     import sys
     from xml.sax import SAXParseException
+
+    from rdflib import Graph
+    from rdflib.exceptions import ParserError
+    from rdflib.plugins.parsers.notation3 import BadSyntax
 
 
 def test_one_input(data):
@@ -18,8 +19,10 @@ def test_one_input(data):
     format_list = ["xml", "trix", "turtle", "n3", "nt"]
     g = Graph()
     try:
-        g.parse(format=fdp.PickValueInList(format_list),
-                data=fdp.ConsumeUnicodeNoSurrogates(fdp.ConsumeIntInRange(1, 100)))
+        g.parse(
+            format=fdp.PickValueInList(format_list),
+            data=fdp.ConsumeUnicodeNoSurrogates(fdp.ConsumeIntInRange(1, 100)),
+        )
     # Data generated is not appropriate, so ignore BadSyntax, SAXParseException and ParserError
     except (BadSyntax, SAXParseException, ParserError):
         pass
