@@ -1,3 +1,4 @@
+import os
 import sys
 from contextlib import ExitStack
 
@@ -42,6 +43,12 @@ def http_file_server() -> Generator[HTTPFileServer, None, None]:
 @pytest.fixture(scope="session")
 def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
+
+
+@pytest.fixture(scope="session")
+def test_owl_graph() -> Graph:
+    onto_path: str = os.path.join(TEST_DATA_DIR, "owl", "test_ontology.owl")
+    return Graph().parse(source=onto_path)
 
 
 @pytest.fixture(scope="session")

@@ -490,6 +490,15 @@ class NamespaceManager:
         else:
             return ":".join((prefix, name))
 
+    def curie(self, uri: str) -> str:
+        """From a URI, generate a valid CURIE.
+
+        Result is guaranteed to contain a colon separating the prefix from the name,
+        even if the prefix is an empty string.
+        """
+        prefix, namespace, name = self.compute_qname(uri)
+        return ":".join((prefix, name))
+
     def qname_strict(self, uri: str) -> str:
         prefix, namespace, name = self.compute_qname_strict(uri)
         if prefix == "":
@@ -643,7 +652,7 @@ class NamespaceManager:
         if not type(curie) is str:
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
-        if len(parts) != 2 or len(parts[0]) < 1:
+        if len(parts) != 2:
             raise ValueError(
                 "Malformed curie argument, format should be e.g. “foaf:name”."
             )
