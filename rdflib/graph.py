@@ -1879,6 +1879,23 @@ class Graph(Node):
 
         return subgraph
 
+    def cbd_subject(self) -> Optional[_SubjectType]:
+        """Determine the subject for which the graph is a Concise Bounded Description
+
+        :return: The subject of the CBD or None
+        """
+        roots = set(self.roots())
+        if len(roots) != 1:
+            # A CBD has exactly one root
+            return None
+        root = roots.pop()
+
+        real_cbd = self.cbd(root)
+        if not real_cbd.isomorphic(self):
+            return None
+
+        return root
+
 
 _ContextType = Graph
 
