@@ -951,6 +951,12 @@ class Graph(Node):
         ):
             yield s, p, o
 
+    def roots(self) -> Generator["_SubjectType", None, None]:
+        """A generator of subjects that are roots of the graph"""
+        for s in self.subjects(unique=True):
+            if (None, None, s) not in self:
+                yield s
+
     @overload
     def value(
         self,
