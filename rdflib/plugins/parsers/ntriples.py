@@ -60,7 +60,7 @@ bufsiz = 2048
 validate = False
 
 
-class DummySink(object):
+class DummySink:
     def __init__(self):
         self.length = 0
 
@@ -126,7 +126,7 @@ def uriquote(uri: str) -> str:
 _BNodeContextType = MutableMapping[str, bNode]
 
 
-class W3CNTriplesParser(object):
+class W3CNTriplesParser:
     """An N-Triples Parser.
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
@@ -334,7 +334,7 @@ class W3CNTriplesParser(object):
         return False
 
 
-class NTGraphSink(object):
+class NTGraphSink:
     __slots__ = ("g",)
 
     def __init__(self, graph: "Graph"):

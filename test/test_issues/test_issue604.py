@@ -1,4 +1,4 @@
-from rdflib import *
+from rdflib import RDF, BNode, Graph, Literal, Namespace
 from rdflib.collection import Collection
 
 

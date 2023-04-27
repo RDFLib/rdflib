@@ -132,7 +132,7 @@ WHERE {
     assert python_two == 2
 
     python_true: bool = literal_true.toPython()
-    assert python_true == True
+    assert python_true is True
 
     python_iri: str = kb_https_uriref.toPython()
     assert python_iri == "https://example.org/kb/y"

@@ -1,10 +1,5 @@
-from test.utils.http import ctx_http_handler
-from test.utils.httpservermock import (
-    BaseHTTPServerMock,
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.http import MethodName, MockHTTPResponse, ctx_http_handler
+from test.utils.httpservermock import BaseHTTPServerMock, ServedBaseHTTPServerMock
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 

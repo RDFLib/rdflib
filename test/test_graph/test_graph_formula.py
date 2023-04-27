@@ -115,7 +115,7 @@ def checkFormulaStore(store="default", configString=None):
             os.unlink(path)
         else:
             g.store.destroy(configString)
-    except:
+    except Exception:
         g.close()
         if store == "SQLite":
             os.unlink(path)

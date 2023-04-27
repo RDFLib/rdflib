@@ -273,7 +273,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        except Exception:
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 
@@ -397,7 +397,7 @@ class TurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:

@@ -1,6 +1,4 @@
-import json
 import logging
-import sys
 import warnings
 from functools import lru_cache
 from pathlib import Path
@@ -93,6 +91,34 @@ __all__ = [
     "ClosedNamespace",
     "DefinedNamespace",
     "NamespaceManager",
+    "BRICK",
+    "CSVW",
+    "DC",
+    "DCAM",
+    "DCAT",
+    "DCMITYPE",
+    "DCTERMS",
+    "DOAP",
+    "FOAF",
+    "GEO",
+    "ODRL2",
+    "ORG",
+    "OWL",
+    "PROF",
+    "PROV",
+    "QB",
+    "RDF",
+    "RDFS",
+    "SDO",
+    "SH",
+    "SKOS",
+    "SOSA",
+    "SSN",
+    "TIME",
+    "VANN",
+    "VOID",
+    "WGS",
+    "XSD",
 ]
 
 logger = logging.getLogger(__name__)
@@ -350,7 +376,7 @@ if TYPE_CHECKING:
 _with_bind_override_fix = True
 
 
-class NamespaceManager(object):
+class NamespaceManager:
     """Class for managing prefix => namespace mappings
 
     This class requires an RDFlib Graph as an input parameter and may optionally have
@@ -482,7 +508,7 @@ class NamespaceManager(object):
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(str(namespace))
-        except:
+        except Exception:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
             else:

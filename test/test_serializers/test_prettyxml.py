@@ -7,7 +7,7 @@ from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 from rdflib.term import BNode, Literal, URIRef
 
 
-class SerializerTestBase(object):
+class SerializerTestBase:
     repeats = 8
 
     def setup_method(self):

@@ -630,7 +630,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
     # Get a CBD for all resources identified to describe
     for resource in to_describe:
         # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
-        graph += ctx.graph.cbd(resource)  # type: ignore[union-attr]
+        ctx.graph.cbd(resource, target_graph=graph)  # type: ignore[union-attr]
 
     res: Dict[str, Union[str, Graph]] = {}
     res["type_"] = "DESCRIBE"
@@ -642,7 +642,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Mapping[str, Identifier],
+    initBindings: Optional[Mapping[str, Identifier]] = None,
     base: Optional[str] = None,
 ) -> Mapping[Any, Any]:
     """
@@ -661,7 +661,7 @@ def evalQuery(
         documentation.
     """
 
-    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+    initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

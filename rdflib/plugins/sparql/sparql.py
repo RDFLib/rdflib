@@ -4,6 +4,7 @@ import collections
 import datetime
 import itertools
 import typing as t
+from collections.abc import Mapping, MutableMapping
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -21,7 +22,6 @@ from typing import (
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.compat import Mapping, MutableMapping
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
@@ -246,7 +246,7 @@ class FrozenBindings(FrozenDict):
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
-class QueryContext(object):
+class QueryContext:
     """
     Query context - passed along when evaluating the query
     """

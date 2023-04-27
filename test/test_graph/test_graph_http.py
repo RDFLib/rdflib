@@ -6,14 +6,12 @@ from test.utils import GraphHelper
 from test.utils.graph import cached_graph
 from test.utils.http import (
     MOCK_HTTP_REQUEST_WILDCARD,
+    MethodName,
     MockHTTPRequest,
+    MockHTTPResponse,
     ctx_http_handler,
 )
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from test.utils.wildcard import URL_PARSE_RESULT_WILDCARD
 from urllib.error import HTTPError
 

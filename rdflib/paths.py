@@ -214,7 +214,7 @@ ZeroOrOne = "?"
 
 
 @total_ordering
-class Path(object):
+class Path:
     __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
     __invert__: Callable[["Path"], "InvPath"]
     __neg__: Callable[["Path"], "NegatedPath"]

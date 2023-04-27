@@ -336,9 +336,9 @@ class TestUtilTermConvert:
     @pytest.mark.parametrize(
         "string",
         [
-            (f"j\\366rn"),
-            (f"\\"),
-            (f"\\0"),
+            ("j\\366rn"),
+            ("\\"),
+            ("\\0"),
         ],
     )
     def test_util_from_n3_not_escapes_xf(self, string: str) -> None:

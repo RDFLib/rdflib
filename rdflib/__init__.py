@@ -92,6 +92,7 @@ __all__ = [
     "TIME",
     "VANN",
     "VOID",
+    "XMLNS",
     "XSD",
     "util",
     "plugin",

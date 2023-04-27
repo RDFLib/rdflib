@@ -6,7 +6,7 @@ __all__ = ["XMLWriter"]
 ESCAPE_ENTITIES = {"\r": "&#13;"}
 
 
-class XMLWriter(object):
+class XMLWriter:
     def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns=None):
         encoding = encoding or "utf-8"
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)

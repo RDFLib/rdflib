@@ -60,5 +60,5 @@ class TestEvent:
         assert c2["bob"] == "uncle"
         assert c3["bob"] == "uncle"
         del c3["bob"]
-        assert ("bob" in c1) == False
-        assert ("bob" in c2) == False
+        assert ("bob" in c1) is False
+        assert ("bob" in c2) is False

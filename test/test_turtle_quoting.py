@@ -5,6 +5,7 @@ formats that are related to turtle, such as ntriples, nquads, trig and n3.
 
 import itertools
 import logging
+import re
 from typing import Callable, Dict, Iterable, List, Tuple
 
 import pytest
@@ -27,8 +28,6 @@ string_escape_map = {
     "'": "'",
     "\\": "\\",
 }
-
-import re
 
 
 def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:

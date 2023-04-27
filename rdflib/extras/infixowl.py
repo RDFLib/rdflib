@@ -110,11 +110,10 @@ Python
 import itertools
 import logging
 
-from rdflib import OWL, RDF, RDFS, XSD, BNode, Literal, Namespace, URIRef, Variable
 from rdflib.collection import Collection
 from rdflib.graph import Graph
-from rdflib.namespace import NamespaceManager
-from rdflib.term import Identifier
+from rdflib.namespace import OWL, RDF, RDFS, XSD, Namespace, NamespaceManager
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 from rdflib.util import first
 
 logger = logging.getLogger(__name__)
@@ -358,7 +357,7 @@ class TermDeletionHelper:
         return _remover
 
 
-class Individual(object):
+class Individual:
     """
     A typed individual
     """
@@ -1383,7 +1382,7 @@ class Class(AnnotatableTerms):
         ) + klassdescr
 
 
-class OWLRDFListProxy(object):
+class OWLRDFListProxy:
     def __init__(self, rdf_list, members=None, graph=None):
         if graph:
             self.graph = graph

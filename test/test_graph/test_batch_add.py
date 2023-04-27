@@ -72,7 +72,7 @@ class TestBatchAddGraph:
         assert 10 == len(g)
 
     def test_addN_batching_addN(self):
-        class MockGraph(object):
+        class MockGraph:
             def __init__(self):
                 self.counts = []
 
