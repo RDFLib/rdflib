@@ -157,7 +157,6 @@ addopts = [
    "--ignore-glob=docs/*.py",
    "--doctest-glob=docs/*.rst",
    "--strict-markers",
-   "--earl-log-level=INFO",
 ]
 doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
