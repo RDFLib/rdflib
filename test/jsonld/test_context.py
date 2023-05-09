@@ -134,7 +134,8 @@ def test_prefix_like_vocab():
 
 # Mock external sources loading
 SOURCES: Dict[str, Dict[str, Any]] = {}
-_source_to_json = context.source_to_json
+# type error: Module "rdflib.plugins.shared.jsonld.context" does not explicitly export attribute "source_to_json"
+_source_to_json = context.source_to_json  # type: ignore[attr-defined]
 
 
 def _mock_source_loader(f):

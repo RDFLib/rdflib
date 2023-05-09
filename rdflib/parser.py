@@ -53,7 +53,7 @@ __all__ = [
 ]
 
 
-class Parser(object):
+class Parser:
     __slots__ = ()
 
     def __init__(self):

@@ -5,7 +5,7 @@ from warnings import warn
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import BNode, Graph, Literal
+from rdflib.graph import Graph
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -17,7 +17,7 @@ from rdflib.namespace import (
     Namespace,
     URIPattern,
 )
-from rdflib.term import URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 
 class TestNamespace:
@@ -284,10 +284,10 @@ class TestNamespacePrefix:
         ["curie", "expected_result"],
         [
             ("ex:tarek", URIRef("urn:example:tarek")),
-            ("ex:", URIRef(f"urn:example:")),
-            ("ex:a", URIRef(f"urn:example:a")),
-            ("ex:a:b", URIRef(f"urn:example:a:b")),
-            ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
+            ("ex:", URIRef("urn:example:")),
+            ("ex:a", URIRef("urn:example:a")),
+            ("ex:a:b", URIRef("urn:example:a:b")),
+            ("ex:a:b:c", URIRef("urn:example:a:b:c")),
             ("ex", ValueError),
             ("em:tarek", ValueError),
             ("em:", ValueError),

@@ -98,7 +98,7 @@ def rdf2dot(g, stream, opts={}):
                 return l_
         try:
             return g.namespace_manager.compute_qname(x)[2]
-        except:
+        except Exception:
             return x
 
     def formatliteral(l, g):
@@ -113,7 +113,7 @@ def rdf2dot(g, stream, opts={}):
         try:
             q = g.compute_qname(x)
             return q[0] + ":" + q[2]
-        except:
+        except Exception:
             return x
 
     def color(p):

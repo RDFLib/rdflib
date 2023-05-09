@@ -16,8 +16,10 @@ import logging
 import os
 import re
 import sys
+from typing import Any, Dict
 
 import sphinx
+import sphinx.application
 
 import rdflib
 
@@ -47,6 +49,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
 ]
 
+# https://github.com/sphinx-contrib/apidoc/blob/master/README.rst#configuration
 apidoc_module_dir = "../rdflib"
 apidoc_output_dir = "apidocs"
 
@@ -328,3 +331,50 @@ if sys.version_info < (3, 9):
 
 if sys.version_info < (3, 8):
     nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])
+
+
+def autodoc_skip_member_handler(
+    app: sphinx.application.Sphinx,
+    what: str,
+    name: str,
+    obj: Any,
+    skip: bool,
+    options: Dict[str, Any],
+):
+    """
+    This function will be called by Sphinx when it is deciding whether to skip a
+    member of a class or module.
+    """
+    # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#event-autodoc-skip-member
+    if (
+        app.env.docname == "apidocs/rdflib"
+        and what == "module"
+        and type(obj).__name__.endswith("DefinedNamespaceMeta")
+    ):
+        # Don't document namespaces in the `rdflib` module, they will be
+        # documented in the `rdflib.namespace` module instead and Sphinx does
+        # not like when these are documented in two places.
+        #
+        # An example of the WARNINGS that occur without this is:
+        #
+        # "WARNING: duplicate object description of rdflib.namespace._SDO.SDO,
+        # other instance in apidocs/rdflib, use :noindex: for one of them"
+        logging.info(
+            "Skipping %s %s in %s, it will be documented in ",
+            what,
+            name,
+            app.env.docname,
+        )
+        return True
+    return None
+
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#skipping-members
+def setup(app: sphinx.application.Sphinx) -> None:
+    """
+    Setup the Sphinx application.
+    """
+
+    # Register a autodoc-skip-member handler so that certain members can be
+    # skipped.
+    app.connect("autodoc-skip-member", autodoc_skip_member_handler)

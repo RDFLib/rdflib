@@ -139,7 +139,7 @@ def prefixuri(x, prefix, class_=None):
 # meta-language for config
 
 
-class NodeMaker(object):
+class NodeMaker:
     def range(self):
         return rdflib.RDFS.Literal
 
@@ -296,7 +296,7 @@ def column(v):
     return eval(v, config_functions)
 
 
-class CSV2RDF(object):
+class CSV2RDF:
     def __init__(self):
         self.CLASS = None
         self.BASE = None
@@ -414,7 +414,7 @@ class CSV2RDF(object):
                         "%d rows, %d triples, elapsed %.2fs.\n"
                         % (rows, self.triples, time.time() - start)
                     )
-            except:
+            except Exception:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise
 

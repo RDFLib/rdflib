@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.XDG_CACHE_HOME }}
-          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt') }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
           restore-keys: |
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
@@ -73,10 +73,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.3.0
-        with:
-          poetry-version: 1.4.0
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
       - uses: actions/setup-java@v3
         if: ${{ matrix.extensive-tests }}
         with:
@@ -133,7 +132,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.XDG_CACHE_HOME }}
-          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt') }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
           restore-keys: |
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
@@ -141,10 +140,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Python Poetry Action
-        uses: abatilo/actions-poetry@v2.3.0
-        with:
-          poetry-version: 1.4.0
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
       - name: Install Task
         uses: arduino/setup-task@v1
         with:

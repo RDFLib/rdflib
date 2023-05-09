@@ -30,7 +30,7 @@ _response_mime_types = {
 }
 
 
-class SPARQLConnector(object):
+class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
     """
@@ -185,3 +185,6 @@ class SPARQLConnector(object):
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
         )
+
+
+__all__ = ["SPARQLConnector", "SPARQLConnectorException"]

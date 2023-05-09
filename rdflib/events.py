@@ -26,7 +26,7 @@ fired:
 __all__ = ["Event", "Dispatcher"]
 
 
-class Event(object):
+class Event:
     """
     An event is a container for attributes.  The source of an event
     creates this object, or a subclass, gives it any kind of data that
@@ -47,7 +47,7 @@ class Event(object):
         return "<rdflib.events.Event %s>" % ([a for a in attrs],)
 
 
-class Dispatcher(object):
+class Dispatcher:
     """
     An object that can dispatch events to a privately managed group of
     subscribers.

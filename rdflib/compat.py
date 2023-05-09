@@ -97,10 +97,3 @@ def decodeUnicodeEscape(escaped: str) -> str:
         # Most of times, there are no backslashes in strings.
         return escaped
     return _turtle_escape_pattern.sub(_turtle_escape_subber, escaped)
-
-
-# Migration to abc in Python 3.8
-try:
-    from collections.abc import Mapping, MutableMapping
-except:
-    from collections import Mapping, MutableMapping
