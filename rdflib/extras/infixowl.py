@@ -386,7 +386,7 @@ class Individual:
             except Exception:  # pragma: no cover
                 pass  # pragma: no cover
 
-    def snc(self, graph, bnc=False):
+    def subject_node_closure(self, graph):
         """
         Take terms referencing this individual as a subject and
         add them to the provided graph.
@@ -396,7 +396,7 @@ class Individual:
 
         return graph
 
-    def bnc(self, graph, bnc=False):
+    def blank_node_closure(self, graph):
         """
         Take terms related to this individual using a blank node
         closure and add them to the provided graph.
@@ -1177,7 +1177,7 @@ class Class(AnnotatableTerms):
         >>> human = Class(exNs.Human, graph=g)
         >>> youngPerson = Class(exNs.YoungPerson, graph=g)
         >>> youngWoman = female & human & youngPerson
-        >>> youngWoman  #doctest: +SKIP
+        >>> youngWoman  # doctest: +SKIP
         ex:YoungPerson THAT ( ex:Female AND ex:Human )
         >>> isinstance(youngWoman, BooleanClass)
         True
