@@ -94,6 +94,8 @@ def make_graph(tmp_path: Path, request) -> GraphFactory:
             graph = Graph(store=store_name)
 
         use_path = tmp_path / f"{store_name}"
+        if store_name == "SQLiteDBStore" and os.path.exists(use_path):
+            use_path = tmp_path / f"{store_name}-0"
         use_path.mkdir(exist_ok=True, parents=True)
         logging.debug("use_path = %s", use_path)
         graph.open(f"{use_path}", create=True)
