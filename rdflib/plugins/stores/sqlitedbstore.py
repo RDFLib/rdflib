@@ -114,25 +114,25 @@ class ListRepr:
         return repr(list(self))  # type: ignore[call-overload]  # pragma: no cover
 
 
-class SQLhashKeysView(collections.abc.KeysView, ListRepr):  # type: ignore[type-arg]
-    def __iter__(self):  # type: ignore[no-untyped-def]
+class SQLhashKeysView(collections.abc.KeysView, ListRepr):
+    def __iter__(self):
         qstr = "SELECT key FROM shelf ORDER BY ROWID"
-        return map(itemgetter(0), self._mapping.conn.cursor().execute(qstr))  # type: ignore[attr-defined]
+        return map(itemgetter(0), self._mapping.conn.cursor().execute(qstr))
 
 
-class SQLhashValuesView(collections.abc.ValuesView, ListRepr):  # type: ignore[type-arg]
+class SQLhashValuesView(collections.abc.ValuesView, ListRepr):
     def __iter__(self) -> Iterator[object]:
         qstr = "SELECT value FROM shelf ORDER BY ROWID"
         return map(itemgetter(0), self._mapping.conn.cursor().execute(qstr))  # type: ignore[attr-defined]
 
 
-class SQLhashItemsView(collections.abc.ValuesView, ListRepr):  # type: ignore[type-arg]
+class SQLhashItemsView(collections.abc.ValuesView, ListRepr):
     def __iter__(self) -> Iterator[Any]:
         qstr = "SELECT key, value FROM shelf ORDER BY ROWID"
         return iter(self._mapping.conn.cursor().execute(qstr))  # type: ignore[attr-defined]
 
 
-class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
+class SQLhash(collections.abc.MutableMapping):
     def __init__(self, filename: str = ":memory:", flags: str = "r", mode: Any = None):
         # XXX add flag/mode handling
         #   c -- create if it doesn't exist
@@ -168,7 +168,7 @@ class SQLhash(collections.abc.MutableMapping):  # type: ignore[type-arg]
         return SQLhashItemsView(self)
         # self.conn.commit()
 
-    def update(self, items=(), **kwds) -> None:  # type: ignore[no-untyped-def, override]
+    def update(self, items=(), **kwds) -> None:  # type: ignore[override]
         if isinstance(items, collections.abc.Mapping):
             items = items.items()
         qstr = "REPLACE INTO shelf (key, value) VALUES (?, ?)"
@@ -642,7 +642,7 @@ class SQLiteDBStore(Store):
         except KeyError:
             prefix = None
         if prefix is not None:
-            return prefix  # type: ignore[no-any-return]
+            return prefix
         return None
 
     def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
@@ -730,7 +730,7 @@ class SQLiteDBStore(Store):
             self.__k2i[k] = i
             self.__k2i[b"__terms__"] = str(self._terms)
 
-        return i  # type: ignore[no-any-return]
+        return i
 
     def __lookup(self, spo: Any, context: Any) -> Any:
         subject, predicate, object = spo
