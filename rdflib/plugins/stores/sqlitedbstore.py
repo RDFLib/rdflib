@@ -25,7 +25,7 @@ from typing import (
 )
 from urllib.request import pathname2url
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
+from rdflib.graph import Graph
 from rdflib.paths import Path
 from rdflib.store import NO_STORE, VALID_STORE, Store
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
