@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+from contextlib import ExitStack
 from pathlib import Path
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.utils import GraphHelper, get_unique_plugin_names
+from test.utils.exceptions import ExceptionChecker
 from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from typing import Callable, Optional, Set
+from typing import Callable, Optional, Set, Tuple, Union
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -342,20 +344,61 @@ def test_guess_format_for_parse(
     # only getting HTML
     with pytest.raises(PluginException):
         graph.parse(location=file_info.request_url)
-
-    try:
-        graph.parse(location="http://www.w3.org/ns/adms.ttl")
-        graph.parse(location="http://www.w3.org/ns/adms.rdf")
-    except (URLError, HTTPError):
-        # this endpoint is currently not available, ignore this test.
-        pass
-
     try:
         # persistent Australian Government online RDF resource without a file-like ending
         graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
     except (URLError, HTTPError):
         # this endpoint is currently not available, ignore this test.
         pass
+
+
+@pytest.mark.parametrize(
+    ("file", "content_type", "expected_result"),
+    (
+        (TEST_DATA_DIR / "defined_namespaces/adms.rdf", "application/rdf+xml", 132),
+        (TEST_DATA_DIR / "defined_namespaces/adms.ttl", "text/turtle", 132),
+        (TEST_DATA_DIR / "defined_namespaces/adms.ttl", None, 132),
+        (
+            TEST_DATA_DIR / "defined_namespaces/adms.rdf",
+            None,
+            ExceptionChecker(
+                ParserError,
+                r"Could not guess RDF format .* from file extension so tried Turtle",
+            ),
+        ),
+    ),
+)
+def test_guess_format_for_parse_http(
+    make_graph: GraphFactory,
+    http_file_server: HTTPFileServer,
+    file: Path,
+    content_type: Optional[str],
+    expected_result: Union[int, ExceptionChecker],
+) -> None:
+    graph = make_graph()
+    headers: Tuple[Tuple[str, str], ...] = tuple()
+    if content_type is not None:
+        headers = (("Content-Type", content_type),)
+
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(headers, file),
+        suffix=f"/{file.name}",
+    )
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+
+    assert 0 == len(graph)
+    with ExitStack() as exit_stack:
+        if isinstance(expected_result, ExceptionChecker):
+            catcher = exit_stack.enter_context(pytest.raises(expected_result.type))
+        graph.parse(location=file_info.request_url)
+
+    if catcher is not None:
+        # assert catcher.value is not None
+        assert isinstance(expected_result, ExceptionChecker)
+        logging.debug("graph = %s", list(graph.triples((None, None, None))))
+    else:
+        assert isinstance(expected_result, int)
+        assert expected_result == len(graph)
 
 
 def test_parse_file_uri(make_graph: GraphFactory):
