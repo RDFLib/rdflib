@@ -29,13 +29,13 @@ pytz = {version = ">=2015.7", markers = "python_version < \"3.9\""}
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.5"
+version = "18.1.6"
 description = "Python bindings for Oracle Berkeley DB"
 category = "main"
 optional = true
 python-versions = "*"
 files = [
-    {file = "berkeleydb-18.1.5.tar.gz", hash = "sha256:d8c2efbca9472f8848b13cce4f4904a5ea1e1540ee576e626a1491817832a50a"},
+    {file = "berkeleydb-18.1.6.tar.gz", hash = "sha256:6d412dd1a5b702aeeda3cbfa10d3399b16a804d016de087234f8579fca613ec9"},
 ]
 
 [[package]]
