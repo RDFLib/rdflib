@@ -108,3 +108,12 @@ def ctx_http_server(server: HTTPServerT) -> Iterator[HTTPServerT]:
     server.shutdown()
     server.socket.close()
     server_thread.join()
+
+
+def headers_as_message(headers: HeadersT) -> email.message.Message:
+    message = email.message.Message()
+    for header, value in header_items(headers):
+        # This will append the value to any existing values for the header
+        # instead of replacing it.
+        message[header] = value
+    return message
