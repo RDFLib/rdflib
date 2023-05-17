@@ -44,22 +44,44 @@ def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
+_ServedBaseHTTPServerMocks = Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
+
+
 @pytest.fixture(scope="session")
-def _session_function_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
+def _session_function_httpmocks() -> Generator[_ServedBaseHTTPServerMocks, None, None]:
     """
     This fixture is session scoped, but it is reset for each function in
     :func:`function_httpmock`. This should not be used directly.
     """
-    with ServedBaseHTTPServerMock() as httpmock:
-        yield httpmock
+    with ServedBaseHTTPServerMock() as httpmock_a, ServedBaseHTTPServerMock() as httpmock_b:
+        yield httpmock_a, httpmock_b
 
 
 @pytest.fixture(scope="function")
 def function_httpmock(
-    _session_function_httpmock: ServedBaseHTTPServerMock,
+    _session_function_httpmocks: _ServedBaseHTTPServerMocks,
 ) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    _session_function_httpmock.reset()
-    yield _session_function_httpmock
+    """
+    HTTP server mock that is reset for each test function.
+    """
+    (mock, _) = _session_function_httpmocks
+    mock.reset()
+    yield mock
+
+
+@pytest.fixture(scope="function")
+def function_httpmocks(
+    _session_function_httpmocks: _ServedBaseHTTPServerMocks,
+) -> Generator[Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
+    """
+    Alternative HTTP server mock that is reset for each test function.
+
+    This exists in case a tests needs to work with two different HTTP servers.
+    """
+    (mock_a, mock_b) = _session_function_httpmocks
+    mock_a.reset()
+    mock_b.reset()
+    yield mock_a, mock_b
 
 
 @pytest.fixture(scope="session", autouse=True)

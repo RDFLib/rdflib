@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <ns1:Ontology xmlns:ns1="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms">
+    <ns2:issued xmlns:ns2="http://purl.org/dc/terms/">2023-04-05</ns2:issued>
+    <ns3:license xmlns:ns3="http://purl.org/dc/terms/"
+       rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
+    <ns4:mediator xmlns:ns4="http://purl.org/dc/terms/">
+      <rdf:Description>
+        <ns5:homepage xmlns:ns5="http://xmlns.com/foaf/0.1/"
+           rdf:resource="https://semic.eu"/>
+        <ns6:name xmlns:ns6="http://xmlns.com/foaf/0.1/">Semantic Interoperability Community (SEMIC)</ns6:name>
+      </rdf:Description>
+    </ns4:mediator>
+    <ns7:label xmlns:ns7="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">adms</ns7:label>
+    <ns8:label xmlns:ns8="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="nl">adms</ns8:label>
+    <ns9:editor xmlns:ns9="http://www.w3.org/2001/02pd/rec54#">
+      <ns10:Person xmlns:ns10="http://xmlns.com/foaf/0.1/">
+        <ns10:firstName>Bert</ns10:firstName>
+        <ns10:lastName>Van Nuffelen</ns10:lastName>
+        <ns10:mbox rdf:resource="mailto:bert.van.nuffelen@tenforce.com"/>
+        <ns11:affiliation xmlns:ns11="https://schema.org/">
+          <rdf:Description>
+            <ns10:name>TenForce</ns10:name>
+          </rdf:Description>
+        </ns11:affiliation>
+      </ns10:Person>
+    </ns9:editor>
+    <ns12:editor xmlns:ns12="http://www.w3.org/2001/02pd/rec54#">
+      <ns13:Person xmlns:ns13="http://xmlns.com/foaf/0.1/">
+        <ns13:firstName>Natasa</ns13:firstName>
+        <ns13:lastName>Sofou</ns13:lastName>
+      </ns13:Person>
+    </ns12:editor>
+    <ns14:editor xmlns:ns14="http://www.w3.org/2001/02pd/rec54#">
+      <ns15:Person xmlns:ns15="http://xmlns.com/foaf/0.1/">
+        <ns15:firstName>Pavlina</ns15:firstName>
+        <ns15:lastName>Fragkou</ns15:lastName>
+        <ns16:affiliation xmlns:ns16="https://schema.org/">
+          <rdf:Description>
+            <ns15:name>SEMIC EU</ns15:name>
+          </rdf:Description>
+        </ns16:affiliation>
+      </ns15:Person>
+    </ns14:editor>
+    <ns17:editor xmlns:ns17="http://www.w3.org/2001/02pd/rec54#">
+      <ns18:Person xmlns:ns18="http://xmlns.com/foaf/0.1/">
+        <ns18:firstName>Makx</ns18:firstName>
+        <ns18:lastName>Dekkers</ns18:lastName>
+      </ns18:Person>
+    </ns17:editor>
+    <ns19:maker xmlns:ns19="http://xmlns.com/foaf/0.1/">
+      <ns19:Person>
+        <ns19:firstName>Pavlina</ns19:firstName>
+        <ns19:lastName>Fragkou</ns19:lastName>
+        <ns20:affiliation xmlns:ns20="https://schema.org/">
+          <rdf:Description>
+            <ns19:name>SEMIC EU</ns19:name>
+          </rdf:Description>
+        </ns20:affiliation>
+      </ns19:Person>
+    </ns19:maker>
+  </ns1:Ontology>
+  <ns21:Class xmlns:ns21="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#Asset">
+    <ns22:comment xmlns:ns22="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">An abstract entity that reflects the intellectual content of the asset and represents those characteristics of the asset that are independent of its physical embodiment. This abstract entity combines the FRBR entities work (a distinct intellectual or artistic creation) and expression (the intellectual or artistic realization of a work)</ns22:comment>
+    <ns23:isDefinedBy xmlns:ns23="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns24:label xmlns:ns24="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Asset</ns24:label>
+  </ns21:Class>
+  <ns25:Class xmlns:ns25="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#AssetDistribution">
+    <ns26:comment xmlns:ns26="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A particular physical embodiment of an Asset, which is an example of the FRBR entity manifestation (the physical embodiment of an expression of a work).</ns26:comment>
+    <ns27:isDefinedBy xmlns:ns27="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns28:label xmlns:ns28="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Asset Distribution</ns28:label>
+  </ns25:Class>
+  <ns29:Class xmlns:ns29="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#AssetRepository">
+    <ns30:comment xmlns:ns30="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A system or service that provides facilities for storage and maintenance of descriptions of Assets and Asset Distributions, and functionality that allows users to search and access these descriptions. An Asset Repository will typically contain descriptions of several Assets and related Asset Distributions.</ns30:comment>
+    <ns31:isDefinedBy xmlns:ns31="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns32:label xmlns:ns32="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Asset repository</ns32:label>
+  </ns29:Class>
+  <ns33:Class xmlns:ns33="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#Identifier">
+    <ns34:comment xmlns:ns34="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">This is based on the UN/CEFACT Identifier class.</ns34:comment>
+    <ns35:isDefinedBy xmlns:ns35="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns36:label xmlns:ns36="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Identifier</ns36:label>
+  </ns33:Class>
+  <ns37:ObjectProperty xmlns:ns37="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#identifier">
+    <ns38:comment xmlns:ns38="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Links a resource to an adms:Identifier class.</ns38:comment>
+    <ns39:domain xmlns:ns39="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns40:isDefinedBy xmlns:ns40="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns41:label xmlns:ns41="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">identifier</ns41:label>
+    <ns42:range xmlns:ns42="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Identifier"/>
+  </ns37:ObjectProperty>
+  <ns43:ObjectProperty xmlns:ns43="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#includedAsset">
+    <ns44:comment xmlns:ns44="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">An Asset that is contained in the Asset being described, e.g. when there are several vocabularies defined in a single document.</ns44:comment>
+    <ns45:domain xmlns:ns45="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Asset"/>
+    <ns46:isDefinedBy xmlns:ns46="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns47:label xmlns:ns47="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">included asset</ns47:label>
+    <ns48:range xmlns:ns48="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Asset"/>
+  </ns43:ObjectProperty>
+  <ns49:ObjectProperty xmlns:ns49="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#interoperabilityLevel">
+    <ns50:comment xmlns:ns50="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">The interoperability level for which the Asset is relevant.</ns50:comment>
+    <ns51:domain xmlns:ns51="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Asset"/>
+    <ns52:isDefinedBy xmlns:ns52="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns53:label xmlns:ns53="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">interoperability level</ns53:label>
+    <ns54:range xmlns:ns54="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </ns49:ObjectProperty>
+  <ns55:ObjectProperty xmlns:ns55="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#last">
+    <ns56:comment xmlns:ns56="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A link to the current or latest version of the Asset.</ns56:comment>
+    <ns57:domain xmlns:ns57="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns58:isDefinedBy xmlns:ns58="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns59:label xmlns:ns59="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">last</ns59:label>
+    <ns60:range xmlns:ns60="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns61:subPropertyOf xmlns:ns61="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/1999/xhtml/vocab#last"/>
+  </ns55:ObjectProperty>
+  <ns62:ObjectProperty xmlns:ns62="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#next">
+    <ns63:comment xmlns:ns63="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A link to the next version of the Asset.</ns63:comment>
+    <ns64:domain xmlns:ns64="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns65:isDefinedBy xmlns:ns65="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns66:label xmlns:ns66="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">next</ns66:label>
+    <ns67:range xmlns:ns67="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns68:subPropertyOf xmlns:ns68="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/1999/xhtml/vocab#next"/>
+  </ns62:ObjectProperty>
+  <ns69:ObjectProperty xmlns:ns69="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#prev">
+    <ns70:comment xmlns:ns70="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A link to the previous version of the Asset.</ns70:comment>
+    <ns71:domain xmlns:ns71="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns72:isDefinedBy xmlns:ns72="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns73:label xmlns:ns73="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">prev</ns73:label>
+    <ns74:range xmlns:ns74="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns75:subPropertyOf xmlns:ns75="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/1999/xhtml/vocab#prev"/>
+  </ns69:ObjectProperty>
+  <ns76:ObjectProperty xmlns:ns76="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#representationTechnique">
+    <ns77:comment xmlns:ns77="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">More information about the format in which an Asset Distribution is released. This is different from the file format as, for example, a ZIP file (file format) could contain an XML schema (representation technique).</ns77:comment>
+    <ns78:domain xmlns:ns78="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns79:isDefinedBy xmlns:ns79="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns80:label xmlns:ns80="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">representation technique</ns80:label>
+    <ns81:range xmlns:ns81="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </ns76:ObjectProperty>
+  <ns82:ObjectProperty xmlns:ns82="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#sample">
+    <ns83:comment xmlns:ns83="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Links to a sample of an Asset (which is itself an Asset).</ns83:comment>
+    <ns84:domain xmlns:ns84="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns85:isDefinedBy xmlns:ns85="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns86:label xmlns:ns86="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">sample</ns86:label>
+    <ns87:range xmlns:ns87="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+  </ns82:ObjectProperty>
+  <ns88:DatatypeProperty xmlns:ns88="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#schemaAgency">
+    <ns89:comment xmlns:ns89="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">The name of the agency that issued the identifier.</ns89:comment>
+    <ns90:domain xmlns:ns90="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Identifier"/>
+    <ns91:isDefinedBy xmlns:ns91="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns92:label xmlns:ns92="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">schema agency</ns92:label>
+    <ns93:range xmlns:ns93="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+  </ns88:DatatypeProperty>
+  <ns94:ObjectProperty xmlns:ns94="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#status">
+    <ns95:comment xmlns:ns95="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">The status of the Asset in the context of a particular workflow process.</ns95:comment>
+    <ns96:domain xmlns:ns96="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns97:isDefinedBy xmlns:ns97="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns98:label xmlns:ns98="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">status</ns98:label>
+    <ns99:range xmlns:ns99="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </ns94:ObjectProperty>
+  <ns100:ObjectProperty xmlns:ns100="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#supportedSchema">
+    <ns101:comment xmlns:ns101="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A schema according to which the Asset Repository can provide data about its content, e.g. ADMS.</ns101:comment>
+    <ns102:domain xmlns:ns102="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns103:isDefinedBy xmlns:ns103="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns104:label xmlns:ns104="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">supported schema</ns104:label>
+    <ns105:range xmlns:ns105="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms#Asset"/>
+  </ns100:ObjectProperty>
+  <ns106:ObjectProperty xmlns:ns106="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#translation">
+    <ns107:comment xmlns:ns107="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">Links Assets that are translations of each other.</ns107:comment>
+    <ns108:domain xmlns:ns108="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns109:isDefinedBy xmlns:ns109="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns110:label xmlns:ns110="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">translation</ns110:label>
+    <ns111:range xmlns:ns111="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+  </ns106:ObjectProperty>
+  <ns112:DatatypeProperty xmlns:ns112="http://www.w3.org/2002/07/owl#"
+     rdf:about="http://www.w3.org/ns/adms#versionNotes">
+    <ns113:comment xmlns:ns113="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">A description of changes between this version and the previous version of the Asset.</ns113:comment>
+    <ns114:domain xmlns:ns114="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <ns115:isDefinedBy xmlns:ns115="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/ns/adms"/>
+    <ns116:label xmlns:ns116="http://www.w3.org/2000/01/rdf-schema#"
+       xml:lang="en">version notes</ns116:label>
+    <ns117:range xmlns:ns117="http://www.w3.org/2000/01/rdf-schema#"
+       rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+  </ns112:DatatypeProperty>
+</rdf:RDF>
