@@ -491,10 +491,27 @@ class NamespaceManager:
             return ":".join((prefix, name))
 
     def curie(self, uri: str) -> str:
-        """From a URI, generate a valid CURIE.
+        """
+        From a URI, generate a valid CURIE.
 
-        Result is guaranteed to contain a colon separating the prefix from the name,
-        even if the prefix is an empty string.
+        Result is guaranteed to contain a colon separating the prefix from the
+        name, even if the prefix is an empty string.
+
+        .. warning::
+
+            If there is no matching namespace for the URI in the namespace
+            manager then a new namespace will be added with prefix
+            ``ns{index}``.
+
+            Because of this side effect this is not a pure function.
+
+            This is the same behaviour as `NamespaceManager.qname`.
+
+
+
+        :param uri: URI to generate CURIE for.
+        :return: CURIE for the URI.
+
         """
         prefix, namespace, name = self.compute_qname(uri)
         return ":".join((prefix, name))

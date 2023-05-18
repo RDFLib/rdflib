@@ -5,6 +5,7 @@ import re
 import sys
 from contextlib import ExitStack
 from pathlib import Path
+from test.utils.exceptions import ExceptionChecker
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
@@ -486,67 +487,100 @@ def test_compute_qname_strict(
     check()
 
 
-@pytest.mark.parametrize(
-    "curie, expected_uri, expected_exception, expected_exc_patt",
-    [
-        ("rdf:type", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", None, ""),
-        ("obo:IAO_0000111", "http://purl.obolibrary.org/obo/IAO_0000111", None, ""),
-        ("obo:nonexistent", "http://purl.obolibrary.org/obo/nonexistent", None, ""),
-        ("too_small", "irrelevant", ValueError, "Malformed curie argument"),
+def make_test_nsm() -> NamespaceManager:
+    namespaces = [
+        ("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+        ("", "http://example.org/"),
         (
-            "blah:chair",
-            "http://blah.org/ontology#chair",
-            ValueError,
-            'Prefix "blah" not bound to any namespace',
+            # Because of <https://github.com/RDFLib/rdflib/issues/2077> this
+            # will have no effect on the namespace manager.
+            "eg",
+            "http://example.org/",
         ),
-        # next case only works with fix for https://github.com/RDFLib/rdflib/issues/2348
-        (":chair", "http://www.example.org/ontologies/mini-ont#chair", None, ""),
+    ]
+    graph = Graph(bind_namespaces="none")
+    for prefix, namespace in namespaces:
+        graph.bind(prefix, namespace, override=False)
+
+    return graph.namespace_manager
+
+
+@pytest.fixture(scope="session")
+def test_nsm_session() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.fixture(scope="function")
+def test_nsm_function() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.mark.parametrize(
+    ["curie", "expected_result"],
+    [
+        ("rdf:type", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+        (":foo", "http://example.org/foo"),
+        ("too_small", ExceptionChecker(ValueError, "Malformed curie argument")),
+        (
+            "egdo:bar",
+            ExceptionChecker(ValueError, 'Prefix "egdo" not bound to any namespace'),
+        ),
         pytest.param(
-            # failure case that should succeed once https://github.com/RDFLib/rdflib/issues/2077 is fixed
-            "mini-ont:chair",
-            "http://www.example.org/ontologies/mini-ont#chair",
-            None,
-            "",
-            marks=pytest.mark.xfail,
+            "eg:foo",
+            "http://example.org/foo",
+            marks=pytest.mark.xfail(
+                raises=ValueError,
+                reason="This is failing because of https://github.com/RDFLib/rdflib/issues/2077",
+            ),
         ),
     ],
 )
 def test_expand_curie(
-    test_owl_graph: Graph,
+    test_nsm_session: NamespaceManager,
     curie: str,
-    expected_uri: str,
-    expected_exception: Optional[Type[Exception]],
-    expected_exc_patt: str,
-):
-    """Confirm that NamespaceManager.expand_curie() handles various CURIEs correctly."""
-    nsm = test_owl_graph.namespace_manager
-    if expected_exception is None:
-        actual_uri = nsm.expand_curie(curie)
-        assert actual_uri == URIRef(expected_uri)
-    else:
-        with pytest.raises(
-            expected_exception=expected_exception, match=expected_exc_patt
-        ):
-            _ = nsm.expand_curie(curie)
+    expected_result: Union[ExceptionChecker, str],
+) -> None:
+    nsm = test_nsm_session
+    with ExitStack() as xstack:
+        if isinstance(expected_result, ExceptionChecker):
+            xstack.enter_context(expected_result)
+        result = nsm.expand_curie(curie)
+
+    if not isinstance(expected_result, ExceptionChecker):
+        assert URIRef(expected_result) == result
 
 
 @pytest.mark.parametrize(
-    "uri, expected_curie",
+    ["uri", "expected_result"],
     [
         ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "rdf:type"),
-        ("http://purl.obolibrary.org/obo/BFO_0000002", "obo:BFO_0000002"),
-        ("http://www.example.org/ontologies/mini-ont#chair", ":chair"),
-        ("http://bogus.org/our_ontology#chair", "ns1:chair"),
-        ("http://bogus.org/their_ontology#chair", "ns2:chair"),
+        ("http://example.org/foo", ":foo"),
+        ("http://example.com/a#chair", "ns1:chair"),
+        ("http://example.com/b#chair", "ns1:chair"),
+        ("http://example.com/c", "ns1:c"),
+        ("", ExceptionChecker(ValueError, "Can't split ''")),
+        (
+            "http://example.com/",
+            ExceptionChecker(ValueError, "Can't split 'http://example.com/'"),
+        ),
     ],
 )
-def test_generate_curie(test_owl_graph: Graph, uri: str, expected_curie: str):
-    """Confirm that NamespaceManager.curie() generates the expected CURIE given a URI.
-
-    Includes demonstration that unknown namespaces are auto-populated into the
-    NamespaceManager, and that entities in the default namespace get a CURIE that starts
-    with a colon.
+def test_generate_curie(
+    test_nsm_function: NamespaceManager,
+    uri: str,
+    expected_result: Union[ExceptionChecker, str],
+) -> None:
     """
-    nsm = test_owl_graph.namespace_manager
-    actual_curie = nsm.curie(uri)
-    assert actual_curie == expected_curie
+    .. note::
+
+        This is using the function scoped nsm fixture because curie has side
+        effects and will modify the namespace manager.
+    """
+    nsm = test_nsm_function
+    with ExitStack() as xstack:
+        if isinstance(expected_result, ExceptionChecker):
+            xstack.enter_context(expected_result)
+        result = nsm.curie(uri)
+
+    if not isinstance(expected_result, ExceptionChecker):
+        assert expected_result == result
