@@ -2193,7 +2193,68 @@ class ConjunctiveGraph(Graph):
             context_id = "#context"
         return URIRef(context_id, base=uri)
 
-    def serialize(  # type: ignore [override]
+    # no destination and non-None positional encoding
+    @overload
+    def serialize(
+        self: _ConjunctiveGraphT,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: str,
+        **args: Any,
+    ) -> bytes:
+        ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self: _ConjunctiveGraphT,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        *,
+        encoding: str,
+        **args: Any,
+    ) -> bytes:
+        ...
+
+    # no destination and None encoding
+    @overload
+    def serialize(
+        self: _ConjunctiveGraphT,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = ...,
+        **args: Any,
+    ) -> str:
+        ...
+
+    # non-None destination
+    @overload
+    def serialize(
+        self: _ConjunctiveGraphT,
+        destination: Union[str, pathlib.PurePath, IO[bytes]],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> _ConjunctiveGraphT:
+        ...
+
+    # fallback
+    @overload
+    def serialize(
+        self: _ConjunctiveGraphT,
+        destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args: Any,
+    ) -> Union[bytes, str, _ConjunctiveGraphT]:
+        ...
+
+    def serialize(
         self: _ConjunctiveGraphT,
         destination: Optional[Union[str, pathlib.PurePath, IO[bytes]]] = None,
         format: str = "trig",
