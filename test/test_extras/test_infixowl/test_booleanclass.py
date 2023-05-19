@@ -17,7 +17,7 @@ def graph():
     del g
 
 
-@pytest.mark.xfail(reason="AssertionError, len(props) != 1")
+@pytest.mark.xfail(reason="AssertionError, len(props) != 1", raises=AssertionError)
 def test_booleanclass_operator_as_none(graph):
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
