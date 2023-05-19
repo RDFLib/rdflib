@@ -372,6 +372,10 @@ class Individual:
 
     factoryGraph = Graph()  # noqa: N815
 
+    def serialize(self, graph):
+        for fact in self.factoryGraph.triples((self.identifier, None, None)):
+            graph.add(fact)
+
     def __init__(self, identifier=None, graph=None):
         self.__identifier = identifier is not None and identifier or BNode()
         if graph is None:
