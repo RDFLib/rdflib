@@ -1581,10 +1581,10 @@ class BooleanClassExtentHelper:
 
 class Callable:
     def __init__(self, anycallable):
-        self.__callfn__ = anycallable
+        self._callfn = anycallable
 
     def __call__(self, *args, **kwargs):
-        return self.__callfn__(*args, **kwargs)
+        return self._callfn(*args, **kwargs)
 
 
 class BooleanClass(OWLRDFListProxy, Class):
