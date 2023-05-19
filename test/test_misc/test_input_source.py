@@ -11,6 +11,7 @@ from dataclasses import dataclass
 # from itertools import product
 from pathlib import Path
 from test.utils import GraphHelper
+from test.utils.exceptions import ExceptionChecker
 from test.utils.httpfileserver import (
     HTTPFileInfo,
     HTTPFileServer,
@@ -27,7 +28,6 @@ from typing import (  # Callable,
     Generic,
     Iterable,
     Optional,
-    Pattern,
     TextIO,
     Tuple,
     Type,
@@ -249,21 +249,6 @@ def call_create_input_source(
             format=format,
         )
         yield input_source
-
-
-@dataclass
-class ExceptionChecker:
-    type: Type[Exception]
-    pattern: Optional[Pattern[str]] = None
-
-    def check(self, exception: Exception) -> None:
-        try:
-            assert isinstance(exception, self.type)
-            if self.pattern is not None:
-                assert self.pattern.match(f"{exception}")
-        except Exception:
-            logging.error("problem checking exception", exc_info=exception)
-            raise
 
 
 AnyT = TypeVar("AnyT")

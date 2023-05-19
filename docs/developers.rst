@@ -23,6 +23,11 @@ Pull Requests Guidelines
 
 Contributions to RDFLib are made through pull requests (PRs).
 
+For changes that add features or affect the public API of RDFLib, it
+is recommended to first open an issue to discuss the change before starting to
+work on it. That way you can get feedback on the design of the feature before
+spending time on it.
+
 In general, maintainers will only merge PRs if the following conditions are
 met:
 
@@ -47,11 +52,11 @@ met:
   workflow pass.
 
 In addition to these conditions, PRs that are easier to review and approve will
-be processed quicker. The primary factors that determine this is the scope and
-size of a PR. If there are few changes and the scope is limited then there is
+be processed quicker. The primary factors that determine this are the scope and
+size of a PR. If there are few changes and the scope is limited, then there is
 less that a reviewer has to understand and less that they can disagree with. It
-is thus important to try and split up your changes into multiple independent
-PRs if possible. No PR is too small.
+is thus important to try to split up your changes into multiple independent PRs
+if possible. No PR is too small.
 
 For PRs that introduce breaking changes, it is even more critical that they are
 limited in size and scope, as they will likely have to be kept up to date with
@@ -59,7 +64,7 @@ the ``main`` branch of this project for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why
 it does it, and how the change will impact the users of this project, for this
-reason it is essential that your PR's description explains the nature of the
+reason, it is essential that your PR's description explains the nature of the
 PR, what the PR intends to do, why this is desirable, and how this will affect
 the users of this project.
 
