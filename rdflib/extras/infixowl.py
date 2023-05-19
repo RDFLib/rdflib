@@ -386,31 +386,6 @@ class Individual:
             except Exception:  # pragma: no cover
                 pass  # pragma: no cover
 
-    def subject_node_closure(self, graph):
-        """
-        Take terms referencing this individual as a subject and
-        add them to the provided graph.
-        """
-        for fact in self.factoryGraph.triples((self.identifier, None, None)):
-            graph.add(fact)
-
-        return graph
-
-    def blank_node_closure(self, graph):
-        """
-        Take terms related to this individual using a blank node
-        closure and add them to the provided graph.
-        """
-        for fact in self.factoryGraph.triples((self.identifier, None, None)):
-            graph.add(fact)
-            if (
-                isinstance(fact[2], BNode)
-                and (fact[2], None, None) not in self.factoryGraph
-            ):
-                graph += self.factoryGraph.triples((fact[2], None, None))
-
-        return graph
-
     def clearInDegree(self):  # noqa: N802
         """
         Remove references to this individual as an object in the
