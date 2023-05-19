@@ -95,7 +95,7 @@ example:
     # x:
     # y:
 
-    # Add in a new triple using SPATQL UPDATE
+    # Add in a new triple using SPARQL UPDATE
     g.update("""INSERT DATA { <z:> a <c:> }""")
 
     # Select all the things (s) that are of type (rdf:type) c:
