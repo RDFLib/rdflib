@@ -5,6 +5,7 @@ import re
 import sys
 from contextlib import ExitStack
 from pathlib import Path
+from test.utils.exceptions import ExceptionChecker
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
@@ -484,3 +485,115 @@ def test_compute_qname_strict(
     check()
     # Run a second time to check caching
     check()
+
+
+def make_test_nsm() -> NamespaceManager:
+    namespaces = [
+        ("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+        ("", "http://example.org/"),
+        (
+            # Because of <https://github.com/RDFLib/rdflib/issues/2077> this
+            # will have no effect on the namespace manager.
+            "eg",
+            "http://example.org/",
+        ),
+    ]
+    graph = Graph(bind_namespaces="none")
+    for prefix, namespace in namespaces:
+        graph.bind(prefix, namespace, override=False)
+
+    return graph.namespace_manager
+
+
+@pytest.fixture(scope="session")
+def test_nsm_session() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.fixture(scope="function")
+def test_nsm_function() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.mark.parametrize(
+    ["curie", "expected_result"],
+    [
+        ("rdf:type", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+        (":foo", "http://example.org/foo"),
+        ("too_small", ExceptionChecker(ValueError, "Malformed curie argument")),
+        (
+            "egdo:bar",
+            ExceptionChecker(ValueError, 'Prefix "egdo" not bound to any namespace'),
+        ),
+        pytest.param(
+            "eg:foo",
+            "http://example.org/foo",
+            marks=pytest.mark.xfail(
+                raises=ValueError,
+                reason="This is failing because of https://github.com/RDFLib/rdflib/issues/2077",
+            ),
+        ),
+    ],
+)
+def test_expand_curie(
+    test_nsm_session: NamespaceManager,
+    curie: str,
+    expected_result: Union[ExceptionChecker, str],
+) -> None:
+    nsm = test_nsm_session
+    with ExitStack() as xstack:
+        if isinstance(expected_result, ExceptionChecker):
+            xstack.enter_context(expected_result)
+        result = nsm.expand_curie(curie)
+
+    if not isinstance(expected_result, ExceptionChecker):
+        assert URIRef(expected_result) == result
+
+
+@pytest.mark.parametrize(
+    ["uri", "generate", "expected_result"],
+    [
+        ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", None, "rdf:type"),
+        ("http://example.org/foo", None, ":foo"),
+        ("http://example.com/a#chair", None, "ns1:chair"),
+        ("http://example.com/a#chair", True, "ns1:chair"),
+        (
+            "http://example.com/a#chair",
+            False,
+            ExceptionChecker(
+                KeyError, "No known prefix for http://example.com/a# and generate=False"
+            ),
+        ),
+        ("http://example.com/b#chair", None, "ns1:chair"),
+        ("http://example.com/c", None, "ns1:c"),
+        ("", None, ExceptionChecker(ValueError, "Can't split ''")),
+        (
+            "http://example.com/",
+            None,
+            ExceptionChecker(ValueError, "Can't split 'http://example.com/'"),
+        ),
+    ],
+)
+def test_generate_curie(
+    test_nsm_function: NamespaceManager,
+    uri: str,
+    generate: Optional[bool],
+    expected_result: Union[ExceptionChecker, str],
+) -> None:
+    """
+    .. note::
+
+        This is using the function scoped nsm fixture because curie has side
+        effects and will modify the namespace manager.
+    """
+    nsm = test_nsm_function
+    with ExitStack() as xstack:
+        if isinstance(expected_result, ExceptionChecker):
+            xstack.enter_context(expected_result)
+        if generate is None:
+            result = nsm.curie(uri)
+        else:
+            result = nsm.curie(uri, generate=generate)
+
+    if not isinstance(expected_result, ExceptionChecker):
+        assert expected_result == result
