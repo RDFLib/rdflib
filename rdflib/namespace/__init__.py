@@ -499,21 +499,21 @@ class NamespaceManager:
 
         .. warning::
 
-            If there is no matching namespace for the URI in the namespace
-            manager then a new namespace will be added with prefix
-            ``ns{index}``.
+            When ``generate`` is `True` (which is the default) and there is no
+            matching namespace for the URI in the namespace manager then a new
+            namespace will be added with prefix ``ns{index}``.
 
-            Because of this side effect this is not a pure function.
+            Thus, when ``generate`` is `True`, this function is not a pure
+            function because of this side-effect.
 
-            This is the same behaviour as `NamespaceManager.qname`.
-
-
+            This default behaviour is chosen so that this function operates
+            similarly to `NamespaceManager.qname`.
 
         :param uri: URI to generate CURIE for.
         :param generate: Whether to add a prefix for the namespace if one doesn't
-            already exist.  Default: True.
+            already exist.  Default: `True`.
         :return: CURIE for the URI.
-        :raises KeyError: If generate is False and the namespace doesn't already have
+        :raises KeyError: If generate is `False` and the namespace doesn't already have
             a prefix.
         """
         prefix, namespace, name = self.compute_qname(uri, generate=generate)
