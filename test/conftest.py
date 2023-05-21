@@ -45,12 +45,6 @@ def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
-@pytest.fixture(scope="session")
-def test_owl_graph() -> Graph:
-    onto_path: str = os.path.join(TEST_DATA_DIR, "owl", "test_ontology.owl")
-    return Graph().parse(source=onto_path)
-
-
 _ServedBaseHTTPServerMocks = Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
 
 
