@@ -490,7 +490,7 @@ class NamespaceManager:
         else:
             return ":".join((prefix, name))
 
-    def curie(self, uri: str) -> str:
+    def curie(self, uri: str, generate: bool = True) -> str:
         """
         From a URI, generate a valid CURIE.
 
@@ -510,10 +510,13 @@ class NamespaceManager:
 
 
         :param uri: URI to generate CURIE for.
+        :param generate: Whether to add a prefix for the namespace if one doesn't
+            already exist.  Default: True.
         :return: CURIE for the URI.
-
+        :raises KeyError: If generate is False and the namespace doesn't already have
+            a prefix.
         """
-        prefix, namespace, name = self.compute_qname(uri)
+        prefix, namespace, name = self.compute_qname(uri, generate=generate)
         return ":".join((prefix, name))
 
     def qname_strict(self, uri: str) -> str:

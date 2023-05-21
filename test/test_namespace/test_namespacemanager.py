@@ -551,16 +551,25 @@ def test_expand_curie(
 
 
 @pytest.mark.parametrize(
-    ["uri", "expected_result"],
+    ["uri", "generate", "expected_result"],
     [
-        ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "rdf:type"),
-        ("http://example.org/foo", ":foo"),
-        ("http://example.com/a#chair", "ns1:chair"),
-        ("http://example.com/b#chair", "ns1:chair"),
-        ("http://example.com/c", "ns1:c"),
-        ("", ExceptionChecker(ValueError, "Can't split ''")),
+        ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", None, "rdf:type"),
+        ("http://example.org/foo", None, ":foo"),
+        ("http://example.com/a#chair", None, "ns1:chair"),
+        ("http://example.com/a#chair", True, "ns1:chair"),
+        (
+            "http://example.com/a#chair",
+            False,
+            ExceptionChecker(
+                KeyError, "No known prefix for http://example.com/a# and generate=False"
+            ),
+        ),
+        ("http://example.com/b#chair", None, "ns1:chair"),
+        ("http://example.com/c", None, "ns1:c"),
+        ("", None, ExceptionChecker(ValueError, "Can't split ''")),
         (
             "http://example.com/",
+            None,
             ExceptionChecker(ValueError, "Can't split 'http://example.com/'"),
         ),
     ],
@@ -568,6 +577,7 @@ def test_expand_curie(
 def test_generate_curie(
     test_nsm_function: NamespaceManager,
     uri: str,
+    generate: Optional[bool],
     expected_result: Union[ExceptionChecker, str],
 ) -> None:
     """
@@ -580,7 +590,10 @@ def test_generate_curie(
     with ExitStack() as xstack:
         if isinstance(expected_result, ExceptionChecker):
             xstack.enter_context(expected_result)
-        result = nsm.curie(uri)
+        if generate is None:
+            result = nsm.curie(uri)
+        else:
+            result = nsm.curie(uri, generate=generate)
 
     if not isinstance(expected_result, ExceptionChecker):
         assert expected_result == result
