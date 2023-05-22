@@ -25,7 +25,7 @@ repos:
       require_serial: true
       args: ["."]
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.4.2
+    rev: 1.5.0
     hooks:
     - id: poetry-check
     - id: poetry-lock
