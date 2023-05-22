@@ -89,7 +89,11 @@ class Counter(Accumulator):
         return row
 
     def use_row(self, row: FrozenBindings) -> bool:
-        return self.eval_row(row) not in self.seen
+        try:
+            return self.eval_row(row) not in self.seen
+        except NotBoundError:
+            # happens when counting zero optional nodes. See issue #2229
+            return False
 
 
 @overload
