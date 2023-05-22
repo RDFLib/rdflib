@@ -95,11 +95,11 @@ there could be no minor or patch releases between two major releases.
 Rationale
 ~~~~~~~~~
 RDFLib has been around for more than a decade, and in this time both Python and
-RDF have evolved. RDFLib's public API has also accumulated some problems over
-time.
+RDF have evolved, and RDFLib's API also has to evolve to keep up with these
+changes and to make it easier for users to use. This will inevitably require
+breaking changes to do.
 
-There are more or less two ways to address the shortcomings of RDFLib's public
-API:
+There are more or less two ways to approach breaking RDFLib's public API:
 
 - Revolutionary: Create a new API from scratch and reimplement it, and when
   ready, release a new version of RDFLib with the new API.
