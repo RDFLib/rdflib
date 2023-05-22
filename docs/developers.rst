@@ -99,7 +99,8 @@ RDF have evolved, and RDFLib's API also has to evolve to keep up with these
 changes and to make it easier for users to use. This will inevitably require
 breaking changes.
 
-There are more or less two ways to approach breaking RDFLib's public API:
+There are more or less two ways to introduce breaking changes to RDFLib's public
+API:
 
 - Revolutionary: Create a new API from scratch and reimplement it, and when
   ready, release a new version of RDFLib with the new API.
