@@ -3,7 +3,7 @@ from pathlib import Path
 from rdflib import URIRef
 from rdflib.graph import Graph
 
-TEST_DIR = Path(__file__).parent
+TEST_DIR = Path(__file__).parent.parent
 TEST_DATA_DIR = TEST_DIR / "data"
 
 alice_uri = URIRef("http://example.org/alice")
@@ -22,7 +22,7 @@ context1 = URIRef("urn:example:context-1")
 context2 = URIRef("urn:example:context-2")
 
 
-simple_triple_graph = Graph().add(
+SIMPLE_TRIPLE_GRAPH = Graph().add(
     (
         URIRef("http://example.org/subject"),
         URIRef("http://example.org/predicate"),

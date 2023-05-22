@@ -5,9 +5,11 @@ import logging
 import os
 import re
 from dataclasses import dataclass, field
+from importlib import import_module
 from pathlib import Path, PurePath
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
+from test.utils.graph import load_sources
 from typing import (
     ClassVar,
     Collection,
@@ -27,10 +29,12 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
+
+MODULE_PATH = Path(__file__).parent
 
 TEST_DIR = Path(__file__).parent.parent.absolute()
 VARIANTS_DIR = TEST_DATA_DIR / "variants"
@@ -86,10 +90,26 @@ class GraphVariants:
     key: str
     variants: Dict[str, Path] = field(default_factory=OrderedDict)
     asserts: GraphAsserts = field(default_factory=lambda: GraphAsserts())
+    pyvariant: Optional[Path] = None
 
     _variant_regex: ClassVar[Pattern[str]] = re.compile(
         r"^(.*?)(|[-]variant-[^/]+|[-]asserts)$"
     )
+
+    def parse_pyvariant(self, graph: Graph) -> None:
+        """
+        Load a graph from a Python file.
+        """
+        assert self.pyvariant is not None
+
+        relative_path = self.pyvariant.relative_to(MODULE_PATH.parent.parent)
+
+        logging.debug("relative_path = %s", relative_path)
+        module_name = ".".join([*relative_path.parts[:-1], relative_path.stem])
+        logging.debug("module_name = %s", module_name)
+        module = import_module(module_name)
+        logging.debug("module = %s", module)
+        module.populate_graph(graph)
 
     def pytest_param(
         self,
@@ -123,13 +143,14 @@ class GraphVariants:
         for file_path in file_paths:
             logging.debug("file_path = %s", file_path)
             file_key, variant_key = cls._decompose_path(file_path, basedir)
-            # file_key = f"{file_path.parent / stem}"
             if file_key not in graph_varaint_dict:
                 graph_variant = graph_varaint_dict[file_key] = GraphVariants(file_key)
             else:
                 graph_variant = graph_varaint_dict[file_key]
             if variant_key.endswith("-asserts.json"):
                 graph_variant.asserts = GraphAsserts.from_path(file_path)
+            elif variant_key.endswith(".py"):
+                graph_variant.pyvariant = file_path
             else:
                 graph_variant.variants[variant_key] = file_path
         return graph_varaint_dict
@@ -139,7 +160,9 @@ class GraphVariants:
         cls, directory: Path, basedir: Optional[Path] = None
     ) -> Dict[str, "GraphVariants"]:
         file_paths = []
-        for file_path in directory.glob("**/*"):
+        logging.debug("directory = %s, basedir = %s", directory, basedir)
+        for file_path in directory.glob("*"):
+            logging.debug("file_path = %s", file_path)
             if not file_path.is_file():
                 continue
             if file_path.name.endswith(".md"):
@@ -226,6 +249,13 @@ def test_variants(graph_variant: GraphVariants) -> None:
     first_graph: Optional[ConjunctiveGraph] = None
     first_path: Optional[Path] = None
     logging.debug("graph_variant.asserts = %s", graph_variant.asserts)
+
+    if graph_variant.pyvariant is not None:
+        first_path = graph_variant.pyvariant
+        logging.debug("loading pyvariant = %s", graph_variant.pyvariant)
+        first_graph = ConjunctiveGraph(identifier=public_id)
+        # graph_variant.parse_pyvariant(first_graph)
+        load_sources(first_path, graph=first_graph)
 
     for variant_key, variant_path in graph_variant.variants.items():
         logging.debug("variant_path = %s", variant_path)

@@ -1,11 +1,14 @@
-from test.data import TEST_DATA_DIR, simple_triple_graph
+from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.variants import load_pyvariant
 from typing import Tuple
 from urllib.parse import urlparse
 
 from rdflib.graph import Graph
+
+SIMPLE_TRIPLE_GRAPH = load_pyvariant("simple_triple", Graph)
 
 
 def test_graph_redirect_new_host(
@@ -38,7 +41,7 @@ def test_graph_redirect_new_host(
 
     graph = Graph()
     graph.parse(location=f"{mock_a.url}/a/data.ttl")
-    GraphHelper.assert_sets_equals(graph, simple_triple_graph)
+    GraphHelper.assert_sets_equals(graph, SIMPLE_TRIPLE_GRAPH)
     for mock in function_httpmocks:
         assert 1 == len(mock.requests[MethodName.GET])
         for request in mock.requests[MethodName.GET]:

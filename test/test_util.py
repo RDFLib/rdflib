@@ -1,21 +1,37 @@
 # -*- coding: utf-8 -*-
 
+import itertools
+from json import load
 import logging
 import time
 from contextlib import ExitStack
 from pathlib import Path
 from test.data import TEST_DATA_DIR
-from test.utils.graph import cached_graph
+from test.utils.graph import cached_graph, load_sources
 from test.utils.namespace import RDFT
-from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
+from test.utils.outcome import ExpectedOutcome, ValueOutcome
+from typing import Any, Collection, Iterable, List, Optional, Set, Tuple, Type, Union
 
 import pytest
+from _pytest.mark.structures import ParameterSet
 
 from rdflib import XSD, util
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.graph import (
+    ConjunctiveGraph,
+    Dataset,
+    Graph,
+    QuotedGraph,
+    _ConjunctiveGraphT,
+)
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
-from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
+from rdflib.util import (
+    _coalesce,
+    _has_non_default_graphs,
+    _iri2uri,
+    find_roots,
+    get_tree,
+)
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -672,3 +688,59 @@ def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) ->
     else:
         assert isinstance(expected_result, set)
         assert result in expected_result
+
+
+def make_has_non_default_graphs_cases() -> Iterable[ParameterSet]:
+    with_non_default_graphs = [
+        TEST_DATA_DIR / "variants" / "diverse_quads.trig",
+        TEST_DATA_DIR / "variants" / "diverse_quads.py",
+        TEST_DATA_DIR / "variants" / "simple_quad.nq",
+        TEST_DATA_DIR / "variants" / "simple_quad.py",
+    ]
+    without_non_default_graphs = [
+        TEST_DATA_DIR / "variants" / "diverse_triples.ttl",
+        TEST_DATA_DIR / "variants" / "diverse_triples.py",
+        TEST_DATA_DIR / "variants" / "simple_triple.nt",
+        TEST_DATA_DIR / "variants" / "simple_triple.trig",
+        TEST_DATA_DIR / "variants" / "simple_triple.py",
+    ]
+
+    for graph_path, graph_type in itertools.product(
+        with_non_default_graphs, (ConjunctiveGraph, Dataset)
+    ):
+        yield pytest.param(
+            graph_path,
+            graph_type,
+            ValueOutcome(True),
+            id=f"{graph_path.relative_to(TEST_DATA_DIR)}-{graph_type.__name__}-True",
+        )
+
+    for graph_path, graph_type in itertools.product(
+        without_non_default_graphs, (ConjunctiveGraph, Dataset)
+    ):
+        marks: Collection[pytest.MarkDecorator] = tuple()
+        if not graph_path.name.endswith(".py"):
+            marks = (pytest.mark.xfail(reason="Triples don't get loaded into the default graph."),)
+
+        yield pytest.param(
+            graph_path,
+            graph_type,
+            ValueOutcome(False),
+            id=f"{graph_path.relative_to(TEST_DATA_DIR)}-{graph_type.__name__}-False",
+            marks=marks,
+        )
+
+
+@pytest.mark.parametrize(
+    ["source", "graph_type", "expected_outcome"], make_has_non_default_graphs_cases()
+)
+def test_has_non_default_graphs(
+    source: Path,
+    graph_type: Type[_ConjunctiveGraphT],
+    expected_outcome: ExpectedOutcome[bool],
+) -> None:
+    with expected_outcome.check_raises():
+        # graph = graph_type()
+        # graph.parse(source)
+        graph = load_sources(source, graph_type=graph_type)
+        expected_outcome.check_value(_has_non_default_graphs(graph))

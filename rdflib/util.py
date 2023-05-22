@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 """
 Some utility functions.
 
@@ -614,3 +616,31 @@ def _iri2uri(iri: str) -> str:
         uri += "#"
 
     return uri
+
+
+def _has_non_default_graphs(graph: rdflib.graph.ConjunctiveGraph) -> bool:
+    """
+    Check if the value passed as `graph` contains graphs other than the default
+    graph.
+
+    The intent of this is to detect if the value passed can be serialized using
+    formats which do not support named graphs like N-Triples and Turtle.
+
+    Ideally this function would check if the supplied value contains any named
+    graphs, but RDFLib assigns a name to the default graph, so the best that can
+    be done is to check if the supplied graph contains any graphs other than the
+    default graph.
+
+    If the supplied value contains only the default graph and other graphs, this
+    function will return `False`, otherwise if the value passed contains at
+    least one graph other than the default graph it will return `True`.
+    """
+    default_context = graph.default_context
+    logging.debug("default_context.identifier = %s", default_context.identifier)
+    for context_index, context in enumerate(graph.contexts()):
+        logging.debug("contexts[%s].identifier = %s", context_index, context.identifier)
+        if context.identifier != default_context.identifier:
+            return True
+        if context_index > 0:
+            return True
+    return False
