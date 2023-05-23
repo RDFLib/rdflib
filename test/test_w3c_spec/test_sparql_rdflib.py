@@ -1,6 +1,7 @@
 """
 Runs the RDFLib SPARQL test suite.
 """
+from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
 from test.utils import ensure_suffix
 from test.utils.dawg_manifest import MarksDictType, params_from_sources
@@ -61,5 +62,7 @@ def configure_rdflib() -> Generator[None, None, None]:
         report_prefix="rdflib_sparql",
     ),
 )
-def test_entry_rdflib(monkeypatch: MonkeyPatch, manifest_entry: SPARQLEntry) -> None:
-    check_entry(monkeypatch, manifest_entry)
+def test_entry_rdflib(
+    monkeypatch: MonkeyPatch, exit_stack: ExitStack, manifest_entry: SPARQLEntry
+) -> None:
+    check_entry(monkeypatch, exit_stack, manifest_entry)

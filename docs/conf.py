@@ -55,6 +55,7 @@ apidoc_output_dir = "apidocs"
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_default_options = {"special-members": True}
+autodoc_inherit_docstrings = True
 
 # https://github.com/tox-dev/sphinx-autodoc-typehints
 always_document_param_types = True

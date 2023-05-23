@@ -66,6 +66,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
    namespaces_and_bindings
    persistence
    merging
+   upgrade6to7
    upgrade5to6
    upgrade4to5
    security_considerations

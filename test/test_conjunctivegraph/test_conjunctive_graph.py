@@ -22,7 +22,7 @@ def test_bnode_publicid():
     b = BNode()
     data = "<d:d> <e:e> <f:f> ."
     print("Parsing %r into %r" % (data, b))
-    g.parse(data=data, format="turtle", publicID=b)
+    g.get_context(b).parse(data=data, format="turtle", publicID=b)
 
     triples = list(g.get_context(b).triples((None, None, None)))
     if not triples:

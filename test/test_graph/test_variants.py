@@ -27,7 +27,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
@@ -52,9 +52,7 @@ class GraphAsserts:
     exact_match: bool = False
     has_subject_iris: Optional[List[str]] = None
 
-    def check(
-        self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph
-    ) -> None:
+    def check(self, first_graph: Optional[Dataset], graph: Dataset) -> None:
         """
         if `first_graph` is `None` then this is the first check before any
         other graphs have been processed.
@@ -223,7 +221,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
     logging.debug("graph_variant = %s", graph_variant)
     public_id = URIRef(f"example:{graph_variant.key}")
     assert len(graph_variant.variants) > 0
-    first_graph: Optional[ConjunctiveGraph] = None
+    first_graph: Optional[Dataset] = None
     first_path: Optional[Path] = None
     logging.debug("graph_variant.asserts = %s", graph_variant.asserts)
 
@@ -231,7 +229,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
         assert format is not None, f"could not determine format for {variant_path.name}"
-        graph = ConjunctiveGraph()
+        graph = Dataset()
         graph.parse(variant_path, format=format, publicID=public_id)
         # Stripping data types as different parsers (e.g. hext) have different
         # opinions of when a bare string is of datatype XSD.string or not.
@@ -243,8 +241,9 @@ def test_variants(graph_variant: GraphVariants) -> None:
             first_path = variant_path
         else:
             assert first_path is not None
-            GraphHelper.assert_isomorphic(
+            GraphHelper.assert_cgraph_isomorphic(
                 first_graph,
                 graph,
+                False,
                 f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}",
             )

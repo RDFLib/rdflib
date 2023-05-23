@@ -16,4 +16,4 @@ def test_nquads_default_graph():
 
     assert len(ds) == 3, len(g)
     assert len(list(ds.contexts())) == 2, len(list(ds.contexts()))
-    assert len(ds.get_context(publicID)) == 2, len(ds.get_context(publicID))
+    assert len(ds.default_context) == 2, len(ds.get_context(publicID))
