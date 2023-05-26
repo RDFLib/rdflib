@@ -28,7 +28,7 @@ into a named graph, use the following code:
     from rdflib import ConjunctiveGraph
 
     cg = ConjunctiveGraph()
-    cg.get_context("example:graph_name").parse("http://example.com/source.trig", format="trig")
+    cg.get_context("example:graph_name").parse("http://example.com/source.ttl", format="turtle")
 
 If you want to move triples from the default graph into a named graph, use the
 following code:
