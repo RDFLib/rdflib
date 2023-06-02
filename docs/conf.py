@@ -266,6 +266,7 @@ suppress_warnings = [
     # This is here to prevent:
     #  "WARNING: more than one target found for cross-reference"
     "ref.python",
+    "autosectionlabel.*",
 ]
 
 sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
