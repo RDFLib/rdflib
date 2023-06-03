@@ -232,6 +232,12 @@ register(
     "rdflib.plugins.stores.sparqlstore",
     "SPARQLUpdateStore",
 )
+register(
+    "SQLiteDBStore",
+    Store,
+    "rdflib.plugins.stores.sqlitedbstore",
+    "SQLiteDBStore",
+)
 
 # Register Triple Serializers
 register(
