@@ -349,6 +349,10 @@ class GraphHelper:
                     else:
                         raise AssertionError("BNode labelled graphs not supported")
                 elif isinstance(context.identifier, URIRef):
+                    if len(context) == 0:
+                        # If a context has no triples it does not exist in a
+                        # meaningful way.
+                        continue
                     result[context.identifier] = context
                 else:
                     raise AssertionError(

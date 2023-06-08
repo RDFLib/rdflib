@@ -1,7 +1,5 @@
 import re
 
-import pytest
-
 import rdflib
 
 TRIPLE = (
@@ -125,13 +123,6 @@ def test_graph_parsing():
     assert len(list(g.contexts())) == 2
 
 
-@pytest.mark.xfail(
-    raises=AssertionError,
-    reason="""
-    This is failing because conjuncitve graph assigns things in the default graph to
-    a graph with a bnode as name. On every parse iteration a new BNode is generated
-    resulting in the default graph content appearing multipile times in the output.""",
-)
 def test_round_trips():
     data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .

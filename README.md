@@ -43,7 +43,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `6.4.0a0` current `main` branch
+* `7.0.0a0` current `main` branch
 * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
