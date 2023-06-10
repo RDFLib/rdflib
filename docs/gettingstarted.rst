@@ -51,7 +51,7 @@ methods that search triples and return them in arbitrary order.
 
 RDFLib graphs also redefine certain built-in Python methods in order
 to behave in a predictable way. They do this by `emulating container types
-<https://docs.python.org/3.7/reference/datamodel.html#emulating-container-types>`_ and
+<https://docs.python.org/3.8/reference/datamodel.html#emulating-container-types>`_ and
 are best thought of as a set of 3-item tuples ("triples", in RDF-speak):
 
 .. code-block:: text

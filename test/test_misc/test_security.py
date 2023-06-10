@@ -8,7 +8,7 @@ from test.utils.audit import AuditHookDispatcher
 from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
 from test.utils.urlopen import context_urlopener
 from textwrap import dedent
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Tuple
 from urllib.request import HTTPHandler, OpenerDirector, Request
 
 import pytest
@@ -74,17 +74,12 @@ def generate_make_block_file_cases() -> Iterable[ParameterSet]:
 @pytest.mark.parametrize(["defence", "uri_kind"], generate_make_block_file_cases())
 def test_block_file(
     tmp_path: Path,
-    audit_hook_dispatcher: Optional[AuditHookDispatcher],
+    audit_hook_dispatcher: AuditHookDispatcher,
     http_file_server: HTTPFileServer,
     exit_stack: ExitStack,
     defence: Defence,
     uri_kind: URIKind,
 ) -> None:
-    if audit_hook_dispatcher is None:
-        pytest.skip(
-            "audit hook dispatcher not available, likely because of Python version"
-        )
-
     context_file = tmp_path / "context.jsonld"
     context_file.write_text(dedent(JSONLD_CONTEXT))
     context_file_served = http_file_server.add_file_with_caching(

@@ -44,12 +44,7 @@ A tiny example:
 """
 import logging
 import sys
-
-if sys.version_info < (3, 8):
-    # importlib is only available in Python 3.8+; for 3.7 we must do this:
-    import importlib_metadata as metadata
-else:
-    from importlib import metadata
+from importlib import metadata
 
 _DISTRIBUTION_METADATA = metadata.metadata("rdflib")
 
