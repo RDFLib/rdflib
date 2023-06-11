@@ -17,6 +17,7 @@ from typing import (
 )
 
 from rdflib.events import Dispatcher, Event
+from rdflib.term import Identifier
 
 if TYPE_CHECKING:
     from rdflib.graph import (
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
-    from rdflib.term import Identifier, Node, URIRef
+    from rdflib.term import Node, URIRef
 
 """
 ============
@@ -198,7 +199,6 @@ class Store:
             np.register(URIRef, "U")
             np.register(BNode, "B")
             np.register(Literal, "L")
-            np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
         return self.__node_pickler
@@ -254,6 +254,11 @@ class Store:
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
+        if not isinstance(context, Identifier):
+            raise Exception(
+                f"Trying to add to a context that isn't an identifier: {context}"
+                )
+
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads: Iterable["_QuadType"]) -> None:  # noqa: N802
@@ -277,6 +282,11 @@ class Store:
         context: Optional["_ContextType"] = None,
     ) -> None:
         """Remove the set of triples matching the pattern from the store"""
+        if context is not None and not isinstance(context, Identifier):
+            raise Exception(
+                f"Trying to remove from a context that isn't an identifier: {context}"
+            )
+
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(

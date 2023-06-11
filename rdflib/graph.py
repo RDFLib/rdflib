@@ -530,14 +530,14 @@ class Graph(Node):
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
-        self.__store.add((s, p, o), self, quoted=False)
+        self.__store.add((s, p, o), self.identifier, quoted=False)
         return self
 
     def addN(self: _GraphT, quads: Iterable["_QuadType"]) -> _GraphT:  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.__store.addN(
-            (s, p, o, c)
+            (s, p, o, c.identifier)
             for s, p, o, c in quads
             if isinstance(c, Graph)
             and c.identifier is self.identifier
@@ -551,7 +551,7 @@ class Graph(Node):
         If the triple does not provide a context attribute, removes the triple
         from all contexts.
         """
-        self.__store.remove(triple, context=self)
+        self.__store.remove(triple, context=self.identifier)
         return self
 
     @overload
@@ -589,7 +589,9 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield _s, p, _o
         else:
-            for (_s, _p, _o), cg in self.__store.triples((s, p, o), context=self):
+            for (_s, _p, _o), cg in self.__store.triples(
+                (s, p, o), context=self.identifier
+            ):
                 yield _s, _p, _o
 
     def __getitem__(self, item):
@@ -669,7 +671,7 @@ class Graph(Node):
         returned instead.
         """
         # type error: Unexpected keyword argument "context" for "__len__" of "Store"
-        return self.__store.__len__(context=self)  # type: ignore[call-arg]
+        return self.__store.__len__(context=self.identifier)  # type: ignore[call-arg]
 
     def __iter__(self) -> Generator["_TripleType", None, None]:
         """Iterates over all triples in the store"""
@@ -947,7 +949,7 @@ class Graph(Node):
         # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
         # type error note: unpacking discards type info
         for (s, p, o), cg in self.store.triples_choices(
-            (subject, predicate, object_), context=self  # type: ignore[arg-type]
+            (subject, predicate, object_), context=self.identifier  # type: ignore[arg-type]
         ):
             yield s, p, o
 
@@ -1904,7 +1906,7 @@ class ConjunctiveGraph(Graph):
         self.context_aware = True
         self.default_union = True  # Conjunctive!
         self.default_context: _ContextType = Graph(
-            store=self.store, identifier=identifier or BNode(), base=default_graph_base
+            store=self.store, identifier=self.identifier, base=default_graph_base
         )
 
     def __str__(self) -> str:
@@ -1972,15 +1974,14 @@ class ConjunctiveGraph(Graph):
         either triples or quads
         """
         if triple_or_quad is None:
-            return (None, None, None, self.default_context if default else None)
+            return (None, None, None, self.identifier if default else None)
         if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
+            c = self.identifier if default else None
             # type error: Too many values to unpack (3 expected, 4 provided)
             (s, p, o) = triple_or_quad  # type: ignore[misc]
         elif len(triple_or_quad) == 4:
             # type error: Need more than 3 values to unpack (4 expected)
             (s, p, o, c) = triple_or_quad  # type: ignore[misc]
-            c = self._graph(c)
         return s, p, o, c
 
     def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
@@ -2005,7 +2006,9 @@ class ConjunctiveGraph(Graph):
         _assertnode(s, p, o)
 
         # type error: Argument "context" to "add" of "Store" has incompatible type "Optional[Graph]"; expected "Graph"
-        self.store.add((s, p, o), context=c, quoted=False)  # type: ignore[arg-type]
+        self.store.add(
+            (s, p, o), context=c.identifier if isinstance(c, Graph) else c, quoted=False
+        )  # type: ignore[arg-type]
         return self
 
     @overload
@@ -2032,7 +2035,9 @@ class ConjunctiveGraph(Graph):
         """Add a sequence of triples with context"""
 
         self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
+            (s, p, o, c.identifier if isinstance(c, Graph) else c)
+            for s, p, o, c in quads
+            if _assertnode(s, p, o)
         )
         return self
 
@@ -2048,7 +2053,9 @@ class ConjunctiveGraph(Graph):
         """
         s, p, o, c = self._spoc(triple_or_quad)
 
-        self.store.remove((s, p, o), context=c)
+        self.store.remove(
+            (s, p, o), context=c.identifier if isinstance(c, Graph) else c
+        )
         return self
 
     @overload
@@ -2089,14 +2096,14 @@ class ConjunctiveGraph(Graph):
         """
 
         s, p, o, c = self._spoc(triple_or_quad)
-        context = self._graph(context or c)
+        context = context or c
 
         if self.default_union:
-            if context == self.default_context:
+            if context == self.identifier:
                 context = None
         else:
             if context is None:
-                context = self.default_context
+                context = self.identifier
 
         if isinstance(p, Path):
             if context is None:
@@ -2115,9 +2122,11 @@ class ConjunctiveGraph(Graph):
 
         s, p, o, c = self._spoc(triple_or_quad)
 
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
+        for (s, p, o), cg in self.store.triples(
+            (s, p, o), context=c if isinstance(c, Graph) else c
+        ):
             for ctx in cg:
-                yield s, p, o, ctx
+                yield s, p, o, self._graph(ctx)
 
     def triples_choices(
         self,
@@ -2132,9 +2141,10 @@ class ConjunctiveGraph(Graph):
         s, p, o = triple
         if context is None:
             if not self.default_union:
-                context = self.default_context
+                context = self.identifier
         else:
-            context = self._graph(context)
+            if isinstance(context, Graph):
+                context = context.identifier
         # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
         # type error note: unpacking discards type info
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=context):  # type: ignore[arg-type]
@@ -2153,10 +2163,7 @@ class ConjunctiveGraph(Graph):
         """
         for context in self.store.contexts(triple):
             if isinstance(context, Graph):
-                # TODO: One of these should never happen and probably
-                # should raise an exception rather than smoothing over
-                # the weirdness - see #225
-                yield context
+                raise Exception("Got graph object as context, not Identifier!")
             else:
                 # type error: Statement is unreachable
                 yield self.get_context(context)  # type: ignore[unreachable]
@@ -2184,7 +2191,10 @@ class ConjunctiveGraph(Graph):
 
     def remove_context(self, context: "_ContextType") -> None:
         """Removes the given context from the graph"""
-        self.store.remove((None, None, None), context)
+        self.store.remove(
+            (None, None, None),
+            context.identifier if isinstance(context, Graph) else context,
+        )
 
     def context_id(self, uri: str, context_id: Optional[str] = None) -> URIRef:
         """URI#context"""
@@ -2403,13 +2413,15 @@ class Dataset(ConjunctiveGraph):
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
-        self.default_context = Graph(
-            store=self.store,
-            identifier=DATASET_DEFAULT_GRAPH_ID,
-            base=default_graph_base,
-        )
 
         self.default_union = default_union
+
+    def add(self, triple_or_quad):
+        if len(triple_or_quad) == 4:
+            res = super(Dataset, self).add(triple_or_quad)
+        else:
+            res = super(Dataset, self).add(triple_or_quad + (DATASET_DEFAULT_GRAPH_ID,))
+        return res
 
     def __str__(self) -> str:
         pattern = (
@@ -2437,6 +2449,8 @@ class Dataset(ConjunctiveGraph):
         identifier: Optional[Union[_ContextIdentifierType, _ContextType, str]] = None,
         base: Optional[str] = None,
     ) -> Graph:
+        if isinstance(identifier, Graph):
+            identifier = identifier.identifier
         if identifier is None:
             from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
 
@@ -2450,7 +2464,7 @@ class Dataset(ConjunctiveGraph):
         g = self._graph(identifier)
         g.base = base
 
-        self.store.add_graph(g)
+        self.store.add_graph(identifier)
         return g
 
     def parse(
@@ -2512,14 +2526,14 @@ class Dataset(ConjunctiveGraph):
     def remove_graph(
         self: _DatasetT, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]
     ) -> _DatasetT:
-        if not isinstance(g, Graph):
-            g = self.get_context(g)
+        if isinstance(g, Graph):
+            g = g.identifier
 
         self.store.remove_graph(g)
-        if g is None or g == self.default_context:
+        if g is None or g == DATASET_DEFAULT_GRAPH_ID:
             # default graph cannot be removed
             # only triples deleted, so add it back in
-            self.store.add_graph(self.default_context)
+            self.store.add_graph(DATASET_DEFAULT_GRAPH_ID)
         return self
 
     def contexts(
@@ -2540,7 +2554,7 @@ class Dataset(ConjunctiveGraph):
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
         for s, p, o, c in super(Dataset, self).quads(quad):
             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            if c.identifier == self.default_context:  # type: ignore[union-attr]
+            if c.identifier == DATASET_DEFAULT_GRAPH_ID:  # type: ignore[union-attr]
                 yield s, p, o, None
             else:
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
@@ -2576,14 +2590,14 @@ class QuotedGraph(Graph):
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
 
-        self.store.add((s, p, o), self, quoted=True)
+        self.store.add((s, p, o), self.identifier, quoted=True)
         return self
 
     def addN(self: _GraphT, quads: Iterable["_QuadType"]) -> _GraphT:  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.store.addN(
-            (s, p, o, c)
+            (s, p, o, c.identifier)
             for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier

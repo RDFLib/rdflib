@@ -341,7 +341,7 @@ class SPARQLStore(SPARQLConnector, Store):
         result = self._query(
             query,
             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-            default_graph=context.identifier if self._is_contextual(context) else None,  # type: ignore[union-attr]
+            default_graph=context if self._is_contextual(context) else None,  # type: ignore[union-attr]
         )
 
         if vars:
@@ -485,7 +485,7 @@ class SPARQLStore(SPARQLConnector, Store):
         if isinstance(graph, str):
             return graph != "__UNION__"
         else:
-            return graph.identifier != DATASET_DEFAULT_GRAPH_ID
+            return graph != DATASET_DEFAULT_GRAPH_ID
 
     def subjects(
         self,
