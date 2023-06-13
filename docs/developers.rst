@@ -437,6 +437,8 @@ flag them as expecting to fail.
 Compatibility
 -------------
 
+RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
+
 RDFlib 6.0.0 release and later only support Python 3.7 and newer.
 
 RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.

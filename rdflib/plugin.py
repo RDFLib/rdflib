@@ -25,7 +25,7 @@ information.
 
 """
 
-import sys
+from importlib.metadata import EntryPoint, entry_points
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -51,11 +51,6 @@ from rdflib.query import (
 )
 from rdflib.serializer import Serializer
 from rdflib.store import Store
-
-if sys.version_info < (3, 8):
-    from importlib_metadata import EntryPoint, entry_points
-else:
-    from importlib.metadata import EntryPoint, entry_points
 
 __all__ = [
     "register",

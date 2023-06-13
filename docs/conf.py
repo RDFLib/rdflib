@@ -256,7 +256,7 @@ htmlhelp_basename = "rdflibdoc"
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.8", None),
 }
 
 html_experimental_html5_writer = True
@@ -330,9 +330,6 @@ if sys.version_info < (3, 9):
             ("py:class", "Message"),
         ]
     )
-
-if sys.version_info < (3, 8):
-    nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])
 
 
 def autodoc_skip_member_handler(

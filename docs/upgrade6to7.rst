@@ -4,6 +4,11 @@
 Upgrading 6 to 7
 ============================================
 
+Python version
+----------------------------------------------------
+
+RDFLib 7 requires Python 3.8.1 or later.
+
 New behaviour for ``publicID`` in ``parse`` methods.
 ----------------------------------------------------
 
