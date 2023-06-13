@@ -80,7 +80,7 @@ def evalDrop(ctx: QueryContext, u: CompValue) -> None:
     """
     if ctx.dataset.store.graph_aware:
         for g in _graphAll(ctx, u.graphiri):
-            ctx.dataset.store.remove_graph(g)
+            ctx.dataset.remove_graph(g)
     else:
         evalClear(ctx, u)
 
@@ -248,7 +248,7 @@ def evalMove(ctx: QueryContext, u: CompValue) -> None:
 
     if ctx.dataset.store.graph_aware:
         # type error: Argument 1 to "remove_graph" of "Store" has incompatible type "Optional[Graph]"; expected "Graph"
-        ctx.dataset.store.remove_graph(srcg)  # type: ignore[arg-type]
+        ctx.dataset.remove_graph(srcg)  # type: ignore[arg-type]
     else:
         # type error: Item "None" of "Optional[Graph]" has no attribute "remove"
         srcg.remove((None, None, None))  # type: ignore[union-attr]

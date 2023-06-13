@@ -79,12 +79,7 @@ class AuditableStore(Store):
         lock = destructiveOpLocks["add"]
         lock = lock if lock else threading.RLock()
         with lock:
-            context = (
-                context.__class__(self.store, context.identifier)
-                if context is not None
-                else None
-            )
-            ctxId = context.identifier if context is not None else None  # noqa: N806
+            ctxId = context if context is not None else None  # noqa: N806
             if list(self.store.triples(triple, context)):
                 return  # triple already in store, do nothing
             self.reverseOps.append((s, p, o, ctxId, "remove"))
@@ -103,16 +98,11 @@ class AuditableStore(Store):
         with lock:
             # Need to determine which quads will be removed if any term is a
             # wildcard
-            context = (
-                context.__class__(self.store, context.identifier)
-                if context is not None
-                else None
-            )
-            ctxId = context.identifier if context is not None else None  # noqa: N806
+            ctxId = context if context is not None else None  # noqa: N806
             if None in [subject, predicate, object_, context]:
                 if ctxId:
                     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-                    for s, p, o in context.triples((subject, predicate, object_)):  # type: ignore[union-attr]
+                    for (s, p, o), cg in self.store.triples((subject, predicate, object_), context):
                         try:
                             self.reverseOps.remove((s, p, o, ctxId, "remove"))
                         except ValueError:
@@ -123,10 +113,10 @@ class AuditableStore(Store):
                     ):
                         try:
                             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-                            self.reverseOps.remove((s, p, o, ctx.identifier, "remove"))  # type: ignore[union-attr]
+                            self.reverseOps.remove((s, p, o, ctx, "remove"))  # type: ignore[union-attr]
                         except ValueError:
                             # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-                            self.reverseOps.append((s, p, o, ctx.identifier, "add"))  # type: ignore[union-attr]
+                            self.reverseOps.append((s, p, o, ctx, "add"))  # type: ignore[union-attr]
             else:
                 if not list(self.triples((subject, predicate, object_), context)):
                     return  # triple not present in store, do nothing
@@ -142,20 +132,10 @@ class AuditableStore(Store):
         self, triple: "_TriplePatternType", context: Optional["_ContextType"] = None
     ) -> Iterator[Tuple["_TripleType", Iterator[Optional["_ContextType"]]]]:
         (su, pr, ob) = triple
-        context = (
-            context.__class__(self.store, context.identifier)
-            if context is not None
-            else None
-        )
         for (s, p, o), cg in self.store.triples((su, pr, ob), context):
             yield (s, p, o), cg
 
     def __len__(self, context: Optional["_ContextType"] = None):
-        context = (
-            context.__class__(self.store, context.identifier)
-            if context is not None
-            else None
-        )
         return self.store.__len__(context)
 
     def contexts(
@@ -187,11 +167,9 @@ class AuditableStore(Store):
                 if op == "add":
                     # type error: Argument 2 to "Graph" has incompatible type "Optional[Node]"; expected "Union[IdentifiedNode, str, None]"
                     self.store.add(
-                        (subject, predicate, obj), Graph(self.store, context)  # type: ignore[arg-type]
-                    )
+                        (subject, predicate, obj), context)  # type: ignore[arg-type]
                 else:
                     self.store.remove(
-                        (subject, predicate, obj), Graph(self.store, context)
-                    )
+                        (subject, predicate, obj), context)
 
             self.reverseOps = []
