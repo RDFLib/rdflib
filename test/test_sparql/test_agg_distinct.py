@@ -124,14 +124,17 @@ def test_count_optional_values():
     """
     g = Graph()
     g.bind("ex", "http://example.com/")
-    g.parse(format="ttl", data="""@prefix ex: <http://example.com/>.
+    g.parse(
+        format="ttl",
+        data="""@prefix ex: <http://example.com/>.
             ex:1 a ex:a;
                 ex:d ex:b.
             ex:2 a ex:a;
                 ex:d ex:c;
                 ex:d ex:b.
             ex:3 a ex:a.
-    """)
+    """,
+    )
 
     query = """
     SELECT DISTINCT ?x (COUNT(DISTINCT ?inst) as ?cnt)
