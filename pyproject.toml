@@ -115,6 +115,9 @@ pep8-naming = ["-N815"]
 pep8-naming = ["-N802"]
 [tool.flakeheaven.exceptions."rdflib/plugins/parsers/trix.py"]
 pep8-naming = ["-N802"]
+[tool.flakeheaven.exceptions."docs/*.rst"]
+pyflakes = ["-F821"]
+
 
 [tool.black]
 required-version = "23.3.0"
