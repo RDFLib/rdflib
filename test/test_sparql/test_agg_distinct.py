@@ -1,4 +1,5 @@
 from rdflib import Graph, URIRef
+from rdflib.term import Literal
 
 query_tpl = """
 SELECT ?x (MIN(?y_) as ?y) (%s(DISTINCT ?z_) as ?z) {
@@ -147,4 +148,8 @@ def test_count_optional_values():
     }  GROUP BY ?x
     """
     results = dict(g.query(query))
-    assert results[URIRef("http://example.com/3")].toPython() == 0
+    assert results == {
+        URIRef("http://example.com/1"): Literal(1),
+        URIRef("http://example.com/2"): Literal(2),
+        URIRef("http://example.com/3"): Literal(0),
+    }
