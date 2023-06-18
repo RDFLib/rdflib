@@ -65,7 +65,7 @@ RDF operations performed on it.
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
-UNKNOWN = None
+UNKNOWN: None = None
 
 
 Pickler = pickle.Pickler

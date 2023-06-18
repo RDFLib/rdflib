@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __doc__ = """
 Dirt Simple Events
 
@@ -22,6 +24,9 @@ fired:
   >>> d.dispatch(Event(foo='bar', data='yours', used_by='the event handlers'))
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
+
+
+from typing import Any, Dict, Optional
 
 __all__ = ["Event", "Dispatcher"]
 
@@ -53,9 +58,9 @@ class Dispatcher:
     subscribers.
     """
 
-    _dispatch_map = None
+    _dispatch_map: Optional[Dict[Any, Any]] = None
 
-    def set_map(self, amap):
+    def set_map(self, amap: Dict[Any, Any]):
         self._dispatch_map = amap
         return self
 

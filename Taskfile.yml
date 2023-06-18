@@ -35,6 +35,7 @@ vars:
   PIP_COMPILE: pip-compile
   DOCKER: docker
   OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  MYPY_VARIANT: '{{ env "MYPY_VARIANT" | default "mypy" }}'
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -132,8 +133,15 @@ tasks:
   mypy:
     desc: Run mypy
     cmds:
+      - task: "mypy:{{ .MYPY_VARIANT }}"
+  mypy:mypy:
+    desc: Run mypy
+    cmds:
       - "{{.VENV_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
-
+  mypy:dmypy:
+    desc: Run dmypy
+    cmds:
+      - "{{.RUN_PREFIX}} dmypy run {{.CLI_ARGS}}"
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:

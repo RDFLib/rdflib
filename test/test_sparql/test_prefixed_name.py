@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import itertools
 import logging
 from contextlib import ExitStack
-from typing import Type, Union
+from typing import Optional, Type, Union
 
 import pyparsing
 import pytest
-from pyparsing import Optional
 
 import rdflib
 from rdflib import Graph
