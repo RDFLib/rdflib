@@ -1773,6 +1773,10 @@ class Graph(Node):
     def de_skolemize(
         self, new_graph: Optional[Graph] = None, uriref: Optional[URIRef] = None
     ) -> Graph:
+        """
+        .. warning::
+            De-skolemization is not a well defined process.
+        """
         def do_de_skolemize(uriref: URIRef, t: _TripleType) -> _TripleType:
             (s, p, o) = t
             if s == uriref:
@@ -1788,19 +1792,19 @@ class Graph(Node):
         def do_de_skolemize2(t: _TripleType) -> _TripleType:
             (s, p, o) = t
 
-            if RDFLibGenid._is_rdflib_skolem(s):
-                # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
-                s = RDFLibGenid(s).de_skolemize()  # type: ignore[arg-type]
-            elif Genid._is_external_skolem(s):
-                # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
-                s = Genid(s).de_skolemize()  # type: ignore[arg-type]
+            # if RDFLibGenid._is_rdflib_skolem(s):
+            #     # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
+            #     s = RDFLibGenid(s).de_skolemize()  # type: ignore[arg-type]
+            # elif Genid._is_external_skolem(s):
+            #     # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
+            #     s = Genid(s).de_skolemize()  # type: ignore[arg-type]
 
-            if RDFLibGenid._is_rdflib_skolem(o):
-                # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
-                o = RDFLibGenid(o).de_skolemize()  # type: ignore[arg-type]
-            elif Genid._is_external_skolem(o):
-                # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
-                o = Genid(o).de_skolemize()  # type: ignore[arg-type]
+            # if RDFLibGenid._is_rdflib_skolem(o):
+            #     # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
+            #     o = RDFLibGenid(o).de_skolemize()  # type: ignore[arg-type]
+            # elif Genid._is_external_skolem(o):
+            #     # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
+            #     o = Genid(o).de_skolemize()  # type: ignore[arg-type]
 
             return s, p, o
 
