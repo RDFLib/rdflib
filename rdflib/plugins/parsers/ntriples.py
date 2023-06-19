@@ -316,18 +316,17 @@ class W3CNTriplesParser:
 
     def literal(self) -> Union["te.Literal[False]", Literal]:
         if self.peek('"'):
-            lit, lang, dtype = self.eat(r_literal).groups()
-            if lang:
+            lit, lang, dtype = self.eat(r_literal).groups(default=None)
+            if TYPE_CHECKING:
+                # The pattern does not allow lit to be none.
+                assert lit is not None
+            if lang is not None:
                 lang = lang
-            else:
-                lang = None
-            if dtype:
+            if dtype is not None:
                 dtype = unquote(dtype)
                 dtype = uriquote(dtype)
                 dtype = URI(dtype)
-            else:
-                dtype = None
-            if lang and dtype:
+            if lang is not None and dtype is not None:
                 raise ParseError("Can't have both a language and a datatype")
             lit = unquote(lit)
             return Literal(lit, lang, dtype)

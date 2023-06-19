@@ -1,5 +1,7 @@
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://github.com/RDFLib/rdflib> a doap:Project ;
     doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;

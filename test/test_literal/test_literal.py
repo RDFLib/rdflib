@@ -88,8 +88,8 @@ class TestNewPT:
     @pytest.mark.parametrize(
         "lang, exception_type",
         [
-            ({}, TypeError),
-            ([], TypeError),
+            ({}, ValueError),
+            ([], ValueError),
             (1, TypeError),
             (b"en", TypeError),
             ("999", ValueError),
@@ -136,7 +136,7 @@ class TestNewPT:
             ("2147483648", XSD.integer, False),
             ("valid ASCII", XSD.string, False),
             pytest.param("هذا رجل ثلج⛄", XSD.string, False, id="snowman-ar"),
-            ("More ASCII", None, None),
+            ("More ASCII", None, False),
             ("Not a valid time", XSD.time, True),
             ("Not a valid date", XSD.date, True),
             ("7264666c6962", XSD.hexBinary, False),
@@ -155,7 +155,10 @@ class TestNewPT:
         """
         ill_typed has the correct value.
         """
-        lit = Literal(lexical, datatype=datatype)
+        if datatype != RDF.langString:
+            lit = Literal(lexical, datatype=datatype)
+        else:
+            lit = Literal(lexical, datatype=datatype, lang="en")
         assert lit.ill_typed is is_ill_typed
         if is_ill_typed is False:
             # If the literal is not ill typed it should have a value associated with it.
@@ -840,7 +843,6 @@ class TestBindings:
         normal_l = Literal(s)
         assert str(normal_l) == s
         assert normal_l.toPython() == s
-        assert normal_l.datatype is None
 
         specific_l = Literal("--%s--" % s, datatype=datatype)
         assert str(specific_l) == lexify(s)
@@ -998,8 +1000,8 @@ def test_exception_in_converter(
         ),
         (lambda: Literal(Literal("1")), Literal("1")),
         (
-            lambda: Literal(Literal("blue sky", "en")),
-            Literal("blue sky", "en"),
+            lambda: Literal(Literal("blue sky", lang="en")),
+            Literal("blue sky", lang="en"),
         ),
     ],
 )

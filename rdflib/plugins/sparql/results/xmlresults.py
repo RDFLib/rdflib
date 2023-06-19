@@ -18,6 +18,7 @@ from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
+from rdflib.namespace import XSD
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
@@ -131,7 +132,7 @@ def parseTerm(element: xml_etree.Element) -> Union[URIRef, Literal, BNode]:
     if tag == RESULTS_NS_ET + "literal":
         if text is None:
             text = ""
-        datatype = None
+        datatype = XSD.string
         lang = None
         if element.get("datatype", None):
             # type error: Argument 1 to "URIRef" has incompatible type "Optional[str]"; expected "str"

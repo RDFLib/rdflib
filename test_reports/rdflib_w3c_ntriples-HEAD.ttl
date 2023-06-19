@@ -1,5 +1,7 @@
 @prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <https://github.com/RDFLib/rdflib> a doap:Project ;
     doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
@@ -11,7 +13,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#comment_following_triple> .
 
@@ -19,7 +21,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#langtagged_string> .
 
@@ -27,7 +29,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#lantag_with_subtag> .
 
@@ -499,7 +501,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#nt-syntax-string-02> .
 
@@ -507,7 +509,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#nt-syntax-string-03> .
 
@@ -515,7 +517,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2013/N-TriplesTests/#nt-syntax-subm-01> .
 

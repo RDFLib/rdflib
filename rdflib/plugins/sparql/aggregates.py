@@ -140,7 +140,9 @@ class Sum(Accumulator):
             pass
 
     def get_value(self) -> Literal:
-        return Literal(self.value, datatype=self.datatype)
+        return Literal(
+            self.value, datatype=XSD.integer if self.datatype is None else self.datatype
+        )
 
 
 class Average(Accumulator):
