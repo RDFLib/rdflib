@@ -104,25 +104,25 @@ _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
 @overload
-def _validate_language(lang: None) -> NoReturn:
+def _validate_language_tag(tag: None) -> NoReturn:
     ...
 
 
 @overload
-def _validate_language(lang: str) -> None:
+def _validate_language_tag(tag: str) -> None:
     ...
 
 
-def _validate_language(lang: Optional[str]) -> None:
-    if lang is None:
+def _validate_language_tag(tag: Optional[str]) -> None:
+    if tag is None:
         raise ValueError("language can not be None")
-    if not lang:
+    if not tag:
         raise ValueError("language can not be empty string")
-    if not _lang_tag_regex.match(lang):
+    if not _lang_tag_regex.match(tag):
         raise ValueError(
-            f"language must match the pattern "
+            "language tag must match the pattern "
             "^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$ "
-            "but was {lang}"
+            f"but was {tag}"
         )
 
 
@@ -666,7 +666,7 @@ class Literal(Identifier):
         cls,
         lexical_or_value: Any,
         *,
-        language: str,
+        lang: str,
         normalize: Optional[bool] = None,
     ) -> Literal:
         ...
@@ -685,7 +685,7 @@ class Literal(Identifier):
         cls,
         lexical_or_value: Any,
         *,
-        datatype: str = _XSD_STRING,
+        datatype: str,
         normalize: Optional[bool] = None,
     ) -> Literal:
         ...
@@ -694,7 +694,7 @@ class Literal(Identifier):
     def __new__(
         cls,
         lexical_or_value: str,
-        language: Optional[str],
+        lang: Optional[str],
         datatype: str,
         normalize: Optional[bool] = None,
     ) -> Literal:
@@ -703,7 +703,7 @@ class Literal(Identifier):
     def __new__(
         cls,
         lexical_or_value: Any,
-        language: Optional[str] = None,
+        lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
     ) -> "Literal":
@@ -711,9 +711,9 @@ class Literal(Identifier):
         if datatype is not None:
             datatype = URIRef(datatype)
 
-        if language is not None or datatype == _RDF_LANGSTRING:
-            _validate_language(language)
-            if datatype == None:
+        if lang is not None or datatype == _RDF_LANGSTRING:
+            _validate_language_tag(lang)
+            if datatype is None:
                 datatype = _RDF_LANGSTRING
 
         value = None
@@ -721,7 +721,7 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
-            lang = language if language is not None else lexical_or_value.language
+            lang = lang if lang is not None else lexical_or_value.language
             if datatype is not None:
                 # override datatype
                 value = _castLexicalToPython(lexical_or_value, datatype)
@@ -729,7 +729,7 @@ class Literal(Identifier):
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
 
-        elif isinstance(lexical_or_value, str) or isinstance(lexical_or_value, bytes):
+        elif isinstance(lexical_or_value, (str, bytes, bytearray)):
             if datatype is None:
                 datatype = _XSD_STRING
 
@@ -753,7 +753,7 @@ class Literal(Identifier):
             if _value is not None:
                 lexical_or_value = _value
 
-        if lang is not None and datatype != ns.RDF.langString:
+        if lang is not None and datatype != _RDF_LANGSTRING:
             raise ValueError(f"Can't have a language tag with datatype {datatype}!")
 
         if isinstance(lexical_or_value, bytes):
@@ -771,7 +771,7 @@ class Literal(Identifier):
     def _make(
         cls,
         lexical: Any,
-        language: Optional[str],
+        lang: Optional[str],
         datatype: URIRef,
         value: Any,
         ill_typed: Optional[bool],
@@ -781,7 +781,7 @@ class Literal(Identifier):
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical, "utf-8")
 
-        inst._language = language
+        inst._language = lang
         inst._datatype = datatype
         inst._value = value
         inst._ill_typed = ill_typed
@@ -803,7 +803,7 @@ class Literal(Identifier):
         """
 
         if self.value is not None:
-            return Literal(self.value, datatype=self.datatype, language=self.language)
+            return Literal(self.value, datatype=self.datatype, lang=self.language)
         else:
             return self
 

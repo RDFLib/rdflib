@@ -28,7 +28,6 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 import rdflib.compare
 import rdflib.util
 from rdflib.graph import Dataset
-from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
 
@@ -234,7 +233,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
         # Stripping data types as different parsers (e.g. hext) have different
         # opinions of when a bare string is of datatype XSD.string or not.
         # Probably something that needs more investigation.
-        GraphHelper.strip_literal_datatypes(graph, {XSD.string})
+        # GraphHelper.strip_literal_datatypes(graph, {XSD.string})
         graph_variant.asserts.check(first_graph, graph)
         if first_graph is None:
             first_graph = graph

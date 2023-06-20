@@ -290,18 +290,18 @@ def Builtin_CONCAT(expr: Expr, ctx) -> Literal:
 
     # dt/lang passed on only if they all match
 
-    dt = set(x.datatype for x in expr.arg if isinstance(x, Literal))
-    # type error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "Set[Optional[str]]")
-    dt = dt.pop() if len(dt) == 1 else None  # type: ignore[assignment]
+    args = [x for x in expr.arg if isinstance(x, Literal)]
 
-    lang = set(x.language for x in expr.arg if isinstance(x, Literal))
-    # type error: error: Incompatible types in assignment (expression has type "Optional[str]", variable has type "Set[Optional[str]]")
-    lang = lang.pop() if len(lang) == 1 else None  # type: ignore[assignment]
+    if not args:
+        return Literal("")
 
-    # NOTE on type errors: this is because same variable is used for two incompatibel types
-    # type error: Argument "datatype" to "Literal" has incompatible type "Set[Any]"; expected "Optional[str]"  [arg-type]
-    # type error: Argument "lang" to "Literal" has incompatible type "Set[Any]"; expected "Optional[str]"
-    return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)  # type: ignore[arg-type]
+    dt_set = set(x.datatype for x in args)
+    dt = dt_set.pop()
+
+    lang_set = set(x.language for x in args)
+    lang = lang_set.pop()
+
+    return Literal("".join(string(x) for x in expr.arg), datatype=dt, lang=lang)
 
 
 def _compatibleStrings(a: Literal, b: Literal) -> None:

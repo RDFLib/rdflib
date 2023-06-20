@@ -136,7 +136,7 @@ class TestNewPT:
             ("2147483648", XSD.integer, False),
             ("valid ASCII", XSD.string, False),
             pytest.param("هذا رجل ثلج⛄", XSD.string, False, id="snowman-ar"),
-            ("More ASCII", None, None),
+            ("More ASCII", XSD.string, None),
             ("Not a valid time", XSD.time, True),
             ("Not a valid date", XSD.date, True),
             ("7264666c6962", XSD.hexBinary, False),
@@ -149,7 +149,7 @@ class TestNewPT:
     def test_ill_typed_literals(
         self,
         lexical: Union[bytes, str],
-        datatype: Optional[URIRef],
+        datatype: URIRef,
         is_ill_typed: Optional[bool],
     ) -> None:
         """
@@ -840,7 +840,6 @@ class TestBindings:
         normal_l = Literal(s)
         assert str(normal_l) == s
         assert normal_l.toPython() == s
-        assert normal_l.datatype is None
 
         specific_l = Literal("--%s--" % s, datatype=datatype)
         assert str(specific_l) == lexify(s)
@@ -998,8 +997,8 @@ def test_exception_in_converter(
         ),
         (lambda: Literal(Literal("1")), Literal("1")),
         (
-            lambda: Literal(Literal("blue sky", "en")),
-            Literal("blue sky", "en"),
+            lambda: Literal(Literal("blue sky", lang="en")),
+            Literal("blue sky", lang="en"),
         ),
     ],
 )

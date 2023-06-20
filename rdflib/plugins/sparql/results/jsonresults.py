@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import IO, Any, Dict, Mapping, MutableSequence, Optional
 
+from rdflib.namespace import XSD
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
@@ -101,7 +102,9 @@ def parseJsonTerm(d: Dict[str, str]) -> Identifier:
     if t == "uri":
         return URIRef(d["value"])
     elif t == "literal":
-        return Literal(d["value"], datatype=d.get("datatype"), lang=d.get("xml:lang"))
+        return Literal(
+            d["value"], datatype=d.get("datatype", XSD.string), lang=d.get("xml:lang")
+        )
     elif t == "typed-literal":
         return Literal(d["value"], datatype=URIRef(d["datatype"]))
     elif t == "bnode":

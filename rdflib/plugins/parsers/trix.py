@@ -9,7 +9,7 @@ from xml.sax.handler import ErrorHandler
 
 from rdflib.exceptions import ParserError
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace
+from rdflib.namespace import XSD, Namespace
 from rdflib.parser import InputSource, Parser
 from rdflib.store import Store
 from rdflib.term import BNode, Identifier, Literal, URIRef
@@ -185,7 +185,11 @@ class TriXHandler(handler.ContentHandler):
         elif name[1] == "plainLiteral" or name[1] == "typedLiteral":
             if self.state == 4:
                 self.triple += [
-                    Literal(self.chars, lang=self.lang, datatype=self.datatype)
+                    Literal(
+                        self.chars,
+                        lang=self.lang,
+                        datatype=XSD.string if self.datatype is None else self.datatype,
+                    )
                 ]
             else:
                 self.error(
