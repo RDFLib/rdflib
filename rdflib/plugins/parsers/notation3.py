@@ -276,7 +276,7 @@ N3_List = (SYMBOL, List_NS + "List")
 N3_Empty = (SYMBOL, List_NS + "Empty")
 
 
-runNamespaceValue = None
+runNamespaceValue: Optional[str] = None
 
 
 def runNamespace() -> str:

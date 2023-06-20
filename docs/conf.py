@@ -302,6 +302,7 @@ nitpick_ignore = [
     ("py:class", "ParseFailAction"),
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
+    ("py:class", "pyparsing.core.ParserElement"),
     # These are related to BerkeleyDB
     ("py:class", "db.DBEnv"),
 ]

@@ -14,7 +14,7 @@ from typing import (
     Union,
 )
 
-from pyparsing import ParseResults, TokenConverter, originalTextFor
+from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
 
 from rdflib.term import BNode, Identifier, Variable
 
@@ -241,7 +241,7 @@ class Comp(TokenConverter):
     Returns CompValue / Expr objects - depending on whether evalFn is set.
     """
 
-    def __init__(self, name: str, expr):
+    def __init__(self, name: str, expr: ParserElement):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.setName(name)

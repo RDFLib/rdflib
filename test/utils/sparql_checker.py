@@ -1,5 +1,7 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+from __future__ import annotations
+
 import enum
 import logging
 import pprint
@@ -290,11 +292,11 @@ def check_syntax(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
         if entry.type_info.negative:
             catcher = xstack.enter_context(pytest.raises(Exception))
         if entry.type_info.query_type is QueryType.UPDATE:
-            tree = parseUpdate(query_text)
-            translateUpdate(tree)
+            parse_tree = parseUpdate(query_text)
+            translateUpdate(parse_tree)
         elif entry.type_info.query_type is QueryType.QUERY:
-            tree = parseQuery(query_text)
-            translateQuery(tree)
+            query_tree = parseQuery(query_text)
+            translateQuery(query_tree)
     if catcher is not None:
         assert catcher.value is not None
         logging.info("catcher.value = %s", catcher.value)
