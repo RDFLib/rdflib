@@ -98,14 +98,15 @@ class TrigSinkParser(SinkParser):
 
         j = i + 1
 
+        if self._context is not None:
+            self.BadSyntax(argstr, i, "Nested graphs are not allowed")
+
         oldParentContext = self._parentContext
         self._parentContext = self._context
         reason2 = self._reason2
         self._reason2 = becauseSubGraph
         # type error: Incompatible types in assignment (expression has type "Graph", variable has type "Optional[Formula]")
         self._context = self._store.newGraph(graph)  # type: ignore[assignment]
-        if self._context is not None and self._parentContext is not None:
-            raise SyntaxError("GRAPH may not include a GRAPH " "(#trig-graph-bad-07)")
 
         while 1:
             i = self.skipSpace(argstr, j)
