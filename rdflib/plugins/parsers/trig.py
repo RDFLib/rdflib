@@ -104,6 +104,9 @@ class TrigSinkParser(SinkParser):
         self._reason2 = becauseSubGraph
         # type error: Incompatible types in assignment (expression has type "Graph", variable has type "Optional[Formula]")
         self._context = self._store.newGraph(graph)  # type: ignore[assignment]
+        if self._context is not None and self._parentContext is not None:
+            raise SyntaxError("GRAPH may not include a GRAPH "
+                              "(#trig-graph-bad-07)")
 
         while 1:
             i = self.skipSpace(argstr, j)
