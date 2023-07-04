@@ -265,7 +265,7 @@ INTEGER.setParseAction(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.intege
 EXPONENT_re = "[eE][+-]?[0-9]+"
 
 # [147] DECIMAL ::= [0-9]* '.' [0-9]+
-DECIMAL = Regex(r"[0-9]*\.[0-9]+")  # (?![eE])
+DECIMAL = Regex(r"[0-9]*\.[0-9]*")  # (?![eE])
 # DECIMAL.setResultsName('decimal')
 DECIMAL.setParseAction(lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.decimal))
 
@@ -390,6 +390,7 @@ RDFLiteral = Comp(
 
 # [132] NumericLiteralPositive ::= INTEGER_POSITIVE | DECIMAL_POSITIVE | DOUBLE_POSITIVE
 NumericLiteralPositive = DOUBLE_POSITIVE | DECIMAL_POSITIVE | INTEGER_POSITIVE
+
 
 # [133] NumericLiteralNegative ::= INTEGER_NEGATIVE | DECIMAL_NEGATIVE | DOUBLE_NEGATIVE
 NumericLiteralNegative = DOUBLE_NEGATIVE | DECIMAL_NEGATIVE | INTEGER_NEGATIVE
