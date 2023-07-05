@@ -102,6 +102,9 @@ class TrigSinkParser(SinkParser):
 
         j = i + 1
 
+        if self._context is not None:
+            self.BadSyntax(argstr, i, "Nested graphs are not allowed")
+
         oldParentContext = self._parentContext
         self._parentContext = self._context
         reason2 = self._reason2
