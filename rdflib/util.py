@@ -189,8 +189,16 @@ def from_n3(
             quotes = '"'
         value, rest = s.rsplit(quotes, 1)
         value = value[len(quotes) :]  # strip leading quotes
-        datatype = None
-        language = None
+        # datatype = None
+        # language = None
+
+        value = value.replace(r"\"", '"')
+        # unicode-escape interprets \xhh as an escape sequence,
+        # but n3 does not define it as such.
+        value = value.replace(r"\x", r"\\x")
+        # Hack: this should correctly handle strings with either native unicode
+        # characters, or \u1234 unicode escapes.
+        value = value.encode("raw-unicode-escape").decode("unicode-escape")
 
         # as a given datatype overrules lang-tag check for it first
         dtoffset = rest.rfind("^^")
@@ -200,19 +208,15 @@ def from_n3(
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
             datatype = from_n3(rest[dtoffset + 2 :], default, backend, nsm)
+            if not isinstance(datatype, str):
+                raise ValueError(f"datatype must be a string: {datatype!r}")
+            return rdflib.term.Literal(value, datatype=datatype)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
-
-        value = value.replace(r"\"", '"')
-        # unicode-escape interprets \xhh as an escape sequence,
-        # but n3 does not define it as such.
-        value = value.replace(r"\x", r"\\x")
-        # Hack: this should correctly handle strings with either native unicode
-        # characters, or \u1234 unicode escapes.
-        value = value.encode("raw-unicode-escape").decode("unicode-escape")
-        # type error: Argument 3 to "Literal" has incompatible type "Union[Node, str, None]"; expected "Optional[str]"
-        return rdflib.term.Literal(value, language, datatype)  # type: ignore[arg-type]
+                return rdflib.term.Literal(value, lang=language)
+            else:
+                return rdflib.term.Literal(value)
     elif s == "true" or s == "false":
         return rdflib.term.Literal(s == "true")
     elif (

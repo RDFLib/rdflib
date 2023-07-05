@@ -24,6 +24,7 @@ from typing import (
 
 from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
+from rdflib.namespace import XSD
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
@@ -326,7 +327,7 @@ class W3CNTriplesParser:
                 dtype = uriquote(dtype)
                 dtype = URI(dtype)
             else:
-                dtype = None
+                dtype = XSD.string
             if lang and dtype:
                 raise ParseError("Can't have both a language and a datatype")
             lit = unquote(lit)

@@ -1506,7 +1506,7 @@ class SinkParser:
 
                 j, s = self.strconst(argstr, i, delim)
 
-                res.append(self._store.newLiteral(s))  # type: ignore[call-arg] # TODO FIXME
+                res.append(Literal(s))
                 return j
             else:
                 return -1
@@ -1570,11 +1570,14 @@ class SinkParser:
                     i = m.end()
                     lang = argstr[j + 1 : i]
                     j = i
-                if argstr[j : j + 2] == "^^":
+                    res.append(Literal(s, lang=lang))
+                elif argstr[j : j + 2] == "^^":
                     res2: typing.List[Any] = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
                     dt = res2[0]
-                res.append(self._store.newLiteral(s, dt, lang))
+                    res.append(Literal(s, datatype=dt))
+                else:
+                    res.append(Literal(s))
                 return j
             else:
                 return -1
@@ -1852,11 +1855,11 @@ class RDFSink:
             bn = BNode(str(arg[0]).split("#").pop().replace("_", "b"))
         return bn
 
-    def newLiteral(self, s: str, dt: Optional[URIRef], lang: Optional[str]) -> Literal:
-        if dt:
-            return Literal(s, datatype=dt)
-        else:
-            return Literal(s, lang=lang)
+    # def newLiteral(self, s: str, dt: Optional[URIRef], lang: Optional[str]) -> Literal:
+    #     if dt:
+    #         return Literal(s, datatype=dt)
+    #     else:
+    #         return Literal(s, lang=lang)
 
     def newList(self, n: typing.List[Any], f: Optional[Formula]) -> IdentifiedNode:
         nil = self.newSymbol("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil")

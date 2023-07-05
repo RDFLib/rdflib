@@ -11,7 +11,7 @@ from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.exceptions import Error, ParserError
 from rdflib.graph import Graph
-from rdflib.namespace import RDF, is_ncname
+from rdflib.namespace import RDF, XSD, is_ncname
 from rdflib.parser import InputSource, Parser
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.term import BNode, Identifier, Literal, URIRef
@@ -361,7 +361,7 @@ class RDFXMLHandler(handler.ContentHandler):
             if not att.startswith(str(RDFNS)):
                 predicate = absolutize(att)
                 try:
-                    object = Literal(atts[att], language)
+                    object = Literal(atts[att], lang=language)
                 except Error as e:
                     # type error: Argument 1 to "error" of "RDFXMLHandler" has incompatible type "Optional[str]"; expected "str"
                     self.error(e.msg)  # type: ignore[arg-type]
@@ -377,7 +377,7 @@ class RDFXMLHandler(handler.ContentHandler):
             else:
                 predicate = absolutize(att)
                 try:
-                    object = Literal(atts[att], language)
+                    object = Literal(atts[att], lang=language)
                 except Error as e:
                     # type error: Argument 1 to "error" of "RDFXMLHandler" has incompatible type "Optional[str]"; expected "str"
                     self.error(e.msg)  # type: ignore[arg-type]
@@ -510,7 +510,11 @@ class RDFXMLHandler(handler.ContentHandler):
                     if datatype is not None:
                         # type error: Statement is unreachable
                         language = None  # type: ignore[unreachable]
-                    o = Literal(atts[att], language, datatype)
+                    o = Literal(
+                        atts[att],
+                        language,
+                        XSD.string if datatype is None else datatype,
+                    )
 
                 if object is None:
                     object = BNode()

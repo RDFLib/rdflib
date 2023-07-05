@@ -525,7 +525,10 @@ class Parser:
                     return  # type: ignore[return-value]
                 return Literal(value, lang=lang)
             elif datatype:
-                return Literal(value, datatype=context.expand(datatype))
+                datatype = context.expand(datatype)
+                if datatype is None:
+                    datatype = XSD.string
+                return Literal(value, datatype=datatype)
             else:
                 return Literal(value)
         else:

@@ -39,6 +39,7 @@ from urllib.request import Request, urlopen
 from pyparsing import ParseException
 
 from rdflib.graph import Graph
+from rdflib.namespace import XSD
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.evalutils import (
@@ -424,7 +425,7 @@ def _yieldBindingsFromServiceCallResult(
             elif var_type == "literal":
                 res_dict[Variable(var)] = Literal(
                     var_binding["value"],
-                    datatype=var_binding.get("datatype"),
+                    datatype=var_binding.get("datatype", XSD.string),
                     lang=var_binding.get("xml:lang"),
                 )
             # This is here because of
