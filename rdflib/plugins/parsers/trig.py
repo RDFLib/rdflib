@@ -82,7 +82,7 @@ class TrigSinkParser(SinkParser):
             graph = r[0]
             i = j
         elif need_graphid:
-            return -1
+            self.BadSyntax(argstr, i, "GRAPH keyword must be followed by graph name")
         else:
             graph = self._store.graph.identifier  # hack
 
