@@ -27,7 +27,10 @@ MARK_DICT: MarksDictType = {
         reason="using Sparql 1.1 which is not backwards compatible. "
         "'456.' will be interpreted differently in query and data."
     ),
-    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.xfail(reason="..."),
+    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.skip(
+        reason="using Sparql 1.1 which is not backwards compatible. "
+        "'456.' will be interpreted differently in query and data."
+    ),
     f"{REMOTE_BASE_IRI}expr-builtin/manifest#dawg-datatype-2": pytest.mark.xfail(
         reason="additional row in output"
     ),
