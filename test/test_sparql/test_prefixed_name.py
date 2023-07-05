@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import itertools
 import logging
-from contextlib import ExitStack
-from typing import Optional, Type, Union
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 import pyparsing
 import pytest
@@ -11,7 +10,7 @@ import pytest
 import rdflib
 from rdflib import Graph
 from rdflib.namespace import Namespace
-from rdflib.term import URIRef
+from rdflib.term import Node, URIRef
 
 RESERVED_PCHARS = [
     "%20",
@@ -101,17 +100,15 @@ def blank_graph() -> Graph:
 def test_pnames(
     pname_ns: str,
     pname: str,
-    expected_result: Union[URIRef, Type[Exception]],
+    expected_result: OutcomePrimitive[Node],
     blank_graph: Graph,
 ) -> None:
     """
     The given pname produces the expected result.
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    checker = OutcomeChecker[Node].from_primitive(expected_result)
 
-    with ExitStack() as xstack:
-        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
-            catcher = xstack.enter_context(pytest.raises(expected_result))
+    with checker.context():
         query_string = f"""\
         PREFIX {pname_ns}: <{PNAME_PREFIX}>
 
@@ -127,10 +124,4 @@ def test_pnames(
         triple = triples[0]
         result = triple[2]
         logging.debug("result = %s", result)
-
-    if catcher is not None:
-        assert isinstance(catcher, pytest.ExceptionInfo)
-        assert catcher.value is not None
-    else:
-        assert isinstance(expected_result, URIRef)
-        assert expected_result == result
+        checker.check(result)

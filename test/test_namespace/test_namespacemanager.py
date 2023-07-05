@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import logging
-import re
 import sys
 from contextlib import ExitStack
 from pathlib import Path
-from test.utils.exceptions import ExceptionChecker
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
@@ -374,7 +373,7 @@ def test_compute_qname(
     manager_prefixes: Optional[Mapping[str, Namespace]],
     graph_prefixes: Optional[Mapping[str, Namespace]],
     store_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+    expected_result: OutcomePrimitive[Tuple[str, URIRef, str]],
 ) -> None:
     """
     :param uri: argument to compute_qname()
@@ -403,25 +402,13 @@ def test_compute_qname(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            if isinstance(expected_result, Exception):
-                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+        checker = OutcomeChecker[Tuple[str, URIRef, str]].from_primitive(
+            expected_result
+        )
+        with checker.context():
             actual_result = nm.compute_qname(uri, generate)
             logging.debug("actual_result = %s", actual_result)
-        if catcher is not None:
-            assert catcher is not None
-            assert catcher.value is not None
-            if isinstance(expected_result, Exception):
-                assert re.match(expected_result.args[0], f"{catcher.value}")
-        else:
-            assert isinstance(expected_result, tuple)
-            assert isinstance(actual_result, tuple)
-            assert actual_result == expected_result
+            checker.check(actual_result)
 
     check()
     # Run a second time to check caching
@@ -452,7 +439,7 @@ def test_compute_qname_strict(
     generate: bool,
     bind_namespaces: _NamespaceSetString,
     additional_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+    expected_result: OutcomePrimitive[Tuple[str, str, str]],
 ) -> None:
     graph = Graph(bind_namespaces=bind_namespaces)
     nm = graph.namespace_manager
@@ -462,25 +449,11 @@ def test_compute_qname_strict(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            if isinstance(expected_result, Exception):
-                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+        checker = OutcomeChecker[Tuple[str, str, str]].from_primitive(expected_result)
+        with checker.context():
             actual_result = nm.compute_qname_strict(uri, generate)
             logging.debug("actual_result = %s", actual_result)
-        if catcher is not None:
-            assert catcher is not None
-            assert catcher.value is not None
-            if isinstance(expected_result, Exception):
-                assert re.match(expected_result.args[0], f"{catcher.value}")
-        else:
-            assert isinstance(expected_result, tuple)
-            assert isinstance(actual_result, tuple)
-            assert actual_result == expected_result
+            checker.check(actual_result)
 
     check()
     # Run a second time to check caching
@@ -538,16 +511,15 @@ def test_nsm_function() -> NamespaceManager:
 def test_expand_curie(
     test_nsm_session: NamespaceManager,
     curie: str,
-    expected_result: Union[ExceptionChecker, str],
+    expected_result: OutcomePrimitive[str],
 ) -> None:
     nsm = test_nsm_session
-    with ExitStack() as xstack:
-        if isinstance(expected_result, ExceptionChecker):
-            xstack.enter_context(expected_result)
-        result = nsm.expand_curie(curie)
-
-    if not isinstance(expected_result, ExceptionChecker):
-        assert URIRef(expected_result) == result
+    if isinstance(expected_result, str):
+        expected_result = URIRef(expected_result)
+    checker = OutcomeChecker[str].from_primitive(expected_result)
+    with checker.context():
+        actual_result = nsm.expand_curie(curie)
+        checker.check(actual_result)
 
 
 @pytest.mark.parametrize(
@@ -578,7 +550,7 @@ def test_generate_curie(
     test_nsm_function: NamespaceManager,
     uri: str,
     generate: Optional[bool],
-    expected_result: Union[ExceptionChecker, str],
+    expected_result: OutcomePrimitive[str],
 ) -> None:
     """
     .. note::
@@ -587,13 +559,10 @@ def test_generate_curie(
         effects and will modify the namespace manager.
     """
     nsm = test_nsm_function
-    with ExitStack() as xstack:
-        if isinstance(expected_result, ExceptionChecker):
-            xstack.enter_context(expected_result)
+    checker = OutcomeChecker[str].from_primitive(expected_result)
+    with checker.context():
         if generate is None:
-            result = nsm.curie(uri)
+            actual_result = nsm.curie(uri)
         else:
-            result = nsm.curie(uri, generate=generate)
-
-    if not isinstance(expected_result, ExceptionChecker):
-        assert expected_result == result
+            actual_result = nsm.curie(uri, generate=generate)
+        checker.check(actual_result)

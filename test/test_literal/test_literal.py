@@ -9,11 +9,11 @@
 
 import datetime
 import logging
-from contextlib import ExitStack
 from decimal import Decimal
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker
-from typing import Any, Callable, Generator, Iterable, Optional, Type, Union
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
+from typing import Any, Callable, Generator, Optional, Type, Union
 
 import isodate
 import pytest
@@ -614,16 +614,10 @@ def test_literal_addsub(
     a: Literal,
     b: Literal,
     op: str,
-    expected_result: Union[Literal, Type[Exception], Exception],
+    expected_result: OutcomePrimitive[Literal],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-    expected_exception: Optional[Exception] = None
-    with ExitStack() as xstack:
-        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
-            catcher = xstack.enter_context(pytest.raises(expected_result))
-        elif isinstance(expected_result, Exception):
-            expected_exception = expected_result
-            catcher = xstack.enter_context(pytest.raises(type(expected_exception)))
+    checker = OutcomeChecker[Literal].from_primitive(expected_result)
+    with checker.context():
         if op == "aplusb":
             result = a + b
 
@@ -636,14 +630,7 @@ def test_literal_addsub(
         else:
             raise ValueError(f"invalid operation {op}")
         logging.debug("result = %r", result)
-    if catcher is not None or expected_exception is not None:
-        assert catcher is not None
-        assert catcher.value is not None
-        if expected_exception is not None:
-            assert catcher.match(expected_exception.args[0])
-    else:
-        assert isinstance(expected_result, Literal)
-        assert expected_result == result
+        checker.check(result)
 
 
 @pytest.mark.parametrize(
@@ -930,7 +917,7 @@ def test_exception_in_converter(
 
 
 @pytest.mark.parametrize(
-    ["literal_maker", "checks"],
+    ["literal_maker", "outcome"],
     [
         (
             lambda: Literal("foo"),
@@ -969,32 +956,9 @@ def test_exception_in_converter(
 )
 def test_literal_construction(
     literal_maker: Callable[[], Literal],
-    checks: Union[
-        Iterable[Union[LiteralChecker, Literal]],
-        LiteralChecker,
-        Literal,
-        Type[Exception],
-    ],
+    outcome: OutcomePrimitives[Literal],
 ) -> None:
-    check_error: Optional[Type[Exception]] = None
-    if isinstance(checks, type) and issubclass(checks, Exception):
-        check_error = checks
-        checks = []
-    elif not isinstance(checks, Iterable):
-        checks = [checks]
-
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-    with ExitStack() as xstack:
-        if check_error is not None:
-            catcher = xstack.enter_context(pytest.raises(check_error))
-        literal = literal_maker()
-
-    if check_error is not None:
-        assert catcher is not None
-        assert catcher.value is not None
-
-    for check in checks:
-        if isinstance(check, LiteralChecker):
-            check.check(literal)
-        else:
-            check = literal
+    checker = OutcomeChecker[Literal].from_primitives(outcome)
+    with checker.context():
+        actual_outcome = literal_maker()
+        checker.check(actual_outcome)

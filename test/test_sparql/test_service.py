@@ -1,19 +1,9 @@
 import json
-from contextlib import ExitStack
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
-from typing import (
-    Dict,
-    FrozenSet,
-    List,
-    Mapping,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    Union,
-)
+from test.utils.outcome import OutcomeChecker
+from typing import Dict, FrozenSet, List, Mapping, Sequence, Tuple, Type, Union
 
 import pytest
 
@@ -337,19 +327,15 @@ def test_with_mock(
     # dependent on the size of the service query.
     function_httpmock.responses[MethodName.GET].append(mock_response)
     function_httpmock.responses[MethodName.POST].append(mock_response)
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
-    with ExitStack() as xstack:
-        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
-            catcher = xstack.enter_context(pytest.raises(expected_result))
-        else:
-            expected_bindings = [{Variable("var"): item} for item in expected_result]
+    checker = OutcomeChecker[Sequence[Mapping[Variable, Identifier]]].from_primitive(
+        [{Variable("var"): item} for item in expected_result]
+        if isinstance(expected_result, List)
+        else expected_result
+    )
+    with checker.context():
         bindings = graph.query(query).bindings
-    if catcher is not None:
-        assert catcher is not None
-        assert catcher.value is not None
-    else:
-        assert expected_bindings == bindings
+        checker.check(bindings)
 
 
 if __name__ == "__main__":
