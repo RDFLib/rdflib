@@ -11,8 +11,8 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
+from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.sparql.algebra import translateAlgebra
-from rdflib import Graph, URIRef, Literal
 
 
 @pytest.fixture
@@ -309,7 +309,7 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
 
 def test_sparql_group_concat():
     """Tests if GROUP_CONCAT correctly uses the separator keyword"""
-    query="""
+    query = """
     PREFIX : <http://example.org/>
 
     SELECT ?subject (GROUP_CONCAT(?object; separator="")
