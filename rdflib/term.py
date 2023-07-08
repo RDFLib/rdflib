@@ -654,7 +654,11 @@ class Literal(Identifier):
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
-                    lexical_or_value = _value
+                    if _datatype != _RDF_HTMLLITERAL:
+                        # Hotfix. See here for more information:
+                        # https://github.com/RDFLib/rdflib/issues/2475
+                        # html produce an empty _value
+                        lexical_or_value = _value
 
         else:
             # passed some python object
