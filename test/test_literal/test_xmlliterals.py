@@ -101,9 +101,9 @@ def testHTML():
     assert l2.datatype == RDF.HTML, "literal must have right datatype"
 
     l3 = Literal("<invalid", datatype=RDF.HTML)
-    assert l3.value is None, "invalid html must not be parsed/normalized"
+    assert l3.value is None, "invalid html must not be parsed"
     assert l3.datatype == RDF.HTML, "literal must have right datatype"
-    assert str(l3) == "<invalid", "literal must have right datatype"
+    assert str(l3) == "<invalid", "invalid html must not be normalized"
 
     assert l1 != l2
     assert not l1.eq(l2)
