@@ -1,5 +1,5 @@
-from contextlib import ExitStack
-from typing import Any, Optional, Type, Union
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
+from typing import Any, Optional
 from warnings import warn
 
 import pytest
@@ -306,22 +306,15 @@ class TestNamespacePrefix:
         ],
     )
     def test_expand_curie(
-        self, curie: Any, expected_result: Union[Type[Exception], URIRef, None]
+        self, curie: Any, expected_result: OutcomePrimitive[URIRef]
     ) -> None:
         g = Graph(bind_namespaces="none")
         nsm = g.namespace_manager
         nsm.bind("ex", "urn:example:")
-        result: Optional[URIRef] = None
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            result = g.namespace_manager.expand_curie(curie)
 
-        if catcher is not None:
-            assert result is None
-            assert catcher.value is not None
-        else:
-            assert expected_result == result
+        checker = OutcomeChecker.from_primitive(expected_result)
+
+        result: Optional[URIRef] = None
+        with checker.context():
+            result = g.namespace_manager.expand_curie(curie)
+            checker.check(result)

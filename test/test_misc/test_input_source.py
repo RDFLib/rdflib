@@ -7,11 +7,8 @@ import pathlib
 import re
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
-
-# from itertools import product
 from pathlib import Path
 from test.utils import GraphHelper
-from test.utils.exceptions import ExceptionChecker
 from test.utils.httpfileserver import (
     HTTPFileInfo,
     HTTPFileServer,
@@ -19,6 +16,7 @@ from test.utils.httpfileserver import (
     ProtoFileResource,
     ProtoRedirectResource,
 )
+from test.utils.outcome import ExceptionChecker
 from typing import (  # Callable,
     IO,
     BinaryIO,
@@ -648,9 +646,7 @@ def test_create_input_source(
     input_source: Optional[InputSource] = None
     with ExitStack() as xstack:
         if isinstance(test_params.expected_result, ExceptionChecker):
-            catcher = xstack.enter_context(
-                pytest.raises(test_params.expected_result.type)
-            )
+            catcher = xstack.enter_context(test_params.expected_result.context())
 
         input_source = xstack.enter_context(
             call_create_input_source(
@@ -670,8 +666,3 @@ def test_create_input_source(
             )
 
     logging.debug("input_source = %s, catcher = %s", input_source, catcher)
-
-    if isinstance(test_params.expected_result, ExceptionChecker):
-        assert catcher is not None
-        assert input_source is None
-        test_params.expected_result.check(catcher.value)
