@@ -1641,16 +1641,17 @@ def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
 def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:  # noqa: N802
     try:
         import html5lib
-
-        parser = html5lib.HTMLParser(tree=html5lib.treebuilders.getTreeBuilder("dom"))
-        retval = parser.parseFragment(htmltext)
-        retval.normalize()
-        return retval
     except ImportError:
         raise ImportError(
             "HTML5 parser not available. Try installing"
             + " html5lib <http://code.google.com/p/html5lib>"
         )
+    parser = html5lib.HTMLParser(
+        tree=html5lib.treebuilders.getTreeBuilder("dom"), strict=True
+    )
+    retval = parser.parseFragment(htmltext)
+    retval.normalize()
+    return retval
 
 
 def _writeXML(  # noqa: N802
