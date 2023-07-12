@@ -1646,10 +1646,8 @@ def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:  # noqa: N802
             "HTML5 parser not available. Try installing"
             + " html5lib <http://code.google.com/p/html5lib>"
         )
-    parser = html5lib.HTMLParser(tree=html5lib.treebuilders.getTreeBuilder("dom"))
+    parser = html5lib.HTMLParser(tree=html5lib.treebuilders.getTreeBuilder("dom"), strict=True)
     retval = parser.parseFragment(htmltext)
-    if parser.errors:
-        raise ValueError("html5lib failed to parse.", htmltext)
     retval.normalize()
     return retval
 
