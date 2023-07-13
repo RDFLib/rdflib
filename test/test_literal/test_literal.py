@@ -1,3 +1,15 @@
+from __future__ import annotations
+
+import builtins
+import datetime
+import logging
+from decimal import Decimal
+from test.utils import affix_tuples
+from test.utils.literal import LiteralChecker, literal_idfn
+from test.utils.namespace import EGDC
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
+from typing import Any, Callable, Generator, Optional, Type, Union
+
 # NOTE: The config below enables strict mode for mypy.
 # mypy: no_ignore_errors
 # mypy: warn_unused_configs, disallow_any_generics
@@ -7,14 +19,13 @@
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
 
-import datetime
-import logging
-from decimal import Decimal
-from test.utils import affix_tuples
-from test.utils.literal import LiteralChecker
-from test.utils.namespace import EGDC
-from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
-from typing import Any, Callable, Generator, Optional, Type, Union
+
+try:
+    import html5lib as _  # noqa: F401
+
+    _HAVE_HTML5LIB = True
+except ImportError:
+    _HAVE_HTML5LIB = False
 
 import isodate
 import pytest
@@ -915,6 +926,21 @@ def test_exception_in_converter(
     )
 
 
+class _UnknownType:
+    """
+    A class that is not known to rdflib, used to test the how
+    rdflib.term.Literal handles unknown python types.
+    """
+
+    def __repr__(self) -> str:
+        return "_UnknownType()"
+
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, _UnknownType):
+            return True
+        return False
+
+
 @pytest.mark.parametrize(
     ["literal_maker", "outcome"],
     [
@@ -951,7 +977,30 @@ def test_exception_in_converter(
             lambda: Literal(Literal("blue sky", "en")),
             Literal("blue sky", "en"),
         ),
+        (
+            lambda: Literal("<body>", datatype=RDF.HTML),
+            LiteralChecker(
+                ..., None, RDF.HTML, True if _HAVE_HTML5LIB else None, "<body>"
+            ),
+        ),
+        (
+            lambda: Literal("<table></table>", datatype=RDF.HTML),
+            LiteralChecker(
+                ...,
+                None,
+                RDF.HTML,
+                False if _HAVE_HTML5LIB else None,
+                "<table></table>",
+            ),
+        ),
+        (
+            lambda: Literal(_UnknownType(), datatype=EGDC.UnknownType),
+            LiteralChecker(
+                _UnknownType(), None, EGDC.UnknownType, None, "_UnknownType()"
+            ),
+        ),
     ],
+    ids=literal_idfn,
 )
 def test_literal_construction(
     literal_maker: Callable[[], Literal],
@@ -961,3 +1010,41 @@ def test_literal_construction(
     with checker.context():
         actual_outcome = literal_maker()
         checker.check(actual_outcome)
+
+
+@pytest.mark.parametrize(
+    ["literal_maker", "normalize_literals", "outcome"],
+    [
+        (
+            lambda: Literal("001000", datatype=XSD.integer),
+            ...,
+            LiteralChecker(1000, None, XSD.integer, False, "1000"),
+        ),
+        (
+            lambda: Literal("001000", datatype=XSD.integer),
+            True,
+            LiteralChecker(1000, None, XSD.integer, False, "1000"),
+        ),
+        (
+            lambda: Literal("001000", datatype=XSD.integer),
+            False,
+            LiteralChecker(1000, None, XSD.integer, False, "001000"),
+        ),
+    ],
+    ids=literal_idfn,
+)
+def test_global_normalize(
+    literal_maker: Callable[[], Literal],
+    normalize_literals: Union[builtins.ellipsis, bool],
+    outcome: OutcomePrimitives[Literal],
+) -> None:
+    _normalize_literals = rdflib.NORMALIZE_LITERALS
+    try:
+        if normalize_literals is not ...:
+            rdflib.NORMALIZE_LITERALS = normalize_literals
+        checker = OutcomeChecker[Literal].from_primitives(outcome)
+        with checker.context():
+            actual_outcome = literal_maker()
+            checker.check(actual_outcome)
+    finally:
+        rdflib.NORMALIZE_LITERALS = _normalize_literals

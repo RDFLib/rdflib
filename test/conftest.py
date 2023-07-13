@@ -3,6 +3,8 @@ from contextlib import ExitStack
 
 import pytest
 
+# This is here so that asserts from these modules are formatted for human
+# readibility.
 pytest.register_assert_rewrite("test.utils")
 
 from pathlib import Path  # noqa: E402
@@ -19,16 +21,13 @@ from typing import (  # noqa: E402
     Union,
 )
 
-from rdflib import Graph
+from rdflib import Graph  # noqa: E402
 
 from .data import TEST_DATA_DIR
 from .utils.earl import EARLReporter  # noqa: E402
 from .utils.httpservermock import ServedBaseHTTPServerMock  # noqa: E402
 
 pytest_plugins = [EARLReporter.__module__]
-
-# This is here so that asserts from these modules are formatted for human
-# readibility.
 
 
 @pytest.fixture(scope="session")
