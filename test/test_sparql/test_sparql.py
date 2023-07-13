@@ -1,5 +1,6 @@
 import logging
 from test.utils import eq_
+from test.utils.namespace import EGDC
 from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
@@ -344,9 +345,8 @@ def test_custom_eval() -> None:
     """
     SPARQL custom eval function works as expected.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
-    custom_function_result = eg["result"]
+    custom_function_uri = EGDC["function"]
+    custom_function_result = EGDC["result"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -417,8 +417,7 @@ def test_custom_eval_exception(
     Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
     query propagates to the caller.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
+    custom_function_uri = EGDC["function"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):

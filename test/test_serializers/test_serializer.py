@@ -9,6 +9,7 @@ from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
 from test.utils import GraphHelper, get_unique_plugins
 from test.utils.destination import DestinationType, DestParmType, DestRef
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 from typing import (
     IO,
     Callable,
@@ -32,10 +33,6 @@ import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.serializer import Serializer
-
-EGSCHEMA = Namespace("example:")
-EGURN = Namespace("urn:example:")
-EGHTTP = Namespace("http://example.com/")
 
 
 @pytest.mark.parametrize(
@@ -85,18 +82,18 @@ def simple_graph() -> Graph:
     than that it contains no blank nodes.
     """
     graph = Graph()
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12)))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))
     graph.add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.add((EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject))
+    graph.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
     graph.add(
-        (EGSCHEMA.object, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
@@ -109,33 +106,31 @@ def simple_dataset() -> Dataset:
     than that it contains no blank nodes.
     """
     graph = Dataset()
-    graph.default_context.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
+    graph.default_context.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     graph.default_context.add((EGURN.subject, EGURN.predicate, EGURN.object))
-    graph.default_context.add((EGHTTP.subject, EGHTTP.predicate, Literal("typeless")))
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+    graph.default_context.add((EGDC.subject, EGDC.predicate, Literal("typeless")))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, Literal(12))
     )
-    graph.get_context(EGSCHEMA.graph).add(
+    graph.get_context(EGSCHEME.graph).add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject)
+    graph.get_context(EGSCHEME.graph).add(
+        (EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject)
     )
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
+    graph.get_context(EGURN.graph).add((EGSCHEME.subject, EGDC.predicate, EGDC.object))
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, EGHTTP.object)
-    )
-    graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.subject, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
