@@ -12,6 +12,7 @@ import logging
 from decimal import Decimal
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker
+from test.utils.namespace import EGDC
 from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
 from typing import Any, Callable, Generator, Optional, Type, Union
 
@@ -20,7 +21,7 @@ import pytest
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib import XSD
-from rdflib.namespace import RDF, Namespace
+from rdflib.namespace import RDF
 from rdflib.term import (
     _XSD_BOOLEAN,
     _XSD_DATE,
@@ -37,8 +38,6 @@ from rdflib.term import (
     _reset_bindings,
     bind,
 )
-
-EGNS = Namespace("http://example.com/")
 
 
 @pytest.fixture()
@@ -141,7 +140,7 @@ def test_cant_pass_invalid_lang(
         # RDF.langString is not a recognized datatype IRI as we assign no literal value to it, though this should likely change.
         ("English string", RDF.langString, None),
         # The datatypes IRIs below should never be recognized.
-        ("[p]", EGNS.unrecognized, None),
+        ("[p]", EGDC.unrecognized, None),
     ],
 )
 def test_ill_typed_literals(
