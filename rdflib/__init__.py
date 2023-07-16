@@ -92,6 +92,7 @@ __all__ = [
     "util",
     "plugin",
     "query",
+    "NORMALIZE_LITERALS",
 ]
 
 logger = logging.getLogger(__name__)
