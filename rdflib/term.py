@@ -76,6 +76,15 @@ if TYPE_CHECKING:
     from .namespace import NamespaceManager
     from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
+_HAS_HTML5LIB = False
+
+try:
+    import html5lib
+
+    _HAS_HTML5LIB = True
+except ImportError:
+    html5lib = None
+
 _SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
 
 logger = logging.getLogger(__name__)
@@ -1638,20 +1647,34 @@ def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
     return retval
 
 
-def _parseHTML(htmltext: str) -> xml.dom.minidom.DocumentFragment:  # noqa: N802
-    try:
-        import html5lib
-    except ImportError:
-        raise ImportError(
-            "HTML5 parser not available. Try installing"
-            + " html5lib <http://code.google.com/p/html5lib>"
-        )
+def _parse_html(lexical_form: str) -> xml.dom.minidom.DocumentFragment:
+    """
+    Parse the lexical form of an HTML literal into a document fragment
+    using the ``dom`` from html5lib tree builder.
+
+    :param lexical_form: The lexical form of the HTML literal.
+    :return: A document fragment representing the HTML literal.
+    :raises: `html5lib.html5parser.ParseError` if the lexical form is
+        not valid HTML.
+    """
     parser = html5lib.HTMLParser(
         tree=html5lib.treebuilders.getTreeBuilder("dom"), strict=True
     )
-    retval = parser.parseFragment(htmltext)
-    retval.normalize()
-    return retval
+    result: xml.dom.minidom.DocumentFragment = parser.parseFragment(lexical_form)
+    result.normalize()
+    return result
+
+
+def _write_html(value: xml.dom.minidom.DocumentFragment) -> bytes:
+    """
+    Serialize a document fragment representing an HTML literal into
+    its lexical form.
+
+    :param value: A document fragment representing an HTML literal.
+    :return: The lexical form of the HTML literal.
+    """
+    result = html5lib.serialize(value, tree="dom")
+    return result
 
 
 def _writeXML(  # noqa: N802
@@ -1967,13 +1990,20 @@ _GenericPythonToXSDRules: List[
     (Duration, (lambda i: duration_isoformat(i), _XSD_DURATION)),
     (timedelta, (lambda i: duration_isoformat(i), _XSD_DAYTIMEDURATION)),
     (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
-    # this is a bit dirty - by accident the html5lib parser produces
-    # DocumentFragments, and the xml parser Documents, letting this
-    # decide what datatype to use makes roundtripping easier, but it a
-    # bit random
-    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL)),
     (Fraction, (None, _OWL_RATIONAL)),
 ]
+
+if html5lib is not None:
+    # This is a bit dirty, by accident the html5lib parser produces
+    # DocumentFragments, and the xml parser Documents, letting this
+    # decide what datatype to use makes roundtripping easier, but it a
+    # bit random.
+    #
+    # This must happen before _GenericPythonToXSDRules is assigned to
+    # _OriginalGenericPythonToXSDRules.
+    _GenericPythonToXSDRules.append(
+        (xml.dom.minidom.DocumentFragment, (_write_html, _RDF_HTMLLITERAL))
+    )
 
 _OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
 
@@ -2025,8 +2055,12 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
-    _RDF_HTMLLITERAL: _parseHTML,
 }
+
+if html5lib is not None:
+    # It is probably best to keep this close to the definition of
+    # _GenericPythonToXSDRules so nobody misses it.
+    XSDToPython[_RDF_HTMLLITERAL] = _parse_html
 
 _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,

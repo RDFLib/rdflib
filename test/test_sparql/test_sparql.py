@@ -844,6 +844,23 @@ def test_operator_exception(
             ],
             id="select-group-concat-optional-many",
         ),
+        pytest.param(
+            """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT * WHERE {
+                BIND(STRDT("<body>", rdf:HTML) as ?tag1) # incorrectly disappearing literal
+                BIND("<body>" as ?tag2)                  # correctly appearing literal
+            }
+            """,
+            [
+                {
+                    Variable("tag1"): Literal("<body>", datatype=RDF.HTML),
+                    Variable("tag2"): Literal("<body>"),
+                }
+            ],
+            id="select-bind-strdt-html",
+        ),
     ],
 )
 def test_queries(
