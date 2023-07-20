@@ -71,8 +71,8 @@ Additional store plugins
 More store implementations are available in RDFLib extension projects: 
 
  * `rdflib-sqlalchemy <https://github.com/RDFLib/rdflib-sqlalchemy>`_ – a store which supports a wide-variety of RDBMS backends, 
- * `rdflib-leveldb <https://github.com/RDFLib/rdflib-leveldb>`_ – a store onto Google's `LevelDB <https://code.google.com/p/leveldb/>`_ key-value store. 
- * `rdflib-kyotocabinet <https://github.com/RDFLib/rdflib-kyotocabinet>`_ – a store onto the `Kyoto Cabinet <http://fallabs.com/kyotocabinet/>`_ key-value store. 
+ * `rdflib-leveldb <https://github.com/RDFLib/rdflib-leveldb>`_ – a store on top of Google's `LevelDB <https://code.google.com/p/leveldb/>`_ key-value store. 
+ * `rdflib-kyotocabinet <https://github.com/RDFLib/rdflib-kyotocabinet>`_ – a store on top of the `Kyoto Cabinet <http://fallabs.com/kyotocabinet/>`_ key-value store. 
 
 Example
 ^^^^^^^
