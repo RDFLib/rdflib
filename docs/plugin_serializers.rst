@@ -32,7 +32,7 @@ xml        :class:`~rdflib.plugins.serializers.rdfxml.XMLSerializer`
 
 JSON-LD
 -------
-JSON-LD - 'json-ld' - has been incorprated in rdflib since v6.0.0.
+JSON-LD - 'json-ld' - has been incorporated into RDFLib since v6.0.0.
 
 HexTuples
 ---------
@@ -43,3 +43,12 @@ Hextuple) will be an empty string.
 
 For context-aware (multi-graph) serialization, the 'graph' field of the default graph will be an empty string and 
 the values for other graphs will be Blank Node IDs or IRIs.
+
+Longturtle
+----------
+Longturtle is just the turtle format with newlines preferred over compactness - multiple nodes on the same line 
+to enhance the format's text file version control (think Git) friendliness - and more modern forms of prefix markers - 
+PREFIX instead of @prefix - to make it as similar to SPARQL as possible.
+
+Longturtle is Turtle 1.1 compliant and will work wherever ordinary turtle works, however some very old parsers don't 
+understand PREFIX, only @prefix...
