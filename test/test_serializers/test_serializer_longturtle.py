@@ -1,5 +1,6 @@
 import difflib
 from textwrap import dedent
+
 from rdflib import Graph, Namespace
 from rdflib.namespace import GEO, SDO
 
@@ -156,7 +157,8 @@ def test_longturtle():
                 ]
             }               
         """,
-        format="application/ld+json")
+        format="application/ld+json",
+    )
 
     # declare a few namespaces for Turtle
     g.bind("ex", Namespace("http://example.com/"))

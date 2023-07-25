@@ -180,8 +180,7 @@ class LongTurtleSerializer(RecursiveSerializer):
 
     def path(self, node, position, newline=False):
         if not (
-            self.p_squared(node, position)
-            or self.p_default(node, position, newline)
+            self.p_squared(node, position) or self.p_default(node, position, newline)
         ):
             raise Error("Cannot serialize node '%s'" % (node,))
 
@@ -206,7 +205,11 @@ class LongTurtleSerializer(RecursiveSerializer):
 
             return self.getQName(node, position == VERB) or node.n3()
 
-    def p_squared(self, node, position,):
+    def p_squared(
+        self,
+        node,
+        position,
+    ):
         if (
             not isinstance(node, BNode)
             or node in self._serialized
