@@ -155,7 +155,7 @@ def test_longturtle():
                         "value": "Maxov"
                     }
                 ]
-            }               
+            }
         """,
         format="application/ld+json",
     )
