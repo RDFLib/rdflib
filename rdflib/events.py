@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __doc__ = """
 Dirt Simple Events
 
@@ -23,10 +25,13 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
+
+from typing import Any, Dict, Optional
+
 __all__ = ["Event", "Dispatcher"]
 
 
-class Event(object):
+class Event:
     """
     An event is a container for attributes.  The source of an event
     creates this object, or a subclass, gives it any kind of data that
@@ -47,15 +52,15 @@ class Event(object):
         return "<rdflib.events.Event %s>" % ([a for a in attrs],)
 
 
-class Dispatcher(object):
+class Dispatcher:
     """
     An object that can dispatch events to a privately managed group of
     subscribers.
     """
 
-    _dispatch_map = None
+    _dispatch_map: Optional[Dict[Any, Any]] = None
 
-    def set_map(self, amap):
+    def set_map(self, amap: Dict[Any, Any]):
         self._dispatch_map = amap
         return self
 

@@ -22,24 +22,33 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
+from __future__ import annotations
 
 from codecs import getreader
+from typing import Any, MutableMapping, Optional
 
-from rdflib import ConjunctiveGraph
+from rdflib.exceptions import ParserError as ParseError
+from rdflib.graph import ConjunctiveGraph
+from rdflib.parser import InputSource
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import (
-    ParseError,
-    W3CNTriplesParser,
-    r_tail,
-    r_wspace,
-)
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_tail, r_wspace
+from rdflib.term import BNode
 
 __all__ = ["NQuadsParser"]
 
+_BNodeContextType = MutableMapping[str, BNode]
+
 
 class NQuadsParser(W3CNTriplesParser):
-    def parse(self, inputsource, sink, bnode_context=None, **kwargs):
+    # type error: Signature of "parse" incompatible with supertype "W3CNTriplesParser"
+    def parse(  # type: ignore[override]
+        self,
+        inputsource: InputSource,
+        sink: ConjunctiveGraph,
+        bnode_context: Optional[_BNodeContextType] = None,
+        **kwargs: Any,
+    ) -> ConjunctiveGraph:
         """
         Parse inputsource as an N-Quads file.
 
@@ -49,12 +58,15 @@ class NQuadsParser(W3CNTriplesParser):
         :param sink: where to send parsed triples
         :type bnode_context: `dict`, optional
         :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
-                              See `.NTriplesParser.parse`
+                              See `.W3CNTriplesParser.parse`
         """
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."
         )
-        self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+        # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
+        self.sink: ConjunctiveGraph = ConjunctiveGraph(  # type: ignore[assignment]
+            store=sink.store, identifier=sink.identifier
+        )
 
         source = inputsource.getCharacterStream()
         if not source:
@@ -77,7 +89,7 @@ class NQuadsParser(W3CNTriplesParser):
 
         return self.sink
 
-    def parseline(self, bnode_context=None):
+    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith(("#")):
             return  # The line is empty or a comment

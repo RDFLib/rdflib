@@ -28,7 +28,6 @@ class TriXSerializer(Serializer):
         encoding: Optional[str] = None,
         **args,
     ):
-
         nm = self.store.namespace_manager
 
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
@@ -47,7 +46,7 @@ class TriXSerializer(Serializer):
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)
         else:
-            raise Exception("Unknown graph type: " + type(self.store))
+            raise Exception(f"Unknown graph type: {type(self.store)}")
 
         self.writer.pop()
         stream.write("\n".encode("latin-1"))

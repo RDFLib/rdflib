@@ -12,7 +12,7 @@ well known attributes and qualities that can make it easier to reason about.
 
 ## Fetcher
 
-Files that originate from the internet should be downloaded using `fetcher.py`
+Files that originate from the internet should be downloaded using `fetcher.py`,
 so we can easily verify the integrity of the files by re-running `fetcher.py`.
 
 ```bash
@@ -27,3 +27,10 @@ so we can easily verify the integrity of the files by re-running `fetcher.py`.
 # only fetch files below path:
 .venv/bin/python3 test/data/fetcher.py test/data/suites
 ```
+
+For archives, if there is a `.patch` directory corresponding to the local path
+name (e.g. `test/data/suites/w3c/rdf-xml.patch` for
+`test/data/suites/w3c/rdf-xml`) then the content of the `.patch` directory will
+be copied into the local path after fetching the remote content. Patch
+directories should contain a README.md file that explains the reason for the
+patch content.

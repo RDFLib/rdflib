@@ -1,18 +1,22 @@
+from __future__ import annotations
+
 import os
 import shutil
 import sys
 import unittest
 from tempfile import mkdtemp, mkstemp
+from typing import Optional
 
 import pytest
 
 from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
+from rdflib.store import Store
 
 
 class ContextTestCase(unittest.TestCase):
     store = "default"
     slow = True
-    tmppath = None
+    tmppath: Optional[str] = None
 
     def setUp(self):
         try:
@@ -367,7 +371,7 @@ if __name__ == "__main__":
         pluginname = sys.argv[1]
 
 tests = 0
-for s in plugin.plugins(pluginname, plugin.Store):
+for s in plugin.plugins(pluginname, Store):
     if s.name in (
         "default",
         "Memory",

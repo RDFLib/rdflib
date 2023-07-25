@@ -1,9 +1,8 @@
-from rdflib import *
+from rdflib import RDF, BNode, Graph, Literal, Namespace
 from rdflib.collection import Collection
 
 
 def test_issue604():
-
     EX = Namespace("http://ex.co/")
     g = Graph()
     bn = BNode()

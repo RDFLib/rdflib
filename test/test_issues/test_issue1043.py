@@ -1,8 +1,9 @@
 import io
 import sys
 import unittest
+from test.utils.namespace import EGDO
 
-from rdflib import RDFS, XSD, Graph, Literal, Namespace
+from rdflib import RDFS, XSD, Graph, Literal
 
 
 class TestIssue1043(unittest.TestCase):
@@ -19,8 +20,7 @@ class TestIssue1043(unittest.TestCase):
         g = Graph()
         g.bind("xsd", XSD)
         g.bind("rdfs", RDFS)
-        n = Namespace("http://example.org/")
-        g.add((n.number, RDFS.label, Literal(0.00000004, datatype=XSD.decimal)))
+        g.add((EGDO.number, RDFS.label, Literal(0.00000004, datatype=XSD.decimal)))
         g.print()
         sys.stdout = sys.__stdout__
         self.assertEqual(capturedOutput.getvalue(), expected)

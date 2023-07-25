@@ -4,16 +4,17 @@ import os
 from pathlib import Path
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.utils import GraphHelper, get_unique_plugin_names
-from typing import Callable, Optional, Set
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
+from typing import Callable, Optional, Set, Tuple
 from urllib.error import HTTPError, URLError
 
 import pytest
 
-from rdflib import Graph, URIRef, plugin
+from rdflib import Graph, URIRef
 from rdflib.exceptions import ParserError
 from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
-from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import Store
 from rdflib.term import BNode
 
@@ -62,7 +63,7 @@ def test_property_namespace_manager() -> None:
 
 
 def get_store_names() -> Set[Optional[str]]:
-    names: Set[Optional[str]] = {*get_unique_plugin_names(plugin.Store)}
+    names: Set[Optional[str]] = {*get_unique_plugin_names(Store)}
     names.difference_update(
         {
             "default",
@@ -75,8 +76,6 @@ def get_store_names() -> Set[Optional[str]]:
         }
     )
     names.add(None)
-    if not has_bsddb:
-        names.remove("BerkeleyDB")
 
     logging.debug("names = %s", names)
     return names
@@ -275,7 +274,9 @@ def test_graph_intersection(make_graph: GraphFactory):
     assert (michel, likes, cheese) in g1
 
 
-def test_guess_format_for_parse(make_graph: GraphFactory):
+def test_guess_format_for_parse(
+    make_graph: GraphFactory, http_file_server: HTTPFileServer
+):
     graph = make_graph()
 
     # files
@@ -332,24 +333,61 @@ def test_guess_format_for_parse(make_graph: GraphFactory):
     graph.parse(data=rdf, format="xml")
 
     # URI
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(
+            (("Content-Type", "text/html; charset=UTF-8"),),
+            TEST_DATA_DIR / "html5lib_tests1.html",
+        ),
+    )
 
     # only getting HTML
     with pytest.raises(PluginException):
-        graph.parse(location="https://www.google.com")
-
-    try:
-        graph.parse(location="http://www.w3.org/ns/adms.ttl")
-        graph.parse(location="http://www.w3.org/ns/adms.rdf")
-    except (URLError, HTTPError):
-        # this endpoint is currently not available, ignore this test.
-        pass
-
+        graph.parse(location=file_info.request_url)
     try:
         # persistent Australian Government online RDF resource without a file-like ending
         graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
     except (URLError, HTTPError):
         # this endpoint is currently not available, ignore this test.
         pass
+
+
+@pytest.mark.parametrize(
+    ("file", "content_type", "expected_result"),
+    (
+        (TEST_DATA_DIR / "defined_namespaces/adms.rdf", "application/rdf+xml", 132),
+        (TEST_DATA_DIR / "defined_namespaces/adms.ttl", "text/turtle", 132),
+        (TEST_DATA_DIR / "defined_namespaces/adms.ttl", None, 132),
+        (
+            TEST_DATA_DIR / "defined_namespaces/adms.rdf",
+            None,
+            ExceptionChecker(
+                ParserError,
+                r"Could not guess RDF format .* from file extension so tried Turtle",
+            ),
+        ),
+    ),
+)
+def test_guess_format_for_parse_http(
+    make_graph: GraphFactory,
+    http_file_server: HTTPFileServer,
+    file: Path,
+    content_type: Optional[str],
+    expected_result: OutcomePrimitive[int],
+) -> None:
+    graph = make_graph()
+    headers: Tuple[Tuple[str, str], ...] = tuple()
+    if content_type is not None:
+        headers = (("Content-Type", content_type),)
+
+    file_info = http_file_server.add_file_with_caching(
+        ProtoFileResource(headers, file),
+        suffix=f"/{file.name}",
+    )
+    checker = OutcomeChecker.from_primitive(expected_result)
+    assert 0 == len(graph)
+    with checker.context():
+        graph.parse(location=file_info.request_url)
+        checker.check(len(graph))
 
 
 def test_parse_file_uri(make_graph: GraphFactory):

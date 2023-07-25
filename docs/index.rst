@@ -1,4 +1,4 @@
-.. rdflib documentation documentation master file
+.. rdflib documentation documentation main file
 
 ================
 rdflib |release|
@@ -26,6 +26,18 @@ RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_
 
   * both Queries and Updates are supported
 
+.. caution::
+
+   RDFLib is designed to access arbitrary network and file resources, in some
+   cases these are directly requested resources, in other cases they are
+   indirectly referenced resources.
+
+   If you are using RDFLib to process untrusted documents or queries you should
+   take measures to restrict file and network access.
+
+   For information on available security measures, see the RDFLib
+   :doc:`Security Considerations </security_considerations>`
+   documentation.
 
 Getting started
 ---------------
@@ -54,8 +66,10 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
    namespaces_and_bindings
    persistence
    merging
+   upgrade6to7
    upgrade5to6
    upgrade4to5
+   security_considerations
 
 
 Reference
@@ -77,6 +91,16 @@ API reference:
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 
+Versioning
+----------
+RDFLib follows `Semantic Versioning 2.0.0 <https://semver.org/spec/v2.0.0.html>`_, which can be summarized as follows:
+
+    Given a version number ``MAJOR.MINOR.PATCH``, increment the:
+
+    #. ``MAJOR`` version when you make incompatible API changes
+    #. ``MINOR`` version when you add functionality in a backwards-compatible
+        manner
+    #. ``PATCH`` version when you make backwards-compatible bug fixes
 
 For developers
 --------------
@@ -88,6 +112,8 @@ For developers
    docs
    persisting_n3_terms
    type_hints
+   CONTRIBUTING
+   decisions/index
 
 Source Code
 -----------
@@ -98,14 +124,20 @@ The RDFlib organisation on GitHub at `<https://github.com/RDFLib>`__ maintains t
 and RDFlib-related packaged that you might also find useful.
 
 
+.. _further_help_and_contact:
+
 Further help & Contact
 ----------------------
 
-If you would like more help with using rdflib, rather than developing it, please post a question on StackOverflow using
-the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept there at:
+If you would like help with using RDFlib, rather than developing it, please post
+a question on StackOverflow using the tag ``[rdflib]``. A list of existing
+``[rdflib]`` tagged questions can be found 
+`here <https://stackoverflow.com/questions/tagged/rdflib>`_.
 
-* `<https://stackoverflow.com/questions/tagged/rdflib>`__
+You might also like to join RDFlib's `dev mailing list
+<https://groups.google.com/group/rdflib-dev>`_ or use RDFLib's `GitHub
+discussions section <https://github.com/RDFLib/rdflib/discussions>`_.
 
-You might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
-
-The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via matrix `#RDFLib_rdflib:gitter.im <https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.
+The chat is available at `gitter <https://gitter.im/RDFLib/rdflib>`_ or via
+matrix `#RDFLib_rdflib:gitter.im
+<https://matrix.to/#/#RDFLib_rdflib:gitter.im>`_.

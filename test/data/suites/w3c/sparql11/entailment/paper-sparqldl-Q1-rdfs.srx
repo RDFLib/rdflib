@@ -9,11 +9,6 @@
   <results>
     <result>
       <binding name="c">
-        <uri>http://www.w3.org/2002/07/owl#Nothing</uri>
-      </binding>
-    </result>
-    <result>
-      <binding name="c">
         <uri>http://example.org/GraduateAssistant</uri>
       </binding>
     </result>

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 
 This module implements a parser and serializer for the CSV SPARQL result
@@ -9,23 +11,26 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 
 import codecs
 import csv
-from typing import IO
+from typing import IO, Dict, List, Optional, Union
 
-from rdflib import BNode, Literal, URIRef, Variable
+from rdflib.plugins.sparql.processor import SPARQLResult
 from rdflib.query import Result, ResultParser, ResultSerializer
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
 class CSVResultParser(ResultParser):
     def __init__(self):
         self.delim = ","
 
-    def parse(self, source, content_type=None):
-
+    # type error: Signature of "parse" incompatible with supertype "ResultParser"
+    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
         r = Result("SELECT")
 
+        # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
-            source = codecs.getreader("utf-8")(source)
+            # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
+            source = codecs.getreader("utf-8")(source)  # type: ignore[assignment]
 
         reader = csv.reader(source, delimiter=self.delim)
         r.vars = [Variable(x) for x in next(reader)]
@@ -36,14 +41,16 @@ class CSVResultParser(ResultParser):
 
         return r
 
-    def parseRow(self, row, v):
+    def parseRow(
+        self, row: List[str], v: List[Variable]
+    ) -> Dict[Variable, Union[BNode, URIRef, Literal]]:
         return dict(
             (var, val)
             for var, val in zip(v, [self.convertTerm(t) for t in row])
             if val is not None
         )
 
-    def convertTerm(self, t):
+    def convertTerm(self, t: str) -> Optional[Union[BNode, URIRef, Literal]]:
         if t == "":
             return None
         if t.startswith("_:"):
@@ -54,15 +61,14 @@ class CSVResultParser(ResultParser):
 
 
 class CSVResultSerializer(ResultSerializer):
-    def __init__(self, result):
+    def __init__(self, result: SPARQLResult):
         ResultSerializer.__init__(self, result)
 
         self.delim = ","
         if result.type != "SELECT":
             raise Exception("CSVSerializer can only serialize select query results")
 
-    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
-
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs) -> None:
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards
@@ -80,8 +86,12 @@ class CSVResultSerializer(ResultSerializer):
                 [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]  # type: ignore[union-attr]
             )
 
-    def serializeTerm(self, term, encoding):
+    def serializeTerm(
+        self, term: Optional[Identifier], encoding: str
+    ) -> Union[str, Identifier]:
         if term is None:
             return ""
+        elif isinstance(term, BNode):
+            return f"_:{term}"
         else:
             return term

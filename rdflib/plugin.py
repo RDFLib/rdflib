@@ -25,7 +25,7 @@ information.
 
 """
 
-import sys
+from importlib.metadata import EntryPoint, entry_points
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -39,6 +39,7 @@ from typing import (
     overload,
 )
 
+import rdflib.plugins.stores.berkeleydb
 from rdflib.exceptions import Error
 from rdflib.parser import Parser
 from rdflib.query import (
@@ -51,12 +52,15 @@ from rdflib.query import (
 from rdflib.serializer import Serializer
 from rdflib.store import Store
 
-if sys.version_info < (3, 8):
-    from importlib_metadata import EntryPoint, entry_points
-else:
-    from importlib.metadata import EntryPoint, entry_points
-
-__all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
+__all__ = [
+    "register",
+    "get",
+    "plugins",
+    "PluginException",
+    "Plugin",
+    "PluginT",
+    "PKGPlugin",
+]
 
 rdflib_entry_points = {
     "rdf.plugins.store": Store,
@@ -76,6 +80,7 @@ class PluginException(Error):
     pass
 
 
+#: A generic type variable for plugins
 PluginT = TypeVar("PluginT")
 
 
@@ -89,7 +94,7 @@ class Plugin(Generic[PluginT]):
         self.class_name = class_name
         self._class: Optional[Type[PluginT]] = None
 
-    def getClass(self) -> Type[PluginT]:
+    def getClass(self) -> Type[PluginT]:  # noqa: N802
         if self._class is None:
             module = __import__(self.module_path, globals(), locals(), [""])
             self._class = getattr(module, self.class_name)
@@ -103,7 +108,7 @@ class PKGPlugin(Plugin[PluginT]):
         self.ep = ep
         self._class: Optional[Type[PluginT]] = None
 
-    def getClass(self) -> Type[PluginT]:
+    def getClass(self) -> Type[PluginT]:  # noqa: N802
         if self._class is None:
             self._class = self.ep.load()
         return self._class
@@ -158,7 +163,7 @@ def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]:
 
 def plugins(
     name: Optional[str] = None, kind: Optional[Type[PluginT]] = None
-) -> Iterator[Plugin]:
+) -> Iterator[Plugin[PluginT]]:
     """
     A generator of the plugins.
 
@@ -170,6 +175,15 @@ def plugins(
 
 
 # Register Stores
+
+if rdflib.plugins.stores.berkeleydb.has_bsddb:
+    # Checks for BerkeleyDB before registering it
+    register(
+        "BerkeleyDB",
+        Store,
+        "rdflib.plugins.stores.berkeleydb",
+        "BerkeleyDB",
+    )
 register(
     "default",
     Store,
@@ -200,12 +214,7 @@ register(
     "rdflib.plugins.stores.concurrent",
     "ConcurrentStore",
 )
-register(
-    "BerkeleyDB",
-    Store,
-    "rdflib.plugins.stores.berkeleydb",
-    "BerkeleyDB",
-)
+
 register(
     "SPARQLStore",
     Store,

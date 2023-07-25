@@ -1,0 +1,2 @@
+_:Bd4e090fc58cd3d4498d5407842d9488b <http://example.org/#bar> <http://example.org/#baz> .
+<http://example.org/#foo> <http://example.org/#bar> _:Bd4e090fc58cd3d4498d5407842d9488b .

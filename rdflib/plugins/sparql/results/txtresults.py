@@ -1,12 +1,14 @@
-from typing import IO, List, Optional
+from typing import IO, List, Optional, Union
 
-from rdflib import BNode, Literal, URIRef
 from rdflib.namespace import NamespaceManager
 from rdflib.query import ResultSerializer
-from rdflib.term import Variable
+from rdflib.term import BNode, Literal, URIRef, Variable
 
 
-def _termString(t, namespace_manager: Optional[NamespaceManager]):
+def _termString(
+    t: Optional[Union[URIRef, Literal, BNode]],
+    namespace_manager: Optional[NamespaceManager],
+) -> str:
     if t is None:
         return "-"
     if namespace_manager:
@@ -26,12 +28,13 @@ class TXTResultSerializer(ResultSerializer):
     """
 
     # TODO FIXME: class specific args should be keyword only.
+    # type error: Signature of "serialize" incompatible with supertype "ResultSerializer"
     def serialize(  # type: ignore[override]
         self,
         stream: IO,
         encoding: str,
         namespace_manager: Optional[NamespaceManager] = None,
-    ):
+    ) -> None:
         """
         return a text table of query results
         """
@@ -50,13 +53,17 @@ class TXTResultSerializer(ResultSerializer):
             raise Exception("Can only pretty print SELECT results!")
 
         if not self.result:
-            return "(no results)\n"
+            # type error: No return value expected
+            return "(no results)\n"  # type: ignore[return-value]
         else:
-
             keys: List[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
             b = [
-                [_termString(r[k], namespace_manager) for k in keys]
+                # type error: Value of type "Union[Tuple[Node, Node, Node], bool, ResultRow]" is not indexable
+                # type error: Argument 1 to "_termString" has incompatible type "Union[Node, Any]"; expected "Union[URIRef, Literal, BNode, None]"  [arg-type]
+                # type error: No overload variant of "__getitem__" of "tuple" matches argument type "Variable"
+                # NOTE on type error: The problem here is that r can be more types than _termString expects because result can be a result of multiple types.
+                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index, arg-type, call-overload]
                 for r in self.result
             ]
             for r in b:

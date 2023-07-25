@@ -1,13 +1,10 @@
+import logging
 import re
 import socket
-import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from test.utils import helper
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from threading import Thread
 from typing import Callable, ClassVar, Type
 from unittest.mock import patch
@@ -16,7 +13,7 @@ import pytest
 
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
-from rdflib.plugins.stores.sparqlstore import SPARQLConnector
+from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
 
 
 class TestSPARQLStoreGraph:
@@ -55,30 +52,28 @@ class TestSPARQLStoreGraph:
         ), f"exception text {msg!r} does not match regex {pattern_str!r}"
 
 
-class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
+class TestSPARQLStoreFakeDBPedia:
     store_name = "SPARQLStore"
     path: ClassVar[str]
     httpmock: ClassVar[ServedBaseHTTPServerMock]
 
     @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
+    def setup_class(cls) -> None:
         cls.httpmock = ServedBaseHTTPServerMock()
         cls.path = f"{cls.httpmock.url}/sparql"
 
     @classmethod
-    def tearDownClass(cls) -> None:
-        super().tearDownClass()
+    def teardown_class(cls) -> None:
         cls.httpmock.stop()
 
-    def setUp(self):
+    def setup_method(self):
         self.httpmock.reset()
         self.graph = Graph(store="SPARQLStore")
         self.graph.open(self.path, create=True)
         ns = list(self.graph.namespaces())
         assert len(ns) > 0, ns
 
-    def tearDown(self):
+    def teardown_method(self):
         self.graph.close()
 
     def test_Query(self):
@@ -121,10 +116,10 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
             (mquery, _, _) = unpacker(*args, *kwargs)
             for _, uri in self.graph.namespaces():
                 assert mquery.count(f"<{uri}>") == 1
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
-        self.assertRegex(req.path, r"^/sparql")
-        self.assertIn(query, req.path_query["query"][0])
+        assert re.match(r"^/sparql", req.path)
+        assert query in req.path_query["query"][0]
 
     def test_initNs(self):
         query = """\
@@ -184,10 +179,10 @@ class SPARQLStoreFakeDBPediaTestCase(unittest.TestCase):
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
-        self.assertRegex(req.path, r"^/sparql")
-        self.assertIn(query, req.path_query["query"][0])
+        assert re.match(r"^/sparql", req.path)
+        assert query in req.path_query["query"][0]
 
     def test_noinitNs(self):
         query = """\
@@ -206,12 +201,12 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
                 {"Content-Type": ["text/plain"]},
             )
         )
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             self.graph.query(query)
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
-        self.assertRegex(req.path, r"^/sparql")
-        self.assertIn(query, req.path_query["query"][0])
+        assert re.match(r"^/sparql", req.path)
+        assert query in req.path_query["query"][0]
 
     def test_query_with_added_prolog(self):
         prologue = """\
@@ -271,10 +266,10 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
-        self.assertRegex(req.path, r"^/sparql")
-        self.assertIn(query, req.path_query["query"][0])
+        assert re.match(r"^/sparql", req.path)
+        assert query in req.path_query["query"][0]
 
     def test_query_with_added_rdf_prolog(self):
         prologue = """\
@@ -335,10 +330,10 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 1)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
-        self.assertRegex(req.path, r"^/sparql")
-        self.assertIn(query, req.path_query["query"][0])
+        assert re.match(r"^/sparql", req.path)
+        assert query in req.path_query["query"][0]
 
     def test_counting_graph_and_store_queries(self):
         query = """
@@ -401,15 +396,15 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
 
         assert count == 5, "SPARQLStore() didn't return 5 records"
 
-        self.assertEqual(self.httpmock.mocks[MethodName.GET].call_count, 2)
+        assert self.httpmock.mocks[MethodName.GET].call_count == 2
         for _ in range(2):
             req = self.httpmock.requests[MethodName.GET].pop(0)
-            self.assertRegex(req.path, r"^/sparql")
-            self.assertIn(query, req.path_query["query"][0])
+            assert re.match(r"^/sparql", req.path)
+            assert query in req.path_query["query"][0]
 
 
-class SPARQLStoreUpdateTestCase(unittest.TestCase):
-    def setUp(self):
+class TestSPARQLStoreUpdate:
+    def setup_method(self):
         port = self.setup_mocked_endpoint()
         self.graph = Graph(store="SPARQLUpdateStore", identifier=URIRef("urn:ex"))
         self.graph.open(
@@ -433,7 +428,7 @@ class SPARQLStoreUpdateTestCase(unittest.TestCase):
         # Start running mock server in a separate thread.
         # Daemon threads automatically shut down when the main process exits.
         mock_server_thread = Thread(target=mock_server.serve_forever)
-        mock_server_thread.setDaemon(True)
+        mock_server_thread.daemon = True
         mock_server_thread.start()
         print(
             "Started mocked sparql endpoint on http://localhost:{port}/".format(
@@ -442,7 +437,7 @@ class SPARQLStoreUpdateTestCase(unittest.TestCase):
         )
         return port
 
-    def tearDown(self):
+    def teardown_method(self):
         self.graph.close()
 
     def test_Query(self):
@@ -460,23 +455,22 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         print(body)
         ```
         """
-        contenttype = self.headers.get("Content-Type")
+        contenttype = [
+            part.strip() for part in f"{self.headers.get('Content-Type')}".split(";")
+        ]
+        logging.debug("contenttype = %s", contenttype)
         if self.path == "/query" or self.path == "/query?":
-            if self.headers.get("Content-Type") == "application/sparql-query":
+            if "application/sparql-query" in contenttype:
                 pass
-            elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
                 self.end_headers()
         elif self.path == "/update" or self.path == "/update?":
-            if self.headers.get("Content-Type") == "application/sparql-update":
+            if "application/sparql-update" in contenttype:
                 pass
-            elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
@@ -497,7 +491,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         return
 
 
-class SPARQLMockTests(unittest.TestCase):
+class TestSPARQLMock:
     def test_query(self):
         triples = {
             (RDFS.Resource, RDF.type, RDFS.Class),
@@ -538,7 +532,3 @@ class SPARQLMockTests(unittest.TestCase):
 
         for _, uri in graph.namespaces():
             assert query.count(f"<{uri}>") == 1
-
-
-if __name__ == "__main__":
-    unittest.main()

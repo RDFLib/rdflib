@@ -1,0 +1,333 @@
+Initial draft of test suite for SPARQL 1.1 Graph Store HTTP Protocol
+
+Let $HOST$ be the host where the Graph Store Protocol implementation is listening
+Let $GRAPHSTORE$ be the path of the URL of the graph store
+Let $NEWPATH$ be URL returned in the Location HTTP header
+
+Dashed lines separate HTTP message content, response messages are in the format:
+
+HTTP Status code
+Headers
+<space>
+Body
+
+------- Request (PUT - Initial state) -----------
+PUT /person/1.ttl HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+<http://$HOST$/person/1> a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:fn "John Doe" 
+    ]
+
+------- Response --------------------------------
+201 Created
+-------------------------------------------------
+
+---- Request (GET of PUT - Initial state) -------
+GET /person/1.ttl HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+------- Response --------------------------------
+200 OK
+Content-type: text/turtle
+
+<http://$HOST$/person/1> a foaf:Person;
+   foaf:businessCard [ 
+        a v:VCard;
+        v:fn "John Doe" 
+   ]
+-------------------------------------------------
+
+
+-- Request (PUT - graph already in store) -------
+PUT /person/1.ttl HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+<http://$HOST$/person/1> a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:fn "Jane Doe" 
+    ]
+------- Response ---------------------------------    
+200 OK
+--------------------------------------------------
+
+- Request (GET of PUT - graph already in store) --
+GET /person/1.ttl HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+<http://$HOST$/person/1> a foaf:Person;
+   foaf:businessCard [ 
+        a v:VCard;
+        v:fn "Jane Doe" 
+   ]
+--------------------------------------------------
+
+
+------- Request (PUT - default graph) ------------
+PUT $GRAPHSTORE$?default HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+[]  a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:given-name "Alice" 
+    ]
+
+------- Response ---------------------------------
+201 Created
+--------------------------------------------------
+
+--- Request (GET of PUT - default graph) ---------
+GET $GRAPHSTORE$?default HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+[]  a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:given-name "Alice" 
+    ]
+--------------------------------------------------
+
+
+--- Request (PUT - mismatched payload) -----------
+PUT /person/1.ttl HTTP/1.1
+Host: $HOST$
+Content-Type: application/rdf+xml
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+<http://$HOST$/person/1> a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:fn "Jane Doe" 
+    ]
+
+------- Response ---------------------------------
+400 Bad Request
+--------------------------------------------------
+
+
+------ Request (PUT - empty graph) ---------------
+PUT /person/2.ttl HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+------- Response ---------------------------------
+200 OK
+--------------------------------------------------
+
+------- Request (GET of PUT - empty graph) -------
+GET /person/2.ttl HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+--------------------------------------------------
+
+
+----- Request (DELETE - existing graph) ------
+DELETE /person/2.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+200 OK
+--------------------------------------------------
+
+- Request (GET of DELETE - existing graph) ---
+GET /person/2.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+404 Not Found
+--------------------------------------------------
+
+
+---- Request (DELETE - non-existent graph ) -----
+DELETE /person/2.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+404 Not Found
+--------------------------------------------------
+
+
+------ Request (POST - existing graph) ----------
+POST /person/1.ttl HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://$HOST$/person/1> foaf:name "Jane Doe" 
+
+------- Response ---------------------------------
+200 OK
+--------------------------------------------------
+
+--- Request (GET of POST - existing graph) ------
+GET /person/1.ttl HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+<http://$HOST$/person/1> a foaf:Person;
+    foaf:name "Jane Doe";
+    foaf:businessCard [ 
+        a v:VCard;
+        v:fn "Jane Doe" 
+    ]
+
+--------------------------------------------------
+
+------- Request (POST - multipart/form-data) ------
+POST /person/1.ttl HTTP/1.1
+Host: $HOST$
+Content-type: multipart/form-data, boundary=AaB03x
+
+--AaB03x
+content-disposition: form-data; name="graphs"
+Content-type: multipart/mixed, boundary=BbC04y
+
+--BbC04y
+Content-disposition: attachment; filename="lastName.ttl"
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+<http://$HOST$/person/1> foaf:familyName "Doe" 
+--BbC04y
+Content-disposition: attachment; filename="firstName.ttl"
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+<http://$HOST$/person/1> foaf:givenName  "Jane"
+--BbC04y
+--AaB03x
+------- Response ---------------------------------
+200 OK
+--------------------------------------------------
+
+--- Request (GET of POST - multipart/form-data) ---
+GET /person/1.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+<http://$HOST$/person/1> a foaf:Person;
+    foaf:name           "Jane Doe";
+    foaf:givenName      "Jane";
+    foaf:familyName     "Doe";
+    foaf:businessCard [ 
+        a               v:VCard;
+        v:fn            "Jane Doe" 
+    ]
+
+-------------------------------------------------
+
+
+---- Request (POST - create  new graph) ----------
+POST $GRAPHSTORE$ HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+[]  a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:given-name "Alice" 
+    ]
+------- Response ---------------------------------
+201 Created
+Location: $NEWPATH$
+--------------------------------------------------
+
+--- Request (GET of POST - create  new graph) ----
+GET $NEWPATH$ HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+[]  a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:given-name "Alice" 
+    ]
+--------------------------------------------------
+
+- Request (POST - empty graph to existing graph) -
+POST $NEWPATH$ HTTP/1.1
+Host: $HOST$
+Content-Type: text/turtle
+
+------- Response ---------------------------------
+204 No Content
+--------------------------------------------------
+
+--------- Request (GET of POST - after noop) -----
+GET $NEWPATH$ HTTP/1.1
+Host: $HOST$
+Accept: text/turtle; charset=utf-8
+
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+[]  a foaf:Person;
+    foaf:businessCard [ 
+        a v:VCard;
+        v:given-name "Alice" 
+    ]
+--------------------------------------------------
+
+------- Request (HEAD on an existing graph) ------
+HEAD /person/1.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+200 OK
+Content-type: text/turtle
+--------------------------------------------------
+
+--- Request (HEAD on a non-existing graph) -------
+HEAD /person/2.ttl HTTP/1.1
+Host: $HOST$
+------- Response ---------------------------------
+404 Not Found
+-------------------------------------------------

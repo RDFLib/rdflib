@@ -33,7 +33,6 @@ _SPACIOUS_OUTPUT = False
 
 
 class LongTurtleSerializer(RecursiveSerializer):
-
     short_name = "longturtle"
     indentString = "    "
 
@@ -58,7 +57,6 @@ class LongTurtleSerializer(RecursiveSerializer):
         if (prefix > "" and prefix[0] == "_") or self.namespaces.get(
             prefix, namespace
         ) != namespace:
-
             if prefix not in self._ns_rewrite:
                 p = "p" + prefix
                 while p in self.namespaces:
@@ -125,7 +123,7 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        except Exception:
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 
@@ -242,7 +240,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:

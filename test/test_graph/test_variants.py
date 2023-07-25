@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import json
 import logging
 import os
 import re
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from test.data import TEST_DATA_DIR
@@ -26,7 +27,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.util
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
 from rdflib.util import guess_format
@@ -51,9 +52,7 @@ class GraphAsserts:
     exact_match: bool = False
     has_subject_iris: Optional[List[str]] = None
 
-    def check(
-        self, first_graph: Optional[ConjunctiveGraph], graph: ConjunctiveGraph
-    ) -> None:
+    def check(self, first_graph: Optional[Dataset], graph: Dataset) -> None:
         """
         if `first_graph` is `None` then this is the first check before any
         other graphs have been processed.
@@ -69,6 +68,11 @@ class GraphAsserts:
                 if isinstance(subject, URIRef)
             }
             assert set(self.has_subject_iris) == subjects_iris
+
+    @classmethod
+    def from_path(cls, path: Path) -> GraphAsserts:
+        with path.open("r") as f:
+            return cls(**json.load(f))
 
 
 @dataclass(order=True)
@@ -123,9 +127,7 @@ class GraphVariants:
             else:
                 graph_variant = graph_varaint_dict[file_key]
             if variant_key.endswith("-asserts.json"):
-                graph_variant.asserts = GraphAsserts(
-                    **json.loads(file_path.read_text())
-                )
+                graph_variant.asserts = GraphAsserts.from_path(file_path)
             else:
                 graph_variant.variants[variant_key] = file_path
         return graph_varaint_dict
@@ -192,16 +194,6 @@ EXPECTED_FAILURES = {
     ),
 }
 
-if sys.platform == "win32":
-    EXPECTED_FAILURES["variants/diverse_triples"] = pytest.mark.xfail(
-        reason="""
-    Some encoding issue when parsing hext on windows:
-        >       return codecs.charmap_decode(input,self.errors,decoding_table)[0]
-        E       UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 356: character maps to <undefined>
-        """,
-        raises=UnicodeDecodeError,
-    )
-
 
 def tests_found() -> None:
     logging.debug("VARIANTS_DIR = %s", VARIANTS_DIR)
@@ -229,7 +221,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
     logging.debug("graph_variant = %s", graph_variant)
     public_id = URIRef(f"example:{graph_variant.key}")
     assert len(graph_variant.variants) > 0
-    first_graph: Optional[ConjunctiveGraph] = None
+    first_graph: Optional[Dataset] = None
     first_path: Optional[Path] = None
     logging.debug("graph_variant.asserts = %s", graph_variant.asserts)
 
@@ -237,7 +229,7 @@ def test_variants(graph_variant: GraphVariants) -> None:
         logging.debug("variant_path = %s", variant_path)
         format = guess_format(variant_path.name, fmap=SUFFIX_FORMAT_MAP)
         assert format is not None, f"could not determine format for {variant_path.name}"
-        graph = ConjunctiveGraph()
+        graph = Dataset()
         graph.parse(variant_path, format=format, publicID=public_id)
         # Stripping data types as different parsers (e.g. hext) have different
         # opinions of when a bare string is of datatype XSD.string or not.
@@ -249,8 +241,9 @@ def test_variants(graph_variant: GraphVariants) -> None:
             first_path = variant_path
         else:
             assert first_path is not None
-            GraphHelper.assert_isomorphic(
+            GraphHelper.assert_cgraph_isomorphic(
                 first_graph,
                 graph,
+                False,
                 f"checking {variant_path.relative_to(VARIANTS_DIR)} against {first_path.relative_to(VARIANTS_DIR)}",
             )

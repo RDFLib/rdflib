@@ -1,0 +1,36 @@
+<!-- all term types except rdf:XMLLiteral -->
+
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <uri>http://example.org/o</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <plainLiteral>object</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <plainLiteral xml:lang="en-uk">object</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">12</typedLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#string">object</typedLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/s</uri>
+      <uri>http://example.org/p</uri>
+      <id>blank</id>
+    </triple>
+  </graph>
+</TriX>

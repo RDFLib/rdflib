@@ -3,12 +3,16 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 (ndjson) files, into Conjunctive. The store that backs the graph *must* be able to
 handle contexts, i.e. multiple graphs.
 """
+from __future__ import annotations
+
 import json
 import warnings
-from typing import List, Union
+from io import TextIOWrapper
+from typing import Any, BinaryIO, List, Optional, TextIO, Union
 
-from rdflib import BNode, ConjunctiveGraph, Literal, URIRef
-from rdflib.parser import Parser
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.parser import InputSource, Parser
+from rdflib.term import BNode, Literal, URIRef
 
 __all__ = ["HextuplesParser"]
 
@@ -22,7 +26,7 @@ class HextuplesParser(Parser):
     def __init__(self):
         pass
 
-    def _load_json_line(self, line: str):
+    def _load_json_line(self, line: str) -> List[Optional[Any]]:
         # this complex handing is because the 'value' component is
         # allowed to be "" but not None
         # all other "" values are treated as None
@@ -32,7 +36,9 @@ class HextuplesParser(Parser):
             ret2[2] = ""
         return ret2
 
-    def _parse_hextuple(self, cg: ConjunctiveGraph, tup: List[Union[str, None]]):
+    def _parse_hextuple(
+        self, cg: ConjunctiveGraph, tup: List[Union[str, None]]
+    ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
@@ -66,11 +72,13 @@ class HextuplesParser(Parser):
         # 6 - context
         if tup[5] is not None:
             c = URIRef(tup[5])
-            cg.add((s, p, o, c))
+            # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+            cg.add((s, p, o, c))  # type: ignore[arg-type]
         else:
             cg.add((s, p, o))
 
-    def parse(self, source, graph, **kwargs):
+    # type error: Signature of "parse" incompatible with supertype "Parser"
+    def parse(self, source: InputSource, graph: Graph, **kwargs: Any) -> None:  # type: ignore[override]
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -85,12 +93,19 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
-        # handle different source types - only file and string (data) for now
-        if hasattr(source, "file"):
-            with open(source.file.name) as fp:
-                for l in fp:
-                    self._parse_hextuple(cg, self._load_json_line(l))
-        elif hasattr(source, "_InputSource__bytefile"):
-            if hasattr(source._InputSource__bytefile, "wrapped"):
-                for l in source._InputSource__bytefile.wrapped.strip().splitlines():
-                    self._parse_hextuple(cg, self._load_json_line(l))
+        text_stream: Optional[TextIO] = source.getCharacterStream()
+        if text_stream is None:
+            binary_stream: Optional[BinaryIO] = source.getByteStream()
+            if binary_stream is None:
+                raise ValueError(
+                    f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
+                )
+            text_stream = TextIOWrapper(binary_stream, encoding="utf-8")
+
+        for line in text_stream:
+            if len(line) == 0 or line.isspace():
+                # Skipping empty lines because this is what was being done before for the first and last lines, albeit in an rather indirect way.
+                # The result is that we accept input that would otherwise be invalid.
+                # Possibly we should just let this result in an error.
+                continue
+            self._parse_hextuple(cg, self._load_json_line(line))

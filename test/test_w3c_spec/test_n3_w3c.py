@@ -21,7 +21,6 @@ def n3(test: RDFTest):
     g = Graph()
 
     try:
-
         base = "https://w3c.github.io/N3/tests/N3Tests/" + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format="n3")
@@ -56,7 +55,7 @@ def n3(test: RDFTest):
                 res.serialize(),
             )
 
-    except:
+    except Exception:
         if test.syntax:
             raise
 

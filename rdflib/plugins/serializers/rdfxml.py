@@ -135,7 +135,6 @@ class XMLSerializer(Serializer):
                 % (indent, qname, attributes, escape(object, ESCAPE_ENTITIES), qname)
             )
         else:
-
             if isinstance(object, BNode):
                 write('%s<%s rdf:nodeID="%s"/>\n' % (indent, qname, object))
             else:
@@ -190,7 +189,8 @@ class PrettyXMLSerializer(Serializer):
         )
 
         for predicate in possible:
-            prefix, namespace, local = nm.compute_qname_strict(predicate)
+            # type error: Argument 1 to "compute_qname_strict" of "NamespaceManager" has incompatible type "Node"; expected "str"
+            prefix, namespace, local = nm.compute_qname_strict(predicate)  # type: ignore[arg-type]
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -206,7 +206,8 @@ class PrettyXMLSerializer(Serializer):
 
         subject: IdentifiedNode
         # Write out subjects that can not be inline
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if (None, None, subject) in store:
                 if (subject, None, subject) in store:
                     self.subject(subject, 1)
@@ -217,7 +218,8 @@ class PrettyXMLSerializer(Serializer):
         # write out BNodes last (to ensure they can be inlined where possible)
         bnodes = set()
 
-        for subject in store.subjects():
+        # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
+        for subject in store.subjects():  # type: ignore[assignment]
             if isinstance(subject, BNode):
                 bnodes.add(subject)
                 continue
@@ -249,8 +251,9 @@ class PrettyXMLSerializer(Serializer):
             type = first(store.objects(subject, RDF.type))
 
             try:
-                self.nm.qname(type)
-            except:
+                # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname(type)  # type: ignore[arg-type]
+            except Exception:
                 type = None
 
             element = type or RDFVOC.Description
@@ -306,7 +309,6 @@ class PrettyXMLSerializer(Serializer):
                 writer.text(object)
 
         elif object in self.__serialized or not (object, None, None) in store:
-
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDFVOC.nodeID, fix(object))
@@ -334,7 +336,6 @@ class PrettyXMLSerializer(Serializer):
                 col = Collection(store, object)
 
                 for item in col:
-
                     if isinstance(item, URIRef):
                         self.forceRDFAbout.add(item)
                     self.subject(item)
@@ -353,7 +354,6 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(object, depth + 1)
 
                 elif isinstance(object, BNode):
-
                     if (
                         object not in self.__serialized
                         and (object, None, None) in store

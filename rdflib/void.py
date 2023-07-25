@@ -1,7 +1,8 @@
 import collections
 
-from rdflib import Graph, Literal, URIRef
+from rdflib.graph import Graph
 from rdflib.namespace import RDF, VOID
+from rdflib.term import Literal, URIRef
 
 
 def generateVoID(  # noqa: N802
@@ -45,7 +46,6 @@ def generateVoID(  # noqa: N802
     propObjects = collections.defaultdict(set)  # noqa: N806
 
     for s, p, o in g:
-
         triples += 1
         subjects.add(s)
         properties.add(p)
@@ -109,7 +109,6 @@ def generateVoID(  # noqa: N802
         res.add((part, VOID.property, p))
 
         if distinctForPartitions:
-
             entities = 0
             propClasses = set()  # noqa: N806
             for s in propSubjects[p]:

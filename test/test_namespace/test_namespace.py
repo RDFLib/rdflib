@@ -1,13 +1,11 @@
-import unittest
-from contextlib import ExitStack
-from typing import Any, Optional, Type, Union
-from unittest.case import expectedFailure
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
+from typing import Any, Optional
 from warnings import warn
 
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import BNode, Graph, Literal
+from rdflib.graph import Graph
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -19,10 +17,10 @@ from rdflib.namespace import (
     Namespace,
     URIPattern,
 )
-from rdflib.term import URIRef
+from rdflib.term import BNode, Literal, URIRef
 
 
-class NamespaceTest(unittest.TestCase):
+class TestNamespace:
     def setup_method(self, method):
         self.ns_str = "http://example.com/name/space/"
         self.ns = Namespace(self.ns_str)
@@ -48,7 +46,7 @@ class NamespaceTest(unittest.TestCase):
         assert ns["jörn"].startswith(ns)
 
 
-class ClosedNamespaceTest(unittest.TestCase):
+class TestClosedNamespace:
     def setup_method(self, method):
         self.ns_str = "http://example.com/name/space/"
         self.ns = ClosedNamespace(self.ns_str, ["a", "b", "c"])
@@ -57,7 +55,7 @@ class ClosedNamespaceTest(unittest.TestCase):
         # NOTE: this assumes ns_str has no characthers that need escaping
         assert self.ns_str in f"{self.ns!r}"
 
-    @expectedFailure
+    @pytest.mark.xfail
     def test_repr_ef(self):
         """
         This fails because ClosedNamespace repr does not represent the second argument
@@ -267,29 +265,29 @@ class TestNamespacePrefix:
         g = Graph()
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(URIRef("urn:example")) == None
+            assert g.namespace_manager.expand_curie(URIRef("urn:example")) is None
         assert str(e.value) == "Argument must be a string, not URIRef."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Literal("rdf:type")) == None
+            assert g.namespace_manager.expand_curie(Literal("rdf:type")) is None
         assert str(e.value) == "Argument must be a string, not Literal."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(BNode()) == None
+            assert g.namespace_manager.expand_curie(BNode()) is None
         assert str(e.value) == "Argument must be a string, not BNode."
 
         with pytest.raises(TypeError) as e:
-            assert g.namespace_manager.expand_curie(Graph()) == None
+            assert g.namespace_manager.expand_curie(Graph()) is None  # type: ignore[arg-type]
         assert str(e.value) == "Argument must be a string, not Graph."
 
     @pytest.mark.parametrize(
         ["curie", "expected_result"],
         [
             ("ex:tarek", URIRef("urn:example:tarek")),
-            ("ex:", URIRef(f"urn:example:")),
-            ("ex:a", URIRef(f"urn:example:a")),
-            ("ex:a:b", URIRef(f"urn:example:a:b")),
-            ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
+            ("ex:", URIRef("urn:example:")),
+            ("ex:a", URIRef("urn:example:a")),
+            ("ex:a:b", URIRef("urn:example:a:b")),
+            ("ex:a:b:c", URIRef("urn:example:a:b:c")),
             ("ex", ValueError),
             ("em:tarek", ValueError),
             ("em:", ValueError),
@@ -308,22 +306,15 @@ class TestNamespacePrefix:
         ],
     )
     def test_expand_curie(
-        self, curie: Any, expected_result: Union[Type[Exception], URIRef, None]
+        self, curie: Any, expected_result: OutcomePrimitive[URIRef]
     ) -> None:
         g = Graph(bind_namespaces="none")
         nsm = g.namespace_manager
         nsm.bind("ex", "urn:example:")
-        result: Optional[URIRef] = None
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            result = g.namespace_manager.expand_curie(curie)
 
-        if catcher is not None:
-            assert result is None
-            assert catcher.value is not None
-        else:
-            assert expected_result == result
+        checker = OutcomeChecker.from_primitive(expected_result)
+
+        result: Optional[URIRef] = None
+        with checker.context():
+            result = g.namespace_manager.expand_curie(curie)
+            checker.check(result)

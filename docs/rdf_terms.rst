@@ -17,68 +17,11 @@ Class hierarchy
 All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class. A class diagram of the various terms is:
 
 .. _term_class_hierarchy:
-.. kroki::
-   :caption: Term Class Hierarchy
-   :type: plantuml
+.. figure:: /_static/term_class_hierarchy.svg
+   :alt: Term Class Hierarchy
 
-    @startuml
-    skinparam shadowing false
-    skinparam monochrome true
-    skinparam packageStyle rectangle
-    skinparam backgroundColor FFFFFE
-    
-    class Node
-    
-    class Identifier {
-        eq(other) -> bool
-        neq(other) -> bool
-        startswith(prefix: str, start, end) -> bool
-    }
-    Identifier -up-|> Node
-    
-    class IdentifiedNode {
-        toPython() -> str
-    }
-    IdentifiedNode -up-|> Identifier
-    
-    class URIRef {
-        n3(namespace_manager) -> str
-        defrag() -> URIRef
-        de_skolemize() -> BNode
-    }
-    URIRef -up-|> IdentifiedNode
-    
-    
-    class Genid
-    Genid -up-|> URIRef
-    
-    class RDFLibGenid
-    RDFLibGenid -up-|> Genid
-    
-    class BNode {
-        n3(namespace_manager) -> str
-        skolemize(authority, basepath) -> RDFLibGenid
-    }
-    BNode -up-|> IdentifiedNode
-    
-    class Literal {
-        datatype: Optional[str]
-        lang: Optional[str]
-        value: Any
-    
-        normalize() -> Literal
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Literal -up-|> Identifier
-    
-    class Variable {
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Variable -up-|> Identifier
-    
-    @enduml
+   Term Class Hierarchy
+
 
 Nodes are a subset of the Terms that underlying stores actually persist.
 
@@ -191,7 +134,7 @@ A literal in an RDF graph contains one or two named components.
     
 All literals have a lexical form being a Unicode string, which SHOULD be in Normal Form C.
     
-Plain literals have a lexical form and optionally a language tag as defined by :rfc:`3066`, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__init__`.
+Plain literals have a lexical form and optionally a language tag as defined by :rfc:`3066`, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__new__`.
     
 Typed literals have a lexical form and a datatype URI being an RDF URI reference.
     
@@ -207,7 +150,7 @@ Common XSD datatypes
 ^^^^^^^^^^^^^^^^^^^^
 
 Most simple literals such as *string* or *integer* have XML Schema (XSD) datatypes defined for them, see the figure 
-below. Additionally, these XSD datatypes are listed in the :class:`XSD Namespace class <rdflib.XSD>` that 
+below. Additionally, these XSD datatypes are listed in the :class:`XSD Namespace class <rdflib.namespace.XSD>` that 
 ships with RDFLib, so many Python code editors will prompt you with autocomplete for them when using it.
 
 Remember, you don't *have* to use XSD datatypes and can always make up your own, as GeoSPARQL does, as described above.

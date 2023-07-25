@@ -16,10 +16,11 @@
 	:dawg-drop-all-01
    ).
 
-:dawg-drop-default-01 a ut:UpdateEvaluationTest ;
+:dawg-drop-default-01 a mf:UpdateEvaluationTest ;
     mf:name    "DROP DEFAULT" ;
     rdfs:comment "This is a DROP of the default graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [
     			ut:request <drop-default-01.ru> ; 
                 ut:data <drop-default.ttl> ;
@@ -36,10 +37,11 @@
               ] ;
     .
 
-:dawg-drop-graph-01 a ut:UpdateEvaluationTest ;
+:dawg-drop-graph-01 a mf:UpdateEvaluationTest ;
     mf:name    "DROP GRAPH" ;
     rdfs:comment "This is a DROP of an existing named graph" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [
     			ut:request <drop-graph-01.ru> ; 
                 ut:data <drop-default.ttl> ;
@@ -55,10 +57,11 @@
               ] ;
     .
 
-:dawg-drop-named-01 a ut:UpdateEvaluationTest ;
+:dawg-drop-named-01 a mf:UpdateEvaluationTest ;
     mf:name    "DROP NAMED" ;
     rdfs:comment "This is a DROP of all the named graphs" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [
     			ut:request <drop-named-01.ru> ; 
                 ut:data <drop-default.ttl> ;
@@ -72,10 +75,11 @@
               ] ;
     .
 
-:dawg-drop-all-01 a ut:UpdateEvaluationTest ;
+:dawg-drop-all-01 a mf:UpdateEvaluationTest ;
     mf:name    "DROP ALL" ;
     rdfs:comment "This is a DROP of all graphs (default and named)" ;
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
     mf:action [
     			ut:request <drop-all-01.ru> ; 
                 ut:data <drop-default.ttl> ;

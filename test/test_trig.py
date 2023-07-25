@@ -1,5 +1,4 @@
 import re
-import unittest
 
 import rdflib
 
@@ -124,11 +123,7 @@ def test_graph_parsing():
     assert len(list(g.contexts())) == 2
 
 
-@unittest.skipIf(
-    True, "Iterative serialization currently produces 16 copies of everything"
-)
 def test_round_trips():
-
     data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
 
@@ -141,7 +136,7 @@ def test_round_trips():
     g = rdflib.ConjunctiveGraph()
     for i in range(5):
         g.parse(data=data, format="trig")
-        data = g.serialize(format="trig").decode()
+        data = g.serialize(format="trig")
 
     # output should only contain 1 mention of each resource/graph name
     assert data.count("thing_a") == 1
@@ -167,7 +162,6 @@ def test_default_graph_serializes_without_name():
 
 
 def test_prefixes():
-
     data = """
     @prefix ns1: <http://ex.org/schema#> .
     <http://ex.org/docs/document1> = {
@@ -187,3 +181,9 @@ def test_prefixes():
     assert "ns2: <http://ex.org/docs/".encode("latin-1") in data, data
     assert "<ns2:document1>".encode("latin-1") not in data, data
     assert "ns2:document1".encode("latin-1") in data, data
+
+
+def test_issue_2154():
+    ds = rdflib.Dataset()
+    sg = ds.serialize(format="trig")
+    assert "prefix" not in sg, sg

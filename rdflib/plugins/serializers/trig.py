@@ -3,18 +3,19 @@ Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
-from collections import defaultdict
-from typing import IO, TYPE_CHECKING, Optional, Union
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
 
+if TYPE_CHECKING:
+    from rdflib.graph import _ContextType, _SubjectType
+
 __all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
-
     short_name = "trig"
     indentString = 4 * " "
 
@@ -33,25 +34,29 @@ class TrigSerializer(TurtleSerializer):
 
         super(TrigSerializer, self).__init__(store)
 
-    def preprocess(self):
+    def preprocess(self) -> None:
         for context in self.contexts:
+            # do not write unnecessary prefix (ex: for an empty default graph)
+            if len(context) == 0:
+                continue
             self.store = context
             self.getQName(context.identifier)
-            self._references = defaultdict(int)
             self._subjects = {}
 
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context] = (
-                self.orderSubjects(),
-                self._subjects,
-                self._references,
-            )
+            for subject in self._subjects.keys():
+                self._references[subject] += 1
 
-    def reset(self):
+            self._contexts[context] = (self.orderSubjects(), self._subjects)
+
+    def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts = {}
+        self._contexts: Dict[
+            _ContextType,
+            Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
+        ] = {}
 
     def serialize(
         self,
@@ -77,11 +82,10 @@ class TrigSerializer(TurtleSerializer):
         self.startDocument()
 
         firstTime = True
-        for store, (ordered_subjects, subjects, ref) in self._contexts.items():
+        for store, (ordered_subjects, subjects) in self._contexts.items():
             if not ordered_subjects:
                 continue
 
-            self._references = ref
             self._serialized = {}
             self.store = store
             self._subjects = subjects
@@ -95,7 +99,8 @@ class TrigSerializer(TurtleSerializer):
                 else:
                     iri = self.getQName(store.identifier)
                     if iri is None:
-                        iri = store.identifier.n3()
+                        # type error: "IdentifiedNode" has no attribute "n3"
+                        iri = store.identifier.n3()  # type: ignore[attr-defined]
                 self.write(self.indent() + "\n%s {" % iri)
 
             self.depth += 1
