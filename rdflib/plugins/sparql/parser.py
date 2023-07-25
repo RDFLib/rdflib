@@ -3,9 +3,13 @@ SPARQL 1.1 Parser
 
 based on pyparsing
 """
+from __future__ import annotations
 
 import re
 import sys
+from typing import Any, BinaryIO, List
+from typing import Optional as OptionalType
+from typing import TextIO, Tuple, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -15,7 +19,6 @@ from pyparsing import (
     Literal,
     OneOrMore,
     Optional,
-    ParseException,
     ParseResults,
     Regex,
     Suppress,
@@ -28,7 +31,7 @@ import rdflib
 from rdflib.compat import decodeUnicodeEscape
 
 from . import operators as op
-from .parserutils import Comp, Param, ParamList
+from .parserutils import Comp, CompValue, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
@@ -38,25 +41,25 @@ DEBUG = False
 # ---------------- ACTIONS
 
 
-def neg(literal):
+def neg(literal: rdflib.Literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
-def setLanguage(terms):
+def setLanguage(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], lang=terms[1])
 
 
-def setDataType(terms):
+def setDataType(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 
-def expandTriples(terms):
+def expandTriples(terms: ParseResults) -> List[Any]:
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
     # import pdb; pdb.set_trace()
     try:
-        res = []
+        res: List[Any] = []
         if DEBUG:
             print("Terms", terms)
         l_ = len(terms)
@@ -95,7 +98,7 @@ def expandTriples(terms):
         #       "Length of triple-list is not divisible by 3: %d!"%len(res)
 
         # return [tuple(res[i:i+3]) for i in range(len(res)/3)]
-    except:
+    except:  # noqa: E722
         if DEBUG:
             import traceback
 
@@ -103,7 +106,7 @@ def expandTriples(terms):
         raise
 
 
-def expandBNodeTriples(terms):
+def expandBNodeTriples(terms: ParseResults) -> List[Any]:
     """
     expand [ ?p ?o ] syntax for implicit bnodes
     """
@@ -120,14 +123,14 @@ def expandBNodeTriples(terms):
         raise
 
 
-def expandCollection(terms):
+def expandCollection(terms: ParseResults) -> List[List[Any]]:
     """
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
         print("Collection: ", terms)
 
-    res = []
+    res: List[Any] = []
     other = []
     for x in terms:
         if isinstance(x, list):  # is this a [ .. ] ?
@@ -225,13 +228,6 @@ PN_LOCAL = Regex(
     % dict(PN_CHARS_U=PN_CHARS_U_re, PN_CHARS=PN_CHARS_re, PLX=PLX_re),
     flags=re.X | re.UNICODE,
 )
-
-
-def _hexExpand(match):
-    return chr(int(match.group(0)[1:], 16))
-
-
-PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -1487,7 +1483,7 @@ DescribeQuery = Comp(
     "DescribeQuery",
     Keyword("DESCRIBE")
     + (OneOrMore(ParamList("var", VarOrIri)) | "*")
-    + Param("datasetClause", ZeroOrMore(DatasetClause))
+    + ZeroOrMore(ParamList("datasetClause", DatasetClause))
     + Optional(WhereClause)
     + SolutionModifier
     + ValuesClause,
@@ -1516,25 +1512,27 @@ QueryUnit.ignore("#" + restOfLine)
 UpdateUnit.ignore("#" + restOfLine)
 
 
-expandUnicodeEscapes_re = re.compile(r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I)
+expandUnicodeEscapes_re: re.Pattern = re.compile(
+    r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I
+)
 
 
-def expandUnicodeEscapes(q):
+def expandUnicodeEscapes(q: str) -> str:
     r"""
     The syntax of the SPARQL Query Language is expressed over code points in Unicode [UNICODE]. The encoding is always UTF-8 [RFC3629].
     Unicode code points may also be expressed using an \ uXXXX (U+0 to U+FFFF) or \ UXXXXXXXX syntax (for U+10000 onwards) where X is a hexadecimal digit [0-9A-F]
     """
 
-    def expand(m):
+    def expand(m: re.Match) -> str:
         try:
             return chr(int(m.group(1), 16))
-        except:
-            raise Exception("Invalid unicode code point: " + m)
+        except (ValueError, OverflowError) as e:
+            raise ValueError("Invalid unicode code point: " + m.group(1)) from e
 
     return expandUnicodeEscapes_re.sub(expand, q)
 
 
-def parseQuery(q):
+def parseQuery(q: Union[str, bytes, TextIO, BinaryIO]) -> ParseResults:
     if hasattr(q, "read"):
         q = q.read()
     if isinstance(q, bytes):
@@ -1544,7 +1542,7 @@ def parseQuery(q):
     return Query.parseString(q, parseAll=True)
 
 
-def parseUpdate(q):
+def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]) -> CompValue:
     if hasattr(q, "read"):
         q = q.read()
 

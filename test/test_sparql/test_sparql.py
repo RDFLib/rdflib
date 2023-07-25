@@ -1,5 +1,7 @@
 import logging
 from test.utils import eq_
+from test.utils.namespace import EGDC
+from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
@@ -15,10 +17,10 @@ from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
-from rdflib.plugins.sparql.parser import parseQuery
+from rdflib.plugins.sparql.parser import expandUnicodeEscapes, parseQuery
 from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
-from rdflib.query import Result
+from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
 
 
@@ -64,7 +66,6 @@ def test_graph_prefix():
 
 
 def test_variable_order():
-
     g = Graph()
     g.add((URIRef("http://foo"), URIRef("http://bar"), URIRef("http://baz")))
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
@@ -90,8 +91,40 @@ def test_sparql_bnodelist():
     prepareQuery("select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }")
 
 
-def test_complex_sparql_construct():
+@pytest.mark.xfail(
+    raises=AssertionError,
+    reason="Object lists combined with predicate-object lists does not seem to work.",
+)
+def test_sparql_polist():
+    """
 
+    syntax tests for equivalence object and predicate-object lists
+
+    """
+
+    g = Graph()
+    g.parse(
+        data="""
+    @prefix : <urn:ns1:> .
+    :s :p [ :v 1 ], [ :v 2].
+    """,
+        format="turtle",
+    )
+
+    qres1 = g.query("PREFIX : <urn:ns1:> select * where { ?s :p [ ], [ ] . }")
+    qres2 = g.query("PREFIX : <urn:ns1:> select * where { ?s :p [ ]; :p [ ] . }")
+    assert_bindings_collections_equal(qres1.bindings, qres2.bindings)
+
+    qres3 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ], [ :v ?v2] . }"
+    )
+    qres4 = g.query(
+        "PREFIX : <urn:ns1:> select ?v1 ?v2 where { ?s :p [ :v ?v1 ]; :p [ :v ?v2 ] . }"
+    )
+    assert_bindings_collections_equal(qres3.bindings, qres4.bindings)
+
+
+def test_complex_sparql_construct():
     g = Graph()
     q = """select ?subject ?study ?id where {
     ?s a <urn:Person>;
@@ -303,6 +336,7 @@ def test_call_function() -> None:
     assert result.type == "SELECT"
     rows = list(result)
     assert len(rows) == 1
+    assert isinstance(rows[0], ResultRow)
     assert len(rows[0]) == 1
     assert rows[0][0] == Literal("a + b")
 
@@ -311,9 +345,8 @@ def test_custom_eval() -> None:
     """
     SPARQL custom eval function works as expected.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
-    custom_function_result = eg["result"]
+    custom_function_uri = EGDC["function"]
+    custom_function_result = EGDC["result"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -353,6 +386,7 @@ def test_custom_eval() -> None:
         assert result.type == "SELECT"
         rows = list(result)
         assert len(rows) == 1
+        assert isinstance(rows[0], ResultRow)
         assert len(rows[0]) == 2
         assert rows[0][0] == Literal("a + b")
         assert rows[0][1] == custom_function_result
@@ -383,8 +417,7 @@ def test_custom_eval_exception(
     Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
     query propagates to the caller.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
+    custom_function_uri = EGDC["function"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -811,6 +844,23 @@ def test_operator_exception(
             ],
             id="select-group-concat-optional-many",
         ),
+        pytest.param(
+            """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT * WHERE {
+                BIND(STRDT("<body>", rdf:HTML) as ?tag1) # incorrectly disappearing literal
+                BIND("<body>" as ?tag2)                  # correctly appearing literal
+            }
+            """,
+            [
+                {
+                    Variable("tag1"): Literal("<body>", datatype=RDF.HTML),
+                    Variable("tag2"): Literal("<body>"),
+                }
+            ],
+            id="select-bind-strdt-html",
+        ),
     ],
 )
 def test_queries(
@@ -831,3 +881,117 @@ def test_queries(
     result = rdfs_graph.query(query)
     logging.debug("result = %s", result)
     assert expected_bindings == result.bindings
+
+
+@pytest.mark.parametrize(
+    ["query_string", "expected_subjects", "expected_size"],
+    [
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class
+            """,
+            {RDFS.Class},
+            5,
+            id="1-explicit",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="2-explict",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf owl:Class
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="3-explict-1-missing",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?prop
+            WHERE {
+                ?prop a rdf:Property
+            }
+            """,
+            {
+                RDFS.seeAlso,
+                RDFS.member,
+                RDFS.subPropertyOf,
+                RDFS.subClassOf,
+                RDFS.domain,
+                RDFS.range,
+                RDFS.label,
+                RDFS.comment,
+                RDFS.isDefinedBy,
+            },
+            55,
+            id="1-var",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype},
+            5,
+            id="2-var-1-projected",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s rdfs:Class
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype, RDFS.Class},
+            10,
+            id="2-var-1-projected-1-explicit",
+        ),
+        pytest.param("DESCRIBE ?s", set(), 0, id="empty"),
+    ],
+)
+def test_sparql_describe(
+    query_string: str,
+    expected_subjects: set,
+    expected_size: int,
+    rdfs_graph: Graph,
+) -> None:
+    """
+    Check results of DESCRIBE queries against rdfs.ttl to ensure
+    the subjects described and the number of triples returned are correct.
+    """
+    r = rdfs_graph.query(query_string)
+    assert r.graph is not None
+    subjects = {s for s in r.graph.subjects() if not isinstance(s, BNode)}
+    assert subjects == expected_subjects
+    assert len(r.graph) == expected_size
+
+
+@pytest.mark.parametrize(
+    "arg, expected_result, expected_valid",
+    [
+        ("abc", "abc", True),
+        ("1234", "1234", True),
+        (r"1234\u0050", "1234P", True),
+        (r"1234\u00e3", "1234\u00e3", True),
+        (r"1234\u00e3\u00e5", "1234ãå", True),
+        (r"1234\u900000e5", "", False),
+        (r"1234\u010000e5", "", False),
+        (r"1234\u001000e5", "1234\U001000e5", True),
+    ],
+)
+def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: bool):
+    if expected_valid:
+        actual_result = expandUnicodeEscapes(arg)
+        assert actual_result == expected_result
+    else:
+        with pytest.raises(ValueError, match="Invalid unicode code point"):
+            _ = expandUnicodeEscapes(arg)

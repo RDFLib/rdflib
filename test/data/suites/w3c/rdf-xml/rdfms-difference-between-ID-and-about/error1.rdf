@@ -11,7 +11,7 @@
   $Id: error1.rdf,v 1.2 2001/09/06 21:23:35 barstow Exp $
 -->
 <!-- 
-Base URI: http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/error1.rdf
+Base URI: http://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/error1.rdf
 
 This is illegal RDF: two elements cannot use the same ID. 
 -->

@@ -1,10 +1,5 @@
-from test.utils.httpservermock import (
-    BaseHTTPServerMock,
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-    ctx_http_server,
-)
+from test.utils.http import MethodName, MockHTTPResponse, ctx_http_handler
+from test.utils.httpservermock import BaseHTTPServerMock, ServedBaseHTTPServerMock
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -13,7 +8,7 @@ import pytest
 
 def test_base() -> None:
     httpmock = BaseHTTPServerMock()
-    with ctx_http_server(httpmock.Handler) as server:
+    with ctx_http_handler(httpmock.Handler) as server:
         url = "http://{}:{}".format(*server.server_address)
         # add two responses the server should give:
         httpmock.responses[MethodName.GET].append(

@@ -7,7 +7,7 @@ where this resource is the subject.
 This example shows g.resource() in action.
 """
 
-from rdflib import Graph, RDF, RDFS, Literal
+from rdflib import RDF, RDFS, Graph, Literal
 from rdflib.namespace import FOAF
 
 if __name__ == "__main__":

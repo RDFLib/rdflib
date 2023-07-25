@@ -1,13 +1,14 @@
 import base64
+import copy
 import logging
 from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Tuple
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from rdflib import BNode
 from rdflib.query import Result
+from rdflib.term import BNode
 
 log = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
     import typing_extensions as te
 
 
-class SPARQLConnectorException(Exception):
+class SPARQLConnectorException(Exception):  # noqa: N818
     pass
 
 
@@ -29,7 +30,7 @@ _response_mime_types = {
 }
 
 
-class SPARQLConnector(object):
+class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
     """
@@ -38,7 +39,7 @@ class SPARQLConnector(object):
         self,
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
-        returnFormat: str = "xml",
+        returnFormat: str = "xml",  # noqa: N803
         method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
@@ -48,7 +49,7 @@ class SPARQLConnector(object):
 
         Any additional keyword arguments will be passed to to the request, and can be used to setup timesouts etc.
         """
-
+        self._method: str
         self.returnFormat = returnFormat
         self.query_endpoint = query_endpoint
         self.update_endpoint = update_endpoint
@@ -66,11 +67,11 @@ class SPARQLConnector(object):
             )
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
     @method.setter
-    def method(self, method):
+    def method(self, method: str) -> None:
         if method not in ("GET", "POST", "POST_FORM"):
             raise SPARQLConnectorException(
                 'Method must be "GET", "POST", or "POST_FORM"'
@@ -78,7 +79,12 @@ class SPARQLConnector(object):
 
         self._method = method
 
-    def query(self, query, default_graph: str = None, named_graph: str = None):
+    def query(
+        self,
+        query: str,
+        default_graph: Optional[str] = None,
+        named_graph: Optional[str] = None,
+    ) -> "Result":
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
@@ -89,7 +95,7 @@ class SPARQLConnector(object):
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
 
-        args = dict(self.kwargs)
+        args = copy.deepcopy(self.kwargs)
 
         # merge params/headers dicts
         args.setdefault("params", {})
@@ -105,13 +111,14 @@ class SPARQLConnector(object):
                 res = urlopen(
                     Request(self.query_endpoint + qsa, headers=args["headers"])
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: F841
                 raise ValueError(
                     "You did something wrong formulating either the URI or your SPARQL query"
                 )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
-            qsa = "?" + urlencode(params)
+            args["params"].update(params)
+            qsa = "?" + urlencode(args["params"])
             try:
                 res = urlopen(
                     Request(
@@ -121,7 +128,8 @@ class SPARQLConnector(object):
                     )
                 )
             except HTTPError as e:
-                return e.code, str(e), None
+                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                return e.code, str(e), None  # type: ignore[return-value]
         elif self.method == "POST_FORM":
             params["query"] = query
             args["params"].update(params)
@@ -134,7 +142,8 @@ class SPARQLConnector(object):
                     )
                 )
             except HTTPError as e:
-                return e.code, str(e), None
+                # type error: Incompatible return value type (got "Tuple[int, str, None]", expected "Result")
+                return e.code, str(e), None  # type: ignore[return-value]
         else:
             raise SPARQLConnectorException("Unknown method %s" % self.method)
         return Result.parse(
@@ -143,10 +152,10 @@ class SPARQLConnector(object):
 
     def update(
         self,
-        query,
+        query: str,
         default_graph: Optional[str] = None,
         named_graph: Optional[str] = None,
-    ):
+    ) -> None:
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
@@ -160,10 +169,10 @@ class SPARQLConnector(object):
 
         headers = {
             "Accept": _response_mime_types[self.returnFormat],
-            "Content-Type": "application/sparql-update",
+            "Content-Type": "application/sparql-update; charset=UTF-8",
         }
 
-        args = dict(self.kwargs)  # other QSAs
+        args = copy.deepcopy(self.kwargs)  # other QSAs
 
         args.setdefault("params", {})
         args["params"].update(params)
@@ -171,8 +180,11 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(
+        res = urlopen(  # noqa: F841
             Request(
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
         )
+
+
+__all__ = ["SPARQLConnector", "SPARQLConnectorException"]

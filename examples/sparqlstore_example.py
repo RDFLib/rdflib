@@ -2,11 +2,11 @@
 Simple examples showing how to use the SPARQLStore
 """
 
-from rdflib import Graph, URIRef, Namespace
+from rdflib import Graph, Namespace, URIRef
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
+from rdflib.term import Identifier
 
 if __name__ == "__main__":
-
     dbo = Namespace("http://dbpedia.org/ontology/")
 
     # EXAMPLE 1: using a Graph with the Store type string set to "SPARQLStore"
@@ -14,6 +14,7 @@ if __name__ == "__main__":
     graph.open("http://dbpedia.org/sparql")
 
     pop = graph.value(URIRef("http://dbpedia.org/resource/Berlin"), dbo.populationTotal)
+    assert isinstance(pop, Identifier)
 
     print(
         "According to DBPedia, Berlin has a population of {0:,}".format(
@@ -28,9 +29,9 @@ if __name__ == "__main__":
     for p in st.objects(
         URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal
     ):
+        assert isinstance(p, Identifier)
         print(
-            "According to DBPedia, Brisbane has a population of "
-            "{0:,}".format(int(p), ",d")
+            "According to DBPedia, Brisbane has a population of " "{0}".format(int(p))
         )
     print()
 
@@ -50,7 +51,7 @@ if __name__ == "__main__":
 
     # EXAMPLE 4: using a SPARQL endpoint that requires Basic HTTP authentication
     # NOTE: this example won't run since the endpoint isn't live (or real)
-    s = SPARQLStore(
+    sparql_store = SPARQLStore(
         query_endpoint="http://fake-sparql-endpoint.com/repository/x",
         auth=("my_username", "my_password"),
     )

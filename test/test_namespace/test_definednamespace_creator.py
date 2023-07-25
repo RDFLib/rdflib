@@ -2,6 +2,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from rdflib.graph import Graph
+from rdflib.tools.defined_namespace_creator import get_target_namespace_elements
+
 
 def test_definednamespace_creator_qb():
     """
@@ -114,3 +117,64 @@ def test_definednamespace_creator_bad_ns():
         universal_newlines=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
+
+
+def test_definednamespace_creator_multiple_comments():
+    """
+    Tests that only a single URIRef is declared, even when multiple
+    rdfs:comments are linked to the resource.
+    """
+
+    definednamespace_script = (
+        Path(__file__).parent.parent.parent
+        / "rdflib"
+        / "tools"
+        / "defined_namespace_creator.py"
+    )
+    multiple_comments_data_file = (
+        Path(__file__).parent.parent / "data" / "contrived" / "multiple-comments.ttl"
+    )
+    print("\n")
+    print(f"Using {definednamespace_script}...")
+    print(f"Testing {multiple_comments_data_file}...")
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(definednamespace_script),
+            str(multiple_comments_data_file),
+            "http://example.org/multiline-string-example#",
+            "MULTILINESTRINGEXAMPLE",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    assert completed.returncode == 0, "subprocess exited incorrectly"
+    assert Path.is_file(
+        Path("_MULTILINESTRINGEXAMPLE.py")
+    ), "_MULTILINESTRINGEXAMPLE.py file not created"
+
+    some_class_count = 0
+    with open(Path("_MULTILINESTRINGEXAMPLE.py")) as f:
+        for line in f.readlines():
+            if "SomeClass: URIRef" in line:
+                some_class_count += 1
+
+    assert (
+        some_class_count == 1
+    ), f"found {some_class_count} SomeClass definitions instead of 1."
+
+    # cleanup
+    Path.unlink(Path("_MULTILINESTRINGEXAMPLE.py"))
+
+
+def test_get_target_namespace_elements(rdfs_graph: Graph) -> None:
+    elements = get_target_namespace_elements(
+        rdfs_graph, "http://www.w3.org/2000/01/rdf-schema#"
+    )
+    assert 2 == len(elements)
+    assert 16 == len(elements[0])
+    assert (
+        "http://www.w3.org/2000/01/rdf-schema#Class",
+        "The class of classes.",
+    ) in elements[0]

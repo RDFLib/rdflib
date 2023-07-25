@@ -38,7 +38,7 @@ HDT               `<https://github.com/RDFLib/rdflib-hdt>`_            A Store b
 Oxigraph          `<https://github.com/oxigraph/oxrdflib>`_            Works with the `Pyoxigraph <https://oxigraph.org/pyoxigraph>`_ Python graph database library
 ================= ==================================================== =============================================================================================
 
-_If you have, or know of a Store implementation and would like it listed here, please submit a Pull Request!_
+*If you have, or know of a Store implementation and would like it listed here, please submit a Pull Request!*
 
 Use
 ---
@@ -56,7 +56,7 @@ You can use these stores like this:
     graph = Graph(store="BerkeleyDB")
 
 
-In some cases, you must explicitly _open_ and _close_ a store, for example:
+In some cases, you must explicitly *open* and *close* a store, for example:
 
 .. code-block:: python
 

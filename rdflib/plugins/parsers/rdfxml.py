@@ -1,17 +1,26 @@
 """
 An RDF/XML parser for RDFLib
 """
+from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
 from urllib.parse import urldefrag, urljoin
 from xml.sax import handler, make_parser, xmlreader
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.exceptions import Error, ParserError
+from rdflib.graph import Graph
 from rdflib.namespace import RDF, is_ncname
-from rdflib.parser import Parser
+from rdflib.parser import InputSource, Parser
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
-from rdflib.term import BNode, Literal, URIRef
+from rdflib.term import BNode, Identifier, Literal, URIRef
+
+if TYPE_CHECKING:
+    # from xml.sax.expatreader import ExpatLocator
+    from xml.sax.xmlreader import AttributesImpl, Locator
+
+    from rdflib.graph import _ObjectType, _SubjectType, _TripleType
 
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 
@@ -86,7 +95,7 @@ class BagID(URIRef):
         return RDFNS["_%s" % self.li]
 
 
-class ElementHandler(object):
+class ElementHandler:
     __slots__ = [
         "start",
         "char",
@@ -125,42 +134,46 @@ class ElementHandler(object):
 
 
 class RDFXMLHandler(handler.ContentHandler):
-    def __init__(self, store):
+    def __init__(self, store: Graph):
         self.store = store
         self.preserve_bnode_ids = False
         self.reset()
 
-    def reset(self):
+    def reset(self) -> None:
         document_element = ElementHandler()
         document_element.start = self.document_element_start
         document_element.end = lambda name, qname: None
-        self.stack = [
+        self.stack: List[Optional[ElementHandler]] = [
             None,
             document_element,
         ]
-        self.ids = {}  # remember IDs we have already seen
-        self.bnode = {}
-        self._ns_contexts = [{}]  # contains uri -> prefix dicts
-        self._current_context = self._ns_contexts[-1]
+        self.ids: Dict[str, int] = {}  # remember IDs we have already seen
+        self.bnode: Dict[str, Identifier] = {}
+        self._ns_contexts: List[Dict[str, Optional[str]]] = [
+            {}
+        ]  # contains uri -> prefix dicts
+        self._current_context: Dict[str, Optional[str]] = self._ns_contexts[-1]
 
     # ContentHandler methods
 
-    def setDocumentLocator(self, locator):
+    def setDocumentLocator(self, locator: Locator):
         self.locator = locator
 
-    def startDocument(self):
+    def startDocument(self) -> None:
         pass
 
-    def startPrefixMapping(self, prefix, namespace):
+    def startPrefixMapping(self, prefix: Optional[str], namespace: str) -> None:
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
         self.store.bind(prefix, namespace or "", override=False)
 
-    def endPrefixMapping(self, prefix):
+    def endPrefixMapping(self, prefix: Optional[str]) -> None:
         self._current_context = self._ns_contexts[-1]
         del self._ns_contexts[-1]
 
-    def startElementNS(self, name, qname, attrs):
+    def startElementNS(
+        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+    ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
         current = self.current
@@ -189,29 +202,29 @@ class RDFXMLHandler(handler.ContentHandler):
         current.language = language
         current.start(name, qname, attrs)
 
-    def endElementNS(self, name, qname):
+    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
         self.current.end(name, qname)
         self.stack.pop()
 
-    def characters(self, content):
+    def characters(self, content: str) -> None:
         char = self.current.char
         if char:
             char(content)
 
-    def ignorableWhitespace(self, content):
+    def ignorableWhitespace(self, content) -> None:
         pass
 
-    def processingInstruction(self, target, data):
+    def processingInstruction(self, target, data) -> None:
         pass
 
-    def add_reified(self, sid, spo):
+    def add_reified(self, sid: Identifier, spo: _TripleType):
         s, p, o = spo
         self.store.add((sid, RDF.type, RDF.Statement))
         self.store.add((sid, RDF.subject, s))
         self.store.add((sid, RDF.predicate, p))
         self.store.add((sid, RDF.object, o))
 
-    def error(self, message):
+    def error(self, message: str) -> NoReturn:
         locator = self.locator
         info = "%s:%s:%s: " % (
             locator.getSystemId(),
@@ -220,40 +233,46 @@ class RDFXMLHandler(handler.ContentHandler):
         )
         raise ParserError(info + message)
 
-    def get_current(self):
+    def get_current(self) -> Optional[ElementHandler]:
         return self.stack[-2]
 
     # Create a read only property called current so that self.current
     # give the current element handler.
     current = property(get_current)
 
-    def get_next(self):
+    def get_next(self) -> Optional[ElementHandler]:
         return self.stack[-1]
 
     # Create a read only property that gives the element handler to be
     # used for the next element.
     next = property(get_next)
 
-    def get_parent(self):
+    def get_parent(self) -> Optional[ElementHandler]:
         return self.stack[-3]
 
     # Create a read only property that gives the current parent
     # element handler
     parent = property(get_parent)
 
-    def absolutize(self, uri):
-        result = urljoin(self.current.base, uri, allow_fragments=1)
+    def absolutize(self, uri: str) -> URIRef:
+        # type error: Argument "allow_fragments" to "urljoin" has incompatible type "int"; expected "bool"
+        result = urljoin(self.current.base, uri, allow_fragments=1)  # type: ignore[arg-type]
         if uri and uri[-1] == "#" and result[-1] != "#":
             result = "%s#" % result
         return URIRef(result)
 
-    def convert(self, name, qname, attrs):
+    def convert(
+        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+    ) -> Tuple[URIRef, Dict[URIRef, str]]:
         if name[0] is None:
-            name = URIRef(name[1])
+            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
+            name = URIRef(name[1])  # type: ignore[assignment]
         else:
-            name = URIRef("".join(name))
+            # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
+            # type error: Argument 1 to "join" of "str" has incompatible type "Tuple[Optional[str], str]"; expected "Iterable[str]"
+            name = URIRef("".join(name))  # type: ignore[assignment, arg-type]
         atts = {}
-        for (n, v) in attrs.items():
+        for n, v in attrs.items():
             if n[0] is None:
                 att = n[1]
             else:
@@ -262,12 +281,16 @@ class RDFXMLHandler(handler.ContentHandler):
                 pass
             elif att in UNQUALIFIED:
                 # if not RDFNS[att] in atts:
-                atts[RDFNS[att]] = v  # type: ignore[misc]
+                # type error: Variable "att" is not valid as a type
+                atts[RDFNS[att]] = v  # type: ignore[misc, valid-type]
             else:
                 atts[URIRef(att)] = v
-        return name, atts
+        # type error: Incompatible return value type (got "Tuple[Tuple[Optional[str], str], Dict[Any, Any]]", expected "Tuple[URIRef, Dict[URIRef, str]]")
+        return name, atts  # type: ignore[return-value]
 
-    def document_element_start(self, name, qname, attrs):
+    def document_element_start(
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+    ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
             # Cheap hack so 2to3 doesn't turn it into __next__
             next = getattr(self, "next")
@@ -279,8 +302,11 @@ class RDFXMLHandler(handler.ContentHandler):
             # TODO... set end to something that sets start such that
             # another element will cause error
 
-    def node_element_start(self, name, qname, attrs):
-        name, atts = self.convert(name, qname, attrs)
+    def node_element_start(
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+    ) -> None:
+        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
+        name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
         current = self.current
         absolutize = self.absolutize
 
@@ -290,8 +316,9 @@ class RDFXMLHandler(handler.ContentHandler):
         next.end = self.property_element_end
 
         if name in NODE_ELEMENT_EXCEPTIONS:
-            self.error("Invalid node element URI: %s" % name)
-
+            # type error: Not all arguments converted during string formatting
+            self.error("Invalid node element URI: %s" % name)  # type: ignore[str-format]
+        subject: _SubjectType
         if RDFVOC.ID in atts:
             if RDFVOC.about in atts or RDFVOC.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
@@ -325,8 +352,10 @@ class RDFXMLHandler(handler.ContentHandler):
             subject = BNode()
 
         if name != RDFVOC.Description:  # S1
-            self.store.add((subject, RDF.type, absolutize(name)))
+            # error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            self.store.add((subject, RDF.type, absolutize(name)))  # type: ignore[arg-type]
 
+        object: _ObjectType
         language = current.language
         for att in atts:
             if not att.startswith(str(RDFNS)):
@@ -334,7 +363,8 @@ class RDFXMLHandler(handler.ContentHandler):
                 try:
                     object = Literal(atts[att], language)
                 except Error as e:
-                    self.error(e.msg)
+                    # type error: Argument 1 to "error" of "RDFXMLHandler" has incompatible type "Optional[str]"; expected "str"
+                    self.error(e.msg)  # type: ignore[arg-type]
             elif att == RDF.type:  # S2
                 predicate = RDF.type
                 object = absolutize(atts[RDF.type])
@@ -342,48 +372,56 @@ class RDFXMLHandler(handler.ContentHandler):
                 continue
             elif att in PROPERTY_ATTRIBUTE_EXCEPTIONS:  # S3
                 self.error("Invalid property attribute URI: %s" % att)
-                continue  # for when error does not throw an exception
+                # type error: Statement is unreachable
+                continue  # type: ignore[unreachable] # for when error does not throw an exception
             else:
                 predicate = absolutize(att)
                 try:
                     object = Literal(atts[att], language)
                 except Error as e:
-                    self.error(e.msg)
+                    # type error: Argument 1 to "error" of "RDFXMLHandler" has incompatible type "Optional[str]"; expected "str"
+                    self.error(e.msg)  # type: ignore[arg-type]
             self.store.add((subject, predicate, object))
 
         current.subject = subject
 
-    def node_element_end(self, name, qname):
+    def node_element_end(self, name: Tuple[str, str], qname) -> None:
         # repeat node-elements are only allowed
         # at at top-level
 
         if self.parent.object and self.current != self.stack[2]:
-
             self.error(
                 "Repeat node-elements inside property elements: %s" % "".join(name)
             )
 
         self.parent.object = self.current.subject
 
-    def property_element_start(self, name, qname, attrs):
-        name, atts = self.convert(name, qname, attrs)
+    def property_element_start(
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+    ) -> None:
+        # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
+        name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
         current = self.current
         absolutize = self.absolutize
 
         # Cheap hack so 2to3 doesn't turn it into __next__
         next = getattr(self, "next")
-        object = None
+        object: Optional[_ObjectType] = None
         current.data = None
         current.list = None
 
-        if not name.startswith(str(RDFNS)):
-            current.predicate = absolutize(name)
+        # type error: "Tuple[str, str]" has no attribute "startswith"
+        if not name.startswith(str(RDFNS)):  # type: ignore[attr-defined]
+            # type error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            current.predicate = absolutize(name)  # type: ignore[arg-type]
         elif name == RDFVOC.li:
             current.predicate = current.next_li()
         elif name in PROPERTY_ELEMENT_EXCEPTIONS:
-            self.error("Invalid property element URI: %s" % name)
+            # type error: Not all arguments converted during string formatting
+            self.error("Invalid property element URI: %s" % name)  # type: ignore[str-format]
         else:
-            current.predicate = absolutize(name)
+            # type error: Argument 1 has incompatible type "Tuple[str, str]"; expected "str"
+            current.predicate = absolutize(name)  # type: ignore[arg-type]
 
         id = atts.get(RDFVOC.ID, None)
         if id is not None:
@@ -465,12 +503,13 @@ class RDFXMLHandler(handler.ContentHandler):
                     self.error("""Invalid property attribute URI: %s""" % att)
                 else:
                     predicate = absolutize(att)
-
+                o: _ObjectType
                 if att == RDF.type:
                     o = URIRef(atts[att])
                 else:
                     if datatype is not None:
-                        language = None
+                        # type error: Statement is unreachable
+                        language = None  # type: ignore[unreachable]
                     o = Literal(atts[att], language, datatype)
 
                 if object is None:
@@ -483,12 +522,12 @@ class RDFXMLHandler(handler.ContentHandler):
             current.data = None
             current.object = object
 
-    def property_element_char(self, data):
+    def property_element_char(self, data: str) -> None:
         current = self.current
         if current.data is not None:
             current.data += data
 
-    def property_element_end(self, name, qname):
+    def property_element_end(self, name: Tuple[str, str], qname) -> None:
         current = self.current
         if current.data is not None and current.object is None:
             literalLang = current.language
@@ -507,7 +546,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 )
         current.subject = None
 
-    def list_node_element_end(self, name, qname):
+    def list_node_element_end(self, name: Tuple[str, str], qname) -> None:
         current = self.current
         if self.parent.list == RDF.nil:
             list = BNode()
@@ -525,7 +564,9 @@ class RDFXMLHandler(handler.ContentHandler):
             self.store.add((list, RDF.first, current.subject))
             self.parent.list = list
 
-    def literal_element_start(self, name, qname, attrs):
+    def literal_element_start(
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+    ) -> None:
         current = self.current
         self.next.start = self.literal_element_start
         self.next.char = self.literal_element_char
@@ -546,20 +587,21 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             current.object = "<%s" % name[1]
 
-        for (name, value) in attrs.items():
+        for name, value in attrs.items():
             if name[0]:
                 if not name[0] in current.declared:
                     current.declared[name[0]] = self._current_context[name[0]]
                 name = current.declared[name[0]] + ":" + name[1]
             else:
-                name = name[1]
+                # type error: Incompatible types in assignment (expression has type "str", variable has type "Tuple[str, str]")
+                name = name[1]  # type: ignore[assignment]
             current.object += " %s=%s" % (name, quoteattr(value))
         current.object += ">"
 
-    def literal_element_char(self, data):
+    def literal_element_char(self, data: str) -> None:
         self.current.object += escape(data)
 
-    def literal_element_end(self, name, qname):
+    def literal_element_end(self, name: Tuple[str, str], qname) -> None:
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:
@@ -571,7 +613,7 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
-def create_parser(target, store) -> xmlreader.XMLReader:
+def create_parser(target: InputSource, store: Graph) -> xmlreader.XMLReader:
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
@@ -581,7 +623,8 @@ def create_parser(target, store) -> xmlreader.XMLReader:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
     rdfxml = RDFXMLHandler(store)
-    rdfxml.setDocumentLocator(target)
+    # type error: Argument 1 to "setDocumentLocator" of "RDFXMLHandler" has incompatible type "InputSource"; expected "Locator"
+    rdfxml.setDocumentLocator(target)  # type: ignore[arg-type]
     # rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
     parser.setContentHandler(rdfxml)
     parser.setErrorHandler(ErrorHandler())
@@ -592,7 +635,7 @@ class RDFXMLParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, sink, **args):
+    def parse(self, source: InputSource, sink: Graph, **args: Any) -> None:
         self._parser = create_parser(source, sink)
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)

@@ -1,19 +1,17 @@
-import unittest
-
 from rdflib.graph import Graph
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import Literal, URIRef
 
 
-class ParserTestCase(unittest.TestCase):
+class TestParser:
     backend = "default"
     path = "store"
 
-    def setUp(self):
+    def setup_method(self):
         self.graph = Graph(store=self.backend)
         self.graph.open(self.path)
 
-    def tearDown(self):
+    def teardown_method(self):
         self.graph.close()
 
     def testNoPathWithHash(self):
@@ -38,12 +36,12 @@ class ParserTestCase(unittest.TestCase):
 
         subject = URIRef("http://example.org#")
         label = g.value(subject, RDFS.label)
-        self.assertEqual(label, Literal("testing"))
+        assert label == Literal("testing")
         type = g.value(subject, RDF.type)
-        self.assertEqual(type, RDFS.Class)
+        assert type == RDFS.Class
 
 
-class TestGitHubIssues(unittest.TestCase):
+class TestGitHubIssues:
     def test_issue_1228_a(self):
         data = """
         PREFIX sdo: <https://schema.org/>
@@ -53,8 +51,8 @@ class TestGitHubIssues(unittest.TestCase):
         """
 
         g = Graph().parse(data=data, format="ttl")
-        self.assertNotIn("1982-01-01", data)
-        self.assertNotIn("1982-01-01", g.serialize(format="ttl"))
+        assert "1982-01-01" not in data
+        assert "1982-01-01" not in g.serialize(format="ttl")
 
     def test_issue_1228_b(self):
         data = """\
@@ -70,8 +68,8 @@ class TestGitHubIssues(unittest.TestCase):
 </rdf:RDF>"""
 
         g = Graph().parse(data=data, format="xml")
-        self.assertNotIn("1982-01-01", data)
-        self.assertNotIn("1982-01-01", g.serialize(format="xml"))
+        assert "1982-01-01" not in data
+        assert "1982-01-01" not in g.serialize(format="xml")
 
     def test_issue_806(self):
         data = (
@@ -82,8 +80,4 @@ class TestGitHubIssues(unittest.TestCase):
         g = Graph()
         g.parse(data=data, format="nt")
         for _, _, o in g:
-            self.assertNotIn("1891-01-01", o.n3())
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "1891-01-01" not in o.n3()

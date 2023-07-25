@@ -17,12 +17,12 @@ The best way to install RDFLib is to use ``pip`` (sudo as required):
 
     $ pip install rdflib
 
-If you want the latest code to run, clone the master branch of the GitHub repo and use that or you can  ``pip install``
+If you want the latest code to run, clone the ``main`` branch of the GitHub repo and use that or you can  ``pip install``
 directly from GitHub:
 
 .. code-block :: bash
 
-    $ pip install git+https://github.com/RDFLib/rdflib.git@master#egg=rdflib
+    $ pip install git+https://github.com/RDFLib/rdflib.git@main#egg=rdflib
 
 
 Support
@@ -51,7 +51,7 @@ methods that search triples and return them in arbitrary order.
 
 RDFLib graphs also redefine certain built-in Python methods in order
 to behave in a predictable way. They do this by `emulating container types
-<https://docs.python.org/3.7/reference/datamodel.html#emulating-container-types>`_ and
+<https://docs.python.org/3.8/reference/datamodel.html#emulating-container-types>`_ and
 are best thought of as a set of 3-item tuples ("triples", in RDF-speak):
 
 .. code-block:: text

@@ -1,12 +1,19 @@
 import os
+from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from test.utils import GraphHelper, affix_tuples, file_uri_to_path
-from typing import Any, List, Optional, Tuple, Union
+from test.utils import (
+    COLLAPSED_BNODE,
+    BNodeHandling,
+    GraphHelper,
+    affix_tuples,
+    file_uri_to_path,
+)
+from typing import Any, List, Optional, Tuple, Type, Union
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.term import URIRef
 
 
@@ -99,7 +106,7 @@ def test_paths(
 class SetsEqualTestCase:
     equal: bool
     format: Union[str, Tuple[str, str]]
-    ignore_blanks: bool
+    bnode_handling: BNodeHandling
     lhs: str
     rhs: str
 
@@ -122,7 +129,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=False,
             format="turtle",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             @prefix eg: <example:> .
             _:a _:b _:c .
@@ -138,7 +145,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format="turtle",
-            ignore_blanks=True,
+            bnode_handling=BNodeHandling.EXCLUDE,
             lhs="""
             @prefix eg: <example:> .
             _:a _:b _:c .
@@ -154,7 +161,25 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format="turtle",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COLLAPSE,
+            lhs="""
+            @prefix eg: <example:> .
+            _:a _:b _:c .
+            _:z _:b _:c .
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+            rhs=f"""
+            @prefix eg: <example:> .
+            <{COLLAPSED_BNODE}> <{COLLAPSED_BNODE}> <{COLLAPSED_BNODE}>.
+            eg:o0 eg:p0 eg:s0 .
+            eg:o1 eg:p1 eg:s1 .
+            """,
+        ),
+        SetsEqualTestCase(
+            equal=True,
+            format="turtle",
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             <example:o0> <example:p0> <example:s0> .
             <example:o1> <example:p1> <example:s1> .
@@ -168,7 +193,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=False,
             format="turtle",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             <example:o0> <example:p0> <example:s0> .
             <example:o1> <example:p1> <example:s1> .
@@ -183,7 +208,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format=("nquads", "trig"),
-            ignore_blanks=True,
+            bnode_handling=BNodeHandling.EXCLUDE,
             lhs="""
             <example:o0> <example:p0> <example:s0> .
             <example:o1> <example:p1> <example:s1> .
@@ -199,7 +224,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format=("nquads", "trig"),
-            ignore_blanks=True,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             <example:o0> <example:p0> <example:s0> .
             <example:o1> <example:p1> <example:s1> <example:g1>.
@@ -219,7 +244,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format="n3",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
             """,
@@ -231,7 +256,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format="n3",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             { <example:ss0> <example:sp0> <example:so0> } <example:p0> {}.
             """,
@@ -243,7 +268,7 @@ class SetsEqualTestCase:
         SetsEqualTestCase(
             equal=True,
             format="n3",
-            ignore_blanks=False,
+            bnode_handling=BNodeHandling.COMPARE,
             lhs="""
             { { <example:sss0> <example:ssp0> <example:sso0> } <example:sp0> <example:so0> } <example:p0> {}.
             """,
@@ -263,59 +288,61 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.rhs_format)
 
     public_id = URIRef("example:graph")
-    lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    lhs_cgraph.parse(
+    lhs_dataset: Dataset = Dataset()
+    lhs_dataset.parse(
         data=test_case.lhs, format=test_case.lhs_format, publicID=public_id
     )
 
-    rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    rhs_cgraph.parse(
+    rhs_dataset: Dataset = Dataset()
+    rhs_dataset.parse(
         data=test_case.rhs, format=test_case.rhs_format, publicID=public_id
     )
 
-    assert isinstance(lhs_cgraph, ConjunctiveGraph)
-    assert isinstance(rhs_cgraph, ConjunctiveGraph)
+    assert isinstance(lhs_dataset, Dataset)
+    assert isinstance(rhs_dataset, Dataset)
     graph: Graph
-    cgraph: ConjunctiveGraph
-    for graph, cgraph in ((lhs_graph, lhs_cgraph), (rhs_graph, rhs_cgraph)):
-        GraphHelper.assert_sets_equals(graph, graph, True)
-        GraphHelper.assert_sets_equals(cgraph, cgraph, True)
-        GraphHelper.assert_triple_sets_equals(graph, graph, True)
-        GraphHelper.assert_triple_sets_equals(cgraph, cgraph, True)
-        GraphHelper.assert_quad_sets_equals(cgraph, cgraph, True)
+    cgraph: Dataset
+    for graph, cgraph in ((lhs_graph, lhs_dataset), (rhs_graph, rhs_dataset)):
+        GraphHelper.assert_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
+        GraphHelper.assert_sets_equals(cgraph, cgraph, BNodeHandling.COLLAPSE)
+        GraphHelper.assert_triple_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
+        GraphHelper.assert_triple_sets_equals(cgraph, cgraph, BNodeHandling.COLLAPSE)
+        GraphHelper.assert_quad_sets_equals(cgraph, cgraph, BNodeHandling.COLLAPSE)
 
     if not test_case.equal:
         with pytest.raises(AssertionError):
             GraphHelper.assert_sets_equals(
-                lhs_graph, rhs_graph, test_case.ignore_blanks
+                lhs_graph, rhs_graph, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
-                lhs_graph, rhs_graph, test_case.ignore_blanks
+                lhs_graph, rhs_graph, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_quad_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
     else:
-        GraphHelper.assert_sets_equals(lhs_graph, rhs_graph, test_case.ignore_blanks)
-        GraphHelper.assert_sets_equals(lhs_cgraph, rhs_cgraph, test_case.ignore_blanks)
-        GraphHelper.assert_triple_sets_equals(
-            lhs_graph, rhs_graph, test_case.ignore_blanks
+        GraphHelper.assert_sets_equals(lhs_graph, rhs_graph, test_case.bnode_handling)
+        GraphHelper.assert_sets_equals(
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
         GraphHelper.assert_triple_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+            lhs_graph, rhs_graph, test_case.bnode_handling
+        )
+        GraphHelper.assert_triple_sets_equals(
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
         GraphHelper.assert_quad_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.ignore_blanks
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
 
 
@@ -357,3 +384,104 @@ def test_prefix_tuples(
     expected_result: List[Tuple[Any, ...]],
 ) -> None:
     assert expected_result == list(affix_tuples(prefix, tuples, suffix))
+
+
+@pytest.mark.parametrize(
+    ["graph_type", "format", "lhs", "rhs", "expected_result"],
+    [
+        (
+            Dataset,
+            "trig",
+            """
+            @prefix eg: <example:> .
+
+            _:b0 eg:p0 eg:o0.
+            eg:s1 eg:p1 eg:o1.
+
+            eg:g0 {
+                _:g0b0 eg:g0p0 eg:g0o0.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+            """,
+            """
+            @prefix eg: <example:> .
+
+            _:b1 eg:p0 eg:o0.
+            eg:s1 eg:p1 eg:o1.
+
+            eg:g0 {
+                _:g0b1 eg:g0p0 eg:g0o0.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+            """,
+            None,
+        ),
+        (
+            Dataset,
+            "trig",
+            """
+            @prefix eg: <example:> .
+
+            eg:g0 {
+                _:b0 eg:g0p0 eg:g0o0.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+            """,
+            """
+            @prefix eg: <example:> .
+
+            eg:g0 {
+                _:b1 eg:g0p0 eg:g0o1.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+            """,
+            AssertionError,
+        ),
+        (
+            Dataset,
+            "trig",
+            """
+            @prefix eg: <example:> .
+
+            eg:g0 {
+                _:b0 eg:g0p0 eg:g0o0.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+            """,
+            """
+            @prefix eg: <example:> .
+
+            eg:g0 {
+                _:b1 eg:g0p0 eg:g0o0.
+                eg:g0s1 eg:g0p1 eg:g0o1.
+            }
+
+            eg:g1 {
+                _:b0 eg:g1p0 eg:g1o0.
+                eg:g1s1 eg:g1p1 eg:g1o1.
+            }
+            """,
+            AssertionError,
+        ),
+    ],
+)
+def test_assert_cgraph_isomorphic(
+    graph_type: Type[ConjunctiveGraph],
+    format: str,
+    lhs: str,
+    rhs: str,
+    expected_result: Union[None, Type[Exception]],
+) -> None:
+    lhs_graph = graph_type()
+    lhs_graph.parse(data=lhs, format=format)
+    rhs_graph = graph_type()
+    rhs_graph.parse(data=rhs, format=format)
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    with ExitStack() as xstack:
+        if expected_result is not None:
+            catcher = xstack.enter_context(pytest.raises(expected_result))
+        GraphHelper.assert_cgraph_isomorphic(lhs_graph, rhs_graph, exclude_bnodes=True)
+    if expected_result is None:
+        assert catcher is None
+    else:
+        assert catcher is not None

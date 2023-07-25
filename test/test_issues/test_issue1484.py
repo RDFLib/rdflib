@@ -1,8 +1,9 @@
 import io
 import json
 import unittest
+from test.utils.namespace import EGDO
 
-from rdflib import RDF, RDFS, Graph, Namespace
+from rdflib import RDF, RDFS, Graph
 
 
 class TestIssue1484_json(unittest.TestCase):
@@ -10,8 +11,7 @@ class TestIssue1484_json(unittest.TestCase):
         """
         Test JSON-LD parsing of result from json.dump
         """
-        n = Namespace("http://example.org/")
-        jsondata = {"@id": n.s, "@type": [n.t], n.p: {"@id": n.o}}
+        jsondata = {"@id": EGDO.s, "@type": [EGDO.t], EGDO.p: {"@id": EGDO.o}}
 
         s = io.StringIO()
         json.dump(jsondata, s, indent=2, separators=(",", ": "))
@@ -22,14 +22,14 @@ class TestIssue1484_json(unittest.TestCase):
             print("S: ", s.read())
             s.seek(0)
 
-        b = n.base
+        b = EGDO.base
         g = Graph()
         g.bind("rdf", RDF)
         g.bind("rdfs", RDFS)
         g.parse(source=s, publicID=b, format="json-ld")
 
-        assert (n.s, RDF.type, n.t) in g
-        assert (n.s, n.p, n.o) in g
+        assert (EGDO.s, RDF.type, EGDO.t) in g
+        assert (EGDO.s, EGDO.p, EGDO.o) in g
 
 
 class TestIssue1484_str(unittest.TestCase):
@@ -39,7 +39,6 @@ class TestIssue1484_str(unittest.TestCase):
 
         (Previously passes, but broken by earlier fix for above.)
         """
-        n = Namespace("http://example.org/")
         jsonstr = """
             {
               "@id": "http://example.org/s",
@@ -52,14 +51,14 @@ class TestIssue1484_str(unittest.TestCase):
             }
         """
 
-        b = n.base
+        b = EGDO.base
         g = Graph()
         g.bind("rdf", RDF)
         g.bind("rdfs", RDFS)
         g.parse(data=jsonstr, publicID=b, format="json-ld")
 
-        assert (n.s, RDF.type, n.t) in g
-        assert (n.s, n.p, n.o) in g
+        assert (EGDO.s, RDF.type, EGDO.t) in g
+        assert (EGDO.s, EGDO.p, EGDO.o) in g
 
 
 if __name__ == "__main__":

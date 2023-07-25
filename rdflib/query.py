@@ -1,21 +1,46 @@
+from __future__ import annotations
+
 import itertools
-import os
-import shutil
-import tempfile
 import types
 import warnings
 from io import BytesIO
-from typing import IO, TYPE_CHECKING, List, Optional, Union, cast
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    BinaryIO,
+    Dict,
+    Iterator,
+    List,
+    Mapping,
+    MutableSequence,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+    overload,
+)
 from urllib.parse import urlparse
+from urllib.request import url2pathname
 
-__all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
+__all__ = [
+    "Processor",
+    "UpdateProcessor",
+    "Result",
+    "ResultRow",
+    "ResultParser",
+    "ResultSerializer",
+    "ResultException",
+    "EncodeOnlyUnicode",
+]
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
-    from rdflib.term import Variable
+    from rdflib.graph import Graph, _TripleType
+    from rdflib.plugins.sparql.sparql import Query, Update
+    from rdflib.term import Identifier, Variable
 
 
-class Processor(object):
+class Processor:
     """
     Query plugin interface.
 
@@ -25,14 +50,21 @@ class Processor(object):
 
     """
 
-    def __init__(self, graph):
+    def __init__(self, graph: "Graph"):
         pass
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
+    # type error: Missing return statement
+    def query(  # type: ignore[empty-body]
+        self,
+        strOrQuery: Union[str, "Query"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
+        initNs: Mapping[str, Any] = {},  # noqa: N803
+        DEBUG: bool = False,
+    ) -> Mapping[str, Any]:
         pass
 
 
-class UpdateProcessor(object):
+class UpdateProcessor:
     """
     Update plugin interface.
 
@@ -45,10 +77,15 @@ class UpdateProcessor(object):
 
     """
 
-    def __init__(self, graph):
+    def __init__(self, graph: "Graph"):
         pass
 
-    def update(self, strOrQuery, initBindings={}, initNs={}):
+    def update(
+        self,
+        strOrQuery: Union[str, "Update"],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
+        initNs: Mapping[str, Any] = {},
+    ) -> None:
         pass
 
 
@@ -56,7 +93,7 @@ class ResultException(Exception):
     pass
 
 
-class EncodeOnlyUnicode(object):
+class EncodeOnlyUnicode:
     """
     This is a crappy work-around for
     http://bugs.python.org/issue11649
@@ -64,7 +101,7 @@ class EncodeOnlyUnicode(object):
 
     """
 
-    def __init__(self, stream):
+    def __init__(self, stream: BinaryIO):
         self.__stream = stream
 
     def write(self, arg):
@@ -73,11 +110,11 @@ class EncodeOnlyUnicode(object):
         else:
             self.__stream.write(arg)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         return getattr(self.__stream, name)
 
 
-class ResultRow(tuple):
+class ResultRow(Tuple["Identifier", ...]):
     """
     a single result row
     allows accessing bindings as attributes or with []
@@ -113,38 +150,59 @@ class ResultRow(tuple):
 
     """
 
-    def __new__(cls, values, labels):
+    labels: Mapping[str, int]
 
-        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))
+    def __new__(
+        cls, values: Mapping["Variable", "Identifier"], labels: List["Variable"]
+    ):
+        # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
+        # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc]
         instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> "Identifier":
         if name not in self.labels:
             raise AttributeError(name)
         return tuple.__getitem__(self, self.labels[name])
 
-    def __getitem__(self, name):
+    # type error: Signature of "__getitem__" incompatible with supertype "tuple"
+    # type error: Signature of "__getitem__" incompatible with supertype "Sequence"
+    def __getitem__(self, name: Union[str, int, Any]) -> "Identifier":  # type: ignore[override]
         try:
-            return tuple.__getitem__(self, name)
+            # type error: Invalid index type "Union[str, int, Any]" for "tuple"; expected type "int"
+            return tuple.__getitem__(self, name)  # type: ignore[index]
         except TypeError:
             if name in self.labels:
-                return tuple.__getitem__(self, self.labels[name])
+                # type error: Invalid index type "Union[str, int, slice, Any]" for "Mapping[str, int]"; expected type "str"
+                return tuple.__getitem__(self, self.labels[name])  # type: ignore[index]
             if str(name) in self.labels:  # passing in variable object
                 return tuple.__getitem__(self, self.labels[str(name)])
             raise KeyError(name)
 
-    def get(self, name, default=None):
+    @overload
+    def get(self, name: str, default: "Identifier") -> "Identifier":
+        ...
+
+    @overload
+    def get(
+        self, name: str, default: Optional["Identifier"] = ...
+    ) -> Optional["Identifier"]:
+        ...
+
+    def get(
+        self, name: str, default: Optional["Identifier"] = None
+    ) -> Optional["Identifier"]:
         try:
             return self[name]
         except KeyError:
             return default
 
-    def asdict(self):
+    def asdict(self) -> Dict[str, "Identifier"]:
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
-class Result(object):
+class Result:
     """
     A common class for representing query result.
 
@@ -164,19 +222,19 @@ class Result(object):
     """
 
     def __init__(self, type_: str):
-
         if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
             raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
+        #: variables contained in the result.
         self.vars: Optional[List["Variable"]] = None
-        self._bindings = None
-        self._genbindings = None
-        self.askAnswer: bool = None  # type: ignore[assignment]
-        self.graph: "Graph" = None  # type: ignore[assignment]
+        self._bindings: MutableSequence[Mapping["Variable", "Identifier"]] = None  # type: ignore[assignment]
+        self._genbindings: Optional[Iterator[Mapping["Variable", "Identifier"]]] = None
+        self.askAnswer: Optional[bool] = None
+        self.graph: Optional["Graph"] = None
 
     @property
-    def bindings(self):
+    def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
         """
         a list of variable bindings as dicts
         """
@@ -187,20 +245,27 @@ class Result(object):
         return self._bindings
 
     @bindings.setter
-    def bindings(self, b):
+    def bindings(
+        self,
+        b: Union[
+            MutableSequence[Mapping["Variable", "Identifier"]],
+            Iterator[Mapping[Variable, Identifier]],
+        ],
+    ) -> None:
         if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []
         else:
-            self._bindings = b
+            # type error: Incompatible types in assignment (expression has type "Union[MutableSequence[Mapping[Variable, Identifier]], Iterator[Mapping[Variable, Identifier]]]", variable has type "MutableSequence[Mapping[Variable, Identifier]]")
+            self._bindings = b  # type: ignore[assignment]
 
     @staticmethod
     def parse(
-        source=None,
+        source: Optional[IO] = None,
         format: Optional[str] = None,
         content_type: Optional[str] = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> "Result":
         from rdflib import plugin
 
         if format:
@@ -212,14 +277,17 @@ class Result(object):
 
         parser = plugin.get(plugin_key, ResultParser)()
 
-        return parser.parse(source, content_type=content_type, **kwargs)
+        # type error: Argument 1 to "parse" of "ResultParser" has incompatible type "Optional[IO[Any]]"; expected "IO[Any]"
+        return parser.parse(
+            source, content_type=content_type, **kwargs  # type:ignore[arg-type]
+        )
 
     def serialize(
         self,
         destination: Optional[Union[str, IO]] = None,
         encoding: str = "utf-8",
         format: str = "xml",
-        **args,
+        **args: Any,
     ) -> Optional[bytes]:
         """
         Serialize the query result.
@@ -238,7 +306,9 @@ class Result(object):
         :return: bytes
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
-            return self.graph.serialize(  # type: ignore[return-value]
+            # type error: Item "None" of "Optional[Graph]" has no attribute "serialize"
+            # type error: Incompatible return value type (got "Union[bytes, str, Graph, Any]", expected "Optional[bytes]")
+            return self.graph.serialize(  # type: ignore[union-attr,return-value]
                 destination, encoding=encoding, format=format, **args
             )
 
@@ -249,7 +319,8 @@ class Result(object):
         if destination is None:
             streamb: BytesIO = BytesIO()
             stream2 = EncodeOnlyUnicode(streamb)
-            serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore
+            # type error: Argument 1 to "serialize" of "ResultSerializer" has incompatible type "EncodeOnlyUnicode"; expected "IO[Any]"
+            serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore[arg-type]
             return streamb.getvalue()
         if hasattr(destination, "write"):
             stream = cast(IO[bytes], destination)
@@ -257,42 +328,44 @@ class Result(object):
         else:
             location = cast(str, destination)
             scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc != "":
-                print(
-                    "WARNING: not saving as location" + "is not a local file reference"
-                )
-                return None
-            fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, encoding=encoding, **args)
-            stream.close()
-            if hasattr(shutil, "move"):
-                shutil.move(name, path)
+            if scheme == "file":
+                if netloc != "":
+                    raise ValueError(
+                        f"the file URI {location!r} has an authority component which is not supported"
+                    )
+                os_path = url2pathname(path)
             else:
-                shutil.copy(name, path)
-                os.remove(name)
+                os_path = location
+            with open(os_path, "wb") as stream:
+                serializer.serialize(stream, encoding=encoding, **args)
         return None
 
-    def __len__(self):
+    def __len__(self) -> int:
         if self.type == "ASK":
             return 1
         elif self.type == "SELECT":
             return len(self.bindings)
         else:
-            return len(self.graph)
+            # type error: Argument 1 to "len" has incompatible type "Optional[Graph]"; expected "Sized"
+            return len(self.graph)  # type: ignore[arg-type]
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         if self.type == "ASK":
-            return self.askAnswer
+            # type error: Incompatible return value type (got "Optional[bool]", expected "bool")
+            return self.askAnswer  # type: ignore[return-value]
         else:
             return len(self) > 0
 
-    def __iter__(self):
+    def __iter__(
+        self,
+    ) -> Iterator[Union["_TripleType", bool, ResultRow]]:
         if self.type in ("CONSTRUCT", "DESCRIBE"):
-            for t in self.graph:
+            # type error: Item "None" of "Optional[Graph]" has no attribute "__iter__" (not iterable)
+            for t in self.graph:  # type: ignore[union-attr]
                 yield t
         elif self.type == "ASK":
-            yield self.askAnswer
+            # type error: Incompatible types in "yield" (actual type "Optional[bool]", expected type "Union[Tuple[Identifier, Identifier, Identifier], bool, ResultRow]")  [misc]
+            yield self.askAnswer  # type: ignore[misc]
         elif self.type == "SELECT":
             # this iterates over ResultRows of variable bindings
 
@@ -300,16 +373,19 @@ class Result(object):
                 for b in self._genbindings:
                     if b:  # don't add a result row in case of empty binding {}
                         self._bindings.append(b)
-                        yield ResultRow(b, self.vars)
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[List[Variable]]"; expected "List[Variable]"
+                        yield ResultRow(b, self.vars)  # type: ignore[arg-type]
                 self._genbindings = None
             else:
                 for b in self._bindings:
                     if b:  # don't add a result row in case of empty binding {}
-                        yield ResultRow(b, self.vars)
+                        # type error: Argument 2 to "ResultRow" has incompatible type "Optional[List[Variable]]"; expected "List[Variable]"
+                        yield ResultRow(b, self.vars)  # type: ignore[arg-type]
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:
-            return self.graph.__getattr__(self, name)
+            # type error: "Graph" has no attribute "__getattr__"
+            return self.graph.__getattr__(self, name)  # type: ignore[attr-defined]
         elif self.type == "SELECT" and name == "result":
             warnings.warn(
                 "accessing the 'result' attribute is deprecated."
@@ -318,11 +394,12 @@ class Result(object):
                 stacklevel=2,
             )
             # copied from __iter__, above
-            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]
+            # type error: Item "None" of "Optional[List[Variable]]" has no attribute "__iter__" (not iterable)
+            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]  # type: ignore[union-attr]
         else:
             raise AttributeError("'%s' object has no attribute '%s'" % (self, name))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         try:
             if self.type != other.type:
                 return False
@@ -332,23 +409,24 @@ class Result(object):
                 return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-        except:
+        except Exception:
             return False
 
 
-class ResultParser(object):
+class ResultParser:
     def __init__(self):
         pass
 
-    def parse(self, source, **kwargs):
+    # type error: Missing return statement
+    def parse(self, source: IO, **kwargs: Any) -> Result:  # type: ignore[empty-body]
         """return a Result object"""
         pass  # abstract
 
 
-class ResultSerializer(object):
+class ResultSerializer:
     def __init__(self, result: Result):
         self.result = result
 
-    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs):
+    def serialize(self, stream: IO, encoding: str = "utf-8", **kwargs: Any) -> None:
         """return a string properly serialized"""
         pass  # abstract

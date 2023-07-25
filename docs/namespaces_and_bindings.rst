@@ -29,7 +29,7 @@ namespaces provided grows with user contributions to RDFLib.
 
 These Namespaces, and any others that users define, can also be associated with prefixes using the :class:`rdflib.namespace.NamespaceManager`, e.g. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``.
 
-Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Prefixes can be bound with the :meth:`rdflib.graph.bind` method::
+Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Prefixes can be bound with the :meth:`rdflib.graph.Graph.bind` method::
 
     from rdflib import Graph, Namespace
     from rdflib.namespace import FOAF
@@ -41,15 +41,15 @@ Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps
     g.bind("ex", EX)      # bind a user-declared namespace to a prefix
     
 
-The :meth:`rdflib.graph.bind` method is actually supplied by the :class:`rdflib.namespace.NamespaceManager` class - see next.
+The :meth:`rdflib.graph.Graph.bind` method is actually supplied by the :class:`rdflib.namespace.NamespaceManager` class - see next.
 
 NamespaceManager
 ----------------
 
-Each RDFLib graph comes with a :class:`rdflib.namespace.NamespaceManager` instance in the `namespace_manager` field; you can use the `bind` method of this instance to bind a prefix to a namespace URI,
-as above, however note that the `NamespaceManager` automatically performs some bindings according to a selected strategy. 
+Each RDFLib graph comes with a :class:`rdflib.namespace.NamespaceManager` instance in the :attr:`~rdflib.graph.Graph.namespace_manager` field; you can use the :meth:`~rdflib.namespace.NamespaceManager.bind` method of this instance to bind a prefix to a namespace URI,
+as above, however note that the :class:`~rdflib.namespace.NamespaceManager` automatically performs some bindings according to a selected strategy. 
 
-Namespace binding strategies are indicated with the `bind_namespaces` input parameter to `NamespaceManager` instances 
+Namespace binding strategies are indicated with the ``bind_namespaces`` input parameter to :class:`~rdflib.namespace.NamespaceManager` instances 
 and may be set via ``Graph`` also::
 
     from rdflib import Graph
@@ -70,7 +70,7 @@ Valid strategies are:
 * rdflib:
     * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
     * all the core namespaces and all the following: brick, csvw, dc, dcat
-    * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+    * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
     * sh, skos, sosa, ssn, time, vann, void
     * see the NAMESPACE_PREFIXES_RDFLIB object in :class:`rdflib.namespace` for up-to-date list
 * none:
@@ -95,7 +95,7 @@ for example::
     
     
 
-`NamespaceManager` also has a method to normalize a given url::
+:class:`~rdflib.namespace.NamespaceManager` also has a method to normalize a given url::
 
     from rdflib.namespace import NamespaceManager
     

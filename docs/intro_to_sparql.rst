@@ -95,7 +95,7 @@ example:
     # x:
     # y:
 
-    # Add in a new triple using SPATQL UPDATE
+    # Add in a new triple using SPARQL UPDATE
     g.update("""INSERT DATA { <z:> a <c:> }""")
 
     # Select all the things (s) that are of type (rdf:type) c:
@@ -140,7 +140,7 @@ The ``SERVICE`` keyword of SPARQL 1.1 can send a query to a remote SPARQL endpoi
         """
         SELECT ?s
         WHERE {
-          SERVICE <http://dbpedia.org/sparql> {
+          SERVICE <https://dbpedia.org/sparql> {
             ?s a ?o .
           }
         }

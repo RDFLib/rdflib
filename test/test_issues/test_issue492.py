@@ -1,7 +1,4 @@
 # test for https://github.com/RDFLib/rdflib/issues/492
-
-#!/usr/bin/env python3
-
 import rdflib
 
 

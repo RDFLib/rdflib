@@ -28,6 +28,7 @@ import pytest
 from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
+from rdflib.query import ResultRow
 
 query_string_expanded = r"""
 SELECT ?nIndividual
@@ -113,6 +114,7 @@ def _test_escapes_and_query(
     assert expected_query_compiled == query_compiled
 
     for result in graph.query(query_object):
+        assert isinstance(result, ResultRow)
         computed.add(str(result[0]))
 
     assert expected == computed

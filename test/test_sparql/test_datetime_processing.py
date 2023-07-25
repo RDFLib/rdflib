@@ -86,7 +86,7 @@ def test_dateTime_duration_subs():
     f = io.StringIO(data)
     graph.parse(f, format="n3")
 
-    ## 1st Test Case
+    # 1st Test Case
 
     result1 = graph.query(
         """
@@ -117,7 +117,7 @@ def test_dateTime_duration_subs():
     eq_(list(result1)[0][0], expected[0])
     eq_(list(result1)[1][0], expected[1])
 
-    ## 2nd Test Case
+    # 2nd Test Case
 
     result2 = graph.query(
         """
@@ -165,7 +165,7 @@ def test_dateTime_duration_add():
     f = io.StringIO(data)
     graph.parse(f, format="n3")
 
-    ## 1st Test case
+    # 1st Test case
 
     result1 = graph.query(
         """
@@ -198,7 +198,7 @@ def test_dateTime_duration_add():
     eq_(list(result1)[0][0], expected[0])
     eq_(list(result1)[1][0], expected[1])
 
-    ## 2nd Test case
+    # 2nd Test case
 
     result2 = graph.query(
         """

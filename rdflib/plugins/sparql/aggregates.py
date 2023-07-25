@@ -1,51 +1,75 @@
-from decimal import Decimal
+from __future__ import annotations
 
-from rdflib import XSD, Literal
+from decimal import Decimal
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+    overload,
+)
+
+from rdflib.namespace import XSD
 from rdflib.plugins.sparql.datatypes import type_promotion
-from rdflib.plugins.sparql.evalutils import NotBoundError, _eval, _val
+from rdflib.plugins.sparql.evalutils import _eval, _val
 from rdflib.plugins.sparql.operators import numeric
-from rdflib.plugins.sparql.sparql import SPARQLTypeError
+from rdflib.plugins.sparql.parserutils import CompValue
+from rdflib.plugins.sparql.sparql import FrozenBindings, NotBoundError, SPARQLTypeError
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 """
 Aggregation functions
 """
 
 
-class Accumulator(object):
+class Accumulator:
     """abstract base class for different aggregation functions"""
 
-    def __init__(self, aggregation):
+    def __init__(self, aggregation: CompValue):
+        self.get_value: Callable[[], Optional[Literal]]
+        self.update: Callable[[FrozenBindings, "Aggregator"], None]
         self.var = aggregation.res
         self.expr = aggregation.vars
         if not aggregation.distinct:
-            self.use_row = self.dont_care
+            # type error: Cannot assign to a method
+            self.use_row = self.dont_care  # type: ignore[method-assign]
             self.distinct = False
         else:
             self.distinct = aggregation.distinct
-            self.seen = set()
+            self.seen: Set[Any] = set()
 
-    def dont_care(self, row):
+    def dont_care(self, row: FrozenBindings) -> bool:
         """skips distinct test"""
         return True
 
-    def use_row(self, row):
+    def use_row(self, row: FrozenBindings) -> bool:
         """tests distinct with set"""
         return _eval(self.expr, row) not in self.seen
 
-    def set_value(self, bindings):
+    def set_value(self, bindings: MutableMapping[Variable, Identifier]) -> None:
         """sets final value in bindings"""
-        bindings[self.var] = self.get_value()
+        # type error: Incompatible types in assignment (expression has type "Optional[Literal]", target has type "Identifier")
+        bindings[self.var] = self.get_value()  # type: ignore[assignment]
 
 
 class Counter(Accumulator):
-    def __init__(self, aggregation):
+    def __init__(self, aggregation: CompValue):
         super(Counter, self).__init__(aggregation)
         self.value = 0
         if self.expr == "*":
             # cannot eval "*" => always use the full row
-            self.eval_row = self.eval_full_row
+            # type error: Cannot assign to a method
+            self.eval_row = self.eval_full_row  # type: ignore[assignment]
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             val = self.eval_row(row)
         except NotBoundError:
@@ -55,41 +79,58 @@ class Counter(Accumulator):
         if self.distinct:
             self.seen.add(val)
 
-    def get_value(self):
+    def get_value(self) -> Literal:
         return Literal(self.value)
 
-    def eval_row(self, row):
+    def eval_row(self, row: FrozenBindings) -> Identifier:
         return _eval(self.expr, row)
 
-    def eval_full_row(self, row):
+    def eval_full_row(self, row: FrozenBindings) -> FrozenBindings:
         return row
 
-    def use_row(self, row):
-        return self.eval_row(row) not in self.seen
+    def use_row(self, row: FrozenBindings) -> bool:
+        try:
+            return self.eval_row(row) not in self.seen
+        except NotBoundError:
+            # happens when counting zero optional nodes. See issue #2229
+            return False
 
 
-def type_safe_numbers(*args):
+@overload
+def type_safe_numbers(*args: int) -> Tuple[int]:
+    ...
+
+
+@overload
+def type_safe_numbers(*args: Union[Decimal, float, int]) -> Tuple[Union[float, int]]:
+    ...
+
+
+def type_safe_numbers(*args: Union[Decimal, float, int]) -> Iterable[Union[float, int]]:
     if any(isinstance(arg, float) for arg in args) and any(
         isinstance(arg, Decimal) for arg in args
     ):
         return map(float, args)
-    return args
+    # type error: Incompatible return value type (got "Tuple[Union[Decimal, float, int], ...]", expected "Iterable[Union[float, int]]")
+    # NOTE on type error: if args contains a Decimal it will nopt get here.
+    return args  # type: ignore[return-value]
 
 
 class Sum(Accumulator):
-    def __init__(self, aggregation):
+    def __init__(self, aggregation: CompValue):
         super(Sum, self).__init__(aggregation)
         self.value = 0
-        self.datatype = None
+        self.datatype: Optional[str] = None
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
             if dt is None:
                 dt = value.datatype
             else:
-                dt = type_promotion(dt, value.datatype)
+                # type error: Argument 1 to "type_promotion" has incompatible type "str"; expected "URIRef"
+                dt = type_promotion(dt, value.datatype)  # type: ignore[arg-type]
             self.datatype = dt
             self.value = sum(type_safe_numbers(self.value, numeric(value)))
             if self.distinct:
@@ -98,18 +139,18 @@ class Sum(Accumulator):
             # skip UNDEF
             pass
 
-    def get_value(self):
+    def get_value(self) -> Literal:
         return Literal(self.value, datatype=self.datatype)
 
 
 class Average(Accumulator):
-    def __init__(self, aggregation):
+    def __init__(self, aggregation: CompValue):
         super(Average, self).__init__(aggregation)
         self.counter = 0
         self.sum = 0
-        self.datatype = None
+        self.datatype: Optional[str] = None
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -117,7 +158,8 @@ class Average(Accumulator):
             if dt is None:
                 dt = value.datatype
             else:
-                dt = type_promotion(dt, value.datatype)
+                # type error: Argument 1 to "type_promotion" has incompatible type "str"; expected "URIRef"
+                dt = type_promotion(dt, value.datatype)  # type: ignore[arg-type]
             self.datatype = dt
             if self.distinct:
                 self.seen.add(value)
@@ -128,7 +170,7 @@ class Average(Accumulator):
         except SPARQLTypeError:
             pass
 
-    def get_value(self):
+    def get_value(self) -> Literal:
         if self.counter == 0:
             return Literal(0)
         if self.datatype in (XSD.float, XSD.double):
@@ -140,18 +182,20 @@ class Average(Accumulator):
 class Extremum(Accumulator):
     """abstract base class for Minimum and Maximum"""
 
-    def __init__(self, aggregation):
+    def __init__(self, aggregation: CompValue):
+        self.compare: Callable[[Any, Any], Any]
         super(Extremum, self).__init__(aggregation)
-        self.value = None
+        self.value: Any = None
         # DISTINCT would not change the value for MIN or MAX
-        self.use_row = self.dont_care
+        # type error: Cannot assign to a method
+        self.use_row = self.dont_care  # type: ignore[method-assign]
 
-    def set_value(self, bindings):
+    def set_value(self, bindings: MutableMapping[Variable, Identifier]) -> None:
         if self.value is not None:
             # simply do not set if self.value is still None
             bindings[self.var] = Literal(self.value)
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             if self.value is None:
                 self.value = _eval(self.expr, row)
@@ -165,13 +209,16 @@ class Extremum(Accumulator):
             pass
 
 
+_ValueT = TypeVar("_ValueT", Variable, BNode, URIRef, Literal)
+
+
 class Minimum(Extremum):
-    def compare(self, val1, val2):
+    def compare(self, val1: _ValueT, val2: _ValueT) -> _ValueT:
         return min(val1, val2, key=_val)
 
 
 class Maximum(Extremum):
-    def compare(self, val1, val2):
+    def compare(self, val1: _ValueT, val2: _ValueT) -> _ValueT:
         return max(val1, val2, key=_val)
 
 
@@ -183,7 +230,7 @@ class Sample(Accumulator):
         # DISTINCT would not change the value
         self.use_row = self.dont_care
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             # set the value now
             aggregator.bindings[self.var] = _eval(self.expr, row)
@@ -192,19 +239,24 @@ class Sample(Accumulator):
         except NotBoundError:
             pass
 
-    def get_value(self):
+    def get_value(self) -> None:
         # set None if no value was set
         return None
 
 
 class GroupConcat(Accumulator):
-    def __init__(self, aggregation):
+    value: List[Literal]
+
+    def __init__(self, aggregation: CompValue):
         super(GroupConcat, self).__init__(aggregation)
         # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
-        self.separator = aggregation.separator or " "
+        if aggregation.separator is None:
+            self.separator = " "
+        else:
+            self.separator = aggregation.separator
 
-    def update(self, row, aggregator):
+    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
             value = _eval(self.expr, row)
             # skip UNDEF
@@ -221,11 +273,11 @@ class GroupConcat(Accumulator):
         except NotBoundError:
             pass
 
-    def get_value(self):
+    def get_value(self) -> Literal:
         return Literal(self.separator.join(str(v) for v in self.value))
 
 
-class Aggregator(object):
+class Aggregator:
     """combines different Accumulator objects"""
 
     accumulator_classes = {
@@ -238,16 +290,16 @@ class Aggregator(object):
         "Aggregate_GroupConcat": GroupConcat,
     }
 
-    def __init__(self, aggregations):
-        self.bindings = {}
-        self.accumulators = {}
+    def __init__(self, aggregations: List[CompValue]):
+        self.bindings: Dict[Variable, Identifier] = {}
+        self.accumulators: Dict[str, Accumulator] = {}
         for a in aggregations:
             accumulator_class = self.accumulator_classes.get(a.name)
             if accumulator_class is None:
                 raise Exception("Unknown aggregate function " + a.name)
             self.accumulators[a.res] = accumulator_class(a)
 
-    def update(self, row):
+    def update(self, row: FrozenBindings) -> None:
         """update all own accumulators"""
         # SAMPLE accumulators may delete themselves
         # => iterate over list not generator
@@ -256,7 +308,7 @@ class Aggregator(object):
             if acc.use_row(row):
                 acc.update(row, self)
 
-    def get_bindings(self):
+    def get_bindings(self) -> Mapping[Variable, Identifier]:
         """calculate and set last values"""
         for acc in self.accumulators.values():
             acc.set_value(self.bindings)

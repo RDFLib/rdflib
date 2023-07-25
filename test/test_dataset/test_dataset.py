@@ -3,11 +3,13 @@ import os
 import shutil
 import tempfile
 from test.data import context1, likes, pizza, tarek
+from test.utils.namespace import EGSCHEME
 
 import pytest
 
 from rdflib import URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, Namespace
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.store import Store
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -26,7 +28,7 @@ DB = "/db/"
 
 pluginstores = []
 
-for s in plugin.plugins(None, plugin.Store):
+for s in plugin.plugins(None, Store):
     if s.name in ("Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
@@ -103,12 +105,11 @@ def get_dataset(request):
         else:
             try:
                 os.remove(path)
-            except:
+            except Exception:
                 pass
 
 
 def test_graph_aware(get_dataset):
-
     store, dataset = get_dataset
 
     if not dataset.store.graph_aware:
@@ -184,7 +185,6 @@ def test_default_graph(get_dataset):
 
 
 def test_not_union(get_dataset):
-
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
     if store == "SPARQLUpdateStore":
@@ -201,7 +201,6 @@ def test_not_union(get_dataset):
 
 
 def test_iter(get_dataset):
-
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
     uri_a = URIRef("https://example.com/a")
@@ -233,9 +232,6 @@ def test_iter(get_dataset):
     assert i_new == i_trad  # both should be 3
 
 
-EGSCHEMA = Namespace("example:")
-
-
 def test_subgraph_without_identifier() -> None:
     """
     Graphs with no identifies assigned are identified by Skolem IRIs with a
@@ -258,7 +254,7 @@ def test_subgraph_without_identifier() -> None:
     )
 
     subgraph: Graph = dataset.graph()
-    subgraph.add((EGSCHEMA["subject"], EGSCHEMA["predicate"], EGSCHEMA["object"]))
+    subgraph.add((EGSCHEME["subject"], EGSCHEME["predicate"], EGSCHEME["object"]))
 
     namespaces = set(nman.namespaces())
     assert next(

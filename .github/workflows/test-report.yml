@@ -1,0 +1,27 @@
+name: "Test Report"
+on:
+  workflow_run:
+    workflows: ["Validate"]
+    types:
+      - completed
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      statuses: write
+    steps:
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: /(.*)-mypy-junit-xml$/
+          name: mypy report
+          path: "*.xml"
+          reporter: java-junit
+          fail-on-error: "false"
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: /(.*)-pytest-junit-xml$/
+          name: pytest report
+          path: "*.xml"
+          reporter: java-junit
+          fail-on-error: "false"

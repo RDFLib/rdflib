@@ -37,7 +37,6 @@ def _object_comparator(a, b):
 
 
 class RecursiveSerializer(Serializer):
-
     topClasses = [RDFS.Class]
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
@@ -45,7 +44,6 @@ class RecursiveSerializer(Serializer):
     roundtrip_prefixes = ()
 
     def __init__(self, store):
-
         super(RecursiveSerializer, self).__init__(store)
         self.stream = None
         self.reset()
@@ -180,7 +178,6 @@ _SPACIOUS_OUTPUT = False
 
 
 class TurtleSerializer(RecursiveSerializer):
-
     short_name = "turtle"
     indentString = "    "
 
@@ -205,7 +202,6 @@ class TurtleSerializer(RecursiveSerializer):
         if (prefix > "" and prefix[0] == "_") or self.namespaces.get(
             prefix, namespace
         ) != namespace:
-
             if prefix not in self._ns_rewrite:
                 p = "p" + prefix
                 while p in self.namespaces:
@@ -277,8 +273,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
-
+        except Exception:
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 
@@ -402,7 +397,7 @@ class TurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:

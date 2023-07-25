@@ -1,5 +1,9 @@
-from rdflib import ConjunctiveGraph
-from rdflib.parser import Parser
+from __future__ import annotations
+
+from typing import Any, MutableSequence
+
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.parser import InputSource, Parser
 
 from .notation3 import RDFSink, SinkParser
 
@@ -9,8 +13,7 @@ def becauseSubGraph(*args, **kwargs):
 
 
 class TrigSinkParser(SinkParser):
-    def directiveOrStatement(self, argstr, h):
-
+    def directiveOrStatement(self, argstr: str, h: int) -> int:  # noqa: N802
         # import pdb; pdb.set_trace()
 
         i = self.skipSpace(argstr, h)
@@ -35,7 +38,9 @@ class TrigSinkParser(SinkParser):
 
         return j
 
-    def labelOrSubject(self, argstr, i, res):
+    def labelOrSubject(  # noqa: N802
+        self, argstr: str, i: int, res: MutableSequence[Any]
+    ) -> int:
         j = self.skipSpace(argstr, i)
         if j < 0:
             return j  # eof
@@ -54,7 +59,7 @@ class TrigSinkParser(SinkParser):
                 return j + 1
         return -1
 
-    def graph(self, argstr, i):
+    def graph(self, argstr: str, i: int) -> int:
         """
         Parse trig graph, i.e.
 
@@ -64,16 +69,20 @@ class TrigSinkParser(SinkParser):
         raise Exception if it looks like a graph, but isn't.
         """
 
+        need_graphid = False
         # import pdb; pdb.set_trace()
         j = self.sparqlTok("GRAPH", argstr, i)  # optional GRAPH keyword
         if j >= 0:
             i = j
+            need_graphid = True
 
-        r = []
+        r: MutableSequence[Any] = []
         j = self.labelOrSubject(argstr, i, r)
         if j >= 0:
             graph = r[0]
             i = j
+        elif need_graphid:
+            self.BadSyntax(argstr, i, "GRAPH keyword must be followed by graph name")
         else:
             graph = self._store.graph.identifier  # hack
 
@@ -82,7 +91,6 @@ class TrigSinkParser(SinkParser):
             self.BadSyntax(argstr, i, "EOF found when expected graph")
 
         if argstr[j : j + 1] == "=":  # optional = for legacy support
-
             i = self.skipSpace(argstr, j + 1)
             if i < 0:
                 self.BadSyntax(argstr, i, "EOF found when expecting '{'")
@@ -94,11 +102,15 @@ class TrigSinkParser(SinkParser):
 
         j = i + 1
 
+        if self._context is not None:
+            self.BadSyntax(argstr, i, "Nested graphs are not allowed")
+
         oldParentContext = self._parentContext
         self._parentContext = self._context
         reason2 = self._reason2
         self._reason2 = becauseSubGraph
-        self._context = self._store.newGraph(graph)
+        # type error: Incompatible types in assignment (expression has type "Graph", variable has type "Optional[Formula]")
+        self._context = self._store.newGraph(graph)  # type: ignore[assignment]
 
         while 1:
             i = self.skipSpace(argstr, j)
@@ -129,11 +141,12 @@ class TrigParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8"):
-
+    def parse(self, source: InputSource, graph: Graph, encoding: str = "utf-8") -> None:
         if encoding not in [None, "utf-8"]:
             raise Exception(
-                ("TriG files are always utf-8 encoded, ", "I was passed: %s") % encoding
+                # type error: Unsupported left operand type for % ("Tuple[str, str]")
+                ("TriG files are always utf-8 encoded, ", "I was passed: %s")  # type: ignore[operator]
+                % encoding
             )
 
         # we're currently being handed a Graph, not a ConjunctiveGraph

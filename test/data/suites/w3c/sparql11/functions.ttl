@@ -1,0 +1,69 @@
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#>  .
+
+# Functional Forms
+# sparql:bound a sd:Function .
+# sparql:exists a sd:Function .
+# sparql:sameTerm a sd:Function .
+# sparql:in a sd:Function .
+
+sparql:if a sd:Function .
+sparql:coalesce a sd:Function .
+
+sparql:abs a sd:Function .
+sparql:bnode a sd:Function .
+sparql:ceil a sd:Function .
+sparql:concat a sd:Function .
+sparql:contains a sd:Function .
+sparql:datatype a sd:Function .
+sparql:day a sd:Function .
+sparql:encode_for_uri a sd:Function .
+sparql:ends a sd:Function .
+sparql:floor a sd:Function .
+sparql:hours a sd:Function .
+sparql:iri a sd:Function .
+sparql:isblank a sd:Function .
+sparql:isiri a sd:Function .
+sparql:isliteral a sd:Function .
+sparql:isnumeric a sd:Function .
+sparql:isuri a sd:Function .
+sparql:lang a sd:Function .
+sparql:langmatches a sd:Function .
+sparql:lcase a sd:Function .
+sparql:md5 a sd:Function .
+sparql:minutes a sd:Function .
+sparql:month a sd:Function .
+sparql:not a sd:Function .
+sparql:now a sd:Function .
+sparql:rand a sd:Function .
+sparql:regex a sd:Function .
+sparql:round a sd:Function .
+sparql:seconds a sd:Function .
+sparql:sha1 a sd:Function .
+sparql:sha256 a sd:Function .
+sparql:sha384 a sd:Function .
+sparql:sha512 a sd:Function .
+sparql:str a sd:Function .
+sparql:strdt a sd:Function .
+sparql:strlang a sd:Function .
+sparql:strlen a sd:Function .
+sparql:strstarts a sd:Function .
+sparql:strbefore a sd:Function .
+sparql:strafter a sd:Function .
+sparql:replace a sd:Function .
+sparql:substr a sd:Function .
+sparql:timezone a sd:Function .
+sparql:tz a sd:Function .
+sparql:ucase a sd:Function .
+sparql:uri a sd:Function .
+sparql:year a sd:Function .
+sparql:uuid a sd:Function .
+sparql:struuid a sd:Function .
+
+sparql:avg a sd:Aggregate .
+sparql:count a sd:Aggregate .
+sparql:group_concat a sd:Aggregate .
+sparql:max a sd:Aggregate .
+sparql:min a sd:Aggregate .
+sparql:sample a sd:Aggregate .
+sparql:sum a sd:Aggregate .

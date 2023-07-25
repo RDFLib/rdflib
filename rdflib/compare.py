@@ -104,7 +104,7 @@ from typing import (
     Union,
 )
 
-from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate
+from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
@@ -118,7 +118,7 @@ def _total_seconds(td):
     return result
 
 
-class _runtime(object):
+class _runtime:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -137,7 +137,7 @@ class _runtime(object):
         return wrapped_f
 
 
-class _call_count(object):
+class _call_count:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -281,11 +281,10 @@ class Color:
         )
 
 
-_TripleT = List[Node]
 _HashT = Callable[[], "HASH"]
 
 
-class _TripleCanonicalizer(object):
+class _TripleCanonicalizer:
     def __init__(self, graph: Graph, hashfunc: _HashT = sha256):
         self.graph = graph
 
@@ -326,7 +325,9 @@ class _TripleCanonicalizer(object):
                     self._neighbors[p].add(p)
         if len(bnodes) > 0:
             return [Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)] + [
-                Color([x], self.hashfunc, x, hash_cache=self._hash_cache)
+                # type error: List item 0 has incompatible type "Union[IdentifiedNode, Literal]"; expected "IdentifiedNode"
+                # type error: Argument 3 to "Color" has incompatible type "Union[IdentifiedNode, Literal]"; expected "Tuple[Tuple[Union[int, str], URIRef, Union[int, str]], ...]"
+                Color([x], self.hashfunc, x, hash_cache=self._hash_cache)  # type: ignore[list-item, arg-type]
                 for x in others
             ]
         else:
@@ -521,7 +522,7 @@ class _TripleCanonicalizer(object):
 
     def _canonicalize_bnodes(
         self,
-        triple: Tuple[IdentifiedNode, IdentifiedNode, Node],
+        triple: "_TripleType",
         labels: Dict[Node, str],
     ):
         for term in triple:
@@ -531,7 +532,7 @@ class _TripleCanonicalizer(object):
                 yield term
 
 
-def to_isomorphic(graph):
+def to_isomorphic(graph: Graph) -> IsomorphicGraph:
     if isinstance(graph, IsomorphicGraph):
         return graph
     result = IsomorphicGraph()
@@ -541,7 +542,7 @@ def to_isomorphic(graph):
     return result
 
 
-def isomorphic(graph1, graph2):
+def isomorphic(graph1: Graph, graph2: Graph) -> bool:
     """Compare graph for equality.
 
     Uses an algorithm to compute unique hashes which takes bnodes into account.
@@ -577,7 +578,9 @@ def isomorphic(graph1, graph2):
     return gd1 == gd2
 
 
-def to_canonical_graph(g1, stats=None):
+def to_canonical_graph(
+    g1: Graph, stats: Optional[Stats] = None
+) -> ReadOnlyGraphAggregate:
     """Creates a canonical, read-only graph.
 
     Creates a canonical, read-only graph where all bnode id:s are based on
@@ -588,7 +591,7 @@ def to_canonical_graph(g1, stats=None):
     return ReadOnlyGraphAggregate([graph])
 
 
-def graph_diff(g1, g2):
+def graph_diff(g1: Graph, g2: Graph) -> Tuple[Graph, Graph, Graph]:
     """Returns three sets of triples: "in both", "in first" and "in second"."""
     # bnodes have deterministic values in canonical graphs:
     cg1 = to_canonical_graph(g1)
@@ -602,7 +605,7 @@ def graph_diff(g1, g2):
 _MOCK_BNODE = BNode()
 
 
-def similar(g1, g2):
+def similar(g1: Graph, g2: Graph):
     """Checks if the two graphs are "similar".
 
     Checks if the two graphs are "similar", by comparing sorted triples where
@@ -615,12 +618,12 @@ def similar(g1, g2):
     return all(t1 == t2 for (t1, t2) in _squashed_graphs_triples(g1, g2))
 
 
-def _squashed_graphs_triples(g1, g2):
-    for (t1, t2) in zip(sorted(_squash_graph(g1)), sorted(_squash_graph(g2))):
+def _squashed_graphs_triples(g1: Graph, g2: Graph):
+    for t1, t2 in zip(sorted(_squash_graph(g1)), sorted(_squash_graph(g2))):
         yield t1, t2
 
 
-def _squash_graph(graph):
+def _squash_graph(graph: Graph):
     return (_squash_bnodes(triple) for triple in graph)
 
 

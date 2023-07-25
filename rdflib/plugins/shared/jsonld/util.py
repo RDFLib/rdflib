@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/util.py
-import typing as t
+from __future__ import annotations
 
-if t.TYPE_CHECKING:
+import pathlib
+from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union
+
+if TYPE_CHECKING:
     import json
 else:
     try:
@@ -18,13 +21,19 @@ from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from rdflib.parser import (
     BytesIOWrapper,
+    InputSource,
     PythonInputSource,
     StringInputSource,
+    URLInputSource,
     create_input_source,
 )
 
 
-def source_to_json(source):
+def source_to_json(
+    source: Optional[
+        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
+    ]
+) -> Optional[Any]:
     if isinstance(source, PythonInputSource):
         return source.data
 
@@ -50,7 +59,7 @@ def source_to_json(source):
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri):
+def split_iri(iri: str) -> Tuple[str, Optional[str]]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:
@@ -58,7 +67,7 @@ def split_iri(iri):
     return iri, None
 
 
-def norm_url(base, url):
+def norm_url(base: str, url: str) -> str:
     """
     >>> norm_url('http://example.org/', '/one')
     'http://example.org/one'
@@ -87,7 +96,8 @@ def norm_url(base, url):
     return result
 
 
-def context_from_urlinputsource(source):
+# type error: Missing return statement
+def context_from_urlinputsource(source: URLInputSource) -> Optional[str]:  # type: ignore[return]
     """
     Please note that JSON-LD documents served with the application/ld+json media type
     MUST have all context information, including references to external contexts,
@@ -100,9 +110,20 @@ def context_from_urlinputsource(source):
             # source.links is the new way of getting Link headers from URLInputSource
             links = source.links
         except AttributeError:
-            return
+            # type error: Return value expected
+            return  # type: ignore[return-value]
         for link in links:
             if ' rel="http://www.w3.org/ns/json-ld#context"' in link:
                 i, j = link.index("<"), link.index(">")
                 if i > -1 and j > -1:
-                    return urljoin(source.url, link[i + 1 : j])
+                    # type error: Value of type variable "AnyStr" of "urljoin" cannot be "Optional[str]"
+                    return urljoin(source.url, link[i + 1 : j])  # type: ignore[type-var]
+
+
+__all__ = [
+    "json",
+    "source_to_json",
+    "split_iri",
+    "norm_url",
+    "context_from_urlinputsource",
+]

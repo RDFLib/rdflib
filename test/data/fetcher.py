@@ -61,9 +61,10 @@ class ArchiveType(enum.Enum):
 class ArchiveResource(Resource):
     type: ArchiveType
     pattern: Pattern[str]
+    clean_local: bool = True
 
     def fetch(self, tmp_path: Path) -> None:
-        if self.local_path.exists():
+        if self.clean_local and self.local_path.exists():
             logging.debug("info %s", self.local_path)
             shutil.rmtree(self.local_path)
         with ExitStack() as xstack:
@@ -125,6 +126,23 @@ class ArchiveResource(Resource):
             self.pattern,
             self.local_path,
         )
+
+        patch_dir = self.local_path.parent / f"{self.local_path.name}.patch"
+        if patch_dir.exists():
+            logging.info(
+                "merging patch content from %s into %s", patch_dir, self.local_path
+            )
+            for child in patch_dir.glob("**/*"):
+                if child.is_dir():
+                    logging.debug("ignoring directory %s", child)
+                    continue
+                if child.name == "README.md" or child.name.endswith(".patch"):
+                    logging.debug("ignoring special %s", child)
+                    continue
+                rel_child = child.relative_to(patch_dir)
+                dest = self.local_path / rel_child
+                logging.info("copying patch content %s to %s", child, dest)
+                shutil.copy2(child, dest)
 
     @classmethod
     def _member_list(
@@ -193,27 +211,37 @@ RESOURCES: List[Resource] = [
         type=ArchiveType.TAR_GZ,
         pattern=re.compile(r"^(.+)$"),
     ),
-    # NOTE: Commented out as these files contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "rdfxml"),
-    #     type=ArchiveType.ZIP,
-    #     pattern=re.compile(r"^(.+)$"),
-    # ),
-    # NOTE: Commented out as this contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
-    #     type=ArchiveType.TAR_GZ,
-    #     pattern=re.compile(r"^[^\/]+[\/](.+)$"),
-    # ),
-    # NOTE: Commented out as this contains local modifications.
-    # ArchiveResource(
-    #     remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
-    #     local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),
-    #     type=ArchiveType.TAR_GZ,
-    #     pattern=re.compile(r"^[^\/]+[\/]data-r2[\/](.+)$"),
-    # ),
+    ArchiveResource(
+        remote="https://www.w3.org/2013/RDFXMLTests/TESTS.zip",
+        local_path=(DATA_PATH / "suites" / "w3c" / "rdf-xml"),
+        type=ArchiveType.ZIP,
+        pattern=re.compile(r"^(.+)$"),
+    ),
+    ArchiveResource(
+        # This is taken from a specific git commit instead of the published
+        # test suite as the tests are non-normative and not considered part of
+        # the test suite, so they could potentially be removed.
+        remote="https://github.com/w3c/rdf-tests/archive/d2cc355bf601d8574116f3ee76ca570925f35ac3.zip",
+        local_path=(DATA_PATH / "suites" / "w3c" / "rdf-xml-non-normative"),
+        type=ArchiveType.ZIP,
+        # Not cleaning local directory as it has a constructed manifest.
+        clean_local=False,
+        pattern=re.compile(
+            r"^[^\/]+[\/]rdf-xml[\/]((?:rdfms-empty-property-elements/error003|rdfms-empty-property-elements/test003|rdfms-empty-property-elements/test009|rdfms-xmllang/test001|rdfms-xmllang/test002|rdfms-xml-literal-namespaces/test001|rdfms-xml-literal-namespaces/test002)[.][^.]+)$"
+        ),
+    ),
+    ArchiveResource(
+        remote="https://www.w3.org/2009/sparql/docs/tests/sparql11-test-suite-20121023.tar.gz",
+        local_path=(DATA_PATH / "suites" / "w3c" / "sparql11"),
+        type=ArchiveType.TAR_GZ,
+        pattern=re.compile(r"^[^\/]+[\/](.+)$"),
+    ),
+    ArchiveResource(
+        remote="https://www.w3.org/2001/sw/DataAccess/tests/data-r2.tar.gz",
+        local_path=(DATA_PATH / "suites" / "w3c" / "dawg-data-r2"),
+        type=ArchiveType.TAR_GZ,
+        pattern=re.compile(r"^[^\/]+[\/]data-r2[\/](.+)$"),
+    ),
     FileResource(
         remote=Request(
             "http://www.w3.org/2000/01/rdf-schema#", headers={"Accept": "text/turtle"}
@@ -221,8 +249,45 @@ RESOURCES: List[Resource] = [
         local_path=(DATA_PATH / "defined_namespaces/rdfs.ttl"),
     ),
     FileResource(
+        remote=Request(
+            "http://www.w3.org/2000/01/rdf-schema#",
+            headers={"Accept": "application/rdf+xml"},
+        ),
+        local_path=(DATA_PATH / "defined_namespaces/rdfs.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.rdf"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.ttl"),
+    ),
+    FileResource(
         remote=Request("https://www.w3.org/ns/rdftest.ttl"),
         local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"),
+        local_path=(DATA_PATH / "defined_namespaces/mf.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"),
+        local_path=(DATA_PATH / "defined_namespaces/dawgt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2001/sw/DataAccess/tests/test-query#"),
+        local_path=(DATA_PATH / "defined_namespaces/qt.ttl"),
+    ),
+    FileResource(
+        remote=Request("https://www.w3.org/2009/sparql/docs/tests/test-update.n3"),
+        local_path=(DATA_PATH / "defined_namespaces/ut.n3"),
+    ),
+    FileResource(
+        remote=Request(
+            "https://github.com/web-platform-tests/wpt/raw/9d13065419df90d2ad71f3c6b78cc12e7800dae4/html/syntax/parsing/html5lib_tests1.html"
+        ),
+        local_path=(DATA_PATH / "html5lib_tests1.html"),
     ),
 ]
 

@@ -1,0 +1,241 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "RDFLib" ;
+    doap:programming-language "Python" .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bindscope> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bindscope2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-a> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-b> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-c> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-d> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-e> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-f> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-g> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#bnode-ppath-mix-h> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filteroptional> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#filtersubquery3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#minusfilter> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#nestedbnode> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#notexistsfilter> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subquery3> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg1> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#subqueryagg2> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-01> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-02> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-03> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-04> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:failed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#test-codepoint-escape-bad> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#unicode> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://raw.github.com/RDFLib/rdflib/main/test/data/suites/rdflib/sparql/manifest.ttl#whitespacedot> .
+

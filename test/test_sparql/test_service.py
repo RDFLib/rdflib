@@ -1,23 +1,9 @@
 import json
-from contextlib import ExitStack
 from test.utils import helper
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
-from typing import (
-    Dict,
-    FrozenSet,
-    Generator,
-    List,
-    Mapping,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    Union,
-)
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.outcome import OutcomeChecker
+from typing import Dict, FrozenSet, List, Mapping, Sequence, Tuple, Type, Union
 
 import pytest
 
@@ -26,6 +12,7 @@ from rdflib.namespace import XSD
 from rdflib.term import BNode, Identifier
 
 
+@pytest.mark.webtest
 def test_service():
     g = Graph()
     q = """select ?sameAs ?dbpComment
@@ -48,6 +35,7 @@ def test_service():
         assert len(r) == 2
 
 
+@pytest.mark.webtest
 def test_service_with_bind():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -70,6 +58,43 @@ def test_service_with_bind():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
+def test_service_with_bound_solutions():
+    g = Graph()
+    g.update(
+        """
+        INSERT DATA {
+          []
+            <http://www.w3.org/2002/07/owl#sameAs> <http://de.dbpedia.org/resource/John_Lilburne> ;
+            <http://purl.org/dc/terms/subject> <http://dbpedia.org/resource/Category:1614_births> .
+        }
+        """
+    )
+    q = """
+        SELECT ?sameAs ?dbpComment ?subject WHERE {
+          []
+            <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+            <http://purl.org/dc/terms/subject> ?subject .
+
+          SERVICE <http://DBpedia.org/sparql> {
+            SELECT ?sameAs ?dbpComment ?subject WHERE {
+              <http://dbpedia.org/resource/John_Lilburne>
+                <http://www.w3.org/2002/07/owl#sameAs> ?sameAs ;
+                <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment ;
+                <http://purl.org/dc/terms/subject> ?subject .
+            }
+          }
+        }
+        LIMIT 2
+        """
+    results = helper.query_with_retry(g, q)
+    assert len(results) == 2
+
+    for r in results:
+        assert len(r) == 3
+
+
+@pytest.mark.webtest
 def test_service_with_values():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -92,6 +117,7 @@ def test_service_with_values():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select():
     g = Graph()
     q = """select ?s ?p ?o
@@ -108,6 +134,7 @@ def test_service_with_implicit_select():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_prefix():
     g = Graph()
     q = """prefix ex:<http://example.org/>
@@ -125,6 +152,7 @@ def test_service_with_implicit_select_and_prefix():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_base():
     g = Graph()
     q = """base <http://example.org/>
@@ -142,6 +170,7 @@ def test_service_with_implicit_select_and_base():
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_allcaps():
     g = Graph()
     q = """SELECT ?s
@@ -165,6 +194,7 @@ def freeze_bindings(
     return frozenset(result)
 
 
+@pytest.mark.webtest
 def test_simple_not_null():
     """Test service returns simple literals not as NULL.
 
@@ -182,6 +212,7 @@ WHERE {
     assert results.bindings[0].get(Variable("o")) == Literal("c")
 
 
+@pytest.mark.webtest
 def test_service_node_types():
     """Test if SERVICE properly returns different types of nodes:
     - URI;
@@ -221,20 +252,6 @@ WHERE {
         ]
     )
     assert expected == freeze_bindings(results.bindings)
-
-
-@pytest.fixture(scope="module")
-def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
-    with ServedBaseHTTPServerMock() as httpmock:
-        yield httpmock
-
-
-@pytest.fixture(scope="function")
-def httpmock(
-    module_httpmock: ServedBaseHTTPServerMock,
-) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    module_httpmock.reset()
-    yield module_httpmock
 
 
 @pytest.mark.parametrize(
@@ -278,7 +295,7 @@ def httpmock(
     ],
 )
 def test_with_mock(
-    httpmock: ServedBaseHTTPServerMock,
+    function_httpmock: ServedBaseHTTPServerMock,
     response_bindings: List[Dict[str, str]],
     expected_result: Union[List[Identifier], Type[Exception]],
 ) -> None:
@@ -295,37 +312,36 @@ def test_with_mock(
         }
     }
     """
-    query = query.replace("REMOTE_URL", httpmock.url)
+    query = query.replace("REMOTE_URL", function_httpmock.url)
     response = {
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": item} for item in response_bindings]},
     }
-    httpmock.responses[MethodName.GET].append(
-        MockHTTPResponse(
-            200,
-            "OK",
-            json.dumps(response).encode("utf-8"),
-            {"Content-Type": ["application/sparql-results+json"]},
-        )
+    mock_response = MockHTTPResponse(
+        200,
+        "OK",
+        json.dumps(response).encode("utf-8"),
+        {"Content-Type": ["application/sparql-results+json"]},
     )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    # Adding the same response for GET and POST as the method used by RDFLib is
+    # dependent on the size of the service query.
+    function_httpmock.responses[MethodName.GET].append(mock_response)
+    function_httpmock.responses[MethodName.POST].append(mock_response)
 
-    with ExitStack() as xstack:
-        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
-            catcher = xstack.enter_context(pytest.raises(expected_result))
-        else:
-            expected_bindings = [{Variable("var"): item} for item in expected_result]
+    checker = OutcomeChecker[Sequence[Mapping[Variable, Identifier]]].from_primitive(
+        [{Variable("var"): item} for item in expected_result]
+        if isinstance(expected_result, List)
+        else expected_result
+    )
+    with checker.context():
         bindings = graph.query(query).bindings
-    if catcher is not None:
-        assert catcher is not None
-        assert catcher.value is not None
-    else:
-        assert expected_bindings == bindings
+        checker.check(bindings)
 
 
 if __name__ == "__main__":
     test_service()
     test_service_with_bind()
+    test_service_with_bound_solutions()
     test_service_with_values()
     test_service_with_implicit_select()
     test_service_with_implicit_select_and_prefix()

@@ -1,13 +1,11 @@
-import unittest
-
 from rdflib import Graph
 from rdflib.container import Alt, Bag, Seq
 from rdflib.term import BNode, Literal
 
 
-class TestContainer(unittest.TestCase):
+class TestContainer:
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.g = Graph()
         cls.c1 = Bag(cls.g, BNode())
         cls.c2 = Bag(
@@ -21,68 +19,63 @@ class TestContainer(unittest.TestCase):
         )
 
     def testA(self):
-        self.assertEqual(len(self.c1) == 0, True)
+        assert len(self.c1) == 0
 
     def testB(self):
-        self.assertEqual(len(self.c2) == 4, True)
+        assert len(self.c2) == 4
 
     def testC(self):
         self.c2.append(Literal("5"))
         del self.c2[2]
-        self.assertEqual(len(self.c2) == 4, True)
+        assert len(self.c2) == 4
 
     def testD(self):
-        self.assertEqual(self.c2.index(Literal("5")) == 4, True)
+        assert self.c2.index(Literal("5")) == 4
 
     def testE(self):
-        self.assertEqual(self.c2[2] == Literal("3"), True)
+        assert self.c2[2] == Literal("3")
 
     def testF(self):
         self.c2[2] = Literal("9")
-        self.assertEqual(self.c2[2] == Literal("9"), True)
+        assert self.c2[2] == Literal("9")
 
     def testG(self):
         self.c2.clear()
-        self.assertEqual(len(self.c2) == 0, True)
+        assert len(self.c2) == 0
 
     def testH(self):
         self.c2.append_multiple([Literal("80"), Literal("90")])
-        self.assertEqual(self.c2[1] == Literal("80"), True)
+        assert self.c2[1] == Literal("80")
 
     def testI(self):
-        self.assertEqual(self.c2[2] == Literal("90"), True)
+        assert self.c2[2] == Literal("90")
 
     def testJ(self):
-        self.assertEqual(len(self.c2) == 2, True)
+        assert len(self.c2) == 2
 
     def testK(self):
-        self.assertEqual(self.c2.end() == 2, True)
+        assert self.c2.end() == 2
 
     def testL(self):
-        self.assertEqual(
-            self.c3.anyone()
-            in [Literal("1"), Literal("2"), Literal("3"), Literal("4")],
-            True,
-        )
+        assert self.c3.anyone() in [
+            Literal("1"),
+            Literal("2"),
+            Literal("3"),
+            Literal("4"),
+        ]
 
     def testM(self):
         self.c4.add_at_position(3, Literal("60"))
-        self.assertEqual(len(self.c4) == 5, True)
+        assert len(self.c4) == 5
 
     def testN(self):
-        self.assertEqual(self.c4.index(Literal("60")) == 3, True)
+        assert self.c4.index(Literal("60")) == 3
 
     def testO(self):
-        self.assertEqual(self.c4.index(Literal("3")) == 4, True)
+        assert self.c4.index(Literal("3")) == 4
 
     def testP(self):
-        self.assertEqual(self.c4.index(Literal("4")) == 5, True)
+        assert self.c4.index(Literal("4")) == 5
 
     def testQ(self):
-        self.assertEqual(
-            self.c2.index(Literal("1000")) == 3, False
-        )  # there is no Literal("1000") in the Bag
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert self.c2.index(Literal("1000")) != 3

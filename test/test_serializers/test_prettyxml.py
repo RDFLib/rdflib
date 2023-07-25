@@ -7,11 +7,10 @@ from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 from rdflib.term import BNode, Literal, URIRef
 
 
-class SerializerTestBase(object):
-
+class SerializerTestBase:
     repeats = 8
 
-    def setup(self):
+    def setup_method(self):
         graph = ConjunctiveGraph()
         graph.parse(data=self.testContent, format=self.testContentFormat)
         self.sourceGraph = graph
@@ -75,7 +74,6 @@ def serialize_and_load(sourceGraph, makeSerializer):
 
 
 class TestPrettyXmlSerializer(SerializerTestBase):
-
     serializer = PrettyXMLSerializer
 
     testContent = """
