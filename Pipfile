@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+html5lib = "*"
+isodate = "*"
+pyparsing = "*"
+
+[dev-packages]
+sphinxcontrib-apidoc = "*"
+nose = "==1.3.7"
+nose-timer = "*"
+coverage = "*"
+flake8 = "*"
+doctest-ignore-unicode = "==0.1.2"
+Sphinx = "*"
+
+[requires]
+python_version = "3.9"
