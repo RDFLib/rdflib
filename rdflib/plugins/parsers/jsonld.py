@@ -281,7 +281,7 @@ class Parser:
             if term.type == JSON:
                 obj_nodes = [self._to_typed_json_value(obj)]
             elif LIST in term.container:
-                obj_nodes = [{LIST: obj_nodes}]
+                obj_nodes = [self._expand_nested_list(obj_nodes)]
             elif isinstance(obj, dict):
                 obj_nodes = self._parse_container(context, term, obj)
         else:
@@ -593,3 +593,12 @@ class Parser:
                 value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
             ),
         }
+
+    @staticmethod
+    def _expand_nested_list(obj_nodes):
+        if not isinstance(obj_nodes, list):
+            result = obj_nodes
+        else:
+            result = [Parser._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes]
+        return {LIST: result}
+
