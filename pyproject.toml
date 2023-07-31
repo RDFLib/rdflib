@@ -120,7 +120,7 @@ pyflakes = ["-F821"]
 
 
 [tool.black]
-required-version = "23.3.0"
+required-version = "23.7.0"
 line-length = "88"
 target-version = ['py37']
 include = '\.pyi?$'
