@@ -160,9 +160,9 @@ Any new functionality being added to RDFLib *must* have unit tests and
 should have doc tests supplied.
 
 Typically, you should add your functionality and new tests to a branch of
-RDFlib and and run all tests locally and see them pass. There are currently
-close to 4,000 tests with a few extra expected failures and skipped tests.
-We won't allow Pull Requests that break any of the existing tests.
+RDFlib and run all tests locally and see them pass. There are currently
+close to 4,000 tests, with a some expected failures and skipped tests.
+We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what
 you say it is doing: if you remove your enhancement, your new tests should fail!
