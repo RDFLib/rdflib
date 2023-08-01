@@ -448,6 +448,7 @@ Releasing
 
 Create a release-preparation pull request with the following changes:
 
+* Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
 * Updated main branch version and current version in the ``README.md`` file. The
@@ -468,8 +469,22 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     # Build artifacts
     poetry build
 
-    # Check that the built wheel works correctly:
-    pipx run --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    # Verify package metadata
+    bsdtar -xvf dist/rdflib-*.whl -O '*/METADATA' | view -
+    bsdtar -xvf dist/rdflib-*.tar.gz -O '*/PKG-INFO' | view -
+
+    # Check that the built wheel and sdist works correctly:
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+
+    # Dry run publishing
+    poetry publish --repository=testpypi --dry-run
+    poetry publish --dry-run
+
+    # Publish to TestPyPI
+    poetry publish --repository=testpypi
 
     # Publish to PyPI
     poetry publish
@@ -484,7 +499,7 @@ uploaded to the release as release artifacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
-Once this is done announce the release at the following locations:
+Once this is done, announce the release at the following locations:
 
 * Twitter: Just make a tweet from your own account linking to the latest release.
 * RDFLib mailing list.
