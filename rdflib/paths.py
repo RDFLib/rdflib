@@ -242,7 +242,7 @@ class Path(ABC):
 
     @abstractmethod
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        pass
+        ...
 
     def __hash__(self):
         return hash(repr(self))
