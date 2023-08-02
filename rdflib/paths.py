@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 
 __doc__ = r"""
@@ -239,7 +240,7 @@ class Path(ABC):
         obj: Optional["_ObjectType"] = None,
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
         pass
-    
+
     @abstractmethod
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         pass
