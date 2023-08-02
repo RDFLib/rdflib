@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 
 __doc__ = r"""
 
@@ -223,20 +224,25 @@ def _n3(
 
 
 @total_ordering
-class Path:
+class Path(ABC):
     __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
     __invert__: Callable[["Path"], "InvPath"]
     __neg__: Callable[["Path"], "NegatedPath"]
     __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
     __mul__: Callable[["Path", str], "MulPath"]
 
+    @abstractmethod
     def eval(
         self,
         graph: "Graph",
         subj: Optional["_SubjectType"] = None,
         obj: Optional["_ObjectType"] = None,
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
-        raise NotImplementedError()
+        pass
+    
+    @abstractmethod
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+        pass
 
     def __hash__(self):
         return hash(repr(self))
