@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
+from urllib.request import urlopen
 
 from rdflib.term import URIRef, Variable, _is_valid_uri
 
@@ -398,7 +399,6 @@ class NamespaceManager:
         * note this is NOT default behaviour
     * cc:
         * using prefix bindings from prefix.cc which is a online prefixes database
-        * not implemented yet - this is aspirational
 
     .. attention::
 
@@ -453,11 +453,14 @@ class NamespaceManager:
             for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
                 self.bind(prefix, ns)
         elif bind_namespaces == "cc":
+            for prefix, ns in _NAMESPACE_PREFIXES_RDFLIB.items():
+                self.bind(prefix, ns)
+            for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
+                self.bind(prefix, ns)
             # bind any prefix that can be found with lookups to prefix.cc
-            # first bind core and rdflib ones
-            # work out remainder - namespaces without prefixes
-            # only look those ones up
-            raise NotImplementedError("Haven't got to this option yet")
+            for prefix, ns in _get_prefix_cc().items():
+                # note that prefixes are lowercase-only in prefix.cc
+                self.bind(prefix, ns)
         elif bind_namespaces == "core":
             # bind a few core RDF namespaces - default
             for prefix, ns in _NAMESPACE_PREFIXES_CORE.items():
@@ -781,6 +784,13 @@ class NamespaceManager:
             if uri and uri[-1] == "#" and result[-1] != "#":
                 result = "%s#" % result
         return URIRef(result)
+
+
+def _get_prefix_cc():
+    """Get the context from Prefix.cc."""
+    response = urlopen("https://prefix.cc/context.jsonld")
+    context = json.loads(response.read())
+    return context["@context"]
 
 
 # From: http://www.w3.org/TR/REC-xml#NT-CombiningChar
