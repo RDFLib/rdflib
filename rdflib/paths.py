@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
+
 __doc__ = r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
@@ -216,27 +218,31 @@ ZeroOrOne = "?"
 def _n3(
     arg: Union["URIRef", "Path"], namespace_manager: Optional["NamespaceManager"] = None
 ) -> str:
-    # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
     if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
         return "(%s)" % arg.n3(namespace_manager)
-    return arg.n3(namespace_manager)  # type: ignore[union-attr]
+    return arg.n3(namespace_manager)
 
 
 @total_ordering
-class Path:
+class Path(ABC):
     __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
     __invert__: Callable[["Path"], "InvPath"]
     __neg__: Callable[["Path"], "NegatedPath"]
     __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
     __mul__: Callable[["Path", str], "MulPath"]
 
+    @abstractmethod
     def eval(
         self,
         graph: "Graph",
         subj: Optional["_SubjectType"] = None,
         obj: Optional["_ObjectType"] = None,
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
-        raise NotImplementedError()
+        ...
+
+    @abstractmethod
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+        ...
 
     def __hash__(self):
         return hash(repr(self))
