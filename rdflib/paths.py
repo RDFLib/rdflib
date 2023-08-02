@@ -238,7 +238,7 @@ class Path(ABC):
         subj: Optional["_SubjectType"] = None,
         obj: Optional["_ObjectType"] = None,
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
-        pass
+        ...
 
     @abstractmethod
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
