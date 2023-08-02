@@ -218,10 +218,9 @@ ZeroOrOne = "?"
 def _n3(
     arg: Union["URIRef", "Path"], namespace_manager: Optional["NamespaceManager"] = None
 ) -> str:
-    # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
     if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
         return "(%s)" % arg.n3(namespace_manager)
-    return arg.n3(namespace_manager)  # type: ignore[union-attr]
+    return arg.n3(namespace_manager)
 
 
 @total_ordering
