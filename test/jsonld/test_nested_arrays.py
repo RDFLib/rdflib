@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
-from rdflib.collection import Collection
-
 from rdflib import *
+from rdflib.collection import Collection
 from rdflib.plugin import Parser, register
 
 register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
