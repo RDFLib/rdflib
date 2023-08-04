@@ -23,7 +23,11 @@ data_no_container = """
         [7, { "@id": "_RES_ID_" }]
     ]
 }
-""".replace('_PROP_ID_', str(prop)).replace('_RES_ID_', str(res))
+""".replace(
+    "_PROP_ID_", str(prop)
+).replace(
+    "_RES_ID_", str(res)
+)
 
 data_list = """
 {
@@ -39,7 +43,11 @@ data_list = """
         [7, { "@id": "_RES_ID_" }]
     ]
 }
-""".replace('_PROP_ID_', str(prop)).replace('_RES_ID_', str(res))
+""".replace(
+    "_PROP_ID_", str(prop)
+).replace(
+    "_RES_ID_", str(res)
+)
 
 
 def test_container_list():

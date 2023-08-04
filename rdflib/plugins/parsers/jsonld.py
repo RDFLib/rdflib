@@ -346,6 +346,7 @@ class Parser(object):
                     continue
                 flattened.append(obj)
             return flattened
+
         obj_nodes = flatten(obj_nodes)
 
         if not pred_uri:
@@ -602,6 +603,8 @@ class Parser(object):
         if not isinstance(obj_nodes, list):
             result = obj_nodes
         else:
-            result = [Parser._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes]
+            result = [
+                Parser._expand_nested_list(o) if isinstance(o, list) else o
+                for o in obj_nodes
+            ]
         return {LIST: result}
-
