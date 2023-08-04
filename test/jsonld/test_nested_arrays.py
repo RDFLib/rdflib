@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from rdflib import Graph, URIRef, Literal
+from rdflib import Graph, Literal, URIRef
 from rdflib.collection import Collection
 from rdflib.plugin import Parser, register
 
