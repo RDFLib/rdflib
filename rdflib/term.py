@@ -20,6 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
+import abc
 import re
 from fractions import Fraction
 
@@ -128,12 +129,16 @@ def _is_valid_unicode(value: Union[str, bytes]) -> bool:
     return True
 
 
-class Node:
+class Node(abc.ABC):
     """
     A Node in the Graph.
     """
 
     __slots__ = ()
+
+    @abc.abstractmethod
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+        ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph

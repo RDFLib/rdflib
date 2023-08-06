@@ -1010,12 +1010,10 @@ class _AlgebraTranslator:
     ) -> str:
         if isinstance(node_arg, Identifier):
             if node_arg in self.aggr_vars.keys():
-                # type error: "Identifier" has no attribute "n3"
-                grp_var = self.aggr_vars[node_arg].pop(0).n3()  # type: ignore[attr-defined]
+                grp_var = self.aggr_vars[node_arg].pop(0).n3()
                 return grp_var
             else:
-                # type error: "Identifier" has no attribute "n3"
-                return node_arg.n3()  # type: ignore[attr-defined]
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):

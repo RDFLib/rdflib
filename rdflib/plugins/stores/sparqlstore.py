@@ -61,8 +61,7 @@ def _node_to_sparql(node: "Node") -> str:
             "SPARQLStore does not support BNodes! "
             "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
         )
-    # type error: "Node" has no attribute "n3"
-    return node.n3()  # type: ignore[attr-defined]
+    return node.n3()
 
 
 class SPARQLStore(SPARQLConnector, Store):

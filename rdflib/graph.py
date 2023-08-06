@@ -1609,10 +1609,9 @@ class Graph(Node):
 
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
-    def n3(self) -> str:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         """Return an n3 identifier for the Graph"""
-        # type error: "IdentifiedNode" has no attribute "n3"
-        return "[%s]" % self.identifier.n3()  # type: ignore[attr-defined]
+        return "[%s]" % self.identifier.n3(namespace_manager=namespace_manager)
 
     def __reduce__(self) -> Tuple[Type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return (
@@ -2591,14 +2590,12 @@ class QuotedGraph(Graph):
         )
         return self
 
-    def n3(self) -> str:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         """Return an n3 identifier for the Graph"""
-        # type error: "IdentifiedNode" has no attribute "n3"
-        return "{%s}" % self.identifier.n3()  # type: ignore[attr-defined]
+        return "{%s}" % self.identifier.n3(namespace_manager=namespace_manager)
 
     def __str__(self) -> str:
-        # type error: "IdentifiedNode" has no attribute "n3"
-        identifier = self.identifier.n3()  # type: ignore[attr-defined]
+        identifier = self.identifier.n3()
         label = self.store.__class__.__name__
         pattern = (
             "{this rdflib.identifier %s;rdflib:storage "
@@ -2900,7 +2897,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     ) -> NoReturn:  # noqa: N803
         raise ModificationException()
 
-    def n3(self) -> NoReturn:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> NoReturn:
         raise UnSupportedAggregateOperation()
 
     def __reduce__(self) -> NoReturn:

@@ -60,14 +60,12 @@ class NT11Serializer(NTSerializer):
 def _nt_row(triple: _TripleType) -> str:
     if isinstance(triple[2], Literal):
         return "%s %s %s .\n" % (
-            # type error: "Node" has no attribute "n3"
-            triple[0].n3(),  # type: ignore[attr-defined]
-            triple[1].n3(),  # type: ignore[attr-defined]
+            triple[0].n3(),
+            triple[1].n3(),
             _quoteLiteral(triple[2]),
         )
     else:
-        # type error: "Node" has no attribute "n3"
-        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())  # type: ignore[attr-defined]
+        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
 
 
 def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
