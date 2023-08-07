@@ -27,13 +27,13 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.error import HTTPError
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname, urlopen
+from urllib.request import Request, url2pathname
 from xml.sax import xmlreader
 
 import rdflib.util
 from rdflib import __version__
+from rdflib._networking import _urlopen
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
@@ -53,7 +53,7 @@ __all__ = [
 ]
 
 
-class Parser(object):
+class Parser:
     __slots__ = ()
 
     def __init__(self):
@@ -266,21 +266,6 @@ class URLInputSource(InputSource):
             myheaders["Accept"] = ", ".join(acc)
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
-
-        def _urlopen(req: Request) -> Any:
-            try:
-                return urlopen(req)
-            except HTTPError as ex:
-                # 308 (Permanent Redirect) is not supported by current python version(s)
-                # See https://bugs.python.org/issue40321
-                # This custom error handling should be removed once all
-                # supported versions of python support 308.
-                if ex.code == 308:
-                    # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
-                    req.full_url = ex.headers.get("Location")  # type: ignore[assignment]
-                    return _urlopen(req)
-                else:
-                    raise
 
         response: addinfourl = _urlopen(req)
         self.url = response.geturl()  # in case redirections took place

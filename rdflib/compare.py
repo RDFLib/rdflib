@@ -118,7 +118,7 @@ def _total_seconds(td):
     return result
 
 
-class _runtime(object):  # noqa: N801
+class _runtime:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -137,7 +137,7 @@ class _runtime(object):  # noqa: N801
         return wrapped_f
 
 
-class _call_count(object):  # noqa: N801
+class _call_count:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -284,7 +284,7 @@ class Color:
 _HashT = Callable[[], "HASH"]
 
 
-class _TripleCanonicalizer(object):
+class _TripleCanonicalizer:
     def __init__(self, graph: Graph, hashfunc: _HashT = sha256):
         self.graph = graph
 

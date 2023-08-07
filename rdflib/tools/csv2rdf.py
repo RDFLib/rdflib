@@ -6,6 +6,7 @@ See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 try: ``csv2rdf --help``
 
 """
+from __future__ import annotations
 
 import codecs
 import configparser
@@ -17,11 +18,12 @@ import re
 import sys
 import time
 import warnings
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import quote
 
 import rdflib
-from rdflib import RDF, RDFS
-from rdflib.namespace import split_uri
+from rdflib.namespace import RDF, RDFS, split_uri
+from rdflib.term import URIRef
 
 __all__ = ["CSV2RDF"]
 
@@ -88,7 +90,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 """
 
 # bah - ugly global
-uris = {}
+uris: Dict[Any, Tuple[URIRef, Optional[URIRef]]] = {}
 
 
 def toProperty(label):
@@ -113,7 +115,7 @@ def toPropertyLabel(label):
     return label
 
 
-def index(l_, i):
+def index(l_: List[int], i: Tuple[int, ...]) -> Tuple[int, ...]:
     """return a set of indexes from a list
     >>> index([1,2,3],(0,2))
     (1, 3)
@@ -127,7 +129,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
         yield row
 
 
-def prefixuri(x, prefix, class_=None):
+def prefixuri(x, prefix, class_: Optional[URIRef] = None):
     if prefix:
         r = rdflib.URIRef(prefix + quote(x.encode("utf8").replace(" ", "_"), safe=""))
     else:
@@ -139,11 +141,11 @@ def prefixuri(x, prefix, class_=None):
 # meta-language for config
 
 
-class NodeMaker(object):
+class NodeMaker:
     def range(self):
         return rdflib.RDFS.Literal
 
-    def __call__(self, x):
+    def __call__(self, x: Any):
         return rdflib.Literal(x)
 
 
@@ -296,7 +298,7 @@ def column(v):
     return eval(v, config_functions)
 
 
-class CSV2RDF(object):
+class CSV2RDF:
     def __init__(self):
         self.CLASS = None
         self.BASE = None
@@ -414,7 +416,7 @@ class CSV2RDF(object):
                         "%d rows, %d triples, elapsed %.2fs.\n"
                         % (rows, self.triples, time.time() - start)
                     )
-            except:
+            except Exception:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise
 

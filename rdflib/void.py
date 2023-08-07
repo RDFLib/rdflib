@@ -1,7 +1,8 @@
 import collections
 
-from rdflib import Graph, Literal, URIRef
+from rdflib.graph import Graph
 from rdflib.namespace import RDF, VOID
+from rdflib.term import Literal, URIRef
 
 
 def generateVoID(  # noqa: N802

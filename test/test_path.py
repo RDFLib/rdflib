@@ -54,14 +54,39 @@ nsm = g.namespace_manager
             "rdfs:subClassOf?",
         ),
         (
-            RDF.type / RDFS.subClassOf * "*",
+            RDF.type / MulPath(RDFS.subClassOf, "*"),
             f"<{RDF.type}>/<{RDFS.subClassOf}>*",
             "rdf:type/rdfs:subClassOf*",
+        ),
+        (
+            RDF.type / ((SequencePath(RDFS.subClassOf)) * "*"),
+            f"<{RDF.type}>/<{RDFS.subClassOf}>*",
+            "rdf:type/rdfs:subClassOf*",
+        ),
+        (
+            RDF.type / RDFS.subClassOf * "*",
+            f"(<{RDF.type}>/<{RDFS.subClassOf}>)*",
+            "(rdf:type/rdfs:subClassOf)*",
         ),
         (
             -(RDF.type | RDFS.subClassOf),
             f"!(<{RDF.type}>|<{RDFS.subClassOf}>)",
             "!(rdf:type|rdfs:subClassOf)",
+        ),
+        (
+            -(RDF.type | ((SequencePath(RDFS.subClassOf)) * "*")),
+            f"!(<{RDF.type}>|<{RDFS.subClassOf}>*)",
+            "!(rdf:type|rdfs:subClassOf*)",
+        ),
+        (
+            SequencePath(RDFS.subClassOf),
+            f"<{RDFS.subClassOf}>",
+            "rdfs:subClassOf",
+        ),
+        (
+            AlternativePath(RDFS.subClassOf),
+            f"<{RDFS.subClassOf}>",
+            "rdfs:subClassOf",
         ),
     ],
 )

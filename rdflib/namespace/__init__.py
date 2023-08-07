@@ -1,6 +1,4 @@
-import json
 import logging
-import sys
 import warnings
 from functools import lru_cache
 from pathlib import Path
@@ -93,6 +91,34 @@ __all__ = [
     "ClosedNamespace",
     "DefinedNamespace",
     "NamespaceManager",
+    "BRICK",
+    "CSVW",
+    "DC",
+    "DCAM",
+    "DCAT",
+    "DCMITYPE",
+    "DCTERMS",
+    "DOAP",
+    "FOAF",
+    "GEO",
+    "ODRL2",
+    "ORG",
+    "OWL",
+    "PROF",
+    "PROV",
+    "QB",
+    "RDF",
+    "RDFS",
+    "SDO",
+    "SH",
+    "SKOS",
+    "SOSA",
+    "SSN",
+    "TIME",
+    "VANN",
+    "VOID",
+    "WGS",
+    "XSD",
 ]
 
 logger = logging.getLogger(__name__)
@@ -350,7 +376,7 @@ if TYPE_CHECKING:
 _with_bind_override_fix = True
 
 
-class NamespaceManager(object):
+class NamespaceManager:
     """Class for managing prefix => namespace mappings
 
     This class requires an RDFlib Graph as an input parameter and may optionally have
@@ -464,6 +490,35 @@ class NamespaceManager(object):
         else:
             return ":".join((prefix, name))
 
+    def curie(self, uri: str, generate: bool = True) -> str:
+        """
+        From a URI, generate a valid CURIE.
+
+        Result is guaranteed to contain a colon separating the prefix from the
+        name, even if the prefix is an empty string.
+
+        .. warning::
+
+            When ``generate`` is `True` (which is the default) and there is no
+            matching namespace for the URI in the namespace manager then a new
+            namespace will be added with prefix ``ns{index}``.
+
+            Thus, when ``generate`` is `True`, this function is not a pure
+            function because of this side-effect.
+
+            This default behaviour is chosen so that this function operates
+            similarly to `NamespaceManager.qname`.
+
+        :param uri: URI to generate CURIE for.
+        :param generate: Whether to add a prefix for the namespace if one doesn't
+            already exist.  Default: `True`.
+        :return: CURIE for the URI.
+        :raises KeyError: If generate is `False` and the namespace doesn't already have
+            a prefix.
+        """
+        prefix, namespace, name = self.compute_qname(uri, generate=generate)
+        return ":".join((prefix, name))
+
     def qname_strict(self, uri: str) -> str:
         prefix, namespace, name = self.compute_qname_strict(uri)
         if prefix == "":
@@ -482,7 +537,7 @@ class NamespaceManager(object):
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(str(namespace))
-        except:
+        except Exception:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
             else:
@@ -617,7 +672,7 @@ class NamespaceManager(object):
         if not type(curie) is str:
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
-        if len(parts) != 2 or len(parts[0]) < 1:
+        if len(parts) != 2:
             raise ValueError(
                 "Malformed curie argument, format should be e.g. “foaf:name”."
             )

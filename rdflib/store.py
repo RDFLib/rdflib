@@ -65,7 +65,7 @@ RDF operations performed on it.
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
-UNKNOWN = None
+UNKNOWN: None = None
 
 
 Pickler = pickle.Pickler
@@ -113,7 +113,7 @@ class TripleRemovedEvent(Event):
     """
 
 
-class NodePickler(object):
+class NodePickler:
     def __init__(self) -> None:
         self._objects: Dict[str, Any] = {}
         self._ids: Dict[Any, str] = {}
@@ -165,7 +165,7 @@ class NodePickler(object):
         self._get_object = self._objects.__getitem__
 
 
-class Store(object):
+class Store:
     # Properties
     context_aware: bool = False
     formula_aware: bool = False

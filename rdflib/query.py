@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     from rdflib.term import Identifier, Variable
 
 
-class Processor(object):
+class Processor:
     """
     Query plugin interface.
 
@@ -64,7 +64,7 @@ class Processor(object):
         pass
 
 
-class UpdateProcessor(object):
+class UpdateProcessor:
     """
     Update plugin interface.
 
@@ -93,7 +93,7 @@ class ResultException(Exception):
     pass
 
 
-class EncodeOnlyUnicode(object):
+class EncodeOnlyUnicode:
     """
     This is a crappy work-around for
     http://bugs.python.org/issue11649
@@ -202,7 +202,7 @@ class ResultRow(Tuple["Identifier", ...]):
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
-class Result(object):
+class Result:
     """
     A common class for representing query result.
 
@@ -409,11 +409,11 @@ class Result(object):
                 return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
-        except:
+        except Exception:
             return False
 
 
-class ResultParser(object):
+class ResultParser:
     def __init__(self):
         pass
 
@@ -423,7 +423,7 @@ class ResultParser(object):
         pass  # abstract
 
 
-class ResultSerializer(object):
+class ResultSerializer:
     def __init__(self, result: Result):
         self.result = result
 

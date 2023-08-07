@@ -105,8 +105,6 @@ _QuadSelectorType = Tuple[
 _TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
 _TriplePathType = Tuple["_SubjectType", Path, "_ObjectType"]
 _TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
-# _QuadPathType = Tuple["_SubjectType", Path, "_ObjectType", "_ContextType"]
-# _QuadOrQuadPathType = Union["_QuadType", "_QuadPathType"]
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
@@ -677,7 +675,7 @@ class Graph(Node):
         """Iterates over all triples in the store"""
         return self.triples((None, None, None))
 
-    def __contains__(self, triple: _TriplePatternType) -> bool:
+    def __contains__(self, triple: _TripleSelectorType) -> bool:
         """Support for 'triple in graph' syntax"""
         for triple in self.triples(triple):
             return True
@@ -1402,26 +1400,26 @@ class Graph(Node):
            :doc:`Security Considerations </security_considerations>`
            documentation.
 
-        :Parameters:
-
-          - ``source``: An InputSource, file-like object, or string. In the case
-            of a string the string is the location of the source.
-          - ``location``: A string indicating the relative or absolute URL of
-            the source. Graph's absolutize method is used if a relative location
+        :param source: An `InputSource`, file-like object, `Path` like object,
+            or string. In the case of a string the string is the location of the
+            source.
+        :param location: A string indicating the relative or absolute URL of the
+            source. `Graph`'s absolutize method is used if a relative location
             is specified.
-          - ``file``: A file-like object.
-          - ``data``: A string containing the data to be parsed.
-          - ``format``: Used if format can not be determined from source, e.g.
+        :param file: A file-like object.
+        :param data: A string containing the data to be parsed.
+        :param format: Used if format can not be determined from source, e.g.
             file extension or Media Type. Defaults to text/turtle. Format
             support can be extended with plugins, but "xml", "n3" (use for
             turtle), "nt" & "trix" are built in.
-          - ``publicID``: the logical URI to use as the document base. If None
+        :param publicID: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
-            there is a document location).
-
-        :Returns:
-
-          - self, the graph instance.
+            there is a document location). This is used as the base URI when
+            resolving relative URIs in the source document, as defined in `IETF
+            RFC 3986
+            <https://datatracker.ietf.org/doc/html/rfc3986#section-5.1.4>`_,
+            given the source document does not define a base URI.
+        :return: ``self``, i.e. the :class:`~rdflib.graph.Graph` instance.
 
         Examples:
 
@@ -1816,7 +1814,9 @@ class Graph(Node):
 
         return retval
 
-    def cbd(self, resource: _SubjectType) -> Graph:
+    def cbd(
+        self, resource: _SubjectType, *, target_graph: Optional[Graph] = None
+    ) -> Graph:
         """Retrieves the Concise Bounded Description of a Resource from a Graph
 
         Concise Bounded Description (CBD) is defined in [1] as:
@@ -1842,10 +1842,14 @@ class Graph(Node):
         [1] https://www.w3.org/Submission/CBD/
 
         :param resource: a URIRef object, of the Resource for queried for
-        :return: a Graph, subgraph of self
+        :param target_graph: Optionally, a graph to add the CBD to; otherwise, a new graph is created for the CBD
+        :return: a Graph, subgraph of self if no graph was provided otherwise the provided graph
 
         """
-        subgraph = Graph()
+        if target_graph is None:
+            subgraph = Graph()
+        else:
+            subgraph = target_graph
 
         def add_to_cbd(uri: _SubjectType) -> None:
             for s, p, o in self.triples((uri, None, None)):
@@ -1979,7 +1983,7 @@ class ConjunctiveGraph(Graph):
             c = self._graph(c)
         return s, p, o, c
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         """Support for 'triple/quad in graph' syntax"""
         s, p, o, c = self._spoc(triple_or_quad)
         for t in self.triples((s, p, o), context=c):
@@ -2202,15 +2206,18 @@ class ConjunctiveGraph(Graph):
         **args: Any,
     ) -> "Graph":
         """
-        Parse source adding the resulting triples to its own context
-        (sub graph of this graph).
+        Parse source adding the resulting triples to its own context (sub graph
+        of this graph).
 
         See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
 
+        If the source is in a format that does not support named graphs it's triples
+        will be added to the default graph (i.e. `Dataset.default_context`).
+
         :Returns:
 
-        The graph into which the source was parsed. In the case of n3
-        it returns the root context.
+        The graph into which the source was parsed. In the case of n3 it returns
+        the root context.
 
         .. caution::
 
@@ -2224,6 +2231,14 @@ class ConjunctiveGraph(Graph):
            For information on available security measures, see the RDFLib
            :doc:`Security Considerations </security_considerations>`
            documentation.
+
+        *Changed in 7.0*: The ``publicID`` argument is no longer used as the
+        identifier (i.e. name) of the default graph as was the case before
+        version 7.0. In the case of sources that do not support named graphs,
+        the ``publicID`` parameter will also not be used as the name for the
+        graph that the data is loaded into, and instead the triples from sources
+        that do not support named graphs will be loaded into the default graph
+        (i.e. `ConjunctionGraph.default_context`).
         """
 
         source = create_input_source(
@@ -2242,12 +2257,8 @@ class ConjunctiveGraph(Graph):
         # create_input_source will ensure that publicId is not None, though it
         # would be good if this guarantee was made more explicit i.e. by type
         # hint on InputSource (TODO/FIXME).
-        g_id: str = publicID and publicID or source.getPublicId()
-        if not isinstance(g_id, Node):
-            g_id = URIRef(g_id)
 
-        context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None))  # hmm ?
+        context = self.default_context
         context.parse(source, publicID=publicID, format=format, **args)
         # TODO: FIXME: This should not return context, but self.
         return context
@@ -2455,6 +2466,14 @@ class Dataset(ConjunctiveGraph):
         **args: Any,
     ) -> "Graph":
         """
+        Parse an RDF source adding the resulting triples to the Graph.
+
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
+
+        The source is specified using one of source, location, file or data.
+
+        If the source is in a format that does not support named graphs it's triples
+        will be added to the default graph (i.e. `Dataset.default_context`).
 
         .. caution::
 
@@ -2468,6 +2487,14 @@ class Dataset(ConjunctiveGraph):
            For information on available security measures, see the RDFLib
            :doc:`Security Considerations </security_considerations>`
            documentation.
+
+        *Changed in 7.0*: The ``publicID`` argument is no longer used as the
+        identifier (i.e. name) of the default graph as was the case before
+        version 7.0. In the case of sources that do not support named graphs,
+        the ``publicID`` parameter will also not be used as the name for the
+        graph that the data is loaded into, and instead the triples from sources
+        that do not support named graphs will be loaded into the default graph
+        (i.e. `ConjunctionGraph.default_context`).
         """
 
         c = ConjunctiveGraph.parse(
@@ -2590,7 +2617,7 @@ class QuotedGraph(Graph):
 rdflib.term._ORDERING[QuotedGraph] = 11
 
 
-class Seq(object):
+class Seq:
     """Wrapper around an RDF Seq resource
 
     It implements a container type in Python with the order of the items
@@ -2753,7 +2780,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 for s1, p1, o1 in graph.triples((s, p, o)):
                     yield s1, p1, o1
 
-    def __contains__(self, triple_or_quad: _TripleOrQuadPatternType) -> bool:
+    def __contains__(self, triple_or_quad: _TripleOrQuadSelectorType) -> bool:
         context = None
         if len(triple_or_quad) == 4:
             # type error: Tuple index out of range
@@ -2896,7 +2923,7 @@ def _assertnode(*terms: Any) -> bool:
     return True
 
 
-class BatchAddGraph(object):
+class BatchAddGraph:
     """
     Wrapper around graph that turns batches of calls to Graph's add
     (and optionally, addN) into calls to batched calls to addN`.

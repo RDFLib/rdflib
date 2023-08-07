@@ -40,7 +40,8 @@ class TrigSerializer(TurtleSerializer):
             if len(context) == 0:
                 continue
             self.store = context
-            self.getQName(context.identifier)
+            # Don't generate a new prefix for a graph URI if one already exists
+            self.getQName(context.identifier, False)
             self._subjects = {}
 
             for triple in context:
@@ -97,7 +98,8 @@ class TrigSerializer(TurtleSerializer):
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
                 else:
-                    iri = self.getQName(store.identifier)
+                    # Show the full graph URI if a prefix for it doesn't already exist
+                    iri = self.getQName(store.identifier, False)
                     if iri is None:
                         # type error: "IdentifiedNode" has no attribute "n3"
                         iri = store.identifier.n3()  # type: ignore[attr-defined]

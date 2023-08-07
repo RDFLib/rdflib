@@ -6,7 +6,7 @@ from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef
 
 
-class SerializerTestBase(object):
+class SerializerTestBase:
     repeats = 8
 
     def setup_method(self):

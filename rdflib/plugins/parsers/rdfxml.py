@@ -95,7 +95,7 @@ class BagID(URIRef):
         return RDFNS["_%s" % self.li]
 
 
-class ElementHandler(object):
+class ElementHandler:
     __slots__ = [
         "start",
         "char",

@@ -1,5 +1,7 @@
 #
 #
+from __future__ import annotations
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -34,7 +36,7 @@ if TYPE_CHECKING:
 
 __all__ = ["SimpleMemory", "Memory"]
 
-ANY = None
+ANY: None = None
 
 
 class SimpleMemory(Store):

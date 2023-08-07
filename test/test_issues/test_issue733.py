@@ -6,17 +6,16 @@ subject or the object.
 """
 
 import unittest
+from test.utils.namespace import EGDO
 
 from rdflib import Graph
-from rdflib.namespace import Namespace
 
 
 class TestIssue733(unittest.TestCase):
     def test_issue_733(self):
         g = Graph()
-        example = Namespace("http://example.org/")
-        g.add((example.S, example.P, example.O1))
-        g.add((example.S, example.P, example.O2))
+        g.add((EGDO.S, EGDO.P, EGDO.O1))
+        g.add((EGDO.S, EGDO.P, EGDO.O2))
         q = """
         prefix ex:<http://example.org/>
         select ?lexical_or_value ?ot ?gt where {
@@ -43,9 +42,8 @@ class TestIssue733(unittest.TestCase):
 
     def test_issue_733_independant(self):
         g = Graph()
-        example = Namespace("http://example.org/")
-        g.add((example.S, example.P, example.O1))
-        g.add((example.S, example.P, example.O2))
+        g.add((EGDO.S, EGDO.P, EGDO.O1))
+        g.add((EGDO.S, EGDO.P, EGDO.O2))
         q = """
                 prefix ex:<http://example.org/>
                 select ?lexical_or_value where {

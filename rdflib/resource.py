@@ -293,7 +293,7 @@ from rdflib.term import BNode, Node, URIRef
 __all__ = ["Resource"]
 
 
-class Resource(object):
+class Resource:
     def __init__(self, graph, subject):
         self._graph = graph
         self._identifier = subject

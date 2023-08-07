@@ -1,4 +1,5 @@
-from rdflib import Graph
+from rdflib import Graph, URIRef
+from rdflib.term import Literal
 
 query_tpl = """
 SELECT ?x (MIN(?y_) as ?y) (%s(DISTINCT ?z_) as ?z) {
@@ -116,3 +117,39 @@ def test_count_distinct():
     """
     )
     assert list(results)[0][0].toPython() == 2
+
+
+def test_count_optional_values():
+    """Problematic query because ?inst may be not bound.
+    So when counting over not bound variables it throws a NotBoundError.
+    """
+    g = Graph()
+    g.bind("ex", "http://example.com/")
+    g.parse(
+        format="ttl",
+        data="""@prefix ex: <http://example.com/>.
+            ex:1 a ex:a;
+                ex:d ex:b.
+            ex:2 a ex:a;
+                ex:d ex:c;
+                ex:d ex:b.
+            ex:3 a ex:a.
+    """,
+    )
+
+    query = """
+    SELECT DISTINCT ?x (COUNT(DISTINCT ?inst) as ?cnt)
+    WHERE {
+        ?x a ex:a
+        OPTIONAL {
+            VALUES ?inst {ex:b ex:c}.
+            ?x ex:d ?inst.
+        }
+    }  GROUP BY ?x
+    """
+    results = dict(g.query(query))
+    assert results == {
+        URIRef("http://example.com/1"): Literal(1),
+        URIRef("http://example.com/2"): Literal(2),
+        URIRef("http://example.com/3"): Literal(0),
+    }

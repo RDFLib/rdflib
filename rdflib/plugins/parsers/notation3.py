@@ -276,7 +276,7 @@ N3_List = (SYMBOL, List_NS + "List")
 N3_Empty = (SYMBOL, List_NS + "Empty")
 
 
-runNamespaceValue = None
+runNamespaceValue: Optional[str] = None
 
 
 def runNamespace() -> str:
@@ -353,7 +353,7 @@ numberCharsPlus = numberChars | {"+", "."}
 def unicodeExpand(m: Match) -> str:
     try:
         return chr(int(m.group(1), 16))
-    except:
+    except Exception:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 
@@ -1711,7 +1711,7 @@ class SinkParser:
             )
         try:
             return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
-        except:
+        except Exception:
             raise BadSyntax(
                 self._thisDoc,
                 startline,
@@ -1773,7 +1773,7 @@ class BadSyntax(SyntaxError):
 
 
 ###############################################################################
-class Formula(object):
+class Formula:
     number = 0
 
     def __init__(self, parent: Graph):
@@ -1815,7 +1815,7 @@ class Formula(object):
 r_hibyte = re.compile(r"([\x80-\xff])")
 
 
-class RDFSink(object):
+class RDFSink:
     def __init__(self, graph: Graph):
         self.rootFormula: Optional[Formula] = None
         self.uuid = uuid4().hex

@@ -4,6 +4,7 @@ import collections
 import datetime
 import itertools
 import typing as t
+from collections.abc import Mapping, MutableMapping
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -21,7 +22,6 @@ from typing import (
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.compat import Mapping, MutableMapping
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
@@ -246,7 +246,7 @@ class FrozenBindings(FrozenDict):
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
-class QueryContext(object):
+class QueryContext:
     """
     Query context - passed along when evaluating the query
     """
@@ -312,6 +312,17 @@ class QueryContext(object):
         return self._dataset
 
     def load(self, source: URIRef, default: bool = False, **kwargs: Any) -> None:
+        """
+        Load data from the source into the query context's.
+
+        :param source: The source to load from.
+        :param default: If `True`, triples from the source will be added to the
+            default graph, otherwise it will be loaded into a graph with
+            ``source`` URI as its name.
+        :param kwargs: Keyword arguments to pass to
+            :meth:`rdflib.graph.Graph.parse`.
+        """
+
         def _load(graph, source):
             try:
                 return graph.parse(source, format="turtle", **kwargs)
@@ -342,7 +353,7 @@ class QueryContext(object):
             if default:
                 _load(self.graph, source)
             else:
-                _load(self.dataset, source)
+                _load(self.dataset.get_context(source), source)
 
     def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
         # in SPARQL BNodes are just labels

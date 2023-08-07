@@ -20,7 +20,7 @@ Full example in the ``to_rdf`` method below::
     >>>
     >>> CV = Namespace("http://purl.org/captsolo/resume-rdf/0.2/cv#")
     >>>
-    >>> class Person(object):
+    >>> class Person:
     ...     def __init__(self):
     ...         self.first_name = u"Some"
     ...         self.last_name = u"Body"
@@ -112,7 +112,7 @@ from rdflib.namespace import RDF
 from rdflib.term import BNode, Identifier, Literal, URIRef
 
 
-class Describer(object):
+class Describer:
     def __init__(self, graph=None, about=None, base=None):
         if graph is None:
             graph = Graph()

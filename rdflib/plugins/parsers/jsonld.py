@@ -138,7 +138,7 @@ def to_rdf(
     return parser.parse(data, context, dataset)
 
 
-class Parser(object):
+class Parser:
     def __init__(
         self, generalized_rdf: bool = False, allow_lists_of_lists: Optional[bool] = None
     ):

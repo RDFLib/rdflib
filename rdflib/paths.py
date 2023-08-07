@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
+
 __doc__ = r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
@@ -213,21 +215,34 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
+def _n3(
+    arg: Union["URIRef", "Path"], namespace_manager: Optional["NamespaceManager"] = None
+) -> str:
+    if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
+        return "(%s)" % arg.n3(namespace_manager)
+    return arg.n3(namespace_manager)
+
+
 @total_ordering
-class Path(object):
+class Path(ABC):
     __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
     __invert__: Callable[["Path"], "InvPath"]
     __neg__: Callable[["Path"], "NegatedPath"]
     __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
     __mul__: Callable[["Path", str], "MulPath"]
 
+    @abstractmethod
     def eval(
         self,
         graph: "Graph",
         subj: Optional["_SubjectType"] = None,
         obj: Optional["_ObjectType"] = None,
     ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
-        raise NotImplementedError()
+        ...
+
+    @abstractmethod
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+        ...
 
     def __hash__(self):
         return hash(repr(self))
@@ -260,8 +275,7 @@ class InvPath(Path):
         return "Path(~%s)" % (self.arg,)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "^%s" % self.arg.n3(namespace_manager)  # type: ignore[union-attr]
+        return "^%s" % _n3(self.arg, namespace_manager)
 
 
 class SequencePath(Path):
@@ -318,8 +332,7 @@ class SequencePath(Path):
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "/".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
+        return "/".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class AlternativePath(Path):
@@ -345,8 +358,7 @@ class AlternativePath(Path):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "|".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
+        return "|".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class MulPath(Path):
@@ -470,8 +482,7 @@ class MulPath(Path):
         return "Path(%s%s)" % (self.path, self.mod)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "%s%s" % (self.path.n3(namespace_manager), self.mod)  # type: ignore[union-attr]
+        return "%s%s" % (_n3(self.path, namespace_manager), self.mod)
 
 
 class NegatedPath(Path):
@@ -505,8 +516,7 @@ class NegatedPath(Path):
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "!(%s)" % ("|".join(arg.n3(namespace_manager) for arg in self.args))  # type: ignore[union-attr]
+        return "!(%s)" % ("|".join(_n3(arg, namespace_manager) for arg in self.args))
 
 
 class PathList(list):

@@ -16,12 +16,17 @@ developing RDFLib code.
 * You must supply tests for new code.
 * RDFLib uses `Poetry <https://python-poetry.org/docs/master/>`_ for dependency management and packaging.
 
-If you add a new cool feature, consider also adding an example in ``./examples``
+If you add a new cool feature, consider also adding an example in ``./examples``.
 
 Pull Requests Guidelines
 ------------------------
 
 Contributions to RDFLib are made through pull requests (PRs).
+
+For changes that add features or affect the public API of RDFLib, it
+is recommended to first open an issue to discuss the change before starting to
+work on it. That way you can get feedback on the design of the feature before
+spending time on it.
 
 In general, maintainers will only merge PRs if the following conditions are
 met:
@@ -47,11 +52,11 @@ met:
   workflow pass.
 
 In addition to these conditions, PRs that are easier to review and approve will
-be processed quicker. The primary factors that determine this is the scope and
-size of a PR. If there are few changes and the scope is limited then there is
+be processed quicker. The primary factors that determine this are the scope and
+size of a PR. If there are few changes and the scope is limited, then there is
 less that a reviewer has to understand and less that they can disagree with. It
-is thus important to try and split up your changes into multiple independent
-PRs if possible. No PR is too small.
+is thus important to try to split up your changes into multiple independent PRs
+if possible. No PR is too small.
 
 For PRs that introduce breaking changes, it is even more critical that they are
 limited in size and scope, as they will likely have to be kept up to date with
@@ -59,12 +64,93 @@ the ``main`` branch of this project for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why
 it does it, and how the change will impact the users of this project, for this
-reason it is essential that your PR's description explains the nature of the
+reason, it is essential that your PR's description explains the nature of the
 PR, what the PR intends to do, why this is desirable, and how this will affect
 the users of this project.
 
 Please note that while we would like all PRs to follow the guidelines given
 here, we will not reject a PR just because it does not.
+
+Maintenance Guidelines
+----------------------
+
+This section contains guidelines for maintaining RDFLib. RDFLib maintainers
+should try to follow these. These guidelines also serve as an indication to
+RDFLib users what they can expect.
+
+Breaking changes
+~~~~~~~~~~~~~~~~
+
+Breaking changes to RDFLib's public API should be made incrementally, with small
+pull requests to the main branch that change as few things as possible.
+
+Breaking changes should be discussed first in an issue before work is started,
+as it is possible that the change is not necessary or that there is a better way
+to achieve the same goal, in which case the work on the PR would have been
+wasted. This will however not be strictly enforced, and no PR will be rejected
+solely on the basis that it was not discussed upfront.
+
+RDFLib follows `semantic versioning <https://semver.org/spec/v2.0.0.html>`_ and `trunk-based development
+<https://trunkbaseddevelopment.com/>`_, so if any breaking changes were
+introduced into the main branch since the last release, then the next release
+will be a major release with an incremented major version. 
+
+Releases of RDFLib will not as a rule be conditioned on specific features, so
+there may be new major releases that contain very few breaking changes, and
+there could be no minor or patch releases between two major releases.
+
+.. _breaking_changes_rationale:
+
+Rationale
+^^^^^^^^^
+
+RDFLib has been around for more than a decade, and in this time both Python and
+RDF have evolved, and RDFLib's API also has to evolve to keep up with these
+changes and to make it easier for users to use. This will inevitably require
+breaking changes.
+
+There are more or less two ways to introduce breaking changes to RDFLib's public
+API:
+
+- Revolutionary: Create a new API from scratch and reimplement it, and when
+  ready, release a new version of RDFLib with the new API.
+- Evolutionary: Incrementally improve the existing API with small changes and
+  release any breaking changes that were made at regular intervals.
+
+While the revolutionary approach seems appealing, it is also risky and
+time-consuming.
+
+The evolutionary approach puts a lot of strain on the users of RDFLib as they
+have to adapt to breaking changes more often, but the shortcomings of the RDFLib
+public API also put a lot of strain on the users of RDFLib. On the other hand, a
+major advantage of the evolutionary approach is that it is simple and achievable
+from a maintenance and contributor perspective.
+
+Deprecating functionality
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To whatever extent possible, classes, functions, variables, or parameters that
+will be removed should be marked for deprecation in documentation, and if
+possible, should be changed to raise deprecation warnings if used.
+
+There is however no hard requirement that something may only be removed after a
+deprecation notice has been added, or only after a release was made with a
+deprecation notice.
+
+Consequently, functionality may be removed without it ever being marked as
+deprecated.
+
+.. _deprecation_rationale:
+
+Rationale
+^^^^^^^^^
+
+Current resource limitations and the backlog of issues make it impractical to
+first release or incorporate deprecation notices before making quality of life
+changes.
+
+RDFLib uses semantic versioning and provides type hints, and these are the
+primary mechanisms for signalling breaking changes to our users.
 
 .. _tests:
 
@@ -74,9 +160,9 @@ Any new functionality being added to RDFLib *must* have unit tests and
 should have doc tests supplied.
 
 Typically, you should add your functionality and new tests to a branch of
-RDFlib and and run all tests locally and see them pass. There are currently
-close to 4,000 tests with a few extra expected failures and skipped tests.
-We won't allow Pull Requests that break any of the existing tests.
+RDFlib and run all tests locally and see them pass. There are currently
+close to 4,000 tests, with a some expected failures and skipped tests.
+We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what
 you say it is doing: if you remove your enhancement, your new tests should fail!
@@ -351,6 +437,8 @@ flag them as expecting to fail.
 Compatibility
 -------------
 
+RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
+
 RDFlib 6.0.0 release and later only support Python 3.7 and newer.
 
 RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3.7.
@@ -360,6 +448,7 @@ Releasing
 
 Create a release-preparation pull request with the following changes:
 
+* Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
 * Updated main branch version and current version in the ``README.md`` file. The
@@ -380,8 +469,22 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     # Build artifacts
     poetry build
 
-    # Check that the built wheel works correctly:
-    pipx run --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    # Verify package metadata
+    bsdtar -xvf dist/rdflib-*.whl -O '*/METADATA' | view -
+    bsdtar -xvf dist/rdflib-*.tar.gz -O '*/PKG-INFO' | view -
+
+    # Check that the built wheel and sdist works correctly:
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+
+    # Dry run publishing
+    poetry publish --repository=testpypi --dry-run
+    poetry publish --dry-run
+
+    # Publish to TestPyPI
+    poetry publish --repository=testpypi
 
     # Publish to PyPI
     poetry publish
@@ -396,7 +499,7 @@ uploaded to the release as release artifacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
-Once this is done announce the release at the following locations:
+Once this is done, announce the release at the following locations:
 
 * Twitter: Just make a tweet from your own account linking to the latest release.
 * RDFLib mailing list.

@@ -6,20 +6,19 @@ from test.utils import GraphHelper
 from test.utils.graph import cached_graph
 from test.utils.http import (
     MOCK_HTTP_REQUEST_WILDCARD,
+    MethodName,
     MockHTTPRequest,
+    MockHTTPResponse,
     ctx_http_handler,
 )
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.namespace import EGDO
 from test.utils.wildcard import URL_PARSE_RESULT_WILDCARD
 from urllib.error import HTTPError
 
 import pytest
 
-from rdflib import Graph, Namespace
+from rdflib import Graph
 
 """
 Test that correct content negotiation headers are passed
@@ -62,8 +61,6 @@ jsonldtestdoc = """
                   }
                 ]
                 """
-
-EG = Namespace("http://example.org/")
 
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
@@ -108,7 +105,7 @@ class ContentNegotiationHandler(BaseHTTPRequestHandler):
 class TestGraphHTTP:
     def test_content_negotiation(self) -> None:
         expected = Graph()
-        expected.add((EG.a, EG.b, EG.c))
+        expected.add((EGDO.a, EGDO.b, EGDO.c))
         expected_triples = GraphHelper.triple_set(expected)
 
         with ctx_http_handler(ContentNegotiationHandler) as server:
@@ -123,7 +120,7 @@ class TestGraphHTTP:
 
     def test_content_negotiation_no_format(self) -> None:
         expected = Graph()
-        expected.add((EG.a, EG.b, EG.c))
+        expected.add((EGDO.a, EGDO.b, EGDO.c))
         expected_triples = GraphHelper.triple_set(expected)
 
         with ctx_http_handler(ContentNegotiationHandler) as server:
@@ -137,7 +134,7 @@ class TestGraphHTTP:
 
     def test_source(self) -> None:
         expected = Graph()
-        expected.add((EG["a"], EG["b"], EG["c"]))
+        expected.add((EGDO["a"], EGDO["b"], EGDO["c"]))
         expected_triples = GraphHelper.triple_set(expected)
 
         with ServedBaseHTTPServerMock() as httpmock:
@@ -147,7 +144,7 @@ class TestGraphHTTP:
                 MockHTTPResponse(
                     200,
                     "OK",
-                    f"<{EG['a']}> <{EG['b']}> <{EG['c']}>.".encode(),
+                    f"<{EGDO['a']}> <{EGDO['b']}> <{EGDO['c']}>.".encode(),
                     {"Content-Type": ["text/turtle"]},
                 )
             )
@@ -157,7 +154,7 @@ class TestGraphHTTP:
 
     def test_3xx(self) -> None:
         expected = Graph()
-        expected.add((EG["a"], EG["b"], EG["c"]))
+        expected.add((EGDO["a"], EGDO["b"], EGDO["c"]))
         expected_triples = GraphHelper.triple_set(expected)
 
         with ServedBaseHTTPServerMock() as httpmock:
@@ -195,7 +192,7 @@ class TestGraphHTTP:
                 MockHTTPResponse(
                     200,
                     "OK",
-                    f"<{EG['a']}> <{EG['b']}> <{EG['c']}>.".encode(),
+                    f"<{EGDO['a']}> <{EGDO['b']}> <{EGDO['c']}>.".encode(),
                     {"Content-Type": ["text/turtle"]},
                 )
             )
