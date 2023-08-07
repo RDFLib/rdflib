@@ -2,10 +2,6 @@
 
 from rdflib import Graph, Literal, URIRef
 from rdflib.collection import Collection
-from rdflib.plugin import Parser, register
-
-register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
-register("application/ld+json", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
 
 prop = URIRef("http://example.com/props/a")
 res = URIRef("http://example.com/res")
