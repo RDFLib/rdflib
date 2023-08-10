@@ -8,7 +8,7 @@ from rdflib.collection import Collection
 prop = EGDC["props/a"]
 res = EGDC["res"]
 
-data_no_container = """
+DATA_NO_CONTAINER = """
 {
     "@context": {
         "egdc": "http://example.com/",
@@ -24,7 +24,7 @@ data_no_container = """
 }
 """
 
-data_list = """
+DATA_LIST = """
 {
     "@context": {
         "egdc": "http://example.com/",
@@ -44,7 +44,7 @@ data_list = """
 
 def test_container_list():
     g = Graph()
-    g.parse(data=data_list, format="application/ld+json")
+    g.parse(data=DATA_LIST, format="application/ld+json")
 
     outer = Collection(g, next(g.objects(predicate=prop)))
     assert len(outer) == 3
@@ -63,7 +63,7 @@ def test_container_list():
 
 def test_no_container():
     g = Graph()
-    g.parse(data=data_no_container, format="application/ld+json")
+    g.parse(data=DATA_NO_CONTAINER, format="application/ld+json")
 
     assert len(g) == 8
 
