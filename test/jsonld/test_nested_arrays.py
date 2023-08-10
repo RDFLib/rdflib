@@ -1,10 +1,12 @@
 # -*- coding: UTF-8 -*-
 
-from rdflib import Graph, Literal, URIRef
+from test.utils.namespace import EGDC
+
+from rdflib import Graph, Literal
 from rdflib.collection import Collection
 
-prop = URIRef("http://example.com/props/a")
-res = URIRef("http://example.com/res")
+prop = EGDC["props/a"]
+res = EGDC["res"]
 
 data_no_container = """
 {
