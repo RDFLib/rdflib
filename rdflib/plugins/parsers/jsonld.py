@@ -600,11 +600,7 @@ class Parser:
 
     @classmethod
     def _expand_nested_list(cls, obj_nodes):
-        if not isinstance(obj_nodes, list):
-            result = obj_nodes
-        else:
-            result = [
-                cls._expand_nested_list(o) if isinstance(o, list) else o
-                for o in obj_nodes
-            ]
+        result = [
+            cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
+        ]
         return {LIST: result}
