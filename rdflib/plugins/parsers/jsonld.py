@@ -35,7 +35,7 @@ Example usage::
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
 
 import rdflib.parser
 from rdflib.graph import ConjunctiveGraph, Graph
@@ -334,7 +334,7 @@ class Parser:
         context = context.get_context_for_term(term)
 
         # Flatten deep nested lists
-        def flatten(n):
+        def flatten(n: Iterable[Any]) -> List[Any]:
             flattened = []
             for obj in n:
                 if isinstance(obj, dict):
@@ -599,7 +599,7 @@ class Parser:
         }
 
     @classmethod
-    def _expand_nested_list(cls, obj_nodes):
+    def _expand_nested_list(cls, obj_nodes: List[Any]) -> Dict[str, List[Any]]:
         result = [
             cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
         ]
