@@ -11,41 +11,35 @@ res = EGDC["res"]
 data_no_container = """
 {
     "@context": {
+        "egdc": "http://example.com/",
         "a": {
-            "@id": "_PROP_ID_"
+            "@id": "egdc:props/a"
         }
     },
     "a": [
         [[1, 2, 3], ["4", 5]],
         6,
-        [7, { "@id": "_RES_ID_" }]
+        [7, { "@id": "egdc:res" }]
     ]
 }
-""".replace(
-    "_PROP_ID_", str(prop)
-).replace(
-    "_RES_ID_", str(res)
-)
+"""
 
 data_list = """
 {
     "@context": {
+        "egdc": "http://example.com/",
         "a": {
-            "@id": "_PROP_ID_",
+            "@id": "egdc:props/a",
             "@container": "@list"
         }
     },
     "a": [
         [[1, 2, 3], ["4", 5]],
         6,
-        [7, { "@id": "_RES_ID_" }]
+        [7, { "@id": "egdc:res" }]
     ]
 }
-""".replace(
-    "_PROP_ID_", str(prop)
-).replace(
-    "_RES_ID_", str(res)
-)
+"""
 
 
 def test_container_list():
