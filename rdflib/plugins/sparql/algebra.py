@@ -174,14 +174,10 @@ def triples(
         List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]
     ]
 ) -> List[Tuple[Identifier, Identifier, Identifier]]:
-    # NOTE on type errors: errors are a result of the variable being reused for
-    # a different type.
-    # type error: Incompatible types in assignment (expression has type "Sequence[Identifier]", variable has type "Union[List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]]")
-    l = reduce(lambda x, y: x + y, l)  # type: ignore[assignment]  # noqa: E741
-    if (len(l) % 3) != 0:
+    _l = reduce(lambda x, y: x + y, l)
+    if (len(_l) % 3) != 0:
         raise Exception("these aint triples")
-    # type error: Generator has incompatible item type "Tuple[Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]]]"; expected "Tuple[Identifier, Identifier, Identifier]"
-    return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))  # type: ignore[misc]
+    return reorderTriples((_l[x], _l[x + 1], _l[x + 2]) for x in range(0, len(_l), 3))
 
 
 # type error: Missing return statement
