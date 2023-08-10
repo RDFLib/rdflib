@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This parser will interpret a JSON-LD document as an RDF Graph. See:
 
