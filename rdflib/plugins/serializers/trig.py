@@ -101,8 +101,7 @@ class TrigSerializer(TurtleSerializer):
                     # Show the full graph URI if a prefix for it doesn't already exist
                     iri = self.getQName(store.identifier, False)
                     if iri is None:
-                        # type error: "IdentifiedNode" has no attribute "n3"
-                        iri = store.identifier.n3()  # type: ignore[attr-defined]
+                        iri = store.identifier.n3()
                 self.write(self.indent() + "\n%s {" % iri)
 
             self.depth += 1
