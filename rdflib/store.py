@@ -1,12 +1,37 @@
+from __future__ import annotations
+
 import pickle
 from io import BytesIO
-from typing import TYPE_CHECKING, Iterable, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
-    from rdflib.term import IdentifiedNode, Node, URIRef
+    from rdflib.graph import (
+        Graph,
+        _ContextType,
+        _ObjectType,
+        _PredicateType,
+        _QuadType,
+        _SubjectType,
+        _TriplePatternType,
+        _TripleType,
+    )
+    from rdflib.plugins.sparql.sparql import Query, Update
+    from rdflib.query import Result
+    from rdflib.term import Identifier, Node, URIRef
 
 """
 ============
@@ -89,37 +114,43 @@ class TripleRemovedEvent(Event):
 
 
 class NodePickler(object):
-    def __init__(self):
-        self._objects = {}
-        self._ids = {}
+    def __init__(self) -> None:
+        self._objects: Dict[str, Any] = {}
+        self._ids: Dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
 
-    def _get_ids(self, key):
+    def _get_ids(self, key: Any) -> Optional[str]:
         try:
             return self._ids.get(key)
         except TypeError:
             return None
 
-    def register(self, object, id):
+    def register(self, object: Any, id: str) -> None:
         self._objects[id] = object
         self._ids[object] = id
 
-    def loads(self, s):
+    def loads(self, s: bytes) -> "Node":
         up = Unpickler(BytesIO(s))
-        up.persistent_load = self._get_object
+        # NOTE on type error: https://github.com/python/mypy/issues/2427
+        # type error: Cannot assign to a method
+        up.persistent_load = self._get_object  # type: ignore[assignment]
         try:
             return up.load()
         except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
-    def dumps(self, obj, protocol=None, bin=None):
+    def dumps(
+        self, obj: "Node", protocol: Optional[Any] = None, bin: Optional[Any] = None
+    ):
         src = BytesIO()
         p = Pickler(src)
-        p.persistent_id = self._get_ids
+        # NOTE on type error: https://github.com/python/mypy/issues/2427
+        # type error: Cannot assign to a method
+        p.persistent_id = self._get_ids  # type: ignore[assignment]
         p.dump(obj)
         return src.getvalue()
 
-    def __getstate__(self):
+    def __getstate__(self) -> Mapping[str, Any]:
         state = self.__dict__.copy()
         del state["_get_object"]
         state.update(
@@ -127,7 +158,7 @@ class NodePickler(object):
         )
         return state
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: Mapping[str, Any]) -> None:
         self.__dict__.update(state)
         self._ids = dict(self._ids)
         self._objects = dict(self._objects)
@@ -136,24 +167,28 @@ class NodePickler(object):
 
 class Store(object):
     # Properties
-    context_aware = False
-    formula_aware = False
-    transaction_aware = False
-    graph_aware = False
+    context_aware: bool = False
+    formula_aware: bool = False
+    transaction_aware: bool = False
+    graph_aware: bool = False
 
-    def __init__(self, configuration=None, identifier=None):
+    def __init__(
+        self,
+        configuration: Optional[str] = None,
+        identifier: Optional["Identifier"] = None,
+    ):
         """
         identifier: URIRef of the Store. Defaults to CWD
         configuration: string containing information open can use to
         connect to datastore.
         """
-        self.__node_pickler = None
+        self.__node_pickler: Optional[NodePickler] = None
         self.dispatcher = Dispatcher()
         if configuration:
             self.open(configuration)
 
     @property
-    def node_pickler(self):
+    def node_pickler(self) -> NodePickler:
         if self.__node_pickler is None:
             from rdflib.graph import Graph, QuotedGraph
             from rdflib.term import BNode, Literal, URIRef, Variable
@@ -169,10 +204,11 @@ class Store(object):
         return self.__node_pickler
 
     # Database management methods
-    def create(self, configuration):
+    # NOTE: Can't find any stores using this, we should consider deprecating it.
+    def create(self, configuration: str) -> None:
         self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
-    def open(self, configuration, create: bool = False):
+    def open(self, configuration: str, create: bool = False) -> Optional[int]:
         """
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
@@ -184,20 +220,20 @@ class Store(object):
         """
         return UNKNOWN
 
-    def close(self, commit_pending_transaction=False):
+    def close(self, commit_pending_transaction: bool = False) -> None:
         """
         This closes the database connection. The commit_pending_transaction
         parameter specifies whether to commit all pending transactions before
         closing (if the store is transactional).
         """
 
-    def destroy(self, configuration):
+    def destroy(self, configuration: str) -> None:
         """
         This destroys the instance of the store identified by the
         configuration string.
         """
 
-    def gc(self):
+    def gc(self) -> None:
         """
         Allows the store to perform any needed garbage collection
         """
@@ -206,10 +242,10 @@ class Store(object):
     # RDF APIs
     def add(
         self,
-        triple: Tuple["Node", "Node", "Node"],
-        context: Optional["Graph"],
+        triple: "_TripleType",
+        context: "_ContextType",
         quoted: bool = False,
-    ):
+    ) -> None:
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -220,7 +256,7 @@ class Store(object):
         """
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
-    def addN(self, quads: Iterable[Tuple["Node", "Node", "Node", "Graph"]]):
+    def addN(self, quads: Iterable["_QuadType"]) -> None:  # noqa: N802
         """
         Adds each item in the list of statements to a specific context. The
         quoted argument is interpreted by formula-aware stores to indicate this
@@ -235,11 +271,30 @@ class Store(object):
             )
             self.add((s, p, o), c)
 
-    def remove(self, triple, context=None):
+    def remove(
+        self,
+        triple: "_TriplePatternType",
+        context: Optional["_ContextType"] = None,
+    ) -> None:
         """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
-    def triples_choices(self, triple, context=None):
+    def triples_choices(
+        self,
+        triple: Union[
+            Tuple[List["_SubjectType"], "_PredicateType", "_ObjectType"],
+            Tuple["_SubjectType", List["_PredicateType"], "_ObjectType"],
+            Tuple["_SubjectType", "_PredicateType", List["_ObjectType"]],
+        ],
+        context: Optional["_ContextType"] = None,
+    ) -> Generator[
+        Tuple[
+            _TripleType,
+            Iterator[Optional["_ContextType"]],
+        ],
+        None,
+        None,
+    ]:
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
@@ -288,13 +343,12 @@ class Store(object):
                 for (s1, p1, o1), cg in self.triples((subject, None, object_), context):
                     yield (s1, p1, o1), cg
 
-    def triples(
+    # type error: Missing return statement
+    def triples(  # type: ignore[return]
         self,
-        triple_pattern: Tuple[
-            Optional["IdentifiedNode"], Optional["IdentifiedNode"], Optional["Node"]
-        ],
-        context=None,
-    ):
+        triple_pattern: "_TriplePatternType",
+        context: Optional["_ContextType"] = None,
+    ) -> Iterator[Tuple["_TripleType", Iterator[Optional["_ContextType"]]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
@@ -309,7 +363,8 @@ class Store(object):
 
     # variants of triples will be done if / when optimization is needed
 
-    def __len__(self, context=None):
+    # type error: Missing return statement
+    def __len__(self, context: Optional["_ContextType"] = None) -> int:  # type: ignore[empty-body]
         """
         Number of statements in the store. This should only account for non-
         quoted (asserted) statements if the context is not specified,
@@ -319,7 +374,10 @@ class Store(object):
         :param context: a graph instance to query or None
         """
 
-    def contexts(self, triple=None):
+    # type error: Missing return statement
+    def contexts(  # type: ignore[empty-body]
+        self, triple: Optional["_TripleType"] = None
+    ) -> Generator["_ContextType", None, None]:
         """
         Generator over all contexts in the graph. If triple is specified,
         a generator over all contexts the triple is in.
@@ -329,7 +387,15 @@ class Store(object):
         :returns: a generator over Nodes
         """
 
-    def query(self, query, initNs, initBindings, queryGraph, **kwargs):
+    # TODO FIXME: the result of query is inconsistent.
+    def query(
+        self,
+        query: Union["Query", str],
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
+        queryGraph: str,  # noqa: N803
+        **kwargs: Any,
+    ) -> "Result":
         """
         If stores provide their own SPARQL implementation, override this.
 
@@ -345,7 +411,14 @@ class Store(object):
 
         raise NotImplementedError
 
-    def update(self, update, initNs, initBindings, queryGraph, **kwargs):
+    def update(
+        self,
+        update: Union["Update", str],
+        initNs: Mapping[str, Any],  # noqa: N803
+        initBindings: Mapping["str", "Identifier"],  # noqa: N803
+        queryGraph: str,  # noqa: N803
+        **kwargs: Any,
+    ) -> None:
         """
         If stores provide their own (SPARQL) Update implementation,
         override this.
@@ -375,25 +448,25 @@ class Store(object):
     def namespace(self, prefix: str) -> Optional["URIRef"]:
         """ """
 
-    def namespaces(self):
+    def namespaces(self) -> Iterator[Tuple[str, "URIRef"]]:
         """ """
         # This is here so that the function becomes an empty generator.
         # See https://stackoverflow.com/q/13243766 and
         # https://www.python.org/dev/peps/pep-0255/#why-a-new-keyword-for-yield-why-not-a-builtin-function-instead
         if False:
-            yield None
+            yield None  # type: ignore[unreachable]
 
     # Optional Transactional methods
 
-    def commit(self):
+    def commit(self) -> None:
         """ """
 
-    def rollback(self):
+    def rollback(self) -> None:
         """ """
 
     # Optional graph methods
 
-    def add_graph(self, graph):
+    def add_graph(self, graph: "Graph") -> None:
         """
         Add a graph to the store, no effect if the graph already
         exists.
@@ -401,7 +474,7 @@ class Store(object):
         """
         raise Exception("Graph method called on non-graph_aware store")
 
-    def remove_graph(self, graph):
+    def remove_graph(self, graph: "Graph") -> None:
         """
         Remove a graph from the store, this should also remove all
         triples in the graph

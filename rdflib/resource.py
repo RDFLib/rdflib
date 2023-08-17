@@ -12,7 +12,7 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(:class:`rdflib.term.URIRef`s and :class:`rdflib.term.BNode`s) are in turn
+(:class:`rdflib.term.URIRef` and :class:`rdflib.term.BNode`) are in turn
 wrapped as Resources. (Note that this behaviour differs from the corresponding
 methods in :class:`~rdflib.graph.Graph`, where no such conversion takes place.)
 

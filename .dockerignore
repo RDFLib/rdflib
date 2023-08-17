@@ -3,3 +3,5 @@
 .mypy_cache
 .pytest_cache
 .git
+docs/
+test/

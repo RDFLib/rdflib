@@ -122,8 +122,9 @@ class Namespace(str):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
+    # type error: Signature of "title" incompatible with supertype "str"
     @property
-    def title(self) -> URIRef:
+    def title(self) -> URIRef:  # type: ignore[override]
         # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
@@ -346,6 +347,8 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 if TYPE_CHECKING:
     from rdflib._type_checking import _NamespaceSetString
 
+_with_bind_override_fix = True
+
 
 class NamespaceManager(object):
     """Class for managing prefix => namespace mappings
@@ -361,7 +364,7 @@ class NamespaceManager(object):
     * rdflib:
         * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
         * all the core namespaces and all the following: brick, csvw, dc, dcat
-        * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+        * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
         * sh, skos, sosa, ssn, time, vann, void
         * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
     * none:
@@ -485,10 +488,8 @@ class NamespaceManager(object):
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
-
         prefix: Optional[str]
         if uri not in self.__cache:
-
             if not _is_valid_uri(uri):
                 raise ValueError(
                     '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
@@ -501,6 +502,7 @@ class NamespaceManager(object):
             except ValueError as e:
                 namespace = URIRef(uri)
                 prefix = self.store.prefix(namespace)
+                name = ""  # empty prefix case, safe since not prefix is error
                 if not prefix:
                     raise e
             if namespace not in self.__strie:
@@ -590,7 +592,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def expand_curie(self, curie: str) -> Union[URIRef, None]:
+    def expand_curie(self, curie: str) -> URIRef:
         """
         Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
@@ -617,6 +619,22 @@ class NamespaceManager(object):
             raise ValueError(
                 f"Prefix \"{curie.split(':')[0]}\" not bound to any namespace."
             )
+
+    def _store_bind(self, prefix: str, namespace: URIRef, override: bool) -> None:
+        if not _with_bind_override_fix:
+            return self.store.bind(prefix, namespace)
+        try:
+            return self.store.bind(prefix, namespace, override=override)
+        except TypeError as error:
+            if "override" in str(error):
+                logger.warning(
+                    "caught a TypeError, "
+                    "retrying call to %s.bind without override, "
+                    "see https://github.com/RDFLib/rdflib/issues/1880 for more info",
+                    type(self.store),
+                    exc_info=True,
+                )
+                return self.store.bind(prefix, namespace)
 
     def bind(
         self,
@@ -650,9 +668,8 @@ class NamespaceManager(object):
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
         if bound_namespace and bound_namespace != namespace:
-
             if replace:
-                self.store.bind(prefix, namespace, override=override)
+                self._store_bind(prefix, namespace, override=override)
                 insert_trie(self.__trie, str(namespace))
                 return
             # prefix already in use for different namespace
@@ -673,16 +690,16 @@ class NamespaceManager(object):
                 if not self.store.namespace(new_prefix):
                     break
                 num += 1
-            self.store.bind(new_prefix, namespace, override=override)
+            self._store_bind(new_prefix, namespace, override=override)
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
-                self.store.bind(prefix, namespace, override=override)
+                self._store_bind(prefix, namespace, override=override)
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
-                    self.store.bind(prefix, namespace, override=override)
+                    self._store_bind(prefix, namespace, override=override)
 
         insert_trie(self.__trie, str(namespace))
 
@@ -879,7 +896,7 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "dc": DC,
     "dcat": DCAT,
     "dcmitype": DCMITYPE,
-    "cdterms": DCTERMS,
+    "dcterms": DCTERMS,
     "dcam": DCAM,
     "doap": DOAP,
     "foaf": FOAF,

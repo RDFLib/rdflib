@@ -15,7 +15,6 @@ https://github.com/RDFLib/rdflib/issues/676
 
 
 def test_sort_dates():
-
     g = rdflib.Graph()
     y = """@prefix ex: <http://ex.org> .
 ex:X ex:p "2016-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>, "2016-01-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> . """
@@ -25,7 +24,6 @@ ex:X ex:p "2016-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>, "2
 
 
 def test_sort_docfrag():
-
     g = rdflib.Graph()
     y = """@prefix ex: <http://ex.org> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -36,5 +34,4 @@ ex:X ex:p "<h1>hi</h1>"^^rdf:HTML, "<h1>ho</h1>"^^rdf:HTML  . """
 
 
 if __name__ == "__main__":
-
     test_sort_docfrag()

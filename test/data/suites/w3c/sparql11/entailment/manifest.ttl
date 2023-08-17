@@ -193,7 +193,7 @@
     mf:result  <rdfs07.srx> .
 
 :rdfs08 rdf:type mf:QueryEvaluationTest ;
-    mf:name    "RDFS inference test rdf:XMLLiteral subclass of rdfs:Literal" ;
+    mf:name    "RDFS inference test rdf:XMLLiteral" ;
     dawgt:approval dawgt:NotClassified ;
     mf:action
          [ qt:query  <rdfs08.rq> ;
@@ -266,7 +266,7 @@
          [ qt:query  <owlds01.rq> ;
            qt:data   <owlds01.ttl> ; 
            sd:EntailmentProfile ( pr:DL pr:EL pr:Full ) ;
-           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:D) ] ;
+           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:D ) ] ;
     mf:result  <owlds01.srx> .
 
 :owlds02 rdf:type mf:QueryEvaluationTest ;
@@ -343,8 +343,8 @@
          mf:action 
 		[ qt:query  <paper-sparqldl-Q5.rq> ; 
 		qt:data <paper-sparqldl-data.ttl> ; 
-           sd:EntailmentProfile ( pr:DL pr:QL pr:Full ) ;
-           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ent:RDFS ent:RDF ent:D) ] ;
+           sd:EntailmentProfile ( pr:DL pr:QL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
          mf:result  <paper-sparqldl-Q5.srx> .
 
 :bind01 rdf:type mf:QueryEvaluationTest ;
@@ -532,8 +532,8 @@
          mf:action 
 		[ qt:query  <sparqldl-11.rq> ; 
 		qt:data <data-11.ttl> ; 
-           sd:EntailmentProfile ( pr:DL pr:Full ) ;
-           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+           sd:EntailmentProfile ( pr:DL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
          mf:result  <sparqldl-11.srx> .
 
 :sparqldl-12  rdf:type   mf:QueryEvaluationTest ;
@@ -542,8 +542,8 @@
          mf:action 
 		[ qt:query  <sparqldl-12.rq> ; 
 		qt:data <data-11.ttl> ; 
-           sd:EntailmentProfile ( pr:DL pr:Full ) ;
-           sd:entailmentRegime ( ent:OWL-Direct ent:OWL-RDF-Based ) ] ;
+           sd:EntailmentProfile ( pr:DL ) ;
+           sd:entailmentRegime ( ent:OWL-Direct ) ] ;
          mf:result  <sparqldl-12.srx> .
 
 :sparqldl-13 rdf:type   mf:QueryEvaluationTest ;

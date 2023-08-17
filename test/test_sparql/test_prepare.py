@@ -6,7 +6,6 @@ from rdflib.plugins.sparql import prepareQuery, prepareUpdate
 
 
 def test_prepare_update():
-
     q = prepareUpdate(
         """\
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -24,7 +23,6 @@ INSERT DATA
 
 
 def test_prepare_query():
-
     q = prepareQuery(
         "SELECT ?name WHERE { ?person foaf:knows/foaf:name ?name . }",
         initNs={"foaf": FOAF},

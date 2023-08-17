@@ -58,7 +58,7 @@ class ConcurrentStore(object):
             if not (s, p, o) in pending_removes:
                 yield s, p, o
 
-        for (s, p, o) in self.__pending_adds:
+        for s, p, o in self.__pending_adds:
             if (
                 (su is None or su == s)
                 and (pr is None or pr == p)
@@ -85,7 +85,7 @@ class ConcurrentStore(object):
                 (s, p, o) = pending_removes.pop()
                 try:
                     self.store.remove((s, p, o))
-                except:
+                except:  # noqa: E722
                     # TODO: change to try finally?
                     print(s, p, o, "Not in store to remove")
             pending_adds = self.__pending_adds

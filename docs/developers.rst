@@ -10,10 +10,11 @@ This document describes the process and conventions to follow when
 developing RDFLib code.
 
 * Please be as Pythonic as possible (:pep:`8`).
-* Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v22.3.0, with the black config in ``pyproject.toml``.
+* Code should be formatted using `black <https://github.com/psf/black>`_  and we use Black v23.1.0, with the black config in ``pyproject.toml``.
 * Code should also pass `flake8 <https://flake8.pycqa.org/en/latest/>`_ linting
   and `mypy <http://mypy-lang.org/>`_ type checking.
 * You must supply tests for new code.
+* RDFLib uses `Poetry <https://python-poetry.org/docs/master/>`_ for dependency management and packaging.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
 
@@ -54,7 +55,7 @@ PRs if possible. No PR is too small.
 
 For PRs that introduce breaking changes, it is even more critical that they are
 limited in size and scope, as they will likely have to be kept up to date with
-the master branch of this project for some time before they are merged.
+the ``main`` branch of this project for some time before they are merged.
 
 It is also critical that your PR is understandable both in what it does and why
 it does it, and how the change will impact the users of this project, for this
@@ -95,25 +96,24 @@ To run RDFLib's test suite with `pytest <https://docs.pytest.org/en/latest/>`_:
 
 .. code-block:: console
 
-   $ pip install -r requirements.txt -r requirements.dev.txt
-   $ pytest
+   $ poetry install
+   $ poetry run pytest
 
 Specific tests can be run by file name. For example:
 
 .. code-block:: console
 
-  $ pytest test/test_graph.py
+  $ poetry run pytest test/test_graph/test_graph.py
 
 For more extensive tests, including tests for the `berkleydb
 <https://www.oracle.com/database/technologies/related/berkeleydb.html>`_
-backend, install the requirements from ``requirements.dev-extra.txt`` before
+backend, install extra requirements before
 executing the tests.
 
 .. code-block:: console
 
-   $ pip install -r requirements.txt -r requirements.dev.txt
-   $ pip install -r requirements.dev-extra.txt
-   $ pytest
+   $ poetry install --all-extras
+   $ poetry run pytest
 
 Writing tests
 ~~~~~~~~~~~~~
@@ -132,7 +132,7 @@ ideally be updated to the pytest test-style when they are touched.
 Test should go into the ``test/`` directory, either into an existing test file
 with a name that is applicable to the test being written, or into a new test
 file with a name that is descriptive of the tests placed in it. Test files
-should be named `test_*.py` so that `pytest can discover them
+should be named ``test_*.py`` so that `pytest can discover them
 <https://docs.pytest.org/en/latest/explanation/goodpractices.html#conventions-for-python-test-discovery>`_.
 
 Running static checks
@@ -143,13 +143,13 @@ our black.toml config file:
 
 .. code-block:: bash
 
-    python -m black --config black.toml --check ./rdflib
+    poetry run black .
 
 Check style and conventions with `flake8 <https://flake8.pycqa.org/en/latest/>`_:
 
 .. code-block:: bash
 
-    python -m flake8 rdflib
+    poetry run flake8 rdflib
 
 We also provide a `flakeheaven <https://pypi.org/project/flakeheaven/>`_
 baseline that ignores existing flake8 errors and only reports on newly
@@ -157,14 +157,14 @@ introduced flake8 errors:
 
 .. code-block:: bash
 
-    python -m flakeheaven
+    poetry run flakeheaven
 
 
 Check types with `mypy <http://mypy-lang.org/>`_:
 
 .. code-block:: bash
 
-    python -m mypy --show-error-context --show-error-codes rdflib
+    poetry run mypy --show-error-context --show-error-codes
 
 pre-commit and pre-commit ci
 ----------------------------
@@ -252,21 +252,14 @@ Some useful commands for working with the task in the taskfile is given below:
     # List available tasks.
     task -l
 
-    # Install pip dependencies
-    task install:pip-deps
+    # Configure the environment for development
+    task configure
 
     # Run basic validation
     task validate
 
-    # Install a venv and run validation inside venv
-    task venv:install
-    task WITH_VENV=1 validate
-
-    # Fix all auto-fixable validation errors (i.e. run black and isort) using venv
-    task WITH_VENV=1 validate:fix
-
-    # Build docs inside venv
-    task WITH_VENV=1 docs:build
+    # Build docs
+    task docs:build
 
     # Run live-preview on the docs
     task docs:live-server
@@ -303,14 +296,17 @@ To use the development container directly:
     # Build the devcontainer docker image.
     docker-compose build
 
-    # Run the validate task inside the devtools container.
-    docker-compose run --rm devcontainer task validate
+    # Configure the system for development.
+    docker-compose run --rm run task configure
 
-    # Run tox for python 3.11 inside the devtools container,
-    docker-compose run --rm devcontainer task tox -- -e py311
+    # Run the validate task inside the devtools container.
+    docker-compose run --rm run task validate
+
+    # Run extensive tests inside the devtools container.
+    docker-compose run --rm run task EXTENSIVE=true test
 
     # To get a shell into the devcontainer docker image.
-    docker-compose run --rm devcontainer bash
+    docker-compose run --rm run bash
 
 The devcontainer also works with `Podman Compose
 <https://github.com/containers/podman-compose>`_.
@@ -342,12 +338,12 @@ We use sphinx for generating HTML docs, see :ref:`docs`.
 Continuous Integration
 ----------------------
 
-We used Drone for CI, see:
+We used GitHub Actions for CI, see:
 
-  https://drone.rdflib.ashs.dev/RDFLib/rdflib
+  https://github.com/RDFLib/rdflib/actions
 
-If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
-passing all tests.
+If you make a pull-request to RDFLib on GitHub, GitHub Actions will
+automatically test your code and we will only merge code passing all tests.
 
 Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
 flag them as expecting to fail.
@@ -399,6 +395,6 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
   # WARNING: once uploaded can never be modified, only deleted!
   twine upload dist/rdflib-X.X.X[.-]*
 
-Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
+Set new dev version number in the above locations, i.e. next release ``-dev``: ``5.0.1-dev`` and commit again.
 
 Tweet, email mailing list and inform members in the chat.

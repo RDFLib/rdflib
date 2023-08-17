@@ -9,7 +9,6 @@ EX = Namespace("http://example.org/")
 
 @pytest.fixture
 def get_graph():
-
     g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))
@@ -230,7 +229,6 @@ def test_remove_add_rollback(get_graph):
 
 @pytest.fixture
 def get_empty_graph():
-
     g = Graph("Memory")
 
     t = Graph(AuditableStore(g.store), g.identifier)
@@ -263,7 +261,6 @@ def test_add_rollback_empty(get_empty_graph):
 
 @pytest.fixture
 def get_concurrent_graph():
-
     g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))
@@ -328,7 +325,6 @@ def test_rollback_rollback(get_concurrent_graph):
 
 @pytest.fixture
 def get_embedded_graph():
-
     g = Graph("Memory")
 
     g.add((EX.s0, EX.p0, EX.o0))

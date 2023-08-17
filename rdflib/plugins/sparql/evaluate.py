@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 These method recursively evaluate the SPARQL Algebra
 
@@ -18,7 +20,19 @@ import collections
 import itertools
 import json as j
 import re
-from typing import Any, Deque, Dict, Generator, Iterable, List, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Deque,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    Union,
+)
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -28,11 +42,9 @@ from rdflib.graph import Graph
 from rdflib.plugins.sparql import CUSTOM_EVALS, parser
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.evalutils import (
-    _diff,
     _ebv,
     _eval,
     _fillTemplate,
-    _filter,
     _join,
     _minus,
     _val,
@@ -40,7 +52,6 @@ from rdflib.plugins.sparql.evalutils import (
 from rdflib.plugins.sparql.parserutils import CompValue, value
 from rdflib.plugins.sparql.sparql import (
     AlreadyBound,
-    Bindings,
     FrozenBindings,
     FrozenDict,
     Query,
@@ -48,6 +59,9 @@ from rdflib.plugins.sparql.sparql import (
     SPARQLError,
 )
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+
+if TYPE_CHECKING:
+    from rdflib.paths import Path
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 
@@ -70,24 +84,28 @@ def evalBGP(
     _o = ctx[o]
 
     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr]
+    # type Argument 1 to "triples" of "Graph" has incompatible type "Tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
+    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr, arg-type]
         if None in (_s, _p, _o):
             c = ctx.push()
         else:
             c = ctx
 
         if _s is None:
-            c[s] = ss
+            # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
+            c[s] = ss  # type: ignore[assignment]
 
         try:
             if _p is None:
-                c[p] = sp
+                # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
+                c[p] = sp  # type: ignore[assignment]
         except AlreadyBound:
             continue
 
         try:
             if _o is None:
-                c[o] = so
+                # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
+                c[o] = so  # type: ignore[assignment]
         except AlreadyBound:
             continue
 
@@ -128,7 +146,6 @@ def evalLazyJoin(
 
 
 def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, None]:
-
     # TODO: Deal with dict returned from evalPart from GROUP BY
     # only ever for join.p1
 
@@ -177,7 +194,6 @@ def evalLeftJoin(
                 _ebv(join.expr, b)
                 for b in evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)
             ):
-
                 yield a
 
 
@@ -196,7 +212,6 @@ def evalFilter(
 def evalGraph(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     if ctx.dataset is None:
         raise Exception(
             "Non-conjunctive-graph doesn't know about "
@@ -204,12 +219,10 @@ def evalGraph(
         )
 
     ctx = ctx.clone()
-    graph = ctx[part.term]
+    graph: Union[str, Path, None, Graph] = ctx[part.term]
     prev_graph = ctx.graph
     if graph is None:
-
         for graph in ctx.dataset.contexts():
-
             # in SPARQL the default graph is NOT a named graph
             if graph == ctx.dataset.default_context:
                 continue
@@ -222,7 +235,10 @@ def evalGraph(
                 yield x
 
     else:
-        c = ctx.pushGraph(ctx.dataset.get_context(graph))
+        if TYPE_CHECKING:
+            assert not isinstance(graph, Graph)
+        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Union[str, Path]"; expected "Union[Node, str, None]"
+        c = ctx.pushGraph(ctx.dataset.get_context(graph))  # type: ignore[arg-type]
         for x in evalPart(c, part.p):
             x.ctx.graph = prev_graph
             yield x
@@ -244,15 +260,13 @@ def evalValues(
 
 
 def evalMultiset(ctx: QueryContext, part: CompValue):
-
     if part.p.name == "values":
         return evalValues(ctx, part)
 
     return evalPart(ctx, part.p)
 
 
-def evalPart(ctx: QueryContext, part: CompValue):
-
+def evalPart(ctx: QueryContext, part: CompValue) -> Any:
     # try custom evaluation functions
     for name, c in CUSTOM_EVALS.items():
         try:
@@ -310,26 +324,26 @@ def evalPart(ctx: QueryContext, part: CompValue):
 
     elif part.name == "ServiceGraphPattern":
         return evalServiceQuery(ctx, part)
-        # raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == "DescribeQuery":
-        raise Exception("DESCRIBE not implemented")
+        return evalDescribeQuery(ctx, part)
 
     else:
         raise Exception("I dont know: %s" % part.name)
 
 
-def evalServiceQuery(ctx: QueryContext, part):
+def evalServiceQuery(ctx: QueryContext, part: CompValue):
     res = {}
     match = re.match(
         "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
-        part.get("service_string", ""),
+        # type error: Argument 2 to "get" of "CompValue" has incompatible type "str"; expected "bool"  [arg-type]
+        part.get("service_string", ""),  # type: ignore[arg-type]
         re.DOTALL | re.I,
     )
 
     if match:
         service_url = match.group(1)
-        service_query = _buildQueryStringForServiceCall(ctx, match)
+        service_query = _buildQueryStringForServiceCall(ctx, match.group(2))
 
         query_settings = {"query": service_query, "output": "json"}
         headers = {
@@ -373,9 +387,7 @@ def evalServiceQuery(ctx: QueryContext, part):
 """
 
 
-def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
-
-    service_query = match.group(2)
+def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> str:
     try:
         parser.parseQuery(service_query)
     except ParseException:
@@ -385,11 +397,11 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
         for p in ctx.prologue.namespace_manager.store.namespaces():  # type: ignore[union-attr]
             service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
         # re add the base if one was defined
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"  [union-attr]
+        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"
         base = ctx.prologue.base  # type: ignore[union-attr]
         if base is not None and len(base) > 0:
             service_query = "BASE <" + base + "> " + service_query
-    sol = ctx.solution()
+    sol = [v for v in ctx.solution() if isinstance(v, Variable)]
     if len(sol) > 0:
         variables = " ".join([v.n3() for v in sol])
         variables_bound = " ".join([ctx.get(v).n3() for v in sol])
@@ -472,11 +484,9 @@ def evalAggregateJoin(
 def evalOrderBy(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     res = evalPart(ctx, part.p)
 
     for e in reversed(part.expr):
-
         reverse = bool(e.order and e.order == "DESC")
         res = sorted(
             res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
@@ -549,20 +559,20 @@ def evalDistinct(
 
 def evalProject(ctx: QueryContext, project: CompValue):
     res = evalPart(ctx, project.p)
-
     return (row.project(project.PV) for row in res)
 
 
-def evalSelectQuery(ctx: QueryContext, query: CompValue):
-
-    res = {}
+def evalSelectQuery(
+    ctx: QueryContext, query: CompValue
+) -> Mapping[str, Union[str, List[Variable], Iterable[FrozenDict]]]:
+    res: Dict[str, Union[str, List[Variable], Iterable[FrozenDict]]] = {}
     res["type_"] = "SELECT"
     res["bindings"] = evalPart(ctx, query.p)
     res["vars_"] = query.PV
     return res
 
 
-def evalAskQuery(ctx: QueryContext, query: CompValue):
+def evalAskQuery(ctx: QueryContext, query: CompValue) -> Mapping[str, Union[str, bool]]:
     res: Dict[str, Union[bool, str]] = {}
     res["type_"] = "ASK"
     res["askAnswer"] = False
@@ -573,7 +583,9 @@ def evalAskQuery(ctx: QueryContext, query: CompValue):
     return res
 
 
-def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+def evalConstructQuery(
+    ctx: QueryContext, query: CompValue
+) -> Mapping[str, Union[str, Graph]]:
     template = query.template
 
     if not template:
@@ -592,8 +604,47 @@ def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]
     return res
 
 
-def evalQuery(graph: Graph, query: Query, initBindings, base=None):
+def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+    # Create a result graph and bind namespaces from the graph being queried
+    graph = Graph()
+    # type error: Item "None" of "Optional[Graph]" has no attribute "namespaces"
+    for pfx, ns in ctx.graph.namespaces():  # type: ignore[union-attr]
+        graph.bind(pfx, ns)
 
+    to_describe = set()
+
+    # Explicit IRIs may be provided to a DESCRIBE query.
+    # If there is a WHERE clause, explicit IRIs may be provided in
+    # addition to projected variables. Find those explicit IRIs and
+    # prepare to describe them.
+    for iri in query.PV:
+        if isinstance(iri, URIRef):
+            to_describe.add(iri)
+
+    # If there is a WHERE clause, evaluate it then find the unique set of
+    # resources to describe across all bindings and projected variables
+    if query.p is not None:
+        bindings = evalPart(ctx, query.p)
+        to_describe.update(*(set(binding.values()) for binding in bindings))
+
+    # Get a CBD for all resources identified to describe
+    for resource in to_describe:
+        # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
+        graph += ctx.graph.cbd(resource)  # type: ignore[union-attr]
+
+    res: Dict[str, Union[str, Graph]] = {}
+    res["type_"] = "DESCRIBE"
+    res["graph"] = graph
+
+    return res
+
+
+def evalQuery(
+    graph: Graph,
+    query: Query,
+    initBindings: Mapping[str, Identifier],
+    base: Optional[str] = None,
+) -> Mapping[Any, Any]:
     initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
@@ -613,7 +664,6 @@ def evalQuery(graph: Graph, query: Query, initBindings, base=None):
         firstDefault = False
         for d in main.datasetClause:
             if d.default:
-
                 if firstDefault:
                     # replace current default graph
                     dg = ctx.dataset.get_context(BNode())

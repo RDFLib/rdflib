@@ -1,0 +1,46 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix :       <http://www.w3.org/2009/sparql/tests/test-update#> .
+
+## Update-specific test vocabulary for a manifest action.
+
+:   rdfs:comment     "Some extra vocabulary for SPARQL Update test cases. This vocabulary extends qt: to describe update test cases." ;
+    dc:creator       "Axel Polleres" ;
+    dc:subject       "" ;
+    dc:publisher     "W3C SPARQL Working Group" ;
+    dc:title         "Update test case vocabulary" ;
+    dc:description   "Update test case vocabulary" ;
+    dc:date          "2010-04" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+
+## ---- Property declarations ----
+
+:request a rdf:Property ;
+    rdfs:comment "The update request (may consist of several update statements" ;
+    rdfs:domain	 :UpdateTest ;
+    # rdfs:range   ?? ;
+    .	
+
+:data a rdf:Property ;
+    rdfs:comment "Optional: data for the update test (i.e. default graph in the graph store prior or after the update, depending on whether used within mf:action or within mf:result)" ;
+    rdfs:domain	 :UpdateTest ;
+    rdfs:range   rdfs:Resource ;
+    .
+
+:graphData a rdf:Property ;
+    rdfs:comment "Optional: named-graph only data for the update test (i.e. named graph in the graph store prior or after the update, depending on whether used within mf:action or within mf:result)" ;
+    rdfs:domain	 :UpdateTest ;
+    rdfs:range   rdfs:Resource ;
+    .
+
+:graph a rdf:Property ;
+    rdfs:comment "Optional: points to the named graph within the resource described by the :graphData property, if present, the actual name of the named graph is supposed to be given using the rdfs:label property as a plain literal" ;
+    rdfs:domain	 rdfs:Resource ;
+    rdfs:range   rdfs:Resource ;
+    .

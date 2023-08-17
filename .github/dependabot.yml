@@ -1,16 +1,32 @@
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "/"
-  schedule:
-    interval: weekly
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: sphinx
-    versions:
-    - 3.4.3
-    - 3.5.2
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: weekly
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: sphinx
+        versions:
+          - 3.4.3
+          - 3.5.2
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: docker/latest/
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: docker/latest/
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: docker/unstable/
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: devtools/
+    schedule:
+      interval: weekly

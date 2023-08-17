@@ -240,7 +240,6 @@ foo-bar:Ex foo-bar:name "Test" . """
                 assert o == Literal("o")
 
     def test_empty_prefix(self):
-
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
         g1.parse(data=":a :b :c .", format="n3")

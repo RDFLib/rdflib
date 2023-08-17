@@ -12,7 +12,8 @@ import logging
 from contextlib import ExitStack
 from decimal import Decimal
 from test.utils import affix_tuples
-from typing import Any, Optional, Type, Union
+from test.utils.literal import LiteralChecker
+from typing import Any, Callable, Generator, Iterable, Optional, Type, Union
 
 import isodate
 import pytest
@@ -33,10 +34,19 @@ from rdflib.term import (
     _XSD_TIME,
     Literal,
     URIRef,
+    _reset_bindings,
     bind,
 )
 
 EGNS = Namespace("http://example.com/")
+
+
+@pytest.fixture()
+def clear_bindings() -> Generator[None, None, None]:
+    try:
+        yield
+    finally:
+        _reset_bindings()
 
 
 class TestLiteral:
@@ -98,7 +108,7 @@ class TestNewPT:
             Literal("foo", lang=lang)
 
     @pytest.mark.parametrize(
-        "lexical, datatype, is_ill_formed",
+        "lexical, datatype, is_ill_typed",
         [
             ("true", XSD.boolean, False),
             ("1", XSD.boolean, False),
@@ -136,19 +146,19 @@ class TestNewPT:
             ("[p]", EGNS.unrecognized, None),
         ],
     )
-    def test_ill_formed_literals(
+    def test_ill_typed_literals(
         self,
         lexical: Union[bytes, str],
         datatype: Optional[URIRef],
-        is_ill_formed: Optional[bool],
+        is_ill_typed: Optional[bool],
     ) -> None:
         """
-        ill_formed has the correct value.
+        ill_typed has the correct value.
         """
         lit = Literal(lexical, datatype=datatype)
-        assert lit.ill_formed is is_ill_formed
-        if is_ill_formed is False:
-            # If the literal is not ill formed it should have a value associated with it.
+        assert lit.ill_typed is is_ill_typed
+        if is_ill_typed is False:
+            # If the literal is not ill typed it should have a value associated with it.
             assert lit.value is not None
 
     @pytest.mark.parametrize(
@@ -779,7 +789,7 @@ class TestParseBoolean:
 
 
 class TestBindings:
-    def test_binding(self) -> None:
+    def test_binding(self, clear_bindings: None) -> None:
         class a:
             def __init__(self, v: str) -> None:
                 self.v = v[3:-3]
@@ -814,7 +824,7 @@ class TestBindings:
         assert lb.value == vb
         assert lb.datatype == dtB
 
-    def test_specific_binding(self) -> None:
+    def test_specific_binding(self, clear_bindings: None) -> None:
         def lexify(s: str) -> str:
             return "--%s--" % s
 
@@ -927,3 +937,100 @@ class TestXsdLiterals:
         else:
             assert literal.value is None
         assert lexical == f"{literal}"
+
+
+def test_exception_in_converter(
+    caplog: pytest.LogCaptureFixture, clear_bindings: None
+) -> None:
+    def lexify(s: str) -> str:
+        return "--%s--" % s
+
+    def unlexify(s: str) -> str:
+        raise Exception("TEST_EXCEPTION")
+
+    datatype = rdflib.URIRef("urn:dt:mystring")
+
+    # Datatype-specific rule
+    bind(datatype, str, unlexify, lexify, datatype_specific=True)
+
+    s = "Hello"
+
+    Literal("--%s--" % s, datatype=datatype)
+
+    assert (
+        caplog.record_tuples[0][1] == logging.WARNING
+        and caplog.record_tuples[0][2].startswith("Failed to convert")
+        and caplog.records[0].exc_info
+        and str(caplog.records[0].exc_info[1]) == "TEST_EXCEPTION"
+    )
+
+
+@pytest.mark.parametrize(
+    ["literal_maker", "checks"],
+    [
+        (
+            lambda: Literal("foo"),
+            LiteralChecker("foo", None, None, None, "foo"),
+        ),
+        (
+            lambda: Literal("foo", None, ""),
+            LiteralChecker(None, None, URIRef(""), None, "foo"),
+        ),
+        (
+            lambda: Literal("foo", None, XSD.string),
+            LiteralChecker("foo", None, XSD.string, False, "foo"),
+        ),
+        (
+            lambda: Literal("1", None, XSD.integer),
+            LiteralChecker(1, None, XSD.integer, False, "1"),
+        ),
+        (
+            lambda: Literal("1", "en", XSD.integer),
+            TypeError,
+        ),
+        (
+            lambda: Literal(Literal("1", None, XSD.integer)),
+            Literal("1", None, XSD.integer),
+        ),
+        (
+            lambda: Literal(Literal("1", None, "")),
+            [LiteralChecker(None, None, URIRef(""), None, "1"), Literal("1", None, "")],
+        ),
+        (lambda: Literal(Literal("1")), Literal("1")),
+        (
+            lambda: Literal(Literal("blue sky", "en")),
+            Literal("blue sky", "en"),
+        ),
+    ],
+)
+def test_literal_construction(
+    literal_maker: Callable[[], Literal],
+    checks: Union[
+        Iterable[Union[LiteralChecker, Literal]],
+        LiteralChecker,
+        Literal,
+        Type[Exception],
+    ],
+) -> None:
+    check_error: Optional[Type[Exception]] = None
+    if isinstance(checks, type) and issubclass(checks, Exception):
+        check_error = checks
+        checks = []
+    elif not isinstance(checks, Iterable):
+        checks = [checks]
+
+    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    with ExitStack() as xstack:
+        if check_error is not None:
+            catcher = xstack.enter_context(pytest.raises(check_error))
+        literal = literal_maker()
+
+    if check_error is not None:
+        assert catcher is not None
+        assert catcher.value is not None
+
+    for check in checks:
+        if isinstance(check, LiteralChecker):
+            check.check(literal)
+        else:
+            check = literal

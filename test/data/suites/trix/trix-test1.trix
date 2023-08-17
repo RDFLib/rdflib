@@ -1,0 +1,42 @@
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/alice/foaf1.rdf</uri>
+    <triple>
+      <uri>http://example.org/alice/foaf.rdf#me</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://xmlns.com/foaf/0.1/Person</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/alice/foaf4.rdf</uri>
+    <triple>
+      <id>da638dcc719e55f5b2d6aed040ed62cf</id>
+      <uri>http://xmlns.com/foaf/0.1/Friend</uri>
+      <plainLiteral xml:lang="it">This literal is "really" useful</plainLiteral>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/alice/foaf3.rdf</uri>
+    <triple>
+      <id>51b062c6efb79042bbc632467ba88b77</id>
+      <uri>http://xmlns.com/foaf/0.1/Friend</uri>
+      <id>da638dcc719e55f5b2d6aed040ed62cf</id>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/alice/foaf2.rdf</uri>
+    <triple>
+      <id>122c0045e54c6028112af67e41ef2b65</id>
+      <uri>http://xmlns.com/foaf/0.1/Friend</uri>
+      <plainLiteral>Michele</plainLiteral>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/alice/foaf5.rdf</uri>
+    <triple>
+      <id>122c0045e54c6028112af67e41ef2b65</id>
+      <uri>http://xmlns.com/foaf/0.1/like</uri>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">12345</typedLiteral>
+    </triple>
+  </graph>
+</trix>

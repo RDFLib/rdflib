@@ -1,10 +1,13 @@
-import email.message
-import enum
 import logging
-import random
 from collections import defaultdict
-from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from test.utils.http import (
+    MethodName,
+    MockHTTPRequest,
+    MockHTTPResponse,
+    apply_headers_to,
+    get_random_ip,
+)
 from threading import Thread
 from types import TracebackType
 from typing import (
@@ -13,9 +16,7 @@ from typing import (
     Callable,
     ContextManager,
     Dict,
-    Iterator,
     List,
-    NamedTuple,
     Optional,
     Tuple,
     Type,
@@ -23,33 +24,12 @@ from typing import (
     cast,
 )
 from unittest.mock import MagicMock, Mock
-from urllib.parse import ParseResult, parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse
+
+__all__: List[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
 
 if TYPE_CHECKING:
     import typing_extensions as te
-
-
-def get_random_ip(ip_prefix: Optional[List[str]] = None) -> str:
-    if ip_prefix is None:
-        parts = ["127"]
-    for _ in range(4 - len(parts)):
-        parts.append(f"{random.randint(0, 255)}")
-    return ".".join(parts)
-
-
-@contextmanager
-def ctx_http_server(
-    handler: Type[BaseHTTPRequestHandler], host: Optional[str] = "127.0.0.1"
-) -> Iterator[HTTPServer]:
-    host = get_random_ip() if host is None else host
-    server = HTTPServer((host, 0), handler)
-    server_thread = Thread(target=server.serve_forever)
-    server_thread.daemon = True
-    server_thread.start()
-    yield server
-    server.shutdown()
-    server.socket.close()
-    server_thread.join()
 
 
 GenericT = TypeVar("GenericT", bound=Any)
@@ -64,38 +44,6 @@ def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
 
     setattr(wrapper, "mock", m)  # noqa
     return cast(GenericT, wrapper), m
-
-
-HeadersT = Dict[str, List[str]]
-PathQueryT = Dict[str, List[str]]
-
-
-class MethodName(str, enum.Enum):
-    CONNECT = enum.auto()
-    DELETE = enum.auto()
-    GET = enum.auto()
-    HEAD = enum.auto()
-    OPTIONS = enum.auto()
-    PATCH = enum.auto()
-    POST = enum.auto()
-    PUT = enum.auto()
-    TRACE = enum.auto()
-
-
-class MockHTTPRequest(NamedTuple):
-    method: MethodName
-    path: str
-    parsed_path: ParseResult
-    path_query: PathQueryT
-    headers: email.message.Message
-    body: Optional[bytes]
-
-
-class MockHTTPResponse(NamedTuple):
-    status_code: int
-    reason_phrase: str
-    body: bytes
-    headers: HeadersT
 
 
 RequestDict = Dict[MethodName, List[MockHTTPRequest]]
@@ -145,13 +93,12 @@ class BaseHTTPServerMock:
                 body,
             )
             logging.debug("handling %s request: %s", method_name, request)
+            logging.debug("headers %s", request.headers)
             requests[method_name].append(request)
 
             response = responses[method_name].pop(0)
             handler.send_response(response.status_code, response.reason_phrase)
-            for header, values in response.headers.items():
-                for value in values:
-                    handler.send_header(header, value)
+            apply_headers_to(response.headers, handler)
             handler.end_headers()
 
             handler.wfile.write(response.body)
@@ -190,6 +137,8 @@ class ServedBaseHTTPServerMock(
     @property
     def address_string(self) -> str:
         (host, port) = self.server.server_address
+        if isinstance(host, (bytes, bytearray)):
+            host = host.decode("utf-8")
         return f"{host}:{port}"
 
     @property
