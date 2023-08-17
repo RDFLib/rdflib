@@ -2,10 +2,14 @@ from __future__ import annotations
 
 """
 This rdflib Python script creates a DefinedNamespace Python file from a given RDF file
+
 It is a very simple script: it finds all things defined in the RDF file within a given
 namespace:
+
     <thing> a ?x
+
     where ?x is anything and <thing> starts with the given namespace
+
 Nicholas J. Car, Dec, 2021
 """
 import argparse
@@ -77,10 +81,12 @@ def get_target_namespace_elements(
         WHERE {
             # all things in the RDF data (anything RDF.type...)
             ?s a ?o .
+
             # get any definitions, if they have one
             OPTIONAL {
                 ?s dcterms:description|rdfs:comment|skos:definition ?def
             }
+
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
         }
@@ -114,9 +120,12 @@ def make_dn_file(
 ) -> None:
     header = f'''from rdflib.term import URIRef
 from rdflib.namespace import DefinedNamespace, Namespace
+
+
 class {object_id}(DefinedNamespace):
     """
     DESCRIPTION_EDIT_ME_!
+
     Generated from: SOURCE_RDF_FILE_EDIT_ME_!
     Date: {datetime.datetime.utcnow()}
     """
