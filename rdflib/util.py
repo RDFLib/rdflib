@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Some utility functions.
 
@@ -29,19 +31,24 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Dict,
+    Hashable,
     Iterable,
+    Iterator,
     List,
     Optional,
     Set,
     Tuple,
     TypeVar,
+    Union,
+    overload,
 )
 from urllib.parse import quote, urlsplit, urlunsplit
 
 import rdflib.graph  # avoid circular dependency
+import rdflib.namespace
+import rdflib.term
 from rdflib.compat import sign
-from rdflib.namespace import XSD, Namespace, NamespaceManager
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -62,17 +69,21 @@ __all__ = [
     "_iri2uri",
 ]
 
+_HashableT = TypeVar("_HashableT", bound=Hashable)
+_AnyT = TypeVar("_AnyT")
 
-def list2set(seq):
+
+def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
     """
     Return a new list without duplicates.
     Preserves the order, unlike set(seq)
     """
     seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
+    # type error: "add" of "set" does not return a value
+    return [x for x in seq if x not in seen and not seen.add(x)]  # type: ignore[func-returns-value]
 
 
-def first(seq):
+def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
     """
     return the first element in a python sequence
     for graphs, use graph.value instead
@@ -82,7 +93,7 @@ def first(seq):
     return None
 
 
-def uniq(sequence, strip=0):
+def uniq(sequence: Iterable[str], strip: int = 0) -> Set[str]:
     """removes duplicate strings from the sequence."""
     if strip:
         return set(s.strip() for s in sequence)
@@ -90,7 +101,7 @@ def uniq(sequence, strip=0):
         return set(sequence)
 
 
-def more_than(sequence, number):
+def more_than(sequence: Iterable[Any], number: int) -> int:
     "Returns 1 if sequence has more items than number and 0 if not."
     i = 0
     for item in sequence:
@@ -100,7 +111,9 @@ def more_than(sequence, number):
     return 0
 
 
-def to_term(s, default=None):
+def to_term(
+    s: Optional[str], default: Optional[rdflib.term.Identifier] = None
+) -> Optional[rdflib.term.Identifier]:
     """
     Creates and returns an Identifier of type corresponding
     to the pattern of the given positional argument string ``s``:
@@ -117,20 +130,27 @@ def to_term(s, default=None):
     if not s:
         return default
     elif s.startswith("<") and s.endswith(">"):
-        return URIRef(s[1:-1])
+        return rdflib.term.URIRef(s[1:-1])
     elif s.startswith('"') and s.endswith('"'):
-        return Literal(s[1:-1])
+        return rdflib.term.Literal(s[1:-1])
     elif s.startswith("_"):
-        return BNode(s)
+        return rdflib.term.BNode(s)
     else:
         msg = "Unrecognised term syntax: '%s'" % s
         raise Exception(msg)
 
 
-def from_n3(s: str, default=None, backend=None, nsm=None):
+def from_n3(
+    s: str,
+    default: Optional[str] = None,
+    backend: Optional[str] = None,
+    nsm: Optional[rdflib.namespace.NamespaceManager] = None,
+) -> Optional[Union[rdflib.term.Node, str]]:
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
+        >>> from rdflib.term import URIRef, Literal
+        >>> from rdflib.namespace import NamespaceManager
         >>> from_n3('<http://ex.com/foo>') == URIRef('http://ex.com/foo')
         True
         >>> from_n3('"foo"@de') == Literal('foo', lang='de')
@@ -159,7 +179,9 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
     if s.startswith("<"):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
-        return URIRef(s[1:-1].encode("raw-unicode-escape").decode("unicode-escape"))
+        return rdflib.term.URIRef(
+            s[1:-1].encode("raw-unicode-escape").decode("unicode-escape")
+        )
     elif s.startswith('"'):
         if s.startswith('"""'):
             quotes = '"""'
@@ -189,9 +211,10 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
-        return Literal(value, language, datatype)
+        # type error: Argument 3 to "Literal" has incompatible type "Union[Node, str, None]"; expected "Optional[str]"
+        return rdflib.term.Literal(value, language, datatype)  # type: ignore[arg-type]
     elif s == "true" or s == "false":
-        return Literal(s == "true")
+        return rdflib.term.Literal(s == "true")
     elif (
         s.lower()
         .replace(".", "", 1)
@@ -200,28 +223,32 @@ def from_n3(s: str, default=None, backend=None, nsm=None):
         .isnumeric()
     ):
         if "e" in s.lower():
-            return Literal(s, datatype=XSD.double)
+            return rdflib.term.Literal(s, datatype=rdflib.namespace.XSD.double)
         if "." in s:
-            return Literal(float(s), datatype=XSD.decimal)
-        return Literal(int(s), datatype=XSD.integer)
+            return rdflib.term.Literal(float(s), datatype=rdflib.namespace.XSD.decimal)
+        return rdflib.term.Literal(int(s), datatype=rdflib.namespace.XSD.integer)
 
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
-        return rdflib.graph.QuotedGraph(backend, identifier)
+        # type error: Argument 1 to "QuotedGraph" has incompatible type "Optional[str]"; expected "Union[Store, str]"
+        # type error: Argument 2 to "QuotedGraph" has incompatible type "Union[Node, str, None]"; expected "Union[IdentifiedNode, str, None]"
+        return rdflib.graph.QuotedGraph(backend, identifier)  # type: ignore[arg-type]
     elif s.startswith("["):
         identifier = from_n3(s[1:-1])
-        return rdflib.graph.Graph(backend, identifier)
+        # type error: Argument 1 to "Graph" has incompatible type "Optional[str]"; expected "Union[Store, str]"
+        # type error: Argument 2 to "Graph" has incompatible type "Union[Node, str, None]"; expected "Union[IdentifiedNode, str, None]"
+        return rdflib.graph.Graph(backend, identifier)  # type: ignore[arg-type]
     elif s.startswith("_:"):
-        return BNode(s[2:])
+        return rdflib.term.BNode(s[2:])
     elif ":" in s:
         if nsm is None:
             # instantiate default NamespaceManager and rely on its defaults
-            nsm = NamespaceManager(rdflib.graph.Graph())
+            nsm = rdflib.namespace.NamespaceManager(rdflib.graph.Graph())
         prefix, last_part = s.split(":", 1)
         ns = dict(nsm.namespaces())[prefix]
-        return Namespace(ns)[last_part]
+        return rdflib.namespace.Namespace(ns)[last_part]
     else:
-        return BNode(s)
+        return rdflib.term.BNode(s)
 
 
 def date_time(t=None, local_time_zone=False):
@@ -259,7 +286,7 @@ def date_time(t=None, local_time_zone=False):
     return s
 
 
-def parse_date_time(val):
+def parse_date_time(val: str) -> int:
     """always returns seconds in UTC
 
     # tests are written like this to make any errors easier to understand
@@ -323,7 +350,7 @@ SUFFIX_FORMAT_MAP = {
 }
 
 
-def guess_format(fpath, fmap=None) -> Optional[str]:
+def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[str]:
     """
     Guess RDF serialization based on file suffix. Uses
     ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
@@ -357,7 +384,7 @@ def guess_format(fpath, fmap=None) -> Optional[str]:
     return fmap.get(_get_ext(fpath)) or fmap.get(fpath.lower())
 
 
-def _get_ext(fpath, lower=True):
+def _get_ext(fpath: str, lower: bool = True) -> str:
     """
     Gets the file extension from a file(path); stripped of leading '.' and in
     lower case. Examples:
@@ -382,8 +409,10 @@ def _get_ext(fpath, lower=True):
 
 
 def find_roots(
-    graph: "Graph", prop: "URIRef", roots: Optional[Set["Node"]] = None
-) -> Set["Node"]:
+    graph: "Graph",
+    prop: "rdflib.term.URIRef",
+    roots: Optional[Set["rdflib.term.Node"]] = None,
+) -> Set["rdflib.term.Node"]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -395,7 +424,7 @@ def find_roots(
 
     """
 
-    non_roots: Set[Node] = set()
+    non_roots: Set[rdflib.term.Node] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -409,13 +438,13 @@ def find_roots(
 
 def get_tree(
     graph: "Graph",
-    root: "IdentifiedNode",
-    prop: "URIRef",
-    mapper: Callable[["IdentifiedNode"], "IdentifiedNode"] = lambda x: x,
+    root: "rdflib.term.Node",
+    prop: "rdflib.term.URIRef",
+    mapper: Callable[["rdflib.term.Node"], "rdflib.term.Node"] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set["IdentifiedNode"]] = None,
+    done: Optional[Set["rdflib.term.Node"]] = None,
     dir: str = "down",
-) -> Optional[Tuple[IdentifiedNode, List[Any]]]:
+) -> Optional[Tuple["rdflib.term.Node", List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -442,12 +471,11 @@ def get_tree(
     done.add(root)
     tree = []
 
-    branches: Iterable[IdentifiedNode]
+    branches: Iterator[rdflib.term.Node]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:
-        # type error: Incompatible types in assignment (expression has type "Iterable[Node]", variable has type "Iterable[IdentifiedNode]")
-        branches = graph.objects(root, prop)  # type: ignore[assignment]
+        branches = graph.objects(root, prop)
 
     for branch in branches:
         t = get_tree(graph, branch, prop, mapper, sortkey, done, dir)
@@ -457,27 +485,41 @@ def get_tree(
     return (mapper(root), sorted(tree, key=sortkey))
 
 
-_AnyT = TypeVar("_AnyT")
+@overload
+def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT:
+    ...
 
 
-def _coalesce(*args: Optional[_AnyT]) -> Optional[_AnyT]:
+@overload
+def _coalesce(
+    *args: Optional[_AnyT], default: Optional[_AnyT] = ...
+) -> Optional[_AnyT]:
+    ...
+
+
+def _coalesce(
+    *args: Optional[_AnyT], default: Optional[_AnyT] = None
+) -> Optional[_AnyT]:
     """
     This is a null coalescing function, it will return the first non-`None`
-    argument passed to it, otherwise it will return `None`.
+    argument passed to it, otherwise it will return ``default`` which is `None`
+    by default.
 
-    For more info regarding the rationale of this function see deferred `PEP
-    505 <https://peps.python.org/pep-0505/>`_.
+    For more info regarding the rationale of this function see deferred `PEP 505
+    <https://peps.python.org/pep-0505/>`_.
 
     :param args: Values to consider as candidates to return, the first arg that
         is not `None` will be returned. If no argument is passed this function
         will return None.
-    :return: The first ``arg`` that is not `None`, otherwise `None` if there
-        are no args or if all args are `None`.
+    :param default: The default value to return if none of the args are not
+        `None`.
+    :return: The first ``args`` that is not `None`, otherwise the value of
+        ``default`` if there are no ``args`` or if all ``args`` are `None`.
     """
     for arg in args:
         if arg is not None:
             return arg
-    return None
+    return default
 
 
 def _iri2uri(iri: str) -> str:
@@ -493,6 +535,7 @@ def _iri2uri(iri: str) -> str:
     >>> _iri2uri("https://dbpedia.org/resource/Almería")
     'https://dbpedia.org/resource/Almer%C3%ADa'
     """
+    # https://datatracker.ietf.org/doc/html/rfc3305
 
     (scheme, netloc, path, query, fragment) = urlsplit(iri)
 
@@ -501,7 +544,7 @@ def _iri2uri(iri: str) -> str:
         return iri
 
     scheme = quote(scheme)
-    netloc = quote(netloc.encode("idna").decode("utf-8"))
+    netloc = netloc.encode("idna").decode("utf-8")
     path = quote(path)
     query = quote(query)
     fragment = quote(fragment)

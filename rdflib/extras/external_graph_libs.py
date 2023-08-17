@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+from __future__ import annotations
 
 """Convert (to and) from rdflib graphs to other well known graph libraries.
 
@@ -13,6 +14,10 @@ see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
 
 import logging
+from typing import TYPE_CHECKING, Any, Dict, List
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +27,9 @@ def _identity(x):
 
 
 def _rdflib_to_networkx_graph(
-    graph,
+    graph: Graph,
     nxgraph,
-    calc_weights,
+    calc_weights: bool,
     edge_attrs,
     transform_s=_identity,
     transform_o=_identity,
@@ -70,7 +75,7 @@ def _rdflib_to_networkx_graph(
 
 
 def rdflib_to_networkx_multidigraph(
-    graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
+    graph: Graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
 ):
     """Converts the given graph into a networkx.MultiDiGraph.
 
@@ -86,7 +91,7 @@ def rdflib_to_networkx_multidigraph(
 
             By default this will include setting the MultiDiGraph key=p here.
             If you don't want to be able to re-identify the edge later on, you
-            can set this to `lambda s, p, o: {}`. In this case MultiDiGraph's
+            can set this to ``lambda s, p, o: {}``. In this case MultiDiGraph's
             default (increasing ints) will be used.
 
     Returns:
@@ -115,7 +120,7 @@ def rdflib_to_networkx_multidigraph(
     True
     >>> mdg.has_edge(a, b, key=1)
     True
-    """
+    """  # noqa: W605
     import networkx as nx
 
     mdg = nx.MultiDiGraph()
@@ -124,8 +129,8 @@ def rdflib_to_networkx_multidigraph(
 
 
 def rdflib_to_networkx_digraph(
-    graph,
-    calc_weights=True,
+    graph: Graph,
+    calc_weights: bool = True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
@@ -138,9 +143,9 @@ def rdflib_to_networkx_digraph(
 
     :Parameters:
 
-        - `graph`: a rdflib.Graph.
-        - `calc_weights`: If true calculate multi-graph edge-count as edge 'weight'
-        - `edge_attrs`: Callable to construct later edge_attributes. It receives
+        - ``graph``: a rdflib.Graph.
+        - ``calc_weights``: If true calculate multi-graph edge-count as edge 'weight'
+        - ``edge_attrs``: Callable to construct later edge_attributes. It receives
             3 variables (s, p, o) and should construct a dictionary that is passed to
             networkx's add_edge(s, o, \*\*attrs) function.
 
@@ -148,7 +153,7 @@ def rdflib_to_networkx_digraph(
             which is treated specially by us to be merged. Other attributes of
             multi-edges will only contain the attributes of the first edge.
             If you don't want the 'triples' attribute for tracking, set this to
-            `lambda s, p, o: {}`.
+            ``lambda s, p, o: {}``.
 
     Returns: networkx.DiGraph
 
@@ -178,7 +183,7 @@ def rdflib_to_networkx_digraph(
     >>> 'triples' in dg[a][b]
     False
 
-    """
+    """  # noqa: W605
     import networkx as nx
 
     dg = nx.DiGraph()
@@ -187,8 +192,8 @@ def rdflib_to_networkx_digraph(
 
 
 def rdflib_to_networkx_graph(
-    graph,
-    calc_weights=True,
+    graph: Graph,
+    calc_weights: bool = True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
@@ -211,7 +216,7 @@ def rdflib_to_networkx_graph(
                     which is treated specially by us to be merged. Other attributes of
                     multi-edges will only contain the attributes of the first edge.
                     If you don't want the 'triples' attribute for tracking, set this to
-                    `lambda s, p, o: {}`.
+                    ``lambda s, p, o: {}``.
 
     Returns:
         networkx.Graph
@@ -241,7 +246,7 @@ def rdflib_to_networkx_graph(
     False
     >>> 'triples' in ug[a][b]
     False
-    """
+    """  # noqa: W605
     import networkx as nx
 
     g = nx.Graph()
@@ -250,9 +255,9 @@ def rdflib_to_networkx_graph(
 
 
 def rdflib_to_graphtool(
-    graph,
-    v_prop_names=[str("term")],
-    e_prop_names=[str("term")],
+    graph: Graph,
+    v_prop_names: List[str] = [str("term")],
+    e_prop_names: List[str] = [str("term")],
     transform_s=lambda s, p, o: {str("term"): s},
     transform_p=lambda s, p, o: {str("term"): p},
     transform_o=lambda s, p, o: {str("term"): o},
@@ -313,7 +318,8 @@ def rdflib_to_graphtool(
     True
 
     """
-    import graph_tool as gt
+    # pytype error: Can't find module 'graph_tool'.
+    import graph_tool as gt  # pytype: disable=import-error
 
     g = gt.Graph()
 
@@ -323,7 +329,7 @@ def rdflib_to_graphtool(
     eprops = [(epn, g.new_edge_property("object")) for epn in e_prop_names]
     for epn, eprop in eprops:
         g.edge_properties[epn] = eprop
-    node_to_vertex = {}
+    node_to_vertex: Dict[Any, Any] = {}
     for s, p, o in graph:
         sv = node_to_vertex.get(s)
         if sv is None:

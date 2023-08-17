@@ -4,7 +4,6 @@ import rdflib
 
 
 def test_broken_add():
-
     g = rdflib.Graph()
     with pytest.raises(AssertionError):
         g.add((1, 2, 3))

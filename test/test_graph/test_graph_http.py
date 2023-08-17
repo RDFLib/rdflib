@@ -3,13 +3,12 @@ from http.server import BaseHTTPRequestHandler
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
+from test.utils.http import ctx_http_handler
 from test.utils.httpservermock import (
     MethodName,
     MockHTTPResponse,
     ServedBaseHTTPServerMock,
-    ctx_http_server,
 )
-from typing import Generator
 from urllib.error import HTTPError
 
 import pytest
@@ -63,7 +62,6 @@ EG = Namespace("http://example.org/")
 
 class ContentNegotiationHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
-
         self.send_response(200, "OK")
         # fun fun fun parsing accept header.
 
@@ -107,8 +105,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             for format in ("xml", "n3", "nt"):
                 graph = Graph()
@@ -120,8 +120,10 @@ class TestGraphHTTP:
         expected.add((EG.a, EG.b, EG.c))
         expected_triples = GraphHelper.triple_set(expected)
 
-        with ctx_http_server(ContentNegotiationHandler) as server:
+        with ctx_http_handler(ContentNegotiationHandler) as server:
             (host, port) = server.server_address
+            if isinstance(host, (bytes, bytearray)):
+                host = host.decode("utf-8")
             url = f"http://{host}:{port}/foo"
             graph = Graph()
             graph.parse(url)
@@ -232,24 +234,10 @@ class TestGraphHTTP:
             assert raised.value.code == 500
 
 
-@pytest.fixture(scope="module")
-def module_httpmock() -> Generator[ServedBaseHTTPServerMock, None, None]:
-    with ServedBaseHTTPServerMock() as httpmock:
-        yield httpmock
-
-
-@pytest.fixture(scope="function")
-def httpmock(
-    module_httpmock: ServedBaseHTTPServerMock,
-) -> Generator[ServedBaseHTTPServerMock, None, None]:
-    module_httpmock.reset()
-    yield module_httpmock
-
-
-def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
+def test_iri_source(function_httpmock: ServedBaseHTTPServerMock) -> None:
     diverse_triples_path = TEST_DATA_DIR / "variants/diverse_triples.ttl"
 
-    httpmock.responses[MethodName.GET].append(
+    function_httpmock.responses[MethodName.GET].append(
         MockHTTPResponse(
             200,
             "OK",
@@ -258,9 +246,9 @@ def test_iri_source(httpmock: ServedBaseHTTPServerMock) -> None:
         )
     )
     g = Graph()
-    g.parse(f"{httpmock.url}/resource/Almería")
-    assert httpmock.call_count == 1
+    g.parse(f"{function_httpmock.url}/resource/Almería")
+    assert function_httpmock.call_count == 1
     GraphHelper.assert_triple_sets_equals(cached_graph((diverse_triples_path,)), g)
 
-    req = httpmock.requests[MethodName.GET].pop(0)
+    req = function_httpmock.requests[MethodName.GET].pop(0)
     assert req.path == "/resource/Almer%C3%ADa"

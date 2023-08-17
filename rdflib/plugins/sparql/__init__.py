@@ -4,6 +4,8 @@ SPARQL implementation for RDFLib
 .. versionadded:: 4.0
 """
 
+import sys
+from typing import TYPE_CHECKING
 
 SPARQL_LOAD_GRAPHS = True
 """
@@ -30,11 +32,9 @@ NotImplementedError if they cannot handle a certain part
 
 PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
-import sys
-from typing import TYPE_CHECKING, Any
 
-from . import operators, parser, parserutils
-from .processor import prepareQuery, prepareUpdate, processUpdate
+from . import operators, parser, parserutils  # noqa: E402
+from .processor import prepareQuery, prepareUpdate, processUpdate  # noqa: F401, E402
 
 assert parser
 assert operators
@@ -55,3 +55,13 @@ else:
         assert isinstance(all_entry_points, dict)
     for ep in all_entry_points.get(PLUGIN_ENTRY_POINT, []):
         CUSTOM_EVALS[ep.name] = ep.load()
+
+__all__ = [
+    "prepareQuery",
+    "prepareUpdate",
+    "processUpdate",
+    "operators",
+    "parser",
+    "parserutils",
+    "CUSTOM_EVALS",
+]

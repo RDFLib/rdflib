@@ -42,11 +42,21 @@ A tiny example:
     True
 
 """
+import logging
+import sys
+
+if sys.version_info < (3, 8):
+    # importlib is only available in Python 3.8+; for 3.7 we must do this:
+    import importlib_metadata as metadata
+else:
+    from importlib import metadata
+
+_DISTRIBUTION_METADATA = metadata.metadata("rdflib")
+
 __docformat__ = "restructuredtext en"
 
-# The format of the __version__ line is matched by a regex in setup.py
-__version__ = "6.2.0-alpha"
-__date__ = "2021-12-20"
+__version__: str = _DISTRIBUTION_METADATA["Version"]
+__date__ = "2022-12-20"
 
 __all__ = [
     "URIRef",
@@ -87,9 +97,6 @@ __all__ = [
     "plugin",
     "query",
 ]
-
-import logging
-import sys
 
 logger = logging.getLogger(__name__)
 

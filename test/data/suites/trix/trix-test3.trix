@@ -1,0 +1,46 @@
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/graph/practise</uri>
+    <triple>
+      <uri>http://example.com/resource/student_10</uri>
+      <uri>http://example.com/ontology/practises</uri>
+      <uri>http://example.com/resource/sport_100</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/graph/sports</uri>
+    <triple>
+      <uri>http://example.com/resource/sport_100</uri>
+      <uri>http://www.w3.org/2000/01/rdf-schema#label</uri>
+      <plainLiteral>Tennis</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.com/resource/sport_100</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://example.com/ontology/Sport</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/graph/students</uri>
+    <triple>
+      <uri>http://example.com/resource/student_20</uri>
+      <uri>http://xmlns.com/foaf/0.1/name</uri>
+      <plainLiteral>Demi Moore</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.com/resource/student_20</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://example.com/ontology/Student</uri>
+    </triple>
+    <triple>
+      <uri>http://example.com/resource/student_10</uri>
+      <uri>http://xmlns.com/foaf/0.1/name</uri>
+      <plainLiteral>Venus Williams</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.com/resource/student_10</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://example.com/ontology/Student</uri>
+    </triple>
+  </graph>
+</trix>

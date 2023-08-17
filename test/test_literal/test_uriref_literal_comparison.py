@@ -1,5 +1,3 @@
-import unittest
-
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
 from rdflib.plugins.parsers.rdfxml import CORE_SYNTAX_TERMS
@@ -26,8 +24,8 @@ Ah... it's coming back to me...
 """
 
 
-class IdentifierEquality(unittest.TestCase):
-    def setUp(self):
+class TestIdentifierEquality:
+    def setup_method(self):
         self.uriref = URIRef("http://example.org/")
         self.bnode = BNode()
         self.literal = Literal("http://example.org/")
@@ -35,42 +33,37 @@ class IdentifierEquality(unittest.TestCase):
         self.python_literal_2 = "foo"
 
     def testA(self):
-        self.assertEqual(self.uriref == self.literal, False)
+        assert self.uriref != self.literal
 
     def testB(self):
-        self.assertEqual(self.literal == self.uriref, False)
+        assert self.literal != self.uriref
 
     def testC(self):
-        self.assertEqual(self.uriref == self.python_literal, False)
+        assert self.uriref != self.python_literal
 
     def testD(self):
-        self.assertEqual(self.python_literal == self.uriref, False)
+        assert self.python_literal != self.uriref
 
     def testE(self):
-        self.assertEqual(self.literal == self.python_literal, False)
+        assert self.literal != self.python_literal
 
     def testE2(self):
-        self.assertTrue(self.literal.eq(self.python_literal), True)
+        assert self.literal.eq(self.python_literal)
 
     def testF(self):
-        self.assertEqual(self.python_literal == self.literal, False)
+        assert self.python_literal != self.literal
 
     def testG(self):
-        self.assertEqual("foo" in CORE_SYNTAX_TERMS, False)
+        assert "foo" not in CORE_SYNTAX_TERMS
 
     def testH(self):
-        self.assertEqual(
+        assert (
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF")
-            in CORE_SYNTAX_TERMS,
-            True,
+            in CORE_SYNTAX_TERMS
         )
 
     def testI(self):
         g = Graph()
         g.add((self.uriref, RDF.value, self.literal))
         g.add((self.uriref, RDF.value, self.uriref))
-        self.assertEqual(len(g), 2)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert len(g) == 2

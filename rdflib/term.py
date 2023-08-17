@@ -69,6 +69,7 @@ from isodate import (
 )
 
 import rdflib
+import rdflib.util
 from rdflib.compat import long_type
 
 if TYPE_CHECKING:
@@ -313,6 +314,18 @@ class URIRef(IdentifiedNode):
             return URIRef(url)
         else:
             return self
+
+    @property
+    def fragment(self) -> str:
+        """
+        Return the URL Fragment
+
+        >>> URIRef("http://example.com/some/path/#some-fragment").fragment
+        'some-fragment'
+        >>> URIRef("http://example.com/some/path/").fragment
+        ''
+        """
+        return urlparse(self).fragment
 
     def __reduce__(self) -> Tuple[Type["URIRef"], Tuple[str]]:
         return (URIRef, (str(self),))
@@ -586,9 +599,9 @@ class Literal(Identifier):
     _value: Any
     _language: Optional[str]
     # NOTE: _datatype should maybe be of type URIRef, and not optional.
-    _datatype: Optional[str]
-    _ill_formed: Optional[bool]
-    __slots__ = ("_language", "_datatype", "_value", "_ill_formed")
+    _datatype: Optional[URIRef]
+    _ill_typed: Optional[bool]
+    __slots__ = ("_language", "_datatype", "_value", "_ill_typed")
 
     def __new__(
         cls,
@@ -597,7 +610,6 @@ class Literal(Identifier):
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
     ) -> "Literal":
-
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
@@ -612,16 +624,16 @@ class Literal(Identifier):
         if lang is not None and not _is_valid_langtag(lang):
             raise ValueError(f"'{str(lang)}' is not a valid language tag!")
 
-        if datatype:
+        if datatype is not None:
             datatype = URIRef(datatype)
 
         value = None
-        ill_formed: Optional[bool] = None
+        ill_typed: Optional[bool] = None
         if isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
             lang = lang or lexical_or_value.language
-            if datatype:
+            if datatype is not None:
                 # override datatype
                 value = _castLexicalToPython(lexical_or_value, datatype)
             else:
@@ -632,13 +644,13 @@ class Literal(Identifier):
             # passed a string
             # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
-            if datatype and datatype in _toPythonMapping:
+            if datatype is not None and datatype in _toPythonMapping:
                 # datatype is a recognized datatype IRI:
                 # https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris
                 dt_uri: URIRef = URIRef(datatype)
                 checker = _check_well_formed_types.get(dt_uri, _well_formed_by_value)
                 well_formed = checker(lexical_or_value, value)
-                ill_formed = ill_formed or (not well_formed)
+                ill_typed = ill_typed or (not well_formed)
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -649,10 +661,12 @@ class Literal(Identifier):
             value = lexical_or_value
             _value, _datatype = _castPythonToLiteral(lexical_or_value, datatype)
 
-            datatype = datatype or _datatype
+            _datatype = None if _datatype is None else URIRef(_datatype)
+
+            datatype = rdflib.util._coalesce(datatype, _datatype)
             if _value is not None:
                 lexical_or_value = _value
-            if datatype:
+            if datatype is not None:
                 lang = None
 
         if isinstance(lexical_or_value, bytes):
@@ -672,7 +686,7 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
-        inst._ill_formed = ill_formed
+        inst._ill_typed = ill_typed
 
         return inst
 
@@ -696,7 +710,7 @@ class Literal(Identifier):
             return self
 
     @property
-    def ill_formed(self) -> Optional[bool]:
+    def ill_typed(self) -> Optional[bool]:
         """
         For `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_,
@@ -706,7 +720,7 @@ class Literal(Identifier):
         If the literal's datatype is `None` or not in the set of `recognized datatype IRIs
         <https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris>`_ this value will be `None`.
         """
-        return self._ill_formed
+        return self._ill_typed
 
     @property
     def value(self) -> Any:
@@ -717,7 +731,7 @@ class Literal(Identifier):
         return self._language
 
     @property
-    def datatype(self) -> Optional[str]:
+    def datatype(self) -> Optional[URIRef]:
         return self._datatype
 
     def __reduce__(
@@ -731,7 +745,7 @@ class Literal(Identifier):
     def __getstate__(self) -> Tuple[None, Dict[str, Union[str, None]]]:
         return (None, dict(language=self.language, datatype=self.datatype))
 
-    def __setstate__(self, arg: Tuple[Any, Dict[str, str]]) -> None:
+    def __setstate__(self, arg: Tuple[Any, Dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
         self._datatype = d["datatype"]
@@ -1075,7 +1089,6 @@ class Literal(Identifier):
         if other is None:
             return True  # Everything is greater than None
         if isinstance(other, Literal):
-
             if (
                 self.datatype in _NUMERIC_LITERAL_TYPES
                 and other.datatype in _NUMERIC_LITERAL_TYPES
@@ -1084,8 +1097,8 @@ class Literal(Identifier):
 
             # plain-literals and xsd:string literals
             # are "the same"
-            dtself = self.datatype or _XSD_STRING
-            dtother = other.datatype or _XSD_STRING
+            dtself = rdflib.util._coalesce(self.datatype, default=_XSD_STRING)
+            dtother = rdflib.util._coalesce(other.datatype, default=_XSD_STRING)
 
             if dtself != dtother:
                 if rdflib.DAWG_LITERAL_COLLATION:
@@ -1117,9 +1130,9 @@ class Literal(Identifier):
             # same language, same lexical form, check real dt
             # plain-literals come before xsd:string!
             if self.datatype != other.datatype:
-                if not self.datatype:
+                if self.datatype is None:
                     return False
-                elif not other.datatype:
+                elif other.datatype is None:
                     return True
                 else:
                     return self.datatype > other.datatype
@@ -1174,7 +1187,7 @@ class Literal(Identifier):
         rich-compare with this literal
         """
         if isinstance(other, Literal):
-            if self.datatype and other.datatype:
+            if self.datatype is not None and other.datatype is not None:
                 # two datatyped literals
                 if (
                     self.datatype not in XSDToPython
@@ -1235,7 +1248,7 @@ class Literal(Identifier):
         # Directly accessing the member is faster than the property.
         if self._language:
             res ^= hash(self._language.lower())
-        if self._datatype:
+        if self._datatype is not None:
             res ^= hash(self._datatype)
         return res
 
@@ -1313,7 +1326,6 @@ class Literal(Identifier):
 
         """
         if isinstance(other, Literal):
-
             if (
                 self.datatype in _NUMERIC_LITERAL_TYPES
                 and other.datatype in _NUMERIC_LITERAL_TYPES
@@ -1330,8 +1342,8 @@ class Literal(Identifier):
             if (self.language or "").lower() != (other.language or "").lower():
                 return False
 
-            dtself = self.datatype or _XSD_STRING
-            dtother = other.datatype or _XSD_STRING
+            dtself = rdflib.util._coalesce(self.datatype, default=_XSD_STRING)
+            dtother = rdflib.util._coalesce(other.datatype, default=_XSD_STRING)
 
             if dtself == _XSD_STRING and dtother == _XSD_STRING:
                 # string/plain literals, compare on lexical form
@@ -1351,13 +1363,11 @@ class Literal(Identifier):
             # maybe there are counter examples
 
             if self.value is not None and other.value is not None:
-
                 if self.datatype in (_RDF_XMLLITERAL, _RDF_HTMLLITERAL):
                     return _isEqualXMLNode(self.value, other.value)
 
                 return self.value == other.value
             else:
-
                 if str.__eq__(self, other):
                     return True
 
@@ -1544,7 +1554,7 @@ class Literal(Identifier):
 
         datatype = self.datatype
         quoted_dt = None
-        if datatype:
+        if datatype is not None:
             if qname_callback:
                 quoted_dt = qname_callback(datatype)
             if not quoted_dt:
@@ -1894,16 +1904,18 @@ _STRING_LITERAL_TYPES: Tuple[URIRef, ...] = (
     URIRef(_XSD_PFX + "token"),
 )
 
+_StrT = TypeVar("_StrT", bound=str)
+
 
 def _py2literal(
     obj: Any,
     pType: Any,  # noqa: N803
     castFunc: Optional[Callable[[Any], Any]],
-    dType: Optional[str],
-) -> Tuple[Any, Optional[str]]:
-    if castFunc:
+    dType: Optional[_StrT],
+) -> Tuple[Any, Optional[_StrT]]:
+    if castFunc is not None:
         return castFunc(obj), dType
-    elif dType:
+    elif dType is not None:
         return obj, dType
     else:
         return obj, None
@@ -1962,6 +1974,8 @@ _GenericPythonToXSDRules: List[
     (Fraction, (None, _OWL_RATIONAL)),
 ]
 
+_OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
+
 _SpecificPythonToXSDRules: List[
     Tuple[Tuple[Type[Any], str], Optional[Callable[[Any], Union[str, bytes]]]]
 ] = [
@@ -1972,6 +1986,8 @@ _SpecificPythonToXSDRules: List[
     ((str, _XSD_B64BINARY), b64encode),
     ((bytes, _XSD_B64BINARY), b64encode),
 ]
+
+_OriginalSpecificPythonToXSDRules = list(_SpecificPythonToXSDRules)
 
 XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     None: None,  # plain literals map directly to value space
@@ -2031,32 +2047,52 @@ _toPythonMapping: Dict[Optional[str], Optional[Callable[[str], Any]]] = {}  # no
 _toPythonMapping.update(XSDToPython)
 
 
+def _reset_bindings() -> None:
+    """
+    Reset lexical<->value space binding for `Literal`
+    """
+    _toPythonMapping.clear()
+    _toPythonMapping.update(XSDToPython)
+
+    _GenericPythonToXSDRules.clear()
+    _GenericPythonToXSDRules.extend(_OriginalGenericPythonToXSDRules)
+
+    _SpecificPythonToXSDRules.clear()
+    _SpecificPythonToXSDRules.extend(_OriginalSpecificPythonToXSDRules)
+
+
 def _castLexicalToPython(  # noqa: N802
-    lexical: Union[str, bytes], datatype: Optional[str]
+    lexical: Union[str, bytes], datatype: Optional[URIRef]
 ) -> Any:
     """
     Map a lexical form to the value-space for the given datatype
     :returns: a python object for the value or ``None``
     """
-    convFunc = _toPythonMapping.get(datatype, False)  # noqa: N806
-    if convFunc:
-        if TYPE_CHECKING:
-            # NOTE: This is here because convFunc is seen as
-            # Union[Callable[[str], Any], bool, None]
-            # even though it will never have value of True.
-            assert not isinstance(convFunc, bool)
-        convFunc
+    try:
+        conv_func = _toPythonMapping[datatype]
+    except KeyError:
+        # no conv_func -> unknown data-type
+        return None
+
+    if conv_func is not None:
         try:
             # type error: Argument 1 has incompatible type "Union[str, bytes]"; expected "str"
             # NOTE for type ignore: various functions in _toPythonMapping will
             # only work for str, so there is some inconsistency here, the right
             # approach may be to change lexical to be of str type but this will
             # require runtime changes.
-            return convFunc(lexical)  # type: ignore[arg-type]
-        except:
+            return conv_func(lexical)  # type: ignore[arg-type]
+        except Exception:
+            logger.warning(
+                "Failed to convert Literal lexical form to value. Datatype=%s, "
+                "Converter=%s",
+                datatype,
+                conv_func,
+                exc_info=True,
+            )
             # not a valid lexical representation for this dt
             return None
-    elif convFunc is None:
+    else:
         # no conv func means 1-1 lexical<->value-space mapping
         try:
             return str(lexical)
@@ -2065,9 +2101,6 @@ def _castLexicalToPython(  # noqa: N802
             # NOTE for type ignore: code assumes that lexical is of type bytes
             # at this point.
             return str(lexical, "utf-8")  # type: ignore[arg-type]
-    else:
-        # no convFunc - unknown data-type
-        return None
 
 
 _AnyT = TypeVar("_AnyT", bound=Any)
@@ -2210,7 +2243,7 @@ def _isEqualXMLNode(  # noqa: N802
         # for the length becomes necessary...
         if len(node.childNodes) != len(other.childNodes):
             return False
-        for (nc, oc) in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
+        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
             if not _isEqualXMLNode(nc, oc):
                 return False
         # if we got here then everything is fine:

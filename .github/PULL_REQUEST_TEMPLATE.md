@@ -13,7 +13,7 @@ If you have any questions regarding our guidelines, submit the PR as is
 and ask.
 
 More detailed guidelines for pull requests are provided in our [developers
-guide](https://github.com/RDFLib/rdflib/blob/master/docs/developers.rst).
+guide](https://github.com/RDFLib/rdflib/blob/main/docs/developers.rst).
 
 As a reminder, PRs that are smaller in size and scope will be reviewed and
 merged quicker, so please consider if your PR could be split up into more than

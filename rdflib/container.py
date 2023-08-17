@@ -64,10 +64,8 @@ class Container(object):
         self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
 
     def n3(self):
-
         items = []
         for i in range(len(self)):
-
             v = self[i + 1]
             items.append(v)
 
@@ -92,11 +90,11 @@ class Container(object):
         pred = self.graph.predicates(self.uri, item)
         if not pred:
             raise ValueError("%s is not in %s" % (item, "container"))
-        LI_INDEX = URIRef(str(RDF) + "_")
+        li_index = URIRef(str(RDF) + "_")
 
         i = None
         for p in pred:
-            i = int(p.replace(LI_INDEX, ""))
+            i = int(p.replace(li_index, ""))
         return i
 
     def __getitem__(self, key):
@@ -163,7 +161,6 @@ class Container(object):
         return l_
 
     def end(self):  #
-
         # find end index (1-based) of container
 
         container = self.uri
@@ -194,7 +191,6 @@ class Container(object):
 
         container = self.uri
         for item in other:
-
             end += 1
             self._len += 1
             elem_uri = str(RDF) + "_" + str(end)

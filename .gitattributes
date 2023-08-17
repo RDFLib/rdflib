@@ -1,0 +1,3 @@
+# This is here to prevent git from tampering with test data, as this tampering
+# results in test failures as some test are sensitive to line endings.
+test/data/suites/w3c/** -text

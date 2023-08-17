@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import json
 import logging
 import os
 import re
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
 from test.data import TEST_DATA_DIR
@@ -70,6 +71,11 @@ class GraphAsserts:
             }
             assert set(self.has_subject_iris) == subjects_iris
 
+    @classmethod
+    def from_path(cls, path: Path) -> GraphAsserts:
+        with path.open("r") as f:
+            return cls(**json.load(f))
+
 
 @dataclass(order=True)
 class GraphVariants:
@@ -123,9 +129,7 @@ class GraphVariants:
             else:
                 graph_variant = graph_varaint_dict[file_key]
             if variant_key.endswith("-asserts.json"):
-                graph_variant.asserts = GraphAsserts(
-                    **json.loads(file_path.read_text())
-                )
+                graph_variant.asserts = GraphAsserts.from_path(file_path)
             else:
                 graph_variant.variants[variant_key] = file_path
         return graph_varaint_dict
@@ -191,16 +195,6 @@ EXPECTED_FAILURES = {
         raises=AssertionError,
     ),
 }
-
-if sys.platform == "win32":
-    EXPECTED_FAILURES["variants/diverse_triples"] = pytest.mark.xfail(
-        reason="""
-    Some encoding issue when parsing hext on windows:
-        >       return codecs.charmap_decode(input,self.errors,decoding_table)[0]
-        E       UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 356: character maps to <undefined>
-        """,
-        raises=UnicodeDecodeError,
-    )
 
 
 def tests_found() -> None:

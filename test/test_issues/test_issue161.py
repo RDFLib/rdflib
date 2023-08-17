@@ -5,7 +5,6 @@ from rdflib.graph import ConjunctiveGraph
 
 class EntityTest(TestCase):
     def test_turtle_namespace_prefixes(self):
-
         g = ConjunctiveGraph()
         n3 = """
         @prefix _9: <http://data.linkedmdb.org/resource/movie/> .

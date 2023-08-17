@@ -1,0 +1,65 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:description "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."@en ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "RDFLib" ;
+    doap:programming-language "Python" .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-error003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test003> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-empty-property-elements-test009> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xml-literal-namespaces-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xml-literal-namespaces-test002> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test001> .
+
+[] a earl:Assertion ;
+    earl:assertedBy <https://github.com/RDFLib/rdflib> ;
+    earl:mode earl:automatic ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <http://www.w3.org/2013/RDFXMLTests/#rdfms-xmllang-test002> .
+

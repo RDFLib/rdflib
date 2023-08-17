@@ -1,3 +1,0 @@
-flake8
-flakeheaven; python_version >= '3.8.0'
-pep8-naming

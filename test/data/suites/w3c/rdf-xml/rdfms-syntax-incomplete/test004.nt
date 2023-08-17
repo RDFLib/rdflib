@@ -12,10 +12,10 @@
 # 
 #####################################################################
 _:j0 <http://example.org/property1> _:j1A .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/test004.rdf#reify>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j0 .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/property1> .
-<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> _:j1A .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.rdf#reify>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j0 .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/property1> .
+<http://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.rdf#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> _:j1A .
 _:j2 <http://example.org/property2> _:j1A .
 
 

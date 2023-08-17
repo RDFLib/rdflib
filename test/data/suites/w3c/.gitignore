@@ -1,0 +1,4 @@
+# These should normally go into $XDG_CONFIG_HOME/git/ignore but they occur in
+# test data so for now this is the best option to avoid having them in git.
+*.bak
+._*

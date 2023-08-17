@@ -6,13 +6,14 @@ import sys
 import warnings
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List
+from typing import Any, Callable, Dict, Generator, List, cast
 
 import rdflib.plugin
 import rdflib.plugins.sparql
 import rdflib.plugins.sparql.evaluate
 from rdflib import Graph
 from rdflib.parser import Parser
+from rdflib.query import ResultRow
 
 TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
@@ -92,7 +93,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         logging.debug("query_string = %s", query_string)
         result = graph.query(query_string)
         assert result.type == "SELECT"
-        rows = list(result)
+        rows = cast(List[ResultRow], list(result))
         logging.debug("rows = %s", rows)
         assert len(rows) == 1
         assert len(rows[0]) == 1
