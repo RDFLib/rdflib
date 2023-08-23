@@ -141,7 +141,7 @@ class Manifest:
                 local_base,
                 public_id,
             )
-            graph = source.load(public_id=public_id)
+            graph: Graph = source.load(public_id=public_id)
             yield from cls.from_graph(
                 uri_mapper,
                 graph,
