@@ -1,4 +1,5 @@
 import json
+from http.client import IncompleteRead, RemoteDisconnected
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
@@ -181,7 +182,10 @@ def test_service_with_implicit_select_and_allcaps():
         ?s <http://www.w3.org/2002/07/owl#sameAs> ?sameAs .
       }
     } LIMIT 3"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 3
 
 
