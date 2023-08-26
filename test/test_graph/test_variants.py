@@ -94,6 +94,7 @@ _VARIANT_PREFERENCE: Dict[str, int] = dict(
     (format, index)
     for index, format in enumerate(
         [
+            "python",
             "nquads",
             "nt",
             "ntriples",
@@ -246,15 +247,19 @@ EXPECTED_FAILURES: Dict[Tuple[str, Optional[str]], MarkDecorator] = {
         """,
         raises=AssertionError,
     ),
-    ("variants/diverse_quads", ".trig"): pytest.mark.xfail(
+    ("variants/diverse_quads", ".nq"): pytest.mark.xfail(
         reason="""
-    TriG parsing gets confused about what graph 'XSD string' appears in:
-        (rdflib.term.URIRef('example:subject'),
-        rdflib.term.URIRef('http://example.com/predicate'),
-        rdflib.term.Literal('XSD string'),
-    -   rdflib.term.URIRef('example:graph')),
-    +   rdflib.term.URIRef('urn:example:graph')),
-    ?                       ++++
+        Problems with default/implicit datatype of strings. It should be
+        xsd:string, but for some parsers it is not. See
+        <https://github.com/RDFLib/rdflib/issues/1326> for more info.
+        """,
+        raises=AssertionError,
+    ),
+    ("variants/diverse_quads", ".jsonld"): pytest.mark.xfail(
+        reason="""
+        Problems with default/implicit datatype of strings. It should be
+        xsd:string, but for some parsers it is not. See
+        <https://github.com/RDFLib/rdflib/issues/1326> for more info.
         """,
         raises=AssertionError,
     ),
@@ -308,8 +313,8 @@ def test_variant_source(
     graph_variants: GraphVariants, variant_key: Optional[str]
 ) -> None:
     """
-    All variants of a graph are isomorphic with the first variant, and thus
-    eachother.
+    All variants of a graph are isomorphic with the preferred variant,
+    and thus eachother.
     """
     preferred_path = graph_variants.preferred_variant[1].path
     preferred_graph: Dataset = load_preferred(graph_variants)

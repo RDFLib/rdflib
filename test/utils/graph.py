@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
+from runpy import run_path
 from typing import Optional, Tuple, Type, Union
 
 import rdflib.util
@@ -66,11 +67,14 @@ class GraphSource:
     ) -> _GraphT:
         if graph is None:
             graph = graph_type()
-        graph.parse(
-            source=self.path,
-            format=self.format,
-            publicID=self.public_id if public_id is None else public_id,
-        )
+        if self.format == "python":
+            load_from_python(self.path, graph, graph_type)
+        else:
+            graph.parse(
+                source=self.path,
+                format=self.format,
+                publicID=self.public_id if public_id is None else public_id,
+            )
         return graph
 
 
@@ -94,3 +98,18 @@ def cached_graph(
     graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     return load_sources(*sources, public_id=public_id, graph_type=graph_type)
+
+
+def load_from_python(
+    path: Path,
+    graph: Optional[_GraphT] = None,
+    graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
+) -> _GraphT:
+    if graph is None:
+        graph = graph_type()
+
+    mod = run_path(f"{path}")
+    if "populate_graph" not in mod:
+        raise ValueError(f"{path} does not contain a `populate_graph` function")
+    mod["populate_graph"](graph)
+    return graph
