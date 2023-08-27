@@ -7,7 +7,7 @@ License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
 """
 
-import codecs
+import codecs  # noqa: I001
 import re
 from io import BytesIO, StringIO, TextIOBase
 from typing import (
@@ -28,7 +28,7 @@ from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
-from rdflib.term import URIRef as URI
+from rdflib.term import URIRef as URI  # noqa: N814
 
 if TYPE_CHECKING:
     import typing_extensions as te
@@ -101,7 +101,7 @@ def unquote(s: str) -> str:
             m = r_uniquot.match(s)
             if m:
                 s = s[m.end() :]
-                u, U = m.groups()
+                u, U = m.groups()  # noqa: N806
                 codepoint = int(u or U, 16)
                 if codepoint > 0x10FFFF:
                     raise ParseError("Disallowed codepoint: %08X" % codepoint)

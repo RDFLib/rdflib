@@ -58,7 +58,7 @@ class CollectionTest(TestCase):
 
         g = ConjunctiveGraph()
         bits = [ex["a"], ex["b"], ex["c"]]
-        l = Collection(g, ex["thing"], bits)
+        l = Collection(g, ex["thing"], bits)  # noqa: E741, F841
         triple = (ex["thing"], rdf["type"], foo["Other"])
         g.add(triple)
         triple = (ex["thing"], foo["property"], Literal("Some Value"))

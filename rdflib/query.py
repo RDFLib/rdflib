@@ -59,7 +59,7 @@ class Processor:
         strOrQuery: Union[str, "Query"],  # noqa: N803
         initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
-        DEBUG: bool = False,
+        DEBUG: bool = False,  # noqa: N803
     ) -> Mapping[str, Any]:
         pass
 
@@ -84,12 +84,12 @@ class UpdateProcessor:
         self,
         strOrQuery: Union[str, "Update"],  # noqa: N803
         initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
-        initNs: Mapping[str, Any] = {},
+        initNs: Mapping[str, Any] = {},  # noqa: N803
     ) -> None:
         pass
 
 
-class ResultException(Exception):
+class ResultException(Exception):  # noqa: N818
     pass
 
 

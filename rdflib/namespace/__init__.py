@@ -297,7 +297,7 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in attrs}
         return values
 
-    def as_jsonld_context(self, pfx: str) -> dict:
+    def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
         """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
@@ -526,7 +526,7 @@ class NamespaceManager:
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self, rdfTerm: str) -> str:
+    def normalizeUri(self, rdfTerm: str) -> str:  # noqa: N802, N803
         """
         Takes an RDF Term and 'normalizes' it into a QName (using the
         registered prefix) or (unlike compute_qname) the Notation 3
@@ -548,7 +548,7 @@ class NamespaceManager:
         elif prefix is None:
             return "<%s>" % rdfTerm
         else:
-            qNameParts = self.compute_qname(rdfTerm)
+            qNameParts = self.compute_qname(rdfTerm)  # noqa: N806
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
@@ -669,7 +669,7 @@ class NamespaceManager:
         Raises exception if a namespace is not bound to the prefix.
 
         """
-        if not type(curie) is str:
+        if not type(curie) is str:  # noqa: E714, E721
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
         if len(parts) != 2:
@@ -836,7 +836,7 @@ def is_ncname(name: str) -> int:
         if first == "_" or category(first) in NAME_START_CATEGORIES:
             for i in range(1, len(name)):
                 c = name[i]
-                if not category(c) in NAME_CATEGORIES:
+                if not category(c) in NAME_CATEGORIES:  # noqa: E713
                     if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
@@ -857,7 +857,7 @@ def split_uri(
     length = len(uri)
     for i in range(0, length):
         c = uri[-i - 1]
-        if not category(c) in NAME_CATEGORIES:
+        if not category(c) in NAME_CATEGORIES:  # noqa: E713
             if c in ALLOWED_NAME_CHARS:
                 continue
             for j in range(-1 - i, length):

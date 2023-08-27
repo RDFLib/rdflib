@@ -133,7 +133,7 @@ class TestUtilTermConvert:
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
         )
 
-    def test_util_to_term_sisNone(self):
+    def test_util_to_term_sisNone(self):  # noqa: N802
         s = None
         assert util.to_term(s) == s
         assert util.to_term(s, default="") == ""

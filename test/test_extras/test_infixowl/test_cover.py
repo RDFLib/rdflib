@@ -230,7 +230,7 @@ def test_owlrdfproxylist():
 
     ogbujiBros.append(fred)
 
-    ogbujiBros += bert
+    ogbujiBros += bert  # noqa: N806
 
     assert ogbujiBros[1] == EXNS.uche
 
@@ -284,7 +284,7 @@ def test_deepclassclear():
 
     classA = classE | classF | anonClass  # noqa: N806
     classG = Class(EXNS.G, complementOf=classA)  # noqa: N806
-    classB += classA
+    classB += classA  # noqa: N806
     classA.equivalentClass = [Class()]
     classA.complementOf = classG
     classB.subClassOf = [EXNS.someProp << some >> classC]

@@ -51,7 +51,7 @@ from rdflib.serializer import Serializer
     + [("trig", 3, False)],
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
-    NS = Namespace("example:")
+    NS = Namespace("example:")  # noqa: N806
     graph = ConjunctiveGraph()
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]

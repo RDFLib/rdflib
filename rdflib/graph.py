@@ -1510,7 +1510,7 @@ class Graph(Node):
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[str, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> query.Result:
@@ -1569,7 +1569,7 @@ class Graph(Node):
         update_object: Union[Update, str],
         processor: Union[str, rdflib.query.UpdateProcessor] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[str, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -1634,11 +1634,11 @@ class Graph(Node):
             return False
         for s, p, o in self:
             if not isinstance(s, BNode) and not isinstance(o, BNode):
-                if not (s, p, o) in other:
+                if not (s, p, o) in other:  # noqa: E713
                     return False
         for s, p, o in other:
             if not isinstance(s, BNode) and not isinstance(o, BNode):
-                if not (s, p, o) in self:
+                if not (s, p, o) in self:  # noqa: E713
                     return False
         # TODO: very well could be a false positive at this point yet.
         return True
@@ -1854,7 +1854,7 @@ class Graph(Node):
             for s, p, o in self.triples((uri, None, None)):
                 subgraph.add((s, p, o))
                 # recurse 'down' through ll Blank Nodes
-                if type(o) == BNode and not (o, None, None) in subgraph:
+                if type(o) == BNode and not (o, None, None) in subgraph:  # noqa: E713
                     add_to_cbd(o)
 
             # for Rule 3 (reification)
@@ -2667,7 +2667,7 @@ class Seq:
         return item
 
 
-class ModificationException(Exception):
+class ModificationException(Exception):  # noqa: N818
     def __init__(self) -> None:
         pass
 
@@ -2678,7 +2678,7 @@ class ModificationException(Exception):
         )
 
 
-class UnSupportedAggregateOperation(Exception):
+class UnSupportedAggregateOperation(Exception):  # noqa: N818
     def __init__(self) -> None:
         pass
 
@@ -2891,7 +2891,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         source: Optional[
             Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
         ],
-        publicID: Optional[str] = None,
+        publicID: Optional[str] = None,  # noqa: N803
         format: Optional[str] = None,
         **args: Any,
     ) -> NoReturn:  # noqa: N803

@@ -55,7 +55,7 @@ class ConcurrentStore:
         pending_removes = self.__pending_removes
         self.__begin_read()
         for s, p, o in ResponsibleGenerator(g, self.__end_read):
-            if not (s, p, o) in pending_removes:
+            if not (s, p, o) in pending_removes:  # noqa: E713
                 yield s, p, o
 
         for s, p, o in self.__pending_adds:

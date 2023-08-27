@@ -52,7 +52,7 @@ def get_graph():
     g.close()
 
 
-def testCbd(get_graph):
+def testCbd(get_graph):  # noqa: N802
     g = get_graph
     assert len(g.cbd(EX.R1)) == 3, "cbd() for R1 should return 3 triples"
 
@@ -63,7 +63,7 @@ def testCbd(get_graph):
     assert len(g.cbd(EX.R4)) == 0, "cbd() for R4 should return 0 triples"
 
 
-def testCbdReified(get_graph):
+def testCbdReified(get_graph):  # noqa: N802
     g = get_graph
     # add some reified triples to the testing graph
     g.parse(

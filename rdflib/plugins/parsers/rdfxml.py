@@ -578,7 +578,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 current.object = "<%s:%s" % (prefix, name[1])
             else:
                 current.object = "<%s" % name[1]
-            if not name[0] in current.declared:
+            if not name[0] in current.declared:  # noqa: E713
                 current.declared[name[0]] = prefix
                 if prefix:
                     current.object += ' xmlns:%s="%s"' % (prefix, name[0])
@@ -589,7 +589,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         for name, value in attrs.items():
             if name[0]:
-                if not name[0] in current.declared:
+                if not name[0] in current.declared:  # noqa: E713
                     current.declared[name[0]] = self._current_context[name[0]]
                 name = current.declared[name[0]] + ":" + name[1]
             else:

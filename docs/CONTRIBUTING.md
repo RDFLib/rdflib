@@ -40,7 +40,8 @@ Some ways in which you can contribute to RDFLib are:
   [![Gitter](https://badges.gitter.im/RDFLib/rdflib.svg)](https://gitter.im/RDFLib/rdflib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Matrix](https://img.shields.io/matrix/rdflib:matrix.org?label=matrix.org%20chat)](https://matrix.to/#/#RDFLib_rdflib:gitter.im)
 - Participate in GitHub discussions:
   [![GitHub Discussions](https://img.shields.io/github/discussions/RDFLib/rdflib)](https://github.com/RDFLib/rdflib/discussions)
-- Fix flake8 failures.
+- Fix linting failures (see ruff settings in `pyproject.toml` and `#
+  noqa:` directives in the codebase).
 
 ## Pull Requests
 

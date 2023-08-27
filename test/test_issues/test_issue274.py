@@ -19,7 +19,7 @@ NS = {
 }
 
 
-def query(querystr, initNs=NS, initBindings=None):
+def query(querystr, initNs=NS, initBindings=None):  # noqa: N803
     return G.query(querystr, initNs=initNs, initBindings=initBindings)
 
 

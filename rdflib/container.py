@@ -260,7 +260,7 @@ class Seq(Container):
         return self
 
 
-class NoElementException(Exception):
+class NoElementException(Exception):  # noqa: N818
     def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 
