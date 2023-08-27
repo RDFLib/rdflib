@@ -237,9 +237,9 @@ def test_query_query_graph(
     to stores that have implemented a `Store.query` method.
     """
 
-    result = Result("SELECT")
-    result.vars = [Variable("s"), Variable("p"), Variable("o")]
-    result.bindings = [
+    mock_result = Result("SELECT")
+    mock_result.vars = [Variable("s"), Variable("p"), Variable("o")]
+    mock_result.bindings = [
         {
             Variable("s"): URIRef("http://example.org/subject"),
             Variable("p"): URIRef("http://example.org/predicate"),
@@ -266,12 +266,14 @@ def test_query_query_graph(
         assert {} == initBindings
         assert query_graph == queryGraph
         assert {} == kwargs
-        return result
+        return mock_result
 
     with patch.object(store, "query", wraps=mock_query) as wrapped_query:
-        result = graph.query(query_string)
-        assert result.type == "SELECT"
-        assert list(result) == list(SIMPLE_TRIPLE_GRAPH.triples((None, None, None)))
+        actual_result = graph.query(query_string)
+        assert actual_result.type == "SELECT"
+        assert list(actual_result) == list(
+            SIMPLE_TRIPLE_GRAPH.triples((None, None, None))
+        )
         assert wrapped_query.call_count == 1
 
 
@@ -292,16 +294,6 @@ def test_update_query_graph(
     The `Graph.update` method passes the correct ``queryGraph`` argument
     to stores that have implemented a `Store.update` method.
     """
-
-    result = Result("SELECT")
-    result.vars = [Variable("s"), Variable("p"), Variable("o")]
-    result.bindings = [
-        {
-            Variable("s"): URIRef("http://example.org/subject"),
-            Variable("p"): URIRef("http://example.org/predicate"),
-            Variable("o"): URIRef("http://example.org/object"),
-        },
-    ]
 
     update_string = r"FAKE UPDATE, NOT USED"
     store = Memory()
@@ -325,6 +317,4 @@ def test_update_query_graph(
 
     with patch.object(store, "update", wraps=mock_update) as wrapped_update:
         graph.update(update_string)
-        assert result.type == "SELECT"
-        assert list(result) == list(SIMPLE_TRIPLE_GRAPH.triples((None, None, None)))
         assert wrapped_update.call_count == 1
