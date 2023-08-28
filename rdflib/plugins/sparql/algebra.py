@@ -1169,7 +1169,6 @@ class _AlgebraTranslator:
                     " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
                 )
             elif node.name == "TriplesBlock":
-                print("triplesblock")
                 self._replace(
                     "{TriplesBlock}",
                     "".join(
@@ -1330,7 +1329,6 @@ class _AlgebraTranslator:
                 # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
                 # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
                 # we get a GroupGraphPatternSub
-                print(node.graph.name)
                 self._replace(
                     "{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}"
                 )
