@@ -19,6 +19,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -35,7 +36,7 @@ import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
-from rdflib.term import Identifier, Literal, Node, URIRef
+from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
 
 PluginT = TypeVar("PluginT")
 
@@ -258,6 +259,23 @@ class GraphHelper:
             assert lhs_set != rhs_set
 
     @classmethod
+    def assert_collection_graphs_equal(
+        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph
+    ) -> None:
+        """
+        Assert that all graphs in provides collections are equal,
+        comparing named graphs with identically named graphs.
+        """
+        cls.assert_triple_sets_equals(lhs.default_context, rhs.default_context)
+        graph_names = cls.non_default_graph_names(lhs) | cls.non_default_graph_names(
+            rhs
+        )
+        for identifier in graph_names:
+            cls.assert_triple_sets_equals(
+                lhs.get_context(identifier), rhs.get_context(identifier)
+            )
+
+    @classmethod
     def assert_sets_equals(
         cls,
         lhs: Union[Graph, GHTripleSet, GHQuadSet],
@@ -380,6 +398,21 @@ class GraphHelper:
                 continue
             if object.datatype in datatypes:
                 object._datatype = None
+
+    @classmethod
+    def non_default_graph_names(
+        cls, container: ConjunctiveGraph
+    ) -> Set[IdentifiedNode]:
+        return set(context.identifier for context in container.contexts()) - {
+            container.default_context.identifier
+        }
+
+    @classmethod
+    def non_default_graphs(cls, container: ConjunctiveGraph) -> Sequence[Graph]:
+        result = []
+        for name in cls.non_default_graph_names(container):
+            result.append(container.get_context(name))
+        return result
 
 
 def eq_(lhs, rhs, msg=None):
