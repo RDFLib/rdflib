@@ -488,4 +488,24 @@ def ensure_suffix(value: str, suffix: str) -> str:
     return value
 
 
+def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[str]]:
+    """
+    Returns an ID function which will try each of the provided ID
+    functions in order.
+
+    :param idfns: The ID functions to try.
+    :return: An ID function which will try each of the provided ID
+        functions.
+    """
+
+    def _idfns(value: Any) -> Optional[str]:
+        for idfn in idfns:
+            result = idfn(value)
+            if result is not None:
+                return result
+        return None
+
+    return _idfns
+
+
 from test.utils.iri import file_uri_to_path  # noqa: E402

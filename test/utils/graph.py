@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import logging
+import test.data
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from runpy import run_path
-from typing import Optional, Tuple, Type, Union
+from typing import Any, Optional, Tuple, Type, Union
 
 import rdflib.util
 from rdflib.graph import Graph, _GraphT
@@ -57,6 +58,11 @@ class GraphSource:
             source = GraphSource.from_path(source)
         return source
 
+    def public_id_or_path_uri(self) -> str:
+        if self.public_id is not None:
+            self.public_id
+        return self.path.as_uri()
+
     def load(
         self,
         graph: Optional[_GraphT] = None,
@@ -76,6 +82,23 @@ class GraphSource:
                 publicID=self.public_id if public_id is None else public_id,
             )
         return graph
+
+    @classmethod
+    def idfn(cls, val: Any) -> Optional[str]:
+        """
+        ID function for GraphSource objects.
+
+        :param val: The value to try to generate and identifier for.
+        :return: A string identifying the given value if the value is a
+            `GraphSource`, otherwise return `None`.
+        """
+        if isinstance(val, cls):
+            try:
+                path_string = f"{val.path.relative_to(test.data.TEST_DATA_DIR)}"
+            except ValueError:
+                path_string = f"{val.path}"
+            return f"GS({path_string}, {val.format}, {val.public_id})"
+        return None
 
 
 def load_sources(

@@ -1,0 +1,8 @@
+{
+  "public_id": "http://example.org/variants/relative_triples",
+  "quad_count": 1,
+  "exact_match" : true,
+  "has_subject_iris": [
+    "http://example.org/variants/path/subject"
+  ]
+}
