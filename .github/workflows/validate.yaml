@@ -42,7 +42,6 @@ jobs:
             TOXENV_SUFFIX: "-min"
           - python-version: "3.9"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
             TOXENV_SUFFIX: "-docs"
           - python-version: "3.10"
             os: ubuntu-latest
@@ -50,7 +49,6 @@ jobs:
             TOXENV_SUFFIX: "-lxml"
           - python-version: "3.11"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
             TOXENV_SUFFIX: "-docs"
             PREPARATION: "sudo apt-get install -y firejail"
             extensive-tests: true
@@ -121,7 +119,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - task: "gha:flake8"
+          - task: "gha:lint"
             python-version: 3.8
     steps:
       - uses: actions/checkout@v3

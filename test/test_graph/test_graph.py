@@ -137,7 +137,7 @@ def test_remove(make_graph: GraphFactory):
 def test_triples(make_graph: GraphFactory):
     graph = make_graph()
     triples = graph.triples
-    Any = None
+    Any = None  # noqa: N806
 
     populate_graph(graph)
 
@@ -391,7 +391,7 @@ def test_guess_format_for_parse_http(
 
 
 def test_parse_file_uri(make_graph: GraphFactory):
-    EG = Namespace("http://example.org/#")
+    EG = Namespace("http://example.org/#")  # noqa: N806
     g = make_graph()
     g.parse(
         Path(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "simple-04.nt"))

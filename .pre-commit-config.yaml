@@ -6,15 +6,11 @@ ci:
 
 # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 repos:
-  - repo: https://github.com/pycqa/isort
-    rev: 5.11.5
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.286
     hooks:
-    - id: isort
-      # This is here to defer file selection to isort which will do it based on
-      # black config.
-      pass_filenames: false
-      require_serial: true
-      args: ["."]
+      - id: ruff
+        args: ["--fix"]
   - repo: https://github.com/psf/black
     # WARNING: version should be the same as in `pyproject.toml`
     # Using git ref spec because of https://github.com/psf/black/issues/2493

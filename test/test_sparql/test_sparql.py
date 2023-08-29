@@ -157,7 +157,7 @@ def test_sparql_update_with_bnode_serialize_parse():
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         raised = True
     assert not raised
 

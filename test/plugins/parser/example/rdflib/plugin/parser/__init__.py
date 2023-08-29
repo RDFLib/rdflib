@@ -28,4 +28,4 @@ class ExampleParser(Parser):
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}
 
 
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace  # noqa: F811

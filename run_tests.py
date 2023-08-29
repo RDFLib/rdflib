@@ -43,6 +43,6 @@ if __name__ == "__main__":
         )
         exit(1)
 
-    finalArgs = sys.argv[1:]
+    finalArgs = sys.argv[1:]  # noqa: N816
     print("Running pytest with:", json.dumps(finalArgs))
     sys.exit(pytest.main(args=finalArgs))

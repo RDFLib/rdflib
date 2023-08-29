@@ -1,4 +1,4 @@
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF  # noqa: N999
 from rdflib.term import URIRef
 
 
@@ -12,8 +12,8 @@ class RDFVOC(RDF):
     Description: URIRef
     ID: URIRef
     about: URIRef
-    parseType: URIRef
+    parseType: URIRef  # noqa: N815
     resource: URIRef
     li: URIRef
-    nodeID: URIRef
+    nodeID: URIRef  # noqa: N815
     datatype: URIRef

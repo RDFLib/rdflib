@@ -180,7 +180,7 @@ def test_binding_replace():
 
     s = g.serialize(format="n3")
 
-    for l in expected.split():
+    for l in expected.split():  # noqa: E741
         assert l in s
 
 
@@ -410,7 +410,7 @@ def test_change_namespace_and_prefix():
     assert list(g.namespaces()) == [("foaf", foaf2_uri), ("foaf1", foaf1_uri)]
 
     foaf3_uri = URIRef("http://xmlns.com/foaf/3.0/")
-    FOAF3 = Namespace("http://xmlns.com/foaf/3.0/")
+    FOAF3 = Namespace("http://xmlns.com/foaf/3.0/")  # noqa: N806
 
     g.bind("foaf", FOAF3)
 
@@ -421,7 +421,7 @@ def test_change_namespace_and_prefix():
     ]
 
     foaf4_uri = URIRef("http://xmlns.com/foaf/4.0/")
-    FOAF4 = Namespace("http://xmlns.com/foaf/4.0/")
+    FOAF4 = Namespace("http://xmlns.com/foaf/4.0/")  # noqa: N806
 
     g.bind("foaf", FOAF4)
 

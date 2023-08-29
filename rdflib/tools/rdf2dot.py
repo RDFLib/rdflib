@@ -92,7 +92,7 @@ def rdf2dot(g, stream, opts={}):
         return nodes[x]
 
     def label(x, g):
-        for labelProp in LABEL_PROPERTIES:
+        for labelProp in LABEL_PROPERTIES:  # noqa: N806
             l_ = g.value(x, labelProp)
             if l_:
                 return l_
@@ -101,7 +101,7 @@ def rdf2dot(g, stream, opts={}):
         except Exception:
             return x
 
-    def formatliteral(l, g):
+    def formatliteral(l, g):  # noqa: E741
         v = html.escape(l)
         if l.datatype:
             return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))

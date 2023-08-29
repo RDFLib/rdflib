@@ -48,7 +48,6 @@ lxml = {version = "^4.3.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 black = "23.7.0"
-isort = "^5.10.0"
 mypy = "^1.1.0"
 lxml-stubs = "^0.4.0"
 
@@ -66,10 +65,8 @@ sphinxcontrib-apidoc = "^0.3.0"
 sphinx-autodoc-typehints = "^1.17.1"
 typing-extensions = "^4.5.0"
 
-[tool.poetry.group.flake8.dependencies]
-flake8 = {version = ">=4.0.1"} # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
-flakeheaven = {version = "^3.2.1"}
-pep8-naming = {version = "^0.13.2"}
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.0.286"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -81,42 +78,88 @@ lxml = ["lxml"]
 requires = ["poetry-core>=1.4.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.flakeheaven]
-format = "grouped"
-baseline = ".flakeheaven.baseline"
-
-[tool.flakeheaven.plugins]
-pycodestyle = [
-  "+*",
-  # mirrored from setup.cfg
-  "-E501",
-  "-E203",
-  "-W503",
-  "-E231",
+[tool.ruff]
+# https://beta.ruff.rs/docs/configuration/
+target-version = "py38"
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # Pyflakes
+    "I", # isort
+    "N", # pep8-naming
 ]
-pyflakes = [
-  "+*",
-]
-pep8-naming = ["+*"]
 
-[tool.flakeheaven.exceptions."rdflib/plugins/sparql/*"]
-pep8-naming = ["-N802", "-N803", "-N806", "-N812", "-N816", "-N801"]
-[tool.flakeheaven.exceptions."rdflib/namespace/_*"]
-pep8-naming = ["-N815"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/notation3.py"]
-pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
-[tool.flakeheaven.exceptions."rdflib/plugins/serializers/turtle.py"]
-pep8-naming = ["-N802", "-N806", "-N815"]
-[tool.flakeheaven.exceptions."rdflib/__init__.py"]
-pycodestyle = ["-E402"]
-[tool.flakeheaven.exceptions."test/utils/namespace/_*"]
-pep8-naming = ["-N815"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/rdfxml.py"]
-pep8-naming = ["-N802"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/trix.py"]
-pep8-naming = ["-N802"]
-[tool.flakeheaven.exceptions."docs/*.rst"]
-pyflakes = ["-F821"]
+ignore = [
+    "E501", # line too long:
+    # Disabled based on black recommendations
+    # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated
+    "E203", # whitespace before ':'
+    "E231", # missing whitespace after ','
+    "E402", # Module level import not at top of file
+]
+
+# Same as Black.
+line-length = 88
+
+[tool.ruff.per-file-ignores]
+"rdflib/plugins/sparql/*" = [
+    "N801", # Class name should be UpperCamelCase
+    "N802", # Function name should be lowercase
+    "N803", # Argument name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N812", # Lowercase imported as non lowercase
+    "N816", # Variable in class scope should be mixedCase
+]
+"rdflib/namespace/_*" = [
+    "N815", # Variable in class scope should not be mixedCase
+    "N999", # Invalid module name
+]
+"rdflib/plugins/parsers/{trix,rdfxml,notation3}.py" = [
+    "N802", # Function name should be lowercase
+    "N803", # Argument name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N816", # Variable in class scope should be mixedCase
+]
+"rdflib/extras/infixowl.py" = [
+    "N803", # Function name should be lowercase
+]
+"rdflib/plugins/serializers/{turtle,longturtle,trig}.py" = [
+    "N802", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N815", # Variable in class scope should not be mixedCase
+]
+"rdflib/plugins/stores/sparqlstore.py" = [
+    "N803", # Argument name should be lowercase
+]
+"test/utils/namespace/_*" = [
+    "N815", # Variable in class scope should not be mixedCase
+    "N999", # Invalid module name
+]
+"test/test_sparql/test_{initbindings,datetime_processing,expressions}.py" = [
+    "N802", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+]
+"test/test_store/test_store_sparql*.py" = [
+    "N802", # Function name should be lowercase
+]
+"test/test_serializers/test_{prettyxml,serializer_turtle,serializer_xml}.py" = [
+    "N802", # Function name should be lowercase
+    "N803", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N815", # Variable in class scope should not be mixedCase
+]
+"test/test_literal/test_uriref_literal_comparison.py" = [
+    "N802", # Function name should be lowercase
+]
+"test/test_nt_misc.py" = [
+    "N802", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+]
+"test/test_graph/test_{container,graph_context,aggregate_graphs}.py" = [
+    "N802", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N816", # Variable in class scope should be mixedCase
+]
 
 
 [tool.black]

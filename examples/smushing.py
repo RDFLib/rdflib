@@ -34,7 +34,7 @@ if __name__ == "__main__":
     g = Graph()
     g.parse(f"{EXAMPLES_DIR / 'smushingdemo.n3'}", format="n3")
 
-    newURI = {}  # old subject : stable uri
+    newURI = {}  # old subject : stable uri  # noqa: N816
     for s, p, o in g.triples((None, FOAF["mbox_sha1sum"], None)):
         # For this graph, all objects are Identifiers, which is a subclass of
         # string. `n3` does allow for objects which are not Identifiers, like

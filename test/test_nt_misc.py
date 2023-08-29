@@ -35,7 +35,7 @@ class TestNT:
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format="nt")
-        assert type(s) == str
+        assert type(s) == str  # noqa: E721
         assert "R\u00E4ksm\u00F6rg\u00E5s" in s
 
     def testIssue146(self):

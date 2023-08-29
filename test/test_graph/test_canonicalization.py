@@ -27,7 +27,7 @@ def get_digest_value(rdf, mimetype):
 
 def negative_graph_match_test():
     """Test of FRIR identifiers against tricky RDF graphs with blank nodes."""
-    testInputs = [
+    testInputs = [  # noqa: N806
         [
             str(
                 """@prefix : <http://example.org/ns#> .
@@ -455,7 +455,7 @@ def test_issue725_collapsing_bnodes_2():
     [] a rdf:Statement ;
         rdf:object _:v1 ;
         rdf:predicate [ ] ;
-        rdf:subject <urn:gp_learner:fixed_var:target> ."""
+        rdf:subject <urn:gp_learner:fixed_var:target> ."""  # noqa: F841
 
     # g = Graph()
     # g.parse(data=turtle, format='turtle')

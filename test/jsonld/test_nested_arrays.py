@@ -51,7 +51,7 @@ def test_container_list():
     inner1, inner2, inner3 = outer
 
     inner1 = Collection(g, inner1)
-    inner1_1, inner1_2 = map(lambda l: Collection(g, l), inner1)
+    inner1_1, inner1_2 = map(lambda l: Collection(g, l), inner1)  # noqa: E741
     assert list(inner1_1) == [Literal(x) for x in (1, 2, 3)]
     assert list(inner1_2) == [Literal(x) for x in ("4", 5)]
 

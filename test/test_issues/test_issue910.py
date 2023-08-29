@@ -4,7 +4,7 @@ from rdflib import Graph
 
 
 class TestIssue910(unittest.TestCase):
-    def testA(self):
+    def testA(self):  # noqa: N802
         g = Graph()
         q = g.query(
             """
@@ -17,7 +17,7 @@ class TestIssue910(unittest.TestCase):
         )
         self.assertEqual(len(q) == 2, True)
 
-    def testB(self):
+    def testB(self):  # noqa: N802
         g = Graph()
         q = g.query(
             """
@@ -32,7 +32,7 @@ class TestIssue910(unittest.TestCase):
         )
         self.assertEqual(len(q) == 3, True)
 
-    def testC(self):
+    def testC(self):  # noqa: N802
         g = Graph()
         q = g.query(
             """
@@ -47,7 +47,7 @@ class TestIssue910(unittest.TestCase):
         )
         self.assertEqual(len(q) == 3, True)
 
-    def testD(self):
+    def testD(self):  # noqa: N802
         g = Graph()
         q = g.query(
             """SELECT * {

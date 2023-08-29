@@ -4,7 +4,7 @@ This implements the Tab Separated SPARQL Result Format
 It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 """
 
-import codecs
+import codecs  # noqa: I001
 import typing
 from typing import IO, Union
 

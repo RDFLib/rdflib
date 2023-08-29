@@ -29,7 +29,7 @@ class XMLSerializer(Serializer):
             prefix, namespace, name = nm.compute_qname_strict(predicate)
             bindings[prefix] = URIRef(namespace)
 
-        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")  # noqa: N806
 
         if "rdf" in bindings:
             assert bindings["rdf"] == RDFNS
@@ -308,7 +308,10 @@ class PrettyXMLSerializer(Serializer):
                     writer.attribute(RDFVOC.datatype, object.datatype)
                 writer.text(object)
 
-        elif object in self.__serialized or not (object, None, None) in store:
+        elif (
+            object in self.__serialized
+            or not (object, None, None) in store  # noqa: E713
+        ):
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDFVOC.nodeID, fix(object))

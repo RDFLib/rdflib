@@ -8,7 +8,7 @@ from rdflib.parser import InputSource, Parser
 from .notation3 import RDFSink, SinkParser
 
 
-def becauseSubGraph(*args, **kwargs):
+def becauseSubGraph(*args, **kwargs):  # noqa: N802
     pass
 
 
@@ -105,7 +105,7 @@ class TrigSinkParser(SinkParser):
         if self._context is not None:
             self.BadSyntax(argstr, i, "Nested graphs are not allowed")
 
-        oldParentContext = self._parentContext
+        oldParentContext = self._parentContext  # noqa: N806
         self._parentContext = self._context
         reason2 = self._reason2
         self._reason2 = becauseSubGraph
@@ -160,7 +160,7 @@ class TrigParser(Parser):
 
         sink = RDFSink(conj_graph)
 
-        baseURI = conj_graph.absolutize(
+        baseURI = conj_graph.absolutize(  # noqa: N806
             source.getPublicId() or source.getSystemId() or ""
         )
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)

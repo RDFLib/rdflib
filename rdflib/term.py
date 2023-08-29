@@ -1939,8 +1939,8 @@ _StrT = TypeVar("_StrT", bound=str)
 def _py2literal(
     obj: Any,
     pType: Any,  # noqa: N803
-    castFunc: Optional[Callable[[Any], Any]],
-    dType: Optional[_StrT],
+    castFunc: Optional[Callable[[Any], Any]],  # noqa: N803
+    dType: Optional[_StrT],  # noqa: N803
 ) -> Tuple[Any, Optional[_StrT]]:
     if castFunc is not None:
         return castFunc(obj), dType

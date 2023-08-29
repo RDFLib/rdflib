@@ -13,13 +13,13 @@ testN3 = """
 @prefix : <http://test/> .
 {:a :b :c;a :foo} => {:a :d :c,?y}.
 _:foo a rdfs:Class.
-:a :d :c."""
+:a :d :c."""  # noqa: N816
 
 
 # Thorough test suite for formula-aware store
 
 
-def checkFormulaStore(store="default", configString=None):
+def checkFormulaStore(store="default", configString=None):  # noqa: N802, N803
     try:
         g = ConjunctiveGraph(store=store)
     except ImportError:
@@ -38,8 +38,8 @@ def checkFormulaStore(store="default", configString=None):
     g.parse(data=testN3, format="n3")
     try:
         for s, p, o in g.triples((None, implies, None)):
-            formulaA = s
-            formulaB = o
+            formulaA = s  # noqa: N806
+            formulaB = o  # noqa: N806
 
         assert type(formulaA) == QuotedGraph and type(formulaB) == QuotedGraph
         # a = URIRef('http://test/a')

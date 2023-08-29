@@ -36,7 +36,7 @@ class TestNQuadsParser:
 
         g = self._load_example()
         s = URIRef("http://bibliographica.org/entity/E10009")
-        FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+        FOAF = Namespace("http://xmlns.com/foaf/0.1/")  # noqa: N806
         assert g.value(s, FOAF.name).eq("Arco Publications")
 
     def test_context_is_optional(self):

@@ -49,7 +49,7 @@ class IsomorphicTestableGraph(Graph):
             else:
                 yield self.vhash(triple[p], done=True)
 
-    def __eq__(self, G):
+    def __eq__(self, G):  # noqa: N803
         """Graph isomorphism testing."""
         if not isinstance(G, IsomorphicTestableGraph):
             return False
@@ -59,7 +59,7 @@ class IsomorphicTestableGraph(Graph):
             return True  # @@
         return self.internal_hash() == G.internal_hash()
 
-    def __ne__(self, G):
+    def __ne__(self, G):  # noqa: N803
         """Negative graph isomorphism testing."""
         return not self.__eq__(G)
 
@@ -91,7 +91,7 @@ def main():
     (options, args) = op.parse_args()
 
     graphs = []
-    graph2FName = {}
+    graph2FName = {}  # noqa: N806
     if options.stdin:
         graph = IsomorphicTestableGraph().parse(sys.stdin, format=options.inputFormat)
         graphs.append(graph)
