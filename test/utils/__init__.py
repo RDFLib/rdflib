@@ -263,7 +263,7 @@ class GraphHelper:
         cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph
     ) -> None:
         """
-        Assert that all graphs in provides collections are equal,
+        Assert that all graphs in the provided collections are equal,
         comparing named graphs with identically named graphs.
         """
         cls.assert_triple_sets_equals(lhs.default_context, rhs.default_context)
