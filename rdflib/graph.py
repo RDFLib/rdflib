@@ -1544,13 +1544,19 @@ class Graph(Node):
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
+        if self.default_union:
+            query_graph = "__UNION__"
+        elif isinstance(self, ConjunctiveGraph):
+            query_graph = self.default_context.identifier
+        else:
+            query_graph = self.identifier
         if hasattr(self.store, "query") and use_store_provided:
             try:
                 return self.store.query(
                     query_object,
                     initNs,
                     initBindings,
-                    self.default_union and "__UNION__" or self.identifier,
+                    query_graph,
                     **kwargs,
                 )
             except NotImplementedError:
@@ -1592,13 +1598,20 @@ class Graph(Node):
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
+        if self.default_union:
+            query_graph = "__UNION__"
+        elif isinstance(self, ConjunctiveGraph):
+            query_graph = self.default_context.identifier
+        else:
+            query_graph = self.identifier
+
         if hasattr(self.store, "update") and use_store_provided:
             try:
                 return self.store.update(
                     update_object,
                     initNs,
                     initBindings,
-                    self.default_union and "__UNION__" or self.identifier,
+                    query_graph,
                     **kwargs,
                 )
             except NotImplementedError:
