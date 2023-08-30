@@ -928,7 +928,7 @@ def DeepClassClear(class_to_prune):  # noqa: N802
         )
 
 
-class MalformedClass(ValueError):
+class MalformedClass(ValueError):  # noqa: N818
     """
     .. deprecated:: TODO-NEXT-VERSION
        This class will be removed in version ``7.0.0``.

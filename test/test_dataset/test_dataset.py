@@ -54,7 +54,7 @@ def get_dataset(request):
     store = request.param
 
     try:
-        dataset = Dataset(store=store)
+        dataset = Dataset(store=store)  # noqa: F841
     except ImportError:
         pytest.skip("Dependencies for store '%s' not available!" % store)
 

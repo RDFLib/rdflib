@@ -29,7 +29,7 @@ from rdflib.store import Store
 from rdflib.term import BNode, Identifier, Node, URIRef, Variable
 
 if TYPE_CHECKING:
-    import typing_extensions as te
+    import typing_extensions as te  # noqa: I001
     from rdflib.graph import (
         _TripleType,
         _ContextType,
@@ -61,8 +61,7 @@ def _node_to_sparql(node: "Node") -> str:
             "SPARQLStore does not support BNodes! "
             "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
         )
-    # type error: "Node" has no attribute "n3"
-    return node.n3()  # type: ignore[attr-defined]
+    return node.n3()
 
 
 class SPARQLStore(SPARQLConnector, Store):
@@ -151,7 +150,7 @@ class SPARQLStore(SPARQLConnector, Store):
         """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
         can set the required parameters
         """
-        if type(configuration) == str:
+        if type(configuration) == str:  # noqa: E721
             self.query_endpoint = configuration
         else:
             raise Exception(
@@ -652,7 +651,7 @@ class SPARQLUpdateStore(SPARQLStore):
         This method is included so that calls to this Store via Graph, e.g.
         Graph("SPARQLStore"), can set the required parameters
         """
-        if type(configuration) == str:
+        if type(configuration) == str:  # noqa: E721
             self.query_endpoint = configuration
         elif type(configuration) == tuple:
             self.query_endpoint = configuration[0]

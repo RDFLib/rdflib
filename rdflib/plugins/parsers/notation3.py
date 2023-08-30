@@ -1734,7 +1734,7 @@ class SinkParser:
 # [  is  operator:plus  of (  \1  \2 ) ]
 
 
-class BadSyntax(SyntaxError):
+class BadSyntax(SyntaxError):  # noqa: N818
     def __init__(self, uri: str, lines: int, argstr: str, i: int, why: str):
         self._str = argstr.encode("utf-8")  # Better go back to strings for errors
         self._i = i

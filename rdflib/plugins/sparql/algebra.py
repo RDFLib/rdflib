@@ -174,14 +174,10 @@ def triples(
         List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]
     ]
 ) -> List[Tuple[Identifier, Identifier, Identifier]]:
-    # NOTE on type errors: errors are a result of the variable being reused for
-    # a different type.
-    # type error: Incompatible types in assignment (expression has type "Sequence[Identifier]", variable has type "Union[List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]]")
-    l = reduce(lambda x, y: x + y, l)  # type: ignore[assignment]  # noqa: E741
-    if (len(l) % 3) != 0:
+    _l = reduce(lambda x, y: x + y, l)
+    if (len(_l) % 3) != 0:
         raise Exception("these aint triples")
-    # type error: Generator has incompatible item type "Tuple[Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]]]"; expected "Tuple[Identifier, Identifier, Identifier]"
-    return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))  # type: ignore[misc]
+    return reorderTriples((_l[x], _l[x + 1], _l[x + 2]) for x in range(0, len(_l), 3))
 
 
 # type error: Missing return statement
@@ -1010,12 +1006,10 @@ class _AlgebraTranslator:
     ) -> str:
         if isinstance(node_arg, Identifier):
             if node_arg in self.aggr_vars.keys():
-                # type error: "Identifier" has no attribute "n3"
-                grp_var = self.aggr_vars[node_arg].pop(0).n3()  # type: ignore[attr-defined]
+                grp_var = self.aggr_vars[node_arg].pop(0).n3()
                 return grp_var
             else:
-                # type error: "Identifier" has no attribute "n3"
-                return node_arg.n3()  # type: ignore[attr-defined]
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -1175,7 +1169,6 @@ class _AlgebraTranslator:
                     " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
                 )
             elif node.name == "TriplesBlock":
-                print("triplesblock")
                 self._replace(
                     "{TriplesBlock}",
                     "".join(
@@ -1336,7 +1329,6 @@ class _AlgebraTranslator:
                 # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
                 # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
                 # we get a GroupGraphPatternSub
-                print(node.graph.name)
                 self._replace(
                     "{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}"
                 )

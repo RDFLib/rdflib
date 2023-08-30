@@ -32,7 +32,7 @@ class TestURIRefRepr:
         a = u > u
         a = u > BNode()
         a = u > QuotedGraph(g.store, u)
-        a = u > g
+        a = u > g  # noqa: F841
 
 
 class TestBNodeRepr:

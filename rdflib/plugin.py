@@ -76,7 +76,7 @@ rdflib_entry_points = {
 _plugins: Dict[Tuple[str, Type[Any]], "Plugin"] = {}
 
 
-class PluginException(Error):
+class PluginException(Error):  # noqa: N818
     pass
 
 

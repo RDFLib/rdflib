@@ -93,7 +93,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 uris: Dict[Any, Tuple[URIRef, Optional[URIRef]]] = {}
 
 
-def toProperty(label):
+def toProperty(label):  # noqa: N802
     """
     CamelCase + lowercase initial a string
 
@@ -109,7 +109,7 @@ def toProperty(label):
     return "".join([label[0].lower()] + [x.capitalize() for x in label[1:]])
 
 
-def toPropertyLabel(label):
+def toPropertyLabel(label):  # noqa: N802
     if not label[1:2].isupper():
         return label[0:1].lower() + label[1:]
     return label

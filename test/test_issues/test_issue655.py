@@ -26,7 +26,7 @@ class TestIssue655(unittest.TestCase):
         self.assertEqual(Literal("inf")._literal_n3(True), '"inf"')
         self.assertEqual(Literal("nan")._literal_n3(True), '"nan"')
 
-        PROV = Namespace("http://www.w3.org/ns/prov#")
+        PROV = Namespace("http://www.w3.org/ns/prov#")  # noqa: N806
 
         bob = URIRef("http://example.org/object/Bob")
 

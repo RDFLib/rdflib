@@ -125,7 +125,7 @@ class Context:
         ctx.vocab = self.vocab
         ctx.base = self.base
         ctx.doc_base = self.doc_base
-        ctx._alias = {k: l[:] for k, l in self._alias.items()}
+        ctx._alias = {k: l[:] for k, l in self._alias.items()}  # noqa: E741
         ctx.terms = self.terms.copy()
         ctx._lookup = self._lookup.copy()
         ctx._prefixes = self._prefixes.copy()

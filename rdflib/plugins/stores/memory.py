@@ -725,7 +725,7 @@ class Memory(Store):
         query: Union["Query", str],
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",
+        queryGraph: "str",  # noqa: N803
         **kwargs,
     ) -> "Result":
         super(Memory, self).query(query, initNs, initBindings, queryGraph, **kwargs)
@@ -735,7 +735,7 @@ class Memory(Store):
         update: Union["Update", Any],
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",
+        queryGraph: "str",  # noqa: N803
         **kwargs,
     ) -> None:
         super(Memory, self).update(update, initNs, initBindings, queryGraph, **kwargs)

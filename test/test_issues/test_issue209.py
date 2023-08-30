@@ -4,7 +4,7 @@ import unittest
 import rdflib
 
 
-def makeNode():
+def makeNode():  # noqa: N802
     i = 0
     while i < 9999:
         i += 1

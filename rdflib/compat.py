@@ -34,14 +34,14 @@ def sign(n):
     return 0
 
 
-r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")
+r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")  # noqa: N816
 
 
-def _unicodeExpand(s):
+def _unicodeExpand(s):  # noqa: N802
     return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
 
 
-def decodeStringEscape(s):
+def decodeStringEscape(s):  # noqa: N802
     warnings.warn(
         DeprecationWarning(
             "rdflib.compat.decodeStringEscape() is deprecated, "
@@ -92,7 +92,7 @@ _turtle_escape_pattern = re.compile(
 )
 
 
-def decodeUnicodeEscape(escaped: str) -> str:
+def decodeUnicodeEscape(escaped: str) -> str:  # noqa: N802
     if "\\" not in escaped:
         # Most of times, there are no backslashes in strings.
         return escaped

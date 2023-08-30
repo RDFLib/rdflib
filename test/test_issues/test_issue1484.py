@@ -6,7 +6,7 @@ from test.utils.namespace import EGDO
 from rdflib import RDF, RDFS, Graph
 
 
-class TestIssue1484_json(unittest.TestCase):
+class TestIssue1484_json(unittest.TestCase):  # noqa: N801
     def test_issue_1484_json(self):
         """
         Test JSON-LD parsing of result from json.dump
@@ -17,7 +17,7 @@ class TestIssue1484_json(unittest.TestCase):
         json.dump(jsondata, s, indent=2, separators=(",", ": "))
         s.seek(0)
 
-        DEBUG = False
+        DEBUG = False  # noqa: N806
         if DEBUG:
             print("S: ", s.read())
             s.seek(0)
@@ -32,7 +32,7 @@ class TestIssue1484_json(unittest.TestCase):
         assert (EGDO.s, EGDO.p, EGDO.o) in g
 
 
-class TestIssue1484_str(unittest.TestCase):
+class TestIssue1484_str(unittest.TestCase):  # noqa: N801
     def test_issue_1484_str(self):
         """
         Test JSON-LD parsing of result from string (used by round tripping tests)

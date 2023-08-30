@@ -15,7 +15,7 @@ class TestIssue1043(unittest.TestCase):
 
 
 """
-        capturedOutput = io.StringIO()
+        capturedOutput = io.StringIO()  # noqa: N806
         sys.stdout = capturedOutput
         g = Graph()
         g.bind("xsd", XSD)

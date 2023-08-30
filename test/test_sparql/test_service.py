@@ -1,4 +1,5 @@
 import json
+from http.client import IncompleteRead, RemoteDisconnected
 from test.utils import helper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
@@ -26,7 +27,10 @@ def test_service():
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     print(results.vars)
     print(results.bindings)
     assert len(results) == 2
@@ -51,7 +55,10 @@ def test_service_with_bind():
         <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -87,7 +94,10 @@ def test_service_with_bound_solutions():
         }
         LIMIT 2
         """
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -110,7 +120,10 @@ def test_service_with_values():
         <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -127,7 +140,10 @@ def test_service_with_implicit_select():
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -145,7 +161,10 @@ def test_service_with_implicit_select_and_prefix():
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -163,7 +182,10 @@ def test_service_with_implicit_select_and_base():
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
@@ -181,7 +203,10 @@ def test_service_with_implicit_select_and_allcaps():
         ?s <http://www.w3.org/2002/07/owl#sameAs> ?sameAs .
       }
     } LIMIT 3"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 3
 
 
@@ -208,7 +233,10 @@ WHERE {
         VALUES (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> "c")}
     }
 }"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert results.bindings[0].get(Variable("o")) == Literal("c")
 
 
@@ -236,7 +264,10 @@ WHERE {
     }
     FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal"^^xsd:string, "String Language"@en) )
 }"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
 
     expected = freeze_bindings(
         [

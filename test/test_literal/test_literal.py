@@ -689,13 +689,13 @@ def test_cant_pass_invalid_lang_int() -> None:
 
 
 def test_from_other_literal() -> None:
-    l = Literal(1)
+    l = Literal(1)  # noqa: E741
     l2 = Literal(l)
     assert isinstance(l.value, int)
     assert isinstance(l2.value, int)
 
     # change datatype
-    l = Literal("1")
+    l = Literal("1")  # noqa: E741
     l2 = Literal(l, datatype=rdflib.XSD.integer)
     assert isinstance(l2.value, int)
 
@@ -771,14 +771,14 @@ def test_non_false_boolean() -> None:
 
 
 def test_binding(clear_bindings: None) -> None:
-    class a:
+    class a:  # noqa: N801
         def __init__(self, v: str) -> None:
             self.v = v[3:-3]
 
         def __str__(self) -> str:
             return "<<<%s>>>" % self.v
 
-    dtA = rdflib.URIRef("urn:dt:a")
+    dtA = rdflib.URIRef("urn:dt:a")  # noqa: N806
     bind(dtA, a)
 
     va = a("<<<2>>>")
@@ -790,14 +790,14 @@ def test_binding(clear_bindings: None) -> None:
     assert isinstance(la2.value, a)
     assert la2.value.v == va.v
 
-    class b:
+    class b:  # noqa: N801
         def __init__(self, v: str) -> None:
             self.v = v[3:-3]
 
         def __str__(self) -> str:
             return "B%s" % self.v
 
-    dtB = rdflib.URIRef("urn:dt:b")
+    dtB = rdflib.URIRef("urn:dt:b")  # noqa: N806
     bind(dtB, b, None, lambda x: "<<<%s>>>" % x)
 
     vb = b("<<<3>>>")

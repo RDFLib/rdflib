@@ -754,7 +754,7 @@ def MultiplicativeExpression(
         for op, f in zip(e.op, other):
             f = numeric(f)
 
-            if type(f) == float:
+            if type(f) == float:  # noqa: E721
                 res = float(res)
 
             if op == "*":

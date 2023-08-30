@@ -34,7 +34,7 @@ except Exception:
 
 @pytest.fixture
 def get_graph():
-    longMessage = True
+    longMessage = True  # noqa: F841
     graph = ConjunctiveGraph("SPARQLUpdateStore")
 
     root = HOST + DB
@@ -197,7 +197,7 @@ def test_updateW_with_blank_node_serialize_and_parse(get_graph):
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         raised = True
     assert raised is False, "Exception raised when parsing: " + string
 

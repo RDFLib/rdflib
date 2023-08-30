@@ -63,9 +63,9 @@ class TestSerialization(unittest.TestCase):
 
         """
         graph = rdflib.Graph()
-        DC = rdflib.Namespace("http://purl.org/dc/terms/")
-        SKOS = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")
-        LCCO = rdflib.Namespace("http://loc.gov/catdir/cpso/lcco/")
+        DC = rdflib.Namespace("http://purl.org/dc/terms/")  # noqa: N806
+        SKOS = rdflib.Namespace("http://www.w3.org/2004/02/skos/core#")  # noqa: N806
+        LCCO = rdflib.Namespace("http://loc.gov/catdir/cpso/lcco/")  # noqa: N806
 
         graph.bind("dc", DC)
         graph.bind("skos", SKOS)

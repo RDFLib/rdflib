@@ -1510,7 +1510,7 @@ class Graph(Node):
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[str, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> query.Result:
@@ -1544,13 +1544,19 @@ class Graph(Node):
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
+        if self.default_union:
+            query_graph = "__UNION__"
+        elif isinstance(self, ConjunctiveGraph):
+            query_graph = self.default_context.identifier
+        else:
+            query_graph = self.identifier
         if hasattr(self.store, "query") and use_store_provided:
             try:
                 return self.store.query(
                     query_object,
                     initNs,
                     initBindings,
-                    self.default_union and "__UNION__" or self.identifier,
+                    query_graph,
                     **kwargs,
                 )
             except NotImplementedError:
@@ -1569,7 +1575,7 @@ class Graph(Node):
         update_object: Union[Update, str],
         processor: Union[str, rdflib.query.UpdateProcessor] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping[str, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -1592,13 +1598,20 @@ class Graph(Node):
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
+        if self.default_union:
+            query_graph = "__UNION__"
+        elif isinstance(self, ConjunctiveGraph):
+            query_graph = self.default_context.identifier
+        else:
+            query_graph = self.identifier
+
         if hasattr(self.store, "update") and use_store_provided:
             try:
                 return self.store.update(
                     update_object,
                     initNs,
                     initBindings,
-                    self.default_union and "__UNION__" or self.identifier,
+                    query_graph,
                     **kwargs,
                 )
             except NotImplementedError:
@@ -1609,10 +1622,9 @@ class Graph(Node):
 
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
-    def n3(self) -> str:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         """Return an n3 identifier for the Graph"""
-        # type error: "IdentifiedNode" has no attribute "n3"
-        return "[%s]" % self.identifier.n3()  # type: ignore[attr-defined]
+        return "[%s]" % self.identifier.n3(namespace_manager=namespace_manager)
 
     def __reduce__(self) -> Tuple[Type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return (
@@ -1635,11 +1647,11 @@ class Graph(Node):
             return False
         for s, p, o in self:
             if not isinstance(s, BNode) and not isinstance(o, BNode):
-                if not (s, p, o) in other:
+                if not (s, p, o) in other:  # noqa: E713
                     return False
         for s, p, o in other:
             if not isinstance(s, BNode) and not isinstance(o, BNode):
-                if not (s, p, o) in self:
+                if not (s, p, o) in self:  # noqa: E713
                     return False
         # TODO: very well could be a false positive at this point yet.
         return True
@@ -1855,7 +1867,7 @@ class Graph(Node):
             for s, p, o in self.triples((uri, None, None)):
                 subgraph.add((s, p, o))
                 # recurse 'down' through ll Blank Nodes
-                if type(o) == BNode and not (o, None, None) in subgraph:
+                if type(o) == BNode and not (o, None, None) in subgraph:  # noqa: E713
                     add_to_cbd(o)
 
             # for Rule 3 (reification)
@@ -2591,14 +2603,12 @@ class QuotedGraph(Graph):
         )
         return self
 
-    def n3(self) -> str:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
         """Return an n3 identifier for the Graph"""
-        # type error: "IdentifiedNode" has no attribute "n3"
-        return "{%s}" % self.identifier.n3()  # type: ignore[attr-defined]
+        return "{%s}" % self.identifier.n3(namespace_manager=namespace_manager)
 
     def __str__(self) -> str:
-        # type error: "IdentifiedNode" has no attribute "n3"
-        identifier = self.identifier.n3()  # type: ignore[attr-defined]
+        identifier = self.identifier.n3()
         label = self.store.__class__.__name__
         pattern = (
             "{this rdflib.identifier %s;rdflib:storage "
@@ -2670,7 +2680,7 @@ class Seq:
         return item
 
 
-class ModificationException(Exception):
+class ModificationException(Exception):  # noqa: N818
     def __init__(self) -> None:
         pass
 
@@ -2681,7 +2691,7 @@ class ModificationException(Exception):
         )
 
 
-class UnSupportedAggregateOperation(Exception):
+class UnSupportedAggregateOperation(Exception):  # noqa: N818
     def __init__(self) -> None:
         pass
 
@@ -2894,13 +2904,13 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         source: Optional[
             Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
         ],
-        publicID: Optional[str] = None,
+        publicID: Optional[str] = None,  # noqa: N803
         format: Optional[str] = None,
         **args: Any,
     ) -> NoReturn:  # noqa: N803
         raise ModificationException()
 
-    def n3(self) -> NoReturn:
+    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> NoReturn:
         raise UnSupportedAggregateOperation()
 
     def __reduce__(self) -> NoReturn:
