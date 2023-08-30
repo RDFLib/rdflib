@@ -2,7 +2,7 @@
 import os
 import shutil
 import tempfile
-from test.data import context1, likes, pizza, tarek
+from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 from test.utils.namespace import EGSCHEME
 
 import pytest
@@ -115,30 +115,30 @@ def test_graph_aware(get_dataset):
     if not dataset.store.graph_aware:
         return
 
-    g1 = dataset.graph(context1)
+    g1 = dataset.graph(CONTEXT1)
 
     # Some SPARQL endpoint backends (e.g. TDB) do not consider
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # added graph exists
         assert set(x.identifier for x in dataset.contexts()) == set(
-            [context1, DATASET_DEFAULT_GRAPH_ID]
+            [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
     # added graph is empty
     assert len(g1) == 0
 
-    g1.add((tarek, likes, pizza))
+    g1.add((TAREK, LIKES, PIZZA))
 
     # added graph still exists
     assert set(x.identifier for x in dataset.contexts()) == set(
-        [context1, DATASET_DEFAULT_GRAPH_ID]
+        [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
     )
 
     # added graph contains one triple
     assert len(g1) == 1
 
-    g1.remove((tarek, likes, pizza))
+    g1.remove((TAREK, LIKES, PIZZA))
 
     # added graph is empty
     assert len(g1) == 0
@@ -148,10 +148,10 @@ def test_graph_aware(get_dataset):
     if store != "SPARQLUpdateStore":
         # graph still exists, although empty
         assert set(x.identifier for x in dataset.contexts()) == set(
-            [context1, DATASET_DEFAULT_GRAPH_ID]
+            [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
-    dataset.remove_graph(context1)
+    dataset.remove_graph(CONTEXT1)
 
     # graph is gone
     assert set(x.identifier for x in dataset.contexts()) == set(
@@ -170,7 +170,7 @@ def test_default_graph(get_dataset):
             "is supported by your SPARQL endpoint"
         )
 
-    dataset.add((tarek, likes, pizza))
+    dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
     assert list(dataset.contexts()) == [dataset.default_context]
@@ -193,11 +193,11 @@ def test_not_union(get_dataset):
             "its default graph as the union of the named graphs"
         )
 
-    subgraph1 = dataset.graph(context1)
-    subgraph1.add((tarek, likes, pizza))
+    subgraph1 = dataset.graph(CONTEXT1)
+    subgraph1.add((TAREK, LIKES, PIZZA))
 
-    assert list(dataset.objects(tarek, None)) == []
-    assert list(subgraph1.objects(tarek, None)) == [pizza]
+    assert list(dataset.objects(TAREK, None)) == []
+    assert list(subgraph1.objects(TAREK, None)) == [PIZZA]
 
 
 def test_iter(get_dataset):
