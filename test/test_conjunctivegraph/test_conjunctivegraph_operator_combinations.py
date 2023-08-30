@@ -109,4 +109,3 @@ def test_operators_returning_correct_type():
     assert type(g1 - g2) is ConjunctiveGraph
     assert type(g1 * g2) is ConjunctiveGraph
     assert type(g1 ^ g2) is ConjunctiveGraph
-    
