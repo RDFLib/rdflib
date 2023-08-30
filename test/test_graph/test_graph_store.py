@@ -258,7 +258,7 @@ def test_query_query_graph(
         query: Union[Query, str],
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
-        queryGraph: str,
+        queryGraph: str,  # noqa: N803
         **kwargs,
     ) -> Result:
         assert query_string == query
@@ -306,7 +306,7 @@ def test_update_query_graph(
         query: Union[Query, str],
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
-        queryGraph: str,
+        queryGraph: str,  # noqa: N803
         **kwargs,
     ) -> None:
         assert update_string == query
