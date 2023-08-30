@@ -155,12 +155,6 @@ line-length = 88
     "N802", # Function name should be lowercase
     "N806", # Variable in function should be lowercase
 ]
-"test/test_graph/test_{container,graph_context,aggregate_graphs}.py" = [
-    "N802", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-    "N816", # Variable in class scope should be mixedCase
-]
-
 
 [tool.black]
 required-version = "23.7.0"
