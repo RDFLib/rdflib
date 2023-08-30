@@ -100,3 +100,12 @@ def test_operators_with_two_conjunctivegraphs_one_with_contexts():
     assert len(cg1 * cg2) == 1  # only pizza
 
     assert len(cg1 ^ cg2) == 9  # removes pizza
+
+
+def test_operators_returning_correct_type():
+    g1 = ConjunctiveGraph()
+    g2 = ConjunctiveGraph()
+    assert type(g1 + g2) is ConjunctiveGraph
+    assert type(g1 - g2) is ConjunctiveGraph
+    assert type(g1 * g2) is ConjunctiveGraph
+    assert type(g1 ^ g2) is ConjunctiveGraph
