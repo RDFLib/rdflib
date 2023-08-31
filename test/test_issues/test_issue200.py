@@ -7,7 +7,7 @@ import pytest
 import rdflib
 
 if os.name == "nt":
-    pytest.mark.skip(reason="No os.fork() and/or os.pipe() on this platform, skipping")
+    pytest.skip(reason="No os.fork() and/or os.pipe() on this platform, skipping")
 
 
 def test_bnode_id_differs_in_fork():
