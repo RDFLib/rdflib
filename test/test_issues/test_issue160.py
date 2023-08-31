@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from rdflib import ConjunctiveGraph, Literal, Namespace
 from rdflib.collection import Collection
 
@@ -42,36 +40,35 @@ target2xml = """\
 </rdf:RDF>"""
 
 
-class CollectionTest(TestCase):
-    def test_collection_render(self):
-        foo = Namespace("http://www.example.org/foo/ns/")
-        ex = Namespace("http://www.example.org/example/foo/")
-        rdf = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+def test_collection_render():
+    foo = Namespace("http://www.example.org/foo/ns/")
+    ex = Namespace("http://www.example.org/example/foo/")
+    rdf = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
-        # Works:  x a rdf:List, a foo:Other ;
-        # Fails:  y a foo:Wrapper, foo:wraps x; x a rdf:List, a foo:Other ;
+    # Works:  x a rdf:List, a foo:Other ;
+    # Fails:  y a foo:Wrapper, foo:wraps x; x a rdf:List, a foo:Other ;
 
-        target1 = ConjunctiveGraph()
-        target1.parse(data=target1xml, format="xml")
-        target2 = ConjunctiveGraph()
-        target2.parse(data=target2xml, format="xml")
+    target1 = ConjunctiveGraph()
+    target1.parse(data=target1xml, format="xml")
+    target2 = ConjunctiveGraph()
+    target2.parse(data=target2xml, format="xml")
 
-        g = ConjunctiveGraph()
-        bits = [ex["a"], ex["b"], ex["c"]]
-        l = Collection(g, ex["thing"], bits)  # noqa: E741, F841
-        triple = (ex["thing"], rdf["type"], foo["Other"])
+    g = ConjunctiveGraph()
+    bits = [ex["a"], ex["b"], ex["c"]]
+    l = Collection(g, ex["thing"], bits)  # noqa: E741, F841
+    triple = (ex["thing"], rdf["type"], foo["Other"])
+    g.add(triple)
+    triple = (ex["thing"], foo["property"], Literal("Some Value"))
+    g.add(triple)
+    for b in bits:
+        triple = (b, rdf["type"], foo["Item"])
         g.add(triple)
-        triple = (ex["thing"], foo["property"], Literal("Some Value"))
-        g.add(triple)
-        for b in bits:
-            triple = (b, rdf["type"], foo["Item"])
-            g.add(triple)
-        self.assertEqual(g.isomorphic(target1), True)
+    assert g.isomorphic(target1) is True
 
-        # g.add((ex['wrapper'], rdf['type'], foo['Wrapper']))
-        # g.add((ex['wrapper'], foo['wraps'], ex['thing']))
-        # # resn3 = g.serialize(format="n3")
-        # # print(resn3)
-        # resxml = g.serialize(format="pretty-xml")
-        # # print(resxml)
-        # self.assertEqual(g.isomorphic(target2), True)
+    # g.add((ex['wrapper'], rdf['type'], foo['Wrapper']))
+    # g.add((ex['wrapper'], foo['wraps'], ex['thing']))
+    # # resn3 = g.serialize(format="n3")
+    # # print(resn3)
+    # resxml = g.serialize(format="pretty-xml")
+    # # print(resxml)
+    # self.assertEqual(g.isomorphic(target2), True)
