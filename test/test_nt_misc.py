@@ -117,7 +117,7 @@ def test_nonvalidating_uriquote():
     assert res == safe
 
 
-def test_validating_uriquote(self):
+def test_validating_uriquote():
     ntriples.validate = True
     uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
     res = ntriples.uriquote(uniquot)
@@ -126,7 +126,7 @@ def test_validating_uriquote(self):
     assert res == uniquot
 
 
-def test_w3d_ntriples_parser_fpath(self):
+def test_w3d_ntriples_parser_fpath():
     fpath = os.path.join(nt_file(os.listdir(NT_PATH)[0]))
     p = ntriples.W3CNTriplesParser()
     with pytest.raises(ntriples.ParseError):
