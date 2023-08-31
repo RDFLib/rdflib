@@ -6,10 +6,11 @@ import pytest
 
 import rdflib
 
-if os.name == "nt":
-    pytest.skip(reason="No os.fork() and/or os.pipe() on this platform, skipping")
 
-
+@pytest.mark.skipif(
+    condition=(os.name == "nt"),
+    reason="No os.fork() and/or os.pipe() on this platform, skipping",
+)
 def test_bnode_id_differs_in_fork():
     """Checks that os.fork()ed child processes produce a
     different sequence of BNode ids from the parent process.
