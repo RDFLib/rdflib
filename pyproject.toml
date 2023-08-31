@@ -135,20 +135,6 @@ line-length = 88
     "N815", # Variable in class scope should not be mixedCase
     "N999", # Invalid module name
 ]
-"test/test_sparql/test_{initbindings,datetime_processing,expressions}.py" = [
-    "N802", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-]
-"test/test_store/test_store_sparql*.py" = [
-    "N802", # Function name should be lowercase
-]
-"test/test_literal/test_uriref_literal_comparison.py" = [
-    "N802", # Function name should be lowercase
-]
-"test/test_nt_misc.py" = [
-    "N802", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-]
 
 [tool.black]
 required-version = "23.7.0"

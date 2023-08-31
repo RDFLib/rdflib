@@ -25,7 +25,7 @@ def _translate(e):
     return simplify(traverse(e, visitPost=partial(translatePName, prologue=Prologue())))
 
 
-def testRegex():
+def test_regex():
     assert _eval(_translate((p.Expression.parseString('REGEX("zxcabczxc","abc")')[0])))
 
     eq(
