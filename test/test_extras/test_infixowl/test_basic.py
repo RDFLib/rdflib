@@ -1,4 +1,4 @@
-from test.data import context0
+from test.data import CONTEXT0
 
 import pytest
 
@@ -17,7 +17,7 @@ EXNS = Namespace("http://example.org/vocab/")
 
 
 def test_lshift_rlshift_delimiters():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -40,7 +40,7 @@ def test_lshift_rlshift_delimiters():
 
 
 def test_matmul_rmatmul_delimiters():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -83,7 +83,7 @@ def test_infixowl_serialization():
 
 @pytest.mark.webtest
 def test_infix_owl_example1():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
