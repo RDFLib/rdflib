@@ -5,6 +5,8 @@ Tests for ConjunctiveGraph that do not depend on the underlying store
 
 import pytest
 
+from io import StringIO
+
 from rdflib import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.parser import StringInputSource
@@ -77,3 +79,20 @@ def get_graph_ids_tests():
 @pytest.mark.parametrize("checker, kws", get_graph_ids_tests())
 def test_graph_ids(checker, kws):
     checker(kws)
+
+def test_parse_return_type():
+    g = ConjunctiveGraph()
+    g.parse(data=DATA, format='turtle')
+    assert type(g) is ConjunctiveGraph
+
+    g = ConjunctiveGraph()
+    g = g.parse(data=DATA, format='turtle')
+    assert type(g) is ConjunctiveGraph
+
+    g = ConjunctiveGraph()
+    g.parse(source=StringIO(DATA), format='turtle')
+    assert type(g) is ConjunctiveGraph
+
+    g = ConjunctiveGraph()
+    g = g.parse(source=StringIO(DATA), format='turtle')
+    assert type(g) is ConjunctiveGraph
