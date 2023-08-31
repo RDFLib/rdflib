@@ -3,9 +3,9 @@ Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
 
-import pytest
-
 from io import StringIO
+
+import pytest
 
 from rdflib import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
