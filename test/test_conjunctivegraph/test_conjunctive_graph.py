@@ -80,19 +80,20 @@ def get_graph_ids_tests():
 def test_graph_ids(checker, kws):
     checker(kws)
 
+
 def test_parse_return_type():
     g = ConjunctiveGraph()
-    g.parse(data=DATA, format='turtle')
+    g.parse(data=DATA, format="turtle")
     assert type(g) is ConjunctiveGraph
 
     g = ConjunctiveGraph()
-    g = g.parse(data=DATA, format='turtle')
+    g = g.parse(data=DATA, format="turtle")
     assert type(g) is ConjunctiveGraph
 
     g = ConjunctiveGraph()
-    g.parse(source=StringIO(DATA), format='turtle')
+    g.parse(source=StringIO(DATA), format="turtle")
     assert type(g) is ConjunctiveGraph
 
     g = ConjunctiveGraph()
-    g = g.parse(source=StringIO(DATA), format='turtle')
+    g = g.parse(source=StringIO(DATA), format="turtle")
     assert type(g) is ConjunctiveGraph

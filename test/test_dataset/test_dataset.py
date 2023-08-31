@@ -267,19 +267,20 @@ def test_subgraph_without_identifier() -> None:
 
     assert f"{subgraph.identifier}".startswith(genid_prefix)
 
+
 def test_parse_return_type():
     g = Dataset()
-    g.parse(data=DATA, format='turtle')
+    g.parse(data=DATA, format="turtle")
     assert type(g) is Dataset
 
     g = Dataset()
-    g = g.parse(data=DATA, format='turtle')
+    g = g.parse(data=DATA, format="turtle")
     assert type(g) is Dataset
 
     g = Dataset()
-    g.parse(source=StringIO(DATA), format='turtle')
+    g.parse(source=StringIO(DATA), format="turtle")
     assert type(g) is Dataset
 
     g = Dataset()
-    g = g.parse(source=StringIO(DATA), format='turtle')
+    g = g.parse(source=StringIO(DATA), format="turtle")
     assert type(g) is Dataset
