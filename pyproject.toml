@@ -142,12 +142,6 @@ line-length = 88
 "test/test_store/test_store_sparql*.py" = [
     "N802", # Function name should be lowercase
 ]
-"test/test_serializers/test_{prettyxml,serializer_turtle,serializer_xml}.py" = [
-    "N802", # Function name should be lowercase
-    "N803", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-    "N815", # Variable in class scope should not be mixedCase
-]
 "test/test_literal/test_uriref_literal_comparison.py" = [
     "N802", # Function name should be lowercase
 ]
