@@ -135,7 +135,7 @@ def test_conjunctive_default(get_graph):
     assert len(list(r)) == 1, "only TAREK LIKES PIZZA"
 
 
-def testU_update(get_graph):
+def test_u_update(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH <urn:example:graph> { <urn:example:michel> <urn:example:likes> <urn:example:pizza> . } }"
@@ -145,7 +145,7 @@ def testU_update(get_graph):
     assert 1 == len(g), "graph contains 1 triples"
 
 
-def testU_update_with_initns(get_graph):
+def test_u_update_with_initns(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
@@ -187,7 +187,7 @@ def test_update_with_blank_node(get_graph):
         assert t[2].n3() == "<urn:example:Blank>"
 
 
-def test_updateW_with_blank_node_serialize_and_parse(get_graph):
+def test_update_w_with_blank_node_serialize_and_parse(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH <urn:example:graph> { _:blankA <urn:example:type> <urn:example:Blank> } }"

@@ -76,7 +76,7 @@ class TestSPARQLStoreFakeDBPedia:
     def teardown_method(self):
         self.graph.close()
 
-    def test_Query(self):
+    def test_query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
         _query = SPARQLConnector.query
         self.httpmock.responses[MethodName.GET].append(
@@ -121,7 +121,7 @@ class TestSPARQLStoreFakeDBPedia:
         assert re.match(r"^/sparql", req.path)
         assert query in req.path_query["query"][0]
 
-    def test_initNs(self):
+    def test_init_ns(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
@@ -184,7 +184,7 @@ class TestSPARQLStoreFakeDBPedia:
         assert re.match(r"^/sparql", req.path)
         assert query in req.path_query["query"][0]
 
-    def test_noinitNs(self):
+    def test_noinit_ns(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
@@ -440,14 +440,14 @@ class TestSPARQLStoreUpdate:
     def teardown_method(self):
         self.graph.close()
 
-    def test_Query(self):
+    def test_query(self):
         query = "insert data {<urn:s> <urn:p> <urn:o>}"
         res = self.graph.update(query)
         print(res)
 
 
 class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
-    def do_POST(self):
+    def do_POST(self):  # noqa: N802
         """
         If the body should be analysed as well, just use:
         ```
@@ -484,7 +484,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         self.end_headers()
         return
 
-    def do_GET(self):
+    def do_GET(self):  # noqa: N802
         # Process an HTTP GET request and return a response with an HTTP 200 status.
         self.send_response(200, "OK")
         self.end_headers()
