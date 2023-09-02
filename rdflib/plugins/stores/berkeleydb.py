@@ -107,7 +107,7 @@ class BerkeleyDB(Store):
 
     def _init_db_environment(
         self, homeDir: str, create: bool = True  # noqa: N803
-    ) -> "db.DBEnv":  # noqa: N803
+    ) -> "db.DBEnv":
         if not exists(homeDir):
             if create is True:
                 mkdir(homeDir)

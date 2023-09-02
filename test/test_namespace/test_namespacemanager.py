@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Graph  # noqa: E402
-from rdflib.namespace import (  # noqa: E402
+from rdflib import Graph
+from rdflib.namespace import (
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,
     OWL,

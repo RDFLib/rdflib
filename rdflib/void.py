@@ -28,7 +28,7 @@ def generateVoID(  # noqa: N802
     """
 
     typeMap = collections.defaultdict(set)  # noqa: N806
-    classes = collections.defaultdict(set)  # noqa: N806
+    classes = collections.defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)

@@ -316,4 +316,4 @@ def _prettify_sub_parsetree(
 
 
 # hurrah for circular imports
-from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError  # noqa: E402
+from rdflib.plugins.sparql.sparql import NotBoundError, SPARQLError

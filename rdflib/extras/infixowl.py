@@ -1044,15 +1044,15 @@ class Class(AnnotatableTerms):
         self,
         identifier=None,
         subClassOf=None,  # noqa: N803
-        equivalentClass=None,
-        disjointWith=None,
-        complementOf=None,
+        equivalentClass=None,  # noqa: N803
+        disjointWith=None,  # noqa: N803
+        complementOf=None,  # noqa: N803
         graph=None,
-        skipOWLClassMembership=False,
+        skipOWLClassMembership=False,  # noqa: N803
         comment=None,
-        nounAnnotations=None,
-        nameAnnotation=None,
-        nameIsLabel=False,
+        nounAnnotations=None,  # noqa: N803
+        nameAnnotation=None,  # noqa: N803
+        nameIsLabel=False,  # noqa: N803
     ):
         super(Class, self).__init__(identifier, graph, nameAnnotation, nameIsLabel)
 
@@ -1352,7 +1352,7 @@ class Class(AnnotatableTerms):
                 isinstance(s, Class)
                 and isinstance(self.identifier, BNode)
                 and repr(CastClass(s, self.graph))
-                or  # noqa: W504
+                or
                 # repr(BooleanClass(classOrIdentifier(s),
                 #                  operator=None,
                 #                  graph=self.graph)) or
@@ -1736,12 +1736,12 @@ class Restriction(Class):
         self,
         onProperty,  # noqa: N803
         graph=None,
-        allValuesFrom=None,
-        someValuesFrom=None,
+        allValuesFrom=None,  # noqa: N803
+        someValuesFrom=None,  # noqa: N803
         value=None,
         cardinality=None,
-        maxCardinality=None,
-        minCardinality=None,
+        maxCardinality=None,  # noqa: N803
+        minCardinality=None,  # noqa: N803
         identifier=None,
     ):
         graph = Graph() if graph is None else graph
@@ -2098,16 +2098,16 @@ class Property(AnnotatableTerms):
         identifier=None,
         graph=None,
         baseType=OWL.ObjectProperty,  # noqa: N803
-        subPropertyOf=None,
+        subPropertyOf=None,  # noqa: N803
         domain=None,
         range=None,
-        inverseOf=None,
-        otherType=None,
-        equivalentProperty=None,
+        inverseOf=None,  # noqa: N803
+        otherType=None,  # noqa: N803
+        equivalentProperty=None,  # noqa: N803
         comment=None,
-        verbAnnotations=None,
-        nameAnnotation=None,
-        nameIsLabel=False,
+        verbAnnotations=None,  # noqa: N803
+        nameAnnotation=None,  # noqa: N803
+        nameIsLabel=False,  # noqa: N803
     ):
         super(Property, self).__init__(identifier, graph, nameAnnotation, nameIsLabel)
         if verbAnnotations:

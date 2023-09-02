@@ -197,4 +197,4 @@ from rdflib.namespace import (
 from rdflib.term import BNode, IdentifiedNode, Literal, URIRef, Variable
 
 from rdflib import plugin, query, util  # isort:skip
-from rdflib.container import *  # isort:skip # noqa:F401,F403
+from rdflib.container import *  # isort:skip # noqa: F403
