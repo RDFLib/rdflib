@@ -98,7 +98,7 @@ def expandTriples(terms: ParseResults) -> List[Any]:
         #       "Length of triple-list is not divisible by 3: %d!"%len(res)
 
         # return [tuple(res[i:i+3]) for i in range(len(res)/3)]
-    except:  # noqa: E722
+    except:
         if DEBUG:
             import traceback
 

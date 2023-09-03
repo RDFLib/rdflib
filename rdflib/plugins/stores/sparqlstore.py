@@ -192,9 +192,9 @@ class SPARQLStore(SPARQLConnector, Store):
         self,
         query: Union["Update", str],
         initNs: Dict[str, Any] = {},  # noqa: N803
-        initBindings: Dict["str", "Identifier"] = {},
-        queryGraph: "Identifier" = None,
-        DEBUG: bool = False,
+        initBindings: Dict["str", "Identifier"] = {},  # noqa: N803
+        queryGraph: "Identifier" = None,  # noqa: N803
+        DEBUG: bool = False,  # noqa: N803
     ) -> None:
         raise TypeError("The SPARQL store is read only")
 
@@ -221,9 +221,9 @@ class SPARQLStore(SPARQLConnector, Store):
         self,
         query: Union["Query", str],
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
-        initBindings: Optional[Mapping["str", "Identifier"]] = None,
-        queryGraph: Optional["str"] = None,
-        DEBUG: bool = False,
+        initBindings: Optional[Mapping["str", "Identifier"]] = None,  # noqa: N803
+        queryGraph: Optional["str"] = None,  # noqa: N803
+        DEBUG: bool = False,  # noqa: N803
     ) -> "Result":
         self.debug = DEBUG
         assert isinstance(query, str)
@@ -825,9 +825,9 @@ class SPARQLUpdateStore(SPARQLStore):
         self,
         query: Union["Update", str],
         initNs: Dict[str, Any] = {},  # noqa: N803
-        initBindings: Dict["str", "Identifier"] = {},
-        queryGraph: Optional[str] = None,
-        DEBUG: bool = False,
+        initBindings: Dict["str", "Identifier"] = {},  # noqa: N803
+        queryGraph: Optional[str] = None,  # noqa: N803
+        DEBUG: bool = False,  # noqa: N803
     ):
         """
         Perform a SPARQL Update Query against the endpoint,

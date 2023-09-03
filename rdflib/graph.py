@@ -1080,7 +1080,7 @@ class Graph(Node):
         func: Callable[[_TCArgT, "Graph"], Iterable[_TCArgT]],
         arg: _TCArgT,
         seen: Optional[Dict[_TCArgT, int]] = None,
-    ):  # noqa: N802
+    ):
         """
         Generates transitive closure of a user-defined
         function against the graph
@@ -2907,7 +2907,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         publicID: Optional[str] = None,  # noqa: N803
         format: Optional[str] = None,
         **args: Any,
-    ) -> NoReturn:  # noqa: N803
+    ) -> NoReturn:
         raise ModificationException()
 
     def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> NoReturn:

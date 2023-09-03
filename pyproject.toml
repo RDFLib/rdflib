@@ -87,6 +87,7 @@ select = [
     "F", # Pyflakes
     "I", # isort
     "N", # pep8-naming
+    "RUF100", # Unused noqa directive
 ]
 
 ignore = [
@@ -120,16 +121,10 @@ line-length = 88
     "N806", # Variable in function should be lowercase
     "N816", # Variable in class scope should be mixedCase
 ]
-"rdflib/extras/infixowl.py" = [
-    "N803", # Function name should be lowercase
-]
 "rdflib/plugins/serializers/{turtle,longturtle,trig}.py" = [
     "N802", # Function name should be lowercase
     "N806", # Variable in function should be lowercase
     "N815", # Variable in class scope should not be mixedCase
-]
-"rdflib/plugins/stores/sparqlstore.py" = [
-    "N803", # Argument name should be lowercase
 ]
 "test/utils/namespace/_*" = [
     "N815", # Variable in class scope should not be mixedCase

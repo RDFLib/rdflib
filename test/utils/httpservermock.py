@@ -42,7 +42,7 @@ def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
         m(*args, **kwargs)
         return method(self, *args, **kwargs)
 
-    setattr(wrapper, "mock", m)  # noqa
+    setattr(wrapper, "mock", m)
     return cast(GenericT, wrapper), m
 
 
