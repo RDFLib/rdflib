@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This serialiser will output an RDF Graph as a JSON-LD formatted document. See:
 

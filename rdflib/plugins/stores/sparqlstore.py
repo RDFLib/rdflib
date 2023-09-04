@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 """
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
