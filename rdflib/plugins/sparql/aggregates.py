@@ -1,3 +1,6 @@
+"""
+Aggregation functions
+"""
 from __future__ import annotations
 
 from decimal import Decimal
@@ -24,10 +27,6 @@ from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.sparql.sparql import FrozenBindings, NotBoundError, SPARQLTypeError
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
-
-"""
-Aggregation functions
-"""
 
 
 class Accumulator:

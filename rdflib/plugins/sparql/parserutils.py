@@ -1,26 +1,3 @@
-from __future__ import annotations
-
-from collections import OrderedDict
-from types import MethodType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
-
-from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
-
-from rdflib.term import BNode, Identifier, Variable
-
-if TYPE_CHECKING:
-    from rdflib.plugins.sparql.sparql import FrozenBindings
-
 """
 
 NOTE: PyParsing setResultName/__call__ provides a very similar solution to this
@@ -47,6 +24,29 @@ the resulting CompValue
 
 
 """
+
+from __future__ import annotations
+
+from collections import OrderedDict
+from types import MethodType
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
+
+from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
+
+from rdflib.term import BNode, Identifier, Variable
+
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
 
 
 # This is an alternative

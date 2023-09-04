@@ -519,7 +519,7 @@ class BNode(IdentifiedNode):
 
 
 class Literal(Identifier):
-    __doc__ = """
+    """
 
     RDF 1.1's Literals Section: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 

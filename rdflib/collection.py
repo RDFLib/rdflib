@@ -12,7 +12,7 @@ __all__ = ["Collection"]
 
 
 class Collection:
-    __doc__ = """
+    """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 

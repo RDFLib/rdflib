@@ -1,3 +1,12 @@
+"""
+This contains evaluation functions for expressions
+
+They get bound as instances-methods to the CompValue objects from parserutils
+using setEvalFn
+
+"""
+
+
 from __future__ import annotations
 
 import datetime as py_datetime  # naming conflict with function within this module
@@ -39,14 +48,6 @@ from rdflib.term import (
     URIRef,
     Variable,
 )
-
-"""
-This contains evaluation functions for expressions
-
-They get bound as instances-methods to the CompValue objects from parserutils
-using setEvalFn
-
-"""
 
 
 def Builtin_IRI(expr: Expr, ctx: FrozenBindings) -> URIRef:

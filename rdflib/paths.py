@@ -1,8 +1,4 @@
-from __future__ import annotations
-
-from abc import ABC, abstractmethod
-
-__doc__ = r"""
+r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:
@@ -183,9 +179,10 @@ No vars specified:
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
 """
-
+from __future__ import annotations
 
 import warnings
+from abc import ABC, abstractmethod
 from functools import total_ordering
 from typing import (
     TYPE_CHECKING,

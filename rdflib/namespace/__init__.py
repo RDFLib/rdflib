@@ -1,18 +1,4 @@
-import logging
-import warnings
-from functools import lru_cache
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
-from unicodedata import category
-from urllib.parse import urldefrag, urljoin
-
-from rdflib.term import URIRef, Variable, _is_valid_uri
-
-if TYPE_CHECKING:
-    from rdflib.graph import Graph
-    from rdflib.store import Store
-
-__doc__ = """
+"""
 ===================
 Namespace Utilities
 ===================
@@ -83,6 +69,21 @@ The following namespaces are available by directly importing from rdflib:
     >>> RDFS.seeAlso
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
+
+import logging
+import warnings
+from functools import lru_cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from unicodedata import category
+from urllib.parse import urldefrag, urljoin
+
+from rdflib.term import URIRef, Variable, _is_valid_uri
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.store import Store
+
 
 __all__ = [
     "is_ncname",

@@ -1,4 +1,4 @@
-__doc__ = """RDFLib Python binding for OWL Abstract Syntax
+"""RDFLib Python binding for OWL Abstract Syntax
 
 OWL Constructor     DL Syntax       Manchester OWL Syntax   Example
 ====================================================================================

@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-__doc__ = """
+"""
 Dirt Simple Events
 
 A Dispatcher (or a subclass of Dispatcher) stores event handlers that
@@ -25,6 +23,7 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
+from __future__ import annotations
 
 from typing import Any, Dict, Optional
 

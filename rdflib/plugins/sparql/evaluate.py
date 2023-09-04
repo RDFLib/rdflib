@@ -1,3 +1,19 @@
+"""
+These method recursively evaluate the SPARQL Algebra
+
+evalQuery is the entry-point, it will setup context and
+return the SPARQLResult object
+
+evalPart is called on each level and will delegate to the right method
+
+A rdflib.plugins.sparql.sparql.QueryContext is passed along, keeping
+information needed for evaluation
+
+A list of dicts (solution mappings) is returned, apart from GroupBy which may
+also return a dict of list of dicts
+
+"""
+
 from __future__ import annotations
 
 import collections
@@ -47,22 +63,6 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 if TYPE_CHECKING:
     from rdflib.paths import Path
 
-
-"""
-These method recursively evaluate the SPARQL Algebra
-
-evalQuery is the entry-point, it will setup context and
-return the SPARQLResult object
-
-evalPart is called on each level and will delegate to the right method
-
-A rdflib.plugins.sparql.sparql.QueryContext is passed along, keeping
-information needed for evaluation
-
-A list of dicts (solution mappings) is returned, apart from GroupBy which may
-also return a dict of list of dicts
-
-"""
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 

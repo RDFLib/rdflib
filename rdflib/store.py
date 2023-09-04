@@ -1,3 +1,30 @@
+"""
+============
+rdflib.store
+============
+
+Types of store
+--------------
+
+``Context-aware``: An RDF store capable of storing statements within contexts
+is considered context-aware. Essentially, such a store is able to partition
+the RDF model it represents into individual, named, and addressable
+sub-graphs.
+
+Relevant Notation3 reference regarding formulae, quoted statements, and such:
+http://www.w3.org/DesignIssues/Notation3.html
+
+``Formula-aware``: An RDF store capable of distinguishing between statements
+that are asserted and statements that are quoted is considered formula-aware.
+
+``Transaction-capable``: capable of providing transactional integrity to the
+RDF operations performed on it.
+
+``Graph-aware``: capable of keeping track of empty graphs.
+
+------
+"""
+
 from __future__ import annotations
 
 import pickle
@@ -32,33 +59,6 @@ if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
     from rdflib.term import Identifier, Node, URIRef
-
-"""
-============
-rdflib.store
-============
-
-Types of store
---------------
-
-``Context-aware``: An RDF store capable of storing statements within contexts
-is considered context-aware. Essentially, such a store is able to partition
-the RDF model it represents into individual, named, and addressable
-sub-graphs.
-
-Relevant Notation3 reference regarding formulae, quoted statements, and such:
-http://www.w3.org/DesignIssues/Notation3.html
-
-``Formula-aware``: An RDF store capable of distinguishing between statements
-that are asserted and statements that are quoted is considered formula-aware.
-
-``Transaction-capable``: capable of providing transactional integrity to the
-RDF operations performed on it.
-
-``Graph-aware``: capable of keeping track of empty graphs.
-
-------
-"""
 
 
 # Constants representing the state of a Store (returned by the open method)
