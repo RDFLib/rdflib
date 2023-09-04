@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Set, Tuple
 
+from rdflib.namespace import Namespace
 from rdflib.parser import Parser
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
-    from rdflib.namespace import Namespace
     from rdflib.parser import InputSource
     from rdflib.term import URIRef
 
@@ -26,6 +26,3 @@ class ExampleParser(Parser):
         cls,
     ) -> Set[Tuple["URIRef", "URIRef", "URIRef"]]:
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}
-
-
-from rdflib.namespace import Namespace  # noqa: F811
