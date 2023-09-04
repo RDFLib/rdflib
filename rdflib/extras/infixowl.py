@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 __doc__ = """RDFLib Python binding for OWL Abstract Syntax
 
 OWL Constructor     DL Syntax       Manchester OWL Syntax   Example

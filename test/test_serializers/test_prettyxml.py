@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from io import BytesIO
 
 from rdflib.graph import ConjunctiveGraph

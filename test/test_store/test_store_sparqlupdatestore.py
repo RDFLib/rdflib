@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 from urllib.request import urlopen

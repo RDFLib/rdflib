@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import binascii
 
 from rdflib import XSD, Literal

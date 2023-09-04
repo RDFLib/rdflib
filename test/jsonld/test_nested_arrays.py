@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 from test.utils.namespace import EGDC
 
 from rdflib import Graph, Literal

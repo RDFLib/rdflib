@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # rdflib documentation build configuration file, created by
 # sphinx-quickstart on Fri May 15 15:03:54 2009.
 #

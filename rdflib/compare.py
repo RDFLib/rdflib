@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A collection of utilities for canonicalizing and inspecting graphs.
 

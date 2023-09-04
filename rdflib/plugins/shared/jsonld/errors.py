@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/errors.py
 class JSONLDException(ValueError):  # noqa: N818
     pass

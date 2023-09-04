@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 """
 A commandline tool for parsing RDF in different formats and serializing the
 resulting graph to a chosen format.
