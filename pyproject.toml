@@ -96,7 +96,6 @@ ignore = [
     # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated
     "E203", # whitespace before ':'
     "E231", # missing whitespace after ','
-    "E402", # Module level import not at top of file
 ]
 
 # Same as Black.
@@ -130,6 +129,10 @@ line-length = 88
     "N815", # Variable in class scope should not be mixedCase
     "N999", # Invalid module name
 ]
+"{test/conftest.py,rdflib/namespace/__init__.py,rdflib/__init__.py,rdflib/plugins/sparql/__init__.py}" = [
+    "E402", # Module level import not at top of file
+]
+
 
 [tool.black]
 required-version = "23.7.0"

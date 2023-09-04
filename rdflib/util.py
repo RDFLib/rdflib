@@ -1,27 +1,5 @@
 from __future__ import annotations
 
-"""
-Some utility functions.
-
-Miscellaneous utilities
-
-* list2set
-* first
-* uniq
-* more_than
-
-Term characterisation and generation
-
-* to_term
-* from_n3
-
-Date/time utilities
-
-* date_time
-* parse_date_time
-
-"""
-
 from calendar import timegm
 from os.path import splitext
 
@@ -52,6 +30,29 @@ from rdflib.compat import sign
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
+
+
+"""
+Some utility functions.
+
+Miscellaneous utilities
+
+* list2set
+* first
+* uniq
+* more_than
+
+Term characterisation and generation
+
+* to_term
+* from_n3
+
+Date/time utilities
+
+* date_time
+* parse_date_time
+
+"""
 
 __all__ = [
     "list2set",

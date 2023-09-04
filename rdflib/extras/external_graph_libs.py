@@ -2,6 +2,13 @@
 # encoding: utf-8
 from __future__ import annotations
 
+import logging
+from typing import TYPE_CHECKING, Any, Dict, List
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+
+
 """Convert (to and) from rdflib graphs to other well known graph libraries.
 
 Currently the following libraries are supported:
@@ -12,12 +19,6 @@ Doctests in this file are all skipped, as we can't run them conditionally if
 networkx or graph_tool are available and they would err otherwise.
 see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
-
-import logging
-from typing import TYPE_CHECKING, Any, Dict, List
-
-if TYPE_CHECKING:
-    from rdflib.graph import Graph
 
 logger = logging.getLogger(__name__)
 

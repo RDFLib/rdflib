@@ -508,4 +508,4 @@ def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[st
     return _idfns
 
 
-from test.utils.iri import file_uri_to_path
+from test.utils.iri import file_uri_to_path  # noqa: E402

@@ -1,23 +1,14 @@
 from __future__ import annotations
 
 import logging
-import sys
 from contextlib import ExitStack
-from pathlib import Path
 from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
 
-from rdflib.graph import Dataset
-from rdflib.term import URIRef
-
-if TYPE_CHECKING:
-    from rdflib._type_checking import _NamespaceSetString
-
-
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import Graph
+from rdflib.graph import Dataset
 from rdflib.namespace import (
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,
@@ -26,6 +17,10 @@ from rdflib.namespace import (
     Namespace,
     NamespaceManager,
 )
+from rdflib.term import URIRef
+
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
 
 
 def test_core_prefixes_bound():
