@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 notation3.py - Standalone Notation3 Parser
 Derived from CWM, the Closed World Machine
