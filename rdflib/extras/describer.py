@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 __doc__ = """
 A Describer is a stateful utility for creating RDF statements in a
 semi-declarative manner. It has methods for creating literal values, rel and
