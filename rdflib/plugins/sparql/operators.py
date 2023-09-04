@@ -988,8 +988,7 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    # type error: Statement is unreachable
-    if not isinstance(expr, CompValue):  # type: ignore[unreachable]
+    if not isinstance(expr, CompValue):
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:

@@ -226,12 +226,6 @@ warn_unused_ignores = true
 no_implicit_optional = false
 implicit_reexport = false
 
-[[tool.mypy.overrides]]
-module = "pyparsing.*"
-# This is here because of an upstream issue with pyparsing:
-# https://github.com/pyparsing/pyparsing/issues/385
-# Once the issue is fixed this should be removed.
-follow_imports = "skip"
 
 [tool.coverage.run]
 branch = true

@@ -413,16 +413,14 @@ def _traverse(
 
     if isinstance(e, (list, ParseResults)):
         return [_traverse(x, visitPre, visitPost) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, tuple):  # type: ignore[unreachable]
+    elif isinstance(e, tuple):
         return tuple([_traverse(x, visitPre, visitPost) for x in e])
 
     elif isinstance(e, CompValue):
         for k, val in e.items():
             e[k] = _traverse(val, visitPre, visitPost)
 
-    # type error: Statement is unreachable
-    _e = visitPost(e)  # type: ignore[unreachable]
+    _e = visitPost(e)
     if _e is not None:
         return _e
 
@@ -440,8 +438,7 @@ def _traverseAgg(e, visitor: Callable[[Any, Any], Any] = lambda n, v: None):
 
     if isinstance(e, (list, ParseResults, tuple)):
         res = [_traverseAgg(x, visitor) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, CompValue):  # type: ignore[unreachable]
+    elif isinstance(e, CompValue):
         for k, val in e.items():
             if val is not None:
                 res.append(_traverseAgg(val, visitor))
