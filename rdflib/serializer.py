@@ -1,13 +1,3 @@
-from __future__ import annotations
-
-from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
-
-from rdflib.term import URIRef
-
-if TYPE_CHECKING:
-    from rdflib.graph import Graph
-
-
 """
 Serializer plugin interface.
 
@@ -19,6 +9,16 @@ TODO: info for how to write a serializer that can plugin to rdflib.
 See also rdflib.plugin
 
 """
+
+from __future__ import annotations
+
+from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
+
+from rdflib.term import URIRef
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+
 
 __all__ = ["Serializer"]
 

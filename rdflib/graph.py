@@ -1,126 +1,4 @@
-from __future__ import annotations
-
-import logging
-import pathlib
-import random
-from io import BytesIO
-from typing import (
-    IO,
-    TYPE_CHECKING,
-    Any,
-    BinaryIO,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Mapping,
-    NoReturn,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-    overload,
-)
-from urllib.parse import urlparse
-from urllib.request import url2pathname
-
-import rdflib.exceptions as exceptions
-import rdflib.namespace as namespace  # noqa: F401 # This is here because it is used in a docstring.
-import rdflib.plugin as plugin
-import rdflib.query as query
-import rdflib.util  # avoid circular dependency
-from rdflib.collection import Collection
-from rdflib.exceptions import ParserError
-from rdflib.namespace import RDF, Namespace, NamespaceManager
-from rdflib.parser import InputSource, Parser, create_input_source
-from rdflib.paths import Path
-from rdflib.resource import Resource
-from rdflib.serializer import Serializer
-from rdflib.store import Store
-from rdflib.term import (
-    BNode,
-    Genid,
-    IdentifiedNode,
-    Identifier,
-    Literal,
-    Node,
-    RDFLibGenid,
-    URIRef,
-)
-
-if TYPE_CHECKING:
-    import typing_extensions as te
-
-    import rdflib.query
-    from rdflib.plugins.sparql.sparql import Query, Update
-
-_SubjectType = Node
-_PredicateType = Node
-_ObjectType = Node
-_ContextIdentifierType = IdentifiedNode
-
-_TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
-_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
-_OptionalQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
-]
-_TripleOrOptionalQuadType = Union["_TripleType", "_OptionalQuadType"]
-_OptionalIdentifiedQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
-]
-_TriplePatternType = Tuple[
-    Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
-]
-_TriplePathPatternType = Tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]]
-_QuadPatternType = Tuple[
-    Optional["_SubjectType"],
-    Optional["_PredicateType"],
-    Optional["_ObjectType"],
-    Optional["_ContextType"],
-]
-_QuadPathPatternType = Tuple[
-    Optional["_SubjectType"],
-    Path,
-    Optional["_ObjectType"],
-    Optional["_ContextType"],
-]
-_TripleOrQuadPatternType = Union["_TriplePatternType", "_QuadPatternType"]
-_TripleOrQuadPathPatternType = Union["_TriplePathPatternType", "_QuadPathPatternType"]
-_TripleSelectorType = Tuple[
-    Optional["_SubjectType"],
-    Optional[Union["Path", "_PredicateType"]],
-    Optional["_ObjectType"],
-]
-_QuadSelectorType = Tuple[
-    Optional["_SubjectType"],
-    Optional[Union["Path", "_PredicateType"]],
-    Optional["_ObjectType"],
-    Optional["_ContextType"],
-]
-_TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
-_TriplePathType = Tuple["_SubjectType", Path, "_ObjectType"]
-_TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
-
-_GraphT = TypeVar("_GraphT", bound="Graph")
-_ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
-_DatasetT = TypeVar("_DatasetT", bound="Dataset")
-
-# type error: Function "Type[Literal]" could always be true in boolean contex
-assert Literal  # type: ignore[truthy-function] # avoid warning
-# type error: Function "Type[Namespace]" could always be true in boolean context
-assert Namespace  # type: ignore[truthy-function] # avoid warning
-
-if TYPE_CHECKING:
-    from rdflib._type_checking import _NamespaceSetString
-
-logger = logging.getLogger(__name__)
-
-__doc__ = """\
+"""\
 
 RDFLib defines the following kinds of Graphs:
 
@@ -365,6 +243,128 @@ Using Namespace class:
     rdflib.term.URIRef('https://rdflib.github.io/Graph')
 
 """
+
+from __future__ import annotations
+
+import logging
+import pathlib
+import random
+from io import BytesIO
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    BinaryIO,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Mapping,
+    NoReturn,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+    overload,
+)
+from urllib.parse import urlparse
+from urllib.request import url2pathname
+
+import rdflib.exceptions as exceptions
+import rdflib.namespace as namespace  # noqa: F401 # This is here because it is used in a docstring.
+import rdflib.plugin as plugin
+import rdflib.query as query
+import rdflib.util  # avoid circular dependency
+from rdflib.collection import Collection
+from rdflib.exceptions import ParserError
+from rdflib.namespace import RDF, Namespace, NamespaceManager
+from rdflib.parser import InputSource, Parser, create_input_source
+from rdflib.paths import Path
+from rdflib.resource import Resource
+from rdflib.serializer import Serializer
+from rdflib.store import Store
+from rdflib.term import (
+    BNode,
+    Genid,
+    IdentifiedNode,
+    Identifier,
+    Literal,
+    Node,
+    RDFLibGenid,
+    URIRef,
+)
+
+if TYPE_CHECKING:
+    import typing_extensions as te
+
+    import rdflib.query
+    from rdflib.plugins.sparql.sparql import Query, Update
+
+_SubjectType = Node
+_PredicateType = Node
+_ObjectType = Node
+_ContextIdentifierType = IdentifiedNode
+
+_TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
+_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
+_OptionalQuadType = Tuple[
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
+]
+_TripleOrOptionalQuadType = Union["_TripleType", "_OptionalQuadType"]
+_OptionalIdentifiedQuadType = Tuple[
+    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
+]
+_TriplePatternType = Tuple[
+    Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
+]
+_TriplePathPatternType = Tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]]
+_QuadPatternType = Tuple[
+    Optional["_SubjectType"],
+    Optional["_PredicateType"],
+    Optional["_ObjectType"],
+    Optional["_ContextType"],
+]
+_QuadPathPatternType = Tuple[
+    Optional["_SubjectType"],
+    Path,
+    Optional["_ObjectType"],
+    Optional["_ContextType"],
+]
+_TripleOrQuadPatternType = Union["_TriplePatternType", "_QuadPatternType"]
+_TripleOrQuadPathPatternType = Union["_TriplePathPatternType", "_QuadPathPatternType"]
+_TripleSelectorType = Tuple[
+    Optional["_SubjectType"],
+    Optional[Union["Path", "_PredicateType"]],
+    Optional["_ObjectType"],
+]
+_QuadSelectorType = Tuple[
+    Optional["_SubjectType"],
+    Optional[Union["Path", "_PredicateType"]],
+    Optional["_ObjectType"],
+    Optional["_ContextType"],
+]
+_TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
+_TriplePathType = Tuple["_SubjectType", Path, "_ObjectType"]
+_TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
+
+_GraphT = TypeVar("_GraphT", bound="Graph")
+_ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
+_DatasetT = TypeVar("_DatasetT", bound="Dataset")
+
+# type error: Function "Type[Literal]" could always be true in boolean contex
+assert Literal  # type: ignore[truthy-function] # avoid warning
+# type error: Function "Type[Namespace]" could always be true in boolean context
+assert Namespace  # type: ignore[truthy-function] # avoid warning
+
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
+
+logger = logging.getLogger(__name__)
 
 
 __all__ = [
@@ -2283,7 +2283,7 @@ DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib:default")
 
 
 class Dataset(ConjunctiveGraph):
-    __doc__ = """
+    """
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
     - the primary term is graphs in the datasets and not contexts with quads,
     so there is a separate method to set/retrieve a graph in a dataset and

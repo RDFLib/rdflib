@@ -1,3 +1,10 @@
+"""
+Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
+
+http://www.w3.org/TR/sparql11-query/#sparqlQuery
+
+"""
+
 from __future__ import annotations
 
 import collections
@@ -37,13 +44,6 @@ from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 # ---------------------------
 # Some convenience methods
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
-
-"""
-Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
-
-http://www.w3.org/TR/sparql11-query/#sparqlQuery
-
-"""
 
 
 def OrderBy(p: CompValue, expr: List[CompValue]) -> CompValue:

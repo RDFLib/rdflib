@@ -1,12 +1,12 @@
-from __future__ import annotations
-
-__doc__ = """\
+"""\
 N-Triples Parser
 License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
 """
 
-import codecs  # noqa: I001
+from __future__ import annotations
+
+import codecs
 import re
 from io import BytesIO, StringIO, TextIOBase
 from typing import (
@@ -25,8 +25,7 @@ from rdflib.compat import _string_escape_map, decodeUnicodeEscape
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode as bNode
-from rdflib.term import Literal
-from rdflib.term import URIRef
+from rdflib.term import Literal, URIRef
 from rdflib.term import URIRef as URI  # noqa: N814
 
 if TYPE_CHECKING:
