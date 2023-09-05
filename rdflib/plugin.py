@@ -103,7 +103,7 @@ class Plugin(Generic[PluginT]):
 
 
 class PKGPlugin(Plugin[PluginT]):
-    def __init__(self, name: str, kind: Type[PluginT], ep: "EntryPoint"):
+    def __init__(self, name: str, kind: Type[PluginT], ep: EntryPoint):
         self.name = name
         self.kind = kind
         self.ep = ep
