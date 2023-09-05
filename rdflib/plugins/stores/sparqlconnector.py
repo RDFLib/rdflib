@@ -42,7 +42,7 @@ class SPARQLConnector:
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
         returnFormat: str = "xml",  # noqa: N803
-        method: te.Literal['GET', 'POST', 'POST_FORM'] = "GET",
+        method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
     ):
