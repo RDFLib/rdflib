@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from test.utils import eq_
 from test.utils.namespace import EGDC

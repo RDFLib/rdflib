@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from http.client import IncompleteRead, RemoteDisconnected
 from test.utils import helper

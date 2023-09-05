@@ -2,6 +2,8 @@
 Various utilities for working with IRIs and URIs.
 """
 
+from __future__ import annotations
+
 import email.utils
 import http.client
 import logging

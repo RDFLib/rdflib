@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from test.utils.namespace import EGDC
 
 from rdflib import Graph, Literal

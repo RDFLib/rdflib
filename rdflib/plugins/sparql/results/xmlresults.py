@@ -7,6 +7,8 @@ http://projects.bigasterisk.com/sparqlhttp/
 
 Authors: Drew Perttula, Gunnar Aastrand Grimnes
 """
+from __future__ import annotations
+
 import logging
 import xml.etree.ElementTree as xml_etree  # noqa: N813
 from io import BytesIO

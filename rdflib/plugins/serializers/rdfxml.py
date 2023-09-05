@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import xml.dom.minidom
 from typing import IO, Dict, Optional, Set
 from xml.sax.saxutils import escape, quoteattr

@@ -34,6 +34,8 @@ Example usage::
 # but we should consider streaming the output to deal with arbitrarily large
 # graphs.
 
+from __future__ import annotations
+
 import warnings
 from typing import IO, Optional
 

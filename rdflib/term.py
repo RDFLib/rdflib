@@ -20,6 +20,8 @@ underlying Graph:
 * Numerical Ranges
 
 """
+from __future__ import annotations
+
 import abc
 import re
 from fractions import Fraction

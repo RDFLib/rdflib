@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 from contextlib import contextmanager
 from dataclasses import dataclass

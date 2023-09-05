@@ -24,6 +24,7 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
+from __future__ import annotations
 
 from importlib.metadata import EntryPoint, entry_points
 from typing import (

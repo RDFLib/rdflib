@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import itertools
 import logging
 from test.data import TEST_DATA_DIR
