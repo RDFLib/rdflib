@@ -88,6 +88,8 @@ select = [
     "I", # isort
     "N", # pep8-naming
     "RUF100", # Unused noqa directive
+    "UP010", # Unnecessary __future__ import for target Python version
+    "FA", # flake8-future-annotations
 ]
 
 ignore = [

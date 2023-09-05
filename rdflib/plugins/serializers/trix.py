@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import IO, Optional
 
 from rdflib.graph import ConjunctiveGraph, Graph

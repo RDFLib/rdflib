@@ -1,6 +1,8 @@
 """
 PYTEST_DONT_REWRITE
 """
+from __future__ import annotations
+
 import enum
 import logging
 from dataclasses import dataclass, field

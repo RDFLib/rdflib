@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from contextlib import ExitStack
 from test.utils.outcome import ExceptionChecker, OutcomeChecker
 from typing import Any, Callable, NoReturn, Optional, Type, Union

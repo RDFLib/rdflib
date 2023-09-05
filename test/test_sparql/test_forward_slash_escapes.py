@@ -16,6 +16,7 @@ use case originated with attempts to interact with IANA Media Types as
 prefixed concepts, e.g. "application/json" somehow being
 "mime:application/json".
 """
+from __future__ import annotations
 
 from test.data import TEST_DATA_DIR
 from test.utils.graph import cached_graph

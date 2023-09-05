@@ -9,6 +9,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+from __future__ import annotations
 
 import logging
 import os

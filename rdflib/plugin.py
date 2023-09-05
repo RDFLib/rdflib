@@ -24,6 +24,7 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
+from __future__ import annotations
 
 from importlib.metadata import EntryPoint, entry_points
 from typing import (
@@ -102,7 +103,7 @@ class Plugin(Generic[PluginT]):
 
 
 class PKGPlugin(Plugin[PluginT]):
-    def __init__(self, name: str, kind: Type[PluginT], ep: "EntryPoint"):
+    def __init__(self, name: str, kind: Type[PluginT], ep: EntryPoint):
         self.name = name
         self.kind = kind
         self.ep = ep
