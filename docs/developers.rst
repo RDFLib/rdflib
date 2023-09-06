@@ -313,13 +313,13 @@ makes it easier to run validation on all supported python versions.
     tox -a
 
     # Run a specific environment.
-    tox -e py37 # default environment with py37
+    tox -e py38 # default environment with py37
     tox -e py39-extra # extra tests with py39
 
     # Override the test command.
     # the below command will run `pytest test/test_translate_algebra.py`
     # instead of the default pytest command.
-    tox -e py37,py39 -- pytest test/test_translate_algebra.py
+    tox -e py38,py39 -- pytest test/test_translate_algebra.py
 
 
 ``go-task`` and ``Taskfile.yml``
