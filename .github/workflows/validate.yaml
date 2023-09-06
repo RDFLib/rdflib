@@ -38,7 +38,7 @@ jobs:
           - python-version: "3.8"
             os: ubuntu-latest
             extensive-tests: true
-            PREPARATION: "sudo apt-get install -y libxml2-dev"
+            PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
             suffix: "-min"
             TOXENV_SUFFIX: "-min"
           - python-version: "3.9"
