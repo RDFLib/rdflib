@@ -78,7 +78,7 @@ EGNS_V2 = EGNS["v2"]
 def make_graph_store_bind_cases(
     store_type: Type[Store] = Memory,
     graph_type: Type[Graph] = Graph,
-) -> Iterable[Union[Tuple[Any, ...], "ParameterSet"]]:
+) -> Iterable[Union[Tuple[Any, ...], ParameterSet]]:
     """
     Generate test cases for test_graph_store_bind.
     """

@@ -150,7 +150,7 @@ class ServedBaseHTTPServerMock(
     def url(self) -> str:
         return f"http://{self.address_string}"
 
-    def __enter__(self) -> "ServedBaseHTTPServerMock":
+    def __enter__(self) -> ServedBaseHTTPServerMock:
         return self
 
     def __exit__(
@@ -158,6 +158,6 @@ class ServedBaseHTTPServerMock(
         __exc_type: Optional[Type[BaseException]],
         __exc_value: Optional[BaseException],
         __traceback: Optional[TracebackType],
-    ) -> "te.Literal[False]":
+    ) -> te.Literal[False]:
         self.stop()
         return False

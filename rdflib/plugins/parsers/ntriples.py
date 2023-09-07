@@ -142,7 +142,7 @@ class W3CNTriplesParser:
 
     def __init__(
         self,
-        sink: Optional[Union[DummySink, "NTGraphSink"]] = None,
+        sink: Optional[Union[DummySink, NTGraphSink]] = None,
         bnode_context: Optional[_BNodeContextType] = None,
     ):
         if bnode_context is not None:
@@ -150,7 +150,7 @@ class W3CNTriplesParser:
         else:
             self._bnode_ids = {}
 
-        self.sink: Union[DummySink, "NTGraphSink"]
+        self.sink: Union[DummySink, NTGraphSink]
         if sink is not None:
             self.sink = sink
         else:
@@ -164,7 +164,7 @@ class W3CNTriplesParser:
         self,
         f: Union[TextIO, IO[bytes], codecs.StreamReader],
         bnode_context: Optional[_BNodeContextType] = None,
-    ) -> Union[DummySink, "NTGraphSink"]:
+    ) -> Union[DummySink, NTGraphSink]:
         """
         Parse f as an N-Triples file.
 
@@ -284,7 +284,7 @@ class W3CNTriplesParser:
             raise ParseError("Unrecognised object type")
         return objt
 
-    def uriref(self) -> Union["te.Literal[False]", URI]:
+    def uriref(self) -> Union[te.Literal[False], URI]:
         if self.peek("<"):
             uri = self.eat(r_uriref).group(1)
             uri = unquote(uri)
@@ -294,7 +294,7 @@ class W3CNTriplesParser:
 
     def nodeid(
         self, bnode_context: Optional[_BNodeContextType] = None
-    ) -> Union["te.Literal[False]", bNode]:
+    ) -> Union[te.Literal[False], bNode]:
         if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
             if bnode_context is None:
@@ -312,7 +312,7 @@ class W3CNTriplesParser:
                 return bnode
         return False
 
-    def literal(self) -> Union["te.Literal[False]", Literal]:
+    def literal(self) -> Union[te.Literal[False], Literal]:
         if self.peek('"'):
             lit, lang, dtype = self.eat(r_literal).groups()
             if lang:
@@ -335,10 +335,10 @@ class W3CNTriplesParser:
 class NTGraphSink:
     __slots__ = ("g",)
 
-    def __init__(self, graph: "Graph"):
+    def __init__(self, graph: Graph):
         self.g = graph
 
-    def triple(self, s: "_SubjectType", p: "_PredicateType", o: "_ObjectType") -> None:
+    def triple(self, s: _SubjectType, p: _PredicateType, o: _ObjectType) -> None:
         self.g.add((s, p, o))
 
 
@@ -350,7 +350,7 @@ class NTParser(Parser):
     __slots__ = ()
 
     @classmethod
-    def parse(cls, source: InputSource, sink: "Graph", **kwargs: Any) -> None:
+    def parse(cls, source: InputSource, sink: Graph, **kwargs: Any) -> None:
         """
         Parse the NT format
 

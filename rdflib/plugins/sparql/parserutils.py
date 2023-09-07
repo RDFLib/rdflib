@@ -55,7 +55,7 @@ if TYPE_CHECKING:
 
 
 def value(
-    ctx: "FrozenBindings",
+    ctx: FrozenBindings,
     val: Any,
     variables: bool = False,
     errors: bool = False,

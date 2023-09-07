@@ -59,7 +59,7 @@ class Parser:
     def __init__(self):
         pass
 
-    def parse(self, source: "InputSource", sink: "Graph") -> None:
+    def parse(self, source: InputSource, sink: Graph) -> None:
         pass
 
 
@@ -199,7 +199,7 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: "Message", name) -> List[str]:
+    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()

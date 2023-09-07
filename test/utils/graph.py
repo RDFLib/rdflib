@@ -43,7 +43,7 @@ class GraphSource:
         return cls(path, format, public_id)
 
     @classmethod
-    def from_paths(cls, *paths: Path) -> Tuple["GraphSource", ...]:
+    def from_paths(cls, *paths: Path) -> Tuple[GraphSource, ...]:
         result = []
         for path in paths:
             result.append(cls.from_path(path))
@@ -52,7 +52,7 @@ class GraphSource:
     @classmethod
     def from_source(
         cls, source: GraphSourceType, public_id: Optional[str] = None
-    ) -> "GraphSource":
+    ) -> GraphSource:
         logging.debug("source(%s) = %r", id(source), source)
         if isinstance(source, Path):
             source = GraphSource.from_path(source)

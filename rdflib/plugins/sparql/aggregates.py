@@ -34,7 +34,7 @@ class Accumulator:
 
     def __init__(self, aggregation: CompValue):
         self.get_value: Callable[[], Optional[Literal]]
-        self.update: Callable[[FrozenBindings, "Aggregator"], None]
+        self.update: Callable[[FrozenBindings, Aggregator], None]
         self.var = aggregation.res
         self.expr = aggregation.vars
         if not aggregation.distinct:
@@ -68,7 +68,7 @@ class Counter(Accumulator):
             # type error: Cannot assign to a method
             self.eval_row = self.eval_full_row  # type: ignore[assignment]
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             val = self.eval_row(row)
         except NotBoundError:
@@ -121,7 +121,7 @@ class Sum(Accumulator):
         self.value = 0
         self.datatype: Optional[str] = None
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -149,7 +149,7 @@ class Average(Accumulator):
         self.sum = 0
         self.datatype: Optional[str] = None
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -194,7 +194,7 @@ class Extremum(Accumulator):
             # simply do not set if self.value is still None
             bindings[self.var] = Literal(self.value)
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             if self.value is None:
                 self.value = _eval(self.expr, row)
@@ -229,7 +229,7 @@ class Sample(Accumulator):
         # DISTINCT would not change the value
         self.use_row = self.dont_care
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             # set the value now
             aggregator.bindings[self.var] = _eval(self.expr, row)
@@ -255,7 +255,7 @@ class GroupConcat(Accumulator):
         else:
             self.separator = aggregation.separator
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             # skip UNDEF

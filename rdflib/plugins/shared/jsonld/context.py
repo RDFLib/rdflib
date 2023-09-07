@@ -110,13 +110,13 @@ class Context:
         )
         self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
 
-    def subcontext(self, source: Any, propagate: bool = True) -> "Context":
+    def subcontext(self, source: Any, propagate: bool = True) -> Context:
         # IMPROVE: to optimize, implement SubContext with parent fallback support
         parent = self.parent if self.propagate is False else self
         # type error: Item "None" of "Optional[Context]" has no attribute "_subcontext"
         return parent._subcontext(source, propagate)  # type: ignore[union-attr]
 
-    def _subcontext(self, source: Any, propagate: bool) -> "Context":
+    def _subcontext(self, source: Any, propagate: bool) -> Context:
         ctx = Context(version=self.version)
         ctx.propagate = propagate
         ctx.parent = self
@@ -142,12 +142,12 @@ class Context:
         self.active = False
         self.propagate = True
 
-    def get_context_for_term(self, term: Optional["Term"]) -> "Context":
+    def get_context_for_term(self, term: Optional[Term]) -> Context:
         if term and term.context is not UNDEF:
             return self._subcontext(term.context, propagate=True)
         return self
 
-    def get_context_for_type(self, node: Any) -> Optional["Context"]:
+    def get_context_for_type(self, node: Any) -> Optional[Context]:
         if self.version >= 1.1:
             rtype = self.get_type(node) if isinstance(node, dict) else None
             if not isinstance(rtype, list):

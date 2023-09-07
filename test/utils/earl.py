@@ -58,16 +58,16 @@ class EARLReport:
     This is a helper class for building an EARL report graph.
     """
 
-    reporter: "EARLReporter"
+    reporter: EARLReporter
     output_file: Path
-    assertions: List[Tuple[URIRef, Set["_TripleType"]]] = field(
+    assertions: List[Tuple[URIRef, Set[_TripleType]]] = field(
         init=False, default_factory=list, repr=False
     )
 
     def add_test_outcome(
         self, test_id: URIRef, outcome: URIRef, info: Optional[Literal] = None
     ):
-        triples: Set["_TripleType"] = set()
+        triples: Set[_TripleType] = set()
         assertion = BNode(f"{test_id}")
         triples.add((assertion, RDF.type, EARL.Assertion))
         triples.add((assertion, EARL.test, test_id))
@@ -228,7 +228,7 @@ class TestResult(enum.Enum):
 
 class TestReportHelper:
     @classmethod
-    def get_rdf_test_uri(cls, report: "TestReport") -> Optional[URIRef]:
+    def get_rdf_test_uri(cls, report: TestReport) -> Optional[URIRef]:
         return next(
             (
                 cast(URIRef, item[1])
@@ -239,7 +239,7 @@ class TestReportHelper:
         )
 
     @classmethod
-    def get_manifest_entry(cls, report: "TestReport") -> Optional[ManifestEntry]:
+    def get_manifest_entry(cls, report: TestReport) -> Optional[ManifestEntry]:
         return next(
             (
                 cast(ManifestEntry, item[1])
@@ -265,7 +265,7 @@ class EARLReporter:
     assertor_name: Optional[Literal] = None
     assertor_homepage: Optional[URIRef] = None
     add_datetime: bool = True
-    extra_triples: Set["_TripleType"] = field(default_factory=set)
+    extra_triples: Set[_TripleType] = field(default_factory=set)
     prefix_reports: Dict[str, EARLReport] = field(init=True, default_factory=dict)
     report: Optional[EARLReport] = field(init=True, default=None)
 
@@ -341,15 +341,15 @@ class EARLReporter:
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_makereport(
-        self, item: Item, call: "CallInfo[None]"
-    ) -> Generator[None, "_Result", None]:
+        self, item: Item, call: CallInfo[None]
+    ) -> Generator[None, _Result, None]:
         result = yield
 
-        report: "TestReport" = result.get_result()
+        report: TestReport = result.get_result()
 
         if not hasattr(item, "callspec"):
             return
-        callspec: "CallSpec2" = getattr(item, "callspec")
+        callspec: CallSpec2 = getattr(item, "callspec")
         rdf_test_uri = callspec.params.get("rdf_test_uri")
         if rdf_test_uri is not None:
             if isinstance(rdf_test_uri, str):
@@ -375,7 +375,7 @@ class EARLReporter:
             return manifest_entry.identifier
         return None
 
-    def append_result(self, report: "TestReport", test_result: TestResult) -> None:
+    def append_result(self, report: TestReport, test_result: TestResult) -> None:
         rdf_test_uri = TestReportHelper.get_rdf_test_uri(report)
         manifest_entry = TestReportHelper.get_manifest_entry(report)
         rdf_test_uri = self.get_rdf_test_uri(rdf_test_uri, manifest_entry)
@@ -398,7 +398,7 @@ class EARLReporter:
         else:
             earl_report.add_test_outcome(rdf_test_uri, EARL.cantTell)
 
-    def pytest_runtest_logreport(self, report: "TestReport") -> None:
+    def pytest_runtest_logreport(self, report: TestReport) -> None:
         logger.debug(
             "report: passed = %s, failed = %s, skipped = %s, when = %s, outcome = %s, keywords = %s",
             report.passed,
@@ -424,7 +424,7 @@ class EARLReporter:
             else:
                 self.append_result(report, TestResult.ERROR)
 
-    def pytest_sessionfinish(self, session: "Session"):
+    def pytest_sessionfinish(self, session: Session):
         if self.report is not None:
             self.report.write()
         for report in self.prefix_reports.values():
