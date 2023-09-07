@@ -88,8 +88,30 @@ select = [
     "I", # isort
     "N", # pep8-naming
     "RUF100", # Unused noqa directive
+    "UP001", # Remove unused imports
+    "UP003", # Use {} instead of type(...)
+    "UP004", # Class inherits from object
+    "UP005", # is deprecated, use
+    "UP009", # UTF-8 encoding declaration is unnecessary
     "UP010", # Unnecessary __future__ import for target Python version
+    "UP011", # Unnecessary parentheses to functools.lru_cache
+    "UP012", # Unnecessary call to encode as UTF-8
+    "UP017", # Use datetime.UTC alias
+    "UP018", # Unnecessary {literal_type} call (rewrite as a literal)
+    "UP019", # typing.Text is deprecated, use str
+    "UP020", # Use builtin open
+    "UP021", # universal_newlines is deprecated, use text
+    "UP022", # Sending stdout and stderr to PIPE is deprecated, use capture_output
+    "UP023", # cElementTree is deprecated, use ElementTree
+    "UP024", # Replace aliased errors with OSError
+    "UP025", # Remove unicode literals from strings
+    "UP026", # mock is deprecated, use unittest.mock
+    "UP029", # Unnecessary builtin import
+    "UP034", # Avoid extraneous parentheses
+    "UP035", # Import from {target} instead:
+    "UP036", # Version block is outdated for minimum Python version
     "UP037", # Remove quotes from type annotation
+    "UP039", # Unnecessary parentheses after class definition
     "FA", # flake8-future-annotations
 ]
 

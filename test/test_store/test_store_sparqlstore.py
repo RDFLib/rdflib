@@ -169,9 +169,7 @@ class TestSPARQLStoreFakeDBPedia:
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
@@ -259,9 +257,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
@@ -323,9 +319,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
@@ -351,7 +345,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         response = MockHTTPResponse(
             200,
             "OK",
-            """\
+            b"""\
         <sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
         <head>
         <variable name="s"/>
@@ -373,9 +367,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-nonblank</uri></binding>
         </result>
         </results>
-        </sparql>""".encode(
-                "utf8"
-            ),
+        </sparql>""",
             {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
         )
 
