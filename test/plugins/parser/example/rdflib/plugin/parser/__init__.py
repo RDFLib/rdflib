@@ -15,16 +15,16 @@ class ExampleParser(Parser):
     def __init__(self):
         super().__init__()
 
-    def parse(self, source: "InputSource", sink: "Graph"):
+    def parse(self, source: InputSource, sink: Graph):
         for triple in self.constant_output():
             sink.add(triple)
 
     @classmethod
-    def namespace(cls) -> "Namespace":
+    def namespace(cls) -> Namespace:
         return Namespace("example:rdflib:plugin:parser:")
 
     @classmethod
     def constant_output(
         cls,
-    ) -> Set[Tuple["URIRef", "URIRef", "URIRef"]]:
+    ) -> Set[Tuple[URIRef, URIRef, URIRef]]:
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}

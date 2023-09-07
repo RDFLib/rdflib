@@ -382,8 +382,8 @@ langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
 class SinkParser:
     def __init__(
         self,
-        store: "RDFSink",
-        openFormula: Optional["Formula"] = None,
+        store: RDFSink,
+        openFormula: Optional[Formula] = None,
         thisDoc: str = "",
         baseURI: Optional[str] = None,
         genPrefix: str = "",
@@ -474,7 +474,7 @@ class SinkParser:
     def formula(self) -> Optional[Formula]:
         return self._formula
 
-    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Optional["Formula"]:
+    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Optional[Formula]:
         return self.loadBuf(stream.read())  # Not ideal
 
     def loadBuf(self, buf: Union[str, bytes]) -> Optional[Formula]:
@@ -758,7 +758,7 @@ class SinkParser:
         # was: self._store.startDoc()
         self._store.startDoc(self._formula)
 
-    def endDoc(self) -> Optional["Formula"]:
+    def endDoc(self) -> Optional[Formula]:
         """Signal end of document and stop parsing. returns formula"""
         self._store.endDoc(self._formula)  # don't canonicalize yet
         return self._formula
@@ -1999,7 +1999,7 @@ class TurtleParser(Parser):
 
     def parse(
         self,
-        source: "InputSource",
+        source: InputSource,
         graph: Graph,
         encoding: Optional[str] = "utf-8",
         turtle: bool = True,

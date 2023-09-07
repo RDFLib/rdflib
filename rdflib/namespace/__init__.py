@@ -143,7 +143,7 @@ class Namespace(str):
     False
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
+    def __new__(cls, value: Union[str, bytes]) -> Namespace:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -201,7 +201,7 @@ class URIPattern(str):
 
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "URIPattern":
+    def __new__(cls, value: Union[str, bytes]) -> URIPattern:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -428,9 +428,7 @@ class NamespaceManager:
         >>>
     """
 
-    def __init__(
-        self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "rdflib"
-    ):
+    def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -482,7 +480,7 @@ class NamespaceManager:
             insert_trie(self.__trie, str(n))
 
     @property
-    def store(self) -> "Store":
+    def store(self) -> Store:
         return self.graph.store
 
     def qname(self, uri: str) -> str:

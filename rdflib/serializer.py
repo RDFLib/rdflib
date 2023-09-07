@@ -26,8 +26,8 @@ _StrT = TypeVar("_StrT", bound=str)
 
 
 class Serializer:
-    def __init__(self, store: "Graph"):
-        self.store: "Graph" = store
+    def __init__(self, store: Graph):
+        self.store: Graph = store
         self.encoding: str = "utf-8"
         self.base: Optional[str] = None
 

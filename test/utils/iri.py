@@ -102,7 +102,7 @@ class URIMapping:
     local: str
 
     @classmethod
-    def from_tuple(cls, value: URIMappingTupleType) -> "URIMapping":
+    def from_tuple(cls, value: URIMappingTupleType) -> URIMapping:
         return cls(value[0], value[1])
 
 
@@ -147,8 +147,8 @@ class URIMapper:
 
     @classmethod
     def from_mappings(
-        cls, *values: Union["URIMapping", "URIMappingTupleType"]
-    ) -> "URIMapper":
+        cls, *values: Union[URIMapping, URIMappingTupleType]
+    ) -> URIMapper:
         result = set()
         for value in values:
             if isinstance(value, tuple):

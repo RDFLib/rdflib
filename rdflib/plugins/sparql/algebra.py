@@ -207,12 +207,12 @@ def translatePath(p: URIRef) -> None:
 
 
 @overload
-def translatePath(p: CompValue) -> "Path":
+def translatePath(p: CompValue) -> Path:
     ...
 
 
 # type error: Missing return statement
-def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional["Path"]:  # type: ignore[return]
+def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type: ignore[return]
     """
     Translate PropertyPath expressions
     """

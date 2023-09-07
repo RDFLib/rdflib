@@ -86,7 +86,7 @@ class SPARQLConnector:
         query: str,
         default_graph: Optional[str] = None,
         named_graph: Optional[str] = None,
-    ) -> "Result":
+    ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 

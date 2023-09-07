@@ -29,7 +29,7 @@ class DestinationType(str, enum.Enum):
         self,
         tmp_path: Path,
         encoding: Optional[str] = None,
-        path_factory: Callable[[Path, "DestinationType", Optional[str]], Path] = (
+        path_factory: Callable[[Path, DestinationType, Optional[str]], Path] = (
             lambda tmp_path, type, encoding: tmp_path / f"file-{type.name}-{encoding}"
         ),
     ) -> Generator[Optional[DestRef], None, None]:

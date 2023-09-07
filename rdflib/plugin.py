@@ -74,7 +74,7 @@ rdflib_entry_points = {
     "rdf.plugins.updateprocessor": UpdateProcessor,
 }
 
-_plugins: Dict[Tuple[str, Type[Any]], "Plugin"] = {}
+_plugins: Dict[Tuple[str, Type[Any]], Plugin] = {}
 
 
 class PluginException(Error):  # noqa: N818
