@@ -254,11 +254,11 @@ def rdflib_to_networkx_graph(
 
 def rdflib_to_graphtool(
     graph: Graph,
-    v_prop_names: List[str] = [str("term")],
-    e_prop_names: List[str] = [str("term")],
-    transform_s=lambda s, p, o: {str("term"): s},
-    transform_p=lambda s, p, o: {str("term"): p},
-    transform_o=lambda s, p, o: {str("term"): o},
+    v_prop_names: List[str] = ["term"],
+    e_prop_names: List[str] = ["term"],
+    transform_s=lambda s, p, o: {"term": s},
+    transform_p=lambda s, p, o: {"term": p},
+    transform_o=lambda s, p, o: {"term": o},
 ):
     """Converts the given graph into a graph_tool.Graph().
 

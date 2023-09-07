@@ -82,7 +82,7 @@ def test_rdflib_to_graphtool():
     assert len(list(gt_util.find_edge(mdg, epterm, q))) == 1
 
     mdg = rdflib_to_graphtool(
-        g, e_prop_names=[str("name")], transform_p=lambda s, p, o: {str("name"): str(p)}
+        g, e_prop_names=["name"], transform_p=lambda s, p, o: {"name": str(p)}
     )
     epterm = mdg.edge_properties["name"]
     assert len(list(gt_util.find_edge(mdg, epterm, str(p)))) == 3

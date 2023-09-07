@@ -149,7 +149,7 @@ class FrozenDict(Mapping):
         return self._hash
 
     def project(self, vars: Container[Variable]) -> FrozenDict:
-        return FrozenDict((x for x in self.items() if x[0] in vars))
+        return FrozenDict(x for x in self.items() if x[0] in vars)
 
     def disjointDomain(self, other: t.Mapping[Identifier, Identifier]) -> bool:
         return not bool(set(self).intersection(other))
