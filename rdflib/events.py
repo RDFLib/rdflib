@@ -25,10 +25,7 @@ fired:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
-
-if TYPE_CHECKING:
-    import typing_extensions as te
+from typing import Any, Dict, Optional
 
 __all__ = ["Event", "Dispatcher"]
 
@@ -62,7 +59,7 @@ class Dispatcher:
 
     _dispatch_map: Optional[Dict[Any, Any]] = None
 
-    def set_map(self, amap: Dict[Any, Any]) -> te.Self:
+    def set_map(self, amap: Dict[Any, Any]):
         self._dispatch_map = amap
         return self
 
