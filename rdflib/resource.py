@@ -285,71 +285,80 @@ objects::
     Just an image
 
 """
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Optional, Union, overload
 
 from rdflib.namespace import RDF
 from rdflib.paths import Path
 from rdflib.term import BNode, Node, URIRef
 
+if TYPE_CHECKING:
+    from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
+
 __all__ = ["Resource"]
 
 
 class Resource:
-    def __init__(self, graph, subject):
+    def __init__(self, graph: Graph, subject: _SubjectType):
         self._graph = graph
         self._identifier = subject
 
     @property
-    def graph(self):
+    def graph(self) -> Graph:
         return self._graph
 
     @property
-    def identifier(self):
+    def identifier(self) -> _SubjectType:
         return self._identifier
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(Resource) ^ hash(self._graph) ^ hash(self._identifier)
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, Resource)
             and self._graph == other._graph
             and self._identifier == other._identifier
         )
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
-    def __lt__(self, other):
+    def __lt__(self, other: object) -> bool:
         if isinstance(other, Resource):
-            return self._identifier < other._identifier
+            # type error: Unsupported left operand type for < ("Node")
+            return self._identifier < other._identifier  # type: ignore[operator]
         else:
             return False
 
-    def __gt__(self, other):
+    def __gt__(self, other: object) -> bool:
         return not (self < other or self == other)
 
-    def __le__(self, other):
+    def __le__(self, other: object) -> bool:
         return self < other or self == other
 
-    def __ge__(self, other):
+    def __ge__(self, other: object) -> bool:
         return not self < other
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return str(self._identifier)
 
-    def add(self, p, o):
+    def add(self, p: _PredicateType, o: _ObjectType):
         if isinstance(o, Resource):
             o = o._identifier
 
         self._graph.add((self._identifier, p, o))
 
-    def remove(self, p, o=None):
+    def remove(
+        self, p: _PredicateType, o: Optional[Union[_ObjectType, Resource]] = None
+    ) -> None:
         if isinstance(o, Resource):
             o = o._identifier
 
         self._graph.remove((self._identifier, p, o))
 
-    def set(self, p, o):
+    def set(self, p: _PredicateType, o: _ObjectType) -> None:
         if isinstance(o, Resource):
             o = o._identifier
 
@@ -358,13 +367,13 @@ class Resource:
     def subjects(self, predicate=None):  # rev
         return self._resources(self._graph.subjects(predicate, self._identifier))
 
-    def predicates(self, o=None):
+    def predicates(self, o: Optional[Union[_ObjectType, Resource]] = None):
         if isinstance(o, Resource):
             o = o._identifier
 
         return self._resources(self._graph.predicates(self._identifier, o))
 
-    def objects(self, predicate=None):
+    def objects(self, predicate: Optional[_PredicateType] = None):
         return self._resources(self._graph.objects(self._identifier, predicate))
 
     def subject_predicates(self):
@@ -396,7 +405,8 @@ class Resource:
         )
 
     def qname(self):
-        return self._graph.qname(self._identifier)
+        # type error: Argument 1 to "qname" of "Graph" has incompatible type "Node"; expected "str"
+        return self._graph.qname(self._identifier)  # type: ignore[arg-type]
 
     def _resource_pairs(self, pairs):
         for s1, s2 in pairs:
@@ -410,7 +420,15 @@ class Resource:
         for node in nodes:
             yield self._cast(node)
 
-    def _cast(self, node):
+    @overload
+    def _cast(self, node: Union[BNode, URIRef]) -> Resource:
+        ...
+
+    @overload
+    def _cast(self, node: Any) -> Any:
+        ...
+
+    def _cast(self, node: Any) -> Any:
         if isinstance(node, (BNode, URIRef)):
             return self._new(node)
         else:
@@ -441,7 +459,8 @@ class Resource:
             else:
                 return (self.identifier, p, o) in self._graph
         elif isinstance(item, (Node, Path)):
-            return self.objects(item)
+            # type error: Argument 1 to "objects" of "Resource" has incompatible type "Union[Node, Path]"; expected "Optional[Node]"
+            return self.objects(item)  # type: ignore[arg-type]
         else:
             raise TypeError(
                 "You can only index a resource by a single rdflib term, a slice of rdflib terms, not %s (%s)"
@@ -454,8 +473,8 @@ class Resource:
     def _new(self, subject):
         return type(self)(self._graph, subject)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Resource(%s)" % self._identifier
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Resource(%s,%s)" % (self._graph, self._identifier)

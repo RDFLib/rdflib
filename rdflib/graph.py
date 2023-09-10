@@ -655,7 +655,8 @@ class Graph(Node):
                 return (s, p, o) in self
 
         elif isinstance(item, (Path, Node)):
-            return self.predicate_objects(item)
+            # type error: Argument 1 to "predicate_objects" of "Graph" has incompatible type "Union[Path, Node]"; expected "Optional[Node]"
+            return self.predicate_objects(item)  # type: ignore[arg-type]
 
         else:
             raise TypeError(

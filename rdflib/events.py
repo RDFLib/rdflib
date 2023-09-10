@@ -25,7 +25,10 @@ fired:
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+if TYPE_CHECKING:
+    import typing_extensions as te
 
 __all__ = ["Event", "Dispatcher"]
 
@@ -59,7 +62,7 @@ class Dispatcher:
 
     _dispatch_map: Optional[Dict[Any, Any]] = None
 
-    def set_map(self, amap: Dict[Any, Any]):
+    def set_map(self, amap: Dict[Any, Any]) -> te.Self:
         self._dispatch_map = amap
         return self
 
@@ -72,12 +75,14 @@ class Dispatcher:
         """
         if self._dispatch_map is None:
             self.set_map({})
-        lst = self._dispatch_map.get(event_type, None)
+        # type error: error: Item "None" of "Optional[Dict[Any, Any]]" has no attribute "get"
+        lst = self._dispatch_map.get(event_type, None)  # type: ignore[union-attr]
         if lst is None:
             lst = [handler]
         else:
             lst.append(handler)
-        self._dispatch_map[event_type] = lst
+        # type error: Unsupported target for indexed assignment ("Optional[Dict[Any, Any]]")
+        self._dispatch_map[event_type] = lst  # type: ignore[index]
         return self
 
     def dispatch(self, event):

@@ -4,7 +4,7 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -20,7 +20,7 @@ class TrigSerializer(TurtleSerializer):
     short_name = "trig"
     indentString = 4 * " "
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
+    def __init__(self, store: Graph):
         self.default_context: Optional[Node]
         if store.context_aware:
             if TYPE_CHECKING:

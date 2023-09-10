@@ -20,6 +20,7 @@ class ResponsibleGenerator:
         return next(self.gen)
 
 
+# NOTE: This does not seem to be tested and probably should inherit from Store.
 class ConcurrentStore:
     def __init__(self, store):
         self.store = store

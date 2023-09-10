@@ -242,7 +242,7 @@ class Collection:
         self.graph.add((end, RDF.rest, RDF.nil))
         return self
 
-    def __iadd__(self, other: Iterable[Node]):
+    def __iadd__(self, other: Iterable[Node]) -> Collection:
         end = self._end()
         self.graph.remove((end, RDF.rest, None))
 
@@ -257,7 +257,7 @@ class Collection:
         self.graph.add((end, RDF.rest, RDF.nil))
         return self
 
-    def clear(self):
+    def clear(self) -> Collection:
         container: Optional[Node] = self.uri
         graph = self.graph
         while container:
