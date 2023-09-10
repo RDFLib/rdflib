@@ -227,7 +227,8 @@ class Sample(Accumulator):
     def __init__(self, aggregation):
         super(Sample, self).__init__(aggregation)
         # DISTINCT would not change the value
-        self.use_row = self.dont_care
+        # type error: Cannot assign to a method
+        self.use_row = self.dont_care  # type: ignore[method-assign]
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:

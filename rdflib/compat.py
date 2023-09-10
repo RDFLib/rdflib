@@ -3,6 +3,8 @@ Utility functions and objects to ease Python 2/3 compatibility,
 and different versions of support libraries.
 """
 
+from __future__ import annotations
+
 import codecs
 import re
 import warnings
@@ -20,7 +22,8 @@ def ascii(stream):
 
 
 def bopen(*args, **kwargs):
-    return open(*args, mode="rb", **kwargs)
+    # type error: No overload variant of "open" matches argument types "Tuple[Any, ...]", "str", "Dict[str, Any]"
+    return open(*args, mode="rb", **kwargs)  # type: ignore[call-overload]
 
 
 long_type = int
