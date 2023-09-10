@@ -112,12 +112,14 @@ Python
 >>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
 
 """
+from __future__ import annotations
 
 import itertools
 import logging
+from typing import Iterable, Union
 
 from rdflib.collection import Collection
-from rdflib.graph import Graph
+from rdflib.graph import Graph, _ObjectType
 from rdflib.namespace import OWL, RDF, RDFS, XSD, Namespace, NamespaceManager
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 from rdflib.util import first
@@ -432,11 +434,11 @@ class Individual:
             self.graph.add((s, p, classOrIdentifier(other)))
         self.delete()
 
-    def _get_type(self):
+    def _get_type(self) -> Iterable[_ObjectType]:
         for _t in self.graph.objects(subject=self.identifier, predicate=RDF.type):
             yield _t
 
-    def _set_type(self, kind):
+    def _set_type(self, kind: Union[Individual, Identifier, Iterable[_ObjectType]]):
         if not kind:
             return
         if isinstance(kind, (Individual, Identifier)):
@@ -462,10 +464,10 @@ class Individual:
 
     type = property(_get_type, _set_type, _delete_type)
 
-    def _get_identifier(self):
+    def _get_identifier(self) -> Identifier:
         return self.__identifier
 
-    def _set_identifier(self, i):
+    def _set_identifier(self, i: Identifier):
         assert i
         if i != self.__identifier:
             oldstatements_out = [
@@ -492,11 +494,13 @@ class Individual:
 
     identifier = property(_get_identifier, _set_identifier)
 
-    def _get_sameAs(self):  # noqa: N802
+    def _get_sameAs(self) -> Iterable[_ObjectType]:  # noqa: N802
         for _t in self.graph.objects(subject=self.identifier, predicate=OWL.sameAs):
             yield _t
 
-    def _set_sameAs(self, term):  # noqa: N802
+    def _set_sameAs(  # noqa: N802
+        self, term: Union[Individual, Identifier, Iterable[_ObjectType]]
+    ):
         # if not kind:
         #     return
         if isinstance(term, (Individual, Identifier)):
@@ -1305,7 +1309,8 @@ class Class(AnnotatableTerms):
         # sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
         for _e in ec:
@@ -1331,7 +1336,8 @@ class Class(AnnotatableTerms):
         sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
         dc = list(self.disjointWith)
@@ -1340,7 +1346,9 @@ class Class(AnnotatableTerms):
             dc.append(c)
         klasskind = ""
         label = list(self.graph.objects(self.identifier, RDFS.label))
-        label = label and "(" + label[0] + ")" or ""
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "List[Node]")
+        # type error: Unsupported operand types for + ("str" and "Node")
+        label = label and "(" + label[0] + ")" or ""  # type: ignore[assignment, operator]
         if sc:
             if full:
                 scjoin = "\n                "
@@ -1421,7 +1429,9 @@ class OWLRDFListProxy:
             self._rdfList = Collection(
                 self.graph, BNode(), [classOrIdentifier(m) for m in members]
             )
-            self.graph.add((self.identifier, self._operator, self._rdfList.uri))
+            # type error: "OWLRDFListProxy" has no attribute "identifier"
+            # type error: "OWLRDFListProxy" has no attribute "_operator"
+            self.graph.add((self.identifier, self._operator, self._rdfList.uri))  # type: ignore[attr-defined]
 
     def __eq__(self, other):
         """
@@ -1439,7 +1449,8 @@ class OWLRDFListProxy:
                         return False
                     return True
         else:
-            return self.identifier == other.identifier
+            # type error: "OWLRDFListProxy" has no attribute "identifier"
+            return self.identifier == other.identifier  # type: ignore[attr-defined]
 
     # Redirect python list accessors to the underlying Collection instance
     def __len__(self):
@@ -1777,8 +1788,10 @@ class Restriction(Class):
         elif isinstance(restriction_range, Class):
             self.restrictionRange = classOrIdentifier(restriction_range)
         else:
-            self.restrictionRange = first(
-                self.graph.objects(self.identifier, restriction_type)
+            # error: Incompatible types in assignment (expression has type "Optional[Identifier]", variable has type "Identifier")
+            self.restrictionRange = first(  # type: ignore[assignment]
+                # type error: Argument 1 to "first" has incompatible type "Generator[Node, None, None]"; expected "Iterable[Identifier]"
+                self.graph.objects(self.identifier, restriction_type)  # type: ignore[arg-type]
             )
         if (
             self.identifier,
@@ -1834,7 +1847,8 @@ class Restriction(Class):
         if isinstance(other, Restriction):
             return (
                 other.onProperty == self.onProperty
-                and other.restriction_range == self.restrictionRange
+                # type error: "Restriction" has no attribute "restriction_range"; maybe "restrictionRange"?
+                and other.restriction_range == self.restrictionRange  # type: ignore[attr-defined]
             )
         else:
             return False
@@ -1999,9 +2013,11 @@ class Restriction(Class):
 
     def restrictionKind(self):  # noqa: N802
         for s, p, o in self.graph.triples_choices(
-            (self.identifier, self.restrictionKinds, None)
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, List[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+            (self.identifier, self.restrictionKinds, None)  # type: ignore[arg-type]
         ):
-            return p.split(str(OWL))[-1]
+            # type error: "Node" has no attribute "split"
+            return p.split(str(OWL))[-1]  # type: ignore[attr-defined]
         return None
 
     def __repr__(self):
@@ -2155,9 +2171,11 @@ class Property(AnnotatableTerms):
                 % (self.qname, first(self.comment) and first(self.comment) or "")
             )
             if first(self.inverseOf):
-                two_link_inverse = first(first(self.inverseOf).inverseOf)
+                # type error: Item "None" of "Optional[Any]" has no attribute "inverseOf"
+                two_link_inverse = first(first(self.inverseOf).inverseOf)  # type: ignore[union-attr]
                 if two_link_inverse and two_link_inverse.identifier == self.identifier:
-                    inverserepr = first(self.inverseOf).qname
+                    # type error: Item "None" of "Optional[Any]" has no attribute "qname"
+                    inverserepr = first(self.inverseOf).qname  # type: ignore[union-attr]
                 else:
                     inverserepr = repr(first(self.inverseOf))
                 rt.append(
@@ -2168,7 +2186,8 @@ class Property(AnnotatableTerms):
                     )
                 )
             for _s, _p, roletype in self.graph.triples_choices(
-                (
+                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, List[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
+                (  # type: ignore[arg-type]
                     self.identifier,
                     RDF.type,
                     [
@@ -2178,7 +2197,8 @@ class Property(AnnotatableTerms):
                     ],
                 )
             ):
-                rt.append(str(roletype.split(str(OWL))[-1]))
+                # type error: "Node" has no attribute "split"
+                rt.append(str(roletype.split(str(OWL))[-1]))  # type: ignore[attr-defined]
         else:
             rt.append(
                 "DatatypeProperty( %s %s"
@@ -2228,7 +2248,8 @@ class Property(AnnotatableTerms):
                 ]
             )
         )
-        rt = "\n".join([expr for expr in rt if expr])
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "List[str]")
+        rt = "\n".join([expr for expr in rt if expr])  # type: ignore[assignment]
         rt += "\n)"
         return rt
 

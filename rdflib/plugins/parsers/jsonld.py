@@ -122,7 +122,13 @@ def to_rdf(
     data: Any,
     dataset: Graph,
     base: Optional[str] = None,
-    context_data: Optional[bool] = None,
+    context_data: Optional[
+        Union[
+            List[Union[Dict[str, Any], str, None]],
+            Dict[str, Any],
+            str,
+        ]
+    ] = None,
     version: Optional[float] = None,
     generalized_rdf: bool = False,
     allow_lists_of_lists: Optional[bool] = None,

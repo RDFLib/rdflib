@@ -67,11 +67,15 @@ UNDEF = Defined(0)
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
+_ContextSourceType = Union[
+    List[Union[Dict[str, Any], str, None]], Dict[str, Any], str, None
+]
+
 
 class Context:
     def __init__(
         self,
-        source: Optional[Any] = None,
+        source: _ContextSourceType = None,
         base: Optional[str] = None,
         version: Optional[float] = None,
     ):
@@ -389,12 +393,14 @@ class Context:
 
     def load(
         self,
-        source: Optional[Union[List[Any], Any]],
+        source: _ContextSourceType,
         base: Optional[str] = None,
         referenced_contexts: Set[Any] = None,
     ):
         self.active = True
-        sources: List[Any] = []
+        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]] = []
+        # "Union[List[Union[Dict[str, Any], str]], List[Dict[str, Any]], List[str]]" : expression
+        # "Union[List[Dict[str, Any]], Dict[str, Any], List[str], str]" : variable
         source = source if isinstance(source, list) else [source]
         referenced_contexts = referenced_contexts or set()
         self._prep_sources(base, source, sources, referenced_contexts)
@@ -402,7 +408,8 @@ class Context:
             if source is None:
                 self._clear()
             else:
-                self._read_source(source, source_url, referenced_contexts)
+                # type error: Argument 1 to "_read_source" of "Context" has incompatible type "Union[Dict[str, Any], str]"; expected "Dict[str, Any]"
+                self._read_source(source, source_url, referenced_contexts)  # type: ignore[arg-type]
 
     def _accept_term(self, key: str) -> bool:
         if self.version < 1.1:
@@ -415,8 +422,8 @@ class Context:
     def _prep_sources(
         self,
         base: Optional[str],
-        inputs: List[Any],
-        sources: List[Any],
+        inputs: Union[List[Union[Dict[str, Any], str, None]], List[str]],
+        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]],
         referenced_contexts: Set[str],
         in_source_url: Optional[str] = None,
     ):
@@ -443,10 +450,12 @@ class Context:
             if isinstance(source, dict):
                 if CONTEXT in source:
                     source = source[CONTEXT]
-                    source = source if isinstance(source, list) else [source]
+                    # type ignore: Incompatible types in assignment (expression has type "List[Union[Dict[str, Any], str, None]]", variable has type "Union[Dict[str, Any], str, None]")
+                    source = source if isinstance(source, list) else [source]  # type: ignore[assignment]
 
             if isinstance(source, list):
-                self._prep_sources(
+                # type error: Statement is unreachable
+                self._prep_sources(  # type: ignore[unreachable]
                     new_base, source, sources, referenced_contexts, source_url
                 )
             else:

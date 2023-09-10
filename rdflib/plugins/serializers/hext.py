@@ -138,6 +138,7 @@ class HextuplesSerializer(Serializer):
         if context.identifier == "urn:x-rdflib:default":
             return ""
         elif context is not None and self.default_context is not None:
-            if context.identifier == self.default_context.identifier:
+            # type error: "Node" has no attribute "identifier"
+            if context.identifier == self.default_context.identifier:  # type: ignore[attr-defined]
                 return ""
         return context.identifier
