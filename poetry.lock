@@ -1084,18 +1084,18 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "diff-cover (>=7.5)", "p
 
 [[package]]
 name = "sphinxcontrib-apidoc"
-version = "0.3.0"
+version = "0.4.0"
 description = "A Sphinx extension for running 'sphinx-apidoc' on each build"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "sphinxcontrib-apidoc-0.3.0.tar.gz", hash = "sha256:729bf592cf7b7dd57c4c05794f732dc026127275d785c2a5494521fdde773fb9"},
-    {file = "sphinxcontrib_apidoc-0.3.0-py2.py3-none-any.whl", hash = "sha256:6671a46b2c6c5b0dca3d8a147849d159065e50443df79614f921b42fbd15cb09"},
+    {file = "sphinxcontrib-apidoc-0.4.0.tar.gz", hash = "sha256:fe59d15882472aa93c2737afbdea6bedb34ce35cbd34aa4947909f5df1500aad"},
+    {file = "sphinxcontrib_apidoc-0.4.0-py3-none-any.whl", hash = "sha256:18b9fb0cd4816758ec5f8be41c64f8924991dd40fd7b10e666ec9eed2800baff"},
 ]
 
 [package.dependencies]
 pbr = "*"
-Sphinx = ">=1.6.0"
+Sphinx = ">=5.0.0"
 
 [[package]]
 name = "sphinxcontrib-applehelp"
@@ -1271,4 +1271,4 @@ networkx = ["networkx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "ff0e14cf1c2bf6ed458cc15082144c567a1f5ee89a5c34d449bd389efc9ed97c"
+content-hash = "9a3b3593bf27eb52aadc9169721dca209f5bb0958b8a8f0ac7181e2fabbd2e22"
