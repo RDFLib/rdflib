@@ -45,6 +45,17 @@ def test_property_identifier() -> None:
     assert id == graph.identifier
 
 
+def test_property_setter_identifier() -> None:
+    """
+    The ``identifier`` property setter works correctly.
+    """
+    id = URIRef("example:a")
+    new_id = URIRef("example:b")
+    graph = Graph(identifier=id)
+    assert id == graph.identifier
+    graph.identifier = new_id
+    assert new_id == graph.identifier
+
 def test_property_namespace_manager() -> None:
     """
     The ``namespace_manager`` property works correctly.

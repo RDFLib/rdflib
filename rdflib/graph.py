@@ -463,6 +463,14 @@ class Graph(Node):
     def identifier(self) -> _ContextIdentifierType:
         return self.__identifier
 
+    @identifier.setter
+    def identifier(self, identifier: IdentifiedNode):
+        if not isinstance(identifier, IdentifiedNode):
+            raise TypeError(
+                "The identifier for a Graph must be an IdentifiedNode"
+            )
+        self.__identifier = identifier
+
     @property
     def namespace_manager(self) -> NamespaceManager:
         """
