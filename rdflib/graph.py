@@ -2530,6 +2530,13 @@ class Dataset(ConjunctiveGraph):
         """alias of graph for consistency"""
         return self.graph(g)
 
+    def add_named_graph(
+            self, named_graph_identifier: IdentifiedNode, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]
+    ) -> Graph:
+        new_g = self.graph(g)
+        new_g.identifier = named_graph_identifier
+        return new_g
+
     def remove_graph(
         self: _DatasetT, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]
     ) -> _DatasetT:
