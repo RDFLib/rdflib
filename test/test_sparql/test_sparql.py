@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import logging
 from test.utils import eq_
+from test.utils.namespace import EGDC
 from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
@@ -156,7 +159,7 @@ def test_sparql_update_with_bnode_serialize_parse():
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         raised = True
     assert not raised
 
@@ -344,9 +347,8 @@ def test_custom_eval() -> None:
     """
     SPARQL custom eval function works as expected.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
-    custom_function_result = eg["result"]
+    custom_function_uri = EGDC["function"]
+    custom_function_result = EGDC["result"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -417,8 +419,7 @@ def test_custom_eval_exception(
     Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
     query propagates to the caller.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
+    custom_function_uri = EGDC["function"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -845,11 +846,28 @@ def test_operator_exception(
             ],
             id="select-group-concat-optional-many",
         ),
+        pytest.param(
+            """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT * WHERE {
+                BIND(STRDT("<body>", rdf:HTML) as ?tag1) # incorrectly disappearing literal
+                BIND("<body>" as ?tag2)                  # correctly appearing literal
+            }
+            """,
+            [
+                {
+                    Variable("tag1"): Literal("<body>", datatype=RDF.HTML),
+                    Variable("tag2"): Literal("<body>"),
+                }
+            ],
+            id="select-bind-strdt-html",
+        ),
     ],
 )
 def test_queries(
     query_string: str,
-    expected_bindings: Sequence[Mapping["Variable", "Identifier"]],
+    expected_bindings: Sequence[Mapping[Variable, Identifier]],
     rdfs_graph: Graph,
 ) -> None:
     """

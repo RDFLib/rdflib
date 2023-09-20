@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A collection of utilities for canonicalizing and inspecting graphs.
 
@@ -73,7 +72,7 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
-from __future__ import absolute_import, division, print_function
+from __future__ import annotations
 
 # TODO:
 # - Doesn't handle quads.
@@ -118,7 +117,7 @@ def _total_seconds(td):
     return result
 
 
-class _runtime(object):  # noqa: N801
+class _runtime:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -137,7 +136,7 @@ class _runtime(object):  # noqa: N801
         return wrapped_f
 
 
-class _call_count(object):  # noqa: N801
+class _call_count:  # noqa: N801
     def __init__(self, label):
         self.label = label
 
@@ -252,7 +251,7 @@ class Color:
         self._hash_cache[color] = val
         return val
 
-    def distinguish(self, W: "Color", graph: Graph):
+    def distinguish(self, W: Color, graph: Graph):  # noqa: N803
         colors: Dict[str, Color] = {}
         for n in self.nodes:
             new_color: Tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
@@ -284,7 +283,7 @@ class Color:
 _HashT = Callable[[], "HASH"]
 
 
-class _TripleCanonicalizer(object):
+class _TripleCanonicalizer:
     def __init__(self, graph: Graph, hashfunc: _HashT = sha256):
         self.graph = graph
 
@@ -352,7 +351,7 @@ class _TripleCanonicalizer(object):
         sequence = sorted(sequence, key=lambda x: x.key(), reverse=True)
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
-            W = sequence.pop()
+            W = sequence.pop()  # noqa: N806
             for c in coloring[:]:
                 if len(c.nodes) > 1 or isinstance(c.nodes[0], BNode):
                     colors = sorted(
@@ -522,7 +521,7 @@ class _TripleCanonicalizer(object):
 
     def _canonicalize_bnodes(
         self,
-        triple: "_TripleType",
+        triple: _TripleType,
         labels: Dict[Node, str],
     ):
         for term in triple:

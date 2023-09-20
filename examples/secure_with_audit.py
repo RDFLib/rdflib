@@ -9,6 +9,7 @@ URLs that end with ``blocked.jsonld``.
 The code in the example then verifies that the audit hook is blocking access to
 URLs and files as expected.
 """
+from __future__ import annotations
 
 import logging
 import os
@@ -61,15 +62,8 @@ def main() -> None:
         ),
     )
 
-    if sys.version_info < (3, 8):
-        logging.warn("This example requires Python 3.8 or higher")
-        return None
-
     # Install the audit hook
-    #
-    # note on type error: This is needed because we are running mypy with python
-    # 3.7 mode, so mypy thinks the previous condition will always be true.
-    sys.addaudithook(audit_hook)  # type: ignore[unreachable]
+    sys.addaudithook(audit_hook)
 
     graph = Graph()
 

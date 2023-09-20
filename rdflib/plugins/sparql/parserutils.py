@@ -1,27 +1,3 @@
-from __future__ import annotations
-
-from collections import OrderedDict
-from types import MethodType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
-
-from pyparsing import ParseResults, TokenConverter, originalTextFor
-
-from rdflib import BNode, Variable
-from rdflib.term import Identifier
-
-if TYPE_CHECKING:
-    from rdflib.plugins.sparql.sparql import FrozenBindings
-
 """
 
 NOTE: PyParsing setResultName/__call__ provides a very similar solution to this
@@ -49,6 +25,29 @@ the resulting CompValue
 
 """
 
+from __future__ import annotations
+
+from collections import OrderedDict
+from types import MethodType
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
+
+from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
+
+from rdflib.term import BNode, Identifier, Variable
+
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
+
 
 # This is an alternative
 
@@ -56,7 +55,7 @@ the resulting CompValue
 
 
 def value(
-    ctx: "FrozenBindings",
+    ctx: FrozenBindings,
     val: Any,
     variables: bool = False,
     errors: bool = False,
@@ -100,7 +99,7 @@ def value(
         return val
 
 
-class ParamValue(object):
+class ParamValue:
     """
     The result of parsing a Param
     This just keeps the name/value
@@ -242,7 +241,7 @@ class Comp(TokenConverter):
     Returns CompValue / Expr objects - depending on whether evalFn is set.
     """
 
-    def __init__(self, name: str, expr):
+    def __init__(self, name: str, expr: ParserElement):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.setName(name)

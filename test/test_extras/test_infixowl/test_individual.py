@@ -1,4 +1,4 @@
-from test.data import context0, pizza
+from test.data import CONTEXT0, PIZZA
 
 import pytest
 
@@ -57,7 +57,7 @@ def test_individual_type_settergetter(graph):
         "\n"
     )
 
-    b.replace(Class(identifier=context0))
+    b.replace(Class(identifier=CONTEXT0))
 
     assert graph.serialize(format="ttl") == (
         "@prefix ns1: <urn:example:> .\n"
@@ -75,9 +75,9 @@ def test_individual_identity__settergetter(graph):
 
     b.identifier = URIRef("http://www.w3.org/2002/07/owl#Restriction")
 
-    b.identifier = pizza
+    b.identifier = PIZZA
 
-    assert b.identifier == pizza
+    assert b.identifier == PIZZA
 
     b.identifier = URIRef("http://www.w3.org/2002/07/owl#Restriction")
 
@@ -93,12 +93,12 @@ def test_individual_sameas__settergetter(graph):
 
     assert list(b.sameAs) == []
 
-    b.sameAs = pizza
+    b.sameAs = PIZZA
 
-    assert list(b.sameAs) == [pizza]
+    assert list(b.sameAs) == [PIZZA]
 
     bnodeid = BNode("harry")
 
-    b.sameAs = [pizza, bnodeid]
+    b.sameAs = [PIZZA, bnodeid]
 
-    assert list(b.sameAs) == [pizza, bnodeid]
+    assert list(b.sameAs) == [PIZZA, bnodeid]

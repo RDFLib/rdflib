@@ -6,7 +6,7 @@ from rdflib.term import BNode, URIRef
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
 
-class Container(object):
+class Container:
     """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers
 
     Basic usage, creating a ``Bag`` and adding to it::
@@ -260,7 +260,7 @@ class Seq(Container):
         return self
 
 
-class NoElementException(Exception):
+class NoElementException(Exception):  # noqa: N818
     def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 

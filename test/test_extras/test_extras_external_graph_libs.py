@@ -5,7 +5,7 @@ from rdflib import Graph, Literal, URIRef
 
 def test_rdflib_to_networkx():
     try:
-        import networkx
+        import networkx  # noqa: F401
     except ImportError:
         pytest.skip("couldn't find networkx")
     from rdflib.extras.external_graph_libs import (
@@ -15,7 +15,7 @@ def test_rdflib_to_networkx():
     )
 
     g = Graph()
-    a, b, l = URIRef("a"), URIRef("b"), Literal("l")
+    a, b, l = URIRef("a"), URIRef("b"), Literal("l")  # noqa: E741
     p, q = URIRef("p"), URIRef("q")
     edges = [(a, p, b), (a, q, b), (b, p, a), (b, p, l)]
     for t in edges:
@@ -62,7 +62,7 @@ def test_rdflib_to_graphtool():
     from rdflib.extras.external_graph_libs import rdflib_to_graphtool
 
     g = Graph()
-    a, b, l = URIRef("a"), URIRef("b"), Literal("l")
+    a, b, l = URIRef("a"), URIRef("b"), Literal("l")  # noqa: E741
     p, q = URIRef("p"), URIRef("q")
     edges = [(a, p, b), (a, q, b), (b, p, a), (b, p, l)]
     for t in edges:
@@ -74,7 +74,7 @@ def test_rdflib_to_graphtool():
     vpterm = mdg.vertex_properties["term"]
     va = gt_util.find_vertex(mdg, vpterm, a)[0]
     vb = gt_util.find_vertex(mdg, vpterm, b)[0]
-    vl = gt_util.find_vertex(mdg, vpterm, l)[0]
+    vl = gt_util.find_vertex(mdg, vpterm, l)[0]  # noqa: F841
     assert (va, vb) in [(e.source(), e.target()) for e in list(mdg.edges())]
 
     epterm = mdg.edge_properties["term"]
@@ -82,7 +82,7 @@ def test_rdflib_to_graphtool():
     assert len(list(gt_util.find_edge(mdg, epterm, q))) == 1
 
     mdg = rdflib_to_graphtool(
-        g, e_prop_names=[str("name")], transform_p=lambda s, p, o: {str("name"): str(p)}
+        g, e_prop_names=["name"], transform_p=lambda s, p, o: {"name": str(p)}
     )
     epterm = mdg.edge_properties["name"]
     assert len(list(gt_util.find_edge(mdg, epterm, str(p)))) == 3

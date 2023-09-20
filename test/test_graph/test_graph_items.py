@@ -22,7 +22,7 @@ def test_recursive_list_detection():
     for v in g.objects(None, RDF.value):
         try:
             list(g.items(v))
-        except ValueError as e:
+        except ValueError as e:  # noqa: F841
             pass
         else:
             assert False, "Expected detection of recursive rdf:rest reference"

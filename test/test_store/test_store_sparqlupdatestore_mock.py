@@ -1,15 +1,10 @@
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.namespace import EGDO
 from typing import ClassVar
 
-from rdflib import Namespace
 from rdflib.graph import ConjunctiveGraph
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
-
-EG = Namespace("http://example.org/")
 
 
 class TestSPARQLConnector:
@@ -40,7 +35,9 @@ class TestSPARQLConnector:
     def test_graph_update(self):
         graph = ConjunctiveGraph("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
-        update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
 
         self.httpmock.responses[MethodName.POST].append(
             MockHTTPResponse(
@@ -63,7 +60,9 @@ class TestSPARQLConnector:
     def test_update_encoding(self):
         graph = ConjunctiveGraph("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
-        update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
 
         self.httpmock.responses[MethodName.POST].append(
             MockHTTPResponse(
@@ -87,7 +86,9 @@ class TestSPARQLConnector:
         store = SPARQLUpdateStore(
             self.query_endpoint, self.update_endpoint, auth=("admin", "admin")
         )
-        update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
 
         for _ in range(2):
             # run it twice so we can pick up issues with order both ways.

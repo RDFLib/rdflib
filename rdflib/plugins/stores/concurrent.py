@@ -1,7 +1,7 @@
 from threading import Lock
 
 
-class ResponsibleGenerator(object):
+class ResponsibleGenerator:
     """A generator that will help clean up when it is done being used."""
 
     __slots__ = ["cleanup", "gen"]
@@ -20,7 +20,7 @@ class ResponsibleGenerator(object):
         return next(self.gen)
 
 
-class ConcurrentStore(object):
+class ConcurrentStore:
     def __init__(self, store):
         self.store = store
 
@@ -55,7 +55,7 @@ class ConcurrentStore(object):
         pending_removes = self.__pending_removes
         self.__begin_read()
         for s, p, o in ResponsibleGenerator(g, self.__end_read):
-            if not (s, p, o) in pending_removes:
+            if not (s, p, o) in pending_removes:  # noqa: E713
                 yield s, p, o
 
         for s, p, o in self.__pending_adds:

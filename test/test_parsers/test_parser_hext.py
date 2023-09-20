@@ -1,7 +1,5 @@
-import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
 from rdflib import ConjunctiveGraph, Dataset, Literal
 from rdflib.namespace import XSD
 
@@ -91,7 +89,7 @@ def test_small_file_multigraph_cg():
 def test_roundtrip():
     # these are some RDF files that HexT can round-trip since the have no
     # literals with no datatype declared:
-    TEST_DIR = Path(__file__).parent.absolute() / "nt"
+    TEST_DIR = Path(__file__).parent.absolute() / "nt"  # noqa: N806
     files_to_skip = {
         "paths-04.nt": "subject literal",
         "even_more_literals.nt": "JSON decoding error",
@@ -116,8 +114,8 @@ def test_roundtrip():
             try:
                 cg = ConjunctiveGraph().parse(f, format="nt")
                 # print(cg.serialize(format="n3"))
-            except:
-                print(f"Skipping: could not NT parse")
+            except Exception:
+                print("Skipping: could not NT parse")
                 skipped += 1
                 skip = True
             if not skip:

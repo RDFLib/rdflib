@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 __all__ = ["Collection"]
 
 
-class Collection(object):
-    __doc__ = """
+class Collection:
+    """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
@@ -82,8 +82,7 @@ class Collection(object):
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
           "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
-        # type error: "Node" has no attribute "n3"
-        return "( %s )" % (" ".join([i.n3() for i in self]))  # type: ignore[attr-defined]
+        return "( %s )" % (" ".join([i.n3() for i in self]))
 
     def _get_container(self, index: int) -> Optional[Node]:
         """Gets the first, rest holding node at index."""

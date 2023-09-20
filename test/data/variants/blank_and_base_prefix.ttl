@@ -1,0 +1,17 @@
+@base                   <http://example.org/blank_prefix> .
+@prefix :               <http://example.org/blank_prefix#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:            <http://www.w3.org/2002/07/owl#> .
+
+# A Turtle document using both a blank and a base prefix together with well
+# known prefixes.
+
+:subject0 a owl:Class;
+    rdfs:label "subject0"@en;
+    :predicate00 :object00;
+    .
+
+<#subject1> a owl:Class;
+    rdfs:label "subject0"@en;
+    <#predicate10> <#object10>;
+    .
