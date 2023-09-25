@@ -145,11 +145,11 @@ def join(here: str, there: str) -> str:
 
     We grok IRIs
 
-    >>> len(u'Andr\\xe9')
+    >>> len('Andr\\xe9')
     5
 
-    >>> join('http://example.org/', u'#Andr\\xe9')
-    u'http://example.org/#Andr\\xe9'
+    >>> join('http://example.org/', '#Andr\\xe9')
+    'http://example.org/#Andr\\xe9'
     """
 
     #    assert(here.find("#") < 0), \
