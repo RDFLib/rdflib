@@ -105,7 +105,7 @@ node, not a generator:
     # get any name of bob
     name = g.value(bob, FOAF.name)
     # get the one person that knows bob and raise an exception if more are found
-    mbox = g.value(predicate = FOAF.name, object=bob, any=False)
+    person = g.value(predicate=FOAF.knows, object=bob, any=False)
 
 
 :class:`~rdflib.graph.Graph` methods for accessing triples

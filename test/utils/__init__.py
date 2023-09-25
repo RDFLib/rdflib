@@ -5,7 +5,7 @@ The tests for test utilities should be placed inside `test.utils.test`
 (``test/utils/tests/``).
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import enum
 import pprint
@@ -19,6 +19,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -35,7 +36,7 @@ import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
-from rdflib.term import Identifier, Literal, Node, URIRef
+from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
 
 PluginT = TypeVar("PluginT")
 
@@ -258,6 +259,23 @@ class GraphHelper:
             assert lhs_set != rhs_set
 
     @classmethod
+    def assert_collection_graphs_equal(
+        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph
+    ) -> None:
+        """
+        Assert that all graphs in the provided collections are equal,
+        comparing named graphs with identically named graphs.
+        """
+        cls.assert_triple_sets_equals(lhs.default_context, rhs.default_context)
+        graph_names = cls.non_default_graph_names(lhs) | cls.non_default_graph_names(
+            rhs
+        )
+        for identifier in graph_names:
+            cls.assert_triple_sets_equals(
+                lhs.get_context(identifier), rhs.get_context(identifier)
+            )
+
+    @classmethod
     def assert_sets_equals(
         cls,
         lhs: Union[Graph, GHTripleSet, GHQuadSet],
@@ -349,6 +367,10 @@ class GraphHelper:
                     else:
                         raise AssertionError("BNode labelled graphs not supported")
                 elif isinstance(context.identifier, URIRef):
+                    if len(context) == 0:
+                        # If a context has no triples it does not exist in a
+                        # meaningful way.
+                        continue
                     result[context.identifier] = context
                 else:
                     raise AssertionError(
@@ -376,6 +398,21 @@ class GraphHelper:
                 continue
             if object.datatype in datatypes:
                 object._datatype = None
+
+    @classmethod
+    def non_default_graph_names(
+        cls, container: ConjunctiveGraph
+    ) -> Set[IdentifiedNode]:
+        return set(context.identifier for context in container.contexts()) - {
+            container.default_context.identifier
+        }
+
+    @classmethod
+    def non_default_graphs(cls, container: ConjunctiveGraph) -> Sequence[Graph]:
+        result = []
+        for name in cls.non_default_graph_names(container):
+            result.append(container.get_context(name))
+        return result
 
 
 def eq_(lhs, rhs, msg=None):
@@ -449,6 +486,26 @@ def ensure_suffix(value: str, suffix: str) -> str:
     if not value.endswith(suffix):
         value = f"{value}{suffix}"
     return value
+
+
+def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[str]]:
+    """
+    Returns an ID function which will try each of the provided ID
+    functions in order.
+
+    :param idfns: The ID functions to try.
+    :return: An ID function which will try each of the provided ID
+        functions.
+    """
+
+    def _idfns(value: Any) -> Optional[str]:
+        for idfn in idfns:
+            result = idfn(value)
+            if result is not None:
+                return result
+        return None
+
+    return _idfns
 
 
 from test.utils.iri import file_uri_to_path  # noqa: E402

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from os import chdir, environ, getcwd
 from os import path as p
@@ -72,7 +74,7 @@ def read_manifest(skiptests):
             else:
                 inputpath = test.get("input")
                 expectedpath = test.get("expect")
-                expected_error = test.get("expect")  # TODO: verify error
+                expected_error = test.get("expect")  # TODO: verify error  # noqa: F841
                 context = test.get("context", False)
                 options = test.get("option") or {}
                 if expectedpath:

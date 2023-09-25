@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # rdflib documentation build configuration file, created by
 # sphinx-quickstart on Fri May 15 15:03:54 2009.
 #
@@ -11,6 +9,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+from __future__ import annotations
 
 import logging
 import os
@@ -55,6 +54,7 @@ apidoc_output_dir = "apidocs"
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_default_options = {"special-members": True}
+autodoc_inherit_docstrings = True
 
 # https://github.com/tox-dev/sphinx-autodoc-typehints
 always_document_param_types = True
@@ -255,7 +255,7 @@ htmlhelp_basename = "rdflibdoc"
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.8", None),
 }
 
 html_experimental_html5_writer = True
@@ -266,6 +266,7 @@ suppress_warnings = [
     # This is here to prevent:
     #  "WARNING: more than one target found for cross-reference"
     "ref.python",
+    "autosectionlabel.*",
 ]
 
 sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
@@ -273,64 +274,16 @@ sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
 
 nitpicky = True
 
-if sphinx_version < (5,):
-    # Being nitpicky on Sphinx 4.x causes lots of problems.
-    logging.warning(
-        "disabling nitpicky because sphinx is too old: %s", sphinx.__version__
-    )
-    nitpicky = False
-
 nitpick_ignore = [
     ("py:class", "urllib.response.addinfourl"),
-    ("py:data", "typing.Literal"),
-    ("py:class", "typing.IO[bytes]"),
-    ("py:class", "http.client.HTTPMessage"),
     ("py:class", "importlib.metadata.EntryPoint"),
     ("py:class", "xml.dom.minidom.Document"),
     ("py:class", "xml.dom.minidom.DocumentFragment"),
     ("py:class", "isodate.duration.Duration"),
-    # sphinx-autodoc-typehints has some issues with TypeVars.
-    # https://github.com/tox-dev/sphinx-autodoc-typehints/issues/39
-    ("py:class", "rdflib.plugin.PluginT"),
-    # sphinx-autodoc-typehints does not like generic parmaeters in inheritance it seems
-    ("py:class", "Identifier"),
-    # These are related to pyparsing.
-    ("py:class", "Diagnostics"),
-    ("py:class", "ParseAction"),
-    ("py:class", "ParseFailAction"),
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
-    # These are related to BerkeleyDB
-    ("py:class", "db.DBEnv"),
+    ("py:class", "pyparsing.core.ParserElement"),
 ]
-
-if sys.version_info < (3, 9):
-    nitpick_ignore.extend(
-        [
-            ("py:class", "_ContextIdentifierType"),
-            ("py:class", "_ContextType"),
-            ("py:class", "_GraphT"),
-            ("py:class", "_NamespaceSetString"),
-            ("py:class", "_ObjectType"),
-            ("py:class", "_PredicateType"),
-            ("py:class", "_QuadSelectorType"),
-            ("py:class", "_SubjectType"),
-            ("py:class", "_TripleOrPathTripleType"),
-            ("py:class", "_TripleOrQuadPathPatternType"),
-            ("py:class", "_TripleOrQuadPatternType"),
-            ("py:class", "_TriplePathPatternType"),
-            ("py:class", "_TriplePathType"),
-            ("py:class", "_TriplePatternType"),
-            ("py:class", "_TripleSelectorType"),
-            ("py:class", "_TripleType"),
-            ("py:class", "_TripleOrTriplePathType"),
-            ("py:class", "TextIO"),
-            ("py:class", "Message"),
-        ]
-    )
-
-if sys.version_info < (3, 8):
-    nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])
 
 
 def autodoc_skip_member_handler(

@@ -51,7 +51,7 @@ def evalLoad(ctx: QueryContext, u: CompValue) -> None:
         assert isinstance(u.iri, URIRef)
 
     if u.graphiri:
-        ctx.load(u.iri, default=False, publicID=u.graphiri)
+        ctx.load(u.iri, default=False, into=u.graphiri)
     else:
         ctx.load(u.iri, default=True)
 

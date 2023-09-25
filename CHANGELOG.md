@@ -1,3 +1,434 @@
+## 2023-08-02 RELEASE 7.0.0
+
+This is a major release with relatively slight breaking changes, new
+features and bug fixes.
+
+The most notable breaking change relates to how RDFLib handles the
+`publicID` parameter of the `Graph.parse` and `Dataset.parse` methods.
+Most users should not be affected by this change.
+
+Instructions on adapting existing code to the breaking changes can be
+found in the upgrade guide from Version 6 to Version 7 which should be
+available [here](https://rdflib.readthedocs.io/en/stable/).
+
+It is likely that the next couple of RDFLib releases will all be major
+versions, mostly because there are some more shortcomings of RDFLib's
+public interface that should be addressed.
+
+If you use RDFLib, please consider keeping an eye on
+[discussions](https://github.com/RDFLib/rdflib/discussions?discussions_q=label%3A%22feedback+wanted%22),
+issues and pull-requests labelled with ["feedback
+wanted"](https://github.com/RDFLib/rdflib/labels/feedback%20wanted).
+
+A big thanks to everyone who contributed to this release.
+
+## BREAKING CHANGE: don't use `publicID` as the name for the default graph. (#2406)
+
+Commit [4b96e9d](https://github.com/RDFLib/rdflib/commit/4b96e9d), closes [#2406](https://github.com/RDFLib/rdflib/issues/2406).
+
+
+When parsing data into a `ConjunctiveGraph` or `Dataset`, the triples in the
+default graphs in the sources were loaded into a graph named `publicID`.
+
+This behaviour has been changed, and now the triples from the default graph in
+source RDF documents will be loaded into `ConjunctiveGraph.default_context` or
+`Dataset.default_context`.
+
+The `publicID` parameter to `ConjunctiveGraph.parse` and `Dataset.parse`
+constructors will now only be used as the base URI for relative URI resolution.
+
+- Fixes https://github.com/RDFLib/rdflib/issues/2404
+- Fixes https://github.com/RDFLib/rdflib/issues/2375
+- Fixes https://github.com/RDFLib/rdflib/issues/436
+- Fixes https://github.com/RDFLib/rdflib/issues/1804
+
+## BREAKING CHANGE: drop support for python 3.7 (#2436)
+
+Commit [1e5f56b](https://github.com/RDFLib/rdflib/commit/1e5f56b), closes [#2436](https://github.com/RDFLib/rdflib/issues/2436).
+
+
+Python 3.7 will be end-of-life on the 27th of June 2023 and the next release of
+RDFLib will be a new major version.
+
+This changes the minimum supported version of Python to 3.8.1 as some of the
+dependencies we use are not too fond of python 3.8.0. This change also removes
+all accommodations for older python versions.
+
+## feat: add `curie` method to `NamespaceManager` (#2365)
+
+Commit [f200722](https://github.com/RDFLib/rdflib/commit/f200722), closes [#2365](https://github.com/RDFLib/rdflib/issues/2365).
+
+
+Added a `curie` method to `NamespaceManager`, which can be used to generate a
+CURIE from a URI.
+
+Other changes:
+
+- Fixed `NamespaceManager.expand_curie` to work with CURIES that have blank
+  prefixes (e.g. `:something`), which are valid according to [CURIE Syntax
+  1.0](https://www.w3.org/TR/2010/NOTE-curie-20101216/).
+- Added a test to confirm <https://github.com/RDFLib/rdflib/issues/2077>.
+
+Fixes <https://github.com/RDFLib/rdflib/issues/2348>.
+
+
+## feat: add optional `target_graph` argument to `Graph.cbd` and use it  for DESCRIBE queries (#2322)
+
+Commit [81d13d4](https://github.com/RDFLib/rdflib/commit/81d13d4), closes [#2322](https://github.com/RDFLib/rdflib/issues/2322).
+
+
+Add optional keyword only `target_graph` argument to `rdflib.graph.Graph.cbd` and use this new argument in `evalDescribeQuery`.
+
+This makes it possible to compute a concise bounded description without creating a new graph to hold the result, and also without potentially having to copy it to another final graph.
+
+## feat: Don't generate prefixes for unknown URIs (#2467)
+
+Commit [bd797ac](https://github.com/RDFLib/rdflib/commit/bd797ac).
+
+
+When serializing RDF graphs, URIs with unknown prefixes were assigned a
+namespace like `ns1:`. While the result would be smaller files, it does
+result in output that is not as readable.
+
+This change removes this automatic assignment of namespace prefixes.
+
+This is somewhat of an aesthetic choice, eventually we should have more
+flexibility in this regard so that users can exercise more control over
+how URIs in unknown namespaces are handled.
+
+With this change, users can still manually create namespace prefixes for
+URIs in unknown namespaces, but before it there was no way to avoid the
+undesired behaviour, so this seems like the better default.
+
+
+## feat: Longturtle improvements (#2500)
+
+Commit [5ee8bd7](https://github.com/RDFLib/rdflib/commit/5ee8bd7), closes [#2500](https://github.com/RDFLib/rdflib/issues/2500).
+
+Improved the output of the longturtle serializer.
+
+## fix: SPARQL count with optionals (#2448)
+
+Commit [46ff6cf](https://github.com/RDFLib/rdflib/commit/46ff6cf), closes [#2448](https://github.com/RDFLib/rdflib/issues/2448).
+
+
+Change SPARQL count aggregate to ignore optional that are unbound
+instead of raising an exception when they are encountered.
+
+## fix: `GROUP_CONCAT` handling of empty separator (issue) (#2474)
+
+Commit [e94c252](https://github.com/RDFLib/rdflib/commit/e94c252), closes [#2474](https://github.com/RDFLib/rdflib/issues/2474).
+
+
+`GROUP_CONCAT` was handling an empty separator (i.e. `""`) incorrectly,
+it would handle it as if the separator were not set, so essentially it was
+treated as a single space (i.e. `" "`).
+
+This change fixes it so that an empty separator with `GROUP_CONCAT`
+results in a value with nothing between concatenated values.
+
+
+Fixes <https://github.com/RDFLib/rdflib/issues/2473>
+
+
+## fix: add `NORMALIZE_LITERALS` to `rdflib.__all__` (#2489)
+
+Commit [6981c28](https://github.com/RDFLib/rdflib/commit/6981c28), closes [#2489](https://github.com/RDFLib/rdflib/issues/2489).
+
+
+This gets Sphinx to generate documentation for it, and also clearly
+indicates that it can be used from outside the module.
+
+- Fixes <https://github.com/RDFLib/rdflib/issues/2488>
+
+
+## fix: bugs with `rdflib.extras.infixowl` (#2390)
+
+Commit [cd0b442](https://github.com/RDFLib/rdflib/commit/cd0b442), closes [#2390](https://github.com/RDFLib/rdflib/issues/2390).
+
+
+Fix the following issues in `rdflib.extras.infixowl`:
+- getting and setting of max cardinality only considered identifiers and not other RDF terms.
+- The return value of `manchesterSyntax` was wrong for some cases.
+- The way that `BooleanClass` was generating its string representation (i.e. `BooleanClass.__repr__`) was wrong for some cases.
+
+Other changes:
+- Added an example for using infixowl to create an ontology.
+- Updated infixowl tests.
+- Updated infixowl documentation.
+
+This code is based on code from:
+- <https://github.com/RDFLib/rdflib/pull/2307>
+
+
+## fix: correct imports and `__all__` (#2340)
+
+Commit [7df77cd](https://github.com/RDFLib/rdflib/commit/7df77cd), closes [#2340](https://github.com/RDFLib/rdflib/issues/2340).
+
+
+Disable
+[`implicit_reexport`](https://mypy.readthedocs.io/en/stable/config_file.html#confval-implicit_reexport)
+and eliminate all errors reported by mypy after this.
+
+This helps ensure that import statements import from the right module and that
+the `__all__` variable is correct.
+
+
+## fix: dbpedia URL to use https instead of http (#2444)
+
+Commit [ef25896](https://github.com/RDFLib/rdflib/commit/ef25896), closes [#2444](https://github.com/RDFLib/rdflib/issues/2444).
+
+
+The URL for the service keyword had the http address for the dbpedia endpoint, which no longer works. Changing it to https as that works.
+
+
+## fix: eliminate bare `except:` (#2350)
+
+Commit [4ea1436](https://github.com/RDFLib/rdflib/commit/4ea1436), closes [#2350](https://github.com/RDFLib/rdflib/issues/2350).
+
+
+Replace bare `except:` with `except Exception`, there are some cases where it
+can be narrowed further, but this is already an improvement over the current
+situation.
+
+This is somewhat pursuant to eliminating
+[flakeheaven](https://github.com/flakeheaven/flakeheaven), as it no longer
+supports the latest version of flake8
+[[ref](https://github.com/flakeheaven/flakeheaven/issues/132)]. But it also is
+just the right thing to do as bare exceptions can cause problems.
+
+
+## fix: eliminate file intermediary in translate algebra (#2267)
+
+Commit [ae6b859](https://github.com/RDFLib/rdflib/commit/ae6b859), closes [#2267](https://github.com/RDFLib/rdflib/issues/2267).
+
+
+Previously, `rdflib.plugins.sparql.algebra.translateAlgebra()` maintained state via a file, with a fixed filename `query.txt`.  With this change, use of that file is eliminated; state is now maintained in memory so that multiple concurrent `translateAlgebra()` calls, for example, should no longer interfere with each other.
+
+The change is accomplished with no change to the client interface.  Basically, the actual functionality has been moved into a class, which is instantiated and used as needed (once per call to `algrebra.translateAlgebra()`).
+
+
+## fix: eliminate some mutable default arguments in SPARQL code (#2301)
+
+Commit [89982f8](https://github.com/RDFLib/rdflib/commit/89982f8), closes [#2301](https://github.com/RDFLib/rdflib/issues/2301).
+
+
+This change eliminates some situations where a mutable object (i.e., a dictionary) was used as the default value for functions in the `rdflib.plugins.sparql.processor` module and related code. It replaces these situations with `typing.Optinal` that defaults to None, and is then handled within the function. Luckily, some of the code that the SPARQL Processor relied on already had this style, meaning not a lot of changes had to be made.
+
+This change also makes a small update to the logic in the SPARQL Processor's query function to simplify the if/else statement. This better mirrors the implementation in the `UpdateProcessor`.
+
+
+## fix: formatting of SequencePath and AlternativePath (#2504)
+
+Commit [9c73581](https://github.com/RDFLib/rdflib/commit/9c73581), closes [#2504](https://github.com/RDFLib/rdflib/issues/2504).
+
+
+These path types were formatted without parentheses even if they
+contained multiple elements, resulting in string representations that
+did not accurately represent the path.
+
+This change fixes the formatting so that the string representations are
+enclosed in parentheses when necessary.
+
+- Fixes <https://github.com/RDFLib/rdflib/issues/2503>.
+
+
+## fix: handling of `rdf:HTML` literals (#2490)
+
+Commit [588286b](https://github.com/RDFLib/rdflib/commit/588286b), closes [#2490](https://github.com/RDFLib/rdflib/issues/2490).
+
+
+Previously, without `html5lib` installed, literals with`rdf:HTML`
+datatypes were treated as
+[ill-typed](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal),
+even if they were not ill-typed.
+
+With this change, if `html5lib` is not installed, literals with the
+`rdf:HTML` datatype will not be treated as ill-typed, and will have
+`Null` as their `ill_typed` attribute value, which means that it is
+unknown whether they are ill-typed or not.
+
+This change also fixes the mapping from `rdf:HTML` literal values to
+lexical forms.
+
+Other changes:
+
+- Add tests for `rdflib.NORMALIZE_LITERALS` to ensure it behaves
+  correctly.
+
+Related issues:
+
+- Fixes <https://github.com/RDFLib/rdflib/issues/2475>
+
+
+## fix: HTTP 308 Permanent Redirect status code handling (#2389)
+
+Commit [e0b3152](https://github.com/RDFLib/rdflib/commit/e0b3152), closes [#2389](https://github.com/RDFLib/rdflib/issues/2389) [/docs.python.org/3.11/whatsnew/changelog.html#id128](https://github.com//docs.python.org/3.11/whatsnew/changelog.html/issues/id128).
+
+
+Change the handling of HTTP status code 308 to behave more like
+`urllib.request.HTTPRedirectHandler`, most critically, the new 308 handling will
+create a new `urllib.request.Request` object with the new URL, which will
+prevent state from being carried over from the original request.
+
+One case where this is important is when the domain name changes, for example,
+when the original URL is `http://www.w3.org/ns/adms.ttl` and the redirect URL is
+`https://uri.semic.eu/w3c/ns/adms.ttl`. With the previous behaviour, the redirect
+would contain a `Host` header with the value `www.w3.org` instead of
+`uri.semic.eu` because the `Host` header is placed in
+`Request.unredirected_hdrs` and takes precedence over the `Host` header in
+`Request.headers`.
+
+Other changes:
+- Only handle HTTP status code 308 on Python versions before 3.11 as Python 3.11
+
+  will handle 308 by default [[ref](https://docs.python.org/3.11/whatsnew/changelog.html#id128)].
+- Move code which uses `http://www.w3.org/ns/adms.ttl` and
+  `http://www.w3.org/ns/adms.rdf` out of `test_guess_format_for_parse` into a
+  separate parameterized test, which instead uses the embedded http server.
+
+  This allows the test to fully control the `Content-Type` header in the
+  response instead of relying on the value that the server is sending.
+
+  This is needed because the server is sending `Content-Type: text/plain` for
+  the `adms.ttl` file, which is not a valid RDF format, and the test is
+  expecting `Content-Type: text/turtle`.
+
+Fixes:
+- <https://github.com/RDFLib/rdflib/issues/2382>.
+
+## fix: lexical-to-value mapping of rdf:HTML literals (#2483)
+
+Commit [53aaf02](https://github.com/RDFLib/rdflib/commit/53aaf02), closes [#2483](https://github.com/RDFLib/rdflib/issues/2483).
+
+
+Use strict mode when parsing `rdf:HTML` literals. This ensures that when
+[lexical-to-value
+mapping](https://www.w3.org/TR/rdf11-concepts/#dfn-lexical-to-value-mapping)
+(i.e. parsing) of a literal with `rdf:HTML` data type occurs, a value will
+only be assigned if the lexical form is a valid HTML5 fragment.
+Otherwise, i.e. for invalid fragments, no value will be associated with
+the literal
+[[ref](https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal)] and
+the literal will be ill-typed.
+
+
+## fix: TriG handling of GRAPH keyword without a graph ID (#2469)
+
+Commit [8c9608b](https://github.com/RDFLib/rdflib/commit/8c9608b), closes [#2469](https://github.com/RDFLib/rdflib/issues/2469) [/www.w3.org/2013/TriGTests/#trig-graph-bad-01](https://github.com//www.w3.org/2013/TriGTests//issues/trig-graph-bad-01).
+
+
+The RDF 1.1 TriG grammar only allows the `GRAPH` keyword if it
+is followed by a graph identifier
+[[ref](https://www.w3.org/TR/trig/#grammar-production-block)].
+
+This change enforces this rule so that the
+
+<http://www.w3.org/2013/TriGTests/#trig-graph-bad-01> test passes.
+
+## fix: TriG parser error handling for nested graphs (#2468)
+
+Commit [afea615](https://github.com/RDFLib/rdflib/commit/afea615), closes [#2468](https://github.com/RDFLib/rdflib/issues/2468) [/www.w3.org/2013/TriGTests/#trig-graph-bad-07](https://github.com//www.w3.org/2013/TriGTests//issues/trig-graph-bad-07).
+
+
+Raise an error when nested graphs occur in TriG.
+
+With this change, the <http://www.w3.org/2013/TriGTests/#trig-graph-bad-07> test passes.
+
+## fix: typing errors from dmypy (#2451)
+
+Commit [10f9ebe](https://github.com/RDFLib/rdflib/commit/10f9ebe), closes [#2451](https://github.com/RDFLib/rdflib/issues/2451).
+
+
+Fix various typing errors that are reported when running with `dmypy`,
+the mypy daemon.
+
+Also add a task for running `dmypy` to the Taskfile that can be selected
+as the default mypy variant by setting the `MYPY_VARIANT` environment
+variable to `dmypy`.
+
+
+## fix: widen `Graph.__contains__` type-hints to accept `Path` values (#2323)
+
+Commit [1c45ec4](https://github.com/RDFLib/rdflib/commit/1c45ec4), closes [#2323](https://github.com/RDFLib/rdflib/issues/2323).
+
+
+Change the type-hints for `Graph.__contains__` to also accept `Path`
+values as the parameter is passed to the `Graph.triples` function,
+which accepts `Path` values.
+
+
+## docs: Add CITATION.cff file (#2502)
+
+Commit [ad5c0e1](https://github.com/RDFLib/rdflib/commit/ad5c0e1), closes [#2502](https://github.com/RDFLib/rdflib/issues/2502).
+
+
+The `CITATION.cff` file provides release metadata which is used by
+Zenodo and other software and systems.
+
+This file's content is best-effort, and pull requests with improvements
+are welcome and will affect future releases.
+
+
+## docs: add guidelines for breaking changes (#2402)
+
+Commit [cad367e](https://github.com/RDFLib/rdflib/commit/cad367e), closes [#2402](https://github.com/RDFLib/rdflib/issues/2402).
+
+
+Add guidelines on how breaking changes should be approached.
+
+The guidelines take a very pragmatic approach with known downsides, but this
+seems like the best compromise given the current situation.
+
+For prior discussion on this point see:
+- https://github.com/RDFLib/rdflib/discussions/2395
+- https://github.com/RDFLib/rdflib/pull/2108
+- https://github.com/RDFLib/rdflib/discussions/1841
+
+
+## docs: fix comment that doesn't describe behavior (#2443)
+
+Commit [4e42d10](https://github.com/RDFLib/rdflib/commit/4e42d10), closes [#2443](https://github.com/RDFLib/rdflib/issues/2443).
+
+
+Comment refers to a person that knows bob and the code would return a name,
+but this would only work if the triple `person foaf:name bob .` is part of the dataset
+
+As this is a very uncommon way to model a `foaf:knows` the code was
+adjusted to match the description.
+
+## docs: recommend making an issue before making an enhancement (#2391)
+
+Commit [63b082c](https://github.com/RDFLib/rdflib/commit/63b082c), closes [#2391](https://github.com/RDFLib/rdflib/issues/2391).
+
+
+Suggest that contributors first make an issue to get in principle
+agreement for pull requests before making the pull request.
+
+Enhancements can be controversial, and we may reject the enhancement
+sometimes, even if the code is good, as it may just not be deemed
+important enough to increase the maintenance burden of RDFLib.
+
+Other changes:
+- Updated the checklist in the pull request template to be more accurate to
+  current practice.
+- Improved grammar and writing in the pull request template, contribution guide
+  and developers guide.
+
+
+## docs: remove unicode string form in rdflib/term.py (#2384)
+
+Commit [ddcc4eb](https://github.com/RDFLib/rdflib/commit/ddcc4eb), closes [#2384](https://github.com/RDFLib/rdflib/issues/2384).
+
+
+The use of Unicode literals is an artefact of Python 2 and is incorrect in Python 3.
+
+Doctests for docstrings using Unicode literals only pass because [ALLOW_UNICODE](https://docs.pytest.org/en/7.1.x/how-to/doctest.html#using-doctest-options)
+is set, but this option should be disabled as RDFLib does not support Python 2 any more.
+
+This partially resolves <https://github.com/RDFLib/rdflib/issues/2378>.
+
+
 # 2023-03-26 RELEASE 6.3.2
 
 ## fix: `ROUND`, `ENCODE_FOR_URI` and `SECONDS` SPARQL functions (#2314)

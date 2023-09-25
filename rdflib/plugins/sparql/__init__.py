@@ -4,7 +4,7 @@ SPARQL implementation for RDFLib
 .. versionadded:: 4.0
 """
 
-import sys
+from importlib.metadata import entry_points
 from typing import TYPE_CHECKING
 
 SPARQL_LOAD_GRAPHS = True
@@ -33,17 +33,13 @@ NotImplementedError if they cannot handle a certain part
 PLUGIN_ENTRY_POINT = "rdf.plugins.sparqleval"
 
 
-from . import operators, parser, parserutils  # noqa: E402
-from .processor import prepareQuery, prepareUpdate, processUpdate  # noqa: F401, E402
+from . import operators, parser, parserutils
+from .processor import prepareQuery, prepareUpdate, processUpdate
 
 assert parser
 assert operators
 assert parserutils
 
-if sys.version_info < (3, 8):
-    from importlib_metadata import entry_points
-else:
-    from importlib.metadata import entry_points
 
 all_entry_points = entry_points()
 if hasattr(all_entry_points, "select"):

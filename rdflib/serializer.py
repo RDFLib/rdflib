@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 Serializer plugin interface.
 
@@ -12,6 +10,8 @@ See also rdflib.plugin
 
 """
 
+from __future__ import annotations
+
 from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
 
 from rdflib.term import URIRef
@@ -19,14 +19,15 @@ from rdflib.term import URIRef
 if TYPE_CHECKING:
     from rdflib.graph import Graph
 
+
 __all__ = ["Serializer"]
 
 _StrT = TypeVar("_StrT", bound=str)
 
 
 class Serializer:
-    def __init__(self, store: "Graph"):
-        self.store: "Graph" = store
+    def __init__(self, store: Graph):
+        self.store: Graph = store
         self.encoding: str = "utf-8"
         self.base: Optional[str] = None
 

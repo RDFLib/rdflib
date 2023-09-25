@@ -1,5 +1,14 @@
+from __future__ import annotations
+
 import codecs
+from typing import IO, TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple
 from xml.sax.saxutils import escape, quoteattr
+
+from rdflib.term import URIRef
+
+if TYPE_CHECKING:
+    from rdflib.namespace import Namespace, NamespaceManager
+
 
 __all__ = ["XMLWriter"]
 
@@ -7,28 +16,38 @@ ESCAPE_ENTITIES = {"\r": "&#13;"}
 
 
 class XMLWriter:
-    def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns=None):
+    def __init__(
+        self,
+        stream: IO[bytes],
+        namespace_manager: NamespaceManager,
+        encoding: Optional[str] = None,
+        decl: int = 1,
+        extra_ns: Optional[Dict[str, Namespace]] = None,
+    ):
         encoding = encoding or "utf-8"
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
-        self.stream = stream = stream_writer(stream)
+        # NOTE on type ignores: this is mainly because the variable is being re-used.
+        # type error: Incompatible types in assignment (expression has type "StreamWriter", variable has type "IO[bytes]")
+        self.stream = stream = stream_writer(stream)  # type: ignore[assignment]
         if decl:
-            stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
-        self.element_stack = []
+            # type error: No overload variant of "write" of "IO" matches argument type "str"
+            stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)  # type: ignore[call-overload]
+        self.element_stack: List[str] = []
         self.nm = namespace_manager
         self.extra_ns = extra_ns or {}
         self.closed = True
 
-    def __get_indent(self):
+    def __get_indent(self) -> str:
         return "  " * len(self.element_stack)
 
     indent = property(__get_indent)
 
-    def __close_start_tag(self):
+    def __close_start_tag(self) -> None:
         if not self.closed:  # TODO:
             self.closed = True
             self.stream.write(">")
 
-    def push(self, uri):
+    def push(self, uri: str) -> None:
         self.__close_start_tag()
         write = self.stream.write
         write("\n")
@@ -38,7 +57,7 @@ class XMLWriter:
         self.closed = False
         self.parent = False
 
-    def pop(self, uri=None):
+    def pop(self, uri: Optional[str] = None) -> None:
         top = self.element_stack.pop()
         if uri:
             assert uri == top
@@ -53,7 +72,9 @@ class XMLWriter:
             write("</%s>" % self.qname(top))
         self.parent = True
 
-    def element(self, uri, content, attributes={}):
+    def element(
+        self, uri: str, content: str, attributes: Dict[URIRef, str] = {}
+    ) -> None:
         """Utility method for adding a complete simple element"""
         self.push(uri)
         for k, v in attributes.items():
@@ -61,7 +82,7 @@ class XMLWriter:
         self.text(content)
         self.pop()
 
-    def namespaces(self, namespaces=None):
+    def namespaces(self, namespaces: Iterable[Tuple[str, str]] = None) -> None:
         if not namespaces:
             namespaces = self.nm.namespaces()
 
@@ -80,11 +101,11 @@ class XMLWriter:
             else:
                 write('  xmlns="%s"\n' % namespace)
 
-    def attribute(self, uri, value):
+    def attribute(self, uri: str, value: str) -> None:
         write = self.stream.write
         write(" %s=%s" % (self.qname(uri), quoteattr(value)))
 
-    def text(self, text):
+    def text(self, text: str) -> None:
         self.__close_start_tag()
         if "<" in text and ">" in text and "]]>" not in text:
             self.stream.write("<![CDATA[")
@@ -93,7 +114,7 @@ class XMLWriter:
         else:
             self.stream.write(escape(text, ESCAPE_ENTITIES))
 
-    def qname(self, uri):
+    def qname(self, uri: str) -> str:
         """Compute qname for a uri using our extra namespaces,
         or the given namespace manager"""
 

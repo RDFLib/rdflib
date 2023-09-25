@@ -17,4 +17,4 @@ def test_issue492():
     g = rdflib.Graph()
 
     # raised a TypeError: unorderable types: SequencePath() < SequencePath()
-    result = g.query(query)
+    result = g.query(query)  # noqa: F841
