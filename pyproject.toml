@@ -198,7 +198,6 @@ addopts = [
    "--doctest-glob=docs/*.rst",
    "--strict-markers",
 ]
-doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
     # The below warning is a consequence of how pytest doctest detects mocks and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. pytest_mock_example_attribute_that_shouldnt_exist is not defined in namespace .*:UserWarning",
