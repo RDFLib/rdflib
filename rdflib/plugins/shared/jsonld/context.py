@@ -66,7 +66,7 @@ class Defined(int):
 UNDEF = Defined(0)
 
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
-URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
+URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@", "_")
 
 
 class Context:
