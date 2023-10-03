@@ -22,6 +22,7 @@
 # mypy: check_untyped_defs, disallow_untyped_decorators
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
+from __future__ import annotations
 
 from typing import Set, Tuple
 

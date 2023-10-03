@@ -1,8 +1,8 @@
 # RDFLib Contributing Guide
 
 Thank you for considering contributing to RDFLib. This project has no formal
-funding or full-time maintainers and relies entirely on independent contributors
-to keep it alive and relevant.
+funding or full-time maintainers, and relies entirely on independent
+contributors to keep it alive and relevant.
 
 ## Ways to contribute
 
@@ -40,13 +40,20 @@ Some ways in which you can contribute to RDFLib are:
   [![Gitter](https://badges.gitter.im/RDFLib/rdflib.svg)](https://gitter.im/RDFLib/rdflib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Matrix](https://img.shields.io/matrix/rdflib:matrix.org?label=matrix.org%20chat)](https://matrix.to/#/#RDFLib_rdflib:gitter.im)
 - Participate in GitHub discussions:
   [![GitHub Discussions](https://img.shields.io/github/discussions/RDFLib/rdflib)](https://github.com/RDFLib/rdflib/discussions)
-- Fix flake8 failures.
+- Fix linting failures (see ruff settings in `pyproject.toml` and `#
+  noqa:` directives in the codebase).
 
 ## Pull Requests
 
 Contributions that involve changes to the RDFLib repository have to be made with
 pull requests and should follow the [RDFLib developers guide](./developers.rst).
 
+For changes that add features or affect the public API of RDFLib, it is
+recommended to first open an issue to discuss the change before starting to work
+on it. That way you can get feedback on the design of the feature before
+spending time on it.
+
 ## Code of Conduct
 
-All contributions to the project should be consistent with the [code of conduct](./CODE_OF_CONDUCT.md) adopted by RDFLib.
+All contributions to the project should be consistent with the [code of
+conduct](./CODE_OF_CONDUCT.md) adopted by RDFLib.

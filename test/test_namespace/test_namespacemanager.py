@@ -1,24 +1,15 @@
 from __future__ import annotations
 
 import logging
-import re
-import sys
 from contextlib import ExitStack
-from pathlib import Path
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
 
+from rdflib import Graph
 from rdflib.graph import Dataset
-from rdflib.term import URIRef
-
-if TYPE_CHECKING:
-    from rdflib._type_checking import _NamespaceSetString
-
-
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
-from rdflib import Graph  # noqa: E402
-from rdflib.namespace import (  # noqa: E402
+from rdflib.namespace import (
     _NAMESPACE_PREFIXES_CORE,
     _NAMESPACE_PREFIXES_RDFLIB,
     OWL,
@@ -26,6 +17,10 @@ from rdflib.namespace import (  # noqa: E402
     Namespace,
     NamespaceManager,
 )
+from rdflib.term import URIRef
+
+if TYPE_CHECKING:
+    from rdflib._type_checking import _NamespaceSetString
 
 
 def test_core_prefixes_bound():
@@ -373,7 +368,7 @@ def test_compute_qname(
     manager_prefixes: Optional[Mapping[str, Namespace]],
     graph_prefixes: Optional[Mapping[str, Namespace]],
     store_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+    expected_result: OutcomePrimitive[Tuple[str, URIRef, str]],
 ) -> None:
     """
     :param uri: argument to compute_qname()
@@ -402,25 +397,13 @@ def test_compute_qname(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            if isinstance(expected_result, Exception):
-                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+        checker = OutcomeChecker[Tuple[str, URIRef, str]].from_primitive(
+            expected_result
+        )
+        with checker.context():
             actual_result = nm.compute_qname(uri, generate)
             logging.debug("actual_result = %s", actual_result)
-        if catcher is not None:
-            assert catcher is not None
-            assert catcher.value is not None
-            if isinstance(expected_result, Exception):
-                assert re.match(expected_result.args[0], f"{catcher.value}")
-        else:
-            assert isinstance(expected_result, tuple)
-            assert isinstance(actual_result, tuple)
-            assert actual_result == expected_result
+            checker.check(actual_result)
 
     check()
     # Run a second time to check caching
@@ -451,7 +434,7 @@ def test_compute_qname_strict(
     generate: bool,
     bind_namespaces: _NamespaceSetString,
     additional_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: Union[Tuple[str, URIRef, str], Type[Exception], Exception],
+    expected_result: OutcomePrimitive[Tuple[str, str, str]],
 ) -> None:
     graph = Graph(bind_namespaces=bind_namespaces)
     nm = graph.namespace_manager
@@ -461,26 +444,120 @@ def test_compute_qname_strict(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            if isinstance(expected_result, Exception):
-                catcher = xstack.enter_context(pytest.raises(type(expected_result)))
+        checker = OutcomeChecker[Tuple[str, str, str]].from_primitive(expected_result)
+        with checker.context():
             actual_result = nm.compute_qname_strict(uri, generate)
             logging.debug("actual_result = %s", actual_result)
-        if catcher is not None:
-            assert catcher is not None
-            assert catcher.value is not None
-            if isinstance(expected_result, Exception):
-                assert re.match(expected_result.args[0], f"{catcher.value}")
-        else:
-            assert isinstance(expected_result, tuple)
-            assert isinstance(actual_result, tuple)
-            assert actual_result == expected_result
+            checker.check(actual_result)
 
     check()
     # Run a second time to check caching
     check()
+
+
+def make_test_nsm() -> NamespaceManager:
+    namespaces = [
+        ("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+        ("", "http://example.org/"),
+        (
+            # Because of <https://github.com/RDFLib/rdflib/issues/2077> this
+            # will have no effect on the namespace manager.
+            "eg",
+            "http://example.org/",
+        ),
+    ]
+    graph = Graph(bind_namespaces="none")
+    for prefix, namespace in namespaces:
+        graph.bind(prefix, namespace, override=False)
+
+    return graph.namespace_manager
+
+
+@pytest.fixture(scope="session")
+def test_nsm_session() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.fixture(scope="function")
+def test_nsm_function() -> NamespaceManager:
+    return make_test_nsm()
+
+
+@pytest.mark.parametrize(
+    ["curie", "expected_result"],
+    [
+        ("rdf:type", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+        (":foo", "http://example.org/foo"),
+        ("too_small", ExceptionChecker(ValueError, "Malformed curie argument")),
+        (
+            "egdo:bar",
+            ExceptionChecker(ValueError, 'Prefix "egdo" not bound to any namespace'),
+        ),
+        pytest.param(
+            "eg:foo",
+            "http://example.org/foo",
+            marks=pytest.mark.xfail(
+                raises=ValueError,
+                reason="This is failing because of https://github.com/RDFLib/rdflib/issues/2077",
+            ),
+        ),
+    ],
+)
+def test_expand_curie(
+    test_nsm_session: NamespaceManager,
+    curie: str,
+    expected_result: OutcomePrimitive[str],
+) -> None:
+    nsm = test_nsm_session
+    if isinstance(expected_result, str):
+        expected_result = URIRef(expected_result)
+    checker = OutcomeChecker[str].from_primitive(expected_result)
+    with checker.context():
+        actual_result = nsm.expand_curie(curie)
+        checker.check(actual_result)
+
+
+@pytest.mark.parametrize(
+    ["uri", "generate", "expected_result"],
+    [
+        ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", None, "rdf:type"),
+        ("http://example.org/foo", None, ":foo"),
+        ("http://example.com/a#chair", None, "ns1:chair"),
+        ("http://example.com/a#chair", True, "ns1:chair"),
+        (
+            "http://example.com/a#chair",
+            False,
+            ExceptionChecker(
+                KeyError, "No known prefix for http://example.com/a# and generate=False"
+            ),
+        ),
+        ("http://example.com/b#chair", None, "ns1:chair"),
+        ("http://example.com/c", None, "ns1:c"),
+        ("", None, ExceptionChecker(ValueError, "Can't split ''")),
+        (
+            "http://example.com/",
+            None,
+            ExceptionChecker(ValueError, "Can't split 'http://example.com/'"),
+        ),
+    ],
+)
+def test_generate_curie(
+    test_nsm_function: NamespaceManager,
+    uri: str,
+    generate: Optional[bool],
+    expected_result: OutcomePrimitive[str],
+) -> None:
+    """
+    .. note::
+
+        This is using the function scoped nsm fixture because curie has side
+        effects and will modify the namespace manager.
+    """
+    nsm = test_nsm_function
+    checker = OutcomeChecker[str].from_primitive(expected_result)
+    with checker.context():
+        if generate is None:
+            actual_result = nsm.curie(uri)
+        else:
+            actual_result = nsm.curie(uri, generate=generate)
+        checker.check(actual_result)

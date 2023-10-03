@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 from uuid import uuid4
 
@@ -26,8 +25,7 @@ def is_ncname(value):
     >>> assert is_ncname('') == False
     >>> assert is_ncname('999') == False
     >>> assert is_ncname('x') == True
-    >>> assert is_ncname(u'x') == True
-    >>> assert is_ncname(u'Michèle') == True
+    >>> assert is_ncname('Michèle') == True
 
     However, vanilla uuid4s are not necessarily NCNames:
 

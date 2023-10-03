@@ -8,17 +8,17 @@ from rdflib.term import Literal
 
 class TestDuration:
     def test_to_python_timedelta(self):
-        l = Literal("P4DT5H6M7S", datatype=XSD.dayTimeDuration)
+        l = Literal("P4DT5H6M7S", datatype=XSD.dayTimeDuration)  # noqa: E741
         assert isinstance(l.toPython(), timedelta)
         assert l.toPython() == parse_duration("P4DT5H6M7S")
 
     def test_to_python_ym_duration(self):
-        l = Literal("P1Y2M", datatype=XSD.yearMonthDuration)
+        l = Literal("P1Y2M", datatype=XSD.yearMonthDuration)  # noqa: E741
         assert isinstance(l.toPython(), Duration)
         assert l.toPython() == parse_duration("P1Y2M")
 
     def test_to_python_ymdhms_duration(self):
-        l = Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration)
+        l = Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration)  # noqa: E741
         assert isinstance(l.toPython(), Duration)
         assert l.toPython() == parse_duration("P1Y2M4DT5H6M7S")
 

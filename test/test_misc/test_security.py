@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import http.client
 import itertools
@@ -6,21 +8,19 @@ from contextlib import ExitStack
 from pathlib import Path
 from test.utils.audit import AuditHookDispatcher
 from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.namespace import EGDO
 from test.utils.urlopen import context_urlopener
 from textwrap import dedent
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Tuple
 from urllib.request import HTTPHandler, OpenerDirector, Request
 
 import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib import Graph
-from rdflib.namespace import Namespace
 
 from ..utils import GraphHelper
 from ..utils.path import ctx_chdir
-
-EGNS = Namespace("http://example.org/")
 
 JSONLD_CONTEXT = """
 {
@@ -30,7 +30,7 @@ JSONLD_CONTEXT = """
 }
 """
 
-EXPECTED_GRAPH = Graph().add((EGNS.subject, EGNS.predicate, EGNS.object))
+EXPECTED_GRAPH = Graph().add((EGDO.subject, EGDO.predicate, EGDO.object))
 
 
 def test_default(tmp_path: Path) -> None:
@@ -74,17 +74,12 @@ def generate_make_block_file_cases() -> Iterable[ParameterSet]:
 @pytest.mark.parametrize(["defence", "uri_kind"], generate_make_block_file_cases())
 def test_block_file(
     tmp_path: Path,
-    audit_hook_dispatcher: Optional[AuditHookDispatcher],
+    audit_hook_dispatcher: AuditHookDispatcher,
     http_file_server: HTTPFileServer,
     exit_stack: ExitStack,
     defence: Defence,
     uri_kind: URIKind,
 ) -> None:
-    if audit_hook_dispatcher is None:
-        pytest.skip(
-            "audit hook dispatcher not available, likely because of Python version"
-        )
-
     context_file = tmp_path / "context.jsonld"
     context_file.write_text(dedent(JSONLD_CONTEXT))
     context_file_served = http_file_server.add_file_with_caching(

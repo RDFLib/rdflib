@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-__doc__ = """
+"""
 A Describer is a stateful utility for creating RDF statements in a
 semi-declarative manner. It has methods for creating literal values, rel and
 rev resource relations (somewhat resembling RDFa).
@@ -22,15 +19,15 @@ Full example in the ``to_rdf`` method below::
     >>>
     >>> class Person:
     ...     def __init__(self):
-    ...         self.first_name = u"Some"
-    ...         self.last_name = u"Body"
+    ...         self.first_name = "Some"
+    ...         self.last_name = "Body"
     ...         self.username = "some1"
-    ...         self.presentation = u"Just a Python & RDF hacker."
+    ...         self.presentation = "Just a Python & RDF hacker."
     ...         self.image = "/images/persons/" + self.username + ".jpg"
     ...         self.site = "http://example.net/"
     ...         self.start_date = datetime.date(2009, 9, 4)
     ...     def get_full_name(self):
-    ...         return u" ".join([self.first_name, self.last_name])
+    ...         return " ".join([self.first_name, self.last_name])
     ...     def get_absolute_url(self):
     ...         return "/persons/" + self.username
     ...     def get_thumbnail_url(self):
@@ -133,7 +130,7 @@ class Describer:
             rdflib.term.BNode(...)
             >>> d.about("http://example.org/")
             >>> d._current()
-            rdflib.term.URIRef(u'http://example.org/')
+            rdflib.term.URIRef('http://example.org/')
 
         """
         kws.setdefault("base", self.base)
@@ -155,7 +152,7 @@ class Describer:
             >>> d = Describer(about="http://example.org/")
             >>> d.value(RDFS.label, "Example")
             >>> d.graph.value(URIRef('http://example.org/'), RDFS.label)
-            rdflib.term.Literal(u'Example')
+            rdflib.term.Literal('Example')
 
         """
         v = cast_value(v, **kws)
@@ -176,7 +173,7 @@ class Describer:
             >>> d = Describer(about="/", base="http://example.org/")
             >>> _ctxt = d.rel(RDFS.seeAlso, "/about")
             >>> d.graph.value(URIRef('http://example.org/'), RDFS.seeAlso)
-            rdflib.term.URIRef(u'http://example.org/about')
+            rdflib.term.URIRef('http://example.org/about')
 
             >>> with d.rel(RDFS.seeAlso, "/more"):
             ...     d.value(RDFS.label, "More")
@@ -184,7 +181,7 @@ class Describer:
             ...         URIRef('http://example.org/more')) in d.graph
             True
             >>> d.graph.value(URIRef('http://example.org/more'), RDFS.label)
-            rdflib.term.Literal(u'More')
+            rdflib.term.Literal('More')
 
         """
 
@@ -211,7 +208,7 @@ class Describer:
             ...         URIRef('http://example.org/')) in d.graph
             True
             >>> d.graph.value(URIRef('http://example.net/'), RDFS.label)
-            rdflib.term.Literal(u'Net')
+            rdflib.term.Literal('Net')
 
         """
         kws.setdefault("base", self.base)

@@ -25,42 +25,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         # This is used for injecting additional tests for a specific python
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.7"
-            os: ubuntu-latest
-            extensive-tests: true
-            TOXENV_SUFFIX: "-docs"
-          - python-version: "3.7"
-            os: ubuntu-latest
-            extensive-tests: true
-            suffix: "-min"
-            TOXENV_SUFFIX: "-min"
           - python-version: "3.8"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
+            extensive-tests: true
             TOXENV_SUFFIX: "-docs"
+          - python-version: "3.8"
+            os: ubuntu-latest
+            extensive-tests: true
+            PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
+            suffix: "-min"
+            TOXENV_SUFFIX: "-min"
           - python-version: "3.9"
+            os: ubuntu-latest
+            TOXENV_SUFFIX: "-docs"
+          - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
             TOXENV_SUFFIX: "-lxml"
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
             TOXENV_SUFFIX: "-docs"
             PREPARATION: "sudo apt-get install -y firejail"
             extensive-tests: true
             TOX_TEST_HARNESS: "firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
-          - python-version: "3.11"
-            os: ubuntu-latest
-            TOXENV_SUFFIX: "-docs"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v3
         with:
@@ -124,10 +120,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - task: "gha:flake8"
+          - task: "gha:lint"
             python-version: 3.8
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
         uses: actions/cache@v3
         with:

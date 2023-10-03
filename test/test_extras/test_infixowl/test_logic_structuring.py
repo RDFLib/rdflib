@@ -42,7 +42,7 @@ def test_logic_structuring(graph):
     structure += joint
 
     locatedInLeg = hasLocation @ some @ leg  # noqa: N806
-    locatedInLeg += knee
+    locatedInLeg += knee  # noqa: N806
 
     assert graph.serialize(format="ttl") == (
         "@prefix ex: <http://example.org/vocab/> .\n"

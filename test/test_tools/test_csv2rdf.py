@@ -17,9 +17,8 @@ class TestCSV2RDF:
                 "rdflib.tools.csv2rdf",
                 str(REALESTATE_FILE_PATH),
             ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
+            capture_output=True,
+            text=True,
         )
         assert completed.returncode == 0
         assert "Converted 19 rows into 228 triples." in completed.stderr

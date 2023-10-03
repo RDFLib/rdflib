@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import binascii
 
 from rdflib import XSD, Literal
@@ -17,7 +15,7 @@ class TestHexBinaryCase:
         len_hex_i = len(hex_i)
         hex_i = hex_i.zfill(len_hex_i + len_hex_i % 2)
 
-        l = Literal(hex_i, datatype=XSD.hexBinary)
+        l = Literal(hex_i, datatype=XSD.hexBinary)  # noqa: E741
         bin_i = l.toPython()
         assert int(binascii.hexlify(bin_i), 16) == i
 
