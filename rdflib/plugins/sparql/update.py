@@ -51,7 +51,7 @@ def evalLoad(ctx: QueryContext, u: CompValue) -> None:
         assert isinstance(u.iri, URIRef)
 
     if u.graphiri:
-        ctx.load(u.iri, default=False, publicID=u.graphiri)
+        ctx.load(u.iri, default=False, into=u.graphiri)
     else:
         ctx.load(u.iri, default=True)
 
@@ -280,7 +280,9 @@ def evalCopy(ctx: QueryContext, u: CompValue) -> None:
 
 
 def evalUpdate(
-    graph: Graph, update: Update, initBindings: Mapping[str, Identifier] = {}
+    graph: Graph,
+    update: Update,
+    initBindings: Optional[Mapping[str, Identifier]] = None,
 ) -> None:
     """
 
@@ -299,10 +301,23 @@ def evalUpdate(
 
     This will return None on success and raise Exceptions on error
 
+    .. caution::
+
+        This method can access indirectly requested network endpoints, for
+        example, query processing will attempt to access network endpoints
+        specified in ``SERVICE`` directives.
+
+        When processing untrusted or potentially malicious queries, measures
+        should be taken to restrict network and file access.
+
+        For information on available security measures, see the RDFLib
+        :doc:`Security Considerations </security_considerations>`
+        documentation.
+
     """
 
     for u in update.algebra:
-        initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+        initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from collections import defaultdict
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -42,7 +44,7 @@ def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
         m(*args, **kwargs)
         return method(self, *args, **kwargs)
 
-    setattr(wrapper, "mock", m)  # noqa
+    setattr(wrapper, "mock", m)
     return cast(GenericT, wrapper), m
 
 
@@ -96,7 +98,10 @@ class BaseHTTPServerMock:
             logging.debug("headers %s", request.headers)
             requests[method_name].append(request)
 
-            response = responses[method_name].pop(0)
+            try:
+                response = responses[method_name].pop(0)
+            except IndexError as error:
+                raise ValueError(f"No response for {method_name} request") from error
             handler.send_response(response.status_code, response.reason_phrase)
             apply_headers_to(response.headers, handler)
             handler.end_headers()
@@ -145,7 +150,7 @@ class ServedBaseHTTPServerMock(
     def url(self) -> str:
         return f"http://{self.address_string}"
 
-    def __enter__(self) -> "ServedBaseHTTPServerMock":
+    def __enter__(self) -> ServedBaseHTTPServerMock:
         return self
 
     def __exit__(
@@ -153,6 +158,6 @@ class ServedBaseHTTPServerMock(
         __exc_type: Optional[Type[BaseException]],
         __exc_value: Optional[BaseException],
         __traceback: Optional[TracebackType],
-    ) -> "te.Literal[False]":
+    ) -> te.Literal[False]:
         self.stop()
         return False

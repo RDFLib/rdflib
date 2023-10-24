@@ -1,6 +1,7 @@
 """
 Runs the SPARQL 1.0 test suite from.
 """
+from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
 from test.utils import ensure_suffix
 from test.utils.dawg_manifest import MarksDictType, params_from_sources
@@ -22,10 +23,14 @@ MAPPER = URIMapper.from_mappings(
     (REMOTE_BASE_IRI, ensure_suffix(LOCAL_BASE_DIR.as_uri(), "/")),
 )
 MARK_DICT: MarksDictType = {
-    f"{REMOTE_BASE_IRI}basic/manifest#term-6": pytest.mark.xfail(
-        reason="query misinterpreted."
+    f"{REMOTE_BASE_IRI}basic/manifest#term-6": pytest.mark.skip(
+        reason="using Sparql 1.1 which is not backwards compatible. "
+        "'456.' will be interpreted differently in query and data."
     ),
-    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.xfail(reason="..."),
+    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.skip(
+        reason="using Sparql 1.1 which is not backwards compatible. "
+        "'456.' will be interpreted differently in query and data."
+    ),
     f"{REMOTE_BASE_IRI}expr-builtin/manifest#dawg-datatype-2": pytest.mark.xfail(
         reason="additional row in output"
     ),
@@ -47,9 +52,6 @@ MARK_DICT: MarksDictType = {
     ),
     f"{REMOTE_BASE_IRI}syntax-sparql1/manifest#syntax-lit-08": pytest.mark.skip(
         reason="bad test, positive syntax has invalid syntax."
-    ),
-    f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-form-describe01": pytest.mark.xfail(
-        reason="Describe not supported."
     ),
     f"{REMOTE_BASE_IRI}syntax-sparql2/manifest#syntax-general-08": pytest.mark.xfail(
         reason="Not parsing with no spaces."
@@ -121,5 +123,7 @@ def configure_rdflib() -> Generator[None, None, None]:
         report_prefix="rdflib_w3c_sparql10",
     ),
 )
-def test_entry_sparql10(monkeypatch: MonkeyPatch, manifest_entry: SPARQLEntry) -> None:
-    check_entry(monkeypatch, manifest_entry)
+def test_entry_sparql10(
+    monkeypatch: MonkeyPatch, exit_stack: ExitStack, manifest_entry: SPARQLEntry
+) -> None:
+    check_entry(monkeypatch, exit_stack, manifest_entry)

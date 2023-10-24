@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import re
-from test.data import bob, cheese, hates, likes, michel, pizza, tarek
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 from urllib.request import urlopen
 
 import pytest
@@ -28,13 +26,13 @@ othergraphuri = URIRef("urn:example:othergraph")
 
 try:
     assert len(urlopen(HOST).read()) > 0
-except:
+except Exception:
     pytest.skip(f"{HOST} is unavailable.", allow_module_level=True)
 
 
 @pytest.fixture
 def get_graph():
-    longMessage = True
+    longMessage = True  # noqa: F841
     graph = ConjunctiveGraph("SPARQLUpdateStore")
 
     root = HOST + DB
@@ -53,48 +51,48 @@ def get_graph():
 def test_simple_graph(get_graph):
     graph = get_graph
     g = graph.get_context(graphuri)
-    g.add((tarek, likes, pizza))
-    g.add((bob, likes, pizza))
-    g.add((bob, likes, cheese))
+    g.add((TAREK, LIKES, PIZZA))
+    g.add((BOB, LIKES, PIZZA))
+    g.add((BOB, LIKES, CHEESE))
 
     g2 = graph.get_context(othergraphuri)
-    g2.add((michel, likes, pizza))
+    g2.add((MICHEL, LIKES, PIZZA))
 
     assert len(g) == 3, "graph contains 3 triples"
     assert len(g2) == 1, "other graph contains 1 triple"
 
     r = g.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 2, "two people like pizza"
+    assert len(list(r)) == 2, "two people like PIZZA"
 
-    r = g.triples((None, likes, pizza))
-    assert len(list(r)) == 2, "two people like pizza"
+    r = g.triples((None, LIKES, PIZZA))
+    assert len(list(r)) == 2, "two people like PIZZA"
 
     # Test initBindings
     r = g.query(
         "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
-        initBindings={"s": tarek},
+        initBindings={"s": TAREK},
     )
-    assert len(list(r)) == 1, "i was asking only about tarek"
+    assert len(list(r)) == 1, "i was asking only about TAREK"
 
-    r = g.triples((tarek, likes, pizza))
-    assert len(list(r)) == 1, "i was asking only about tarek"
+    r = g.triples((TAREK, LIKES, PIZZA))
+    assert len(list(r)) == 1, "i was asking only about TAREK"
 
-    r = g.triples((tarek, likes, cheese))
-    assert len(list(r)) == 0, "tarek doesn't like cheese"
+    r = g.triples((TAREK, LIKES, CHEESE))
+    assert len(list(r)) == 0, "TAREK doesn't like CHEESE"
 
-    g2.add((tarek, likes, pizza))
-    g.remove((tarek, likes, pizza))
+    g2.add((TAREK, LIKES, PIZZA))
+    g.remove((TAREK, LIKES, PIZZA))
     r = g.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 1, "only bob likes pizza"
+    assert len(list(r)) == 1, "only BOB LIKES PIZZA"
 
 
 def test_conjunctive_default(get_graph):
     graph = get_graph
     g = graph.get_context(graphuri)
-    g.add((tarek, likes, pizza))
+    g.add((TAREK, LIKES, PIZZA))
     g2 = graph.get_context(othergraphuri)
-    g2.add((bob, likes, pizza))
-    g.add((tarek, hates, cheese))
+    g2.add((BOB, LIKES, PIZZA))
+    g.add((TAREK, HATES, CHEESE))
 
     assert 2 == len(g), "graph contains 2 triples"
 
@@ -115,27 +113,27 @@ def test_conjunctive_default(get_graph):
     )
 
     r = graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 2, "two people like pizza"
+    assert len(list(r)) == 2, "two people like PIZZA"
 
     r = graph.query(
         "SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }",
-        initBindings={"s": tarek},
+        initBindings={"s": TAREK},
     )
-    assert len(list(r)) == 1, "i was asking only about tarek"
+    assert len(list(r)) == 1, "i was asking only about TAREK"
 
-    r = graph.triples((tarek, likes, pizza))
-    assert len(list(r)) == 1, "i was asking only about tarek"
+    r = graph.triples((TAREK, LIKES, PIZZA))
+    assert len(list(r)) == 1, "i was asking only about TAREK"
 
-    r = graph.triples((tarek, likes, cheese))
-    assert len(list(r)) == 0, "tarek doesn't like cheese"
+    r = graph.triples((TAREK, LIKES, CHEESE))
+    assert len(list(r)) == 0, "TAREK doesn't like CHEESE"
 
-    g2.remove((bob, likes, pizza))
+    g2.remove((BOB, LIKES, PIZZA))
 
     r = graph.query("SELECT * WHERE { ?s <urn:example:likes> <urn:example:pizza> . }")
-    assert len(list(r)) == 1, "only tarek likes pizza"
+    assert len(list(r)) == 1, "only TAREK LIKES PIZZA"
 
 
-def testU_update(get_graph):
+def test_u_update(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH <urn:example:graph> { <urn:example:michel> <urn:example:likes> <urn:example:pizza> . } }"
@@ -145,7 +143,7 @@ def testU_update(get_graph):
     assert 1 == len(g), "graph contains 1 triples"
 
 
-def testU_update_with_initns(get_graph):
+def test_u_update_with_initns(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
@@ -154,8 +152,8 @@ def testU_update_with_initns(get_graph):
 
     g = graph.get_context(graphuri)
     assert set(g.triples((None, None, None))) == set(
-        [(michel, likes, pizza)]
-    ), "only michel likes pizza"
+        [(MICHEL, LIKES, PIZZA)]
+    ), "only MICHEL LIKES PIZZA"
 
 
 def test_update_with_init_bindings(get_graph):
@@ -171,8 +169,8 @@ def test_update_with_init_bindings(get_graph):
 
     g = graph.get_context(graphuri)
     assert set(g.triples((None, None, None))) == set(
-        [(michel, likes, pizza)]
-    ), "only michel likes pizza"
+        [(MICHEL, LIKES, PIZZA)]
+    ), "only MICHEL LIKES PIZZA"
 
 
 def test_update_with_blank_node(get_graph):
@@ -187,7 +185,7 @@ def test_update_with_blank_node(get_graph):
         assert t[2].n3() == "<urn:example:Blank>"
 
 
-def test_updateW_with_blank_node_serialize_and_parse(get_graph):
+def test_update_w_with_blank_node_serialize_and_parse(get_graph):
     graph = get_graph
     graph.update(
         "INSERT DATA { GRAPH <urn:example:graph> { _:blankA <urn:example:type> <urn:example:Blank> } }"
@@ -197,7 +195,7 @@ def test_updateW_with_blank_node_serialize_and_parse(get_graph):
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         raised = True
     assert raised is False, "Exception raised when parsing: " + string
 
@@ -217,8 +215,8 @@ def test_multiple_update_with_init_bindings(get_graph):
 
     g = graph.get_context(graphuri)
     assert set(g.triples((None, None, None))) == set(
-        [(michel, likes, pizza), (bob, likes, pizza)]
-    ), "michel and bob like pizza"
+        [(MICHEL, LIKES, PIZZA), (BOB, LIKES, PIZZA)]
+    ), "MICHEL and BOB like PIZZA"
 
 
 def test_named_graph_update(get_graph):
@@ -227,8 +225,8 @@ def test_named_graph_update(get_graph):
     r1 = "INSERT DATA { <urn:example:michel> <urn:example:likes> <urn:example:pizza> }"
     g.update(r1)
     assert set(g.triples((None, None, None))) == set(
-        [(michel, likes, pizza)]
-    ), "only michel likes pizza"
+        [(MICHEL, LIKES, PIZZA)]
+    ), "only MICHEL LIKES PIZZA"
 
     r2 = (
         "DELETE { <urn:example:michel> <urn:example:likes> <urn:example:pizza> } "
@@ -236,8 +234,8 @@ def test_named_graph_update(get_graph):
     )
     g.update(r2)
     assert set(g.triples((None, None, None))) == set(
-        [(bob, likes, pizza)]
-    ), "only bob likes pizza"
+        [(BOB, LIKES, PIZZA)]
+    ), "only BOB LIKES PIZZA"
 
     says = URIRef("urn:says")
 
@@ -252,7 +250,7 @@ def test_named_graph_update(get_graph):
         g.update(r3)
 
     values = set()
-    for v in g.objects(bob, says):
+    for v in g.objects(BOB, says):
         values.add(str(v))
     assert values == set(tricky_strs)
 
@@ -277,7 +275,7 @@ def test_named_graph_update(get_graph):
     )
     g.update(r4)
     values = set()
-    for v in g.objects(michel, says):
+    for v in g.objects(MICHEL, says):
         values.add(str(v))
     assert values == set(
         [
@@ -299,7 +297,7 @@ def test_named_graph_update(get_graph):
 
     g.update(r5)
     values = set()
-    for v in g.objects(michel, hates):
+    for v in g.objects(MICHEL, HATES):
         values.add(str(v))
     assert values == set(["urn:example:foo'bar?baz;a=1&b=2#fragment", "'}"])
 
@@ -313,19 +311,19 @@ def test_named_graph_update(get_graph):
 
     g.update(r6)
     values = set()
-    for v in g.objects(bob, hates):
+    for v in g.objects(BOB, HATES):
         values.add(v)
-    assert values == set([bob, michel])
+    assert values == set([BOB, MICHEL])
 
 
 def test_named_graph_update_with_init_bindings(get_graph):
     graph = get_graph
     g = graph.get_context(graphuri)
     r = "INSERT { ?a ?b ?c } WHERE {}"
-    g.update(r, initBindings={"a": michel, "b": likes, "c": pizza})
+    g.update(r, initBindings={"a": MICHEL, "b": LIKES, "c": PIZZA})
     assert set(g.triples((None, None, None))) == set(
-        [(michel, likes, pizza)]
-    ), "only michel likes pizza"
+        [(MICHEL, LIKES, PIZZA)]
+    ), "only MICHEL LIKES PIZZA"
 
 
 def test_empty_named_graph(get_graph):

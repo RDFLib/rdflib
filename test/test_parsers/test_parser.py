@@ -14,7 +14,7 @@ class TestParser:
     def teardown_method(self):
         self.graph.close()
 
-    def testNoPathWithHash(self):
+    def testNoPathWithHash(self):  # noqa: N802
         g = self.graph
         g.parse(
             data="""\

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import argparse
 import enum
 import logging
@@ -247,6 +249,21 @@ RESOURCES: List[Resource] = [
             "http://www.w3.org/2000/01/rdf-schema#", headers={"Accept": "text/turtle"}
         ),
         local_path=(DATA_PATH / "defined_namespaces/rdfs.ttl"),
+    ),
+    FileResource(
+        remote=Request(
+            "http://www.w3.org/2000/01/rdf-schema#",
+            headers={"Accept": "application/rdf+xml"},
+        ),
+        local_path=(DATA_PATH / "defined_namespaces/rdfs.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.rdf"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.ttl"),
     ),
     FileResource(
         remote=Request("https://www.w3.org/ns/rdftest.ttl"),

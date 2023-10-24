@@ -27,13 +27,13 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.error import HTTPError
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname, urlopen
+from urllib.request import Request, url2pathname
 from xml.sax import xmlreader
 
 import rdflib.util
 from rdflib import __version__
+from rdflib._networking import _urlopen
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
@@ -53,13 +53,13 @@ __all__ = [
 ]
 
 
-class Parser(object):
+class Parser:
     __slots__ = ()
 
     def __init__(self):
         pass
 
-    def parse(self, source: "InputSource", sink: "Graph") -> None:
+    def parse(self, source: InputSource, sink: Graph) -> None:
         pass
 
 
@@ -70,7 +70,7 @@ class BytesIOWrapper(BufferedIOBase):
         super(BytesIOWrapper, self).__init__()
         self.wrapped = wrapped
         self.encoding = encoding
-        self.encoded = None
+        self.encoded: Optional[BytesIO] = None
 
     def read(self, *args, **kwargs):
         if self.encoded is None:
@@ -81,7 +81,8 @@ class BytesIOWrapper(BufferedIOBase):
     def read1(self, *args, **kwargs):
         if self.encoded is None:
             b = codecs.getencoder(self.encoding)(self.wrapped)
-            self.encoded = BytesIO(b)
+            # type error: Argument 1 to "BytesIO" has incompatible type "Tuple[bytes, int]"; expected "Buffer"
+            self.encoded = BytesIO(b)  # type: ignore[arg-type]
         return self.encoded.read1(*args, **kwargs)
 
     def readinto(self, *args, **kwargs):
@@ -199,7 +200,7 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: "Message", name) -> List[str]:
+    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
@@ -266,20 +267,6 @@ class URLInputSource(InputSource):
             myheaders["Accept"] = ", ".join(acc)
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
-
-        def _urlopen(req: Request) -> Any:
-            try:
-                return urlopen(req)
-            except HTTPError as ex:
-                # 308 (Permanent Redirect) is not supported by current python version(s)
-                # See https://bugs.python.org/issue40321
-                # This custom error handling should be removed once all
-                # supported versions of python support 308.
-                if ex.code == 308:
-                    req.full_url = ex.headers.get("Location")
-                    return _urlopen(req)
-                else:
-                    raise
 
         response: addinfourl = _urlopen(req)
         self.url = response.geturl()  # in case redirections took place

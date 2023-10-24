@@ -1,3 +1,4 @@
+import logging
 import subprocess
 import sys
 from pathlib import Path
@@ -19,6 +20,7 @@ def generate_example_cases() -> Iterable[ParameterSet]:
         yield pytest.param(example_file, id=f"{example_file.relative_to(EXAMPLES_DIR)}")
 
 
+@pytest.mark.webtest
 @pytest.mark.parametrize(["example_file"], generate_example_cases())
 def test_example(example_file: Path) -> None:
     """
@@ -28,4 +30,20 @@ def test_example(example_file: Path) -> None:
         # this example requires a berkeleydb installation
         pytest.skip("The BerkeleyDB example is not working correctly.")
 
-    subprocess.run([sys.executable, f"{example_file}"], check=True)
+    result = subprocess.run(
+        [sys.executable, f"{example_file}"],
+        capture_output=True,
+    )
+
+    logging.debug("result = %s", result)
+
+    try:
+        result.check_returncode()
+    except subprocess.CalledProcessError:
+        if (
+            example_file.stem == "sparqlstore_example"
+            and "http.client.RemoteDisconnected: Remote end closed connection without response"
+            in result.stderr.decode("utf-8")
+        ):
+            pytest.skip("this test uses dbpedia which is down sometimes")
+        raise

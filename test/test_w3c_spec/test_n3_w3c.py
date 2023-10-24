@@ -1,5 +1,7 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+from __future__ import annotations
+
 import itertools
 import os
 from test.data import TEST_DATA_DIR
@@ -55,7 +57,7 @@ def n3(test: RDFTest):
                 res.serialize(),
             )
 
-    except:
+    except Exception:
         if test.syntax:
             raise
 

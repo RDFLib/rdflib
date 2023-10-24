@@ -1,9 +1,4 @@
-# -*- coding: UTF-8 -*-
-from rdflib import *
-from rdflib.plugin import Parser, register
-
-register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
-register("application/ld+json", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+from rdflib import ConjunctiveGraph, Dataset, Graph, URIRef
 
 data = """
 {

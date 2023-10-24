@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 from os import chdir, environ, getcwd
@@ -191,7 +193,7 @@ def read_manifest(skiptests):
             else:
                 inputpath = test.get("input")
                 expectedpath = test.get("expect")
-                expected_error = test.get("expect")  # TODO: verify error
+                expected_error = test.get("expect")  # TODO: verify error  # noqa: F841
                 context = test.get("context", False)
                 options = test.get("option") or {}
                 if expectedpath:
@@ -231,6 +233,10 @@ def global_state():
     chdir(old_cwd)
 
 
+@pytest.mark.webtest
+# TODO: apply webtest marker to individual tests
+# Marking this whole function as webtest is too broad, as many tests don't
+# require the web, but making it narrower requires more refactoring.
 @pytest.mark.parametrize(
     "rdf_test_uri, func, suite_base, cat, num, inputpath, expectedpath, context, options",
     get_test_suite_cases(),

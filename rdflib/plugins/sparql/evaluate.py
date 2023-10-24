@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 These method recursively evaluate the SPARQL Algebra
 
@@ -15,6 +13,8 @@ A list of dicts (solution mappings) is returned, apart from GroupBy which may
 also return a dict of list of dicts
 
 """
+
+from __future__ import annotations
 
 import collections
 import itertools
@@ -62,6 +62,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 if TYPE_CHECKING:
     from rdflib.paths import Path
+
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 
@@ -157,7 +158,7 @@ def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, 
         return _join(a, b)
 
 
-def evalUnion(ctx: QueryContext, union: CompValue) -> Iterable[FrozenBindings]:
+def evalUnion(ctx: QueryContext, union: CompValue) -> List[Any]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)
@@ -630,7 +631,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
     # Get a CBD for all resources identified to describe
     for resource in to_describe:
         # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
-        graph += ctx.graph.cbd(resource)  # type: ignore[union-attr]
+        ctx.graph.cbd(resource, target_graph=graph)  # type: ignore[union-attr]
 
     res: Dict[str, Union[str, Graph]] = {}
     res["type_"] = "DESCRIBE"
@@ -642,10 +643,26 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Mapping[str, Identifier],
+    initBindings: Optional[Mapping[str, Identifier]] = None,
     base: Optional[str] = None,
 ) -> Mapping[Any, Any]:
-    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+    """
+
+    .. caution::
+
+        This method can access indirectly requested network endpoints, for
+        example, query processing will attempt to access network endpoints
+        specified in ``SERVICE`` directives.
+
+        When processing untrusted or potentially malicious queries, measures
+        should be taken to restrict network and file access.
+
+        For information on available security measures, see the RDFLib
+        :doc:`Security Considerations </security_considerations>`
+        documentation.
+    """
+
+    initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

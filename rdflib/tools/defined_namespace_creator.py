@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 This rdflib Python script creates a DefinedNamespace Python file from a given RDF file
 
@@ -12,17 +10,16 @@ namespace:
 
 Nicholas J. Car, Dec, 2021
 """
+from __future__ import annotations
+
 import argparse
 import datetime
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterable, List, Tuple
 
-sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
-
-from rdflib.graph import Graph  # noqa: E402
-from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS  # noqa: E402
-from rdflib.util import guess_format  # noqa: E402
+from rdflib.graph import Graph
+from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
+from rdflib.util import guess_format
 
 if TYPE_CHECKING:
     from rdflib.query import ResultRow
@@ -77,7 +74,7 @@ def get_target_namespace_elements(
 ) -> Tuple[List[Tuple[str, str]], List[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
-        SELECT DISTINCT ?s ?def
+        SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
         WHERE {
             # all things in the RDF data (anything RDF.type...)
             ?s a ?o .
@@ -90,6 +87,7 @@ def get_target_namespace_elements(
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
         }
+        GROUP BY ?s
         """.replace(
         "xxx", target_namespace
     )
@@ -105,7 +103,7 @@ def get_target_namespace_elements(
     for e in elements:
         desc = e[1].replace("\n", " ")
         elements_strs.append(
-            f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
+            f"    {e[0].replace(target_namespace, '')}: URIRef  # {desc}\n"
         )
 
     return elements, elements_strs

@@ -63,7 +63,7 @@ class TestFileParserGuessFormat:
 
     def test_warning(self) -> None:
         g = Graph()
-        graph_logger = logging.getLogger("rdflib")
+        graph_logger = logging.getLogger("rdflib")  # noqa: F841
 
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
@@ -82,5 +82,5 @@ class TestFileParserGuessFormat:
                 with pytest.warns(
                     UserWarning,
                     match="does not look like a valid URI, trying to serialize this will break.",
-                ) as logwarning:
+                ) as logwarning:  # noqa: F841
                     g.parse(str(newpath))

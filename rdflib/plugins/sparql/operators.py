@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 This contains evaluation functions for expressions
 
@@ -7,6 +5,9 @@ They get bound as instances-methods to the CompValue objects from parserutils
 using setEvalFn
 
 """
+
+
+from __future__ import annotations
 
 import datetime as py_datetime  # naming conflict with function within this module
 import hashlib
@@ -16,7 +17,7 @@ import random
 import re
 import uuid
 import warnings
-from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
 from typing import Any, Callable, Dict, NoReturn, Optional, Tuple, Union, overload
 from urllib.parse import quote
@@ -205,7 +206,7 @@ def Builtin_ROUND(expr: Expr, ctx) -> Literal:
     # this is an ugly work-around
     l_ = expr.arg
     v = numeric(l_)
-    v = int(Decimal(v).quantize(1, ROUND_HALF_UP))
+    v = int(Decimal(v).quantize(1, ROUND_HALF_UP if v > 0 else ROUND_HALF_DOWN))
     return Literal(v, datatype=l_.datatype)
 
 
@@ -381,7 +382,7 @@ def Builtin_CONTAINS(expr: Expr, ctx) -> Literal:
 
 
 def Builtin_ENCODE_FOR_URI(expr: Expr, ctx) -> Literal:
-    return Literal(quote(string(expr.arg).encode("utf-8")))
+    return Literal(quote(string(expr.arg).encode("utf-8"), safe=""))
 
 
 def Builtin_SUBSTR(expr: Expr, ctx) -> Literal:
@@ -471,7 +472,10 @@ def Builtin_SECONDS(e: Expr, ctx) -> Literal:
     http://www.w3.org/TR/sparql11-query/#func-seconds
     """
     d = datetime(e.arg)
-    return Literal(d.second, datatype=XSD.decimal)
+    result_value = Decimal(d.second)
+    if d.microsecond:
+        result_value += Decimal(d.microsecond) / Decimal(1000000)
+    return Literal(result_value, datatype=XSD.decimal)
 
 
 def Builtin_TIMEZONE(e: Expr, ctx) -> Literal:
@@ -751,7 +755,7 @@ def MultiplicativeExpression(
         for op, f in zip(e.op, other):
             f = numeric(f)
 
-            if type(f) == float:
+            if type(f) == float:  # noqa: E721
                 res = float(res)
 
             if op == "*":
@@ -985,8 +989,7 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    # type error: Statement is unreachable
-    if not isinstance(expr, CompValue):  # type: ignore[unreachable]
+    if not isinstance(expr, CompValue):
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:

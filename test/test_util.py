@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import logging
 import time
@@ -133,7 +133,7 @@ class TestUtilTermConvert:
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
         )
 
-    def test_util_to_term_sisNone(self):
+    def test_util_to_term_sisNone(self):  # noqa: N802
         s = None
         assert util.to_term(s) == s
         assert util.to_term(s, default="") == ""
@@ -336,9 +336,9 @@ class TestUtilTermConvert:
     @pytest.mark.parametrize(
         "string",
         [
-            (f"j\\366rn"),
-            (f"\\"),
-            (f"\\0"),
+            ("j\\366rn"),
+            ("\\"),
+            ("\\0"),
         ],
     )
     def test_util_from_n3_not_escapes_xf(self, string: str) -> None:
@@ -633,6 +633,24 @@ def test_get_tree(
             "http://example.com:1231/",
             {
                 "http://example.com:1231/",
+            },
+        ),
+        (
+            "http://example.com:1231/a=b",
+            {
+                "http://example.com:1231/a=b",
+            },
+        ),
+        (
+            "http://aé:aé@example.com:1231/bé/a=bé&c=d#a=bé&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            },
+        ),
+        (
+            "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
+            {
+                "http://a%C3%A9:a%C3%A9@example.com:1231/b%C3%A9/a=b%C3%A9&c=d#a=b%C3%A9&c=d",
             },
         ),
     ],

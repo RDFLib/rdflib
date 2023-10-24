@@ -35,6 +35,7 @@ vars:
   PIP_COMPILE: pip-compile
   DOCKER: docker
   OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  MYPY_VARIANT: '{{ env "MYPY_VARIANT" | default "mypy" }}'
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -98,7 +99,6 @@ tasks:
       - echo "TOXENV=${TOXENV}"
       - |
         {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
-        {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
         {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
@@ -111,17 +111,10 @@ tasks:
     desc: Run tests
     cmds:
       - '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
-  flake8:
-    desc: Run flake8
+  ruff:
+    desc: Run ruff
     cmds:
-      - |
-        if {{.VENV_PYTHON}} -c 'import importlib.util; exit(0 if importlib.util.find_spec("flakeheaven") is not None else 1)'
-        then
-          1>&2 echo "running flakeheaven"
-          {{.VENV_PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}
-        else
-          1>&2 echo "skipping flakeheaven as it is not installed, likely because python version is older than 3.8"
-        fi
+      - '{{.RUN_PREFIX}} ruff check {{if (mustFromJson (.FIX | default "false"))}}--fix {{end}}{{.CLI_ARGS | default "."}}'
   black:
     desc: Run black
     cmds:
@@ -133,22 +126,28 @@ tasks:
   mypy:
     desc: Run mypy
     cmds:
+      - task: "mypy:{{ .MYPY_VARIANT }}"
+  mypy:mypy:
+    desc: Run mypy
+    cmds:
       - "{{.VENV_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
-
+  mypy:dmypy:
+    desc: Run dmypy
+    cmds:
+      - "{{.RUN_PREFIX}} dmypy run {{.CLI_ARGS}}"
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
-      - task: isort
+      - task: ruff
+        vars: { FIX: true }
       - task: black
 
   lint:
     desc: Perform linting
     cmds:
-      - task: isort
-        vars: { CHECK: true }
       - task: black
         vars: { CHECK: true }
-      - task: flake8
+      - task: ruff
 
   validate:static:
     desc: Perform static validation
@@ -218,6 +217,8 @@ tasks:
       - task: venv:clean
       - task: _rimraf
         vars: { RIMRAF_TARGET: ".var/devcontainer" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
 
   test:data:fetch:
     desc: Fetch test data.
@@ -256,13 +257,13 @@ tasks:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
 
-  gha:flake8:
-    desc: GitHub Actions flake8 workflow
+  gha:lint:
+    desc: GitHub Actions lint workflow
     cmds:
       - task: poetry:configure
         vars:
-          CLI_ARGS: --no-root --only=flake8
-      - task: flake8
+          CLI_ARGS: --no-root --only=lint
+      - task: ruff
 
   cmd:rdfpipe:
     desc: Run rdfpipe
@@ -329,6 +330,40 @@ tasks:
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
             {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
           fi
+
+  docs:build-diagrams:
+    desc: Build documentation diagrams
+    cmds:
+      - cmd: |
+          shopt -s globstar;
+          for plantuml_file in ./**/*.plantuml
+          do
+            cat "${plantuml_file}" \
+              | docker run --rm -i plantuml/plantuml -tsvg -pipe \
+              > "${plantuml_file%.*}.svg"
+          done
+
+  test:sdist:
+    desc: Run tests on the sdist artifact
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "dist" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
+      - poetry build
+      - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
+      - |
+        cd var/test-sdist/rdflib-*
+        poetry install
+        poetry run mypy --show-error-context --show-error-codes -p rdflib
+        poetry run sphinx-build -T -W -b html -d docs/_build/doctree docs docs/_build/html
+        poetry run pytest
+
+  test:no_internet:
+    desc: Run tests without internet access
+    cmds:
+      - |
+        {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from contextlib import ExitStack
 from dataclasses import dataclass
@@ -288,21 +290,21 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.rhs_format)
 
     public_id = URIRef("example:graph")
-    lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    lhs_cgraph.parse(
+    lhs_dataset: Dataset = Dataset()
+    lhs_dataset.parse(
         data=test_case.lhs, format=test_case.lhs_format, publicID=public_id
     )
 
-    rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    rhs_cgraph.parse(
+    rhs_dataset: Dataset = Dataset()
+    rhs_dataset.parse(
         data=test_case.rhs, format=test_case.rhs_format, publicID=public_id
     )
 
-    assert isinstance(lhs_cgraph, ConjunctiveGraph)
-    assert isinstance(rhs_cgraph, ConjunctiveGraph)
+    assert isinstance(lhs_dataset, Dataset)
+    assert isinstance(rhs_dataset, Dataset)
     graph: Graph
-    cgraph: ConjunctiveGraph
-    for graph, cgraph in ((lhs_graph, lhs_cgraph), (rhs_graph, rhs_cgraph)):
+    cgraph: Dataset
+    for graph, cgraph in ((lhs_graph, lhs_dataset), (rhs_graph, rhs_dataset)):
         GraphHelper.assert_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
         GraphHelper.assert_sets_equals(cgraph, cgraph, BNodeHandling.COLLAPSE)
         GraphHelper.assert_triple_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
@@ -316,7 +318,7 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
@@ -324,23 +326,25 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_quad_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
     else:
         GraphHelper.assert_sets_equals(lhs_graph, rhs_graph, test_case.bnode_handling)
-        GraphHelper.assert_sets_equals(lhs_cgraph, rhs_cgraph, test_case.bnode_handling)
+        GraphHelper.assert_sets_equals(
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
+        )
         GraphHelper.assert_triple_sets_equals(
             lhs_graph, rhs_graph, test_case.bnode_handling
         )
         GraphHelper.assert_triple_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
         GraphHelper.assert_quad_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
 
 

@@ -115,3 +115,19 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
+:mod:`~examples.secure_with_audit` Module
+-----------------------------------------
+
+.. automodule:: examples.secure_with_audit
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:mod:`~examples.secure_with_urlopen` Module
+-------------------------------------------
+
+.. automodule:: examples.secure_with_urlopen
+    :members:
+    :undoc-members:
+    :show-inheritance:

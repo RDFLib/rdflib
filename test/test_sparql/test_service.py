@@ -1,22 +1,12 @@
+from __future__ import annotations
+
 import json
-from contextlib import ExitStack
+from http.client import IncompleteRead, RemoteDisconnected
 from test.utils import helper
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
-from typing import (
-    Dict,
-    FrozenSet,
-    List,
-    Mapping,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    Union,
-)
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.outcome import OutcomeChecker
+from typing import Dict, FrozenSet, List, Mapping, Sequence, Tuple, Type, Union
 
 import pytest
 
@@ -25,6 +15,7 @@ from rdflib.namespace import XSD
 from rdflib.term import BNode, Identifier
 
 
+@pytest.mark.webtest
 def test_service():
     g = Graph()
     q = """select ?sameAs ?dbpComment
@@ -38,7 +29,10 @@ def test_service():
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     print(results.vars)
     print(results.bindings)
     assert len(results) == 2
@@ -47,6 +41,7 @@ def test_service():
         assert len(r) == 2
 
 
+@pytest.mark.webtest
 def test_service_with_bind():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -62,13 +57,17 @@ def test_service_with_bind():
         <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_bound_solutions():
     g = Graph()
     g.update(
@@ -97,13 +96,17 @@ def test_service_with_bound_solutions():
         }
         LIMIT 2
         """
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_values():
     g = Graph()
     q = """select ?sameAs ?dbpComment ?subject
@@ -119,13 +122,17 @@ def test_service_with_values():
         <http://purl.org/dc/terms/subject> ?subject .
 
     } }  } limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select():
     g = Graph()
     q = """select ?s ?p ?o
@@ -135,13 +142,17 @@ def test_service_with_implicit_select():
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_prefix():
     g = Graph()
     q = """prefix ex:<http://example.org/>
@@ -152,13 +163,17 @@ def test_service_with_implicit_select_and_prefix():
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_base():
     g = Graph()
     q = """base <http://example.org/>
@@ -169,13 +184,17 @@ def test_service_with_implicit_select_and_base():
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 2
 
     for r in results:
         assert len(r) == 3
 
 
+@pytest.mark.webtest
 def test_service_with_implicit_select_and_allcaps():
     g = Graph()
     q = """SELECT ?s
@@ -186,7 +205,10 @@ def test_service_with_implicit_select_and_allcaps():
         ?s <http://www.w3.org/2002/07/owl#sameAs> ?sameAs .
       }
     } LIMIT 3"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert len(results) == 3
 
 
@@ -199,6 +221,7 @@ def freeze_bindings(
     return frozenset(result)
 
 
+@pytest.mark.webtest
 def test_simple_not_null():
     """Test service returns simple literals not as NULL.
 
@@ -212,10 +235,14 @@ WHERE {
         VALUES (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> "c")}
     }
 }"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
     assert results.bindings[0].get(Variable("o")) == Literal("c")
 
 
+@pytest.mark.webtest
 def test_service_node_types():
     """Test if SERVICE properly returns different types of nodes:
     - URI;
@@ -239,7 +266,10 @@ WHERE {
     }
     FILTER( ?o IN (<http://example.org/URI>, "Simple Literal", "String Literal"^^xsd:string, "String Language"@en) )
 }"""
-    results = helper.query_with_retry(g, q)
+    try:
+        results = helper.query_with_retry(g, q)
+    except (RemoteDisconnected, IncompleteRead):
+        pytest.skip("this test uses dbpedia which is down sometimes")
 
     expected = freeze_bindings(
         [
@@ -320,27 +350,25 @@ def test_with_mock(
         "head": {"vars": ["var"]},
         "results": {"bindings": [{"var": item} for item in response_bindings]},
     }
-    function_httpmock.responses[MethodName.GET].append(
-        MockHTTPResponse(
-            200,
-            "OK",
-            json.dumps(response).encode("utf-8"),
-            {"Content-Type": ["application/sparql-results+json"]},
-        )
+    mock_response = MockHTTPResponse(
+        200,
+        "OK",
+        json.dumps(response).encode("utf-8"),
+        {"Content-Type": ["application/sparql-results+json"]},
     )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    # Adding the same response for GET and POST as the method used by RDFLib is
+    # dependent on the size of the service query.
+    function_httpmock.responses[MethodName.GET].append(mock_response)
+    function_httpmock.responses[MethodName.POST].append(mock_response)
 
-    with ExitStack() as xstack:
-        if isinstance(expected_result, type) and issubclass(expected_result, Exception):
-            catcher = xstack.enter_context(pytest.raises(expected_result))
-        else:
-            expected_bindings = [{Variable("var"): item} for item in expected_result]
+    checker = OutcomeChecker[Sequence[Mapping[Variable, Identifier]]].from_primitive(
+        [{Variable("var"): item} for item in expected_result]
+        if isinstance(expected_result, List)
+        else expected_result
+    )
+    with checker.context():
         bindings = graph.query(query).bindings
-    if catcher is not None:
-        assert catcher is not None
-        assert catcher.value is not None
-    else:
-        assert expected_bindings == bindings
+        checker.check(bindings)
 
 
 if __name__ == "__main__":
