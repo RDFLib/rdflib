@@ -49,7 +49,7 @@ class SPARQLConnector:
         """
         auth, if present, must be a tuple of (username, password) used for Basic Authentication
 
-        Any additional keyword arguments will be passed to to the request, and can be used to setup timesouts etc.
+        Any additional keyword arguments will be passed to to the request, and can be used to setup timeouts etc.
         """
         self._method: str
         self.returnFormat = returnFormat
