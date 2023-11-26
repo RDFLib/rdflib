@@ -6,19 +6,6 @@ from rdflib.plugins.shared.jsonld.util import norm_url
 @pytest.mark.parametrize(
     ["base", "url", "expected_result"],
     [
-        pytest.param(
-            "git+ssh://example.com:1231/some/thing/",
-            "a",
-            "git+ssh://example.com:1231/some/thing/a",
-            marks=pytest.mark.xfail(
-                reason="""
-    URL normalizes to the wrong thing.
-
-    AssertionError: assert 'git+ssh://example.com:1231/some/thing/a' == 'a'
-    """,
-                raises=AssertionError,
-            ),
-        ),
         ("http://example.org/", "/one", "http://example.org/one"),
         ("http://example.org/", "/one#", "http://example.org/one#"),
         ("http://example.org/one", "two", "http://example.org/two"),
@@ -70,5 +57,41 @@ from rdflib.plugins.shared.jsonld.util import norm_url
         ),
     ],
 )
-def test_norm_url_xfail(base: str, url: str, expected_result: str) -> None:
+def test_norm_url(base: str, url: str, expected_result: str) -> None:
+    assert expected_result == norm_url(base, url)
+
+
+@pytest.mark.xfail(
+    reason="""
+        URL normalizes to the wrong thing.
+
+       AssertionError: assert 'git+ssh://example.com:1231/some/thing/a' == 'a'
+    """,
+    raises=AssertionError,
+)
+@pytest.mark.parametrize(
+    ["base", "url", "expected_result"],
+    [("git+ssh://example.com:12/three/", "a", "git+ssh://example.com:12/three/a")],
+)
+def test_norm_url_fails_for_trailing_forward_slash(
+    base: str, url: str, expected_result: str
+) -> None:
+    assert expected_result == norm_url(base, url)
+
+
+@pytest.mark.xfail(
+    reason="""
+        URL normalizes to the wrong thing.
+
+       AssertionError: assert 'git+ssh://example.com:1231/some/thing/a' == 'a'
+    """,
+    raises=AssertionError,
+)
+@pytest.mark.parametrize(
+    ["base", "url", "expected_result"],
+    [("", "#my-resource", "#my-resource")],
+)
+def test_norm_url_fails_for_baseless_fragment(
+    base: str, url: str, expected_result: str
+) -> None:
     assert expected_result == norm_url(base, url)
