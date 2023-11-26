@@ -87,9 +87,14 @@ class JsonLDParser(rdflib.parser.Parser):
                 "Given encoding was: %s" % encoding
             )
 
-        base = kwargs.get("base") or sink.absolutize(
-            source.getPublicId() or source.getSystemId() or ""
-        )
+        base = kwargs.get("base")
+        if base is None:
+            public_id = source.getPublicId()
+            base = (
+                public_id
+                if public_id == ""
+                else sink.absolutize(public_id or source.getSystemId() or "")
+            )
 
         context_data = kwargs.get("context")
         if not context_data and hasattr(source, "url") and hasattr(source, "links"):
@@ -102,7 +107,7 @@ class JsonLDParser(rdflib.parser.Parser):
         except ValueError:
             version = None
 
-        generalized_rdf = kwargs.get("generalized_rdf", False)
+        generalized_rdf = kwargs.get("generalized_rdf", False) or base == ""
 
         data = source_to_json(source)
 
