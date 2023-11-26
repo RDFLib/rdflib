@@ -429,7 +429,7 @@ class SinkParser:
             )
 
         self._baseURI: Optional[str]
-        if baseURI:
+        if baseURI is not None:
             self._baseURI = baseURI
         else:
             if thisDoc:
@@ -1263,12 +1263,13 @@ class SinkParser:
                 uref = unicodeEscape8.sub(unicodeExpand, uref)
                 uref = unicodeEscape4.sub(unicodeExpand, uref)
 
-                if self._baseURI:
-                    uref = join(self._baseURI, uref)  # was: uripath.join
-                else:
+                if self._baseURI is None:
                     assert (
                         ":" in uref
                     ), "With no base URI, cannot deal with relative URIs"
+                elif self._baseURI != "":
+                    uref = join(self._baseURI, uref)  # was: uripath.join
+
                 if argstr[i - 1] == "#" and not uref[-1:] == "#":
                     uref += "#"  # She meant it! Weirdness in urlparse?
                 symb = self._store.newSymbol(uref)
@@ -2011,7 +2012,12 @@ class TurtleParser(Parser):
 
         sink = RDFSink(graph)
 
-        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
+        public_id = source.getPublicId()
+        baseURI = (
+            public_id
+            if public_id == ""
+            else graph.absolutize(public_id or source.getSystemId() or "")
+        )
         p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
         # N3 parser prefers str stream
         stream = source.getCharacterStream()
