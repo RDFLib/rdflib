@@ -186,15 +186,19 @@ class RDFXMLHandler(handler.ContentHandler):
             if parent and parent.base:
                 base = urljoin(parent.base, base)
             else:
-                systemId = self.locator.getPublicId() or self.locator.getSystemId()
+                systemId = self.locator.getPublicId()
+                if not isinstance(systemId, str):
+                    systemId = self.locator.getSystemId()
                 if systemId:
                     base = urljoin(systemId, base)
         else:
             if parent:
                 base = parent.base
             if base is None:
-                systemId = self.locator.getPublicId() or self.locator.getSystemId()
-                if systemId:
+                systemId = self.locator.getPublicId()
+                if not isinstance(systemId, str):
+                    systemId = self.locator.getSystemId()
+                if systemId is not None:
                     base, frag = urldefrag(systemId)
         current.base = base
         language = attrs.get(LANG, None)
