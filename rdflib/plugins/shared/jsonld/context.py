@@ -330,6 +330,11 @@ class Context:
 
     def resolve_iri(self, iri: str) -> str:
         # type error: Argument 1 to "norm_url" has incompatible type "Optional[str]"; expected "str"
+        if self._base == "":
+            # we are doing this to avoid calling norm_url(".", iri), which ends up
+            # returning ".<iri>". TODO: is it better to maybe have norm_url not insert
+            # a period?
+            return iri
         return norm_url(self._base, iri)  # type: ignore[arg-type]
 
     def isblank(self, ref: str) -> bool:
