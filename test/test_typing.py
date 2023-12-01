@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+# Portions of this file contributed by NIST are governed by the following
+# statement:
+#
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
 # of their official duties. Pursuant to title 17 Section 105 of the
@@ -132,3 +137,51 @@ WHERE {
 
     python_iri: str = kb_https_uriref.toPython()
     assert python_iri == "https://example.org/kb/y"
+
+
+def test_rdflib_construct_query_result_exercise() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for a CONSTRUCT query.
+    """
+
+    # TODO - Data for these graphs is probably not necessary.  Review "probably" in this sentence after supporting implementation is complete.
+    graph0 = rdflib.Graph()
+    graph1 = rdflib.Graph()
+
+    construct_query = """\
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+CONSTRUCT {
+  ?s rdfs:comment "seen"@en .
+  ?s rdfs:seeAlso ?s .
+}
+WHERE {
+  ?s ?p ?o .
+}
+"""
+    for result in graph0.query(construct_query):
+        graph1.add(result)
+
+    subjects0: Set[rdflib.term.Node] = {x for x in graph0.subjects(None, None)}
+    subjects1: Set[rdflib.term.Node] = {x for x in graph1.subjects(None, None)}
+    assert len(subjects0) == len(subjects1)
+
+
+def test_rdflib_select_query_result_exercise() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for a SELECT query.
+    """
+
+    # TODO - Data for this graph is probably not necessary.  Review "probably" in this sentence after supporting implementation is complete.
+    graph = rdflib.Graph()
+
+    # Assemble set of all triple-objects (position 2) that are URIRefs.
+    n_urirefs: Set[rdflib.URIRef] = set()
+    select_query = """\
+SELECT ?s ?p ?o
+WHERE {
+  ?s ?p ?o .
+}
+"""
+    for result in graph.query(select_query):
+        if isinstance(result[2], rdflib.URIRef):
+            n_urirefs.add(result[2])
