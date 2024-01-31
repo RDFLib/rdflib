@@ -23,12 +23,12 @@ def parse_shacl_path(
 ) -> Union[URIRef, Path]:
     """
     Parse a valid SHACL path (e.g. the object of a triple with predicate sh:path)
-    from a :class:`Graph` as a :class:`URIRef` if the path is simply a predicate
-    or a :class:`Path` otherwise.
+    from a :class:`~rdflib.graph.Graph` as a :class:`~rdflib.term.URIRef` if the path
+    is simply a predicate or a :class:`~rdflib.paths.Path` otherwise.
 
-    :param shapes_graph: A :class:`Graph` containing the path to be parsed
-    :param path_identifier: A :class:`URIRef` or A :class:`BNode` of the path
-    :return: A :class:`URIRef` or a :class:`Path` representing the SHACL Path
+    :param shapes_graph: A :class:`~rdflib.graph.Graph` containing the path to be parsed
+    :param path_identifier: A :class:`~rdflib.term.Node` of the path
+    :return: A :class:`~rdflib.term.URIRef` or a :class:`~rdflib.paths.Path`
     """
     path: Optional[Union[URIRef, Path]] = None
 
