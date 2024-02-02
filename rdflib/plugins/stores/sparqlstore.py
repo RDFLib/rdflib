@@ -670,7 +670,9 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
         return SPARQLStore.__len__(self, *args, **kwargs)
 
-    def open(self, configuration: Union[str, Tuple[str, str]], create: bool = False) -> None:
+    def open(
+        self, configuration: Union[str, Tuple[str, str]], create: bool = False
+    ) -> None:
         """
         sets the endpoint URLs for this SPARQLStore
 
