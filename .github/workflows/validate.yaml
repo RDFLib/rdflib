@@ -78,7 +78,7 @@ jobs:
           distribution: "temurin"
           java-version: "17"
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run preparation
@@ -140,7 +140,7 @@ jobs:
         run: |
           pip install -r devtools/requirements-poetry.in
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run task
