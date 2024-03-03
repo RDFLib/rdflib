@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # Create a complex number RDFlib Literal
     EG = Namespace("http://example.com/")
     c = complex(2, 3)
-    l = Literal(c)
+    l = Literal(c)  # noqa: E741
 
     # Add it to a graph
     g = Graph()

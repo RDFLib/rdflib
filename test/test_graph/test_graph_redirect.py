@@ -1,4 +1,6 @@
-from test.data import TEST_DATA_DIR, simple_triple_graph
+from __future__ import annotations
+
+from test.data import SIMPLE_TRIPLE_GRAPH, TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
@@ -38,7 +40,7 @@ def test_graph_redirect_new_host(
 
     graph = Graph()
     graph.parse(location=f"{mock_a.url}/a/data.ttl")
-    GraphHelper.assert_sets_equals(graph, simple_triple_graph)
+    GraphHelper.assert_sets_equals(graph, SIMPLE_TRIPLE_GRAPH)
     for mock in function_httpmocks:
         assert 1 == len(mock.requests[MethodName.GET])
         for request in mock.requests[MethodName.GET]:

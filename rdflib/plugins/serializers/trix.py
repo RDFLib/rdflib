@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import IO, Optional
 
 from rdflib.graph import ConjunctiveGraph, Graph
@@ -51,7 +53,7 @@ class TriXSerializer(Serializer):
         self.writer.pop()
         stream.write("\n".encode("latin-1"))
 
-    def _writeGraph(self, graph):
+    def _writeGraph(self, graph):  # noqa: N802
         self.writer.push(TRIXNS["graph"])
         if graph.base:
             self.writer.attribute(
@@ -64,7 +66,7 @@ class TriXSerializer(Serializer):
             self._writeTriple(triple)
         self.writer.pop()
 
-    def _writeTriple(self, triple):
+    def _writeTriple(self, triple):  # noqa: N802
         self.writer.push(TRIXNS["triple"])
         for component in triple:
             if isinstance(component, URIRef):

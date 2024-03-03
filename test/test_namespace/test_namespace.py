@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 from typing import Any, Optional
 from warnings import warn

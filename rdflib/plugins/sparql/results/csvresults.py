@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 
 This module implements a parser and serializer for the CSV SPARQL result
@@ -8,6 +6,9 @@ formats
 http://www.w3.org/TR/sparql11-results-csv-tsv/
 
 """
+
+
+from __future__ import annotations
 
 import codecs
 import csv

@@ -149,7 +149,7 @@ A SPARQL query example
 
     from rdflib import Graph
 
-    # Create a Graph, pare in Internet data
+    # Create a Graph, parse in Internet data
     g = Graph().parse("http://www.w3.org/People/Berners-Lee/card")
 
     # Query the data in g using SPARQL

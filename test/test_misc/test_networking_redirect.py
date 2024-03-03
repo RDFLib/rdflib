@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from contextlib import ExitStack
 from copy import deepcopy
 from test.utils.http import headers_as_message as headers_as_message

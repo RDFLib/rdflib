@@ -6,7 +6,7 @@ from rdflib.plugins.sparql import prepareQuery
 g = ConjunctiveGraph()
 
 
-def testStr():
+def test_str():
     a = set(
         g.query(
             "SELECT (STR(?target) AS ?r) WHERE { }",
@@ -21,7 +21,7 @@ def testStr():
     assert a == b, "STR: %r != %r" % (a, b)
 
 
-def testIsIRI():
+def test_is_iri():
     a = set(
         g.query(
             "SELECT (isIRI(?target) AS ?r) WHERE { }",
@@ -36,7 +36,7 @@ def testIsIRI():
     assert a == b, "isIRI: %r != %r" % (a, b)
 
 
-def testIsBlank():
+def test_is_blank():
     a = set(
         g.query(
             "SELECT (isBlank(?target) AS ?r) WHERE { }",
@@ -51,7 +51,7 @@ def testIsBlank():
     assert a == b, "isBlank: %r != %r" % (a, b)
 
 
-def testIsLiteral():
+def test_is_literal():
     a = set(
         g.query(
             "SELECT (isLiteral(?target) AS ?r) WHERE { }",
@@ -66,7 +66,7 @@ def testIsLiteral():
     assert a == b, "isLiteral: %r != %r" % (a, b)
 
 
-def testUCase():
+def test_ucase():
     a = set(
         g.query(
             "SELECT (UCASE(?target) AS ?r) WHERE { }",
@@ -81,7 +81,7 @@ def testUCase():
     assert a == b, "UCASE: %r != %r" % (a, b)
 
 
-def testNoFunc():
+def test_no_func():
     a = set(
         g.query("SELECT ?target WHERE { }", initBindings={"target": Literal("example")})
     )
@@ -89,7 +89,7 @@ def testNoFunc():
     assert a == b, "no func: %r != %r" % (a, b)
 
 
-def testOrderBy():
+def test_order_by():
     a = set(
         g.query(
             "SELECT ?target WHERE { } ORDER BY ?target",
@@ -104,7 +104,7 @@ def testOrderBy():
     assert a == b, "orderby: %r != %r" % (a, b)
 
 
-def testOrderByFunc():
+def test_order_by_func():
     a = set(
         g.query(
             "SELECT (UCASE(?target) as ?r) WHERE { } ORDER BY ?target",
@@ -119,7 +119,7 @@ def testOrderByFunc():
     assert a == b, "orderbyFunc: %r != %r" % (a, b)
 
 
-def testNoFuncLimit():
+def test_no_func_limit():
     a = set(
         g.query(
             "SELECT ?target WHERE { } LIMIT 1",
@@ -130,7 +130,7 @@ def testNoFuncLimit():
     assert a == b, "limit: %r != %r" % (a, b)
 
 
-def testOrderByLimit():
+def test_order_by_limit():
     a = set(
         g.query(
             "SELECT ?target WHERE { } ORDER BY ?target LIMIT 1",
@@ -145,7 +145,7 @@ def testOrderByLimit():
     assert a == b, "orderbyLimit: %r != %r" % (a, b)
 
 
-def testOrderByFuncLimit():
+def test_order_by_func_limit():
     a = set(
         g.query(
             "SELECT (UCASE(?target) as ?r) WHERE { } ORDER BY ?target LIMIT 1",
@@ -160,7 +160,7 @@ def testOrderByFuncLimit():
     assert a == b, "orderbyFuncLimit: %r != %r" % (a, b)
 
 
-def testNoFuncOffset():
+def test_no_func_offset():
     a = set(
         g.query(
             "SELECT ?target WHERE { } OFFSET 1",
@@ -171,7 +171,7 @@ def testNoFuncOffset():
     assert a == b, "offset: %r != %r" % (a, b)
 
 
-def testNoFuncLimitOffset():
+def test_no_func_limit_offset():
     a = set(
         g.query(
             "SELECT ?target WHERE { } LIMIT 1 OFFSET 1",
@@ -186,7 +186,7 @@ def testNoFuncLimitOffset():
     assert a == b, "limitOffset: %r != %r" % (a, b)
 
 
-def testOrderByLimitOffset():
+def test_order_by_limit_offset():
     a = set(
         g.query(
             "SELECT ?target WHERE { } ORDER BY ?target LIMIT 1 OFFSET 1",
@@ -201,7 +201,7 @@ def testOrderByLimitOffset():
     assert a == b, "orderbyLimitOffset: %r != %r" % (a, b)
 
 
-def testOrderByFuncLimitOffset():
+def test_order_by_func_limit_offset():
     a = set(
         g.query(
             "SELECT (UCASE(?target) as ?r) WHERE { } ORDER BY ?target LIMIT 1 OFFSET 1",
@@ -216,7 +216,7 @@ def testOrderByFuncLimitOffset():
     assert a == b, "orderbyFuncLimitOffset: %r != %r" % (a, b)
 
 
-def testDistinct():
+def test_distinct():
     a = set(
         g.query(
             "SELECT DISTINCT ?target WHERE { }",
@@ -227,7 +227,7 @@ def testDistinct():
     assert a == b, "distinct: %r != %r" % (a, b)
 
 
-def testDistinctOrderBy():
+def test_distinct_order_by():
     a = set(
         g.query(
             "SELECT DISTINCT ?target WHERE { } ORDER BY ?target",
@@ -242,7 +242,7 @@ def testDistinctOrderBy():
     assert a == b, "distinctOrderby: %r != %r" % (a, b)
 
 
-def testDistinctOrderByLimit():
+def test_distinct_order_by_limit():
     a = set(
         g.query(
             "SELECT DISTINCT ?target WHERE { } ORDER BY ?target LIMIT 1",
@@ -257,7 +257,7 @@ def testDistinctOrderByLimit():
     assert a == b, "distinctOrderbyLimit: %r != %r" % (a, b)
 
 
-def testPrepare():
+def test_prepare():
     q = prepareQuery("SELECT ?target WHERE { }")
     r = list(g.query(q))
     e = []
@@ -272,7 +272,7 @@ def testPrepare():
     assert r == e, "prepare: %r != %r" % (r, e)
 
 
-def testData():
+def test_data():
     data = ConjunctiveGraph()
     data += [
         (URIRef("urn:a"), URIRef("urn:p"), Literal("a")),
@@ -292,7 +292,7 @@ def testData():
     assert a == b, "data: %r != %r" % (a, b)
 
 
-def testAsk():
+def test_ask():
     a = set(g.query("ASK { }", initBindings={"target": Literal("example")}))
     b = set(g.query("ASK { } VALUES (?target) {('example')}"))
     assert a == b, "ask: %r != %r" % (a, b)
@@ -304,21 +304,21 @@ g2.add((EGDC["s1"], EGDC["p"], EGDC["o1"]))
 g2.add((EGDC["s2"], EGDC["p"], EGDC["o2"]))
 
 
-def testStringKey():
+def test_string_key():
     results = list(
         g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"s": EGDC["s1"]})
     )
     assert len(results) == 1, results
 
 
-def testStringKeyWithQuestionMark():
+def test_string_key_with_question_mark():
     results = list(
         g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"?s": EGDC["s1"]})
     )
     assert len(results) == 1, results
 
 
-def testVariableKey():
+def test_variable_key():
     results = list(
         g2.query(
             "SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("s"): EGDC["s1"]}
@@ -327,7 +327,7 @@ def testVariableKey():
     assert len(results) == 1, results
 
 
-def testVariableKeyWithQuestionMark():
+def test_variable_key_with_question_mark():
     results = list(
         g2.query(
             "SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("?s"): EGDC["s1"]}
@@ -336,7 +336,7 @@ def testVariableKeyWithQuestionMark():
     assert len(results) == 1, results
 
 
-def testFilter():
+def test_filter():
     results = list(
         g2.query(
             "SELECT ?o WHERE { ?s :p ?o FILTER (?s = ?x)}",

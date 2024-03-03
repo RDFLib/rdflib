@@ -1,7 +1,7 @@
-.. _upgrade4to5: Upgrading from RDFLib version 6 to 7
+.. _upgrade6to7: Upgrading from RDFLib version 6 to 7
 
 ============================================
-Upgrading 6 to 7
+Upgrading from version 6 to 7
 ============================================
 
 Python version
@@ -13,8 +13,8 @@ New behaviour for ``publicID`` in ``parse`` methods.
 ----------------------------------------------------
 
 Before version 7, the ``publicID`` argument to the
-:meth:`~rdflib.graph.ConjunctiveGraph.parse` and
-:meth:`~rdflib.graph.Dataset.parse` methods was used as the name for the default
+:meth:`rdflib.graph.ConjunctiveGraph.parse` and
+:meth:`rdflib.graph.Dataset.parse` methods was used as the name for the default
 graph, and triples from the default graph in a source were loaded into the graph
 named ``publicID``.
 

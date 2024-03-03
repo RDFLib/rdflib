@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import re
 from http.server import BaseHTTPRequestHandler
@@ -165,7 +167,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         302,
                         "FOUND",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/302/{idx}"]},
                     )
                 )
@@ -174,7 +176,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         303,
                         "See Other",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/303/{idx}"]},
                     )
                 )
@@ -183,7 +185,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         308,
                         "Permanent Redirect",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/308/{idx}"]},
                     )
                 )
@@ -227,7 +229,7 @@ class TestGraphHTTP:
         with ServedBaseHTTPServerMock() as httpmock:
             url = httpmock.url
             httpmock.responses[MethodName.GET].append(
-                MockHTTPResponse(500, "Internal Server Error", "".encode(), {})
+                MockHTTPResponse(500, "Internal Server Error", b"", {})
             )
 
             graph = Graph()

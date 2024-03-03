@@ -31,9 +31,8 @@ def test_definednamespace_creator_qb():
             "http://purl.org/linked-data/cube#",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 0, "subprocess exited incorrectly"
     assert Path.is_file(Path("_QB.py")), "_QB.py file not created"
@@ -81,9 +80,8 @@ def test_definednamespace_creator_fake():
             "http://purl.org/linked-data/cube#",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
 
@@ -112,9 +110,8 @@ def test_definednamespace_creator_bad_ns():
             "http://purl.org/linked-data/cube",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
 
@@ -145,9 +142,8 @@ def test_definednamespace_creator_multiple_comments():
             "http://example.org/multiline-string-example#",
             "MULTILINESTRINGEXAMPLE",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 0, "subprocess exited incorrectly"
     assert Path.is_file(

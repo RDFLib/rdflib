@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
 from test.data import TEST_DATA_DIR

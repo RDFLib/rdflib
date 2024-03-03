@@ -46,7 +46,7 @@ def example_1():
     print("(will always be 0 when using temp file for DB)")
 
     # Now we'll add some triples to the graph & commit the changes
-    EG = Namespace("http://example.net/test/")
+    EG = Namespace("http://example.net/test/")  # noqa: N806
     graph.bind("eg", EG)
 
     graph.add((EG["pic:1"], EG.name, Literal("Jane & Bob")))

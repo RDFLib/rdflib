@@ -1,9 +1,9 @@
 """
 An RDFLib Dataset is a slight extension to ConjunctiveGraph: it uses simpler terminology
-and has a few additional convenience method extensions, for example add() can be used to
+and has a few additional convenience methods, for example add() can be used to
 add quads directly to a specific Graph within the Dataset.
 
-This example file shows how to decalre a Dataset, add content to it, serialise it, query it
+This example file shows how to declare a Dataset, add content to it, serialise it, query it
 and remove things from it.
 """
 
@@ -12,11 +12,10 @@ from rdflib import Dataset, Literal, Namespace, URIRef
 # Note regarding `mypy: ignore_errors=true`:
 #
 # This example is using URIRef values as context identifiers. This is contrary
-# to the type hints, but it does work. Most likely the type hints are wrong.
+# to the type hints, but it does work. Most likely, the type hints are wrong.
 # Ideally we should just use `# type: ignore` comments for the lines that are
-# causing problems, but for some reason the error occurs on different lines with
-# different python versions, so the only option is to ignore errors for the
-# whole file.
+# causing problems, but the error occurs on different lines with different
+# Python versions, so the only option is to ignore errors for the whole file.
 
 # mypy: ignore_errors=true
 
@@ -102,7 +101,7 @@ print("---")
 print()
 print()
 
-# Query one graph in the Dataset for all it's triples
+# Query one graph in the Dataset for all its triples
 # we should get
 """
 (rdflib.term.URIRef('http://example.com/subject-z'), rdflib.term.URIRef('http://example.com/predicate-z'), rdflib.term.Literal('Triple Z'))
@@ -117,7 +116,7 @@ print()
 print()
 
 # Query the union of all graphs in the dataset for all triples
-# we should get Nothing:
+# we should get nothing:
 """
 """
 # A Dataset's default union graph does not exist by default (default_union property is False)

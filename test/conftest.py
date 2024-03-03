@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 import sys
 from contextlib import ExitStack
 
 import pytest
 
+# This is here so that asserts from these modules are formatted for human
+# readibility.
 pytest.register_assert_rewrite("test.utils")
 
-from pathlib import Path  # noqa: E402
-from test.utils.audit import AuditHookDispatcher  # noqa: E402
-from test.utils.http import ctx_http_server  # noqa: E402
-from test.utils.httpfileserver import HTTPFileServer  # noqa: E402
-from typing import (  # noqa: E402
+from pathlib import Path
+from test.utils.audit import AuditHookDispatcher
+from test.utils.http import ctx_http_server
+from test.utils.httpfileserver import HTTPFileServer
+from typing import (
     Collection,
     Dict,
     Generator,
@@ -22,13 +26,10 @@ from typing import (  # noqa: E402
 from rdflib import Graph
 
 from .data import TEST_DATA_DIR
-from .utils.earl import EARLReporter  # noqa: E402
-from .utils.httpservermock import ServedBaseHTTPServerMock  # noqa: E402
+from .utils.earl import EARLReporter
+from .utils.httpservermock import ServedBaseHTTPServerMock
 
 pytest_plugins = [EARLReporter.__module__]
-
-# This is here so that asserts from these modules are formatted for human
-# readibility.
 
 
 @pytest.fixture(scope="session")

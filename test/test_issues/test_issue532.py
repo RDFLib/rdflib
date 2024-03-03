@@ -48,7 +48,7 @@ def test_issue532():
 
       FILTER (?date >= "2004-06-20"^^xsd:date)
     }
-    """
+    """  # noqa: N806
 
     result = list(g.query(getnewMeps))
     assert len(result) == 1

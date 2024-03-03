@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
 from pathlib import PurePath, PurePosixPath, PureWindowsPath

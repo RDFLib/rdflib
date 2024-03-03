@@ -51,7 +51,7 @@ class Cache(events.Dispatcher):
 
 
 class TestEvent:
-    def testEvents(self):
+    def testEvents(self):  # noqa: N802
         c1 = Cache()
         c2 = Cache()
         c3 = Cache()

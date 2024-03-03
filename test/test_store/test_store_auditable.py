@@ -1,4 +1,3 @@
-# -*- coding=utf8 -*-
 from test.utils.namespace import EGDO
 
 import pytest
