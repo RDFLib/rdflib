@@ -173,12 +173,6 @@ MARK_DICT = {
     f"{REMOTE_BASE_IRI}#trig-syntax-bad-list-04": pytest.mark.xfail(
         reason="ignores badly formed quad"
     ),
-    f"{REMOTE_BASE_IRI}#trig-graph-bad-01": pytest.mark.xfail(
-        reason="accepts GRAPH with no name"
-    ),
-    f"{REMOTE_BASE_IRI}#trig-graph-bad-07": pytest.mark.xfail(
-        reason="accepts nested GRAPH"
-    ),
 }
 
 

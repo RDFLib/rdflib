@@ -11,6 +11,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
+from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.sparql.algebra import translateAlgebra
 
 
@@ -304,3 +305,25 @@ def test_roundtrip(test_spec: AlgebraTest, data_path: Path) -> None:
     # TODO: Execute the raw query (query_text) and the reconstituted query
     # (query_from_query_from_algebra) against a well defined graph and ensure
     # they yield the same result.
+
+
+def test_sparql_group_concat():
+    """Tests if GROUP_CONCAT correctly uses the separator keyword"""
+    query = """
+    PREFIX : <http://example.org/>
+
+    SELECT ?subject (GROUP_CONCAT(?object; separator="")
+                        AS ?concatenatedObjects)
+    WHERE {
+      VALUES (?subject ?object) {
+        (:pred "a")
+        (:pred "b")
+        (:pred "c")
+      }
+    }
+    GROUP BY ?subject
+    """
+
+    g = Graph()
+    q = dict(g.query(query))
+    assert q[URIRef("http://example.org/pred")] == Literal("abc")

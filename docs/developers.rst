@@ -16,7 +16,7 @@ developing RDFLib code.
 * You must supply tests for new code.
 * RDFLib uses `Poetry <https://python-poetry.org/docs/master/>`_ for dependency management and packaging.
 
-If you add a new cool feature, consider also adding an example in ``./examples``
+If you add a new cool feature, consider also adding an example in ``./examples``.
 
 Pull Requests Guidelines
 ------------------------
@@ -70,6 +70,87 @@ the users of this project.
 
 Please note that while we would like all PRs to follow the guidelines given
 here, we will not reject a PR just because it does not.
+
+Maintenance Guidelines
+----------------------
+
+This section contains guidelines for maintaining RDFLib. RDFLib maintainers
+should try to follow these. These guidelines also serve as an indication to
+RDFLib users what they can expect.
+
+Breaking changes
+~~~~~~~~~~~~~~~~
+
+Breaking changes to RDFLib's public API should be made incrementally, with small
+pull requests to the main branch that change as few things as possible.
+
+Breaking changes should be discussed first in an issue before work is started,
+as it is possible that the change is not necessary or that there is a better way
+to achieve the same goal, in which case the work on the PR would have been
+wasted. This will however not be strictly enforced, and no PR will be rejected
+solely on the basis that it was not discussed upfront.
+
+RDFLib follows `semantic versioning <https://semver.org/spec/v2.0.0.html>`_ and `trunk-based development
+<https://trunkbaseddevelopment.com/>`_, so if any breaking changes were
+introduced into the main branch since the last release, then the next release
+will be a major release with an incremented major version. 
+
+Releases of RDFLib will not as a rule be conditioned on specific features, so
+there may be new major releases that contain very few breaking changes, and
+there could be no minor or patch releases between two major releases.
+
+.. _breaking_changes_rationale:
+
+Rationale
+^^^^^^^^^
+
+RDFLib has been around for more than a decade, and in this time both Python and
+RDF have evolved, and RDFLib's API also has to evolve to keep up with these
+changes and to make it easier for users to use. This will inevitably require
+breaking changes.
+
+There are more or less two ways to introduce breaking changes to RDFLib's public
+API:
+
+- Revolutionary: Create a new API from scratch and reimplement it, and when
+  ready, release a new version of RDFLib with the new API.
+- Evolutionary: Incrementally improve the existing API with small changes and
+  release any breaking changes that were made at regular intervals.
+
+While the revolutionary approach seems appealing, it is also risky and
+time-consuming.
+
+The evolutionary approach puts a lot of strain on the users of RDFLib as they
+have to adapt to breaking changes more often, but the shortcomings of the RDFLib
+public API also put a lot of strain on the users of RDFLib. On the other hand, a
+major advantage of the evolutionary approach is that it is simple and achievable
+from a maintenance and contributor perspective.
+
+Deprecating functionality
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To whatever extent possible, classes, functions, variables, or parameters that
+will be removed should be marked for deprecation in documentation, and if
+possible, should be changed to raise deprecation warnings if used.
+
+There is however no hard requirement that something may only be removed after a
+deprecation notice has been added, or only after a release was made with a
+deprecation notice.
+
+Consequently, functionality may be removed without it ever being marked as
+deprecated.
+
+.. _deprecation_rationale:
+
+Rationale
+^^^^^^^^^
+
+Current resource limitations and the backlog of issues make it impractical to
+first release or incorporate deprecation notices before making quality of life
+changes.
+
+RDFLib uses semantic versioning and provides type hints, and these are the
+primary mechanisms for signalling breaking changes to our users.
 
 .. _tests:
 
@@ -355,6 +436,8 @@ flag them as expecting to fail.
 
 Compatibility
 -------------
+
+RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
 
 RDFlib 6.0.0 release and later only support Python 3.7 and newer.
 

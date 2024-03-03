@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from contextlib import ExitStack
 from pathlib import Path
 from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 from test.utils import GraphHelper, get_unique_plugin_names
-from test.utils.exceptions import ExceptionChecker
 from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from typing import Callable, Optional, Set, Tuple, Union
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
+from typing import Callable, Optional, Set, Tuple
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -373,7 +372,7 @@ def test_guess_format_for_parse_http(
     http_file_server: HTTPFileServer,
     file: Path,
     content_type: Optional[str],
-    expected_result: Union[int, ExceptionChecker],
+    expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
     headers: Tuple[Tuple[str, str], ...] = tuple()
@@ -384,21 +383,11 @@ def test_guess_format_for_parse_http(
         ProtoFileResource(headers, file),
         suffix=f"/{file.name}",
     )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-
+    checker = OutcomeChecker.from_primitive(expected_result)
     assert 0 == len(graph)
-    with ExitStack() as exit_stack:
-        if isinstance(expected_result, ExceptionChecker):
-            catcher = exit_stack.enter_context(pytest.raises(expected_result.type))
+    with checker.context():
         graph.parse(location=file_info.request_url)
-
-    if catcher is not None:
-        # assert catcher.value is not None
-        assert isinstance(expected_result, ExceptionChecker)
-        logging.debug("graph = %s", list(graph.triples((None, None, None))))
-    else:
-        assert isinstance(expected_result, int)
-        assert expected_result == len(graph)
+        checker.check(len(graph))
 
 
 def test_parse_file_uri(make_graph: GraphFactory):

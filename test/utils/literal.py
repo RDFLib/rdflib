@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import builtins
 from dataclasses import dataclass
+from test.utils.outcome import NoExceptionChecker
 from typing import Any, Union
 
 from rdflib.term import Literal, URIRef
 
 
-@dataclass
-class LiteralChecker:
+@dataclass(frozen=True)
+class LiteralChecker(NoExceptionChecker[Literal]):
     value: Union[builtins.ellipsis, Any] = ...
     language: Union[builtins.ellipsis, str, None] = ...
     datatype: Union[builtins.ellipsis, URIRef, None] = ...

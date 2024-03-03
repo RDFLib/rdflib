@@ -55,6 +55,7 @@ apidoc_output_dir = "apidocs"
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 autodoc_default_options = {"special-members": True}
+autodoc_inherit_docstrings = True
 
 # https://github.com/tox-dev/sphinx-autodoc-typehints
 always_document_param_types = True
@@ -255,7 +256,7 @@ htmlhelp_basename = "rdflibdoc"
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.8", None),
 }
 
 html_experimental_html5_writer = True
@@ -266,6 +267,7 @@ suppress_warnings = [
     # This is here to prevent:
     #  "WARNING: more than one target found for cross-reference"
     "ref.python",
+    "autosectionlabel.*",
 ]
 
 sphinx_version = tuple(int(part) for part in sphinx.__version__.split("."))
@@ -300,6 +302,7 @@ nitpick_ignore = [
     ("py:class", "ParseFailAction"),
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
+    ("py:class", "pyparsing.core.ParserElement"),
     # These are related to BerkeleyDB
     ("py:class", "db.DBEnv"),
 ]
@@ -328,9 +331,6 @@ if sys.version_info < (3, 9):
             ("py:class", "Message"),
         ]
     )
-
-if sys.version_info < (3, 8):
-    nitpick_ignore.extend([("py:class", "importlib_metadata.EntryPoint")])
 
 
 def autodoc_skip_member_handler(

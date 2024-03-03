@@ -14,18 +14,13 @@ be imported inside ``TYPE_CHECKING`` guards.
     and this module is not part the the RDFLib public API.
 """
 
-import sys
-
 __all__ = [
     "_NamespaceSetString",
     "_MulPathMod",
 ]
 
 
-if sys.version_info >= (3, 8):
-    from typing import Literal as PyLiteral
-else:
-    from typing_extensions import Literal as PyLiteral
+from typing import Literal as PyLiteral
 
 _NamespaceSetString = PyLiteral["core", "rdflib", "none"]
 _MulPathMod = PyLiteral["*", "+", "?"]  # noqa: F722

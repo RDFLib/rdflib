@@ -69,16 +69,20 @@ class TrigSinkParser(SinkParser):
         raise Exception if it looks like a graph, but isn't.
         """
 
+        need_graphid = False
         # import pdb; pdb.set_trace()
         j = self.sparqlTok("GRAPH", argstr, i)  # optional GRAPH keyword
         if j >= 0:
             i = j
+            need_graphid = True
 
         r: MutableSequence[Any] = []
         j = self.labelOrSubject(argstr, i, r)
         if j >= 0:
             graph = r[0]
             i = j
+        elif need_graphid:
+            self.BadSyntax(argstr, i, "GRAPH keyword must be followed by graph name")
         else:
             graph = self._store.graph.identifier  # hack
 
@@ -97,6 +101,9 @@ class TrigSinkParser(SinkParser):
             return -1  # the node wasn't part of a graph
 
         j = i + 1
+
+        if self._context is not None:
+            self.BadSyntax(argstr, i, "Nested graphs are not allowed")
 
         oldParentContext = self._parentContext
         self._parentContext = self._context

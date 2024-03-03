@@ -85,13 +85,10 @@ def function_httpmocks(
 
 
 @pytest.fixture(scope="session", autouse=True)
-def audit_hook_dispatcher() -> Generator[Optional[AuditHookDispatcher], None, None]:
-    if sys.version_info >= (3, 8):
-        dispatcher = AuditHookDispatcher()
-        sys.addaudithook(dispatcher.audit)
-        yield dispatcher
-    else:
-        yield None
+def audit_hook_dispatcher() -> Generator[AuditHookDispatcher, None, None]:
+    dispatcher = AuditHookDispatcher()
+    sys.addaudithook(dispatcher.audit)
+    yield dispatcher
 
 
 @pytest.fixture(scope="function")

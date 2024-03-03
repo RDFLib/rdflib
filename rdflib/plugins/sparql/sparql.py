@@ -312,6 +312,17 @@ class QueryContext:
         return self._dataset
 
     def load(self, source: URIRef, default: bool = False, **kwargs: Any) -> None:
+        """
+        Load data from the source into the query context's.
+
+        :param source: The source to load from.
+        :param default: If `True`, triples from the source will be added to the
+            default graph, otherwise it will be loaded into a graph with
+            ``source`` URI as its name.
+        :param kwargs: Keyword arguments to pass to
+            :meth:`rdflib.graph.Graph.parse`.
+        """
+
         def _load(graph, source):
             try:
                 return graph.parse(source, format="turtle", **kwargs)
@@ -342,7 +353,7 @@ class QueryContext:
             if default:
                 _load(self.graph, source)
             else:
-                _load(self.dataset, source)
+                _load(self.dataset.get_context(source), source)
 
     def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
         # in SPARQL BNodes are just labels

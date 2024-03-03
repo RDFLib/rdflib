@@ -1,4 +1,6 @@
-from rdflib import ConjunctiveGraph, Literal, Namespace, URIRef, Variable
+from test.utils.namespace import EGDC
+
+from rdflib import ConjunctiveGraph, Literal, URIRef, Variable
 from rdflib.plugins.sparql import prepareQuery
 
 g = ConjunctiveGraph()
@@ -296,30 +298,31 @@ def testAsk():
     assert a == b, "ask: %r != %r" % (a, b)
 
 
-EX = Namespace("http://example.com/")
 g2 = ConjunctiveGraph()
-g2.bind("", EX)
-g2.add((EX["s1"], EX["p"], EX["o1"]))
-g2.add((EX["s2"], EX["p"], EX["o2"]))
+g2.bind("", EGDC)
+g2.add((EGDC["s1"], EGDC["p"], EGDC["o1"]))
+g2.add((EGDC["s2"], EGDC["p"], EGDC["o2"]))
 
 
 def testStringKey():
     results = list(
-        g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"s": EX["s1"]})
+        g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"s": EGDC["s1"]})
     )
     assert len(results) == 1, results
 
 
 def testStringKeyWithQuestionMark():
     results = list(
-        g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"?s": EX["s1"]})
+        g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={"?s": EGDC["s1"]})
     )
     assert len(results) == 1, results
 
 
 def testVariableKey():
     results = list(
-        g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("s"): EX["s1"]})
+        g2.query(
+            "SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("s"): EGDC["s1"]}
+        )
     )
     assert len(results) == 1, results
 
@@ -327,7 +330,7 @@ def testVariableKey():
 def testVariableKeyWithQuestionMark():
     results = list(
         g2.query(
-            "SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("?s"): EX["s1"]}
+            "SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("?s"): EGDC["s1"]}
         )
     )
     assert len(results) == 1, results
@@ -337,7 +340,7 @@ def testFilter():
     results = list(
         g2.query(
             "SELECT ?o WHERE { ?s :p ?o FILTER (?s = ?x)}",
-            initBindings={Variable("?x"): EX["s1"]},
+            initBindings={Variable("?x"): EGDC["s1"]},
         )
     )
     assert len(results) == 1, results

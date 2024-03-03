@@ -2,12 +2,17 @@
 Various utilities for working with IRIs and URIs.
 """
 
+import email.utils
+import http.client
 import logging
+import mimetypes
 from dataclasses import dataclass
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 from test.utils import ensure_suffix
 from typing import Callable, Optional, Set, Tuple, Type, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
+from urllib.request import BaseHandler, OpenerDirector, Request
+from urllib.response import addinfourl
 
 from nturl2path import url2pathname as nt_url2pathname
 
@@ -148,3 +153,28 @@ class URIMapper:
                 value = URIMapping.from_tuple(value)
             result.add(value)
         return cls(result)
+
+    def opener(self) -> OpenerDirector:
+        opener = OpenerDirector()
+
+        opener.add_handler(URIMapperHTTPHandler(self))
+
+        return opener
+
+
+class URIMapperHTTPHandler(BaseHandler):
+    def __init__(self, mapper: URIMapper):
+        self.mapper = mapper
+
+    def http_open(self, req: Request) -> addinfourl:
+        url = req.get_full_url()
+        local_uri, local_path = self.mapper.to_local(url)
+        stats = local_path.stat()
+        size = stats.st_size
+        modified = email.utils.formatdate(stats.st_mtime, usegmt=True)
+        mtype = mimetypes.guess_type(f"{local_path}")[0]
+        headers = email.message_from_string(
+            "Content-type: %s\nContent-length: %d\nLast-modified: %s\n"
+            % (mtype or "text/plain", size, modified)
+        )
+        return addinfourl(local_path.open("rb"), headers, url, http.client.OK)

@@ -89,7 +89,11 @@ class Counter(Accumulator):
         return row
 
     def use_row(self, row: FrozenBindings) -> bool:
-        return self.eval_row(row) not in self.seen
+        try:
+            return self.eval_row(row) not in self.seen
+        except NotBoundError:
+            # happens when counting zero optional nodes. See issue #2229
+            return False
 
 
 @overload
@@ -241,11 +245,16 @@ class Sample(Accumulator):
 
 
 class GroupConcat(Accumulator):
-    def __init__(self, aggregation):
+    value: List[Literal]
+
+    def __init__(self, aggregation: CompValue):
         super(GroupConcat, self).__init__(aggregation)
         # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
-        self.separator = aggregation.separator or " "
+        if aggregation.separator is None:
+            self.separator = " "
+        else:
+            self.separator = aggregation.separator
 
     def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
         try:
