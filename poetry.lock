@@ -1085,13 +1085,13 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.3)", "diff-cover (>=7.7)", "pyt
 
 [[package]]
 name = "sphinxcontrib-apidoc"
-version = "0.4.0"
+version = "0.5.0"
 description = "A Sphinx extension for running 'sphinx-apidoc' on each build"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "sphinxcontrib-apidoc-0.4.0.tar.gz", hash = "sha256:fe59d15882472aa93c2737afbdea6bedb34ce35cbd34aa4947909f5df1500aad"},
-    {file = "sphinxcontrib_apidoc-0.4.0-py3-none-any.whl", hash = "sha256:18b9fb0cd4816758ec5f8be41c64f8924991dd40fd7b10e666ec9eed2800baff"},
+    {file = "sphinxcontrib-apidoc-0.5.0.tar.gz", hash = "sha256:65efcd92212a5f823715fb95ee098b458a6bb09a5ee617d9ed3dead97177cd55"},
+    {file = "sphinxcontrib_apidoc-0.5.0-py3-none-any.whl", hash = "sha256:c671d644d6dc468be91b813dcddf74d87893bff74fe8f1b8b01b69408f0fb776"},
 ]
 
 [package.dependencies]
@@ -1286,4 +1286,4 @@ networkx = ["networkx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "245ff6612d9e72b60004cf46050b9865c4a66b52acd57563816f80d7a4ef5ca4"
+content-hash = "6e2eff72ae5df313bf245bdf54a2a6c33f4c280f9e12395f673decabfeb2f238"
