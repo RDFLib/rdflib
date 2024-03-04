@@ -41,7 +41,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install poetry
@@ -66,7 +66,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install poetry
