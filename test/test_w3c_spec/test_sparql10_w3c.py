@@ -23,10 +23,14 @@ MAPPER = URIMapper.from_mappings(
     (REMOTE_BASE_IRI, ensure_suffix(LOCAL_BASE_DIR.as_uri(), "/")),
 )
 MARK_DICT: MarksDictType = {
-    f"{REMOTE_BASE_IRI}basic/manifest#term-6": pytest.mark.xfail(
-        reason="query misinterpreted."
+    f"{REMOTE_BASE_IRI}basic/manifest#term-6": pytest.mark.skip(
+        reason="using Sparql 1.1 which is not backwards compatible. "
+        "'456.' will be interpreted differently in query and data."
     ),
-    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.xfail(reason="..."),
+    f"{REMOTE_BASE_IRI}basic/manifest#term-7": pytest.mark.skip(
+        reason="using Sparql 1.1 which is not backwards compatible. "
+        "'456.' will be interpreted differently in query and data."
+    ),
     f"{REMOTE_BASE_IRI}expr-builtin/manifest#dawg-datatype-2": pytest.mark.xfail(
         reason="additional row in output"
     ),

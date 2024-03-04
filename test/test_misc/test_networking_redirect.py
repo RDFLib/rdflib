@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from contextlib import ExitStack
 from copy import deepcopy
-from test.utils.exceptions import ExceptionChecker
 from test.utils.http import headers_as_message as headers_as_message
+from test.utils.outcome import ExceptionChecker
 from typing import Any, Dict, Iterable, Optional, Type, TypeVar, Union
 from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request
@@ -197,14 +199,13 @@ def test_make_redirect_request(
     result: Optional[Request] = None
     with ExitStack() as stack:
         if isinstance(expected_result, ExceptionChecker):
-            catcher = stack.enter_context(pytest.raises(expected_result.type))
+            catcher = stack.enter_context(expected_result.context())
         elif expected_result is RaisesIdentity:
             catcher = stack.enter_context(pytest.raises(HTTPError))
         result = _make_redirect_request(http_request, http_error)
 
     if isinstance(expected_result, ExceptionChecker):
         assert catcher is not None
-        expected_result.check(catcher.value)
     elif isinstance(expected_result, type):
         assert catcher is not None
         assert http_error is catcher.value

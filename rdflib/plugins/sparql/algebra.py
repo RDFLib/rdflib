@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
 http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
+
+from __future__ import annotations
 
 import collections
 import functools
@@ -174,14 +174,10 @@ def triples(
         List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]
     ]
 ) -> List[Tuple[Identifier, Identifier, Identifier]]:
-    # NOTE on type errors: errors are a result of the variable being reused for
-    # a different type.
-    # type error: Incompatible types in assignment (expression has type "Sequence[Identifier]", variable has type "Union[List[List[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]]")
-    l = reduce(lambda x, y: x + y, l)  # type: ignore[assignment]  # noqa: E741
-    if (len(l) % 3) != 0:
+    _l = reduce(lambda x, y: x + y, l)
+    if (len(_l) % 3) != 0:
         raise Exception("these aint triples")
-    # type error: Generator has incompatible item type "Tuple[Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]], Union[List[Identifier], Tuple[Identifier, Identifier, Identifier]]]"; expected "Tuple[Identifier, Identifier, Identifier]"
-    return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))  # type: ignore[misc]
+    return reorderTriples((_l[x], _l[x + 1], _l[x + 2]) for x in range(0, len(_l), 3))
 
 
 # type error: Missing return statement
@@ -211,12 +207,12 @@ def translatePath(p: URIRef) -> None:
 
 
 @overload
-def translatePath(p: CompValue) -> "Path":
+def translatePath(p: CompValue) -> Path:
     ...
 
 
 # type error: Missing return statement
-def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional["Path"]:  # type: ignore[return]
+def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type: ignore[return]
     """
     Translate PropertyPath expressions
     """
@@ -417,16 +413,14 @@ def _traverse(
 
     if isinstance(e, (list, ParseResults)):
         return [_traverse(x, visitPre, visitPost) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, tuple):  # type: ignore[unreachable]
+    elif isinstance(e, tuple):
         return tuple([_traverse(x, visitPre, visitPost) for x in e])
 
     elif isinstance(e, CompValue):
         for k, val in e.items():
             e[k] = _traverse(val, visitPre, visitPost)
 
-    # type error: Statement is unreachable
-    _e = visitPost(e)  # type: ignore[unreachable]
+    _e = visitPost(e)
     if _e is not None:
         return _e
 
@@ -444,8 +438,7 @@ def _traverseAgg(e, visitor: Callable[[Any, Any], Any] = lambda n, v: None):
 
     if isinstance(e, (list, ParseResults, tuple)):
         res = [_traverseAgg(x, visitor) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, CompValue):  # type: ignore[unreachable]
+    elif isinstance(e, CompValue):
         for k, val in e.items():
             if val is not None:
                 res.append(_traverseAgg(val, visitor))
@@ -1010,16 +1003,14 @@ class _AlgebraTranslator:
     ) -> str:
         if isinstance(node_arg, Identifier):
             if node_arg in self.aggr_vars.keys():
-                # type error: "Identifier" has no attribute "n3"
-                grp_var = self.aggr_vars[node_arg].pop(0).n3()  # type: ignore[attr-defined]
+                grp_var = self.aggr_vars[node_arg].pop(0).n3()
                 return grp_var
             else:
-                # type error: "Identifier" has no attribute "n3"
-                return node_arg.n3()  # type: ignore[attr-defined]
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):
-            return "{" + node_arg.name + "}"
+        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
+            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
         elif isinstance(node_arg, str):
             return node_arg
         else:
@@ -1175,7 +1166,6 @@ class _AlgebraTranslator:
                     " ".join([self.convert_node_arg(pattern) for pattern in node.part]),
                 )
             elif node.name == "TriplesBlock":
-                print("triplesblock")
                 self._replace(
                     "{TriplesBlock}",
                     "".join(
@@ -1336,7 +1326,6 @@ class _AlgebraTranslator:
                 # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
                 # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
                 # we get a GroupGraphPatternSub
-                print(node.graph.name)
                 self._replace(
                     "{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}"
                 )

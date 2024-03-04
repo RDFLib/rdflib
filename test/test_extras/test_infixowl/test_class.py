@@ -1,4 +1,4 @@
-from test.data import context0, context1
+from test.data import CONTEXT0, CONTEXT1
 
 import pytest
 
@@ -216,7 +216,7 @@ def test_class_serialize(graph):
         nameIsLabel=True,
     )
 
-    g1 = Graph(identifier=context1)
+    g1 = Graph(identifier=CONTEXT1)
 
     owlc.serialize(g1)
 
@@ -228,9 +228,9 @@ def test_class_serialize(graph):
 
     owlc.extent = None
 
-    owlc.extent = [context1]
+    owlc.extent = [CONTEXT1]
 
-    assert list(owlc.extent) == [context1]
+    assert list(owlc.extent) == [CONTEXT1]
 
     pred = RDFS.comment
 
@@ -273,7 +273,7 @@ def test_class_serialize(graph):
 
 
 def test_class_nameislabel():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -316,7 +316,7 @@ def test_class_nameislabel():
 
 
 def test_class_nameisnotlabel():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 notation3.py - Standalone Notation3 Parser
 Derived from CWM, the Closed World Machine
@@ -146,11 +145,11 @@ def join(here: str, there: str) -> str:
 
     We grok IRIs
 
-    >>> len(u'Andr\\xe9')
+    >>> len('Andr\\xe9')
     5
 
-    >>> join('http://example.org/', u'#Andr\\xe9')
-    u'http://example.org/#Andr\\xe9'
+    >>> join('http://example.org/', '#Andr\\xe9')
+    'http://example.org/#Andr\\xe9'
     """
 
     #    assert(here.find("#") < 0), \
@@ -383,8 +382,8 @@ langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
 class SinkParser:
     def __init__(
         self,
-        store: "RDFSink",
-        openFormula: Optional["Formula"] = None,
+        store: RDFSink,
+        openFormula: Optional[Formula] = None,
         thisDoc: str = "",
         baseURI: Optional[str] = None,
         genPrefix: str = "",
@@ -475,7 +474,7 @@ class SinkParser:
     def formula(self) -> Optional[Formula]:
         return self._formula
 
-    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Optional["Formula"]:
+    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Optional[Formula]:
         return self.loadBuf(stream.read())  # Not ideal
 
     def loadBuf(self, buf: Union[str, bytes]) -> Optional[Formula]:
@@ -759,7 +758,7 @@ class SinkParser:
         # was: self._store.startDoc()
         self._store.startDoc(self._formula)
 
-    def endDoc(self) -> Optional["Formula"]:
+    def endDoc(self) -> Optional[Formula]:
         """Signal end of document and stop parsing. returns formula"""
         self._store.endDoc(self._formula)  # don't canonicalize yet
         return self._formula
@@ -1734,7 +1733,7 @@ class SinkParser:
 # [  is  operator:plus  of (  \1  \2 ) ]
 
 
-class BadSyntax(SyntaxError):
+class BadSyntax(SyntaxError):  # noqa: N818
     def __init__(self, uri: str, lines: int, argstr: str, i: int, why: str):
         self._str = argstr.encode("utf-8")  # Better go back to strings for errors
         self._i = i
@@ -2000,7 +1999,7 @@ class TurtleParser(Parser):
 
     def parse(
         self,
-        source: "InputSource",
+        source: InputSource,
         graph: Graph,
         encoding: Optional[str] = "utf-8",
         turtle: bool = True,

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
 # of their official duties. Pursuant to title 17 Section 105 of the
@@ -19,6 +17,7 @@
 # mypy: check_untyped_defs, disallow_untyped_decorators
 # mypy: no_implicit_optional, warn_redundant_casts, warn_unused_ignores
 # mypy: warn_return_any, no_implicit_reexport, strict_equality
+from __future__ import annotations
 
 from typing import Set, Tuple
 

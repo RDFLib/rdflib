@@ -59,7 +59,7 @@ class Parser:
     def __init__(self):
         pass
 
-    def parse(self, source: "InputSource", sink: "Graph") -> None:
+    def parse(self, source: InputSource, sink: Graph) -> None:
         pass
 
 
@@ -70,7 +70,7 @@ class BytesIOWrapper(BufferedIOBase):
         super(BytesIOWrapper, self).__init__()
         self.wrapped = wrapped
         self.encoding = encoding
-        self.encoded = None
+        self.encoded: Optional[BytesIO] = None
 
     def read(self, *args, **kwargs):
         if self.encoded is None:
@@ -81,7 +81,8 @@ class BytesIOWrapper(BufferedIOBase):
     def read1(self, *args, **kwargs):
         if self.encoded is None:
             b = codecs.getencoder(self.encoding)(self.wrapped)
-            self.encoded = BytesIO(b)
+            # type error: Argument 1 to "BytesIO" has incompatible type "Tuple[bytes, int]"; expected "Buffer"
+            self.encoded = BytesIO(b)  # type: ignore[arg-type]
         return self.encoded.read1(*args, **kwargs)
 
     def readinto(self, *args, **kwargs):
@@ -199,7 +200,7 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: "Message", name) -> List[str]:
+    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()

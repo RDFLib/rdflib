@@ -1,18 +1,4 @@
-import logging
-import warnings
-from functools import lru_cache
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
-from unicodedata import category
-from urllib.parse import urldefrag, urljoin
-
-from rdflib.term import URIRef, Variable, _is_valid_uri
-
-if TYPE_CHECKING:
-    from rdflib.graph import Graph
-    from rdflib.store import Store
-
-__doc__ = """
+"""
 ===================
 Namespace Utilities
 ===================
@@ -83,6 +69,22 @@ The following namespaces are available by directly importing from rdflib:
     >>> RDFS.seeAlso
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
+from __future__ import annotations
+
+import logging
+import warnings
+from functools import lru_cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from unicodedata import category
+from urllib.parse import urldefrag, urljoin
+
+from rdflib.term import URIRef, Variable, _is_valid_uri
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.store import Store
+
 
 __all__ = [
     "is_ncname",
@@ -141,7 +143,7 @@ class Namespace(str):
     False
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
+    def __new__(cls, value: Union[str, bytes]) -> Namespace:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -199,7 +201,7 @@ class URIPattern(str):
 
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "URIPattern":
+    def __new__(cls, value: Union[str, bytes]) -> URIPattern:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -297,7 +299,7 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in attrs}
         return values
 
-    def as_jsonld_context(self, pfx: str) -> dict:
+    def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
         """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
@@ -426,9 +428,7 @@ class NamespaceManager:
         >>>
     """
 
-    def __init__(
-        self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "rdflib"
-    ):
+    def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -480,7 +480,7 @@ class NamespaceManager:
             insert_trie(self.__trie, str(n))
 
     @property
-    def store(self) -> "Store":
+    def store(self) -> Store:
         return self.graph.store
 
     def qname(self, uri: str) -> str:
@@ -526,7 +526,7 @@ class NamespaceManager:
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self, rdfTerm: str) -> str:
+    def normalizeUri(self, rdfTerm: str) -> str:  # noqa: N802, N803
         """
         Takes an RDF Term and 'normalizes' it into a QName (using the
         registered prefix) or (unlike compute_qname) the Notation 3
@@ -548,7 +548,7 @@ class NamespaceManager:
         elif prefix is None:
             return "<%s>" % rdfTerm
         else:
-            qNameParts = self.compute_qname(rdfTerm)
+            qNameParts = self.compute_qname(rdfTerm)  # noqa: N806
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
@@ -669,7 +669,7 @@ class NamespaceManager:
         Raises exception if a namespace is not bound to the prefix.
 
         """
-        if not type(curie) is str:
+        if not type(curie) is str:  # noqa: E714, E721
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
         if len(parts) != 2:
@@ -836,7 +836,7 @@ def is_ncname(name: str) -> int:
         if first == "_" or category(first) in NAME_START_CATEGORIES:
             for i in range(1, len(name)):
                 c = name[i]
-                if not category(c) in NAME_CATEGORIES:
+                if not category(c) in NAME_CATEGORIES:  # noqa: E713
                     if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
@@ -857,7 +857,7 @@ def split_uri(
     length = len(uri)
     for i in range(0, length):
         c = uri[-i - 1]
-        if not category(c) in NAME_CATEGORIES:
+        if not category(c) in NAME_CATEGORIES:  # noqa: E713
             if c in ALLOWED_NAME_CHARS:
                 continue
             for j in range(-1 - i, length):

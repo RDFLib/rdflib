@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os
 from test.data import TEST_DATA_DIR
 
@@ -12,7 +11,7 @@ class TestTrixParse:
     def teardown_method(self):
         pass
 
-    def testAperture(self):
+    def testAperture(self):  # noqa: N802
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(
@@ -29,7 +28,7 @@ class TestTrixParse:
 
         # print "Parsed %d triples"%t
 
-    def testSpec(self):
+    def testSpec(self):  # noqa: N802
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(
@@ -40,7 +39,7 @@ class TestTrixParse:
 
         # print "Parsed %d triples"%len(g)
 
-    def testNG4j(self):
+    def testNG4j(self):  # noqa: N802
         g = ConjunctiveGraph()
 
         trix_path = os.path.relpath(

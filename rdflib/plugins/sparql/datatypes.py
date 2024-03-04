@@ -1,15 +1,16 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Dict, List, Optional, Set
-
 """
 Utility functions for supporting the XML Schema Datatypes hierarchy
 """
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, List, Optional, Set
 
 from rdflib.namespace import XSD
 
 if TYPE_CHECKING:
     from rdflib.term import URIRef
+
 
 XSD_DTs: Set[URIRef] = set(
     (

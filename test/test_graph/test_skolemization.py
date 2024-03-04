@@ -1,19 +1,19 @@
+from __future__ import annotations
+
 import logging
 import re
 from test.utils import GraphHelper
+from test.utils.namespace import EGDC
 from typing import Pattern, Union
 
 import pytest
 
 from rdflib import Graph
-from rdflib.namespace import Namespace
 from rdflib.term import BNode, Literal, URIRef
 
-EG = Namespace("http://example.com/")
-
 base_triples = {
-    (EG.subject, EG.predicate, EG.object0),
-    (EG.subject, EG.predicate, EG.object1),
+    (EGDC.subject, EGDC.predicate, EGDC.object0),
+    (EGDC.subject, EGDC.predicate, EGDC.object1),
 }
 
 
@@ -40,7 +40,7 @@ def test_skolemization(
     g = Graph()
     for triple in base_triples:
         g.add(triple)
-    g.add((EG.scheck, EG.pcheck, node))
+    g.add((EGDC.scheck, EGDC.pcheck, node))
     assert len(g) == 3
     dsg = g.skolemize()
     if expected_uri is None:
@@ -50,7 +50,7 @@ def test_skolemization(
         iset = GraphHelper.triple_or_quad_set(dsg)
         logging.debug("iset = %s", iset)
         assert iset.issuperset(base_triples)
-        check_triples = list(dsg.triples((EG.scheck, EG.pcheck, None)))
+        check_triples = list(dsg.triples((EGDC.scheck, EGDC.pcheck, None)))
         assert len(check_triples) == 1
         sbnode = check_triples[0][2]
         logging.debug("sbnode = %s, sbnode_value = %s", sbnode, f"{sbnode}")
@@ -77,7 +77,7 @@ def test_deskolemization(
     g = Graph()
     for triple in base_triples:
         g.add(triple)
-    g.add((EG.scheck, EG.pcheck, URIRef(iri)))
+    g.add((EGDC.scheck, EGDC.pcheck, URIRef(iri)))
     assert len(g) == 3
     dsg = g.de_skolemize()
     if expected_bnode_value is None:
@@ -87,7 +87,7 @@ def test_deskolemization(
         iset = GraphHelper.triple_or_quad_set(dsg)
         logging.debug("iset = %s", iset)
         assert iset.issuperset(base_triples)
-        check_triples = list(dsg.triples((EG.scheck, EG.pcheck, None)))
+        check_triples = list(dsg.triples((EGDC.scheck, EGDC.pcheck, None)))
         assert len(check_triples) == 1
         bnode = check_triples[0][2]
         logging.debug("bnode = %s, bnode_value = %s", bnode, f"{bnode}")
