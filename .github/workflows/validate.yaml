@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
@@ -66,19 +66,19 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
           java-version: "17"
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run preparation
@@ -102,12 +102,12 @@ jobs:
           TOX_PYTEST_EXTRA_ARGS: ${{ matrix.TOX_PYTEST_EXTRA_ARGS }}
           TOX_TEST_HARNESS: ${{ matrix.TOX_TEST_HARNESS }}
           TOX_EXTRA_COMMAND: ${{ matrix.TOX_EXTRA_COMMAND }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit-xml
           path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit.xml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ (success() || failure()) }}
         with:
           name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit-xml
@@ -125,7 +125,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.XDG_CACHE_HOME }}
           key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
@@ -133,14 +133,14 @@ jobs:
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
             ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run task
