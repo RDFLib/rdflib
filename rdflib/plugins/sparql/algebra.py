@@ -1275,7 +1275,7 @@ class _AlgebraTranslator:
             elif node.name == "MultiplicativeExpression":
                 left_side = self.convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):  # noqa: F402
+                for i, operator in enumerate(node.op):
                     multiplication += (
                         operator + " " + self.convert_node_arg(node.other[i]) + " "
                     )

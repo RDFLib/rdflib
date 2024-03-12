@@ -21,10 +21,9 @@ JSON-LD has a number of options for serialization - more than other RDF formats.
 }
 """
 # import RDFLib and other things
-import json
 try:
     from rdflib import Graph
-except ModuleNotFoundError as e:
+except ModuleNotFoundError:
     import sys
     from pathlib import Path
     sys.path.append(str(Path(__file__).parent.parent))
