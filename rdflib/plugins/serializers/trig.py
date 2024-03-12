@@ -2,6 +2,7 @@
 Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/trig/> for syntax specification.
 """
+
 from __future__ import annotations
 
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union

@@ -19,6 +19,7 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 & test_serializer_hext.py)
 
 """
+
 from __future__ import annotations
 
 import enum

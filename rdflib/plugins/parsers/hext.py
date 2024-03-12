@@ -3,6 +3,7 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 (ndjson) files, into Conjunctive. The store that backs the graph *must* be able to
 handle contexts, i.e. multiple graphs.
 """
+
 from __future__ import annotations
 
 import json

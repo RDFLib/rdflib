@@ -27,6 +27,7 @@ Example usage::
     True
 
 """
+
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/parser.py
 
 # NOTE: This code reads the entire JSON object into memory before parsing, but
@@ -397,11 +398,11 @@ class Parser:
 
         if v11 and GRAPH in term.container and ID in term.container:
             return [
-                dict({GRAPH: o})
-                if k in context.get_keys(NONE)
-                else dict({ID: k, GRAPH: o})
-                if isinstance(o, dict)
-                else o
+                (
+                    dict({GRAPH: o})
+                    if k in context.get_keys(NONE)
+                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                )
                 for k, o in obj.items()
             ]
 
@@ -413,23 +414,29 @@ class Parser:
 
         elif v11 and ID in term.container:
             return [
-                dict({ID: k}, **o)
-                if isinstance(o, dict) and k not in context.get_keys(NONE)
-                else o
+                (
+                    dict({ID: k}, **o)
+                    if isinstance(o, dict) and k not in context.get_keys(NONE)
+                    else o
+                )
                 for k, o in obj.items()
             ]
 
         elif v11 and TYPE in term.container:
             return [
-                self._add_type(
-                    context,
-                    {ID: context.expand(o) if term.type == VOCAB else o}
-                    if isinstance(o, str)
-                    else o,
-                    k,
+                (
+                    self._add_type(
+                        context,
+                        (
+                            {ID: context.expand(o) if term.type == VOCAB else o}
+                            if isinstance(o, str)
+                            else o
+                        ),
+                        k,
+                    )
+                    if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
+                    else o
                 )
-                if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
-                else o
                 for k, o in obj.items()
             ]
 
