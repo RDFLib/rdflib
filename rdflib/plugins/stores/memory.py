@@ -613,8 +613,8 @@ class Memory(Store):
                 # start with a copy of the default ctx info
                 # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
                 triple_context = self.__tripleContexts[triple] = (
-                    self.__defaultContexts.copy()
-                )  # type: ignore[union-attr]
+                    self.__defaultContexts.copy()  # type: ignore[union-attr]
+                )
 
             triple_context[ctx] = quoted
 
