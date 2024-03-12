@@ -1,6 +1,7 @@
 """
 Issue 923: split charset off of Content-Type before looking up Result-parsing plugin.
 """
+
 from io import StringIO
 
 from rdflib.query import Result

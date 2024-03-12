@@ -52,15 +52,13 @@ def _minus(
 @overload
 def _join(
     a: Iterable[FrozenBindings], b: Iterable[Mapping[Identifier, Identifier]]
-) -> Generator[FrozenBindings, None, None]:
-    ...
+) -> Generator[FrozenBindings, None, None]: ...
 
 
 @overload
 def _join(
     a: Iterable[FrozenDict], b: Iterable[Mapping[Identifier, Identifier]]
-) -> Generator[FrozenDict, None, None]:
-    ...
+) -> Generator[FrozenDict, None, None]: ...
 
 
 def _join(
@@ -106,8 +104,7 @@ def _eval(
     expr: Union[Literal, URIRef],
     ctx: FrozenBindings,
     raise_not_bound_error: bool = ...,
-) -> Union[Literal, URIRef]:
-    ...
+) -> Union[Literal, URIRef]: ...
 
 
 @overload
@@ -115,8 +112,7 @@ def _eval(
     expr: Union[Variable, Expr],
     ctx: FrozenBindings,
     raise_not_bound_error: bool = ...,
-) -> Union[Any, SPARQLError]:
-    ...
+) -> Union[Any, SPARQLError]: ...
 
 
 def _eval(
