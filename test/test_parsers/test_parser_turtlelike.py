@@ -2,7 +2,6 @@
 This module contains tests for the parsing of the turtle family of formats: N3,
 Turtle, NTriples, NQauds and TriG.
 """
-
 from __future__ import annotations
 
 import enum

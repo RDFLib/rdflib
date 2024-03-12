@@ -24,7 +24,6 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
-
 from __future__ import annotations
 
 from importlib.metadata import EntryPoint, entry_points
@@ -154,11 +153,13 @@ else:
 @overload
 def plugins(
     name: Optional[str] = ..., kind: Type[PluginT] = ...
-) -> Iterator[Plugin[PluginT]]: ...
+) -> Iterator[Plugin[PluginT]]:
+    ...
 
 
 @overload
-def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]: ...
+def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]:
+    ...
 
 
 def plugins(

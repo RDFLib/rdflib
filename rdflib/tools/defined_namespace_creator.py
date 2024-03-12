@@ -10,7 +10,6 @@ namespace:
 
 Nicholas J. Car, Dec, 2021
 """
-
 from __future__ import annotations
 
 import argparse

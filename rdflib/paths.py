@@ -179,7 +179,6 @@ No vars specified:
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
 """
-
 from __future__ import annotations
 
 import warnings
@@ -235,10 +234,12 @@ class Path(ABC):
         graph: Graph,
         subj: Optional[_SubjectType] = None,
         obj: Optional[_ObjectType] = None,
-    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]: ...
+    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
+        ...
 
     @abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        ...
 
     def __hash__(self):
         return hash(repr(self))

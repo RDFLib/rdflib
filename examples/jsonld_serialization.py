@@ -20,14 +20,12 @@ JSON-LD has a number of options for serialization - more than other RDF formats.
     "schema": "https://schema.org/"
 }
 """
-
 # import RDFLib and other things
 try:
     from rdflib import Graph
 except ModuleNotFoundError:
     import sys
     from pathlib import Path
-
     sys.path.append(str(Path(__file__).parent.parent))
     from rdflib import Graph
 
@@ -178,7 +176,10 @@ print(g.serialize(format="json-ld", auto_compact=True))
 
 # 2.3 Compact the JSON-LD by supplying own context
 # We now override RDFLib's namespace prefixes by supplying our own context information
-context = {"sdo": "https://schema.org/", "dct": "http://purl.org/dc/terms/"}
+context = {
+    "sdo": "https://schema.org/",
+    "dct": "http://purl.org/dc/terms/"
+}
 
 # Now when we serialise the RDF data, this context can be used to overwrite the default RDFLib one. auto_compact need not be specified
 print(g.serialize(format="json-ld", context=context))

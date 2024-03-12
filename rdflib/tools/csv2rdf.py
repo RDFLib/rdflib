@@ -6,7 +6,6 @@ See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 try: ``csv2rdf --help``
 
 """
-
 from __future__ import annotations
 
 import codecs

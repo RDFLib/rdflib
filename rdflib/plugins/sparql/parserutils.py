@@ -150,6 +150,7 @@ _ValT = TypeVar("_ValT")
 
 
 class CompValue(OrderedDict):
+
     """
     The result of parsing a Comp
     Any included Params are available as Dict keys
@@ -199,7 +200,8 @@ class CompValue(OrderedDict):
 
     if TYPE_CHECKING:
         # this is here because properties are dynamically set on CompValue
-        def __setattr__(self, __name: str, __value: Any) -> None: ...
+        def __setattr__(self, __name: str, __value: Any) -> None:
+            ...
 
 
 class Expr(CompValue):
@@ -231,6 +233,7 @@ class Expr(CompValue):
 
 
 class Comp(TokenConverter):
+
     """
     A pyparsing token for grouping together things with a label
     Any sub-tokens that are not Params will be ignored.

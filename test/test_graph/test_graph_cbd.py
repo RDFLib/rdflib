@@ -1,5 +1,4 @@
 """Tests the Graph class' cbd() function"""
-
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper
 

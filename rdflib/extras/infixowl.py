@@ -112,7 +112,6 @@ Python
 >>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
 
 """
-
 from __future__ import annotations
 
 import itertools

@@ -72,7 +72,6 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
-
 from __future__ import annotations
 
 # TODO:
