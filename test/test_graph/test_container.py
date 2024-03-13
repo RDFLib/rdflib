@@ -79,3 +79,8 @@ class TestContainer:
 
     def test_q(self):
         assert self.c2.index(Literal("1000")) != 3
+
+    def test_r(self):
+        assert self.c1.type_of_container() == self.c1.type_of_conatiner()
+        assert self.c3.type_of_container() == self.c3.type_of_conatiner()
+        assert self.c4.type_of_container() == self.c4.type_of_conatiner()
