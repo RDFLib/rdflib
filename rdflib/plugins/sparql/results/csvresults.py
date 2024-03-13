@@ -7,7 +7,6 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 
 """
 
-
 from __future__ import annotations
 
 import codecs

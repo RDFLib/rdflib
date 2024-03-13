@@ -44,7 +44,9 @@ class TIME(DefinedNamespace):
     hour: URIRef  # Hour position in a calendar-clock system.
     hours: URIRef  # length of, or element of the length of, a temporal extent expressed in hours
     inXSDDate: URIRef  # Position of an instant, expressed using xsd:date
-    inXSDDateTimeStamp: URIRef  # Position of an instant, expressed using xsd:dateTimeStamp
+    inXSDDateTimeStamp: (
+        URIRef  # Position of an instant, expressed using xsd:dateTimeStamp
+    )
     inXSDgYear: URIRef  # Position of an instant, expressed using xsd:gYear
     inXSDgYearMonth: URIRef  # Position of an instant, expressed using xsd:gYearMonth
     minute: URIRef  # Minute position in a calendar-clock system.
@@ -74,7 +76,9 @@ class TIME(DefinedNamespace):
 
     # http://www.w3.org/2002/07/owl#ObjectProperty
     after: URIRef  # Gives directionality to time. If a temporal entity T1 is after another temporal entity T2, then the beginning of T1 is after the end of T2.
-    dayOfWeek: URIRef  # The day of week, whose value is a member of the class time:DayOfWeek
+    dayOfWeek: (
+        URIRef  # The day of week, whose value is a member of the class time:DayOfWeek
+    )
     hasBeginning: URIRef  # Beginning of a temporal entity.
     hasDateTimeDescription: URIRef  # Value of DateTimeInterval expressed as a structured value. The beginning and end of the interval coincide with the limits of the shortest element in the description.
     hasDuration: URIRef  # Duration of a temporal entity, event or activity, or thing, expressed as a scaled value
@@ -82,7 +86,9 @@ class TIME(DefinedNamespace):
     hasEnd: URIRef  # End of a temporal entity.
     hasTemporalDuration: URIRef  # Duration of a temporal entity.
     hasTime: URIRef  # Supports the association of a temporal entity (instant or interval) to any thing
-    inDateTime: URIRef  # Position of an instant, expressed using a structured description
+    inDateTime: (
+        URIRef  # Position of an instant, expressed using a structured description
+    )
     inTemporalPosition: URIRef  # Position of a time instant
     inTimePosition: URIRef  # Position of a time instant expressed as a TimePosition
     inside: URIRef  # An instant that falls inside the interval. It is not intended to include beginnings and ends of intervals.

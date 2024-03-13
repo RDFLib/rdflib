@@ -1,6 +1,7 @@
 """
 An RDF/XML parser for RDFLib
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple

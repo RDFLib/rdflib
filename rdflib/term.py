@@ -20,6 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
+
 from __future__ import annotations
 
 import abc
@@ -139,8 +140,7 @@ class Node(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
-        ...
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
@@ -946,9 +946,11 @@ class Literal(Identifier):
                 return Literal(
                     self.toPython() - val.toPython(),
                     self.language,
-                    datatype=_XSD_DURATION
-                    if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
-                    else self.datatype,
+                    datatype=(
+                        _XSD_DURATION
+                        if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
+                        else self.datatype
+                    ),
                 )
 
         # if the datatypes are not the same but are both numeric, subtract the Python values and strip off decimal junk
