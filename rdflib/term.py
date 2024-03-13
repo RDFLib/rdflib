@@ -37,6 +37,7 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
+    "RdfstarTriple",
 ]
 
 import logging
@@ -519,6 +520,95 @@ class BNode(IdentifiedNode):
         skolem = "%s%s" % (basepath, str(self))
         return URIRef(urljoin(authority, skolem))
 
+class RdfstarTriple(IdentifiedNode):
+
+    #  thanks for JervenBolleman's example
+    #  https://github.com/RDFLib/rdflib/issues/955
+
+    """
+    Triple: Needed for RDF*
+    """
+    _subject = None
+    _predicate = None
+    _object = None
+    _hashvalue = None
+    _hashvalueid = None
+    __slots__ = ()
+    # def __init__(self, sid=None,
+    #              subject=None, predicate=None, object=None):
+    def __new__(self, hashvalue: Optional[str]
+    )-> "RdfstarTriple":
+        # self._subject = subject
+        # self._predicate = predicate
+        # self._object = object
+        # self._sid = sid #Statement Identifier
+        self._hashvalue = hashvalue
+        if hashvalue is None:
+            print("error, every quoted triple should have the only hash value and not None")
+        return Identifier.__new__(rdflib.term.RdfstarTriple, hashvalue)
+
+    # def toPython(self):
+    #     return self._subject.toPython() + self._predicate.toPython() + self._object.toPython()
+
+    def n3(self, namespace_manager=None):
+        return "_:%s" % self + "rdfstartriple"
+
+    def __repr__(self) -> str:
+        if self.__class__ is RdfstarTriple:
+            clsName = "rdflib.term.RdfstarTriple"
+        else:
+            clsName = self.__class__.__name__
+        return """%s('%s')""" % (clsName, str(self))
+
+    # def asQuad(self):
+    #     _rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    #     _type = URIRef('type',base=_rdf)
+    #     _rdf_object = URIRef('object', base=_rdf)
+    #     _rdf_predicate = URIRef('predicate', base=_rdf)
+    #     _rdf_subject = URIRef('subject', base=_rdf)
+    #     _rdf_statement = URIRef('Statement', base=_rdf)
+    #     return [[self._sid, _type , _rdf_statement],
+    #             [self._sid , _rdf_object, self. object],
+    #             [self._sid, _rdf_predicate, self._predicate],
+    #             [self._sid, _rdf_subject, self._subject]]
+
+    def subject(self):
+        return self._subject
+
+    def predicate(self):
+        return self._predicate
+
+    def object(self):
+        return self._object
+
+    def hashvalueid(self):
+        return self._hashvalueid
+
+    def setSubject(self, subject):
+        self._subject = subject
+
+    def setPredicate(self, predicate):
+        self._predicate = predicate
+
+    def setObject(self, object):
+        self._object = object
+
+    def sid(self, hashvalueid):
+        self._hashvalueid = hashvalueid
+
+
+    # def __ne__(self, other):
+    #     return not self.__eq__(other)
+
+    # def __eq__(self, other):
+    #     if (not isinstance(other, self.__class__)):
+    #         return False
+    #     return self._subject == other._subject and  \
+    #            self._predicate == other._predicate and \
+    #            self._object == other._object
+
+    # def __hash__(self):
+    #     return hash(self._subject) | hash(self._predicate) | hash(self._object)
 
 class Literal(Identifier):
     """
