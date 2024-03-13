@@ -181,14 +181,12 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
             raise KeyError(name)
 
     @overload
-    def get(self, name: str, default: Identifier) -> Identifier:
-        ...
+    def get(self, name: str, default: Identifier) -> Identifier: ...
 
     @overload
     def get(
         self, name: str, default: Optional[Identifier] = ...
-    ) -> Optional[Identifier]:
-        ...
+    ) -> Optional[Identifier]: ...
 
     def get(
         self, name: str, default: Optional[Identifier] = None

@@ -8,6 +8,7 @@ You can draw the graph of an RDFS file directly:
 
    rdf2dot my_rdfs_file.rdf | dot -Tpng | display
 """
+
 from __future__ import annotations
 
 import collections

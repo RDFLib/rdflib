@@ -5,6 +5,7 @@ Graph into a number of NT files with a maximum number of triples or maximum file
 There is an option to preserve any prefixes declared for the original graph in the first
 file, which will be a Turtle file.
 """
+
 from __future__ import annotations
 
 from contextlib import ExitStack, contextmanager

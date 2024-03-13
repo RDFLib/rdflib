@@ -57,7 +57,6 @@ class SPARQLTypeError(SPARQLError):
 
 
 class Bindings(MutableMapping):
-
     """
 
     A single level of a stack of variable-value bindings.

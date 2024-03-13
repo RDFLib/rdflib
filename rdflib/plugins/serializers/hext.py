@@ -2,6 +2,7 @@
 HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
+
 from __future__ import annotations
 
 import json

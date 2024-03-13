@@ -292,8 +292,6 @@ class LongTurtleSerializer(RecursiveSerializer):
         if count > 1:
             if not isinstance(objects[0], BNode):
                 self.write("\n" + self.indent(1))
-            else:
-                self.write(" ")
             first_nl = True
         self.path(objects[0], OBJECT, newline=first_nl)
         for obj in objects[1:]:
