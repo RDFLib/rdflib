@@ -3,6 +3,7 @@ This implements the Tab Separated SPARQL Result Format
 
 It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 """
+
 from __future__ import annotations
 
 import codecs

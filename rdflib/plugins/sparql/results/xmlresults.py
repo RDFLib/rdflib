@@ -7,6 +7,7 @@ http://projects.bigasterisk.com/sparqlhttp/
 
 Authors: Drew Perttula, Gunnar Aastrand Grimnes
 """
+
 from __future__ import annotations
 
 import logging

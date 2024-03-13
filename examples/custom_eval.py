@@ -16,7 +16,6 @@ i.e. in your setup.py::
     }
 """
 
-
 from pathlib import Path
 
 import rdflib
