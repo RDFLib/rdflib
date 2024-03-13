@@ -1,6 +1,7 @@
 """
 Issue 801 - Problem with prefixes created for URIs containing %20
 """
+
 from test.utils.namespace import EGDO
 
 from rdflib import BNode, Graph, Literal

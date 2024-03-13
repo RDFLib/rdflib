@@ -3,6 +3,7 @@ This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
 
 """
+
 from __future__ import annotations
 
 import collections
@@ -401,9 +402,11 @@ class SPARQLStore(SPARQLConnector, Store):
             result = self._query(
                 q,
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-                default_graph=context.identifier  # type: ignore[union-attr]
-                if self._is_contextual(context)
-                else None,
+                default_graph=(
+                    context.identifier  # type: ignore[union-attr]
+                    if self._is_contextual(context)
+                    else None
+                ),
             )
             # type error: Item "Tuple[Node, ...]" of "Union[Tuple[Node, Node, Node], bool, ResultRow]" has no attribute "c"
             return int(next(iter(result)).c)  # type: ignore[union-attr]
@@ -468,12 +471,10 @@ class SPARQLStore(SPARQLConnector, Store):
         raise TypeError("The SPARQL store is read only")
 
     @overload
-    def _is_contextual(self, graph: None) -> te.Literal[False]:
-        ...
+    def _is_contextual(self, graph: None) -> te.Literal[False]: ...
 
     @overload
-    def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool:
-        ...
+    def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool: ...
 
     def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool:
         """Returns `True` if the "GRAPH" keyword must appear

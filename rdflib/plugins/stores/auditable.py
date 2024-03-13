@@ -14,6 +14,7 @@ persisted in memory and wont  be available to reverse operations after the
 system fails): A and I out of ACID.
 
 """
+
 from __future__ import annotations
 
 import threading

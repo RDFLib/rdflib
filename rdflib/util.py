@@ -487,15 +487,13 @@ def get_tree(
 
 
 @overload
-def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT:
-    ...
+def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT: ...
 
 
 @overload
 def _coalesce(
     *args: Optional[_AnyT], default: Optional[_AnyT] = ...
-) -> Optional[_AnyT]:
-    ...
+) -> Optional[_AnyT]: ...
 
 
 def _coalesce(
