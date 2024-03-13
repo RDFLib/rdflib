@@ -42,6 +42,7 @@ A tiny example:
     True
 
 """
+
 import logging
 import sys
 from importlib import metadata

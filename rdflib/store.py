@@ -287,7 +287,14 @@ class Store:
             Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
         ],
         context: Optional[_ContextType] = None,
-    ) -> Generator[Tuple[_TripleType, Iterator[Optional[_ContextType]],], None, None,]:
+    ) -> Generator[
+        Tuple[
+            _TripleType,
+            Iterator[Optional[_ContextType]],
+        ],
+        None,
+        None,
+    ]:
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
