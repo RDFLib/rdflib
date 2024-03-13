@@ -33,9 +33,9 @@ def generateVoID(  # noqa: N802
 
     """
 
-    typeMap: Dict[  # noqa: N806
-        _SubjectType, Set[_SubjectType]
-    ] = collections.defaultdict(set)
+    typeMap: Dict[_SubjectType, Set[_SubjectType]] = (  # noqa: N806
+        collections.defaultdict(set)
+    )
     classes: Dict[_ObjectType, Set[_SubjectType]] = collections.defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)

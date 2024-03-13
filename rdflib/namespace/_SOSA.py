@@ -31,7 +31,9 @@ class SOSA(DefinedNamespace):
     Sensor: URIRef  # Device, agent (including humans), or software (simulation) involved in, or implementing, a Procedure. Sensors respond to a stimulus, e.g., a change in the environment, or input data composed from the results of prior Observations, and generate a Result. Sensors can be hosted by Platforms.
 
     # http://www.w3.org/2002/07/owl#DatatypeProperty
-    hasSimpleResult: URIRef  # The simple value of an Observation or Actuation or act of Sampling.
+    hasSimpleResult: (
+        URIRef  # The simple value of an Observation or Actuation or act of Sampling.
+    )
     resultTime: URIRef  # The result time is the instant of time when the Observation, Actuation or Sampling activity was completed.
 
     # http://www.w3.org/2002/07/owl#ObjectProperty
@@ -54,7 +56,9 @@ class SOSA(DefinedNamespace):
     madeByActuator: URIRef  # Relation linking an Actuation to the Actuator that made that Actuation.
     madeBySampler: URIRef  # Relation linking an act of Sampling to the Sampler (sampling device or entity) that made it.
     madeBySensor: URIRef  # Relation between an Observation and the Sensor which made the Observation.
-    madeObservation: URIRef  # Relation between a Sensor and an Observation made by the Sensor.
+    madeObservation: (
+        URIRef  # Relation between a Sensor and an Observation made by the Sensor.
+    )
     madeSampling: URIRef  # Relation between a Sampler (sampling device or entity) and the Sampling act it performed.
     observedProperty: URIRef  # Relation linking an Observation to the property that was observed. The ObservableProperty should be a property of the FeatureOfInterest (linked by hasFeatureOfInterest) of this Observation.
     observes: URIRef  # Relation between a Sensor and an ObservableProperty that it is capable of sensing.

@@ -202,13 +202,11 @@ def translatePName(  # type: ignore[return]
 
 
 @overload
-def translatePath(p: URIRef) -> None:
-    ...
+def translatePath(p: URIRef) -> None: ...
 
 
 @overload
-def translatePath(p: CompValue) -> Path:
-    ...
+def translatePath(p: CompValue) -> Path: ...
 
 
 # type error: Missing return statement
@@ -843,9 +841,9 @@ def translateQuads(
     else:
         alltriples = []
 
-    allquads: DefaultDict[
-        str, List[Tuple[Identifier, Identifier, Identifier]]
-    ] = collections.defaultdict(list)
+    allquads: DefaultDict[str, List[Tuple[Identifier, Identifier, Identifier]]] = (
+        collections.defaultdict(list)
+    )
 
     if quads.quadsNotTriples:
         for q in quads.quadsNotTriples:
@@ -968,9 +966,9 @@ class _AlgebraTranslator:
 
     def __init__(self, query_algebra: Query):
         self.query_algebra = query_algebra
-        self.aggr_vars: DefaultDict[
-            Identifier, List[Identifier]
-        ] = collections.defaultdict(list)
+        self.aggr_vars: DefaultDict[Identifier, List[Identifier]] = (
+            collections.defaultdict(list)
+        )
         self._alg_translation: str = ""
 
     def _replace(
@@ -1275,7 +1273,7 @@ class _AlgebraTranslator:
             elif node.name == "MultiplicativeExpression":
                 left_side = self.convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):  # noqa: F402
+                for i, operator in enumerate(node.op):
                     multiplication += (
                         operator + " " + self.convert_node_arg(node.other[i]) + " "
                     )

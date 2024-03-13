@@ -3,6 +3,7 @@ SPARQL 1.1 Parser
 
 based on pyparsing
 """
+
 from __future__ import annotations  # noqa: I001
 
 import re

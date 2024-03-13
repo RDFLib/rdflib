@@ -1,6 +1,7 @@
 """
 Aggregation functions
 """
+
 from __future__ import annotations
 
 from decimal import Decimal
@@ -96,13 +97,13 @@ class Counter(Accumulator):
 
 
 @overload
-def type_safe_numbers(*args: int) -> Tuple[int]:
-    ...
+def type_safe_numbers(*args: int) -> Tuple[int]: ...
 
 
 @overload
-def type_safe_numbers(*args: Union[Decimal, float, int]) -> Tuple[Union[float, int]]:
-    ...
+def type_safe_numbers(
+    *args: Union[Decimal, float, int]
+) -> Tuple[Union[float, int]]: ...
 
 
 def type_safe_numbers(*args: Union[Decimal, float, int]) -> Iterable[Union[float, int]]:
