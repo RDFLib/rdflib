@@ -23,7 +23,9 @@ class SSN(DefinedNamespace):
     System: URIRef  # System is a unit of abstraction for pieces of infrastructure that implement Procedures. A System may have components, its subsystems, which are other systems.
 
     # http://www.w3.org/2002/07/owl#FunctionalProperty
-    wasOriginatedBy: URIRef  # Relation between an Observation and the Stimulus that originated it.
+    wasOriginatedBy: (
+        URIRef  # Relation between an Observation and the Stimulus that originated it.
+    )
 
     # http://www.w3.org/2002/07/owl#ObjectProperty
     deployedOnPlatform: URIRef  # Relation between a Deployment and the Platform on which the Systems are deployed.

@@ -26,6 +26,7 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
+
 from __future__ import annotations
 
 import codecs
@@ -1987,7 +1988,6 @@ def hexify(ustr: str) -> bytes:
 
 
 class TurtleParser(Parser):
-
     """
     An RDFLib parser for Turtle
 
@@ -2024,7 +2024,6 @@ class TurtleParser(Parser):
 
 
 class N3Parser(TurtleParser):
-
     """
     An RDFLib parser for Notation3
 

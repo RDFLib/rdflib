@@ -59,19 +59,19 @@ class SimpleMemory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[
-            _SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]
-        ] = {}
+        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[
-            _PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]
-        ] = {}
+        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[
-            _ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]
-        ] = {}
+        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+            {}
+        )
 
         self.__namespace: Dict[str, URIRef] = {}
         self.__prefix: Dict[URIRef, str] = {}
@@ -290,19 +290,19 @@ class Memory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[
-            _SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]
-        ] = {}
+        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[
-            _PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]
-        ] = {}
+        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[
-            _ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]
-        ] = {}
+        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+            {}
+        )
 
         self.__namespace: Dict[str, URIRef] = {}
         self.__prefix: Dict[URIRef, str] = {}
@@ -612,9 +612,9 @@ class Memory(Store):
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
                 # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
-                triple_context = self.__tripleContexts[
-                    triple
-                ] = self.__defaultContexts.copy()  # type: ignore[union-attr]
+                triple_context = self.__tripleContexts[triple] = (
+                    self.__defaultContexts.copy()  # type: ignore[union-attr]
+                )
 
             triple_context[ctx] = quoted
 
@@ -679,12 +679,10 @@ class Memory(Store):
         self.__contextTriples[ctx].remove(triple)
 
     @overload
-    def __ctx_to_str(self, ctx: _ContextType) -> str:
-        ...
+    def __ctx_to_str(self, ctx: _ContextType) -> str: ...
 
     @overload
-    def __ctx_to_str(self, ctx: None) -> None:
-        ...
+    def __ctx_to_str(self, ctx: None) -> None: ...
 
     def __ctx_to_str(self, ctx: Optional[_ContextType]) -> Optional[str]:
         if ctx is None:

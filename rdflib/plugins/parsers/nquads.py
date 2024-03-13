@@ -22,6 +22,7 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
+
 from __future__ import annotations
 
 from codecs import getreader

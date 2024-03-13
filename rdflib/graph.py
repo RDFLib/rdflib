@@ -558,22 +558,19 @@ class Graph(Node):
     def triples(
         self,
         triple: _TriplePatternType,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TriplePathPatternType,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TripleSelectorType,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -960,8 +957,7 @@ class Graph(Node):
         object: Optional[_ObjectType] = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -971,8 +967,7 @@ class Graph(Node):
         object: None = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -982,8 +977,7 @@ class Graph(Node):
         object: None = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -993,8 +987,7 @@ class Graph(Node):
         object: Optional[_ObjectType] = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> Optional[Node]:
-        ...
+    ) -> Optional[Node]: ...
 
     def value(
         self,
@@ -1232,8 +1225,7 @@ class Graph(Node):
         base: Optional[str],
         encoding: str,
         **args: Any,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     # no destination and non-None keyword encoding
     @overload
@@ -1245,8 +1237,7 @@ class Graph(Node):
         *,
         encoding: str,
         **args: Any,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     # no destination and None encoding
     @overload
@@ -1257,8 +1248,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: None = ...,
         **args: Any,
-    ) -> str:
-        ...
+    ) -> str: ...
 
     # non-None destination
     @overload
@@ -1269,8 +1259,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
         **args: Any,
-    ) -> Graph:
-        ...
+    ) -> Graph: ...
 
     # fallback
     @overload
@@ -1281,8 +1270,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
         **args: Any,
-    ) -> Union[bytes, str, Graph]:
-        ...
+    ) -> Union[bytes, str, Graph]: ...
 
     def serialize(
         self: _GraphT,
@@ -1932,48 +1920,42 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: _QuadType,
         default: bool = False,
-    ) -> _QuadType:
-        ...
+    ) -> _QuadType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Union[_TripleType, _OptionalQuadType],
         default: bool = False,
-    ) -> _OptionalQuadType:
-        ...
+    ) -> _OptionalQuadType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: None,
         default: bool = False,
-    ) -> Tuple[None, None, None, Optional[Graph]]:
-        ...
+    ) -> Tuple[None, None, None, Optional[Graph]]: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Optional[_TripleOrQuadPatternType],
         default: bool = False,
-    ) -> _QuadPatternType:
-        ...
+    ) -> _QuadPatternType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: _TripleOrQuadSelectorType,
         default: bool = False,
-    ) -> _QuadSelectorType:
-        ...
+    ) -> _QuadSelectorType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Optional[_TripleOrQuadSelectorType],
         default: bool = False,
-    ) -> _QuadSelectorType:
-        ...
+    ) -> _QuadSelectorType: ...
 
     def _spoc(
         self,
@@ -2022,12 +2004,10 @@ class ConjunctiveGraph(Graph):
         return self
 
     @overload
-    def _graph(self, c: Union[Graph, _ContextIdentifierType, str]) -> Graph:
-        ...
+    def _graph(self, c: Union[Graph, _ContextIdentifierType, str]) -> Graph: ...
 
     @overload
-    def _graph(self, c: None) -> None:
-        ...
+    def _graph(self, c: None) -> None: ...
 
     def _graph(
         self, c: Optional[Union[Graph, _ContextIdentifierType, str]]
@@ -2069,24 +2049,21 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: _TripleOrQuadPatternType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple_or_quad: _TripleOrQuadPathPatternType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple_or_quad: _TripleOrQuadSelectorType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -2761,22 +2738,19 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def triples(
         self,
         triple: _TriplePatternType,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TriplePathPatternType,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TripleSelectorType,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -2887,7 +2861,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
         if hasattr(self, "namespace_manager"):
-            for prefix, namespace in self.namespace_manager.namespaces():  # noqa: F402
+            for prefix, namespace in self.namespace_manager.namespaces():
                 yield prefix, namespace
         else:
             for graph in self.graphs:
@@ -2917,13 +2891,11 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
 
 @overload
-def _assertnode(*terms: Node) -> te.Literal[True]:
-    ...
+def _assertnode(*terms: Node) -> te.Literal[True]: ...
 
 
 @overload
-def _assertnode(*terms: Any) -> bool:
-    ...
+def _assertnode(*terms: Any) -> bool: ...
 
 
 def _assertnode(*terms: Any) -> bool:

@@ -17,7 +17,9 @@ class SDO(DefinedNamespace):
 
     # 3DModel: URIRef  # A 3D model represents some kind of 3D content, which may have [[encoding]]s in one or more [[MediaObject]]s. Many 3D formats are available (e.g. see [Wikipedia](https://en.wikipedia.org/wiki/Category:3D_graphics_file_formats)); specific encoding formats can be represented using the [[encodingFormat]] property applied to the relevant [[MediaObject]]. For the case of a single file published after Zip compression, the convention of appending '+zip' to the [[encodingFormat]] can be used. Geospatial, AR/VR, artistic/animation, gaming, engineering and scientific content can all be represented using [[3DModel]].
     AMRadioChannel: URIRef  # A radio channel that uses AM.
-    APIReference: URIRef  # Reference documentation for application programming interfaces (APIs).
+    APIReference: (
+        URIRef  # Reference documentation for application programming interfaces (APIs).
+    )
     Abdomen: URIRef  # Abdomen clinical examination.
     AboutPage: URIRef  # Web page type: About page.
     AcceptAction: URIRef  # The act of committing to/adopting an object.\n\nRelated actions:\n\n* [[RejectAction]]: The antonym of AcceptAction.
@@ -44,7 +46,9 @@ class SDO(DefinedNamespace):
     AlbumRelease: URIRef  # AlbumRelease.
     AlignmentObject: URIRef  # An intangible item that describes an alignment between a learning resource and a node in an educational framework.  Should not be used where the nature of the alignment can be described using a simple property, for example to express that a resource [[teaches]] or [[assesses]] a competency.
     AllWheelDriveConfiguration: URIRef  # All-wheel Drive is a transmission layout where the engine drives all four wheels.
-    AllergiesHealthAspect: URIRef  # Content about the allergy-related aspects of a health topic.
+    AllergiesHealthAspect: (
+        URIRef  # Content about the allergy-related aspects of a health topic.
+    )
     AllocateAction: URIRef  # The act of organizing tasks/objects/events by associating resources to it.
     AmpStory: URIRef  # A creative work with a visual storytelling format intended to be viewed online, particularly on mobile devices.
     AmusementPark: URIRef  # An amusement park.
@@ -117,11 +121,17 @@ class SDO(DefinedNamespace):
     BoatTerminal: URIRef  # A terminal for boats, ships, and other water vessels.
     BoatTrip: URIRef  # A trip on a commercial ferry line.
     BodyMeasurementArm: URIRef  # Arm length (measured between arms/shoulder line intersection and the prominent wrist bone). Used, for example, to fit shirts.
-    BodyMeasurementBust: URIRef  # Maximum girth of bust. Used, for example, to fit women's suits.
-    BodyMeasurementChest: URIRef  # Maximum girth of chest. Used, for example, to fit men's suits.
+    BodyMeasurementBust: (
+        URIRef  # Maximum girth of bust. Used, for example, to fit women's suits.
+    )
+    BodyMeasurementChest: (
+        URIRef  # Maximum girth of chest. Used, for example, to fit men's suits.
+    )
     BodyMeasurementFoot: URIRef  # Foot length (measured between end of the most prominent toe and the most prominent part of the heel). Used, for example, to measure socks.
     BodyMeasurementHand: URIRef  # Maximum hand girth (measured over the knuckles of the open right hand excluding thumb, fingers together). Used, for example, to fit gloves.
-    BodyMeasurementHead: URIRef  # Maximum girth of head above the ears. Used, for example, to fit hats.
+    BodyMeasurementHead: (
+        URIRef  # Maximum girth of head above the ears. Used, for example, to fit hats.
+    )
     BodyMeasurementHeight: URIRef  # Body height (measured between crown of head and soles of feet). Used, for example, to fit jackets.
     BodyMeasurementHips: URIRef  # Girth of hips (measured around the buttocks). Used, for example, to fit skirts.
     BodyMeasurementInsideLeg: URIRef  # Inside leg (measured between crotch and soles of feet). Used, for example, to fit pants.
@@ -129,7 +139,9 @@ class SDO(DefinedNamespace):
     BodyMeasurementTypeEnumeration: URIRef  # Enumerates types (or dimensions) of a person's body measurements, for example for fitting of clothes.
     BodyMeasurementUnderbust: URIRef  # Girth of body just below the bust. Used, for example, to fit women's swimwear.
     BodyMeasurementWaist: URIRef  # Girth of natural waistline (between hip bones and lower ribs). Used, for example, to fit pants.
-    BodyMeasurementWeight: URIRef  # Body weight. Used, for example, to measure pantyhose.
+    BodyMeasurementWeight: (
+        URIRef  # Body weight. Used, for example, to measure pantyhose.
+    )
     BodyOfWater: URIRef  # A body of water, such as a sea, ocean, or lake.
     Bone: URIRef  # Rigid connective tissue that comprises up the skeletal structure of the human body.
     Book: URIRef  # A book.
@@ -161,7 +173,9 @@ class SDO(DefinedNamespace):
     BusinessEntityType: URIRef  # A business entity type is a conceptual entity representing the legal form, the size, the main line of business, the position in the value chain, or any combination thereof, of an organization or business person.\n\nCommonly used values:\n\n* http://purl.org/goodrelations/v1#Business\n* http://purl.org/goodrelations/v1#Enduser\n* http://purl.org/goodrelations/v1#PublicInstitution\n* http://purl.org/goodrelations/v1#Reseller
     BusinessEvent: URIRef  # Event type: Business event.
     BusinessFunction: URIRef  # The business function specifies the type of activity or access (i.e., the bundle of rights) offered by the organization or business person through the offer. Typical are sell, rental or lease, maintenance or repair, manufacture / produce, recycle / dispose, engineering / construction, or installation. Proprietary specifications of access rights are also instances of this class.\n\nCommonly used values:\n\n* http://purl.org/goodrelations/v1#ConstructionInstallation\n* http://purl.org/goodrelations/v1#Dispose\n* http://purl.org/goodrelations/v1#LeaseOut\n* http://purl.org/goodrelations/v1#Maintain\n* http://purl.org/goodrelations/v1#ProvideService\n* http://purl.org/goodrelations/v1#Repair\n* http://purl.org/goodrelations/v1#Sell\n* http://purl.org/goodrelations/v1#Buy
-    BusinessSupport: URIRef  # BusinessSupport: this is a benefit for supporting businesses.
+    BusinessSupport: (
+        URIRef  # BusinessSupport: this is a benefit for supporting businesses.
+    )
     BuyAction: URIRef  # The act of giving money to a seller in exchange for goods or services rendered. An agent buys an object, product, or service from a seller for a price. Reciprocal of SellAction.
     CDCPMDRecord: URIRef  # A CDCPMDRecord is a data structure representing a record in a CDC tabular data format       used for hospital data reporting. See [documentation](/docs/cdc-covid.html) for details, and the linked CDC materials for authoritative       definitions used as the source here.
     CDFormat: URIRef  # CDFormat.
@@ -175,7 +189,9 @@ class SDO(DefinedNamespace):
     Car: URIRef  # A car is a wheeled, self-powered motor vehicle used for transportation.
     CarUsageType: URIRef  # A value indicating a special usage of a car, e.g. commercial rental, driving school, or as a taxi.
     Cardiovascular: URIRef  # A specific branch of medical science that pertains to diagnosis and treatment of disorders of heart and vasculature.
-    CardiovascularExam: URIRef  # Cardiovascular system assessment withclinical examination.
+    CardiovascularExam: (
+        URIRef  # Cardiovascular system assessment withclinical examination.
+    )
     CaseSeries: URIRef  # A case series (also known as a clinical series) is a medical research study that tracks patients with a known exposure given similar treatment or examines their medical records for exposure and outcome. A case series can be retrospective or prospective and usually involves a smaller number of patients than the more powerful case-control studies or randomized controlled trials. Case series may be consecutive or non-consecutive, depending on whether all cases presenting to the reporting authors over a period of time were included, or only a selection.
     Casino: URIRef  # A casino.
     CassetteFormat: URIRef  # CassetteFormat.
@@ -211,7 +227,9 @@ class SDO(DefinedNamespace):
     CohortStudy: URIRef  # Also known as a panel study. A cohort study is a form of longitudinal study used in medicine and social science. It is one type of study design and should be compared with a cross-sectional study.  A cohort is a group of people who share a common characteristic or experience within a defined period (e.g., are born, leave school, lose their job, are exposed to a drug or a vaccine, etc.). The comparison group may be the general population from which the cohort is drawn, or it may be another cohort of persons thought to have had little or no exposure to the substance under investigation, but otherwise similar. Alternatively, subgroups within the cohort may be compared with each other.
     Collection: URIRef  # A collection of items e.g. creative works or products.
     CollectionPage: URIRef  # Web page type: Collection page.
-    CollegeOrUniversity: URIRef  # A college, university, or other third-level educational institution.
+    CollegeOrUniversity: (
+        URIRef  # A college, university, or other third-level educational institution.
+    )
     ComedyClub: URIRef  # A comedy club.
     ComedyEvent: URIRef  # Event type: Comedy event.
     ComicCoverArt: URIRef  # The artwork on the cover of a comic.
@@ -234,7 +252,9 @@ class SDO(DefinedNamespace):
     Consortium: URIRef  # A Consortium is a membership [[Organization]] whose members are typically Organizations.
     ConsumeAction: URIRef  # The act of ingesting information/resources/food.
     ContactPage: URIRef  # Web page type: Contact page.
-    ContactPoint: URIRef  # A contact point&#x2014;for example, a Customer Complaints department.
+    ContactPoint: (
+        URIRef  # A contact point&#x2014;for example, a Customer Complaints department.
+    )
     ContactPointOption: URIRef  # Enumerated options related to a ContactPoint.
     ContagiousnessHealthAspect: URIRef  # Content about contagion mechanisms and contagiousness information over the topic.
     Continent: URIRef  # One of the continents (for example, Europe or Africa).
@@ -259,7 +279,9 @@ class SDO(DefinedNamespace):
     CriticReview: URIRef  # A [[CriticReview]] is a more specialized form of Review written or published by a source that is recognized for its reviewing activities. These can include online columns, travel and food guides, TV and radio shows, blogs and other independent Web sites. [[CriticReview]]s are typically more in-depth and professionally written. For simpler, casually written user/visitor/viewer/customer reviews, it is more appropriate to use the [[UserReview]] type. Review aggregator sites such as Metacritic already separate out the site's user reviews from selected critic reviews that originate from third-party sources.
     CrossSectional: URIRef  # Studies carried out on pre-existing data (usually from 'snapshot' surveys), such as that collected by the Census Bureau. Sometimes called Prevalence Studies.
     CssSelectorType: URIRef  # Text representing a CSS selector.
-    CurrencyConversionService: URIRef  # A service to convert funds from one currency to another currency.
+    CurrencyConversionService: (
+        URIRef  # A service to convert funds from one currency to another currency.
+    )
     DDxElement: URIRef  # An alternative, closely-related condition typically considered later in the differential diagnosis process along with the signs that are used to distinguish it.
     DJMixAlbum: URIRef  # DJMixAlbum.
     DVDFormat: URIRef  # DVDFormat.
@@ -271,7 +293,9 @@ class SDO(DefinedNamespace):
     DataFeed: URIRef  # A single feed providing structured information about one or more entities or topics.
     DataFeedItem: URIRef  # A single item within a larger data feed.
     DataType: URIRef  # The basic data types such as Integers, Strings, etc.
-    Dataset: URIRef  # A body of structured information describing some topic(s) of interest.
+    Dataset: (
+        URIRef  # A body of structured information describing some topic(s) of interest.
+    )
     Date: URIRef  # A date value in [ISO 8601 date format](http://en.wikipedia.org/wiki/ISO_8601).
     DateTime: URIRef  # A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm] (see Chapter 5.4 of ISO 8601).
     DatedMoneySpecification: URIRef  # A DatedMoneySpecification represents monetary values with optional start and end dates. For example, this could represent an employee's salary over a specific period of time. __Note:__ This type has been superseded by [[MonetaryAmount]] use of that type is recommended
@@ -279,12 +303,16 @@ class SDO(DefinedNamespace):
     DaySpa: URIRef  # A day spa.
     DeactivateAction: URIRef  # The act of stopping or deactivating a device or application (e.g. stopping a timer or turning off a flashlight).
     DecontextualizedContent: URIRef  # Content coded 'missing context' in a [[MediaReview]], considered in the context of how it was published or shared.  For a [[VideoObject]] to be 'missing context': Presenting unaltered video in an inaccurate manner that misrepresents the footage. For example, using incorrect dates or locations, altering the transcript or sharing brief clips from a longer video to mislead viewers. (A video rated 'original' can also be missing context.)  For an [[ImageObject]] to be 'missing context': Presenting unaltered images in an inaccurate manner to misrepresent the image and mislead the viewer. For example, a common tactic is using an unaltered image but saying it came from a different time or place. (An image rated 'original' can also be missing context.)  For an [[ImageObject]] with embedded text to be 'missing context': An unaltered image presented in an inaccurate manner to misrepresent the image and mislead the viewer. For example, a common tactic is using an unaltered image but saying it came from a different time or place. (An 'original' image with inaccurate text would generally fall in this category.)  For an [[AudioObject]] to be 'missing context': Unaltered audio presented in an inaccurate manner that misrepresents it. For example, using incorrect dates or locations, or sharing brief clips from a longer recording to mislead viewers. (Audio rated “original” can also be missing context.)
-    DefenceEstablishment: URIRef  # A defence establishment, such as an army or navy base.
+    DefenceEstablishment: (
+        URIRef  # A defence establishment, such as an army or navy base.
+    )
     DefinedRegion: URIRef  # A DefinedRegion is a geographic area defined by potentially arbitrary (rather than political, administrative or natural geographical) criteria. Properties are provided for defining a region by reference to sets of postal codes.  Examples: a delivery destination when shopping. Region where regional pricing is configured.  Requirement 1: Country: US States: "NY", "CA"  Requirement 2: Country: US PostalCode Set: { [94000-94585], [97000, 97999], [13000, 13599]} { [12345, 12345], [78945, 78945], } Region = state, canton, prefecture, autonomous community...
     DefinedTerm: URIRef  # A word, name, acronym, phrase, etc. with a formal definition. Often used in the context of category or subject classification, glossaries or dictionaries, product or creative work types, etc. Use the name property for the term being defined, use termCode if the term has an alpha-numeric code allocated, use description to provide the definition of the term.
     DefinedTermSet: URIRef  # A set of defined terms for example a set of categories or a classification scheme, a glossary, dictionary or enumeration.
     DefinitiveLegalValue: URIRef  # Indicates a document for which the text is conclusively what the law says and is legally binding. (e.g. The digitally signed version of an Official Journal.)   Something "Definitive" is considered to be also [[AuthoritativeLegalValue]].
-    DeleteAction: URIRef  # The act of editing a recipient by removing one of its objects.
+    DeleteAction: (
+        URIRef  # The act of editing a recipient by removing one of its objects.
+    )
     DeliveryChargeSpecification: URIRef  # The price for the delivery of an offer using a particular delivery method.
     DeliveryEvent: URIRef  # An event involving the delivery of an item.
     DeliveryMethod: URIRef  # A delivery method is a standardized procedure for transferring the product or service to the destination of fulfillment chosen by the customer. Delivery methods are characterized by the means of transportation used, and by the organization or group that is the contracting party for the sending organization or person.\n\nCommonly used values:\n\n* http://purl.org/goodrelations/v1#DeliveryModeDirectDownload\n* http://purl.org/goodrelations/v1#DeliveryModeFreight\n* http://purl.org/goodrelations/v1#DeliveryModeMail\n* http://purl.org/goodrelations/v1#DeliveryModeOwnFleet\n* http://purl.org/goodrelations/v1#DeliveryModePickUp\n* http://purl.org/goodrelations/v1#DHL\n* http://purl.org/goodrelations/v1#FederalExpress\n* http://purl.org/goodrelations/v1#UPS
@@ -310,7 +338,9 @@ class SDO(DefinedNamespace):
     DigitalDocumentPermission: URIRef  # A permission for a particular person or group to access a particular file.
     DigitalDocumentPermissionType: URIRef  # A type of permission which can be granted for accessing a digital document.
     DigitalFormat: URIRef  # DigitalFormat.
-    DisabilitySupport: URIRef  # DisabilitySupport: this is a benefit for disability support.
+    DisabilitySupport: (
+        URIRef  # DisabilitySupport: this is a benefit for disability support.
+    )
     DisagreeAction: URIRef  # The act of expressing a difference of opinion with the object. An agent disagrees to/about an object (a proposition, topic or theme) with participants.
     Discontinued: URIRef  # Indicates that the item has been discontinued.
     DiscoverAction: URIRef  # The act of discovering/finding an object.
@@ -327,8 +357,12 @@ class SDO(DefinedNamespace):
     DrawAction: URIRef  # The act of producing a visual/graphical representation of an object, typically with a pen/pencil and paper as instruments.
     Drawing: URIRef  # A picture or diagram made with a pencil, pen, or crayon rather than paint.
     DrinkAction: URIRef  # The act of swallowing liquids.
-    DriveWheelConfigurationValue: URIRef  # A value indicating which roadwheels will receive torque.
-    DrivingSchoolVehicleUsage: URIRef  # Indicates the usage of the vehicle for driving school.
+    DriveWheelConfigurationValue: (
+        URIRef  # A value indicating which roadwheels will receive torque.
+    )
+    DrivingSchoolVehicleUsage: (
+        URIRef  # Indicates the usage of the vehicle for driving school.
+    )
     Drug: URIRef  # A chemical or biologic substance, used as a medical therapy, that has a physiological effect on an organism. Here the term drug is used interchangeably with the term medicine although clinical knowledge make a clear difference between them.
     DrugClass: URIRef  # A class of medical drugs, e.g., statins. Classes can represent general pharmacological class, common mechanisms of action, common physiological effects, etc.
     DrugCost: URIRef  # The cost per unit of a medical drug. Note that this type is not meant to represent the price in an offer of a drug for sale; see the Offer type for that. This type will typically be used to tag wholesale or average retail cost of a drug, or maximum reimbursable cost. Costs of medical drugs vary widely depending on how and where they are paid for, so while this type captures some of the variables, costs should be used with caution by consumers of this schema's markup.
@@ -360,7 +394,9 @@ class SDO(DefinedNamespace):
     EducationalOccupationalCredential: URIRef  # An educational or occupational credential. A diploma, academic degree, certification, qualification, badge, etc., that may be awarded to a person or other entity that meets the requirements defined by the credentialer.
     EducationalOccupationalProgram: URIRef  # A program offered by an institution which determines the learning progress to achieve an outcome, usually a credential like a degree or certificate. This would define a discrete set of opportunities (e.g., job, courses) that together constitute a program with a clear start, end, set of requirements, and transition to a new occupational opportunity (e.g., a job), or sometimes a higher educational opportunity (e.g., an advanced degree).
     EducationalOrganization: URIRef  # An educational organization.
-    EffectivenessHealthAspect: URIRef  # Content about the effectiveness-related aspects of a health topic.
+    EffectivenessHealthAspect: (
+        URIRef  # Content about the effectiveness-related aspects of a health topic.
+    )
     Electrician: URIRef  # An electrician.
     ElectronicsStore: URIRef  # An electronics store.
     ElementarySchool: URIRef  # An elementary school.
@@ -373,13 +409,17 @@ class SDO(DefinedNamespace):
     EmployerReview: URIRef  # An [[EmployerReview]] is a review of an [[Organization]] regarding its role as an employer, written by a current or former employee of that organization.
     EmploymentAgency: URIRef  # An employment agency.
     Endocrine: URIRef  # A specific branch of medical science that pertains to diagnosis and treatment of disorders of endocrine glands and their secretions.
-    EndorseAction: URIRef  # An agent approves/certifies/likes/supports/sanction an object.
+    EndorseAction: (
+        URIRef  # An agent approves/certifies/likes/supports/sanction an object.
+    )
     EndorsementRating: URIRef  # An EndorsementRating is a rating that expresses some level of endorsement, for example inclusion in a "critic's pick" blog, a "Like" or "+1" on a social network. It can be considered the [[result]] of an [[EndorseAction]] in which the [[object]] of the action is rated positively by some [[agent]]. As is common elsewhere in schema.org, it is sometimes more useful to describe the results of such an action without explicitly describing the [[Action]].  An [[EndorsementRating]] may be part of a numeric scale or organized system, but this is not required: having an explicit type for indicating a positive, endorsement rating is particularly useful in the absence of numeric scales as it helps consumers understand that the rating is broadly positive.
     Energy: URIRef  # Properties that take Energy as values are of the form '&lt;Number&gt; &lt;Energy unit of measure&gt;'.
     EnergyConsumptionDetails: URIRef  # EnergyConsumptionDetails represents information related to the energy efficiency of a product that consumes energy. The information that can be provided is based on international regulations such as for example [EU directive 2017/1369](https://eur-lex.europa.eu/eli/reg/2017/1369/oj) for energy labeling and the [Energy labeling rule](https://www.ftc.gov/enforcement/rules/rulemaking-regulatory-reform-proceedings/energy-water-use-labeling-consumer) under the Energy Policy and Conservation Act (EPCA) in the US.
     EnergyEfficiencyEnumeration: URIRef  # Enumerates energy efficiency levels (also known as "classes" or "ratings") and certifications that are part of several international energy efficiency standards.
     EnergyStarCertified: URIRef  # Represents EnergyStar certification.
-    EnergyStarEnergyEfficiencyEnumeration: URIRef  # Used to indicate whether a product is EnergyStar certified.
+    EnergyStarEnergyEfficiencyEnumeration: (
+        URIRef  # Used to indicate whether a product is EnergyStar certified.
+    )
     EngineSpecification: URIRef  # Information about the engine of the vehicle. A vehicle can have multiple engines represented by multiple engine specification entities.
     EnrollingByInvitation: URIRef  # Enrolling participants by invitation only.
     EntertainmentBusiness: URIRef  # A business providing entertainment.
@@ -398,8 +438,12 @@ class SDO(DefinedNamespace):
     EventStatusType: URIRef  # EventStatusType is an enumeration type whose instances represent several states that an Event may be in.
     EventVenue: URIRef  # An event venue.
     EvidenceLevelA: URIRef  # Data derived from multiple randomized clinical trials or meta-analyses.
-    EvidenceLevelB: URIRef  # Data derived from a single randomized trial, or nonrandomized studies.
-    EvidenceLevelC: URIRef  # Only consensus opinion of experts, case studies, or standard-of-care.
+    EvidenceLevelB: (
+        URIRef  # Data derived from a single randomized trial, or nonrandomized studies.
+    )
+    EvidenceLevelC: (
+        URIRef  # Only consensus opinion of experts, case studies, or standard-of-care.
+    )
     ExchangeRateSpecification: URIRef  # A structured value representing exchange rate.
     ExchangeRefund: URIRef  # Specifies that a refund can be done as an exchange for the same product.
     ExerciseAction: URIRef  # The act of participating in exertive activity for the purposes of improving health and fitness.
@@ -437,7 +481,9 @@ class SDO(DefinedNamespace):
     FoodEvent: URIRef  # Event type: Food event.
     FoodService: URIRef  # A food service, like breakfast, lunch, or dinner.
     FourWheelDriveConfiguration: URIRef  # Four-wheel drive is a transmission layout where the engine primarily drives two wheels with a part-time four-wheel drive capability.
-    FreeReturn: URIRef  # Specifies that product returns are free of charge for the customer.
+    FreeReturn: (
+        URIRef  # Specifies that product returns are free of charge for the customer.
+    )
     Friday: URIRef  # The day of the week between Thursday and Saturday.
     FrontWheelDriveConfiguration: URIRef  # Front-wheel drive is a transmission layout where the engine drives the front wheels.
     FullRefund: URIRef  # Specifies that a refund can be done in the full amount the customer paid for the product
@@ -446,7 +492,9 @@ class SDO(DefinedNamespace):
     Fungus: URIRef  # Pathogenic fungus.
     FurnitureStore: URIRef  # A furniture store.
     Game: URIRef  # The Game type represents things which are games. These are typically rule-governed recreational activities, e.g. role-playing games in which players assume the role of characters in a fictional setting.
-    GamePlayMode: URIRef  # Indicates whether this game is multi-player, co-op or single-player.
+    GamePlayMode: (
+        URIRef  # Indicates whether this game is multi-player, co-op or single-player.
+    )
     GameServer: URIRef  # Server that provides game interaction in a multiplayer game.
     GameServerStatus: URIRef  # Status of a game server.
     GardenStore: URIRef  # A garden store.
@@ -457,7 +505,9 @@ class SDO(DefinedNamespace):
     Gene: URIRef  # A discrete unit of inheritance which affects one or more biological traits (Source: [https://en.wikipedia.org/wiki/Gene](https://en.wikipedia.org/wiki/Gene)). Examples include FOXP2 (Forkhead box protein P2), SCARNA21 (small Cajal body-specific RNA 21), A- (agouti genotype).
     GeneralContractor: URIRef  # A general contractor.
     Genetic: URIRef  # A specific branch of medical science that pertains to hereditary transmission and the variation of inherited characteristics and disorders.
-    Genitourinary: URIRef  # Genitourinary system function assessment with clinical examination.
+    Genitourinary: (
+        URIRef  # Genitourinary system function assessment with clinical examination.
+    )
     GeoCircle: URIRef  # A GeoCircle is a GeoShape representing a circular geographic area. As it is a GeoShape           it provides the simple textual property 'circle', but also allows the combination of postalCode alongside geoRadius.           The center of the circle can be indicated via the 'geoMidpoint' property, or more approximately using 'address', 'postalCode'.
     GeoCoordinates: URIRef  # The geographic coordinates of a place or event.
     GeoShape: URIRef  # The geographic shape of a place. A GeoShape can be described using several properties whose values are based on latitude/longitude pairs. Either whitespace or commas can be used to separate latitude and longitude; whitespace should be used when writing a list of several such points.
@@ -469,14 +519,18 @@ class SDO(DefinedNamespace):
     GolfCourse: URIRef  # A golf course.
     GovernmentBenefitsType: URIRef  # GovernmentBenefitsType enumerates several kinds of government benefits to support the COVID-19 situation. Note that this structure may not capture all benefits offered.
     GovernmentBuilding: URIRef  # A government building.
-    GovernmentOffice: URIRef  # A government office&#x2014;for example, an IRS or DMV office.
+    GovernmentOffice: (
+        URIRef  # A government office&#x2014;for example, an IRS or DMV office.
+    )
     GovernmentOrganization: URIRef  # A governmental organization or agency.
     GovernmentPermit: URIRef  # A permit issued by a government agency.
     GovernmentService: URIRef  # A service provided by a government organization, e.g. food stamps, veterans benefits, etc.
     Grant: URIRef  # A grant, typically financial or otherwise quantifiable, of resources. Typically a [[funder]] sponsors some [[MonetaryAmount]] to an [[Organization]] or [[Person]],     sometimes not necessarily via a dedicated or long-lived [[Project]], resulting in one or more outputs, or [[fundedItem]]s. For financial sponsorship, indicate the [[funder]] of a [[MonetaryGrant]]. For non-financial support, indicate [[sponsor]] of [[Grant]]s of resources (e.g. office space).  Grants support  activities directed towards some agreed collective goals, often but not always organized as [[Project]]s. Long-lived projects are sometimes sponsored by a variety of grants over time, but it is also common for a project to be associated with a single grant.  The amount of a [[Grant]] is represented using [[amount]] as a [[MonetaryAmount]].
     GraphicNovel: URIRef  # Book format: GraphicNovel. May represent a bound collection of ComicIssue instances.
     GroceryStore: URIRef  # A grocery store.
-    GroupBoardingPolicy: URIRef  # The airline boards by groups based on check-in time, priority, etc.
+    GroupBoardingPolicy: (
+        URIRef  # The airline boards by groups based on check-in time, priority, etc.
+    )
     Guide: URIRef  # [[Guide]] is a page or article that recommend specific products or services, or aspects of a thing for a user to consider. A [[Guide]] may represent a Buying Guide and detail aspects of products or services for a user to consider. A [[Guide]] may represent a Product Guide and recommend specific products or services. A [[Guide]] may represent a Ranked List and recommend specific products or services with ranking.
     Gynecologic: URIRef  # A specific branch of medical science that pertains to the health care of women, particularly in the diagnosis and treatment of disorders affecting the female reproductive system.
     HVACBusiness: URIRef  # A business that provide Heating, Ventilation and Air Conditioning services.
@@ -490,17 +544,23 @@ class SDO(DefinedNamespace):
     HealthAspectEnumeration: URIRef  # HealthAspectEnumeration enumerates several aspects of health content online, each of which might be described using [[hasHealthAspect]] and [[HealthTopicContent]].
     HealthCare: URIRef  # HealthCare: this is a benefit for health care.
     HealthClub: URIRef  # A health club.
-    HealthInsurancePlan: URIRef  # A US-style health insurance plan, including PPOs, EPOs, and HMOs.
+    HealthInsurancePlan: (
+        URIRef  # A US-style health insurance plan, including PPOs, EPOs, and HMOs.
+    )
     HealthPlanCostSharingSpecification: URIRef  # A description of costs to the patient under a given network or formulary.
     HealthPlanFormulary: URIRef  # For a given health insurance plan, the specification for costs and coverage of prescription drugs.
     HealthPlanNetwork: URIRef  # A US-style health insurance plan network.
     HealthTopicContent: URIRef  # [[HealthTopicContent]] is [[WebContent]] that is about some aspect of a health topic, e.g. a condition, its symptoms or treatments. Such content may be comprised of several parts or sections and use different types of media. Multiple instances of [[WebContent]] (and hence [[HealthTopicContent]]) can be related using [[hasPart]] / [[isPartOf]] where there is some kind of content hierarchy, and their content described with [[about]] and [[mentions]] e.g. building upon the existing [[MedicalCondition]] vocabulary.
-    HearingImpairedSupported: URIRef  # Uses devices to support users with hearing impairments.
+    HearingImpairedSupported: (
+        URIRef  # Uses devices to support users with hearing impairments.
+    )
     Hematologic: URIRef  # A specific branch of medical science that pertains to diagnosis and treatment of disorders of blood and blood producing organs.
     HighSchool: URIRef  # A high school.
     HinduDiet: URIRef  # A diet conforming to Hindu dietary practices, in particular, beef-free.
     HinduTemple: URIRef  # A Hindu temple.
-    HobbyShop: URIRef  # A store that sells materials useful or necessary for various hobbies.
+    HobbyShop: (
+        URIRef  # A store that sells materials useful or necessary for various hobbies.
+    )
     HomeAndConstructionBusiness: URIRef  # A construction business.\n\nA HomeAndConstructionBusiness is a [[LocalBusiness]] that provides services around homes and buildings.\n\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\(s).
     HomeGoodsStore: URIRef  # A home goods store.
     Homeopathic: URIRef  # A system of medicine based on the principle that a disease can be cured by a substance that produces similar symptoms in healthy people.
@@ -527,23 +587,33 @@ class SDO(DefinedNamespace):
     ImageGallery: URIRef  # Web page type: Image gallery page.
     ImageObject: URIRef  # An image file.
     ImageObjectSnapshot: URIRef  # A specific and exact (byte-for-byte) version of an [[ImageObject]]. Two byte-for-byte identical files, for the purposes of this type, considered identical. If they have different embedded metadata (e.g. XMP, EXIF) the files will differ. Different external facts about the files, e.g. creator or dateCreated that aren't represented in their actual content, do not affect this notion of identity.
-    ImagingTest: URIRef  # Any medical imaging modality typically used for diagnostic purposes.
+    ImagingTest: (
+        URIRef  # Any medical imaging modality typically used for diagnostic purposes.
+    )
     InForce: URIRef  # Indicates that a legislation is in force.
     InStock: URIRef  # Indicates that the item is in stock.
-    InStoreOnly: URIRef  # Indicates that the item is available only at physical locations.
+    InStoreOnly: (
+        URIRef  # Indicates that the item is available only at physical locations.
+    )
     IndividualProduct: URIRef  # A single, identifiable product instance (e.g. a laptop with a particular serial number).
     Infectious: URIRef  # Something in medical science that pertains to infectious diseases i.e caused by bacterial, viral, fungal or parasitic infections.
     InfectiousAgentClass: URIRef  # Classes of agents or pathogens that transmit infectious diseases. Enumerated type.
     InfectiousDisease: URIRef  # An infectious disease is a clinically evident human disease resulting from the presence of pathogenic microbial agents, like pathogenic viruses, pathogenic bacteria, fungi, protozoa, multicellular parasites, and prions. To be considered an infectious disease, such pathogens are known to be able to cause this disease.
     InformAction: URIRef  # The act of notifying someone of information pertinent to them, with no expectation of a response.
-    IngredientsHealthAspect: URIRef  # Content discussing ingredients-related aspects of a health topic.
-    InsertAction: URIRef  # The act of adding at a specific location in an ordered collection.
+    IngredientsHealthAspect: (
+        URIRef  # Content discussing ingredients-related aspects of a health topic.
+    )
+    InsertAction: (
+        URIRef  # The act of adding at a specific location in an ordered collection.
+    )
     InstallAction: URIRef  # The act of installing an application.
     Installment: URIRef  # Represents the installment pricing component of the total price for an offered product.
     InsuranceAgency: URIRef  # An Insurance agency.
     Intangible: URIRef  # A utility class that serves as the umbrella for a number of 'intangible' things such as quantities, structured values, etc.
     Integer: URIRef  # Data type: Integer.
-    InteractAction: URIRef  # The act of interacting with another person or organization.
+    InteractAction: (
+        URIRef  # The act of interacting with another person or organization.
+    )
     InteractionCounter: URIRef  # A summary of how users have interacted with this CreativeWork. In most cases, authors will use a subtype to specify the specific type of interaction.
     InternationalTrial: URIRef  # An international trial.
     InternetCafe: URIRef  # An internet cafe.
@@ -554,13 +624,19 @@ class SDO(DefinedNamespace):
     InvoicePrice: URIRef  # Represents the invoice price of an offered product.
     ItemAvailability: URIRef  # A list of possible product availability options.
     ItemList: URIRef  # A list of items of any sort&#x2014;for example, Top 10 Movies About Weathermen, or Top 100 Party Songs. Not to be confused with HTML lists, which are often used only for formatting.
-    ItemListOrderAscending: URIRef  # An ItemList ordered with lower values listed first.
-    ItemListOrderDescending: URIRef  # An ItemList ordered with higher values listed first.
+    ItemListOrderAscending: (
+        URIRef  # An ItemList ordered with lower values listed first.
+    )
+    ItemListOrderDescending: (
+        URIRef  # An ItemList ordered with higher values listed first.
+    )
     ItemListOrderType: URIRef  # Enumerated for values for itemListOrder for indicating how an ordered ItemList is organized.
     ItemListUnordered: URIRef  # An ItemList ordered with no explicit order.
     ItemPage: URIRef  # A page devoted to a single item, such as a particular product or hotel.
     JewelryStore: URIRef  # A jewelry store.
-    JobPosting: URIRef  # A listing that describes a job opening in a certain organization.
+    JobPosting: (
+        URIRef  # A listing that describes a job opening in a certain organization.
+    )
     JoinAction: URIRef  # An agent joins an event/group with participants/friends at a location.\n\nRelated actions:\n\n* [[RegisterAction]]: Unlike RegisterAction, JoinAction refers to joining a group/team of people.\n* [[SubscribeAction]]: Unlike SubscribeAction, JoinAction does not imply that you'll be receiving updates.\n* [[FollowAction]]: Unlike FollowAction, JoinAction does not imply that you'll be polling for updates.
     Joint: URIRef  # The anatomical location at which two or more bones make contact.
     KosherDiet: URIRef  # A diet conforming to Jewish dietary practices.
@@ -573,12 +649,18 @@ class SDO(DefinedNamespace):
     LearningResource: URIRef  # The LearningResource type can be used to indicate [[CreativeWork]]s (whether physical or digital) that have a particular and explicit orientation towards learning, education, skill acquisition, and other educational purposes.  [[LearningResource]] is expected to be used as an addition to a primary type such as [[Book]], [[VideoObject]], [[Product]] etc.  [[EducationEvent]] serves a similar purpose for event-like things (e.g. a [[Trip]]). A [[LearningResource]] may be created as a result of an [[EducationEvent]], for example by recording one.
     LeaveAction: URIRef  # An agent leaves an event / group with participants/friends at a location.\n\nRelated actions:\n\n* [[JoinAction]]: The antonym of LeaveAction.\n* [[UnRegisterAction]]: Unlike UnRegisterAction, LeaveAction implies leaving a group/team of people rather than a service.
     LeftHandDriving: URIRef  # The steering position is on the left side of the vehicle (viewed from the main direction of driving).
-    LegalForceStatus: URIRef  # A list of possible statuses for the legal force of a legislation.
+    LegalForceStatus: (
+        URIRef  # A list of possible statuses for the legal force of a legislation.
+    )
     LegalService: URIRef  # A LegalService is a business that provides legally-oriented services, advice and representation, e.g. law firms.\n\nAs a [[LocalBusiness]] it can be described as a [[provider]] of one or more [[Service]]\(s).
-    LegalValueLevel: URIRef  # A list of possible levels for the legal validity of a legislation.
+    LegalValueLevel: (
+        URIRef  # A list of possible levels for the legal validity of a legislation.
+    )
     Legislation: URIRef  # A legal document such as an act, decree, bill, etc. (enforceable or not) or a component of a legal act (like an article).
     LegislationObject: URIRef  # A specific object or file containing a Legislation. Note that the same Legislation can be published in multiple files. For example, a digitally signed PDF, a plain PDF and an HTML version.
-    LegislativeBuilding: URIRef  # A legislative building&#x2014;for example, the state capitol.
+    LegislativeBuilding: (
+        URIRef  # A legislative building&#x2014;for example, the state capitol.
+    )
     LeisureTimeActivity: URIRef  # Any physical activity engaged in for recreational purposes. Examples may include ballroom dancing, roller skating, canoeing, fishing, etc.
     LendAction: URIRef  # The act of providing an object under an agreement that it will be returned at a later date. Reciprocal of BorrowAction.\n\nRelated actions:\n\n* [[BorrowAction]]: Reciprocal of LendAction.
     Library: URIRef  # A library.
@@ -596,11 +678,15 @@ class SDO(DefinedNamespace):
     LiteraryEvent: URIRef  # Event type: Literary event.
     LiveAlbum: URIRef  # LiveAlbum.
     LiveBlogPosting: URIRef  # A [[LiveBlogPosting]] is a [[BlogPosting]] intended to provide a rolling textual coverage of an ongoing event through continuous updates.
-    LivingWithHealthAspect: URIRef  # Information about coping or life related to the topic.
+    LivingWithHealthAspect: (
+        URIRef  # Information about coping or life related to the topic.
+    )
     LoanOrCredit: URIRef  # A financial product for the loaning of an amount of money, or line of credit, under agreed terms and charges.
     LocalBusiness: URIRef  # A particular physical business or branch of an organization. Examples of LocalBusiness include a restaurant, a particular branch of a restaurant chain, a branch of a bank, a medical practice, a club, a bowling alley, etc.
     LocationFeatureSpecification: URIRef  # Specifies a location feature by providing a structured value representing a feature of an accommodation as a property-value pair of varying degrees of formality.
-    LockerDelivery: URIRef  # A DeliveryMethod in which an item is made available via locker.
+    LockerDelivery: (
+        URIRef  # A DeliveryMethod in which an item is made available via locker.
+    )
     Locksmith: URIRef  # A locksmith.
     LodgingBusiness: URIRef  # A lodging business, such as a motel, hotel, or inn.
     LodgingReservation: URIRef  # A reservation for lodging at a hotel, motel, inn, etc.\n\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations.
@@ -631,19 +717,25 @@ class SDO(DefinedNamespace):
     MediaReviewItem: URIRef  # Represents an item or group of closely related items treated as a unit for the sake of evaluation in a [[MediaReview]]. Authorship etc. apply to the items rather than to the curation/grouping or reviewing party.
     MediaSubscription: URIRef  # A subscription which allows a user to access media including audio, video, books, etc.
     MedicalAudience: URIRef  # Target audiences for medical web pages.
-    MedicalAudienceType: URIRef  # Target audiences types for medical web pages. Enumerated type.
+    MedicalAudienceType: (
+        URIRef  # Target audiences types for medical web pages. Enumerated type.
+    )
     MedicalBusiness: URIRef  # A particular physical or virtual business of an organization for medical purposes. Examples of MedicalBusiness include differents business run by health professionals.
     MedicalCause: URIRef  # The causative agent(s) that are responsible for the pathophysiologic process that eventually results in a medical condition, symptom or sign. In this schema, unless otherwise specified this is meant to be the proximate cause of the medical condition, symptom or sign. The proximate cause is defined as the causative agent that most directly results in the medical condition, symptom or sign. For example, the HIV virus could be considered a cause of AIDS. Or in a diagnostic context, if a patient fell and sustained a hip fracture and two days later sustained a pulmonary embolism which eventuated in a cardiac arrest, the cause of the cardiac arrest (the proximate cause) would be the pulmonary embolism and not the fall. Medical causes can include cardiovascular, chemical, dermatologic, endocrine, environmental, gastroenterologic, genetic, hematologic, gynecologic, iatrogenic, infectious, musculoskeletal, neurologic, nutritional, obstetric, oncologic, otolaryngologic, pharmacologic, psychiatric, pulmonary, renal, rheumatologic, toxic, traumatic, or urologic causes; medical conditions can be causes as well.
     MedicalClinic: URIRef  # A facility, often associated with a hospital or medical school, that is devoted to the specific diagnosis and/or healthcare. Previously limited to outpatients but with evolution it may be open to inpatients as well.
     MedicalCode: URIRef  # A code for a medical entity.
     MedicalCondition: URIRef  # Any condition of the human body that affects the normal functioning of a person, whether physically or mentally. Includes diseases, injuries, disabilities, disorders, syndromes, etc.
-    MedicalConditionStage: URIRef  # A stage of a medical condition, such as 'Stage IIIa'.
+    MedicalConditionStage: (
+        URIRef  # A stage of a medical condition, such as 'Stage IIIa'.
+    )
     MedicalContraindication: URIRef  # A condition or factor that serves as a reason to withhold a certain medical therapy. Contraindications can be absolute (there are no reasonable circumstances for undertaking a course of action) or relative (the patient is at higher risk of complications, but that these risks may be outweighed by other considerations or mitigated by other measures).
     MedicalDevice: URIRef  # Any object used in a medical capacity, such as to diagnose or treat a patient.
     MedicalDevicePurpose: URIRef  # Categories of medical devices, organized by the purpose or intended use of the device.
     MedicalEntity: URIRef  # The most generic type of entity related to health and the practice of medicine.
     MedicalEnumeration: URIRef  # Enumerations related to health and the practice of medicine: A concept that is used to attribute a quality to another concept, as a qualifier, a collection of items or a listing of all of the elements of a set in medicine practice.
-    MedicalEvidenceLevel: URIRef  # Level of evidence for a medical guideline. Enumerated type.
+    MedicalEvidenceLevel: (
+        URIRef  # Level of evidence for a medical guideline. Enumerated type.
+    )
     MedicalGuideline: URIRef  # Any recommendation made by a standard society (e.g. ACC/AHA) or consensus statement that denotes how to diagnose and treat a particular condition. Note: this type should be used to tag the actual guideline recommendation; if the guideline recommendation occurs in a larger scholarly article, use MedicalScholarlyArticle to tag the overall article, not this type. Note also: the organization making the recommendation should be captured in the recognizingAuthority base property of MedicalEntity.
     MedicalGuidelineContraindication: URIRef  # A guideline contraindication that designates a process as harmful and where quality of the data supporting the contraindication is sound.
     MedicalGuidelineRecommendation: URIRef  # A guideline recommendation that is regarded as efficacious and where quality of the data supporting the recommendation is sound.
@@ -651,10 +743,14 @@ class SDO(DefinedNamespace):
     MedicalIndication: URIRef  # A condition or factor that indicates use of a medical therapy, including signs, symptoms, risk factors, anatomical states, etc.
     MedicalIntangible: URIRef  # A utility class that serves as the umbrella for a number of 'intangible' things in the medical space.
     MedicalObservationalStudy: URIRef  # An observational study is a type of medical study that attempts to infer the possible effect of a treatment through observation of a cohort of subjects over a period of time. In an observational study, the assignment of subjects into treatment groups versus control groups is outside the control of the investigator. This is in contrast with controlled studies, such as the randomized controlled trials represented by MedicalTrial, where each subject is randomly assigned to a treatment group or a control group before the start of the treatment.
-    MedicalObservationalStudyDesign: URIRef  # Design models for observational medical studies. Enumerated type.
+    MedicalObservationalStudyDesign: (
+        URIRef  # Design models for observational medical studies. Enumerated type.
+    )
     MedicalOrganization: URIRef  # A medical organization (physical or not), such as hospital, institution or clinic.
     MedicalProcedure: URIRef  # A process of care used in either a diagnostic, therapeutic, preventive or palliative capacity that relies on invasive (surgical), non-invasive, or other techniques.
-    MedicalProcedureType: URIRef  # An enumeration that describes different types of medical procedures.
+    MedicalProcedureType: (
+        URIRef  # An enumeration that describes different types of medical procedures.
+    )
     MedicalResearcher: URIRef  # Medical researchers.
     MedicalRiskCalculator: URIRef  # A complex mathematical calculation requiring an online calculator, used to assess prognosis. Note: use the url property of Thing to record any URLs for online calculators.
     MedicalRiskEstimator: URIRef  # Any rule set or interactive tool for estimating the risk of developing a complication or condition.
@@ -667,7 +763,9 @@ class SDO(DefinedNamespace):
     MedicalStudy: URIRef  # A medical study is an umbrella type covering all kinds of research studies relating to human medicine or health, including observational studies and interventional trials and registries, randomized, controlled or not. When the specific type of study is known, use one of the extensions of this type, such as MedicalTrial or MedicalObservationalStudy. Also, note that this type should be used to mark up data that describes the study itself; to tag an article that publishes the results of a study, use MedicalScholarlyArticle. Note: use the code property of MedicalEntity to store study IDs, e.g. clinicaltrials.gov ID.
     MedicalStudyStatus: URIRef  # The status of a medical study. Enumerated type.
     MedicalSymptom: URIRef  # Any complaint sensed and expressed by the patient (therefore defined as subjective)  like stomachache, lower-back pain, or fatigue.
-    MedicalTest: URIRef  # Any medical test, typically performed for diagnostic purposes.
+    MedicalTest: (
+        URIRef  # Any medical test, typically performed for diagnostic purposes.
+    )
     MedicalTestPanel: URIRef  # Any collection of tests commonly ordered together.
     MedicalTherapy: URIRef  # Any medical intervention designed to prevent, treat, and cure human diseases and medical conditions, including both curative and palliative therapies. Medical therapies are typically processes of care relying upon pharmacotherapy, behavioral therapy, supportive therapy (with fluid or nutrition for example), or detoxification (e.g. hemodialysis) aimed at improving or preventing a health condition.
     MedicalTrial: URIRef  # A medical trial is a type of medical study that uses scientific process used to compare the safety and efficacy of medical therapies or medical procedures. In general, medical trials are controlled and subjects are allocated at random to the different treatment and/or control groups.
@@ -679,14 +777,28 @@ class SDO(DefinedNamespace):
     Menu: URIRef  # A structured representation of food or drink items available from a FoodEstablishment.
     MenuItem: URIRef  # A food or drink item listed in a menu or menu section.
     MenuSection: URIRef  # A sub-grouping of food or drink items in a menu. E.g. courses (such as 'Dinner', 'Breakfast', etc.), specific type of dishes (such as 'Meat', 'Vegan', 'Drinks', etc.), or some other classification made by the menu provider.
-    MerchantReturnEnumeration: URIRef  # Enumerates several kinds of product return policies.
-    MerchantReturnFiniteReturnWindow: URIRef  # Specifies that there is a finite window for product returns.
-    MerchantReturnNotPermitted: URIRef  # Specifies that product returns are not permitted.
+    MerchantReturnEnumeration: (
+        URIRef  # Enumerates several kinds of product return policies.
+    )
+    MerchantReturnFiniteReturnWindow: (
+        URIRef  # Specifies that there is a finite window for product returns.
+    )
+    MerchantReturnNotPermitted: (
+        URIRef  # Specifies that product returns are not permitted.
+    )
     MerchantReturnPolicy: URIRef  # A MerchantReturnPolicy provides information about product return policies associated with an [[Organization]], [[Product]], or [[Offer]].
-    MerchantReturnPolicySeasonalOverride: URIRef  # A seasonal override of a return policy, for example used for holidays.
-    MerchantReturnUnlimitedWindow: URIRef  # Specifies that there is an unlimited window for product returns.
-    MerchantReturnUnspecified: URIRef  # Specifies that a product return policy is not provided.
-    Message: URIRef  # A single message from a sender to one or more organizations or people.
+    MerchantReturnPolicySeasonalOverride: (
+        URIRef  # A seasonal override of a return policy, for example used for holidays.
+    )
+    MerchantReturnUnlimitedWindow: (
+        URIRef  # Specifies that there is an unlimited window for product returns.
+    )
+    MerchantReturnUnspecified: (
+        URIRef  # Specifies that a product return policy is not provided.
+    )
+    Message: (
+        URIRef  # A single message from a sender to one or more organizations or people.
+    )
     MiddleSchool: URIRef  # A middle school (typically for children aged around 11-14, although this varies somewhat).
     Midwifery: URIRef  # A nurse-like health profession that deals with pregnancy, childbirth, and the postpartum period (including care of the newborn), besides sexual and reproductive health of women throughout their lives.
     MinimumAdvertisedPrice: URIRef  # Represents the minimum advertised price ("MAP") (as dictated by the manufacturer) of an offered product.
@@ -694,11 +806,15 @@ class SDO(DefinedNamespace):
     MixedEventAttendanceMode: URIRef  # MixedEventAttendanceMode - an event that is conducted as a combination of both offline and online modes.
     MixtapeAlbum: URIRef  # MixtapeAlbum.
     MobileApplication: URIRef  # A software application designed specifically to work well on a mobile device such as a telephone.
-    MobilePhoneStore: URIRef  # A store that sells mobile phones and related accessories.
+    MobilePhoneStore: (
+        URIRef  # A store that sells mobile phones and related accessories.
+    )
     MolecularEntity: URIRef  # Any constitutionally or isotopically distinct atom, molecule, ion, ion pair, radical, radical ion, complex, conformer etc., identifiable as a separately distinguishable entity.
     Monday: URIRef  # The day of the week between Sunday and Tuesday.
     MonetaryAmount: URIRef  # A monetary value or range. This type can be used to describe an amount of money such as $50 USD, or a range as in describing a bank account being suitable for a balance between £1,000 and £1,000,000 GBP, or the value of a salary, etc. It is recommended to use [[PriceSpecification]] Types to describe the price of an Offer, Invoice, etc.
-    MonetaryAmountDistribution: URIRef  # A statistical distribution of monetary amounts.
+    MonetaryAmountDistribution: (
+        URIRef  # A statistical distribution of monetary amounts.
+    )
     MonetaryGrant: URIRef  # A monetary grant.
     MoneyTransfer: URIRef  # The act of transferring money from one place to another place. This may occur electronically or physically.
     MortgageLoan: URIRef  # A loan in which property or real estate is used as collateral. (A loan securitized against some real estate).
@@ -725,7 +841,9 @@ class SDO(DefinedNamespace):
     Museum: URIRef  # A museum.
     MusicAlbum: URIRef  # A collection of music tracks.
     MusicAlbumProductionType: URIRef  # Classification of the album by it's type of content: soundtrack, live album, studio album, etc.
-    MusicAlbumReleaseType: URIRef  # The kind of release which this album is: single, EP or album.
+    MusicAlbumReleaseType: (
+        URIRef  # The kind of release which this album is: single, EP or album.
+    )
     MusicComposition: URIRef  # A musical composition.
     MusicEvent: URIRef  # Event type: Music event.
     MusicGroup: URIRef  # A musical group, such as a band, an orchestra, or a choir. Can also be a solo musician.
@@ -745,16 +863,22 @@ class SDO(DefinedNamespace):
     Neurologic: URIRef  # A specific branch of medical science that studies the nerves and nervous system and its respective disease states.
     NewCondition: URIRef  # Indicates that the item is new.
     NewsArticle: URIRef  # A NewsArticle is an article whose content reports news, or provides background context and supporting materials for understanding the news.  A more detailed overview of [schema.org News markup](/docs/news.html) is also available.
-    NewsMediaOrganization: URIRef  # A News/Media organization such as a newspaper or TV station.
+    NewsMediaOrganization: (
+        URIRef  # A News/Media organization such as a newspaper or TV station.
+    )
     Newspaper: URIRef  # A publication containing information about varied topics that are pertinent to general information, a geographic area, or a specific subject matter (i.e. business, culture, education). Often published daily.
     NightClub: URIRef  # A nightclub or discotheque.
-    NoninvasiveProcedure: URIRef  # A type of medical procedure that involves noninvasive techniques.
+    NoninvasiveProcedure: (
+        URIRef  # A type of medical procedure that involves noninvasive techniques.
+    )
     Nonprofit501a: URIRef  # Nonprofit501a: Non-profit type referring to Farmers’ Cooperative Associations.
     Nonprofit501c1: URIRef  # Nonprofit501c1: Non-profit type referring to Corporations Organized Under Act of Congress, including Federal Credit Unions and National Farm Loan Associations.
     Nonprofit501c10: URIRef  # Nonprofit501c10: Non-profit type referring to Domestic Fraternal Societies and Associations.
     Nonprofit501c11: URIRef  # Nonprofit501c11: Non-profit type referring to Teachers' Retirement Fund Associations.
     Nonprofit501c12: URIRef  # Nonprofit501c12: Non-profit type referring to Benevolent Life Insurance Associations, Mutual Ditch or Irrigation Companies, Mutual or Cooperative Telephone Companies.
-    Nonprofit501c13: URIRef  # Nonprofit501c13: Non-profit type referring to Cemetery Companies.
+    Nonprofit501c13: (
+        URIRef  # Nonprofit501c13: Non-profit type referring to Cemetery Companies.
+    )
     Nonprofit501c14: URIRef  # Nonprofit501c14: Non-profit type referring to State-Chartered Credit Unions, Mutual Reserve Funds.
     Nonprofit501c15: URIRef  # Nonprofit501c15: Non-profit type referring to Mutual Insurance Companies or Associations.
     Nonprofit501c16: URIRef  # Nonprofit501c16: Non-profit type referring to Cooperative Organizations to Finance Crop Operations.
@@ -765,7 +889,9 @@ class SDO(DefinedNamespace):
     Nonprofit501c20: URIRef  # Nonprofit501c20: Non-profit type referring to Group Legal Services Plan Organizations.
     Nonprofit501c21: URIRef  # Nonprofit501c21: Non-profit type referring to Black Lung Benefit Trusts.
     Nonprofit501c22: URIRef  # Nonprofit501c22: Non-profit type referring to Withdrawal Liability Payment Funds.
-    Nonprofit501c23: URIRef  # Nonprofit501c23: Non-profit type referring to Veterans Organizations.
+    Nonprofit501c23: (
+        URIRef  # Nonprofit501c23: Non-profit type referring to Veterans Organizations.
+    )
     Nonprofit501c24: URIRef  # Nonprofit501c24: Non-profit type referring to Section 4049 ERISA Trusts.
     Nonprofit501c25: URIRef  # Nonprofit501c25: Non-profit type referring to Real Property Title-Holding Corporations or Trusts with Multiple Parents.
     Nonprofit501c26: URIRef  # Nonprofit501c26: Non-profit type referring to State-Sponsored Organizations Providing Health Coverage for High-Risk Individuals.
@@ -781,10 +907,16 @@ class SDO(DefinedNamespace):
     Nonprofit501d: URIRef  # Nonprofit501d: Non-profit type referring to Religious and Apostolic Associations.
     Nonprofit501e: URIRef  # Nonprofit501e: Non-profit type referring to Cooperative Hospital Service Organizations.
     Nonprofit501f: URIRef  # Nonprofit501f: Non-profit type referring to Cooperative Service Organizations.
-    Nonprofit501k: URIRef  # Nonprofit501k: Non-profit type referring to Child Care Organizations.
-    Nonprofit501n: URIRef  # Nonprofit501n: Non-profit type referring to Charitable Risk Pools.
+    Nonprofit501k: (
+        URIRef  # Nonprofit501k: Non-profit type referring to Child Care Organizations.
+    )
+    Nonprofit501n: (
+        URIRef  # Nonprofit501n: Non-profit type referring to Charitable Risk Pools.
+    )
     Nonprofit501q: URIRef  # Nonprofit501q: Non-profit type referring to Credit Counseling Organizations.
-    Nonprofit527: URIRef  # Nonprofit527: Non-profit type referring to Political organizations.
+    Nonprofit527: (
+        URIRef  # Nonprofit527: Non-profit type referring to Political organizations.
+    )
     NonprofitANBI: URIRef  # NonprofitANBI: Non-profit type referring to a Public Benefit Organization (NL).
     NonprofitSBBI: URIRef  # NonprofitSBBI: Non-profit type referring to a Social Interest Promoting Institution (NL).
     NonprofitType: URIRef  # NonprofitType enumerates several kinds of official non-profit types of which a non-profit organization can be.
@@ -830,19 +962,31 @@ class SDO(DefinedNamespace):
     Optician: URIRef  # A store that sells reading glasses and similar devices for improving vision.
     Optometric: URIRef  # The science or practice of testing visual acuity and prescribing corrective lenses.
     Order: URIRef  # An order is a confirmation of a transaction (a receipt), which can contain multiple line items, each represented by an Offer that has been accepted by the customer.
-    OrderAction: URIRef  # An agent orders an object/product/service to be delivered/sent.
+    OrderAction: (
+        URIRef  # An agent orders an object/product/service to be delivered/sent.
+    )
     OrderCancelled: URIRef  # OrderStatus representing cancellation of an order.
     OrderDelivered: URIRef  # OrderStatus representing successful delivery of an order.
     OrderInTransit: URIRef  # OrderStatus representing that an order is in transit.
     OrderItem: URIRef  # An order item is a line of an order. It includes the quantity and shipping details of a bought offer.
     OrderPaymentDue: URIRef  # OrderStatus representing that payment is due on an order.
-    OrderPickupAvailable: URIRef  # OrderStatus representing availability of an order for pickup.
-    OrderProblem: URIRef  # OrderStatus representing that there is a problem with the order.
-    OrderProcessing: URIRef  # OrderStatus representing that an order is being processed.
+    OrderPickupAvailable: (
+        URIRef  # OrderStatus representing availability of an order for pickup.
+    )
+    OrderProblem: (
+        URIRef  # OrderStatus representing that there is a problem with the order.
+    )
+    OrderProcessing: (
+        URIRef  # OrderStatus representing that an order is being processed.
+    )
     OrderReturned: URIRef  # OrderStatus representing that an order has been returned.
     OrderStatus: URIRef  # Enumerated status values for Order.
-    Organization: URIRef  # An organization such as a school, NGO, corporation, club, etc.
-    OrganizationRole: URIRef  # A subclass of Role used to describe roles within organizations.
+    Organization: (
+        URIRef  # An organization such as a school, NGO, corporation, club, etc.
+    )
+    OrganizationRole: (
+        URIRef  # A subclass of Role used to describe roles within organizations.
+    )
     OrganizeAction: URIRef  # The act of manipulating/administering/supervising/controlling one or more objects.
     OriginalMediaContent: URIRef  # Content coded 'as original media content' in a [[MediaReview]], considered in the context of how it was published or shared.  For a [[VideoObject]] to be 'original': No evidence the footage has been misleadingly altered or manipulated, though it may contain false or misleading claims.  For an [[ImageObject]] to be 'original': No evidence the image has been misleadingly altered or manipulated, though it may still contain false or misleading claims.  For an [[ImageObject]] with embedded text to be 'original': No evidence the image has been misleadingly altered or manipulated, though it may still contain false or misleading claims.  For an [[AudioObject]] to be 'original': No evidence the audio has been misleadingly altered or manipulated, though it may contain false or misleading claims.
     OriginalShippingFees: URIRef  # Specifies that the customer must pay the original shipping costs when returning a product.
@@ -872,11 +1016,17 @@ class SDO(DefinedNamespace):
     PatientExperienceHealthAspect: URIRef  # Content about the real life experience of patients or people that have lived a similar experience about the topic. May be forums, topics, Q-and-A and related material.
     PawnShop: URIRef  # A shop that will buy, or lend money against the security of, personal possessions.
     PayAction: URIRef  # An agent pays a price to a participant.
-    PaymentAutomaticallyApplied: URIRef  # An automatic payment system is in place and will be used.
+    PaymentAutomaticallyApplied: (
+        URIRef  # An automatic payment system is in place and will be used.
+    )
     PaymentCard: URIRef  # A payment method using a credit, debit, store or other card to associate the payment with an account.
-    PaymentChargeSpecification: URIRef  # The costs of settling the payment using a particular payment method.
+    PaymentChargeSpecification: (
+        URIRef  # The costs of settling the payment using a particular payment method.
+    )
     PaymentComplete: URIRef  # The payment has been received and processed.
-    PaymentDeclined: URIRef  # The payee received the payment, but it was declined for some reason.
+    PaymentDeclined: (
+        URIRef  # The payee received the payment, but it was declined for some reason.
+    )
     PaymentDue: URIRef  # The payment is due, but still within an acceptable time to be received.
     PaymentMethod: URIRef  # A payment method is a standardized procedure for transferring the monetary amount for a purchase. Payment methods are characterized by the legal and technical structures used, and by the organization or group carrying out the transaction.\n\nCommonly used values:\n\n* http://purl.org/goodrelations/v1#ByBankTransferInAdvance\n* http://purl.org/goodrelations/v1#ByInvoice\n* http://purl.org/goodrelations/v1#Cash\n* http://purl.org/goodrelations/v1#CheckInAdvance\n* http://purl.org/goodrelations/v1#COD\n* http://purl.org/goodrelations/v1#DirectDebit\n* http://purl.org/goodrelations/v1#GoogleCheckout\n* http://purl.org/goodrelations/v1#PayPal\n* http://purl.org/goodrelations/v1#PaySwarm
     PaymentPastDue: URIRef  # The payment is due and considered late.
@@ -888,7 +1038,9 @@ class SDO(DefinedNamespace):
     PerformAction: URIRef  # The act of participating in performance arts.
     PerformanceRole: URIRef  # A PerformanceRole is a Role that some entity places with regard to a theatrical performance, e.g. in a Movie, TVSeries etc.
     PerformingArtsTheater: URIRef  # A theater or other performing art center.
-    PerformingGroup: URIRef  # A performance group, such as a band, an orchestra, or a circus.
+    PerformingGroup: (
+        URIRef  # A performance group, such as a band, an orchestra, or a circus.
+    )
     Periodical: URIRef  # A publication in any medium issued in successive parts bearing numerical or chronological designations and intended, such as a magazine, scholarly journal, or newspaper to continue indefinitely.\n\nSee also [blog post](http://blog.schema.org/2014/09/schemaorg-support-for-bibliographic_2.html).
     Permit: URIRef  # A permit issued by an organization, e.g. a parking pass.
     Person: URIRef  # A person (alive, dead, undead, or fictional).
@@ -896,10 +1048,14 @@ class SDO(DefinedNamespace):
     Pharmacy: URIRef  # A pharmacy or drugstore.
     PharmacySpecialty: URIRef  # The practice or art and science of preparing and dispensing drugs and medicines.
     Photograph: URIRef  # A photograph.
-    PhotographAction: URIRef  # The act of capturing still images of objects using a camera.
+    PhotographAction: (
+        URIRef  # The act of capturing still images of objects using a camera.
+    )
     PhysicalActivity: URIRef  # Any bodily activity that enhances or maintains physical fitness and overall health and wellness. Includes activity that is part of daily living and routine, structured exercise, and exercise prescribed as part of a medical treatment or recovery plan.
     PhysicalActivityCategory: URIRef  # Categories of physical activity, organized by physiologic classification.
-    PhysicalExam: URIRef  # A type of physical examination of a patient performed by a physician.
+    PhysicalExam: (
+        URIRef  # A type of physical examination of a patient performed by a physician.
+    )
     PhysicalTherapy: URIRef  # A process of progressive physical care and rehabilitation aimed at improving a health condition.
     Physician: URIRef  # A doctor's office.
     Physiotherapy: URIRef  # The practice of treatment of disease, injury, or deformity by physical methods such as massage, heat treatment, and exercise rather than by drugs or surgery..
@@ -926,13 +1082,21 @@ class SDO(DefinedNamespace):
     PreOrder: URIRef  # Indicates that the item is available for pre-order.
     PreOrderAction: URIRef  # An agent orders a (not yet released) object/product/service to be delivered/sent.
     PreSale: URIRef  # Indicates that the item is available for ordering and delivery before general availability.
-    PregnancyHealthAspect: URIRef  # Content discussing pregnancy-related aspects of a health topic.
-    PrependAction: URIRef  # The act of inserting at the beginning if an ordered collection.
+    PregnancyHealthAspect: (
+        URIRef  # Content discussing pregnancy-related aspects of a health topic.
+    )
+    PrependAction: (
+        URIRef  # The act of inserting at the beginning if an ordered collection.
+    )
     Preschool: URIRef  # A preschool.
     PrescriptionOnly: URIRef  # Available by prescription only.
-    PresentationDigitalDocument: URIRef  # A file containing slides or used for a presentation.
+    PresentationDigitalDocument: (
+        URIRef  # A file containing slides or used for a presentation.
+    )
     PreventionHealthAspect: URIRef  # Information about actions or measures that can be taken to avoid getting the topic or reaching a critical situation related to the topic.
-    PreventionIndication: URIRef  # An indication for preventing an underlying condition, symptom, etc.
+    PreventionIndication: (
+        URIRef  # An indication for preventing an underlying condition, symptom, etc.
+    )
     PriceComponentTypeEnumeration: URIRef  # Enumerates different price components that together make up the total price for an offered product.
     PriceSpecification: URIRef  # A structured value representing a price or price range. Typically, only the subclasses of this type are used for markup. It is recommended to use [[MonetaryAmount]] to describe independent amounts of money such as a salary, credit card limits, etc.
     PriceTypeEnumeration: URIRef  # Enumerates different price types, for example list price, invoice price, and sale price.
@@ -944,7 +1108,9 @@ class SDO(DefinedNamespace):
     ProductModel: URIRef  # A datasheet or vendor specification of a product (in the sense of a prototypical description).
     ProfessionalService: URIRef  # Original definition: "provider of professional services."\n\nThe general [[ProfessionalService]] type for local businesses was deprecated due to confusion with [[Service]]. For reference, the types that it included were: [[Dentist]],         [[AccountingService]], [[Attorney]], [[Notary]], as well as types for several kinds of [[HomeAndConstructionBusiness]]: [[Electrician]], [[GeneralContractor]],         [[HousePainter]], [[Locksmith]], [[Plumber]], [[RoofingContractor]]. [[LegalService]] was introduced as a more inclusive supertype of [[Attorney]].
     ProfilePage: URIRef  # Web page type: Profile page.
-    PrognosisHealthAspect: URIRef  # Typical progression and happenings of life course of the topic.
+    PrognosisHealthAspect: (
+        URIRef  # Typical progression and happenings of life course of the topic.
+    )
     ProgramMembership: URIRef  # Used to describe membership in a loyalty programs (e.g. "StarAliance"), traveler clubs (e.g. "AAA"), purchase clubs ("Safeway Club"), etc.
     Project: URIRef  # An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [[Organization]], [[subOrganization]]/[[parentOrganization]] to indicate project sub-structures.
     PronounceableText: URIRef  # Data type: PronounceableText.
@@ -978,12 +1144,16 @@ class SDO(DefinedNamespace):
     RadioChannel: URIRef  # A unique instance of a radio BroadcastService on a CableOrSatelliteService lineup.
     RadioClip: URIRef  # A short radio program or a segment/part of a radio program.
     RadioEpisode: URIRef  # A radio episode which can be part of a series or season.
-    RadioSeason: URIRef  # Season dedicated to radio broadcast and associated online delivery.
+    RadioSeason: (
+        URIRef  # Season dedicated to radio broadcast and associated online delivery.
+    )
     RadioSeries: URIRef  # CreativeWorkSeries dedicated to radio broadcast and associated online delivery.
     RadioStation: URIRef  # A radio station.
     Radiography: URIRef  # Radiography is an imaging technique that uses electromagnetic radiation other than visible light, especially X-rays, to view the internal structure of a non-uniformly composed and opaque object such as the human body.
     RandomizedTrial: URIRef  # A randomized trial design.
-    Rating: URIRef  # A rating is an evaluation on a numeric scale, such as 1 to 5 stars.
+    Rating: (
+        URIRef  # A rating is an evaluation on a numeric scale, such as 1 to 5 stars.
+    )
     ReactAction: URIRef  # The act of responding instinctively and emotionally to an object, expressing a sentiment.
     ReadAction: URIRef  # The act of consuming written content.
     ReadPermission: URIRef  # Permission to read or view the document.
@@ -996,13 +1166,17 @@ class SDO(DefinedNamespace):
     RecommendedDoseSchedule: URIRef  # A recommended dosing schedule for a drug or supplement as prescribed or recommended by an authority or by the drug/supplement's manufacturer. Capture the recommending authority in the recognizingAuthority property of MedicalEntity.
     Recruiting: URIRef  # Recruiting participants.
     RecyclingCenter: URIRef  # A recycling center.
-    RefundTypeEnumeration: URIRef  # Enumerates several kinds of product return refund types.
+    RefundTypeEnumeration: (
+        URIRef  # Enumerates several kinds of product return refund types.
+    )
     RefurbishedCondition: URIRef  # Indicates that the item is refurbished.
     RegisterAction: URIRef  # The act of registering to be a user of a service, product or web page.\n\nRelated actions:\n\n* [[JoinAction]]: Unlike JoinAction, RegisterAction implies you are registering to be a user of a service, *not* a group/team of people.\n* [FollowAction]]: Unlike FollowAction, RegisterAction doesn't imply that the agent is expecting to poll for updates from the object.\n* [[SubscribeAction]]: Unlike SubscribeAction, RegisterAction doesn't imply that the agent is expecting updates from the object.
     Registry: URIRef  # A registry-based study design.
     ReimbursementCap: URIRef  # The drug's cost represents the maximum reimbursement paid by an insurer for the drug.
     RejectAction: URIRef  # The act of rejecting to/adopting an object.\n\nRelated actions:\n\n* [[AcceptAction]]: The antonym of RejectAction.
-    RelatedTopicsHealthAspect: URIRef  # Other prominent or relevant topics tied to the main topic.
+    RelatedTopicsHealthAspect: (
+        URIRef  # Other prominent or relevant topics tied to the main topic.
+    )
     RemixAlbum: URIRef  # RemixAlbum.
     Renal: URIRef  # A specific branch of medical science that pertains to the study of the kidneys and its respective disease states.
     RentAction: URIRef  # The act of giving money in return for temporary use, but not ownership, of an object such as a vehicle or property. For example, an agent rents a property from a landlord in exchange for a periodic payment.
@@ -1011,10 +1185,14 @@ class SDO(DefinedNamespace):
     RepaymentSpecification: URIRef  # A structured value representing repayment.
     ReplaceAction: URIRef  # The act of editing a recipient by replacing an old object with a new object.
     ReplyAction: URIRef  # The act of responding to a question/message asked/sent by the object. Related to [[AskAction]]\n\nRelated actions:\n\n* [[AskAction]]: Appears generally as an origin of a ReplyAction.
-    Report: URIRef  # A Report generated by governmental or non-governmental organization.
+    Report: (
+        URIRef  # A Report generated by governmental or non-governmental organization.
+    )
     ReportageNewsArticle: URIRef  # The [[ReportageNewsArticle]] type is a subtype of [[NewsArticle]] representing  news articles which are the result of journalistic news reporting conventions.  In practice many news publishers produce a wide variety of article types, many of which might be considered a [[NewsArticle]] but not a [[ReportageNewsArticle]]. For example, opinion pieces, reviews, analysis, sponsored or satirical articles, or articles that combine several of these elements.  The [[ReportageNewsArticle]] type is based on a stricter ideal for "news" as a work of journalism, with articles based on factual information either observed or verified by the author, or reported and verified from knowledgeable sources.  This often includes perspectives from multiple viewpoints on a particular issue (distinguishing news reports from public relations or propaganda).  News reports in the [[ReportageNewsArticle]] sense de-emphasize the opinion of the author, with commentary and value judgements typically expressed elsewhere.  A [[ReportageNewsArticle]] which goes deeper into analysis can also be marked with an additional type of [[AnalysisNewsArticle]].
     ReportedDoseSchedule: URIRef  # A patient-reported or observed dosing schedule for a drug or supplement.
-    ResearchOrganization: URIRef  # A Research Organization (e.g. scientific institute, research company).
+    ResearchOrganization: (
+        URIRef  # A Research Organization (e.g. scientific institute, research company).
+    )
     ResearchProject: URIRef  # A Research project.
     Researcher: URIRef  # Researchers.
     Reservation: URIRef  # Describes a reservation for travel, dining or an event. Some reservations require tickets. \n\nNote: This type is for information about actual reservations, e.g. in confirmation emails or HTML pages with individual confirmations of reservations. For offers of tickets, restaurant reservations, flights, or rental cars, use [[Offer]].
@@ -1040,15 +1218,23 @@ class SDO(DefinedNamespace):
     ReturnAtKiosk: URIRef  # Specifies that product returns must be made at a kiosk.
     ReturnByMail: URIRef  # Specifies that product returns must to be done by mail.
     ReturnFeesCustomerResponsibility: URIRef  # Specifies that product returns must be paid for, and are the responsibility of, the customer.
-    ReturnFeesEnumeration: URIRef  # Enumerates several kinds of policies for product return fees.
+    ReturnFeesEnumeration: (
+        URIRef  # Enumerates several kinds of policies for product return fees.
+    )
     ReturnInStore: URIRef  # Specifies that product returns must be made in a store.
     ReturnLabelCustomerResponsibility: URIRef  # Indicated that creating a return label is the responsibility of the customer.
     ReturnLabelDownloadAndPrint: URIRef  # Indicated that a return label must be downloaded and printed by the customer.
     ReturnLabelInBox: URIRef  # Specifies that a return label will be provided by the seller in the shipping box.
-    ReturnLabelSourceEnumeration: URIRef  # Enumerates several types of return labels for product returns.
-    ReturnMethodEnumeration: URIRef  # Enumerates several types of product return methods.
+    ReturnLabelSourceEnumeration: (
+        URIRef  # Enumerates several types of return labels for product returns.
+    )
+    ReturnMethodEnumeration: (
+        URIRef  # Enumerates several types of product return methods.
+    )
     ReturnShippingFees: URIRef  # Specifies that the customer must pay the return shipping costs when returning a product
-    Review: URIRef  # A review of an item - for example, of a restaurant, movie, or store.
+    Review: (
+        URIRef  # A review of an item - for example, of a restaurant, movie, or store.
+    )
     ReviewAction: URIRef  # The act of producing a balanced opinion about the object for an audience. An agent reviews an object with participants resulting in a review.
     ReviewNewsArticle: URIRef  # A [[NewsArticle]] and [[CriticReview]] providing a professional critic's assessment of a service, product, performance, or artistic or literary work.
     Rheumatologic: URIRef  # A specific branch of medical science that deals with the study and treatment of rheumatic, autoimmune or joint diseases.
@@ -1064,7 +1250,9 @@ class SDO(DefinedNamespace):
     RsvpResponseType: URIRef  # RsvpResponseType is an enumeration type whose instances represent responding to an RSVP request.
     RsvpResponseYes: URIRef  # The invitee will attend.
     SRP: URIRef  # Represents the suggested retail price ("SRP") of an offered product.
-    SafetyHealthAspect: URIRef  # Content about the safety-related aspects of a health topic.
+    SafetyHealthAspect: (
+        URIRef  # Content about the safety-related aspects of a health topic.
+    )
     SaleEvent: URIRef  # Event type: Sales event.
     SalePrice: URIRef  # Represents a sale price (usually active for a limited period) of an offered product.
     SatireOrParodyContent: URIRef  # Content coded 'satire or parody content' in a [[MediaReview]], considered in the context of how it was published or shared.  For a [[VideoObject]] to be 'satire or parody content': A video that was created as political or humorous commentary and is presented in that context. (Reshares of satire/parody content that do not include relevant context are more likely to fall under the “missing context” rating.)  For an [[ImageObject]] to be 'satire or parody content': An image that was created as political or humorous commentary and is presented in that context. (Reshares of satire/parody content that do not include relevant context are more likely to fall under the “missing context” rating.)  For an [[ImageObject]] with embedded text to be 'satire or parody content': An image that was created as political or humorous commentary and is presented in that context. (Reshares of satire/parody content that do not include relevant context are more likely to fall under the “missing context” rating.)  For an [[AudioObject]] to be 'satire or parody content': Audio that was created as political or humorous commentary and is presented in that context. (Reshares of satire/parody content that do not include relevant context are more likely to fall under the “missing context” rating.)
@@ -1076,7 +1264,9 @@ class SDO(DefinedNamespace):
     School: URIRef  # A school.
     SchoolDistrict: URIRef  # A School District is an administrative area for the administration of schools.
     ScreeningEvent: URIRef  # A screening of a movie or other video.
-    ScreeningHealthAspect: URIRef  # Content about how to screen or further filter a topic.
+    ScreeningHealthAspect: (
+        URIRef  # Content about how to screen or further filter a topic.
+    )
     Sculpture: URIRef  # A piece of sculpture.
     SeaBodyOfWater: URIRef  # A sea (for example, the Caspian sea).
     SearchAction: URIRef  # The act of searching for an object.\n\nRelated actions:\n\n* [[FindAction]]: SearchAction generally leads to a FindAction, but not necessarily.
@@ -1100,14 +1290,18 @@ class SDO(DefinedNamespace):
     ShoeStore: URIRef  # A shoe store.
     ShoppingCenter: URIRef  # A shopping center or mall.
     ShortStory: URIRef  # Short story or tale. A brief work of literature, usually written in narrative prose.
-    SideEffectsHealthAspect: URIRef  # Side effects that can be observed from the usage of the topic.
+    SideEffectsHealthAspect: (
+        URIRef  # Side effects that can be observed from the usage of the topic.
+    )
     SingleBlindedTrial: URIRef  # A trial design in which the researcher knows which treatment the patient was randomly assigned to but the patient does not.
     SingleCenterTrial: URIRef  # A trial that takes place at a single center.
     SingleFamilyResidence: URIRef  # Residence type: Single-family home.
     SinglePlayer: URIRef  # Play mode: SinglePlayer. Which is played by a lone player.
     SingleRelease: URIRef  # SingleRelease.
     SiteNavigationElement: URIRef  # A navigation element of the page.
-    SizeGroupEnumeration: URIRef  # Enumerates common size groups for various product categories.
+    SizeGroupEnumeration: (
+        URIRef  # Enumerates common size groups for various product categories.
+    )
     SizeSpecification: URIRef  # Size related properties of a product, typically a size code ([[name]]) and optionally a [[sizeSystem]], [[sizeGroup]], and product measurements ([[hasMeasurement]]). In addition, the intended audience can be defined through [[suggestedAge]], [[suggestedGender]], and suggested body measurements ([[suggestedMeasurement]]).
     SizeSystemEnumeration: URIRef  # Enumerates common size systems for different categories of products, for example "EN-13402" or "UK" for wearables or "Imperial" for screws.
     SizeSystemImperial: URIRef  # Imperial size system.
@@ -1120,7 +1314,9 @@ class SDO(DefinedNamespace):
     SoftwareSourceCode: URIRef  # Computer programming source code. Example: Full (compile ready) solutions, code snippet samples, scripts, templates.
     SoldOut: URIRef  # Indicates that the item has sold out.
     SolveMathAction: URIRef  # The action that takes in a math expression and directs users to a page potentially capable of solving/simplifying that expression.
-    SomeProducts: URIRef  # A placeholder for multiple similar products of the same kind.
+    SomeProducts: (
+        URIRef  # A placeholder for multiple similar products of the same kind.
+    )
     SoundtrackAlbum: URIRef  # SoundtrackAlbum.
     SpeakableSpecification: URIRef  # A SpeakableSpecification indicates (typically via [[xpath]] or [[cssSelector]]) sections of a document that are highlighted as particularly [[speakable]]. Instances of this type are expected to be used primarily as values of the [[speakable]] property.
     SpecialAnnouncement: URIRef  # A SpecialAnnouncement combines a simple date-stamped textual information update       with contextualized Web links and other structured data.  It represents an information update made by a       locally-oriented organization, for example schools, pharmacies, healthcare providers,  community groups, police,       local government.  For work in progress guidelines on Coronavirus-related markup see [this doc](https://docs.google.com/document/d/14ikaGCKxo50rRM7nvKSlbUpjyIk2WMQd3IkB1lItlrM/edit#).  The motivating scenario for SpecialAnnouncement is the [Coronavirus pandemic](https://en.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_pandemic), and the initial vocabulary is oriented to this urgent situation. Schema.org expect to improve the markup iteratively as it is deployed and as feedback emerges from use. In addition to our usual [Github entry](https://github.com/schemaorg/schemaorg/issues/2490), feedback comments can also be provided in [this document](https://docs.google.com/document/d/1fpdFFxk8s87CWwACs53SGkYv3aafSxz_DTtOQxMrBJQ/edit#).   While this schema is designed to communicate urgent crisis-related information, it is not the same as an emergency warning technology like [CAP](https://en.wikipedia.org/wiki/Common_Alerting_Protocol), although there may be overlaps. The intent is to cover the kinds of everyday practical information being posted to existing websites during an emergency situation.  Several kinds of information can be provided:  We encourage the provision of "name", "text", "datePosted", "expires" (if appropriate), "category" and "url" as a simple baseline. It is important to provide a value for "category" where possible, most ideally as a well known URL from Wikipedia or Wikidata. In the case of the 2019-2020 Coronavirus pandemic, this should be "https://en.wikipedia.org/w/index.php?title=2019-20\_coronavirus\_pandemic" or "https://www.wikidata.org/wiki/Q81068910".  For many of the possible properties, values can either be simple links or an inline description, depending on whether a summary is available. For a link, provide just the URL of the appropriate page as the property's value. For an inline description, use a [[WebContent]] type, and provide the url as a property of that, alongside at least a simple "[[text]]" summary of the page. It is unlikely that a single SpecialAnnouncement will need all of the possible properties simultaneously.  We expect that in many cases the page referenced might contain more specialized structured data, e.g. contact info, [[openingHours]], [[Event]], [[FAQPage]] etc. By linking to those pages from a [[SpecialAnnouncement]] you can help make it clearer that the events are related to the situation (e.g. Coronavirus) indicated by the [[category]] property of the [[SpecialAnnouncement]].  Many [[SpecialAnnouncement]]s will relate to particular regions and to identifiable local organizations. Use [[spatialCoverage]] for the region, and [[announcementLocation]] to indicate specific [[LocalBusiness]]es and [[CivicStructure]]s. If the announcement affects both a particular region and a specific location (for example, a library closure that serves an entire region), use both [[spatialCoverage]] and [[announcementLocation]].  The [[about]] property can be used to indicate entities that are the focus of the announcement. We now recommend using [[about]] only for representing non-location entities (e.g. a [[Course]] or a [[RadioStation]]). For places, use [[announcementLocation]] and [[spatialCoverage]]. Consumers of this markup should be aware that the initial design encouraged the use of /about for locations too.  The basic content of [[SpecialAnnouncement]] is similar to that of an [RSS](https://en.wikipedia.org/wiki/RSS) or [Atom](https://en.wikipedia.org/wiki/Atom_(Web_standard)) feed. For publishers without such feeds, basic feed-like information can be shared by posting [[SpecialAnnouncement]] updates in a page, e.g. using JSON-LD. For sites with Atom/RSS functionality, you can point to a feed with the [[webFeed]] property. This can be a simple URL, or an inline [[DataFeed]] object, with [[encodingFormat]] providing media type information e.g. "application/rss+xml" or "application/atom+xml".
@@ -1211,7 +1407,9 @@ class SDO(DefinedNamespace):
     TransitMap: URIRef  # A transit map.
     TravelAction: URIRef  # The act of traveling from an fromLocation to a destination by a specified mode of transport, optionally with participants.
     TravelAgency: URIRef  # A travel agency.
-    TreatmentIndication: URIRef  # An indication for treating an underlying condition, symptom, etc.
+    TreatmentIndication: (
+        URIRef  # An indication for treating an underlying condition, symptom, etc.
+    )
     TreatmentsHealthAspect: URIRef  # Treatments or related therapies for a Topic.
     Trip: URIRef  # A trip or journey. An itinerary of visits to one or more places.
     TripleBlindedTrial: URIRef  # A trial design in which neither the researcher, the person administering the therapy nor the patient knows the details of the treatment the patient was randomly assigned to.
@@ -1225,13 +1423,19 @@ class SDO(DefinedNamespace):
     USNonprofitType: URIRef  # USNonprofitType: Non-profit organization type originating from the United States.
     Ultrasound: URIRef  # Ultrasound imaging.
     UnRegisterAction: URIRef  # The act of un-registering from a service.\n\nRelated actions:\n\n* [[RegisterAction]]: antonym of UnRegisterAction.\n* [[LeaveAction]]: Unlike LeaveAction, UnRegisterAction implies that you are unregistering from a service you werer previously registered, rather than leaving a team/group of people.
-    UnemploymentSupport: URIRef  # UnemploymentSupport: this is a benefit for unemployment support.
+    UnemploymentSupport: (
+        URIRef  # UnemploymentSupport: this is a benefit for unemployment support.
+    )
     UnincorporatedAssociationCharity: URIRef  # UnincorporatedAssociationCharity: Non-profit type referring to a charitable company that is not incorporated (UK).
     UnitPriceSpecification: URIRef  # The price asked for a given offer by the respective organization or person.
     UnofficialLegalValue: URIRef  # Indicates that a document has no particular or special standing (e.g. a republication of a law by a private publisher).
-    UpdateAction: URIRef  # The act of managing by changing/editing the state of the object.
+    UpdateAction: (
+        URIRef  # The act of managing by changing/editing the state of the object.
+    )
     Urologic: URIRef  # A specific branch of medical science that is concerned with the diagnosis and treatment of diseases pertaining to the urinary tract and the urogenital system.
-    UsageOrScheduleHealthAspect: URIRef  # Content about how, when, frequency and dosage of a topic.
+    UsageOrScheduleHealthAspect: (
+        URIRef  # Content about how, when, frequency and dosage of a topic.
+    )
     UseAction: URIRef  # The act of applying an object to its intended purpose.
     UsedCondition: URIRef  # Indicates that the item is used.
     UserBlocks: URIRef  # UserInteraction and its subtypes is an old way of talking about users interacting with pages. It is generally better to use [[Action]]-based vocabulary, alongside types such as [[Comment]].
@@ -1277,18 +1481,36 @@ class SDO(DefinedNamespace):
     WatchAction: URIRef  # The act of consuming dynamic/moving visual content.
     Waterfall: URIRef  # A waterfall, like Niagara.
     WearAction: URIRef  # The act of dressing oneself in clothing.
-    WearableMeasurementBack: URIRef  # Measurement of the back section, for example of a jacket
-    WearableMeasurementChestOrBust: URIRef  # Measurement of the chest/bust section, for example of a suit
-    WearableMeasurementCollar: URIRef  # Measurement of the collar, for example of a shirt
+    WearableMeasurementBack: (
+        URIRef  # Measurement of the back section, for example of a jacket
+    )
+    WearableMeasurementChestOrBust: (
+        URIRef  # Measurement of the chest/bust section, for example of a suit
+    )
+    WearableMeasurementCollar: (
+        URIRef  # Measurement of the collar, for example of a shirt
+    )
     WearableMeasurementCup: URIRef  # Measurement of the cup, for example of a bra
-    WearableMeasurementHeight: URIRef  # Measurement of the height, for example the heel height of a shoe
-    WearableMeasurementHips: URIRef  # Measurement of the hip section, for example of a skirt
+    WearableMeasurementHeight: (
+        URIRef  # Measurement of the height, for example the heel height of a shoe
+    )
+    WearableMeasurementHips: (
+        URIRef  # Measurement of the hip section, for example of a skirt
+    )
     WearableMeasurementInseam: URIRef  # Measurement of the inseam, for example of pants
     WearableMeasurementLength: URIRef  # Represents the length, for example of a dress
-    WearableMeasurementOutsideLeg: URIRef  # Measurement of the outside leg, for example of pants
-    WearableMeasurementSleeve: URIRef  # Measurement of the sleeve length, for example of a shirt
-    WearableMeasurementTypeEnumeration: URIRef  # Enumerates common types of measurement for wearables products.
-    WearableMeasurementWaist: URIRef  # Measurement of the waist section, for example of pants
+    WearableMeasurementOutsideLeg: (
+        URIRef  # Measurement of the outside leg, for example of pants
+    )
+    WearableMeasurementSleeve: (
+        URIRef  # Measurement of the sleeve length, for example of a shirt
+    )
+    WearableMeasurementTypeEnumeration: (
+        URIRef  # Enumerates common types of measurement for wearables products.
+    )
+    WearableMeasurementWaist: (
+        URIRef  # Measurement of the waist section, for example of pants
+    )
     WearableMeasurementWidth: URIRef  # Measurement of the width, for example of shoes
     WearableSizeGroupBig: URIRef  # Size group "Big" for wearables.
     WearableSizeGroupBoys: URIRef  # Size group "Boys" for wearables.
@@ -1301,7 +1523,9 @@ class SDO(DefinedNamespace):
     WearableSizeGroupJuniors: URIRef  # Size group "Juniors" for wearables.
     WearableSizeGroupMaternity: URIRef  # Size group "Maternity" for wearables.
     WearableSizeGroupMens: URIRef  # Size group "Mens" for wearables.
-    WearableSizeGroupMisses: URIRef  # Size group "Misses" (also known as "Missy") for wearables.
+    WearableSizeGroupMisses: (
+        URIRef  # Size group "Misses" (also known as "Missy") for wearables.
+    )
     WearableSizeGroupPetite: URIRef  # Size group "Petite" for wearables.
     WearableSizeGroupPlus: URIRef  # Size group "Plus" for wearables.
     WearableSizeGroupRegular: URIRef  # Size group "Regular" for wearables.
@@ -1313,8 +1537,12 @@ class SDO(DefinedNamespace):
     WearableSizeSystemCN: URIRef  # Chinese size system for wearables.
     WearableSizeSystemContinental: URIRef  # Continental size system for wearables.
     WearableSizeSystemDE: URIRef  # German size system for wearables.
-    WearableSizeSystemEN13402: URIRef  # EN 13402 (joint European standard for size labelling of clothes).
-    WearableSizeSystemEnumeration: URIRef  # Enumerates common size systems specific for wearable products
+    WearableSizeSystemEN13402: (
+        URIRef  # EN 13402 (joint European standard for size labelling of clothes).
+    )
+    WearableSizeSystemEnumeration: (
+        URIRef  # Enumerates common size systems specific for wearable products
+    )
     WearableSizeSystemEurope: URIRef  # European size system for wearables.
     WearableSizeSystemFR: URIRef  # French size system for wearables.
     WearableSizeSystemGS1: URIRef  # GS1 (formerly NRF) size system for wearables.
@@ -1331,7 +1559,9 @@ class SDO(DefinedNamespace):
     WebSite: URIRef  # A WebSite is a set of related web pages and other items typically served from a single web domain and accessible via URLs.
     Wednesday: URIRef  # The day of the week between Tuesday and Thursday.
     WesternConventional: URIRef  # The conventional Western system of medicine, that aims to apply the best available evidence gained from the scientific method to clinical decision making. Also known as conventional or Western medicine.
-    Wholesale: URIRef  # The drug's cost represents the wholesale acquisition cost of the drug.
+    Wholesale: (
+        URIRef  # The drug's cost represents the wholesale acquisition cost of the drug.
+    )
     WholesaleStore: URIRef  # A wholesale store.
     WinAction: URIRef  # The act of achieving victory in a competitive activity.
     Winery: URIRef  # A winery.
@@ -1346,11 +1576,15 @@ class SDO(DefinedNamespace):
     Zoo: URIRef  # A zoo.
     about: URIRef  # The subject matter of the content.
     abridged: URIRef  # Indicates whether the book is an abridged edition.
-    abstract: URIRef  # An abstract is a short description that summarizes a [[CreativeWork]].
+    abstract: (
+        URIRef  # An abstract is a short description that summarizes a [[CreativeWork]].
+    )
     accelerationTime: URIRef  # The time needed to accelerate the vehicle from a given start velocity to a given target velocity.\n\nTypical unit code(s): SEC for seconds\n\n* Note: There are unfortunately no standard unit codes for seconds/0..100 km/h or seconds/0..60 mph. Simply use "SEC" for seconds and indicate the velocities in the [[name]] of the [[QuantitativeValue]], or use [[valueReference]] with a [[QuantitativeValue]] of 0..60 mph or 0..100 km/h to specify the reference speeds.
     acceptedAnswer: URIRef  # The answer(s) that has been accepted as best, typically on a Question/Answer site. Sites vary in their selection mechanisms, e.g. drawing on community opinion and/or the view of the Question author.
     acceptedOffer: URIRef  # The offer(s) -- e.g., product, quantity and price combinations -- included in the order.
-    acceptedPaymentMethod: URIRef  # The payment method(s) accepted by seller for this offer.
+    acceptedPaymentMethod: (
+        URIRef  # The payment method(s) accepted by seller for this offer.
+    )
     acceptsReservations: URIRef  # Indicates whether a FoodEstablishment accepts reservations. Values can be Boolean, an URL at which reservations can be made or (for backwards compatibility) the strings ```Yes``` or ```No```.
     accessCode: URIRef  # Password, PIN, or access code needed for delivery (e.g. from a locker).
     accessMode: URIRef  # The human sensory perceptual system or cognitive faculty through which a person may process or perceive information. Expected values include: auditory, tactile, textual, visual, colorDependent, chartOnVisual, chemOnVisual, diagramOnVisual, mathOnVisual, musicOnVisual, textOnVisual.
@@ -1365,13 +1599,19 @@ class SDO(DefinedNamespace):
     accountId: URIRef  # The identifier for the account the payment will be applied to.
     accountMinimumInflow: URIRef  # A minimum amount that has to be paid in every month.
     accountOverdraftLimit: URIRef  # An overdraft is an extension of credit from a lending institution when an account reaches zero. An overdraft allows the individual to continue withdrawing money even if the account has no funds in it. Basically the bank allows people to borrow a set amount of money.
-    accountablePerson: URIRef  # Specifies the Person that is legally accountable for the CreativeWork.
+    accountablePerson: (
+        URIRef  # Specifies the Person that is legally accountable for the CreativeWork.
+    )
     acquireLicensePage: URIRef  # Indicates a page documenting how licenses can be purchased or otherwise acquired, for the current item.
-    acquiredFrom: URIRef  # The organization or person from which the product was acquired.
+    acquiredFrom: (
+        URIRef  # The organization or person from which the product was acquired.
+    )
     acrissCode: URIRef  # The ACRISS Car Classification Code is a code used by many car rental companies, for classifying vehicles. ACRISS stands for Association of Car Rental Industry Systems and Standards.
     actionAccessibilityRequirement: URIRef  # A set of requirements that a must be fulfilled in order to perform an Action. If more than one value is specied, fulfilling one set of requirements will allow the Action to be performed.
     actionApplication: URIRef  # An application that can complete the request.
-    actionOption: URIRef  # A sub property of object. The options subject to this action.
+    actionOption: (
+        URIRef  # A sub property of object. The options subject to this action.
+    )
     actionPlatform: URIRef  # The high level platform(s) where the Action can be performed for the given URL. To specify a specific application or operating system instance, use actionApplication.
     actionStatus: URIRef  # Indicates the current disposition of the Action.
     actionableFeedbackPolicy: URIRef  # For a [[NewsMediaOrganization]] or other news-related [[Organization]], a statement about public engagement activities (for news media, the newsroom’s), including involving the public - digitally or otherwise -- in coverage decisions, reporting and activities after publication.
@@ -1381,7 +1621,9 @@ class SDO(DefinedNamespace):
     actor: URIRef  # An actor, e.g. in tv, radio, movie, video games etc., or in an event. Actors can be associated with individual items or with a series, episode, clip.
     actors: URIRef  # An actor, e.g. in tv, radio, movie, video games etc. Actors can be associated with individual items or with a series, episode, clip.
     addOn: URIRef  # An additional offer that can only be obtained in combination with the first base offer (e.g. supplements and extensions that are available for a surcharge).
-    additionalName: URIRef  # An additional name for a Person, can be used for a middle name.
+    additionalName: (
+        URIRef  # An additional name for a Person, can be used for a middle name.
+    )
     additionalNumberOfGuests: URIRef  # If responding yes, the number of guests who will attend in addition to the invitee.
     additionalProperty: URIRef  # A property-value pair representing an additional characteristics of the entitity, e.g. a product feature or another characteristic for which there is no matching property in schema.org.\n\nNote: Publishers should be aware that applications designed to use specific schema.org properties (e.g. https://schema.org/width, https://schema.org/color, https://schema.org/gtin13, ...) will typically expect such data to be provided using those properties, rather than using the generic property/value mechanism.
     additionalType: URIRef  # An additional type for the item, typically used for adding more specific types from external vocabularies in microdata syntax. This is a relationship between something and a class that the thing is in. In RDFa syntax, it is better to use the native RDFa syntax - the 'typeof' attribute - for multiple types. Schema.org tools may have only weaker understanding of extra types, in particular those defined externally.
@@ -1390,7 +1632,9 @@ class SDO(DefinedNamespace):
     addressCountry: URIRef  # The country. For example, USA. You can also provide the two-letter [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1).
     addressLocality: URIRef  # The locality in which the street address is, and which is in the region. For example, Mountain View.
     addressRegion: URIRef  # The region in which the locality is, and which is in the country. For example, California or another appropriate first-level [Administrative division](https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country)
-    administrationRoute: URIRef  # A route by which this drug may be administered, e.g. 'oral'.
+    administrationRoute: (
+        URIRef  # A route by which this drug may be administered, e.g. 'oral'.
+    )
     advanceBookingRequirement: URIRef  # The amount of time that is required between accepting the offer and the actual usage of the resource or service.
     adverseOutcome: URIRef  # A possible complication and/or side effect of this therapy. If it is known that an adverse outcome is serious (resulting in death, disability, or permanent damage; requiring hospitalization; or is otherwise life-threatening or requires immediate medical attention), tag it as a seriouseAdverseOutcome instead.
     affectedBy: URIRef  # Drugs that affect the test's results.
@@ -1402,7 +1646,9 @@ class SDO(DefinedNamespace):
     album: URIRef  # A music album.
     albumProductionType: URIRef  # Classification of the album by it's type of content: soundtrack, live album, studio album, etc.
     albumRelease: URIRef  # A release of this album.
-    albumReleaseType: URIRef  # The kind of release which this album is: single, EP or album.
+    albumReleaseType: (
+        URIRef  # The kind of release which this album is: single, EP or album.
+    )
     albums: URIRef  # A collection of music albums.
     alcoholWarning: URIRef  # Any precaution, guidance, contraindication, etc. related to consumption of alcohol while taking this drug.
     algorithm: URIRef  # The algorithm or rules to follow to compute the score.
@@ -1420,22 +1666,34 @@ class SDO(DefinedNamespace):
     answerCount: URIRef  # The number of answers this question has received.
     answerExplanation: URIRef  # A step-by-step or full explanation about Answer. Can outline how this Answer was achieved or contain more broad clarification or statement about it.
     antagonist: URIRef  # The muscle whose action counteracts the specified muscle.
-    appearance: URIRef  # Indicates an occurence of a [[Claim]] in some [[CreativeWork]].
+    appearance: (
+        URIRef  # Indicates an occurence of a [[Claim]] in some [[CreativeWork]].
+    )
     applicableLocation: URIRef  # The location in which the status applies.
     applicantLocationRequirements: URIRef  # The location(s) applicants can apply from. This is usually used for telecommuting jobs where the applicant does not need to be in a physical office. Note: This should not be used for citizenship or work visa requirements.
     application: URIRef  # An application that can complete the request.
-    applicationCategory: URIRef  # Type of software application, e.g. 'Game, Multimedia'.
-    applicationContact: URIRef  # Contact details for further information relevant to this job posting.
+    applicationCategory: (
+        URIRef  # Type of software application, e.g. 'Game, Multimedia'.
+    )
+    applicationContact: (
+        URIRef  # Contact details for further information relevant to this job posting.
+    )
     applicationDeadline: URIRef  # The date at which the program stops collecting applications for the next enrollment cycle.
     applicationStartDate: URIRef  # The date at which the program begins collecting applications for the next enrollment cycle.
-    applicationSubCategory: URIRef  # Subcategory of the application, e.g. 'Arcade Game'.
+    applicationSubCategory: (
+        URIRef  # Subcategory of the application, e.g. 'Arcade Game'.
+    )
     applicationSuite: URIRef  # The name of the application suite to which the application belongs (e.g. Excel belongs to Office).
     appliesToDeliveryMethod: URIRef  # The delivery method(s) to which the delivery charge or payment charge specification applies.
     appliesToPaymentMethod: URIRef  # The payment method(s) to which the payment charge specification applies.
     archiveHeld: URIRef  # Collection, [fonds](https://en.wikipedia.org/wiki/Fonds), or item held, kept or maintained by an [[ArchiveOrganization]].
     archivedAt: URIRef  # Indicates a page or other link involved in archival of a [[CreativeWork]]. In the case of [[MediaReview]], the items in a [[MediaReviewItem]] may often become inaccessible, but be archived by archival, journalistic, activist, or law enforcement organizations. In such cases, the referenced page may not directly publish the content.
-    area: URIRef  # The area within which users can expect to reach the broadcast service.
-    areaServed: URIRef  # The geographic area where a service or offered item is provided.
+    area: (
+        URIRef  # The area within which users can expect to reach the broadcast service.
+    )
+    areaServed: (
+        URIRef  # The geographic area where a service or offered item is provided.
+    )
     arrivalAirport: URIRef  # The airport where the flight terminates.
     arrivalBoatTerminal: URIRef  # The terminal or port from which the boat arrives.
     arrivalBusStop: URIRef  # The stop or station from which the bus arrives.
@@ -1454,7 +1712,9 @@ class SDO(DefinedNamespace):
     artworkSurface: URIRef  # The supporting materials for the artwork, e.g. Canvas, Paper, Wood, Board, etc.
     aspect: URIRef  # An aspect of medical practice that is considered on the page, such as 'diagnosis', 'treatment', 'causes', 'prognosis', 'etiology', 'epidemiology', etc.
     assembly: URIRef  # Library file name e.g., mscorlib.dll, system.web.dll.
-    assemblyVersion: URIRef  # Associated product/technology version. e.g., .NET Framework 4.5.
+    assemblyVersion: (
+        URIRef  # Associated product/technology version. e.g., .NET Framework 4.5.
+    )
     assesses: URIRef  # The item being described is intended to assess the competency or learning outcome defined by the referenced term.
     associatedAnatomy: URIRef  # The anatomy of the underlying organ system or structures associated with this entity.
     associatedArticle: URIRef  # A NewsArticle associated with the Media Object.
@@ -1467,7 +1727,9 @@ class SDO(DefinedNamespace):
     athlete: URIRef  # A person that acts as performing member of a sports team; a player as opposed to a coach.
     attendee: URIRef  # A person or organization attending the event.
     attendees: URIRef  # A person attending the event.
-    audience: URIRef  # An intended audience, i.e. a group for whom something was created.
+    audience: (
+        URIRef  # An intended audience, i.e. a group for whom something was created.
+    )
     audienceType: URIRef  # The target group associated with a given audience (e.g. veterans, car owners, musicians, etc.).
     audio: URIRef  # An embedded audio object.
     authenticator: URIRef  # The Organization responsible for authenticating the user's subscription. For example, many media apps require a cable/satellite provider to authenticate your subscription before playing media.
@@ -1478,21 +1740,29 @@ class SDO(DefinedNamespace):
     availableAtOrFrom: URIRef  # The place(s) from which the offer can be obtained (e.g. store locations).
     availableChannel: URIRef  # A means of accessing the service (e.g. a phone bank, a web site, a location, etc.).
     availableDeliveryMethod: URIRef  # The delivery method(s) available for this offer.
-    availableFrom: URIRef  # When the item is available for pickup from the store, locker, etc.
+    availableFrom: (
+        URIRef  # When the item is available for pickup from the store, locker, etc.
+    )
     availableIn: URIRef  # The location in which the strength is available.
     availableLanguage: URIRef  # A language someone may use with or at the item, service or place. Please use one of the language codes from the [IETF BCP 47 standard](http://tools.ietf.org/html/bcp47). See also [[inLanguage]]
     availableOnDevice: URIRef  # Device required to run the application. Used in cases where a specific make/model is required to run the application.
     availableService: URIRef  # A medical service available from this provider.
     availableStrength: URIRef  # An available dosage strength for the drug.
     availableTest: URIRef  # A diagnostic test or procedure offered by this lab.
-    availableThrough: URIRef  # After this date, the item will no longer be available for pickup.
+    availableThrough: (
+        URIRef  # After this date, the item will no longer be available for pickup.
+    )
     award: URIRef  # An award won by or for this item.
     awards: URIRef  # Awards won by or for this item.
     awayTeam: URIRef  # The away team in a sports event.
     backstory: URIRef  # For an [[Article]], typically a [[NewsArticle]], the backstory property provides a textual summary giving a brief explanation of why and how an article was created. In a journalistic setting this could include information about reporting process, methods, interviews, data sources, etc.
     bankAccountType: URIRef  # The type of a bank account.
-    baseSalary: URIRef  # The base salary of the job or of an employee in an EmployeeRole.
-    bccRecipient: URIRef  # A sub property of recipient. The recipient blind copied on a message.
+    baseSalary: (
+        URIRef  # The base salary of the job or of an employee in an EmployeeRole.
+    )
+    bccRecipient: (
+        URIRef  # A sub property of recipient. The recipient blind copied on a message.
+    )
     bed: URIRef  # The type of bed or beds included in the accommodation. For the single case of just one bed of a certain type, you use bed directly with a text.       If you want to indicate the quantity of a certain kind of bed, use an instance of BedDetails. For more detailed information, use the amenityFeature property.
     beforeMedia: URIRef  # A media object representing the circumstances before performing this direction.
     beneficiaryBank: URIRef  # A bank or bank’s branch, financial institution or international financial institution operating the beneficiary’s bank account or releasing funds for the beneficiary.
@@ -1504,17 +1774,25 @@ class SDO(DefinedNamespace):
     billingIncrement: URIRef  # This property specifies the minimal quantity and rounding increment that will be the basis for the billing. The unit of measurement is specified by the unitCode property.
     billingPeriod: URIRef  # The time interval used to compute the invoice.
     billingStart: URIRef  # Specifies after how much time this price (or price component) becomes valid and billing starts. Can be used, for example, to model a price increase after the first year of a subscription. The unit of measurement is specified by the unitCode property.
-    bioChemInteraction: URIRef  # A BioChemEntity that is known to interact with this item.
+    bioChemInteraction: (
+        URIRef  # A BioChemEntity that is known to interact with this item.
+    )
     bioChemSimilarity: URIRef  # A similar BioChemEntity, e.g., obtained by fingerprint similarity algorithms.
-    biologicalRole: URIRef  # A role played by the BioChemEntity within a biological context.
+    biologicalRole: (
+        URIRef  # A role played by the BioChemEntity within a biological context.
+    )
     biomechnicalClass: URIRef  # The biomechanical properties of the bone.
     birthDate: URIRef  # Date of birth.
     birthPlace: URIRef  # The place where the person was born.
     bitrate: URIRef  # The bitrate of the media object.
     blogPost: URIRef  # A posting that is part of this blog.
     blogPosts: URIRef  # Indicates a post that is part of a [[Blog]]. Note that historically, what we term a "Blog" was once known as a "weblog", and that what we term a "BlogPosting" is now often colloquially referred to as a "blog".
-    bloodSupply: URIRef  # The blood vessel that carries blood from the heart to the muscle.
-    boardingGroup: URIRef  # The airline-specific indicator of boarding order / preference.
+    bloodSupply: (
+        URIRef  # The blood vessel that carries blood from the heart to the muscle.
+    )
+    boardingGroup: (
+        URIRef  # The airline-specific indicator of boarding order / preference.
+    )
     boardingPolicy: URIRef  # The type of boarding policy used by the airline (e.g. zone-based or group-based).
     bodyLocation: URIRef  # Location in the body of the anatomical structure.
     bodyType: URIRef  # Indicates the design and body style of the vehicle (e.g. station wagon, hatchback, etc.).
@@ -1530,12 +1808,16 @@ class SDO(DefinedNamespace):
     brand: URIRef  # The brand(s) associated with a product or service, or the brand(s) maintained by an organization or business person.
     breadcrumb: URIRef  # A set of links that can help a user understand and navigate a website hierarchy.
     breastfeedingWarning: URIRef  # Any precaution, guidance, contraindication, etc. related to this drug's use by breastfeeding mothers.
-    broadcastAffiliateOf: URIRef  # The media network(s) whose content is broadcast on this station.
+    broadcastAffiliateOf: (
+        URIRef  # The media network(s) whose content is broadcast on this station.
+    )
     broadcastChannelId: URIRef  # The unique address by which the BroadcastService can be identified in a provider lineup. In US, this is typically a number.
     broadcastDisplayName: URIRef  # The name displayed in the channel guide. For many US affiliates, it is the network name.
     broadcastFrequency: URIRef  # The frequency used for over-the-air broadcasts. Numeric values or simple ranges e.g. 87-99. In addition a shortcut idiom is supported for frequences of AM and FM radio channels, e.g. "87 FM".
     broadcastFrequencyValue: URIRef  # The frequency in MHz for a particular broadcast.
-    broadcastOfEvent: URIRef  # The event being broadcast such as a sporting event or awards ceremony.
+    broadcastOfEvent: (
+        URIRef  # The event being broadcast such as a sporting event or awards ceremony.
+    )
     broadcastServiceTier: URIRef  # The type of service required to have access to the channel (e.g. Standard or Premium).
     broadcastSignalModulation: URIRef  # The modulation (e.g. FM, AM, etc) used by a particular broadcast service.
     broadcastSubChannel: URIRef  # The subchannel used for the broadcast.
@@ -1566,7 +1848,9 @@ class SDO(DefinedNamespace):
     catalogNumber: URIRef  # The catalog number for the release.
     category: URIRef  # A category for the item. Greater signs or slashes can be used to informally indicate a category hierarchy.
     causeOf: URIRef  # The condition, complication, symptom, sign, etc. caused.
-    ccRecipient: URIRef  # A sub property of recipient. The recipient copied on a message.
+    ccRecipient: (
+        URIRef  # A sub property of recipient. The recipient copied on a message.
+    )
     character: URIRef  # Fictional person connected with a creative work.
     characterAttribute: URIRef  # A piece of data that represents a particular aspect of a fictional character (skill, power, character points, advantage, disadvantage).
     characterName: URIRef  # The name of a character played in some acting or performing role, i.e. in a PerformanceRole.
@@ -1574,7 +1858,9 @@ class SDO(DefinedNamespace):
     checkinTime: URIRef  # The earliest someone may check into a lodging establishment.
     checkoutTime: URIRef  # The latest someone may check out of a lodging establishment.
     chemicalComposition: URIRef  # The chemical composition describes the identity and relative ratio of the chemical elements that make up the substance.
-    chemicalRole: URIRef  # A role played by the BioChemEntity within a chemical context.
+    chemicalRole: (
+        URIRef  # A role played by the BioChemEntity within a chemical context.
+    )
     childMaxAge: URIRef  # Maximal age of the child.
     childMinAge: URIRef  # Minimal age of the child.
     childTaxon: URIRef  # Closest child taxa of the taxon in question.
@@ -1583,7 +1869,9 @@ class SDO(DefinedNamespace):
     circle: URIRef  # A circle is the circular region of a specified radius centered at a specified latitude and longitude. A circle is expressed as a pair followed by a radius in meters.
     citation: URIRef  # A citation or reference to another creative work, such as another publication, web page, scholarly article, etc.
     claimInterpreter: URIRef  # For a [[Claim]] interpreted from [[MediaObject]] content     sed to indicate a claim contained, implied or refined from the content of a [[MediaObject]].
-    claimReviewed: URIRef  # A short summary of the specific claims reviewed in a ClaimReview.
+    claimReviewed: (
+        URIRef  # A short summary of the specific claims reviewed in a ClaimReview.
+    )
     clincalPharmacology: URIRef  # Description of the absorption and elimination of drugs, including their concentration (pharmacokinetics, pK) and biological effects (pharmacodynamics, pD).
     clinicalPharmacology: URIRef  # Description of the absorption and elimination of drugs, including their concentration (pharmacokinetics, pK) and biological effects (pharmacodynamics, pD).
     clipNumber: URIRef  # Position of the clip within an ordered group of clips.
@@ -1609,8 +1897,12 @@ class SDO(DefinedNamespace):
     composer: URIRef  # The person or organization who wrote a composition, or who is the composer of a work performed at some event.
     comprisedOf: URIRef  # Specifying something physically contained by something else. Typically used here for the underlying anatomical structures, such as organs, that comprise the anatomical system.
     conditionsOfAccess: URIRef  # Conditions that affect the availability of, or method(s) of access to, an item. Typically used for real world items such as an [[ArchiveComponent]] held by an [[ArchiveOrganization]]. This property is not suitable for use as a general Web access control mechanism. It is expressed only in natural language.\n\nFor example "Available by appointment from the Reading Room" or "Accessible only from logged-in accounts ".
-    confirmationNumber: URIRef  # A number that confirms the given order or payment has been received.
-    connectedTo: URIRef  # Other anatomical structures to which this structure is connected.
+    confirmationNumber: (
+        URIRef  # A number that confirms the given order or payment has been received.
+    )
+    connectedTo: (
+        URIRef  # Other anatomical structures to which this structure is connected.
+    )
     constrainingProperty: URIRef  # Indicates a property used as a constraint to define a [[StatisticalPopulation]] with respect to the set of entities   corresponding to an indicated type (via [[populationType]]).
     contactOption: URIRef  # An option available on this contact point (e.g. a toll-free number or support for hearing-impaired callers).
     contactPoint: URIRef  # A contact point for a person or organization.
@@ -1622,7 +1914,9 @@ class SDO(DefinedNamespace):
     containsPlace: URIRef  # The basic containment relation between a place and another that it contains.
     containsSeason: URIRef  # A season that is part of the media series.
     contentLocation: URIRef  # The location depicted or described in the content. For example, the location in a photograph or painting.
-    contentRating: URIRef  # Official rating of a piece of content&#x2014;for example,'MPAA PG-13'.
+    contentRating: (
+        URIRef  # Official rating of a piece of content&#x2014;for example,'MPAA PG-13'.
+    )
     contentReferenceTime: URIRef  # The specific time described by a creative work, for works (e.g. articles, video objects etc.) that emphasise a particular moment within an Event.
     contentSize: URIRef  # File size in (mega/kilo) bytes.
     contentType: URIRef  # The supported content type(s) for an EntryPoint response.
@@ -1631,7 +1925,9 @@ class SDO(DefinedNamespace):
     contributor: URIRef  # A secondary contributor to the CreativeWork or Event.
     cookTime: URIRef  # The time it takes to actually cook the dish, in [ISO 8601 duration format](http://en.wikipedia.org/wiki/ISO_8601).
     cookingMethod: URIRef  # The method of cooking, such as Frying, Steaming, ...
-    copyrightHolder: URIRef  # The party holding the legal copyright to the CreativeWork.
+    copyrightHolder: (
+        URIRef  # The party holding the legal copyright to the CreativeWork.
+    )
     copyrightNotice: URIRef  # Text of a notice appropriate for describing the copyright aspects of this Creative Work, ideally indicating the owner of the copyright for the Work.
     copyrightYear: URIRef  # The year during which the claimed copyright for the CreativeWork was first asserted.
     correction: URIRef  # Indicates a correction to a [[CreativeWork]], either via a [[CorrectionComment]], textually or in another document.
@@ -1645,7 +1941,9 @@ class SDO(DefinedNamespace):
     countryOfAssembly: URIRef  # The place where the product was assembled.
     countryOfLastProcessing: URIRef  # The place where the item (typically [[Product]]) was last processed and tested before importation.
     countryOfOrigin: URIRef  # The country of origin of something, including products as well as creative  works such as movie and TV content.  In the case of TV and movie, this would be the country of the principle offices of the production company or individual responsible for the movie. For other kinds of [[CreativeWork]] it is difficult to provide fully general guidance, and properties such as [[contentLocation]] and [[locationCreated]] may be more applicable.  In the case of products, the country of origin of the product. The exact interpretation of this may vary by context and product type, and cannot be fully enumerated here.
-    course: URIRef  # A sub property of location. The course where this action was taken.
+    course: (
+        URIRef  # A sub property of location. The course where this action was taken.
+    )
     courseCode: URIRef  # The identifier for the [[Course]] used by the course [[provider]] (e.g. CS101 or 6.001).
     courseMode: URIRef  # The medium or means of delivery of the course instance or the mode of study, either as a text label (e.g. "online", "onsite" or "blended"; "synchronous" or "asynchronous"; "full-time" or "part-time") or as a URL reference to a term from a controlled vocabulary (e.g. https://ceds.ed.gov/element/001311#Asynchronous ).
     coursePrerequisites: URIRef  # Requirements for taking the Course. May be completion of another [[Course]] or a textual description like "permission of instructor". Requirements may be a pre-requisite competency, referenced using [[AlignmentObject]].
@@ -1666,7 +1964,9 @@ class SDO(DefinedNamespace):
     customerRemorseReturnLabelSource: URIRef  # The method (from an enumeration) by which the customer obtains a return shipping label for a product returned due to customer remorse.
     customerRemorseReturnShippingFeesAmount: URIRef  # The amount of shipping costs if a product is returned due to customer remorse. Applicable when property [[customerRemorseReturnFees]] equals [[ReturnShippingFees]].
     cutoffTime: URIRef  # Order cutoff time allows merchants to describe the time after which they will no longer process orders received on that day. For orders processed after cutoff time, one day gets added to the delivery time estimate. This property is expected to be most typically used via the [[ShippingRateSettings]] publication pattern. The time is indicated using the ISO-8601 Time format, e.g. "23:30:00-05:00" would represent 6:30 pm Eastern Standard Time (EST) which is 5 hours behind Coordinated Universal Time (UTC).
-    cvdCollectionDate: URIRef  # collectiondate - Date for which patient counts are reported.
+    cvdCollectionDate: (
+        URIRef  # collectiondate - Date for which patient counts are reported.
+    )
     cvdFacilityCounty: URIRef  # Name of the County of the NHSN facility that this data record applies to. Use [[cvdFacilityId]] to identify the facility. To provide other details, [[healthcareReportingData]] can be used on a [[Hospital]] entry.
     cvdFacilityId: URIRef  # Identifier of the NHSN facility that this data record applies to. Use [[cvdFacilityCounty]] to indicate the county. To provide other details, [[healthcareReportingData]] can be used on a [[Hospital]] entry.
     cvdNumBeds: URIRef  # numbeds - HOSPITAL INPATIENT BEDS: Inpatient beds, including all staffed, licensed, and overflow (surge) beds used for inpatients.
@@ -1682,7 +1982,9 @@ class SDO(DefinedNamespace):
     cvdNumTotBeds: URIRef  # numtotbeds - ALL HOSPITAL BEDS: Total number of all Inpatient and outpatient beds, including all staffed,ICU, licensed, and overflow (surge) beds used for inpatients or outpatients.
     cvdNumVent: URIRef  # numvent - MECHANICAL VENTILATORS: Total number of ventilators available.
     cvdNumVentUse: URIRef  # numventuse - MECHANICAL VENTILATORS IN USE: Total number of ventilators in use.
-    dataFeedElement: URIRef  # An item within in a data feed. Data feeds may have many elements.
+    dataFeedElement: (
+        URIRef  # An item within in a data feed. Data feeds may have many elements.
+    )
     dataset: URIRef  # A dataset contained in this catalog.
     datasetTimeInterval: URIRef  # The range of temporal applicability of a dataset, e.g. for a 2011 census dataset, the year 2011 (in ISO 8601 time interval format).
     dateCreated: URIRef  # The date on which the CreativeWork was created or the item was added to a DataFeed.
@@ -1692,7 +1994,9 @@ class SDO(DefinedNamespace):
     datePosted: URIRef  # Publication date of an online listing.
     datePublished: URIRef  # Date of first broadcast/publication.
     dateRead: URIRef  # The date/time at which the message has been read by the recipient if a single recipient exists.
-    dateReceived: URIRef  # The date/time the message was received if a single recipient exists.
+    dateReceived: (
+        URIRef  # The date/time the message was received if a single recipient exists.
+    )
     dateSent: URIRef  # The date/time at which the message was sent.
     dateVehicleFirstRegistered: URIRef  # The date of the first registration of the vehicle with the respective public authorities.
     dateline: URIRef  # A [dateline](https://en.wikipedia.org/wiki/Dateline) is a brief piece of text included in news articles that describes where and when the story was written or filed though the date is often omitted. Sometimes only a placename is provided.  Structured representations of dateline-related information can also be expressed more explicitly using [[locationCreated]] (which represents where a work was created e.g. where a news report was written).  For location depicted or described in the content, use [[contentLocation]].  Dateline summaries are oriented more towards human readers than towards automated processing, and can vary substantially. Some examples: "BEIRUT, Lebanon, June 2.", "Paris, France", "December 19, 2017 11:43AM Reporting from Washington", "Beijing/Moscow", "QUEZON CITY, Philippines".
@@ -1731,7 +2035,9 @@ class SDO(DefinedNamespace):
     discountCode: URIRef  # Code used to redeem a discount.
     discountCurrency: URIRef  # The currency of the discount.\n\nUse standard formats: [ISO 4217 currency format](http://en.wikipedia.org/wiki/ISO_4217) e.g. "USD"; [Ticker symbol](https://en.wikipedia.org/wiki/List_of_cryptocurrencies) for cryptocurrencies e.g. "BTC"; well known names for [Local Exchange Tradings Systems](https://en.wikipedia.org/wiki/Local_exchange_trading_system) (LETS) and other currency types e.g. "Ithaca HOUR".
     discusses: URIRef  # Specifies the CreativeWork associated with the UserComment.
-    discussionUrl: URIRef  # A link to the page containing the comments of the CreativeWork.
+    discussionUrl: (
+        URIRef  # A link to the page containing the comments of the CreativeWork.
+    )
     diseasePreventionInfo: URIRef  # Information about disease prevention.
     diseaseSpreadStatistics: URIRef  # Statistical information about the spread of a disease, either as [[WebContent]], or   described directly as a [[Dataset]], or the specific [[Observation]]s in the dataset. When a [[WebContent]] URL is   provided, the page indicated might also contain more such markup.
     dissolutionDate: URIRef  # The date that this organization was dissolved.
@@ -1740,7 +2046,9 @@ class SDO(DefinedNamespace):
     distribution: URIRef  # A downloadable form of this dataset, at a specific location, in a specific format.
     diversityPolicy: URIRef  # Statement on diversity policy by an [[Organization]] e.g. a [[NewsMediaOrganization]]. For a [[NewsMediaOrganization]], a statement describing the newsroom’s diversity policy on both staffing and sources, typically providing staffing data.
     diversityStaffingReport: URIRef  # For an [[Organization]] (often but not necessarily a [[NewsMediaOrganization]]), a report on staffing diversity issues. In a news context this might be for example ASNE or RTDNA (US) reports, or self-reported.
-    documentation: URIRef  # Further documentation describing the Web API in more detail.
+    documentation: (
+        URIRef  # Further documentation describing the Web API in more detail.
+    )
     doesNotShip: URIRef  # Indicates when shipping to a particular [[shippingDestination]] is not available.
     domainIncludes: URIRef  # Relates a property to a class that is (one of) the type(s) the property is expected to be used on.
     domiciledMortgage: URIRef  # Whether borrower is a resident of the jurisdiction where the property is located.
@@ -1768,17 +2076,23 @@ class SDO(DefinedNamespace):
     editEIDR: URIRef  # An [EIDR](https://eidr.org/) (Entertainment Identifier Registry) [[identifier]] representing a specific edit / edition for a work of film or television.  For example, the motion picture known as "Ghostbusters" whose [[titleEIDR]] is "10.5240/7EC7-228A-510A-053E-CBB8-J", has several edits e.g. "10.5240/1F2A-E1C5-680A-14C6-E76B-I" and "10.5240/8A35-3BEE-6497-5D12-9E4F-3".  Since schema.org types like [[Movie]] and [[TVEpisode]] can be used for both works and their multiple expressions, it is possible to use [[titleEIDR]] alone (for a general description), or alongside [[editEIDR]] for a more edit-specific description.
     editor: URIRef  # Specifies the Person who edited the CreativeWork.
     eduQuestionType: URIRef  # For questions that are part of learning resources (e.g. Quiz), eduQuestionType indicates the format of question being given. Example: "Multiple choice", "Open ended", "Flashcard".
-    educationRequirements: URIRef  # Educational background needed for the position or Occupation.
+    educationRequirements: (
+        URIRef  # Educational background needed for the position or Occupation.
+    )
     educationalAlignment: URIRef  # An alignment to an established educational framework.  This property should not be used where the nature of the alignment can be described using a simple property, for example to express that a resource [[teaches]] or [[assesses]] a competency.
     educationalCredentialAwarded: URIRef  # A description of the qualification, award, certificate, diploma or other educational credential awarded as a consequence of successful completion of this course or program.
-    educationalFramework: URIRef  # The framework to which the resource being described is aligned.
+    educationalFramework: (
+        URIRef  # The framework to which the resource being described is aligned.
+    )
     educationalLevel: URIRef  # The level in terms of progression through an educational or training context. Examples of educational levels include 'beginner', 'intermediate' or 'advanced', and formal sets of level indicators.
     educationalProgramMode: URIRef  # Similar to courseMode, The medium or means of delivery of the program as a whole. The value may either be a text label (e.g. "online", "onsite" or "blended"; "synchronous" or "asynchronous"; "full-time" or "part-time") or a URL reference to a term from a controlled vocabulary (e.g. https://ceds.ed.gov/element/001311#Asynchronous ).
     educationalRole: URIRef  # An educationalRole of an EducationalAudience.
     educationalUse: URIRef  # The purpose of a work in the context of education; for example, 'assignment', 'group work'.
     elevation: URIRef  # The elevation of a location ([WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System)). Values may be of the form 'NUMBER UNIT_OF_MEASUREMENT' (e.g., '1,000 m', '3,200 ft') while numbers alone should be assumed to be a value in meters.
     eligibilityToWorkRequirement: URIRef  # The legal requirements such as citizenship, visa and other documentation required for an applicant to this job.
-    eligibleCustomerType: URIRef  # The type(s) of customers for which the given offer is valid.
+    eligibleCustomerType: (
+        URIRef  # The type(s) of customers for which the given offer is valid.
+    )
     eligibleDuration: URIRef  # The duration for which the given offer is valid.
     eligibleQuantity: URIRef  # The interval and unit of measurement of ordering quantities for which the offer or price specification is valid. This allows e.g. specifying that a certain freight charge is valid only for a certain quantity.
     eligibleRegion: URIRef  # The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is valid.\n\nSee also [[ineligibleRegion]].
@@ -1810,30 +2124,46 @@ class SDO(DefinedNamespace):
     engineType: URIRef  # The type of engine or engines powering the vehicle.
     entertainmentBusiness: URIRef  # A sub property of location. The entertainment business where the action occurred.
     epidemiology: URIRef  # The characteristics of associated patients, such as age, gender, race etc.
-    episode: URIRef  # An episode of a tv, radio or game media within a series or season.
-    episodeNumber: URIRef  # Position of the episode within an ordered group of episodes.
+    episode: (
+        URIRef  # An episode of a tv, radio or game media within a series or season.
+    )
+    episodeNumber: (
+        URIRef  # Position of the episode within an ordered group of episodes.
+    )
     episodes: URIRef  # An episode of a TV/radio series or season.
     equal: URIRef  # This ordering relation for qualitative values indicates that the subject is equal to the object.
     error: URIRef  # For failed actions, more information on the cause of the failure.
     estimatedCost: URIRef  # The estimated cost of the supply or supplies consumed when performing instructions.
     estimatedFlightDuration: URIRef  # The estimated time the flight will take.
     estimatedSalary: URIRef  # An estimated salary for a job posting or occupation, based on a variety of variables including, but not limited to industry, job title, and location. Estimated salaries  are often computed by outside organizations rather than the hiring organization, who may not have committed to the estimated value.
-    estimatesRiskOf: URIRef  # The condition, complication, or symptom whose risk is being estimated.
+    estimatesRiskOf: (
+        URIRef  # The condition, complication, or symptom whose risk is being estimated.
+    )
     ethicsPolicy: URIRef  # Statement about ethics policy, e.g. of a [[NewsMediaOrganization]] regarding journalistic and publishing practices, or of a [[Restaurant]], a page describing food source policies. In the case of a [[NewsMediaOrganization]], an ethicsPolicy is typically a statement describing the personal, organizational, and corporate standards of behavior expected by the organization.
     event: URIRef  # Upcoming or past event associated with this place, organization, or action.
     eventAttendanceMode: URIRef  # The eventAttendanceMode of an event indicates whether it occurs online, offline, or a mix.
     eventSchedule: URIRef  # Associates an [[Event]] with a [[Schedule]]. There are circumstances where it is preferable to share a schedule for a series of       repeating events rather than data on the individual events themselves. For example, a website or application might prefer to publish a schedule for a weekly       gym class rather than provide data on every event. A schedule could be processed by applications to add forthcoming events to a calendar. An [[Event]] that       is associated with a [[Schedule]] using this property should not have [[startDate]] or [[endDate]] properties. These are instead defined within the associated       [[Schedule]], this avoids any ambiguity for clients using the data. The property might have repeated values to specify different schedules, e.g. for different months       or seasons.
     eventStatus: URIRef  # An eventStatus of an event represents its status; particularly useful when an event is cancelled or rescheduled.
-    events: URIRef  # Upcoming or past events associated with this place or organization.
+    events: (
+        URIRef  # Upcoming or past events associated with this place or organization.
+    )
     evidenceLevel: URIRef  # Strength of evidence of the data used to formulate the guideline (enumerated).
     evidenceOrigin: URIRef  # Source of the data used to formulate the guidance, e.g. RCT, consensus opinion, etc.
     exampleOfWork: URIRef  # A creative work that this work is an example/instance/realization/derivation of.
     exceptDate: URIRef  # Defines a [[Date]] or [[DateTime]] during which a scheduled [[Event]] will not take place. The property allows exceptions to       a [[Schedule]] to be specified. If an exception is specified as a [[DateTime]] then only the event that would have started at that specific date and time       should be excluded from the schedule. If an exception is specified as a [[Date]] then any event that is scheduled for that 24 hour period should be       excluded from the schedule. This allows a whole day to be excluded from the schedule without having to itemise every scheduled event.
     exchangeRateSpread: URIRef  # The difference between the price at which a broker or other intermediary buys and sells foreign currency.
-    executableLibraryName: URIRef  # Library file name e.g., mscorlib.dll, system.web.dll.
-    exerciseCourse: URIRef  # A sub property of location. The course where this action was taken.
-    exercisePlan: URIRef  # A sub property of instrument. The exercise plan used on this action.
-    exerciseRelatedDiet: URIRef  # A sub property of instrument. The diet used in this action.
+    executableLibraryName: (
+        URIRef  # Library file name e.g., mscorlib.dll, system.web.dll.
+    )
+    exerciseCourse: (
+        URIRef  # A sub property of location. The course where this action was taken.
+    )
+    exercisePlan: (
+        URIRef  # A sub property of instrument. The exercise plan used on this action.
+    )
+    exerciseRelatedDiet: (
+        URIRef  # A sub property of instrument. The diet used in this action.
+    )
     exerciseType: URIRef  # Type(s) of exercise or activity, such as strength training, flexibility training, aerobics, cardiac rehabilitation, etc.
     exifData: URIRef  # exif data for this object.
     expectedArrivalFrom: URIRef  # The earliest date the package may arrive.
@@ -1861,9 +2191,13 @@ class SDO(DefinedNamespace):
     floorLevel: URIRef  # The floor level for an [[Accommodation]] in a multi-storey building. Since counting   systems [vary internationally](https://en.wikipedia.org/wiki/Storey#Consecutive_number_floor_designations), the local system should be used where possible.
     floorLimit: URIRef  # A floor limit is the amount of money above which credit card transactions must be authorized.
     floorSize: URIRef  # The size of the accommodation, e.g. in square meter or squarefoot. Typical unit code(s): MTK for square meter, FTK for square foot, or YDK for square yard
-    followee: URIRef  # A sub property of object. The person or organization being followed.
+    followee: (
+        URIRef  # A sub property of object. The person or organization being followed.
+    )
     follows: URIRef  # The most generic uni-directional social relation.
-    followup: URIRef  # Typical or recommended followup care after the procedure is performed.
+    followup: (
+        URIRef  # Typical or recommended followup care after the procedure is performed.
+    )
     foodEstablishment: URIRef  # A sub property of location. The specific food establishment where the action occurred.
     foodEvent: URIRef  # A sub property of location. The specific food event where the action occurred.
     foodWarning: URIRef  # Any precaution, guidance, contraindication, etc. related to consumption of specific foods while taking this drug.
@@ -1940,7 +2274,9 @@ class SDO(DefinedNamespace):
     hasMenu: URIRef  # Either the actual menu as a structured representation, as text, or a URL of the menu.
     hasMenuItem: URIRef  # A food or drink item contained in a menu or menu section.
     hasMenuSection: URIRef  # A subgrouping of the menu (by dishes, course, serving time period, etc.).
-    hasMerchantReturnPolicy: URIRef  # Specifies a MerchantReturnPolicy that may be applicable.
+    hasMerchantReturnPolicy: (
+        URIRef  # Specifies a MerchantReturnPolicy that may be applicable.
+    )
     hasMolecularFunction: URIRef  # Molecular function performed by this BioChemEntity; please use PropertyValue if you want to include any evidence.
     hasOccupation: URIRef  # The Person's occupation. For past professions, use Role for expressing dates.
     hasOfferCatalog: URIRef  # Indicates an OfferCatalog listing for this Organization, Person, or Service.
@@ -1956,12 +2292,16 @@ class SDO(DefinedNamespace):
     healthPlanCopayOption: URIRef  # Whether the copay is before or after deductible, etc. TODO: Is this a closed set?
     healthPlanCostSharing: URIRef  # Whether The costs to the patient for services under this network or formulary.
     healthPlanDrugOption: URIRef  # TODO.
-    healthPlanDrugTier: URIRef  # The tier(s) of drugs offered by this formulary or insurance plan.
+    healthPlanDrugTier: (
+        URIRef  # The tier(s) of drugs offered by this formulary or insurance plan.
+    )
     healthPlanId: URIRef  # The 14-character, HIOS-generated Plan ID number. (Plan IDs must be unique, even across different markets.)
     healthPlanMarketingUrl: URIRef  # The URL that goes directly to the plan brochure for the specific standard plan or plan variation.
     healthPlanNetworkId: URIRef  # Name or unique ID of network. (Networks are often reused across different insurance plans).
     healthPlanNetworkTier: URIRef  # The tier(s) for this network.
-    healthPlanPharmacyCategory: URIRef  # The category or type of pharmacy associated with this cost sharing.
+    healthPlanPharmacyCategory: (
+        URIRef  # The category or type of pharmacy associated with this cost sharing.
+    )
     healthcareReportingData: URIRef  # Indicates data describing a hospital, e.g. a CDC [[CDCPMDRecord]] or as some kind of [[Dataset]].
     height: URIRef  # The height of the item.
     highPrice: URIRef  # The highest price of all offers available.\n\nUsage guidelines:\n\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.
@@ -1969,11 +2309,19 @@ class SDO(DefinedNamespace):
     holdingArchive: URIRef  # [[ArchiveOrganization]] that holds, keeps or maintains the [[ArchiveComponent]].
     homeLocation: URIRef  # A contact location for a person's residence.
     homeTeam: URIRef  # The home team in a sports event.
-    honorificPrefix: URIRef  # An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.
-    honorificSuffix: URIRef  # An honorific suffix following a Person's name such as M.D. /PhD/MSCSW.
-    hospitalAffiliation: URIRef  # A hospital with which the physician or office is affiliated.
+    honorificPrefix: (
+        URIRef  # An honorific prefix preceding a Person's name such as Dr/Mrs/Mr.
+    )
+    honorificSuffix: (
+        URIRef  # An honorific suffix following a Person's name such as M.D. /PhD/MSCSW.
+    )
+    hospitalAffiliation: (
+        URIRef  # A hospital with which the physician or office is affiliated.
+    )
     hostingOrganization: URIRef  # The organization (airline, travelers' club, etc.) the membership is made with.
-    hoursAvailable: URIRef  # The hours during which this service or contact is available.
+    hoursAvailable: (
+        URIRef  # The hours during which this service or contact is available.
+    )
     howPerformed: URIRef  # How the procedure is performed.
     httpMethod: URIRef  # An HTTP method that specifies the appropriate HTTP method for a request to an HTTP EntryPoint. Values are capitalized strings as used in HTTP.
     iataCode: URIRef  # IATA identifier for an airline or airport.
@@ -1994,9 +2342,15 @@ class SDO(DefinedNamespace):
     inPlaylist: URIRef  # The playlist to which this recording belongs.
     inProductGroupWithID: URIRef  # Indicates the [[productGroupID]] for a [[ProductGroup]] that this product [[isVariantOf]].
     inStoreReturnsOffered: URIRef  # Are in-store returns offered? (for more advanced return methods use the [[returnMethod]] property)
-    inSupportOf: URIRef  # Qualification, candidature, degree, application that Thesis supports.
-    incentiveCompensation: URIRef  # Description of bonus and commission compensation aspects of the job.
-    incentives: URIRef  # Description of bonus and commission compensation aspects of the job.
+    inSupportOf: (
+        URIRef  # Qualification, candidature, degree, application that Thesis supports.
+    )
+    incentiveCompensation: (
+        URIRef  # Description of bonus and commission compensation aspects of the job.
+    )
+    incentives: (
+        URIRef  # Description of bonus and commission compensation aspects of the job.
+    )
     includedComposition: URIRef  # Smaller compositions included in this work (e.g. a movement in a symphony).
     includedDataCatalog: URIRef  # A data catalog which contains this dataset (this property was previously 'catalog', preferred name is now 'includedInDataCatalog').
     includedInDataCatalog: URIRef  # A data catalog which contains this dataset.
@@ -2006,12 +2360,18 @@ class SDO(DefinedNamespace):
     includesHealthPlanFormulary: URIRef  # Formularies covered by this plan.
     includesHealthPlanNetwork: URIRef  # Networks covered by this plan.
     includesObject: URIRef  # This links to a node or nodes indicating the exact quantity of the products included in  an [[Offer]] or [[ProductCollection]].
-    increasesRiskOf: URIRef  # The condition, complication, etc. influenced by this factor.
+    increasesRiskOf: (
+        URIRef  # The condition, complication, etc. influenced by this factor.
+    )
     industry: URIRef  # The industry associated with the job position.
     ineligibleRegion: URIRef  # The ISO 3166-1 (ISO 3166-1 alpha-2) or ISO 3166-2 code, the place, or the GeoShape for the geo-political region(s) for which the offer or delivery charge specification is not valid, e.g. a region where the transaction is not allowed.\n\nSee also [[eligibleRegion]].
-    infectiousAgent: URIRef  # The actual infectious agent, such as a specific bacterium.
+    infectiousAgent: (
+        URIRef  # The actual infectious agent, such as a specific bacterium.
+    )
     infectiousAgentClass: URIRef  # The class of infectious agent (bacteria, prion, etc.) that causes the disease.
-    ingredients: URIRef  # A single ingredient used in the recipe, e.g. sugar, flour or garlic.
+    ingredients: (
+        URIRef  # A single ingredient used in the recipe, e.g. sugar, flour or garlic.
+    )
     inker: URIRef  # The individual who traces over the pencil drawings in ink after pencils are complete.
     insertion: URIRef  # The place of attachment of a muscle, or what the muscle moves.
     installUrl: URIRef  # URL at which the app may be installed, if different from the URL of the item.
@@ -2020,18 +2380,24 @@ class SDO(DefinedNamespace):
     intensity: URIRef  # Quantitative measure gauging the degree of force involved in the exercise, for example, heartbeats per minute. May include the velocity of the movement.
     interactingDrug: URIRef  # Another drug that is known to interact with this drug in a way that impacts the effect of this drug or causes a risk to the patient. Note: disease interactions are typically captured as contraindications.
     interactionCount: URIRef  # This property is deprecated, alongside the UserInteraction types on which it depended.
-    interactionService: URIRef  # The WebSite or SoftwareApplication where the interactions took place.
+    interactionService: (
+        URIRef  # The WebSite or SoftwareApplication where the interactions took place.
+    )
     interactionStatistic: URIRef  # The number of interactions for the CreativeWork using the WebSite or SoftwareApplication. The most specific child type of InteractionCounter should be used.
     interactionType: URIRef  # The Action representing the type of interaction. For up votes, +1s, etc. use [[LikeAction]]. For down votes use [[DislikeAction]]. Otherwise, use the most specific Action.
     interactivityType: URIRef  # The predominant mode of learning supported by the learning resource. Acceptable values are 'active', 'expositive', or 'mixed'.
     interestRate: URIRef  # The interest rate, charged or paid, applicable to the financial product. Note: This is different from the calculated annualPercentageRate.
     interpretedAsClaim: URIRef  # Used to indicate a specific claim contained, implied, translated or refined from the content of a [[MediaObject]] or other [[CreativeWork]]. The interpreting party can be indicated using [[claimInterpreter]].
-    inventoryLevel: URIRef  # The current approximate inventory level for the item or items.
+    inventoryLevel: (
+        URIRef  # The current approximate inventory level for the item or items.
+    )
     inverseOf: URIRef  # Relates a property to a property that is its inverse. Inverse properties relate the same pairs of items to each other, but in reversed direction. For example, the 'alumni' and 'alumniOf' properties are inverseOf each other. Some properties don't have explicit inverses; in these situations RDFa and JSON-LD syntax for reverse properties can be used.
     isAcceptingNewPatients: URIRef  # Whether the provider is accepting new patients.
     isAccessibleForFree: URIRef  # A flag to signal that the item, event, or place is accessible for free.
     isAccessoryOrSparePartFor: URIRef  # A pointer to another product (or multiple products) for which this product is an accessory or spare part.
-    isAvailableGenerically: URIRef  # True if the drug is available in a generic form (regardless of name).
+    isAvailableGenerically: (
+        URIRef  # True if the drug is available in a generic form (regardless of name).
+    )
     isBasedOn: URIRef  # A resource from which this work is derived or from which it is a modification or adaption.
     isBasedOnUrl: URIRef  # A resource that was used in the creation of this resource. This term can be repeated for multiple sources. For example, http://example.com/great-multiplication-intro.html.
     isConsumableFor: URIRef  # A pointer to another product (or multiple products) for which this product is a consumable.
@@ -2043,9 +2409,13 @@ class SDO(DefinedNamespace):
     isLocatedInSubcellularLocation: URIRef  # Subcellular location where this BioChemEntity is located; please use PropertyValue if you want to include any evidence.
     isPartOf: URIRef  # Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
     isPartOfBioChemEntity: URIRef  # Indicates a BioChemEntity that is (in some sense) a part of this BioChemEntity.
-    isPlanForApartment: URIRef  # Indicates some accommodation that this floor plan describes.
+    isPlanForApartment: (
+        URIRef  # Indicates some accommodation that this floor plan describes.
+    )
     isProprietary: URIRef  # True if this item's name is a proprietary/brand name (vs. generic name).
-    isRelatedTo: URIRef  # A pointer to another, somehow related product (or multiple products).
+    isRelatedTo: (
+        URIRef  # A pointer to another, somehow related product (or multiple products).
+    )
     isResizable: URIRef  # Whether the 3DModel allows resizing. For example, room layout applications often do not allow 3DModel elements to be resized to reflect reality.
     isSimilarTo: URIRef  # A pointer to another, functionally similar product (or multiple products).
     isUnlabelledFallback: URIRef  # This can be marked 'true' to indicate that some published [[DeliveryTimeSettings]] or [[ShippingRateSettings]] are intended to apply to all [[OfferShippingDetails]] published by the same merchant, when referenced by a [[shippingSettingsLink]] in those settings. It is not meaningful to use a 'true' value for this property alongside a transitTimeLabel (for [[DeliveryTimeSettings]]) or shippingLabel (for [[ShippingRateSettings]]), since this property is for use with unlabelled settings.
@@ -2054,13 +2424,19 @@ class SDO(DefinedNamespace):
     isicV4: URIRef  # The International Standard of Industrial Classification of All Economic Activities (ISIC), Revision 4 code for a particular organization, business person, or place.
     isrcCode: URIRef  # The International Standard Recording Code for the recording.
     issn: URIRef  # The International Standard Serial Number (ISSN) that identifies this serial publication. You can repeat this property to identify different formats of, or the linking ISSN (ISSN-L) for, this serial publication.
-    issueNumber: URIRef  # Identifies the issue of publication; for example, "iii" or "2".
+    issueNumber: (
+        URIRef  # Identifies the issue of publication; for example, "iii" or "2".
+    )
     issuedBy: URIRef  # The organization issuing the ticket or permit.
     issuedThrough: URIRef  # The service through with the permit was granted.
-    iswcCode: URIRef  # The International Standard Musical Work Code for the composition.
+    iswcCode: (
+        URIRef  # The International Standard Musical Work Code for the composition.
+    )
     item: URIRef  # An entity represented by an entry in a list or data feed (e.g. an 'artist' in a list of 'artists')’.
     itemCondition: URIRef  # A predefined value from OfferItemCondition specifying the condition of the product or service, or the products or services included in the offer. Also used for product return policies to specify the condition of products accepted for returns.
-    itemDefectReturnFees: URIRef  # The type of return fees for returns of defect products.
+    itemDefectReturnFees: (
+        URIRef  # The type of return fees for returns of defect products.
+    )
     itemDefectReturnLabelSource: URIRef  # The method (from an enumeration) by which the customer obtains a return shipping label for a defect product.
     itemDefectReturnShippingFeesAmount: URIRef  # Amount of shipping costs for defect product returns. Applicable when property [[itemDefectReturnFees]] equals [[ReturnShippingFees]].
     itemListElement: URIRef  # For itemListElement values, you can use simple strings (e.g. "Peter", "Paul", "Mary"), existing entities, or use ListItem.\n\nText values are best if the elements in the list are plain strings. Existing entities are best for a simple, unordered list of existing things in your data. ListItem is used with ordered lists when you want to provide additional context about the element in that list or when the same item might be in different places in different lists.\n\nNote: The order of elements in your mark-up is not sufficient for indicating the order or elements.  Use ListItem with a 'position' property in such cases.
@@ -2079,12 +2455,16 @@ class SDO(DefinedNamespace):
     jobTitle: URIRef  # The job title of the person (for example, Financial Manager).
     jurisdiction: URIRef  # Indicates a legal jurisdiction, e.g. of some legislation, or where some government service is based.
     keywords: URIRef  # Keywords or tags used to describe this content. Multiple entries in a keywords list are typically delimited by commas.
-    knownVehicleDamages: URIRef  # A textual description of known damages, both repaired and unrepaired.
+    knownVehicleDamages: (
+        URIRef  # A textual description of known damages, both repaired and unrepaired.
+    )
     knows: URIRef  # The most generic bi-directional social/work relation.
     knowsAbout: URIRef  # Of a [[Person]], and less typically of an [[Organization]], to indicate a topic that is known about - suggesting possible expertise but not implying it. We do not distinguish skill levels here, or relate this to educational content, events, objectives or [[JobPosting]] descriptions.
     knowsLanguage: URIRef  # Of a [[Person]], and less typically of an [[Organization]], to indicate a known language. We do not distinguish skill levels or reading/writing/speaking/signing here. Use language codes from the [IETF BCP 47 standard](http://tools.ietf.org/html/bcp47).
     labelDetails: URIRef  # Link to the drug's label details.
-    landlord: URIRef  # A sub property of participant. The owner of the real estate property.
+    landlord: (
+        URIRef  # A sub property of participant. The owner of the real estate property.
+    )
     language: URIRef  # A sub property of instrument. The language used on this action.
     lastReviewed: URIRef  # Date on which the content on this web page was last reviewed for accuracy and/or completeness.
     latitude: URIRef  # The latitude of a location. For example ```37.42242``` ([WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System)).
@@ -2099,7 +2479,9 @@ class SDO(DefinedNamespace):
     legislationDate: URIRef  # The date of adoption or signature of the legislation. This is the date at which the text is officially aknowledged to be a legislation, even though it might not even be published or in force.
     legislationDateVersion: URIRef  # The point-in-time at which the provided description of the legislation is valid (e.g. : when looking at the law on the 2016-04-07 (= dateVersion), I get the consolidation of 2015-04-12 of the "National Insurance Contributions Act 2015")
     legislationIdentifier: URIRef  # An identifier for the legislation. This can be either a string-based identifier, like the CELEX at EU level or the NOR in France, or a web-based, URL/URI identifier, like an ELI (European Legislation Identifier) or an URN-Lex.
-    legislationJurisdiction: URIRef  # The jurisdiction from which the legislation originates.
+    legislationJurisdiction: (
+        URIRef  # The jurisdiction from which the legislation originates.
+    )
     legislationLegalForce: URIRef  # Whether the legislation is currently in force, not in force, or partially in force.
     legislationLegalValue: URIRef  # The legal value of this legislation file. The same legislation can be written in multiple files with different legal values. Typically a digitally signed PDF have a "stronger" legal value than the HTML file of the same act.
     legislationPassedBy: URIRef  # The person or organization that originally passed or made the law : typically parliament (for primary legislation) or government (for secondary legislation). This indicates the "legal author" of the law, as opposed to its physical author.
@@ -2131,7 +2513,9 @@ class SDO(DefinedNamespace):
     lowPrice: URIRef  # The lowest price of all offers available.\n\nUsage guidelines:\n\n* Use values from 0123456789 (Unicode 'DIGIT ZERO' (U+0030) to 'DIGIT NINE' (U+0039)) rather than superficially similiar Unicode symbols.\n* Use '.' (Unicode 'FULL STOP' (U+002E)) rather than ',' to indicate a decimal point. Avoid using these symbols as a readability separator.
     lyricist: URIRef  # The person who wrote the words.
     lyrics: URIRef  # The words in the song.
-    mainContentOfPage: URIRef  # Indicates if this web page element is the main subject of the page.
+    mainContentOfPage: (
+        URIRef  # Indicates if this web page element is the main subject of the page.
+    )
     mainEntity: URIRef  # Indicates the primary entity described in some page or other CreativeWork.
     mainEntityOfPage: URIRef  # Indicates a page (or other CreativeWork) for which this thing is the main entity being described. See [background notes](/docs/datamodel.html#mainEntityBackground) for details.
     maintainer: URIRef  # A maintainer of a [[Dataset]], software package ([[SoftwareApplication]]), or other [[Project]]. A maintainer is a [[Person]] or [[Organization]] that manages contributions to, and/or publication of, some (typically complex) artifact. It is common for distributions of software and data to be based on "upstream" sources. When [[maintainer]] is applied to a specific version of something e.g. a particular version or packaging of a [[Dataset]], it is always  possible that the upstream source has a different maintainer. The [[isBasedOn]] property can be used to indicate such relationships between datasets to make the different maintenance roles clear. Similarly in the case of software, a package may have dedicated maintainers working on integration into software distributions such as Ubuntu, as well as upstream maintainers of the underlying work.
@@ -2147,8 +2531,12 @@ class SDO(DefinedNamespace):
     mathExpression: URIRef  # A mathematical expression (e.g. 'x^2-3x=0') that may be solved for a specific variable, simplified, or transformed. This can take many formats, e.g. LaTeX, Ascii-Math, or math as you would write with a keyboard.
     maxPrice: URIRef  # The highest price if the price is a range.
     maxValue: URIRef  # The upper value of some characteristic or property.
-    maximumAttendeeCapacity: URIRef  # The total number of individuals that may attend an event or venue.
-    maximumEnrollment: URIRef  # The maximum number of students who may be enrolled in the program.
+    maximumAttendeeCapacity: (
+        URIRef  # The total number of individuals that may attend an event or venue.
+    )
+    maximumEnrollment: (
+        URIRef  # The maximum number of students who may be enrolled in the program.
+    )
     maximumIntake: URIRef  # Recommended intake of this supplement for a given population as defined by a specific recommending authority.
     maximumPhysicalAttendeeCapacity: URIRef  # The maximum physical attendee capacity of an [[Event]] whose [[eventAttendanceMode]] is [[OfflineEventAttendanceMode]] (or the offline aspects, in the case of a [[MixedEventAttendanceMode]]).
     maximumVirtualAttendeeCapacity: URIRef  # The maximum physical attendee capacity of an [[Event]] whose [[eventAttendanceMode]] is [[OnlineEventAttendanceMode]] (or the online aspects, in the case of a [[MixedEventAttendanceMode]]).
@@ -2163,7 +2551,9 @@ class SDO(DefinedNamespace):
     medicalAudience: URIRef  # Medical audience for page.
     medicalSpecialty: URIRef  # A medical specialty of the provider.
     medicineSystem: URIRef  # The system of medicine that includes this MedicalEntity, for example 'evidence-based', 'homeopathic', 'chiropractic', etc.
-    meetsEmissionStandard: URIRef  # Indicates that the vehicle meets the respective emission standard.
+    meetsEmissionStandard: (
+        URIRef  # Indicates that the vehicle meets the respective emission standard.
+    )
     member: URIRef  # A member of an Organization or a ProgramMembership. Organizations can be members of organizations; ProgramMembership is typically for individuals.
     memberOf: URIRef  # An Organization (or ProgramMembership) to which this Person or Organization belongs.
     members: URIRef  # A member of this organization.
@@ -2175,7 +2565,9 @@ class SDO(DefinedNamespace):
     menuAddOn: URIRef  # Additional menu item(s) such as a side dish of salad or side order of fries that can be added to this menu item. Additionally it can be a menu section containing allowed add-on menu items for this menu item.
     merchant: URIRef  # 'merchant' is an out-dated term for 'seller'.
     merchantReturnDays: URIRef  # Specifies either a fixed return date or the number of days (from the delivery date) that a product can be returned. Used when the [[returnPolicyCategory]] property is specified as [[MerchantReturnFiniteReturnWindow]].
-    merchantReturnLink: URIRef  # Specifies a Web page or service by URL, for product returns.
+    merchantReturnLink: (
+        URIRef  # Specifies a Web page or service by URL, for product returns.
+    )
     messageAttachment: URIRef  # A CreativeWork attached to the message.
     mileageFromOdometer: URIRef  # The total distance travelled by the particular vehicle since its initial production, as read from its odometer.\n\nTypical unit code(s): KMT for kilometers, SMI for statute miles
     minPrice: URIRef  # The lowest price if the price is a range.
@@ -2195,7 +2587,9 @@ class SDO(DefinedNamespace):
     muscleAction: URIRef  # The movement the muscle generates.
     musicArrangement: URIRef  # An arrangement derived from the composition.
     musicBy: URIRef  # The composer of the soundtrack.
-    musicCompositionForm: URIRef  # The type of composition (e.g. overture, sonata, symphony, etc.).
+    musicCompositionForm: (
+        URIRef  # The type of composition (e.g. overture, sonata, symphony, etc.).
+    )
     musicGroupMember: URIRef  # A member of a music group&#x2014;for example, John, Paul, George, or Ringo.
     musicReleaseFormat: URIRef  # Format of this release (the type of recording media used, ie. compact disc, digital media, LP, etc.).
     musicalKey: URIRef  # The key, mode, or scale this composition uses.
@@ -2206,7 +2600,9 @@ class SDO(DefinedNamespace):
     naturalProgression: URIRef  # The expected progression of the condition if it is not treated and allowed to progress naturally.
     negativeNotes: URIRef  # Indicates, in the context of a [[Review]] (e.g. framed as 'pro' vs 'con' considerations), negative considerations - either as unstructured text, or a list.
     nerve: URIRef  # The underlying innervation associated with the muscle.
-    nerveMotor: URIRef  # The neurological pathway extension that involves muscle control.
+    nerveMotor: (
+        URIRef  # The neurological pathway extension that involves muscle control.
+    )
     netWorth: URIRef  # The total financial value of the person as calculated by subtracting assets from liabilities.
     newsUpdatesAndGuidelines: URIRef  # Indicates a page with news updates and guidelines. This could often be (but is not required to be) the main page containing [[SpecialAnnouncement]] markup on a site.
     nextItem: URIRef  # A link to the ListItem that follows the current one.
@@ -2214,7 +2610,9 @@ class SDO(DefinedNamespace):
     nonEqual: URIRef  # This ordering relation for qualitative values indicates that the subject is not equal to the object.
     nonProprietaryName: URIRef  # The generic name of this drug or supplement.
     nonprofitStatus: URIRef  # nonprofit Status indicates the legal status of a non-profit organization in its primary place of business.
-    normalRange: URIRef  # Range of acceptable values for a typical patient, when applicable.
+    normalRange: (
+        URIRef  # Range of acceptable values for a typical patient, when applicable.
+    )
     nsn: URIRef  # Indicates the [NATO stock number](https://en.wikipedia.org/wiki/NATO_Stock_Number) (nsn) of a [[Product]].
     numAdults: URIRef  # The number of adults staying in the unit.
     numChildren: URIRef  # The number of children staying in the unit.
@@ -2229,7 +2627,9 @@ class SDO(DefinedNamespace):
     numberOfBeds: URIRef  # The quantity of the given bed type available in the HotelRoom, Suite, House, or Apartment.
     numberOfCredits: URIRef  # The number of credits or units awarded by a Course or required to complete an EducationalOccupationalProgram.
     numberOfDoors: URIRef  # The number of doors.\n\nTypical unit code(s): C62
-    numberOfEmployees: URIRef  # The number of employees in an organization e.g. business.
+    numberOfEmployees: (
+        URIRef  # The number of employees in an organization e.g. business.
+    )
     numberOfEpisodes: URIRef  # The number of episodes in this season or series.
     numberOfForwardGears: URIRef  # The total number of forward gears available for the transmission system of the vehicle.\n\nTypical unit code(s): C62
     numberOfFullBathrooms: URIRef  # Number of full bathrooms - The total number of full and ¾ bathrooms in an [[Accommodation]]. This corresponds to the [BathroomsFull field in RESO](https://ddwiki.reso.org/display/DDW17/BathroomsFull+Field).
@@ -2257,11 +2657,15 @@ class SDO(DefinedNamespace):
     openingHours: URIRef  # The general opening hours for a business. Opening hours can be specified as a weekly time range, starting with days, then times per day. Multiple days can be listed with commas ',' separating each day. Day or time ranges are specified using a hyphen '-'.\n\n* Days are specified using the following two-letter combinations: ```Mo```, ```Tu```, ```We```, ```Th```, ```Fr```, ```Sa```, ```Su```.\n* Times are specified using 24:00 format. For example, 3pm is specified as ```15:00```, 10am as ```10:00```. \n* Here is an example: <code>&lt;time itemprop="openingHours" datetime=&quot;Tu,Th 16:00-20:00&quot;&gt;Tuesdays and Thursdays 4-8pm&lt;/time&gt;</code>.\n* If a business is open 7 days a week, then it can be specified as <code>&lt;time itemprop=&quot;openingHours&quot; datetime=&quot;Mo-Su&quot;&gt;Monday through Sunday, all day&lt;/time&gt;</code>.
     openingHoursSpecification: URIRef  # The opening hours of a certain place.
     opens: URIRef  # The opening hour of the place or service on the given day(s) of the week.
-    operatingSystem: URIRef  # Operating systems supported (Windows 7, OSX 10.6, Android 1.6).
+    operatingSystem: (
+        URIRef  # Operating systems supported (Windows 7, OSX 10.6, Android 1.6).
+    )
     opponent: URIRef  # A sub property of participant. The opponent on this action.
     option: URIRef  # A sub property of object. The options subject to this action.
     orderDate: URIRef  # Date order was placed.
-    orderDelivery: URIRef  # The delivery of the parcel related to this order or order item.
+    orderDelivery: (
+        URIRef  # The delivery of the parcel related to this order or order item.
+    )
     orderItemNumber: URIRef  # The identifier of the order item.
     orderItemStatus: URIRef  # The current status of the order item.
     orderNumber: URIRef  # The identifier of the transaction.
@@ -2289,25 +2693,35 @@ class SDO(DefinedNamespace):
     parents: URIRef  # A parents of the person.
     partOfEpisode: URIRef  # The episode to which this clip belongs.
     partOfInvoice: URIRef  # The order is being paid as part of the referenced Invoice.
-    partOfOrder: URIRef  # The overall order the items in this delivery were included in.
+    partOfOrder: (
+        URIRef  # The overall order the items in this delivery were included in.
+    )
     partOfSeason: URIRef  # The season to which this episode belongs.
     partOfSeries: URIRef  # The series to which this episode or season belongs.
-    partOfSystem: URIRef  # The anatomical or organ system that this structure is part of.
+    partOfSystem: (
+        URIRef  # The anatomical or organ system that this structure is part of.
+    )
     partOfTVSeries: URIRef  # The TV series to which this episode or season belongs.
     partOfTrip: URIRef  # Identifies that this [[Trip]] is a subTrip of another Trip.  For example Day 1, Day 2, etc. of a multi-day trip.
     participant: URIRef  # Other co-agents that participated in the action indirectly. e.g. John wrote a book with *Steve*.
     partySize: URIRef  # Number of people the reservation should accommodate.
     passengerPriorityStatus: URIRef  # The priority status assigned to a passenger for security or boarding (e.g. FastTrack or Priority).
-    passengerSequenceNumber: URIRef  # The passenger's sequence number as assigned by the airline.
+    passengerSequenceNumber: (
+        URIRef  # The passenger's sequence number as assigned by the airline.
+    )
     pathophysiology: URIRef  # Changes in the normal mechanical, physical, and biochemical functions that are associated with this activity or condition.
     pattern: URIRef  # A pattern that something has, for example 'polka dot', 'striped', 'Canadian flag'. Values are typically expressed as text, although links to controlled value schemes are also supported.
     payload: URIRef  # The permitted weight of passengers and cargo, EXCLUDING the weight of the empty vehicle.\n\nTypical unit code(s): KGM for kilogram, LBR for pound\n\n* Note 1: Many databases specify the permitted TOTAL weight instead, which is the sum of [[weight]] and [[payload]]\n* Note 2: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\n* Note 3: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\n* Note 4: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges.
     paymentAccepted: URIRef  # Cash, Credit Card, Cryptocurrency, Local Exchange Tradings System, etc.
     paymentDue: URIRef  # The date that payment is due.
     paymentDueDate: URIRef  # The date that payment is due.
-    paymentMethod: URIRef  # The name of the credit card or other method of payment for the order.
+    paymentMethod: (
+        URIRef  # The name of the credit card or other method of payment for the order.
+    )
     paymentMethodId: URIRef  # An identifier for the method of payment used (e.g. the last 4 digits of the credit card).
-    paymentStatus: URIRef  # The status of payment; whether the invoice has been paid or not.
+    paymentStatus: (
+        URIRef  # The status of payment; whether the invoice has been paid or not.
+    )
     paymentUrl: URIRef  # The URL for sending a payment.
     penciler: URIRef  # The individual who draws the primary narrative artwork.
     percentile10: URIRef  # The 10th percentile value.
@@ -2318,18 +2732,26 @@ class SDO(DefinedNamespace):
     performer: URIRef  # A performer at the event&#x2014;for example, a presenter, musician, musical group or actor.
     performerIn: URIRef  # Event that this person is a performer or participant in.
     performers: URIRef  # The main performer or performers of the event&#x2014;for example, a presenter, musician, or actor.
-    permissionType: URIRef  # The type of permission granted the person, organization, or audience.
+    permissionType: (
+        URIRef  # The type of permission granted the person, organization, or audience.
+    )
     permissions: URIRef  # Permission(s) required to run the app (for example, a mobile app may require full internet access or may run only on wifi).
     permitAudience: URIRef  # The target audience for this permit.
-    permittedUsage: URIRef  # Indications regarding the permitted usage of the accommodation.
+    permittedUsage: (
+        URIRef  # Indications regarding the permitted usage of the accommodation.
+    )
     petsAllowed: URIRef  # Indicates whether pets are allowed to enter the accommodation or lodging business. More detailed information can be put in a text value.
     phoneticText: URIRef  # Representation of a text [[textValue]] using the specified [[speechToTextMarkup]]. For example the city name of Houston in IPA: /ˈhjuːstən/.
     photo: URIRef  # A photograph of this place.
     photos: URIRef  # Photographs of this place.
     physicalRequirement: URIRef  # A description of the types of physical activity associated with the job. Defined terms such as those in O*net may be used, but note that there is no way to specify the level of ability as well as its nature when using a defined term.
-    physiologicalBenefits: URIRef  # Specific physiologic benefits associated to the plan.
+    physiologicalBenefits: (
+        URIRef  # Specific physiologic benefits associated to the plan.
+    )
     pickupLocation: URIRef  # Where a taxi will pick up a passenger or a rental car can be picked up.
-    pickupTime: URIRef  # When a taxi will pickup a passenger or a rental car can be picked up.
+    pickupTime: (
+        URIRef  # When a taxi will pickup a passenger or a rental car can be picked up.
+    )
     playMode: URIRef  # Indicates whether this game is multi-player, co-op or single-player.  The game can be marked as multi-player, co-op and single-player at the same time.
     playerType: URIRef  # Player type required&#x2014;for example, Flash or Silverlight.
     playersOnline: URIRef  # Number of players on the server.
@@ -2338,7 +2760,9 @@ class SDO(DefinedNamespace):
     position: URIRef  # The position of an item in a series or sequence of items.
     positiveNotes: URIRef  # Indicates, in the context of a [[Review]] (e.g. framed as 'pro' vs 'con' considerations), positive considerations - either as unstructured text, or a list.
     possibleComplication: URIRef  # A possible unexpected and unfavorable evolution of a medical condition. Complications may include worsening of the signs or symptoms of the disease, extension of the condition to other organ systems, etc.
-    possibleTreatment: URIRef  # A possible treatment to address this condition, sign or symptom.
+    possibleTreatment: (
+        URIRef  # A possible treatment to address this condition, sign or symptom.
+    )
     postOfficeBoxNumber: URIRef  # The post office box number for PO box addresses.
     postOp: URIRef  # A description of the postoperative procedures, care, and/or followups for this device.
     postalCode: URIRef  # The postal code. For example, 94043.
@@ -2369,13 +2793,19 @@ class SDO(DefinedNamespace):
     primaryImageOfPage: URIRef  # Indicates the main image on the page.
     primaryPrevention: URIRef  # A preventative therapy used to prevent an initial occurrence of the medical condition, such as vaccination.
     printColumn: URIRef  # The number of the column in which the NewsArticle appears in the print edition.
-    printEdition: URIRef  # The edition of the print product in which the NewsArticle appears.
+    printEdition: (
+        URIRef  # The edition of the print product in which the NewsArticle appears.
+    )
     printPage: URIRef  # If this NewsArticle appears in print, this field indicates the name of the page on which the article is found. Please note that this field is intended for the exact page name (e.g. A5, B18).
     printSection: URIRef  # If this NewsArticle appears in print, this field indicates the print section in which the article appeared.
     procedure: URIRef  # A description of the procedure involved in setting up, using, and/or installing the device.
     procedureType: URIRef  # The type of procedure, for example Surgical, Noninvasive, or Percutaneous.
-    processingTime: URIRef  # Estimated processing time for the service using this channel.
-    processorRequirements: URIRef  # Processor architecture required to run the application (e.g. IA64).
+    processingTime: (
+        URIRef  # Estimated processing time for the service using this channel.
+    )
+    processorRequirements: (
+        URIRef  # Processor architecture required to run the application (e.g. IA64).
+    )
     producer: URIRef  # The person or organization who produced the work (e.g. music album, movie, tv/radio series etc.).
     produces: URIRef  # The tangible thing generated by the service, e.g. a passport, permit, etc.
     productGroupID: URIRef  # Indicates a textual identifier for a ProductGroup.
@@ -2406,9 +2836,15 @@ class SDO(DefinedNamespace):
     publisher: URIRef  # The publisher of the creative work.
     publisherImprint: URIRef  # The publishing division which published the comic.
     publishingPrinciples: URIRef  # The publishingPrinciples property indicates (typically via [[URL]]) a document describing the editorial principles of an [[Organization]] (or individual e.g. a [[Person]] writing a blog) that relate to their activities as a publisher, e.g. ethics or diversity policies. When applied to a [[CreativeWork]] (e.g. [[NewsArticle]]) the principles are those of the party primarily responsible for the creation of the [[CreativeWork]].  While such policies are most typically expressed in natural language, sometimes related information (e.g. indicating a [[funder]]) can be expressed using schema.org terminology.
-    purchaseDate: URIRef  # The date the item e.g. vehicle was purchased by the current owner.
-    qualifications: URIRef  # Specific qualifications required for this role or Occupation.
-    quarantineGuidelines: URIRef  # Guidelines about quarantine rules, e.g. in the context of a pandemic.
+    purchaseDate: (
+        URIRef  # The date the item e.g. vehicle was purchased by the current owner.
+    )
+    qualifications: (
+        URIRef  # Specific qualifications required for this role or Occupation.
+    )
+    quarantineGuidelines: (
+        URIRef  # Guidelines about quarantine rules, e.g. in the context of a pandemic.
+    )
     query: URIRef  # A sub property of instrument. The query used on this action.
     quest: URIRef  # The task that a player-controlled character, or group of characters may complete in order to gain a reward.
     question: URIRef  # A sub property of object. A question.
@@ -2420,15 +2856,23 @@ class SDO(DefinedNamespace):
     readonlyValue: URIRef  # Whether or not a property is mutable.  Default is false. Specifying this for a property that also has a value makes it act similar to a "hidden" input in an HTML form.
     realEstateAgent: URIRef  # A sub property of participant. The real estate agent involved in the action.
     recipe: URIRef  # A sub property of instrument. The recipe/instructions used to perform the action.
-    recipeCategory: URIRef  # The category of the recipe—for example, appetizer, entree, etc.
-    recipeCuisine: URIRef  # The cuisine of the recipe (for example, French or Ethiopian).
-    recipeIngredient: URIRef  # A single ingredient used in the recipe, e.g. sugar, flour or garlic.
+    recipeCategory: (
+        URIRef  # The category of the recipe—for example, appetizer, entree, etc.
+    )
+    recipeCuisine: (
+        URIRef  # The cuisine of the recipe (for example, French or Ethiopian).
+    )
+    recipeIngredient: (
+        URIRef  # A single ingredient used in the recipe, e.g. sugar, flour or garlic.
+    )
     recipeInstructions: URIRef  # A step in making the recipe, in the form of a single item (document, video, etc.) or an ordered list with HowToStep and/or HowToSection items.
     recipeYield: URIRef  # The quantity produced by the recipe (for example, number of people served, number of servings, etc).
     recipient: URIRef  # A sub property of participant. The participant who is at the receiving end of the action.
     recognizedBy: URIRef  # An organization that acknowledges the validity, value or utility of a credential. Note: recognition may include a process of quality assurance or accreditation.
     recognizingAuthority: URIRef  # If applicable, the organization that officially recognizes this entity as part of its endorsed system of medicine.
-    recommendationStrength: URIRef  # Strength of the guideline's recommendation (e.g. 'class I').
+    recommendationStrength: (
+        URIRef  # Strength of the guideline's recommendation (e.g. 'class I').
+    )
     recommendedIntake: URIRef  # Recommended intake of this supplement for a given population as defined by a specific recommending authority.
     recordLabel: URIRef  # The label that issued the release.
     recordedAs: URIRef  # An audio recording of the work.
@@ -2453,15 +2897,23 @@ class SDO(DefinedNamespace):
     releaseOf: URIRef  # The album this is a release of.
     releasedEvent: URIRef  # The place and time the release was issued, expressed as a PublicationEvent.
     relevantOccupation: URIRef  # The Occupation for the JobPosting.
-    relevantSpecialty: URIRef  # If applicable, a medical specialty in which this entity is relevant.
-    remainingAttendeeCapacity: URIRef  # The number of attendee places for an event that remain unallocated.
+    relevantSpecialty: (
+        URIRef  # If applicable, a medical specialty in which this entity is relevant.
+    )
+    remainingAttendeeCapacity: (
+        URIRef  # The number of attendee places for an event that remain unallocated.
+    )
     renegotiableLoan: URIRef  # Whether the terms for payment of interest can be renegotiated during the life of the loan.
-    repeatCount: URIRef  # Defines the number of times a recurring [[Event]] will take place
+    repeatCount: (
+        URIRef  # Defines the number of times a recurring [[Event]] will take place
+    )
     repeatFrequency: URIRef  # Defines the frequency at which [[Event]]s will occur according to a schedule [[Schedule]]. The intervals between       events should be defined as a [[Duration]] of time.
     repetitions: URIRef  # Number of times one should repeat the activity.
     replacee: URIRef  # A sub property of object. The object that is being replaced.
     replacer: URIRef  # A sub property of object. The object that replaces.
-    replyToUrl: URIRef  # The URL at which a reply may be posted to the specified UserComment.
+    replyToUrl: (
+        URIRef  # The URL at which a reply may be posted to the specified UserComment.
+    )
     reportNumber: URIRef  # The number or other unique designator assigned to a Report by the publishing organization.
     representativeOfPage: URIRef  # Indicates whether this image is representative of the content of the page.
     requiredCollateral: URIRef  # Assets required to secure loan or credit repayments. It may take form of third party pledge, goods, financial instruments (cash, securities, etc.)
@@ -2471,20 +2923,30 @@ class SDO(DefinedNamespace):
     requiredQuantity: URIRef  # The required quantity of the item(s).
     requirements: URIRef  # Component dependency requirements for application. This includes runtime environments and shared libraries that are not included in the application distribution package, but required to run the application (Examples: DirectX, Java or .NET runtime).
     requiresSubscription: URIRef  # Indicates if use of the media require a subscription  (either paid or free). Allowed values are ```true``` or ```false``` (note that an earlier version had 'yes', 'no').
-    reservationFor: URIRef  # The thing -- flight, event, restaurant,etc. being reserved.
+    reservationFor: (
+        URIRef  # The thing -- flight, event, restaurant,etc. being reserved.
+    )
     reservationId: URIRef  # A unique identifier for the reservation.
     reservationStatus: URIRef  # The current status of the reservation.
     reservedTicket: URIRef  # A ticket associated with the reservation.
-    responsibilities: URIRef  # Responsibilities associated with this role or Occupation.
+    responsibilities: (
+        URIRef  # Responsibilities associated with this role or Occupation.
+    )
     restPeriods: URIRef  # How often one should break from the activity.
     restockingFee: URIRef  # Use [[MonetaryAmount]] to specify a fixed restocking fee for product returns, or use [[Number]] to specify a percentage of the product price paid by the customer.
     result: URIRef  # The result produced in the action. e.g. John wrote *a book*.
     resultComment: URIRef  # A sub property of result. The Comment created or sent as a result of this action.
     resultReview: URIRef  # A sub property of result. The review that resulted in the performing of the action.
-    returnFees: URIRef  # The type of return fees for purchased products (for any return reason)
+    returnFees: (
+        URIRef  # The type of return fees for purchased products (for any return reason)
+    )
     returnLabelSource: URIRef  # The method (from an enumeration) by which the customer obtains a return shipping label for a product returned for any reason.
-    returnMethod: URIRef  # The type of return method offered, specified from an enumeration.
-    returnPolicyCategory: URIRef  # Specifies an applicable return policy (from an enumeration).
+    returnMethod: (
+        URIRef  # The type of return method offered, specified from an enumeration.
+    )
+    returnPolicyCategory: (
+        URIRef  # Specifies an applicable return policy (from an enumeration).
+    )
     returnPolicyCountry: URIRef  # The country where the product has to be sent to for returns, for example "Ireland" using the [[name]] property of [[Country]]. You can also provide the two-letter [ISO 3166-1 alpha-2 country code](http://en.wikipedia.org/wiki/ISO_3166-1). Note that this can be different from the country where the product was originally shipped from or sent too.
     returnPolicySeasonalOverride: URIRef  # Seasonal override of a return policy.
     returnShippingFeesAmount: URIRef  # Amount of shipping costs for product returns (for any reason). Applicable when property [[returnFees]] equals [[ReturnShippingFees]].
@@ -2529,8 +2991,12 @@ class SDO(DefinedNamespace):
     seatingCapacity: URIRef  # The number of persons that can be seated (e.g. in a vehicle), both in terms of the physical space available, and in terms of limitations set by law.\n\nTypical unit code(s): C62 for persons
     seatingType: URIRef  # The type/class of the seat.
     secondaryPrevention: URIRef  # A preventative therapy used to prevent reoccurrence of the medical condition after an initial episode of the condition.
-    securityClearanceRequirement: URIRef  # A description of any security clearance requirements of the job.
-    securityScreening: URIRef  # The type of security screening the passenger is subject to.
+    securityClearanceRequirement: (
+        URIRef  # A description of any security clearance requirements of the job.
+    )
+    securityScreening: (
+        URIRef  # The type of security screening the passenger is subject to.
+    )
     seeks: URIRef  # A pointer to products or services sought by the organization or person (demand).
     seller: URIRef  # An entity which offers (sells / leases / lends / loans) the services / goods.  A seller may also be a provider.
     sender: URIRef  # A sub property of participant. The participant who is at the sending end of the action.
@@ -2578,7 +3044,9 @@ class SDO(DefinedNamespace):
     softwareHelp: URIRef  # Software application help.
     softwareRequirements: URIRef  # Component dependency requirements for application. This includes runtime environments and shared libraries that are not included in the application distribution package, but required to run the application (Examples: DirectX, Java or .NET runtime).
     softwareVersion: URIRef  # Version of the software instance.
-    sourceOrganization: URIRef  # The Organization on whose behalf the creator was working.
+    sourceOrganization: (
+        URIRef  # The Organization on whose behalf the creator was working.
+    )
     sourcedFrom: URIRef  # The neurological pathway that originates the neurons.
     spatial: URIRef  # The "spatial" property can be used in cases when more specific properties (e.g. [[locationCreated]], [[spatialCoverage]], [[contentLocation]]) are not known to be appropriate.
     spatialCoverage: URIRef  # The spatialCoverage of a CreativeWork indicates the place(s) which are the focus of the content. It is a subproperty of       contentLocation intended primarily for more technical and detailed materials. For example with a Dataset, it indicates       areas that the dataset describes: a dataset of New York weather would have spatialCoverage which was the place: the state of New York.
@@ -2610,7 +3078,9 @@ class SDO(DefinedNamespace):
     streetAddress: URIRef  # The street address. For example, 1600 Amphitheatre Pkwy.
     strengthUnit: URIRef  # The units of an active ingredient's strength, e.g. mg.
     strengthValue: URIRef  # The value of an active ingredient's strength, e.g. 325.
-    structuralClass: URIRef  # The name given to how bone physically connects to each other.
+    structuralClass: (
+        URIRef  # The name given to how bone physically connects to each other.
+    )
     study: URIRef  # A medical study or trial related to this entity.
     studyDesign: URIRef  # Specifics about the observational study design (enumerated).
     studyLocation: URIRef  # The location in which the study is taking/took place.
@@ -2620,7 +3090,9 @@ class SDO(DefinedNamespace):
     subOrganization: URIRef  # A relationship between two organizations where the first includes the second, e.g., as a subsidiary. See also: the more specific 'department' property.
     subReservation: URIRef  # The individual reservations included in the package. Typically a repeated property.
     subStageSuffix: URIRef  # The substage, e.g. 'a' for Stage IIIa.
-    subStructure: URIRef  # Component (sub-)structure(s) that comprise this anatomical structure.
+    subStructure: (
+        URIRef  # Component (sub-)structure(s) that comprise this anatomical structure.
+    )
     subTest: URIRef  # A component test of the panel.
     subTrip: URIRef  # Identifies a [[Trip]] that is a subTrip of this Trip.  For example Day 1, Day 2, etc. of a multi-day trip.
     subjectOf: URIRef  # A CreativeWork or Event about this Thing.
@@ -2630,9 +3102,13 @@ class SDO(DefinedNamespace):
     suggestedAge: URIRef  # The age or age range for the intended audience or person, for example 3-12 months for infants, 1-5 years for toddlers.
     suggestedAnswer: URIRef  # An answer (possibly one of several, possibly incorrect) to a Question, e.g. on a Question/Answer site.
     suggestedGender: URIRef  # The suggested gender of the intended person or audience, for example "male", "female", or "unisex".
-    suggestedMaxAge: URIRef  # Maximum recommended age in years for the audience or user.
+    suggestedMaxAge: (
+        URIRef  # Maximum recommended age in years for the audience or user.
+    )
     suggestedMeasurement: URIRef  # A suggested range of body measurements for the intended audience or person, for example inseam between 32 and 34 inches or height between 170 and 190 cm. Typically found on a size chart for wearable products.
-    suggestedMinAge: URIRef  # Minimum recommended age in years for the audience or user.
+    suggestedMinAge: (
+        URIRef  # Minimum recommended age in years for the audience or user.
+    )
     suitableForDiet: URIRef  # Indicates a dietary restriction or guideline for which this recipe or menu item is suitable, e.g. diabetic, halal etc.
     superEvent: URIRef  # An event that this event is a part of. For example, a collection of individual music performances might each have a music festival as their superEvent.
     supersededBy: URIRef  # Relates a term (i.e. a property, class or enumeration) to one that supersedes it.
@@ -2641,10 +3117,16 @@ class SDO(DefinedNamespace):
     supportingData: URIRef  # Supporting data for a SoftwareApplication.
     surface: URIRef  # A material used as a surface in some artwork, e.g. Canvas, Paper, Wood, Board, etc.
     target: URIRef  # Indicates a target EntryPoint for an Action.
-    targetCollection: URIRef  # A sub property of object. The collection target of the action.
-    targetDescription: URIRef  # The description of a node in an established educational framework.
+    targetCollection: (
+        URIRef  # A sub property of object. The collection target of the action.
+    )
+    targetDescription: (
+        URIRef  # The description of a node in an established educational framework.
+    )
     targetName: URIRef  # The name of a node in an established educational framework.
-    targetPlatform: URIRef  # Type of app development: phone, Metro style, desktop, XBox, etc.
+    targetPlatform: (
+        URIRef  # Type of app development: phone, Metro style, desktop, XBox, etc.
+    )
     targetPopulation: URIRef  # Characteristics of the population for which this is intended, or which typically uses it, e.g. 'adults'.
     targetProduct: URIRef  # Target Operating System / Product to which the code applies.  If applies to several versions, just the product name can be used.
     targetUrl: URIRef  # The URL of a node in an established educational framework.
@@ -2667,7 +3149,9 @@ class SDO(DefinedNamespace):
     ticketNumber: URIRef  # The unique identifier for the ticket.
     ticketToken: URIRef  # Reference to an asset (e.g., Barcode, QR code image or PDF) usable for entrance.
     ticketedSeat: URIRef  # The seat associated with the ticket.
-    timeOfDay: URIRef  # The time of day the program normally runs. For example, "evenings".
+    timeOfDay: (
+        URIRef  # The time of day the program normally runs. For example, "evenings".
+    )
     timeRequired: URIRef  # Approximate or typical time it takes to work with or through this learning resource for the typical intended target audience, e.g. 'PT30M', 'PT1H25M'.
     timeToComplete: URIRef  # The expected length of time to complete the program if attending full-time.
     tissueSample: URIRef  # The type of tissue sample required for the test.
@@ -2702,7 +3186,9 @@ class SDO(DefinedNamespace):
     translationOfWork: URIRef  # The work that this work has been translated from. e.g. 物种起源 is a translationOf “On the Origin of Species”
     translator: URIRef  # Organization or person who adapts a creative work to different languages, regional differences and technical requirements of a target market, or that translates during some event.
     transmissionMethod: URIRef  # How the disease spreads, either as a route or vector, for example 'direct contact', 'Aedes aegypti', etc.
-    travelBans: URIRef  # Information about travel bans, e.g. in the context of a pandemic.
+    travelBans: (
+        URIRef  # Information about travel bans, e.g. in the context of a pandemic.
+    )
     trialDesign: URIRef  # Specifics about the trial design (enumerated).
     tributary: URIRef  # The anatomical or organ system that the vein flows into; a larger structure that the vein connects to.
     typeOfBed: URIRef  # The type of bed to which the BedDetail refers, i.e. the type of bed available in the quantity indicated by quantity.
@@ -2745,7 +3231,9 @@ class SDO(DefinedNamespace):
     vehicleConfiguration: URIRef  # A short text indicating the configuration of the vehicle, e.g. '5dr hatchback ST 2.5 MT 225 hp' or 'limited edition'.
     vehicleEngine: URIRef  # Information about the engine or engines of the vehicle.
     vehicleIdentificationNumber: URIRef  # The Vehicle Identification Number (VIN) is a unique serial number used by the automotive industry to identify individual motor vehicles.
-    vehicleInteriorColor: URIRef  # The color or color combination of the interior of the vehicle.
+    vehicleInteriorColor: (
+        URIRef  # The color or color combination of the interior of the vehicle.
+    )
     vehicleInteriorType: URIRef  # The type or material of the interior of the vehicle (e.g. synthetic fabric, leather, wood, etc.). While most interior types are characterized by the material used, an interior type can also be based on vehicle usage or target audience.
     vehicleModelDate: URIRef  # The release date of a vehicle model (often used to differentiate versions of the same make and model).
     vehicleSeatingCapacity: URIRef  # The number of passengers that can be seated in the vehicle, both in terms of the physical space available, and in terms of limitations set by law.\n\nTypical unit code(s): C62 for persons.
@@ -2763,7 +3251,9 @@ class SDO(DefinedNamespace):
     warranty: URIRef  # The warranty promise(s) included in the offer.
     warrantyPromise: URIRef  # The warranty promise(s) included in the offer.
     warrantyScope: URIRef  # The scope of the warranty promise.
-    webCheckinTime: URIRef  # The time when a passenger can check into the flight online.
+    webCheckinTime: (
+        URIRef  # The time when a passenger can check into the flight online.
+    )
     webFeed: URIRef  # The URL for a feed, e.g. associated with a podcast series, blog, or series of date-stamped updates. This is usually RSS or Atom.
     weight: URIRef  # The weight of the product or person.
     weightTotal: URIRef  # The permitted total weight of the loaded vehicle, including passengers and cargo and the weight of the empty vehicle.\n\nTypical unit code(s): KGM for kilogram, LBR for pound\n\n* Note 1: You can indicate additional information in the [[name]] of the [[QuantitativeValue]] node.\n* Note 2: You may also link to a [[QualitativeValue]] node that provides additional information using [[valueReference]].\n* Note 3: Note that you can use [[minValue]] and [[maxValue]] to indicate ranges.

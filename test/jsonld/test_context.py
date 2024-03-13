@@ -1,6 +1,7 @@
 """
 JSON-LD Context Spec
 """
+
 from __future__ import annotations
 
 import json
