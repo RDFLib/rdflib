@@ -30,7 +30,9 @@ class QB(DefinedNamespace):
     measure: URIRef  # An alternative to qb:componentProperty which makes explicit that the component is a measure
     measureDimension: URIRef  # An alternative to qb:componentProperty which makes explicit that the component is a measure dimension
     measureType: URIRef  # Generic measure dimension, the value of this dimension indicates which measure (from the set of measures in the DSD) is being given by the obsValue (or other primary measure)
-    observation: URIRef  # indicates a observation contained within this slice of the data set
+    observation: (
+        URIRef  # indicates a observation contained within this slice of the data set
+    )
     observationGroup: URIRef  # Indicates a group of observations. The domain of this property is left open so that a group may be attached to different resources and need not be restricted to a single DataSet
     order: URIRef  # indicates a priority order for the components of sets with this structure, used to guide presentations - lower order numbers come before higher numbers, un-numbered components come last
     parentChildProperty: URIRef  # Specifies a property which relates a parent concept in the hierarchy to a child concept.
@@ -48,7 +50,9 @@ class QB(DefinedNamespace):
     ComponentSpecification: URIRef  # Used to define properties of a component (attribute, dimension etc) which are specific to its usage in a DSD.
     DataSet: URIRef  # Represents a collection of observations, possibly organized into various slices, conforming to some common dimensional structure.
     DataStructureDefinition: URIRef  # Defines the structure of a DataSet or slice
-    DimensionProperty: URIRef  # The class of components which represent the dimensions of the cube
+    DimensionProperty: (
+        URIRef  # The class of components which represent the dimensions of the cube
+    )
     HierarchicalCodeList: URIRef  # Represents a generalized hierarchy of concepts which can be used for coding. The hierarchy is defined by one or more roots together with a property which relates concepts in the hierarchy to their child concept .  The same concepts may be members of multiple hierarchies provided that different qb:parentChildProperty values are used for each hierarchy.
     MeasureProperty: URIRef  # The class of components which represent the measured value of the phenomenon being observed
     Observation: URIRef  # A single observation in the cube, may have one or more associated measured values

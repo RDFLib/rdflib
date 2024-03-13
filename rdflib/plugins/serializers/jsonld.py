@@ -28,6 +28,7 @@ Example usage::
     ]
 
 """
+
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/serializer.py
 
 # NOTE: This code writes the entire JSON object into memory before serialising,

@@ -14,13 +14,17 @@ class DC(DefinedNamespace):
     _fail = True
 
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
-    contributor: URIRef  # An entity responsible for making contributions to the resource.
+    contributor: (
+        URIRef  # An entity responsible for making contributions to the resource.
+    )
     coverage: URIRef  # The spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.
     creator: URIRef  # An entity primarily responsible for making the resource.
     date: URIRef  # A point or period of time associated with an event in the lifecycle of the resource.
     description: URIRef  # An account of the resource.
     format: URIRef  # The file format, physical medium, or dimensions of the resource.
-    identifier: URIRef  # An unambiguous reference to the resource within a given context.
+    identifier: (
+        URIRef  # An unambiguous reference to the resource within a given context.
+    )
     language: URIRef  # A language of the resource.
     publisher: URIRef  # An entity responsible for making the resource available.
     relation: URIRef  # A related resource.

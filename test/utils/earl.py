@@ -1,6 +1,7 @@
 """
 PYTEST_DONT_REWRITE
 """
+
 from __future__ import annotations
 
 import enum
@@ -334,9 +335,9 @@ class EARLReporter:
             return None
         report = self.prefix_reports.get(manifest.report_prefix)
         if report is None:
-            report = self.prefix_reports[
-                manifest.report_prefix
-            ] = self.make_report_with_prefix(manifest.report_prefix)
+            report = self.prefix_reports[manifest.report_prefix] = (
+                self.make_report_with_prefix(manifest.report_prefix)
+            )
         return report
 
     @pytest.hookimpl(hookwrapper=True)

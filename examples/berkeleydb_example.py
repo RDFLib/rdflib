@@ -15,6 +15,7 @@ Example 2: larger data
 * loads multiple graphs downloaded from GitHub into a BerkeleyDB-baked graph stored in the folder gsq_vocabs.
 * does not delete the DB at the end so you can see it on disk
 """
+
 import os
 import tempfile
 

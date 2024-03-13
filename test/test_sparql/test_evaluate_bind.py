@@ -2,6 +2,7 @@
 Verify evaluation of BIND expressions of different types. See
 <http://www.w3.org/TR/sparql11-query/#rExpression>.
 """
+
 import pytest
 
 from rdflib import Graph, Literal, URIRef, Variable

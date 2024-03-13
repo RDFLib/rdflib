@@ -8,6 +8,7 @@ You can draw the graph of an RDF file directly:
    rdf2dot my_rdf_file.rdf | dot -Tpng | display
 
 """
+
 from __future__ import annotations
 
 import collections

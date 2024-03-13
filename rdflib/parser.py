@@ -9,6 +9,7 @@ can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
 
 """
+
 from __future__ import annotations
 
 import codecs
@@ -250,9 +251,9 @@ class URLInputSource(InputSource):
         elif format == "trix":
             myheaders["Accept"] = "application/trix, */*;q=0.1"
         elif format == "json-ld":
-            myheaders[
-                "Accept"
-            ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
+            myheaders["Accept"] = (
+                "application/ld+json, application/json;q=0.9, */*;q=0.1"
+            )
         else:
             # if format not given, create an Accept header from all registered
             # parser Media Types
