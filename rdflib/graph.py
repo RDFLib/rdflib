@@ -1484,10 +1484,9 @@ class Graph(Node):
             format = rdflib.util.guess_format(
                 source if not isinstance(source, InputSource) else str(source)
             )
-            if format is not None:
-                parser = plugin.get(format, Parser)()
-            else:
+            if format is None:
                 raise
+            parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
             parser.parse(source, self, **args)
