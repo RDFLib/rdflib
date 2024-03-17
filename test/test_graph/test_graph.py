@@ -391,6 +391,7 @@ def test_guess_format_for_parse_http(
         checker.check(len(graph))
 
 
+@pytest.mark.webtest
 def test_guess_format_for_parse_http_text_plain():
     # Any raw url of a file from GitHub will return the content-type with text/plain.
     url = "https://raw.githubusercontent.com/AGLDWG/vocpub-profile/master/validators/validator.ttl"
