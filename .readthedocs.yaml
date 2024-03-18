@@ -21,10 +21,9 @@ build:
     # the readthedocs environment.
     - pip install -r devtools/requirements-poetry.in
     post_install:
-    - poetry config virtualenvs.create false
-    - poetry install --only=main --only=docs --extras=html
-    - poetry env info
+    - poetry export --only=main --only=docs --extras=html
     - poetry run python -c "from rdflib import Graph; print(Graph)"
+    - pip install --no-cache-dir -r requirements.txt
     - python -c "from rdflib import Graph; print(Graph)"
 
 sphinx:
