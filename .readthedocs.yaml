@@ -23,6 +23,7 @@ build:
     post_install:
     - poetry export --only=main --only=docs --extras=html -o requirements.txt
     - pip install --no-cache-dir -r requirements.txt
+    - pip install .
     - python -c "from rdflib import Graph; print(Graph)"
 
 sphinx:
