@@ -1007,8 +1007,8 @@ class _AlgebraTranslator:
                 return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
-            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
+        elif isinstance(node_arg, Expr):
+            return "{" + node_arg.name + "}"
         elif isinstance(node_arg, str):
             return node_arg
         else:
