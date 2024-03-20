@@ -6,7 +6,6 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 from __future__ import annotations
 
 from collections import defaultdict
-from functools import cmp_to_key
 from typing import (
     IO,
     TYPE_CHECKING,
@@ -30,34 +29,6 @@ if TYPE_CHECKING:
     from rdflib.graph import _PredicateType, _SubjectType, _TripleType
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
-
-
-def _object_comparator(a: Node, b: Node) -> int:
-    """
-    for nice clean output we sort the objects of triples,
-    some of them are literals,
-    these are sorted according to the sort order of the underlying python objects
-    in py3 not all things are comparable.
-    This falls back on comparing string representations when not.
-    """
-
-    try:
-        # type error: Unsupported left operand type for > ("Node")
-        if a > b:  # type: ignore[operator]
-            return 1
-        # type error: Unsupported left operand type for < ("Node")
-        if a < b:  # type: ignore[operator]
-            return -1
-        return 0
-
-    except TypeError:
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")  [assignment]
-        a = str(a)  # type: ignore[assignment]
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-        b = str(b)  # type: ignore[assignment]
-        # type error: Unsupported left operand type for > ("Node")  [operator]
-        # type error: Unsupported left operand type for < ("Node")
-        return (a > b) - (a < b)  # type: ignore[operator]
 
 
 class RecursiveSerializer(Serializer):
@@ -168,7 +139,7 @@ class RecursiveSerializer(Serializer):
         Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
-            objects.sort(key=cmp_to_key(_object_comparator))
+            objects.sort()
 
         # Make sorted list of properties
         propList: List[_PredicateType] = []
