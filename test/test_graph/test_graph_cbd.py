@@ -1,15 +1,17 @@
+"""Tests the Graph class' cbd() function"""
+
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper
 
 import pytest
 
 from rdflib import Graph, Namespace
-from rdflib.term import URIRef
+from rdflib.namespace import RDF, RDFS
+from rdflib.term import Literal, URIRef
 
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
 EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"
 
-"""Tests the Graph class' cbd() function"""
 
 EX = Namespace("http://ex/")
 
@@ -51,7 +53,7 @@ def get_graph():
     g.close()
 
 
-def testCbd(get_graph):
+def testCbd(get_graph):  # noqa: N802
     g = get_graph
     assert len(g.cbd(EX.R1)) == 3, "cbd() for R1 should return 3 triples"
 
@@ -62,7 +64,7 @@ def testCbd(get_graph):
     assert len(g.cbd(EX.R4)) == 0, "cbd() for R4 should return 0 triples"
 
 
-def testCbdReified(get_graph):
+def testCbdReified(get_graph):  # noqa: N802
     g = get_graph
     # add some reified triples to the testing graph
     g.parse(
@@ -134,3 +136,27 @@ def test_cbd_example():
     assert len(g.cbd(URIRef(query))) == (
         21
     ), "cbd() for aReallyGreatBook should return 21 triples"
+
+
+def test_cbd_target(rdfs_graph: Graph):
+    """
+    `Graph.cbd` places the Concise Bounded Description in the target graph.
+    """
+
+    target = Graph()
+    result = rdfs_graph.cbd(RDFS.Literal, target_graph=target)
+
+    expected_result = {
+        (RDFS.Literal, RDFS.subClassOf, RDFS.Resource),
+        (RDFS.Literal, RDF.type, RDFS.Class),
+        (RDFS.Literal, RDFS.label, Literal("Literal")),
+        (
+            RDFS.Literal,
+            RDFS.comment,
+            Literal("The class of literal values, eg. textual strings and integers."),
+        ),
+        (RDFS.Literal, RDFS.isDefinedBy, URIRef(f"{RDFS}")),
+    }
+
+    assert result is target
+    assert expected_result == set(result.triples((None, None, None)))

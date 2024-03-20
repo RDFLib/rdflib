@@ -1,25 +1,3 @@
-import enum
-import logging
-import os.path
-from pathlib import Path
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper
-from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
-from xml.sax import SAXParseException
-
-import pytest
-from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
-
-import rdflib
-import rdflib.compare
-from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.namespace import XSD
-from rdflib.parser import create_input_source
-from rdflib.plugins.parsers.notation3 import BadSyntax
-from rdflib.util import guess_format
-
-logger = logging.getLogger(__name__)
-
 """
 Test round-tripping by all serializers/parser that are registered.
 This means, you may test more than just core rdflib!
@@ -41,6 +19,32 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 & test_serializer_hext.py)
 
 """
+
+from __future__ import annotations
+
+import enum
+import logging
+import os.path
+from pathlib import Path
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper
+from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
+from xml.sax import SAXParseException
+
+import pytest
+from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
+
+import rdflib
+import rdflib.compare
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.namespace import XSD
+from rdflib.parser import Parser, create_input_source
+from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.serializer import Serializer
+from rdflib.util import guess_format
+
+logger = logging.getLogger(__name__)
+
 
 NT_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "nt_misc"
 INVALID_NT_FILES = {
@@ -302,10 +306,8 @@ _formats: Optional[Set[str]] = None
 def get_formats() -> Set[str]:
     global _formats
     if not _formats:
-        serializers = set(
-            x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Serializer)
-        )
-        parsers = set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Parser))
+        serializers = set(x.name for x in rdflib.plugin.plugins(None, Serializer))
+        parsers = set(x.name for x in rdflib.plugin.plugins(None, Parser))
         _formats = {
             format for format in parsers.intersection(serializers) if "/" not in format
         }

@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 __all__ = ["Collection"]
 
 
-class Collection(object):
-    __doc__ = """
+class Collection:
+    """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
@@ -37,9 +37,9 @@ class Collection(object):
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> c = Collection(g,listname)
     >>> pprint([term.n3() for term in c])
-    [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     u'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
+    ['"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
 
     >>> Literal(1) in c
     True
@@ -82,8 +82,7 @@ class Collection(object):
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
           "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
-        # type error: "Node" has no attribute "n3"
-        return "( %s )" % (" ".join([i.n3() for i in self]))  # type: ignore[attr-defined]
+        return "( %s )" % (" ".join([i.n3() for i in self]))
 
     def _get_container(self, index: int) -> Optional[Node]:
         """Gets the first, rest holding node at index."""

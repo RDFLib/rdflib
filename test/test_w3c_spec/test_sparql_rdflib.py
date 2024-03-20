@@ -1,6 +1,8 @@
 """
 Runs the RDFLib SPARQL test suite.
 """
+
+from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
 from test.utils import ensure_suffix
 from test.utils.dawg_manifest import MarksDictType, params_from_sources
@@ -54,12 +56,16 @@ def configure_rdflib() -> Generator[None, None, None]:
         LOCAL_BASE_DIR / "manifest.ttl",
         mark_dict=MARK_DICT,
         markers=(
-            lambda entry: pytest.mark.skip(reason="tester not implemented")
-            if entry.type in SKIP_TYPES
-            else None,
+            lambda entry: (
+                pytest.mark.skip(reason="tester not implemented")
+                if entry.type in SKIP_TYPES
+                else None
+            ),
         ),
         report_prefix="rdflib_sparql",
     ),
 )
-def test_entry_rdflib(monkeypatch: MonkeyPatch, manifest_entry: SPARQLEntry) -> None:
-    check_entry(monkeypatch, manifest_entry)
+def test_entry_rdflib(
+    monkeypatch: MonkeyPatch, exit_stack: ExitStack, manifest_entry: SPARQLEntry
+) -> None:
+    check_entry(monkeypatch, exit_stack, manifest_entry)

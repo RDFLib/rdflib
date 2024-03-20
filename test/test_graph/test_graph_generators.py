@@ -1,5 +1,5 @@
 import os
-from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
 
 from rdflib import Graph
 
@@ -7,17 +7,17 @@ timblcardn3 = open(os.path.join(TEST_DATA_DIR, "timbl-card.n3")).read()
 
 
 def add_stuff(graph):
-    graph.add((tarek, likes, pizza))
-    graph.add((tarek, likes, cheese))
-    graph.add((tarek, likes, bob))
-    graph.add((tarek, likes, michel))
-    graph.add((michel, likes, pizza))
-    graph.add((michel, likes, cheese))
-    graph.add((michel, likes, tarek))
-    graph.add((bob, likes, cheese))
-    graph.add((bob, hates, pizza))
-    graph.add((bob, hates, michel))
-    graph.add((bob, likes, tarek))
+    graph.add((TAREK, LIKES, PIZZA))
+    graph.add((TAREK, LIKES, CHEESE))
+    graph.add((TAREK, LIKES, BOB))
+    graph.add((TAREK, LIKES, MICHEL))
+    graph.add((MICHEL, LIKES, PIZZA))
+    graph.add((MICHEL, LIKES, CHEESE))
+    graph.add((MICHEL, LIKES, TAREK))
+    graph.add((BOB, LIKES, CHEESE))
+    graph.add((BOB, HATES, PIZZA))
+    graph.add((BOB, HATES, MICHEL))
+    graph.add((BOB, LIKES, TAREK))
 
 
 def test_unique_subjects():

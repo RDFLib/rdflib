@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import sys
 from typing import Set, Tuple
@@ -24,8 +26,8 @@ class TestSPARQLParser:
         self.do_insert(200)
 
     def do_insert(self, resource_count: int) -> None:
-        EGV = Namespace("http://example.org/vocab#")
-        EGI = Namespace("http://example.org/instance#")
+        EGV = Namespace("http://example.org/vocab#")  # noqa: N806
+        EGI = Namespace("http://example.org/instance#")  # noqa: N806
         prop0, prop1, prop2 = EGV["prop0"], EGV["prop1"], EGV["prop2"]
         g0 = Graph()
         for index in range(resource_count):

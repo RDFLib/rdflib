@@ -32,37 +32,37 @@ class TestIdentifierEquality:
         self.python_literal = "http://example.org/"
         self.python_literal_2 = "foo"
 
-    def testA(self):
+    def test_a(self):
         assert self.uriref != self.literal
 
-    def testB(self):
+    def test_b(self):
         assert self.literal != self.uriref
 
-    def testC(self):
+    def test_c(self):
         assert self.uriref != self.python_literal
 
-    def testD(self):
+    def test_d(self):
         assert self.python_literal != self.uriref
 
-    def testE(self):
+    def test_e(self):
         assert self.literal != self.python_literal
 
-    def testE2(self):
+    def test_e2(self):
         assert self.literal.eq(self.python_literal)
 
-    def testF(self):
+    def test_f(self):
         assert self.python_literal != self.literal
 
-    def testG(self):
+    def test_g(self):
         assert "foo" not in CORE_SYNTAX_TERMS
 
-    def testH(self):
+    def test_h(self):
         assert (
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF")
             in CORE_SYNTAX_TERMS
         )
 
-    def testI(self):
+    def test_i(self):
         g = Graph()
         g.add((self.uriref, RDF.value, self.literal))
         g.add((self.uriref, RDF.value, self.uriref))

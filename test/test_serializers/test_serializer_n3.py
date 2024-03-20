@@ -1,11 +1,11 @@
 import logging
 from test.utils import GraphHelper
+from test.utils.namespace import EGDC
 
 import rdflib
 import rdflib.term
 from rdflib import Graph
 from rdflib.graph import QuotedGraph
-from rdflib.namespace import Namespace
 from rdflib.plugins.parsers.notation3 import LOG_implies_URI
 from rdflib.term import BNode, URIRef
 
@@ -55,8 +55,6 @@ def test_implies():
     ) in graph2
 
 
-EG = Namespace("http://example.com/")
-
 LOG_implies = URIRef(LOG_implies_URI)
 
 
@@ -70,13 +68,13 @@ def test_merging() -> None:
     {:a :b :c} => {:d :e :f}.
     """
     graph = Graph()
-    assert (EG.a, EG.b, EG.c) not in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) not in graph
 
     graph.parse(data=data_a, format="n3")
-    assert (EG.a, EG.b, EG.c) in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) in graph
 
     graph.parse(data=data_b, format="n3")
-    assert (EG.a, EG.b, EG.c) in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) in graph
     assert len(set(graph.triples((None, LOG_implies, None)))) == 1
 
     data_s = graph.serialize(format="n3")
@@ -86,7 +84,7 @@ def test_merging() -> None:
     graph.parse(data=data_s, format="n3")
     quad_set = GraphHelper.triple_set(graph)
 
-    assert (EG.a, EG.b, EG.c) in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) in graph
     assert len(set(graph.triples((None, LOG_implies, None)))) == 1
 
     logging.debug("quad_set = %s", quad_set)
@@ -98,10 +96,10 @@ def test_single_simple_triple() -> None:
     :a :b :c.
     """
     graph = Graph()
-    assert (EG.a, EG.b, EG.c) not in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) not in graph
 
     graph.parse(data=data_a, format="n3")
-    assert (EG.a, EG.b, EG.c) in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) in graph
 
     data_s = graph.serialize(format="n3")
     logging.debug("data_s = %s", data_s)
@@ -110,13 +108,13 @@ def test_single_simple_triple() -> None:
     graph.parse(data=data_s, format="n3")
     quad_set = GraphHelper.triple_set(graph)
 
-    assert (EG.a, EG.b, EG.c) in graph
+    assert (EGDC.a, EGDC.b, EGDC.c) in graph
 
     logging.debug("quad_set = %s", quad_set)
 
 
 def test_implies_nothing() -> None:
-    triple_a = (EG.a, EG.b, EG.c)
+    triple_a = (EGDC.a, EGDC.b, EGDC.c)
     graph = Graph()
     qgraph_a = QuotedGraph(graph.store, BNode())
     qgraph_a.add(triple_a)

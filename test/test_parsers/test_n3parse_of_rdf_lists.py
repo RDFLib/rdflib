@@ -29,7 +29,7 @@ class TestOWLCollectionTest:
     def test_collection_rdfxml(self):
         g = Graph().parse(data=DATA, format="nt")
         g.namespace_manager.bind("owl", URIRef("http://www.w3.org/2002/07/owl#"))
-        s = g.serialize(format="pretty-xml")
+        s = g.serialize(format="pretty-xml")  # noqa: F841
 
 
 class TestListTest:

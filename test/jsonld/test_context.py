@@ -2,6 +2,8 @@
 JSON-LD Context Spec
 """
 
+from __future__ import annotations
+
 import json
 from functools import wraps
 from pathlib import Path
@@ -19,7 +21,7 @@ def _expect_exception(expected_error):
         def _try():
             try:
                 f()
-                assert e == expected_error
+                assert e == expected_error  # noqa: F821
             except Exception as e:
                 success = e == expected_error
             else:
@@ -134,7 +136,8 @@ def test_prefix_like_vocab():
 
 # Mock external sources loading
 SOURCES: Dict[str, Dict[str, Any]] = {}
-_source_to_json = context.source_to_json
+# type error: Module "rdflib.plugins.shared.jsonld.context" does not explicitly export attribute "source_to_json"
+_source_to_json = context.source_to_json  # type: ignore[attr-defined]
 
 
 def _mock_source_loader(f):
@@ -207,7 +210,7 @@ def test_ignore_base_remote_context():
 def test_recursive_context_inclusion_error():
     ctx_url = "http://example.org/recursive.jsonld"
     SOURCES[ctx_url] = {"@context": ctx_url}
-    ctx = Context(ctx_url)
+    ctx = Context(ctx_url)  # noqa: F841
 
 
 @_expect_exception(errors.INVALID_REMOTE_CONTEXT)
@@ -215,7 +218,7 @@ def test_recursive_context_inclusion_error():
 def test_invalid_remote_context():
     ctx_url = "http://example.org/recursive.jsonld"
     SOURCES[ctx_url] = {"key": "value"}
-    ctx = Context(ctx_url)
+    ctx = Context(ctx_url)  # noqa: F841
 
 
 def test_file_source(tmp_path: Path) -> None:

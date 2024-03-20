@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "6.4.0a0"
+version = "7.1.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -11,7 +11,6 @@ license = "BSD-3-Clause"
 classifiers=[
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -39,39 +38,36 @@ rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8.1"
 isodate = "^0.6.0"
 pyparsing = ">=2.1.0,<4"
-importlib-metadata = {version = ">=4,<7", python = ">=3.7,<3.8"}
 berkeleydb = {version = "^18.1.0", optional = true}
 networkx = {version = "^2.0.0", optional = true}
 html5lib = {version = "^1.0", optional = true}
 lxml = {version = "^4.3.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "23.1.0"
-isort = "^5.10.0"
+black = "24.3.0"
 mypy = "^1.1.0"
-lxml-stubs = "^0.4.0"
+lxml-stubs = ">=0.4,<0.6"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^7.1.3"
 pytest-cov = "^4.0.0"
 coverage = {version = "^7.0.1", extras = ["toml"]}
-types-setuptools = ">=65.6.0.3,<68.0.0.0"
-setuptools = ">=65.6.3,<68.0.0"
+types-setuptools = ">=68.0.0.3,<70.0.0.0"
+setuptools = ">=68,<70"
+wheel = ">=0.42,<0.44"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^5.3.0"
-myst-parser = "^1.0.0"
-sphinxcontrib-apidoc = "^0.3.0"
+sphinx = "^7.1.1"
+myst-parser = "^2.0.0"
+sphinxcontrib-apidoc = ">=0.3,<0.6"
 sphinx-autodoc-typehints = "^1.17.1"
 typing-extensions = "^4.5.0"
 
-[tool.poetry.group.flake8.dependencies]
-flake8 = {version = ">=4.0.1", python = ">=3.8"} # flakeheaven is incompatible with flake8 >=5.0 (https://github.com/flakeheaven/flakeheaven/issues/132)
-flakeheaven = {version = "^3.2.1", python = ">=3.8"}
-pep8-naming = {version = "^0.13.2", python = ">=3.8"}
+[tool.poetry.group.lint.dependencies]
+ruff = ">=0.0.286,<0.3.3"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -83,45 +79,90 @@ lxml = ["lxml"]
 requires = ["poetry-core>=1.4.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.flakeheaven]
-format = "grouped"
-baseline = ".flakeheaven.baseline"
-
-[tool.flakeheaven.plugins]
-pycodestyle = [
-  "+*",
-  # mirrored from setup.cfg
-  "-E501",
-  "-E203",
-  "-W503",
-  "-E231",
+[tool.ruff]
+# https://beta.ruff.rs/docs/configuration/
+target-version = "py38"
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # Pyflakes
+    "I", # isort
+    "N", # pep8-naming
+    "RUF100", # Unused noqa directive
+    "UP001", # Remove unused imports
+    "UP003", # Use {} instead of type(...)
+    "UP004", # Class inherits from object
+    "UP005", # is deprecated, use
+    "UP009", # UTF-8 encoding declaration is unnecessary
+    "UP010", # Unnecessary __future__ import for target Python version
+    "UP011", # Unnecessary parentheses to functools.lru_cache
+    "UP012", # Unnecessary call to encode as UTF-8
+    "UP017", # Use datetime.UTC alias
+    "UP018", # Unnecessary {literal_type} call (rewrite as a literal)
+    "UP019", # typing.Text is deprecated, use str
+    "UP020", # Use builtin open
+    "UP021", # universal_newlines is deprecated, use text
+    "UP022", # Sending stdout and stderr to PIPE is deprecated, use capture_output
+    "UP023", # cElementTree is deprecated, use ElementTree
+    "UP024", # Replace aliased errors with OSError
+    "UP025", # Remove unicode literals from strings
+    "UP026", # mock is deprecated, use unittest.mock
+    "UP029", # Unnecessary builtin import
+    "UP034", # Avoid extraneous parentheses
+    "UP035", # Import from {target} instead:
+    "UP036", # Version block is outdated for minimum Python version
+    "UP037", # Remove quotes from type annotation
+    "UP039", # Unnecessary parentheses after class definition
+    "FA", # flake8-future-annotations
 ]
-pyflakes = [
-  "+*",
-]
-pep8-naming = ["+*"]
 
-[tool.flakeheaven.exceptions."rdflib/plugins/sparql/*"]
-pep8-naming = ["-N802", "-N803", "-N806", "-N812", "-N816", "-N801"]
-[tool.flakeheaven.exceptions."rdflib/namespace/_*"]
-pep8-naming = ["-N815"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/notation3.py"]
-pep8-naming = ["-N802", "-N803", "-N806", "-N816"]
-[tool.flakeheaven.exceptions."rdflib/plugins/serializers/turtle.py"]
-pep8-naming = ["-N802", "-N806", "-N815"]
-[tool.flakeheaven.exceptions."rdflib/__init__.py"]
-pycodestyle = ["-E402"]
-[tool.flakeheaven.exceptions."test/utils/namespace/_*"]
-pep8-naming = ["-N815"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/rdfxml.py"]
-pep8-naming = ["-N802"]
-[tool.flakeheaven.exceptions."rdflib/plugins/parsers/trix.py"]
-pep8-naming = ["-N802"]
+ignore = [
+    "E501", # line too long:
+    # Disabled based on black recommendations
+    # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated
+    "E203", # whitespace before ':'
+    "E231", # missing whitespace after ','
+]
+
+# Same as Black.
+line-length = 88
+
+[tool.ruff.per-file-ignores]
+"rdflib/plugins/sparql/*" = [
+    "N801", # Class name should be UpperCamelCase
+    "N802", # Function name should be lowercase
+    "N803", # Argument name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N812", # Lowercase imported as non lowercase
+    "N816", # Variable in class scope should be mixedCase
+]
+"rdflib/namespace/_*" = [
+    "N815", # Variable in class scope should not be mixedCase
+    "N999", # Invalid module name
+]
+"rdflib/plugins/parsers/{trix,rdfxml,notation3}.py" = [
+    "N802", # Function name should be lowercase
+    "N803", # Argument name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N816", # Variable in class scope should be mixedCase
+]
+"rdflib/plugins/serializers/{turtle,longturtle,trig}.py" = [
+    "N802", # Function name should be lowercase
+    "N806", # Variable in function should be lowercase
+    "N815", # Variable in class scope should not be mixedCase
+]
+"test/utils/namespace/_*" = [
+    "N815", # Variable in class scope should not be mixedCase
+    "N999", # Invalid module name
+]
+"{test/conftest.py,rdflib/namespace/__init__.py,rdflib/__init__.py,rdflib/plugins/sparql/__init__.py}" = [
+    "E402", # Module level import not at top of file
+]
+
 
 [tool.black]
-required-version = "23.1.0"
 line-length = "88"
-target-version = ['py37']
+target-version = ['py38']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -158,7 +199,6 @@ addopts = [
    "--doctest-glob=docs/*.rst",
    "--strict-markers",
 ]
-doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
     # The below warning is a consequence of how pytest doctest detects mocks and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. pytest_mock_example_attribute_that_shouldnt_exist is not defined in namespace .*:UserWarning",
@@ -204,20 +244,20 @@ skip = [
 
 [tool.mypy]
 files = ['rdflib', 'test', 'devtools', 'examples']
-python_version = "3.7"
+python_version = "3.8"
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_subclassing_any = false
 warn_unreachable = true
 warn_unused_ignores = true
 no_implicit_optional = false
+implicit_reexport = false
+
 
 [[tool.mypy.overrides]]
-module = "pyparsing.*"
-# This is here because of an upstream issue with pyparsing:
-# https://github.com/pyparsing/pyparsing/issues/385
-# Once the issue is fixed this should be removed.
-follow_imports = "skip"
+module = "rdflib.*"
+check_untyped_defs = true
+
 
 [tool.coverage.run]
 branch = true

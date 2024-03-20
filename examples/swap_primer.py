@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # Think of it as a blank piece of graph paper!
 
     primer = ConjunctiveGraph()
-    myNS = Namespace("https://example.com/")
+    myNS = Namespace("https://example.com/")  # noqa: N816
 
     primer.add((myNS.pat, myNS.knows, myNS.jo))
     # or:
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     :Woman = foo:FemaleAdult .
     :Title a rdf:Property; = dc:title .
-    """  # --- End of primer code
+    """  # --- End of primer code  # noqa: N816
 
     # To make this go easier to spit back out...
     # technically, we already created a namespace

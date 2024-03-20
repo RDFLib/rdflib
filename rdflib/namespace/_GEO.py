@@ -9,18 +9,20 @@ class GEO(DefinedNamespace):
     Generated from: http://schemas.opengis.net/geosparql/1.0/geosparql_vocab_all.rdf
     Date: 2021-12-27 17:38:15.101187
 
-    <http://www.opengis.net/ont/geosparql> dc:creator "Open Geospatial Consortium"^^xsd:string
-    dc:date "2012-04-30"^^xsd:date
-    dc:source <http://www.opengis.net/doc/IS/geosparql/1.0>
-        "OGC GeoSPARQL – A Geographic Query Language for RDF Data OGC 11-052r5"^^xsd:string
-    rdfs:seeAlso <http://www.opengis.net/def/function/ogc-geosparql/1.0>
-        <http://www.opengis.net/def/rule/ogc-geosparql/1.0>
-        <http://www.opengis.net/doc/IS/geosparql/1.0>
-    owl:imports dc:
-        <http://www.opengis.net/ont/gml>
-        <http://www.opengis.net/ont/sf>
-        <http://www.w3.org/2004/02/skos/core>
-    owl:versionInfo "OGC GeoSPARQL 1.0"^^xsd:string
+    .. code-block:: Turtle
+
+        <http://www.opengis.net/ont/geosparql> dc:creator "Open Geospatial Consortium"^^xsd:string
+        dc:date "2012-04-30"^^xsd:date
+        dc:source <http://www.opengis.net/doc/IS/geosparql/1.0>
+            "OGC GeoSPARQL – A Geographic Query Language for RDF Data OGC 11-052r5"^^xsd:string
+        rdfs:seeAlso <http://www.opengis.net/def/function/ogc-geosparql/1.0>
+            <http://www.opengis.net/def/rule/ogc-geosparql/1.0>
+            <http://www.opengis.net/doc/IS/geosparql/1.0>
+        owl:imports dc:
+            <http://www.opengis.net/ont/gml>
+            <http://www.opengis.net/ont/sf>
+            <http://www.w3.org/2004/02/skos/core>
+        owl:versionInfo "OGC GeoSPARQL 1.0"^^xsd:string
     """
 
     # http://www.w3.org/2000/01/rdf-schema#Datatype
@@ -37,7 +39,9 @@ class GEO(DefinedNamespace):
     asWKT: URIRef  # The WKT serialization of a geometry
     coordinateDimension: URIRef  # The number of measurements or axes needed to describe the position of this       geometry in a coordinate system.
     dimension: URIRef  # The topological dimension of this geometric object, which        must be less than or equal to the coordinate dimension.        In non-homogeneous collections, this will return the largest        topological dimension of the contained objects.
-    hasSerialization: URIRef  # Connects a geometry object with its text-based serialization.
+    hasSerialization: (
+        URIRef  # Connects a geometry object with its text-based serialization.
+    )
     isEmpty: URIRef  # (true) if this geometric object is the empty Geometry. If        true, then this geometric object represents the empty point        set for the coordinate space.
     isSimple: URIRef  # (true) if this geometric object has no anomalous geometric        points, such as self intersection or self tangency.
     spatialDimension: URIRef  # The number of measurements or axes needed to describe the spatial position of        this geometry in a coordinate system.

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from os import mkdir
 from os.path import abspath, exists
@@ -84,12 +86,12 @@ class BerkeleyDB(Store):
     formula_aware = True
     transaction_aware = False
     graph_aware = True
-    db_env: "db.DBEnv" = None
+    db_env: db.DBEnv = None
 
     def __init__(
         self,
         configuration: Optional[str] = None,
-        identifier: Optional["Identifier"] = None,
+        identifier: Optional[Identifier] = None,
     ):
         if not has_bsddb:
             raise ImportError("Unable to import berkeleydb, store is unusable.")
@@ -100,14 +102,14 @@ class BerkeleyDB(Store):
         self._dumps = self.node_pickler.dumps
         self.__indicies_info: List[Tuple[Any, _ToKeyFunc, _FromKeyFunc]]
 
-    def __get_identifier(self) -> Optional["Identifier"]:
+    def __get_identifier(self) -> Optional[Identifier]:
         return self.__identifier
 
     identifier = property(__get_identifier)
 
     def _init_db_environment(
         self, homeDir: str, create: bool = True  # noqa: N803
-    ) -> "db.DBEnv":  # noqa: N803
+    ) -> db.DBEnv:
         if not exists(homeDir):
             if create is True:
                 mkdir(homeDir)
@@ -155,7 +157,7 @@ class BerkeleyDB(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies: List["db.DB"] = [
+        self.__indicies: List[db.DB] = [
             None,
         ] * 3
         # NOTE on type ingore: this is because type checker does not like this
@@ -176,7 +178,7 @@ class BerkeleyDB(Store):
             self.__indicies_info[i] = (index, to_key_func(i), from_key_func(i))
 
         lookup: Dict[
-            int, Tuple["db.DB", _GetPrefixFunc, _FromKeyFunc, _ResultsFromKeyFunc]
+            int, Tuple[db.DB, _GetPrefixFunc, _FromKeyFunc, _ResultsFromKeyFunc]
         ] = {}
         for i in range(0, 8):
             results: List[Tuple[Tuple[int, int], int, int]] = []
@@ -298,8 +300,8 @@ class BerkeleyDB(Store):
 
     def add(
         self,
-        triple: "_TripleType",
-        context: "_ContextType",
+        triple: _TripleType,
+        context: _ContextType,
         quoted: bool = False,
         txn: Optional[Any] = None,
     ) -> None:
@@ -380,8 +382,8 @@ class BerkeleyDB(Store):
     # type error: Signature of "remove" incompatible with supertype "Store"
     def remove(  # type: ignore[override]
         self,
-        spo: "_TriplePatternType",
-        context: Optional["_ContextType"],
+        spo: _TriplePatternType,
+        context: Optional[_ContextType],
         txn: Optional[Any] = None,
     ) -> None:
         subject, predicate, object = spo
@@ -471,11 +473,11 @@ class BerkeleyDB(Store):
 
     def triples(
         self,
-        spo: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
+        spo: _TriplePatternType,
+        context: Optional[_ContextType] = None,
         txn: Optional[Any] = None,
     ) -> Generator[
-        Tuple["_TripleType", Generator[Optional["_ContextType"], None, None]],
+        Tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
         None,
         None,
     ]:
@@ -518,7 +520,7 @@ class BerkeleyDB(Store):
             else:
                 break
 
-    def __len__(self, context: Optional["_ContextType"] = None) -> int:
+    def __len__(self, context: Optional[_ContextType] = None) -> int:
         assert self.__open, "The Store must be open."
         if context is not None:
             if context == self:
@@ -544,7 +546,7 @@ class BerkeleyDB(Store):
         cursor.close()
         return count
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         # NOTE on type error: this is because the variables are reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "str")
@@ -564,7 +566,7 @@ class BerkeleyDB(Store):
             self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
             self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
-    def namespace(self, prefix: str) -> Optional["URIRef"]:
+    def namespace(self, prefix: str) -> Optional[URIRef]:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "str")
@@ -574,7 +576,7 @@ class BerkeleyDB(Store):
             return URIRef(ns.decode("utf-8"))
         return None
 
-    def prefix(self, namespace: "URIRef") -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> Optional[str]:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "URIRef")
@@ -584,7 +586,7 @@ class BerkeleyDB(Store):
             return prefix.decode("utf-8")
         return None
 
-    def namespaces(self) -> Generator[Tuple[str, "URIRef"], None, None]:
+    def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
         cursor = self.__namespace.cursor()
         results = []
         current = cursor.first()
@@ -598,8 +600,8 @@ class BerkeleyDB(Store):
             yield prefix, URIRef(namespace)
 
     def contexts(
-        self, triple: Optional["_TripleType"] = None
-    ) -> Generator["_ContextType", None, None]:
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
         _from_string = self._from_string
         _to_string = self._to_string
         # NOTE on type errors: context is lost because of how data is loaded
@@ -641,10 +643,10 @@ class BerkeleyDB(Store):
                     current = None
                 cursor.close()
 
-    def add_graph(self, graph: "Graph") -> None:
+    def add_graph(self, graph: Graph) -> None:
         self.__contexts.put(bb(self._to_string(graph)), b"")
 
-    def remove_graph(self, graph: "Graph"):
+    def remove_graph(self, graph: Graph):
         self.remove((None, None, None), graph)
 
     def _from_string(self, i: bytes) -> Node:
@@ -669,10 +671,10 @@ class BerkeleyDB(Store):
 
     def __lookup(
         self,
-        spo: "_TriplePatternType",
-        context: Optional["_ContextType"],
+        spo: _TriplePatternType,
+        context: Optional[_ContextType],
         txn: Optional[Any] = None,
-    ) -> Tuple["db.DB", bytes, _FromKeyFunc, _ResultsFromKeyFunc]:
+    ) -> Tuple[db.DB, bytes, _FromKeyFunc, _ResultsFromKeyFunc]:
         subject, predicate, object = spo
         _to_string = self._to_string
         # NOTE on type errors: this is because the same variable is used with different types.

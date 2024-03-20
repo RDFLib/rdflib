@@ -13,7 +13,7 @@ to turtle - the original turtle serializer. It:
     on the start of the next line
 * uses default encoding (encode()) is used instead of "latin-1"
 
-- Nicholas Car, 2021
+- Nicholas Car, 2023
 """
 
 from rdflib.exceptions import Error
@@ -101,7 +101,6 @@ class LongTurtleSerializer(RecursiveSerializer):
                 self.write("\n")
 
         self.endDocument()
-        self.write("\n")
 
         self.base = None
 
@@ -124,7 +123,7 @@ class LongTurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        except Exception:
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
 
@@ -168,21 +167,20 @@ class LongTurtleSerializer(RecursiveSerializer):
         self.path(subject, SUBJECT)
         self.write("\n" + self.indent())
         self.predicateList(subject)
-        self.write(" ;\n.")
+        self.write("\n.")
         return True
 
     def s_squared(self, subject):
         if (self._references[subject] > 0) or not isinstance(subject, BNode):
             return False
         self.write("\n" + self.indent() + "[]")
-        self.predicateList(subject)
+        self.predicateList(subject, newline=False)
         self.write(" ;\n.")
         return True
 
     def path(self, node, position, newline=False):
         if not (
-            self.p_squared(node, position, newline)
-            or self.p_default(node, position, newline)
+            self.p_squared(node, position) or self.p_default(node, position, newline)
         ):
             raise Error("Cannot serialize node '%s'" % (node,))
 
@@ -207,7 +205,11 @@ class LongTurtleSerializer(RecursiveSerializer):
 
             return self.getQName(node, position == VERB) or node.n3()
 
-    def p_squared(self, node, position, newline=False):
+    def p_squared(
+        self,
+        node,
+        position,
+    ):
         if (
             not isinstance(node, BNode)
             or node in self._serialized
@@ -216,23 +218,19 @@ class LongTurtleSerializer(RecursiveSerializer):
         ):
             return False
 
-        if not newline:
-            self.write(" ")
-
         if self.isValidList(node):
             # this is a list
             self.depth += 2
-            self.write("(\n")
-            self.depth -= 1
+            self.write(" (\n")
+            self.depth -= 2
             self.doList(node)
-            self.depth -= 1
-            self.write("\n" + self.indent(1) + ")")
+            self.write("\n" + self.indent() + ")")
         else:
+            # this is a Blank Node
             self.subjectDone(node)
-            self.depth += 2
-            self.write("[\n")
-            self.depth -= 1
-            self.predicateList(node, newline=False)
+            self.write("\n" + self.indent(1) + "[\n")
+            self.depth += 1
+            self.predicateList(node)
             self.depth -= 1
             self.write("\n" + self.indent(1) + "]")
 
@@ -245,7 +243,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         try:
             if self.store.value(l_, RDF.first) is None:
                 return False
-        except:
+        except Exception:
             return False
         while l_:
             if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:
@@ -279,6 +277,7 @@ class LongTurtleSerializer(RecursiveSerializer):
             self.write(" ;\n" + self.indent(1))
             self.verb(predicate, newline=True)
             self.objectList(properties[predicate])
+        self.write(" ;")
 
     def verb(self, node, newline=False):
         self.path(node, VERB, newline)
@@ -291,11 +290,13 @@ class LongTurtleSerializer(RecursiveSerializer):
         self.depth += depthmod
         first_nl = False
         if count > 1:
-            self.write("\n" + self.indent(1))
+            if not isinstance(objects[0], BNode):
+                self.write("\n" + self.indent(1))
             first_nl = True
         self.path(objects[0], OBJECT, newline=first_nl)
         for obj in objects[1:]:
-            self.write(" ,\n")
-            self.write(self.indent(1))
+            self.write(" ,")
+            if not isinstance(obj, BNode):
+                self.write("\n" + self.indent(1))
             self.path(obj, OBJECT, newline=True)
         self.depth -= depthmod

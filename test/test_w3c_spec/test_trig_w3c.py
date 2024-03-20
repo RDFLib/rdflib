@@ -1,6 +1,9 @@
 """Runs the tests for the W3C RDF Working Group's TriG test suite.
 
 """
+
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
 from test.data import TEST_DATA_DIR
@@ -172,12 +175,6 @@ MARK_DICT = {
     ),
     f"{REMOTE_BASE_IRI}#trig-syntax-bad-list-04": pytest.mark.xfail(
         reason="ignores badly formed quad"
-    ),
-    f"{REMOTE_BASE_IRI}#trig-graph-bad-01": pytest.mark.xfail(
-        reason="accepts GRAPH with no name"
-    ),
-    f"{REMOTE_BASE_IRI}#trig-graph-bad-07": pytest.mark.xfail(
-        reason="accepts nested GRAPH"
     ),
 }
 

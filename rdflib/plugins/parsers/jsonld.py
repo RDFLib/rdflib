@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This parser will interpret a JSON-LD document as an RDF Graph. See:
 
@@ -28,6 +27,7 @@ Example usage::
     True
 
 """
+
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/parser.py
 
 # NOTE: This code reads the entire JSON object into memory before parsing, but
@@ -35,7 +35,7 @@ Example usage::
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
 
 import rdflib.parser
 from rdflib.graph import ConjunctiveGraph, Graph
@@ -123,7 +123,13 @@ def to_rdf(
     data: Any,
     dataset: Graph,
     base: Optional[str] = None,
-    context_data: Optional[bool] = None,
+    context_data: Optional[
+        Union[
+            List[Union[Dict[str, Any], str, None]],
+            Dict[str, Any],
+            str,
+        ]
+    ] = None,
     version: Optional[float] = None,
     generalized_rdf: bool = False,
     allow_lists_of_lists: Optional[bool] = None,
@@ -138,7 +144,7 @@ def to_rdf(
     return parser.parse(data, context, dataset)
 
 
-class Parser(object):
+class Parser:
     def __init__(
         self, generalized_rdf: bool = False, allow_lists_of_lists: Optional[bool] = None
     ):
@@ -281,7 +287,7 @@ class Parser(object):
             if term.type == JSON:
                 obj_nodes = [self._to_typed_json_value(obj)]
             elif LIST in term.container:
-                obj_nodes = [{LIST: obj_nodes}]
+                obj_nodes = [self._expand_nested_list(obj_nodes)]
             elif isinstance(obj, dict):
                 obj_nodes = self._parse_container(context, term, obj)
         else:
@@ -333,17 +339,21 @@ class Parser(object):
 
         context = context.get_context_for_term(term)
 
-        flattened = []
-        for obj in obj_nodes:
-            if isinstance(obj, dict):
-                objs = context.get_set(obj)
-                if objs is not None:
-                    obj = objs
-            if isinstance(obj, list):
-                flattened += obj
-                continue
-            flattened.append(obj)
-        obj_nodes = flattened
+        # Flatten deep nested lists
+        def flatten(n: Iterable[Any]) -> List[Any]:
+            flattened = []
+            for obj in n:
+                if isinstance(obj, dict):
+                    objs = context.get_set(obj)
+                    if objs is not None:
+                        obj = objs
+                if isinstance(obj, list):
+                    flattened += flatten(obj)
+                    continue
+                flattened.append(obj)
+            return flattened
+
+        obj_nodes = flatten(obj_nodes)
 
         if not pred_uri:
             return
@@ -388,11 +398,11 @@ class Parser(object):
 
         if v11 and GRAPH in term.container and ID in term.container:
             return [
-                dict({GRAPH: o})
-                if k in context.get_keys(NONE)
-                else dict({ID: k, GRAPH: o})
-                if isinstance(o, dict)
-                else o
+                (
+                    dict({GRAPH: o})
+                    if k in context.get_keys(NONE)
+                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                )
                 for k, o in obj.items()
             ]
 
@@ -404,23 +414,29 @@ class Parser(object):
 
         elif v11 and ID in term.container:
             return [
-                dict({ID: k}, **o)
-                if isinstance(o, dict) and k not in context.get_keys(NONE)
-                else o
+                (
+                    dict({ID: k}, **o)
+                    if isinstance(o, dict) and k not in context.get_keys(NONE)
+                    else o
+                )
                 for k, o in obj.items()
             ]
 
         elif v11 and TYPE in term.container:
             return [
-                self._add_type(
-                    context,
-                    {ID: context.expand(o) if term.type == VOCAB else o}
-                    if isinstance(o, str)
-                    else o,
-                    k,
+                (
+                    self._add_type(
+                        context,
+                        (
+                            {ID: context.expand(o) if term.type == VOCAB else o}
+                            if isinstance(o, str)
+                            else o
+                        ),
+                        k,
+                    )
+                    if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
+                    else o
                 )
-                if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
-                else o
                 for k, o in obj.items()
             ]
 
@@ -593,3 +609,10 @@ class Parser(object):
                 value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
             ),
         }
+
+    @classmethod
+    def _expand_nested_list(cls, obj_nodes: List[Any]) -> Dict[str, List[Any]]:
+        result = [
+            cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
+        ]
+        return {LIST: result}

@@ -1,6 +1,7 @@
 """
 A TriX parser for RDFLib
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
@@ -105,7 +106,7 @@ class TriXHandler(handler.ContentHandler):
 
                 try:
                     self.lang = attrs.getValue((str(XMLNS), "lang"))
-                except:
+                except Exception:
                     # language not required - ignore
                     pass
                 try:
@@ -122,7 +123,7 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype = None
                 try:
                     self.lang = attrs.getValue((str(XMLNS), "lang"))
-                except:
+                except Exception:
                     # language not required - ignore
                     pass
 

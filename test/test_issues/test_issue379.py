@@ -17,7 +17,7 @@ base_data = """
 
 
 class TestCase(unittest.TestCase):
-    def assertIsInstance(self, obj, cls, msg=None, *args, **kwargs):
+    def assertIsInstance(self, obj, cls, msg=None, *args, **kwargs):  # noqa: N802
         """Python < v2.7 compatibility.  Assert 'obj' is instance of 'cls'"""
         try:
             f = super(TestCase, self).assertIsInstance

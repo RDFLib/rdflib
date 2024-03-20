@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from test.utils import (
     COLLAPSED_BNODE,
@@ -17,7 +19,7 @@ import rdflib
 from rdflib import Graph
 from rdflib.compare import graph_diff
 from rdflib.graph import ConjunctiveGraph, Dataset
-from rdflib.namespace import FOAF, RDF, Namespace
+from rdflib.namespace import FOAF, RDF
 from rdflib.term import BNode, Literal
 
 if TYPE_CHECKING:
@@ -126,9 +128,6 @@ class GraphDiffCase:
 
     def as_params(self) -> ParameterSet:
         return pytest.param(self, marks=self.marks)
-
-
-EGSCHEME = Namespace("example:")
 
 
 @pytest.mark.parametrize(

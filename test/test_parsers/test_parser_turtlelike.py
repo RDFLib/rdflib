@@ -3,19 +3,20 @@ This module contains tests for the parsing of the turtle family of formats: N3,
 Turtle, NTriples, NQauds and TriG.
 """
 
+from __future__ import annotations
+
 import enum
 import itertools
 from dataclasses import dataclass, field
+from test.utils.namespace import EGDC
 from typing import Callable, Dict, Iterator, List, Set, Tuple, Union
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
-from rdflib import XSD, Graph, Literal, Namespace
+from rdflib import XSD, Graph, Literal
 from rdflib.term import Identifier
 from rdflib.util import from_n3
-
-EGNS = Namespace("http://example.com/")
 
 
 class FormatTrait(enum.Enum):
@@ -65,14 +66,14 @@ FORMATS = [
 def parse_identifier(identifier_string: str, format: str) -> Identifier:
     g = Graph()
     g.parse(
-        data=f"""<{EGNS.subject}> <{EGNS.predicate}> {identifier_string} .""",
+        data=f"""<{EGDC.subject}> <{EGDC.predicate}> {identifier_string} .""",
         format=format,
     )
     triples = list(g.triples((None, None, None)))
     assert len(triples) == 1
     (subj, pred, obj) = triples[0]
-    assert subj == EGNS.subject
-    assert pred == EGNS.predicate
+    assert subj == EGDC.subject
+    assert pred == EGDC.predicate
     assert isinstance(obj, Identifier)
     return obj
 

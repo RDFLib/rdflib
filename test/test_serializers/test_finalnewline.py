@@ -19,7 +19,7 @@ def test_finalnewline():
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
         v = graph.serialize(format=p.name, encoding="utf-8")
-        lines = v.split("\n".encode("utf-8"))
+        lines = v.split(b"\n")
         if b"\n" not in v or (lines[-1] != b""):
             failed.add(p.name)
     # JSON-LD does not require a final newline (because JSON doesn't)
