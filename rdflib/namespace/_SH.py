@@ -35,8 +35,12 @@ class SH(DefinedNamespace):
     entailment: URIRef  # An entailment regime that indicates what kind of inferencing is required by a shapes graph.
     equals: URIRef  # Specifies a property that must have the same values as the value nodes.
     expression: URIRef  # The node expression that must return true for the value nodes.
-    filterShape: URIRef  # The shape that all input nodes of the expression need to conform to.
-    flags: URIRef  # An optional flag to be used with regular expression pattern matching.
+    filterShape: (
+        URIRef  # The shape that all input nodes of the expression need to conform to.
+    )
+    flags: (
+        URIRef  # An optional flag to be used with regular expression pattern matching.
+    )
     focusNode: URIRef  # The focus node that was validated when the result was produced.
     group: URIRef  # Can be used to link to a property group to indicate that a property shape belongs to a group of related property shapes.
     hasValue: URIRef  # Specifies a value that must be among the value nodes.
@@ -48,15 +52,21 @@ class SH(DefinedNamespace):
     jsLibrary: URIRef  # Declares which JavaScript libraries are needed to execute this.
     jsLibraryURL: URIRef  # Declares the URLs of a JavaScript library. This should be the absolute URL of a JavaScript file. Implementations may redirect those to local files.
     labelTemplate: URIRef  # Outlines how human-readable labels of instances of the associated Parameterizable shall be produced. The values can contain {?paramName} as placeholders for the actual values of the given parameter.
-    languageIn: URIRef  # Specifies a list of language tags that all value nodes must have.
+    languageIn: (
+        URIRef  # Specifies a list of language tags that all value nodes must have.
+    )
     lessThan: URIRef  # Specifies a property that must have smaller values than the value nodes.
     lessThanOrEquals: URIRef  # Specifies a property that must have smaller or equal values than the value nodes.
-    maxCount: URIRef  # Specifies the maximum number of values in the set of value nodes.
+    maxCount: (
+        URIRef  # Specifies the maximum number of values in the set of value nodes.
+    )
     maxExclusive: URIRef  # Specifies the maximum exclusive value of each value node.
     maxInclusive: URIRef  # Specifies the maximum inclusive value of each value node.
     maxLength: URIRef  # Specifies the maximum string length of each value node.
     message: URIRef  # A human-readable message (possibly with placeholders for variables) explaining the cause of the result.
-    minCount: URIRef  # Specifies the minimum number of values in the set of value nodes.
+    minCount: (
+        URIRef  # Specifies the minimum number of values in the set of value nodes.
+    )
     minExclusive: URIRef  # Specifies the minimum exclusive value of each value node.
     minInclusive: URIRef  # Specifies the minimum inclusive value of each value node.
     minLength: URIRef  # Specifies the minimum string length of each value node.
@@ -66,7 +76,9 @@ class SH(DefinedNamespace):
     nodeKind: URIRef  # Specifies the node kind (e.g. IRI or literal) each value node.
     nodeValidator: URIRef  # The validator(s) used to evaluate a constraint in the context of a node shape.
     nodes: URIRef  # The node expression producing the input nodes of a filter shape expression.
-    object: URIRef  # An expression producing the nodes that shall be inferred as objects.
+    object: (
+        URIRef  # An expression producing the nodes that shall be inferred as objects.
+    )
     oneOrMorePath: URIRef  # The (single) value of this property represents a path that is matched one or more times.
     optional: URIRef  # Indicates whether a parameter is optional.
     order: URIRef  # Specifies the relative order of this compared to its siblings. For example use 0 for the first, 1 for the second.
@@ -78,23 +90,37 @@ class SH(DefinedNamespace):
     prefixes: URIRef  # The prefixes that shall be applied before parsing the associated SPARQL query.
     property: URIRef  # Links a shape to its property shapes.
     propertyValidator: URIRef  # The validator(s) used to evaluate a constraint in the context of a property shape.
-    qualifiedMaxCount: URIRef  # The maximum number of value nodes that can conform to the shape.
-    qualifiedMinCount: URIRef  # The minimum number of value nodes that must conform to the shape.
-    qualifiedValueShape: URIRef  # The shape that a specified number of values must conform to.
+    qualifiedMaxCount: (
+        URIRef  # The maximum number of value nodes that can conform to the shape.
+    )
+    qualifiedMinCount: (
+        URIRef  # The minimum number of value nodes that must conform to the shape.
+    )
+    qualifiedValueShape: (
+        URIRef  # The shape that a specified number of values must conform to.
+    )
     qualifiedValueShapesDisjoint: URIRef  # Can be used to mark the qualified value shape to be disjoint with its sibling shapes.
     result: URIRef  # The validation results contained in a validation report.
     resultAnnotation: URIRef  # Links a SPARQL validator with zero or more sh:ResultAnnotation instances, defining how to derive additional result properties based on the variables of the SELECT query.
     resultMessage: URIRef  # Human-readable messages explaining the cause of the result.
     resultPath: URIRef  # The path of a validation result, based on the path of the validated property shape.
     resultSeverity: URIRef  # The severity of the result, e.g. warning.
-    returnType: URIRef  # The expected type of values returned by the associated function.
+    returnType: (
+        URIRef  # The expected type of values returned by the associated function.
+    )
     rule: URIRef  # The rules linked to a shape.
     select: URIRef  # The SPARQL SELECT query to execute.
     severity: URIRef  # Defines the severity that validation results produced by a shape must have. Defaults to sh:Violation.
-    shapesGraph: URIRef  # Shapes graphs that should be used when validating this data graph.
+    shapesGraph: (
+        URIRef  # Shapes graphs that should be used when validating this data graph.
+    )
     shapesGraphWellFormed: URIRef  # If true then the validation engine was certain that the shapes graph has passed all SHACL syntax requirements during the validation process.
-    sourceConstraint: URIRef  # The constraint that was validated when the result was produced.
-    sourceConstraintComponent: URIRef  # The constraint component that is the source of the result.
+    sourceConstraint: (
+        URIRef  # The constraint that was validated when the result was produced.
+    )
+    sourceConstraintComponent: (
+        URIRef  # The constraint component that is the source of the result.
+    )
     sourceShape: URIRef  # The shape that is was validated when the result was produced.
     sparql: URIRef  # Links a shape with SPARQL constraints.
     subject: URIRef  # An expression producing the resources that shall be inferred as subjects.
@@ -134,18 +160,28 @@ class SH(DefinedNamespace):
     PropertyShape: URIRef  # A property shape is a shape that specifies constraints on the values of a focus node for a given property or path.
     ResultAnnotation: URIRef  # A class of result annotations, which define the rules to derive the values of a given annotation property as extra values for a validation result.
     Rule: URIRef  # The class of SHACL rules. Never instantiated directly.
-    SPARQLAskExecutable: URIRef  # The class of SPARQL executables that are based on an ASK query.
+    SPARQLAskExecutable: (
+        URIRef  # The class of SPARQL executables that are based on an ASK query.
+    )
     SPARQLAskValidator: URIRef  # The class of validators based on SPARQL ASK queries. The queries are evaluated for each value node and are supposed to return true if the given node conforms.
     SPARQLConstraint: URIRef  # The class of constraints based on SPARQL SELECT queries.
-    SPARQLConstructExecutable: URIRef  # The class of SPARQL executables that are based on a CONSTRUCT query.
+    SPARQLConstructExecutable: (
+        URIRef  # The class of SPARQL executables that are based on a CONSTRUCT query.
+    )
     SPARQLExecutable: URIRef  # The class of resources that encapsulate a SPARQL query.
-    SPARQLFunction: URIRef  # A function backed by a SPARQL query - either ASK or SELECT.
+    SPARQLFunction: (
+        URIRef  # A function backed by a SPARQL query - either ASK or SELECT.
+    )
     SPARQLRule: URIRef  # The class of SHACL rules based on SPARQL CONSTRUCT queries.
-    SPARQLSelectExecutable: URIRef  # The class of SPARQL executables based on a SELECT query.
+    SPARQLSelectExecutable: (
+        URIRef  # The class of SPARQL executables based on a SELECT query.
+    )
     SPARQLSelectValidator: URIRef  # The class of validators based on SPARQL SELECT queries. The queries are evaluated for each focus node and are supposed to produce bindings for all focus nodes that do not conform.
     SPARQLTarget: URIRef  # The class of targets that are based on SPARQL queries.
     SPARQLTargetType: URIRef  # The (meta) class for parameterizable targets that are based on SPARQL queries.
-    SPARQLUpdateExecutable: URIRef  # The class of SPARQL executables based on a SPARQL UPDATE.
+    SPARQLUpdateExecutable: (
+        URIRef  # The class of SPARQL executables based on a SPARQL UPDATE.
+    )
     Severity: URIRef  # The class of validation result severity levels, including violation and warning levels.
     Shape: URIRef  # A shape is a collection of constraints that may be targeted for certain nodes.
     Target: URIRef  # The base class of targets such as those based on SPARQL queries.

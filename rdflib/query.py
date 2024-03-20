@@ -125,28 +125,28 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
     >>> rr[0]
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr[1]
     Traceback (most recent call last):
         ...
     IndexError: tuple index out of range
 
     >>> rr.a
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr.b
     Traceback (most recent call last):
         ...
     AttributeError: b
 
     >>> rr['a']
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr['b']
     Traceback (most recent call last):
         ...
     KeyError: 'b'
 
     >>> rr[Variable('a')]
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
 
     .. versionadded:: 4.0
 
@@ -181,14 +181,12 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
             raise KeyError(name)
 
     @overload
-    def get(self, name: str, default: Identifier) -> Identifier:
-        ...
+    def get(self, name: str, default: Identifier) -> Identifier: ...
 
     @overload
     def get(
         self, name: str, default: Optional[Identifier] = ...
-    ) -> Optional[Identifier]:
-        ...
+    ) -> Optional[Identifier]: ...
 
     def get(
         self, name: str, default: Optional[Identifier] = None

@@ -41,7 +41,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install poetry
@@ -66,14 +66,14 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

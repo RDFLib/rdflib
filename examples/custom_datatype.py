@@ -8,7 +8,6 @@ This example shows how :meth:`rdflib.term.bind` lets you register new
 mappings between literal datatypes and Python objects
 """
 
-
 from rdflib import XSD, Graph, Literal, Namespace, term
 
 if __name__ == "__main__":

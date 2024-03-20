@@ -8,6 +8,7 @@ Doctests in this file are all skipped, as we can't run them conditionally if
 networkx or graph_tool are available and they would err otherwise.
 see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
+
 from __future__ import annotations
 
 import logging

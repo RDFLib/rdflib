@@ -26,6 +26,7 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
+
 from __future__ import annotations
 
 import codecs
@@ -145,11 +146,11 @@ def join(here: str, there: str) -> str:
 
     We grok IRIs
 
-    >>> len(u'Andr\\xe9')
+    >>> len('Andr\\xe9')
     5
 
-    >>> join('http://example.org/', u'#Andr\\xe9')
-    u'http://example.org/#Andr\\xe9'
+    >>> join('http://example.org/', '#Andr\\xe9')
+    'http://example.org/#Andr\\xe9'
     """
 
     #    assert(here.find("#") < 0), \
@@ -1987,7 +1988,6 @@ def hexify(ustr: str) -> bytes:
 
 
 class TurtleParser(Parser):
-
     """
     An RDFLib parser for Turtle
 
@@ -2024,7 +2024,6 @@ class TurtleParser(Parser):
 
 
 class N3Parser(TurtleParser):
-
     """
     An RDFLib parser for Notation3
 

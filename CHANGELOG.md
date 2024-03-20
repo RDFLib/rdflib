@@ -22,7 +22,7 @@ wanted"](https://github.com/RDFLib/rdflib/labels/feedback%20wanted).
 
 A big thanks to everyone who contributed to this release.
 
-## BREAKING CHANGE: don't use `publicID` as the name for the default graph. (#2406)
+### BREAKING CHANGE: don't use `publicID` as the name for the default graph. (#2406)
 
 Commit [4b96e9d](https://github.com/RDFLib/rdflib/commit/4b96e9d), closes [#2406](https://github.com/RDFLib/rdflib/issues/2406).
 
@@ -42,7 +42,7 @@ constructors will now only be used as the base URI for relative URI resolution.
 - Fixes https://github.com/RDFLib/rdflib/issues/436
 - Fixes https://github.com/RDFLib/rdflib/issues/1804
 
-## BREAKING CHANGE: drop support for python 3.7 (#2436)
+### BREAKING CHANGE: drop support for python 3.7 (#2436)
 
 Commit [1e5f56b](https://github.com/RDFLib/rdflib/commit/1e5f56b), closes [#2436](https://github.com/RDFLib/rdflib/issues/2436).
 
@@ -54,7 +54,7 @@ This changes the minimum supported version of Python to 3.8.1 as some of the
 dependencies we use are not too fond of python 3.8.0. This change also removes
 all accommodations for older python versions.
 
-## feat: add `curie` method to `NamespaceManager` (#2365)
+### feat: add `curie` method to `NamespaceManager` (#2365)
 
 Commit [f200722](https://github.com/RDFLib/rdflib/commit/f200722), closes [#2365](https://github.com/RDFLib/rdflib/issues/2365).
 
@@ -72,7 +72,7 @@ Other changes:
 Fixes <https://github.com/RDFLib/rdflib/issues/2348>.
 
 
-## feat: add optional `target_graph` argument to `Graph.cbd` and use it  for DESCRIBE queries (#2322)
+### feat: add optional `target_graph` argument to `Graph.cbd` and use it  for DESCRIBE queries (#2322)
 
 Commit [81d13d4](https://github.com/RDFLib/rdflib/commit/81d13d4), closes [#2322](https://github.com/RDFLib/rdflib/issues/2322).
 
@@ -81,7 +81,7 @@ Add optional keyword only `target_graph` argument to `rdflib.graph.Graph.cbd` an
 
 This makes it possible to compute a concise bounded description without creating a new graph to hold the result, and also without potentially having to copy it to another final graph.
 
-## feat: Don't generate prefixes for unknown URIs (#2467)
+### feat: Don't generate prefixes for unknown URIs (#2467)
 
 Commit [bd797ac](https://github.com/RDFLib/rdflib/commit/bd797ac).
 
@@ -101,13 +101,13 @@ URIs in unknown namespaces, but before it there was no way to avoid the
 undesired behaviour, so this seems like the better default.
 
 
-## feat: Longturtle improvements (#2500)
+### feat: Longturtle improvements (#2500)
 
 Commit [5ee8bd7](https://github.com/RDFLib/rdflib/commit/5ee8bd7), closes [#2500](https://github.com/RDFLib/rdflib/issues/2500).
 
 Improved the output of the longturtle serializer.
 
-## fix: SPARQL count with optionals (#2448)
+### fix: SPARQL count with optionals (#2448)
 
 Commit [46ff6cf](https://github.com/RDFLib/rdflib/commit/46ff6cf), closes [#2448](https://github.com/RDFLib/rdflib/issues/2448).
 
@@ -115,7 +115,7 @@ Commit [46ff6cf](https://github.com/RDFLib/rdflib/commit/46ff6cf), closes [#2448
 Change SPARQL count aggregate to ignore optional that are unbound
 instead of raising an exception when they are encountered.
 
-## fix: `GROUP_CONCAT` handling of empty separator (issue) (#2474)
+### fix: `GROUP_CONCAT` handling of empty separator (issue) (#2474)
 
 Commit [e94c252](https://github.com/RDFLib/rdflib/commit/e94c252), closes [#2474](https://github.com/RDFLib/rdflib/issues/2474).
 
@@ -131,7 +131,7 @@ results in a value with nothing between concatenated values.
 Fixes <https://github.com/RDFLib/rdflib/issues/2473>
 
 
-## fix: add `NORMALIZE_LITERALS` to `rdflib.__all__` (#2489)
+### fix: add `NORMALIZE_LITERALS` to `rdflib.__all__` (#2489)
 
 Commit [6981c28](https://github.com/RDFLib/rdflib/commit/6981c28), closes [#2489](https://github.com/RDFLib/rdflib/issues/2489).
 
@@ -142,7 +142,7 @@ indicates that it can be used from outside the module.
 - Fixes <https://github.com/RDFLib/rdflib/issues/2488>
 
 
-## fix: bugs with `rdflib.extras.infixowl` (#2390)
+### fix: bugs with `rdflib.extras.infixowl` (#2390)
 
 Commit [cd0b442](https://github.com/RDFLib/rdflib/commit/cd0b442), closes [#2390](https://github.com/RDFLib/rdflib/issues/2390).
 
@@ -161,7 +161,7 @@ This code is based on code from:
 - <https://github.com/RDFLib/rdflib/pull/2307>
 
 
-## fix: correct imports and `__all__` (#2340)
+### fix: correct imports and `__all__` (#2340)
 
 Commit [7df77cd](https://github.com/RDFLib/rdflib/commit/7df77cd), closes [#2340](https://github.com/RDFLib/rdflib/issues/2340).
 
@@ -174,7 +174,7 @@ This helps ensure that import statements import from the right module and that
 the `__all__` variable is correct.
 
 
-## fix: dbpedia URL to use https instead of http (#2444)
+### fix: dbpedia URL to use https instead of http (#2444)
 
 Commit [ef25896](https://github.com/RDFLib/rdflib/commit/ef25896), closes [#2444](https://github.com/RDFLib/rdflib/issues/2444).
 
@@ -182,7 +182,7 @@ Commit [ef25896](https://github.com/RDFLib/rdflib/commit/ef25896), closes [#2444
 The URL for the service keyword had the http address for the dbpedia endpoint, which no longer works. Changing it to https as that works.
 
 
-## fix: eliminate bare `except:` (#2350)
+### fix: eliminate bare `except:` (#2350)
 
 Commit [4ea1436](https://github.com/RDFLib/rdflib/commit/4ea1436), closes [#2350](https://github.com/RDFLib/rdflib/issues/2350).
 
@@ -198,7 +198,7 @@ supports the latest version of flake8
 just the right thing to do as bare exceptions can cause problems.
 
 
-## fix: eliminate file intermediary in translate algebra (#2267)
+### fix: eliminate file intermediary in translate algebra (#2267)
 
 Commit [ae6b859](https://github.com/RDFLib/rdflib/commit/ae6b859), closes [#2267](https://github.com/RDFLib/rdflib/issues/2267).
 
@@ -208,7 +208,7 @@ Previously, `rdflib.plugins.sparql.algebra.translateAlgebra()` maintained state 
 The change is accomplished with no change to the client interface.  Basically, the actual functionality has been moved into a class, which is instantiated and used as needed (once per call to `algrebra.translateAlgebra()`).
 
 
-## fix: eliminate some mutable default arguments in SPARQL code (#2301)
+### fix: eliminate some mutable default arguments in SPARQL code (#2301)
 
 Commit [89982f8](https://github.com/RDFLib/rdflib/commit/89982f8), closes [#2301](https://github.com/RDFLib/rdflib/issues/2301).
 
@@ -218,7 +218,7 @@ This change eliminates some situations where a mutable object (i.e., a dictionar
 This change also makes a small update to the logic in the SPARQL Processor's query function to simplify the if/else statement. This better mirrors the implementation in the `UpdateProcessor`.
 
 
-## fix: formatting of SequencePath and AlternativePath (#2504)
+### fix: formatting of SequencePath and AlternativePath (#2504)
 
 Commit [9c73581](https://github.com/RDFLib/rdflib/commit/9c73581), closes [#2504](https://github.com/RDFLib/rdflib/issues/2504).
 
@@ -233,7 +233,7 @@ enclosed in parentheses when necessary.
 - Fixes <https://github.com/RDFLib/rdflib/issues/2503>.
 
 
-## fix: handling of `rdf:HTML` literals (#2490)
+### fix: handling of `rdf:HTML` literals (#2490)
 
 Commit [588286b](https://github.com/RDFLib/rdflib/commit/588286b), closes [#2490](https://github.com/RDFLib/rdflib/issues/2490).
 
@@ -261,7 +261,7 @@ Related issues:
 - Fixes <https://github.com/RDFLib/rdflib/issues/2475>
 
 
-## fix: HTTP 308 Permanent Redirect status code handling (#2389)
+### fix: HTTP 308 Permanent Redirect status code handling (#2389)
 
 Commit [e0b3152](https://github.com/RDFLib/rdflib/commit/e0b3152), closes [#2389](https://github.com/RDFLib/rdflib/issues/2389) [/docs.python.org/3.11/whatsnew/changelog.html#id128](https://github.com//docs.python.org/3.11/whatsnew/changelog.html/issues/id128).
 
@@ -297,7 +297,7 @@ Other changes:
 Fixes:
 - <https://github.com/RDFLib/rdflib/issues/2382>.
 
-## fix: lexical-to-value mapping of rdf:HTML literals (#2483)
+### fix: lexical-to-value mapping of rdf:HTML literals (#2483)
 
 Commit [53aaf02](https://github.com/RDFLib/rdflib/commit/53aaf02), closes [#2483](https://github.com/RDFLib/rdflib/issues/2483).
 
@@ -313,7 +313,7 @@ the literal
 the literal will be ill-typed.
 
 
-## fix: TriG handling of GRAPH keyword without a graph ID (#2469)
+### fix: TriG handling of GRAPH keyword without a graph ID (#2469)
 
 Commit [8c9608b](https://github.com/RDFLib/rdflib/commit/8c9608b), closes [#2469](https://github.com/RDFLib/rdflib/issues/2469) [/www.w3.org/2013/TriGTests/#trig-graph-bad-01](https://github.com//www.w3.org/2013/TriGTests//issues/trig-graph-bad-01).
 
@@ -326,7 +326,7 @@ This change enforces this rule so that the
 
 <http://www.w3.org/2013/TriGTests/#trig-graph-bad-01> test passes.
 
-## fix: TriG parser error handling for nested graphs (#2468)
+### fix: TriG parser error handling for nested graphs (#2468)
 
 Commit [afea615](https://github.com/RDFLib/rdflib/commit/afea615), closes [#2468](https://github.com/RDFLib/rdflib/issues/2468) [/www.w3.org/2013/TriGTests/#trig-graph-bad-07](https://github.com//www.w3.org/2013/TriGTests//issues/trig-graph-bad-07).
 
@@ -335,7 +335,7 @@ Raise an error when nested graphs occur in TriG.
 
 With this change, the <http://www.w3.org/2013/TriGTests/#trig-graph-bad-07> test passes.
 
-## fix: typing errors from dmypy (#2451)
+### fix: typing errors from dmypy (#2451)
 
 Commit [10f9ebe](https://github.com/RDFLib/rdflib/commit/10f9ebe), closes [#2451](https://github.com/RDFLib/rdflib/issues/2451).
 
@@ -348,7 +348,7 @@ as the default mypy variant by setting the `MYPY_VARIANT` environment
 variable to `dmypy`.
 
 
-## fix: widen `Graph.__contains__` type-hints to accept `Path` values (#2323)
+### fix: widen `Graph.__contains__` type-hints to accept `Path` values (#2323)
 
 Commit [1c45ec4](https://github.com/RDFLib/rdflib/commit/1c45ec4), closes [#2323](https://github.com/RDFLib/rdflib/issues/2323).
 
@@ -358,7 +358,7 @@ values as the parameter is passed to the `Graph.triples` function,
 which accepts `Path` values.
 
 
-## docs: Add CITATION.cff file (#2502)
+### docs: Add CITATION.cff file (#2502)
 
 Commit [ad5c0e1](https://github.com/RDFLib/rdflib/commit/ad5c0e1), closes [#2502](https://github.com/RDFLib/rdflib/issues/2502).
 
@@ -370,7 +370,7 @@ This file's content is best-effort, and pull requests with improvements
 are welcome and will affect future releases.
 
 
-## docs: add guidelines for breaking changes (#2402)
+### docs: add guidelines for breaking changes (#2402)
 
 Commit [cad367e](https://github.com/RDFLib/rdflib/commit/cad367e), closes [#2402](https://github.com/RDFLib/rdflib/issues/2402).
 
@@ -386,7 +386,7 @@ For prior discussion on this point see:
 - https://github.com/RDFLib/rdflib/discussions/1841
 
 
-## docs: fix comment that doesn't describe behavior (#2443)
+### docs: fix comment that doesn't describe behavior (#2443)
 
 Commit [4e42d10](https://github.com/RDFLib/rdflib/commit/4e42d10), closes [#2443](https://github.com/RDFLib/rdflib/issues/2443).
 
@@ -397,7 +397,7 @@ but this would only work if the triple `person foaf:name bob .` is part of the d
 As this is a very uncommon way to model a `foaf:knows` the code was
 adjusted to match the description.
 
-## docs: recommend making an issue before making an enhancement (#2391)
+### docs: recommend making an issue before making an enhancement (#2391)
 
 Commit [63b082c](https://github.com/RDFLib/rdflib/commit/63b082c), closes [#2391](https://github.com/RDFLib/rdflib/issues/2391).
 
@@ -416,7 +416,7 @@ Other changes:
   and developers guide.
 
 
-## docs: remove unicode string form in rdflib/term.py (#2384)
+### docs: remove unicode string form in rdflib/term.py (#2384)
 
 Commit [ddcc4eb](https://github.com/RDFLib/rdflib/commit/ddcc4eb), closes [#2384](https://github.com/RDFLib/rdflib/issues/2384).
 
@@ -429,9 +429,9 @@ is set, but this option should be disabled as RDFLib does not support Python 2 a
 This partially resolves <https://github.com/RDFLib/rdflib/issues/2378>.
 
 
-# 2023-03-26 RELEASE 6.3.2
+## 2023-03-26 RELEASE 6.3.2
 
-## fix: `ROUND`, `ENCODE_FOR_URI` and `SECONDS` SPARQL functions (#2314)
+### fix: `ROUND`, `ENCODE_FOR_URI` and `SECONDS` SPARQL functions (#2314)
 
 Commit [af17916](https://github.com/RDFLib/rdflib/commit/af17916), closes [#2314](https://github.com/RDFLib/rdflib/issues/2314).
 
@@ -445,7 +445,7 @@ This change corrects these issues.
 - Closes <https://github.com/RDFLib/rdflib/issues/2151>.
 
 
-## fix: add `__hash__` and `__eq__` back to `rdflib.paths.Path` (#2292)
+### fix: add `__hash__` and `__eq__` back to `rdflib.paths.Path` (#2292)
 
 Commit [fe1a8f8](https://github.com/RDFLib/rdflib/commit/fe1a8f8), closes [#2292](https://github.com/RDFLib/rdflib/issues/2292).
 
@@ -463,7 +463,7 @@ All path related tests are also moved into one file.
 - Closes <https://github.com/RDFLib/rdflib/issues/2242>.
 
 
-## fix: Add `to_dict` method to the JSON-LD `Context` class. (#2310)
+### fix: Add `to_dict` method to the JSON-LD `Context` class. (#2310)
 
 Commit [d7883eb](https://github.com/RDFLib/rdflib/commit/d7883eb), closes [#2310](https://github.com/RDFLib/rdflib/issues/2310).
 
@@ -474,7 +474,7 @@ This change adds the method.
 - Closes <https://github.com/RDFLib/rdflib/issues/2138>.
 
 
-## fix: add the `wgs` namespace binding back (#2294)
+### fix: add the `wgs` namespace binding back (#2294)
 
 Commit [adf8eb2](https://github.com/RDFLib/rdflib/commit/adf8eb2), closes [#2294](https://github.com/RDFLib/rdflib/issues/2294).
 
@@ -485,7 +485,7 @@ This change adds it back.
 - Closes <https://github.com/RDFLib/rdflib/issues/2196>.
 
 
-## fix: change the prefix for `https://schema.org/` back to `schema` (#2312)
+### fix: change the prefix for `https://schema.org/` back to `schema` (#2312)
 
 Commit [3faa01b](https://github.com/RDFLib/rdflib/commit/3faa01b), closes [#2312](https://github.com/RDFLib/rdflib/issues/2312).
 
@@ -497,7 +497,7 @@ prefix would no longer have the same behaviour. This change changes the prefix
 back to `schema`.
 
 
-## fix: include docs and examples in the sdist tarball (#2289)
+### fix: include docs and examples in the sdist tarball (#2289)
 
 Commit [394fb50](https://github.com/RDFLib/rdflib/commit/394fb50), closes [#2289](https://github.com/RDFLib/rdflib/issues/2289).
 
@@ -512,7 +512,7 @@ A `test:sdist` task is also added to `Taskfile.yml` which uses the sdists to run
 pytest and build docs.
 
 
-## fix: IRI to URI conversion (#2304)
+### fix: IRI to URI conversion (#2304)
 
 Commit [dfa4054](https://github.com/RDFLib/rdflib/commit/dfa4054), closes [#2304](https://github.com/RDFLib/rdflib/issues/2304).
 
@@ -534,7 +534,7 @@ though there are some differences.
 
 - Closes <https://github.com/RDFLib/rdflib/issues/2120>.
 
-## fix: JSON-LD context construction from a `dict` (#2306)
+### fix: JSON-LD context construction from a `dict` (#2306)
 
 Commit [832e693](https://github.com/RDFLib/rdflib/commit/832e693), closes [#2306](https://github.com/RDFLib/rdflib/issues/2306).
 
@@ -549,7 +549,7 @@ input is used to construct a JSON-LD context.
 - Closes <https://github.com/RDFLib/rdflib/issues/2303>.
 
 
-## fix: reference to global inside `get_target_namespace_elements` (#2311)
+### fix: reference to global inside `get_target_namespace_elements` (#2311)
 
 Commit [4da67f9](https://github.com/RDFLib/rdflib/commit/4da67f9), closes [#2311](https://github.com/RDFLib/rdflib/issues/2311).
 
@@ -561,7 +561,7 @@ that instead referencing the argument passed to the function.
 - Closes <https://github.com/RDFLib/rdflib/issues/2072>.
 
 
-## fix: restore the 6.1.1 default bound namespaces (#2313)
+### fix: restore the 6.1.1 default bound namespaces (#2313)
 
 Commit [57bb428](https://github.com/RDFLib/rdflib/commit/57bb428), closes [#2313](https://github.com/RDFLib/rdflib/issues/2313).
 
@@ -578,7 +578,7 @@ To bind a reduced set of namespaces, the `bind_namespaces` parameter of
 - Closes <https://github.com/RDFLib/rdflib/issues/2103>.
 
 
-## test: add `webtest` marker to tests that use the internet (#2295)
+### test: add `webtest` marker to tests that use the internet (#2295)
 
 Commit [cfe6e37](https://github.com/RDFLib/rdflib/commit/cfe6e37), closes [#2295](https://github.com/RDFLib/rdflib/issues/2295).
 
@@ -593,14 +593,14 @@ running the tests inside `firejail --net=none`.
 
 - Closes <https://github.com/RDFLib/rdflib/issues/2293>.
 
-## chore: Update CONTRIBUTORS from commit history (#2305)
+### chore: Update CONTRIBUTORS from commit history (#2305)
 
 Commit [1ab4fc0](https://github.com/RDFLib/rdflib/commit/1ab4fc0), closes [#2305](https://github.com/RDFLib/rdflib/issues/2305).
 
 
 This ensures contributors are credited. Also added .mailmap to fix early misattributed contributions.
 
-## docs: fix typo in NamespaceManager documentation (#2291)
+### docs: fix typo in NamespaceManager documentation (#2291)
 
 Commit [7a05c15](https://github.com/RDFLib/rdflib/commit/7a05c15), closes [#2291](https://github.com/RDFLib/rdflib/issues/2291).
 
@@ -608,14 +608,14 @@ Commit [7a05c15](https://github.com/RDFLib/rdflib/commit/7a05c15), closes [#2291
 Changed `cdterms` to `dcterms`, see <https://github.com/RDFLib/rdflib/issues/2196> for more info.
 
 
-# 2023-03-18 RELEASE 6.3.1
+## 2023-03-18 RELEASE 6.3.1
 
 This is a patch release that includes a singular user facing fix, which is the
 inclusion of the `test` directory in the `sdist` release artifact.
 
 The following sections describe the changes included in this version.
 
-## build: explicitly specify `packages` in `pyproject.toml` (#2280)
+### build: explicitly specify `packages` in `pyproject.toml` (#2280)
 
 Commit [334787b](https://github.com/RDFLib/rdflib/commit/334787b), closes [#2280](https://github.com/RDFLib/rdflib/issues/2280).
 
@@ -627,14 +627,14 @@ and possibly other reasons.
 More changes may follow in a similar vein.
 
 
-## build: include test in sdist (#2282)
+### build: include test in sdist (#2282)
 
 Commit [e3884b7](https://github.com/RDFLib/rdflib/commit/e3884b7), closes [#2282](https://github.com/RDFLib/rdflib/issues/2282).
 
 
 A perhaps minor regression from earlier versions is that the sdist does not include the test folder, which makes it harder for downstreams to use a single source of truth to build and test a reliable package. This restores the test folder for sdists.
 
-## docs: don't use kroki (#2284)
+### docs: don't use kroki (#2284)
 
 Commit [bea782f](https://github.com/RDFLib/rdflib/commit/bea782f), closes [#2284](https://github.com/RDFLib/rdflib/issues/2284).
 
@@ -648,18 +648,18 @@ I also added a task to the Taskfile to re-generate the SVG images from
 the PlantUML sources by calling docker.
 
 
-# 2023-03-16 RELEASE 6.3.0
+## 2023-03-16 RELEASE 6.3.0
 
 This is a minor release that includes bug fixes and features.
 
-## Important Information
+### Important Information
 
 - RDFLib will drop support for Python 3.7 when it becomes EOL on 2023-06-27,
   this will not be considered a breaking change, and RDFLib's major version
   number will not be changed solely on the basis of Python 3.7 support being
   dropped.
 
-## User facing changes
+### User facing changes
 
 This section lists changes that have a potential impact on users of RDFLib,
 changes with no user impact are not included in this section.
@@ -866,7 +866,7 @@ changes with no user impact are not included in this section.
   Closed [issue #1844](https://github.com/RDFLib/rdflib/issues/1844).
   [PR #2267](https://github.com/RDFLib/rdflib/pull/2270).
 
-## PRs merged since last release
+### PRs merged since last release
 
 * fix: validation issues with examples
   [PR #2269](https://github.com/RDFLib/rdflib/pull/2269)
@@ -1040,11 +1040,11 @@ changes with no user impact are not included in this section.
   [PR #1968](https://github.com/RDFLib/rdflib/pull/1968)
 
 
-# 2022-07-16 RELEASE 6.2.0
+## 2022-07-16 RELEASE 6.2.0
 
 This is a minor release that includes bug fixes and features.
 
-## User facing changes
+### User facing changes
 
 This section lists changes that have a potential impact on users of RDFLib,
 changes with no user impact are not included in this section.
@@ -1235,7 +1235,7 @@ be a graph.
   - `rdflib.term`
   - `rdflib.parser`
 
-## PRs merged since last release
+### PRs merged since last release
 
 * Fallback to old `Store.bind` signature on `TypeError`
   [PR #2018](https://github.com/RDFLib/rdflib/pull/2018)
@@ -1650,8 +1650,8 @@ be a graph.
 * Fix issue #936 HAVING clause with variable comparison not correctly evaluated
   [PR #1093](https://github.com/RDFLib/rdflib/pull/1093)
 
-2021-12-20 RELEASE 6.1.1
-========================
+## 2021-12-20 RELEASE 6.1.1
+
 Better testing and tidier code.
 
 This is a semi-major release that:
@@ -1760,12 +1760,12 @@ PRs merged since last release:
 * Export DCMITYPE
   [PR #1433](https://github.com/RDFLib/rdflib/pull/1433)
 
-2021-12-20 RELEASE 6.1.0
-========================
+## 2021-12-20 RELEASE 6.1.0
+
 A slightly messed-up release of what is now 6.1.1. Do not use!
 
-2021-10-10 RELEASE 6.0.2
-========================
+## 2021-10-10 RELEASE 6.0.2
+
 Minor release to add OWL.rational & OWL.real which are needed to allow the OWL-RL package to use only rdflib namespaces, not it's own versions.
 
 * Add owl:rational and owl:real to match standard.
@@ -1787,8 +1787,8 @@ A few other small things have been added, see the following merged PRs list:
   [PR #1407](https://github.com/RDFLib/rdflib/pull/1407)
 
 
-2021-09-17 RELEASE 6.0.1
-========================
+## 2021-09-17 RELEASE 6.0.1
+
 Minor release to fix a few small errors, in particular with JSON-LD parsing & serializing integration from rdflib-jsonld. Also, a few other niceties, such as allowing graph `add()`, `remove()` etc. to be chainable.
 
 * Add test for adding JSON-LD to guess_format()
@@ -1810,8 +1810,8 @@ Minor release to fix a few small errors, in particular with JSON-LD parsing & se
 * Iterate over dataset return quads
   [PR #1382](https://github.com/RDFLib/rdflib/pull/1382)
 
-2021-07-20 RELEASE 6.0.0
-========================
+## 2021-07-20 RELEASE 6.0.0
+
 6.0.0 is a major stable release that drops support for Python 2 and Python 3 < 3.7. Type hinting is now present in much
 of the toolkit as a result.
 
@@ -2075,8 +2075,8 @@ _**All PRs merged since 5.0.0:**_
   [PR #1006](https://github.com/RDFLib/rdflib/pull/1006)
   
   
-2020-04-18 RELEASE 5.0.0
-========================
+## 2020-04-18 RELEASE 5.0.0
+
 5.0.0 is a major stable release and is the last release to support Python 2 & 3.4. 5.0.0 is mostly backwards-
 compatible with 4.2.2 and is intended for long-term, bug fix only support.
 
@@ -2110,8 +2110,7 @@ _**All PRs merged since 5.0.0RC1:**_
     [PR #1004](https://github.com/RDFLib/rdflib/pull/1004)
     
 
-2020-04-04 RELEASE 5.0.0RC1
-===========================
+## 2020-04-04 RELEASE 5.0.0RC1
 
 After more than three years, RDFLib 5.0.0rc1 is finally released.
 
@@ -2295,13 +2294,12 @@ _**All issues closed and PRs merged since 4.2.2:**_
 
 
 
-2017-01-29 RELEASE 4.2.2
-========================
+## 2017-01-29 RELEASE 4.2.2
 
 This is a bug-fix release, and the last release in the 4.X.X series.
 
-Bug fixes:
-----------
+### Bug fixes:
+
 * SPARQL bugs fixed:
   * Fix for filters in sub-queries
     [#693](https://github.com/RDFLib/rdflib/pull/693)
@@ -2416,8 +2414,8 @@ Bug fixes:
   [#573](https://github.com/RDFLib/rdflib/pull/573)
 
 
-Enhancements:
--------------
+### Enhancements:
+
 * Added support for Python 3.5+
   [#526](https://github.com/RDFLib/rdflib/pull/526)
 * More aliases for common formats (nt, turtle)
@@ -2473,8 +2471,8 @@ Enhancements:
   [#529](https://github.com/RDFLib/rdflib/pull/529)
 
 
-Cleanups:
----------
+### Cleanups:
+
 * cleanup: SPARQL Prologue and Query new style classes
   [#566](https://github.com/RDFLib/rdflib/pull/566)
 * Reduce amount of warnings, especially closing opened file pointers
@@ -2504,8 +2502,8 @@ Cleanups:
   [#593](https://github.com/RDFLib/rdflib/pull/593)
 
 
-Testing improvements:
----------------------
+### Testing improvements:
+
 * updating deprecated testing syntax
   [#697](https://github.com/RDFLib/rdflib/pull/697)
 * make test 375 more portable (use sys.executable rather than python)
@@ -2521,8 +2519,8 @@ Testing improvements:
   [#598](https://github.com/RDFLib/rdflib/pull/598)
 
 
-Doc improvements:
------------------
+### Doc improvements:
+
 * Update list of builtin serialisers in docstring
   [#621](https://github.com/RDFLib/rdflib/pull/621)
 * Update reference to "Emulating container types"
@@ -2537,13 +2535,12 @@ Doc improvements:
 
 
 
-2015-08-12 RELEASE 4.2.1
-========================
+## 2015-08-12 RELEASE 4.2.1
 
 This is a bug-fix release.
 
-Minor enhancements:
--------------------
+### Minor enhancements:
+
 * Added a Networkx connector
   [#471](https://github.com/RDFLib/rdflib/pull/471),
   [#507](https://github.com/RDFLib/rdflib/pull/507)
@@ -2555,8 +2552,8 @@ Minor enhancements:
 * Batch commits for `SPARQLUpdateStore`
   [#486](https://github.com/RDFLib/rdflib/pull/486)
 
-Bug fixes:
-----------
+### Bug fixes:
+
 * Fixed bnode collision bug
   [#506](https://github.com/RDFLib/rdflib/pull/506),
   [#496](https://github.com/RDFLib/rdflib/pull/496),
@@ -2598,8 +2595,8 @@ Bug fixes:
 * slight performance increase for graph.all_nodes()
   [#458](https://github.com/RDFLib/rdflib/pull/458)
 
-Testing improvements:
----------------------
+### Testing improvements:
+
 * travis: migrate to docker container infrastructure
   [#508](https://github.com/RDFLib/rdflib/pull/508)
 * test for narrow python builds (chars > 0xFFFF) (related to
@@ -2620,8 +2617,7 @@ Testing improvements:
   [#472](https://github.com/RDFLib/rdflib/pull/472)
 
 
-2015-02-19 RELEASE 4.2.0
-========================
+## 2015-02-19 RELEASE 4.2.0
 
 This is a new minor version of RDFLib including a handful of new features:
 
@@ -2650,8 +2646,7 @@ This is a new minor version of RDFLib including a handful of new features:
 * Python 3.4 fully supported
   [#418](https://github.com/RDFLib/rdflib/pull/418)
 
-Minor enhancements & bugs fixed:
---------------------------------
+### Minor enhancements & bugs fixed:
 
 * Fixed double invocation of 2to3
   [#437](https://github.com/RDFLib/rdflib/pull/437)
@@ -2682,16 +2677,14 @@ Minor enhancements & bugs fixed:
   [#383](https://github.com/RDFLib/rdflib/pull/383)
 
 
-2014-04-15 RELEASE 4.1.2
-========================
+## 2014-04-15 RELEASE 4.1.2
 
 This is a bug-fix release.
 
 * Fixed unicode/str bug in py3 for rdfpipe
   [#375](https://github.com/RDFLib/rdflib/issues/375)
 
-2014-03-03 RELEASE 4.1.1
-========================
+## 2014-03-03 RELEASE 4.1.1
 
 This is a bug-fix release.
 
@@ -2716,8 +2709,7 @@ This will be the last RDFLib release to support python 2.5.
 * A bug in the manchester OWL syntax was fixed
   [#355](https://github.com/RDFLib/rdflib/issues/355)
 
-2013-12-31 RELEASE 4.1
-======================
+## 2013-12-31 RELEASE 4.1
 
 This is a new minor version RDFLib, which includes a handful of new features:
 
@@ -2743,8 +2735,7 @@ This is a new minor version RDFLib, which includes a handful of new features:
 
 * After long deprecation, ```BackwardCompatibleGraph``` was removed.
 
-Minor enhancements/bugs fixed:
-------------------------------
+### Minor enhancements/bugs fixed:
 
 * Many code samples in the documentation were fixed thanks to @PuckCh
 
@@ -2787,8 +2778,7 @@ Minor enhancements/bugs fixed:
 * Introduced ordering of ```QuotedGraphs```
   [#291](https://github.com/RDFLib/rdflib/issues/291)
 
-2013-05-22 RELEASE 4.0.1
-========================
+## 2013-05-22 RELEASE 4.0.1
 
 Following RDFLib tradition, some bugs snuck into the 4.0 release.
 This is a bug-fixing release:
@@ -2815,8 +2805,7 @@ This is a bug-fixing release:
 * Moved HTML5Lib dependency to the recently released 1.0b1 which
   support python3
 
-2013-05-16 RELEASE 4.0
-======================
+## 2013-05-16 RELEASE 4.0
 
 This release includes several major changes:
 
@@ -2878,8 +2867,7 @@ This release includes several major changes:
   for most features have been added.
 
 
-Minor Changes:
---------------
+### Minor Changes:
 
 * String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258))
   ```py
@@ -2899,8 +2887,7 @@ Minor Changes:
 * Several bugs in the TriG serializer were fixed
 * Several bugs in the NQuads parser were fixed
 
-2013-03-01 RELEASE 3.4
-======================
+## 2013-03-01 RELEASE 3.4
 
 This release introduced new parsers for structured data in HTML.
 In particular formats: hturtle, rdfa, mdata and an auto-detecting
@@ -2927,8 +2914,7 @@ with any cpython from 2.5 through 3.3.
 * allow read-only sleepycat stores
 * language tag parsing in N3/Turtle fixes to allow several subtags.
 
-2012-10-10 RELEASE 3.2.3
-========================
+## 2012-10-10 RELEASE 3.2.3
 
 Almost identical to 3.2.2
 A stupid bug snuck into 3.2.2, and querying graphs were broken.
@@ -2936,8 +2922,7 @@ A stupid bug snuck into 3.2.2, and querying graphs were broken.
 * Fixes broken querying ([#234](https://github.com/RDFLib/rdflib/issues/234))
 * graph.transitiveClosure now works with loops ([#206](https://github.com/RDFLib/rdflib/issues/206))
 
-2012-09-25 RELEASE 3.2.2
-========================
+## 2012-09-25 RELEASE 3.2.2
 
 This is mainly a maintenance release.
 
@@ -2959,8 +2944,7 @@ Changes:
 * Illegal BNode IDs removed from NT output: ([#212](https://github.com/RDFLib/rdflib/issues/212))
 * and more minor bug fixes that had no issues
 
-2012-04-24 RELEASE 3.2.1
-========================
+## 2012-04-24 RELEASE 3.2.1
 
 This is mainly a maintenance release.
 
@@ -2975,8 +2959,7 @@ Changes:
 * Consistent toPyton() for all node objects ([#174](https://github.com/RDFLib/rdflib/issues/174))
 * Better random BNode ID in multi-thread environments ([#185](https://github.com/RDFLib/rdflib/issues/185))
 
-2012-01-19 RELEASE 3.2.0
-========================
+## 2012-01-19 RELEASE 3.2.0
 
 Major changes:
 * Thanks to Thomas Kluyver, rdflib now works under python3,
@@ -3000,8 +2983,7 @@ Major changes:
       serialize(format="pretty-xml") fails on cyclic links
 
 
-2011-03-17 RELEASE 3.1.0
-========================
+## 2011-03-17 RELEASE 3.1.0
 
 Fixed a range of minor issues:
 
@@ -3086,8 +3068,7 @@ Fixed a range of minor issues:
   Store SPARQL Support
 
 
-2010-05-13 RELEASE 3.0.0
-========================
+## 2010-05-13 RELEASE 3.0.0
 
 Working test suite with all tests passing.
 
@@ -3127,8 +3108,7 @@ Fixed interoperability issue with plugin module.
 
 Fixed use of Deprecated functionality.
 
-2009-03-30 RELEASE 2.4.1
-========================
+## 2009-03-30 RELEASE 2.4.1
 
 Fixed Literal comparison case involving Literal's with
 datatypes of XSD.base64Binary.
@@ -3143,8 +3123,7 @@ Fixed Literal repr to handle apostrophes correctly (issue #28).
 Fixed Literal's repr to be consistent with its ```__init__``` (issue #33).
 
 
-2007-04-04 RELEASE 2.4.0
-========================
+## 2007-04-04 RELEASE 2.4.0
 
 Improved Literal comparison / equality
 
@@ -3315,8 +3294,7 @@ Added BerkeleyDB store implementation.
 Merged TextIndex from michel-events branch.
 
 
-2006-10-15 RELEASE 2.3.3
-========================
+## 2006-10-15 RELEASE 2.3.3
 
 Added TriXParser, N3Serializer and TurtleSerializer.
 
@@ -3351,8 +3329,7 @@ various patches for the testsuite -
 http://rdflib.net/pipermail/dev/2006-September/000069.html
 
 
-2006-08-01 RELEASE 2.3.2
-========================
+## 2006-08-01 RELEASE 2.3.2
 
 Added SPARQL query support.
 
@@ -3394,8 +3371,7 @@ Added more test cases.
 Cleaned up source code to follow pep8 / pep257.
 
 
-2006-02-27 RELEASE 2.3.1
-========================
+## 2006-02-27 RELEASE 2.3.1
 
 Added save method to BackwardCompatibleGraph so that
 example.py etc work again.
@@ -3428,8 +3404,7 @@ Fixed RDF/XML serializer so that it does not choke on n3 bits
 (rather it'll just ignore them)
 
 
-2005-12-23 RELEASE 2.3.0
-========================
+## 2005-12-23 RELEASE 2.3.0
 
 See http://rdflib.net/2.3.0/ for most up-to-date release notes
 
@@ -3464,8 +3439,7 @@ all executed, the store will remain in an invalid state, but
 it provides Atomicity in the best case scenario.
 
 
-2005-10-10 RELEASE 2.2.3
-========================
+## 2005-10-10 RELEASE 2.2.3
 
 Fixed BerkeleyDB backend to commit after an add and
 remove. This should help just a bit with those unclean
@@ -3482,8 +3456,7 @@ now supports an empty constructor and an open method that
 takes a configuration string.
 
 
-2005-09-10 RELEASE 2.2.2
-========================
+## 2005-09-10 RELEASE 2.2.2
 
 Applied patch from inkel to add encoding argument to all
 serialization related methods.
@@ -3508,16 +3481,14 @@ Fixed setup.py so that install does not try to uninstall
 command if one needs to uninstall.
 
 
-2005-08-25 RELEASE 2.2.1
-========================
+## 2005-08-25 RELEASE 2.2.1
 
 Fixed issue regarding Python2.3 compatibility.
 
 Fixed minor issue with URIRef's absolute method.
 
 
-2005-08-12 RELEASE 2.1.4
-========================
+## 2005-08-12 RELEASE 2.1.4
 
 Added optional base argument to URIRef.
 
@@ -3532,8 +3503,7 @@ Included pyparsing (pyparsing.sourceforge.net) for sparql parsing.
 Added attribute support to namespaces.
 
 
-2005-06-28 RELEASE 2.1.3
-========================
+## 2005-06-28 RELEASE 2.1.3
 
 Added Ivan's sparql-p implementation.
 
@@ -3549,8 +3519,7 @@ Fixed BNode's n3 serialization bug (recently introduced).
 Fixed a collections related bug.
 
 
-2005-05-13 RELEASE 2.1.2
-========================
+## 2005-05-13 RELEASE 2.1.2
 
 Added patch from Sidnei da Silva that adds a sqlobject based backend.
 
@@ -3560,8 +3529,7 @@ Fixed bug in RDF/XML parser where empty collections where
 causing exceptions.
 
 
-2005-05-01 RELEASE 2.1.1
-========================
+## 2005-05-01 RELEASE 2.1.1
 
 Fixed a number of bugs relating to 2.0 backward compatibility.
 
@@ -3574,8 +3542,7 @@ Added check_context to Graph.
 Added patch the improves IOMemory implementation.
 
 
-2005-04-12 RELEASE 2.1.0
-========================
+## 2005-04-12 RELEASE 2.1.0
 
 Merged TripleStore and InformationStore into Graph.
 
@@ -3594,8 +3561,7 @@ Added notion of NamespaceManager.
 Added couple new backends, IOMemory and ZODB.
 
 
-2005-03-19 RELEASE 2.0.6
-========================
+## 2005-03-19 RELEASE 2.0.6
 
 Added pretty-xml serializer (inlines BNodes where possible,
 typed nodes, Collections).
@@ -3613,16 +3579,14 @@ Changed InMemoryBackend to update third index in the same style it
 does the first two.
 
 
-2005-01-08 RELEASE 2.0.5
-========================
+## 2005-01-08 RELEASE 2.0.5
 
 Added publicID argument to Store's load method.
 
 Added RDF and RDFS to top level rdflib package.
 
 
-2004-10-14 RELEASE 2.0.4
-========================
+## 2004-10-14 RELEASE 2.0.4
 
 Removed unfinished functionality.
 
@@ -3632,8 +3596,7 @@ defined for the rdf namespace (causing an assertion to fail).
 Fixed bug in serializer where nodeIDs were not valid NCNames.
 
 
-2004-04-21 RELEASE 2.0.3
-========================
+## 2004-04-21 RELEASE 2.0.3
 
 Added missing "from __future__ import generators" statement to
 InformationStore.
@@ -3652,8 +3615,7 @@ Context now goes through InformationStore (was bypassing it
 going directly to backend).
 
 
-2004-03-22 RELEASE 2.0.2
-========================
+## 2004-03-22 RELEASE 2.0.2
 
 Improved performance of Identifier equality tests.
 
@@ -3669,8 +3631,7 @@ Fixed bug recently introduced into InformationStore's remove
 method.
 
 
-2004-03-15 RELEASE 2.0.1
-========================
+## 2004-03-15 RELEASE 2.0.1
 
 Fixed a bug in the SleepyCatBackend multi threaded concurrency
 support. (Tested fairly extensively under the following
@@ -3690,8 +3651,7 @@ responsible for implementing ```__len__```.
 Context objects now have a identifier property.
 
 
-2004-03-10 RELEASE 2.0.0
-========================
+## 2004-03-10 RELEASE 2.0.0
 
 Fixed a few bugs in the SleepyCatBackend multi process
 concurrency support.
@@ -3705,8 +3665,7 @@ Added ```__iadd__``` method to Store in support of store +=
 another_store.
 
 
-2004-01-04 RELEASE 1.3.2
-========================
+## 2004-01-04 RELEASE 1.3.2
 
 Added a serialization dispatcher.
 
@@ -3718,8 +3677,7 @@ Backends are now more pluggable
 
 ...
 
-2003-10-14 RELEASE 1.3.1
-========================
+## 2003-10-14 RELEASE 1.3.1
 
 Fixed bug in serializer where triples where only getting
 serialized the first time.
@@ -3737,8 +3695,7 @@ Changed rdf:RDF to be optional to conform with latest spec.
 Fixed handling of XMLLiterals
 
 
-2003-04-40 RELEASE 1.3.0
-========================
+## 2003-04-40 RELEASE 1.3.0
 
 Removed bag_id support and added it to OLD_TERMS.
 
@@ -3752,8 +3709,7 @@ Added a KDTreeStore and RedlandStore backends.
 Added a StoreTester.
 
 
-2003-02-28 RELEASE 1.2.4
-========================
+## 2003-02-28 RELEASE 1.2.4
 
 Fixed bug in SCBackend where language and datatype information
 where being ignored.
@@ -3766,8 +3722,7 @@ async_load now adds more http header and error information to
 the InformationStore.
 
 
-2003-02-11 RELEASE 1.2.3
-========================
+## 2003-02-11 RELEASE 1.2.3
 
 Fixed bug in load methods where relative URLs where not being
 absolutized correctly on Windows.
@@ -3776,8 +3731,7 @@ Fixed serializer so that it throws an exception when trying to
 serialize a graph with a predicate that can not be split.
 
 
-2003-02-07 RELEASE 1.2.2
-========================
+## 2003-02-07 RELEASE 1.2.2
 
 Added an exists method to the BackwardCompatibility mixin.
 
@@ -3786,8 +3740,7 @@ to the BackwardCompatility mixin for TripleStores that take an
 s, p, o as opposed to an (s, p, o).
 
 
-2003-02-03 RELEASE 1.2.1
-========================
+## 2003-02-03 RELEASE 1.2.1
 
 Added support for parsing XMLLiterals.
 
@@ -3799,8 +3752,7 @@ Fixed remaining rdfcore test cases that where not passing.
 Fixed windows bug in AbstractInformationStore's run method.
 
 
-2003-01-02 RELEASE 1.2.0
-========================
+## 2003-01-02 RELEASE 1.2.0
 
 Added systemID, line #, and column # to error messages.
 
@@ -3812,8 +3764,7 @@ Added an asynchronous load method, methods for scheduling context
 updates, and a run method.
 
 
-2002-12-16 RELEASE 1.1.5
-========================
+## 2002-12-16 RELEASE 1.1.5
 
 Introduction of InformationStore, a TripleStore with the
 addition of context support.
@@ -3825,8 +3776,7 @@ Fixed bug in parser that was introduced in last release
 regaurding unqualified names.
 
 
-2002-12-10 RELEASE 1.1.4
-========================
+## 2002-12-10 RELEASE 1.1.4
 
 Interface realigned with last stable release.
 
@@ -3847,8 +3797,7 @@ rdflib.BTreeTripleStore.BTreeTripleStore.
 Minor reorganization of mix-in classes.
 
 
-2002-12-03 RELEASE 1.1.3
-========================
+## 2002-12-03 RELEASE 1.1.3
 
 BNodes now created with a more unique identifier so BNodes
 from different sessions do not collide.
@@ -3863,8 +3812,7 @@ type for ```__getitem__```. Instead there is now a get(predicate, default)
 method.
 
 
-2002-11-21 RELEASE 1.1.2
-========================
+## 2002-11-21 RELEASE 1.1.2
 
 Fixed Literal's ```__eq__``` method so that Literal('foo')=='foo' etc.
 
@@ -3872,8 +3820,7 @@ Fixed Resource's ```__setitem__``` method so that it does not raise
 a dictionary changed size while iterating exception.
 
 
-2002-11-09 RELEASE 1.1.1
-========================
+## 2002-11-09 RELEASE 1.1.1
 
 Resource is now a special kind of URIRef
 
@@ -3882,10 +3829,9 @@ return type in default case.
 
 
 
-2002-11-05 RELEASE 1.1.0
-========================
+## 2002-11-05 RELEASE 1.1.0
 
-# A new development branch
+### A new development branch
 
 Cleaned up interface and promoted it to SIR: Simple Interface
 for RDF.
@@ -3903,11 +3849,9 @@ Cleaned up interfaces for load/parse: removed generate_path
 from loadsave andrenamed parse_URI to parse.
 
 
-2002-10-08 RELEASE 0.9.6
-========================
+## 2002-10-08 RELEASE 0.9.6
 
-
-# The end of a development branch
+### The end of a development branch
 
 BNode can now be created with specified value.
 
@@ -3929,9 +3873,7 @@ This functionality is still experimental
 
 Consecutive Collections now parse correctly.
 
-2002-08-06 RELEASE 0.9.5
-========================
-
+## 2002-08-06 RELEASE 0.9.5
 
 Added support for rdf:parseType="Collection"
 
@@ -3951,9 +3893,7 @@ Added a little more to example.py
 Removed generate_uri since we have BNodes now.
 
 
-2002-07-29 RELEASE 0.9.4
-========================
-
+## 2002-07-29 RELEASE 0.9.4
 
 Added support for proposed rdf:nodeID to both the parser and
 serializer.
@@ -3964,9 +3904,7 @@ possible.
 Added partial support for XML Literal parseTypes.
 
 
-2002-07-16 RELEASE 0.9.3
-========================
-
+## 2002-07-16 RELEASE 0.9.3
 
 Fixed bug where bNodes where being created for nested property
 elements when they where not supposed to be.
@@ -3979,9 +3917,7 @@ Added missing check for valid attribute names in the case of
 production 5.18 of latest WD spec.
 
 
-2002-07-05 RELEASE 0.9.2
-========================
-
+## 2002-07-05 RELEASE 0.9.2
 
 Added missing constants for SUBPROPERTYOF, ISDEFINEDBY.
 
@@ -3990,9 +3926,7 @@ Added test case for running all of the rdf/xml test cases.
 Reimplemented rdf/xml parser to conform to latest WD.
 
 
-2002-06-10 RELEASE 0.9.1
-========================
-
+## 2002-06-10 RELEASE 0.9.1
 
 There is now a remove and a remove_triples (no more overloaded
 remove).
@@ -4015,7 +3949,6 @@ Added N-Triples parser.
 Added ```__len__``` and ```__eq__``` methods to store interface.
 
 
-2002-06-04 RELEASE 0.9.0
-========================
+## 2002-06-04 RELEASE 0.9.0
 
 Initial release after being split from redfootlib.
