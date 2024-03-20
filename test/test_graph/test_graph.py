@@ -391,6 +391,19 @@ def test_guess_format_for_parse_http(
         checker.check(len(graph))
 
 
+@pytest.mark.webtest
+def test_guess_format_for_parse_http_text_plain():
+    # Any raw url of a file from GitHub will return the content-type with text/plain.
+    url = "https://raw.githubusercontent.com/AGLDWG/vocpub-profile/master/validators/validator.ttl"
+    graph = Graph().parse(url)
+    assert len(graph) > 0
+
+    # A url that returns content-type text/html.
+    url = "https://github.com/RDFLib/rdflib/issues/2734"
+    with pytest.raises(PluginException):
+        graph = Graph().parse(url)
+
+
 def test_parse_file_uri(make_graph: GraphFactory):
     EG = Namespace("http://example.org/#")  # noqa: N806
     g = make_graph()
