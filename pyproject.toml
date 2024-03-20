@@ -57,7 +57,7 @@ pytest-cov = "^4.0.0"
 coverage = {version = "^7.0.1", extras = ["toml"]}
 types-setuptools = ">=68.0.0.3,<70.0.0.0"
 setuptools = ">=68,<70"
-wheel = "^0.42.0"
+wheel = ">=0.42,<0.44"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.1.1"
