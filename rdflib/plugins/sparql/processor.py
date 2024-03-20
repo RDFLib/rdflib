@@ -7,7 +7,7 @@ These should be automatically registered with RDFLib
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Callable, List, Mapping, Optional, Union
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
@@ -106,9 +106,13 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         return evalUpdate(self.graph, strOrQuery, initBindings)
 
 
+_QueryTranslatorType = Callable[[Query], Query]
+
+
 class SPARQLProcessor(Processor):
-    def __init__(self, graph):
+    def __init__(self, graph, translators: Optional[List[_QueryTranslatorType]] = None):
         self.graph = graph
+        self.translators = translators
 
     # NOTE on type error: this is because the super type constructor does not
     # accept base argument and thie position of the DEBUG argument is
@@ -143,5 +147,8 @@ class SPARQLProcessor(Processor):
 
         if isinstance(strOrQuery, str):
             strOrQuery = translateQuery(parseQuery(strOrQuery), base, initNs)
+
+        for translator in self.translators:
+            strOrQuery = translator(strOrQuery)
 
         return evalQuery(self.graph, strOrQuery, initBindings, base)
