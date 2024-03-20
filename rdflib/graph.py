@@ -1475,7 +1475,18 @@ class Graph(Node):
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True
-        parser = plugin.get(format, Parser)()
+        try:
+            parser = plugin.get(format, Parser)()
+        except plugin.PluginException:
+            # Handle the case when a URLInputSource returns RDF but with the headers
+            # as a format that does not exist in the plugin system.
+            # Use guess_format to guess the format based on the input's file suffix.
+            format = rdflib.util.guess_format(
+                source if not isinstance(source, InputSource) else str(source)
+            )
+            if format is None:
+                raise
+            parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
             parser.parse(source, self, **args)
