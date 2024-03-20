@@ -1,12 +1,12 @@
 # multi variant graphs
 
-This directory containts variants of the same graph encoded in different
+This directory contains variants of the same graph encoded in different
 formats, or differently in the same format.
 
-The graph that a specific file is a variant of is determined by it's filename.
-Files that differ only in file extention but have the same basename are
+The graph that a specific file is a variant of is determined by its filename.
+Files that differ only in file extensions but have the same basename are
 considered variants of the same graph. Additionally, any suffix that matches
-`-variant-[^/]*` is excluded when determening the graph key, so the following
+`-variant-[^/]*` is excluded when determining the graph key, so the following
 files are all considered variants of the same graph:
 
 ```

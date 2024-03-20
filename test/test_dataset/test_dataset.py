@@ -3,12 +3,20 @@ import shutil
 import tempfile
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 from test.utils.namespace import EGSCHEME
+import logging
+import os
+import shutil
+import tempfile
+from typing import Optional
+from rdflib.term import Identifier, Literal
 
 import pytest
 
 from rdflib import URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
+from rdflib.namespace import XSD
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -261,3 +269,47 @@ def test_subgraph_without_identifier() -> None:
     ) == ("genid", genid_prefix)
 
     assert f"{subgraph.identifier}".startswith(genid_prefix)
+
+
+def test_updating_datatype() -> None:
+    dataset = Dataset()
+
+    dataset.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+
+    egurn_graph = dataset.get_context(EGURN.graph)
+    egurn_graph.add(
+        (EGSCHEME.subject, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
+    )
+
+    def find_literal_obj_ctx_id(dataset: Dataset, literal_value: str) -> Optional[Identifier]:
+        for quad in (quad for quad in dataset.quads((None, None, None, None))):
+            if isinstance(quad[2], Literal) and quad[2].value == literal_value:
+                logging.debug("quad = %s", quad)
+                return quad[3]
+        return None
+
+    assert find_literal_obj_ctx_id(dataset, "XSD string") == EGURN.graph
+
+    for context in dataset.contexts():
+        logging.debug("context.identifier = %s", context.identifier)
+        for triple in context:
+            logging.debug("triple = %s", triple)
+            object = triple[2]
+            if not isinstance(object, Literal):
+                continue
+            if object.datatype is None:
+                continue
+            logging.debug("object.datatype = %s", object.datatype)
+            if object.datatype == XSD.string:
+                object._datatype = None
+
+    assert find_literal_obj_ctx_id(dataset, "XSD string") == EGURN.graph
+
+
+    # found = False
+    # for quad in (quad for quad in dataset.quads((None, None, None, None))):
+    #     if isinstance(quad[2], Literal) and quad[2].value == "XSD string":
+    #         logging.debug("quad = %s", quad)
+    #         # found = True
+    #         # break
+    # # assert found is True
