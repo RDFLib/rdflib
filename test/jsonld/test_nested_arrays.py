@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+from __future__ import annotations
 
 from test.utils.namespace import EGDC
 

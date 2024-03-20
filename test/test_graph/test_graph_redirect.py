@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from test.data import SIMPLE_TRIPLE_GRAPH, TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.http import MethodName, MockHTTPResponse

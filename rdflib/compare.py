@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A collection of utilities for canonicalizing and inspecting graphs.
 
@@ -73,7 +72,8 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
-from __future__ import absolute_import, division, print_function
+
+from __future__ import annotations
 
 # TODO:
 # - Doesn't handle quads.
@@ -252,7 +252,7 @@ class Color:
         self._hash_cache[color] = val
         return val
 
-    def distinguish(self, W: "Color", graph: Graph):  # noqa: N803
+    def distinguish(self, W: Color, graph: Graph):  # noqa: N803
         colors: Dict[str, Color] = {}
         for n in self.nodes:
             new_color: Tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
@@ -522,7 +522,7 @@ class _TripleCanonicalizer:
 
     def _canonicalize_bnodes(
         self,
-        triple: "_TripleType",
+        triple: _TripleType,
         labels: Dict[Node, str],
     ):
         for term in triple:

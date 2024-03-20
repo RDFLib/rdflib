@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import base64
 import copy
 import logging
@@ -40,14 +42,14 @@ class SPARQLConnector:
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
         returnFormat: str = "xml",  # noqa: N803
-        method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
+        method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
     ):
         """
         auth, if present, must be a tuple of (username, password) used for Basic Authentication
 
-        Any additional keyword arguments will be passed to to the request, and can be used to setup timesouts etc.
+        Any additional keyword arguments will be passed to to the request, and can be used to setup timeouts etc.
         """
         self._method: str
         self.returnFormat = returnFormat
@@ -84,7 +86,7 @@ class SPARQLConnector:
         query: str,
         default_graph: Optional[str] = None,
         named_graph: Optional[str] = None,
-    ) -> "Result":
+    ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 

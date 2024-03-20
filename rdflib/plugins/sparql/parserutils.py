@@ -1,26 +1,3 @@
-from __future__ import annotations
-
-from collections import OrderedDict
-from types import MethodType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
-
-from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
-
-from rdflib.term import BNode, Identifier, Variable
-
-if TYPE_CHECKING:
-    from rdflib.plugins.sparql.sparql import FrozenBindings
-
 """
 
 NOTE: PyParsing setResultName/__call__ provides a very similar solution to this
@@ -48,6 +25,29 @@ the resulting CompValue
 
 """
 
+from __future__ import annotations
+
+from collections import OrderedDict
+from types import MethodType
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
+
+from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
+
+from rdflib.term import BNode, Identifier, Variable
+
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
+
 
 # This is an alternative
 
@@ -55,7 +55,7 @@ the resulting CompValue
 
 
 def value(
-    ctx: "FrozenBindings",
+    ctx: FrozenBindings,
     val: Any,
     variables: bool = False,
     errors: bool = False,
@@ -150,7 +150,6 @@ _ValT = TypeVar("_ValT")
 
 
 class CompValue(OrderedDict):
-
     """
     The result of parsing a Comp
     Any included Params are available as Dict keys
@@ -200,8 +199,7 @@ class CompValue(OrderedDict):
 
     if TYPE_CHECKING:
         # this is here because properties are dynamically set on CompValue
-        def __setattr__(self, __name: str, __value: Any) -> None:
-            ...
+        def __setattr__(self, __name: str, __value: Any) -> None: ...
 
 
 class Expr(CompValue):
@@ -233,7 +231,6 @@ class Expr(CompValue):
 
 
 class Comp(TokenConverter):
-
     """
     A pyparsing token for grouping together things with a label
     Any sub-tokens that are not Params will be ignored.

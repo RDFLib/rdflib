@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass, field
 from test.utils import MarkListType, marks_to_list
@@ -38,7 +40,7 @@ IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 
 @dataclass
 class ManifestEntry:
-    manifest: "Manifest"
+    manifest: Manifest
     identifier: URIRef
     type: IdentifiedNode = field(init=False)
     action: Optional[IdentifiedNode] = field(init=False)
@@ -109,7 +111,7 @@ class Manifest:
         uri_mapper: URIMapper,
         graph: Graph,
         report_prefix: Optional[str] = None,
-    ) -> Generator["Manifest", None, None]:
+    ) -> Generator[Manifest, None, None]:
         for identifier in graph.subjects(RDF.type, MF.Manifest):
             assert isinstance(identifier, IdentifiedNode)
             manifest = Manifest(
@@ -127,7 +129,7 @@ class Manifest:
         uri_mapper: URIMapper,
         *sources: GraphSourceType,
         report_prefix: Optional[str] = None,
-    ) -> Generator["Manifest", None, None]:
+    ) -> Generator[Manifest, None, None]:
         for source in sources:
             logging.debug("source(%s) = %r", id(source), source)
             source = GraphSource.from_source(source)
@@ -148,7 +150,7 @@ class Manifest:
                 report_prefix,
             )
 
-    def included(self) -> Generator["Manifest", None, None]:
+    def included(self) -> Generator[Manifest, None, None]:
         for includes in self.graph.objects(self.identifier, MF.include):
             for include in self.graph.items(includes):
                 assert isinstance(include, str)
@@ -161,10 +163,10 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type["ManifestEntryT"],
+        entry_type: Type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
-    ) -> Generator["ManifestEntryT", None, None]:
+    ) -> Generator[ManifestEntryT, None, None]:
         for entries in self.graph.objects(self.identifier, MF.entries):
             for entry_iri in self.graph.items(entries):
                 assert isinstance(entry_iri, URIRef)
@@ -177,26 +179,26 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type["ManifestEntryT"],
+        entry_type: Type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
         mark_dict: Optional[MarksDictType] = None,
         markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
-    ) -> Generator["ParameterSet", None, None]:
+    ) -> Generator[ParameterSet, None, None]:
         for entry in self.entires(entry_type, exclude, include):
             yield entry.param(mark_dict, markers)
 
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type["ManifestEntryT"],
+    entry_type: Type[ManifestEntryT],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,
     include: Optional[POFiltersType] = None,
     mark_dict: Optional[MarksDictType] = None,
     markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
     report_prefix: Optional[str] = None,
-) -> Generator["ParameterSet", None, None]:
+) -> Generator[ParameterSet, None, None]:
     for manifest in Manifest.from_sources(
         uri_mapper, *sources, report_prefix=report_prefix
     ):

@@ -32,8 +32,7 @@ def test_example(example_file: Path) -> None:
 
     result = subprocess.run(
         [sys.executable, f"{example_file}"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
     )
 
     logging.debug("result = %s", result)

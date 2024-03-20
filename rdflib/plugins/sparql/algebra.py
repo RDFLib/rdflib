@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
 http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
+
+from __future__ import annotations
 
 import collections
 import functools
@@ -202,17 +202,15 @@ def translatePName(  # type: ignore[return]
 
 
 @overload
-def translatePath(p: URIRef) -> None:
-    ...
+def translatePath(p: URIRef) -> None: ...
 
 
 @overload
-def translatePath(p: CompValue) -> "Path":
-    ...
+def translatePath(p: CompValue) -> Path: ...
 
 
 # type error: Missing return statement
-def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional["Path"]:  # type: ignore[return]
+def translatePath(p: typing.Union[CompValue, URIRef]) -> Optional[Path]:  # type: ignore[return]
     """
     Translate PropertyPath expressions
     """
@@ -413,16 +411,14 @@ def _traverse(
 
     if isinstance(e, (list, ParseResults)):
         return [_traverse(x, visitPre, visitPost) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, tuple):  # type: ignore[unreachable]
+    elif isinstance(e, tuple):
         return tuple([_traverse(x, visitPre, visitPost) for x in e])
 
     elif isinstance(e, CompValue):
         for k, val in e.items():
             e[k] = _traverse(val, visitPre, visitPost)
 
-    # type error: Statement is unreachable
-    _e = visitPost(e)  # type: ignore[unreachable]
+    _e = visitPost(e)
     if _e is not None:
         return _e
 
@@ -440,8 +436,7 @@ def _traverseAgg(e, visitor: Callable[[Any, Any], Any] = lambda n, v: None):
 
     if isinstance(e, (list, ParseResults, tuple)):
         res = [_traverseAgg(x, visitor) for x in e]
-    # type error: Statement is unreachable
-    elif isinstance(e, CompValue):  # type: ignore[unreachable]
+    elif isinstance(e, CompValue):
         for k, val in e.items():
             if val is not None:
                 res.append(_traverseAgg(val, visitor))
@@ -846,9 +841,9 @@ def translateQuads(
     else:
         alltriples = []
 
-    allquads: DefaultDict[
-        str, List[Tuple[Identifier, Identifier, Identifier]]
-    ] = collections.defaultdict(list)
+    allquads: DefaultDict[str, List[Tuple[Identifier, Identifier, Identifier]]] = (
+        collections.defaultdict(list)
+    )
 
     if quads.quadsNotTriples:
         for q in quads.quadsNotTriples:
@@ -971,9 +966,9 @@ class _AlgebraTranslator:
 
     def __init__(self, query_algebra: Query):
         self.query_algebra = query_algebra
-        self.aggr_vars: DefaultDict[
-            Identifier, List[Identifier]
-        ] = collections.defaultdict(list)
+        self.aggr_vars: DefaultDict[Identifier, List[Identifier]] = (
+            collections.defaultdict(list)
+        )
         self._alg_translation: str = ""
 
     def _replace(
@@ -1012,8 +1007,8 @@ class _AlgebraTranslator:
                 return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):
-            return "{" + node_arg.name + "}"
+        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
+            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
         elif isinstance(node_arg, str):
             return node_arg
         else:
@@ -1278,7 +1273,7 @@ class _AlgebraTranslator:
             elif node.name == "MultiplicativeExpression":
                 left_side = self.convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):  # noqa: F402
+                for i, operator in enumerate(node.op):
                     multiplication += (
                         operator + " " + self.convert_node_arg(node.other[i]) + " "
                     )

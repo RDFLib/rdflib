@@ -3,6 +3,8 @@ This module is intended for tests related to unquoting/unescaping in various
 formats that are related to turtle, such as ntriples, nquads, trig and n3.
 """
 
+from __future__ import annotations
+
 import itertools
 import logging
 import re

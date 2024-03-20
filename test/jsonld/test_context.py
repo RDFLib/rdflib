@@ -2,6 +2,8 @@
 JSON-LD Context Spec
 """
 
+from __future__ import annotations
+
 import json
 from functools import wraps
 from pathlib import Path

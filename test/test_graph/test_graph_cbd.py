@@ -1,3 +1,5 @@
+"""Tests the Graph class' cbd() function"""
+
 from test.data import TEST_DATA_DIR
 from test.utils import BNodeHandling, GraphHelper
 
@@ -10,7 +12,6 @@ from rdflib.term import Literal, URIRef
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
 EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"
 
-"""Tests the Graph class' cbd() function"""
 
 EX = Namespace("http://ex/")
 

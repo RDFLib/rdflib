@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from test.utils import eq_
 from test.utils.namespace import EGDC
@@ -865,7 +867,7 @@ def test_operator_exception(
 )
 def test_queries(
     query_string: str,
-    expected_bindings: Sequence[Mapping["Variable", "Identifier"]],
+    expected_bindings: Sequence[Mapping[Variable, Identifier]],
     rdfs_graph: Graph,
 ) -> None:
     """

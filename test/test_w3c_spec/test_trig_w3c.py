@@ -1,6 +1,9 @@
 """Runs the tests for the W3C RDF Working Group's TriG test suite.
 
 """
+
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
 from test.data import TEST_DATA_DIR

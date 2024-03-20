@@ -1,6 +1,7 @@
 """
 Notation 3 (N3) RDF graph serializer for RDFLib.
 """
+
 from rdflib.graph import Graph
 from rdflib.namespace import OWL, Namespace
 from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT, TurtleSerializer
@@ -81,7 +82,8 @@ class N3Serializer(TurtleSerializer):
             self.write("{")
             self.depth += 1
             serializer = N3Serializer(node, parent=self)
-            serializer.serialize(self.stream)
+            # type error: Argument 1 to "serialize" of "TurtleSerializer" has incompatible type "Optional[IO[bytes]]"; expected "IO[bytes]"
+            serializer.serialize(self.stream)  # type: ignore[arg-type]
             self.depth -= 1
             self.write(self.indent() + "}")
             return True

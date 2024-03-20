@@ -63,13 +63,13 @@ Create a Resource::
 Retrieve some basic facts::
 
     >>> person.identifier
-    rdflib.term.URIRef(u'http://example.org/person/some1#self')
+    rdflib.term.URIRef('http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
-    rdflib.term.Literal(u'Some Body')
+    rdflib.term.Literal('Some Body')
 
     >>> person.value(RDFS.comment)
-    rdflib.term.Literal(u'Just a Python & RDF hacker.', lang=u'en')
+    rdflib.term.Literal('Just a Python & RDF hacker.', lang='en')
 
 Resources can be sliced (like graphs, but the subject is fixed)::
 
@@ -82,21 +82,21 @@ Resources can be sliced (like graphs, but the subject is fixed)::
 Resources as unicode are represented by their identifiers as unicode::
 
     >>> %(unicode)s(person)  #doctest: +SKIP
-    u'Resource(http://example.org/person/some1#self'
+    'Resource(http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
 
     >>> person.value(RDF.type).qname()
-    u'foaf:Person'
+    'foaf:Person'
 
 Or for the predicates of a resource::
 
     >>> sorted(
     ...     p.qname() for p in person.predicates()
     ... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
-    [u'foaf:depiction', u'foaf:homepage',
-     u'foaf:name', u'rdf:type', u'rdfs:comment']
+    ['foaf:depiction', 'foaf:homepage',
+     'foaf:name', 'rdf:type', 'rdfs:comment']
 
 Follow relations and get more data from their Resources as well::
 
@@ -172,18 +172,18 @@ we can get at subclasses::
 
     >>> subclasses = list(artifact.transitive_subjects(RDFS.subClassOf))
     >>> [c.qname() for c in subclasses]
-    [u'v:Artifact', u'v:Document', u'v:Paper']
+    ['v:Artifact', 'v:Document', 'v:Paper']
 
 and superclasses from the last subclass::
 
     >>> [c.qname() for c in subclasses[-1].transitive_objects(RDFS.subClassOf)]
-    [u'v:Paper', u'v:Document', u'v:Artifact']
+    ['v:Paper', 'v:Document', 'v:Artifact']
 
 Get items from the Choice::
 
     >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    [u'v:One', u'v:Other']
+    ['v:One', 'v:Other']
 
 On add, other resources are auto-unboxed:
     >>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))

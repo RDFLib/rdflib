@@ -22,6 +22,7 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
+
 from __future__ import annotations
 
 from codecs import getreader
@@ -91,7 +92,7 @@ class NQuadsParser(W3CNTriplesParser):
 
     def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(("#")):
+        if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
 
         subject = self.subject(bnode_context)

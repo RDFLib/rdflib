@@ -166,7 +166,7 @@ class GraphVariants:
     @classmethod
     def for_files(
         cls, file_paths: Iterable[Path], basedir: Optional[Path] = None
-    ) -> Dict[str, "GraphVariants"]:
+    ) -> Dict[str, GraphVariants]:
         graph_sources: DefaultDict[str, Dict[str, GraphSource]] = defaultdict(dict)
         graph_meta: Dict[str, GraphVariantsMeta] = {}
         for file_path in file_paths:
@@ -199,7 +199,7 @@ class GraphVariants:
     @classmethod
     def for_directory(
         cls, directory: Path, basedir: Optional[Path] = None
-    ) -> Dict[str, "GraphVariants"]:
+    ) -> Dict[str, GraphVariants]:
         file_paths = []
         for file_path in directory.glob("*"):
             if not file_path.is_file():

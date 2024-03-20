@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os
 from test.data import TEST_DATA_DIR
 

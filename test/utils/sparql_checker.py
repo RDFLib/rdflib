@@ -1,5 +1,6 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+
 from __future__ import annotations
 
 import enum
@@ -71,7 +72,7 @@ class TypeInfo:
             self.expected_outcome_property = UT.result
 
     @classmethod
-    def make_dict(cls, *test_types: "TypeInfo") -> Dict[Identifier, "TypeInfo"]:
+    def make_dict(cls, *test_types: TypeInfo) -> Dict[Identifier, TypeInfo]:
         return dict((test_type.id, test_type) for test_type in test_types)
 
 
@@ -99,7 +100,7 @@ class GraphData:
     label: Optional[Literal] = None
 
     @classmethod
-    def from_graph(cls, graph: Graph, identifier: Identifier) -> "GraphData":
+    def from_graph(cls, graph: Graph, identifier: Identifier) -> GraphData:
         if isinstance(identifier, URIRef):
             return cls(identifier)
         elif isinstance(identifier, BNode):

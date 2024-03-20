@@ -1,3 +1,27 @@
+"""
+Test round-tripping by all serializers/parser that are registered.
+This means, you may test more than just core rdflib!
+
+run with no arguments to test all formats + all files
+run with a single argument, to test only that format, i.e. "n3"
+run with three arguments to test round-tripping in a given format
+and reading a single file in the given format, i.e.:
+
+python test/test_roundtrip.py xml nt test/nt/literals-02.nt
+
+tests roundtripping through rdf/xml with only the literals-02 file
+
+HexTuples format, "hext", cannot be used in all roundtrips due to its
+addition of xsd:string to literals of no declared type as this breaks
+(rdflib) graph isomorphism, and given that its JSON serialization is
+simple (lacking), so hext has been excluded from roundtripping here
+but provides some roundtrip test functions of its own (see test_parser_hext.py
+& test_serializer_hext.py)
+
+"""
+
+from __future__ import annotations
+
 import enum
 import logging
 import os.path
@@ -21,27 +45,6 @@ from rdflib.util import guess_format
 
 logger = logging.getLogger(__name__)
 
-"""
-Test round-tripping by all serializers/parser that are registered.
-This means, you may test more than just core rdflib!
-
-run with no arguments to test all formats + all files
-run with a single argument, to test only that format, i.e. "n3"
-run with three arguments to test round-tripping in a given format
-and reading a single file in the given format, i.e.:
-
-python test/test_roundtrip.py xml nt test/nt/literals-02.nt
-
-tests roundtripping through rdf/xml with only the literals-02 file
-
-HexTuples format, "hext", cannot be used in all roundtrips due to its
-addition of xsd:string to literals of no declared type as this breaks
-(rdflib) graph isomorphism, and given that its JSON serialization is
-simple (lacking), so hext has been excluded from roundtripping here
-but provides some roundtrip test functions of its own (see test_parser_hext.py
-& test_serializer_hext.py)
-
-"""
 
 NT_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "nt_misc"
 INVALID_NT_FILES = {

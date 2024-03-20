@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import codecs
 import getopt
 import sys
 import time
+from typing import TextIO, Union
 
 import rdflib
 from rdflib.util import guess_format
@@ -40,6 +43,7 @@ def main(target, _help=_help, options="", stdin=True):
     else:
         f = None
 
+    out: Union[TextIO, codecs.StreamReaderWriter]
     if "-o" in dargs:
         sys.stderr.write("Output to %s\n" % dargs["-o"])
         out = codecs.open(dargs["-o"], "w", "utf-8")

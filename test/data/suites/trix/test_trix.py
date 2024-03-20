@@ -1,5 +1,8 @@
 """This runs the TriX tests for RDFLib's informally-assembled TriX
 test suite."""
+
+from __future__ import annotations
+
 from test.data import TEST_DATA_DIR
 from test.utils.manifest import RDFTest, read_manifest
 from test.utils.namespace import RDFT

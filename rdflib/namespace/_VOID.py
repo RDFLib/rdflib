@@ -26,7 +26,9 @@ class VOID(DefinedNamespace):
     distinctObjects: URIRef  # The total number of distinct objects in a void:Dataset. In other words, the number of distinct resources that occur in the object position of triples in the dataset. Literals are included in this count.
     distinctSubjects: URIRef  # The total number of distinct subjects in a void:Dataset. In other words, the number of distinct resources that occur in the subject position of triples in the dataset.
     documents: URIRef  # The total number of documents, for datasets that are published as a set of individual documents, such as RDF/XML documents or RDFa-annotated web pages. Non-RDF documents, such as web pages in HTML or images, are usually not included in this count. This property is intended for datasets where the total number of triples or entities is hard to determine. void:triples or void:entities should be preferred where practical.
-    entities: URIRef  # The total number of entities that are described in a void:Dataset.
+    entities: (
+        URIRef  # The total number of entities that are described in a void:Dataset.
+    )
     exampleResource: URIRef  # example resource of dataset
     feature: URIRef  # feature
     inDataset: URIRef  # Points to the void:Dataset that a document is a part of.
@@ -42,8 +44,12 @@ class VOID(DefinedNamespace):
     subset: URIRef  # has subset
     target: URIRef  # One of the two datasets linked by the Linkset.
     triples: URIRef  # The total number of triples contained in a void:Dataset.
-    uriLookupEndpoint: URIRef  # Defines a simple URI look-up protocol for accessing a dataset.
-    uriRegexPattern: URIRef  # Defines a regular expression pattern matching URIs in the dataset.
+    uriLookupEndpoint: (
+        URIRef  # Defines a simple URI look-up protocol for accessing a dataset.
+    )
+    uriRegexPattern: (
+        URIRef  # Defines a regular expression pattern matching URIs in the dataset.
+    )
     uriSpace: URIRef  # A URI that is a common string prefix of all the entity URIs in a void:Dataset.
     vocabulary: URIRef  # A vocabulary that is used in the dataset.
 

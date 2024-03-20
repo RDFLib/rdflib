@@ -47,26 +47,27 @@ html5lib = {version = "^1.0", optional = true}
 lxml = {version = "^4.3.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "23.7.0"
+black = "24.3.0"
 mypy = "^1.1.0"
-lxml-stubs = "^0.4.0"
+lxml-stubs = ">=0.4,<0.6"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^7.1.3"
 pytest-cov = "^4.0.0"
 coverage = {version = "^7.0.1", extras = ["toml"]}
-types-setuptools = "^68.0.0.3"
-setuptools = "^68.0.0"
+types-setuptools = ">=68.0.0.3,<70.0.0.0"
+setuptools = ">=68,<70"
+wheel = ">=0.42,<0.44"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = "^7.1.1"
 myst-parser = "^2.0.0"
-sphinxcontrib-apidoc = "^0.3.0"
+sphinxcontrib-apidoc = ">=0.3,<0.6"
 sphinx-autodoc-typehints = "^1.17.1"
 typing-extensions = "^4.5.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = "^0.0.286"
+ruff = ">=0.0.286,<0.3.3"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -87,6 +88,32 @@ select = [
     "F", # Pyflakes
     "I", # isort
     "N", # pep8-naming
+    "RUF100", # Unused noqa directive
+    "UP001", # Remove unused imports
+    "UP003", # Use {} instead of type(...)
+    "UP004", # Class inherits from object
+    "UP005", # is deprecated, use
+    "UP009", # UTF-8 encoding declaration is unnecessary
+    "UP010", # Unnecessary __future__ import for target Python version
+    "UP011", # Unnecessary parentheses to functools.lru_cache
+    "UP012", # Unnecessary call to encode as UTF-8
+    "UP017", # Use datetime.UTC alias
+    "UP018", # Unnecessary {literal_type} call (rewrite as a literal)
+    "UP019", # typing.Text is deprecated, use str
+    "UP020", # Use builtin open
+    "UP021", # universal_newlines is deprecated, use text
+    "UP022", # Sending stdout and stderr to PIPE is deprecated, use capture_output
+    "UP023", # cElementTree is deprecated, use ElementTree
+    "UP024", # Replace aliased errors with OSError
+    "UP025", # Remove unicode literals from strings
+    "UP026", # mock is deprecated, use unittest.mock
+    "UP029", # Unnecessary builtin import
+    "UP034", # Avoid extraneous parentheses
+    "UP035", # Import from {target} instead:
+    "UP036", # Version block is outdated for minimum Python version
+    "UP037", # Remove quotes from type annotation
+    "UP039", # Unnecessary parentheses after class definition
+    "FA", # flake8-future-annotations
 ]
 
 ignore = [
@@ -95,7 +122,6 @@ ignore = [
     # https://black.readthedocs.io/en/stable/faq.html#why-are-flake8-s-e203-and-w503-violated
     "E203", # whitespace before ':'
     "E231", # missing whitespace after ','
-    "E402", # Module level import not at top of file
 ]
 
 # Same as Black.
@@ -120,46 +146,23 @@ line-length = 88
     "N806", # Variable in function should be lowercase
     "N816", # Variable in class scope should be mixedCase
 ]
-"rdflib/extras/infixowl.py" = [
-    "N803", # Function name should be lowercase
-]
 "rdflib/plugins/serializers/{turtle,longturtle,trig}.py" = [
     "N802", # Function name should be lowercase
     "N806", # Variable in function should be lowercase
     "N815", # Variable in class scope should not be mixedCase
 ]
-"rdflib/plugins/stores/sparqlstore.py" = [
-    "N803", # Argument name should be lowercase
-]
 "test/utils/namespace/_*" = [
     "N815", # Variable in class scope should not be mixedCase
     "N999", # Invalid module name
 ]
-"test/test_sparql/test_{initbindings,datetime_processing,expressions}.py" = [
-    "N802", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-]
-"test/test_store/test_store_sparql*.py" = [
-    "N802", # Function name should be lowercase
-]
-"test/test_serializers/test_{prettyxml,serializer_turtle,serializer_xml}.py" = [
-    "N802", # Function name should be lowercase
-    "N803", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
-    "N815", # Variable in class scope should not be mixedCase
-]
-"test/test_literal/test_uriref_literal_comparison.py" = [
-    "N802", # Function name should be lowercase
-]
-"test/test_nt_misc.py" = [
-    "N802", # Function name should be lowercase
-    "N806", # Variable in function should be lowercase
+"{test/conftest.py,rdflib/namespace/__init__.py,rdflib/__init__.py,rdflib/plugins/sparql/__init__.py}" = [
+    "E402", # Module level import not at top of file
 ]
 
+
 [tool.black]
-required-version = "23.7.0"
 line-length = "88"
-target-version = ['py37']
+target-version = ['py38']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -196,7 +199,6 @@ addopts = [
    "--doctest-glob=docs/*.rst",
    "--strict-markers",
 ]
-doctest_optionflags = "ALLOW_UNICODE"
 filterwarnings = [
     # The below warning is a consequence of how pytest doctest detects mocks and how DefinedNamespace behaves when an undefined attribute is being accessed.
     "ignore:Code. pytest_mock_example_attribute_that_shouldnt_exist is not defined in namespace .*:UserWarning",
@@ -251,12 +253,11 @@ warn_unused_ignores = true
 no_implicit_optional = false
 implicit_reexport = false
 
+
 [[tool.mypy.overrides]]
-module = "pyparsing.*"
-# This is here because of an upstream issue with pyparsing:
-# https://github.com/pyparsing/pyparsing/issues/385
-# Once the issue is fixed this should be removed.
-follow_imports = "skip"
+module = "rdflib.*"
+check_untyped_defs = true
+
 
 [tool.coverage.run]
 branch = true

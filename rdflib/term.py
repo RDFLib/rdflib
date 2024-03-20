@@ -20,6 +20,9 @@ underlying Graph:
 * Numerical Ranges
 
 """
+
+from __future__ import annotations
+
 import abc
 import re
 from fractions import Fraction
@@ -91,7 +94,7 @@ _SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems: Dict[str, "BNode"] = {}
+skolems: Dict[str, BNode] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
@@ -137,8 +140,7 @@ class Node(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        ...
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
@@ -149,7 +151,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> "Identifier":
+    def __new__(cls, value: str) -> Identifier:
         return str.__new__(cls, value)
 
     def eq(self, other: Any) -> bool:
@@ -274,12 +276,12 @@ class URIRef(IdentifiedNode):
 
     __slots__ = ()
 
-    __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
-    __invert__: Callable[["URIRef"], "InvPath"]
-    __neg__: Callable[["URIRef"], "NegatedPath"]
-    __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
+    __or__: Callable[[URIRef, Union[URIRef, Path]], AlternativePath]
+    __invert__: Callable[[URIRef], InvPath]
+    __neg__: Callable[[URIRef], NegatedPath]
+    __truediv__: Callable[[URIRef, Union[URIRef, Path]], SequencePath]
 
-    def __new__(cls, value: str, base: Optional[str] = None) -> "URIRef":
+    def __new__(cls, value: str, base: Optional[str] = None) -> URIRef:
         if base is not None:
             ends_in_hash = value.endswith("#")
             # type error: Argument "allow_fragments" to "urljoin" has incompatible type "int"; expected "bool"
@@ -301,7 +303,7 @@ class URIRef(IdentifiedNode):
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[call-overload]
         return rt
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         """
         This will do a limited check for valid URIs,
         essentially just making sure that the string includes no illegal
@@ -322,7 +324,7 @@ class URIRef(IdentifiedNode):
         else:
             return "<%s>" % self
 
-    def defrag(self) -> "URIRef":
+    def defrag(self) -> URIRef:
         if "#" in self:
             url, frag = urldefrag(self)
             return URIRef(url)
@@ -341,7 +343,7 @@ class URIRef(IdentifiedNode):
         """
         return urlparse(self).fragment
 
-    def __reduce__(self) -> Tuple[Type["URIRef"], Tuple[str]]:
+    def __reduce__(self) -> Tuple[Type[URIRef], Tuple[str]]:
         return (URIRef, (str(self),))
 
     def __repr__(self) -> str:
@@ -352,16 +354,16 @@ class URIRef(IdentifiedNode):
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
-    def __add__(self, other) -> "URIRef":
+    def __add__(self, other) -> URIRef:
         return self.__class__(str(self) + other)
 
-    def __radd__(self, other) -> "URIRef":
+    def __radd__(self, other) -> URIRef:
         return self.__class__(other + str(self))
 
-    def __mod__(self, other) -> "URIRef":
+    def __mod__(self, other) -> URIRef:
         return self.__class__(str(self) % other)
 
-    def de_skolemize(self) -> "BNode":
+    def de_skolemize(self) -> BNode:
         """Create a Blank Node from a skolem URI, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
         This function accepts only rdflib type skolemization, to provide
@@ -469,7 +471,7 @@ class BNode(IdentifiedNode):
         value: Optional[str] = None,
         _sn_gen: Callable[[], str] = _serial_number_generator(),
         _prefix: str = _unique_id(),
-    ) -> "BNode":
+    ) -> BNode:
         """
         # only store implementations should pass in a value
         """
@@ -489,10 +491,10 @@ class BNode(IdentifiedNode):
         # type error: Incompatible return value type (got "Identifier", expected "BNode")
         return Identifier.__new__(cls, value)  # type: ignore[return-value]
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         return "_:%s" % self
 
-    def __reduce__(self) -> Tuple[Type["BNode"], Tuple[str]]:
+    def __reduce__(self) -> Tuple[Type[BNode], Tuple[str]]:
         return (BNode, (str(self),))
 
     def __repr__(self) -> str:
@@ -519,7 +521,7 @@ class BNode(IdentifiedNode):
 
 
 class Literal(Identifier):
-    __doc__ = """
+    """
 
     RDF 1.1's Literals Section: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
@@ -623,7 +625,7 @@ class Literal(Identifier):
         lang: Optional[str] = None,
         datatype: Optional[str] = None,
         normalize: Optional[bool] = None,
-    ) -> "Literal":
+    ) -> Literal:
         if lang == "":
             lang = None  # no empty lang-tags in RDF
 
@@ -704,7 +706,7 @@ class Literal(Identifier):
 
         return inst
 
-    def normalize(self) -> "Literal":
+    def normalize(self) -> Literal:
         """
         Returns a new literal with a normalised lexical representation
         of this literal
@@ -750,7 +752,7 @@ class Literal(Identifier):
 
     def __reduce__(
         self,
-    ) -> Tuple[Type["Literal"], Tuple[str, Union[str, None], Union[str, None]]]:
+    ) -> Tuple[Type[Literal], Tuple[str, Union[str, None], Union[str, None]]]:
         return (
             Literal,
             (str(self), self.language, self.datatype),
@@ -764,7 +766,7 @@ class Literal(Identifier):
         self._language = d["language"]
         self._datatype = d["datatype"]
 
-    def __add__(self, val: Any) -> "Literal":
+    def __add__(self, val: Any) -> Literal:
         """
         >>> from rdflib.namespace import XSD
         >>> Literal(1) + 1
@@ -869,7 +871,7 @@ class Literal(Identifier):
 
             return Literal(s, self.language, datatype=new_datatype)
 
-    def __sub__(self, val: Any) -> "Literal":
+    def __sub__(self, val: Any) -> Literal:
         """
         >>> from rdflib.namespace import XSD
         >>> Literal(2) - 1
@@ -944,9 +946,11 @@ class Literal(Identifier):
                 return Literal(
                     self.toPython() - val.toPython(),
                     self.language,
-                    datatype=_XSD_DURATION
-                    if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
-                    else self.datatype,
+                    datatype=(
+                        _XSD_DURATION
+                        if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
+                        else self.datatype
+                    ),
                 )
 
         # if the datatypes are not the same but are both numeric, subtract the Python values and strip off decimal junk
@@ -981,7 +985,7 @@ class Literal(Identifier):
             return bool(self.value)
         return len(self) != 0
 
-    def __neg__(self) -> "Literal":
+    def __neg__(self) -> Literal:
         """
         >>> (- Literal(1))
         rdflib.term.Literal('-1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
@@ -1003,7 +1007,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    def __pos__(self) -> "Literal":
+    def __pos__(self) -> Literal:
         """
         >>> (+ Literal(1))
         rdflib.term.Literal('1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
@@ -1023,7 +1027,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    def __abs__(self) -> "Literal":
+    def __abs__(self) -> Literal:
         """
         >>> abs(Literal(-1))
         rdflib.term.Literal('1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
@@ -1042,7 +1046,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    def __invert__(self) -> "Literal":
+    def __invert__(self) -> Literal:
         """
         >>> ~(Literal(-1))
         rdflib.term.Literal('0', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))
@@ -1430,7 +1434,7 @@ class Literal(Identifier):
     def neq(self, other: Any) -> bool:
         return not self.eq(other)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         r'''
         Returns a representation in the N3 format.
 
@@ -1491,7 +1495,7 @@ class Literal(Identifier):
     def _literal_n3(
         self,
         use_plain: bool = False,
-        qname_callback: Optional[Callable[[str], str]] = None,
+        qname_callback: Optional[Callable[[URIRef], Optional[str]]] = None,
     ) -> str:
         """
         Using plain literal (shorthand) output::
@@ -2210,7 +2214,7 @@ class Variable(Identifier):
 
     __slots__ = ()
 
-    def __new__(cls, value: str) -> "Variable":
+    def __new__(cls, value: str) -> Variable:
         if len(value) == 0:
             raise Exception("Attempted to create variable with empty string as name!")
         if value[0] == "?":
@@ -2228,10 +2232,10 @@ class Variable(Identifier):
     def toPython(self) -> str:  # noqa: N802
         return "?%s" % self
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
         return "?%s" % self
 
-    def __reduce__(self) -> Tuple[Type["Variable"], Tuple[str]]:
+    def __reduce__(self) -> Tuple[Type[Variable], Tuple[str]]:
         return (Variable, (str(self),))
 
 
@@ -2281,9 +2285,11 @@ def _isEqualXMLNode(  # noqa: N802
         # length would be unnecessary. In Python 3,
         # the semantics of map has changed (why, oh why???) and the check
         # for the length becomes necessary...
-        if len(node.childNodes) != len(other.childNodes):
+        # type error: Item "None" of "Union[None, Attr, Comment, Document, DocumentFragment, DocumentType, Element, Entity, Notation, ProcessingInstruction, Text]" has no attribute "childNodes"
+        if len(node.childNodes) != len(other.childNodes):  # type: ignore[union-attr]
             return False
-        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
+        # type error: Item "None" of "Union[None, Attr, Comment, Document, DocumentFragment, DocumentType, Element, Entity, Notation, ProcessingInstruction, Text]" has no attribute "childNodes"
+        for nc, oc in map(lambda x, y: (x, y), node.childNodes, other.childNodes):  # type: ignore[union-attr]
             if not _isEqualXMLNode(nc, oc):
                 return False
         # if we got here then everything is fine:

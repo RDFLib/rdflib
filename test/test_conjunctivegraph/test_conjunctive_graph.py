@@ -2,9 +2,7 @@
 Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
-
 from io import StringIO
-
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph

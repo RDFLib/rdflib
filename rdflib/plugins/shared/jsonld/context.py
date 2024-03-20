@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Implementation of the JSON-LD Context structure. See:
 
     http://json-ld.org/
 
 """
+
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
 from __future__ import annotations
 
@@ -68,11 +68,15 @@ UNDEF = Defined(0)
 # From <https://tools.ietf.org/html/rfc3986#section-2.2>
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
+_ContextSourceType = Union[
+    List[Union[Dict[str, Any], str, None]], Dict[str, Any], str, None
+]
+
 
 class Context:
     def __init__(
         self,
-        source: Optional[Any] = None,
+        source: _ContextSourceType = None,
         base: Optional[str] = None,
         version: Optional[float] = None,
     ):
@@ -111,13 +115,13 @@ class Context:
         )
         self._basedomain = "%s://%s" % urlsplit(base)[0:2] if base else None
 
-    def subcontext(self, source: Any, propagate: bool = True) -> "Context":
+    def subcontext(self, source: Any, propagate: bool = True) -> Context:
         # IMPROVE: to optimize, implement SubContext with parent fallback support
         parent = self.parent if self.propagate is False else self
         # type error: Item "None" of "Optional[Context]" has no attribute "_subcontext"
         return parent._subcontext(source, propagate)  # type: ignore[union-attr]
 
-    def _subcontext(self, source: Any, propagate: bool) -> "Context":
+    def _subcontext(self, source: Any, propagate: bool) -> Context:
         ctx = Context(version=self.version)
         ctx.propagate = propagate
         ctx.parent = self
@@ -143,12 +147,12 @@ class Context:
         self.active = False
         self.propagate = True
 
-    def get_context_for_term(self, term: Optional["Term"]) -> "Context":
+    def get_context_for_term(self, term: Optional[Term]) -> Context:
         if term and term.context is not UNDEF:
             return self._subcontext(term.context, propagate=True)
         return self
 
-    def get_context_for_type(self, node: Any) -> Optional["Context"]:
+    def get_context_for_type(self, node: Any) -> Optional[Context]:
         if self.version >= 1.1:
             rtype = self.get_type(node) if isinstance(node, dict) else None
             if not isinstance(rtype, list):
@@ -390,12 +394,14 @@ class Context:
 
     def load(
         self,
-        source: Optional[Union[List[Any], Any]],
+        source: _ContextSourceType,
         base: Optional[str] = None,
         referenced_contexts: Set[Any] = None,
     ):
         self.active = True
-        sources: List[Any] = []
+        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]] = []
+        # "Union[List[Union[Dict[str, Any], str]], List[Dict[str, Any]], List[str]]" : expression
+        # "Union[List[Dict[str, Any]], Dict[str, Any], List[str], str]" : variable
         source = source if isinstance(source, list) else [source]
         referenced_contexts = referenced_contexts or set()
         self._prep_sources(base, source, sources, referenced_contexts)
@@ -403,7 +409,8 @@ class Context:
             if source is None:
                 self._clear()
             else:
-                self._read_source(source, source_url, referenced_contexts)
+                # type error: Argument 1 to "_read_source" of "Context" has incompatible type "Union[Dict[str, Any], str]"; expected "Dict[str, Any]"
+                self._read_source(source, source_url, referenced_contexts)  # type: ignore[arg-type]
 
     def _accept_term(self, key: str) -> bool:
         if self.version < 1.1:
@@ -416,8 +423,8 @@ class Context:
     def _prep_sources(
         self,
         base: Optional[str],
-        inputs: List[Any],
-        sources: List[Any],
+        inputs: Union[List[Union[Dict[str, Any], str, None]], List[str]],
+        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]],
         referenced_contexts: Set[str],
         in_source_url: Optional[str] = None,
     ):
@@ -444,10 +451,12 @@ class Context:
             if isinstance(source, dict):
                 if CONTEXT in source:
                     source = source[CONTEXT]
-                    source = source if isinstance(source, list) else [source]
+                    # type ignore: Incompatible types in assignment (expression has type "List[Union[Dict[str, Any], str, None]]", variable has type "Union[Dict[str, Any], str, None]")
+                    source = source if isinstance(source, list) else [source]  # type: ignore[assignment]
 
             if isinstance(source, list):
-                self._prep_sources(
+                # type error: Statement is unreachable
+                self._prep_sources(  # type: ignore[unreachable]
                     new_base, source, sources, referenced_contexts, source_url
                 )
             else:

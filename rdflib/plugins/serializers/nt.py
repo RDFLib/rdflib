@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""
-N-Triples RDF graph serializer for RDFLib.
-See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
-format.
-"""
 import codecs
 import warnings
 from typing import IO, TYPE_CHECKING, Optional, Tuple, Union
@@ -15,6 +10,12 @@ from rdflib.term import Literal
 
 if TYPE_CHECKING:
     from rdflib.graph import _TripleType
+
+"""
+N-Triples RDF graph serializer for RDFLib.
+See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
+format.
+"""
 
 __all__ = ["NTSerializer"]
 
