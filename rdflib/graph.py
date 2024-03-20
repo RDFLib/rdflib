@@ -2205,7 +2205,7 @@ class ConjunctiveGraph(Graph):
         file: Optional[Union[BinaryIO, TextIO]] = None,
         data: Optional[Union[str, bytes]] = None,
         **args: Any,
-    ) -> Graph:
+    ) -> "ConjunctiveGraph":
         """
         Parse source adding the resulting triples to its own context (sub graph
         of this graph).
@@ -2261,8 +2261,7 @@ class ConjunctiveGraph(Graph):
 
         context = self.default_context
         context.parse(source, publicID=publicID, format=format, **args)
-        # TODO: FIXME: This should not return context, but self.
-        return context
+        return self
 
     def __reduce__(self) -> Tuple[Type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return ConjunctiveGraph, (self.store, self.identifier)
@@ -2465,7 +2464,7 @@ class Dataset(ConjunctiveGraph):
         file: Optional[Union[BinaryIO, TextIO]] = None,
         data: Optional[Union[str, bytes]] = None,
         **args: Any,
-    ) -> Graph:
+    ) -> "Dataset":
         """
         Parse an RDF source adding the resulting triples to the Graph.
 
@@ -2501,8 +2500,11 @@ class Dataset(ConjunctiveGraph):
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )
-        self.graph(c)
-        return c
+
+        for context in c.contexts():
+            self.graph(context)
+
+        return self
 
     def add_graph(
         self, g: Optional[Union[_ContextIdentifierType, _ContextType, str]]

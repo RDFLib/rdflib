@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+from io import StringIO
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 from test.utils.namespace import EGSCHEME
 
@@ -24,6 +25,9 @@ from rdflib.store import Store
 
 HOST = "http://localhost:3030"
 DB = "/db/"
+DATA = """
+<http://example.org/record/1> a <http://xmlns.com/foaf/0.1/Document> .
+"""
 
 pluginstores = []
 
@@ -261,3 +265,21 @@ def test_subgraph_without_identifier() -> None:
     ) == ("genid", genid_prefix)
 
     assert f"{subgraph.identifier}".startswith(genid_prefix)
+
+
+def test_parse_return_type():
+    g = Dataset()
+    g.parse(data=DATA, format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g = g.parse(data=DATA, format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g.parse(source=StringIO(DATA), format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g = g.parse(source=StringIO(DATA), format="turtle")
+    assert type(g) is Dataset
