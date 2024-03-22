@@ -160,3 +160,27 @@ def test_cbd_target(rdfs_graph: Graph):
 
     assert result is target
     assert expected_result == set(result.triples((None, None, None)))
+
+
+def test_cbd_subject(get_graph):
+    g = get_graph
+
+    assert g.cbd(EX.R1).cbd_subject() == (
+        EX.R1
+    ), "cbd_subject() for CBD of EX.R1 should be EX.R1"
+    assert g.cbd(EX.R2).cbd_subject() == (
+        EX.R2
+    ), "cbd_subject() for CBD of EX.R2 should be EX.R2"
+    assert g.cbd(EX.R3).cbd_subject() == (
+        EX.R3
+    ), "cbd_subject() for CBD of EX.R3 should be EX.R3"
+    assert g.cbd(EX.R4).cbd_subject() == (
+        None
+    ), "cbd_subject() for CBD of EX.R4 should be None"
+
+    test_g = g.cbd(EX.R1)
+    test_g.add((EX.R2, EX.propOne, EX.P1))
+
+    assert test_g.cbd_subject() is (
+        None
+    ), "cbd_subject() of graph with an additional subject should be None"

@@ -949,6 +949,12 @@ class Graph(Node):
         ):
             yield s, p, o
 
+    def roots(self) -> Generator["_SubjectType", None, None]:
+        """A generator of subjects that are roots of the graph"""
+        for s in self.subjects(unique=True):
+            if (None, None, s) not in self:
+                yield s
+
     @overload
     def value(
         self,
@@ -1884,6 +1890,23 @@ class Graph(Node):
         add_to_cbd(resource)
 
         return subgraph
+
+    def cbd_subject(self) -> Optional[_SubjectType]:
+        """Determine the subject for which the graph is a Concise Bounded Description
+
+        :return: The subject of the CBD or None
+        """
+        roots = set(self.roots())
+        if len(roots) != 1:
+            # A CBD has exactly one root
+            return None
+        root = roots.pop()
+
+        real_cbd = self.cbd(root)
+        if not real_cbd.isomorphic(self):
+            return None
+
+        return root
 
 
 _ContextType = Graph
