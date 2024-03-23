@@ -78,9 +78,9 @@ class Context:
         self,
         source: _ContextSourceType = None,
         base: Optional[str] = None,
-        version: Optional[float] = None,
+        version: Optional[float] = 1.1,
     ):
-        self.version: float = version or 1.0
+        self.version: float = version or 1.1
         self.language = None
         self.vocab: Optional[str] = None
         self._base: Optional[str]

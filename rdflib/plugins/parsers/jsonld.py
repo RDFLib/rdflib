@@ -79,7 +79,9 @@ class JsonLDParser(rdflib.parser.Parser):
     def __init__(self):
         super(JsonLDParser, self).__init__()
 
-    def parse(self, source: InputSource, sink: Graph, **kwargs: Any) -> None:
+    def parse(
+        self, source: InputSource, sink: Graph, version: float = 1.1, **kwargs: Any
+    ) -> None:
         # TODO: docstring w. args and return value
         encoding = kwargs.get("encoding") or "utf-8"
         if encoding not in ("utf-8", "utf-16"):
@@ -99,9 +101,9 @@ class JsonLDParser(rdflib.parser.Parser):
             context_data = context_from_urlinputsource(source)
 
         try:
-            version = float(kwargs.get("version", "1.0"))
+            version = float(version)
         except ValueError:
-            version = None
+            version = 1.1
 
         generalized_rdf = kwargs.get("generalized_rdf", False)
 
@@ -401,7 +403,9 @@ class Parser:
                 (
                     dict({GRAPH: o})
                     if k in context.get_keys(NONE)
-                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                    else dict({ID: k, GRAPH: o})
+                    if isinstance(o, dict)
+                    else o
                 )
                 for k, o in obj.items()
             ]
