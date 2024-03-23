@@ -163,7 +163,7 @@ class Context:
                 try:
                     typeterm = self.terms.get(rt)
                 except TypeError:
-                    #extra lenience, triggers if type is set to a literal
+                    # extra lenience, triggers if type is set to a literal
                     pass
                 if typeterm is not None:
                     break
