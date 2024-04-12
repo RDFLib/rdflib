@@ -91,6 +91,7 @@ class SPARQLConnector:
             raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {}
+        default_graph = default_graph or self.kwargs.get("default_graph")
         # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
         if default_graph is not None and type(default_graph) != BNode:
             params["default-graph-uri"] = default_graph
