@@ -78,9 +78,9 @@ class Context:
         self,
         source: _ContextSourceType = None,
         base: Optional[str] = None,
-        version: Optional[float] = None,
+        version: Optional[float] = 1.1,
     ):
-        self.version: float = version or 1.0
+        self.version: float = version or 1.1
         self.language = None
         self.vocab: Optional[str] = None
         self._base: Optional[str]
@@ -158,12 +158,15 @@ class Context:
             if not isinstance(rtype, list):
                 rtype = [rtype] if rtype else []
 
+            typeterm = None
             for rt in rtype:
-                typeterm = self.terms.get(rt)
-                if typeterm:
+                try:
+                    typeterm = self.terms.get(rt)
+                except TypeError:
+                    # extra lenience, triggers if type is set to a literal
+                    pass
+                if typeterm is not None:
                     break
-            else:
-                typeterm = None
 
             if typeterm and typeterm.context:
                 subcontext = self.subcontext(typeterm.context, propagate=False)
