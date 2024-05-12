@@ -905,7 +905,7 @@ class SinkParser:
         term = self._anonymousNodes.get(ln, None)
         if term is not None:
             return term
-        term = self._store.newBlankNode(self._context, why=self._reason2)
+        term = self._store.newBlankNode(self._context, uri='#' + ln, why=self._reason2)
         self._anonymousNodes[ln] = term
         return term
 
