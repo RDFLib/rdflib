@@ -57,6 +57,13 @@ def test_context_namespaces():
     assert ("ex", ns) in g.namespace_manager.namespaces()
 
 
+def test_deprecated():
+    with pytest.warns(
+        DeprecationWarning, match="ConjunctiveGraph is deprecated, use Dataset instead."
+    ):
+        ConjunctiveGraph()
+
+
 def get_graph_ids_tests():
     def check(kws):
         cg = ConjunctiveGraph()
