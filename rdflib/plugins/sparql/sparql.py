@@ -255,6 +255,7 @@ class QueryContext:
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
+        datasetClause=None
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -264,11 +265,25 @@ class QueryContext:
         self.graph: Optional[Graph]
         self._dataset: Optional[ConjunctiveGraph]
         if isinstance(graph, ConjunctiveGraph):
-            self._dataset = graph
-            if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
-                self.graph = self.dataset
+            if datasetClause:
+                self._dataset = ConjunctiveGraph()
+                self.graph = Graph()
+                for d in datasetClause:
+                    if d.default:
+                        self.graph += graph.get_context(d.default)
+                        if not graph.get_context(d.default):
+                            self.load(d.default, default=True)
+                    elif d.named:
+                        namedGraphs = Graph(store=self.dataset.store, identifier=d.named)
+                        namedGraphs += graph.get_context(d.named)
+                        if not graph.get_context(d.named):
+                            self.load(d.named, default=False)
             else:
-                self.graph = self.dataset.default_context
+                self._dataset = graph
+                if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
+                    self.graph = self.dataset
+                else:
+                    self.graph = self.dataset.default_context
         else:
             self._dataset = None
             self.graph = graph

@@ -661,36 +661,12 @@ def evalQuery(
         :doc:`Security Considerations </security_considerations>`
         documentation.
     """
+    main = query.algebra
 
     initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
-    ctx = QueryContext(graph, initBindings=initBindings)
+    ctx = QueryContext(graph, initBindings=initBindings, datasetClause=main.datasetClause)
 
     ctx.prologue = query.prologue
-    main = query.algebra
-
-    if main.datasetClause:
-        if ctx.dataset is None:
-            raise Exception(
-                "Non-conjunctive-graph doesn't know about "
-                + "graphs! Try a query without FROM (NAMED)."
-            )
-
-        ctx = ctx.clone()  # or push/pop?
-
-        firstDefault = False
-        for d in main.datasetClause:
-            if d.default:
-                if firstDefault:
-                    # replace current default graph
-                    dg = ctx.dataset.get_context(BNode())
-                    ctx = ctx.pushGraph(dg)
-                    firstDefault = True
-
-                ctx.load(d.default, default=True)
-
-            elif d.named:
-                g = d.named
-                ctx.load(g, default=False)
 
     return evalPart(ctx, main)
