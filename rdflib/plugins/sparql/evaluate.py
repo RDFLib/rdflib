@@ -665,7 +665,9 @@ def evalQuery(
 
     initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
-    ctx = QueryContext(graph, initBindings=initBindings, datasetClause=main.datasetClause)
+    ctx = QueryContext(
+        graph, initBindings=initBindings, datasetClause=main.datasetClause
+    )
 
     ctx.prologue = query.prologue
 

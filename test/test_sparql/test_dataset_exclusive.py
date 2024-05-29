@@ -9,7 +9,9 @@ graph = ConjunctiveGraph()
 graph.add((URIRef("urn:s0"), URIRef("urn:p0"), URIRef("urn:o0")))
 # Adding into named graphs
 graph.add((URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1"), URIRef("urn:g1")))
+
 graph.add((URIRef("urn:s2"), URIRef("urn:p2"), URIRef("urn:o2"), URIRef("urn:g2")))
+
 graph.add((URIRef("urn:s3"), URIRef("urn:p3"), URIRef("urn:o3"), URIRef("urn:g3")))
 
 
@@ -24,19 +26,34 @@ def configure_rdflib() -> Generator[None, None, None]:
 # Test implicit exlusive dataset
 def test_exclusive():
     results = list(graph.query("SELECT ?s ?p ?o WHERE {?s ?p ?o}"))
-    assert results == [(URIRef('urn:s0'), URIRef('urn:p0'), URIRef('urn:o0'))]
+    assert results == [(URIRef("urn:s0"), URIRef("urn:p0"), URIRef("urn:o0"))]
 
 
 # Test explicit default graph with exclusive dataset
 def test_from():
-    results = list(graph.query("SELECT ?s ?p ?o FROM <urn:g1> WHERE {?s ?p ?o}"))
-    assert results == [(URIRef('urn:s1'), URIRef('urn:p1'), URIRef('urn:o1'))]
+    query = """
+        SELECT ?s ?p ?o
+        FROM <urn:g1>
+        WHERE {?s ?p ?o}
+    """
+    results = list(graph.query(query))
+    assert results == [(URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1"))]
 
 
 # Test explicit named graphs with exclusive dataset
 def test_from_named():
-    results = list(graph.query("SELECT ?g ?s ?p ?o FROM NAMED <urn:g1> WHERE {graph ?g {?s ?p ?o}}"))
-    assert results == [(URIRef('urn:g1'), URIRef('urn:s1'), URIRef('urn:p1'), URIRef('urn:o1'))]
+    query = """
+        SELECT
+        ?g ?s ?p ?o
+        FROM NAMED <urn:g1>
+        WHERE {
+            graph ?g {?s ?p ?o}
+        }
+    """
+    results = list(graph.query(query))
+    assert results == [
+        (URIRef("urn:g1"), URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1"))
+    ]
 
 
 # Test that we can use from and from named in the same query
@@ -52,6 +69,6 @@ def test_from_and_from_named():
     """
     results = list(graph.query(query))
     assert results == [
-        (None, URIRef('urn:s1'), URIRef('urn:p1'), URIRef('urn:o1')),
-        (URIRef('urn:g2'), URIRef('urn:s2'), URIRef('urn:p2'), URIRef('urn:o2'))
-        ]
+        (None, URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1")),
+        (URIRef("urn:g2"), URIRef("urn:s2"), URIRef("urn:p2"), URIRef("urn:o2")),
+    ]

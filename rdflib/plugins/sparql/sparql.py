@@ -255,7 +255,7 @@ class QueryContext:
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
-        datasetClause=None
+        datasetClause=None,
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -274,7 +274,9 @@ class QueryContext:
                         if not graph.get_context(d.default):
                             self.load(d.default, default=True)
                     elif d.named:
-                        namedGraphs = Graph(store=self.dataset.store, identifier=d.named)
+                        namedGraphs = Graph(
+                            store=self.dataset.store, identifier=d.named
+                        )
                         namedGraphs += graph.get_context(d.named)
                         if not graph.get_context(d.named):
                             self.load(d.named, default=False)
