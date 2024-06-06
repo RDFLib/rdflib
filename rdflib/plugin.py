@@ -580,12 +580,6 @@ register(
     "XMLResultParser",
 )
 register(
-    "application/sparql-results+xml; charset=UTF-8",
-    ResultParser,
-    "rdflib.plugins.sparql.results.xmlresults",
-    "XMLResultParser",
-)
-register(
     "application/rdf+xml",
     ResultParser,
     "rdflib.plugins.sparql.results.graph",
