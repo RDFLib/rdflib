@@ -162,7 +162,7 @@ class SPARQLStore(SPARQLConnector, Store):
         sparql11: bool = True,
         context_aware: bool = True,
         node_to_sparql: _NodeToSparql = _node_to_sparql,
-        returnFormat: SUPPORTED_FORMATS = "xml",  # noqa: N803
+        returnFormat: SUPPORTED_FORMATS | None = "xml",  # noqa: N803
         method: SUPPORTED_METHODS = "GET",
         auth: tuple[str, str] | None = None,
         **sparqlconnector_kwargs,
