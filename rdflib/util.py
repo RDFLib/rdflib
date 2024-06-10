@@ -74,6 +74,47 @@ _HashableT = TypeVar("_HashableT", bound=Hashable)
 _AnyT = TypeVar("_AnyT")
 
 
+SUFFIX_FORMAT_MAP = {
+    "xml": "xml",
+    "rdf": "xml",
+    "owl": "xml",
+    "n3": "n3",
+    "ttl": "turtle",
+    "nt": "nt",
+    "trix": "trix",
+    "xhtml": "rdfa",
+    "html": "rdfa",
+    "svg": "rdfa",
+    "nq": "nquads",
+    "nquads": "nquads",
+    "trig": "trig",
+    "json": "json-ld",
+    "jsonld": "json-ld",
+    "json-ld": "json-ld",
+}
+
+
+FORMAT_MIMETYPE_MAP = {
+    "xml": ["application/rdf+xml"],
+    "n3": ["text/n3"],
+    "turtle": ["text/turtle"],
+    "nt": ["application/n-triples"],
+    "trix": ["application/trix"],
+    "rdfa": ["text/html", "application/xhtml+xml"],
+    "nquads": ["application/n-quads"],
+    "trig": ["application/trig"],
+    "json-ld": ["application/ld+json"],
+}
+
+
+RESPONSE_TABLE_FORMAT_MIMETYPE_MAP = {
+    "xml": ["application/sparql-results+xml"],
+    "json": ["application/sparql-results+json"],
+    "csv": ["text/csv"],
+    "tsv": ["text/tab-separated-values"],
+}
+
+
 def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
     """
     Return a new list without duplicates.
@@ -329,26 +370,6 @@ def parse_date_time(val: str) -> int:
     )
     t = t + tz_offset
     return t
-
-
-SUFFIX_FORMAT_MAP = {
-    "xml": "xml",
-    "rdf": "xml",
-    "owl": "xml",
-    "n3": "n3",
-    "ttl": "turtle",
-    "nt": "nt",
-    "trix": "trix",
-    "xhtml": "rdfa",
-    "html": "rdfa",
-    "svg": "rdfa",
-    "nq": "nquads",
-    "nquads": "nquads",
-    "trig": "trig",
-    "json": "json-ld",
-    "jsonld": "json-ld",
-    "json-ld": "json-ld",
-}
 
 
 def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[str]:
