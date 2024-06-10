@@ -557,12 +557,6 @@ register(
     "XMLResultParser",
 )
 register(
-    "application/rdf+xml",
-    ResultParser,
-    "rdflib.plugins.sparql.results.graph",
-    "GraphResultParser",
-)
-register(
     "json",
     ResultParser,
     "rdflib.plugins.sparql.results.jsonresults",
@@ -598,3 +592,10 @@ register(
     "rdflib.plugins.sparql.results.tsvresults",
     "TSVResultParser",
 )
+for parser in list(plugins(kind=Parser)):
+    register(
+        parser.name,
+        ResultParser,
+        "rdflib.plugins.sparql.results.graph",
+        "GraphResultParser",
+    )
