@@ -9,11 +9,9 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from rdflib.query import Result
-from rdflib.term import BNode
 from rdflib.plugin import plugins
-from rdflib.query import ResultParser
-
+from rdflib.query import Result, ResultParser
+from rdflib.term import BNode
 from rdflib.util import FORMAT_MIMETYPE_MAP, RESPONSE_TABLE_FORMAT_MIMETYPE_MAP
 
 log = logging.getLogger(__name__)
