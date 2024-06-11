@@ -615,9 +615,13 @@ register(
     "rdflib.plugins.sparql.results.tsvresults",
     "TSVResultParser",
 )
-for parser in list(plugins(kind=Parser)):
+
+graph_parsers = {parser.name for parser in plugins(kind=Parser)}
+result_parsers = {parser.name for parser in plugins(kind=ResultParser)}
+graph_result_parsers = graph_parsers - result_parsers
+for parser_name in graph_result_parsers:
     register(
-        parser.name,
+        parser_name,
         ResultParser,
         "rdflib.plugins.sparql.results.graph",
         "GraphResultParser",
