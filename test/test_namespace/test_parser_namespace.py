@@ -96,6 +96,7 @@ def test_literals(
         URIRef("https://example.org/namespaces/testexample/"),
     ) in all_ns
 
+
 def test_namespacemanager() -> None:
     """
     Setup a namespace manager add two prefixes for the same IRI.
@@ -104,9 +105,7 @@ def test_namespacemanager() -> None:
     namespaces.bind(
         "testexample", Namespace("https://example.org/namespaces/testexample/")
     )
-    namespaces.bind(
-        "test", Namespace("https://example.org/namespaces/testexample/")
-    )
+    namespaces.bind("test", Namespace("https://example.org/namespaces/testexample/"))
     all_ns = [n for n in namespaces.namespaces()]
     assert (
         "testexample",
