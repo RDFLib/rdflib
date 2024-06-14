@@ -430,7 +430,7 @@ class SinkParser:
             )
 
         self._baseURI: Optional[str]
-        if baseURI:
+        if baseURI is not None:
             self._baseURI = baseURI
         else:
             if thisDoc:
@@ -642,13 +642,15 @@ class SinkParser:
 
             if self._baseURI:
                 ns = join(self._baseURI, ns)
-            elif ":" not in ns:
+            elif self._baseURI is None:
                 self.BadSyntax(
                     argstr,
                     j,
                     f"With no base URI, cannot use relative URI in @prefix <{ns}>",
                 )
-            assert ":" in ns  # must be absolute
+
+            if self._baseURI != "":
+                assert ":" in ns  # must be absolute
             self._bindings[t[0][0]] = ns
             self.bind(t[0][0], hexify(ns))
             return j
@@ -663,7 +665,7 @@ class SinkParser:
 
             if self._baseURI:
                 ns = join(self._baseURI, ns)
-            else:
+            elif self._baseURI is None:
                 self.BadSyntax(
                     argstr,
                     j,
@@ -672,8 +674,9 @@ class SinkParser:
                     + ns
                     + ">",
                 )
-            assert ":" in ns  # must be absolute
-            self._baseURI = ns
+            if self._baseURI != "":
+                assert ":" in ns  # must be absolute
+                self._baseURI = ns
             return i
 
         return -1  # Not a directive, could be something else.
@@ -699,9 +702,7 @@ class SinkParser:
                 self.BadSyntax(argstr, i, "expected <uriref> after @prefix _qname_")
             ns = self.uriOf(t[1])
 
-            if self._baseURI:
-                ns = join(self._baseURI, ns)
-            elif ":" not in ns:
+            if self._baseURI is None and ":" not in ns:
                 self.BadSyntax(
                     argstr,
                     j,
@@ -710,7 +711,9 @@ class SinkParser:
                     + ns
                     + ">",
                 )
-            assert ":" in ns  # must be absolute
+            elif self._baseURI != "":
+                ns = join(self._baseURI, ns)
+
             self._bindings[t[0][0]] = ns
             self.bind(t[0][0], hexify(ns))
             return j
@@ -723,7 +726,7 @@ class SinkParser:
                 self.BadSyntax(argstr, j, "expected <uri> after @base ")
             ns = self.uriOf(t[0])
 
-            if self._baseURI:
+            if self._baseURI or self._baseURI == "":
                 ns = join(self._baseURI, ns)
             else:
                 self.BadSyntax(
@@ -734,8 +737,9 @@ class SinkParser:
                     + ns
                     + ">",
                 )
-            assert ":" in ns  # must be absolute
-            self._baseURI = ns
+            if self._baseURI != "":
+                assert ":" in ns  # must be absolute
+                self._baseURI = ns
             return i
 
         return -1  # Not a directive, could be something else.
@@ -1235,7 +1239,11 @@ class SinkParser:
                         res.append(self.anonymousNode(ln))
                         return j
                     if not self.turtle and pfx == "":
-                        ns = join(self._baseURI or "", "#")
+                        ns = (
+                            "#"
+                            if self._baseURI == ""
+                            else join(self._baseURI or "", "#")
+                        )
                     else:
                         self.BadSyntax(argstr, i, 'Prefix "%s:" not bound' % (pfx))
             symb = self._store.newSymbol(ns + ln)
@@ -1264,12 +1272,13 @@ class SinkParser:
                 uref = unicodeEscape8.sub(unicodeExpand, uref)
                 uref = unicodeEscape4.sub(unicodeExpand, uref)
 
-                if self._baseURI:
-                    uref = join(self._baseURI, uref)  # was: uripath.join
-                else:
+                if self._baseURI is None:
                     assert (
                         ":" in uref
                     ), "With no base URI, cannot deal with relative URIs"
+                elif self._baseURI != "":
+                    uref = join(self._baseURI, uref)  # was: uripath.join
+
                 if argstr[i - 1] == "#" and not uref[-1:] == "#":
                     uref += "#"  # She meant it! Weirdness in urlparse?
                 symb = self._store.newSymbol(uref)
@@ -2011,7 +2020,12 @@ class TurtleParser(Parser):
 
         sink = RDFSink(graph)
 
-        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
+        public_id = source.getPublicId()
+        baseURI = (
+            public_id
+            if public_id == ""
+            else graph.absolutize(public_id or source.getSystemId() or "")
+        )
         p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
         # N3 parser prefers str stream
         stream = source.getCharacterStream()

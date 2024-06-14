@@ -160,10 +160,13 @@ class TrigParser(Parser):
 
         sink = RDFSink(conj_graph)
 
-        baseURI = conj_graph.absolutize(  # noqa: N806
-            source.getPublicId() or source.getSystemId() or ""
+        public_id = source.getPublicId()
+        base_uri = (
+            public_id
+            if public_id == ""
+            else conj_graph.absolutize(public_id or source.getSystemId() or "")
         )
-        p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
+        p = TrigSinkParser(sink, baseURI=base_uri, turtle=True)
 
         stream = source.getCharacterStream()  # try to get str stream first
         if not stream:
