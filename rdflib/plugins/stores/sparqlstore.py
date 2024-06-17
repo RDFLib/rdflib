@@ -3,6 +3,7 @@ This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
 
 """
+
 from __future__ import annotations
 
 import collections
@@ -401,9 +402,11 @@ class SPARQLStore(SPARQLConnector, Store):
             result = self._query(
                 q,
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"
-                default_graph=context.identifier  # type: ignore[union-attr]
-                if self._is_contextual(context)
-                else None,
+                default_graph=(
+                    context.identifier  # type: ignore[union-attr]
+                    if self._is_contextual(context)
+                    else None
+                ),
             )
             # type error: Item "Tuple[Node, ...]" of "Union[Tuple[Node, Node, Node], bool, ResultRow]" has no attribute "c"
             return int(next(iter(result)).c)  # type: ignore[union-attr]
@@ -468,12 +471,10 @@ class SPARQLStore(SPARQLConnector, Store):
         raise TypeError("The SPARQL store is read only")
 
     @overload
-    def _is_contextual(self, graph: None) -> te.Literal[False]:
-        ...
+    def _is_contextual(self, graph: None) -> te.Literal[False]: ...
 
     @overload
-    def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool:
-        ...
+    def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool: ...
 
     def _is_contextual(self, graph: Optional[Union[Graph, str]]) -> bool:
         """Returns `True` if the "GRAPH" keyword must appear
@@ -644,24 +645,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self._edits: Optional[List[str]] = None
         self._updates = 0
 
-    def open(
-        self, configuration: Union[str, Tuple[str, str]], create: bool = False
-    ) -> None:
-        """
-        This method is included so that calls to this Store via Graph, e.g.
-        Graph("SPARQLStore"), can set the required parameters
-        """
-        if type(configuration) == str:  # noqa: E721
-            self.query_endpoint = configuration
-        elif type(configuration) == tuple:
-            self.query_endpoint = configuration[0]
-            self.update_endpoint = configuration[1]
-        else:
-            raise Exception(
-                "configuration must be either a string (a single query endpoint URI) "
-                "or a tuple (a query/update endpoint URI pair)"
-            )
-
     def query(self, *args: Any, **kwargs: Any) -> Result:
         if not self.autocommit and not self.dirty_reads:
             self.commit()
@@ -688,8 +671,9 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
         return SPARQLStore.__len__(self, *args, **kwargs)
 
-    # TODO: FIXME: open is defined twice
-    def open(self, configuration: Union[str, Tuple[str, str]], create: bool = False) -> None:  # type: ignore[no-redef]  # noqa: F811
+    def open(
+        self, configuration: Union[str, Tuple[str, str]], create: bool = False
+    ) -> None:
         """
         sets the endpoint URLs for this SPARQLStore
 

@@ -6,7 +6,6 @@ using setEvalFn
 
 """
 
-
 from __future__ import annotations
 
 import datetime as py_datetime  # naming conflict with function within this module
@@ -1164,18 +1163,15 @@ def calculateFinalDateTime(
 
 
 @overload
-def EBV(rt: Literal) -> bool:
-    ...
+def EBV(rt: Literal) -> bool: ...
 
 
 @overload
-def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn:
-    ...
+def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn: ...
 
 
 @overload
-def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]:
-    ...
+def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]: ...
 
 
 def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:

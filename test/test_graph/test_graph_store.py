@@ -1,6 +1,7 @@
 """
 Tests for usage of the Store interface from Graph/NamespaceManager.
 """
+
 from __future__ import annotations
 
 import itertools

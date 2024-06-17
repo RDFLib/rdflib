@@ -20,8 +20,12 @@ class DOAP(DefinedNamespace):
     blog: URIRef  # URI of a blog related to a project
     browse: URIRef  # Web browser interface to repository.
     category: URIRef  # A category of project.
-    created: URIRef  # Date when something was created, in YYYY-MM-DD form. e.g. 2004-04-05
-    description: URIRef  # Plain text description of a project, of 2-4 sentences in length.
+    created: (
+        URIRef  # Date when something was created, in YYYY-MM-DD form. e.g. 2004-04-05
+    )
+    description: (
+        URIRef  # Plain text description of a project, of 2-4 sentences in length.
+    )
     developer: URIRef  # Developer of software for the project.
     documenter: URIRef  # Contributor of documentation to the project.
     helper: URIRef  # Project contributor.
@@ -57,11 +61,15 @@ class DOAP(DefinedNamespace):
     Project: URIRef  # A project.
     Repository: URIRef  # Source code repository.
     SVNRepository: URIRef  # Subversion source code repository.
-    Specification: URIRef  # A specification of a system's aspects, technical or otherwise.
+    Specification: (
+        URIRef  # A specification of a system's aspects, technical or otherwise.
+    )
     Version: URIRef  # Version information of a project release.
 
     # http://www.w3.org/2002/07/owl#InverseFunctionalProperty
-    homepage: URIRef  # URL of a project's homepage, 		associated with exactly one project.
+    homepage: (
+        URIRef  # URL of a project's homepage, 		associated with exactly one project.
+    )
 
     # Valid non-python identifiers
     _extras = [

@@ -71,7 +71,9 @@ class ODRL2(DefinedNamespace):
     trackedParty: URIRef  # The Party whose usage is being tracked.
     trackingParty: URIRef  # The Party who is tracking usage.
     uid: URIRef  # An unambiguous identifier
-    undefined: URIRef  # Relates the strategy used for handling undefined actions to a Policy.
+    undefined: (
+        URIRef  # Relates the strategy used for handling undefined actions to a Policy.
+    )
     unit: URIRef  # The unit of measurement of the value of the rightOperand or rightOperandReference of a Constraint.
     xone: URIRef  # The relation is satisfied when only one, and not more, of the Constraints is satisfied
 
@@ -89,7 +91,9 @@ class ODRL2(DefinedNamespace):
     count: URIRef  # Numeric count of executions of the action of the Rule.
     dateTime: URIRef  # The date (and optional time and timezone) of exercising the action of the Rule. Right operand value MUST be an xsd:date or xsd:dateTime as defined by [[xmlschema11-2]].
     delayPeriod: URIRef  # A time delay period prior to exercising the action of the Rule. The point in time triggering this period MAY be defined by another temporal Constraint combined by a Logical Constraint (utilising the odrl:andSequence operand). Right operand value MUST be an xsd:duration as defined by [[xmlschema11-2]].
-    deliveryChannel: URIRef  # The delivery channel used for exercising the action of the Rule.
+    deliveryChannel: (
+        URIRef  # The delivery channel used for exercising the action of the Rule.
+    )
     device: URIRef  # An identified device used for exercising the action of the Rule.
     elapsedTime: URIRef  # A continuous elapsed time period which may be used for exercising of the action of the Rule. Right operand value MUST be an xsd:duration as defined by [[xmlschema11-2]].
     eq: URIRef  # Indicating that a given value equals the right operand of the Constraint.
@@ -115,7 +119,9 @@ class ODRL2(DefinedNamespace):
     payAmount: URIRef  # The amount of a financial payment. Right operand value MUST be an xsd:decimal.
     percentage: URIRef  # A percentage amount of the target Asset relevant for exercising the action of the Rule. Right operand value MUST be an xsd:decimal from 0 to 100.
     perm: URIRef  # Permissions take preference over prohibitions.
-    policyUsage: URIRef  # Indicates the actual datetime the action of the Rule was exercised.
+    policyUsage: (
+        URIRef  # Indicates the actual datetime the action of the Rule was exercised.
+    )
     product: URIRef  # Category of product or service setting a context for exercising the action of the Rule.
     prohibit: URIRef  # Prohibitions take preference over permissions.
     purpose: URIRef  # A defined purpose for exercising the action of the Rule.
@@ -151,7 +157,9 @@ class ODRL2(DefinedNamespace):
     LogicalConstraint: URIRef  # A logical expression that refines the semantics of an Action and Party/Asset Collection or declare the conditions applicable to a Rule.
     Offer: URIRef  # A Policy that proposes a Rule over an Asset from an assigner.
     Operator: URIRef  # Operator for constraint expression.
-    Party: URIRef  # An entity or a collection of entities that undertake Roles in a Rule.
+    Party: (
+        URIRef  # An entity or a collection of entities that undertake Roles in a Rule.
+    )
     PartyCollection: URIRef  # A Party that is a group of individual entities
     PartyScope: URIRef  # Scopes for Party Scope expressions.
     Permission: URIRef  # The ability to perform an Action over an Asset.
@@ -162,25 +170,33 @@ class ODRL2(DefinedNamespace):
     RightOperand: URIRef  # Right operand for constraint expression.
     Rule: URIRef  # An abstract concept that represents the common characteristics of Permissions, Prohibitions, and Duties.
     Set: URIRef  # A Policy that expresses a Rule over an Asset.
-    Ticket: URIRef  # A Policy that grants the holder a Rule over an Asset from an assigner.
+    Ticket: (
+        URIRef  # A Policy that grants the holder a Rule over an Asset from an assigner.
+    )
     UndefinedTerm: URIRef  # Is used to indicate how to support Actions that are not part of any vocabulary or profile in the policy expression system.
     acceptTracking: URIRef  # To accept that the use of the Asset may be tracked.
     adHocShare: URIRef  # The act of sharing the asset to parties in close proximity to the owner.
-    aggregate: URIRef  # To use the Asset or parts of it as part of a composite collection.
+    aggregate: (
+        URIRef  # To use the Asset or parts of it as part of a composite collection.
+    )
     annotate: URIRef  # To add explanatory notations/commentaries to the Asset without modifying the Asset in any other way.
     anonymize: URIRef  # To anonymize all or parts of the Asset.
     append: URIRef  # The act of adding to the end of an asset.
     appendTo: URIRef  # The act of appending data to the Asset without modifying the Asset in any other way.
     archive: URIRef  # To store the Asset (in a non-transient form).
     attachPolicy: URIRef  # The act of keeping the policy notice with the asset.
-    attachSource: URIRef  # The act of attaching the source of the asset and its derivatives.
+    attachSource: (
+        URIRef  # The act of attaching the source of the asset and its derivatives.
+    )
     attribute: URIRef  # To attribute the use of the Asset.
     commercialize: URIRef  # The act of using the asset in a business environment.
     compensate: URIRef  # To compensate by transfer of some amount of value, if defined, for using or selling the Asset.
     concurrentUse: URIRef  # To create multiple copies of the Asset that are being concurrently used.
     copy: URIRef  # The act of making an exact reproduction of the asset.
     core: URIRef  # Identifier for the ODRL Core Profile
-    delete: URIRef  # To permanently remove all copies of the Asset after it has been used.
+    delete: (
+        URIRef  # To permanently remove all copies of the Asset after it has been used.
+    )
     derive: URIRef  # To create a new derivative Asset from this Asset and to edit or modify the derivative.
     digitize: URIRef  # To produce a digital copy of (or otherwise digitize) the Asset from its analogue form.
     display: URIRef  # To create a static and transient rendition of an Asset.
@@ -190,8 +206,12 @@ class ODRL2(DefinedNamespace):
     export: URIRef  # The act of transforming the asset into a new form.
     extract: URIRef  # To extract parts of the Asset and to use it as a new Asset.
     extractChar: URIRef  # The act of extracting (replicating) unchanged characters from the asset.
-    extractPage: URIRef  # The act of extracting (replicating) unchanged pages from the asset.
-    extractWord: URIRef  # The act of extracting (replicating) unchanged words from the asset.
+    extractPage: (
+        URIRef  # The act of extracting (replicating) unchanged pages from the asset.
+    )
+    extractWord: (
+        URIRef  # The act of extracting (replicating) unchanged words from the asset.
+    )
     give: URIRef  # To transfer the ownership of the Asset to a third party without compensation and while deleting the original asset.
     grantUse: URIRef  # To grant the use of the Asset to third parties.
     include: URIRef  # To include other related assets in the Asset.

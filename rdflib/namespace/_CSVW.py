@@ -82,7 +82,9 @@ class CSVW(DefinedNamespace):
 
     # http://www.w3.org/2000/01/rdf-schema#Class
     Cell: URIRef  # A Cell represents a cell at the intersection of a Row and a Column within a Table.
-    Column: URIRef  # A Column represents a vertical arrangement of Cells within a Table.
+    Column: (
+        URIRef  # A Column represents a vertical arrangement of Cells within a Table.
+    )
     Datatype: URIRef  # Describes facets of a datatype.
     Dialect: URIRef  # A Dialect Description provides hints to parsers about how to parse a linked file.
     Direction: URIRef  # The class of table/text directions.
@@ -106,7 +108,11 @@ class CSVW(DefinedNamespace):
     rtl: URIRef  # Indicates whether the tables in the group should be displayed with the first column on the left.
 
     # http://www.w3.org/ns/prov#Role
-    csvEncodedTabularData: URIRef  # Describes the role of a CSV file in the tabular data mapping.
-    tabularMetadata: URIRef  # Describes the role of a Metadata file in the tabular data mapping.
+    csvEncodedTabularData: (
+        URIRef  # Describes the role of a CSV file in the tabular data mapping.
+    )
+    tabularMetadata: (
+        URIRef  # Describes the role of a Metadata file in the tabular data mapping.
+    )
 
     _NS = Namespace("http://www.w3.org/ns/csvw#")

@@ -35,7 +35,9 @@ class DCAT(DefinedNamespace):
     packageFormat: URIRef  # The package format of the distribution in which one or more data files are grouped together, e.g. to enable a set of related files to be downloaded together.
     record: URIRef  # A record describing the registration of a single dataset or data service that is part of the catalog.
     startDate: URIRef  # The start of the period
-    theme: URIRef  # A main category of the resource. A resource can have multiple themes.
+    theme: (
+        URIRef  # A main category of the resource. A resource can have multiple themes.
+    )
     themeTaxonomy: URIRef  # The knowledge organization system (KOS) used to classify catalog's datasets.
 
     # http://www.w3.org/2000/01/rdf-schema#Class
@@ -60,7 +62,9 @@ class DCAT(DefinedNamespace):
     endpointDescription: URIRef  # A description of the service end-point, including its operations, parameters etc.
     endpointURL: URIRef  # The root location or primary endpoint of the service (a web-resolvable IRI).
     hadRole: URIRef  # The function of an entity or agent with respect to another entity or resource.
-    qualifiedRelation: URIRef  # Link to a description of a relationship with another resource.
+    qualifiedRelation: (
+        URIRef  # Link to a description of a relationship with another resource.
+    )
     servesDataset: URIRef  # A collection of data that this DataService can distribute.
     service: URIRef  # A site or endpoint that is listed in the catalog.
 

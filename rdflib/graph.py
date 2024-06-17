@@ -19,6 +19,9 @@ see :class:`~rdflib.graph.Graph`
 Conjunctive Graph
 -----------------
 
+.. warning::
+    ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
+
 A Conjunctive Graph is the most relevant collection of graphs that are
 considered to be the boundary for closed world assumptions.  This
 boundary is equivalent to that of the store instance (which is itself
@@ -249,6 +252,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import random
+import warnings
 from io import BytesIO
 from typing import (
     IO,
@@ -558,22 +562,19 @@ class Graph(Node):
     def triples(
         self,
         triple: _TriplePatternType,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TriplePathPatternType,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TripleSelectorType,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -960,8 +961,7 @@ class Graph(Node):
         object: Optional[_ObjectType] = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -971,8 +971,7 @@ class Graph(Node):
         object: None = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -982,8 +981,7 @@ class Graph(Node):
         object: None = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def value(
@@ -993,8 +991,7 @@ class Graph(Node):
         object: Optional[_ObjectType] = ...,
         default: Optional[Node] = ...,
         any: bool = ...,
-    ) -> Optional[Node]:
-        ...
+    ) -> Optional[Node]: ...
 
     def value(
         self,
@@ -1232,8 +1229,7 @@ class Graph(Node):
         base: Optional[str],
         encoding: str,
         **args: Any,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     # no destination and non-None keyword encoding
     @overload
@@ -1245,8 +1241,7 @@ class Graph(Node):
         *,
         encoding: str,
         **args: Any,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     # no destination and None encoding
     @overload
@@ -1257,8 +1252,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: None = ...,
         **args: Any,
-    ) -> str:
-        ...
+    ) -> str: ...
 
     # non-None destination
     @overload
@@ -1269,8 +1263,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
         **args: Any,
-    ) -> _GraphT:
-        ...
+    ) -> _GraphT: ...
 
     # fallback
     @overload
@@ -1281,8 +1274,7 @@ class Graph(Node):
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
         **args: Any,
-    ) -> Union[bytes, str, _GraphT]:
-        ...
+    ) -> Union[bytes, str, _GraphT]: ...
 
     def serialize(
         self: _GraphT,
@@ -1487,7 +1479,18 @@ class Graph(Node):
             if format is None:
                 format = "turtle"
                 could_not_guess_format = True
-        parser = plugin.get(format, Parser)()
+        try:
+            parser = plugin.get(format, Parser)()
+        except plugin.PluginException:
+            # Handle the case when a URLInputSource returns RDF but with the headers
+            # as a format that does not exist in the plugin system.
+            # Use guess_format to guess the format based on the input's file suffix.
+            format = rdflib.util.guess_format(
+                source if not isinstance(source, InputSource) else str(source)
+            )
+            if format is None:
+                raise
+            parser = plugin.get(format, Parser)()
         try:
             # TODO FIXME: Parser.parse should have **kwargs argument.
             parser.parse(source, self, **args)
@@ -1894,6 +1897,9 @@ class ConjunctiveGraph(Graph):
     """A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
+    .. warning::
+        ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
+
     It has a ``default`` graph, whose name is associated with the
     graph throughout its life. :meth:`__init__` can take an identifier
     to use as the name of this default graph or it will assign a
@@ -1911,6 +1917,14 @@ class ConjunctiveGraph(Graph):
         default_graph_base: Optional[str] = None,
     ):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
+
+        if type(self) is ConjunctiveGraph:
+            warnings.warn(
+                "ConjunctiveGraph is deprecated, use Dataset instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         assert self.store.context_aware, (
             "ConjunctiveGraph must be backed by" " a context aware store."
         )
@@ -1932,48 +1946,42 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: _QuadType,
         default: bool = False,
-    ) -> _QuadType:
-        ...
+    ) -> _QuadType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Union[_TripleType, _OptionalQuadType],
         default: bool = False,
-    ) -> _OptionalQuadType:
-        ...
+    ) -> _OptionalQuadType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: None,
         default: bool = False,
-    ) -> Tuple[None, None, None, Optional[Graph]]:
-        ...
+    ) -> Tuple[None, None, None, Optional[Graph]]: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Optional[_TripleOrQuadPatternType],
         default: bool = False,
-    ) -> _QuadPatternType:
-        ...
+    ) -> _QuadPatternType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: _TripleOrQuadSelectorType,
         default: bool = False,
-    ) -> _QuadSelectorType:
-        ...
+    ) -> _QuadSelectorType: ...
 
     @overload
     def _spoc(
         self,
         triple_or_quad: Optional[_TripleOrQuadSelectorType],
         default: bool = False,
-    ) -> _QuadSelectorType:
-        ...
+    ) -> _QuadSelectorType: ...
 
     def _spoc(
         self,
@@ -2022,12 +2030,10 @@ class ConjunctiveGraph(Graph):
         return self
 
     @overload
-    def _graph(self, c: Union[Graph, _ContextIdentifierType, str]) -> Graph:
-        ...
+    def _graph(self, c: Union[Graph, _ContextIdentifierType, str]) -> Graph: ...
 
     @overload
-    def _graph(self, c: None) -> None:
-        ...
+    def _graph(self, c: None) -> None: ...
 
     def _graph(
         self, c: Optional[Union[Graph, _ContextIdentifierType, str]]
@@ -2069,24 +2075,21 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: _TripleOrQuadPatternType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple_or_quad: _TripleOrQuadPathPatternType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple_or_quad: _TripleOrQuadSelectorType,
         context: Optional[_ContextType] = ...,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -2832,22 +2835,19 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def triples(
         self,
         triple: _TriplePatternType,
-    ) -> Generator[_TripleType, None, None]:
-        ...
+    ) -> Generator[_TripleType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TriplePathPatternType,
-    ) -> Generator[_TriplePathType, None, None]:
-        ...
+    ) -> Generator[_TriplePathType, None, None]: ...
 
     @overload
     def triples(
         self,
         triple: _TripleSelectorType,
-    ) -> Generator[_TripleOrTriplePathType, None, None]:
-        ...
+    ) -> Generator[_TripleOrTriplePathType, None, None]: ...
 
     def triples(
         self,
@@ -2958,7 +2958,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
         if hasattr(self, "namespace_manager"):
-            for prefix, namespace in self.namespace_manager.namespaces():  # noqa: F402
+            for prefix, namespace in self.namespace_manager.namespaces():
                 yield prefix, namespace
         else:
             for graph in self.graphs:
@@ -2988,13 +2988,11 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
 
 @overload
-def _assertnode(*terms: Node) -> te.Literal[True]:
-    ...
+def _assertnode(*terms: Node) -> te.Literal[True]: ...
 
 
 @overload
-def _assertnode(*terms: Any) -> bool:
-    ...
+def _assertnode(*terms: Any) -> bool: ...
 
 
 def _assertnode(*terms: Any) -> bool:

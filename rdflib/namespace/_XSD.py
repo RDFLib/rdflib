@@ -47,9 +47,15 @@ class XSD(DefinedNamespace):
     language: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#language
     long: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#long
     negativeInteger: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#negativeInteger
-    nonNegativeInteger: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#nonNegativeInteger
-    nonPositiveInteger: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#nonPositiveInteger
-    normalizedString: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#normalizedString
+    nonNegativeInteger: (
+        URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#nonNegativeInteger
+    )
+    nonPositiveInteger: (
+        URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#nonPositiveInteger
+    )
+    normalizedString: (
+        URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#normalizedString
+    )
     positiveInteger: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#positiveInteger
     short: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#short
     string: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#string
@@ -59,7 +65,9 @@ class XSD(DefinedNamespace):
     unsignedInt: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#unsignedInt
     unsignedLong: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#unsignedLong
     unsignedShort: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#unsignedShort
-    yearMonthDuration: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#yearMonthDuration
+    yearMonthDuration: (
+        URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#yearMonthDuration
+    )
 
     # fundamental facets - https://www.w3.org/TR/xmlschema11-2/#rf-fund-facets
     ordered: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#rf-ordered
@@ -81,7 +89,9 @@ class XSD(DefinedNamespace):
     totalDigits: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#rf-totalDigits
     fractionDigits: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#rf-fractionDigits
     Assertions: URIRef  # see: https://www.w3.org/TR/xmlschema11-2/#rf-assertions
-    explicitTimezone: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#rf-explicitTimezone
+    explicitTimezone: (
+        URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#rf-explicitTimezone
+    )
 
     # The Seven-property Model - https://www.w3.org/TR/xmlschema11-2/#theSevenPropertyModel
     year: URIRef  # see: https://www.w3.org/TR/xmlschema11-2/#vp-dt-http://www.w3.org/TR/xmlschema11-2/#rf-whiteSpace
