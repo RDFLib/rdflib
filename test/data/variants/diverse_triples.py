@@ -14,5 +14,4 @@ def populate_graph(graph: Graph) -> None:
     graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     graph.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))
 
-
 __all__ = ["populate_graph"]
