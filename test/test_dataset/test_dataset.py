@@ -1,6 +1,7 @@
 import os
 import shutil
 import tempfile
+import warnings
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 from test.utils.namespace import EGSCHEME
 
@@ -261,3 +262,14 @@ def test_subgraph_without_identifier() -> None:
     ) == ("genid", genid_prefix)
 
     assert f"{subgraph.identifier}".startswith(genid_prefix)
+
+
+def test_not_deprecated():
+    """
+    Ensure Dataset does not trigger the deprecation warning
+    from the ConjunctiveGraph superclass.
+    """
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        Dataset()
