@@ -403,9 +403,7 @@ class Parser:
                 (
                     dict({GRAPH: o})
                     if k in context.get_keys(NONE)
-                    else dict({ID: k, GRAPH: o})
-                    if isinstance(o, dict)
-                    else o
+                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
                 )
                 for k, o in obj.items()
             ]
