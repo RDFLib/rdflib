@@ -345,7 +345,7 @@ Some useful commands for working with the task in the taskfile is given below:
     task validate
 
     # Build docs
-    task docs:build
+    task docs
 
     # Run live-preview on the docs
     task docs:live-server
