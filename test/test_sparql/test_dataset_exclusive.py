@@ -1,8 +1,10 @@
+from test.utils.sparql_checker import ctx_configure_rdflib
+from typing import Generator
+
+import pytest
+
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
-import pytest
-from typing import Generator
-from test.utils.sparql_checker import ctx_configure_rdflib
 
 graph = ConjunctiveGraph()
 # Adding into default graph
