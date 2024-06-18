@@ -1,15 +1,36 @@
-from rdflib.graph import Dataset
+from rdflib.graph import Dataset, Graph
 from rdflib.term import URIRef
 
 dataset = Dataset(default_union=True)
 # Adding into default graph
 dataset.add((URIRef("urn:s0"), URIRef("urn:p0"), URIRef("urn:o0")))
 # Adding into named graphs
-dataset.add((URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1"), URIRef("urn:g1")))
+dataset.add(
+    (
+        URIRef("urn:s1"),
+        URIRef("urn:p1"),
+        URIRef("urn:o1"),
+        Graph(identifier=URIRef("urn:g1")),
+    )
+)
 
-dataset.add((URIRef("urn:s2"), URIRef("urn:p2"), URIRef("urn:o2"), URIRef("urn:g2")))
+dataset.add(
+    (
+        URIRef("urn:s2"),
+        URIRef("urn:p2"),
+        URIRef("urn:o2"),
+        Graph(identifier=URIRef("urn:g2")),
+    )
+)
 
-dataset.add((URIRef("urn:s3"), URIRef("urn:p3"), URIRef("urn:o3"), URIRef("urn:g3")))
+dataset.add(
+    (
+        URIRef("urn:s3"),
+        URIRef("urn:p3"),
+        URIRef("urn:o3"),
+        Graph(identifier=URIRef("urn:g3")),
+    )
+)
 
 
 # Test implicit inclusive dataset
