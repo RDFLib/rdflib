@@ -25,7 +25,7 @@ In RDFLib, blank nodes are given unique IDs when parsing, so graph merging can b
 ``graph`` now contains the merged graph of ``input1`` and ``input2``. 
 
 
-.. note:: However, the set-theoretic graph operations in RDFLib are assumed to be performed in sub-graphs of some larger data-base (for instance, in the context of a :class:`~rdflib.graph.ConjunctiveGraph`) and assume shared blank node IDs, and therefore do NOT do *correct* merging, i.e.:: 
+.. note:: However, the set-theoretic graph operations in RDFLib are assumed to be performed in sub-graphs of some larger data-base (for instance, in the context of a :class:`~rdflib.graph.Dataset`) and assume shared blank node IDs, and therefore do NOT do *correct* merging, i.e.:: 
 		  
 		  from rdflib import Graph
 
