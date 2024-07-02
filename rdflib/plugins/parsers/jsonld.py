@@ -390,7 +390,7 @@ class Parser:
         if bid:
             if not self.generalized_rdf:
                 return
-            pred: BNode = BNode(bid)
+            pred = BNode(bid)
             if self.skolemize:
                 pred = pred.skolemize()
         else:
@@ -578,7 +578,7 @@ class Parser:
         if bid:
             b = BNode(bid)
             if self.skolemize:
-                b = b.skolemize()
+                return b.skolemize()
             return b
         else:
             uri = context.resolve(id_val)
@@ -604,9 +604,11 @@ class Parser:
         if not isinstance(node_list, list):
             node_list = [node_list]
 
-        first_subj = BNode()
-        if self.skolemize:
+        first_subj: Union[URIRef, BNode] = BNode()
+        if self.skolemize and isinstance(first_subj, BNode):
             first_subj = first_subj.skolemize()
+
+        rest: Union[URIRef, BNode, None]
         subj, rest = first_subj, None
 
         for node in node_list:
@@ -625,7 +627,7 @@ class Parser:
 
             graph.add((subj, RDF.first, obj))
             rest = BNode()
-            if self.skolemize:
+            if self.skolemize and isinstance(rest, BNode):
                 rest = rest.skolemize()
 
         if rest:
