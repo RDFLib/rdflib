@@ -138,13 +138,15 @@ class W3CNTriplesParser:
     `W3CNTriplesParser`.
     """
 
-    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
+    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line", "skolemize")
 
     def __init__(
         self,
         sink: Optional[Union[DummySink, NTGraphSink]] = None,
         bnode_context: Optional[_BNodeContextType] = None,
     ):
+        self.skolemize = False
+
         if bnode_context is not None:
             self._bnode_ids = bnode_context
         else:
@@ -164,6 +166,7 @@ class W3CNTriplesParser:
         self,
         f: Union[TextIO, IO[bytes], codecs.StreamReader],
         bnode_context: Optional[_BNodeContextType] = None,
+        skolemize: bool = False,
     ) -> Union[DummySink, NTGraphSink]:
         """
         Parse f as an N-Triples file.
@@ -184,6 +187,7 @@ class W3CNTriplesParser:
             # someone still using a bytestream here?
             f = codecs.getreader("utf-8")(f)
 
+        self.skolemize = skolemize
         self.file = f  # type: ignore[assignment]
         self.buffer = ""
         while True:
@@ -270,7 +274,7 @@ class W3CNTriplesParser:
             raise ParseError("Subject must be uriref or nodeID")
         return subj
 
-    def predicate(self) -> URIRef:
+    def predicate(self) -> Union[bNode, URIRef]:
         pred = self.uriref()
         if not pred:
             raise ParseError("Predicate must be uriref")
@@ -294,22 +298,27 @@ class W3CNTriplesParser:
 
     def nodeid(
         self, bnode_context: Optional[_BNodeContextType] = None
-    ) -> Union[te.Literal[False], bNode]:
+    ) -> Union[te.Literal[False], bNode, URI]:
         if self.peek("_"):
-            # Fix for https://github.com/RDFLib/rdflib/issues/204
-            if bnode_context is None:
-                bnode_context = self._bnode_ids
-            bnode_id = self.eat(r_nodeid).group(1)
-            new_id = bnode_context.get(bnode_id, None)
-            if new_id is not None:
-                # Re-map to id specific to this doc
-                return bNode(new_id)
+            if self.skolemize:
+                bnode_id = self.eat(r_nodeid).group(1)
+                return bNode(bnode_id).skolemize()
+
             else:
-                # Replace with freshly-generated document-specific BNode id
-                bnode = bNode()
-                # Store the mapping
-                bnode_context[bnode_id] = bnode
-                return bnode
+                # Fix for https://github.com/RDFLib/rdflib/issues/204
+                if bnode_context is None:
+                    bnode_context = self._bnode_ids
+                bnode_id = self.eat(r_nodeid).group(1)
+                new_id = bnode_context.get(bnode_id, None)
+                if new_id is not None:
+                    # Re-map to id specific to this doc
+                    return bNode(new_id)
+                else:
+                    # Replace with freshly-generated document-specific BNode id
+                    bnode = bNode()
+                    # Store the mapping
+                    bnode_context[bnode_id] = bnode
+                    return bnode
         return False
 
     def literal(self) -> Union[te.Literal[False], Literal]:

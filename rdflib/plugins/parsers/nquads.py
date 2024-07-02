@@ -48,6 +48,7 @@ class NQuadsParser(W3CNTriplesParser):
         inputsource: InputSource,
         sink: ConjunctiveGraph,
         bnode_context: Optional[_BNodeContextType] = None,
+        skolemize: bool = False,
         **kwargs: Any,
     ) -> ConjunctiveGraph:
         """
@@ -68,6 +69,7 @@ class NQuadsParser(W3CNTriplesParser):
         self.sink: ConjunctiveGraph = ConjunctiveGraph(  # type: ignore[assignment]
             store=sink.store, identifier=sink.identifier
         )
+        self.skolemize = skolemize
 
         source = inputsource.getCharacterStream()
         if not source:
