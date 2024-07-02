@@ -4,6 +4,9 @@ import logging
 import re
 import socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from test.utils import helper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from threading import Thread
 from typing import Callable, ClassVar, Type
 from unittest.mock import patch
@@ -13,9 +16,6 @@ import pytest
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
 from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
-from test.utils import helper
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 class TestSPARQLStoreGraph:

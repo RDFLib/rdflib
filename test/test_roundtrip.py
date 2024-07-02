@@ -26,6 +26,8 @@ import enum
 import logging
 import os.path
 from pathlib import Path
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper
 from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
 from xml.sax import SAXParseException
 
@@ -40,8 +42,6 @@ from rdflib.parser import Parser, create_input_source
 from rdflib.plugins.parsers.notation3 import BadSyntax
 from rdflib.serializer import Serializer
 from rdflib.util import guess_format
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper
 
 logger = logging.getLogger(__name__)
 

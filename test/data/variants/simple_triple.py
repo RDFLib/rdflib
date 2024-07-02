@@ -1,5 +1,6 @@
-from rdflib.graph import Graph
 from test.utils.namespace import EGDO
+
+from rdflib.graph import Graph
 
 
 def populate_graph(graph: Graph) -> None:

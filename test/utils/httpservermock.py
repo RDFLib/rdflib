@@ -3,6 +3,13 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from test.utils.http import (
+    MethodName,
+    MockHTTPRequest,
+    MockHTTPResponse,
+    apply_headers_to,
+    get_random_ip,
+)
 from threading import Thread
 from types import TracebackType
 from typing import (
@@ -20,14 +27,6 @@ from typing import (
 )
 from unittest.mock import MagicMock, Mock
 from urllib.parse import parse_qs, urlparse
-
-from test.utils.http import (
-    MethodName,
-    MockHTTPRequest,
-    MockHTTPResponse,
-    apply_headers_to,
-    get_random_ip,
-)
 
 __all__: List[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
 

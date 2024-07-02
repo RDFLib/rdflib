@@ -1,10 +1,9 @@
+from test.utils.http import MethodName, MockHTTPResponse, ctx_http_handler
+from test.utils.httpservermock import BaseHTTPServerMock, ServedBaseHTTPServerMock
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 import pytest
-
-from test.utils.http import MethodName, MockHTTPResponse, ctx_http_handler
-from test.utils.httpservermock import BaseHTTPServerMock, ServedBaseHTTPServerMock
 
 
 def test_base() -> None:

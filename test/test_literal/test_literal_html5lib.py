@@ -1,4 +1,6 @@
 import xml.dom.minidom
+from test.utils.literal import LiteralChecker
+from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 from typing import Callable
 
 import pytest
@@ -6,8 +8,6 @@ import pytest
 import rdflib.term
 from rdflib.namespace import RDF
 from rdflib.term import Literal
-from test.utils.literal import LiteralChecker
-from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 
 try:
     import html5lib as _  # noqa: F401

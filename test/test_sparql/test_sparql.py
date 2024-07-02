@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import logging
+from test.utils import eq_
+from test.utils.namespace import EGDC
+from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
@@ -21,9 +24,6 @@ from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
 from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
-from test.utils import eq_
-from test.utils.namespace import EGDC
-from test.utils.result import assert_bindings_collections_equal
 
 
 def test_graph_prefix():

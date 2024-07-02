@@ -5,6 +5,7 @@ import itertools
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from test.utils import pytest_mark_filter
 from typing import Any, Callable, Dict, Set, Union
 
 import pytest
@@ -14,7 +15,6 @@ from rdflib.namespace import Namespace
 from rdflib.plugins.stores.berkeleydb import has_bsddb
 from rdflib.store import Store
 from rdflib.term import IdentifiedNode, URIRef
-from test.utils import pytest_mark_filter
 
 
 class StoreTrait(enum.Enum):

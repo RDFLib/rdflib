@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
 
 import pytest
@@ -17,7 +18,6 @@ from rdflib.namespace import (
     NamespaceManager,
 )
 from rdflib.term import URIRef
-from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 
 if TYPE_CHECKING:
     from rdflib._type_checking import _NamespaceSetString

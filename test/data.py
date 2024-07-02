@@ -1,7 +1,7 @@
 from pathlib import Path
+from test.utils.graph import cached_graph
 
 from rdflib import URIRef
-from test.utils.graph import cached_graph
 
 TEST_DIR = Path(__file__).parent
 TEST_DATA_DIR = TEST_DIR / "data"

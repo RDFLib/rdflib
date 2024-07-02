@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import logging
+from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
 
 from rdflib import RDF, RDFS, Graph
 from rdflib.term import Identifier, Node, URIRef
-from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 
 logger = logging.getLogger(__name__)
 

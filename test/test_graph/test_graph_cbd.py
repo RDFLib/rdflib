@@ -1,12 +1,13 @@
 """Tests the Graph class' cbd() function"""
 
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper
+
 import pytest
 
 from rdflib import Graph, Namespace
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import Literal, URIRef
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper
 
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
 EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"

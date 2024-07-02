@@ -2,8 +2,9 @@
 Issue 801 - Problem with prefixes created for URIs containing %20
 """
 
-from rdflib import BNode, Graph, Literal
 from test.utils.namespace import EGDO
+
+from rdflib import BNode, Graph, Literal
 
 
 def test_issue_801():

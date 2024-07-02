@@ -8,6 +8,15 @@ import re
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+from test.utils import GraphHelper
+from test.utils.httpfileserver import (
+    HTTPFileInfo,
+    HTTPFileServer,
+    LocationType,
+    ProtoFileResource,
+    ProtoRedirectResource,
+)
+from test.utils.outcome import ExceptionChecker
 from typing import (  # Callable,
     IO,
     BinaryIO,
@@ -35,15 +44,6 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
-from test.utils import GraphHelper
-from test.utils.httpfileserver import (
-    HTTPFileInfo,
-    HTTPFileServer,
-    LocationType,
-    ProtoFileResource,
-    ProtoRedirectResource,
-)
-from test.utils.outcome import ExceptionChecker
 
 from ..data import TEST_DATA_DIR
 

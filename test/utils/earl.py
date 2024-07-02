@@ -9,6 +9,9 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from test.utils import GraphHelper
+from test.utils.dawg_manifest import ManifestEntry
+from test.utils.namespace import EARL, MF, RDFT
 from typing import (
     TYPE_CHECKING,
     Callable,
@@ -30,9 +33,6 @@ from pytest import Item
 from rdflib import RDF, BNode, Graph, Literal, URIRef
 from rdflib.namespace import DC, DOAP, FOAF
 from rdflib.plugins.stores.memory import Memory
-from test.utils import GraphHelper
-from test.utils.dawg_manifest import ManifestEntry
-from test.utils.namespace import EARL, MF, RDFT
 
 if TYPE_CHECKING:
     from _pytest.main import Session

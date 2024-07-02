@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import itertools
 import logging
+from test.utils import GraphHelper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib.graph import Graph
-from test.utils import GraphHelper
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:

@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import json
 from http.client import IncompleteRead, RemoteDisconnected
+from test.utils import helper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.outcome import OutcomeChecker
 from typing import Dict, FrozenSet, List, Mapping, Sequence, Tuple, Type, Union
 
 import pytest
@@ -9,10 +13,6 @@ import pytest
 from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.namespace import XSD
 from rdflib.term import BNode, Identifier
-from test.utils import helper
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
-from test.utils.outcome import OutcomeChecker
 
 
 @pytest.mark.webtest

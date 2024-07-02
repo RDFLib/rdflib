@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import logging
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 import pyparsing
 import pytest
@@ -10,7 +11,6 @@ import rdflib
 from rdflib import Graph
 from rdflib.namespace import Namespace
 from rdflib.term import Node, URIRef
-from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 RESERVED_PCHARS = [
     "%20",

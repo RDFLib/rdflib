@@ -4,17 +4,17 @@ import logging
 import os
 from contextlib import ExitStack
 from pathlib import Path
+from test.data import TEST_DATA_DIR
+from test.utils import GraphHelper
+from test.utils.graph import cached_graph
+from test.utils.namespace import MF
+from test.utils.path import ctx_chdir
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 
 import pytest
 
 from rdflib import Graph
 from rdflib.tools.chunk_serializer import serialize_in_chunks
-from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
-from test.utils.graph import cached_graph
-from test.utils.namespace import MF
-from test.utils.path import ctx_chdir
 
 if TYPE_CHECKING:
     from builtins import ellipsis

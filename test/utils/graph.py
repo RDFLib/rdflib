@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import test.data
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -8,7 +9,6 @@ from runpy import run_path
 from typing import Any, Optional, Tuple, Type, Union
 
 import rdflib.util
-import test.data
 from rdflib.graph import Graph, _GraphT
 from rdflib.util import guess_format
 

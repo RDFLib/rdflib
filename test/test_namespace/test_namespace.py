@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 from typing import Any, Optional
 from warnings import warn
 
@@ -19,7 +20,6 @@ from rdflib.namespace import (
     URIPattern,
 )
 from rdflib.term import BNode, Literal, URIRef
-from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 
 class TestNamespace:

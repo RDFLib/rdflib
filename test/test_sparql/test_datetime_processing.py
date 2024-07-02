@@ -1,8 +1,8 @@
 import io
+from test.utils import eq_
 
 import rdflib
 from rdflib import Graph
-from test.utils import eq_
 
 
 def test_datetime_datetime_subs_issue():

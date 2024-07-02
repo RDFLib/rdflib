@@ -8,6 +8,7 @@ import warnings
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import Path
+from test.data import TEST_DATA_DIR
 from typing import Optional, Type
 
 import pytest
@@ -15,7 +16,6 @@ import pytest
 from rdflib import RDF, SKOS
 from rdflib.namespace import DefinedNamespace, Namespace
 from rdflib.term import URIRef
-from test.data import TEST_DATA_DIR
 
 
 def test_definednamespace_creator_qb():

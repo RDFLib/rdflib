@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from contextlib import ExitStack
+from test.utils.result import BindingsCollectionType, assert_bindings_collections_equal
 from typing import Optional, Type, Union
 
 import pytest
 
 from rdflib.namespace import XSD
 from rdflib.term import BNode, Literal, URIRef, Variable
-from test.utils.result import BindingsCollectionType, assert_bindings_collections_equal
 
 
 @pytest.mark.parametrize(

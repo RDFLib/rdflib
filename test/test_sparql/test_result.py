@@ -9,6 +9,13 @@ import socket
 from contextlib import ExitStack
 from io import BytesIO, StringIO
 from pathlib import Path, PosixPath, PurePath
+from test.utils.destination import DestinationType, DestParmType
+from test.utils.result import (
+    ResultFormat,
+    ResultFormatInfo,
+    ResultFormatTrait,
+    ResultType,
+)
 from typing import (
     IO,
     BinaryIO,
@@ -34,13 +41,6 @@ from rdflib.graph import Graph
 from rdflib.namespace import Namespace
 from rdflib.query import Result, ResultRow
 from rdflib.term import BNode, Identifier, Literal, Node, Variable
-from test.utils.destination import DestinationType, DestParmType
-from test.utils.result import (
-    ResultFormat,
-    ResultFormatInfo,
-    ResultFormatTrait,
-    ResultType,
-)
 
 BindingsType = Sequence[Mapping[Variable, Identifier]]
 ParseOutcomeType = Union[BindingsType, Type[Exception]]

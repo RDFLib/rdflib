@@ -1,8 +1,9 @@
+from test.utils.namespace import EGDO
+
 import pytest
 
 from rdflib import Graph
 from rdflib.plugins.stores.auditable import AuditableStore
-from test.utils.namespace import EGDO
 
 
 @pytest.fixture

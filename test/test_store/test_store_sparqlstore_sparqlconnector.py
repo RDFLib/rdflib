@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import json
 import logging
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 from typing import Optional
 
 import pytest
 
 from rdflib.graph import Graph
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 @pytest.mark.parametrize(

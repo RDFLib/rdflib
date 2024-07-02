@@ -10,6 +10,9 @@ import pytest
 pytest.register_assert_rewrite("test.utils")
 
 from pathlib import Path
+from test.utils.audit import AuditHookDispatcher
+from test.utils.http import ctx_http_server
+from test.utils.httpfileserver import HTTPFileServer
 from typing import (
     Collection,
     Dict,
@@ -21,9 +24,6 @@ from typing import (
 )
 
 from rdflib import Graph
-from test.utils.audit import AuditHookDispatcher
-from test.utils.http import ctx_http_server
-from test.utils.httpfileserver import HTTPFileServer
 
 from .data import TEST_DATA_DIR
 from .utils.earl import EARLReporter

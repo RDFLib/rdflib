@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import logging
 import re
+from test.utils import GraphHelper
+from test.utils.namespace import EGDC
 from typing import Pattern, Union
 
 import pytest
 
 from rdflib import Graph
 from rdflib.term import BNode, Literal, URIRef
-from test.utils import GraphHelper
-from test.utils.namespace import EGDC
 
 base_triples = {
     (EGDC.subject, EGDC.predicate, EGDC.object0),

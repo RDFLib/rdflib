@@ -1,4 +1,6 @@
 import logging
+from test.utils import GraphHelper
+from test.utils.namespace import EGDC
 
 import rdflib
 import rdflib.term
@@ -6,8 +8,6 @@ from rdflib import Graph
 from rdflib.graph import QuotedGraph
 from rdflib.plugins.parsers.notation3 import LOG_implies_URI
 from rdflib.term import BNode, URIRef
-from test.utils import GraphHelper
-from test.utils.namespace import EGDC
 
 logger = logging.getLogger(__name__)
 

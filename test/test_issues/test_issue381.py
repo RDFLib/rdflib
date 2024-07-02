@@ -1,6 +1,7 @@
+from test.utils.namespace import EGDO
+
 from rdflib import BNode, Graph
 from rdflib.compare import isomorphic
-from test.utils.namespace import EGDO
 
 
 def test_no_spurious_semicolon():

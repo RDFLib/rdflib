@@ -1,14 +1,14 @@
 import itertools
 import logging
+from test.data import TEST_DATA_DIR
+from test.utils import GraphHelper
+from test.utils.graph import GraphSource
+from test.utils.namespace import EGDO
 from typing import Callable
 
 import pytest
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
-from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
-from test.utils.graph import GraphSource
-from test.utils.namespace import EGDO
 
 
 @pytest.mark.parametrize(

@@ -3,11 +3,11 @@ from __future__ import annotations
 import builtins
 import logging
 from dataclasses import dataclass
+from test.utils.outcome import NoExceptionChecker
 from typing import Any, Optional, Union
 from xml.dom.minidom import DocumentFragment
 
 from rdflib.term import Literal, URIRef
-from test.utils.outcome import NoExceptionChecker
 
 
 @dataclass(frozen=True)

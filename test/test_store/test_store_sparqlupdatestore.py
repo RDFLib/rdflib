@@ -1,10 +1,10 @@
 import re
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 from urllib.request import urlopen
 
 import pytest
 
 from rdflib import BNode, ConjunctiveGraph, Graph, Literal, URIRef
-from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 
 HOST = "http://localhost:3031"
 DB = "/db/"

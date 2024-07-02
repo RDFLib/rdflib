@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import itertools
 import logging
+from test.data import SIMPLE_TRIPLE_GRAPH
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -31,7 +32,6 @@ from rdflib.plugins.stores.memory import Memory
 from rdflib.query import Result
 from rdflib.store import Store
 from rdflib.term import Identifier, URIRef, Variable
-from test.data import SIMPLE_TRIPLE_GRAPH
 
 if TYPE_CHECKING:
     from _pytest.mark.structures import ParameterSet

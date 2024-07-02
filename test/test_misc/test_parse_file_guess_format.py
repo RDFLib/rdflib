@@ -12,13 +12,13 @@ import os
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
+from test.data import TEST_DATA_DIR
 
 import pytest
 
 from rdflib import Graph
 from rdflib.exceptions import ParserError
 from rdflib.util import guess_format
-from test.data import TEST_DATA_DIR
 
 
 class TestFileParserGuessFormat:

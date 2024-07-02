@@ -1,8 +1,8 @@
 import io
 import json
+from test.utils.namespace import EGDO
 
 from rdflib import RDF, RDFS, Graph
-from test.utils.namespace import EGDO
 
 
 def test_issue_1484_json():
