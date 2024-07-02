@@ -1,9 +1,8 @@
-from test.data import CONTEXT0, PIZZA
-
 import pytest
 
 from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import Class, Individual
+from test.data import CONTEXT0, PIZZA
 
 EXNS = Namespace("http://example.org/vocab/")
 
