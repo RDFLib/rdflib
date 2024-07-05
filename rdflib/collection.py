@@ -49,12 +49,16 @@ class Collection:
     True
     >>> c.index(Literal(2)) == 1
     True
+
+    The collection is immutable if ``uri`` is the empty list
+    (``http://www.w3.org/1999/02/22-rdf-syntax-ns#nil``).
     """
 
     def __init__(self, graph: Graph, uri: Node, seq: List[Node] = []):
         self.graph = graph
         self.uri = uri or BNode()
-        self += seq
+        if seq:
+            self += seq
 
     def n3(self) -> str:
         """
@@ -208,6 +212,8 @@ class Collection:
         return self.graph.items(self.uri)
 
     def _end(self) -> Node:
+        if self.uri == RDF.nil:
+            raise ValueError("Cannot append to empty list")
         # find end of list
         container = self.uri
         while True:
