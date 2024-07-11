@@ -14,6 +14,8 @@
 #
 # We would appreciate acknowledgement if the software is used.
 
+from __future__ import annotations
+
 import logging
 from typing import Set, Tuple
 
@@ -128,7 +130,7 @@ ex:HistoricAction
     prov:Activity
     ;
   owl:disjointWith ex:HistoricThing ;
-  . 
+  .
 
 ex:hadMember
   a owl:ObjectProperty ;
