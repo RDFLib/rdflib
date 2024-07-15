@@ -1201,13 +1201,13 @@ files = [
 
 [[package]]
 name = "types-setuptools"
-version = "69.5.0.20240415"
+version = "69.5.0.20240513"
 description = "Typing stubs for setuptools"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-setuptools-69.5.0.20240415.tar.gz", hash = "sha256:ea64af0a96a674f8c40ba34c09c254f3c70bc3f218c6bffa1d0912bd91584a2f"},
-    {file = "types_setuptools-69.5.0.20240415-py3-none-any.whl", hash = "sha256:637cdb24a0d48a6ab362c09cfe3b89ecaa1c10666a8ba9452924e9a0ae00fa4a"},
+    {file = "types-setuptools-69.5.0.20240513.tar.gz", hash = "sha256:3a8ccea3e3f1f639856a1dd622be282f74e94e00fdc364630240f999cc9594fc"},
+    {file = "types_setuptools-69.5.0.20240513-py3-none-any.whl", hash = "sha256:bd3964c08cffd5a057d9cabe61641c86a41a1b5dd2b652b8d371eed64d89d726"},
 ]
 
 [[package]]
@@ -1287,4 +1287,4 @@ networkx = ["networkx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "4db60a4fdd30bd7eb3e3c767587ac3489a8e50fabdc0ebcf5353dffe5469e024"
+content-hash = "d2d9651d6b2c2f6e3dcfe43473be15f9457890a616f549b2bea3fe417c8dc0f6"
