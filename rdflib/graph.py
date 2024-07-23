@@ -19,6 +19,9 @@ see :class:`~rdflib.graph.Graph`
 Conjunctive Graph
 -----------------
 
+.. warning::
+    ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
+
 A Conjunctive Graph is the most relevant collection of graphs that are
 considered to be the boundary for closed world assumptions.  This
 boundary is equivalent to that of the store instance (which is itself
@@ -249,6 +252,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import random
+import warnings
 from io import BytesIO
 from typing import (
     IO,
@@ -1893,6 +1897,9 @@ class ConjunctiveGraph(Graph):
     """A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
+    .. warning::
+        ConjunctiveGraph is deprecated, use :class:`~rdflib.graph.Dataset` instead.
+
     It has a ``default`` graph, whose name is associated with the
     graph throughout its life. :meth:`__init__` can take an identifier
     to use as the name of this default graph or it will assign a
@@ -1910,6 +1917,14 @@ class ConjunctiveGraph(Graph):
         default_graph_base: Optional[str] = None,
     ):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
+
+        if type(self) is ConjunctiveGraph:
+            warnings.warn(
+                "ConjunctiveGraph is deprecated, use Dataset instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         assert self.store.context_aware, (
             "ConjunctiveGraph must be backed by" " a context aware store."
         )
