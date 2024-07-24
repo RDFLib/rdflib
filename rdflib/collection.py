@@ -212,8 +212,6 @@ class Collection:
         return self.graph.items(self.uri)
 
     def _end(self) -> Node:
-        if self.uri == RDF.nil:
-            raise ValueError("Cannot append to empty list")
         # find end of list
         container = self.uri
         while True:
@@ -237,6 +235,9 @@ class Collection:
 
         """
 
+        if self.uri == RDF.nil:
+            raise ValueError("Cannot append to empty list")
+
         end = self._end()
         if (end, RDF.first, None) in self.graph:
             # append new node to the end of the linked list
@@ -249,6 +250,9 @@ class Collection:
         return self
 
     def __iadd__(self, other: Iterable[Node]):
+        if self.uri == RDF.nil:
+            raise ValueError("Cannot append to empty list")
+
         end = self._end()
         self.graph.remove((end, RDF.rest, None))
 
