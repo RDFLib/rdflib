@@ -289,7 +289,7 @@ class TriXParser(Parser):
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:
             # type error: ContentHandler has no attribute "preserve_bnode_ids"
-            content_handler.preserve_bnode_ids = preserve_bnode_ids # type: ignore[attr-defined, unused-ignore]
+            content_handler.preserve_bnode_ids = preserve_bnode_ids  # type: ignore[attr-defined, unused-ignore]
         # We're only using it once now
         # content_handler.reset()
         # self._parser.reset()
