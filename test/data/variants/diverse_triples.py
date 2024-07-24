@@ -1,7 +1,6 @@
-from test.utils.namespace import EGDC, EGSCHEME, EGURN
-
 from rdflib.graph import Graph
 from rdflib.term import Literal
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 def populate_graph(graph: Graph) -> None:

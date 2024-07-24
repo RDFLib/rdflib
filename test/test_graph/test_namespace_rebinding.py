@@ -1,11 +1,10 @@
-from test.data import CONTEXT1, CONTEXT2, TAREK
-
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph, Literal
 from rdflib.namespace import OWL, Namespace, NamespaceManager
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import URIRef
+from test.data import CONTEXT1, CONTEXT2, TAREK
 
 foaf1_uri = URIRef("http://xmlns.com/foaf/0.1/")
 foaf2_uri = URIRef("http://xmlns.com/foaf/2.0/")
