@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from test.data import SIMPLE_TRIPLE_GRAPH, TEST_DATA_DIR
-from test.utils import GraphHelper
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
 from typing import Tuple
 from urllib.parse import urlparse
 
 from rdflib.graph import Graph
+from test.data import SIMPLE_TRIPLE_GRAPH, TEST_DATA_DIR
+from test.utils import GraphHelper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 def test_graph_redirect_new_host(

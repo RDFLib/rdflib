@@ -6,7 +6,6 @@ import enum
 import random
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test.utils.wildcard import EQ_WILDCARD
 from threading import Thread
 from typing import (
     Dict,
@@ -21,6 +20,8 @@ from typing import (
     Union,
 )
 from urllib.parse import ParseResult
+
+from test.utils.wildcard import EQ_WILDCARD
 
 __all__: List[str] = []
 
