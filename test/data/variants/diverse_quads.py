@@ -1,8 +1,7 @@
-from test.utils.namespace import EGDC, EGSCHEME, EGURN
-
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
 from rdflib.term import Literal
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 def populate_graph(graph: Graph) -> None:

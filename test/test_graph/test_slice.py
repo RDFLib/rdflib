@@ -1,6 +1,5 @@
-from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
-
 from rdflib import Graph
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 
 
 class TestGraphSlice:

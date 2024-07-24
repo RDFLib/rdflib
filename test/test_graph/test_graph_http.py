@@ -3,6 +3,11 @@ from __future__ import annotations
 import logging
 import re
 from http.server import BaseHTTPRequestHandler
+from urllib.error import HTTPError
+
+import pytest
+
+from rdflib import Graph
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
@@ -16,11 +21,6 @@ from test.utils.http import (
 from test.utils.httpservermock import ServedBaseHTTPServerMock
 from test.utils.namespace import EGDO
 from test.utils.wildcard import URL_PARSE_RESULT_WILDCARD
-from urllib.error import HTTPError
-
-import pytest
-
-from rdflib import Graph
 
 """
 Test that correct content negotiation headers are passed
