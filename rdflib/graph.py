@@ -1871,7 +1871,7 @@ class Graph(Node):
             for s, p, o in self.triples((uri, None, None)):
                 subgraph.add((s, p, o))
                 # recurse 'down' through ll Blank Nodes
-                if type(o) == BNode and not (o, None, None) in subgraph:  # noqa: E713
+                if type(o) is BNode and (o, None, None) not in subgraph:
                     add_to_cbd(o)
 
             # for Rule 3 (reification)
