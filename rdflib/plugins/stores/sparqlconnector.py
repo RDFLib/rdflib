@@ -163,7 +163,6 @@ class SPARQLConnector:
             raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {}
-        
         default_graph = default_graph or self.kwargs.get("default_graph")
         if default_graph is not None:
             params["using-graph-uri"] = default_graph
