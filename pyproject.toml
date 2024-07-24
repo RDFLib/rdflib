@@ -47,7 +47,7 @@ html5lib = {version = "^1.0", optional = true}
 lxml = {version = "^4.3.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "24.4.0"
+black = "24.4.2"
 mypy = "^1.1.0"
 lxml-stubs = ">=0.4,<0.6"
 
