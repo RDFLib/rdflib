@@ -5,7 +5,9 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    versioning-strategy: widen
+    # todo: change this to widen when Dependabot adds widen back to Pip ecosystem
+    # see https://github.com/dependabot/dependabot-core/pull/10194
+    versioning-strategy: auto
     ignore:
       - dependency-name: sphinx
         versions:
@@ -28,7 +30,7 @@ updates:
     directory: docker/latest/
     schedule:
       interval: weekly
-    versioning-strategy: widen
+    versioning-strategy: auto
   - package-ecosystem: docker
     directory: docker/unstable/
     schedule:
@@ -37,4 +39,4 @@ updates:
     directory: devtools/
     schedule:
       interval: weekly
-    versioning-strategy: widen
+    versioning-strategy: auto
