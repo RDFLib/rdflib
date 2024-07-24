@@ -1,9 +1,9 @@
 import os
-from test.data import TEST_DATA_DIR
 
 import pytest
 
 import rdflib
+from test.data import TEST_DATA_DIR
 
 """
 SWAP N3 parser test suite

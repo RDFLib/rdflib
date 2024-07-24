@@ -1,6 +1,5 @@
-from test.utils.namespace import EGDO
-
 from rdflib.graph import ConjunctiveGraph, Graph
+from test.utils.namespace import EGDO
 
 
 def populate_graph(graph: Graph) -> None:
