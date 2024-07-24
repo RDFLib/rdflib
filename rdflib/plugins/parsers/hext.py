@@ -72,7 +72,11 @@ class HextuplesParser(Parser):
 
         # 6 - context
         if tup[5] is not None:
-            c = URIRef(tup[5])
+            c = (
+                BNode(tup[5].replace("_:", ""))
+                if tup[5].startswith("_:")
+                else URIRef(tup[5])
+            )
             # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
             cg.add((s, p, o, c))  # type: ignore[arg-type]
         else:
