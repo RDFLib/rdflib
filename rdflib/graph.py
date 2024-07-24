@@ -433,6 +433,11 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
+    context_aware: bool
+    formula_aware: bool
+    default_union: bool
+    base: Optional[str]
+
     def __init__(
         self,
         store: Union[Store, str] = "default",
@@ -1910,6 +1915,8 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
+    default_context: _ContextType
+
     def __init__(
         self,
         store: Union[Store, str] = "default",
@@ -2227,8 +2234,8 @@ class ConjunctiveGraph(Graph):
 
         See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
 
-        If the source is in a format that does not support named graphs it's triples
-        will be added to the default graph (i.e. `Dataset.default_context`).
+        If the source is in a format that does not support named graphs its triples
+        will be added to the default graph (i.e. `ConjunctiveGraph.default_context`).
 
         :Returns:
 
@@ -2510,7 +2517,7 @@ class Dataset(ConjunctiveGraph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. `ConjunctiveGraph.default_context`).
+        (i.e. `Dataset.default_context`).
         """
 
         c = ConjunctiveGraph.parse(
