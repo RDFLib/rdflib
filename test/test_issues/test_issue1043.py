@@ -1,8 +1,8 @@
 import io
 import sys
-from test.utils.namespace import EGDO
 
 from rdflib import RDFS, XSD, Graph, Literal
+from test.utils.namespace import EGDO
 
 
 def test_issue_1043():

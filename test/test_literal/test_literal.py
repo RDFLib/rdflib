@@ -4,11 +4,12 @@ import builtins
 import datetime
 import logging
 from decimal import Decimal
+from typing import Any, Callable, Generator, Optional, Type, Union
+
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker, literal_idfn
 from test.utils.namespace import EGDC
 from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
-from typing import Any, Callable, Generator, Optional, Type, Union
 
 # NOTE: The config below enables strict mode for mypy.
 # mypy: no_ignore_errors

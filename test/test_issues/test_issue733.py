@@ -5,9 +5,8 @@ zeroOrMore ('*') property paths and specifying neither the
 subject or the object.
 """
 
-from test.utils.namespace import EGDO
-
 from rdflib import Graph
+from test.utils.namespace import EGDO
 
 
 def test_issue_733():

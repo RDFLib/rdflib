@@ -6,10 +6,6 @@ import itertools
 import logging
 from contextlib import ExitStack
 from pathlib import Path
-from test.utils.audit import AuditHookDispatcher
-from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from test.utils.namespace import EGDO
-from test.utils.urlopen import context_urlopener
 from textwrap import dedent
 from typing import Any, Iterable, Tuple
 from urllib.request import HTTPHandler, OpenerDirector, Request
@@ -18,6 +14,10 @@ import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib import Graph
+from test.utils.audit import AuditHookDispatcher
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.namespace import EGDO
+from test.utils.urlopen import context_urlopener
 
 from ..utils import GraphHelper
 from ..utils.path import ctx_chdir

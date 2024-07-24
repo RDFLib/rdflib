@@ -3,10 +3,11 @@ from __future__ import annotations
 import logging
 from contextlib import ExitStack
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
-from test.utils.iri import file_uri_to_path, rebase_url
 from typing import Optional, Type, Union
 
 import pytest
+
+from test.utils.iri import file_uri_to_path, rebase_url
 
 
 @pytest.mark.parametrize(

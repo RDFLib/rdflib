@@ -2,14 +2,14 @@ import os
 import shutil
 import tempfile
 import warnings
-from test.data import CONTEXT1, LIKES, PIZZA, TAREK
-from test.utils.namespace import EGSCHEME
 
 import pytest
 
 from rdflib import URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
+from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.utils.namespace import EGSCHEME
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
