@@ -58,7 +58,7 @@ class SPARQLConnector:
         self.kwargs = kwargs
         self.method = method
         if auth is not None:
-            if type(auth) != tuple:
+            if type(auth) is not tuple:
                 raise SPARQLConnectorException("auth must be a tuple")
             if len(auth) != 2:
                 raise SPARQLConnectorException("auth must be a tuple (user, password)")
@@ -93,7 +93,7 @@ class SPARQLConnector:
         params = {}
         default_graph = default_graph or self.kwargs.get("default_graph")
         # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
-        if default_graph is not None and type(default_graph) != BNode:
+        if default_graph is not None and type(default_graph) is not BNode:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
