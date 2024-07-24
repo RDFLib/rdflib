@@ -1,10 +1,10 @@
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
-from test.utils.namespace import EGDO
 from typing import ClassVar
 
 from rdflib.graph import ConjunctiveGraph
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.namespace import EGDO
 
 
 class TestSPARQLConnector:

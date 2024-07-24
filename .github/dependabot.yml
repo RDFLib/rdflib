@@ -5,6 +5,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    versioning-strategy: widen
     ignore:
       - dependency-name: sphinx
         versions:
@@ -22,6 +23,7 @@ updates:
     directory: docker/latest/
     schedule:
       interval: weekly
+    versioning-strategy: widen
   - package-ecosystem: docker
     directory: docker/unstable/
     schedule:
@@ -30,3 +32,4 @@ updates:
     directory: devtools/
     schedule:
       interval: weekly
+    versioning-strategy: widen

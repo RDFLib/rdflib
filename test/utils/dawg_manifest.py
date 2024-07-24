@@ -2,10 +2,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from test.utils import MarkListType, marks_to_list
-from test.utils.graph import GraphSource, GraphSourceType
-from test.utils.iri import URIMapper
-from test.utils.namespace import MF
 from typing import (
     Callable,
     Collection,
@@ -26,6 +22,10 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
 from rdflib.term import IdentifiedNode, Identifier, URIRef
+from test.utils import MarkListType, marks_to_list
+from test.utils.graph import GraphSource, GraphSourceType
+from test.utils.iri import URIMapper
+from test.utils.namespace import MF
 
 POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
 POFiltersType = Iterable[POFilterType]

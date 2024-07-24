@@ -2,13 +2,13 @@ import logging
 import os
 import re
 from pathlib import Path
-from test.data import TEST_DATA_DIR
 from urllib.request import urlopen
 
 import pytest
 
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
+from test.data import TEST_DATA_DIR
 
 log = logging.getLogger(__name__)
 

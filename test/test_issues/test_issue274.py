@@ -1,5 +1,3 @@
-from test.utils import eq_
-from test.utils.namespace import EGDO
 from unittest import TestCase
 
 import pytest
@@ -9,6 +7,8 @@ from rdflib.plugins.sparql.operators import (
     register_custom_function,
     unregister_custom_function,
 )
+from test.utils import eq_
+from test.utils.namespace import EGDO
 
 G = Graph()
 G.add((BNode(), RDFS.label, Literal("bnode")))
