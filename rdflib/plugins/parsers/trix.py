@@ -4,7 +4,7 @@ A TriX parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
 from xml.sax import handler, make_parser
 from xml.sax.handler import ErrorHandler
 
@@ -289,7 +289,7 @@ class TriXParser(Parser):
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:
             # type error: ContentHandler has no attribute "preserve_bnode_ids"
-            content_handler.preserve_bnode_ids = preserve_bnode_ids # type: ignore[attr-defined, unused-ignore]
+            content_handler.preserve_bnode_ids = preserve_bnode_ids  # type: ignore[attr-defined, unused-ignore]
         # We're only using it once now
         # content_handler.reset()
         # self._parser.reset()

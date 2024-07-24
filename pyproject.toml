@@ -82,6 +82,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 # https://beta.ruff.rs/docs/configuration/
 target-version = "py38"
+# Same as Black.
+line-length = 88
+
+[tool.ruff.lint]
 select = [
     "E", # pycodestyle errors
     "W", # pycodestyle warnings
@@ -124,10 +128,7 @@ ignore = [
     "E231", # missing whitespace after ','
 ]
 
-# Same as Black.
-line-length = 88
-
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "rdflib/plugins/sparql/*" = [
     "N801", # Class name should be UpperCamelCase
     "N802", # Function name should be lowercase
@@ -158,7 +159,6 @@ line-length = 88
 "{test/conftest.py,rdflib/namespace/__init__.py,rdflib/__init__.py,rdflib/plugins/sparql/__init__.py}" = [
     "E402", # Module level import not at top of file
 ]
-
 
 [tool.black]
 line-length = "88"

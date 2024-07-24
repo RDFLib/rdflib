@@ -3,13 +3,13 @@ from __future__ import annotations
 import json
 import logging
 import pprint
-from test.utils.namespace import EGDO
 from typing import Any, Dict, Union
 
 import pytest
 
 from rdflib import Graph
 from rdflib.plugins.shared.jsonld.context import Context
+from test.utils.namespace import EGDO
 
 
 @pytest.mark.parametrize(

@@ -3,10 +3,6 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
-from test.utils import GraphHelper, get_unique_plugin_names
-from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import Callable, Optional, Set, Tuple
 from urllib.error import HTTPError, URLError
 
@@ -18,6 +14,10 @@ from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
 from rdflib.store import Store
 from rdflib.term import BNode
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
+from test.utils import GraphHelper, get_unique_plugin_names
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 
 
 def test_property_store() -> None:
