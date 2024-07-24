@@ -41,7 +41,7 @@ def checkFormulaStore(store="default", configString=None):  # noqa: N802, N803
             formulaA = s  # noqa: N806
             formulaB = o  # noqa: N806
 
-        assert type(formulaA) == QuotedGraph and type(formulaB) == QuotedGraph
+        assert type(formulaA) is QuotedGraph and type(formulaB) is QuotedGraph
         # a = URIRef('http://test/a')
         b = URIRef("http://test/b")
         c = URIRef("http://test/c")

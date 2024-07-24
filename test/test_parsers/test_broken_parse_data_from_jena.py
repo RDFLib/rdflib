@@ -1,9 +1,9 @@
 import os
-from test.data import TEST_DATA_DIR
 
 import pytest
 
 import rdflib
+from test.data import TEST_DATA_DIR
 
 # Recovered from
 # https://github.com/RDFLib/rdflib/tree/6b4607018ebf589da74aea4c25408999f1acf2e2

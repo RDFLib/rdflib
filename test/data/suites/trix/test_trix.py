@@ -3,9 +3,6 @@ test suite."""
 
 from __future__ import annotations
 
-from test.data import TEST_DATA_DIR
-from test.utils.manifest import RDFTest, read_manifest
-from test.utils.namespace import RDFT
 from typing import Callable, Dict
 
 import pytest
@@ -14,6 +11,9 @@ from rdflib import ConjunctiveGraph, logger
 from rdflib.compare import graph_diff, isomorphic
 from rdflib.namespace import split_uri
 from rdflib.term import Node, URIRef
+from test.data import TEST_DATA_DIR
+from test.utils.manifest import RDFTest, read_manifest
+from test.utils.namespace import RDFT
 
 verbose = False
 

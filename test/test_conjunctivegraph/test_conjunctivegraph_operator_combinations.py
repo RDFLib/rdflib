@@ -1,7 +1,7 @@
 import os
-from test.data import CHEESE, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
 
 from rdflib import ConjunctiveGraph, Graph
+from test.data import CHEESE, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
 
 sportquadstrig = open(os.path.join(TEST_DATA_DIR, "sportquads.trig")).read()
 

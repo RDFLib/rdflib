@@ -187,7 +187,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
         False
         """
 
-        if type(self) == type(other):
+        if type(self) is type(other):
             return str(self) == str(other)
         else:
             return False
@@ -205,7 +205,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
         """
         if other is None:
             return True  # everything bigger than None
-        elif type(self) == type(other):
+        elif type(self) is type(other):
             return str(self) > str(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] > _ORDERING[type(other)]
@@ -215,7 +215,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     def __lt__(self, other: Any) -> bool:
         if other is None:
             return False  # Nothing is less than None
-        elif type(self) == type(other):
+        elif type(self) is type(other):
             return str(self) < str(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] < _ORDERING[type(other)]

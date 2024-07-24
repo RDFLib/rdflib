@@ -1,5 +1,3 @@
-from test.data import CONTEXT0, CONTEXT1
-
 import pytest
 
 from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable
@@ -12,6 +10,7 @@ from rdflib.extras.infixowl import (
     max,
 )
 from rdflib.util import first
+from test.data import CONTEXT0, CONTEXT1
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
