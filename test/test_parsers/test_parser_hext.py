@@ -128,7 +128,7 @@ def test_roundtrip():
                 if cg2.context_aware:
                     for context in cg2.contexts():
                         for triple in context.triples((None, None, None)):
-                            if type(triple[2]) == Literal:
+                            if type(triple[2]) is Literal:
                                 if triple[2].datatype == XSD.string:
                                     context.remove((triple[0], triple[1], triple[2]))
                                     context.add(
@@ -136,7 +136,7 @@ def test_roundtrip():
                                     )
                 else:
                     for triple in cg2.triples((None, None, None)):
-                        if type(triple[2]) == Literal:
+                        if type(triple[2]) is Literal:
                             if triple[2].datatype == XSD.string:
                                 cg2.remove((triple[0], triple[1], triple[2]))
                                 cg2.add((triple[0], triple[1], Literal(str(triple[2]))))

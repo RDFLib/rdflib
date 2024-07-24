@@ -1,11 +1,11 @@
 from functools import partial
-from test.utils import eq_ as eq
 
 import rdflib.plugins.sparql.parser as p
 from rdflib import Literal, Variable
 from rdflib.plugins.sparql.algebra import translatePName, traverse
 from rdflib.plugins.sparql.operators import simplify
 from rdflib.plugins.sparql.sparql import Prologue, QueryContext, SPARQLError
+from test.utils import eq_ as eq
 
 
 def _eval(e, ctx=None):

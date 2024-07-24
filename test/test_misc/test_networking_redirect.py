@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from contextlib import ExitStack
 from copy import deepcopy
-from test.utils.http import headers_as_message as headers_as_message
-from test.utils.outcome import ExceptionChecker
 from typing import Any, Dict, Iterable, Optional, Type, TypeVar, Union
 from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request
@@ -12,6 +10,8 @@ import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib._networking import _make_redirect_request
+from test.utils.http import headers_as_message as headers_as_message
+from test.utils.outcome import ExceptionChecker
 
 AnyT = TypeVar("AnyT")
 

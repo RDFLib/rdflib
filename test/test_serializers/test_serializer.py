@@ -9,9 +9,6 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
-from test.utils import GraphHelper, get_unique_plugins
-from test.utils.destination import DestinationType, DestParmType, DestRef
-from test.utils.namespace import EGDC, EGSCHEME, EGURN
 from typing import (
     IO,
     Callable,
@@ -35,6 +32,9 @@ import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.serializer import Serializer
+from test.utils import GraphHelper, get_unique_plugins
+from test.utils.destination import DestinationType, DestParmType, DestRef
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 @pytest.mark.parametrize(
