@@ -7,7 +7,7 @@ ci:
 # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.9
+    rev: v0.5.4
     hooks:
       - id: ruff
         args: ["--fix"]
