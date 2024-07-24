@@ -1202,13 +1202,13 @@ files = [
 
 [[package]]
 name = "types-setuptools"
-version = "69.5.0.20240513"
+version = "71.1.0.20240723"
 description = "Typing stubs for setuptools"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-setuptools-69.5.0.20240513.tar.gz", hash = "sha256:3a8ccea3e3f1f639856a1dd622be282f74e94e00fdc364630240f999cc9594fc"},
-    {file = "types_setuptools-69.5.0.20240513-py3-none-any.whl", hash = "sha256:bd3964c08cffd5a057d9cabe61641c86a41a1b5dd2b652b8d371eed64d89d726"},
+    {file = "types-setuptools-71.1.0.20240723.tar.gz", hash = "sha256:8a9349038c7e22d88e6c5d9c6705b347b22930424114a452c1712899e85131ff"},
+    {file = "types_setuptools-71.1.0.20240723-py3-none-any.whl", hash = "sha256:ac9fc263f59d1e02bca49cb7270a12c47ab80b3b911fb4d92f1fecf978bfe88a"},
 ]
 
 [[package]]
