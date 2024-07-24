@@ -163,6 +163,7 @@ ignore = [
 [tool.black]
 line-length = "88"
 target-version = ['py38']
+required-version = "24.4.2"
 include = '\.pyi?$'
 exclude = '''
 (

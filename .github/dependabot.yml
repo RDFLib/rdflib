@@ -11,6 +11,11 @@ updates:
         versions:
           - 3.4.3
           - 3.5.2
+      # Ignore all black updates, because we use a pinned version we don't want to change
+      - dependency-name: black
+      # Ignore types-setuptools patch-level updates, because they issue too many!
+      - dependency-name: types-setuptools
+        update-types: ["version-update:semver-patch"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
