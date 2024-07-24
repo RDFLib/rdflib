@@ -670,7 +670,7 @@ class NamespaceManager:
         Raises exception if a namespace is not bound to the prefix.
 
         """
-        if not type(curie) is str:  # noqa: E714, E721
+        if not type(curie) is str:  # noqa: E714
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
         if len(parts) != 2:

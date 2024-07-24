@@ -8,7 +8,6 @@ from __future__ import annotations
 import itertools
 import logging
 import re
-from test.utils.namespace import EGDC
 from typing import Callable, Dict, Iterable, List, Tuple
 
 import pytest
@@ -16,6 +15,7 @@ import pytest
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
+from test.utils.namespace import EGDC
 
 from .utils import GraphHelper
 

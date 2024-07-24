@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 from typing import Any, Optional
 from warnings import warn
 
@@ -20,6 +19,7 @@ from rdflib.namespace import (
     URIPattern,
 )
 from rdflib.term import BNode, Literal, URIRef
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 
 class TestNamespace:
@@ -240,7 +240,7 @@ class TestNamespacePrefix:
 
         ref = URIRef("http://www.w3.org/ns/shacl#Info")
         assert (
-            type(SH) == DefinedNamespaceMeta
+            type(SH) is DefinedNamespaceMeta
         ), f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
         assert ref in SH, "sh:Info not in SH"
 

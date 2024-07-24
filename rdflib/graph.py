@@ -1782,7 +1782,7 @@ class Graph(Node):
             self._process_skolem_tuples(retval, do_skolemize2)
         elif isinstance(bnode, BNode):
             # type error: Argument 1 to "do_skolemize" has incompatible type "Optional[BNode]"; expected "BNode"
-            self._process_skolem_tuples(retval, lambda t: do_skolemize(bnode, t))  # type: ignore[arg-type]
+            self._process_skolem_tuples(retval, lambda t: do_skolemize(bnode, t))  # type: ignore[arg-type, unused-ignore]
 
         return retval
 
@@ -1826,7 +1826,7 @@ class Graph(Node):
             self._process_skolem_tuples(retval, do_de_skolemize2)
         elif isinstance(uriref, Genid):
             # type error: Argument 1 to "do_de_skolemize" has incompatible type "Optional[URIRef]"; expected "URIRef"
-            self._process_skolem_tuples(retval, lambda t: do_de_skolemize(uriref, t))  # type: ignore[arg-type]
+            self._process_skolem_tuples(retval, lambda t: do_de_skolemize(uriref, t))  # type: ignore[arg-type, unused-ignore]
 
         return retval
 
@@ -1871,7 +1871,7 @@ class Graph(Node):
             for s, p, o in self.triples((uri, None, None)):
                 subgraph.add((s, p, o))
                 # recurse 'down' through ll Blank Nodes
-                if type(o) == BNode and not (o, None, None) in subgraph:  # noqa: E713
+                if type(o) is BNode and (o, None, None) not in subgraph:
                     add_to_cbd(o)
 
             # for Rule 3 (reification)
@@ -1997,10 +1997,10 @@ class ConjunctiveGraph(Graph):
         if len(triple_or_quad) == 3:
             c = self.default_context if default else None
             # type error: Too many values to unpack (3 expected, 4 provided)
-            (s, p, o) = triple_or_quad  # type: ignore[misc]
+            (s, p, o) = triple_or_quad  # type: ignore[misc, unused-ignore]
         elif len(triple_or_quad) == 4:
             # type error: Need more than 3 values to unpack (4 expected)
-            (s, p, o, c) = triple_or_quad  # type: ignore[misc]
+            (s, p, o, c) = triple_or_quad  # type: ignore[misc, unused-ignore]
             c = self._graph(c)
         return s, p, o, c
 
@@ -2795,7 +2795,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         context = None
         if len(triple_or_quad) == 4:
             # type error: Tuple index out of range
-            context = triple_or_quad[3]  # type: ignore [misc]
+            context = triple_or_quad[3]  # type: ignore [misc, unused-ignore]
         for graph in self.graphs:
             if context is None or graph.identifier == context.identifier:
                 if triple_or_quad[:3] in graph:
@@ -2814,10 +2814,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         c = None
         if len(triple_or_quad) == 4:
             # type error: Need more than 3 values to unpack (4 expected)
-            s, p, o, c = triple_or_quad  # type: ignore[misc]
+            s, p, o, c = triple_or_quad  # type: ignore[misc, unused-ignore]
         else:
             # type error: Too many values to unpack (3 expected, 4 provided)
-            s, p, o = triple_or_quad  # type: ignore[misc]
+            s, p, o = triple_or_quad  # type: ignore[misc, unused-ignore]
 
         if c is not None:
             for graph in [g for g in self.graphs if g == c]:
@@ -2984,10 +2984,10 @@ class BatchAddGraph:
         self.count += 1
         if len(triple_or_quad) == 3:
             # type error: Argument 1 to "append" of "list" has incompatible type "Tuple[Node, ...]"; expected "Tuple[Node, Node, Node, Graph]"
-            self.batch.append(triple_or_quad + self.__graph_tuple)  # type: ignore[arg-type]
+            self.batch.append(triple_or_quad + self.__graph_tuple)  # type: ignore[arg-type, unused-ignore]
         else:
             # type error: Argument 1 to "append" of "list" has incompatible type "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Graph]]"; expected "Tuple[Node, Node, Node, Graph]"
-            self.batch.append(triple_or_quad)  # type: ignore[arg-type]
+            self.batch.append(triple_or_quad)  # type: ignore[arg-type, unused-ignore]
         return self
 
     def addN(self, quads: Iterable[_QuadType]) -> BatchAddGraph:  # noqa: N802

@@ -1,6 +1,5 @@
 import itertools
 import os
-from test import TEST_DIR
 from urllib.error import URLError
 
 import pytest
@@ -8,6 +7,7 @@ import pytest
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 from rdflib.term import Literal, URIRef
+from test import TEST_DIR
 
 test_data = """
 #  Definitions of terms describing the n3 model

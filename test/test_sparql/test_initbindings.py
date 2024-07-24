@@ -1,7 +1,6 @@
-from test.utils.namespace import EGDC
-
 from rdflib import ConjunctiveGraph, Literal, URIRef, Variable
 from rdflib.plugins.sparql import prepareQuery
+from test.utils.namespace import EGDC
 
 g = ConjunctiveGraph()
 

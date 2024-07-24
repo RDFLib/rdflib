@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from test.utils.namespace import EGDC
-
 from rdflib import Graph, Literal
 from rdflib.collection import Collection
+from test.utils.namespace import EGDC
 
 prop = EGDC["props/a"]
 res = EGDC["res"]

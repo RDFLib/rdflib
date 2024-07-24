@@ -1,7 +1,7 @@
 import os
-from test.data import TEST_DATA_DIR
 
 from rdflib.graph import ConjunctiveGraph
+from test.data import TEST_DATA_DIR
 
 
 class TestTrixParse:
