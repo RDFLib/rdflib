@@ -9,9 +9,6 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
-from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
-from test.utils.graph import GraphSource
 from typing import (
     ClassVar,
     Collection,
@@ -36,6 +33,9 @@ import rdflib.util
 from rdflib.graph import Dataset, _GraphT
 from rdflib.namespace import XSD
 from rdflib.term import URIRef
+from test.data import TEST_DATA_DIR
+from test.utils import GraphHelper
+from test.utils.graph import GraphSource
 
 MODULE_PATH = Path(__file__).parent
 
