@@ -717,4 +717,5 @@ def test_serialize_to_fileuri_with_authortiy(
             format=format.info.serializer,
         )
         assert False  # this should never happen as serialize should always fail
-    assert catcher.value is not None
+    # type error, mypy thinks this line is unreachable, but it works fine
+    assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]
