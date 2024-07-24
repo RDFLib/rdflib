@@ -4,7 +4,7 @@ A TriX parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
 from xml.sax import handler, make_parser
 from xml.sax.handler import ErrorHandler
 
