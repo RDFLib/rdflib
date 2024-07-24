@@ -2254,7 +2254,7 @@ class ConjunctiveGraph(Graph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. `ConjunctionGraph.default_context`).
+        (i.e. `ConjunctiveGraph.default_context`).
         """
 
         source = create_input_source(
@@ -2510,7 +2510,7 @@ class Dataset(ConjunctiveGraph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. `ConjunctionGraph.default_context`).
+        (i.e. `ConjunctiveGraph.default_context`).
         """
 
         c = ConjunctiveGraph.parse(
