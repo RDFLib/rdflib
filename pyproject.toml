@@ -44,7 +44,7 @@ pyparsing = ">=2.1.0,<4"
 berkeleydb = {version = "^18.1.0", optional = true}
 networkx = {version = ">=2,<4", optional = true}
 html5lib = {version = "^1.0", optional = true}
-lxml = {version = "^4.3.0", optional = true}
+lxml = {version = ">=4.3,<6.0", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 black = "24.4.2"
@@ -60,10 +60,10 @@ setuptools = ">=68,<72"
 wheel = ">=0.42,<0.44"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^7.1.1"
+sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
-sphinx-autodoc-typehints = "^1.17.1"
+sphinx-autodoc-typehints = ">=1.25.3,<=2.0.1"
 typing-extensions = "^4.5.0"
 
 [tool.poetry.group.lint.dependencies]
