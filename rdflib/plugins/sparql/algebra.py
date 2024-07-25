@@ -328,6 +328,11 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
     http://www.w3.org/TR/sparql11-query/#convertGraphPattern
     """
 
+    if graphPattern.translated:
+        # This occurs if it is attempted to translate a group graph pattern twice,
+        # which occurs with nested (NOT) EXISTS filters. Simply return the already
+        # translated pattern instead.
+        return graphPattern
     if graphPattern.name == "SubSelect":
         # The first output from translate cannot be None for a subselect query
         # as it can only be None for certain DESCRIBE queries.
@@ -383,6 +388,9 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
 
     if filters:
         G = Filter(expr=filters, p=G)
+
+    # Mark this graph pattern as translated
+    G.translated = True
 
     return G
 
@@ -1007,8 +1015,6 @@ class _AlgebraTranslator:
                 return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):  # type: ignore[unreachable]
-            return "{" + node_arg.name + "}"  # type: ignore[unreachable]
         elif isinstance(node_arg, str):
             return node_arg
         else:
