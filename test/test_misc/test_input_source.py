@@ -7,17 +7,7 @@ import pathlib
 import re
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
-
-# from itertools import product
 from pathlib import Path
-from test.utils import GraphHelper
-from test.utils.httpfileserver import (
-    HTTPFileInfo,
-    HTTPFileServer,
-    LocationType,
-    ProtoFileResource,
-    ProtoRedirectResource,
-)
 from typing import (  # Callable,
     IO,
     BinaryIO,
@@ -27,7 +17,6 @@ from typing import (  # Callable,
     Generic,
     Iterable,
     Optional,
-    Pattern,
     TextIO,
     Tuple,
     Type,
@@ -46,6 +35,15 @@ from rdflib.parser import (
     URLInputSource,
     create_input_source,
 )
+from test.utils import GraphHelper
+from test.utils.httpfileserver import (
+    HTTPFileInfo,
+    HTTPFileServer,
+    LocationType,
+    ProtoFileResource,
+    ProtoRedirectResource,
+)
+from test.utils.outcome import ExceptionChecker
 
 from ..data import TEST_DATA_DIR
 
@@ -249,21 +247,6 @@ def call_create_input_source(
             format=format,
         )
         yield input_source
-
-
-@dataclass
-class ExceptionChecker:
-    type: Type[Exception]
-    pattern: Optional[Pattern[str]] = None
-
-    def check(self, exception: Exception) -> None:
-        try:
-            assert isinstance(exception, self.type)
-            if self.pattern is not None:
-                assert self.pattern.match(f"{exception}")
-        except Exception:
-            logging.error("problem checking exception", exc_info=exception)
-            raise
 
 
 AnyT = TypeVar("AnyT")
@@ -663,9 +646,7 @@ def test_create_input_source(
     input_source: Optional[InputSource] = None
     with ExitStack() as xstack:
         if isinstance(test_params.expected_result, ExceptionChecker):
-            catcher = xstack.enter_context(
-                pytest.raises(test_params.expected_result.type)
-            )
+            catcher = xstack.enter_context(test_params.expected_result.context())
 
         input_source = xstack.enter_context(
             call_create_input_source(
@@ -685,8 +666,3 @@ def test_create_input_source(
             )
 
     logging.debug("input_source = %s, catcher = %s", input_source, catcher)
-
-    if isinstance(test_params.expected_result, ExceptionChecker):
-        assert catcher is not None
-        assert input_source is None
-        test_params.expected_result.check(catcher.value)

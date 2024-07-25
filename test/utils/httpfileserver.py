@@ -7,10 +7,11 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 from typing import Dict, List, Optional, Sequence, Type
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
+
+from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 
 __all__: List[str] = [
     "LocationType",
@@ -74,7 +75,7 @@ class HTTPFileInfo:
     :param effective_url: The URL that the file will be served from after
         redirects.
     :param redirects: A sequence of redirects that will be given to the client
-        if it uses the ``request_url``. This sequence will terimate in the
+        if it uses the ``request_url``. This sequence will terminate in the
         ``effective_url``.
     """
 
@@ -128,15 +129,17 @@ class HTTPFileServer(HTTPServer):
         self,
         proto_file: ProtoFileResource,
         proto_redirects: Optional[Sequence[ProtoRedirectResource]] = None,
+        suffix: str = "",
     ) -> HTTPFileInfo:
-        return self.add_file(proto_file, proto_redirects)
+        return self.add_file(proto_file, proto_redirects, suffix)
 
     def add_file(
         self,
         proto_file: ProtoFileResource,
         proto_redirects: Optional[Sequence[ProtoRedirectResource]] = None,
+        suffix: str = "",
     ) -> HTTPFileInfo:
-        url_path = f"/file/{uuid4().hex}"
+        url_path = f"/file/{uuid4().hex}{suffix}"
         url = urljoin(self.url, url_path)
         file_resource = FileResource(
             url_path=url_path,
@@ -151,7 +154,7 @@ class HTTPFileServer(HTTPServer):
 
         redirects: List[RedirectResource] = []
         for proto_redirect in reversed(proto_redirects):
-            redirect_url_path = f"/redirect/{uuid4().hex}"
+            redirect_url_path = f"/redirect/{uuid4().hex}{suffix}"
             if proto_redirect.location_type == LocationType.URL:
                 location = url
             elif proto_redirect.location_type == LocationType.ABSOLUTE_PATH:

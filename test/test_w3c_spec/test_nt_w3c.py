@@ -1,17 +1,20 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Triples
 test suite."""
+
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper, ensure_suffix
-from test.utils.dawg_manifest import ManifestEntry, params_from_sources
-from test.utils.iri import URIMapper
-from test.utils.namespace import RDFT
 from typing import Optional
 
 import pytest
 
 from rdflib.graph import Graph
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper, ensure_suffix
+from test.utils.dawg_manifest import ManifestEntry, params_from_sources
+from test.utils.iri import URIMapper
+from test.utils.namespace import RDFT
 
 logger = logging.getLogger(__name__)
 

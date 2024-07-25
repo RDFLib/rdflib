@@ -6,6 +6,8 @@ There is an option to preserve any prefixes declared for the original graph in t
 file, which will be a Turtle file.
 """
 
+from __future__ import annotations
+
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, BinaryIO, Generator, Optional, Tuple

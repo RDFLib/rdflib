@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/util.py
 from __future__ import annotations
 

@@ -35,7 +35,7 @@ class TestUtil:
     def test_literal_cases(self):
         np = NodePickler()
 
-        for l in cases:
+        for l in cases:  # noqa: E741
             a = Literal(l)
             b = np.loads(np.dumps(a))
             assert a == b

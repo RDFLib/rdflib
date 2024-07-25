@@ -1,3 +1,7 @@
+"""
+Aggregation functions
+"""
+
 from __future__ import annotations
 
 from decimal import Decimal
@@ -25,17 +29,13 @@ from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.plugins.sparql.sparql import FrozenBindings, NotBoundError, SPARQLTypeError
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
-"""
-Aggregation functions
-"""
-
 
 class Accumulator:
     """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation: CompValue):
         self.get_value: Callable[[], Optional[Literal]]
-        self.update: Callable[[FrozenBindings, "Aggregator"], None]
+        self.update: Callable[[FrozenBindings, Aggregator], None]
         self.var = aggregation.res
         self.expr = aggregation.vars
         if not aggregation.distinct:
@@ -69,7 +69,7 @@ class Counter(Accumulator):
             # type error: Cannot assign to a method
             self.eval_row = self.eval_full_row  # type: ignore[assignment]
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             val = self.eval_row(row)
         except NotBoundError:
@@ -89,17 +89,21 @@ class Counter(Accumulator):
         return row
 
     def use_row(self, row: FrozenBindings) -> bool:
-        return self.eval_row(row) not in self.seen
+        try:
+            return self.eval_row(row) not in self.seen
+        except NotBoundError:
+            # happens when counting zero optional nodes. See issue #2229
+            return False
 
 
 @overload
-def type_safe_numbers(*args: int) -> Tuple[int]:
-    ...
+def type_safe_numbers(*args: int) -> Tuple[int]: ...
 
 
 @overload
-def type_safe_numbers(*args: Union[Decimal, float, int]) -> Tuple[Union[float, int]]:
-    ...
+def type_safe_numbers(
+    *args: Union[Decimal, float, int]
+) -> Tuple[Union[float, int]]: ...
 
 
 def type_safe_numbers(*args: Union[Decimal, float, int]) -> Iterable[Union[float, int]]:
@@ -118,7 +122,7 @@ class Sum(Accumulator):
         self.value = 0
         self.datatype: Optional[str] = None
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -146,7 +150,7 @@ class Average(Accumulator):
         self.sum = 0
         self.datatype: Optional[str] = None
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             dt = self.datatype
@@ -191,7 +195,7 @@ class Extremum(Accumulator):
             # simply do not set if self.value is still None
             bindings[self.var] = Literal(self.value)
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             if self.value is None:
                 self.value = _eval(self.expr, row)
@@ -224,9 +228,10 @@ class Sample(Accumulator):
     def __init__(self, aggregation):
         super(Sample, self).__init__(aggregation)
         # DISTINCT would not change the value
-        self.use_row = self.dont_care
+        # type error: Cannot assign to a method
+        self.use_row = self.dont_care  # type: ignore[method-assign]
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             # set the value now
             aggregator.bindings[self.var] = _eval(self.expr, row)
@@ -241,13 +246,18 @@ class Sample(Accumulator):
 
 
 class GroupConcat(Accumulator):
-    def __init__(self, aggregation):
+    value: List[Literal]
+
+    def __init__(self, aggregation: CompValue):
         super(GroupConcat, self).__init__(aggregation)
         # only GROUPCONCAT needs to have a list as accumulator
         self.value = []
-        self.separator = aggregation.separator or " "
+        if aggregation.separator is None:
+            self.separator = " "
+        else:
+            self.separator = aggregation.separator
 
-    def update(self, row: FrozenBindings, aggregator: "Aggregator") -> None:
+    def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
             value = _eval(self.expr, row)
             # skip UNDEF

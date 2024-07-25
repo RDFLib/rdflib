@@ -3,7 +3,7 @@ from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 
 
-def testTurtleFinalDot():
+def test_turtle_final_dot():
     """
     https://github.com/RDFLib/rdflib/issues/282
     """
@@ -16,7 +16,7 @@ def testTurtleFinalDot():
     assert b"ns:bob." not in s
 
 
-def testTurtleBoolList():
+def test_turtle_bool_list():
     subject = URIRef("http://localhost/user")
     predicate = URIRef("http://localhost/vocab#hasList")
     g1 = Graph()
@@ -40,7 +40,7 @@ def testTurtleBoolList():
     assert bool_list == [True, False, True]
 
 
-def testUnicodeEscaping():
+def test_unicode_escaping():
     turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\\u00f3bbb> ."
     g = Graph()
 
@@ -56,21 +56,21 @@ def testUnicodeEscaping():
 
 
 def test_turtle_valid_list():
-    NS = Namespace("http://example.org/ns/")
+    ns = Namespace("http://example.org/ns/")
     g = Graph()
     g.parse(
         data="""
             @prefix : <{0}> .
             :s :p (""), (0), (false) .
             """.format(
-            NS
+            ns
         ),
         format="turtle",
     )
 
     turtle_serializer = TurtleSerializer(g)
 
-    for o in g.objects(NS.s, NS.p):
+    for o in g.objects(ns.s, ns.p):
         assert turtle_serializer.isValidList(o)
 
 

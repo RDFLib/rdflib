@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 This rdflib Python script creates a DefinedNamespace Python file from a given RDF file
 
@@ -12,17 +10,17 @@ namespace:
 
 Nicholas J. Car, Dec, 2021
 """
+
+from __future__ import annotations
+
 import argparse
 import datetime
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterable, List, Tuple
 
-sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
-
-from rdflib.graph import Graph  # noqa: E402
-from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS  # noqa: E402
-from rdflib.util import guess_format  # noqa: E402
+from rdflib.graph import Graph
+from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
+from rdflib.util import guess_format
 
 if TYPE_CHECKING:
     from rdflib.query import ResultRow

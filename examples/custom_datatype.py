@@ -8,7 +8,6 @@ This example shows how :meth:`rdflib.term.bind` lets you register new
 mappings between literal datatypes and Python objects
 """
 
-
 from rdflib import XSD, Graph, Literal, Namespace, term
 
 if __name__ == "__main__":
@@ -20,7 +19,7 @@ if __name__ == "__main__":
     # Create a complex number RDFlib Literal
     EG = Namespace("http://example.com/")
     c = complex(2, 3)
-    l = Literal(c)
+    l = Literal(c)  # noqa: E741
 
     # Add it to a graph
     g = Graph()

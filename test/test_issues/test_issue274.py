@@ -1,25 +1,25 @@
-from test.utils import eq_
 from unittest import TestCase
 
 import pytest
 
-from rdflib import RDFS, XSD, BNode, Graph, Literal, Namespace
+from rdflib import RDFS, XSD, BNode, Graph, Literal
 from rdflib.plugins.sparql.operators import (
     register_custom_function,
     unregister_custom_function,
 )
+from test.utils import eq_
+from test.utils.namespace import EGDO
 
-EX = Namespace("http://example.org/")
 G = Graph()
 G.add((BNode(), RDFS.label, Literal("bnode")))
 NS = {
-    "ex": EX,
+    "ex": EGDO,
     "rdfs": RDFS,
     "xsd": XSD,
 }
 
 
-def query(querystr, initNs=NS, initBindings=None):
+def query(querystr, initNs=NS, initBindings=None):  # noqa: N803
     return G.query(querystr, initNs=initNs, initBindings=initBindings)
 
 
@@ -176,21 +176,21 @@ class TestCustom(TestCase):
         return Literal("%s %s" % (x, y), datatype=XSD.string)
 
     def setUp(self):
-        register_custom_function(EX.f, self.f)
+        register_custom_function(EGDO.f, self.f)
 
     def tearDown(self):
-        unregister_custom_function(EX.f, self.f)
+        unregister_custom_function(EGDO.f, self.f)
 
     def test_register_twice_fail(self):
         with self.assertRaises(ValueError):
-            register_custom_function(EX.f, self.f)
+            register_custom_function(EGDO.f, self.f)
 
     def test_register_override(self):
-        register_custom_function(EX.f, self.f, override=True)
+        register_custom_function(EGDO.f, self.f, override=True)
 
     def test_wrong_unregister_warns(self):
         with pytest.warns(UserWarning):
-            unregister_custom_function(EX.notexist)
+            unregister_custom_function(EGDO.notexist)
 
     def test_f(self):
         res = query("""SELECT (ex:f(42, "hello") as ?x) {}""")

@@ -1,5 +1,3 @@
-from test.data import context0
-
 import pytest
 
 from rdflib import OWL, Graph, Literal, Namespace
@@ -12,12 +10,13 @@ from rdflib.extras.infixowl import (
     max,
     some,
 )
+from test.data import CONTEXT0
 
 EXNS = Namespace("http://example.org/vocab/")
 
 
 def test_lshift_rlshift_delimiters():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -29,18 +28,18 @@ def test_lshift_rlshift_delimiters():
     classF = Class(EXNS.F)  # noqa: N806
 
     anonClass = EXNS.someProp << some >> classD  # noqa: N806
-    classF += anonClass
+    classF += anonClass  # noqa: N806
     assert str(list(anonClass.subClassOf)) == "[Class: ex:F ]"
 
     classA = classE | classF | anonClass  # noqa: N806
-    classB += classA
+    classB += classA  # noqa: N806
     classA.equivalentClass = [Class()]
     classB.subClassOf = [EXNS.someProp << some >> classC]
     assert str(classA) == "( ex:E OR ex:F OR ( ex:someProp SOME ex:D ) )"
 
 
 def test_matmul_rmatmul_delimiters():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -52,11 +51,11 @@ def test_matmul_rmatmul_delimiters():
     classF = Class(EXNS.F)  # noqa: N806
 
     anonClass = EXNS.someProp @ some @ classD  # noqa: N806
-    classF += anonClass
+    classF += anonClass  # noqa: N806
     assert str(list(anonClass.subClassOf)) == "[Class: ex:F ]"
 
     classA = classE | classF | anonClass  # noqa: N806
-    classB += classA
+    classB += classA  # noqa: N806
     classA.equivalentClass = [Class()]
     classB.subClassOf = [EXNS.someProp @ some @ classC]
     assert str(classA) == "( ex:E OR ex:F OR ( ex:someProp SOME ex:D ) )"
@@ -83,7 +82,7 @@ def test_infixowl_serialization():
 
 @pytest.mark.webtest
 def test_infix_owl_example1():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g

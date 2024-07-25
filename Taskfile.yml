@@ -35,6 +35,7 @@ vars:
   PIP_COMPILE: pip-compile
   DOCKER: docker
   OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  MYPY_VARIANT: '{{ env "MYPY_VARIANT" | default "mypy" }}'
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -110,17 +111,10 @@ tasks:
     desc: Run tests
     cmds:
       - '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
-  flake8:
-    desc: Run flake8
+  ruff:
+    desc: Run ruff
     cmds:
-      - |
-        if {{.VENV_PYTHON}} -c 'import importlib.util; exit(0 if importlib.util.find_spec("flakeheaven") is not None else 1)'
-        then
-          1>&2 echo "running flakeheaven"
-          {{.VENV_PYTHON}} -m flakeheaven lint {{.CLI_ARGS}}
-        else
-          1>&2 echo "skipping flakeheaven as it is not installed, likely because python version is older than 3.8"
-        fi
+      - '{{.RUN_PREFIX}} ruff check {{if (mustFromJson (.FIX | default "false"))}}--fix {{end}}{{.CLI_ARGS | default "."}}'
   black:
     desc: Run black
     cmds:
@@ -132,22 +126,28 @@ tasks:
   mypy:
     desc: Run mypy
     cmds:
+      - task: "mypy:{{ .MYPY_VARIANT }}"
+  mypy:mypy:
+    desc: Run mypy
+    cmds:
       - "{{.VENV_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
-
+  mypy:dmypy:
+    desc: Run dmypy
+    cmds:
+      - "{{.RUN_PREFIX}} dmypy run {{.CLI_ARGS}}"
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
-      - task: isort
+      - task: ruff
+        vars: { FIX: "true" }
       - task: black
 
   lint:
     desc: Perform linting
     cmds:
-      - task: isort
-        vars: { CHECK: true }
       - task: black
-        vars: { CHECK: true }
-      - task: flake8
+        vars: { CHECK: "true" }
+      - task: ruff
 
   validate:static:
     desc: Perform static validation
@@ -250,20 +250,20 @@ tasks:
       - task: install:system-deps
       - task: install:tox
         vars:
-          WITH_GITHUB_ACTIONS: true
+          WITH_GITHUB_ACTIONS: "true"
       - cmd: "{{.PYTHON}} -m pip install coveralls"
       - task: tox
         vars:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
 
-  gha:flake8:
-    desc: GitHub Actions flake8 workflow
+  gha:lint:
+    desc: GitHub Actions lint workflow
     cmds:
       - task: poetry:configure
         vars:
-          CLI_ARGS: --no-root --only=flake8
-      - task: flake8
+          CLI_ARGS: --no-root --only=lint
+      - task: ruff
 
   cmd:rdfpipe:
     desc: Run rdfpipe

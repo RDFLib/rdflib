@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import collections
 import email.message
 import enum
 import random
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test.utils.wildcard import EQ_WILDCARD
 from threading import Thread
 from typing import (
     Dict,
@@ -19,6 +20,8 @@ from typing import (
     Union,
 )
 from urllib.parse import ParseResult
+
+from test.utils.wildcard import EQ_WILDCARD
 
 __all__: List[str] = []
 
@@ -108,3 +111,12 @@ def ctx_http_server(server: HTTPServerT) -> Iterator[HTTPServerT]:
     server.shutdown()
     server.socket.close()
     server_thread.join()
+
+
+def headers_as_message(headers: HeadersT) -> email.message.Message:
+    message = email.message.Message()
+    for header, value in header_items(headers):
+        # This will append the value to any existing values for the header
+        # instead of replacing it.
+        message[header] = value
+    return message

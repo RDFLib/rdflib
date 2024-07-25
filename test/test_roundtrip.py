@@ -1,26 +1,3 @@
-import enum
-import logging
-import os.path
-from pathlib import Path
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper
-from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
-from xml.sax import SAXParseException
-
-import pytest
-from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
-
-import rdflib
-import rdflib.compare
-from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.namespace import XSD
-from rdflib.parser import Parser, create_input_source
-from rdflib.plugins.parsers.notation3 import BadSyntax
-from rdflib.serializer import Serializer
-from rdflib.util import guess_format
-
-logger = logging.getLogger(__name__)
-
 """
 Test round-tripping by all serializers/parser that are registered.
 This means, you may test more than just core rdflib!
@@ -42,6 +19,32 @@ but provides some roundtrip test functions of its own (see test_parser_hext.py
 & test_serializer_hext.py)
 
 """
+
+from __future__ import annotations
+
+import enum
+import logging
+import os.path
+from pathlib import Path
+from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
+from xml.sax import SAXParseException
+
+import pytest
+from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
+
+import rdflib
+import rdflib.compare
+from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.namespace import XSD
+from rdflib.parser import Parser, create_input_source
+from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.serializer import Serializer
+from rdflib.util import guess_format
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper
+
+logger = logging.getLogger(__name__)
+
 
 NT_DATA_DIR = Path(TEST_DATA_DIR) / "suites" / "nt_misc"
 INVALID_NT_FILES = {
@@ -269,7 +272,7 @@ def roundtrip(
         for c in g2.contexts():
             # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
             for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
-                if type(o) == rdflib.Literal and o.datatype == XSD.string:
+                if type(o) is rdflib.Literal and o.datatype == XSD.string:
                     # type error: Argument 1 to "remove" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
                     c.remove((s, p, o))  # type: ignore[arg-type]
                     # type error: Argument 1 to "add" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Node, Node, Node]"

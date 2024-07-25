@@ -1,4 +1,12 @@
-from rdflib import BNode, ConjunctiveGraph, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib import (  # noqa: I001
+    BNode,
+    ConjunctiveGraph,
+    Dataset,
+    Graph,
+    Literal,
+    Namespace,
+    URIRef,
+)
 from rdflib.extras.infixowl import Class, Property, classOrTerm
 from rdflib.extras.infixowl import generateQName as generate_qname  # noqa: N813
 from rdflib.extras.infixowl import propertyOrIdentifier

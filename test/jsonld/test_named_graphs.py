@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from rdflib import ConjunctiveGraph, Dataset, Graph, URIRef
 
 data = """

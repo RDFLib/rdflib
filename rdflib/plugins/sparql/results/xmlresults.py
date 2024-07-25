@@ -1,3 +1,15 @@
+"""A Parser for SPARQL results in XML:
+
+http://www.w3.org/TR/rdf-sparql-XMLres/
+
+Bits and pieces borrowed from:
+http://projects.bigasterisk.com/sparqlhttp/
+
+Authors: Drew Perttula, Gunnar Aastrand Grimnes
+"""
+
+from __future__ import annotations
+
 import logging
 import xml.etree.ElementTree as xml_etree  # noqa: N813
 from io import BytesIO
@@ -33,17 +45,6 @@ SPARQL_XML_NAMESPACE = "http://www.w3.org/2005/sparql-results#"
 RESULTS_NS_ET = "{%s}" % SPARQL_XML_NAMESPACE
 
 log = logging.getLogger(__name__)
-
-
-"""A Parser for SPARQL results in XML:
-
-http://www.w3.org/TR/rdf-sparql-XMLres/
-
-Bits and pieces borrowed from:
-http://projects.bigasterisk.com/sparqlhttp/
-
-Authors: Drew Perttula, Gunnar Aastrand Grimnes
-"""
 
 
 class XMLResultParser(ResultParser):
@@ -253,7 +254,7 @@ class SPARQLXMLWriter:
             "binding",
             # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
             # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
-            AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
+            AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type, unused-ignore]
         )
 
         if isinstance(val, URIRef):
@@ -283,7 +284,7 @@ class SPARQLXMLWriter:
                 "literal",
                 # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
                 # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
-                AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
+                AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type, unused-ignore]
             )
             self.writer.characters(val)
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "literal"), "literal")
