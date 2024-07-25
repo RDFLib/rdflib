@@ -1,5 +1,3 @@
-from test.data import CONTEXT0, CONTEXT1
-
 import pytest
 
 from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable
@@ -12,6 +10,7 @@ from rdflib.extras.infixowl import (
     max,
 )
 from rdflib.util import first
+from test.data import CONTEXT0, CONTEXT1
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
@@ -154,7 +153,7 @@ def test_class_getparents(graph):
 
     assert list(sibling.subSumpteeIds()) == []
 
-    assert str(brother.__repr__(full=True)) == "Class: ex:Brother "
+    assert str(brother.manchesterClass(full=True)) == "Class: ex:Brother "
 
     assert graph.serialize(format="ttl") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
@@ -252,7 +251,7 @@ def test_class_serialize(graph):
 
     assert str(owlc.__invert__()) == "Some Class DisjointWith ( NOT ex:Sister )\n"
 
-    assert owlc.__repr__(full=True) == (
+    assert owlc.manchesterClass(full=True) == (
         "Class: ex:test \n"
         "    ## A Defined Class (Man) ##\n"
         "    This is a Man\n"

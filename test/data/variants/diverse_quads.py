@@ -1,8 +1,7 @@
-from test.utils.namespace import EGDC, EGSCHEME, EGURN
-
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import XSD
 from rdflib.term import Literal
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 def populate_graph(graph: Graph) -> None:
@@ -13,7 +12,9 @@ def populate_graph(graph: Graph) -> None:
     graph.add((EGURN.subject, EGURN.predicate, EGURN.object))
 
     egscheme_graph = graph.get_context(EGSCHEME.graph)
-    egscheme_graph.add((EGDC.subject, EGDC.predicate, Literal("日本語の表記体系", lang="jpx")))
+    egscheme_graph.add(
+        (EGDC.subject, EGDC.predicate, Literal("日本語の表記体系", lang="jpx"))
+    )
     egscheme_graph.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
     egscheme_graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     egscheme_graph.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))

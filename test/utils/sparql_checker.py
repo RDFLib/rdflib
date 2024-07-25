@@ -1,5 +1,6 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+
 from __future__ import annotations
 
 import enum
@@ -8,12 +9,6 @@ import pprint
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from io import BytesIO, StringIO
-from test.utils import BNodeHandling, GraphHelper
-from test.utils.dawg_manifest import Manifest, ManifestEntry
-from test.utils.iri import URIMapper
-from test.utils.namespace import MF, QT, UT
-from test.utils.result import ResultType, assert_bindings_collections_equal
-from test.utils.urlopen import context_urlopener
 from typing import Dict, Generator, Optional, Set, Tuple, Type, Union, cast
 from urllib.parse import urljoin
 
@@ -30,6 +25,12 @@ from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.query import Result
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import guess_format
+from test.utils import BNodeHandling, GraphHelper
+from test.utils.dawg_manifest import Manifest, ManifestEntry
+from test.utils.iri import URIMapper
+from test.utils.namespace import MF, QT, UT
+from test.utils.result import ResultType, assert_bindings_collections_equal
+from test.utils.urlopen import context_urlopener
 
 logger = logging.getLogger(__name__)
 

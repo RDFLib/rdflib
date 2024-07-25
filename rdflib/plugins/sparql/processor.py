@@ -4,6 +4,7 @@ Code for tying SPARQL Engine into RDFLib
 These should be automatically registered with RDFLib
 
 """
+
 from __future__ import annotations
 
 from typing import Any, Mapping, Optional, Union

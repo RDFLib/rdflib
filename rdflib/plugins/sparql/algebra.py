@@ -210,13 +210,11 @@ def translatePName(  # type: ignore[return]
 
 
 @overload
-def translatePath(p: URIRef) -> None:
-    ...
+def translatePath(p: URIRef) -> None: ...
 
 
 @overload
-def translatePath(p: CompValue) -> Path:
-    ...
+def translatePath(p: CompValue) -> Path: ...
 
 
 # type error: Missing return statement
@@ -338,6 +336,11 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
     http://www.w3.org/TR/sparql11-query/#convertGraphPattern
     """
 
+    if graphPattern.translated:
+        # This occurs if it is attempted to translate a group graph pattern twice,
+        # which occurs with nested (NOT) EXISTS filters. Simply return the already
+        # translated pattern instead.
+        return graphPattern
     if graphPattern.name == "SubSelect":
         # The first output from translate cannot be None for a subselect query
         # as it can only be None for certain DESCRIBE queries.
@@ -393,6 +396,9 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
 
     if filters:
         G = Filter(expr=filters, p=G)
+
+    # Mark this graph pattern as translated
+    G.translated = True
 
     return G
 
@@ -851,9 +857,9 @@ def translateQuads(
     else:
         alltriples = []
 
-    allquads: DefaultDict[
-        str, List[Tuple[Identifier, Identifier, Identifier]]
-    ] = collections.defaultdict(list)
+    allquads: DefaultDict[str, List[Tuple[Identifier, Identifier, Identifier]]] = (
+        collections.defaultdict(list)
+    )
 
     if quads.quadsNotTriples:
         for q in quads.quadsNotTriples:
@@ -985,9 +991,9 @@ class _AlgebraTranslator:
 
     def __init__(self, query_algebra: Query):
         self.query_algebra = query_algebra
-        self.aggr_vars: DefaultDict[
-            Identifier, List[Identifier]
-        ] = collections.defaultdict(list)
+        self.aggr_vars: DefaultDict[Identifier, List[Identifier]] = (
+            collections.defaultdict(list)
+        )
         self._alg_translation: str = ""
 
     def _replace(
@@ -1025,8 +1031,6 @@ class _AlgebraTranslator:
             else:
                 return node_arg.n3()
         elif isinstance(node_arg, CompValue):
-            return "{" + node_arg.name + "}"
-        elif isinstance(node_arg, Expr):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, str):
             return node_arg
@@ -1292,7 +1296,7 @@ class _AlgebraTranslator:
             elif node.name == "MultiplicativeExpression":
                 left_side = self.convert_node_arg(node.expr)
                 multiplication = left_side
-                for i, operator in enumerate(node.op):  # noqa: F402
+                for i, operator in enumerate(node.op):
                     multiplication += (
                         operator + " " + self.convert_node_arg(node.other[i]) + " "
                     )

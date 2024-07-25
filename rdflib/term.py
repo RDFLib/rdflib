@@ -20,6 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
+
 from __future__ import annotations
 
 import abc
@@ -139,8 +140,7 @@ class Node(abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
-        ...
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
@@ -187,7 +187,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
         False
         """
 
-        if type(self) == type(other):
+        if type(self) is type(other):
             return str(self) == str(other)
         else:
             return False
@@ -205,7 +205,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
         """
         if other is None:
             return True  # everything bigger than None
-        elif type(self) == type(other):
+        elif type(self) is type(other):
             return str(self) > str(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] > _ORDERING[type(other)]
@@ -215,7 +215,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     def __lt__(self, other: Any) -> bool:
         if other is None:
             return False  # Nothing is less than None
-        elif type(self) == type(other):
+        elif type(self) is type(other):
             return str(self) < str(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] < _ORDERING[type(other)]
@@ -946,9 +946,11 @@ class Literal(Identifier):
                 return Literal(
                     self.toPython() - val.toPython(),
                     self.language,
-                    datatype=_XSD_DURATION
-                    if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
-                    else self.datatype,
+                    datatype=(
+                        _XSD_DURATION
+                        if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME)
+                        else self.datatype
+                    ),
                 )
 
         # if the datatypes are not the same but are both numeric, subtract the Python values and strip off decimal junk

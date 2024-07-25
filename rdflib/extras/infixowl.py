@@ -112,6 +112,7 @@ Python
 >>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
 
 """
+
 from __future__ import annotations
 
 import itertools
@@ -1328,7 +1329,10 @@ class Class(AnnotatableTerms):
     #        predicate=RDFS.subClassOf,object=self.identifier):
     #         yield Class(s,skipOWLClassMembership=True)
 
-    def __repr__(self, full=False, normalization=True):
+    def __repr__(self):
+        return self.manchesterClass(full=False, normalization=True)
+
+    def manchesterClass(self, full=False, normalization=True):  # noqa: N802
         """
         Returns the Manchester Syntax equivalent for this class
         """

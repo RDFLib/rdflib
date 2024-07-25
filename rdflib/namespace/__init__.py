@@ -69,6 +69,7 @@ The following namespaces are available by directly importing from rdflib:
     >>> RDFS.seeAlso
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
+
 from __future__ import annotations
 
 import logging
@@ -232,6 +233,13 @@ _DFNS_RESERVED_ATTRS: Set[str] = {
     "_underscore_num",
 }
 
+# Some libraries probe classes for certain attributes or items.
+# This is a list of those attributes and items that should be ignored.
+_IGNORED_ATTR_LOOKUP: Set[str] = {
+    "_pytestfixturefunction",  # pytest tries to look this up on Defined namespaces
+    "_partialmethod",  # sphinx tries to look this up during autodoc generation
+}
+
 
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
@@ -245,10 +253,13 @@ class DefinedNamespaceMeta(type):
     @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
+
         if name in _DFNS_RESERVED_ATTRS:
             raise AttributeError(
                 f"DefinedNamespace like object has no attribute {name!r}"
             )
+        elif name in _IGNORED_ATTR_LOOKUP:
+            raise KeyError()
         if str(name).startswith("__"):
             # NOTE on type ignore: This seems to be a real bug, super() does not
             # implement this method, it will fail if it is ever reached.
@@ -264,6 +275,8 @@ class DefinedNamespaceMeta(type):
         return cls._NS[name]
 
     def __getattr__(cls, name: str):
+        if name in _IGNORED_ATTR_LOOKUP:
+            raise AttributeError()
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
@@ -669,7 +682,7 @@ class NamespaceManager:
         Raises exception if a namespace is not bound to the prefix.
 
         """
-        if not type(curie) is str:  # noqa: E714, E721
+        if not type(curie) is str:  # noqa: E714
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
         if len(parts) != 2:

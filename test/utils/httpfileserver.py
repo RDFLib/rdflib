@@ -7,10 +7,11 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 from typing import Dict, List, Optional, Sequence, Type
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
+
+from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 
 __all__: List[str] = [
     "LocationType",

@@ -157,7 +157,7 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
     def __new__(cls, values: Mapping[Variable, Identifier], labels: List[Variable]):
         # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
         # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
-        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc]
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
         instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
@@ -181,14 +181,12 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
             raise KeyError(name)
 
     @overload
-    def get(self, name: str, default: Identifier) -> Identifier:
-        ...
+    def get(self, name: str, default: Identifier) -> Identifier: ...
 
     @overload
     def get(
         self, name: str, default: Optional[Identifier] = ...
-    ) -> Optional[Identifier]:
-        ...
+    ) -> Optional[Identifier]: ...
 
     def get(
         self, name: str, default: Optional[Identifier] = None

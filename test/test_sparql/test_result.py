@@ -9,13 +9,6 @@ import socket
 from contextlib import ExitStack
 from io import BytesIO, StringIO
 from pathlib import Path, PosixPath, PurePath
-from test.utils.destination import DestinationType, DestParmType
-from test.utils.result import (
-    ResultFormat,
-    ResultFormatInfo,
-    ResultFormatTrait,
-    ResultType,
-)
 from typing import (
     IO,
     BinaryIO,
@@ -41,6 +34,13 @@ from rdflib.graph import Graph
 from rdflib.namespace import Namespace
 from rdflib.query import Result, ResultRow
 from rdflib.term import BNode, Identifier, Literal, Node, Variable
+from test.utils.destination import DestinationType, DestParmType
+from test.utils.result import (
+    ResultFormat,
+    ResultFormatInfo,
+    ResultFormatTrait,
+    ResultType,
+)
 
 BindingsType = Sequence[Mapping[Variable, Identifier]]
 ParseOutcomeType = Union[BindingsType, Type[Exception]]
@@ -441,4 +441,5 @@ def test_serialize_to_fileuri_with_authortiy(
             encoding=encoding,
         )
         assert False  # this should never happen as serialize should always fail
-    assert catcher.value is not None
+    # type error, mypy thinks this line is unreachable, but it works fine
+    assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]

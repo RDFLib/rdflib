@@ -3,10 +3,6 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
-from test.utils import GraphHelper, get_unique_plugin_names
-from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 from typing import Callable, Optional, Set, Tuple
 from urllib.error import HTTPError, URLError
 
@@ -18,6 +14,10 @@ from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
 from rdflib.store import Store
 from rdflib.term import BNode
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
+from test.utils import GraphHelper, get_unique_plugin_names
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 
 
 def test_property_store() -> None:
@@ -389,6 +389,19 @@ def test_guess_format_for_parse_http(
     with checker.context():
         graph.parse(location=file_info.request_url)
         checker.check(len(graph))
+
+
+@pytest.mark.webtest
+def test_guess_format_for_parse_http_text_plain():
+    # Any raw url of a file from GitHub will return the content-type with text/plain.
+    url = "https://raw.githubusercontent.com/AGLDWG/vocpub-profile/master/validators/validator.ttl"
+    graph = Graph().parse(url)
+    assert len(graph) > 0
+
+    # A url that returns content-type text/html.
+    url = "https://github.com/RDFLib/rdflib/issues/2734"
+    with pytest.raises(PluginException):
+        graph = Graph().parse(url)
 
 
 def test_parse_file_uri(make_graph: GraphFactory):
