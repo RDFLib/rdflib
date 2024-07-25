@@ -433,6 +433,11 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
+    context_aware: bool
+    formula_aware: bool
+    default_union: bool
+    base: Optional[str]
+
     def __init__(
         self,
         store: Union[Store, str] = "default",
@@ -1393,9 +1398,9 @@ class Graph(Node):
            :doc:`Security Considerations </security_considerations>`
            documentation.
 
-        :param source: An `InputSource`, file-like object, `Path` like object,
-            or string. In the case of a string the string is the location of the
-            source.
+        :param source: An `xml.sax.xmlreader.InputSource`, file-like object,
+            `pathlib.Path` like object, or string. In the case of a string the string
+            is the location of the source.
         :param location: A string indicating the relative or absolute URL of the
             source. `Graph`'s absolutize method is used if a relative location
             is specified.
@@ -1910,6 +1915,8 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
+    default_context: _ContextType
+
     def __init__(
         self,
         store: Union[Store, str] = "default",
@@ -2298,8 +2305,9 @@ class ConjunctiveGraph(Graph):
 
         See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
 
-        If the source is in a format that does not support named graphs it's triples
-        will be added to the default graph (i.e. `Dataset.default_context`).
+        If the source is in a format that does not support named graphs its triples
+        will be added to the default graph
+        (i.e. :attr:`ConjunctiveGraph.default_context`).
 
         :Returns:
 
@@ -2325,7 +2333,7 @@ class ConjunctiveGraph(Graph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. `ConjunctionGraph.default_context`).
+        (i.e. :attr:`ConjunctiveGraph.default_context`).
         """
 
         source = create_input_source(
@@ -2559,8 +2567,9 @@ class Dataset(ConjunctiveGraph):
 
         The source is specified using one of source, location, file or data.
 
-        If the source is in a format that does not support named graphs it's triples
-        will be added to the default graph (i.e. `Dataset.default_context`).
+        If the source is in a format that does not support named graphs its triples
+        will be added to the default graph
+        (i.e. :attr:`.Dataset.default_context`).
 
         .. caution::
 
@@ -2581,7 +2590,7 @@ class Dataset(ConjunctiveGraph):
         the ``publicID`` parameter will also not be used as the name for the
         graph that the data is loaded into, and instead the triples from sources
         that do not support named graphs will be loaded into the default graph
-        (i.e. `ConjunctionGraph.default_context`).
+        (i.e. :attr:`.Dataset.default_context`).
         """
 
         c = ConjunctiveGraph.parse(
