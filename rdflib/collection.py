@@ -250,10 +250,9 @@ class Collection:
         return self
 
     def __iadd__(self, other: Iterable[Node]):
-        if self.uri == RDF.nil:
-            raise ValueError("Cannot append to empty list")
-
         end = self._end()
+        if end == RDF.nil:
+            raise ValueError("Cannot append to empty list")
         self.graph.remove((end, RDF.rest, None))
 
         for item in other:
