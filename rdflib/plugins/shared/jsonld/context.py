@@ -481,7 +481,7 @@ class Context:
             return self._context_cache[source_url]
 
         # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
-        source = source_to_json(source_url)  # type: ignore[assignment]
+        source, _ = source_to_json(source_url)
         if source and CONTEXT not in source:
             raise INVALID_REMOTE_CONTEXT
 
