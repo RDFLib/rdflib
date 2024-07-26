@@ -79,6 +79,8 @@ class BytesIOWrapper(BufferedIOBase):
         "has_read1",
         "has_seek",
         "_name",
+        "_fileno",
+        "_isatty",
         "_leftover",
         "_bytes_per_char",
         "_text_bytes_offset",
@@ -94,6 +96,8 @@ class BytesIOWrapper(BufferedIOBase):
         self.has_read1: Optional[bool] = None
         self.has_seek: Optional[bool] = None
         self._name: Optional[str] = None
+        self._fileno: Optional[int] = None
+        self._isatty: Optional[bool] = None
         self._leftover: bytes = b""
         self._text_bytes_offset: int = 0
         norm_encoding = encoding.lower().replace("_", "-")
@@ -155,6 +159,14 @@ class BytesIOWrapper(BufferedIOBase):
             self.has_seek = use_stream.seekable()
         except AttributeError:
             self.has_seek = hasattr(use_stream, "seek")
+        try:
+            self._fileno = use_stream.fileno()
+        except AttributeError:
+            self._fileno = -1
+        try:
+            self._isatty = use_stream.isatty()
+        except AttributeError:
+            self._isatty = False
         self._name = name
 
     @property
@@ -180,9 +192,24 @@ class BytesIOWrapper(BufferedIOBase):
                 closed = None
         return False if closed is None else closed
 
+    def readable(self) -> bool:
+        return True
+
+    def writable(self) -> bool:
+        return False
+
+    def truncate(self, size: Optional[int] = None) -> int:
+        raise NotImplementedError("Cannot truncate on BytesIOWrapper")
+
+    def isatty(self) -> bool:
+        return bool(self._isatty)
+
+    def fileno(self) -> int:
+        return self._fileno if self._fileno is not None else -1
+
     def close(self):
         if self.enc_str is None and self.text_str is None:
-            return False
+            return
         if self.enc_str is not None:
             try:
                 self.enc_str.close()
@@ -193,6 +220,9 @@ class BytesIOWrapper(BufferedIOBase):
                 self.text_str.close()
             except AttributeError:
                 pass
+
+    def flush(self):
+        return  # Does nothing on read-only streams
 
     def _read_bytes_from_text_stream(self, size: Optional[int] = -1, /) -> bytes:
         if TYPE_CHECKING:
