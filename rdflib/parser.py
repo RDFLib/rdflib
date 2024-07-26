@@ -96,8 +96,8 @@ class BytesIOWrapper(BufferedIOBase):
         self.has_read1: Optional[bool] = None
         self.has_seek: Optional[bool] = None
         self._name: Optional[str] = None
-        self._fileno: Optional[int] = None
-        self._isatty: Optional[bool] = None
+        self._fileno: Optional[Union[int, BaseException]] = None
+        self._isatty: Optional[Union[bool, BaseException]] = None
         self._leftover: bytes = b""
         self._text_bytes_offset: int = 0
         norm_encoding = encoding.lower().replace("_", "-")
@@ -159,15 +159,38 @@ class BytesIOWrapper(BufferedIOBase):
             self.has_seek = use_stream.seekable()
         except AttributeError:
             self.has_seek = hasattr(use_stream, "seek")
+
+        self._name = name
+
+    def _check_fileno(self):
+        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            use_stream = self.enc_str
+        elif self.text_str is not None:
+            use_stream = self.text_str
         try:
             self._fileno = use_stream.fileno()
+        except OSError as e:
+            self._fileno = e
         except AttributeError:
             self._fileno = -1
+
+    def _check_isatty(self):
+        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            use_stream = self.enc_str
+        elif self.text_str is not None:
+            use_stream = self.text_str
         try:
             self._isatty = use_stream.isatty()
+        except OSError as e:
+            self._isatty = e
         except AttributeError:
             self._isatty = False
-        self._name = name
 
     @property
     def name(self) -> Any:
@@ -202,10 +225,20 @@ class BytesIOWrapper(BufferedIOBase):
         raise NotImplementedError("Cannot truncate on BytesIOWrapper")
 
     def isatty(self) -> bool:
-        return bool(self._isatty)
+        if self._isatty is None:
+            self._check_isatty()
+        if isinstance(self._isatty, BaseException):
+            raise self._isatty
+        else:
+            return bool(self._isatty)
 
     def fileno(self) -> int:
-        return self._fileno if self._fileno is not None else -1
+        if self._fileno is None:
+            self._check_fileno()
+        if isinstance(self._fileno, BaseException):
+            raise self._fileno
+        else:
+            return -1 if self._fileno is None else self._fileno
 
     def close(self):
         if self.enc_str is None and self.text_str is None:
