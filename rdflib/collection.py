@@ -235,10 +235,10 @@ class Collection:
 
         """
 
-        if self.uri == RDF.nil:
+        end = self._end()
+        if end == RDF.nil:
             raise ValueError("Cannot append to empty list")
 
-        end = self._end()
         if (end, RDF.first, None) in self.graph:
             # append new node to the end of the linked list
             node = BNode()
