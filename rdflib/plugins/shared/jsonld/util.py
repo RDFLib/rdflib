@@ -1,22 +1,21 @@
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/util.py
 from __future__ import annotations
 
+import json
 import pathlib
-from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union
-
-if TYPE_CHECKING:
-    import json
-else:
-    try:
-        import json
-
-        assert json  # workaround for pyflakes issue #13
-    except ImportError:
-        import simplejson as json
-
-from io import TextIOBase, TextIOWrapper
+from io import StringIO, TextIOWrapper
 from posixpath import normpath, sep
+from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union
 from urllib.parse import urljoin, urlsplit, urlunsplit
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None
+    _HAS_ORJSON = False
+
 
 from rdflib.parser import (
     BytesIOWrapper,
@@ -37,22 +36,91 @@ def source_to_json(
         return source.data
 
     if isinstance(source, StringInputSource):
-        return json.load(source.getCharacterStream())
+        # We can get the original string from the StringInputSource
+        # It's hidden in the BytesIOWrapper 'wrapped' attribute
+        b_stream = source.getByteStream()
+        original_string: Optional[str] = None
+        if isinstance(b_stream, BytesIOWrapper):
+            wrapped_inner = b_stream.wrapped
+            if isinstance(wrapped_inner, str):
+                original_string = wrapped_inner
+            elif isinstance(wrapped_inner, StringIO):
+                original_string = wrapped_inner.getvalue()
+
+        if _HAS_ORJSON:
+            if original_string is not None:
+                return orjson.loads(original_string)
+            elif isinstance(b_stream, BytesIOWrapper):
+                # use the CharacterStream instead
+                c_stream = source.getCharacterStream()
+                return orjson.loads(c_stream.read())
+            else:
+                return orjson.loads(b_stream.read())
+        else:
+            if original_string is not None:
+                return json.loads(original_string)
+            return json.load(source.getCharacterStream())
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
-    stream = source.getByteStream()
     try:
-        if isinstance(stream, BytesIOWrapper):
-            stream = stream.wrapped
-        # Use character stream as-is, or interpret byte stream as UTF-8
-        if isinstance(stream, TextIOBase):
-            use_stream = stream
+        b_stream = source.getByteStream()
+    except (AttributeError, LookupError):
+        b_stream = None
+    try:
+        c_stream = source.getCharacterStream()
+    except (AttributeError, LookupError):
+        c_stream = None
+    if b_stream is None and c_stream is None:
+        raise ValueError(
+            f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
+        )
+    underlying_string: Optional[str] = None
+    if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
+        # Try to find an underlying string to use?
+        wrapped_inner = b_stream.wrapped
+        if isinstance(wrapped_inner, str):
+            underlying_string = wrapped_inner
+        elif isinstance(wrapped_inner, StringIO):
+            underlying_string = wrapped_inner.getvalue()
+    try:
+        if _HAS_ORJSON:
+            if underlying_string is not None:
+                return orjson.loads(underlying_string)
+            elif (
+                (b_stream is not None and isinstance(b_stream, BytesIOWrapper))
+                or b_stream is None
+            ) and c_stream is not None:
+                # use the CharacterStream instead
+                return orjson.loads(c_stream.read())
+            else:
+                if TYPE_CHECKING:
+                    assert b_stream is not None
+                # b_stream is not None
+                return orjson.loads(b_stream.read())
         else:
-            use_stream = TextIOWrapper(stream, encoding="utf-8")
-        return json.load(use_stream)
+            if underlying_string is not None:
+                return json.loads(underlying_string)
+            if c_stream is not None:
+                use_stream = c_stream
+            else:
+                if TYPE_CHECKING:
+                    assert b_stream is not None
+                # b_stream is not None
+                use_stream = TextIOWrapper(b_stream, encoding="utf-8")
+            return json.load(use_stream)
+
     finally:
-        stream.close()
+        if b_stream is not None:
+            try:
+                b_stream.close()
+            except AttributeError:
+                pass
+        if c_stream is not None:
+            try:
+                c_stream.close()
+            except AttributeError:
+                pass
 
 
 VOCAB_DELIMS = ("#", "/", ":")

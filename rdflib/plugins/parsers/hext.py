@@ -9,11 +9,22 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import Any, BinaryIO, List, Optional, TextIO, Union
+from typing import TYPE_CHECKING, Any, BinaryIO, List, Optional, TextIO, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None
+    _HAS_ORJSON = False
+
+if TYPE_CHECKING:
+    from io import BufferedReader
 
 __all__ = ["HextuplesParser"]
 
@@ -26,16 +37,6 @@ class HextuplesParser(Parser):
 
     def __init__(self):
         pass
-
-    def _load_json_line(self, line: str) -> List[Optional[Any]]:
-        # this complex handing is because the 'value' component is
-        # allowed to be "" but not None
-        # all other "" values are treated as None
-        ret1 = json.loads(line)
-        ret2 = [x if x != "" else None for x in ret1]
-        if ret1[2] == "":
-            ret2[2] = ""
-        return ret2
 
     def _parse_hextuple(
         self, cg: ConjunctiveGraph, tup: List[Union[str, None]]
@@ -98,19 +99,50 @@ class HextuplesParser(Parser):
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 
-        text_stream: Optional[TextIO] = source.getCharacterStream()
-        if text_stream is None:
+        try:
+            text_stream: Optional[TextIO] = source.getCharacterStream()
+        except (AttributeError, LookupError):
+            text_stream = None
+        try:
             binary_stream: Optional[BinaryIO] = source.getByteStream()
-            if binary_stream is None:
-                raise ValueError(
-                    f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
-                )
-            text_stream = TextIOWrapper(binary_stream, encoding="utf-8")
+        except (AttributeError, LookupError):
+            binary_stream = None
 
-        for line in text_stream:
+        if text_stream is None and binary_stream is None:
+            raise ValueError(
+                f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
+            )
+        if TYPE_CHECKING:
+            assert text_stream is not None or binary_stream is not None
+        use_stream: Union[TextIO, BinaryIO]
+        if _HAS_ORJSON:
+            if binary_stream is not None:
+                use_stream = binary_stream
+            else:
+                if TYPE_CHECKING:
+                    assert isinstance(text_stream, TextIOWrapper)
+                use_stream = text_stream
+            loads = orjson.loads
+        else:
+            if text_stream is not None:
+                use_stream = text_stream
+            else:
+                if TYPE_CHECKING:
+                    assert isinstance(binary_stream, BufferedReader)
+                use_stream = TextIOWrapper(binary_stream, encoding="utf-8")
+            loads = json.loads
+
+        for line in use_stream:  # type: Union[str, bytes]
             if len(line) == 0 or line.isspace():
                 # Skipping empty lines because this is what was being done before for the first and last lines, albeit in an rather indirect way.
                 # The result is that we accept input that would otherwise be invalid.
                 # Possibly we should just let this result in an error.
                 continue
-            self._parse_hextuple(cg, self._load_json_line(line))
+            # this complex handing is because the 'value' component is
+            # allowed to be "" but not None
+            # all other "" values are treated as None
+            raw_line: List[str] = loads(line)
+            hex_tuple_line = [x if x != "" else None for x in raw_line]
+            if raw_line[2] == "":
+                hex_tuple_line[2] = ""
+            self._parse_hextuple(cg, hex_tuple_line)
