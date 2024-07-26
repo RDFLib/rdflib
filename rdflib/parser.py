@@ -10,6 +10,8 @@ want to do so through the Graph class parse method.
 
 """
 
+from __future__ import annotations
+
 import codecs
 import os
 import pathlib
@@ -26,20 +28,21 @@ from typing import (
     Tuple,
     Union,
 )
-from urllib.error import HTTPError
 from urllib.parse import urljoin
-from urllib.request import Request, url2pathname, urlopen
+from urllib.request import Request, url2pathname
 from xml.sax import xmlreader
 
 import rdflib.util
 from rdflib import __version__
+from rdflib._networking import _urlopen
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 
 if TYPE_CHECKING:
-    from http.client import HTTPMessage, HTTPResponse
+    from email.message import Message
+    from urllib.response import addinfourl
 
-    from rdflib import Graph
+    from rdflib.graph import Graph
 
 __all__ = [
     "Parser",
@@ -51,13 +54,13 @@ __all__ = [
 ]
 
 
-class Parser(object):
+class Parser:
     __slots__ = ()
 
     def __init__(self):
         pass
 
-    def parse(self, source: "InputSource", sink: "Graph"):
+    def parse(self, source: InputSource, sink: Graph) -> None:
         pass
 
 
@@ -68,7 +71,7 @@ class BytesIOWrapper(BufferedIOBase):
         super(BytesIOWrapper, self).__init__()
         self.wrapped = wrapped
         self.encoding = encoding
-        self.encoded = None
+        self.encoded: Optional[BytesIO] = None
 
     def read(self, *args, **kwargs):
         if self.encoded is None:
@@ -79,7 +82,8 @@ class BytesIOWrapper(BufferedIOBase):
     def read1(self, *args, **kwargs):
         if self.encoded is None:
             b = codecs.getencoder(self.encoding)(self.wrapped)
-            self.encoded = BytesIO(b)
+            # type error: Argument 1 to "BytesIO" has incompatible type "Tuple[bytes, int]"; expected "Buffer"
+            self.encoded = BytesIO(b)  # type: ignore[arg-type]
         return self.encoded.read1(*args, **kwargs)
 
     def readinto(self, *args, **kwargs):
@@ -92,7 +96,7 @@ class BytesIOWrapper(BufferedIOBase):
         raise NotImplementedError()
 
 
-class InputSource(xmlreader.InputSource, object):
+class InputSource(xmlreader.InputSource):
     """
     TODO:
     """
@@ -102,7 +106,7 @@ class InputSource(xmlreader.InputSource, object):
         self.content_type: Optional[str] = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
 
-    def close(self):
+    def close(self) -> None:
         c = self.getCharacterStream()
         if c and hasattr(c, "close"):
             try:
@@ -133,26 +137,26 @@ class PythonInputSource(InputSource):
     True
     """
 
-    def __init__(self, data, system_id=None):
+    def __init__(self, data: Any, system_id: Optional[str] = None):
         self.content_type = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
-        self.public_id = None
-        self.system_id = system_id
+        self.public_id: Optional[str] = None
+        self.system_id: Optional[str] = system_id
         self.data = data
 
-    def getPublicId(self):  # noqa: N802
+    def getPublicId(self) -> Optional[str]:  # noqa: N802
         return self.public_id
 
-    def setPublicId(self, public_id):  # noqa: N802
+    def setPublicId(self, public_id: Optional[str]) -> None:  # noqa: N802
         self.public_id = public_id
 
-    def getSystemId(self):  # noqa: N802
+    def getSystemId(self) -> Optional[str]:  # noqa: N802
         return self.system_id
 
-    def setSystemId(self, system_id):  # noqa: N802
+    def setSystemId(self, system_id: Optional[str]) -> None:  # noqa: N802
         self.system_id = system_id
 
-    def close(self):
+    def close(self) -> None:
         self.data = None
 
 
@@ -197,16 +201,16 @@ class URLInputSource(InputSource):
     links: List[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: "HTTPMessage", name):
+    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
         return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
-    def get_links(cls, response: "HTTPResponse"):
+    def get_links(cls, response: addinfourl) -> List[str]:
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
-        retarray = []
+        retarray: List[str] = []
         for linksline in linkslines:
             links = [linkstr.strip() for linkstr in linksline.split(",")]
             for link in links:
@@ -247,9 +251,9 @@ class URLInputSource(InputSource):
         elif format == "trix":
             myheaders["Accept"] = "application/trix, */*;q=0.1"
         elif format == "json-ld":
-            myheaders[
-                "Accept"
-            ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
+            myheaders["Accept"] = (
+                "application/ld+json, application/json;q=0.9, */*;q=0.1"
+            )
         else:
             # if format not given, create an Accept header from all registered
             # parser Media Types
@@ -265,21 +269,7 @@ class URLInputSource(InputSource):
 
         req = Request(system_id, None, myheaders)  # type: ignore[arg-type]
 
-        def _urlopen(req: Request) -> Any:
-            try:
-                return urlopen(req)
-            except HTTPError as ex:
-                # 308 (Permanent Redirect) is not supported by current python version(s)
-                # See https://bugs.python.org/issue40321
-                # This custom error handling should be removed once all
-                # supported versions of python support 308.
-                if ex.code == 308:
-                    req.full_url = ex.headers.get("Location")
-                    return _urlopen(req)
-                else:
-                    raise
-
-        response: HTTPResponse = _urlopen(req)
+        response: addinfourl = _urlopen(req)
         self.url = response.geturl()  # in case redirections took place
         self.links = self.get_links(response)
         if format in ("json-ld", "application/ld+json"):
@@ -300,8 +290,9 @@ class URLInputSource(InputSource):
         # TODO: self.setEncoding(encoding)
         self.response_info = response.info()  # a mimetools.Message instance
 
-    def __repr__(self):
-        return self.url
+    def __repr__(self) -> str:
+        # type error: Incompatible return value type (got "Optional[str]", expected "str")
+        return self.url  # type: ignore[return-value]
 
 
 class FileInputSource(InputSource):
@@ -325,7 +316,7 @@ class FileInputSource(InputSource):
             # We cannot set characterStream here because
             # we do not know the Raw Bytes File encoding.
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self.file)
 
 
@@ -336,8 +327,8 @@ def create_input_source(
     publicID: Optional[str] = None,  # noqa: N803
     location: Optional[str] = None,
     file: Optional[Union[BinaryIO, TextIO]] = None,
-    data: Union[str, bytes, dict] = None,
-    format: str = None,
+    data: Optional[Union[str, bytes, dict]] = None,
+    format: Optional[str] = None,
 ) -> InputSource:
     """
     Return an appropriate InputSource instance for the given
@@ -360,6 +351,10 @@ def create_input_source(
     input_source = None
 
     if source is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert location is None
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -369,14 +364,14 @@ def create_input_source(
                 location = str(source)
             elif isinstance(source, bytes):
                 data = source
-            elif hasattr(source, "read") and not isinstance(source, Namespace):  # type: ignore[unreachable]
+            elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
                     input_source.setCharacterStream(source)
-                    input_source.setEncoding(source.encoding)  # type: ignore[union-attr]
+                    input_source.setEncoding(source.encoding)
                     try:
-                        b = file.buffer  # type: ignore[union-attr]
+                        b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
                         input_source.setByteStream(source)
@@ -396,6 +391,10 @@ def create_input_source(
     auto_close = False  # make sure we close all file handles we open
 
     if location is not None:
+        if TYPE_CHECKING:
+            assert file is None
+            assert data is None
+            assert source is None
         (
             absolute_location,
             auto_close,
@@ -409,9 +408,17 @@ def create_input_source(
         )
 
     if file is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert data is None
+            assert source is None
         input_source = FileInputSource(file)
 
     if data is not None:
+        if TYPE_CHECKING:
+            assert location is None
+            assert file is None
+            assert source is None
         if isinstance(data, dict):
             input_source = PythonInputSource(data)
             auto_close = True

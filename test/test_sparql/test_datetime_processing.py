@@ -1,11 +1,11 @@
 import io
-from test.utils import eq_
 
 import rdflib
 from rdflib import Graph
+from test.utils import eq_
 
 
-def test_dateTime_dateTime_subs_issue():
+def test_datetime_datetime_subs_issue():
     """
     Test for query mentioned in the Issue #629
     https://github.com/RDFLib/rdflib/issues/629
@@ -58,20 +58,20 @@ def test_dateTime_dateTime_subs_issue():
     # FirstElement of these tuples will be a node with a path of directory of saved project
     # Second Element while represent the actual durations
 
-    expectedFirstDuration = rdflib.term.Literal(
+    expected_first_duration = rdflib.term.Literal(
         "P1DT1M",
         datatype=rdflib.term.URIRef("http://www.w3.org/2001/XMLSchema#duration"),
     )
-    expectedSecondDuration = rdflib.term.Literal(
+    expected_second_duration = rdflib.term.Literal(
         "PT25M",
         datatype=rdflib.term.URIRef("http://www.w3.org/2001/XMLSchema#duration"),
     )
 
-    eq_(answer[0][1], expectedFirstDuration)
-    eq_(answer[1][1], expectedSecondDuration)
+    eq_(answer[0][1], expected_first_duration)
+    eq_(answer[1][1], expected_second_duration)
 
 
-def test_dateTime_duration_subs():
+def test_datetime_duration_subs():
     """
     Test cases for subtraction operation between dateTime and duration
 
@@ -86,7 +86,7 @@ def test_dateTime_duration_subs():
     f = io.StringIO(data)
     graph.parse(f, format="n3")
 
-    ## 1st Test Case
+    # 1st Test Case
 
     result1 = graph.query(
         """
@@ -117,7 +117,7 @@ def test_dateTime_duration_subs():
     eq_(list(result1)[0][0], expected[0])
     eq_(list(result1)[1][0], expected[1])
 
-    ## 2nd Test Case
+    # 2nd Test Case
 
     result2 = graph.query(
         """
@@ -150,7 +150,7 @@ def test_dateTime_duration_subs():
     eq_(list(result2)[1][0], expected[1])
 
 
-def test_dateTime_duration_add():
+def test_datetime_duration_add():
     """
     Test cases for addition operation between dateTime and duration
 
@@ -165,7 +165,7 @@ def test_dateTime_duration_add():
     f = io.StringIO(data)
     graph.parse(f, format="n3")
 
-    ## 1st Test case
+    # 1st Test case
 
     result1 = graph.query(
         """
@@ -198,7 +198,7 @@ def test_dateTime_duration_add():
     eq_(list(result1)[0][0], expected[0])
     eq_(list(result1)[1][0], expected[1])
 
-    ## 2nd Test case
+    # 2nd Test case
 
     result2 = graph.query(
         """
@@ -232,7 +232,7 @@ def test_dateTime_duration_add():
     eq_(list(result2)[1][0], expected[1])
 
 
-def test_dateTime_dateTime_subs():
+def test_datetime_datetime_subs():
     """
     Test cases for subtraction operation between dateTime and dateTime
 

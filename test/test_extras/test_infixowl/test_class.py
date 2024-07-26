@@ -1,5 +1,3 @@
-from test.data import context0, context1
-
 import pytest
 
 from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef, Variable
@@ -12,6 +10,7 @@ from rdflib.extras.infixowl import (
     max,
 )
 from rdflib.util import first
+from test.data import CONTEXT0, CONTEXT1
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
@@ -31,7 +30,6 @@ def graph():
 
 
 def test_class_instantiation(graph):
-
     name = EXNS.Man
     assert isinstance(name, URIRef)
 
@@ -155,7 +153,7 @@ def test_class_getparents(graph):
 
     assert list(sibling.subSumpteeIds()) == []
 
-    assert str(brother.__repr__(full=True)) == "Class: ex:Brother "
+    assert str(brother.manchesterClass(full=True)) == "Class: ex:Brother "
 
     assert graph.serialize(format="ttl") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
@@ -195,7 +193,6 @@ def test_class_getparents(graph):
 
 
 def test_class_serialize(graph):
-
     father = Class(EXNS.Father)
     sister = Class(EXNS.Sister)
     parent = Class(EXNS.Parent)
@@ -218,7 +215,7 @@ def test_class_serialize(graph):
         nameIsLabel=True,
     )
 
-    g1 = Graph(identifier=context1)
+    g1 = Graph(identifier=CONTEXT1)
 
     owlc.serialize(g1)
 
@@ -230,9 +227,9 @@ def test_class_serialize(graph):
 
     owlc.extent = None
 
-    owlc.extent = [context1]
+    owlc.extent = [CONTEXT1]
 
-    assert list(owlc.extent) == [context1]
+    assert list(owlc.extent) == [CONTEXT1]
 
     pred = RDFS.comment
 
@@ -254,7 +251,7 @@ def test_class_serialize(graph):
 
     assert str(owlc.__invert__()) == "Some Class DisjointWith ( NOT ex:Sister )\n"
 
-    assert owlc.__repr__(full=True) == (
+    assert owlc.manchesterClass(full=True) == (
         "Class: ex:test \n"
         "    ## A Defined Class (Man) ##\n"
         "    This is a Man\n"
@@ -275,7 +272,7 @@ def test_class_serialize(graph):
 
 
 def test_class_nameislabel():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g
@@ -318,7 +315,7 @@ def test_class_nameislabel():
 
 
 def test_class_nameisnotlabel():
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
 
     Individual.factoryGraph = g

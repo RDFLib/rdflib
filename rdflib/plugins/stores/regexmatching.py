@@ -30,7 +30,7 @@ class REGEXTerm(str):
         self.compiledExpr = re.compile(expr)
 
     def __reduce__(self):
-        return (REGEXTerm, (str(""),))
+        return (REGEXTerm, ("",))
 
 
 def regexCompareQuad(quad, regexQuad):  # noqa: N802, N803

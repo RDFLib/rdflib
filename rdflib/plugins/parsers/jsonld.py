@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This parser will interpret a JSON-LD document as an RDF Graph. See:
 
@@ -28,19 +27,21 @@ Example usage::
     True
 
 """
+
 # From: https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/parser.py
 
 # NOTE: This code reads the entire JSON object into memory before parsing, but
 # we should consider streaming the input to deal with arbitrarily large graphs.
+from __future__ import annotations
 
 import warnings
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
 
 import rdflib.parser
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import RDF, XSD
-from rdflib.parser import URLInputSource
-from rdflib.term import BNode, Literal, URIRef
+from rdflib.parser import InputSource, URLInputSource
+from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context, Term
 from ..shared.jsonld.keys import (
@@ -78,51 +79,108 @@ class JsonLDParser(rdflib.parser.Parser):
     def __init__(self):
         super(JsonLDParser, self).__init__()
 
-    def parse(self, source, sink, **kwargs):
-        # TODO: docstring w. args and return value
-        encoding = kwargs.get("encoding") or "utf-8"
+    def parse(
+        self,
+        source: InputSource,
+        sink: Graph,
+        version: float = 1.1,
+        encoding: Optional[str] = "utf-8",
+        base: Optional[str] = None,
+        context: Optional[
+            Union[
+                List[Union[Dict[str, Any], str, None]],
+                Dict[str, Any],
+                str,
+            ]
+        ] = None,
+        generalized_rdf: Optional[bool] = False,
+        extract_all_scripts: Optional[bool] = False,
+    ) -> None:
+        """Parse JSON-LD from a source document.
+
+        The source document can be JSON or HTML with embedded JSON script
+        elements (type attribute = "application/ld+json"). To process as HTML
+        ``source.content_type`` must be set to "text/html" or
+        "application/xhtml+xml".
+
+        :param source: InputSource with JSON-formatted data (JSON or HTML)
+
+        :param sink: Graph to receive the parsed triples
+
+        :param version: parse as JSON-LD version, defaults to 1.1
+
+        :param encoding: character encoding of the JSON (should be "utf-8"
+            or "utf-16"), defaults to "utf-8"
+
+        :param base: JSON-LD `Base IRI <https://www.w3.org/TR/json-ld/#base-iri>`_, defaults to None
+
+        :param context: JSON-LD `Context <https://www.w3.org/TR/json-ld/#the-context>`_, defaults to None
+
+        :param generalized_rdf: parse as `Generalized RDF <https://www.w3.org/TR/json-ld/#relationship-to-rdf>`_, defaults to False
+
+        :param extract_all_scripts: if source is an HTML document then extract
+            all script elements, defaults to False (extract only the first
+            script element). This is ignored if ``source.system_id`` contains
+            a fragment identifier, in which case only the script element with
+            matching id attribute is extracted.
+
+        """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
                 "JSON should be encoded as unicode. "
                 "Given encoding was: %s" % encoding
             )
 
-        base = kwargs.get("base") or sink.absolutize(
-            source.getPublicId() or source.getSystemId() or ""
-        )
+        if not base:
+            base = sink.absolutize(source.getPublicId() or source.getSystemId() or "")
 
-        context_data = kwargs.get("context")
+        context_data = context
         if not context_data and hasattr(source, "url") and hasattr(source, "links"):
+            if TYPE_CHECKING:
+                assert isinstance(source, URLInputSource)
             context_data = context_from_urlinputsource(source)
 
         try:
-            version = float(kwargs.get("version", "1.0"))
+            version = float(version)
         except ValueError:
-            version = None
+            version = 1.1
 
-        generalized_rdf = kwargs.get("generalized_rdf", False)
+        # Get the optional fragment identifier
+        try:
+            fragment_id = URIRef(source.getSystemId()).fragment
+        except Exception:
+            fragment_id = None
 
-        data = source_to_json(source)
+        data, html_base = source_to_json(source, fragment_id, extract_all_scripts)
+        if html_base is not None:
+            base = URIRef(html_base, base=base)
 
         # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
         # context_aware. Keeping this check in case RDFLib is changed, or
         # someone passes something context_aware to this parser directly.
+        conj_sink: Graph
         if not sink.context_aware:
             conj_sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
         else:
             conj_sink = sink
 
-        to_rdf(data, conj_sink, base, context_data, version, generalized_rdf)
+        to_rdf(data, conj_sink, base, context_data, version, bool(generalized_rdf))
 
 
 def to_rdf(
-    data,
-    dataset,
-    base=None,
-    context_data=None,
+    data: Any,
+    dataset: Graph,
+    base: Optional[str] = None,
+    context_data: Optional[
+        Union[
+            List[Union[Dict[str, Any], str, None]],
+            Dict[str, Any],
+            str,
+        ]
+    ] = None,
     version: Optional[float] = None,
-    generalized_rdf=False,
-    allow_lists_of_lists=None,
+    generalized_rdf: bool = False,
+    allow_lists_of_lists: Optional[bool] = None,
 ):
     # TODO: docstring w. args and return value
     context = Context(base=base, version=version)
@@ -134,8 +192,10 @@ def to_rdf(
     return parser.parse(data, context, dataset)
 
 
-class Parser(object):
-    def __init__(self, generalized_rdf=False, allow_lists_of_lists=None):
+class Parser:
+    def __init__(
+        self, generalized_rdf: bool = False, allow_lists_of_lists: Optional[bool] = None
+    ):
         self.generalized_rdf = generalized_rdf
         self.allow_lists_of_lists = (
             allow_lists_of_lists
@@ -143,9 +203,9 @@ class Parser(object):
             else ALLOW_LISTS_OF_LISTS
         )
 
-    def parse(self, data, context, dataset):
+    def parse(self, data: Any, context: Context, dataset: Graph) -> Graph:
         topcontext = False
-
+        resources: Union[Dict[str, Any], List[Any]]
         if isinstance(data, list):
             resources = data
         elif isinstance(data, dict):
@@ -154,7 +214,8 @@ class Parser(object):
                 context.load(local_context, context.base)
                 topcontext = True
             resources = data
-            if not isinstance(resources, list):
+            # type error: Subclass of "Dict[str, Any]" and "List[Any]" cannot exist: would have incompatible method signatures
+            if not isinstance(resources, list):  # type: ignore[unreachable]
                 resources = [resources]
 
         if context.vocab:
@@ -163,16 +224,25 @@ class Parser(object):
             if term.id and term.id.endswith(VOCAB_DELIMS):
                 dataset.bind(name, term.id)
 
-        graph = dataset.default_context if dataset.context_aware else dataset
+        # type error: "Graph" has no attribute "default_context"
+        graph = dataset.default_context if dataset.context_aware else dataset  # type: ignore[attr-defined]
 
         for node in resources:
             self._add_to_graph(dataset, graph, context, node, topcontext)
 
         return graph
 
-    def _add_to_graph(self, dataset, graph, context, node, topcontext=False):
+    def _add_to_graph(
+        self,
+        dataset: Graph,
+        graph: Graph,
+        context: Context,
+        node: Any,
+        topcontext: bool = False,
+    ) -> Optional[Node]:
         if not isinstance(node, dict) or context.get_value(node):
-            return
+            # type error: Return value expected
+            return  # type: ignore[return-value]
 
         if CONTEXT in node and not topcontext:
             local_context = node[CONTEXT]
@@ -181,7 +251,8 @@ class Parser(object):
             else:
                 context = Context(base=context.doc_base)
 
-        context = context.get_context_for_type(node)
+        # type error: Incompatible types in assignment (expression has type "Optional[Context]", variable has type "Context")
+        context = context.get_context_for_type(node)  # type: ignore[assignment]
 
         id_val = context.get_id(node)
 
@@ -222,7 +293,8 @@ class Parser(object):
 
         return subj
 
-    def _get_nested_id(self, context, node):
+    # type error: Missing return statement
+    def _get_nested_id(self, context: Context, node: Dict[str, Any]) -> Optional[str]:  # type: ignore[return]
         for key, obj in node.items():
             if context.version >= 1.1 and key in context.get_keys(NEST):
                 term = context.terms.get(key)
@@ -242,9 +314,16 @@ class Parser(object):
                         return id_val
 
     def _key_to_graph(
-        self, dataset, graph, context, subj, key, obj, reverse=False, no_id=False
-    ):
-
+        self,
+        dataset: Graph,
+        graph: Graph,
+        context: Context,
+        subj: Node,
+        key: str,
+        obj: Any,
+        reverse: bool = False,
+        no_id: bool = False,
+    ) -> None:
         if isinstance(obj, list):
             obj_nodes = obj
         else:
@@ -256,7 +335,7 @@ class Parser(object):
             if term.type == JSON:
                 obj_nodes = [self._to_typed_json_value(obj)]
             elif LIST in term.container:
-                obj_nodes = [{LIST: obj_nodes}]
+                obj_nodes = [self._expand_nested_list(obj_nodes)]
             elif isinstance(obj, dict):
                 obj_nodes = self._parse_container(context, term, obj)
         else:
@@ -267,7 +346,10 @@ class Parser(object):
 
         if GRAPH in (key, term_id):
             if dataset.context_aware and not no_id:
-                subgraph = dataset.get_context(subj)
+                if TYPE_CHECKING:
+                    assert isinstance(dataset, ConjunctiveGraph)
+                # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Node"; expected "Union[IdentifiedNode, str, None]"
+                subgraph = dataset.get_context(subj)  # type: ignore[arg-type]
             else:
                 subgraph = graph
             for onode in obj_nodes:
@@ -297,24 +379,29 @@ class Parser(object):
                     if nkey in context.get_keys(ID):
                         continue
                     subcontext = context.get_context_for_type(obj)
-                    self._key_to_graph(dataset, graph, subcontext, subj, nkey, nobj)
+                    # type error: Argument 3 to "_key_to_graph" of "Parser" has incompatible type "Optional[Context]"; expected "Context"
+                    self._key_to_graph(dataset, graph, subcontext, subj, nkey, nobj)  # type: ignore[arg-type]
             return
 
         pred_uri = term.id if term else context.expand(key)
 
         context = context.get_context_for_term(term)
 
-        flattened = []
-        for obj in obj_nodes:
-            if isinstance(obj, dict):
-                objs = context.get_set(obj)
-                if objs is not None:
-                    obj = objs
-            if isinstance(obj, list):
-                flattened += obj
-                continue
-            flattened.append(obj)
-        obj_nodes = flattened
+        # Flatten deep nested lists
+        def flatten(n: Iterable[Any]) -> List[Any]:
+            flattened = []
+            for obj in n:
+                if isinstance(obj, dict):
+                    objs = context.get_set(obj)
+                    if objs is not None:
+                        obj = objs
+                if isinstance(obj, list):
+                    flattened += flatten(obj)
+                    continue
+                flattened.append(obj)
+            return flattened
+
+        obj_nodes = flatten(obj_nodes)
 
         if not pred_uri:
             return
@@ -322,6 +409,7 @@ class Parser(object):
         if term and term.reverse:
             reverse = not reverse
 
+        pred: IdentifiedNode
         bid = self._get_bnodeid(pred_uri)
         if bid:
             if not self.generalized_rdf:
@@ -339,7 +427,9 @@ class Parser(object):
             else:
                 graph.add((subj, pred, obj))
 
-    def _parse_container(self, context, term, obj):
+    def _parse_container(
+        self, context: Context, term: Term, obj: Dict[str, Any]
+    ) -> List[Any]:
         if LANG in term.container:
             obj_nodes = []
             for lang, values in obj.items():
@@ -356,11 +446,11 @@ class Parser(object):
 
         if v11 and GRAPH in term.container and ID in term.container:
             return [
-                dict({GRAPH: o})
-                if k in context.get_keys(NONE)
-                else dict({ID: k, GRAPH: o})
-                if isinstance(o, dict)
-                else o
+                (
+                    dict({GRAPH: o})
+                    if k in context.get_keys(NONE)
+                    else dict({ID: k, GRAPH: o}) if isinstance(o, dict) else o
+                )
                 for k, o in obj.items()
             ]
 
@@ -372,23 +462,29 @@ class Parser(object):
 
         elif v11 and ID in term.container:
             return [
-                dict({ID: k}, **o)
-                if isinstance(o, dict) and k not in context.get_keys(NONE)
-                else o
+                (
+                    dict({ID: k}, **o)
+                    if isinstance(o, dict) and k not in context.get_keys(NONE)
+                    else o
+                )
                 for k, o in obj.items()
             ]
 
         elif v11 and TYPE in term.container:
             return [
-                self._add_type(
-                    context,
-                    {ID: context.expand(o) if term.type == VOCAB else o}
-                    if isinstance(o, str)
-                    else o,
-                    k,
+                (
+                    self._add_type(
+                        context,
+                        (
+                            {ID: context.expand(o) if term.type == VOCAB else o}
+                            if isinstance(o, str)
+                            else o
+                        ),
+                        k,
+                    )
+                    if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
+                    else o
                 )
-                if isinstance(o, (dict, str)) and k not in context.get_keys(NONE)
-                else o
                 for k, o in obj.items()
             ]
 
@@ -412,7 +508,7 @@ class Parser(object):
         return [obj]
 
     @staticmethod
-    def _add_type(context, o, k):
+    def _add_type(context: Context, o: Dict[str, Any], k: str) -> Dict[str, Any]:
         otype = context.get_type(o) or []
         if otype and not isinstance(otype, list):
             otype = [otype]
@@ -420,20 +516,31 @@ class Parser(object):
         o[TYPE] = otype
         return o
 
-    def _to_object(self, dataset, graph, context, term, node, inlist=False):
+    def _to_object(
+        self,
+        dataset: Graph,
+        graph: Graph,
+        context: Context,
+        term: Optional[Term],
+        node: Any,
+        inlist: bool = False,
+    ) -> Optional[Node]:
         if isinstance(node, tuple):
             value, lang = node
             if value is None:
-                return
+                # type error: Return value expected
+                return  # type: ignore[return-value]
             if lang and " " in lang:
-                return
+                # type error: Return value expected
+                return  # type: ignore[return-value]
             return Literal(value, lang=lang)
 
         if isinstance(node, dict):
             node_list = context.get_list(node)
             if node_list is not None:
                 if inlist and not self.allow_lists_of_lists:
-                    return
+                    # type error: Return value expected
+                    return  # type: ignore[return-value]
                 listref = self._add_list(dataset, graph, context, term, node_list)
                 if listref:
                     return listref
@@ -443,7 +550,8 @@ class Parser(object):
                 if term.type == JSON:
                     node = self._to_typed_json_value(node)
                 elif node is None:
-                    return
+                    # type error: Return value expected
+                    return  # type: ignore[return-value]
                 elif term.type == ID and isinstance(node, str):
                     node = {ID: context.resolve(node)}
                 elif term.type == VOCAB and isinstance(node, str):
@@ -452,7 +560,8 @@ class Parser(object):
                     node = {TYPE: term.type, VALUE: node}
             else:
                 if node is None:
-                    return
+                    # type error: Return value expected
+                    return  # type: ignore[return-value]
                 if isinstance(node, float):
                     return Literal(node, datatype=XSD.double)
 
@@ -465,7 +574,8 @@ class Parser(object):
         lang = context.get_language(node)
         datatype = not lang and context.get_type(node) or None
         value = context.get_value(node)
-        if datatype in context.get_keys(JSON):
+        # type error: Unsupported operand types for in ("Optional[Any]" and "Generator[str, None, None]")
+        if datatype in context.get_keys(JSON):  # type: ignore[operator]
             node = self._to_typed_json_value(value)
             datatype = context.get_type(node)
             value = context.get_value(node)
@@ -475,7 +585,8 @@ class Parser(object):
                 return None
             if lang:
                 if " " in lang:
-                    return
+                    # type error: Return value expected
+                    return  # type: ignore[return-value]
                 return Literal(value, lang=lang)
             elif datatype:
                 return Literal(value, datatype=context.expand(datatype))
@@ -484,7 +595,7 @@ class Parser(object):
         else:
             return self._add_to_graph(dataset, graph, context, node)
 
-    def _to_rdf_id(self, context, id_val):
+    def _to_rdf_id(self, context: Context, id_val: str) -> Optional[IdentifiedNode]:
         bid = self._get_bnodeid(id_val)
         if bid:
             return BNode(bid)
@@ -494,13 +605,21 @@ class Parser(object):
                 return None
             return URIRef(uri)
 
-    def _get_bnodeid(self, ref):
+    def _get_bnodeid(self, ref: str) -> Optional[str]:
         if not ref.startswith("_:"):
-            return
+            # type error: Return value expected
+            return  # type: ignore[return-value]
         bid = ref.split("_:", 1)[-1]
         return bid or None
 
-    def _add_list(self, dataset, graph, context, term, node_list):
+    def _add_list(
+        self,
+        dataset: Graph,
+        graph: Graph,
+        context: Context,
+        term: Optional[Term],
+        node_list: Any,
+    ) -> IdentifiedNode:
         if not isinstance(node_list, list):
             node_list = [node_list]
 
@@ -512,7 +631,8 @@ class Parser(object):
                 continue
 
             if rest:
-                graph.add((subj, RDF.rest, rest))
+                # type error: Statement is unreachable
+                graph.add((subj, RDF.rest, rest))  # type: ignore[unreachable]
                 subj = rest
 
             obj = self._to_object(dataset, graph, context, term, node, inlist=True)
@@ -530,10 +650,17 @@ class Parser(object):
             return RDF.nil
 
     @staticmethod
-    def _to_typed_json_value(value):
+    def _to_typed_json_value(value: Any) -> Dict[str, str]:
         return {
             TYPE: URIRef("%sJSON" % str(RDF)),
             VALUE: json.dumps(
                 value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
             ),
         }
+
+    @classmethod
+    def _expand_nested_list(cls, obj_nodes: List[Any]) -> Dict[str, List[Any]]:
+        result = [
+            cls._expand_nested_list(o) if isinstance(o, list) else o for o in obj_nodes
+        ]
+        return {LIST: result}

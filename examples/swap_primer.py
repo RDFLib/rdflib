@@ -5,17 +5,16 @@ example stuff in the Primer on N3:
 http://www.w3.org/2000/10/swap/Primer
 """
 
-from rdflib import ConjunctiveGraph, Namespace, Literal
-from rdflib.namespace import OWL, DC
+from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib.namespace import DC, OWL
 
 if __name__ == "__main__":
-
     # Firstly, it doesn't have to be so complex.
     # Here we create a "Graph" of our work.
     # Think of it as a blank piece of graph paper!
 
     primer = ConjunctiveGraph()
-    myNS = Namespace("https://example.com/")
+    myNS = Namespace("https://example.com/")  # noqa: N816
 
     primer.add((myNS.pat, myNS.knows, myNS.jo))
     # or:
@@ -97,7 +96,7 @@ if __name__ == "__main__":
 
     :Woman = foo:FemaleAdult .
     :Title a rdf:Property; = dc:title .
-    """  # --- End of primer code
+    """  # --- End of primer code  # noqa: N816
 
     # To make this go easier to spit back out...
     # technically, we already created a namespace

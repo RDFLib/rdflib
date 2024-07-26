@@ -1,3 +1,4 @@
+import warnings
 from random import randint
 
 from rdflib.namespace import RDF
@@ -6,7 +7,7 @@ from rdflib.term import BNode, URIRef
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
 
-class Container(object):
+class Container:
     """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers
 
     Basic usage, creating a ``Bag`` and adding to it::
@@ -64,10 +65,8 @@ class Container(object):
         self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
 
     def n3(self):
-
         items = []
         for i in range(len(self)):
-
             v = self[i + 1]
             items.append(v)
 
@@ -84,6 +83,15 @@ class Container(object):
         return self._len
 
     def type_of_conatiner(self):
+        warnings.warn(
+            "rdflib.container.Container.type_of_conatiner is deprecated. "
+            "Use type_of_container method instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._rtype
+
+    def type_of_container(self):
         return self._rtype
 
     def index(self, item):
@@ -163,7 +171,6 @@ class Container(object):
         return l_
 
     def end(self):  #
-
         # find end index (1-based) of container
 
         container = self.uri
@@ -194,7 +201,6 @@ class Container(object):
 
         container = self.uri
         for item in other:
-
             end += 1
             self._len += 1
             elem_uri = str(RDF) + "_" + str(end)
@@ -264,7 +270,7 @@ class Seq(Container):
         return self
 
 
-class NoElementException(Exception):
+class NoElementException(Exception):  # noqa: N818
     def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 

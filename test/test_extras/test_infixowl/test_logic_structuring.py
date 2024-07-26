@@ -20,7 +20,6 @@ def graph():
 
 
 def test_logic_structuring(graph):
-
     isPartOf = Property(EXNS.isPartOf)  # noqa: N806
     graph.add((isPartOf.identifier, RDF.type, OWL.TransitiveProperty))
 
@@ -43,7 +42,7 @@ def test_logic_structuring(graph):
     structure += joint
 
     locatedInLeg = hasLocation @ some @ leg  # noqa: N806
-    locatedInLeg += knee
+    locatedInLeg += knee  # noqa: N806
 
     assert graph.serialize(format="ttl") == (
         "@prefix ex: <http://example.org/vocab/> .\n"

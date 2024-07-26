@@ -14,7 +14,6 @@ graph = Graph().parse(
 
 
 class TestPrefixTypes:
-
     """N3/Turtle serializers should use prefixes,
     also for types and datatypes
 

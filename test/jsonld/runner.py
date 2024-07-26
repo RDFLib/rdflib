@@ -1,13 +1,12 @@
-# -*- coding: UTF-8 -*-
 import json
 
-from rdflib import ConjunctiveGraph
+from rdflib import BNode, ConjunctiveGraph
 from rdflib.compare import isomorphic
 from rdflib.parser import InputSource
 from rdflib.plugins.parsers.jsonld import JsonLDParser, to_rdf
 
 # monkey-patch N-Quads parser via it's underlying W3CNTriplesParser to keep source bnode id:s ..
-from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, bNode, r_nodeid
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_nodeid
 from rdflib.plugins.serializers.jsonld import from_rdf
 from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
 
@@ -15,7 +14,7 @@ from rdflib.plugins.shared.jsonld.keys import CONTEXT, GRAPH
 def _preserving_nodeid(self, bnode_context=None):
     if not self.peek("_"):
         return False
-    return bNode(self.eat(r_nodeid).group(1))
+    return BNode(self.eat(r_nodeid).group(1))
 
 
 DEFAULT_PARSER_VERSION = 1.0
@@ -23,6 +22,9 @@ DEFAULT_PARSER_VERSION = 1.0
 
 def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}):
     local_url = input_uri.replace("https://w3c.github.io/json-ld-api/tests/", "./")
+    if (index := local_url.find("#")) > -1:
+        # Strip off the optional fragment identifier
+        local_url = local_url[0:index]
     try:
         f = open(local_url, "rb")
     except FileNotFoundError:
@@ -34,6 +36,8 @@ def make_fake_urlinputsource(input_uri, format=None, suite_base=None, options={}
     source.links = []
     if local_url.endswith((".jsonld", ".jldt")):
         source.content_type = "application/ld+json"
+    elif local_url.endswith(".html"):
+        source.content_type = "text/html"
     else:
         source.content_type = "application/json"
     source.format = format
@@ -171,6 +175,52 @@ def do_test_serializer(suite_base, cat, num, inputpath, expectedpath, context, o
         use_rdf_type=options.get("useRdfType", False),
     )
     _compare_json(expected_json, result_json)
+
+
+def do_test_html(suite_base, cat, num, inputpath, expectedpath, context, options):
+    input_uri = suite_base + inputpath
+    input_graph = ConjunctiveGraph()
+
+    input_src = make_fake_urlinputsource(
+        input_uri, format="json-ld", suite_base=suite_base, options=options
+    )
+
+    context = _load_json(context) if context else context
+
+    # Get test options from the manifest
+    base = options.get("base", input_src.getPublicId())
+    extract_all_scripts = options.get("extractAllScripts", False)
+
+    p = JsonLDParser()
+    p.parse(
+        input_src,
+        input_graph,
+        base=base,
+        context=context,
+        generalized_rdf=True,
+        extract_all_scripts=extract_all_scripts,
+    )
+
+    if expectedpath.endswith(".nq"):
+        expected_graph = _load_nquads(expectedpath)
+
+    elif expectedpath.endswith(".jsonld"):
+        expected_graph = ConjunctiveGraph()
+        with open(expectedpath) as f:
+            data = f.read()
+        expected_graph.parse(data=data, format="json-ld")
+
+    # TODO: Change test from graph comparison to json comparison
+    # The html test cases combine testing for JSON-LD extraction from the HTML
+    # along with testing for other algorithms (compact/flatten), which we do
+    # not currently support. In order to test extraction only, we currently
+    # perform a graph comparison. Consider changing this to a json comparison
+    # once the processing algorithms are implemented.
+
+    assert isomorphic(input_graph, expected_graph), "Expected:\n%s\nGot:\n%s" % (
+        expected_graph.serialize(),
+        input_graph.serialize(),
+    )
 
 
 def _load_nquads(source):

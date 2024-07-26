@@ -1,12 +1,9 @@
+from __future__ import annotations
+
+import logging
 import re
 import socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test.utils import helper
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
 from threading import Thread
 from typing import Callable, ClassVar, Type
 from unittest.mock import patch
@@ -15,7 +12,10 @@ import pytest
 
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
-from rdflib.plugins.stores.sparqlstore import SPARQLConnector
+from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
+from test.utils import helper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 class TestSPARQLStoreGraph:
@@ -78,7 +78,7 @@ class TestSPARQLStoreFakeDBPedia:
     def teardown_method(self):
         self.graph.close()
 
-    def test_Query(self):
+    def test_query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
         _query = SPARQLConnector.query
         self.httpmock.responses[MethodName.GET].append(
@@ -107,7 +107,7 @@ class TestSPARQLStoreFakeDBPedia:
             count = 0
             for i in res:
                 count += 1
-                assert type(i[0]) == URIRef, i[0].n3()
+                assert type(i[0]) is URIRef, i[0].n3()
             assert count > 0
             mock.assert_called_once()
             args, kwargs = mock.call_args
@@ -123,7 +123,7 @@ class TestSPARQLStoreFakeDBPedia:
         assert re.match(r"^/sparql", req.path)
         assert query in req.path_query["query"][0]
 
-    def test_initNs(self):
+    def test_init_ns(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
@@ -169,9 +169,7 @@ class TestSPARQLStoreFakeDBPedia:
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
@@ -179,14 +177,14 @@ class TestSPARQLStoreFakeDBPedia:
             query, initNs={"xyzzy": "http://www.w3.org/2004/02/skos/core#"}
         )
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
 
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert re.match(r"^/sparql", req.path)
         assert query in req.path_query["query"][0]
 
-    def test_noinitNs(self):
+    def test_noinit_ns(self):
         query = """\
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
@@ -259,15 +257,13 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert re.match(r"^/sparql", req.path)
@@ -323,15 +319,13 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
    <binding name="label"><literal xml:lang="en">1899–1900 in Belgian football</literal></binding>
   </result>
  </results>
-</sparql>""".encode(
-                    "utf8"
-                ),
+</sparql>""".encode(),
                 {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
             )
         )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert re.match(r"^/sparql", req.path)
@@ -351,7 +345,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         response = MockHTTPResponse(
             200,
             "OK",
-            """\
+            b"""\
         <sparql xmlns="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
         <head>
         <variable name="s"/>
@@ -373,9 +367,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         <binding name="s"><uri>http://www.openlinksw.com/virtrdf-data-formats#default-iid-nonblank</uri></binding>
         </result>
         </results>
-        </sparql>""".encode(
-                "utf8"
-            ),
+        </sparql>""",
             {"Content-Type": ["application/sparql-results+xml; charset=UTF-8"]},
         )
 
@@ -430,7 +422,7 @@ class TestSPARQLStoreUpdate:
         # Start running mock server in a separate thread.
         # Daemon threads automatically shut down when the main process exits.
         mock_server_thread = Thread(target=mock_server.serve_forever)
-        mock_server_thread.setDaemon(True)
+        mock_server_thread.daemon = True
         mock_server_thread.start()
         print(
             "Started mocked sparql endpoint on http://localhost:{port}/".format(
@@ -442,14 +434,14 @@ class TestSPARQLStoreUpdate:
     def teardown_method(self):
         self.graph.close()
 
-    def test_Query(self):
+    def test_query(self):
         query = "insert data {<urn:s> <urn:p> <urn:o>}"
         res = self.graph.update(query)
         print(res)
 
 
 class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
-    def do_POST(self):
+    def do_POST(self):  # noqa: N802
         """
         If the body should be analysed as well, just use:
         ```
@@ -457,23 +449,22 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         print(body)
         ```
         """
-        contenttype = self.headers.get("Content-Type")
+        contenttype = [
+            part.strip() for part in f"{self.headers.get('Content-Type')}".split(";")
+        ]
+        logging.debug("contenttype = %s", contenttype)
         if self.path == "/query" or self.path == "/query?":
-            if self.headers.get("Content-Type") == "application/sparql-query":
+            if "application/sparql-query" in contenttype:
                 pass
-            elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
                 self.end_headers()
         elif self.path == "/update" or self.path == "/update?":
-            if self.headers.get("Content-Type") == "application/sparql-update":
+            if "application/sparql-update" in contenttype:
                 pass
-            elif (
-                self.headers.get("Content-Type") == "application/x-www-form-urlencoded"
-            ):
+            elif "application/x-www-form-urlencoded" in contenttype:
                 pass
             else:
                 self.send_response(406, "Not Acceptable")
@@ -487,7 +478,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         self.end_headers()
         return
 
-    def do_GET(self):
+    def do_GET(self):  # noqa: N802
         # Process an HTTP GET request and return a response with an HTTP 200 status.
         self.send_response(200, "OK")
         self.end_headers()

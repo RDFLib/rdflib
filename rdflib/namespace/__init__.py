@@ -1,20 +1,4 @@
-import json
-import logging
-import sys
-import warnings
-from functools import lru_cache
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
-from unicodedata import category
-from urllib.parse import urldefrag, urljoin
-
-from rdflib.term import URIRef, Variable, _is_valid_uri
-
-if TYPE_CHECKING:
-    from rdflib.graph import Graph
-    from rdflib.store import Store
-
-__doc__ = """
+"""
 ===================
 Namespace Utilities
 ===================
@@ -86,6 +70,23 @@ The following namespaces are available by directly importing from rdflib:
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
 
+from __future__ import annotations
+
+import logging
+import warnings
+from functools import lru_cache
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from unicodedata import category
+from urllib.parse import urldefrag, urljoin
+
+from rdflib.term import URIRef, Variable, _is_valid_uri
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+    from rdflib.store import Store
+
+
 __all__ = [
     "is_ncname",
     "split_uri",
@@ -93,6 +94,34 @@ __all__ = [
     "ClosedNamespace",
     "DefinedNamespace",
     "NamespaceManager",
+    "BRICK",
+    "CSVW",
+    "DC",
+    "DCAM",
+    "DCAT",
+    "DCMITYPE",
+    "DCTERMS",
+    "DOAP",
+    "FOAF",
+    "GEO",
+    "ODRL2",
+    "ORG",
+    "OWL",
+    "PROF",
+    "PROV",
+    "QB",
+    "RDF",
+    "RDFS",
+    "SDO",
+    "SH",
+    "SKOS",
+    "SOSA",
+    "SSN",
+    "TIME",
+    "VANN",
+    "VOID",
+    "WGS",
+    "XSD",
 ]
 
 logger = logging.getLogger(__name__)
@@ -115,15 +144,16 @@ class Namespace(str):
     False
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "Namespace":
+    def __new__(cls, value: Union[str, bytes]) -> Namespace:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
             rt = str.__new__(cls, value, "utf-8")  # type: ignore[arg-type]
         return rt
 
+    # type error: Signature of "title" incompatible with supertype "str"
     @property
-    def title(self) -> URIRef:
+    def title(self) -> URIRef:  # type: ignore[override]
         # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
@@ -172,7 +202,7 @@ class URIPattern(str):
 
     """
 
-    def __new__(cls, value: Union[str, bytes]) -> "URIPattern":
+    def __new__(cls, value: Union[str, bytes]) -> URIPattern:
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
@@ -203,6 +233,13 @@ _DFNS_RESERVED_ATTRS: Set[str] = {
     "_underscore_num",
 }
 
+# Some libraries probe classes for certain attributes or items.
+# This is a list of those attributes and items that should be ignored.
+_IGNORED_ATTR_LOOKUP: Set[str] = {
+    "_pytestfixturefunction",  # pytest tries to look this up on Defined namespaces
+    "_partialmethod",  # sphinx tries to look this up during autodoc generation
+}
+
 
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
@@ -216,10 +253,13 @@ class DefinedNamespaceMeta(type):
     @lru_cache(maxsize=None)
     def __getitem__(cls, name: str, default=None) -> URIRef:
         name = str(name)
+
         if name in _DFNS_RESERVED_ATTRS:
             raise AttributeError(
                 f"DefinedNamespace like object has no attribute {name!r}"
             )
+        elif name in _IGNORED_ATTR_LOOKUP:
+            raise KeyError()
         if str(name).startswith("__"):
             # NOTE on type ignore: This seems to be a real bug, super() does not
             # implement this method, it will fail if it is ever reached.
@@ -235,6 +275,8 @@ class DefinedNamespaceMeta(type):
         return cls._NS[name]
 
     def __getattr__(cls, name: str):
+        if name in _IGNORED_ATTR_LOOKUP:
+            raise AttributeError()
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
@@ -270,7 +312,7 @@ class DefinedNamespaceMeta(type):
         values = {cls[str(x)] for x in attrs}
         return values
 
-    def as_jsonld_context(self, pfx: str) -> dict:
+    def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
         """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
@@ -349,7 +391,7 @@ if TYPE_CHECKING:
 _with_bind_override_fix = True
 
 
-class NamespaceManager(object):
+class NamespaceManager:
     """Class for managing prefix => namespace mappings
 
     This class requires an RDFlib Graph as an input parameter and may optionally have
@@ -359,19 +401,27 @@ class NamespaceManager(object):
     * core:
         * binds several core RDF prefixes only
         * owl, rdf, rdfs, xsd, xml from the NAMESPACE_PREFIXES_CORE object
-        * this is default
     * rdflib:
         * binds all the namespaces shipped with RDFLib as DefinedNamespace instances
         * all the core namespaces and all the following: brick, csvw, dc, dcat
-        * dcmitype, cdterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, sdo
+        * dcmitype, dcterms, dcam, doap, foaf, geo, odrl, org, prof, prov, qb, schema
         * sh, skos, sosa, ssn, time, vann, void
         * see the NAMESPACE_PREFIXES_RDFLIB object for the up-to-date list
+        * this is default
     * none:
         * binds no namespaces to prefixes
         * note this is NOT default behaviour
     * cc:
         * using prefix bindings from prefix.cc which is a online prefixes database
         * not implemented yet - this is aspirational
+
+    .. attention::
+
+        The namespaces bound for specific values of ``bind_namespaces``
+        constitute part of RDFLib's public interface, so changes to them should
+        only be additive within the same minor version. Removing values, or
+        removing namespaces that are bound by default, constitutes a breaking
+        change.
 
     See the
     Sample usage
@@ -389,10 +439,9 @@ class NamespaceManager(object):
         >>> all_ns = [n for n in g.namespace_manager.namespaces()]
         >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
         >>>
-
     """
 
-    def __init__(self, graph: "Graph", bind_namespaces: "_NamespaceSetString" = "core"):
+    def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
         self.graph = graph
         self.__cache: Dict[str, Tuple[str, URIRef, str]] = {}
         self.__cache_strict: Dict[str, Tuple[str, URIRef, str]] = {}
@@ -444,7 +493,7 @@ class NamespaceManager(object):
             insert_trie(self.__trie, str(n))
 
     @property
-    def store(self) -> "Store":
+    def store(self) -> Store:
         return self.graph.store
 
     def qname(self, uri: str) -> str:
@@ -454,6 +503,35 @@ class NamespaceManager(object):
         else:
             return ":".join((prefix, name))
 
+    def curie(self, uri: str, generate: bool = True) -> str:
+        """
+        From a URI, generate a valid CURIE.
+
+        Result is guaranteed to contain a colon separating the prefix from the
+        name, even if the prefix is an empty string.
+
+        .. warning::
+
+            When ``generate`` is `True` (which is the default) and there is no
+            matching namespace for the URI in the namespace manager then a new
+            namespace will be added with prefix ``ns{index}``.
+
+            Thus, when ``generate`` is `True`, this function is not a pure
+            function because of this side-effect.
+
+            This default behaviour is chosen so that this function operates
+            similarly to `NamespaceManager.qname`.
+
+        :param uri: URI to generate CURIE for.
+        :param generate: Whether to add a prefix for the namespace if one doesn't
+            already exist.  Default: `True`.
+        :return: CURIE for the URI.
+        :raises KeyError: If generate is `False` and the namespace doesn't already have
+            a prefix.
+        """
+        prefix, namespace, name = self.compute_qname(uri, generate=generate)
+        return ":".join((prefix, name))
+
     def qname_strict(self, uri: str) -> str:
         prefix, namespace, name = self.compute_qname_strict(uri)
         if prefix == "":
@@ -461,7 +539,7 @@ class NamespaceManager(object):
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self, rdfTerm: str) -> str:
+    def normalizeUri(self, rdfTerm: str) -> str:  # noqa: N802, N803
         """
         Takes an RDF Term and 'normalizes' it into a QName (using the
         registered prefix) or (unlike compute_qname) the Notation 3
@@ -472,7 +550,7 @@ class NamespaceManager(object):
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(str(namespace))
-        except:
+        except Exception:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
             else:
@@ -483,14 +561,12 @@ class NamespaceManager(object):
         elif prefix is None:
             return "<%s>" % rdfTerm
         else:
-            qNameParts = self.compute_qname(rdfTerm)
+            qNameParts = self.compute_qname(rdfTerm)  # noqa: N806
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
-
         prefix: Optional[str]
         if uri not in self.__cache:
-
             if not _is_valid_uri(uri):
                 raise ValueError(
                     '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
@@ -503,6 +579,7 @@ class NamespaceManager(object):
             except ValueError as e:
                 namespace = URIRef(uri)
                 prefix = self.store.prefix(namespace)
+                name = ""  # empty prefix case, safe since not prefix is error
                 if not prefix:
                     raise e
             if namespace not in self.__strie:
@@ -592,7 +669,7 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
-    def expand_curie(self, curie: str) -> Union[URIRef, None]:
+    def expand_curie(self, curie: str) -> URIRef:
         """
         Expand a CURIE of the form <prefix:element>, e.g. "rdf:type"
         into its full expression:
@@ -605,10 +682,10 @@ class NamespaceManager(object):
         Raises exception if a namespace is not bound to the prefix.
 
         """
-        if not type(curie) is str:
+        if not type(curie) is str:  # noqa: E714
             raise TypeError(f"Argument must be a string, not {type(curie).__name__}.")
         parts = curie.split(":", 1)
-        if len(parts) != 2 or len(parts[0]) < 1:
+        if len(parts) != 2:
             raise ValueError(
                 "Malformed curie argument, format should be e.g. “foaf:name”."
             )
@@ -668,7 +745,6 @@ class NamespaceManager(object):
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
         if bound_namespace and bound_namespace != namespace:
-
             if replace:
                 self._store_bind(prefix, namespace, override=override)
                 insert_trie(self.__trie, str(namespace))
@@ -773,7 +849,7 @@ def is_ncname(name: str) -> int:
         if first == "_" or category(first) in NAME_START_CATEGORIES:
             for i in range(1, len(name)):
                 c = name[i]
-                if not category(c) in NAME_CATEGORIES:
+                if not category(c) in NAME_CATEGORIES:  # noqa: E713
                     if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
@@ -794,7 +870,7 @@ def split_uri(
     length = len(uri)
     for i in range(0, length):
         c = uri[-i - 1]
-        if not category(c) in NAME_CATEGORIES:
+        if not category(c) in NAME_CATEGORIES:  # noqa: E713
             if c in ALLOWED_NAME_CHARS:
                 continue
             for j in range(-1 - i, length):
@@ -897,7 +973,7 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "dc": DC,
     "dcat": DCAT,
     "dcmitype": DCMITYPE,
-    "cdterms": DCTERMS,
+    "dcterms": DCTERMS,
     "dcam": DCAM,
     "doap": DOAP,
     "foaf": FOAF,
@@ -907,7 +983,7 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "prof": PROF,
     "prov": PROV,
     "qb": QB,
-    "sdo": SDO,
+    "schema": SDO,
     "sh": SH,
     "skos": SKOS,
     "sosa": SOSA,
@@ -915,4 +991,5 @@ _NAMESPACE_PREFIXES_RDFLIB = {
     "time": TIME,
     "vann": VANN,
     "void": VOID,
+    "wgs": WGS,
 }

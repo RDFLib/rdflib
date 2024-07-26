@@ -33,17 +33,25 @@ class OWL(DefinedNamespace):
     cardinality: URIRef  # The property that determines the cardinality of an exact cardinality restriction.
     complementOf: URIRef  # The property that determines that a given class is the complement of another class.
     datatypeComplementOf: URIRef  # The property that determines that a given data range is the complement of another data range with respect to the data domain.
-    differentFrom: URIRef  # The property that determines that two given individuals are different.
+    differentFrom: (
+        URIRef  # The property that determines that two given individuals are different.
+    )
     disjointUnionOf: URIRef  # The property that determines that a given class is equivalent to the disjoint union of a collection of other classes.
-    disjointWith: URIRef  # The property that determines that two given classes are disjoint.
+    disjointWith: (
+        URIRef  # The property that determines that two given classes are disjoint.
+    )
     distinctMembers: URIRef  # The property that determines the collection of pairwise different individuals in a owl:AllDifferent axiom.
     equivalentClass: URIRef  # The property that determines that two given classes are equivalent, and that is used to specify datatype definitions.
-    equivalentProperty: URIRef  # The property that determines that two given properties are equivalent.
+    equivalentProperty: (
+        URIRef  # The property that determines that two given properties are equivalent.
+    )
     hasKey: URIRef  # The property that determines the collection of properties that jointly build a key.
     hasSelf: URIRef  # The property that determines the property that a self restriction refers to.
     hasValue: URIRef  # The property that determines the individual that a has-value restriction refers to.
     intersectionOf: URIRef  # The property that determines the collection of classes or data ranges that build an intersection.
-    inverseOf: URIRef  # The property that determines that two given properties are inverse.
+    inverseOf: (
+        URIRef  # The property that determines that two given properties are inverse.
+    )
     maxCardinality: URIRef  # The property that determines the cardinality of a maximum cardinality restriction.
     maxQualifiedCardinality: URIRef  # The property that determines the cardinality of a maximum qualified cardinality restriction.
     members: URIRef  # The property that determines the collection of members in either a owl:AllDifferent, owl:AllDisjointClasses or owl:AllDisjointProperties axiom.
@@ -56,7 +64,9 @@ class OWL(DefinedNamespace):
     onProperty: URIRef  # The property that determines the property that a property restriction refers to.
     oneOf: URIRef  # The property that determines the collection of individuals or data values that build an enumeration.
     propertyChainAxiom: URIRef  # The property that determines the n-tuple of properties that build a sub property chain of a given property.
-    propertyDisjointWith: URIRef  # The property that determines that two given properties are disjoint.
+    propertyDisjointWith: (
+        URIRef  # The property that determines that two given properties are disjoint.
+    )
     qualifiedCardinality: URIRef  # The property that determines the cardinality of an exact qualified cardinality restriction.
     sameAs: URIRef  # The property that determines that two given individuals are equal.
     someValuesFrom: URIRef  # The property that determines the class that an existential property restriction refers to.
@@ -69,7 +79,9 @@ class OWL(DefinedNamespace):
     # http://www.w3.org/2000/01/rdf-schema#Class
     AllDifferent: URIRef  # The class of collections of pairwise different individuals.
     AllDisjointClasses: URIRef  # The class of collections of pairwise disjoint classes.
-    AllDisjointProperties: URIRef  # The class of collections of pairwise disjoint properties.
+    AllDisjointProperties: (
+        URIRef  # The class of collections of pairwise disjoint properties.
+    )
     Annotation: URIRef  # The class of annotated annotations for which the RDF serialization consists of an annotated subject, predicate and object.
     AnnotationProperty: URIRef  # The class of annotation properties.
     AsymmetricProperty: URIRef  # The class of asymmetric properties.
@@ -105,10 +117,14 @@ class OWL(DefinedNamespace):
 
     # http://www.w3.org/2002/07/owl#DatatypeProperty
     bottomDataProperty: URIRef  # The data property that does not relate any individual to any data value.
-    topDataProperty: URIRef  # The data property that relates every individual to every data value.
+    topDataProperty: (
+        URIRef  # The data property that relates every individual to every data value.
+    )
 
     # http://www.w3.org/2002/07/owl#ObjectProperty
-    bottomObjectProperty: URIRef  # The object property that does not relate any two individuals.
+    bottomObjectProperty: (
+        URIRef  # The object property that does not relate any two individuals.
+    )
     topObjectProperty: URIRef  # The object property that relates every two individuals.
 
     # http://www.w3.org/2002/07/owl#OntologyProperty

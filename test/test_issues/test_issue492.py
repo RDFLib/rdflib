@@ -1,7 +1,4 @@
 # test for https://github.com/RDFLib/rdflib/issues/492
-
-#!/usr/bin/env python3
-
 import rdflib
 
 
@@ -20,4 +17,4 @@ def test_issue492():
     g = rdflib.Graph()
 
     # raised a TypeError: unorderable types: SequencePath() < SequencePath()
-    result = g.query(query)
+    result = g.query(query)  # noqa: F841

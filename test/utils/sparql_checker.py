@@ -1,29 +1,15 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+
+from __future__ import annotations
+
 import enum
 import logging
 import pprint
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from io import BytesIO, StringIO
-from pathlib import Path
-from test.utils import BNodeHandling, GraphHelper
-from test.utils.dawg_manifest import Manifest, ManifestEntry
-from test.utils.iri import URIMapper
-from test.utils.namespace import MF, QT, UT
-from test.utils.result import ResultType, assert_bindings_collections_equal
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from typing import Dict, Generator, Optional, Set, Tuple, Type, Union, cast
 from urllib.parse import urljoin
 
 import pytest
@@ -36,10 +22,15 @@ from rdflib.plugins import sparql as rdflib_sparql_module
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
 from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
-from rdflib.plugins.sparql.sparql import QueryContext
 from rdflib.query import Result
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import guess_format
+from test.utils import BNodeHandling, GraphHelper
+from test.utils.dawg_manifest import Manifest, ManifestEntry
+from test.utils.iri import URIMapper
+from test.utils.namespace import MF, QT, UT
+from test.utils.result import ResultType, assert_bindings_collections_equal
+from test.utils.urlopen import context_urlopener
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +72,7 @@ class TypeInfo:
             self.expected_outcome_property = UT.result
 
     @classmethod
-    def make_dict(cls, *test_types: "TypeInfo") -> Dict[Identifier, "TypeInfo"]:
+    def make_dict(cls, *test_types: TypeInfo) -> Dict[Identifier, TypeInfo]:
         return dict((test_type.id, test_type) for test_type in test_types)
 
 
@@ -109,7 +100,7 @@ class GraphData:
     label: Optional[Literal] = None
 
     @classmethod
-    def from_graph(cls, graph: Graph, identifier: Identifier) -> "GraphData":
+    def from_graph(cls, graph: Graph, identifier: Identifier) -> GraphData:
         if isinstance(identifier, URIRef):
             return cls(identifier)
         elif isinstance(identifier, BNode):
@@ -131,8 +122,11 @@ class GraphData:
         logging.debug(
             "public_id = %s - graph = %s\n%s", public_id, graph_path, graph_text
         )
-        dataset.parse(
-            data=graph_text, publicID=public_id, format=guess_format(graph_path)
+        dataset.get_context(public_id).parse(
+            # type error: Argument 1 to "guess_format" has incompatible type "Path"; expected "str"
+            data=graph_text,
+            publicID=public_id,
+            format=guess_format(graph_path),  # type: ignore[arg-type]
         )
 
 
@@ -211,7 +205,9 @@ class SPARQLEntry(ManifestEntry):
                 data_text,
             )
             dataset.default_context.parse(
-                data=data_text, format=guess_format(data_path)
+                # type error: Argument 1 to "guess_format" has incompatible type "Path"; expected "str"
+                data=data_text,
+                format=guess_format(data_path),  # type: ignore[arg-type]
             )
         if graph_data_set is not None:
             for graph_data in graph_data_set:
@@ -297,11 +293,11 @@ def check_syntax(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
         if entry.type_info.negative:
             catcher = xstack.enter_context(pytest.raises(Exception))
         if entry.type_info.query_type is QueryType.UPDATE:
-            tree = parseUpdate(query_text)
-            translateUpdate(tree)
+            parse_tree = parseUpdate(query_text)
+            translateUpdate(parse_tree)
         elif entry.type_info.query_type is QueryType.QUERY:
-            tree = parseQuery(query_text)
-            translateQuery(tree)
+            query_tree = parseQuery(query_text)
+            translateQuery(query_tree)
     if catcher is not None:
         assert catcher.value is not None
         logging.info("catcher.value = %s", catcher.value)
@@ -346,32 +342,11 @@ def check_update(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
         rdflib_sparql_module.SPARQL_LOAD_GRAPHS = True
 
 
-def patched_query_context_load(uri_mapper: URIMapper) -> Callable[..., Any]:
-    def _patched_load(
-        self: QueryContext, source: URIRef, default: bool = False, **kwargs
-    ) -> None:
-        public_id = None
-        use_source: Union[URIRef, Path] = source
-        format = guess_format(use_source)
-        if f"{source}".startswith(("https://", "http://")):
-            use_source = uri_mapper.to_local_path(source)
-            public_id = source
-        if default:
-            assert self.graph is not None
-            self.graph.parse(use_source, format=format, publicID=public_id)
-        else:
-            self.dataset.parse(use_source, format=format, publicID=public_id)
-
-    return _patched_load
-
-
-def check_query(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
+def check_query(exit_stack: ExitStack, entry: SPARQLEntry) -> None:
     assert entry.query is not None
     assert isinstance(entry.result, URIRef)
 
-    monkeypatch.setattr(
-        QueryContext, "load", patched_query_context_load(entry.uri_mapper)
-    )
+    exit_stack.enter_context(context_urlopener(entry.uri_mapper.opener()))
 
     query_text = entry.query_text()
     dataset = entry.action_dataset()
@@ -394,6 +369,11 @@ def check_query(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
     assert expected_result.type == result.type
 
     if result.type == ResultType.SELECT:
+        if logger.isEnabledFor(logging.DEBUG):
+            logging.debug(
+                "expected_result.bindings = \n%s",
+                pprint.pformat(expected_result.bindings, indent=2, width=80),
+            )
         if logger.isEnabledFor(logging.DEBUG):
             logging.debug(
                 "entry.result_cardinality = %s, result.bindings = \n%s",
@@ -435,7 +415,9 @@ SKIP_TYPES = {
 }
 
 
-def check_entry(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
+def check_entry(
+    monkeypatch: MonkeyPatch, exit_stack: ExitStack, entry: SPARQLEntry
+) -> None:
     if logger.isEnabledFor(logging.DEBUG):
         logging.debug(
             "entry = \n%s",
@@ -446,5 +428,5 @@ def check_entry(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
     if entry.type_info.query_type is QueryType.UPDATE:
         return check_update(monkeypatch, entry)
     elif entry.type_info.query_type is QueryType.QUERY:
-        return check_query(monkeypatch, entry)
+        return check_query(exit_stack, entry)
     raise ValueError(f"unsupported test {entry.type}")

@@ -1,11 +1,12 @@
-from contextlib import ExitStack
-from typing import Any, Optional, Type, Union
+from __future__ import annotations
+
+from typing import Any, Optional
 from warnings import warn
 
 import pytest
 
 from rdflib import DCTERMS
-from rdflib.graph import BNode, Graph, Literal
+from rdflib.graph import Graph
 from rdflib.namespace import (
     FOAF,
     OWL,
@@ -17,7 +18,8 @@ from rdflib.namespace import (
     Namespace,
     URIPattern,
 )
-from rdflib.term import URIRef
+from rdflib.term import BNode, Literal, URIRef
+from test.utils.outcome import OutcomeChecker, OutcomePrimitive
 
 
 class TestNamespace:
@@ -238,7 +240,7 @@ class TestNamespacePrefix:
 
         ref = URIRef("http://www.w3.org/ns/shacl#Info")
         assert (
-            type(SH) == DefinedNamespaceMeta
+            type(SH) is DefinedNamespaceMeta
         ), f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test."
         assert ref in SH, "sh:Info not in SH"
 
@@ -284,10 +286,10 @@ class TestNamespacePrefix:
         ["curie", "expected_result"],
         [
             ("ex:tarek", URIRef("urn:example:tarek")),
-            ("ex:", URIRef(f"urn:example:")),
-            ("ex:a", URIRef(f"urn:example:a")),
-            ("ex:a:b", URIRef(f"urn:example:a:b")),
-            ("ex:a:b:c", URIRef(f"urn:example:a:b:c")),
+            ("ex:", URIRef("urn:example:")),
+            ("ex:a", URIRef("urn:example:a")),
+            ("ex:a:b", URIRef("urn:example:a:b")),
+            ("ex:a:b:c", URIRef("urn:example:a:b:c")),
             ("ex", ValueError),
             ("em:tarek", ValueError),
             ("em:", ValueError),
@@ -306,22 +308,15 @@ class TestNamespacePrefix:
         ],
     )
     def test_expand_curie(
-        self, curie: Any, expected_result: Union[Type[Exception], URIRef, None]
+        self, curie: Any, expected_result: OutcomePrimitive[URIRef]
     ) -> None:
         g = Graph(bind_namespaces="none")
         nsm = g.namespace_manager
         nsm.bind("ex", "urn:example:")
-        result: Optional[URIRef] = None
-        catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-        with ExitStack() as xstack:
-            if isinstance(expected_result, type) and issubclass(
-                expected_result, Exception
-            ):
-                catcher = xstack.enter_context(pytest.raises(expected_result))
-            result = g.namespace_manager.expand_curie(curie)
 
-        if catcher is not None:
-            assert result is None
-            assert catcher.value is not None
-        else:
-            assert expected_result == result
+        checker = OutcomeChecker.from_primitive(expected_result)
+
+        result: Optional[URIRef] = None
+        with checker.context():
+            result = g.namespace_manager.expand_curie(curie)
+            checker.check(result)

@@ -32,9 +32,8 @@ xml       :class:`~rdflib.plugins.parsers.rdfxml.RDFXMLParser`
 
 Multi-graph IDs
 ---------------
-Note that for correct parsing of multi-graph data, e.g. Trig, HexT, etc., into a ``ConjunctiveGraph`` or a ``Dataset``,
-as opposed to a context-unaware ``Graph``, you will need to set the ``publicID`` of the ``ConjunctiveGraph`` a 
-``Dataset`` to the identifier of the ``default_context`` (default graph), for example::
+Note that for correct parsing of multi-graph data, e.g. Trig, HexT, etc., into a ``Dataset``,
+as opposed to a context-unaware ``Graph``, you will need to set the ``publicID`` of the ``Dataset`` to the identifier of the ``default_context`` (default graph), for example::
 
     d = Dataset()
     d.parse(

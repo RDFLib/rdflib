@@ -1,11 +1,3 @@
-from __future__ import annotations
-
-import json
-from typing import IO, Any, Dict, Mapping, MutableSequence, Optional
-
-from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
-from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
-
 """A Serializer for SPARQL results in JSON:
 
 http://www.w3.org/TR/rdf-sparql-json-res/
@@ -16,6 +8,14 @@ http://projects.bigasterisk.com/sparqlhttp/
 Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 """
+
+from __future__ import annotations
+
+import json
+from typing import IO, Any, Dict, Mapping, MutableSequence, Optional
+
+from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
+from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
 class JSONResultParser(ResultParser):
@@ -33,7 +33,6 @@ class JSONResultSerializer(ResultSerializer):
 
     # type error: Signature of "serialize" incompatible with supertype "ResultSerializer"
     def serialize(self, stream: IO, encoding: str = None) -> None:  # type: ignore[override]
-
         res: Dict[str, Any] = {}
         if self.result.type == "ASK":
             res["head"] = {}

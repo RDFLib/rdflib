@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 This contains evaluation functions for expressions
 
@@ -7,6 +5,8 @@ They get bound as instances-methods to the CompValue objects from parserutils
 using setEvalFn
 
 """
+
+from __future__ import annotations
 
 import datetime as py_datetime  # naming conflict with function within this module
 import hashlib
@@ -16,7 +16,7 @@ import random
 import re
 import uuid
 import warnings
-from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
 from typing import Any, Callable, Dict, NoReturn, Optional, Tuple, Union, overload
 from urllib.parse import quote
@@ -205,7 +205,7 @@ def Builtin_ROUND(expr: Expr, ctx) -> Literal:
     # this is an ugly work-around
     l_ = expr.arg
     v = numeric(l_)
-    v = int(Decimal(v).quantize(1, ROUND_HALF_UP))
+    v = int(Decimal(v).quantize(1, ROUND_HALF_UP if v > 0 else ROUND_HALF_DOWN))
     return Literal(v, datatype=l_.datatype)
 
 
@@ -381,7 +381,7 @@ def Builtin_CONTAINS(expr: Expr, ctx) -> Literal:
 
 
 def Builtin_ENCODE_FOR_URI(expr: Expr, ctx) -> Literal:
-    return Literal(quote(string(expr.arg).encode("utf-8")))
+    return Literal(quote(string(expr.arg).encode("utf-8"), safe=""))
 
 
 def Builtin_SUBSTR(expr: Expr, ctx) -> Literal:
@@ -471,7 +471,10 @@ def Builtin_SECONDS(e: Expr, ctx) -> Literal:
     http://www.w3.org/TR/sparql11-query/#func-seconds
     """
     d = datetime(e.arg)
-    return Literal(d.second, datatype=XSD.decimal)
+    result_value = Decimal(d.second)
+    if d.microsecond:
+        result_value += Decimal(d.microsecond) / Decimal(1000000)
+    return Literal(result_value, datatype=XSD.decimal)
 
 
 def Builtin_TIMEZONE(e: Expr, ctx) -> Literal:
@@ -669,7 +672,6 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
     x = e.expr[0]
 
     if e.iri == XSD.string:
-
         if isinstance(x, (URIRef, Literal)):
             return Literal(x, datatype=XSD.string)
         else:
@@ -739,7 +741,6 @@ def UnaryPlus(expr: Expr, ctx: FrozenBindings) -> Literal:
 def MultiplicativeExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     expr = e.expr
     other = e.other
 
@@ -753,7 +754,7 @@ def MultiplicativeExpression(
         for op, f in zip(e.op, other):
             f = numeric(f)
 
-            if type(f) == float:
+            if type(f) == float:  # noqa: E721
                 res = float(res)
 
             if op == "*":
@@ -768,7 +769,6 @@ def MultiplicativeExpression(
 
 # type error: Missing return statement
 def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:  # type: ignore[return]
-
     expr = e.expr
     other = e.other
 
@@ -782,12 +782,10 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
     if hasattr(expr, "datatype") and (
         expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs
     ):
-
         res = dateTimeObjects(expr)
         dt = expr.datatype
 
         for op, term in zip(e.op, other):
-
             # check if operation is datetime,date,time operation over
             # another datetime,date,time datatype
             if dt in XSD_DateTime_DTs and dt == term.datatype and op == "-":
@@ -844,7 +842,6 @@ def AdditiveExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Lit
 
 
 def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> Literal:
-
     expr = e.expr
     other = e.other
     op = e.op
@@ -868,7 +865,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
     )
 
     if op in ("IN", "NOT IN"):
-
         res = op == "NOT IN"
 
         error: Union[bool, SPARQLError] = False
@@ -905,7 +901,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
             raise SPARQLError("I cannot compare this non-node: %r" % other)
 
     if isinstance(expr, Literal) and isinstance(other, Literal):
-
         if (
             expr.datatype is not None
             and expr.datatype not in XSD_DTs
@@ -928,7 +923,6 @@ def RelationalExpression(e: Expr, ctx: Union[QueryContext, FrozenBindings]) -> L
 def ConditionalAndExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     # TODO: handle returned errors
 
     expr = e.expr
@@ -945,7 +939,6 @@ def ConditionalAndExpression(
 def ConditionalOrExpression(
     e: Expr, ctx: Union[QueryContext, FrozenBindings]
 ) -> Literal:
-
     # TODO: handle errors
 
     expr = e.expr
@@ -995,8 +988,7 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    # type error: Statement is unreachable
-    if not isinstance(expr, CompValue):  # type: ignore[unreachable]
+    if not isinstance(expr, CompValue):
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:
@@ -1171,18 +1163,15 @@ def calculateFinalDateTime(
 
 
 @overload
-def EBV(rt: Literal) -> bool:
-    ...
+def EBV(rt: Literal) -> bool: ...
 
 
 @overload
-def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn:
-    ...
+def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn: ...
 
 
 @overload
-def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]:
-    ...
+def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]: ...
 
 
 def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
@@ -1202,7 +1191,6 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
     """
 
     if isinstance(rt, Literal):
-
         if rt.datatype == XSD.boolean:
             return rt.toPython()
 

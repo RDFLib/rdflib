@@ -1,13 +1,6 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from test.utils import (
-    COLLAPSED_BNODE,
-    BNodeHandling,
-    GHQuad,
-    GHTriple,
-    GraphHelper,
-    MarksType,
-    MarkType,
-)
 from typing import TYPE_CHECKING, Collection, Set, Tuple, Type, Union, cast
 
 import pytest
@@ -17,8 +10,17 @@ import rdflib
 from rdflib import Graph
 from rdflib.compare import graph_diff
 from rdflib.graph import ConjunctiveGraph, Dataset
-from rdflib.namespace import FOAF, RDF, Namespace
+from rdflib.namespace import FOAF, RDF
 from rdflib.term import BNode, Literal
+from test.utils import (
+    COLLAPSED_BNODE,
+    BNodeHandling,
+    GHQuad,
+    GHTriple,
+    GraphHelper,
+    MarksType,
+    MarkType,
+)
 
 if TYPE_CHECKING:
     from rdflib.graph import _TripleType
@@ -126,9 +128,6 @@ class GraphDiffCase:
 
     def as_params(self) -> ParameterSet:
         return pytest.param(self, marks=self.marks)
-
-
-EGSCHEME = Namespace("example:")
 
 
 @pytest.mark.parametrize(

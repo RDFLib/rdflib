@@ -1,0 +1,87 @@
+name: Docker Images
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      docker-push: ${{ steps.vars.outputs.docker-push }}
+      oci-reference: ${{ steps.vars.outputs.oci-reference }}
+    steps:
+      - id: vars
+        run: |
+          echo ::set-output name=github-ref::${{ github.ref }}
+          echo ::set-output name=docker-push::${{ github.ref == 'refs/heads/main' }}
+          echo ::set-output name=oci-reference::ghcr.io/$( echo "${{ github.repository}}" | tr '[:upper:]' '[:lower:]' )
+      - id: vars-dump
+        run: |
+          echo "steps.vars.github-ref = ${{ steps.vars.outputs.github-ref }}"
+          echo "steps.vars.docker-push = ${{ steps.vars.outputs.docker-push }}"
+          echo "steps.vars.oci-reference = ${{ steps.vars.outputs.oci-reference }}"
+
+  build:
+    needs: setup
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
+      - name: Build images
+        shell: bash
+        run: |
+          task \
+            OCI_REFERENCE="${{ needs.setup.outputs.oci-reference }}" \
+            docker:latest docker:unstable
+  push:
+    if: "${{ needs.setup.outputs.docker-push == 'true' }}"
+    needs: [ setup, build ]
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push images
+        shell: bash
+        run: |
+          task \
+            DOCKER_PUSH=true \
+            OCI_REFERENCE="${{ needs.setup.outputs.oci-reference }}" \
+            docker:latest docker:unstable

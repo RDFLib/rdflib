@@ -43,8 +43,10 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `6.3.0a0` current `main` branch
-* `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+* `7.1.0a0` current `main` branch.
+* `7.x.y` current release, supports Python 3.8.1+ only.
+    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+* `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
@@ -58,10 +60,14 @@ The stable release of RDFLib may be installed with Python's package management t
 
     $ pip install rdflib
 
+Some features of RDFLib require optional dependencies which may be installed using *pip* extras:
+
+    $ pip install rdflib[berkeleydb,networkx,html,lxml]
+
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.2.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 7.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current main branch (for developers)
 
@@ -75,7 +81,7 @@ or
 
 or from your locally cloned repository you can install it with one of the following options:
 
-    $ python setup.py install
+    $ poetry install  # installs into a poetry-managed venv
 
 or
 
@@ -182,21 +188,22 @@ Multiple other projects are contained within the RDFlib "family", see <https://g
 
 Run the test suite with `pytest`.
 ```shell
-pytest
+poetry install
+poetry run pytest
 ```
 
 ### Running test coverage on the host with coverage report
 
 Run the test suite and generate a HTML coverage report with `pytest` and `pytest-cov`.
 ```shell
-pytest --cov
+poetry run pytest --cov
 ```
 
 ### Viewing test coverage
 
 Once tests have produced HTML output of the coverage report, view it by running:
 ```shell
-pytest --cov --cov-report term --cov-report html
+poetry run pytest --cov --cov-report term --cov-report html
 python -m http.server --directory=htmlcov
 ```
 

@@ -32,7 +32,7 @@ class TestURIRefRepr:
         a = u > u
         a = u > BNode()
         a = u > QuotedGraph(g.store, u)
-        a = u > g
+        a = u > g  # noqa: F841
 
 
 class TestBNodeRepr:
@@ -124,8 +124,8 @@ class TestLiteral:
                 Literal(Decimal(2.1), datatype=XSD.decimal),
             ),
             (7, Literal(Decimal(1.1)), Literal(Decimal(1.1)), Literal(Decimal(2.2))),
-            (8, Literal(float(1)), Literal(float(1.1)), Literal(float(2.1))),
-            (9, Literal(float(1.1)), Literal(float(1.1)), Literal(float(2.2))),
+            (8, Literal(float(1)), Literal(1.1), Literal(2.1)),
+            (9, Literal(1.1), Literal(1.1), Literal(2.2)),
             (10, Literal(-1), Literal(-1), Literal(-2)),
             (12, Literal(Decimal(-1)), Literal(Decimal(-1)), Literal(Decimal(-2))),
             (13, Literal(float(-1)), Literal(float(-1)), Literal(float(-2))),
@@ -138,14 +138,14 @@ class TestLiteral:
                 Literal(Decimal(-1.1)),
                 Literal(Decimal(-2.2)),
             ),
-            (18, Literal(float(-1)), Literal(float(-1.1)), Literal(float(-2.1))),
-            (19, Literal(float(-1.1)), Literal(float(-1.1)), Literal(float(-2.2))),
+            (18, Literal(float(-1)), Literal(-1.1), Literal(-2.1)),
+            (19, Literal(-1.1), Literal(-1.1), Literal(-2.2)),
             (20, Literal(1), Literal(1.0), Literal(2.0)),
             (21, Literal(1.0), Literal(1.0), Literal(2.0)),
             (22, Literal(Decimal(1)), Literal(Decimal(1.0)), Literal(Decimal(2.0))),
             (23, Literal(Decimal(1.0)), Literal(Decimal(1.0)), Literal(Decimal(2.0))),
-            (24, Literal(float(1)), Literal(float(1.0)), Literal(float(2.0))),
-            (25, Literal(float(1.0)), Literal(float(1.0)), Literal(float(2.0))),
+            (24, Literal(float(1)), Literal(1.0), Literal(2.0)),
+            (25, Literal(1.0), Literal(1.0), Literal(2.0)),
             (
                 26,
                 Literal(1, datatype=XSD.integer),
@@ -206,8 +206,8 @@ class TestLiteral:
             (38, Literal(1.0), 1.0, Literal(2.0)),
             (39, Literal(Decimal(1.0)), Decimal(1), Literal(Decimal(2.0))),
             (40, Literal(Decimal(1.0)), Decimal(1.0), Literal(Decimal(2.0))),
-            (41, Literal(float(1.0)), float(1), Literal(float(2.0))),
-            (42, Literal(float(1.0)), float(1.0), Literal(float(2.0))),
+            (41, Literal(1.0), float(1), Literal(2.0)),
+            (42, Literal(1.0), 1.0, Literal(2.0)),
             (
                 43,
                 Literal(1, datatype=XSD.integer),
@@ -253,7 +253,7 @@ class TestLiteral:
             if not case_passed:
                 try:
                     case_passed = isclose((case[1] + case[2].value), case[3].value)
-                except:
+                except Exception:
                     pass
 
             if not case_passed:

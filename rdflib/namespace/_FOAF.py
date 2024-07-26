@@ -17,8 +17,12 @@ class FOAF(DefinedNamespace):
 
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     account: URIRef  # Indicates an account held by this agent.
-    accountName: URIRef  # Indicates the name (identifier) associated with this online account.
-    accountServiceHomepage: URIRef  # Indicates a homepage of the service provide for this online account.
+    accountName: (
+        URIRef  # Indicates the name (identifier) associated with this online account.
+    )
+    accountServiceHomepage: (
+        URIRef  # Indicates a homepage of the service provide for this online account.
+    )
     age: URIRef  # The age in years of some agent.
     based_near: URIRef  # A location that something is based near, for some broadly human notion of near.
     birthday: URIRef  # The birthday of this Agent, represented in mm-dd string form, eg. '12-31'.
@@ -43,7 +47,9 @@ class FOAF(DefinedNamespace):
     made: URIRef  # Something that was made by this agent.
     maker: URIRef  # An agent that  made this thing.
     member: URIRef  # Indicates a member of a Group
-    membershipClass: URIRef  # Indicates the class of individuals that are a member of a Group
+    membershipClass: (
+        URIRef  # Indicates the class of individuals that are a member of a Group
+    )
     myersBriggs: URIRef  # A Myers Briggs (MBTI) personality classification.
     name: URIRef  # A name for some thing.
     nick: URIRef  # A short informal nickname characterising an agent (includes login identifiers, IRC and other chat nicknames).

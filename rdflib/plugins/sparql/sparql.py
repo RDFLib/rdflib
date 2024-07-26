@@ -1,17 +1,37 @@
+from __future__ import annotations
+
 import collections
 import datetime
 import itertools
 import typing as t
-from typing import Any, Container, Dict, Iterable, List, Optional, Tuple, Union
+from collections.abc import Mapping, MutableMapping
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Container,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.compat import Mapping, MutableMapping
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
+
+if TYPE_CHECKING:
+    from rdflib.paths import Path
+
+
+_AnyT = TypeVar("_AnyT")
 
 
 class SPARQLError(Exception):
@@ -37,7 +57,6 @@ class SPARQLTypeError(SPARQLError):
 
 
 class Bindings(MutableMapping):
-
     """
 
     A single level of a stack of variable-value bindings.
@@ -47,7 +66,7 @@ class Bindings(MutableMapping):
     In python 3.3 this could be a collections.ChainMap
     """
 
-    def __init__(self, outer: Optional["Bindings"] = None, d=[]):
+    def __init__(self, outer: Optional[Bindings] = None, d=[]):
         self._d: Dict[str, str] = dict(d)
         self.outer = outer
 
@@ -80,8 +99,8 @@ class Bindings(MutableMapping):
             d = d.outer
         return i
 
-    def __iter__(self):
-        d = self
+    def __iter__(self) -> Generator[str, None, None]:
+        d: Optional[Bindings] = self
         while d is not None:
             yield from d._d
             d = d.outer
@@ -128,8 +147,8 @@ class FrozenDict(Mapping):
                 self._hash ^= hash(value)
         return self._hash
 
-    def project(self, vars: Container[Variable]) -> "FrozenDict":
-        return FrozenDict((x for x in self.items() if x[0] in vars))
+    def project(self, vars: Container[Variable]) -> FrozenDict:
+        return FrozenDict(x for x in self.items() if x[0] in vars)
 
     def disjointDomain(self, other: t.Mapping[Identifier, Identifier]) -> bool:
         return not bool(set(self).intersection(other))
@@ -144,7 +163,7 @@ class FrozenDict(Mapping):
 
         return True
 
-    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenDict":
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> FrozenDict:
         res = FrozenDict(itertools.chain(self.items(), other.items()))
 
         return res
@@ -157,12 +176,11 @@ class FrozenDict(Mapping):
 
 
 class FrozenBindings(FrozenDict):
-    def __init__(self, ctx: "QueryContext", *args, **kwargs):
+    def __init__(self, ctx: QueryContext, *args, **kwargs):
         FrozenDict.__init__(self, *args, **kwargs)
         self.ctx = ctx
 
     def __getitem__(self, key: Union[Identifier, str]) -> Identifier:
-
         if not isinstance(key, Node):
             key = Variable(key)
 
@@ -176,10 +194,10 @@ class FrozenBindings(FrozenDict):
         else:
             return self._d[key]
 
-    def project(self, vars: Container[Variable]) -> "FrozenBindings":
+    def project(self, vars: Container[Variable]) -> FrozenBindings:
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in vars))
 
-    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenBindings":
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> FrozenBindings:
         res = FrozenBindings(self.ctx, itertools.chain(self.items(), other.items()))
         return res
 
@@ -192,12 +210,12 @@ class FrozenBindings(FrozenDict):
         return self.ctx.bnodes
 
     @property
-    def prologue(self) -> Optional["Prologue"]:
+    def prologue(self) -> Optional[Prologue]:
         return self.ctx.prologue
 
     def forget(
-        self, before: "QueryContext", _except: Optional[Container[Variable]] = None
-    ):
+        self, before: QueryContext, _except: Optional[Container[Variable]] = None
+    ) -> FrozenBindings:
         """
         return a frozen dict only of bindings made in self
         since before
@@ -220,14 +238,14 @@ class FrozenBindings(FrozenDict):
             ),
         )
 
-    def remember(self, these):
+    def remember(self, these) -> FrozenBindings:
         """
         return a frozen dict only of bindings in these
         """
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
-class QueryContext(object):
+class QueryContext:
     """
     Query context - passed along when evaluating the query
     """
@@ -236,7 +254,7 @@ class QueryContext(object):
         self,
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
-        initBindings: Optional[Dict[Variable, Identifier]] = None,
+        initBindings: Optional[Mapping[str, Identifier]] = None,
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -270,7 +288,7 @@ class QueryContext(object):
 
     def clone(
         self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
-    ) -> "QueryContext":
+    ) -> QueryContext:
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
             bindings or self.bindings,
@@ -292,7 +310,27 @@ class QueryContext(object):
             )
         return self._dataset
 
-    def load(self, source: URIRef, default: bool = False, **kwargs):
+    def load(
+        self,
+        source: URIRef,
+        default: bool = False,
+        into: Optional[Identifier] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Load data from the source into the query context's.
+
+        :param source: The source to load from.
+        :param default: If `True`, triples from the source will be added
+            to the default graph, otherwise it will be loaded into a
+            graph with ``source`` URI as its name.
+        :param into: The name of the graph to load the data into. If
+            `None`, the source URI will be used as as the name of the
+            graph.
+        :param kwargs: Keyword arguments to pass to
+            :meth:`rdflib.graph.Graph.parse`.
+        """
+
         def _load(graph, source):
             try:
                 return graph.parse(source, format="turtle", **kwargs)
@@ -320,13 +358,14 @@ class QueryContext(object):
                 # Unsupported left operand type for + ("None")
                 self.graph += self.dataset.get_context(source)  # type: ignore[operator]
         else:
-
             if default:
                 _load(self.graph, source)
             else:
-                _load(self.dataset, source)
+                if into is None:
+                    into = source
+                _load(self.dataset.get_context(into), source)
 
-    def __getitem__(self, key) -> Any:
+    def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
         # in SPARQL BNodes are just labels
         if not isinstance(key, (BNode, Variable)):
             return key
@@ -335,7 +374,7 @@ class QueryContext(object):
         except KeyError:
             return None
 
-    def get(self, key: Variable, default: Optional[Any] = None):
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
         try:
             return self[key]
         except KeyError:
@@ -352,25 +391,25 @@ class QueryContext(object):
         else:
             return FrozenBindings(self, self.bindings.items())
 
-    def __setitem__(self, key: Identifier, value: Identifier) -> None:
+    def __setitem__(self, key: str, value: str) -> None:
         if key in self.bindings and self.bindings[key] != value:
             raise AlreadyBound()
 
         self.bindings[key] = value
 
-    def pushGraph(self, graph: Optional[Graph]) -> "QueryContext":
+    def pushGraph(self, graph: Optional[Graph]) -> QueryContext:
         r = self.clone()
         r.graph = graph
         return r
 
-    def push(self) -> "QueryContext":
+    def push(self) -> QueryContext:
         r = self.clone(Bindings(self.bindings))
         return r
 
-    def clean(self) -> "QueryContext":
+    def clean(self) -> QueryContext:
         return self.clone([])
 
-    def thaw(self, frozenbindings: FrozenBindings) -> "QueryContext":
+    def thaw(self, frozenbindings: FrozenBindings) -> QueryContext:
         """
         Create a new read/write query context from the given solution
         """
@@ -384,7 +423,7 @@ class Prologue:
     A class for holding prefixing bindings and base URI information
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.base: Optional[str] = None
         self.namespace_manager = NamespaceManager(Graph())  # ns man needs a store
 

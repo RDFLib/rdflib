@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import IO, Any, MutableMapping, Optional, Union
 
 from rdflib.graph import Graph
@@ -15,7 +17,6 @@ class RDFResultParser(ResultParser):
 
 class RDFResult(Result):
     def __init__(self, source: Union[IO, Graph], **kwargs: Any):
-
         if not isinstance(source, Graph):
             graph = Graph()
             graph.parse(source, **kwargs)
@@ -33,7 +34,6 @@ class RDFResult(Result):
             g += graph
 
         else:
-
             askAnswer = graph.value(rs, RS.boolean)
 
             if askAnswer is not None:

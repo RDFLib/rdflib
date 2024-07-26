@@ -8,8 +8,14 @@ on:
 
 env:
   FORCE_COLOR: 1
-  XDG_CACHE_HOME: ${{ github.workspace }}/cache
-  PIP_CACHE_DIR: ${{ github.workspace }}/pip-cache
+  XDG_CACHE_HOME: ${{ github.workspace }}/.var/cache
+  POETRY_CACHE_DIR: ${{ github.workspace }}/.var/cache/pypoetry
+  PIP_CACHE_DIR: ${{ github.workspace }}/.var/cache/pip
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -19,102 +25,122 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-rc.1"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-latest, macos-latest, windows-latest]
+        # This is used for injecting additional tests for a specific python
+        # version and OS.
+        suffix: [""]
         include:
-          - python-version: "3.7"
+          - python-version: "3.8"
             os: ubuntu-latest
             extensive-tests: true
             TOXENV_SUFFIX: "-docs"
           - python-version: "3.8"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "- isort --check-only --diff ."
-            TOXENV_SUFFIX: "-docs"
+            extensive-tests: true
+            PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
+            suffix: "-min"
+            TOXENV_SUFFIX: "-min"
           - python-version: "3.9"
+            os: ubuntu-latest
+            TOXENV_SUFFIX: "-docs"
+          - python-version: "3.10"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
             TOXENV_SUFFIX: "-lxml"
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
-            TOX_EXTRA_COMMAND: "flake8 --exit-zero rdflib"
             TOXENV_SUFFIX: "-docs"
+            PREPARATION: "sudo apt-get install -y firejail"
+            extensive-tests: true
+            TOX_TEST_HARNESS: "firejail --net=none --"
+            TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Cache XDG_CACHE_HOME
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.XDG_CACHE_HOME }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
+          restore-keys: |
+            ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
+            ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/setup-java@v3
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
+      - uses: actions/setup-java@v4
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PIP_CACHE_DIR }}
-          key: ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-${{
-            hashFiles('**/setup.py', '**/*requirements*.txt') }}
-          restore-keys: |
-            ${{ matrix.os }}-pip-${{ matrix.python-version }}-v1-
-      - name: Cache xdg
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.XDG_CACHE_HOME }}
-          key: ${{ matrix.os }}-xdg-v1-${{ hashFiles('**/with-fuseki.sh') }}
-          restore-keys: |
-            ${{ matrix.os }}-xdg-v1-
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run preparation
+        if: ${{ matrix.PREPARATION }}
+        shell: bash
+        run: |
+          ${{ matrix.PREPARATION }}
       - name: Run validation
         shell: bash
         run: |
           task \
-            TOX_EXTRA_COMMAND="${{ matrix.TOX_EXTRA_COMMAND }}" \
             OS=${{ matrix.os }} \
+            MATRIX_SUFFIX=${{ matrix.suffix }} \
             EXTENSIVE=${{ matrix.extensive-tests || 'false' }} \
             TOX_PYTHON_VERSION=${{ matrix.python-version }} \
             TOXENV_SUFFIX=${{ matrix.TOXENV_SUFFIX }} \
-            TOX_JUNIT_XML_PREFIX=${{ matrix.python-version }}-${{ matrix.os }}- \
+            TOX_JUNIT_XML_PREFIX=${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}- \
             gha:validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
+          TOX_PYTEST_EXTRA_ARGS: ${{ matrix.TOX_PYTEST_EXTRA_ARGS }}
+          TOX_TEST_HARNESS: ${{ matrix.TOX_TEST_HARNESS }}
+          TOX_EXTRA_COMMAND: ${{ matrix.TOX_EXTRA_COMMAND }}
+      - uses: actions/upload-artifact@v4
         if: ${{ (success() || failure()) }}
         with:
-          name: ${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit-xml
-          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-mypy-junit.xml
-      - uses: actions/upload-artifact@v3
+          name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-mypy-junit.xml
+      - uses: actions/upload-artifact@v4
         if: ${{ (success() || failure()) }}
         with:
-          name: ${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit-xml
-          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}-pytest-junit.xml
+          name: ${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit-xml
+          path: test_reports/${{ matrix.python-version }}-${{ matrix.os }}${{matrix.suffix}}-pytest-junit.xml
   extra-tasks:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - task: "gha:flake8"
+          - task: "gha:lint"
             python-version: 3.8
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Cache XDG_CACHE_HOME
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.XDG_CACHE_HOME }}
+          key: ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/poetry.lock', '**/with-fuseki.sh', '**/*requirements*.txt', '**/*requirements*.in') }}
+          restore-keys: |
+            ${{ github.job }}-xdg-v1-${{ matrix.os }}-${{ matrix.python-version }}-
+            ${{ github.job }}-xdg-v1-${{ matrix.os }}-
       - name: Set up Python ${{env.DEFAULT_PYTHON}}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PIP_CACHE_DIR }}
-          key: tox-${{ matrix.task }}-pip-v1-${{
-            hashFiles('**/setup.py', '**/requirements*.txt') }}
-          restore-keys: |
-            tox-${{ matrix.task }}-pip-v1-
+      - name: Install poetry
+        run: |
+          pip install -r devtools/requirements-poetry.in
       - name: Install Task
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run task

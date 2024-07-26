@@ -1,7 +1,5 @@
 import re
 
-import pytest
-
 import rdflib
 
 TRIPLE = (
@@ -62,15 +60,15 @@ def test_remember_namespace():
     # prefix for the graph but later serialize() calls would work.
     first_out = g.serialize(format="trig", encoding="latin-1")
     second_out = g.serialize(format="trig", encoding="latin-1")
-    assert b"@prefix ns1: <http://example.com/> ." in second_out
-    assert b"@prefix ns1: <http://example.com/> ." in first_out
+    assert b"@prefix ns1: <http://example.com/> ." not in second_out
+    assert b"@prefix ns1: <http://example.com/> ." not in first_out
 
 
 def test_graph_qname_syntax():
     g = rdflib.ConjunctiveGraph()
     g.add(TRIPLE + (rdflib.URIRef("http://example.com/graph1"),))
     out = g.serialize(format="trig", encoding="latin-1")
-    assert b"ns1:graph1 {" in out
+    assert b"ns1:graph1 {" not in out
 
 
 def test_graph_uri_syntax():
@@ -125,15 +123,7 @@ def test_graph_parsing():
     assert len(list(g.contexts())) == 2
 
 
-@pytest.mark.xfail(
-    raises=AssertionError,
-    reason="""
-    This is failing because conjuncitve graph assigns things in the default graph to
-    a graph with a bnode as name. On every parse iteration a new BNode is generated
-    resulting in the default graph content appearing multipile times in the output.""",
-)
 def test_round_trips():
-
     data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
 
@@ -172,7 +162,6 @@ def test_default_graph_serializes_without_name():
 
 
 def test_prefixes():
-
     data = """
     @prefix ns1: <http://ex.org/schema#> .
     <http://ex.org/docs/document1> = {
@@ -189,6 +178,12 @@ def test_prefixes():
     cg.parse(data=data, format="trig")
     data = cg.serialize(format="trig", encoding="latin-1")
 
-    assert "ns2: <http://ex.org/docs/".encode("latin-1") in data, data
+    assert "ns2: <http://ex.org/docs/".encode("latin-1") not in data, data
     assert "<ns2:document1>".encode("latin-1") not in data, data
-    assert "ns2:document1".encode("latin-1") in data, data
+    assert "ns2:document1".encode("latin-1") not in data, data
+
+
+def test_issue_2154():
+    ds = rdflib.Dataset()
+    sg = ds.serialize(format="trig")
+    assert "prefix" not in sg, sg

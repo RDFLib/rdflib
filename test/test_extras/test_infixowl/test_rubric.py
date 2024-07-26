@@ -1,4 +1,12 @@
-from rdflib import BNode, ConjunctiveGraph, Dataset, Graph, Literal, Namespace, URIRef
+from rdflib import (  # noqa: I001
+    BNode,
+    ConjunctiveGraph,
+    Dataset,
+    Graph,
+    Literal,
+    Namespace,
+    URIRef,
+)
 from rdflib.extras.infixowl import Class, Property, classOrTerm
 from rdflib.extras.infixowl import generateQName as generate_qname  # noqa: N813
 from rdflib.extras.infixowl import propertyOrIdentifier
@@ -177,7 +185,6 @@ def test_class_or_term() -> None:
 
 
 def test_property_or_identifier() -> None:
-
     g = Graph()
     g.bind("ex", EXNS)
 

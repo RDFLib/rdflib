@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import base64
+import copy
 import logging
 from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Tuple
@@ -29,7 +32,7 @@ _response_mime_types = {
 }
 
 
-class SPARQLConnector(object):
+class SPARQLConnector:
     """
     this class deals with nitty gritty details of talking to a SPARQL server
     """
@@ -39,14 +42,14 @@ class SPARQLConnector(object):
         query_endpoint: Optional[str] = None,
         update_endpoint: Optional[str] = None,
         returnFormat: str = "xml",  # noqa: N803
-        method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
+        method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
         auth: Optional[Tuple[str, str]] = None,
         **kwargs,
     ):
         """
         auth, if present, must be a tuple of (username, password) used for Basic Authentication
 
-        Any additional keyword arguments will be passed to to the request, and can be used to setup timesouts etc.
+        Any additional keyword arguments will be passed to to the request, and can be used to setup timeouts etc.
         """
         self._method: str
         self.returnFormat = returnFormat
@@ -55,7 +58,7 @@ class SPARQLConnector(object):
         self.kwargs = kwargs
         self.method = method
         if auth is not None:
-            if type(auth) != tuple:
+            if type(auth) is not tuple:
                 raise SPARQLConnectorException("auth must be a tuple")
             if len(auth) != 2:
                 raise SPARQLConnectorException("auth must be a tuple (user, password)")
@@ -83,18 +86,18 @@ class SPARQLConnector(object):
         query: str,
         default_graph: Optional[str] = None,
         named_graph: Optional[str] = None,
-    ) -> "Result":
+    ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {}
         # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
-        if default_graph is not None and type(default_graph) != BNode:
+        if default_graph is not None and type(default_graph) is not BNode:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
 
-        args = dict(self.kwargs)
+        args = copy.deepcopy(self.kwargs)
 
         # merge params/headers dicts
         args.setdefault("params", {})
@@ -116,7 +119,8 @@ class SPARQLConnector(object):
                 )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
-            qsa = "?" + urlencode(params)
+            args["params"].update(params)
+            qsa = "?" + urlencode(args["params"])
             try:
                 res = urlopen(
                     Request(
@@ -167,10 +171,10 @@ class SPARQLConnector(object):
 
         headers = {
             "Accept": _response_mime_types[self.returnFormat],
-            "Content-Type": "application/sparql-update",
+            "Content-Type": "application/sparql-update; charset=UTF-8",
         }
 
-        args = dict(self.kwargs)  # other QSAs
+        args = copy.deepcopy(self.kwargs)  # other QSAs
 
         args.setdefault("params", {})
         args["params"].update(params)
@@ -183,3 +187,6 @@ class SPARQLConnector(object):
                 self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
             )
         )
+
+
+__all__ = ["SPARQLConnector", "SPARQLConnectorException"]

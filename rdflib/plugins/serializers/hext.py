@@ -2,11 +2,14 @@
 HextuplesSerializer RDF graph serializer for RDFLib.
 See <https://github.com/ontola/hextuples> for details about the format.
 """
+
+from __future__ import annotations
+
 import json
 import warnings
 from typing import IO, Optional, Type, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, Literal, Node, URIRef
@@ -133,9 +136,14 @@ class HextuplesSerializer(Serializer):
     def _context(self, context):
         if self.graph_type == Graph:
             return ""
-        if context.identifier == "urn:x-rdflib:default":
+        if context.identifier == DATASET_DEFAULT_GRAPH_ID:
             return ""
         elif context is not None and self.default_context is not None:
-            if context.identifier == self.default_context.identifier:
+            # type error: "Node" has no attribute "identifier"
+            if context.identifier == self.default_context.identifier:  # type: ignore[attr-defined]
                 return ""
-        return context.identifier
+        return (
+            context.identifier
+            if isinstance(context.identifier, URIRef)
+            else context.identifier.n3()
+        )

@@ -1,6 +1,6 @@
+from __future__ import annotations
+
 import logging
-from test.utils import eq_
-from test.utils.result import assert_bindings_collections_equal
 from typing import Any, Callable, Mapping, Sequence, Type
 
 import pytest
@@ -16,11 +16,14 @@ from rdflib.plugins.sparql import prepareQuery, sparql
 from rdflib.plugins.sparql.algebra import translateQuery
 from rdflib.plugins.sparql.evaluate import evalPart
 from rdflib.plugins.sparql.evalutils import _eval
-from rdflib.plugins.sparql.parser import parseQuery
+from rdflib.plugins.sparql.parser import expandUnicodeEscapes, parseQuery
 from rdflib.plugins.sparql.parserutils import prettify_parsetree
 from rdflib.plugins.sparql.sparql import SPARQLError
 from rdflib.query import Result, ResultRow
 from rdflib.term import Identifier, Variable
+from test.utils import eq_
+from test.utils.namespace import EGDC
+from test.utils.result import assert_bindings_collections_equal
 
 
 def test_graph_prefix():
@@ -65,7 +68,6 @@ def test_graph_prefix():
 
 
 def test_variable_order():
-
     g = Graph()
     g.add((URIRef("http://foo"), URIRef("http://bar"), URIRef("http://baz")))
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
@@ -125,7 +127,6 @@ def test_sparql_polist():
 
 
 def test_complex_sparql_construct():
-
     g = Graph()
     q = """select ?subject ?study ?id where {
     ?s a <urn:Person>;
@@ -158,7 +159,7 @@ def test_sparql_update_with_bnode_serialize_parse():
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
-    except Exception as e:
+    except Exception as e:  # noqa: F841
         raised = True
     assert not raised
 
@@ -346,9 +347,8 @@ def test_custom_eval() -> None:
     """
     SPARQL custom eval function works as expected.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
-    custom_function_result = eg["result"]
+    custom_function_uri = EGDC["function"]
+    custom_function_result = EGDC["result"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -419,8 +419,7 @@ def test_custom_eval_exception(
     Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
     query propagates to the caller.
     """
-    eg = Namespace("http://example.com/")
-    custom_function_uri = eg["function"]
+    custom_function_uri = EGDC["function"]
 
     def custom_eval_extended(ctx: Any, extend: Any) -> Any:
         for c in evalPart(ctx, extend.p):
@@ -847,11 +846,28 @@ def test_operator_exception(
             ],
             id="select-group-concat-optional-many",
         ),
+        pytest.param(
+            """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT * WHERE {
+                BIND(STRDT("<body>", rdf:HTML) as ?tag1) # incorrectly disappearing literal
+                BIND("<body>" as ?tag2)                  # correctly appearing literal
+            }
+            """,
+            [
+                {
+                    Variable("tag1"): Literal("<body>", datatype=RDF.HTML),
+                    Variable("tag2"): Literal("<body>"),
+                }
+            ],
+            id="select-bind-strdt-html",
+        ),
     ],
 )
 def test_queries(
     query_string: str,
-    expected_bindings: Sequence[Mapping["Variable", "Identifier"]],
+    expected_bindings: Sequence[Mapping[Variable, Identifier]],
     rdfs_graph: Graph,
 ) -> None:
     """
@@ -867,3 +883,117 @@ def test_queries(
     result = rdfs_graph.query(query)
     logging.debug("result = %s", result)
     assert expected_bindings == result.bindings
+
+
+@pytest.mark.parametrize(
+    ["query_string", "expected_subjects", "expected_size"],
+    [
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class
+            """,
+            {RDFS.Class},
+            5,
+            id="1-explicit",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="2-explict",
+        ),
+        pytest.param(
+            """
+            DESCRIBE rdfs:Class rdfs:subClassOf owl:Class
+            """,
+            {RDFS.Class, RDFS.subClassOf},
+            11,
+            id="3-explict-1-missing",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?prop
+            WHERE {
+                ?prop a rdf:Property
+            }
+            """,
+            {
+                RDFS.seeAlso,
+                RDFS.member,
+                RDFS.subPropertyOf,
+                RDFS.subClassOf,
+                RDFS.domain,
+                RDFS.range,
+                RDFS.label,
+                RDFS.comment,
+                RDFS.isDefinedBy,
+            },
+            55,
+            id="1-var",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype},
+            5,
+            id="2-var-1-projected",
+        ),
+        pytest.param(
+            """
+            DESCRIBE ?s rdfs:Class
+            WHERE {
+                ?s a ?type ;
+                   rdfs:subClassOf rdfs:Class .
+            }
+            """,
+            {RDFS.Datatype, RDFS.Class},
+            10,
+            id="2-var-1-projected-1-explicit",
+        ),
+        pytest.param("DESCRIBE ?s", set(), 0, id="empty"),
+    ],
+)
+def test_sparql_describe(
+    query_string: str,
+    expected_subjects: set,
+    expected_size: int,
+    rdfs_graph: Graph,
+) -> None:
+    """
+    Check results of DESCRIBE queries against rdfs.ttl to ensure
+    the subjects described and the number of triples returned are correct.
+    """
+    r = rdfs_graph.query(query_string)
+    assert r.graph is not None
+    subjects = {s for s in r.graph.subjects() if not isinstance(s, BNode)}
+    assert subjects == expected_subjects
+    assert len(r.graph) == expected_size
+
+
+@pytest.mark.parametrize(
+    "arg, expected_result, expected_valid",
+    [
+        ("abc", "abc", True),
+        ("1234", "1234", True),
+        (r"1234\u0050", "1234P", True),
+        (r"1234\u00e3", "1234\u00e3", True),
+        (r"1234\u00e3\u00e5", "1234ãå", True),
+        (r"1234\u900000e5", "", False),
+        (r"1234\u010000e5", "", False),
+        (r"1234\u001000e5", "1234\U001000e5", True),
+    ],
+)
+def test_expand_unicode_escapes(arg: str, expected_result: str, expected_valid: bool):
+    if expected_valid:
+        actual_result = expandUnicodeEscapes(arg)
+        assert actual_result == expected_result
+    else:
+        with pytest.raises(ValueError, match="Invalid unicode code point"):
+            _ = expandUnicodeEscapes(arg)

@@ -6,23 +6,19 @@ version: "3"
 vars:
   TASKFILE_DIR:
     sh: pwd
-  # The path to the virtual environment to use when using a virtual
-  # environment.
-  VENV_PATH: '{{(env "VENV_PATH") | default (osClean (print .TASKFILE_DIR "/.venv"))}}'
-  # Non empty string results in tasks using a virtual environment.
-  WITH_VENV: '{{env "WITH_VENV" | default "false"}}'
-  # The virtual environemtn specific python interpreter to use.
-  VENV_BINPREFIX: '{{if (mustFromJson .WITH_VENV)}}{{if (eq OS "windows")}}{{.VENV_PATH}}/Scripts/{{else}}{{.VENV_PATH}}/bin/{{end}}{{end}}'
-  VENV_PYTHON: '{{if (eq OS "windows")}}{{.VENV_BINPREFIX}}python.exe{{else}}{{.VENV_BINPREFIX}}python{{end}}'
-  # The python interpreter to use.
+  POETRY: poetry
+  # The prefix to use when running dev commands
+  RUN_PREFIX: "{{.POETRY}} run"
+  # The python to use for running in the venv
+  VENV_PYTHON: "{{.RUN_PREFIX}} python"
+    # The python interpreter to use.
   PYTHON: python
-  _PYTHON: '{{if (mustFromJson .WITH_VENV)}}{{.VENV_PYTHON}}{{else}}{{.PYTHON}}{{end}}'
   # Truthish values ("true", "1", etc.) results in java being installed as a
   # system dependency.
   INSTALL_SYSTEM_DEPS_JAVA: "false"
   # Truthish values ("true", "1", etc.) results in extras being installed with
   # pip.
-  INSTALL_PIP_EXTRAS: "false"
+  INSTALL_EXTRAS: "false"
   # Truthish values ("true", "1", etc.) results in extensive tests being ran and
   # dependencies for extensive tests being installed.
   EXTENSIVE: "false"
@@ -36,7 +32,10 @@ vars:
   # Truthish values ("true", "1", etc.) results in coverage being generated for
   # relevant commands.
   WITH_COVERAGE: "false"
-
+  PIP_COMPILE: pip-compile
+  DOCKER: docker
+  OCI_REFERENCE: ghcr.io/rdflib/rdflib
+  MYPY_VARIANT: '{{ env "MYPY_VARIANT" | default "mypy" }}'
 tasks:
   install:system-deps:
     desc: Install system dependencies
@@ -59,59 +58,40 @@ tasks:
   install:tox:
     desc: Install tox
     cmds:
-      - '{{._PYTHON | shellQuote}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}'
+      - "{{.PYTHON}} -m pip install tox {{if (mustFromJson .WITH_GITHUB_ACTIONS)}}tox-gh-actions{{end}}"
 
-  install:pip-deps:
-    desc: Install pip dependencies
+  poetry:configure:
+    desc: Configure the environment for development with poetry
     cmds:
-      - '{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.txt -r requirements.dev.txt -r docs/sphinx-requirements.txt {{if (mustFromJson .INSTALL_PIP_EXTRAS)}}-r requirements.dev-extra.txt{{end}}'
+      - |
+        {{if .POETRY_PYTHON}} {{.POETRY}} env use {{.POETRY_PYTHON}} {{end}}
+        {{.POETRY}} install {{if (or (mustFromJson .INSTALL_EXTRAS) (mustFromJson .EXTENSIVE))}} --all-extras{{end}} {{.CLI_ARGS}}
 
-  install:flake8:
-    desc: Install flake8 dependencies
+  configure:
+    desc: Configure the environment for development
     cmds:
-      - "{{._PYTHON | shellQuote}} -m pip install --upgrade -r requirements.flake8.txt"
-
-  install:deps:
-    desc: Install all dependencies
-    cmds:
-      - task: install:system-deps
-      - task: install:tox
-      - task: install:pip-deps
-
-
-  venv:create:
-    desc: Create a venv to VENV_PATH(={{.VENV_PATH}})
-    cmds:
-      - "{{.PYTHON | shellQuote}} -m venv {{.VENV_PATH}}"
+      - task: venv:install
 
   venv:install:
-    desc: Create and install a venv to VENV_PATH(={{.VENV_PATH}})
+    desc: Create and install a venv
     cmds:
-      - task: venv:create
-      - task: install:pip-deps
-        vars: { _PYTHON: "{{.VENV_PYTHON}}" }
+      - task: poetry:configure
 
   venv:clean:
-    desc: Remove the venv at VENV_PATH(={{.VENV_PATH}})
+    desc: Clean the virtual environment
     cmds:
-      - task: _rimraf
-        vars: { _PYTHON: "{{.PYTHON}}", RIMRAF_TARGET: "{{.VENV_PATH}}" }
+      - "{{.POETRY}} env remove --all {{.CLI_ARGS}}"
 
   venv:run:
     desc: Run a command inside the venv
     cmds:
       - cmd: |
-          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
+          {{.RUN_PREFIX}} {{.CLI_ARGS}}
 
   run:
     desc: Run a command. If WITH_VENV is truthish, the command will be run inside the virtual environment.
     cmds:
-      - cmd: |
-          {{if (mustFromJson .WITH_VENV)}}
-          VIRTUAL_ENV="{{.VENV_PATH}}" PATH="{{.VENV_PATH}}/bin${PATH:+:${PATH}}" {{.CLI_ARGS}}
-          {{else}}
-          {{.CLI_ARGS}}
-          {{end}}
+      - task: venv:run
 
   tox:
     desc: Run tox
@@ -119,11 +99,10 @@ tasks:
       - echo "TOXENV=${TOXENV}"
       - |
         {{if .TOX_PYTEST_ARGS}}TOX_PYTEST_ARGS={{shellQuote .TOX_PYTEST_ARGS}}{{end}} \
-        {{if .TOX_EXTRA_COMMAND}}TOX_EXTRA_COMMAND={{shellQuote .TOX_EXTRA_COMMAND}}{{end}} \
         {{if .TOX_JUNIT_XML_PREFIX}}TOX_JUNIT_XML_PREFIX={{shellQuote .TOX_JUNIT_XML_PREFIX}}{{end}} \
         {{if .COVERAGE_FILE}}COVERAGE_FILE={{shellQuote .COVERAGE_FILE}}{{end}} \
         {{.TEST_HARNESS}} \
-        {{._PYTHON | shellQuote}} \
+        {{.PYTHON | shellQuote}} \
           -m tox \
           {{.CLI_ARGS}}
     env:
@@ -131,45 +110,44 @@ tasks:
   test:
     desc: Run tests
     cmds:
-      - '{{.TEST_HARNESS}}{{print .VENV_BINPREFIX "pytest" | shellQuote}} {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
-  flake8:
-    desc: Run flake8
+      - '{{.TEST_HARNESS}}{{.RUN_PREFIX}} pytest {{if (mustFromJson .WITH_COVERAGE)}}--cov --cov-report={{end}} {{.CLI_ARGS}}'
+  ruff:
+    desc: Run ruff
     cmds:
-      - |
-        if {{._PYTHON | shellQuote}} -c 'import importlib; exit(0 if importlib.util.find_spec("flakeheaven") is not None else 1)'
-        then
-          1>&2 echo "running flakeheaven"
-          {{._PYTHON | shellQuote}} -m flakeheaven lint {{.CLI_ARGS}}
-        else
-          1>&2 echo "skipping flakeheaven as it is not installed, likely because python version is older than 3.8"
-        fi
+      - '{{.RUN_PREFIX}} ruff check {{if (mustFromJson (.FIX | default "false"))}}--fix {{end}}{{.CLI_ARGS | default "."}}'
   black:
     desc: Run black
     cmds:
-      - '{{._PYTHON | shellQuote}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{.VENV_PYTHON}} -m black {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   isort:
     desc: Run isort
     cmds:
-      - '{{._PYTHON | shellQuote}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{.VENV_PYTHON}} -m isort {{if (mustFromJson (.CHECK | default "false"))}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
   mypy:
     desc: Run mypy
     cmds:
-      - "{{._PYTHON | shellQuote}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
-
+      - task: "mypy:{{ .MYPY_VARIANT }}"
+  mypy:mypy:
+    desc: Run mypy
+    cmds:
+      - "{{.VENV_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
+  mypy:dmypy:
+    desc: Run dmypy
+    cmds:
+      - "{{.RUN_PREFIX}} dmypy run {{.CLI_ARGS}}"
   lint:fix:
     desc: Fix auto-fixable linting errors
     cmds:
-      - task: isort
+      - task: ruff
+        vars: { FIX: "true" }
       - task: black
 
   lint:
     desc: Perform linting
     cmds:
-      - task: isort
-        vars: { CHECK: true }
       - task: black
-        vars: { CHECK: true }
-      - task: flake8
+        vars: { CHECK: "true" }
+      - task: ruff
 
   validate:static:
     desc: Perform static validation
@@ -198,7 +176,7 @@ tasks:
     desc: Build documentation
     cmds:
       - echo "PYTHONPATH=${PYTHONPATH}"
-      - "{{._PYTHON | shellQuote}} -m sphinx.cmd.build -b html -d docs/_build/doctrees docs/ docs/_build/html -W {{.CLI_ARGS}}"
+      - "{{.VENV_PYTHON}} -m sphinx.cmd.build -T -W -b html -d docs/_build/doctree docs docs/_build/html {{.CLI_ARGS}}"
 
   docs:live-server:
     desc: Run a live server on generated docs
@@ -237,11 +215,15 @@ tasks:
       - task: clean:tox
       - task: clean:mypy
       - task: venv:clean
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: ".var/devcontainer" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
 
   test:data:fetch:
     desc: Fetch test data.
     cmds:
-      - "{{._PYTHON}} test/data/fetcher.py {{.CLI_ARGS}}"
+      - "{{.VENV_PYTHON}} test/data/fetcher.py {{.CLI_ARGS}}"
 
   pre-commit:install:
     desc: Install pre-commit hooks
@@ -262,38 +244,133 @@ tasks:
     desc: GitHub Actions Validation Workflow
     env:
       COVERALLS_PARALLEL: true
-      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}"
+      COVERALLS_FLAG_NAME: "{{.OS}}-{{.TOX_PYTHON_VERSION}}{{.MATRIX_SUFFIX}}"
       COVERALLS_SERVICE_NAME: '{{.COVERALLS_SERVICE_NAME | default (env "COVERALLS_SERVICE_NAME") | default "github"}}'
     cmds:
       - task: install:system-deps
       - task: install:tox
         vars:
-          WITH_GITHUB_ACTIONS: true
-      - cmd: "{{._PYTHON | shellQuote}} -m pip install coveralls"
+          WITH_GITHUB_ACTIONS: "true"
+      - cmd: "{{.PYTHON}} -m pip install coveralls"
       - task: tox
         vars:
           COVERAGE_FILE: ".coverage"
       - cmd: coveralls
 
-
-  gha:flake8:
-    desc: GitHub Actions flake8 workflow
+  gha:lint:
+    desc: GitHub Actions lint workflow
     cmds:
-      - task: install:flake8
-      - task: flake8
+      - task: poetry:configure
+        vars:
+          CLI_ARGS: --no-root --only=lint
+      - task: ruff
 
   cmd:rdfpipe:
     desc: Run rdfpipe
     cmds:
-      - cmd: "{{._PYTHON | shellQuote}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
+      - cmd: "{{.VENV_PYTHON}} -m rdflib.tools.rdfpipe {{.CLI_ARGS}}"
 
+  pip-compile:
+    cmds:
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking {{.CLI_ARGS}}"
+
+  docker:prepare:
+    cmds:
+      - task: pip-compile
+        vars: { CLI_ARGS: "docker/latest/requirements.in" }
+  docker:unstable:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:unstable || :
+
+          set -eo pipefail
+          mkdir -vp var
+          {{.POETRY}} export -o var/requirements.txt
+          pipx run --spec=build build --wheel
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:unstable \
+            --tag {{.OCI_REFERENCE}}:unstable \
+            --progress plain \
+            -f docker/unstable/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:unstable
+          fi
+  docker:latest:
+    desc: ...
+    cmds:
+      - cmd: |
+          # fetch for caching ...
+          {{.DOCKER}} image pull {{.OCI_REFERENCE}}:latest || :
+
+          set -eo pipefail
+
+          {{.DOCKER}} buildx build \
+            --cache-to=type=inline \
+            --cache-from=type=registry,ref={{.OCI_REFERENCE}}:latest \
+            --tag {{.OCI_REFERENCE}}:latest \
+            --progress plain \
+            -f docker/latest/Dockerfile \
+            {{.DOCKER_BUILD_ARGS}} \
+            .
+
+          _latest_rdflib_version=$({{.DOCKER}} run --entrypoint= {{.OCI_REFERENCE}}:latest bash -c 'pip show rdflib | sed -n "s/^Version: //gp"')
+          echo "_latest_rdflib_version=${_latest_rdflib_version}"
+
+          {{.DOCKER}} image tag {{.OCI_REFERENCE}}:latest {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+
+          if {{.DOCKER_PUSH | default "false"}}
+          then
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:latest
+            {{.DOCKER}} image push {{.OCI_REFERENCE}}:${_latest_rdflib_version}
+          fi
+
+  docs:build-diagrams:
+    desc: Build documentation diagrams
+    cmds:
+      - cmd: |
+          shopt -s globstar;
+          for plantuml_file in ./**/*.plantuml
+          do
+            cat "${plantuml_file}" \
+              | docker run --rm -i plantuml/plantuml -tsvg -pipe \
+              > "${plantuml_file%.*}.svg"
+          done
+
+  test:sdist:
+    desc: Run tests on the sdist artifact
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "dist" }
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "var/test-sdist" }
+      - poetry build
+      - python -c 'import tarfile, glob; tarfile.open(glob.glob("dist/*.tar.gz")[0]).extractall("var/test-sdist")'
+      - |
+        cd var/test-sdist/rdflib-*
+        poetry install
+        poetry run mypy --show-error-context --show-error-codes -p rdflib
+        poetry run sphinx-build -T -W -b html -d docs/_build/doctree docs docs/_build/html
+        poetry run pytest
+
+  test:no_internet:
+    desc: Run tests without internet access
+    cmds:
+      - |
+        {{.TEST_HARNESS}}{{.RUN_PREFIX}} firejail --net=none -- pytest -m "not webtest" {{.CLI_ARGS}}
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is
     # a python interpreter. The name is inspired by
     # <https://www.npmjs.com/package/rimraf>.
     - cmd: |
-        {{._PYTHON | shellQuote}} -c '
+        {{.PYTHON}} -c '
         from pathlib import Path;
         import sys, shutil;
         for path in sys.argv[1:]:

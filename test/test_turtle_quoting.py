@@ -3,16 +3,19 @@ This module is intended for tests related to unquoting/unescaping in various
 formats that are related to turtle, such as ntriples, nquads, trig and n3.
 """
 
+from __future__ import annotations
+
 import itertools
 import logging
+import re
 from typing import Callable, Dict, Iterable, List, Tuple
 
 import pytest
 
-from rdflib import Namespace
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
+from test.utils.namespace import EGDC
 
 from .utils import GraphHelper
 
@@ -27,8 +30,6 @@ string_escape_map = {
     "'": "'",
     "\\": "\\",
 }
-
-import re
 
 
 def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
@@ -156,9 +157,6 @@ def test_parse_correctness(
     assert obj.value == unquoted
 
 
-EGNS = Namespace("http://example.com/")
-
-
 @pytest.mark.parametrize(
     "format, char, escaped",
     [
@@ -176,11 +174,11 @@ EGNS = Namespace("http://example.com/")
 def test_pname_escaping(format: str, char: str, escaped: str) -> None:
     graph = Graph()
     triple = (
-        URIRef(EGNS["prefix/John_Doe"]),
-        URIRef(EGNS[f"prefix/prop{char}"]),
+        URIRef(EGDC["prefix/John_Doe"]),
+        URIRef(EGDC[f"prefix/prop{char}"]),
         Literal("foo", lang="en"),
     )
-    graph.bind("egns", EGNS["prefix/"])
+    graph.bind("egns", EGDC["prefix/"])
     graph.add(triple)
     data = graph.serialize(format=format)
     pattern = re.compile(f"\\segns:prop{re.escape(escaped)}\\s")
@@ -207,12 +205,12 @@ PN_LOCAL_ESC_CHARS = r"_~.-!$&'()*+,;=/?#@"
 def test_serialize_roundtrip(format: str, char: str) -> None:
     graph = Graph()
     triple = (
-        URIRef(EGNS["prefix/John_Doe"]),
-        URIRef(EGNS[f"prefix/prop{char}"]),
+        URIRef(EGDC["prefix/John_Doe"]),
+        URIRef(EGDC[f"prefix/prop{char}"]),
         Literal("foo", lang="en"),
     )
     graph.add(triple)
-    graph.bind("egns", EGNS["prefix/"])
+    graph.bind("egns", EGDC["prefix/"])
     data = graph.serialize(format=format)
     logging.debug("format = %s, char = %s, data = %s", format, char, data)
     parsed_graph = Graph()

@@ -1,6 +1,7 @@
 """
 Notation 3 (N3) RDF graph serializer for RDFLib.
 """
+
 from rdflib.graph import Graph
 from rdflib.namespace import OWL, Namespace
 from rdflib.plugins.serializers.turtle import OBJECT, SUBJECT, TurtleSerializer
@@ -11,7 +12,6 @@ SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
 
 class N3Serializer(TurtleSerializer):
-
     short_name = "n3"
 
     def __init__(self, store: Graph, parent=None):
@@ -23,7 +23,7 @@ class N3Serializer(TurtleSerializer):
         super(N3Serializer, self).reset()
         self._stores = {}
 
-    def endDocument(self):
+    def endDocument(self):  # noqa: N802
         if not self.parent:
             super(N3Serializer, self).endDocument()
 
@@ -33,7 +33,7 @@ class N3Serializer(TurtleSerializer):
             indent += self.parent.indent()  # modifier)
         return indent
 
-    def preprocessTriple(self, triple):
+    def preprocessTriple(self, triple):  # noqa: N802
         super(N3Serializer, self).preprocessTriple(triple)
         if isinstance(triple[0], Graph):
             for t in triple[0]:
@@ -45,7 +45,7 @@ class N3Serializer(TurtleSerializer):
             for t in triple[2]:
                 self.preprocessTriple(t)
 
-    def getQName(self, uri, gen_prefix=True):
+    def getQName(self, uri, gen_prefix=True):  # noqa: N802
         qname = None
         if self.parent is not None:
             qname = self.parent.getQName(uri, gen_prefix)
@@ -82,7 +82,8 @@ class N3Serializer(TurtleSerializer):
             self.write("{")
             self.depth += 1
             serializer = N3Serializer(node, parent=self)
-            serializer.serialize(self.stream)
+            # type error: Argument 1 to "serialize" of "TurtleSerializer" has incompatible type "Optional[IO[bytes]]"; expected "IO[bytes]"
+            serializer.serialize(self.stream)  # type: ignore[arg-type]
             self.depth -= 1
             self.write(self.indent() + "}")
             return True

@@ -4,6 +4,8 @@ This implements the Tab Separated SPARQL Result Format
 It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 """
 
+from __future__ import annotations
+
 import codecs
 import typing
 from typing import IO, Union
@@ -30,9 +32,8 @@ from rdflib.plugins.sparql.parser import (
 )
 from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
 from rdflib.query import Result, ResultParser
-from rdflib.term import BNode
+from rdflib.term import BNode, URIRef
 from rdflib.term import Literal as RDFLiteral
-from rdflib.term import URIRef
 
 ParserElement.setDefaultWhitespaceChars(" \n")
 
@@ -65,7 +66,6 @@ HEADER.parseWithTabs()
 class TSVResultParser(ResultParser):
     # type error: Signature of "parse" incompatible with supertype "ResultParser"  [override]
     def parse(self, source: IO, content_type: typing.Optional[str] = None) -> Result:  # type: ignore[override]
-
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
             # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")

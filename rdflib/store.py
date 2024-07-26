@@ -1,3 +1,30 @@
+"""
+============
+rdflib.store
+============
+
+Types of store
+--------------
+
+``Context-aware``: An RDF store capable of storing statements within contexts
+is considered context-aware. Essentially, such a store is able to partition
+the RDF model it represents into individual, named, and addressable
+sub-graphs.
+
+Relevant Notation3 reference regarding formulae, quoted statements, and such:
+http://www.w3.org/DesignIssues/Notation3.html
+
+``Formula-aware``: An RDF store capable of distinguishing between statements
+that are asserted and statements that are quoted is considered formula-aware.
+
+``Transaction-capable``: capable of providing transactional integrity to the
+RDF operations performed on it.
+
+``Graph-aware``: capable of keeping track of empty graphs.
+
+------
+"""
+
 from __future__ import annotations
 
 import pickle
@@ -31,41 +58,14 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
-    from rdflib.term import Identifier, Node, URIRef, Variable
-
-"""
-============
-rdflib.store
-============
-
-Types of store
---------------
-
-``Context-aware``: An RDF store capable of storing statements within contexts
-is considered context-aware. Essentially, such a store is able to partition
-the RDF model it represents into individual, named, and addressable
-sub-graphs.
-
-Relevant Notation3 reference regarding formulae, quoted statements, and such:
-http://www.w3.org/DesignIssues/Notation3.html
-
-``Formula-aware``: An RDF store capable of distinguishing between statements
-that are asserted and statements that are quoted is considered formula-aware.
-
-``Transaction-capable``: capable of providing transactional integrity to the
-RDF operations performed on it.
-
-``Graph-aware``: capable of keeping track of empty graphs.
-
-------
-"""
+    from rdflib.term import Identifier, Node, URIRef
 
 
 # Constants representing the state of a Store (returned by the open method)
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
-UNKNOWN = None
+UNKNOWN: None = None
 
 
 Pickler = pickle.Pickler
@@ -113,8 +113,8 @@ class TripleRemovedEvent(Event):
     """
 
 
-class NodePickler(object):
-    def __init__(self):
+class NodePickler:
+    def __init__(self) -> None:
         self._objects: Dict[str, Any] = {}
         self._ids: Dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
@@ -129,7 +129,7 @@ class NodePickler(object):
         self._objects[id] = object
         self._ids[object] = id
 
-    def loads(self, s: bytes) -> "Node":
+    def loads(self, s: bytes) -> Node:
         up = Unpickler(BytesIO(s))
         # NOTE on type error: https://github.com/python/mypy/issues/2427
         # type error: Cannot assign to a method
@@ -140,7 +140,7 @@ class NodePickler(object):
             raise UnpicklingError("Could not find Node class for %s" % e)
 
     def dumps(
-        self, obj: "Node", protocol: Optional[Any] = None, bin: Optional[Any] = None
+        self, obj: Node, protocol: Optional[Any] = None, bin: Optional[Any] = None
     ):
         src = BytesIO()
         p = Pickler(src)
@@ -165,7 +165,7 @@ class NodePickler(object):
         self._get_object = self._objects.__getitem__
 
 
-class Store(object):
+class Store:
     # Properties
     context_aware: bool = False
     formula_aware: bool = False
@@ -175,7 +175,7 @@ class Store(object):
     def __init__(
         self,
         configuration: Optional[str] = None,
-        identifier: Optional["Identifier"] = None,
+        identifier: Optional[Identifier] = None,
     ):
         """
         identifier: URIRef of the Store. Defaults to CWD
@@ -242,8 +242,8 @@ class Store(object):
     # RDF APIs
     def add(
         self,
-        triple: "_TripleType",
-        context: "_ContextType",
+        triple: _TripleType,
+        context: _ContextType,
         quoted: bool = False,
     ) -> None:
         """
@@ -256,7 +256,7 @@ class Store(object):
         """
         self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
-    def addN(self, quads: Iterable["_QuadType"]) -> None:  # noqa: N802
+    def addN(self, quads: Iterable[_QuadType]) -> None:  # noqa: N802
         """
         Adds each item in the list of statements to a specific context. The
         quoted argument is interpreted by formula-aware stores to indicate this
@@ -273,8 +273,8 @@ class Store(object):
 
     def remove(
         self,
-        triple: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
+        triple: _TriplePatternType,
+        context: Optional[_ContextType] = None,
     ) -> None:
         """Remove the set of triples matching the pattern from the store"""
         self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
@@ -282,15 +282,15 @@ class Store(object):
     def triples_choices(
         self,
         triple: Union[
-            Tuple[List["_SubjectType"], "_PredicateType", "_ObjectType"],
-            Tuple["_SubjectType", List["_PredicateType"], "_ObjectType"],
-            Tuple["_SubjectType", "_PredicateType", List["_ObjectType"]],
+            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
+            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
+            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
         ],
-        context: Optional["_ContextType"] = None,
+        context: Optional[_ContextType] = None,
     ) -> Generator[
         Tuple[
             _TripleType,
-            Iterator[Optional["_ContextType"]],
+            Iterator[Optional[_ContextType]],
         ],
         None,
         None,
@@ -346,9 +346,9 @@ class Store(object):
     # type error: Missing return statement
     def triples(  # type: ignore[return]
         self,
-        triple_pattern: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
-    ) -> Iterator[Tuple["_TripleType", Iterator[Optional["_ContextType"]]]]:
+        triple_pattern: _TriplePatternType,
+        context: Optional[_ContextType] = None,
+    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
@@ -363,7 +363,8 @@ class Store(object):
 
     # variants of triples will be done if / when optimization is needed
 
-    def __len__(self, context: Optional["_ContextType"] = None) -> int:
+    # type error: Missing return statement
+    def __len__(self, context: Optional[_ContextType] = None) -> int:  # type: ignore[empty-body]
         """
         Number of statements in the store. This should only account for non-
         quoted (asserted) statements if the context is not specified,
@@ -373,9 +374,10 @@ class Store(object):
         :param context: a graph instance to query or None
         """
 
-    def contexts(
-        self, triple: Optional["_TripleType"] = None
-    ) -> Generator["_ContextType", None, None]:
+    # type error: Missing return statement
+    def contexts(  # type: ignore[empty-body]
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
         """
         Generator over all contexts in the graph. If triple is specified,
         a generator over all contexts the triple is in.
@@ -388,12 +390,12 @@ class Store(object):
     # TODO FIXME: the result of query is inconsistent.
     def query(
         self,
-        query: Union["Query", str],
+        query: Union[Query, str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
         **kwargs: Any,
-    ) -> "Result":
+    ) -> Result:
         """
         If stores provide their own SPARQL implementation, override this.
 
@@ -411,9 +413,9 @@ class Store(object):
 
     def update(
         self,
-        update: Union["Update", str],
+        update: Union[Update, str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["Variable", "Identifier"],  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> None:
@@ -435,18 +437,18 @@ class Store(object):
 
     # Optional Namespace methods
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         """
         :param override: rebind, even if the given namespace is already bound to another prefix.
         """
 
-    def prefix(self, namespace: "URIRef") -> Optional["str"]:
+    def prefix(self, namespace: URIRef) -> Optional[str]:
         """"""
 
-    def namespace(self, prefix: str) -> Optional["URIRef"]:
+    def namespace(self, prefix: str) -> Optional[URIRef]:
         """ """
 
-    def namespaces(self) -> Iterator[Tuple[str, "URIRef"]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         """ """
         # This is here so that the function becomes an empty generator.
         # See https://stackoverflow.com/q/13243766 and
@@ -464,7 +466,7 @@ class Store(object):
 
     # Optional graph methods
 
-    def add_graph(self, graph: "Graph") -> None:
+    def add_graph(self, graph: Graph) -> None:
         """
         Add a graph to the store, no effect if the graph already
         exists.
@@ -472,7 +474,7 @@ class Store(object):
         """
         raise Exception("Graph method called on non-graph_aware store")
 
-    def remove_graph(self, graph: "Graph") -> None:
+    def remove_graph(self, graph: Graph) -> None:
         """
         Remove a graph from the store, this should also remove all
         triples in the graph

@@ -1,13 +1,15 @@
-# -*- coding: utf-8 -*-
 import os
 import shutil
 import tempfile
-from test.data import context1, likes, pizza, tarek
+import warnings
 
 import pytest
 
 from rdflib import URIRef, plugin
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph, Namespace
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
+from rdflib.store import Store
+from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.utils.namespace import EGSCHEME
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -26,7 +28,7 @@ DB = "/db/"
 
 pluginstores = []
 
-for s in plugin.plugins(None, plugin.Store):
+for s in plugin.plugins(None, Store):
     if s.name in ("Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
@@ -52,7 +54,7 @@ def get_dataset(request):
     store = request.param
 
     try:
-        dataset = Dataset(store=store)
+        dataset = Dataset(store=store)  # noqa: F841
     except ImportError:
         pytest.skip("Dependencies for store '%s' not available!" % store)
 
@@ -103,41 +105,40 @@ def get_dataset(request):
         else:
             try:
                 os.remove(path)
-            except:
+            except Exception:
                 pass
 
 
 def test_graph_aware(get_dataset):
-
     store, dataset = get_dataset
 
     if not dataset.store.graph_aware:
         return
 
-    g1 = dataset.graph(context1)
+    g1 = dataset.graph(CONTEXT1)
 
     # Some SPARQL endpoint backends (e.g. TDB) do not consider
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # added graph exists
         assert set(x.identifier for x in dataset.contexts()) == set(
-            [context1, DATASET_DEFAULT_GRAPH_ID]
+            [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
     # added graph is empty
     assert len(g1) == 0
 
-    g1.add((tarek, likes, pizza))
+    g1.add((TAREK, LIKES, PIZZA))
 
     # added graph still exists
     assert set(x.identifier for x in dataset.contexts()) == set(
-        [context1, DATASET_DEFAULT_GRAPH_ID]
+        [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
     )
 
     # added graph contains one triple
     assert len(g1) == 1
 
-    g1.remove((tarek, likes, pizza))
+    g1.remove((TAREK, LIKES, PIZZA))
 
     # added graph is empty
     assert len(g1) == 0
@@ -147,10 +148,10 @@ def test_graph_aware(get_dataset):
     if store != "SPARQLUpdateStore":
         # graph still exists, although empty
         assert set(x.identifier for x in dataset.contexts()) == set(
-            [context1, DATASET_DEFAULT_GRAPH_ID]
+            [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
-    dataset.remove_graph(context1)
+    dataset.remove_graph(CONTEXT1)
 
     # graph is gone
     assert set(x.identifier for x in dataset.contexts()) == set(
@@ -169,7 +170,7 @@ def test_default_graph(get_dataset):
             "is supported by your SPARQL endpoint"
         )
 
-    dataset.add((tarek, likes, pizza))
+    dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
     assert list(dataset.contexts()) == [dataset.default_context]
@@ -184,7 +185,6 @@ def test_default_graph(get_dataset):
 
 
 def test_not_union(get_dataset):
-
     store, dataset = get_dataset
     # Union depends on the SPARQL endpoint configuration
     if store == "SPARQLUpdateStore":
@@ -193,15 +193,14 @@ def test_not_union(get_dataset):
             "its default graph as the union of the named graphs"
         )
 
-    subgraph1 = dataset.graph(context1)
-    subgraph1.add((tarek, likes, pizza))
+    subgraph1 = dataset.graph(CONTEXT1)
+    subgraph1.add((TAREK, LIKES, PIZZA))
 
-    assert list(dataset.objects(tarek, None)) == []
-    assert list(subgraph1.objects(tarek, None)) == [pizza]
+    assert list(dataset.objects(TAREK, None)) == []
+    assert list(subgraph1.objects(TAREK, None)) == [PIZZA]
 
 
 def test_iter(get_dataset):
-
     store, d = get_dataset
     """PR 1382: adds __iter__ to Dataset"""
     uri_a = URIRef("https://example.com/a")
@@ -233,9 +232,6 @@ def test_iter(get_dataset):
     assert i_new == i_trad  # both should be 3
 
 
-EGSCHEMA = Namespace("example:")
-
-
 def test_subgraph_without_identifier() -> None:
     """
     Graphs with no identifies assigned are identified by Skolem IRIs with a
@@ -258,7 +254,7 @@ def test_subgraph_without_identifier() -> None:
     )
 
     subgraph: Graph = dataset.graph()
-    subgraph.add((EGSCHEMA["subject"], EGSCHEMA["predicate"], EGSCHEMA["object"]))
+    subgraph.add((EGSCHEME["subject"], EGSCHEME["predicate"], EGSCHEME["object"]))
 
     namespaces = set(nman.namespaces())
     assert next(
@@ -266,3 +262,14 @@ def test_subgraph_without_identifier() -> None:
     ) == ("genid", genid_prefix)
 
     assert f"{subgraph.identifier}".startswith(genid_prefix)
+
+
+def test_not_deprecated():
+    """
+    Ensure Dataset does not trigger the deprecation warning
+    from the ConjunctiveGraph superclass.
+    """
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        Dataset()

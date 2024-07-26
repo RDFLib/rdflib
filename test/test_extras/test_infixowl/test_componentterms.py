@@ -28,7 +28,6 @@ def graph():
 
 
 def test_componentterms_restriction():
-
     name = EXNS.Man
     assert isinstance(name, URIRef)
 
@@ -45,7 +44,6 @@ def test_componentterms_restriction():
 
 
 def test_componentterms_booleanclass(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 
@@ -59,7 +57,6 @@ def test_componentterms_booleanclass(graph):
 
 
 def test_componentterms_booleanclass_bnodeid(graph):
-
     fire = Class(EXNS.Fire)
     water = Class(EXNS.Water)
 

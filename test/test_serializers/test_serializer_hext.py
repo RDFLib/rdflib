@@ -1,8 +1,5 @@
-import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
 import json
+from pathlib import Path
 
 from rdflib import ConjunctiveGraph, Dataset, Graph
 

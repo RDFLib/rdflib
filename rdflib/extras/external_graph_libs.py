@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf-8
-
 """Convert (to and) from rdflib graphs to other well known graph libraries.
 
 Currently the following libraries are supported:
@@ -12,7 +9,14 @@ networkx or graph_tool are available and they would err otherwise.
 see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
 
+from __future__ import annotations
+
 import logging
+from typing import TYPE_CHECKING, Any, Dict, List
+
+if TYPE_CHECKING:
+    from rdflib.graph import Graph
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +26,9 @@ def _identity(x):
 
 
 def _rdflib_to_networkx_graph(
-    graph,
+    graph: Graph,
     nxgraph,
-    calc_weights,
+    calc_weights: bool,
     edge_attrs,
     transform_s=_identity,
     transform_o=_identity,
@@ -70,7 +74,7 @@ def _rdflib_to_networkx_graph(
 
 
 def rdflib_to_networkx_multidigraph(
-    graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
+    graph: Graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
 ):
     """Converts the given graph into a networkx.MultiDiGraph.
 
@@ -124,8 +128,8 @@ def rdflib_to_networkx_multidigraph(
 
 
 def rdflib_to_networkx_digraph(
-    graph,
-    calc_weights=True,
+    graph: Graph,
+    calc_weights: bool = True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
@@ -187,8 +191,8 @@ def rdflib_to_networkx_digraph(
 
 
 def rdflib_to_networkx_graph(
-    graph,
-    calc_weights=True,
+    graph: Graph,
+    calc_weights: bool = True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
@@ -250,12 +254,12 @@ def rdflib_to_networkx_graph(
 
 
 def rdflib_to_graphtool(
-    graph,
-    v_prop_names=[str("term")],
-    e_prop_names=[str("term")],
-    transform_s=lambda s, p, o: {str("term"): s},
-    transform_p=lambda s, p, o: {str("term"): p},
-    transform_o=lambda s, p, o: {str("term"): o},
+    graph: Graph,
+    v_prop_names: List[str] = ["term"],
+    e_prop_names: List[str] = ["term"],
+    transform_s=lambda s, p, o: {"term": s},
+    transform_p=lambda s, p, o: {"term": p},
+    transform_o=lambda s, p, o: {"term": o},
 ):
     """Converts the given graph into a graph_tool.Graph().
 
@@ -313,7 +317,8 @@ def rdflib_to_graphtool(
     True
 
     """
-    import graph_tool as gt
+    # pytype error: Can't find module 'graph_tool'.
+    import graph_tool as gt  # pytype: disable=import-error
 
     g = gt.Graph()
 
@@ -323,7 +328,7 @@ def rdflib_to_graphtool(
     eprops = [(epn, g.new_edge_property("object")) for epn in e_prop_names]
     for epn, eprop in eprops:
         g.edge_properties[epn] = eprop
-    node_to_vertex = {}
+    node_to_vertex: Dict[Any, Any] = {}
     for s, p, o in graph:
         sv = node_to_vertex.get(s)
         if sv is None:

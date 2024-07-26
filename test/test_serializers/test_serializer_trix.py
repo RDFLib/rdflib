@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from io import BytesIO
 
 from rdflib.graph import ConjunctiveGraph, Graph
@@ -7,7 +5,6 @@ from rdflib.term import Literal, URIRef
 
 
 def test_serialize():
-
     s1 = URIRef("store:1")
     r1 = URIRef("resource:1")
     r2 = URIRef("resource:2")

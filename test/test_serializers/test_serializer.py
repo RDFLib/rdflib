@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import itertools
 import logging
@@ -7,8 +9,6 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
-from test.utils import GraphHelper, get_unique_plugins
-from test.utils.destination import DestinationType, DestParmType, DestRef
 from typing import (
     IO,
     Callable,
@@ -32,10 +32,9 @@ import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.serializer import Serializer
-
-EGSCHEMA = Namespace("example:")
-EGURN = Namespace("urn:example:")
-EGHTTP = Namespace("http://example.com/")
+from test.utils import GraphHelper, get_unique_plugins
+from test.utils.destination import DestinationType, DestParmType, DestRef
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 @pytest.mark.parametrize(
@@ -54,7 +53,7 @@ EGHTTP = Namespace("http://example.com/")
     + [("trig", 3, False)],
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
-    NS = Namespace("example:")
+    NS = Namespace("example:")  # noqa: N806
     graph = ConjunctiveGraph()
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
@@ -85,18 +84,18 @@ def simple_graph() -> Graph:
     than that it contains no blank nodes.
     """
     graph = Graph()
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12)))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))
     graph.add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.add((EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject))
+    graph.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
     graph.add(
-        (EGSCHEMA.object, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
@@ -109,33 +108,31 @@ def simple_dataset() -> Dataset:
     than that it contains no blank nodes.
     """
     graph = Dataset()
-    graph.default_context.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
+    graph.default_context.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     graph.default_context.add((EGURN.subject, EGURN.predicate, EGURN.object))
-    graph.default_context.add((EGHTTP.subject, EGHTTP.predicate, Literal("typeless")))
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+    graph.default_context.add((EGDC.subject, EGDC.predicate, Literal("typeless")))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, Literal(12))
     )
-    graph.get_context(EGSCHEMA.graph).add(
+    graph.get_context(EGSCHEME.graph).add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject)
+    graph.get_context(EGSCHEME.graph).add(
+        (EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject)
     )
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
+    graph.get_context(EGURN.graph).add((EGSCHEME.subject, EGDC.predicate, EGDC.object))
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, EGHTTP.object)
-    )
-    graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.subject, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
@@ -231,7 +228,7 @@ class GraphFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "GraphFormatInfoDict":
+    def info_dict(cls) -> GraphFormatInfoDict:
         return GraphFormatInfoDict.make(
             GraphFormatInfo(
                 GraphFormat.TRIG,
@@ -296,18 +293,18 @@ class GraphFormat(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "GraphFormatInfo":
+    def info(self) -> GraphFormatInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["GraphFormat"]:
+    def set(cls) -> Set[GraphFormat]:
         return set(*cls)
 
 
 @dataclass
 class GraphFormatInfo:
-    name: "GraphFormat"
+    name: GraphFormat
     graph_types: Set[GraphType]
     encodings: Set[str]
     serializer_list: Optional[List[str]] = field(
@@ -330,13 +327,13 @@ class GraphFormatInfo:
         )
 
     @property
-    def serializer(self) -> "str":
+    def serializer(self) -> str:
         if not self.serializers:
             raise RuntimeError("no serializers for {self.name}")
         return self.serializers[0]
 
     @property
-    def deserializer(self) -> "str":
+    def deserializer(self) -> str:
         if not self.deserializers:
             raise RuntimeError("no deserializer for {self.name}")
         return self.deserializer[0]
@@ -344,7 +341,7 @@ class GraphFormatInfo:
 
 class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
     @classmethod
-    def make(cls, *graph_format: GraphFormatInfo) -> "GraphFormatInfoDict":
+    def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
         for item in graph_format:
             result[item.name] = item
@@ -720,4 +717,5 @@ def test_serialize_to_fileuri_with_authortiy(
             format=format.info.serializer,
         )
         assert False  # this should never happen as serialize should always fail
-    assert catcher.value is not None
+    # type error, mypy thinks this line is unreachable, but it works fine
+    assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]

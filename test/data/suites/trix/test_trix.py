@@ -1,8 +1,8 @@
 """This runs the TriX tests for RDFLib's informally-assembled TriX
 test suite."""
-from test.data import TEST_DATA_DIR
-from test.utils.manifest import RDFTest, read_manifest
-from test.utils.namespace import RDFT
+
+from __future__ import annotations
+
 from typing import Callable, Dict
 
 import pytest
@@ -11,6 +11,9 @@ from rdflib import ConjunctiveGraph, logger
 from rdflib.compare import graph_diff, isomorphic
 from rdflib.namespace import split_uri
 from rdflib.term import Node, URIRef
+from test.data import TEST_DATA_DIR
+from test.utils.manifest import RDFTest, read_manifest
+from test.utils.namespace import RDFT
 
 verbose = False
 
@@ -19,7 +22,6 @@ def trix(test: RDFTest):
     g = ConjunctiveGraph()
 
     try:
-
         base = "https://rdflib.github.io/tests/trix/" + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format="trix")

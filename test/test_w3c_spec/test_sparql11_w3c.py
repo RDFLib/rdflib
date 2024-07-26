@@ -1,6 +1,13 @@
 """
 Runs the SPARQL 1.1 test suite from.
 """
+
+from contextlib import ExitStack
+from typing import Generator
+
+import pytest
+from pytest import MonkeyPatch
+
 from test.data import TEST_DATA_DIR
 from test.utils import ensure_suffix
 from test.utils.dawg_manifest import MarksDictType, params_from_sources
@@ -11,10 +18,6 @@ from test.utils.sparql_checker import (
     check_entry,
     ctx_configure_rdflib,
 )
-from typing import Generator
-
-import pytest
-from pytest import MonkeyPatch
 
 REMOTE_BASE_IRI = "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/"
 LOCAL_BASE_DIR = TEST_DATA_DIR / "suites/w3c/sparql11/"
@@ -252,12 +255,16 @@ def configure_rdflib() -> Generator[None, None, None]:
         LOCAL_BASE_DIR / "manifest-all.ttl",
         mark_dict=MARK_DICT,
         markers=(
-            lambda entry: pytest.mark.skip(reason="tester not implemented")
-            if entry.type in SKIP_TYPES
-            else None,
+            lambda entry: (
+                pytest.mark.skip(reason="tester not implemented")
+                if entry.type in SKIP_TYPES
+                else None
+            ),
         ),
         report_prefix="rdflib_w3c_sparql11",
     ),
 )
-def test_entry_sparql11(monkeypatch: MonkeyPatch, manifest_entry: SPARQLEntry) -> None:
-    check_entry(monkeypatch, manifest_entry)
+def test_entry_sparql11(
+    monkeypatch: MonkeyPatch, exit_stack: ExitStack, manifest_entry: SPARQLEntry
+) -> None:
+    check_entry(monkeypatch, exit_stack, manifest_entry)

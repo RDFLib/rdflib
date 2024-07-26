@@ -15,13 +15,16 @@ build:
     # Using 3.9 as earlier versions have trouble generating documentation for
     # `@typing.overload`` with type aliases.
     python: "3.9"
-
-python:
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - docs
+  jobs:
+    post_create_environment:
+    # Using requirements-poetry.in as requirements-poetry.txt has conflicts with
+    # the readthedocs environment.
+    - pip install -r devtools/requirements-poetry.in
+    post_install:
+    - poetry export --only=main --only=docs --extras=html -o requirements.txt
+    - pip install --no-cache-dir -r requirements.txt
+    - pip install .
+    - python -c "from rdflib import Graph; print(Graph)"
 
 sphinx:
   fail_on_warning: true
