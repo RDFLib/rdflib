@@ -175,7 +175,7 @@ class JsonLDParser(rdflib.parser.Parser):
             bool(generalized_rdf),
             skolemize=skolemize,
         )
-        
+
 
 def to_rdf(
     data: Any,
