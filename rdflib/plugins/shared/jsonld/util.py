@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import json
 import pathlib
-from io import StringIO, TextIOWrapper
+from io import StringIO, TextIOBase, TextIOWrapper
 from posixpath import normpath, sep
-from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union, cast
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
 try:
@@ -13,7 +13,7 @@ try:
 
     _HAS_ORJSON = True
 except ImportError:
-    orjson = None
+    orjson = None  # type: ignore[assignment]
     _HAS_ORJSON = False
 
 
@@ -41,7 +41,7 @@ def source_to_json(
         b_stream = source.getByteStream()
         original_string: Optional[str] = None
         if isinstance(b_stream, BytesIOWrapper):
-            wrapped_inner = b_stream.wrapped
+            wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
                 original_string = wrapped_inner
             elif isinstance(wrapped_inner, StringIO):
@@ -193,4 +193,6 @@ __all__ = [
     "split_iri",
     "norm_url",
     "context_from_urlinputsource",
+    "orjson",
+    "_HAS_ORJSON",
 ]

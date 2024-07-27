@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import collections
 import itertools
-import json as j
 import re
 from typing import (
     TYPE_CHECKING,
@@ -63,6 +62,15 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 if TYPE_CHECKING:
     from rdflib.paths import Path
 
+import json
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment]
+    _HAS_ORJSON = False
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 
@@ -365,10 +373,13 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
                 )
             )
         if response.status == 200:
-            json = j.loads(response.read())
-            variables = res["vars_"] = json["head"]["vars"]
+            if _HAS_ORJSON:
+                json_dict = orjson.loads(response.read())
+            else:
+                json_dict = json.loads(response.read())
+            variables = res["vars_"] = json_dict["head"]["vars"]
             # or just return the bindings?
-            res = json["results"]["bindings"]
+            res = json_dict["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
                     # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"

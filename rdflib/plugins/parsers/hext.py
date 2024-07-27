@@ -20,7 +20,7 @@ try:
 
     _HAS_ORJSON = True
 except ImportError:
-    orjson = None
+    orjson = None  # type: ignore[assignment]
     _HAS_ORJSON = False
 
 if TYPE_CHECKING:

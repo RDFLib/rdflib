@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import IO, Callable, List, Optional, Type, Union
+from typing import IO, Any, Callable, List, Optional, Type, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD
@@ -19,7 +19,7 @@ try:
 
     _HAS_ORJSON = True
 except ImportError:
-    orjson = None
+    orjson = None  # type: ignore[assignment]
     _HAS_ORJSON = False
 
 __all__ = ["HextuplesSerializer"]
@@ -35,24 +35,22 @@ class HextuplesSerializer(Serializer):
 
     def __new__(cls, store: Union[Graph, Dataset, ConjunctiveGraph]):
         if _HAS_ORJSON:
-            cls.str_local_id = orjson.Fragment(b'"localId"')
-            cls.str_global_id = orjson.Fragment(b'"globalId"')
-            cls.empty = orjson.Fragment(b'""')
-            cls.newline: Union[bytes, str] = b"\n"
-            cls.lang_str = orjson.Fragment(b'"' + RDF.langString.encode("utf-8") + b'"')
-            cls.xsd_string = orjson.Fragment(b'"' + XSD.string.encode("utf-8") + b'"')
-            dumps = orjson.dumps
+            cls.str_local_id: Union[str, Any] = orjson.Fragment(b'"localId"')
+            cls.str_global_id: Union[str, Any] = orjson.Fragment(b'"globalId"')
+            cls.empty: Union[str, Any] = orjson.Fragment(b'""')
+            cls.lang_str: Union[str, Any] = orjson.Fragment(
+                b'"' + RDF.langString.encode("utf-8") + b'"'
+            )
+            cls.xsd_string: Union[str, Any] = orjson.Fragment(
+                b'"' + XSD.string.encode("utf-8") + b'"'
+            )
         else:
             cls.str_local_id = "localId"
             cls.str_global_id = "globalId"
             cls.empty = ""
-            cls.newline = "\n"
             cls.lang_str = f"{RDF.langString}"
             cls.xsd_string = f"{XSD.string}"
-            dumps = json.dumps
-        self = super(cls, cls).__new__(cls)
-        self.dumps = dumps
-        return self
+        return super(cls, cls).__new__(cls)
 
     def __init__(self, store: Union[Graph, Dataset, ConjunctiveGraph]):
         self.default_context: Optional[Union[Graph, IdentifiedNode]]
@@ -104,14 +102,17 @@ class HextuplesSerializer(Serializer):
             for triple in context:
                 # Generate context string just once, because it doesn't change
                 # for every triple in this context
-                context_str = (
-                    self.empty
-                    if self.graph_type is Graph
-                    else (
-                        orjson.Fragment('"' + self._context_str(context) + '"')
-                        if _HAS_ORJSON
-                        else self._context_str(context)
-                    )
+                context_str = cast(
+                    Union[str, bytes],
+                    (
+                        self.empty
+                        if self.graph_type is Graph
+                        else (
+                            orjson.Fragment('"' + self._context_str(context) + '"')
+                            if _HAS_ORJSON
+                            else self._context_str(context)
+                        )
+                    ),
                 )
                 hl = self._hex_line(triple, context_str)
                 if hl is not None:
@@ -154,20 +155,20 @@ class HextuplesSerializer(Serializer):
                     language = self.empty
             else:
                 language = self.empty
-
-            return (
-                self.dumps(
-                    [
-                        self._iri_or_bn(triple[0]),
-                        triple[1],
-                        value,
-                        datatype,
-                        language,
-                        context_str,
-                    ]
-                )
-                + self.newline
-            )
+            line_list = [
+                self._iri_or_bn(triple[0]),
+                triple[1],
+                value,
+                datatype,
+                language,
+                context_str,
+            ]
+            outline: Union[str, bytes]
+            if _HAS_ORJSON:
+                outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+            else:
+                outline = json.dumps(line_list) + "\n"
+            return outline
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None
 

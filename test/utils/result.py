@@ -11,6 +11,12 @@ from rdflib.term import BNode, Identifier, Literal, Variable
 
 logger = logging.getLogger(__name__)
 
+try:
+    import orjson
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment]
+    _HAS_ORJSON = False
 
 ResultTypeInfoDict = Dict["ResultType", "ResultTypeInfo"]
 
@@ -222,7 +228,7 @@ class ResultFormat(str, enum.Enum):
                         ResultFormatTrait.HAS_SERIALIZER,
                     }
                 ),
-                frozenset({"utf-8", "utf-16"}),
+                frozenset({"utf-8"} if _HAS_ORJSON else {"utf-8", "utf-16"}),
             ),
             ResultFormatInfo(
                 ResultFormat.XML,
