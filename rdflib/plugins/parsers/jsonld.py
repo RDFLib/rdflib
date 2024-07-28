@@ -84,6 +84,7 @@ class JsonLDParser(rdflib.parser.Parser):
         source: InputSource,
         sink: Graph,
         version: float = 1.1,
+        skolemize: bool = False,
         encoding: Optional[str] = "utf-8",
         base: Optional[str] = None,
         context: Optional[
@@ -95,6 +96,7 @@ class JsonLDParser(rdflib.parser.Parser):
         ] = None,
         generalized_rdf: Optional[bool] = False,
         extract_all_scripts: Optional[bool] = False,
+        **kwargs: Any,
     ) -> None:
         """Parse JSON-LD from a source document.
 
@@ -164,7 +166,15 @@ class JsonLDParser(rdflib.parser.Parser):
         else:
             conj_sink = sink
 
-        to_rdf(data, conj_sink, base, context_data, version, bool(generalized_rdf))
+        to_rdf(
+            data,
+            conj_sink,
+            base,
+            context_data,
+            version,
+            bool(generalized_rdf),
+            skolemize=skolemize,
+        )
 
 
 def to_rdf(
@@ -181,21 +191,28 @@ def to_rdf(
     version: Optional[float] = None,
     generalized_rdf: bool = False,
     allow_lists_of_lists: Optional[bool] = None,
+    skolemize: bool = False,
 ):
     # TODO: docstring w. args and return value
     context = Context(base=base, version=version)
     if context_data:
         context.load(context_data)
     parser = Parser(
-        generalized_rdf=generalized_rdf, allow_lists_of_lists=allow_lists_of_lists
+        generalized_rdf=generalized_rdf,
+        allow_lists_of_lists=allow_lists_of_lists,
+        skolemize=skolemize,
     )
     return parser.parse(data, context, dataset)
 
 
 class Parser:
     def __init__(
-        self, generalized_rdf: bool = False, allow_lists_of_lists: Optional[bool] = None
+        self,
+        generalized_rdf: bool = False,
+        allow_lists_of_lists: Optional[bool] = None,
+        skolemize: bool = False,
     ):
+        self.skolemize = skolemize
         self.generalized_rdf = generalized_rdf
         self.allow_lists_of_lists = (
             allow_lists_of_lists
@@ -265,6 +282,8 @@ class Parser:
             subj = self._to_rdf_id(context, id_val)
         else:
             subj = BNode()
+            if self.skolemize:
+                subj = subj.skolemize()
 
         if subj is None:
             return None
@@ -415,6 +434,8 @@ class Parser:
             if not self.generalized_rdf:
                 return
             pred = BNode(bid)
+            if self.skolemize:
+                pred = pred.skolemize()
         else:
             pred = URIRef(pred_uri)
 
@@ -598,7 +619,10 @@ class Parser:
     def _to_rdf_id(self, context: Context, id_val: str) -> Optional[IdentifiedNode]:
         bid = self._get_bnodeid(id_val)
         if bid:
-            return BNode(bid)
+            b = BNode(bid)
+            if self.skolemize:
+                return b.skolemize()
+            return b
         else:
             uri = context.resolve(id_val)
             if not self.generalized_rdf and ":" not in uri:
@@ -623,7 +647,11 @@ class Parser:
         if not isinstance(node_list, list):
             node_list = [node_list]
 
-        first_subj = BNode()
+        first_subj: Union[URIRef, BNode] = BNode()
+        if self.skolemize and isinstance(first_subj, BNode):
+            first_subj = first_subj.skolemize()
+
+        rest: Union[URIRef, BNode, None]
         subj, rest = first_subj, None
 
         for node in node_list:
@@ -642,6 +670,8 @@ class Parser:
 
             graph.add((subj, RDF.first, obj))
             rest = BNode()
+            if self.skolemize and isinstance(rest, BNode):
+                rest = rest.skolemize()
 
         if rest:
             graph.add((subj, RDF.rest, RDF.nil))
