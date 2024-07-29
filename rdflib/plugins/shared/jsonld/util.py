@@ -314,7 +314,13 @@ class HTMLJSONParser(HTMLParser):
                 return
 
             # Try to parse the json
-            parsed = json.loads(data)
+            if _HAS_ORJSON:
+                # orjson can load a unicode string
+                # if that's the only thing we have,
+                # its not worth encoding it to bytes
+                parsed = orjson.loads(data)
+            else:
+                parsed = json.loads(data)
 
             # Add to the result document
             if isinstance(parsed, list):
