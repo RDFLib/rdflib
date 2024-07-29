@@ -36,7 +36,7 @@ class HextuplesParser(Parser):
     """
 
     def __init__(self):
-        pass
+        self.skolemize = False
 
     def _parse_hextuple(
         self, cg: ConjunctiveGraph, tup: List[Union[str, None]]
@@ -53,6 +53,8 @@ class HextuplesParser(Parser):
         s: Union[URIRef, BNode]
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
+            if self.skolemize:
+                s = s.skolemize()
         else:
             s = URIRef(tup[0])
 
@@ -65,6 +67,8 @@ class HextuplesParser(Parser):
             o = URIRef(tup[2])
         elif tup[3] == "localId":
             o = BNode(value=tup[2].replace("_:", ""))
+            if self.skolemize:
+                o = o.skolemize()
         else:  # literal
             if tup[4] is None:
                 o = Literal(tup[2], datatype=URIRef(tup[3]))
@@ -78,13 +82,16 @@ class HextuplesParser(Parser):
                 if tup[5].startswith("_:")
                 else URIRef(tup[5])
             )
+            if isinstance(c, BNode) and self.skolemize:
+                c = c.skolemize()
+
             # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
             cg.add((s, p, o, c))  # type: ignore[arg-type]
         else:
             cg.add((s, p, o))
 
     # type error: Signature of "parse" incompatible with supertype "Parser"
-    def parse(self, source: InputSource, graph: Graph, **kwargs: Any) -> None:  # type: ignore[override]
+    def parse(self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any) -> None:  # type: ignore[override]
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -96,6 +103,7 @@ class HextuplesParser(Parser):
             graph.store.context_aware
         ), "Hextuples Parser needs a context-aware store!"
 
+        self.skolemize = skolemize
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 

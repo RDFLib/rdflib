@@ -82,21 +82,63 @@ class JsonLDParser(rdflib.parser.Parser):
         super(JsonLDParser, self).__init__()
 
     def parse(
-        self, source: InputSource, sink: Graph, version: float = 1.1, **kwargs: Any
+        self,
+        source: InputSource,
+        sink: Graph,
+        version: float = 1.1,
+        skolemize: bool = False,
+        encoding: Optional[str] = "utf-8",
+        base: Optional[str] = None,
+        context: Optional[
+            Union[
+                List[Union[Dict[str, Any], str, None]],
+                Dict[str, Any],
+                str,
+            ]
+        ] = None,
+        generalized_rdf: Optional[bool] = False,
+        extract_all_scripts: Optional[bool] = False,
+        **kwargs: Any,
     ) -> None:
-        # TODO: docstring w. args and return value
-        encoding = kwargs.get("encoding") or "utf-8"
+        """Parse JSON-LD from a source document.
+
+        The source document can be JSON or HTML with embedded JSON script
+        elements (type attribute = "application/ld+json"). To process as HTML
+        ``source.content_type`` must be set to "text/html" or
+        "application/xhtml+xml".
+
+        :param source: InputSource with JSON-formatted data (JSON or HTML)
+
+        :param sink: Graph to receive the parsed triples
+
+        :param version: parse as JSON-LD version, defaults to 1.1
+
+        :param encoding: character encoding of the JSON (should be "utf-8"
+            or "utf-16"), defaults to "utf-8"
+
+        :param base: JSON-LD `Base IRI <https://www.w3.org/TR/json-ld/#base-iri>`_, defaults to None
+
+        :param context: JSON-LD `Context <https://www.w3.org/TR/json-ld/#the-context>`_, defaults to None
+
+        :param generalized_rdf: parse as `Generalized RDF <https://www.w3.org/TR/json-ld/#relationship-to-rdf>`_, defaults to False
+
+        :param extract_all_scripts: if source is an HTML document then extract
+            all script elements, defaults to False (extract only the first
+            script element). This is ignored if ``source.system_id`` contains
+            a fragment identifier, in which case only the script element with
+            matching id attribute is extracted.
+
+        """
         if encoding not in ("utf-8", "utf-16"):
             warnings.warn(
                 "JSON should be encoded as unicode. "
                 "Given encoding was: %s" % encoding
             )
 
-        base = kwargs.get("base") or sink.absolutize(
-            source.getPublicId() or source.getSystemId() or ""
-        )
+        if not base:
+            base = sink.absolutize(source.getPublicId() or source.getSystemId() or "")
 
-        context_data = kwargs.get("context")
+        context_data = context
         if not context_data and hasattr(source, "url") and hasattr(source, "links"):
             if TYPE_CHECKING:
                 assert isinstance(source, URLInputSource)
@@ -107,9 +149,15 @@ class JsonLDParser(rdflib.parser.Parser):
         except ValueError:
             version = 1.1
 
-        generalized_rdf = kwargs.get("generalized_rdf", False)
+        # Get the optional fragment identifier
+        try:
+            fragment_id = URIRef(source.getSystemId()).fragment
+        except Exception:
+            fragment_id = None
 
-        data = source_to_json(source)
+        data, html_base = source_to_json(source, fragment_id, extract_all_scripts)
+        if html_base is not None:
+            base = URIRef(html_base, base=base)
 
         # NOTE: A ConjunctiveGraph parses into a Graph sink, so no sink will be
         # context_aware. Keeping this check in case RDFLib is changed, or
@@ -120,7 +168,15 @@ class JsonLDParser(rdflib.parser.Parser):
         else:
             conj_sink = sink
 
-        to_rdf(data, conj_sink, base, context_data, version, generalized_rdf)
+        to_rdf(
+            data,
+            conj_sink,
+            base,
+            context_data,
+            version,
+            bool(generalized_rdf),
+            skolemize=skolemize,
+        )
 
 
 def to_rdf(
@@ -137,21 +193,28 @@ def to_rdf(
     version: Optional[float] = None,
     generalized_rdf: bool = False,
     allow_lists_of_lists: Optional[bool] = None,
+    skolemize: bool = False,
 ):
     # TODO: docstring w. args and return value
     context = Context(base=base, version=version)
     if context_data:
         context.load(context_data)
     parser = Parser(
-        generalized_rdf=generalized_rdf, allow_lists_of_lists=allow_lists_of_lists
+        generalized_rdf=generalized_rdf,
+        allow_lists_of_lists=allow_lists_of_lists,
+        skolemize=skolemize,
     )
     return parser.parse(data, context, dataset)
 
 
 class Parser:
     def __init__(
-        self, generalized_rdf: bool = False, allow_lists_of_lists: Optional[bool] = None
+        self,
+        generalized_rdf: bool = False,
+        allow_lists_of_lists: Optional[bool] = None,
+        skolemize: bool = False,
     ):
+        self.skolemize = skolemize
         self.generalized_rdf = generalized_rdf
         self.allow_lists_of_lists = (
             allow_lists_of_lists
@@ -221,6 +284,8 @@ class Parser:
             subj = self._to_rdf_id(context, id_val)
         else:
             subj = BNode()
+            if self.skolemize:
+                subj = subj.skolemize()
 
         if subj is None:
             return None
@@ -371,6 +436,8 @@ class Parser:
             if not self.generalized_rdf:
                 return
             pred = BNode(bid)
+            if self.skolemize:
+                pred = pred.skolemize()
         else:
             pred = URIRef(pred_uri)
 
@@ -554,7 +621,10 @@ class Parser:
     def _to_rdf_id(self, context: Context, id_val: str) -> Optional[IdentifiedNode]:
         bid = self._get_bnodeid(id_val)
         if bid:
-            return BNode(bid)
+            b = BNode(bid)
+            if self.skolemize:
+                return b.skolemize()
+            return b
         else:
             uri = context.resolve(id_val)
             if not self.generalized_rdf and ":" not in uri:
@@ -579,7 +649,11 @@ class Parser:
         if not isinstance(node_list, list):
             node_list = [node_list]
 
-        first_subj = BNode()
+        first_subj: Union[URIRef, BNode] = BNode()
+        if self.skolemize and isinstance(first_subj, BNode):
+            first_subj = first_subj.skolemize()
+
+        rest: Union[URIRef, BNode, None]
         subj, rest = first_subj, None
 
         for node in node_list:
@@ -598,6 +672,8 @@ class Parser:
 
             graph.add((subj, RDF.first, obj))
             rest = BNode()
+            if self.skolemize and isinstance(rest, BNode):
+                rest = rest.skolemize()
 
         if rest:
             graph.add((subj, RDF.rest, RDF.nil))
