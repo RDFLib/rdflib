@@ -294,13 +294,12 @@ from rdflib.serializer import Serializer
 from rdflib.store import Store
 from rdflib.term import (
     BNode,
-    Genid,
     IdentifiedNode,
     Identifier,
     Literal,
     Node,
-    RDFLibGenid,
     URIRef,
+    _Deskolemizer,
 )
 
 if TYPE_CHECKING:
