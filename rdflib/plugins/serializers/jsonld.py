@@ -14,17 +14,17 @@ Example usage::
 
     >>> g = Graph().parse(data=testrdf, format='n3')
 
-    >>> print(g.serialize(format='json-ld', indent=4))
+    >>> print(g.serialize(format='json-ld', indent=2))
     [
-        {
-            "@id": "http://example.org/about",
-            "http://purl.org/dc/terms/title": [
-                {
-                    "@language": "en",
-                    "@value": "Someone's Homepage"
-                }
-            ]
-        }
+      {
+        "@id": "http://example.org/about",
+        "http://purl.org/dc/terms/title": [
+          {
+            "@language": "en",
+            "@value": "Someone's Homepage"
+          }
+        ]
+      }
     ]
 
 """
@@ -47,7 +47,7 @@ from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
-from ..shared.jsonld.util import json
+from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
 
 __all__ = ["JsonLDSerializer", "from_rdf"]
 
@@ -91,16 +91,25 @@ class JsonLDSerializer(Serializer):
             use_rdf_type,
             auto_compact=auto_compact,
         )
-
-        data = json.dumps(
-            obj,
-            indent=indent,
-            separators=separators,
-            sort_keys=sort_keys,
-            ensure_ascii=ensure_ascii,
-        )
-
-        stream.write(data.encode(encoding, "replace"))
+        if _HAS_ORJSON:
+            option: int = orjson.OPT_NON_STR_KEYS
+            if indent is not None:
+                option |= orjson.OPT_INDENT_2
+            if sort_keys:
+                option |= orjson.OPT_SORT_KEYS
+            if ensure_ascii:
+                warnings.warn("Cannot use ensure_ascii with orjson")
+            data_bytes = orjson.dumps(obj, option=option)
+            stream.write(data_bytes)
+        else:
+            data = json.dumps(
+                obj,
+                indent=indent,
+                separators=separators,
+                sort_keys=sort_keys,
+                ensure_ascii=ensure_ascii,
+            )
+            stream.write(data.encode(encoding, "replace"))
 
 
 def from_rdf(

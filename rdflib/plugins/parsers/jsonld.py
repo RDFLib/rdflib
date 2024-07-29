@@ -62,9 +62,11 @@ from ..shared.jsonld.keys import (
     VOCAB,
 )
 from ..shared.jsonld.util import (
+    _HAS_ORJSON,
     VOCAB_DELIMS,
     context_from_urlinputsource,
     json,
+    orjson,
     source_to_json,
 )
 
@@ -681,11 +683,18 @@ class Parser:
 
     @staticmethod
     def _to_typed_json_value(value: Any) -> Dict[str, str]:
-        return {
-            TYPE: URIRef("%sJSON" % str(RDF)),
-            VALUE: json.dumps(
+        if _HAS_ORJSON:
+            val_string: str = orjson.dumps(
+                value,
+                option=orjson.OPT_SORT_KEYS | orjson.OPT_NON_STR_KEYS,
+            ).decode("utf-8")
+        else:
+            val_string = json.dumps(
                 value, separators=(",", ":"), sort_keys=True, ensure_ascii=False
-            ),
+            )
+        return {
+            TYPE: RDF.JSON,
+            VALUE: val_string,
         }
 
     @classmethod

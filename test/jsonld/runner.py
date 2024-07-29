@@ -258,7 +258,7 @@ def _ord_key(x):
 
 def _dump_json(obj):
     return json.dumps(
-        obj, indent=4, separators=(",", ": "), sort_keys=True, check_circular=True
+        obj, indent=2, separators=(",", ": "), sort_keys=True, check_circular=True
     )
 
 
