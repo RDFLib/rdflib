@@ -14,17 +14,17 @@ Example usage::
 
     >>> g = Graph().parse(data=testrdf, format='n3')
 
-    >>> print(g.serialize(format='json-ld', indent=4))
+    >>> print(g.serialize(format='json-ld', indent=2))
     [
-        {
-            "@id": "http://example.org/about",
-            "http://purl.org/dc/terms/title": [
-                {
-                    "@language": "en",
-                    "@value": "Someone's Homepage"
-                }
-            ]
-        }
+      {
+        "@id": "http://example.org/about",
+        "http://purl.org/dc/terms/title": [
+          {
+            "@language": "en",
+            "@value": "Someone's Homepage"
+          }
+        ]
+      }
     ]
 
 """
