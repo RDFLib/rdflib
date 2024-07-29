@@ -123,7 +123,10 @@ def source_to_json(
         raise ValueError(
             f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
         )
-    underlying_string: Optional[str] = None
+    try:
+        b_encoding: Optional[str] = None if b_stream is None else source.getEncoding()
+    except (AttributeError, LookupError):
+        b_encoding = None    underlying_string: Optional[str] = None
     if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
         # Try to find an underlying wrapped Unicode string to use?
         wrapped_inner = b_stream.wrapped
@@ -141,7 +144,9 @@ def source_to_json(
             else:
                 if TYPE_CHECKING:
                     assert b_stream is not None
-                html_string = TextIOWrapper(b_stream, encoding="utf-8").read()
+                if b_encoding is None:
+                    b_encoding = "utf-8"
+                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()
             html_docparser.feed(html_string)
             json_dict, html_base = html_docparser.get_json(), html_docparser.get_base()
         elif _HAS_ORJSON:
@@ -169,7 +174,9 @@ def source_to_json(
                 if TYPE_CHECKING:
                     assert b_stream is not None
                 # b_stream is not None
-                use_stream = TextIOWrapper(b_stream, encoding="utf-8")
+                if b_encoding is None:
+                    b_encoding = "utf-8"
+                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)
             json_dict = json.load(use_stream)
         return json_dict, html_base
     finally:
