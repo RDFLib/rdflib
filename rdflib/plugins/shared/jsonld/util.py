@@ -5,7 +5,7 @@ import json
 import pathlib
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
-from typing import IO, TYPE_CHECKING, Any, List, Optional, TextIO, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Tuple, Union
 
 if TYPE_CHECKING:
     import json
@@ -18,7 +18,7 @@ else:
         import simplejson as json
 
 from posixpath import normpath, sep
-from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Tuple, Union, cast
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
 try:
@@ -46,7 +46,7 @@ def source_to_json(
     ],
     fragment_id: Optional[str] = None,
     extract_all_scripts: Optional[bool] = False,
-) -> Tuple[Optional[Any], Any]:
+) -> Tuple[Union[Dict, List[Dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -71,13 +71,13 @@ def source_to_json(
         # It's hidden in the BytesIOWrapper 'wrapped' attribute
         b_stream = source.getByteStream()
         original_string: Optional[str] = None
+        json_dict: Union[Dict, List[Dict]]
         if isinstance(b_stream, BytesIOWrapper):
             wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
                 original_string = wrapped_inner
             elif isinstance(wrapped_inner, StringIO):
                 original_string = wrapped_inner.getvalue()
-
         if _HAS_ORJSON:
             if original_string is not None:
                 json_dict = orjson.loads(original_string)
@@ -103,8 +103,10 @@ def source_to_json(
     except (AttributeError, LookupError):
         content_type = None
 
-    is_html = content_type is not None and \
-        content_type.lower() in ("text/html", "application/xhtml+xml")
+    is_html = content_type is not None and content_type.lower() in (
+        "text/html",
+        "application/xhtml+xml",
+    )
     if is_html:
         html_docparser: Optional[HTMLJSONParser] = HTMLJSONParser(
             fragment_id=fragment_id, extract_all_scripts=extract_all_scripts
@@ -126,7 +128,8 @@ def source_to_json(
     try:
         b_encoding: Optional[str] = None if b_stream is None else source.getEncoding()
     except (AttributeError, LookupError):
-        b_encoding = None    underlying_string: Optional[str] = None
+        b_encoding = None
+    underlying_string: Optional[str] = None
     if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
         # Try to find an underlying wrapped Unicode string to use?
         wrapped_inner = b_stream.wrapped
@@ -152,18 +155,18 @@ def source_to_json(
         elif _HAS_ORJSON:
             html_base = None
             if underlying_string is not None:
-               json_dict = orjson.loads(underlying_string)
+                json_dict = orjson.loads(underlying_string)
             elif (
                 (b_stream is not None and isinstance(b_stream, BytesIOWrapper))
                 or b_stream is None
             ) and c_stream is not None:
                 # use the CharacterStream instead
-                json_dict =  orjson.loads(c_stream.read())
+                json_dict = orjson.loads(c_stream.read())
             else:
                 if TYPE_CHECKING:
                     assert b_stream is not None
                 # b_stream is not None
-                json_dict =  orjson.loads(b_stream.read())
+                json_dict = orjson.loads(b_stream.read())
         else:
             html_base = None
             if underlying_string is not None:
@@ -275,7 +278,7 @@ class HTMLJSONParser(HTMLParser):
     ):
         super().__init__()
         self.fragment_id = fragment_id
-        self.json: List[Any] = []
+        self.json: List[Dict] = []
         self.contains_json = False
         self.fragment_id_does_not_match = False
         self.base = None
@@ -330,7 +333,7 @@ class HTMLJSONParser(HTMLParser):
 
             self.script_count += 1
 
-    def get_json(self):
+    def get_json(self) -> List[Dict]:
         return self.json
 
     def get_base(self):
