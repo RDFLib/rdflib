@@ -1,8 +1,11 @@
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/util.py
 from __future__ import annotations
 
+import json
 import pathlib
-from typing import IO, TYPE_CHECKING, Any, List, Optional, TextIO, Tuple, Union
+from html.parser import HTMLParser
+from io import StringIO, TextIOBase, TextIOWrapper
+from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Tuple, Union
 
 if TYPE_CHECKING:
     import json
@@ -14,10 +17,18 @@ else:
     except ImportError:
         import simplejson as json
 
-from html.parser import HTMLParser
-from io import TextIOBase, TextIOWrapper
 from posixpath import normpath, sep
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urljoin, urlsplit, urlunsplit
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment, unused-ignore]
+    _HAS_ORJSON = False
+
 
 from rdflib.parser import (
     BytesIOWrapper,
@@ -35,7 +46,7 @@ def source_to_json(
     ],
     fragment_id: Optional[str] = None,
     extract_all_scripts: Optional[bool] = False,
-) -> Tuple[Any, Any]:
+) -> Tuple[Union[Dict, List[Dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -51,33 +62,137 @@ def source_to_json(
     """
 
     if isinstance(source, PythonInputSource):
-        return (source.data, None)
+        return source.data, None
 
     if isinstance(source, StringInputSource):
-        return (json.load(source.getCharacterStream()), None)
+        # A StringInputSource is assumed to be never a HTMLJSON doc
+        html_base: Any = None
+        # We can get the original string from the StringInputSource
+        # It's hidden in the BytesIOWrapper 'wrapped' attribute
+        b_stream = source.getByteStream()
+        original_string: Optional[str] = None
+        json_dict: Union[Dict, List[Dict]]
+        if isinstance(b_stream, BytesIOWrapper):
+            wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
+            if isinstance(wrapped_inner, str):
+                original_string = wrapped_inner
+            elif isinstance(wrapped_inner, StringIO):
+                original_string = wrapped_inner.getvalue()
+        if _HAS_ORJSON:
+            if original_string is not None:
+                json_dict = orjson.loads(original_string)
+            elif isinstance(b_stream, BytesIOWrapper):
+                # use the CharacterStream instead
+                c_stream = source.getCharacterStream()
+                json_dict = orjson.loads(c_stream.read())
+            else:
+                # orjson assumes its in utf-8 encoding so
+                # don't bother to check the source.getEncoding()
+                json_dict = orjson.loads(b_stream.read())
+        else:
+            if original_string is not None:
+                json_dict = json.loads(original_string)
+            else:
+                json_dict = json.load(source.getCharacterStream())
+        return json_dict, html_base
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
     source = create_input_source(source, format="json-ld")
-    stream = source.getByteStream()
     try:
-        if isinstance(stream, BytesIOWrapper):
-            stream = stream.wrapped
-        # Use character stream as-is, or interpret byte stream as UTF-8
-        if isinstance(stream, TextIOBase):
-            use_stream = stream
-        else:
-            use_stream = TextIOWrapper(stream, encoding="utf-8")
+        content_type = source.content_type
+    except (AttributeError, LookupError):
+        content_type = None
 
-        if source.content_type in ("text/html", "application/xhtml+xml"):
-            parser = HTMLJSONParser(
-                fragment_id=fragment_id, extract_all_scripts=extract_all_scripts
-            )
-            parser.feed(use_stream.read())
-            return (parser.get_json(), parser.get_base())
+    is_html = content_type is not None and content_type.lower() in (
+        "text/html",
+        "application/xhtml+xml",
+    )
+    if is_html:
+        html_docparser: Optional[HTMLJSONParser] = HTMLJSONParser(
+            fragment_id=fragment_id, extract_all_scripts=extract_all_scripts
+        )
+    else:
+        html_docparser = None
+    try:
+        b_stream = source.getByteStream()
+    except (AttributeError, LookupError):
+        b_stream = None
+    try:
+        c_stream = source.getCharacterStream()
+    except (AttributeError, LookupError):
+        c_stream = None
+    if b_stream is None and c_stream is None:
+        raise ValueError(
+            f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
+        )
+    try:
+        b_encoding: Optional[str] = None if b_stream is None else source.getEncoding()
+    except (AttributeError, LookupError):
+        b_encoding = None
+    underlying_string: Optional[str] = None
+    if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
+        # Try to find an underlying wrapped Unicode string to use?
+        wrapped_inner = b_stream.wrapped
+        if isinstance(wrapped_inner, str):
+            underlying_string = wrapped_inner
+        elif isinstance(wrapped_inner, StringIO):
+            underlying_string = wrapped_inner.getvalue()
+    try:
+        if is_html and html_docparser is not None:
+            # Offload parsing to the HTMLJSONParser
+            if underlying_string is not None:
+                html_string: str = underlying_string
+            elif c_stream is not None:
+                html_string = c_stream.read()
+            else:
+                if TYPE_CHECKING:
+                    assert b_stream is not None
+                if b_encoding is None:
+                    b_encoding = "utf-8"
+                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()
+            html_docparser.feed(html_string)
+            json_dict, html_base = html_docparser.get_json(), html_docparser.get_base()
+        elif _HAS_ORJSON:
+            html_base = None
+            if underlying_string is not None:
+                json_dict = orjson.loads(underlying_string)
+            elif (
+                (b_stream is not None and isinstance(b_stream, BytesIOWrapper))
+                or b_stream is None
+            ) and c_stream is not None:
+                # use the CharacterStream instead
+                json_dict = orjson.loads(c_stream.read())
+            else:
+                if TYPE_CHECKING:
+                    assert b_stream is not None
+                # b_stream is not None
+                json_dict = orjson.loads(b_stream.read())
         else:
-            return (json.load(use_stream), None)
+            html_base = None
+            if underlying_string is not None:
+                return json.loads(underlying_string)
+            if c_stream is not None:
+                use_stream = c_stream
+            else:
+                if TYPE_CHECKING:
+                    assert b_stream is not None
+                # b_stream is not None
+                if b_encoding is None:
+                    b_encoding = "utf-8"
+                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)
+            json_dict = json.load(use_stream)
+        return json_dict, html_base
     finally:
-        stream.close()
+        if b_stream is not None:
+            try:
+                b_stream.close()
+            except AttributeError:
+                pass
+        if c_stream is not None:
+            try:
+                c_stream.close()
+            except AttributeError:
+                pass
 
 
 VOCAB_DELIMS = ("#", "/", ":")
@@ -150,6 +265,8 @@ __all__ = [
     "split_iri",
     "norm_url",
     "context_from_urlinputsource",
+    "orjson",
+    "_HAS_ORJSON",
 ]
 
 
@@ -161,7 +278,7 @@ class HTMLJSONParser(HTMLParser):
     ):
         super().__init__()
         self.fragment_id = fragment_id
-        self.json: List[Any] = []
+        self.json: List[Dict] = []
         self.contains_json = False
         self.fragment_id_does_not_match = False
         self.base = None
@@ -200,7 +317,13 @@ class HTMLJSONParser(HTMLParser):
                 return
 
             # Try to parse the json
-            parsed = json.loads(data)
+            if _HAS_ORJSON:
+                # orjson can load a unicode string
+                # if that's the only thing we have,
+                # its not worth encoding it to bytes
+                parsed = orjson.loads(data)
+            else:
+                parsed = json.loads(data)
 
             # Add to the result document
             if isinstance(parsed, list):
@@ -210,7 +333,7 @@ class HTMLJSONParser(HTMLParser):
 
             self.script_count += 1
 
-    def get_json(self):
+    def get_json(self) -> List[Dict]:
         return self.json
 
     def get_base(self):
