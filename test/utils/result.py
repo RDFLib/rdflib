@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import orjson
+
     _HAS_ORJSON = True
 except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]

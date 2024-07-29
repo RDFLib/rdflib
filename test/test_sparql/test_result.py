@@ -181,8 +181,7 @@ def narrow_dest_param(param: DestParmType) -> ResultDestParamType:
 
 
 def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
-    xfails: Dict[Tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {
-    }
+    xfails: Dict[Tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
