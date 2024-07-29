@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from rdflib import Graph, Literal, URIRef
 
 

@@ -3,6 +3,7 @@ This is a rdflib plugin for parsing Hextuple files, which are Newline-Delimited 
 (ndjson) files, into Conjunctive. The store that backs the graph *must* be able to
 handle contexts, i.e. multiple graphs.
 """
+
 from __future__ import annotations
 
 import json
@@ -24,7 +25,7 @@ class HextuplesParser(Parser):
     """
 
     def __init__(self):
-        pass
+        self.skolemize = False
 
     def _load_json_line(self, line: str) -> List[Optional[Any]]:
         # this complex handing is because the 'value' component is
@@ -51,6 +52,8 @@ class HextuplesParser(Parser):
         s: Union[URIRef, BNode]
         if tup[0].startswith("_"):
             s = BNode(value=tup[0].replace("_:", ""))
+            if self.skolemize:
+                s = s.skolemize()
         else:
             s = URIRef(tup[0])
 
@@ -63,6 +66,8 @@ class HextuplesParser(Parser):
             o = URIRef(tup[2])
         elif tup[3] == "localId":
             o = BNode(value=tup[2].replace("_:", ""))
+            if self.skolemize:
+                o = o.skolemize()
         else:  # literal
             if tup[4] is None:
                 o = Literal(tup[2], datatype=URIRef(tup[3]))
@@ -71,14 +76,21 @@ class HextuplesParser(Parser):
 
         # 6 - context
         if tup[5] is not None:
-            c = URIRef(tup[5])
+            c = (
+                BNode(tup[5].replace("_:", ""))
+                if tup[5].startswith("_:")
+                else URIRef(tup[5])
+            )
+            if isinstance(c, BNode) and self.skolemize:
+                c = c.skolemize()
+
             # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
             cg.add((s, p, o, c))  # type: ignore[arg-type]
         else:
             cg.add((s, p, o))
 
     # type error: Signature of "parse" incompatible with supertype "Parser"
-    def parse(self, source: InputSource, graph: Graph, **kwargs: Any) -> None:  # type: ignore[override]
+    def parse(self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any) -> None:  # type: ignore[override]
         if kwargs.get("encoding") not in [None, "utf-8"]:
             warnings.warn(
                 f"Hextuples files are always utf-8 encoded, "
@@ -90,6 +102,7 @@ class HextuplesParser(Parser):
             graph.store.context_aware
         ), "Hextuples Parser needs a context-aware store!"
 
+        self.skolemize = skolemize
         cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         cg.default_context = graph
 

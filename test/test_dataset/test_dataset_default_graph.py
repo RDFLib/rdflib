@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import itertools
 import logging
-from test.data import TEST_DATA_DIR
 from typing import Iterable, Type, Union
 
 import pytest
@@ -8,6 +9,7 @@ from _pytest.mark.structures import ParameterSet
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.term import BNode, URIRef
+from test.data import TEST_DATA_DIR
 
 
 def make_load_default_and_named() -> Iterable[ParameterSet]:

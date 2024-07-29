@@ -10,6 +10,8 @@ The code in the example then verifies that the audit hook is blocking access to
 URLs and files as expected.
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import sys

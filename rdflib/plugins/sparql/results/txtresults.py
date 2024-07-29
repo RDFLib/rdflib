@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import IO, List, Optional, Union
 
 from rdflib.namespace import NamespaceManager

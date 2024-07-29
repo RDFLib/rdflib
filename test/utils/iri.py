@@ -2,19 +2,21 @@
 Various utilities for working with IRIs and URIs.
 """
 
+from __future__ import annotations
+
 import email.utils
 import http.client
 import logging
 import mimetypes
 from dataclasses import dataclass
+from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from test.utils import ensure_suffix
 from typing import Callable, Optional, Set, Tuple, Type, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
 
-from nturl2path import url2pathname as nt_url2pathname
+from test.utils import ensure_suffix
 
 PurePathT = TypeVar("PurePathT", bound=PurePath)
 
@@ -100,7 +102,7 @@ class URIMapping:
     local: str
 
     @classmethod
-    def from_tuple(cls, value: URIMappingTupleType) -> "URIMapping":
+    def from_tuple(cls, value: URIMappingTupleType) -> URIMapping:
         return cls(value[0], value[1])
 
 
@@ -145,8 +147,8 @@ class URIMapper:
 
     @classmethod
     def from_mappings(
-        cls, *values: Union["URIMapping", "URIMappingTupleType"]
-    ) -> "URIMapper":
+        cls, *values: Union[URIMapping, URIMappingTupleType]
+    ) -> URIMapper:
         result = set()
         for value in values:
             if isinstance(value, tuple):

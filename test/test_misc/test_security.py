@@ -1,12 +1,11 @@
+from __future__ import annotations
+
 import enum
 import http.client
 import itertools
 import logging
 from contextlib import ExitStack
 from pathlib import Path
-from test.utils.audit import AuditHookDispatcher
-from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from test.utils.urlopen import context_urlopener
 from textwrap import dedent
 from typing import Any, Iterable, Tuple
 from urllib.request import HTTPHandler, OpenerDirector, Request
@@ -15,12 +14,13 @@ import pytest
 from _pytest.mark.structures import ParameterSet
 
 from rdflib import Graph
-from rdflib.namespace import Namespace
+from test.utils.audit import AuditHookDispatcher
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.namespace import EGDO
+from test.utils.urlopen import context_urlopener
 
 from ..utils import GraphHelper
 from ..utils.path import ctx_chdir
-
-EGNS = Namespace("http://example.org/")
 
 JSONLD_CONTEXT = """
 {
@@ -30,7 +30,7 @@ JSONLD_CONTEXT = """
 }
 """
 
-EXPECTED_GRAPH = Graph().add((EGNS.subject, EGNS.predicate, EGNS.object))
+EXPECTED_GRAPH = Graph().add((EGDO.subject, EGDO.predicate, EGDO.object))
 
 
 def test_default(tmp_path: Path) -> None:

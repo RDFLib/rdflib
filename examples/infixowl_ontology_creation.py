@@ -249,22 +249,22 @@ def infixowl_example():
         disjointWith=[CPR["physical-therapy"], CPR["psychological-therapy"]],
     )
     therapy += medicalTherapy
-    medicalTherapy += Class(CPR["substance-administration"])
+    medicalTherapy += Class(CPR["substance-administration"])  # noqa: N806
 
     diagnosticAct = Class(CPR["diagnostic-act"], subClassOf=[clinicalAct])  # noqa: N806
     diagnosticAct.disjointWith = [CPR["therapeutic-act"]]
 
     screeningAct = Class(CPR["screening-act"])  # noqa: N806
-    screeningAct += Class(CPR["laboratory-test"])
+    screeningAct += Class(CPR["laboratory-test"])  # noqa: N806
 
-    diagnosticAct += screeningAct
+    diagnosticAct += screeningAct  # noqa: N806
 
-    screeningAct += Class(
+    screeningAct += Class(  # noqa: N806
         CPR["medical-history-screening-act"],
         disjointWith=[CPR["clinical-examination"], CPR["laboratory-test"]],
     )
 
-    screeningAct += Class(
+    screeningAct += Class(  # noqa: N806
         CPR["clinical-examination"],
         disjointWith=[CPR["laboratory-test"], CPR["medical-history-screening-act"]],
     )

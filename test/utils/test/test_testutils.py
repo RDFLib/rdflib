@@ -1,7 +1,15 @@
+from __future__ import annotations
+
 import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
+from typing import Any, List, Optional, Tuple, Type, Union
+
+import pytest
+
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib.term import URIRef
 from test.utils import (
     COLLAPSED_BNODE,
     BNodeHandling,
@@ -9,12 +17,6 @@ from test.utils import (
     affix_tuples,
     file_uri_to_path,
 )
-from typing import Any, List, Optional, Tuple, Type, Union
-
-import pytest
-
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
-from rdflib.term import URIRef
 
 
 def check(

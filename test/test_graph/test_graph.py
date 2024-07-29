@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import logging
 import os
-from contextlib import ExitStack
 from pathlib import Path
-from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
-from test.utils import GraphHelper, get_unique_plugin_names
-from test.utils.exceptions import ExceptionChecker
-from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
-from typing import Callable, Optional, Set, Tuple, Union
+from typing import Callable, Optional, Set, Tuple
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -18,6 +14,10 @@ from rdflib.namespace import Namespace, NamespaceManager
 from rdflib.plugin import PluginException
 from rdflib.store import Store
 from rdflib.term import BNode
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
+from test.utils import GraphHelper, get_unique_plugin_names
+from test.utils.httpfileserver import HTTPFileServer, ProtoFileResource
+from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitive
 
 
 def test_property_store() -> None:
@@ -105,23 +105,23 @@ def make_graph(tmp_path: Path, request) -> GraphFactory:
 
 
 def populate_graph(graph: Graph):
-    graph.add((tarek, likes, pizza))
-    graph.add((tarek, likes, cheese))
-    graph.add((michel, likes, pizza))
-    graph.add((michel, likes, cheese))
-    graph.add((bob, likes, cheese))
-    graph.add((bob, hates, pizza))
-    graph.add((bob, hates, michel))  # gasp!
+    graph.add((TAREK, LIKES, PIZZA))
+    graph.add((TAREK, LIKES, CHEESE))
+    graph.add((MICHEL, LIKES, PIZZA))
+    graph.add((MICHEL, LIKES, CHEESE))
+    graph.add((BOB, LIKES, CHEESE))
+    graph.add((BOB, HATES, PIZZA))
+    graph.add((BOB, HATES, MICHEL))  # gasp!
 
 
 def depopulate_graph(graph: Graph):
-    graph.remove((tarek, likes, pizza))
-    graph.remove((tarek, likes, cheese))
-    graph.remove((michel, likes, pizza))
-    graph.remove((michel, likes, cheese))
-    graph.remove((bob, likes, cheese))
-    graph.remove((bob, hates, pizza))
-    graph.remove((bob, hates, michel))  # gasp!
+    graph.remove((TAREK, LIKES, PIZZA))
+    graph.remove((TAREK, LIKES, CHEESE))
+    graph.remove((MICHEL, LIKES, PIZZA))
+    graph.remove((MICHEL, LIKES, CHEESE))
+    graph.remove((BOB, LIKES, CHEESE))
+    graph.remove((BOB, HATES, PIZZA))
+    graph.remove((BOB, HATES, MICHEL))  # gasp!
 
 
 def test_add(make_graph: GraphFactory):
@@ -138,41 +138,41 @@ def test_remove(make_graph: GraphFactory):
 def test_triples(make_graph: GraphFactory):
     graph = make_graph()
     triples = graph.triples
-    Any = None
+    Any = None  # noqa: N806
 
     populate_graph(graph)
 
     # unbound subjects
-    assert len(list(triples((Any, likes, pizza)))) == 2
-    assert len(list(triples((Any, hates, pizza)))) == 1
-    assert len(list(triples((Any, likes, cheese)))) == 3
-    assert len(list(triples((Any, hates, cheese)))) == 0
+    assert len(list(triples((Any, LIKES, PIZZA)))) == 2
+    assert len(list(triples((Any, HATES, PIZZA)))) == 1
+    assert len(list(triples((Any, LIKES, CHEESE)))) == 3
+    assert len(list(triples((Any, HATES, CHEESE)))) == 0
 
     # unbound objects
-    assert len(list(triples((michel, likes, Any)))) == 2
-    assert len(list(triples((tarek, likes, Any)))) == 2
-    assert len(list(triples((bob, hates, Any)))) == 2
-    assert len(list(triples((bob, likes, Any)))) == 1
+    assert len(list(triples((MICHEL, LIKES, Any)))) == 2
+    assert len(list(triples((TAREK, LIKES, Any)))) == 2
+    assert len(list(triples((BOB, HATES, Any)))) == 2
+    assert len(list(triples((BOB, LIKES, Any)))) == 1
 
     # unbound predicates
-    assert len(list(triples((michel, Any, cheese)))) == 1
-    assert len(list(triples((tarek, Any, cheese)))) == 1
-    assert len(list(triples((bob, Any, pizza)))) == 1
-    assert len(list(triples((bob, Any, michel)))) == 1
+    assert len(list(triples((MICHEL, Any, CHEESE)))) == 1
+    assert len(list(triples((TAREK, Any, CHEESE)))) == 1
+    assert len(list(triples((BOB, Any, PIZZA)))) == 1
+    assert len(list(triples((BOB, Any, MICHEL)))) == 1
 
     # unbound subject, objects
-    assert len(list(triples((Any, hates, Any)))) == 2
-    assert len(list(triples((Any, likes, Any)))) == 5
+    assert len(list(triples((Any, HATES, Any)))) == 2
+    assert len(list(triples((Any, LIKES, Any)))) == 5
 
     # unbound predicates, objects
-    assert len(list(triples((michel, Any, Any)))) == 2
-    assert len(list(triples((bob, Any, Any)))) == 3
-    assert len(list(triples((tarek, Any, Any)))) == 2
+    assert len(list(triples((MICHEL, Any, Any)))) == 2
+    assert len(list(triples((BOB, Any, Any)))) == 3
+    assert len(list(triples((TAREK, Any, Any)))) == 2
 
     # unbound subjects, predicates
-    assert len(list(triples((Any, Any, pizza)))) == 3
-    assert len(list(triples((Any, Any, cheese)))) == 3
-    assert len(list(triples((Any, Any, michel)))) == 1
+    assert len(list(triples((Any, Any, PIZZA)))) == 3
+    assert len(list(triples((Any, Any, CHEESE)))) == 3
+    assert len(list(triples((Any, Any, MICHEL)))) == 1
 
     # all unbound
     assert len(list(triples((Any, Any, Any)))) == 7
@@ -188,7 +188,7 @@ def test_connected(make_graph: GraphFactory):
     jeroen = URIRef("jeroen")
     unconnected = URIRef("unconnected")
 
-    graph.add((jeroen, likes, unconnected))
+    graph.add((jeroen, LIKES, unconnected))
 
     assert graph.connected() is False
 
@@ -197,82 +197,82 @@ def test_graph_sub(make_graph: GraphFactory):
     g1 = make_graph()
     g2 = make_graph()
 
-    g1.add((tarek, likes, pizza))
-    g1.add((bob, likes, cheese))
+    g1.add((TAREK, LIKES, PIZZA))
+    g1.add((BOB, LIKES, CHEESE))
 
-    g2.add((bob, likes, cheese))
+    g2.add((BOB, LIKES, CHEESE))
 
     g3 = g1 - g2
 
     assert len(g3) == 1
-    assert (tarek, likes, pizza) in g3
-    assert (tarek, likes, cheese) not in g3
+    assert (TAREK, LIKES, PIZZA) in g3
+    assert (TAREK, LIKES, CHEESE) not in g3
 
-    assert (bob, likes, cheese) not in g3
+    assert (BOB, LIKES, CHEESE) not in g3
 
     g1 -= g2
 
     assert len(g1) == 1
-    assert (tarek, likes, pizza) in g1
-    assert (tarek, likes, cheese) not in g1
+    assert (TAREK, LIKES, PIZZA) in g1
+    assert (TAREK, LIKES, CHEESE) not in g1
 
-    assert (bob, likes, cheese) not in g1
+    assert (BOB, LIKES, CHEESE) not in g1
 
 
 def test_graph_add(make_graph: GraphFactory):
     g1 = make_graph()
     g2 = make_graph()
 
-    g1.add((tarek, likes, pizza))
-    g2.add((bob, likes, cheese))
+    g1.add((TAREK, LIKES, PIZZA))
+    g2.add((BOB, LIKES, CHEESE))
 
     g3 = g1 + g2
 
     assert len(g3) == 2
-    assert (tarek, likes, pizza) in g3
-    assert (tarek, likes, cheese) not in g3
+    assert (TAREK, LIKES, PIZZA) in g3
+    assert (TAREK, LIKES, CHEESE) not in g3
 
-    assert (bob, likes, cheese) in g3
+    assert (BOB, LIKES, CHEESE) in g3
 
     g1 += g2
 
     assert len(g1) == 2
-    assert (tarek, likes, pizza) in g1
-    assert (tarek, likes, cheese) not in g1
+    assert (TAREK, LIKES, PIZZA) in g1
+    assert (TAREK, LIKES, CHEESE) not in g1
 
-    assert (bob, likes, cheese) in g1
+    assert (BOB, LIKES, CHEESE) in g1
 
 
 def test_graph_intersection(make_graph: GraphFactory):
     g1 = make_graph()
     g2 = make_graph()
 
-    g1.add((tarek, likes, pizza))
-    g1.add((michel, likes, cheese))
+    g1.add((TAREK, LIKES, PIZZA))
+    g1.add((MICHEL, LIKES, CHEESE))
 
-    g2.add((bob, likes, cheese))
-    g2.add((michel, likes, cheese))
+    g2.add((BOB, LIKES, CHEESE))
+    g2.add((MICHEL, LIKES, CHEESE))
 
     g3 = g1 * g2
 
     assert len(g3) == 1
-    assert (tarek, likes, pizza) not in g3
-    assert (tarek, likes, cheese) not in g3
+    assert (TAREK, LIKES, PIZZA) not in g3
+    assert (TAREK, LIKES, CHEESE) not in g3
 
-    assert (bob, likes, cheese) not in g3
+    assert (BOB, LIKES, CHEESE) not in g3
 
-    assert (michel, likes, cheese) in g3
+    assert (MICHEL, LIKES, CHEESE) in g3
 
     g1 *= g2
 
     assert len(g1) == 1
 
-    assert (tarek, likes, pizza) not in g1
-    assert (tarek, likes, cheese) not in g1
+    assert (TAREK, LIKES, PIZZA) not in g1
+    assert (TAREK, LIKES, CHEESE) not in g1
 
-    assert (bob, likes, cheese) not in g1
+    assert (BOB, LIKES, CHEESE) not in g1
 
-    assert (michel, likes, cheese) in g1
+    assert (MICHEL, LIKES, CHEESE) in g1
 
 
 def test_guess_format_for_parse(
@@ -373,7 +373,7 @@ def test_guess_format_for_parse_http(
     http_file_server: HTTPFileServer,
     file: Path,
     content_type: Optional[str],
-    expected_result: Union[int, ExceptionChecker],
+    expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
     headers: Tuple[Tuple[str, str], ...] = tuple()
@@ -384,25 +384,28 @@ def test_guess_format_for_parse_http(
         ProtoFileResource(headers, file),
         suffix=f"/{file.name}",
     )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-
+    checker = OutcomeChecker.from_primitive(expected_result)
     assert 0 == len(graph)
-    with ExitStack() as exit_stack:
-        if isinstance(expected_result, ExceptionChecker):
-            catcher = exit_stack.enter_context(pytest.raises(expected_result.type))
+    with checker.context():
         graph.parse(location=file_info.request_url)
+        checker.check(len(graph))
 
-    if catcher is not None:
-        # assert catcher.value is not None
-        assert isinstance(expected_result, ExceptionChecker)
-        logging.debug("graph = %s", list(graph.triples((None, None, None))))
-    else:
-        assert isinstance(expected_result, int)
-        assert expected_result == len(graph)
+
+@pytest.mark.webtest
+def test_guess_format_for_parse_http_text_plain():
+    # Any raw url of a file from GitHub will return the content-type with text/plain.
+    url = "https://raw.githubusercontent.com/AGLDWG/vocpub-profile/master/validators/validator.ttl"
+    graph = Graph().parse(url)
+    assert len(graph) > 0
+
+    # A url that returns content-type text/html.
+    url = "https://github.com/RDFLib/rdflib/issues/2734"
+    with pytest.raises(PluginException):
+        graph = Graph().parse(url)
 
 
 def test_parse_file_uri(make_graph: GraphFactory):
-    EG = Namespace("http://example.org/#")
+    EG = Namespace("http://example.org/#")  # noqa: N806
     g = make_graph()
     g.parse(
         Path(os.path.join(TEST_DATA_DIR, "suites", "nt_misc", "simple-04.nt"))

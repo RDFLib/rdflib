@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from io import BytesIO
 
 from rdflib.graph import ConjunctiveGraph, Graph

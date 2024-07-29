@@ -3,6 +3,7 @@ of the output.
 
 https://github.com/RDFLib/rdflib/issues/1998
 """
+
 import rdflib
 
 

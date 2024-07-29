@@ -164,12 +164,18 @@ class PROV(DefinedNamespace):
 
     # http://www.w3.org/2002/07/owl#DatatypeProperty
     atTime: URIRef  # The time at which an InstantaneousEvent occurred, in the form of xsd:dateTime.
-    endedAtTime: URIRef  # The time at which an activity ended. See also prov:startedAtTime.
+    endedAtTime: (
+        URIRef  # The time at which an activity ended. See also prov:startedAtTime.
+    )
     generatedAtTime: URIRef  # The time at which an entity was completely created and is available for use.
-    invalidatedAtTime: URIRef  # The time at which an entity was invalidated (i.e., no longer usable).
+    invalidatedAtTime: (
+        URIRef  # The time at which an entity was invalidated (i.e., no longer usable).
+    )
     provenanceUriTemplate: URIRef  # Relates a provenance service to a URI template string for constructing provenance-URIs.
     removedKey: URIRef  # removedKey
-    startedAtTime: URIRef  # The time at which an activity started. See also prov:endedAtTime.
+    startedAtTime: (
+        URIRef  # The time at which an activity started. See also prov:endedAtTime.
+    )
     value: URIRef  # value
 
     # http://www.w3.org/2002/07/owl#FunctionalProperty
@@ -194,13 +200,17 @@ class PROV(DefinedNamespace):
     generated: URIRef  # generated
     hadActivity: URIRef  # The _optional_ Activity of an Influence, which used, generated, invalidated, or was the responsibility of some Entity. This property is _not_ used by ActivityInfluence (use prov:activity instead).
     hadDictionaryMember: URIRef  # hadDictionaryMember
-    hadGeneration: URIRef  # The _optional_ Generation involved in an Entity's Derivation.
+    hadGeneration: (
+        URIRef  # The _optional_ Generation involved in an Entity's Derivation.
+    )
     hadMember: URIRef  # hadMember
     hadPlan: URIRef  # The _optional_ Plan adopted by an Agent in Association with some Activity. Plan specifications are out of the scope of this specification.
     hadPrimarySource: URIRef  # hadPrimarySource
     hadRole: URIRef  # This property has multiple RDFS domains to suit multiple OWL Profiles. See <a href="#owl-profile">PROV-O OWL Profile</a>.
     hadUsage: URIRef  # The _optional_ Usage involved in an Entity's Derivation.
-    has_anchor: URIRef  # Indicates anchor URI for a potentially dynamic resource instance.
+    has_anchor: (
+        URIRef  # Indicates anchor URI for a potentially dynamic resource instance.
+    )
     has_provenance: URIRef  # Indicates a provenance-URI for a resource; the resource identified by this property presents a provenance record about its subject or anchor resource.
     has_query_service: URIRef  # Indicates a provenance query service that can access provenance related to its subject or anchor resource.
     influenced: URIRef  # influenced

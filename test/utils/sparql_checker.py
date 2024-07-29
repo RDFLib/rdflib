@@ -1,17 +1,14 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+
+from __future__ import annotations
+
 import enum
 import logging
 import pprint
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from io import BytesIO, StringIO
-from test.utils import BNodeHandling, GraphHelper
-from test.utils.dawg_manifest import Manifest, ManifestEntry
-from test.utils.iri import URIMapper
-from test.utils.namespace import MF, QT, UT
-from test.utils.result import ResultType, assert_bindings_collections_equal
-from test.utils.urlopen import context_urlopener
 from typing import Dict, Generator, Optional, Set, Tuple, Type, Union, cast
 from urllib.parse import urljoin
 
@@ -28,6 +25,12 @@ from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.query import Result
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
 from rdflib.util import guess_format
+from test.utils import BNodeHandling, GraphHelper
+from test.utils.dawg_manifest import Manifest, ManifestEntry
+from test.utils.iri import URIMapper
+from test.utils.namespace import MF, QT, UT
+from test.utils.result import ResultType, assert_bindings_collections_equal
+from test.utils.urlopen import context_urlopener
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +72,7 @@ class TypeInfo:
             self.expected_outcome_property = UT.result
 
     @classmethod
-    def make_dict(cls, *test_types: "TypeInfo") -> Dict[Identifier, "TypeInfo"]:
+    def make_dict(cls, *test_types: TypeInfo) -> Dict[Identifier, TypeInfo]:
         return dict((test_type.id, test_type) for test_type in test_types)
 
 
@@ -97,7 +100,7 @@ class GraphData:
     label: Optional[Literal] = None
 
     @classmethod
-    def from_graph(cls, graph: Graph, identifier: Identifier) -> "GraphData":
+    def from_graph(cls, graph: Graph, identifier: Identifier) -> GraphData:
         if isinstance(identifier, URIRef):
             return cls(identifier)
         elif isinstance(identifier, BNode):
@@ -290,11 +293,11 @@ def check_syntax(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
         if entry.type_info.negative:
             catcher = xstack.enter_context(pytest.raises(Exception))
         if entry.type_info.query_type is QueryType.UPDATE:
-            tree = parseUpdate(query_text)
-            translateUpdate(tree)
+            parse_tree = parseUpdate(query_text)
+            translateUpdate(parse_tree)
         elif entry.type_info.query_type is QueryType.QUERY:
-            tree = parseQuery(query_text)
-            translateQuery(tree)
+            query_tree = parseQuery(query_text)
+            translateQuery(query_tree)
     if catcher is not None:
         assert catcher.value is not None
         logging.info("catcher.value = %s", catcher.value)

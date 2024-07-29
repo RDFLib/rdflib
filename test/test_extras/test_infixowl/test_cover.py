@@ -1,5 +1,3 @@
-from test.data import TEST_DATA_DIR, context0
-
 import pytest
 
 from rdflib import OWL, RDF, RDFS, XSD, Graph, Literal, Namespace, URIRef, logger
@@ -28,6 +26,7 @@ from rdflib.extras.infixowl import (
     some,
     value,
 )
+from test.data import CONTEXT0, TEST_DATA_DIR
 
 EXNS = Namespace("http://example.org/vocab/")
 PZNS = Namespace(
@@ -105,14 +104,14 @@ def test_allclasses():
 
 
 def test_check_allclasses():
-    from test.data import bob, michel, tarek
+    from test.data import BOB, MICHEL, TAREK
 
     g = Graph()
     g.bind("ex", PZNS)
 
-    g.add((tarek, RDF.type, OWL.Class))
-    g.add((michel, RDF.type, OWL.Class))
-    g.add((bob, RDF.type, OWL.Class))
+    g.add((TAREK, RDF.type, OWL.Class))
+    g.add((MICHEL, RDF.type, OWL.Class))
+    g.add((BOB, RDF.type, OWL.Class))
 
     assert set(g.subjects(predicate=RDF.type, object=OWL.Class)) == {
         URIRef("urn:example:bob"),
@@ -230,7 +229,7 @@ def test_owlrdfproxylist():
 
     ogbujiBros.append(fred)
 
-    ogbujiBros += bert
+    ogbujiBros += bert  # noqa: N806
 
     assert ogbujiBros[1] == EXNS.uche
 
@@ -284,7 +283,7 @@ def test_deepclassclear():
 
     classA = classE | classF | anonClass  # noqa: N806
     classG = Class(EXNS.G, complementOf=classA)  # noqa: N806
-    classB += classA
+    classB += classA  # noqa: N806
     classA.equivalentClass = [Class()]
     classA.complementOf = classG
     classB.subClassOf = [EXNS.someProp << some >> classC]
@@ -329,7 +328,7 @@ def test_changeoperator():
     # Converts a unionOf / intersectionOf class expression into one
     # that instead uses the given operator
 
-    g = Graph(identifier=context0)
+    g = Graph(identifier=CONTEXT0)
     g.bind("ex", EXNS)
     Individual.factoryGraph = g
 

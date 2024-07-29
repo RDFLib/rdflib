@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 These method recursively evaluate the SPARQL Algebra
 
@@ -15,6 +13,8 @@ A list of dicts (solution mappings) is returned, apart from GroupBy which may
 also return a dict of list of dicts
 
 """
+
+from __future__ import annotations
 
 import collections
 import itertools
@@ -62,6 +62,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 if TYPE_CHECKING:
     from rdflib.paths import Path
+
 
 _Triple = Tuple[Identifier, Identifier, Identifier]
 
@@ -157,7 +158,7 @@ def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, 
         return _join(a, b)
 
 
-def evalUnion(ctx: QueryContext, union: CompValue) -> Iterable[FrozenBindings]:
+def evalUnion(ctx: QueryContext, union: CompValue) -> List[Any]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)

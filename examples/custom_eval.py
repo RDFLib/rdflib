@@ -16,7 +16,6 @@ i.e. in your setup.py::
     }
 """
 
-
 from pathlib import Path
 
 import rdflib
@@ -31,7 +30,7 @@ inferred_sub_class = (
 )  # any number of rdfs.subClassOf
 
 
-def customEval(ctx, part):
+def customEval(ctx, part):  # noqa: N802
     """
     Rewrite triple patterns to get super-classes
     """

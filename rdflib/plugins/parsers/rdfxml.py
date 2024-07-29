@@ -1,6 +1,7 @@
 """
 An RDF/XML parser for RDFLib
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
@@ -87,12 +88,14 @@ class BagID(URIRef):
     __slots__ = ["li"]
 
     def __init__(self, val):
-        super(URIRef, self).__init__(val)
+        # type error: Too many arguments for "__init__" of "object"
+        super(URIRef, self).__init__(val)  # type: ignore[call-arg]
         self.li = 0
 
     def next_li(self):
         self.li += 1
-        return RDFNS["_%s" % self.li]
+        # type error: Type expected within [...]
+        return RDFNS["_%s" % self.li]  # type: ignore[misc]
 
 
 class ElementHandler:
@@ -178,7 +181,8 @@ class RDFXMLHandler(handler.ContentHandler):
         stack.append(ElementHandler())
         current = self.current
         parent = self.parent
-        base = attrs.get(BASE, None)
+        # type error: No overlaod for "get" of "AttributesImpl" mactches tuple (str, str)
+        base = attrs.get(BASE, None)  # type: ignore[call-overload, unused-ignore]
         if base is not None:
             base, frag = urldefrag(base)
             if parent and parent.base:
@@ -195,7 +199,8 @@ class RDFXMLHandler(handler.ContentHandler):
                 if systemId:
                     base, frag = urldefrag(systemId)
         current.base = base
-        language = attrs.get(LANG, None)
+        # type error: No overlaod for "get" of "AttributesImpl" mactches tuple (str, str)
+        language = attrs.get(LANG, None)  # type: ignore[call-overload, unused-ignore]
         if language is None:
             if parent:
                 language = parent.language
@@ -273,8 +278,9 @@ class RDFXMLHandler(handler.ContentHandler):
             name = URIRef("".join(name))  # type: ignore[assignment, arg-type]
         atts = {}
         for n, v in attrs.items():
+            # mypy error: mypy thinks n[0]==None is unreachable
             if n[0] is None:
-                att = n[1]
+                att = n[1]  # type: ignore[unreachable, unused-ignore]
             else:
                 att = "".join(n)
             if att.startswith(XMLNS) or att[0:3].lower() == "xml":
@@ -578,7 +584,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 current.object = "<%s:%s" % (prefix, name[1])
             else:
                 current.object = "<%s" % name[1]
-            if not name[0] in current.declared:
+            if not name[0] in current.declared:  # noqa: E713
                 current.declared[name[0]] = prefix
                 if prefix:
                     current.object += ' xmlns:%s="%s"' % (prefix, name[0])
@@ -586,10 +592,10 @@ class RDFXMLHandler(handler.ContentHandler):
                     current.object += ' xmlns="%s"' % name[0]
         else:
             current.object = "<%s" % name[1]
-
-        for name, value in attrs.items():
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "Tuple[str, str]")
+        for name, value in attrs.items():  # type: ignore[assignment, unused-ignore]
             if name[0]:
-                if not name[0] in current.declared:
+                if not name[0] in current.declared:  # noqa: E713
                     current.declared[name[0]] = self._current_context[name[0]]
                 name = current.declared[name[0]] + ":" + name[1]
             else:
@@ -640,7 +646,8 @@ class RDFXMLParser(Parser):
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:
-            content_handler.preserve_bnode_ids = preserve_bnode_ids
+            # type error: ContentHandler has no attribute "preserve_bnode_ids"
+            content_handler.preserve_bnode_ids = preserve_bnode_ids  # type: ignore[attr-defined, unused-ignore]
         # # We're only using it once now
         # content_handler.reset()
         # self._parser.reset()

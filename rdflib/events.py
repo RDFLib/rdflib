@@ -1,4 +1,4 @@
-__doc__ = """
+"""
 Dirt Simple Events
 
 A Dispatcher (or a subclass of Dispatcher) stores event handlers that
@@ -22,6 +22,10 @@ fired:
   >>> d.dispatch(Event(foo='bar', data='yours', used_by='the event handlers'))
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
+
+from __future__ import annotations
+
+from typing import Any, Dict, Optional
 
 __all__ = ["Event", "Dispatcher"]
 
@@ -53,9 +57,9 @@ class Dispatcher:
     subscribers.
     """
 
-    _dispatch_map = None
+    _dispatch_map: Optional[Dict[Any, Any]] = None
 
-    def set_map(self, amap):
+    def set_map(self, amap: Dict[Any, Any]):
         self._dispatch_map = amap
         return self
 
@@ -68,12 +72,14 @@ class Dispatcher:
         """
         if self._dispatch_map is None:
             self.set_map({})
-        lst = self._dispatch_map.get(event_type, None)
+        # type error: error: Item "None" of "Optional[Dict[Any, Any]]" has no attribute "get"
+        lst = self._dispatch_map.get(event_type, None)  # type: ignore[union-attr]
         if lst is None:
             lst = [handler]
         else:
             lst.append(handler)
-        self._dispatch_map[event_type] = lst
+        # type error: Unsupported target for indexed assignment ("Optional[Dict[Any, Any]]")
+        self._dispatch_map[event_type] = lst  # type: ignore[index]
         return self
 
     def dispatch(self, event):

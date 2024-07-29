@@ -25,6 +25,8 @@ information.
 
 """
 
+from __future__ import annotations
+
 from importlib.metadata import EntryPoint, entry_points
 from typing import (
     TYPE_CHECKING,
@@ -73,10 +75,10 @@ rdflib_entry_points = {
     "rdf.plugins.updateprocessor": UpdateProcessor,
 }
 
-_plugins: Dict[Tuple[str, Type[Any]], "Plugin"] = {}
+_plugins: Dict[Tuple[str, Type[Any]], Plugin] = {}
 
 
-class PluginException(Error):
+class PluginException(Error):  # noqa: N818
     pass
 
 
@@ -102,7 +104,7 @@ class Plugin(Generic[PluginT]):
 
 
 class PKGPlugin(Plugin[PluginT]):
-    def __init__(self, name: str, kind: Type[PluginT], ep: "EntryPoint"):
+    def __init__(self, name: str, kind: Type[PluginT], ep: EntryPoint):
         self.name = name
         self.kind = kind
         self.ep = ep
@@ -152,13 +154,11 @@ else:
 @overload
 def plugins(
     name: Optional[str] = ..., kind: Type[PluginT] = ...
-) -> Iterator[Plugin[PluginT]]:
-    ...
+) -> Iterator[Plugin[PluginT]]: ...
 
 
 @overload
-def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]:
-    ...
+def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]: ...
 
 
 def plugins(

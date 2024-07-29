@@ -49,10 +49,10 @@ if __name__ == "__main__":
     person = URIRef("ex:person")
     dad = URIRef("ex:d")
     mom = URIRef("ex:m")
-    momOfDad = URIRef("ex:gm0")
-    momOfMom = URIRef("ex:gm1")
-    dadOfDad = URIRef("ex:gf0")
-    dadOfMom = URIRef("ex:gf1")
+    momOfDad = URIRef("ex:gm0")  # noqa: N816
+    momOfMom = URIRef("ex:gm1")  # noqa: N816
+    dadOfDad = URIRef("ex:gf0")  # noqa: N816
+    dadOfMom = URIRef("ex:gf1")  # noqa: N816
 
     parent = URIRef("ex:parent")
 

@@ -1,6 +1,9 @@
 """
 This example demonstrates how to use a custom global URL opener installed with `urllib.request.install_opener` to block access to URLs.
 """
+
+from __future__ import annotations
+
 import http.client
 import logging
 import os

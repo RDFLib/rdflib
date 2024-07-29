@@ -1,7 +1,6 @@
-from rdflib import BNode, Graph, Namespace
+from rdflib import BNode, Graph
 from rdflib.compare import isomorphic
-
-NS = Namespace("http://example.org/")
+from test.utils.namespace import EGDO
 
 
 def test_no_spurious_semicolon():
@@ -15,8 +14,8 @@ def test_no_spurious_semicolon():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
         ]
     )
     got = Graph().query(sparql).graph
@@ -34,8 +33,8 @@ def test_one_spurious_semicolon():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
         ]
     )
     got = Graph().query(sparql).graph
@@ -53,8 +52,8 @@ def test_one_spurious_semicolon_no_perdiod():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
         ]
     )
     got = Graph().query(sparql).graph
@@ -72,8 +71,8 @@ def test_two_spurious_semicolons_no_period():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
         ]
     )
     got = Graph().query(sparql).graph
@@ -91,8 +90,8 @@ def test_one_spurious_semicolons_bnode():
     expected.addN(
         t + (expected,)
         for t in [
-            (BNode("a"), NS.b, NS.c),
-            (BNode("a"), NS.d, NS.e),
+            (BNode("a"), EGDO.b, EGDO.c),
+            (BNode("a"), EGDO.d, EGDO.e),
         ]
     )
     got = Graph().query(sparql).graph
@@ -116,9 +115,9 @@ def test_pathological():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
-            (NS.a, NS.f, NS.g),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
+            (EGDO.a, EGDO.f, EGDO.g),
         ]
     )
     got = Graph().query(sparql).graph
@@ -137,9 +136,9 @@ def test_mixing_spurious_semicolons_and_commas():
     expected.addN(
         t + (expected,)
         for t in [
-            (NS.a, NS.b, NS.c),
-            (NS.a, NS.d, NS.e),
-            (NS.a, NS.d, NS.f),
+            (EGDO.a, EGDO.b, EGDO.c),
+            (EGDO.a, EGDO.d, EGDO.e),
+            (EGDO.a, EGDO.d, EGDO.f),
         ]
     )
     got = Graph().query(sparql).graph
