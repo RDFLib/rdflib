@@ -22,7 +22,7 @@ try:
 
     _HAS_ORJSON = True
 except ImportError:
-    orjson = None  # type: ignore[assignment]
+    orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
 
