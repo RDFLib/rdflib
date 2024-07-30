@@ -316,7 +316,8 @@ class Result:
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
             streamb: BytesIO = BytesIO()
-            stream2 = EncodeOnlyUnicode(streamb)
+            stream2 = EncodeOnlyUnicode(streamb)  # TODO: Remove the need for this
+            # TODO: All QueryResult serializers should write to a Bytes Stream.
             # type error: Argument 1 to "serialize" of "ResultSerializer" has incompatible type "EncodeOnlyUnicode"; expected "IO[Any]"
             serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore[arg-type]
             return streamb.getvalue()
