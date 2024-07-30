@@ -55,6 +55,7 @@ from typing import (
     Any,
     Callable,
     Dict,
+    Generator,
     List,
     Optional,
     Tuple,
@@ -457,7 +458,7 @@ class BNode(IdentifiedNode):
     def __new__(
         cls,
         value: Optional[str] = None,
-        _sn_gen: Optional[Union[Callable[[], str], GeneratorType]] = None,
+        _sn_gen: Optional[Union[Callable[[], str], Generator]] = None,
         _prefix: str = _unique_id(),
     ) -> BNode:
         """
@@ -468,7 +469,7 @@ class BNode(IdentifiedNode):
             # a different instance of this module at some other time.
             if _sn_gen is not None:
                 if callable(_sn_gen):
-                    sn_result: Union[str, GeneratorType] = _sn_gen()
+                    sn_result: Union[str, Generator] = _sn_gen()
                 else:
                     sn_result = _sn_gen
                 if isinstance(sn_result, GeneratorType):
