@@ -49,6 +49,7 @@ from collections import defaultdict
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from re import compile, sub
+from types import GeneratorType
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -456,7 +457,7 @@ class BNode(IdentifiedNode):
     def __new__(
         cls,
         value: Optional[str] = None,
-        _sn_gen: Optional[Callable[[], str]] = None,
+        _sn_gen: Optional[Union[Callable[[], str], GeneratorType]] = None,
         _prefix: str = _unique_id(),
     ) -> BNode:
         """
@@ -466,12 +467,19 @@ class BNode(IdentifiedNode):
             # so that BNode values do not collide with ones created with
             # a different instance of this module at some other time.
             if _sn_gen is not None:
-                node_id = _sn_gen()
+                if callable(_sn_gen):
+                    sn_result: Union[str, GeneratorType] = _sn_gen()
+                else:
+                    sn_result = _sn_gen
+                if isinstance(sn_result, GeneratorType):
+                    node_id = next(sn_result)
+                else:
+                    node_id = sn_result
             else:
                 node_id = uuid4().hex
-            # note, for two (and only two) immutable strings,
+            # note, for two (and only two) string variables,
             # concat with + is faster than f"{x}{y}"
-            value = _prefix + node_id
+            value = _prefix + f"{node_id}"
         else:
             # TODO: check that value falls within acceptable bnode value range
             # for RDF/XML needs to be something that can be serialized
