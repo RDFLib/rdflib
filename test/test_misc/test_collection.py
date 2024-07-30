@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from rdflib import BNode, Graph, Literal
+from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.collection import Collection
 
 
@@ -37,5 +37,16 @@ def test_scenario() -> None:
     del c[3]
 
     c.clear()
+
+    assert len(c) == 0
+
+
+def test_empty_list() -> None:
+    nil = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil")
+    g = Graph()
+
+    c = Collection(g, nil)
+
+    assert set(g) == set(), "Collection changed the graph"
 
     assert len(c) == 0
