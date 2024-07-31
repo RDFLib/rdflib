@@ -23,7 +23,7 @@ class TestPatchParser:
         ds = Dataset()
         nq_path = os.path.relpath(
             os.path.join(TEST_DATA_DIR, "patch/add_and_delete_bnode_triples.rdp"),
-            os.curdir
+            os.curdir,
         )
         with open(nq_path, "rb") as data:
             ds.parse(data, format="patch")
@@ -59,7 +59,9 @@ class TestPatchParser:
             ds.parse(data, format="patch")
         namespaces = [tup[0] for tup in (ds.namespaces())]
         assert "present" in namespaces
-        assert "@prefix removed: <http://ns-for-prefix-to-remove#> ." not in ds.serialize()
+        assert (
+            "@prefix removed: <http://ns-for-prefix-to-remove#> ." not in ds.serialize()
+        )
 
     def test_06(self):
         ds = Dataset()
@@ -87,8 +89,9 @@ class TestPatchParser:
         # test will pass if changed to `for t in ds.de_skolemize():`:
         for t in ds:
             assert BNode("bn1") in t
-            assert URIRef(
-                'https://rdflib.github.io/.well-known/genid/rdflib/bn1') not in t
+            assert (
+                URIRef("https://rdflib.github.io/.well-known/genid/rdflib/bn1") not in t
+            )
 
     def test_08(self):
         ds = Dataset()

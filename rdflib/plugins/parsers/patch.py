@@ -8,6 +8,7 @@ from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import Dataset
 from rdflib.parser import InputSource
 from rdflib.plugins.parsers.nquads import NQuadsParser
+
 # Build up from the NTriples parser:
 from rdflib.plugins.parsers.ntriples import r_wspace
 from rdflib.term import BNode
@@ -18,14 +19,14 @@ _BNodeContextType = MutableMapping[str, BNode]
 
 
 class Operation(Enum):
-    AddTripleOrQuad = 'A'
-    DeleteTripleOrQuad = 'D'
-    AddPrefix = 'PA'
-    DeletePrefix = 'PD'
-    TransactionStart = 'TX'
-    TransactionCommit = 'TC'
-    TransactionAbort = 'TA'
-    Header = 'H'
+    AddTripleOrQuad = "A"
+    DeleteTripleOrQuad = "D"
+    AddPrefix = "PA"
+    DeletePrefix = "PD"
+    TransactionStart = "TX"
+    TransactionCommit = "TC"
+    TransactionAbort = "TA"
+    Header = "H"
 
 
 class RDFPatchParser(NQuadsParser):
@@ -42,7 +43,7 @@ class RDFPatchParser(NQuadsParser):
 
         :type inputsource: `rdflib.parser.InputSource`
         :param inputsource: the source of RDF Patch formatted data
-        :type sink: `rdflib.graph.Graph`
+        :type sink: `rdflib.graph.Dataset`
         :param sink: where to send parsed data
         :type bnode_context: `dict`, optional
         :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
@@ -52,9 +53,7 @@ class RDFPatchParser(NQuadsParser):
             "RDFPatchParser must be given" " a context aware store."
         )
         # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
-        self.sink: Dataset = Dataset(  # type: ignore[assignment]
-            store=sink.store
-        )
+        self.sink: Dataset = Dataset(store=sink.store)  # type: ignore[assignment]
         self.skolemize = skolemize
 
         source = inputsource.getCharacterStream()
@@ -105,11 +104,11 @@ class RDFPatchParser(NQuadsParser):
             self.delete_prefix()
 
     def add_triple_or_quad(self):
-        self.sink.parse(data=self.line, format='nquads', skolemize=True)
+        self.sink.parse(data=self.line, format="nquads", skolemize=True)
 
     def delete_triple_or_quad(self):
         removal_ds = Dataset()
-        removal_ds.parse(data=self.line, format='nquads', skolemize=True)
+        removal_ds.parse(data=self.line, format="nquads", skolemize=True)
         triple_or_quad = next(iter(removal_ds))
         self.sink.remove(triple_or_quad)
 
@@ -129,8 +128,9 @@ class RDFPatchParser(NQuadsParser):
                 self.eat_op(op.value)
                 return op
         raise ValueError(
-            f"Invalid or no Operation found in line: \"{self.line}\". Valid Operations "
-            f"codes are {', '.join([op.value for op in Operation])}")
+            f'Invalid or no Operation found in line: "{self.line}". Valid Operations '
+            f"codes are {', '.join([op.value for op in Operation])}"
+        )
 
     def eat_op(self, op: str) -> None:
         self.line = self.line.lstrip(op)
