@@ -22,7 +22,7 @@ from typing import (
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
@@ -263,22 +263,24 @@ class QueryContext:
             self.bindings.update(initBindings)
 
         self.graph: Optional[Graph]
-        self._dataset: Optional[ConjunctiveGraph]
+        self._dataset: Optional[Dataset]
         if isinstance(graph, ConjunctiveGraph):
             if datasetClause:
-                self._dataset = ConjunctiveGraph()
+                self._dataset = Dataset()
                 self.graph = Graph()
                 for d in datasetClause:
                     if d.default:
-                        self.graph += graph.get_context(d.default)
-                        if not graph.get_context(d.default):
+                        from_graph = graph.get_context(d.default)
+                        self.graph += from_graph
+                        if not from_graph:
                             self.load(d.default, default=True)
                     elif d.named:
                         namedGraphs = Graph(
                             store=self.dataset.store, identifier=d.named
                         )
-                        namedGraphs += graph.get_context(d.named)
-                        if not graph.get_context(d.named):
+                        from_named_graphs = graph.get_context(d.named)
+                        namedGraphs += from_named_graphs
+                        if not from_named_graphs:
                             self.load(d.named, default=False)
             else:
                 self._dataset = graph
