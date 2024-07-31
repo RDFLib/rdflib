@@ -263,8 +263,8 @@ class QueryContext:
             self.bindings.update(initBindings)
 
         self.graph: Optional[Graph]
-        self._dataset: Optional[Dataset]
-        if isinstance(graph, ConjunctiveGraph):
+        self._dataset: Optional[Union[Dataset, ConjunctiveGraph]]
+        if isinstance(graph, (Dataset, ConjunctiveGraph)):
             if datasetClause:
                 self._dataset = Dataset()
                 self.graph = Graph()
