@@ -13,12 +13,25 @@ from rdflib.plugins.parsers.nquads import NQuadsParser
 from rdflib.plugins.parsers.ntriples import r_wspace
 from rdflib.term import BNode
 
-__all__ = ["RDFPatchParser"]
+__all__ = ["RDFPatchParser", "Operation"]
 
 _BNodeContextType = MutableMapping[str, BNode]
 
 
 class Operation(Enum):
+    """
+    Enum of RDF Patch operations.
+
+    Operations:
+    - `AddTripleOrQuad` (A): Adds a triple or quad.
+    - `DeleteTripleOrQuad` (D): Deletes a triple or quad.
+    - `AddPrefix` (PA): Adds a prefix.
+    - `DeletePrefix` (PD): Deletes a prefix.
+    - `TransactionStart` (TX): Starts a transaction.
+    - `TransactionCommit` (TC): Commits a transaction.
+    - `TransactionAbort` (TA): Aborts a transaction.
+    - `Header` (H): Specifies a header.
+    """
     AddTripleOrQuad = "A"
     DeleteTripleOrQuad = "D"
     AddPrefix = "PA"
