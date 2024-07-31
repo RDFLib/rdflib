@@ -32,6 +32,7 @@ class Operation(Enum):
     - `TransactionAbort` (TA): Aborts a transaction.
     - `Header` (H): Specifies a header.
     """
+
     AddTripleOrQuad = "A"
     DeleteTripleOrQuad = "D"
     AddPrefix = "PA"
