@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from rdflib import Dataset, BNode, URIRef
+from rdflib import BNode, Dataset, URIRef
 from test.data import TEST_DATA_DIR
 
 TEST_BASE = os.path.join(TEST_DATA_DIR, "patch")
