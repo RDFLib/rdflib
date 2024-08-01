@@ -7,9 +7,11 @@ import pathlib
 import re
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
+from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
 from typing import (  # Callable,
     IO,
+    TYPE_CHECKING,
     BinaryIO,
     Collection,
     ContextManager,
@@ -29,6 +31,7 @@ from _pytest.mark.structures import ParameterSet
 
 from rdflib.graph import Graph
 from rdflib.parser import (
+    BytesIOWrapper,
     FileInputSource,
     InputSource,
     StringInputSource,
@@ -666,3 +669,65 @@ def test_create_input_source(
             )
 
     logging.debug("input_source = %s, catcher = %s", input_source, catcher)
+
+
+def test_bytesio_wrapper():
+    wrapper = BytesIOWrapper("hello world")
+    assert wrapper.seekable()
+    assert wrapper.read(1) == b"h"
+    assert wrapper.read(1) == b"e"
+    assert wrapper.seek(0) == 0
+    assert wrapper.read() == b"hello world"
+    wrapper.seek(0)
+    ba = bytearray(7)
+    assert wrapper.readinto(ba) == 7
+    assert ba == b"hello w"
+    assert not wrapper.closed
+    wrapper.close()
+    assert wrapper.closed
+
+    text_stream = TextIOWrapper(BytesIO(b"hello world"))
+    wrapper = BytesIOWrapper(text_stream)
+    assert wrapper.seekable()
+    assert wrapper.read(1) == b"h"
+    assert wrapper.read(1) == b"e"
+    assert wrapper.tell() == 2
+    assert wrapper.seek(0) == 0
+    assert wrapper.read() == b"hello world"
+    ba = bytearray(7)
+    assert wrapper.readinto(ba) == 0
+    wrapper.seek(0)
+    assert wrapper.readinto(ba) == 7
+    assert ba == b"hello w"
+
+    text_stream = StringIO("h∈llo world")
+    wrapper = BytesIOWrapper(text_stream)
+    assert wrapper.seekable()
+    assert wrapper.read(1) == b"h"
+    assert wrapper.read(1) == b"\xe2"
+    assert wrapper.read(1) == b"\x88"
+    assert wrapper.tell() == 3
+    assert wrapper.read(2) == b"\x88l"
+    assert wrapper.seek(0) == 0
+    assert wrapper.read() == b"h\xe2\x88\x88llo world"
+    ba = bytearray(7)
+    assert wrapper.readinto(ba) == 0
+    wrapper.seek(0)
+    assert wrapper.readinto(ba) == 7
+    assert ba == b"h\xe2\x88\x88llo"
+    nquads_dir = TEST_DATA_DIR.relative_to(Path.cwd()) / "nquads.rdflib"
+
+    with open(Path(nquads_dir / "test1.nquads"), "r") as f:
+        # not binary file, opened as a TextIO
+        if TYPE_CHECKING:
+            assert isinstance(f, TextIOWrapper)
+        wrapper = BytesIOWrapper(f)
+        assert not wrapper.closed
+        assert wrapper.name == str(nquads_dir / "test1.nquads")
+        assert wrapper.seekable()
+        assert wrapper.read(1) == b"<"
+        assert wrapper.read(1) == b"h"
+        assert wrapper.tell() == 2
+        assert wrapper.seek(0) == 0
+        assert wrapper.read(1) == b"<"
+    assert wrapper.closed

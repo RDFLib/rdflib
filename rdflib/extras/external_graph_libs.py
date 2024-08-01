@@ -76,7 +76,7 @@ def _rdflib_to_networkx_graph(
 def rdflib_to_networkx_multidigraph(
     graph: Graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
 ):
-    """Converts the given graph into a networkx.MultiDiGraph.
+    r"""Converts the given graph into a networkx.MultiDiGraph.
 
     The subjects and objects are the later nodes of the MultiDiGraph.
     The predicates are used as edge keys (to identify multi-edges).
@@ -119,7 +119,7 @@ def rdflib_to_networkx_multidigraph(
     True
     >>> mdg.has_edge(a, b, key=1)
     True
-    """  # noqa: W605
+    """
     import networkx as nx
 
     mdg = nx.MultiDiGraph()
@@ -133,7 +133,7 @@ def rdflib_to_networkx_digraph(
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
-    """Converts the given graph into a networkx.DiGraph.
+    r"""Converts the given graph into a networkx.DiGraph.
 
     As an rdflib.Graph() can contain multiple edges between nodes, by default
     adds the a 'triples' attribute to the single DiGraph edge with a list of
@@ -182,7 +182,7 @@ def rdflib_to_networkx_digraph(
     >>> 'triples' in dg[a][b]
     False
 
-    """  # noqa: W605
+    """
     import networkx as nx
 
     dg = nx.DiGraph()
@@ -196,7 +196,7 @@ def rdflib_to_networkx_graph(
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
-    """Converts the given graph into a networkx.Graph.
+    r"""Converts the given graph into a networkx.Graph.
 
     As an rdflib.Graph() can contain multiple directed edges between nodes, by
     default adds the a 'triples' attribute to the single DiGraph edge with a
@@ -245,7 +245,7 @@ def rdflib_to_networkx_graph(
     False
     >>> 'triples' in ug[a][b]
     False
-    """  # noqa: W605
+    """
     import networkx as nx
 
     g = nx.Graph()

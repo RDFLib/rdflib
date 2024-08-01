@@ -481,14 +481,14 @@ class Context:
             return self._context_cache[source_url]
 
         # type error: Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
-        source, _ = source_to_json(source_url)
-        if source and CONTEXT not in source:
+        source_json, _ = source_to_json(source_url)
+        if source_json and CONTEXT not in source_json:
             raise INVALID_REMOTE_CONTEXT
 
         # type error: Invalid index type "Optional[str]" for "Dict[str, Any]"; expected type "str"
-        self._context_cache[source_url] = source  # type: ignore[index]
+        self._context_cache[source_url] = source_json  # type: ignore[index]
 
-        return source
+        return source_json
 
     def _read_source(
         self,
