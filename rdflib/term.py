@@ -257,8 +257,13 @@ class IdentifiedNode(Identifier):
     The name "Identified Node" is not explicitly defined in the RDF specification, but can be drawn from this section: https://www.w3.org/TR/rdf-concepts/#section-URI-Vocabulary
     """
 
+    __slots__ = ()
+
     def __getnewargs__(self) -> Tuple[str]:
         return (str(self),)
+
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        raise NotImplementedError()
 
     def toPython(self) -> str:  # noqa: N802
         return str(self)
