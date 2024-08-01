@@ -18,7 +18,9 @@ class DOAP(DefinedNamespace):
 
     ArchRepository: URIRef  # GNU Arch source code repository. Dépôt GNU Arch du code source. Repositorio GNU Arch del código fuente. GNU Arch Quellcode-Versionierungssystem. Úložiště zdrojových kódů GNU Arch. Repositório GNU Arch do código fonte.
     BKRepository: URIRef  # BitKeeper source code repository. Dépôt BitKeeper du code source. Repositorio BitKeeper del código fuente. BitKeeper Quellcode-Versionierungssystem. Úložiště zdrojových kódů BitKeeper. Repositório BitKeeper do código fonte.
-    BazaarBranch: URIRef  # Bazaar source code branch. Código fonte da ramificação Bazaar.
+    BazaarBranch: (
+        URIRef  # Bazaar source code branch. Código fonte da ramificação Bazaar.
+    )
     CVSRepository: URIRef  # CVS source code repository. Dépôt CVS du code source. Repositorio CVS del código fuente. CVS Quellcode-Versionierungssystem. Úložiště zdrojových kódů CVS. Repositório CVS do código fonte.
     DarcsRepository: URIRef  # darcs source code repository. Dépôt darcs du code source. Repositorio darcs del código fuente. Repositório darcs do código fonte.
     GitBranch: URIRef  # Git source code branch. Código fonte da ramificação Git.
@@ -29,14 +31,18 @@ class DOAP(DefinedNamespace):
     SVNRepository: URIRef  # Subversion source code repository. Dépôt Subversion du code source. Repositorio Subversion del código fuente. Subversion Quellcode-Versionierungssystem. Úložiště zdrojových kódů Subversion. Repositório Subversion do código fonte.
     Specification: URIRef  # A specification of a system's aspects, technical or otherwise. A especificação de aspetos, técnicas ou outros do sistema.
     Version: URIRef  # Version information of a project release. Détails sur une version d'une release d'un projet. Información sobre la versión de un release del proyecto. Versionsinformation eines Projekt Releases. Informace o uvolněné verzi projektu. Informação sobre a versão do projeto lançado.
-    audience: URIRef  # Description of target user base Descrição do utilizador base alvo
+    audience: (
+        URIRef  # Description of target user base Descrição do utilizador base alvo
+    )
     blog: URIRef  # URI of a blog related to a project URI de um blog relacionado com um projeto
     browse: URIRef  # Web browser interface to repository. Interface web au dépôt. Interface web del repositorio. Web-Browser Interface für das Repository. Webové rozhraní pro prohlížení úložiště. Interface web do repositório.
     category: URIRef  # A category of project. Une catégorie de projet. Una categoría de proyecto. Eine Kategorie eines Projektes. Kategorie projektu. Uma categoría de projeto.
     created: URIRef  # Date when something was created, in YYYY-MM-DD form. e.g. 2004-04-05 Date à laquelle a été créé quelque chose, au format AAAA-MM-JJ (par ex. 2004-04-05) Fecha en la que algo fue creado, en formato AAAA-MM-DD. e.g. 2004-04-05 Erstellungsdatum von Irgendwas, angegeben im YYYY-MM-DD Format, z.B. 2004-04-05. Datum, kdy bylo něco vytvořeno ve formátu RRRR-MM-DD, např. 2004-04-05 Data em que algo foi criado, no formato AAAA-MM-DD. e.g. 2004-04-05
     description: URIRef  # Plain text description of a project, of 2-4 sentences in length. Texte descriptif d'un projet, long de 2 à 4 phrases. Descripción en texto plano de un proyecto, de 2 a 4 enunciados de longitud. Beschreibung eines Projekts als einfacher Text mit der Länge von 2 bis 4 Sätzen. Čistě textový, 2 až 4 věty dlouhý popis projektu. Descrição de um projeto em texto apenas, com 2 a 4 frases de comprimento.
     developer: URIRef  # Developer of software for the project. Développeur pour le projet. Desarrollador de software para el proyecto. Software-Entwickler für das Projekt. Vývojář softwaru projektu. Programador de software para o projeto.
-    documentation: URIRef  # Documentation of the project. Aide pour l’utilisation de ce projet.
+    documentation: (
+        URIRef  # Documentation of the project. Aide pour l’utilisation de ce projet.
+    )
     documenter: URIRef  # Contributor of documentation to the project. Collaborateur à la documentation du projet. Proveedor de documentación para el proyecto. Mitarbeiter an der Dokumentation des Projektes. Spoluautor dokumentace projektu. Contribuidor para a documentação do projeto.
     helper: URIRef  # Project contributor. Collaborateur au projet. Colaborador del proyecto. Projekt-Mitarbeiter. Spoluautor projektu. Ajudante ou colaborador do projeto.
     homepage: URIRef  # URL of a project's homepage, 		associated with exactly one project. L'URL de la page web d'un projet, 		associée avec un unique projet. El URL de la página de un proyecto, 		asociada con exactamente un proyecto. URL der Projekt-Homepage, 		verbunden mit genau einem Projekt. URL adresa domovské stránky projektu asociované s právě jedním projektem. O URL da página de um projeto, 		asociada com exactamente um projeto.
