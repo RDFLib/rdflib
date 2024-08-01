@@ -11,7 +11,7 @@ import warnings
 from io import TextIOWrapper
 from typing import TYPE_CHECKING, Any, BinaryIO, List, Optional, TextIO, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
 from rdflib.term import BNode, Literal, URIRef
 
@@ -32,21 +32,22 @@ __all__ = ["HextuplesParser"]
 class HextuplesParser(Parser):
     """
     An RDFLib parser for Hextuples
-
     """
 
     def __init__(self):
+        super(HextuplesParser, self).__init__()
+        self.default_context: Optional[Graph] = None
         self.skolemize = False
 
     def _parse_hextuple(
-        self, cg: ConjunctiveGraph, tup: List[Union[str, None]]
+        self, ds: Union[Dataset, ConjunctiveGraph], tup: List[Union[str, None]]
     ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
         # language and graph may be None
         if tup[0] is None or tup[1] is None or tup[2] is None or tup[3] is None:
             raise ValueError(
-                "subject, predicate, value, datatype cannot be None. Given: " f"{tup}"
+                f"subject, predicate, value, datatype cannot be None. Given: {tup}"
             )
 
         # 1 - subject
@@ -85,10 +86,11 @@ class HextuplesParser(Parser):
             if isinstance(c, BNode) and self.skolemize:
                 c = c.skolemize()
 
-            # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[Union[URIRef, BNode], URIRef, Union[URIRef, BNode, Literal], URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
-            cg.add((s, p, o, c))  # type: ignore[arg-type]
+            ds.get_context(c).add((s, p, o))
+        elif self.default_context is not None:
+            self.default_context.add((s, p, o))
         else:
-            cg.add((s, p, o))
+            raise Exception("No context to parse into!")
 
     # type error: Signature of "parse" incompatible with supertype "Parser"
     def parse(self, source: InputSource, graph: Graph, skolemize: bool = False, **kwargs: Any) -> None:  # type: ignore[override]
@@ -104,8 +106,22 @@ class HextuplesParser(Parser):
         ), "Hextuples Parser needs a context-aware store!"
 
         self.skolemize = skolemize
-        cg = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
-        cg.default_context = graph
+        # Set default_union to True to mimic ConjunctiveGraph behavior
+        ds = Dataset(store=graph.store, default_union=True)
+        ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
+        if isinstance(graph, (Dataset, ConjunctiveGraph)):
+            self.default_context = graph.default_context
+        elif graph.identifier is not None:
+            if graph.identifier == ds_default.identifier:
+                self.default_context = graph
+            else:
+                self.default_context = ds.get_context(graph.identifier)
+        else:
+            # mypy thinks this is unreachable, but graph.identifier can be None
+            self.default_context = ds_default  # type: ignore[unreachable]
+        if self.default_context is not ds_default:
+            ds.default_context = self.default_context
+            ds.remove_graph(ds_default)  # remove the original unused default graph
 
         try:
             text_stream: Optional[TextIO] = source.getCharacterStream()
@@ -153,4 +169,4 @@ class HextuplesParser(Parser):
             hex_tuple_line = [x if x != "" else None for x in raw_line]
             if raw_line[2] == "":
                 hex_tuple_line[2] = ""
-            self._parse_hextuple(cg, hex_tuple_line)
+            self._parse_hextuple(ds, hex_tuple_line)

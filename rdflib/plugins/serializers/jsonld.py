@@ -40,7 +40,7 @@ from __future__ import annotations
 import warnings
 from typing import IO, Any, Dict, List, Optional
 
-from rdflib.graph import Graph, _ObjectType
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
@@ -159,16 +159,32 @@ class Converter:
         # TODO: bug in rdflib dataset parsing (nquads et al):
         # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
-            default_graph = Graph()
-            graphs = [default_graph]
             # type error: "Graph" has no attribute "contexts"
-            for g in graph.contexts():  # type: ignore[attr-defined]
+            all_contexts = list(graph.contexts())  # type: ignore[attr-defined]
+            has_dataset_default_id = any(
+                c.identifier == DATASET_DEFAULT_GRAPH_ID for c in all_contexts
+            )
+            if (
+                has_dataset_default_id
+                # # type error: "Graph" has no attribute "contexts"
+                and graph.default_context.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
+            ):
+                default_graph = graph.default_context  # type: ignore[attr-defined]
+            else:
+                default_graph = Graph()
+            graphs = [default_graph]
+            default_graph_id = default_graph.identifier
+
+            for g in all_contexts:
+                if g in graphs:
+                    continue
                 if isinstance(g.identifier, URIRef):
                     graphs.append(g)
                 else:
                     default_graph += g
         else:
             graphs = [graph]
+            default_graph_id = graph.identifier
 
         context = self.context
 
@@ -178,8 +194,9 @@ class Converter:
             graphname = None
 
             if isinstance(g.identifier, URIRef):
-                graphname = context.shrink_iri(g.identifier)
-                obj[context.id_key] = graphname
+                if g.identifier != default_graph_id:
+                    graphname = context.shrink_iri(g.identifier)
+                    obj[context.id_key] = graphname
 
             nodes = self.from_graph(g)
 
