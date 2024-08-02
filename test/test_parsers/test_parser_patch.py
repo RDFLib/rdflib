@@ -137,3 +137,14 @@ class TestPatchParser:
         with open(delete_bnode_uri_path, "rb") as data:
             ds.parse(data, format="patch")
         assert len(ds) == 0
+
+    def test_11(self):
+        ds = Dataset()
+        nq_path = os.path.relpath(
+            os.path.join(TEST_DATA_DIR, "patch/add_and_delete_labeled_bnode_quads.rdp"),
+            os.curdir,
+        )
+        with open(nq_path, "rb") as data:
+            ds.parse(data, format="patch")
+        assert len(ds) == 2
+        return ds

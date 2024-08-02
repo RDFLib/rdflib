@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from codecs import getreader
 from enum import Enum
-from typing import Any, MutableMapping, Optional
+from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import Dataset
@@ -10,8 +10,11 @@ from rdflib.parser import InputSource
 from rdflib.plugins.parsers.nquads import NQuadsParser
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import r_wspace
-from rdflib.term import BNode
+from rdflib.plugins.parsers.ntriples import r_nodeid, r_tail, r_uriref, r_wspace
+from rdflib.term import BNode, URIRef
+
+if TYPE_CHECKING:
+    import typing_extensions as te
 
 __all__ = ["RDFPatchParser", "Operation"]
 
@@ -88,14 +91,7 @@ class RDFPatchParser(NQuadsParser):
                 self.parsepatch(bnode_context)
             except ParseError as msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
-
-        if self.skolemize:
-            return self.sink
-        else:
-            self.sink = self.sink.de_skolemize()
-            return self.sink  # Dataset is skolemized as part of adding/removing triples
-            # , so de skolemize before returning. NB this is broken by the parent class
-            # (ConjunctiveGraph) which re-skolemizes the dataset.
+        return self.sink
 
     def parsepatch(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
         self.eat(r_wspace)
@@ -108,23 +104,46 @@ class RDFPatchParser(NQuadsParser):
         operation = self.operation()
         self.eat(r_wspace)
 
-        if operation == Operation.AddTripleOrQuad:
-            self.add_triple_or_quad()
-        elif operation == Operation.DeleteTripleOrQuad:
-            self.delete_triple_or_quad()
+        if operation in [Operation.AddTripleOrQuad, Operation.DeleteTripleOrQuad]:
+            self.add_or_remove_triple_or_quad(operation, bnode_context)
         elif operation == Operation.AddPrefix:
             self.add_prefix()
         elif operation == Operation.DeletePrefix:
             self.delete_prefix()
 
-    def add_triple_or_quad(self):
-        self.sink.parse(data=self.line, format="nquads", skolemize=True)
+    def add_or_remove_triple_or_quad(
+        self, operation, bnode_context: Optional[_BNodeContextType] = None
+    ) -> None:
+        self.eat(r_wspace)
+        if (not self.line) or self.line.startswith("#"):
+            return  # The line is empty or a comment
 
-    def delete_triple_or_quad(self):
-        removal_ds = Dataset()
-        removal_ds.parse(data=self.line, format="nquads", skolemize=True)
-        triple_or_quad = next(iter(removal_ds))
-        self.sink.remove(triple_or_quad)
+        subject = self.labeled_bnode() or self.subject(bnode_context)
+        self.eat(r_wspace)
+
+        predicate = self.predicate()
+        self.eat(r_wspace)
+
+        obj = self.labeled_bnode() or self.object(bnode_context)
+        self.eat(r_wspace)
+
+        context = self.labeled_bnode() or self.uriref() or self.nodeid(bnode_context)
+        self.eat(r_tail)
+
+        if self.line:
+            raise ParseError("Trailing garbage")
+        # Must have a context aware store - add on a normal Graph
+        # discards anything where the ctx != graph.identifier
+        if operation == Operation.AddTripleOrQuad:
+            if context:
+                self.sink.get_context(context).add((subject, predicate, obj))
+            else:
+                self.sink.default_context.add((subject, predicate, obj))
+        elif operation == Operation.DeleteTripleOrQuad:
+            if context:
+                self.sink.get_context(context).remove((subject, predicate, obj))
+            else:
+                self.sink.default_context.remove((subject, predicate, obj))
 
     def add_prefix(self):
         # Extract prefix and URI from the line
@@ -148,3 +167,15 @@ class RDFPatchParser(NQuadsParser):
 
     def eat_op(self, op: str) -> None:
         self.line = self.line.lstrip(op)
+
+    def nodeid(
+        self, bnode_context: Optional[_BNodeContextType] = None
+    ) -> Union[te.Literal[False], BNode, URIRef]:
+        if self.peek("_"):
+            return BNode(self.eat(r_nodeid).group(1))
+
+    def labeled_bnode(self):
+        if self.peek("<_"):
+            plain_uri = self.eat(r_uriref).group(1)
+            bnode_id = r_nodeid.match(plain_uri).group(1)
+            return BNode(bnode_id)
