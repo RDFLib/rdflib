@@ -177,6 +177,7 @@ class RDFPatchParser(NQuadsParser):
 
     def labeled_bnode(self):
         if self.peek("<_"):
-            plain_uri = self.eat(r_uriref).group(1)  # type: ignore[union-attr]
+            plain_uri = self.eat(r_uriref).group(1)
             bnode_id = r_nodeid.match(plain_uri).group(1)
             return BNode(bnode_id)
+        return False
