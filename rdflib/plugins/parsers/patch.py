@@ -147,17 +147,17 @@ class RDFPatchParser(NQuadsParser):
 
     def add_prefix(self):
         # Extract prefix and URI from the line
-        prefix, ns, _ = self.line.replace('"', "").replace("'", "").split(" ")
+        prefix, ns, _ = self.line.replace('"', "").replace("'", "").split(" ")  # type: ignore[union-attr]
         ns_stripped = ns.strip("<>")
         self.sink.bind(prefix, ns_stripped)
 
     def delete_prefix(self):
-        prefix, _, _ = self.line.replace('"', "").replace("'", "").split(" ")
+        prefix, _, _ = self.line.replace('"', "").replace("'", "").split(" ")  # type: ignore[union-attr]
         self.sink.namespace_manager.bind(prefix, None, replace=True)
 
     def operation(self) -> Operation:
         for op in Operation:
-            if self.line.startswith(op.value):
+            if self.line.startswith(op.value):  # type: ignore[union-attr]
                 self.eat_op(op.value)
                 return op
         raise ValueError(
@@ -166,16 +166,17 @@ class RDFPatchParser(NQuadsParser):
         )
 
     def eat_op(self, op: str) -> None:
-        self.line = self.line.lstrip(op)
+        self.line = self.line.lstrip(op)  # type: ignore[union-attr]
 
     def nodeid(
         self, bnode_context: Optional[_BNodeContextType] = None
     ) -> Union[te.Literal[False], BNode, URIRef]:
         if self.peek("_"):
             return BNode(self.eat(r_nodeid).group(1))
+        return False
 
     def labeled_bnode(self):
         if self.peek("<_"):
-            plain_uri = self.eat(r_uriref).group(1)
+            plain_uri = self.eat(r_uriref).group(1)  # type: ignore[union-attr]
             bnode_id = r_nodeid.match(plain_uri).group(1)
             return BNode(bnode_id)
