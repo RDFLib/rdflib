@@ -3,15 +3,13 @@ from rdflib import Dataset, Literal, URIRef
 
 def test_add_quad():
     ds = Dataset()
-    ds.addN(
-        [
-            (
-                URIRef("http://example.org/subject1"),
-                URIRef("http://example.org/predicate2"),
-                Literal("object2"),
-                URIRef("http://example.org/graph1"),
-            )
-        ]
+    ds.add(
+        (
+            URIRef("http://example.org/subject1"),
+            URIRef("http://example.org/predicate2"),
+            Literal("object2"),
+            URIRef("http://example.org/graph1"),
+        )
     )
     result = ds.serialize(format="patch", operation="add")
     assert (
@@ -23,15 +21,13 @@ def test_add_quad():
 
 def test_delete_quad():
     ds = Dataset()
-    ds.addN(
-        [
-            (
-                URIRef("http://example.org/subject1"),
-                URIRef("http://example.org/predicate2"),
-                Literal("object2"),
-                URIRef("http://example.org/graph1"),
-            )
-        ]
+    ds.add(
+        (
+            URIRef("http://example.org/subject1"),
+            URIRef("http://example.org/predicate2"),
+            Literal("object2"),
+            URIRef("http://example.org/graph1"),
+        )
     )
     result = ds.serialize(format="patch", operation="remove")
     assert (
@@ -56,7 +52,7 @@ def test_diff_quad():
     )
     ds1 = Dataset()
     ds2 = Dataset()
-    ds1.addN([quad_1])
+    ds1.add(quad_1)
     ds2.addN([quad_1, quad_2])
     result = ds1.serialize(format="patch", target=ds2)
     assert (

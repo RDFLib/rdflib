@@ -2,14 +2,14 @@ from rdflib import Dataset, Literal, URIRef
 
 # Example for adding a quad
 ds = Dataset()
-ds.addN([
+ds.add(
     (
         URIRef("http://subj-a"),
         URIRef("http://pred-a"),
         Literal("obj-a"),
         URIRef("http://graph-a"),
     )
-])
+)
 result = ds.serialize(format="patch", operation="add")
 print("Add Quad Patch:")
 print(result)
