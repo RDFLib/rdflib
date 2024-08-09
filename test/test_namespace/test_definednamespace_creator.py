@@ -168,9 +168,13 @@ def test_get_target_namespace_elements(rdfs_graph: Graph) -> None:
     elements = get_target_namespace_elements(
         rdfs_graph, "http://www.w3.org/2000/01/rdf-schema#"
     )
-    assert 2 == len(elements)
-    assert 16 == len(elements[0])
+    assert 3 == len(elements)
+    assert 15 == len(elements[0])
     assert (
         "http://www.w3.org/2000/01/rdf-schema#Class",
         "The class of classes.",
     ) in elements[0]
+    assert ("http://www.w3.org/2000/01/rdf-schema#", "") not in elements[0]
+    assert 15 == len(elements[1])
+    assert "    Class: URIRef  # The class of classes.\n" in elements[1]
+    assert 0 == len(elements[2])
