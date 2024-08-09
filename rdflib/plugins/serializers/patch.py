@@ -54,16 +54,13 @@ class PatchSerializer(Serializer):
                 stream.write(f"H prev <{header_prev}>\n".encode(encoding, "replace"))
             stream.write("TX .\n".encode(encoding, "replace"))
 
-        def write_triples(contexts, op_code):
+        def write_triples(contexts, op_code, use_passed_contexts=False):
             for context in contexts:
-                context_id = (
-                    None
-                    if context == self.store.default_context
-                    else context.identifier
-                )
+                if not use_passed_contexts:
+                    context = self.store.get_context(context.identifier)
                 for triple in context:
                     stream.write(
-                        _patch_row(triple, context_id, op_code).encode(
+                        self._patch_row(triple, context.identifier, op_code).encode(
                             encoding, "replace"
                         )
                     )
@@ -77,8 +74,8 @@ class PatchSerializer(Serializer):
             write_triples(self.store.contexts(), operation_code)
         elif target:
             to_add, to_remove = self._diff(target)
-            write_triples(to_add.contexts(), "A")
-            write_triples(to_remove.contexts(), "D")
+            write_triples(to_add.contexts(), "A", use_passed_contexts=True)
+            write_triples(to_remove.contexts(), "D", use_passed_contexts=True)
 
         stream.write("TC .\n".encode(encoding, "replace"))
 
@@ -87,9 +84,8 @@ class PatchSerializer(Serializer):
         rows_to_remove = self.store - target
         return rows_to_add, rows_to_remove
 
-
-def _patch_row(triple, context_id, operation):
-    if context_id:
-        return f"{operation} {_nq_row(triple, context_id)}"
-    else:
-        return f"{operation} {_nt_row(triple)}"
+    def _patch_row(self, triple, context_id, operation):
+        if context_id == self.store.default_context.identifier:
+            return f"{operation} {_nt_row(triple)}"
+        else:
+            return f"{operation} {_nq_row(triple, context_id)}"

@@ -1,4 +1,4 @@
-from rdflib import Dataset, Literal, URIRef
+from rdflib import Dataset, Graph, Literal, URIRef
 
 
 def test_add_quad():
@@ -8,7 +8,7 @@ def test_add_quad():
             URIRef("http://example.org/subject1"),
             URIRef("http://example.org/predicate2"),
             Literal("object2"),
-            URIRef("http://example.org/graph1"),
+            Graph(identifier=URIRef("http://example.org/graph1")),
         )
     )
     result = ds.serialize(format="patch", operation="add")
@@ -26,7 +26,7 @@ def test_delete_quad():
             URIRef("http://example.org/subject1"),
             URIRef("http://example.org/predicate2"),
             Literal("object2"),
-            URIRef("http://example.org/graph1"),
+            Graph(identifier=URIRef("http://example.org/graph1")),
         )
     )
     result = ds.serialize(format="patch", operation="remove")
@@ -42,13 +42,13 @@ def test_diff_quad():
         URIRef("http://example.org/subject1"),
         URIRef("http://example.org/predicate2"),
         Literal("object2"),
-        URIRef("http://example.org/graph1"),
+        Graph(identifier=URIRef("http://example.org/graph1")),
     )
     quad_2 = (
         URIRef("http://example.org/subject2"),
         URIRef("http://example.org/predicate3"),
         Literal("object3"),
-        URIRef("http://example.org/graph2"),
+        Graph(identifier=URIRef("http://example.org/graph2")),
     )
     ds1 = Dataset()
     ds2 = Dataset()
@@ -121,19 +121,19 @@ def test_diff_quad_overlap():
         URIRef("http://example.org/subject1"),
         URIRef("http://example.org/predicate1"),
         Literal("object1"),
-        URIRef("http://example.org/graph1"),
+        Graph(identifier=URIRef("http://example.org/graph1")),
     )
     quad_2 = (
         URIRef("http://example.org/subject2"),
         URIRef("http://example.org/predicate2"),
         Literal("object2"),
-        URIRef("http://example.org/graph2"),
+        Graph(identifier=URIRef("http://example.org/graph2")),
     )
     quad_3 = (
         URIRef("http://example.org/subject3"),
         URIRef("http://example.org/predicate3"),
         Literal("object3"),
-        URIRef("http://example.org/graph3"),
+        Graph(identifier=URIRef("http://example.org/graph3")),
     )
     ds1 = Dataset()
     ds2 = Dataset()

@@ -1,50 +1,55 @@
-from rdflib import Dataset, Literal, URIRef
+from rdflib import Dataset, Graph, Literal, URIRef
 
-# Example for adding a quad
+# example for adding a quad
 ds = Dataset()
-ds.add(
-    (
-        URIRef("http://subj-a"),
-        URIRef("http://pred-a"),
-        Literal("obj-a"),
-        URIRef("http://graph-a"),
-    )
-)
+g = Graph(identifier=URIRef("http://graph-a"))
+ds.add_graph(g)
+triple = (URIRef("http://subj-a"), URIRef("http://pred-a"), Literal("obj-a"))
+ds.get_context(g.identifier).add(triple)
 result = ds.serialize(format="patch", operation="add")
 print("Add Quad Patch:")
 print(result)
 
-# Example for removing a triple
+# alternate example for adding a quad
 ds = Dataset()
-ds.add(
-    (
-        URIRef("http://subj-a"),
-        URIRef("http://pred-a"),
-        Literal("obj-a"),
-    )
+quad = (
+    URIRef("http://subj-a"),
+    URIRef("http://pred-a"),
+    Literal("obj-a"),
+    Graph(identifier=URIRef("http://graph-a")),
 )
-result = ds.serialize(format="patch", operation="remove")
-print("Delete Triple Patch:")
+ds.add(quad)
+result = ds.serialize(format="patch", operation="add")
+print("Add Quad Patch:")
 print(result)
+
+
+# example for adding a triple
+ds = Dataset()
+ds.add(triple)
+result = ds.serialize(format="patch", operation="add")
+print("\nAdd Triple Patch:")
+print(result)
+
 
 # Example for diff quads
 quad_1 = (
     URIRef("http://subj-a"),
     URIRef("http://pred-a"),
     Literal("obj-a"),
-    URIRef("http://graph-a"),
+    Graph(identifier=URIRef("http://graph-a")),
 )
 quad_2 = (
     URIRef("http://subj-b"),
     URIRef("http://pred-b"),
     Literal("obj-b"),
-    URIRef("http://graph-b"),
+    Graph(identifier=URIRef("http://graph-b")),
 )
 quad_3 = (
     URIRef("http://subj-c"),
     URIRef("http://pred-c"),
     Literal("obj-c"),
-    URIRef("http://graph-c"),
+    Graph(identifier=URIRef("http://graph-c")),
 )
 ds1 = Dataset()
 ds2 = Dataset()
