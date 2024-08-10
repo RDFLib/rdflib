@@ -119,7 +119,7 @@ def make_dn_file(
     output_file_name: Path,
     target_namespace: str,
     elements_strs: Iterable[str],
-    non_python_elements_strs: Iterable[str],
+    non_python_elements_strs: List[str],
     object_id: str,
     fail: bool,
 ) -> None:
