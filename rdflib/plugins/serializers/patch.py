@@ -4,7 +4,7 @@ import warnings
 from typing import IO, Optional
 from uuid import uuid4
 
-from rdflib import Dataset, Graph
+from rdflib import Dataset
 from rdflib.plugins.serializers.nquads import _nq_row
 from rdflib.plugins.serializers.nt import _nt_row
 from rdflib.serializer import Serializer
@@ -24,7 +24,7 @@ class PatchSerializer(Serializer):
         self,
         store: Dataset,
     ):
-        self.store = store
+        self.store: Dataset = store
         super().__init__(store)
 
     def serialize(
@@ -32,11 +32,12 @@ class PatchSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        operation: Optional[str] = None,
-        target: Optional[Graph] = None,
-        header_id: Optional[str] = None,
-        header_prev: Optional[str] = None,
+        **kwargs,
     ):
+        operation = kwargs.get("operation")
+        target = kwargs.get("target")
+        header_id = kwargs.get("header_id")
+        header_prev = kwargs.get("header_prev")
         if not header_id:
             header_id = f"uuid:{uuid4()}"
         encoding = self.encoding
