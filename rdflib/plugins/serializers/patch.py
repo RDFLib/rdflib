@@ -34,6 +34,19 @@ class PatchSerializer(Serializer):
         encoding: Optional[str] = None,
         **kwargs,
     ):
+        """
+        Serialize the store to the given stream.
+        :param stream: The stream to serialize to.
+        :param base: The base URI to use for the serialization.
+        :param encoding: The encoding to use for the serialization.
+        :param kwargs: Additional keyword arguments.
+        Supported keyword arguments:
+        - operation: The operation to perform. Either 'add' or 'remove'.
+        - target: The target Dataset to compare against.
+        NB: Only one of 'operation' or 'target' should be provided.
+        - header_id: The header ID to use.
+        - header_prev: The previous header ID to use.
+        """
         operation = kwargs.get("operation")
         target = kwargs.get("target")
         header_id = kwargs.get("header_id")
