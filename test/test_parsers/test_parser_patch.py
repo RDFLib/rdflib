@@ -17,7 +17,6 @@ class TestPatchParser:
         with open(nq_path, "rb") as data:
             ds.parse(data, format="patch")
         assert len(ds) == 2
-        return ds
 
     def test_02(self):
         ds = Dataset()
@@ -28,7 +27,6 @@ class TestPatchParser:
         with open(nq_path, "rb") as data:
             ds.parse(data, format="patch")
         assert len(ds) == 2
-        return ds
 
     def test_03(self):
         ds = Dataset()
@@ -38,7 +36,6 @@ class TestPatchParser:
         with open(nq_path, "rb") as data:
             ds.parse(data, format="patch")
         assert len(ds) == 0
-        return ds
 
     def test_04(self):
         ds = Dataset()
@@ -147,4 +144,3 @@ class TestPatchParser:
         with open(nq_path, "rb") as data:
             ds.parse(data, format="patch")
         assert len(ds) == 2
-        return ds
