@@ -19,11 +19,11 @@ ds = Dataset()
 # Apply add patch
 ds.parse(data=add_patch, format="patch")
 print("After add patch:")
-for triple in ds.de_skolemize():
+for triple in ds:
     print(triple)
 
 # Apply delete patch
 ds.parse(data=delete_patch, format="patch")
 print("After delete patch:")
-for triple in ds.de_skolemize():
+for triple in ds:
     print(triple)
