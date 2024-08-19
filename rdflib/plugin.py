@@ -584,6 +584,12 @@ register(
     "JSONResultParser",
 )
 register(
+    "application/json",
+    ResultParser,
+    "rdflib.plugins.sparql.results.jsonresults",
+    "JSONResultParser",
+)
+register(
     "application/sparql-results+json",
     ResultParser,
     "rdflib.plugins.sparql.results.jsonresults",
