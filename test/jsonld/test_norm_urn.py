@@ -1,4 +1,4 @@
-from plugins.shared.jsonld.util import norm_url
+from rdflib.plugins.shared.jsonld.util import norm_url
 
 
 def test_norm_urn():
