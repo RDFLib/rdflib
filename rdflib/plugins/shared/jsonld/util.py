@@ -230,12 +230,12 @@ def norm_url(base: str, url: str) -> str:
     if parsed_url.scheme:
         # Assume full URL
         return url
-    if parsed_base.scheme in ('urn', 'urn-x'):
+    if parsed_base.scheme in ("urn", "urn-x"):
         # No scheme -> assume relative and join paths
-        base_path_parts = parsed_base.path.split('/', 1)
-        base_path = '/' + (base_path_parts[1] if len(base_path_parts) > 1 else '')
+        base_path_parts = parsed_base.path.split("/", 1)
+        base_path = "/" + (base_path_parts[1] if len(base_path_parts) > 1 else "")
         joined_path = urljoin(base_path, parsed_url.path)
-        fragment = f"#{parsed_url.fragment}" if parsed_url.fragment else ''
+        fragment = f"#{parsed_url.fragment}" if parsed_url.fragment else ""
         result = f"{parsed_base.scheme}:{base_path_parts[0]}{joined_path}{fragment}"
     else:
         parts = urlsplit(urljoin(base, url))
