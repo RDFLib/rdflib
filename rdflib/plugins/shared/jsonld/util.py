@@ -223,13 +223,28 @@ def norm_url(base: str, url: str) -> str:
     """
     if "://" in url:
         return url
-    parts = urlsplit(urljoin(base, url))
-    path = normpath(parts[2])
-    if sep != "/":
-        path = "/".join(path.split(sep))
-    if parts[2].endswith("/") and not path.endswith("/"):
-        path += "/"
-    result = urlunsplit(parts[0:2] + (path,) + parts[3:])
+
+    # Fix for URNs
+    parsed_base = urlsplit(base)
+    parsed_url = urlsplit(url)
+    if parsed_url.scheme:
+        # Assume full URL
+        return url
+    if parsed_base.scheme in ("urn", "urn-x"):
+        # No scheme -> assume relative and join paths
+        base_path_parts = parsed_base.path.split("/", 1)
+        base_path = "/" + (base_path_parts[1] if len(base_path_parts) > 1 else "")
+        joined_path = urljoin(base_path, parsed_url.path)
+        fragment = f"#{parsed_url.fragment}" if parsed_url.fragment else ""
+        result = f"{parsed_base.scheme}:{base_path_parts[0]}{joined_path}{fragment}"
+    else:
+        parts = urlsplit(urljoin(base, url))
+        path = normpath(parts[2])
+        if sep != "/":
+            path = "/".join(path.split(sep))
+        if parts[2].endswith("/") and not path.endswith("/"):
+            path += "/"
+        result = urlunsplit(parts[0:2] + (path,) + parts[3:])
     if url.endswith("#") and not result.endswith("#"):
         result += "#"
     return result
