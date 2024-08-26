@@ -488,6 +488,14 @@ register(
     "HextuplesParser",
 )
 
+# Register RDF Patch Parsers
+register(
+    "patch",
+    Parser,
+    "rdflib.plugins.parsers.patch",
+    "RDFPatchParser",
+)
+
 # Register SPARQL Processors
 register(
     "sparql",
