@@ -21,6 +21,7 @@ n3         :class:`~rdflib.plugins.serializers.n3.N3Serializer`
 nquads     :class:`~rdflib.plugins.serializers.nquads.NQuadsSerializer`
 nt         :class:`~rdflib.plugins.serializers.nt.NTSerializer`
 hext       :class:`~rdflib.plugins.serializers.hext.HextuplesSerializer`
+patch      :class:`~rdflib.plugins.serializers.patch.PatchSerializer`
 pretty-xml :class:`~rdflib.plugins.serializers.rdfxml.PrettyXMLSerializer`
 trig       :class:`~rdflib.plugins.serializers.trig.TrigSerializer`
 trix       :class:`~rdflib.plugins.serializers.trix.TriXSerializer`
@@ -33,6 +34,11 @@ xml        :class:`~rdflib.plugins.serializers.rdfxml.XMLSerializer`
 JSON-LD
 -------
 JSON-LD - 'json-ld' - has been incorporated into RDFLib since v6.0.0.
+
+RDF Patch
+---------
+
+The RDF Patch Serializer - 'patch' - uses the RDF Patch format defined at https://afs.github.io/rdf-patch/. It supports serializing context aware stores as either addition or deletion patches; and also supports serializing the difference between two context aware stores as a Patch of additions and deletions.
 
 HexTuples
 ---------
