@@ -81,7 +81,10 @@ class PatchSerializer(Serializer):
 
         if operation:
             assert operation in add_remove_methods, f"Invalid operation: {operation}"
-
+        elif not target:
+            # No operation specified and no target specified
+            # Fall back to default operation of "add" to prevent a no-op
+            operation = "add"
         write_header()
         if operation:
             operation_code = add_remove_methods.get(operation)
