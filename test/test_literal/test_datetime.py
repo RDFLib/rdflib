@@ -44,8 +44,9 @@ class TestRelativeBase:
 
         assert isinstance(l.toPython(), datetime)
         assert datetime_isoformat(
-            l.toPython() == DATE_EXT_COMPLETE + "T" + "%H:%M:%S.%f" + TZ_EXT, dt
-        )
+            l.toPython(),
+            DATE_EXT_COMPLETE + "T" + "%H:%M:%S.%f" + TZ_EXT
+         ) == dt
         assert l.toPython().isoformat() == "2008-12-01T18:02:00.522630+00:00"
 
     def test_timezone_offset(self):
