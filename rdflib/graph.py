@@ -1015,10 +1015,11 @@ class Graph(Node):
         'macro' like utility
 
         Parameters:
-        subject, predicate, object  -- exactly one must be None
-        default -- value to be returned if no values found
-        any -- if True, return any value in the case there is more than one,
-        else, raise UniquenessError
+
+        - subject, predicate, object: exactly one must be None
+        - default: value to be returned if no values found
+        - any: if True, return any value in the case there is more than one,
+          else, raise UniquenessError
         """
         retval = default
 
