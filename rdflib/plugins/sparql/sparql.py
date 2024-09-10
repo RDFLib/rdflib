@@ -22,7 +22,7 @@ from typing import (
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
@@ -255,6 +255,7 @@ class QueryContext:
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
+        datasetClause=None,
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -262,13 +263,31 @@ class QueryContext:
             self.bindings.update(initBindings)
 
         self.graph: Optional[Graph]
-        self._dataset: Optional[ConjunctiveGraph]
-        if isinstance(graph, ConjunctiveGraph):
-            self._dataset = graph
-            if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
-                self.graph = self.dataset
+        self._dataset: Optional[Union[Dataset, ConjunctiveGraph]]
+        if isinstance(graph, (Dataset, ConjunctiveGraph)):
+            if datasetClause:
+                self._dataset = Dataset()
+                self.graph = Graph()
+                for d in datasetClause:
+                    if d.default:
+                        from_graph = graph.get_context(d.default)
+                        self.graph += from_graph
+                        if not from_graph:
+                            self.load(d.default, default=True)
+                    elif d.named:
+                        namedGraphs = Graph(
+                            store=self.dataset.store, identifier=d.named
+                        )
+                        from_named_graphs = graph.get_context(d.named)
+                        namedGraphs += from_named_graphs
+                        if not from_named_graphs:
+                            self.load(d.named, default=False)
             else:
-                self.graph = self.dataset.default_context
+                self._dataset = graph
+                if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
+                    self.graph = self.dataset
+                else:
+                    self.graph = self.dataset.default_context
         else:
             self._dataset = None
             self.graph = graph

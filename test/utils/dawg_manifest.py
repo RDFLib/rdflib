@@ -48,12 +48,12 @@ class ManifestEntry:
     result_cardinality: Optional[URIRef] = field(init=False)
 
     def __post_init__(self) -> None:
-        type = self.value(RDF.type, IdentifiedNode)  # type: ignore[type-abstract]
+        type = self.value(RDF.type, IdentifiedNode)
         assert type is not None
         self.type = type
 
-        self.action = self.value(MF.action, IdentifiedNode)  # type: ignore[type-abstract]
-        self.result = self.value(MF.result, IdentifiedNode)  # type: ignore[type-abstract]
+        self.action = self.value(MF.action, IdentifiedNode)
+        self.result = self.value(MF.result, IdentifiedNode)
         self.result_cardinality = self.value(MF.resultCardinality, URIRef)
         if self.result_cardinality is not None:
             assert self.result_cardinality == MF.LaxCardinality

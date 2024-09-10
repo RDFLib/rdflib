@@ -14,17 +14,17 @@ Example usage::
 
     >>> g = Graph().parse(data=testrdf, format='n3')
 
-    >>> print(g.serialize(format='json-ld', indent=4))
+    >>> print(g.serialize(format='json-ld', indent=2))
     [
-        {
-            "@id": "http://example.org/about",
-            "http://purl.org/dc/terms/title": [
-                {
-                    "@language": "en",
-                    "@value": "Someone's Homepage"
-                }
-            ]
-        }
+      {
+        "@id": "http://example.org/about",
+        "http://purl.org/dc/terms/title": [
+          {
+            "@language": "en",
+            "@value": "Someone's Homepage"
+          }
+        ]
+      }
     ]
 
 """
@@ -40,14 +40,14 @@ from __future__ import annotations
 import warnings
 from typing import IO, Any, Dict, List, Optional
 
-from rdflib.graph import Graph, _ObjectType
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
-from ..shared.jsonld.util import json
+from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
 
 __all__ = ["JsonLDSerializer", "from_rdf"]
 
@@ -91,16 +91,25 @@ class JsonLDSerializer(Serializer):
             use_rdf_type,
             auto_compact=auto_compact,
         )
-
-        data = json.dumps(
-            obj,
-            indent=indent,
-            separators=separators,
-            sort_keys=sort_keys,
-            ensure_ascii=ensure_ascii,
-        )
-
-        stream.write(data.encode(encoding, "replace"))
+        if _HAS_ORJSON:
+            option: int = orjson.OPT_NON_STR_KEYS
+            if indent is not None:
+                option |= orjson.OPT_INDENT_2
+            if sort_keys:
+                option |= orjson.OPT_SORT_KEYS
+            if ensure_ascii:
+                warnings.warn("Cannot use ensure_ascii with orjson")
+            data_bytes = orjson.dumps(obj, option=option)
+            stream.write(data_bytes)
+        else:
+            data = json.dumps(
+                obj,
+                indent=indent,
+                separators=separators,
+                sort_keys=sort_keys,
+                ensure_ascii=ensure_ascii,
+            )
+            stream.write(data.encode(encoding, "replace"))
 
 
 def from_rdf(
@@ -150,16 +159,32 @@ class Converter:
         # TODO: bug in rdflib dataset parsing (nquads et al):
         # plain triples end up in separate unnamed graphs (rdflib issue #436)
         if graph.context_aware:
-            default_graph = Graph()
-            graphs = [default_graph]
             # type error: "Graph" has no attribute "contexts"
-            for g in graph.contexts():  # type: ignore[attr-defined]
+            all_contexts = list(graph.contexts())  # type: ignore[attr-defined]
+            has_dataset_default_id = any(
+                c.identifier == DATASET_DEFAULT_GRAPH_ID for c in all_contexts
+            )
+            if (
+                has_dataset_default_id
+                # # type error: "Graph" has no attribute "contexts"
+                and graph.default_context.identifier == DATASET_DEFAULT_GRAPH_ID  # type: ignore[attr-defined]
+            ):
+                default_graph = graph.default_context  # type: ignore[attr-defined]
+            else:
+                default_graph = Graph()
+            graphs = [default_graph]
+            default_graph_id = default_graph.identifier
+
+            for g in all_contexts:
+                if g in graphs:
+                    continue
                 if isinstance(g.identifier, URIRef):
                     graphs.append(g)
                 else:
                     default_graph += g
         else:
             graphs = [graph]
+            default_graph_id = graph.identifier
 
         context = self.context
 
@@ -169,8 +194,9 @@ class Converter:
             graphname = None
 
             if isinstance(g.identifier, URIRef):
-                graphname = context.shrink_iri(g.identifier)
-                obj[context.id_key] = graphname
+                if g.identifier != default_graph_id:
+                    graphname = context.shrink_iri(g.identifier)
+                    obj[context.id_key] = graphname
 
             nodes = self.from_graph(g)
 

@@ -62,7 +62,7 @@ The stable release of RDFLib may be installed with Python's package management t
 
 Some features of RDFLib require optional dependencies which may be installed using *pip* extras:
 
-    $ pip install rdflib[berkeleydb,networkx,html,lxml]
+    $ pip install rdflib[berkeleydb,networkx,html,lxml,orjson]
 
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
