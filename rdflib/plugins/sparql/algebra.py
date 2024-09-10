@@ -44,8 +44,8 @@ from rdflib.plugins.sparql.sparql import (
     ConstructQuery,
     DescribeQuery,
     Prologue,
-    SelectQuery,
     Query,
+    SelectQuery,
     Update,
 )
 
