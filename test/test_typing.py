@@ -31,6 +31,12 @@ import rdflib
 # TODO Bug - rdflib.plugins.sparql.prepareQuery() will run fine if this
 # test is run, but mypy can't tell the symbol is exposed.
 import rdflib.plugins.sparql.processor
+from rdflib.plugins.sparql.sparql import (
+    AskQuery,
+    ConstructQuery,
+    DescribeQuery,
+    SelectQuery,
+)
 from rdflib.query import ResultRow
 from rdflib.term import IdentifiedNode, Identifier, Node
 
@@ -139,14 +145,69 @@ WHERE {
     assert python_iri == "https://example.org/kb/y"
 
 
+def _test_rdflib_ask_query_result_graph() -> rdflib.Graph:
+    graph = rdflib.Graph()
+    graph.add(
+        (
+            rdflib.URIRef("http://example.org/kb/a"),
+            rdflib.URIRef("http://example.org/kb/b"),
+            rdflib.URIRef("http://example.org/kb/c"),
+        )
+    )
+    return graph
+
+
+def test_rdflib_ask_query_result_exercise_0() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for an ASK query.
+    """
+    graph = _test_rdflib_ask_query_result_graph()
+    ask_query_0 = """\
+ASK { ?s ?p ?o . }
+"""
+    result_0 = graph.query(AskQuery.prepare(ask_query_0))
+    assert result_0 is True
+
+
+def test_rdflib_ask_query_result_exercise_1() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for an ASK query.
+    """
+    graph = _test_rdflib_ask_query_result_graph()
+    ask_query_1 = """\
+ASK { <http://example.org/kb/a> <http://example.org/kb/b> <http://example.org/kb/c> . }
+"""
+    result_1 = graph.query(AskQuery.prepare(ask_query_1))
+    assert result_1 is True
+
+
+def test_rdflib_ask_query_result_exercise_2() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for an ASK query.
+    """
+    graph = _test_rdflib_ask_query_result_graph()
+    ask_query_2 = """\
+ASK { <http://example.org/kb/a> <http://example.org/kb/a> <http://example.org/kb/a> . }
+"""
+    result_2 = graph.query(AskQuery.prepare(ask_query_2))
+    assert result_2 is False
+
+
 def test_rdflib_construct_query_result_exercise() -> None:
     """
     This test shows minimally necessary type review runtime statements for a CONSTRUCT query.
     """
 
-    # TODO - Data for these graphs is probably not necessary.  Review "probably" in this sentence after supporting implementation is complete.
     graph0 = rdflib.Graph()
     graph1 = rdflib.Graph()
+
+    graph0.add(
+        (
+            rdflib.URIRef("http://example.org/kb/a"),
+            rdflib.URIRef("http://example.org/kb/b"),
+            rdflib.URIRef("http://example.org/kb/c"),
+        )
+    )
 
     construct_query = """\
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -158,12 +219,38 @@ WHERE {
   ?s ?p ?o .
 }
 """
-    for result in graph0.query(construct_query):
+    for result in graph0.query(ConstructQuery.prepare(construct_query)):
         graph1.add(result)
 
     subjects0: Set[rdflib.term.Node] = {x for x in graph0.subjects(None, None)}
     subjects1: Set[rdflib.term.Node] = {x for x in graph1.subjects(None, None)}
-    assert len(subjects0) == len(subjects1)
+    assert len(subjects0) == 1
+    assert subjects0 == subjects1
+
+
+def test_rdflib_describe_query_result_exercise() -> None:
+    """
+    This test shows minimally necessary type review runtime statements for a DESCRIBE query.
+    """
+
+    graph = rdflib.Graph()
+    graph.add(
+        (
+            rdflib.URIRef("http://example.org/kb/a"),
+            rdflib.URIRef("http://example.org/kb/b"),
+            rdflib.URIRef("http://example.org/kb/c"),
+        )
+    )
+
+    expected: Set[rdflib.URIRef] = {rdflib.URIRef("http://example.org/kb/a")}
+    computed: Set[rdflib.URIRef] = set()
+    describe_query = """\
+DESCRIBE ?s
+"""
+    for result in graph.query(DescribeQuery.prepare(describe_query)):
+        if isinstance(result[0], rdflib.URIRef):
+            computed.add(result[0])
+    assert expected == computed
 
 
 def test_rdflib_select_query_result_exercise() -> None:
@@ -171,17 +258,25 @@ def test_rdflib_select_query_result_exercise() -> None:
     This test shows minimally necessary type review runtime statements for a SELECT query.
     """
 
-    # TODO - Data for this graph is probably not necessary.  Review "probably" in this sentence after supporting implementation is complete.
     graph = rdflib.Graph()
+    graph.add(
+        (
+            rdflib.URIRef("http://example.org/kb/a"),
+            rdflib.URIRef("http://example.org/kb/b"),
+            rdflib.URIRef("http://example.org/kb/c"),
+        )
+    )
 
     # Assemble set of all triple-objects (position 2) that are URIRefs.
-    n_urirefs: Set[rdflib.URIRef] = set()
+    expected: Set[rdflib.URIRef] = {rdflib.URIRef("http://example.org/kb/b")}
+    computed: Set[rdflib.URIRef] = set()
     select_query = """\
 SELECT ?s ?p ?o
 WHERE {
   ?s ?p ?o .
 }
 """
-    for result in graph.query(select_query):
+    for result in graph.query(SelectQuery.prepare(select_query)):
         if isinstance(result[2], rdflib.URIRef):
-            n_urirefs.add(result[2])
+            computed.add(result[2])
+    assert expected == computed
