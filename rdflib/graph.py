@@ -1515,17 +1515,13 @@ class Graph(Node):
 
     def query(
         self,
-        query_object: Union[None, str, Query],
+        query_object: Union[str, Query],
         processor: Union[str, query.Processor] = "sparql",
         result: Union[str, Type[query.Result]] = "sparql",
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
         initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
         *args: Any,
-        ask_query: Optional[AskQuery] = None,
-        construct_query: Optional[ConstructQuery] = None,
-        describe_query: Optional[DescribeQuery] = None,
-        select_query: Optional[SelectQuery] = None,
         **kwargs: Any,
     ) -> query.Result:
         """
@@ -1555,14 +1551,6 @@ class Graph(Node):
 
         """
 
-        # Requirement: Exactly one of the query arguments is non-null.
-        populated_query_arguments: List[Union[str, Query]] = [x for x in [query_object, ask_query, construct_query, describe_query, select_query] if x is not None]
-        if len(populated_query_arguments) == 0:
-            raise ValueError("No query argument was provided.")
-        elif len(populated_query_arguments) > 1:
-            raise ValueError("Multiple query arguments were provided.")
-        passing_query_object: Union[str, Query] = populated_query_arguments[0]
-
         initBindings = initBindings or {}  # noqa: N806
         initNs = initNs or dict(self.namespaces())  # noqa: N806
 
@@ -1575,7 +1563,7 @@ class Graph(Node):
         if hasattr(self.store, "query") and use_store_provided:
             try:
                 return self.store.query(
-                    passing_query_object,
+                    query_object,
                     initNs,
                     initBindings,
                     query_graph,
@@ -1590,7 +1578,7 @@ class Graph(Node):
             processor = plugin.get(processor, query.Processor)(self)
 
         # type error: Argument 1 to "Result" has incompatible type "Mapping[str, Any]"; expected "str"
-        return result(processor.query(passing_query_object, initBindings, initNs, **kwargs))  # type: ignore[arg-type]
+        return result(processor.query(query_object, initBindings, initNs, **kwargs))  # type: ignore[arg-type]
 
     def update(
         self,

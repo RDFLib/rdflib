@@ -5,6 +5,7 @@ import datetime
 import itertools
 import typing as t
 from collections.abc import Mapping, MutableMapping
+# TODO - import Self from typing_extensions when Python < 3.11.
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -14,6 +15,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Self,
     Tuple,
     TypeVar,
     Union,
@@ -25,6 +27,7 @@ import rdflib.plugins.sparql
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
+from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
 
 if TYPE_CHECKING:
@@ -488,6 +491,17 @@ class Query:
         self.prologue = prologue
         self.algebra = algebra
         self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+
+    @classmethod
+    def prepare(
+        cls,
+        queryString: str,
+        initNs: Optional[Mapping[str, Any]] = None,
+        base: Optional[str] = None,
+    ) -> Self:
+        result = prepareQuery(queryString, initNs, base)
+        assert isinstance(result, cls)
+        return cls(result.prologue, result.algebra)
 
 
 class AskQuery(Query):
