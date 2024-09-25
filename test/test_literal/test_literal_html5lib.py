@@ -9,14 +9,10 @@ from rdflib.term import Literal
 from test.utils.literal import LiteralChecker
 from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 
-try:
-    import html5lib as _  # noqa: F401
-except ImportError:
-    pytest.skip("html5lib not installed", allow_module_level=True)
+import html5lib
 
 
 def test_has_html5lib() -> None:
-    assert rdflib.term._HAS_HTML5LIB is True
     assert RDF.HTML in rdflib.term.XSDToPython
     rule = next(
         (
