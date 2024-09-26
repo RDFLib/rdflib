@@ -66,6 +66,7 @@ from typing import (
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
 
+import html5lib
 from isodate import (
     Duration,
     duration_isoformat,
@@ -74,7 +75,7 @@ from isodate import (
     parse_duration,
     parse_time,
 )
-import html5lib
+
 import rdflib
 import rdflib.util
 from rdflib.compat import long_type
