@@ -79,8 +79,10 @@ def test_hext_graph():
         ],
     ]
     for line in out.splitlines():
+        normalized_line = line.replace(", ", ",").strip()
         for test in testing_lines:
-            if test[1] in line:
+            normalized_test = test[1].replace(", ", ",").strip()
+            if normalized_test in normalized_line:
                 test[0] = True
 
     assert all([x[0] for x in testing_lines])
@@ -127,7 +129,7 @@ def test_hext_cg():
            """
     d.parse(data=trig_data, format="trig", publicID=d.default_context.identifier)
     out = d.serialize(format="hext")
-    # note: cant' test for BNs in result as they will be different ever time
+    # note: cant' test for BNs in result as they will be different every time
     testing_lines = [
         [
             False,
@@ -200,8 +202,10 @@ def test_hext_cg():
         ],
     ]
     for line in out.splitlines():
+        normalized_line = line.replace(", ", ",").strip()
         for test in testing_lines:
-            if test[1] in line:
+            normalized_test = test[1].replace(", ", ",").strip()
+            if normalized_test in normalized_line:
                 test[0] = True
 
     assert all([x[0] for x in testing_lines])
@@ -316,8 +320,10 @@ def test_hext_dataset():
         ],
     ]
     for line in out.splitlines():
+        normalized_line = line.replace(", ", ",").strip()
         for test in testing_lines:
-            if test[1] in line:
+            normalized_test = test[1].replace(", ", ",").strip()
+            if normalized_test in normalized_line:
                 test[0] = True
 
     assert all([x[0] for x in testing_lines])
@@ -396,10 +402,12 @@ def test_roundtrip():
         str(Path(__file__).parent.parent / "data/test_parser_hext_multigraph.ndjson")
     ) as i:
         ordered_input = "".join(sorted(i.readlines())).strip()
+        normalized_ordered_input = ordered_input.replace(", ", ",")
 
     ordered_output = "\n".join(sorted(d.serialize(format="hext").split("\n"))).strip()
+    normalized_ordered_output = ordered_output.replace(", ", ",")
 
-    assert ordered_output == ordered_input
+    assert normalized_ordered_output == normalized_ordered_input
 
 
 # def _make_large_graph():

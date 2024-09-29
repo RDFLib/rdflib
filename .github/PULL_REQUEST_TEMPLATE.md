@@ -58,7 +58,7 @@ unsure about them, submit your PR as is and ask for help.
   - [ ] Created an issue to discuss the change and get in-principle agreement.
   - [ ] Considered adding an example in `./examples`.
 - If the change has a potential impact on users of this project:
-  <!-- This can be removed if the changed does affect users of this project. -->
+  <!-- This can be removed if the change does not affect users of this project. -->
   - [ ] Added or updated tests that fail without the change.
   - [ ] Updated relevant documentation to avoid inaccuracies.
   - [ ] Considered adding additional documentation.

@@ -144,7 +144,7 @@ def _mock_source_loader(f):
     @wraps(f)
     def _wrapper():
         try:
-            context.source_to_json = SOURCES.get
+            context.source_to_json = lambda source: (SOURCES.get(source), None)
             f()
         finally:
             context.source_to_json = _source_to_json
