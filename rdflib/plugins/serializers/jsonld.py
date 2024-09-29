@@ -393,11 +393,8 @@ class Converter:
             else:
                 v = str(o)
             if o.datatype:
-                if native:
-                    if self.context.active:
-                        return v
-                    else:
-                        return {context.value_key: v}
+                if native and self.context.active:
+                    return v
                 return {
                     context.type_key: context.to_symbol(o.datatype),
                     context.value_key: v,
