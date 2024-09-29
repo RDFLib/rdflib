@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from os import chdir, environ, getcwd
 from os import path as p
 from typing import Tuple
@@ -23,7 +24,6 @@ unsupported_tests += (
     "remote",
 )
 unsupported_tests += ("flatten", "compact", "expand")
-unsupported_tests += ("html",)
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
 
 known_bugs: Tuple[str, ...] = (
@@ -138,7 +138,8 @@ known_bugs: Tuple[str, ...] = (
     "toRdf/tn02-in",
     # TODO: Rdflib should silently reject bad predicate URIs
     "toRdf/wf02-in",
-    # TODO: we don't extract context or json-ld that's embedded in HTML
+    # TODO: Determine why f004 expects to extract all scripts
+    "html/f004-in",
     "remote-doc/0013-in",
     "remote-doc/la01-in",
     "remote-doc/la02-in",
@@ -219,6 +220,10 @@ def get_test_suite_cases():
                 func = runner.do_test_json
             else:  # toRdf
                 func = runner.do_test_parser
+        elif re.search(
+            r"\.html(#.*)?$", inputpath
+        ):  # html (with optional fragment identifier)
+            func = runner.do_test_html
         else:  # fromRdf
             func = runner.do_test_serializer
         rdf_test_uri = URIRef("{0}{1}-manifest#t{2}".format(TC_BASE, cat, num))

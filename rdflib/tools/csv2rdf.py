@@ -482,7 +482,7 @@ def main():
 
     if "-f" in opts:
         config = configparser.ConfigParser()
-        config.readfp(open(opts["-f"]))
+        config.read_file(open(opts["-f"]))
         for k, v in config.items("csv2rdf"):
             if k == "out":
                 csv2rdf.OUT = codecs.open(v, "w", "utf-8")

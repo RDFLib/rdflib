@@ -363,6 +363,12 @@ register(
     "rdflib.plugins.serializers.hext",
     "HextuplesSerializer",
 )
+register(
+    "patch",
+    Serializer,
+    "rdflib.plugins.serializers.patch",
+    "PatchSerializer",
+)
 
 # Register Triple Parsers
 register(
@@ -486,6 +492,14 @@ register(
     Parser,
     "rdflib.plugins.parsers.hext",
     "HextuplesParser",
+)
+
+# Register RDF Patch Parsers
+register(
+    "patch",
+    Parser,
+    "rdflib.plugins.parsers.patch",
+    "RDFPatchParser",
 )
 
 # Register SPARQL Processors
