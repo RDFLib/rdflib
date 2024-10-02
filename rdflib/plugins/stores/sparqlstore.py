@@ -128,7 +128,7 @@ class SPARQLStore(SPARQLConnector, Store):
         sparql11: bool = True,
         context_aware: bool = True,
         node_to_sparql: _NodeToSparql = _node_to_sparql,
-        returnFormat: str = "xml",  # noqa: N803
+        returnFormat: Optional[str] = None,  # noqa: N803
         auth: Optional[Tuple[str, str]] = None,
         **sparqlconnector_kwargs,
     ):
