@@ -1,5 +1,4 @@
-"""\
-
+"""
 RDFLib defines the following kinds of Graphs:
 
 * :class:`~rdflib.graph.Graph`
@@ -1522,6 +1521,7 @@ class Graph(Node):
         initNs: Optional[Mapping[str, Any]] = None,  # noqa: N803
         initBindings: Optional[Mapping[str, Identifier]] = None,  # noqa: N803
         use_store_provided: bool = True,
+        *args: Any,
         **kwargs: Any,
     ) -> query.Result:
         """
