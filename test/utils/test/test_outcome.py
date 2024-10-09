@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from contextlib import ExitStack
-from test.utils.outcome import ExceptionChecker, OutcomeChecker
-from typing import Any, Callable, NoReturn, Optional, Type, Union
+from typing import Any, Callable, NoReturn, Optional, Type, Union, cast
 
 import pytest
+
+from test.utils.outcome import ExceptionChecker, OutcomeChecker
 
 
 def _raise(
@@ -13,7 +16,8 @@ def _raise(
     if isinstance(what, type) and issubclass(what, Exception):
         raise what(*args, **kwargs)
     elif callable(what):
-        raise what(*args, **kwargs)
+        what_fn: Callable[..., Exception] = cast(Callable[..., Exception], what)
+        raise what_fn(*args, **kwargs)
 
 
 @pytest.mark.parametrize(

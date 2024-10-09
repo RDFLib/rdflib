@@ -52,7 +52,7 @@ class TestBatchAddGraph:
             cut.add((URIRef("a"), URIRef("b"), URIRef("c"), g))
         assert 1 == len(g)
 
-    def test_no_addN_on_exception(self):
+    def test_no_addN_on_exception(self):  # noqa: N802
         """
         Even if we've added triples so far, it may be that attempting to add the last
         batch is the cause of our exception, so we don't want to attempt again
@@ -71,12 +71,12 @@ class TestBatchAddGraph:
                 pass
         assert 10 == len(g)
 
-    def test_addN_batching_addN(self):
+    def test_addN_batching_addN(self):  # noqa: N802
         class MockGraph:
             def __init__(self):
                 self.counts = []
 
-            def addN(self, quads):
+            def addN(self, quads):  # noqa: N802
                 self.counts.append(sum(1 for _ in quads))
 
         g = MockGraph()

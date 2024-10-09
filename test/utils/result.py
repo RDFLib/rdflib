@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import logging
 import pprint
@@ -9,6 +11,13 @@ from rdflib.term import BNode, Identifier, Literal, Variable
 
 logger = logging.getLogger(__name__)
 
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment, unused-ignore]
+    _HAS_ORJSON = False
 
 ResultTypeInfoDict = Dict["ResultType", "ResultTypeInfo"]
 
@@ -25,7 +34,7 @@ class ResultType(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "ResultTypeInfoDict":
+    def info_dict(cls) -> ResultTypeInfoDict:
         return ResultTypeInfo.make_dict(
             ResultTypeInfo(ResultType.CONSTRUCT, {ResultTypeTrait.GRAPH_RESULT}),
             ResultTypeInfo(ResultType.DESCRIBE, {ResultTypeTrait.GRAPH_RESULT}),
@@ -34,12 +43,12 @@ class ResultType(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "ResultTypeInfo":
+    def info(self) -> ResultTypeInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["ResultType"]:
+    def set(cls) -> Set[ResultType]:
         return set(*cls)
 
 
@@ -49,7 +58,7 @@ class ResultTypeInfo:
     traits: Set[ResultTypeTrait]
 
     @classmethod
-    def make_dict(cls, *items: "ResultTypeInfo") -> ResultTypeInfoDict:
+    def make_dict(cls, *items: ResultTypeInfo) -> ResultTypeInfoDict:
         return dict((info.type, info) for info in items)
 
 
@@ -188,7 +197,7 @@ class ResultFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "ResultFormatInfoDict":
+    def info_dict(cls) -> ResultFormatInfoDict:
         return ResultFormatInfo.make_dict(
             ResultFormatInfo(
                 ResultFormat.CSV,
@@ -220,7 +229,7 @@ class ResultFormat(str, enum.Enum):
                         ResultFormatTrait.HAS_SERIALIZER,
                     }
                 ),
-                frozenset({"utf-8", "utf-16"}),
+                frozenset({"utf-8"} if _HAS_ORJSON else {"utf-8", "utf-16"}),
             ),
             ResultFormatInfo(
                 ResultFormat.XML,
@@ -246,17 +255,17 @@ class ResultFormat(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "ResultFormatInfo":
+    def info(self) -> ResultFormatInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["ResultFormat"]:
+    def set(cls) -> Set[ResultFormat]:
         return set(cls)
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_set(cls) -> Set["ResultFormatInfo"]:
+    def info_set(cls) -> Set[ResultFormatInfo]:
         return {format.info for format in cls.set()}
 
 
@@ -268,9 +277,9 @@ class ResultFormatInfo:
     encodings: FrozenSet[str]
 
     @classmethod
-    def make_dict(cls, *items: "ResultFormatInfo") -> ResultFormatInfoDict:
+    def make_dict(cls, *items: ResultFormatInfo) -> ResultFormatInfoDict:
         return dict((info.format, info) for info in items)
 
     @property
-    def name(self) -> "str":
+    def name(self) -> str:
         return f"{self.format.value}"

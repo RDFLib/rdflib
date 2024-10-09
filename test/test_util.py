@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import logging
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from test.data import TEST_DATA_DIR
-from test.utils.graph import cached_graph
-from test.utils.namespace import RDFT
 from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
 
 import pytest
@@ -16,6 +13,9 @@ from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
+from test.data import TEST_DATA_DIR
+from test.utils.graph import cached_graph
+from test.utils.namespace import RDFT
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -133,7 +133,7 @@ class TestUtilTermConvert:
             datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime"),
         )
 
-    def test_util_to_term_sisNone(self):
+    def test_util_to_term_sisNone(self):  # noqa: N802
         s = None
         assert util.to_term(s) == s
         assert util.to_term(s, default="") == ""

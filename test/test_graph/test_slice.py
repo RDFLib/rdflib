@@ -1,6 +1,5 @@
-from test.data import bob, cheese, hates, likes, michel, pizza, tarek
-
 from rdflib import Graph
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
 
 
 class TestGraphSlice:
@@ -19,37 +18,37 @@ class TestGraphSlice:
             return set([a[2] for a in x]) == set(y)  # equals objects
 
         g = Graph()
-        g.add((tarek, likes, pizza))
-        g.add((tarek, likes, cheese))
-        g.add((michel, likes, pizza))
-        g.add((michel, likes, cheese))
-        g.add((bob, likes, cheese))
-        g.add((bob, hates, pizza))
-        g.add((bob, hates, michel))  # gasp!
+        g.add((TAREK, LIKES, PIZZA))
+        g.add((TAREK, LIKES, CHEESE))
+        g.add((MICHEL, LIKES, PIZZA))
+        g.add((MICHEL, LIKES, CHEESE))
+        g.add((BOB, LIKES, CHEESE))
+        g.add((BOB, HATES, PIZZA))
+        g.add((BOB, HATES, MICHEL))  # gasp!
 
         # Single terms are all trivial:
 
         # single index slices by subject, i.e. return triples((x,None,None))
-        # tell me everything about "tarek"
-        sl(g[tarek], 2)
+        # tell me everything about "TAREK"
+        sl(g[TAREK], 2)
 
         # single slice slices by s,p,o, with : used to split
-        # tell me everything about "tarek" (same as above)
-        sl(g[tarek::], 2)
+        # tell me everything about "TAREK" (same as above)
+        sl(g[TAREK::], 2)
 
-        # give me every "likes" relationship
-        sl(g[:likes:], 5)
+        # give me every "LIKES" relationship
+        sl(g[:LIKES:], 5)
 
-        # give me every relationship to pizza
-        sl(g[::pizza], 3)
+        # give me every relationship to PIZZA
+        sl(g[::PIZZA], 3)
 
-        # give me everyone who likes pizza
-        sl(g[:likes:pizza], 2)
+        # give me everyone who LIKES PIZZA
+        sl(g[:LIKES:PIZZA], 2)
 
-        # does tarek like pizza?
-        assert g[tarek:likes:pizza] is True
+        # does TAREK like PIZZA?
+        assert g[TAREK:LIKES:PIZZA] is True
 
         # More intesting is using paths
 
         # everything hated or liked
-        sl(g[: hates | likes], 7)
+        sl(g[: HATES | LIKES], 7)

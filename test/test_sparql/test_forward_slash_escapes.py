@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # This software was developed at the National Institute of Standards
 # and Technology by employees of the Federal Government in the course
 # of their official duties. Pursuant to title 17 Section 105 of the
@@ -18,9 +16,8 @@ use case originated with attempts to interact with IANA Media Types as
 prefixed concepts, e.g. "application/json" somehow being
 "mime:application/json".
 """
+from __future__ import annotations
 
-from test.data import TEST_DATA_DIR
-from test.utils.graph import cached_graph
 from typing import Set
 
 import pytest
@@ -29,6 +26,8 @@ from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.query import ResultRow
+from test.data import TEST_DATA_DIR
+from test.utils.graph import cached_graph
 
 query_string_expanded = r"""
 SELECT ?nIndividual

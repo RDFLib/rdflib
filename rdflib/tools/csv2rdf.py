@@ -6,6 +6,7 @@ See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 try: ``csv2rdf --help``
 
 """
+
 from __future__ import annotations
 
 import codecs
@@ -18,7 +19,7 @@ import re
 import sys
 import time
 import warnings
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import quote
 
 import rdflib
@@ -93,7 +94,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 uris: Dict[Any, Tuple[URIRef, Optional[URIRef]]] = {}
 
 
-def toProperty(label):
+def toProperty(label: str):  # noqa: N802
     """
     CamelCase + lowercase initial a string
 
@@ -105,11 +106,12 @@ def toProperty(label):
     """
     label = re.sub(r"[^\w]", " ", label)
     label = re.sub("([a-z])([A-Z])", "\\1 \\2", label)
-    label = label.split(" ")
+    # type error: Incompatible types in assignment (expression has type "None", variable has type "BinaryIO")
+    label = label.split(" ")  # type: ignore[assignment]
     return "".join([label[0].lower()] + [x.capitalize() for x in label[1:]])
 
 
-def toPropertyLabel(label):
+def toPropertyLabel(label):  # noqa: N802
     if not label[1:2].isupper():
         return label[0:1].lower() + label[1:]
     return label
@@ -151,6 +153,7 @@ class NodeMaker:
 
 class NodeUri(NodeMaker):
     def __init__(self, prefix, class_):
+        self.class_: Optional[URIRef] = None
         self.prefix = prefix
         if class_:
             self.class_ = rdflib.URIRef(class_)
@@ -303,7 +306,7 @@ class CSV2RDF:
         self.CLASS = None
         self.BASE = None
         self.PROPBASE = None
-        self.IDENT = "auto"
+        self.IDENT: Union[Tuple[str, ...], str] = "auto"
         self.LABEL = None
         self.DEFINECLASS = False
         self.SKIP = 0
@@ -375,15 +378,20 @@ class CSV2RDF:
                     uri = self.BASE[
                         "_".join(
                             [
-                                quote(x.encode("utf8").replace(" ", "_"), safe="")
-                                for x in index(l_, self.IDENT)
+                                # type error: "int" has no attribute "encode"
+                                quote(x.encode("utf8").replace(" ", "_"), safe="")  # type: ignore[attr-defined]
+                                # type error: Argument 2 to "index" has incompatible type "Union[Tuple[str, ...], str]"; expected "Tuple[int, ...]"
+                                for x in index(l_, self.IDENT)  # type: ignore[arg-type]
                             ]
                         )
                     ]
 
                 if self.LABEL:
                     self.triple(
-                        uri, RDFS.label, rdflib.Literal(" ".join(index(l_, self.LABEL)))
+                        # type error: Argument 1 to "join" of "str" has incompatible type "Tuple[int, ...]"; expected "Iterable[str]"
+                        uri,
+                        RDFS.label,
+                        rdflib.Literal(" ".join(index(l_, self.LABEL))),  # type: ignore[arg-type]
                     )
 
                 if self.CLASS:
@@ -391,7 +399,8 @@ class CSV2RDF:
                     self.triple(uri, RDF.type, self.CLASS)
 
                 for i, x in enumerate(l_):
-                    x = x.strip()
+                    # type error: "int" has no attribute "strip"
+                    x = x.strip()  # type: ignore[attr-defined]
                     if x != "":
                         if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                             continue
@@ -407,7 +416,8 @@ class CSV2RDF:
                             warnings.warn(
                                 "Could not process value for column "
                                 + "%d:%s in row %d, ignoring: %s "
-                                % (i, headers[i], rows, e.message)
+                                # type error: "Exception" has no attribute "message"
+                                % (i, headers[i], rows, e.message)  # type: ignore[attr-defined]
                             )
 
                 rows += 1
@@ -422,13 +432,19 @@ class CSV2RDF:
 
         # output types/labels for generated URIs
         classes = set()
-        for l_, x in uris.items():
-            u, c = x
-            self.triple(u, RDFS.label, rdflib.Literal(l_))
-            if c:
-                c = rdflib.URIRef(c)
+        # type error: Incompatible types in assignment (expression has type "Tuple[URIRef, Optional[URIRef]]", variable has type "int")
+        for l_, x in uris.items():  # type: ignore[assignment]
+            # type error: "int" object is not iterable
+            u, c = x  # type: ignore[misc]
+            # type error: Cannot determine type of "u"
+            self.triple(u, RDFS.label, rdflib.Literal(l_))  # type: ignore[has-type]
+            # type error: Cannot determine type of "c"
+            if c:  # type: ignore[has-type]
+                # type error: Cannot determine type of "c"
+                c = rdflib.URIRef(c)  # type: ignore[has-type]
                 classes.add(c)
-                self.triple(u, RDF.type, c)
+                # type error: Cannot determine type of "u"
+                self.triple(u, RDF.type, c)  # type: ignore[has-type]
 
         for c in classes:
             self.triple(c, RDF.type, RDFS.Class)
@@ -441,6 +457,7 @@ class CSV2RDF:
 def main():
     csv2rdf = CSV2RDF()
 
+    opts: Union[Dict[str, str], List[Tuple[str, str]]]
     opts, files = getopt.getopt(
         sys.argv[1:],
         "hc:b:p:i:o:Cf:l:s:d:D:",
@@ -465,7 +482,7 @@ def main():
 
     if "-f" in opts:
         config = configparser.ConfigParser()
-        config.readfp(open(opts["-f"]))
+        config.read_file(open(opts["-f"]))
         for k, v in config.items("csv2rdf"):
             if k == "out":
                 csv2rdf.OUT = codecs.open(v, "w", "utf-8")

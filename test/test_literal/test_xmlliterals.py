@@ -16,7 +16,7 @@ except ImportError:
     have_html5lib = False
 
 
-def testPythonRoundtrip():
+def testPythonRoundtrip():  # noqa: N802
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
     assert l1.datatype == RDF.XMLLiteral, "literal must have right datatype"
@@ -42,7 +42,7 @@ def testPythonRoundtrip():
         rdflib.NORMALIZE_LITERALS = True
 
 
-def testRDFXMLParse():
+def testRDFXMLParse():  # noqa: N802
     rdfxml = """\
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -84,14 +84,14 @@ def roundtrip(fmt):
     assert l1.eq(l2)
 
 
-def testRoundtrip():
+def testRoundtrip():  # noqa: N802
     roundtrip("xml")
     roundtrip("n3")
     roundtrip("nt")
 
 
 @pytest.mark.skipif(not have_html5lib, reason="requires html5lib")
-def testHTML():
+def testHTML():  # noqa: N802
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
     assert l1.datatype == RDF.XMLLiteral, "literal must have right datatype"

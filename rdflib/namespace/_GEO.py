@@ -26,20 +26,42 @@ class GEO(DefinedNamespace):
     """
 
     # http://www.w3.org/2000/01/rdf-schema#Datatype
+    dggsLiteral: URIRef  # A DGGS serialization of a geometry object.
+    geoJSONLiteral: URIRef  # A GeoJSON serialization of a geometry object.
     gmlLiteral: URIRef  # A GML serialization of a geometry object.
+    kmlLiteral: URIRef  # A KML serialization of a geometry object.
     wktLiteral: URIRef  # A Well-known Text serialization of a geometry object.
 
     # http://www.w3.org/2002/07/owl#Class
     Feature: URIRef  # This class represents the top-level feature type. This class is        equivalent to GFI_Feature defined in ISO 19156:2011, and it is        superclass of all feature types.
+    FeatureCollection: URIRef  # A collection of individual Features.
     Geometry: URIRef  # The class represents the top-level geometry type. This class is        equivalent to the UML class GM_Object defined in ISO 19107, and        it is superclass of all geometry types.
+    GeometryCollection: URIRef  # A collection of individual Geometries.
     SpatialObject: URIRef  # The class spatial-object represents everything that can have        a spatial representation. It is superclass of feature and geometry.
+    SpatialObjectCollection: URIRef  # A collection of individual Spatial Objects.  This is the superclass of Feature Collection and Geometry Collection.
 
     # http://www.w3.org/2002/07/owl#DatatypeProperty
     asGML: URIRef  # The GML serialization of a geometry
     asWKT: URIRef  # The WKT serialization of a geometry
+    asGeoJSON: URIRef  # The GeoJSON serialization of a geometry
+    asKML: URIRef  # The KML serialization of a geometry
+    asDGGS: URIRef  # The DGGS serialization of a geometry
     coordinateDimension: URIRef  # The number of measurements or axes needed to describe the position of this       geometry in a coordinate system.
     dimension: URIRef  # The topological dimension of this geometric object, which        must be less than or equal to the coordinate dimension.        In non-homogeneous collections, this will return the largest        topological dimension of the contained objects.
-    hasSerialization: URIRef  # Connects a geometry object with its text-based serialization.
+    hasMetricArea: URIRef  # The area of a Spatial Object in square meters.
+    hasMetricLength: URIRef  # The length of a Spatial Object in meters.
+    hasMetricPerimeterLength: (
+        URIRef  # The length of the perimeter of a Spatial Object in meters.
+    )
+    hasMetricSpatialAccuracy: URIRef  # The spatial resolution of a Geometry in meters.
+    hasMetricSpatialResolution: (
+        URIRef  # The spatial resolution of a Geometry in meters.
+    )
+    hasMetricSize: URIRef  # Subproperties of this property are used to indicate the size of a Spatial Object as a measurement or estimate of one or more dimensions of the Spatial Object's spatial presence. Units are always metric (meter, square meter or cubic meter)
+    hasMetricVolume: URIRef  # The volume of a Spatial Object in cubic meters.
+    hasSerialization: (
+        URIRef  # Connects a geometry object with its text-based serialization.
+    )
     isEmpty: URIRef  # (true) if this geometric object is the empty Geometry. If        true, then this geometric object represents the empty point        set for the coordinate space.
     isSimple: URIRef  # (true) if this geometric object has no anomalous geometric        points, such as self intersection or self tangency.
     spatialDimension: URIRef  # The number of measurements or axes needed to describe the spatial position of        this geometry in a coordinate system.
@@ -54,7 +76,21 @@ class GEO(DefinedNamespace):
     ehInside: URIRef  # Exists if the subject SpatialObject is spatially inside        the object SpatialObject. DE-9IM: TFF*FFT**
     ehMeet: URIRef  # Exists if the subject SpatialObject spatially meets the        object SpatialObject.        DE-9IM: FT******* ^ F**T***** ^ F***T****
     ehOverlap: URIRef  # Exists if the subject SpatialObject spatially overlaps the        object SpatialObject. DE-9IM: T*T***T**
+    hasArea: URIRef  # The area of a Spatial Object.
+    hasBoundingBox: (
+        URIRef  # The minimum or smallest bounding or enclosing box of a given Feature.
+    )
+    hasCentroid: URIRef  # The arithmetic mean position of all the geometry points of a given Feature.
+    hasDefaultGeometry: URIRef  # The default geometry to be used in spatial calculations, usually the most detailed geometry.
     hasGeometry: URIRef  # A spatial representation for a given feature.
+    hasLength: URIRef  # The length of a Spatial Object.
+    hasPerimeterLength: URIRef  # The length of the perimeter of a Spatial Object.
+    hasSize: URIRef  #  Subproperties of this property are used to indicate the size of a Spatial Object as a measurement or estimate of one or more dimensions of the Spatial Object's spatial presence.
+    hasSpatialAccuracy: (
+        URIRef  # The positional accuracy of the coordinates of a Geometry.
+    )
+    hasSpatialResolution: URIRef  # The spatial resolution of a Geometry.
+    hasVolume: URIRef  # he volume of a three-dimensional Spatial Object.
     rcc8dc: URIRef  # Exists if the subject SpatialObject is spatially disjoint       from the object SpatialObject. DE-9IM: FFTFFTTTT
     rcc8ec: URIRef  # Exists if the subject SpatialObject spatially meets the        object SpatialObject. DE-9IM: FFTFTTTTT
     rcc8eq: URIRef  # Exists if the subject SpatialObject spatially equals the        object SpatialObject. DE-9IM: TFFFTFFFT

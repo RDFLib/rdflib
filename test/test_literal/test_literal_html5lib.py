@@ -1,22 +1,17 @@
 import xml.dom.minidom
-from test.utils.literal import LiteralChecker
-from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 from typing import Callable
 
+import html5lib  # noqa: F401
 import pytest
 
 import rdflib.term
 from rdflib.namespace import RDF
 from rdflib.term import Literal
-
-try:
-    import html5lib as _  # noqa: F401
-except ImportError:
-    pytest.skip("html5lib not installed", allow_module_level=True)
+from test.utils.literal import LiteralChecker
+from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 
 
 def test_has_html5lib() -> None:
-    assert rdflib.term._HAS_HTML5LIB is True
     assert RDF.HTML in rdflib.term.XSDToPython
     rule = next(
         (

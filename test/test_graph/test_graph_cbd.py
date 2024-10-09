@@ -1,16 +1,16 @@
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper
+"""Tests the Graph class' cbd() function"""
 
 import pytest
 
 from rdflib import Graph, Namespace
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import Literal, URIRef
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper
 
 EXAMPLE_GRAPH_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph.rdf"
 EXAMPLE_GRAPH_CBD_FILE_PATH = TEST_DATA_DIR / "spec" / "cbd" / "example_graph_cbd.rdf"
 
-"""Tests the Graph class' cbd() function"""
 
 EX = Namespace("http://ex/")
 
@@ -52,7 +52,7 @@ def get_graph():
     g.close()
 
 
-def testCbd(get_graph):
+def testCbd(get_graph):  # noqa: N802
     g = get_graph
     assert len(g.cbd(EX.R1)) == 3, "cbd() for R1 should return 3 triples"
 
@@ -63,7 +63,7 @@ def testCbd(get_graph):
     assert len(g.cbd(EX.R4)) == 0, "cbd() for R4 should return 0 triples"
 
 
-def testCbdReified(get_graph):
+def testCbdReified(get_graph):  # noqa: N802
     g = get_graph
     # add some reified triples to the testing graph
     g.parse(

@@ -4,11 +4,12 @@ import builtins
 import datetime
 import logging
 from decimal import Decimal
+from typing import Any, Callable, Generator, Optional, Type, Union
+
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker, literal_idfn
 from test.utils.namespace import EGDC
 from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitives
-from typing import Any, Callable, Generator, Optional, Type, Union
 
 # NOTE: The config below enables strict mode for mypy.
 # mypy: no_ignore_errors
@@ -546,10 +547,10 @@ def test_ill_typed_literals(
                 Literal(1),
             ),
             [
-                ("aminusb", Literal(Decimal("0.212121"))),
-                ("aplusb", Literal(Decimal("2.212121"))),
-                ("bminusa", Literal(Decimal("-0.212121"))),
-                ("bplusa", Literal(Decimal("2.212121"))),
+                ("aminusb", Literal(Decimal("0.2121214312312"))),
+                ("aplusb", Literal(Decimal("2.2121214312312"))),
+                ("bminusa", Literal(Decimal("-0.2121214312312"))),
+                ("bplusa", Literal(Decimal("2.2121214312312"))),
             ],
             None,
         ),
@@ -689,13 +690,13 @@ def test_cant_pass_invalid_lang_int() -> None:
 
 
 def test_from_other_literal() -> None:
-    l = Literal(1)
+    l = Literal(1)  # noqa: E741
     l2 = Literal(l)
     assert isinstance(l.value, int)
     assert isinstance(l2.value, int)
 
     # change datatype
-    l = Literal("1")
+    l = Literal("1")  # noqa: E741
     l2 = Literal(l, datatype=rdflib.XSD.integer)
     assert isinstance(l2.value, int)
 
@@ -771,14 +772,14 @@ def test_non_false_boolean() -> None:
 
 
 def test_binding(clear_bindings: None) -> None:
-    class a:
+    class a:  # noqa: N801
         def __init__(self, v: str) -> None:
             self.v = v[3:-3]
 
         def __str__(self) -> str:
             return "<<<%s>>>" % self.v
 
-    dtA = rdflib.URIRef("urn:dt:a")
+    dtA = rdflib.URIRef("urn:dt:a")  # noqa: N806
     bind(dtA, a)
 
     va = a("<<<2>>>")
@@ -790,14 +791,14 @@ def test_binding(clear_bindings: None) -> None:
     assert isinstance(la2.value, a)
     assert la2.value.v == va.v
 
-    class b:
+    class b:  # noqa: N801
         def __init__(self, v: str) -> None:
             self.v = v[3:-3]
 
         def __str__(self) -> str:
             return "B%s" % self.v
 
-    dtB = rdflib.URIRef("urn:dt:b")
+    dtB = rdflib.URIRef("urn:dt:b")  # noqa: N806
     bind(dtB, b, None, lambda x: "<<<%s>>>" % x)
 
     vb = b("<<<3>>>")

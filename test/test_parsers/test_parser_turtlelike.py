@@ -3,10 +3,11 @@ This module contains tests for the parsing of the turtle family of formats: N3,
 Turtle, NTriples, NQauds and TriG.
 """
 
+from __future__ import annotations
+
 import enum
 import itertools
 from dataclasses import dataclass, field
-from test.utils.namespace import EGDC
 from typing import Callable, Dict, Iterator, List, Set, Tuple, Union
 
 import pytest
@@ -15,6 +16,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from rdflib import XSD, Graph, Literal
 from rdflib.term import Identifier
 from rdflib.util import from_n3
+from test.utils.namespace import EGDC
 
 
 class FormatTrait(enum.Enum):

@@ -1,6 +1,7 @@
 """
 A TriX parser for RDFLib
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
@@ -27,6 +28,9 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 
 class TriXHandler(handler.ContentHandler):
     """An Sax Handler for TriX. See http://sw.nokia.com/trix/"""
+
+    lang: Optional[str]
+    datatype: Optional[str]
 
     def __init__(self, store: Store):
         self.store = store
@@ -104,12 +108,12 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype = None
 
                 try:
-                    self.lang = attrs.getValue((str(XMLNS), "lang"))
+                    self.lang = attrs.getValue((str(XMLNS), "lang"))  # type: ignore[arg-type, unused-ignore]
                 except Exception:
                     # language not required - ignore
                     pass
                 try:
-                    self.datatype = attrs.getValueByQName("datatype")
+                    self.datatype = attrs.getValueByQName("datatype")  # type: ignore[arg-type, unused-ignore]
                 except KeyError:
                     self.error("No required attribute 'datatype'")
             else:
@@ -121,7 +125,8 @@ class TriXHandler(handler.ContentHandler):
                 self.lang = None
                 self.datatype = None
                 try:
-                    self.lang = attrs.getValue((str(XMLNS), "lang"))
+                    # type error: Argument 1 to "getValue" of "AttributesImpl" has incompatible type "Tuple[str, str]"; expected "str"
+                    self.lang = attrs.getValue((str(XMLNS), "lang"))  # type: ignore[arg-type, unused-ignore]
                 except Exception:
                     # language not required - ignore
                     pass
@@ -283,7 +288,8 @@ class TriXParser(Parser):
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:
-            content_handler.preserve_bnode_ids = preserve_bnode_ids
+            # type error: ContentHandler has no attribute "preserve_bnode_ids"
+            content_handler.preserve_bnode_ids = preserve_bnode_ids  # type: ignore[attr-defined, unused-ignore]
         # We're only using it once now
         # content_handler.reset()
         # self._parser.reset()

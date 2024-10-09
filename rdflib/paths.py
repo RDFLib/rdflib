@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-__doc__ = r"""
+r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:
@@ -182,8 +180,10 @@ No vars specified:
 
 """
 
+from __future__ import annotations
 
 import warnings
+from abc import ABC, abstractmethod
 from functools import total_ordering
 from typing import (
     TYPE_CHECKING,
@@ -213,21 +213,32 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
-@total_ordering
-class Path:
-    __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
-    __invert__: Callable[["Path"], "InvPath"]
-    __neg__: Callable[["Path"], "NegatedPath"]
-    __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
-    __mul__: Callable[["Path", str], "MulPath"]
+def _n3(
+    arg: Union[URIRef, Path], namespace_manager: Optional[NamespaceManager] = None
+) -> str:
+    if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
+        return "(%s)" % arg.n3(namespace_manager)
+    return arg.n3(namespace_manager)
 
+
+@total_ordering
+class Path(ABC):
+    __or__: Callable[[Path, Union[URIRef, Path]], AlternativePath]
+    __invert__: Callable[[Path], InvPath]
+    __neg__: Callable[[Path], NegatedPath]
+    __truediv__: Callable[[Path, Union[URIRef, Path]], SequencePath]
+    __mul__: Callable[[Path, str], MulPath]
+
+    @abstractmethod
     def eval(
         self,
-        graph: "Graph",
-        subj: Optional["_SubjectType"] = None,
-        obj: Optional["_ObjectType"] = None,
-    ) -> Iterator[Tuple["_SubjectType", "_ObjectType"]]:
-        raise NotImplementedError()
+        graph: Graph,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
+    ) -> Iterator[Tuple[_SubjectType, _ObjectType]]: ...
+
+    @abstractmethod
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
 
     def __hash__(self):
         return hash(repr(self))
@@ -249,9 +260,9 @@ class InvPath(Path):
 
     def eval(
         self,
-        graph: "Graph",
-        subj: Optional["_SubjectType"] = None,
-        obj: Optional["_ObjectType"] = None,
+        graph: Graph,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
     ) -> Generator[Tuple[_ObjectType, _SubjectType], None, None]:
         for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
@@ -259,9 +270,8 @@ class InvPath(Path):
     def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "^%s" % self.arg.n3(namespace_manager)  # type: ignore[union-attr]
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        return "^%s" % _n3(self.arg, namespace_manager)
 
 
 class SequencePath(Path):
@@ -275,9 +285,9 @@ class SequencePath(Path):
 
     def eval(
         self,
-        graph: "Graph",
-        subj: Optional["_SubjectType"] = None,
-        obj: Optional["_ObjectType"] = None,
+        graph: Graph,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
     ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         def _eval_seq(
             paths: List[Union[Path, URIRef]],
@@ -317,9 +327,8 @@ class SequencePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "/".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        return "/".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class AlternativePath(Path):
@@ -333,9 +342,9 @@ class AlternativePath(Path):
 
     def eval(
         self,
-        graph: "Graph",
-        subj: Optional["_SubjectType"] = None,
-        obj: Optional["_ObjectType"] = None,
+        graph: Graph,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
     ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         for x in self.args:
             for y in eval_path(graph, (subj, x, obj)):
@@ -344,9 +353,8 @@ class AlternativePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "|".join(a.n3(namespace_manager) for a in self.args)  # type: ignore[union-attr]
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        return "|".join(_n3(a, namespace_manager) for a in self.args)
 
 
 class MulPath(Path):
@@ -368,9 +376,9 @@ class MulPath(Path):
 
     def eval(
         self,
-        graph: "Graph",
-        subj: Optional["_SubjectType"] = None,
-        obj: Optional["_ObjectType"] = None,
+        graph: Graph,
+        subj: Optional[_SubjectType] = None,
+        obj: Optional[_ObjectType] = None,
         first: bool = True,
     ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         if self.zero and first:
@@ -469,9 +477,8 @@ class MulPath(Path):
     def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "%s%s" % (self.path.n3(namespace_manager), self.mod)  # type: ignore[union-attr]
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        return "%s%s" % (_n3(self.path, namespace_manager), self.mod)
 
 
 class NegatedPath(Path):
@@ -504,9 +511,8 @@ class NegatedPath(Path):
     def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional["NamespaceManager"] = None) -> str:
-        # type error: Item "Path" of "Union[Path, URIRef]" has no attribute "n3"  [union-attr]
-        return "!(%s)" % ("|".join(arg.n3(namespace_manager) for arg in self.args))  # type: ignore[union-attr]
+    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+        return "!(%s)" % ("|".join(_n3(arg, namespace_manager) for arg in self.args))
 
 
 class PathList(list):
@@ -534,9 +540,9 @@ def path_sequence(self: Union[URIRef, Path], other: Union[URIRef, Path]):
 def evalPath(  # noqa: N802
     graph: Graph,
     t: Tuple[
-        Optional["_SubjectType"],
+        Optional[_SubjectType],
         Union[None, Path, _PredicateType],
-        Optional["_ObjectType"],
+        Optional[_ObjectType],
     ],
 ) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
     warnings.warn(
@@ -552,9 +558,9 @@ def evalPath(  # noqa: N802
 def eval_path(
     graph: Graph,
     t: Tuple[
-        Optional["_SubjectType"],
+        Optional[_SubjectType],
         Union[None, Path, _PredicateType],
-        Optional["_ObjectType"],
+        Optional[_ObjectType],
     ],
 ) -> Iterator[Tuple[_SubjectType, _ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))

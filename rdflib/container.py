@@ -1,3 +1,4 @@
+import warnings
 from random import randint
 
 from rdflib.namespace import RDF
@@ -82,6 +83,15 @@ class Container:
         return self._len
 
     def type_of_conatiner(self):
+        warnings.warn(
+            "rdflib.container.Container.type_of_conatiner is deprecated. "
+            "Use type_of_container method instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._rtype
+
+    def type_of_container(self):
         return self._rtype
 
     def index(self, item):
@@ -260,7 +270,7 @@ class Seq(Container):
         return self
 
 
-class NoElementException(Exception):
+class NoElementException(Exception):  # noqa: N818
     def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 

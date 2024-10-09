@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 This contains evaluation functions for expressions
 
@@ -7,6 +5,8 @@ They get bound as instances-methods to the CompValue objects from parserutils
 using setEvalFn
 
 """
+
+from __future__ import annotations
 
 import datetime as py_datetime  # naming conflict with function within this module
 import hashlib
@@ -754,7 +754,7 @@ def MultiplicativeExpression(
         for op, f in zip(e.op, other):
             f = numeric(f)
 
-            if type(f) == float:
+            if type(f) == float:  # noqa: E721
                 res = float(res)
 
             if op == "*":
@@ -988,8 +988,7 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    # type error: Statement is unreachable
-    if not isinstance(expr, CompValue):  # type: ignore[unreachable]
+    if not isinstance(expr, CompValue):
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:
@@ -1164,18 +1163,15 @@ def calculateFinalDateTime(
 
 
 @overload
-def EBV(rt: Literal) -> bool:
-    ...
+def EBV(rt: Literal) -> bool: ...
 
 
 @overload
-def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn:
-    ...
+def EBV(rt: Union[Variable, IdentifiedNode, SPARQLError, Expr]) -> NoReturn: ...
 
 
 @overload
-def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]:
-    ...
+def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]: ...
 
 
 def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:

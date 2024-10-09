@@ -9,12 +9,16 @@ You can draw the graph of an RDFS file directly:
    rdf2dot my_rdfs_file.rdf | dot -Tpng | display
 """
 
+from __future__ import annotations
+
 import collections
 import itertools
 import sys
+from typing import Dict
 
 import rdflib.extras.cmdlineutils
 from rdflib import RDF, RDFS, XSD
+from rdflib.term import Identifier
 
 XSDTERMS = [
     XSD[x]
@@ -75,7 +79,7 @@ def rdfs2dot(g, stream, opts={}):
     """
 
     fields = collections.defaultdict(set)
-    nodes = {}
+    nodes: Dict[Identifier, str] = {}
 
     def node(nd):
         if nd not in nodes:

@@ -34,6 +34,8 @@ __all__ = [
     "EncodeOnlyUnicode",
 ]
 
+import rdflib.term
+
 if TYPE_CHECKING:
     from rdflib.graph import Graph, _TripleType
     from rdflib.plugins.sparql.sparql import Query, Update
@@ -50,16 +52,16 @@ class Processor:
 
     """
 
-    def __init__(self, graph: "Graph"):
+    def __init__(self, graph: Graph):
         pass
 
     # type error: Missing return statement
     def query(  # type: ignore[empty-body]
         self,
-        strOrQuery: Union[str, "Query"],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
+        strOrQuery: Union[str, Query],  # noqa: N803
+        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
         initNs: Mapping[str, Any] = {},  # noqa: N803
-        DEBUG: bool = False,
+        DEBUG: bool = False,  # noqa: N803
     ) -> Mapping[str, Any]:
         pass
 
@@ -77,19 +79,19 @@ class UpdateProcessor:
 
     """
 
-    def __init__(self, graph: "Graph"):
+    def __init__(self, graph: Graph):
         pass
 
     def update(
         self,
-        strOrQuery: Union[str, "Update"],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"] = {},  # noqa: N803
-        initNs: Mapping[str, Any] = {},
+        strOrQuery: Union[str, Update],  # noqa: N803
+        initBindings: Mapping[str, Identifier] = {},  # noqa: N803
+        initNs: Mapping[str, Any] = {},  # noqa: N803
     ) -> None:
         pass
 
 
-class ResultException(Exception):
+class ResultException(Exception):  # noqa: N818
     pass
 
 
@@ -114,7 +116,7 @@ class EncodeOnlyUnicode:
         return getattr(self.__stream, name)
 
 
-class ResultRow(Tuple["Identifier", ...]):
+class ResultRow(Tuple[rdflib.term.Identifier, ...]):
     """
     a single result row
     allows accessing bindings as attributes or with []
@@ -123,28 +125,28 @@ class ResultRow(Tuple["Identifier", ...]):
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
     >>> rr[0]
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr[1]
     Traceback (most recent call last):
         ...
     IndexError: tuple index out of range
 
     >>> rr.a
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr.b
     Traceback (most recent call last):
         ...
     AttributeError: b
 
     >>> rr['a']
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
     >>> rr['b']
     Traceback (most recent call last):
         ...
     KeyError: 'b'
 
     >>> rr[Variable('a')]
-    rdflib.term.URIRef(u'urn:cake')
+    rdflib.term.URIRef('urn:cake')
 
     .. versionadded:: 4.0
 
@@ -152,23 +154,21 @@ class ResultRow(Tuple["Identifier", ...]):
 
     labels: Mapping[str, int]
 
-    def __new__(
-        cls, values: Mapping["Variable", "Identifier"], labels: List["Variable"]
-    ):
+    def __new__(cls, values: Mapping[Variable, Identifier], labels: List[Variable]):
         # type error: Value of type variable "Self" of "__new__" of "tuple" cannot be "ResultRow"  [type-var]
         # type error: Generator has incompatible item type "Optional[Identifier]"; expected "_T_co"  [misc]
-        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc]
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))  # type: ignore[type-var, misc, unused-ignore]
         instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
-    def __getattr__(self, name: str) -> "Identifier":
+    def __getattr__(self, name: str) -> Identifier:
         if name not in self.labels:
             raise AttributeError(name)
         return tuple.__getitem__(self, self.labels[name])
 
     # type error: Signature of "__getitem__" incompatible with supertype "tuple"
     # type error: Signature of "__getitem__" incompatible with supertype "Sequence"
-    def __getitem__(self, name: Union[str, int, Any]) -> "Identifier":  # type: ignore[override]
+    def __getitem__(self, name: Union[str, int, Any]) -> Identifier:  # type: ignore[override]
         try:
             # type error: Invalid index type "Union[str, int, Any]" for "tuple"; expected type "int"
             return tuple.__getitem__(self, name)  # type: ignore[index]
@@ -181,24 +181,22 @@ class ResultRow(Tuple["Identifier", ...]):
             raise KeyError(name)
 
     @overload
-    def get(self, name: str, default: "Identifier") -> "Identifier":
-        ...
+    def get(self, name: str, default: Identifier) -> Identifier: ...
 
     @overload
     def get(
-        self, name: str, default: Optional["Identifier"] = ...
-    ) -> Optional["Identifier"]:
-        ...
+        self, name: str, default: Optional[Identifier] = ...
+    ) -> Optional[Identifier]: ...
 
     def get(
-        self, name: str, default: Optional["Identifier"] = None
-    ) -> Optional["Identifier"]:
+        self, name: str, default: Optional[Identifier] = None
+    ) -> Optional[Identifier]:
         try:
             return self[name]
         except KeyError:
             return default
 
-    def asdict(self) -> Dict[str, "Identifier"]:
+    def asdict(self) -> Dict[str, Identifier]:
         return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
@@ -227,11 +225,11 @@ class Result:
 
         self.type = type_
         #: variables contained in the result.
-        self.vars: Optional[List["Variable"]] = None
-        self._bindings: MutableSequence[Mapping["Variable", "Identifier"]] = None  # type: ignore[assignment]
-        self._genbindings: Optional[Iterator[Mapping["Variable", "Identifier"]]] = None
+        self.vars: Optional[List[Variable]] = None
+        self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
+        self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
         self.askAnswer: Optional[bool] = None
-        self.graph: Optional["Graph"] = None
+        self.graph: Optional[Graph] = None
 
     @property
     def bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
@@ -248,7 +246,7 @@ class Result:
     def bindings(
         self,
         b: Union[
-            MutableSequence[Mapping["Variable", "Identifier"]],
+            MutableSequence[Mapping[Variable, Identifier]],
             Iterator[Mapping[Variable, Identifier]],
         ],
     ) -> None:
@@ -265,7 +263,7 @@ class Result:
         format: Optional[str] = None,
         content_type: Optional[str] = None,
         **kwargs: Any,
-    ) -> "Result":
+    ) -> Result:
         from rdflib import plugin
 
         if format:
@@ -318,7 +316,8 @@ class Result:
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
             streamb: BytesIO = BytesIO()
-            stream2 = EncodeOnlyUnicode(streamb)
+            stream2 = EncodeOnlyUnicode(streamb)  # TODO: Remove the need for this
+            # TODO: All QueryResult serializers should write to a Bytes Stream.
             # type error: Argument 1 to "serialize" of "ResultSerializer" has incompatible type "EncodeOnlyUnicode"; expected "IO[Any]"
             serializer.serialize(stream2, encoding=encoding, **args)  # type: ignore[arg-type]
             return streamb.getvalue()
@@ -358,7 +357,7 @@ class Result:
 
     def __iter__(
         self,
-    ) -> Iterator[Union["_TripleType", bool, ResultRow]]:
+    ) -> Iterator[Union[_TripleType, bool, ResultRow]]:
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             # type error: Item "None" of "Optional[Graph]" has no attribute "__iter__" (not iterable)
             for t in self.graph:  # type: ignore[union-attr]

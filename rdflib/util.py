@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 Some utility functions.
 
@@ -21,6 +19,8 @@ Date/time utilities
 * parse_date_time
 
 """
+
+from __future__ import annotations
 
 from calendar import timegm
 from os.path import splitext
@@ -52,6 +52,7 @@ from rdflib.compat import sign
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
+
 
 __all__ = [
     "list2set",
@@ -409,10 +410,10 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
 
 
 def find_roots(
-    graph: "Graph",
-    prop: "rdflib.term.URIRef",
-    roots: Optional[Set["rdflib.term.Node"]] = None,
-) -> Set["rdflib.term.Node"]:
+    graph: Graph,
+    prop: rdflib.term.URIRef,
+    roots: Optional[Set[rdflib.term.Node]] = None,
+) -> Set[rdflib.term.Node]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -437,14 +438,14 @@ def find_roots(
 
 
 def get_tree(
-    graph: "Graph",
-    root: "rdflib.term.Node",
-    prop: "rdflib.term.URIRef",
-    mapper: Callable[["rdflib.term.Node"], "rdflib.term.Node"] = lambda x: x,
+    graph: Graph,
+    root: rdflib.term.Node,
+    prop: rdflib.term.URIRef,
+    mapper: Callable[[rdflib.term.Node], rdflib.term.Node] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set["rdflib.term.Node"]] = None,
+    done: Optional[Set[rdflib.term.Node]] = None,
     dir: str = "down",
-) -> Optional[Tuple["rdflib.term.Node", List[Any]]]:
+) -> Optional[Tuple[rdflib.term.Node, List[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -486,15 +487,13 @@ def get_tree(
 
 
 @overload
-def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT:
-    ...
+def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT: ...
 
 
 @overload
 def _coalesce(
     *args: Optional[_AnyT], default: Optional[_AnyT] = ...
-) -> Optional[_AnyT]:
-    ...
+) -> Optional[_AnyT]: ...
 
 
 def _coalesce(

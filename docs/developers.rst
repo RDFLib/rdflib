@@ -160,9 +160,9 @@ Any new functionality being added to RDFLib *must* have unit tests and
 should have doc tests supplied.
 
 Typically, you should add your functionality and new tests to a branch of
-RDFlib and and run all tests locally and see them pass. There are currently
-close to 4,000 tests with a few extra expected failures and skipped tests.
-We won't allow Pull Requests that break any of the existing tests.
+RDFlib and run all tests locally and see them pass. There are currently
+close to 4,000 tests, with a some expected failures and skipped tests.
+We won't merge pull requests unless the test suite completes successfully.
 
 Tests that you add should show how your new feature or bug fix is doing what
 you say it is doing: if you remove your enhancement, your new tests should fail!
@@ -313,13 +313,13 @@ makes it easier to run validation on all supported python versions.
     tox -a
 
     # Run a specific environment.
-    tox -e py37 # default environment with py37
+    tox -e py38 # default environment with py37
     tox -e py39-extra # extra tests with py39
 
     # Override the test command.
     # the below command will run `pytest test/test_translate_algebra.py`
     # instead of the default pytest command.
-    tox -e py37,py39 -- pytest test/test_translate_algebra.py
+    tox -e py38,py39 -- pytest test/test_translate_algebra.py
 
 
 ``go-task`` and ``Taskfile.yml``
@@ -345,7 +345,7 @@ Some useful commands for working with the task in the taskfile is given below:
     task validate
 
     # Build docs
-    task docs:build
+    task docs
 
     # Run live-preview on the docs
     task docs:live-server
@@ -448,6 +448,7 @@ Releasing
 
 Create a release-preparation pull request with the following changes:
 
+* Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
 * Updated main branch version and current version in the ``README.md`` file. The
@@ -468,8 +469,22 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     # Build artifacts
     poetry build
 
-    # Check that the built wheel works correctly:
-    pipx run --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    # Verify package metadata
+    bsdtar -xvf dist/rdflib-*.whl -O '*/METADATA' | view -
+    bsdtar -xvf dist/rdflib-*.tar.gz -O '*/PKG-INFO' | view -
+
+    # Check that the built wheel and sdist works correctly:
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --version
+    pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
+
+    # Dry run publishing
+    poetry publish --repository=testpypi --dry-run
+    poetry publish --dry-run
+
+    # Publish to TestPyPI
+    poetry publish --repository=testpypi
 
     # Publish to PyPI
     poetry publish
@@ -484,7 +499,7 @@ uploaded to the release as release artifacts.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
-Once this is done announce the release at the following locations:
+Once this is done, announce the release at the following locations:
 
 * Twitter: Just make a tweet from your own account linking to the latest release.
 * RDFLib mailing list.

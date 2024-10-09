@@ -43,8 +43,10 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `7.0.0a0` current `main` branch and supports Python 3.8.1+ only.
-* `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+* `7.1.0a0` current `main` branch.
+* `7.x.y` current release, supports Python 3.8.1+ only.
+    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+* `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
@@ -58,10 +60,14 @@ The stable release of RDFLib may be installed with Python's package management t
 
     $ pip install rdflib
 
+Some features of RDFLib require optional dependencies which may be installed using *pip* extras:
+
+    $ pip install rdflib[berkeleydb,networkx,html,lxml,orjson]
+
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 6.3.2, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 7.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current main branch (for developers)
 

@@ -1,4 +1,3 @@
-# coding=utf-8
 # test for https://github.com/RDFLib/rdflib/issues/446
 
 from rdflib import Graph, URIRef

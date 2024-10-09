@@ -1,5 +1,10 @@
 from typing import Any
 
+from rdflib import Namespace
+from rdflib.plugins.sparql.evaluate import evalPart
+from rdflib.plugins.sparql.evalutils import _eval
+from rdflib.plugins.sparql.sparql import SPARQLError
+
 
 def custom_eval_extended(ctx: Any, extend: Any) -> Any:
     for c in evalPart(ctx, extend.p):
@@ -23,11 +28,6 @@ def custom_eval(ctx: Any, part: Any) -> Any:
     else:
         raise NotImplementedError()
 
-
-from rdflib import Namespace
-from rdflib.plugins.sparql.evaluate import evalPart
-from rdflib.plugins.sparql.evalutils import _eval
-from rdflib.plugins.sparql.sparql import SPARQLError
 
 namespace = Namespace("example:rdflib:plugin:sparqleval:")
 function_uri = namespace["function"]

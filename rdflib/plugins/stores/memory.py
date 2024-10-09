@@ -53,33 +53,33 @@ class SimpleMemory(Store):
     def __init__(
         self,
         configuration: Optional[str] = None,
-        identifier: Optional["Identifier"] = None,
+        identifier: Optional[Identifier] = None,
     ):
         super(SimpleMemory, self).__init__(configuration)
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[
-            "_SubjectType", Dict["_PredicateType", Dict["_ObjectType", int]]
-        ] = {}
+        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[
-            "_PredicateType", Dict["_ObjectType", Dict["_SubjectType", int]]
-        ] = {}
+        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[
-            "_ObjectType", Dict["_SubjectType", Dict["_PredicateType", int]]
-        ] = {}
+        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+            {}
+        )
 
-        self.__namespace: Dict[str, "URIRef"] = {}
-        self.__prefix: Dict["URIRef", str] = {}
+        self.__namespace: Dict[str, URIRef] = {}
+        self.__prefix: Dict[URIRef, str] = {}
 
     def add(
         self,
-        triple: "_TripleType",
-        context: "_ContextType",
+        triple: _TripleType,
+        context: _ContextType,
         quoted: bool = False,
     ) -> None:
         """\
@@ -124,8 +124,8 @@ class SimpleMemory(Store):
 
     def remove(
         self,
-        triple_pattern: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
+        triple_pattern: _TriplePatternType,
+        context: Optional[_ContextType] = None,
     ) -> None:
         for (subject, predicate, object), c in list(self.triples(triple_pattern)):
             del self.__spo[subject][predicate][object]
@@ -134,9 +134,9 @@ class SimpleMemory(Store):
 
     def triples(
         self,
-        triple_pattern: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
-    ) -> Iterator[Tuple["_TripleType", Iterator[Optional["_ContextType"]]]]:
+        triple_pattern: _TriplePatternType,
+        context: Optional[_ContextType] = None,
+    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         """A generator over all the triples matching"""
         subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
@@ -196,14 +196,14 @@ class SimpleMemory(Store):
                     for o in subjectDictionary[p].keys():
                         yield (s, p, o), self.__contexts()
 
-    def __len__(self, context: Optional["_ContextType"] = None) -> int:
+    def __len__(self, context: Optional[_ContextType] = None) -> int:
         # @@ optimize
         i = 0
         for triple in self.triples((None, None, None)):
             i += 1
         return i
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         # should be identical to `Memory.bind`
         bound_namespace = self.__namespace.get(prefix)
         bound_prefix = _coalesce(
@@ -228,17 +228,17 @@ class SimpleMemory(Store):
                 bound_namespace, default=namespace
             )
 
-    def namespace(self, prefix: str) -> Optional["URIRef"]:
+    def namespace(self, prefix: str) -> Optional[URIRef]:
         return self.__namespace.get(prefix, None)
 
-    def prefix(self, namespace: "URIRef") -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> Optional[str]:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[Tuple[str, "URIRef"]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
-    def __contexts(self) -> Generator["_ContextType", None, None]:
+    def __contexts(self) -> Generator[_ContextType, None, None]:
         # TODO: best way to return empty generator
         # type error: Need type annotation for "c"
         return (c for c in [])  # type: ignore[var-annotated]
@@ -246,22 +246,22 @@ class SimpleMemory(Store):
     # type error: Missing return statement
     def query(  # type: ignore[return]
         self,
-        query: Union["Query", str],
+        query: Union[Query, str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs: Any,
-    ) -> "Result":
+    ) -> Result:
         super(SimpleMemory, self).query(
             query, initNs, initBindings, queryGraph, **kwargs
         )
 
     def update(
         self,
-        update: Union["Update", str],
+        update: Union[Update, str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",  # noqa: N803
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs: Any,
     ) -> None:
         super(SimpleMemory, self).update(
@@ -284,40 +284,40 @@ class Memory(Store):
     def __init__(
         self,
         configuration: Optional[str] = None,
-        identifier: Optional["Identifier"] = None,
+        identifier: Optional[Identifier] = None,
     ):
         super(Memory, self).__init__(configuration)
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[
-            "_SubjectType", Dict["_PredicateType", Dict["_ObjectType", int]]
-        ] = {}
+        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[
-            "_PredicateType", Dict["_ObjectType", Dict["_SubjectType", int]]
-        ] = {}
+        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+            {}
+        )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[
-            "_ObjectType", Dict["_SubjectType", Dict["_PredicateType", int]]
-        ] = {}
+        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+            {}
+        )
 
-        self.__namespace: Dict[str, "URIRef"] = {}
-        self.__prefix: Dict["URIRef", str] = {}
-        self.__context_obj_map: Dict[str, "Graph"] = {}
-        self.__tripleContexts: Dict["_TripleType", Dict[Optional[str], bool]] = {}
-        self.__contextTriples: Dict[Optional[str], Set["_TripleType"]] = {None: set()}
+        self.__namespace: Dict[str, URIRef] = {}
+        self.__prefix: Dict[URIRef, str] = {}
+        self.__context_obj_map: Dict[str, Graph] = {}
+        self.__tripleContexts: Dict[_TripleType, Dict[Optional[str], bool]] = {}
+        self.__contextTriples: Dict[Optional[str], Set[_TripleType]] = {None: set()}
         # all contexts used in store (unencoded)
-        self.__all_contexts: Set["Graph"] = set()
+        self.__all_contexts: Set[Graph] = set()
         # default context information for triples
         self.__defaultContexts: Optional[Dict[Optional[str], bool]] = None
 
     def add(
         self,
-        triple: "_TripleType",
-        context: "_ContextType",
+        triple: _TripleType,
+        context: _ContextType,
         quoted: bool = False,
     ) -> None:
         """\
@@ -378,8 +378,8 @@ class Memory(Store):
 
     def remove(
         self,
-        triple_pattern: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
+        triple_pattern: _TriplePatternType,
+        context: Optional[_ContextType] = None,
     ) -> None:
         req_ctx = self.__ctx_to_str(context)
         for triple, c in self.triples(triple_pattern, context=context):
@@ -416,10 +416,10 @@ class Memory(Store):
 
     def triples(
         self,
-        triple_pattern: "_TriplePatternType",
-        context: Optional["_ContextType"] = None,
+        triple_pattern: _TriplePatternType,
+        context: Optional[_ContextType] = None,
     ) -> Generator[
-        Tuple["_TripleType", Generator[Optional["_ContextType"], None, None]],
+        Tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
         None,
         None,
     ]:
@@ -522,7 +522,7 @@ class Memory(Store):
                         if self.__triple_has_context(triple, req_ctx):
                             yield triple, self.__contexts(triple)
 
-    def bind(self, prefix: str, namespace: "URIRef", override: bool = True) -> None:
+    def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         # should be identical to `SimpleMemory.bind`
         bound_namespace = self.__namespace.get(prefix)
         bound_prefix = _coalesce(
@@ -548,19 +548,19 @@ class Memory(Store):
                 bound_namespace, default=namespace
             )
 
-    def namespace(self, prefix: str) -> Optional["URIRef"]:
+    def namespace(self, prefix: str) -> Optional[URIRef]:
         return self.__namespace.get(prefix, None)
 
-    def prefix(self, namespace: "URIRef") -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> Optional[str]:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[Tuple[str, "URIRef"]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
     def contexts(
-        self, triple: Optional["_TripleType"] = None
-    ) -> Generator["_ContextType", None, None]:
+        self, triple: Optional[_TripleType] = None
+    ) -> Generator[_ContextType, None, None]:
         if triple is None or triple == (None, None, None):
             return (context for context in self.__all_contexts)
 
@@ -571,19 +571,19 @@ class Memory(Store):
         except KeyError:
             return (_ for _ in [])
 
-    def __len__(self, context: Optional["_ContextType"] = None) -> int:
+    def __len__(self, context: Optional[_ContextType] = None) -> int:
         ctx = self.__ctx_to_str(context)
         if ctx not in self.__contextTriples:
             return 0
         return len(self.__contextTriples[ctx])
 
-    def add_graph(self, graph: "Graph") -> None:
+    def add_graph(self, graph: Graph) -> None:
         if not self.graph_aware:
             Store.add_graph(self, graph)
         else:
             self.__all_contexts.add(graph)
 
-    def remove_graph(self, graph: "Graph") -> None:
+    def remove_graph(self, graph: Graph) -> None:
         if not self.graph_aware:
             Store.remove_graph(self, graph)
         else:
@@ -596,9 +596,9 @@ class Memory(Store):
     # internal utility methods below
     def __add_triple_context(
         self,
-        triple: "_TripleType",
+        triple: _TripleType,
         triple_exists: bool,
-        context: Optional["_ContextType"],
+        context: Optional[_ContextType],
         quoted: bool,
     ) -> None:
         """add the given context to the set of contexts for the triple"""
@@ -612,9 +612,9 @@ class Memory(Store):
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
                 # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
-                triple_context = self.__tripleContexts[
-                    triple
-                ] = self.__defaultContexts.copy()  # type: ignore[union-attr]
+                triple_context = self.__tripleContexts[triple] = (
+                    self.__defaultContexts.copy()  # type: ignore[union-attr]
+                )
 
             triple_context[ctx] = quoted
 
@@ -648,7 +648,7 @@ class Memory(Store):
             del self.__tripleContexts[triple]
 
     def __get_context_for_triple(
-        self, triple: "_TripleType", skipQuoted: bool = False  # noqa: N803
+        self, triple: _TripleType, skipQuoted: bool = False  # noqa: N803
     ) -> Collection[Optional[str]]:
         """return a list of contexts (str) for the triple, skipping
         quoted contexts if skipQuoted==True"""
@@ -662,12 +662,12 @@ class Memory(Store):
         # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "items"
         return [ctx for ctx, quoted in ctxs.items() if not quoted]  # type: ignore[union-attr]
 
-    def __triple_has_context(self, triple: "_TripleType", ctx: Optional[str]) -> bool:
+    def __triple_has_context(self, triple: _TripleType, ctx: Optional[str]) -> bool:
         """return True if the triple exists in the given context"""
         # type error: Unsupported right operand type for in ("Optional[Dict[Optional[str], bool]]")
         return ctx in self.__tripleContexts.get(triple, self.__defaultContexts)  # type: ignore[operator]
 
-    def __remove_triple_context(self, triple: "_TripleType", ctx):
+    def __remove_triple_context(self, triple: _TripleType, ctx):
         """remove the context from the triple"""
         # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
         ctxs = self.__tripleContexts.get(triple, self.__defaultContexts).copy()  # type: ignore[union-attr]
@@ -679,14 +679,12 @@ class Memory(Store):
         self.__contextTriples[ctx].remove(triple)
 
     @overload
-    def __ctx_to_str(self, ctx: "_ContextType") -> str:
-        ...
+    def __ctx_to_str(self, ctx: _ContextType) -> str: ...
 
     @overload
-    def __ctx_to_str(self, ctx: None) -> None:
-        ...
+    def __ctx_to_str(self, ctx: None) -> None: ...
 
-    def __ctx_to_str(self, ctx: Optional["_ContextType"]) -> Optional[str]:
+    def __ctx_to_str(self, ctx: Optional[_ContextType]) -> Optional[str]:
         if ctx is None:
             return None
         try:
@@ -707,9 +705,7 @@ class Memory(Store):
                 return ctx_str
             raise RuntimeError("Cannot use that type of object as a Graph context")
 
-    def __contexts(
-        self, triple: "_TripleType"
-    ) -> Generator["_ContextType", None, None]:
+    def __contexts(self, triple: _TripleType) -> Generator[_ContextType, None, None]:
         """return a generator for all the non-quoted contexts
         (dereferenced) the encoded triple appears in"""
         # type error: Argument 2 to "get" of "Mapping" has incompatible type "str"; expected "Optional[Graph]"
@@ -722,20 +718,20 @@ class Memory(Store):
     # type error: Missing return statement
     def query(  # type: ignore[return]
         self,
-        query: Union["Query", str],
+        query: Union[Query, str],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs,
-    ) -> "Result":
+    ) -> Result:
         super(Memory, self).query(query, initNs, initBindings, queryGraph, **kwargs)
 
     def update(
         self,
-        update: Union["Update", Any],
+        update: Union[Update, Any],
         initNs: Mapping[str, Any],  # noqa: N803
-        initBindings: Mapping["str", "Identifier"],  # noqa: N803
-        queryGraph: "str",
+        initBindings: Mapping[str, Identifier],  # noqa: N803
+        queryGraph: str,  # noqa: N803
         **kwargs,
     ) -> None:
         super(Memory, self).update(update, initNs, initBindings, queryGraph, **kwargs)

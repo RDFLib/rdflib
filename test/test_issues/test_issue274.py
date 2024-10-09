@@ -1,5 +1,3 @@
-from test.utils import eq_
-from test.utils.namespace import EGDO
 from unittest import TestCase
 
 import pytest
@@ -9,6 +7,8 @@ from rdflib.plugins.sparql.operators import (
     register_custom_function,
     unregister_custom_function,
 )
+from test.utils import eq_
+from test.utils.namespace import EGDO
 
 G = Graph()
 G.add((BNode(), RDFS.label, Literal("bnode")))
@@ -19,7 +19,7 @@ NS = {
 }
 
 
-def query(querystr, initNs=NS, initBindings=None):
+def query(querystr, initNs=NS, initBindings=None):  # noqa: N803
     return G.query(querystr, initNs=initNs, initBindings=initBindings)
 
 

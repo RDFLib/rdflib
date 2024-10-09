@@ -1,6 +1,13 @@
+from __future__ import annotations
+
 import logging
 import re
 from http.server import BaseHTTPRequestHandler
+from urllib.error import HTTPError
+
+import pytest
+
+from rdflib import Graph
 from test.data import TEST_DATA_DIR
 from test.utils import GraphHelper
 from test.utils.graph import cached_graph
@@ -14,11 +21,6 @@ from test.utils.http import (
 from test.utils.httpservermock import ServedBaseHTTPServerMock
 from test.utils.namespace import EGDO
 from test.utils.wildcard import URL_PARSE_RESULT_WILDCARD
-from urllib.error import HTTPError
-
-import pytest
-
-from rdflib import Graph
 
 """
 Test that correct content negotiation headers are passed
@@ -165,7 +167,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         302,
                         "FOUND",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/302/{idx}"]},
                     )
                 )
@@ -174,7 +176,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         303,
                         "See Other",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/303/{idx}"]},
                     )
                 )
@@ -183,7 +185,7 @@ class TestGraphHTTP:
                     MockHTTPResponse(
                         308,
                         "Permanent Redirect",
-                        "".encode(),
+                        b"",
                         {"Location": [f"{url}/loc/308/{idx}"]},
                     )
                 )
@@ -227,7 +229,7 @@ class TestGraphHTTP:
         with ServedBaseHTTPServerMock() as httpmock:
             url = httpmock.url
             httpmock.responses[MethodName.GET].append(
-                MockHTTPResponse(500, "Internal Server Error", "".encode(), {})
+                MockHTTPResponse(500, "Internal Server Error", b"", {})
             )
 
             graph = Graph()

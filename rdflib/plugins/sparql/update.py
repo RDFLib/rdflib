@@ -3,6 +3,7 @@
 Code for carrying out Update Operations
 
 """
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterator, Mapping, Optional, Sequence
@@ -51,7 +52,7 @@ def evalLoad(ctx: QueryContext, u: CompValue) -> None:
         assert isinstance(u.iri, URIRef)
 
     if u.graphiri:
-        ctx.load(u.iri, default=False, publicID=u.graphiri)
+        ctx.load(u.iri, default=False, into=u.graphiri)
     else:
         ctx.load(u.iri, default=True)
 

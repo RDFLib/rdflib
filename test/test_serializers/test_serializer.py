@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import itertools
 import logging
@@ -7,9 +9,6 @@ from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
-from test.utils import GraphHelper, get_unique_plugins
-from test.utils.destination import DestinationType, DestParmType, DestRef
-from test.utils.namespace import EGDC, EGSCHEME, EGURN
 from typing import (
     IO,
     Callable,
@@ -33,6 +32,9 @@ import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.serializer import Serializer
+from test.utils import GraphHelper, get_unique_plugins
+from test.utils.destination import DestinationType, DestParmType, DestRef
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 @pytest.mark.parametrize(
@@ -51,7 +53,7 @@ from rdflib.serializer import Serializer
     + [("trig", 3, False)],
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
-    NS = Namespace("example:")
+    NS = Namespace("example:")  # noqa: N806
     graph = ConjunctiveGraph()
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
@@ -226,7 +228,7 @@ class GraphFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "GraphFormatInfoDict":
+    def info_dict(cls) -> GraphFormatInfoDict:
         return GraphFormatInfoDict.make(
             GraphFormatInfo(
                 GraphFormat.TRIG,
@@ -291,18 +293,18 @@ class GraphFormat(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "GraphFormatInfo":
+    def info(self) -> GraphFormatInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["GraphFormat"]:
+    def set(cls) -> Set[GraphFormat]:
         return set(*cls)
 
 
 @dataclass
 class GraphFormatInfo:
-    name: "GraphFormat"
+    name: GraphFormat
     graph_types: Set[GraphType]
     encodings: Set[str]
     serializer_list: Optional[List[str]] = field(
@@ -325,13 +327,13 @@ class GraphFormatInfo:
         )
 
     @property
-    def serializer(self) -> "str":
+    def serializer(self) -> str:
         if not self.serializers:
             raise RuntimeError("no serializers for {self.name}")
         return self.serializers[0]
 
     @property
-    def deserializer(self) -> "str":
+    def deserializer(self) -> str:
         if not self.deserializers:
             raise RuntimeError("no deserializer for {self.name}")
         return self.deserializer[0]
@@ -339,7 +341,7 @@ class GraphFormatInfo:
 
 class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
     @classmethod
-    def make(cls, *graph_format: GraphFormatInfo) -> "GraphFormatInfoDict":
+    def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
         for item in graph_format:
             result[item.name] = item
@@ -715,4 +717,5 @@ def test_serialize_to_fileuri_with_authortiy(
             format=format.info.serializer,
         )
         assert False  # this should never happen as serialize should always fail
-    assert catcher.value is not None
+    # type error, mypy thinks this line is unreachable, but it works fine
+    assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]

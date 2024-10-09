@@ -17,6 +17,7 @@ To use this script
 Then attach ``/var/tmp/compact.diff`` to the PR.
 """
 
+from __future__ import annotations
 
 import argparse
 import logging

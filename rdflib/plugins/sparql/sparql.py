@@ -22,7 +22,7 @@ from typing import (
 import isodate
 
 import rdflib.plugins.sparql
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
 from rdflib.plugins.sparql.parserutils import CompValue
 from rdflib.term import BNode, Identifier, Literal, Node, URIRef, Variable
@@ -57,7 +57,6 @@ class SPARQLTypeError(SPARQLError):
 
 
 class Bindings(MutableMapping):
-
     """
 
     A single level of a stack of variable-value bindings.
@@ -67,7 +66,7 @@ class Bindings(MutableMapping):
     In python 3.3 this could be a collections.ChainMap
     """
 
-    def __init__(self, outer: Optional["Bindings"] = None, d=[]):
+    def __init__(self, outer: Optional[Bindings] = None, d=[]):
         self._d: Dict[str, str] = dict(d)
         self.outer = outer
 
@@ -148,8 +147,8 @@ class FrozenDict(Mapping):
                 self._hash ^= hash(value)
         return self._hash
 
-    def project(self, vars: Container[Variable]) -> "FrozenDict":
-        return FrozenDict((x for x in self.items() if x[0] in vars))
+    def project(self, vars: Container[Variable]) -> FrozenDict:
+        return FrozenDict(x for x in self.items() if x[0] in vars)
 
     def disjointDomain(self, other: t.Mapping[Identifier, Identifier]) -> bool:
         return not bool(set(self).intersection(other))
@@ -164,7 +163,7 @@ class FrozenDict(Mapping):
 
         return True
 
-    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenDict":
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> FrozenDict:
         res = FrozenDict(itertools.chain(self.items(), other.items()))
 
         return res
@@ -177,7 +176,7 @@ class FrozenDict(Mapping):
 
 
 class FrozenBindings(FrozenDict):
-    def __init__(self, ctx: "QueryContext", *args, **kwargs):
+    def __init__(self, ctx: QueryContext, *args, **kwargs):
         FrozenDict.__init__(self, *args, **kwargs)
         self.ctx = ctx
 
@@ -195,10 +194,10 @@ class FrozenBindings(FrozenDict):
         else:
             return self._d[key]
 
-    def project(self, vars: Container[Variable]) -> "FrozenBindings":
+    def project(self, vars: Container[Variable]) -> FrozenBindings:
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in vars))
 
-    def merge(self, other: t.Mapping[Identifier, Identifier]) -> "FrozenBindings":
+    def merge(self, other: t.Mapping[Identifier, Identifier]) -> FrozenBindings:
         res = FrozenBindings(self.ctx, itertools.chain(self.items(), other.items()))
         return res
 
@@ -211,11 +210,11 @@ class FrozenBindings(FrozenDict):
         return self.ctx.bnodes
 
     @property
-    def prologue(self) -> Optional["Prologue"]:
+    def prologue(self) -> Optional[Prologue]:
         return self.ctx.prologue
 
     def forget(
-        self, before: "QueryContext", _except: Optional[Container[Variable]] = None
+        self, before: QueryContext, _except: Optional[Container[Variable]] = None
     ) -> FrozenBindings:
         """
         return a frozen dict only of bindings made in self
@@ -256,6 +255,7 @@ class QueryContext:
         graph: Optional[Graph] = None,
         bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
+        datasetClause=None,
     ):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
@@ -263,13 +263,31 @@ class QueryContext:
             self.bindings.update(initBindings)
 
         self.graph: Optional[Graph]
-        self._dataset: Optional[ConjunctiveGraph]
-        if isinstance(graph, ConjunctiveGraph):
-            self._dataset = graph
-            if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
-                self.graph = self.dataset
+        self._dataset: Optional[Union[Dataset, ConjunctiveGraph]]
+        if isinstance(graph, (Dataset, ConjunctiveGraph)):
+            if datasetClause:
+                self._dataset = Dataset()
+                self.graph = Graph()
+                for d in datasetClause:
+                    if d.default:
+                        from_graph = graph.get_context(d.default)
+                        self.graph += from_graph
+                        if not from_graph:
+                            self.load(d.default, default=True)
+                    elif d.named:
+                        namedGraphs = Graph(
+                            store=self.dataset.store, identifier=d.named
+                        )
+                        from_named_graphs = graph.get_context(d.named)
+                        namedGraphs += from_named_graphs
+                        if not from_named_graphs:
+                            self.load(d.named, default=False)
             else:
-                self.graph = self.dataset.default_context
+                self._dataset = graph
+                if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
+                    self.graph = self.dataset
+                else:
+                    self.graph = self.dataset.default_context
         else:
             self._dataset = None
             self.graph = graph
@@ -289,7 +307,7 @@ class QueryContext:
 
     def clone(
         self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
-    ) -> "QueryContext":
+    ) -> QueryContext:
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
             bindings or self.bindings,
@@ -311,14 +329,23 @@ class QueryContext:
             )
         return self._dataset
 
-    def load(self, source: URIRef, default: bool = False, **kwargs: Any) -> None:
+    def load(
+        self,
+        source: URIRef,
+        default: bool = False,
+        into: Optional[Identifier] = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Load data from the source into the query context's.
 
         :param source: The source to load from.
-        :param default: If `True`, triples from the source will be added to the
-            default graph, otherwise it will be loaded into a graph with
-            ``source`` URI as its name.
+        :param default: If `True`, triples from the source will be added
+            to the default graph, otherwise it will be loaded into a
+            graph with ``source`` URI as its name.
+        :param into: The name of the graph to load the data into. If
+            `None`, the source URI will be used as as the name of the
+            graph.
         :param kwargs: Keyword arguments to pass to
             :meth:`rdflib.graph.Graph.parse`.
         """
@@ -353,7 +380,9 @@ class QueryContext:
             if default:
                 _load(self.graph, source)
             else:
-                _load(self.dataset.get_context(source), source)
+                if into is None:
+                    into = source
+                _load(self.dataset.get_context(into), source)
 
     def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
         # in SPARQL BNodes are just labels
@@ -387,19 +416,19 @@ class QueryContext:
 
         self.bindings[key] = value
 
-    def pushGraph(self, graph: Optional[Graph]) -> "QueryContext":
+    def pushGraph(self, graph: Optional[Graph]) -> QueryContext:
         r = self.clone()
         r.graph = graph
         return r
 
-    def push(self) -> "QueryContext":
+    def push(self) -> QueryContext:
         r = self.clone(Bindings(self.bindings))
         return r
 
-    def clean(self) -> "QueryContext":
+    def clean(self) -> QueryContext:
         return self.clone([])
 
-    def thaw(self, frozenbindings: FrozenBindings) -> "QueryContext":
+    def thaw(self, frozenbindings: FrozenBindings) -> QueryContext:
         """
         Create a new read/write query context from the given solution
         """

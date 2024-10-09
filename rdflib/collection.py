@@ -12,7 +12,7 @@ __all__ = ["Collection"]
 
 
 class Collection:
-    __doc__ = """
+    """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
@@ -37,9 +37,9 @@ class Collection:
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> c = Collection(g,listname)
     >>> pprint([term.n3() for term in c])
-    [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     u'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
+    ['"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     '"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
 
     >>> Literal(1) in c
     True
@@ -49,12 +49,16 @@ class Collection:
     True
     >>> c.index(Literal(2)) == 1
     True
+
+    The collection is immutable if ``uri`` is the empty list
+    (``http://www.w3.org/1999/02/22-rdf-syntax-ns#nil``).
     """
 
     def __init__(self, graph: Graph, uri: Node, seq: List[Node] = []):
         self.graph = graph
         self.uri = uri or BNode()
-        self += seq
+        if seq:
+            self += seq
 
     def n3(self) -> str:
         """
@@ -82,8 +86,7 @@ class Collection:
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
           "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
-        # type error: "Node" has no attribute "n3"
-        return "( %s )" % (" ".join([i.n3() for i in self]))  # type: ignore[attr-defined]
+        return "( %s )" % (" ".join([i.n3() for i in self]))
 
     def _get_container(self, index: int) -> Optional[Node]:
         """Gets the first, rest holding node at index."""
@@ -233,6 +236,9 @@ class Collection:
         """
 
         end = self._end()
+        if end == RDF.nil:
+            raise ValueError("Cannot append to empty list")
+
         if (end, RDF.first, None) in self.graph:
             # append new node to the end of the linked list
             node = BNode()
@@ -245,6 +251,8 @@ class Collection:
 
     def __iadd__(self, other: Iterable[Node]):
         end = self._end()
+        if end == RDF.nil:
+            raise ValueError("Cannot append to empty list")
         self.graph.remove((end, RDF.rest, None))
 
         for item in other:

@@ -2,7 +2,6 @@
 Tests for ConjunctiveGraph that do not depend on the underlying store
 """
 
-
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph
@@ -56,6 +55,13 @@ def test_context_namespaces():
 
     assert type(g.namespace_manager) is NamespaceManager
     assert ("ex", ns) in g.namespace_manager.namespaces()
+
+
+def test_deprecated():
+    with pytest.warns(
+        DeprecationWarning, match="ConjunctiveGraph is deprecated, use Dataset instead."
+    ):
+        ConjunctiveGraph()
 
 
 def get_graph_ids_tests():

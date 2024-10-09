@@ -1,9 +1,10 @@
+from __future__ import annotations
+
 import logging
 import os
 from dataclasses import dataclass, field
 from io import StringIO
 from pathlib import Path
-from test.data import TEST_DATA_DIR
 from typing import Collection, Tuple, Union, cast
 
 import pytest
@@ -13,6 +14,7 @@ import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.sparql.algebra import translateAlgebra
+from test.data import TEST_DATA_DIR
 
 
 @pytest.fixture
