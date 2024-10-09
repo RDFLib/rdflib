@@ -1,5 +1,6 @@
 from __future__ import annotations
-from rdflib import Graph, Literal, URIRef, BNode, Namespace
+
+from rdflib import BNode, Graph, Literal, Namespace, URIRef
 
 DATA = """
 {
