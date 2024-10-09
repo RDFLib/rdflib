@@ -580,6 +580,11 @@ class Context:
 
         if idref in NODE_KEYS:
             self._alias.setdefault(idref, []).append(name)
+        else:
+            # undo aliases that may have been inherited from parent context
+            for v in self._alias.values():
+                if name in v:
+                    v.remove(name)
 
     def _rec_expand(
         self, source: Dict[str, Any], expr: Optional[str], prev: Optional[str] = None
