@@ -12,7 +12,7 @@ Some ways in which you can contribute to RDFLib are:
   [![GitHub issues](https://img.shields.io/github/issues/RDFLib/rdflib)](https://github.com/RDFLib/rdflib/issues)
 - Fix
   [expected failure](https://docs.pytest.org/en/latest/how-to/skipping.html#xfail-mark-test-functions-as-expected-to-fail)
-  tests.
+  tests: [![GitHub search query](https://img.shields.io/badge/GitHub-search-green)](https://github.com/search?q=xfail+repo%3ARDFLib%2Frdflib+path%3Atest%2F**.py&amp%3Btype=code&type=code)
 - Add additional
   [expected failure](https://docs.pytest.org/en/latest/how-to/skipping.html#xfail-mark-test-functions-as-expected-to-fail)
   tests for open issues:
@@ -29,7 +29,7 @@ Some ways in which you can contribute to RDFLib are:
   based tests to
   [`pytest`](https://docs.pytest.org/en/latest/)
   based tests:
-  [![GitHub search query](https://img.shields.io/badge/GitHub-search-green)](https://github.com/search?q=unittest+repo%3ARDFLib%2Frdflib+extension%3Apy+path%3Atest%2F&type=Code)
+  [![GitHub search query](https://img.shields.io/badge/GitHub-search-green)](https://github.com/search?q=unittest+repo%3ARDFLib%2Frdflib+path%3Atest%2F**.py&type=code)
 - Add, correct or improve docstrings:
   [![rtd latest](https://img.shields.io/badge/docs-latest-informational)](https://rdflib.readthedocs.io/en/latest/)
 - Update the RDFLib Wikipedia entry:
