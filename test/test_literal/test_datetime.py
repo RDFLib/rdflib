@@ -1,7 +1,7 @@
 from datetime import datetime
+from datetime import timezone
 
-from isodate import UTC, datetime_isoformat
-from isodate.isostrf import DATE_EXT_COMPLETE, TZ_EXT
+from rdflib.xsd_datetime import xsd_datetime_isoformat
 
 from rdflib.namespace import XSD
 from rdflib.term import Literal, URIRef
@@ -44,10 +44,7 @@ class TestRelativeBase:
 
         assert isinstance(l.toPython(), datetime)
         assert (
-            datetime_isoformat(
-                l.toPython(), DATE_EXT_COMPLETE + "T" + "%H:%M:%S.%f" + TZ_EXT
-            )
-            == dt
+            xsd_datetime_isoformat(l.toPython()) == dt
         )
         assert l.toPython().isoformat() == "2008-12-01T18:02:00.522630+00:00"
 
@@ -66,8 +63,8 @@ class TestRelativeBase:
             dt, datatype=URIRef("http://www.w3.org/2001/XMLSchema#dateTime")
         )
 
-        utc_dt = l.toPython().astimezone(UTC)
-        assert datetime_isoformat(utc_dt) == "2010-02-10T09:36:00Z"
+        utc_dt = l.toPython().astimezone(timezone.utc)
+        assert xsd_datetime_isoformat(utc_dt) == "2010-02-10T09:36:00Z"
 
     def test_timezone_offset_millisecond(self):
         dt = "2011-01-16T19:39:18.239743+01:00"

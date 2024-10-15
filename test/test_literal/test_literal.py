@@ -6,6 +6,7 @@ import logging
 from decimal import Decimal
 from typing import Any, Callable, Generator, Optional, Type, Union
 
+from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker, literal_idfn
 from test.utils.namespace import EGDC
@@ -28,7 +29,6 @@ try:
 except ImportError:
     _HAVE_HTML5LIB = False
 
-import isodate
 import pytest
 
 import rdflib  # needed for eval(repr(...)) below
@@ -397,10 +397,10 @@ def test_ill_typed_literals(
             Literal("3.2", datatype=_XSD_DOUBLE),
         ),
         (
-            Literal(isodate.Duration(hours=1)),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aplusb",
-            Literal(isodate.Duration(hours=2)),
+            Literal(Duration(hours=2)),
         ),
         (
             Literal(datetime.timedelta(days=1)),
@@ -410,19 +410,19 @@ def test_ill_typed_literals(
         ),
         (
             Literal(datetime.time.fromisoformat("04:23:01.000384")),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aplusb",
             Literal("05:23:01.000384", datatype=XSD.time),
         ),
         (
             Literal(datetime.date.fromisoformat("2011-11-04")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aplusb",
             Literal("2011-11-05", datatype=XSD.date),
         ),
         (
             Literal(datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aplusb",
             Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
         ),
@@ -446,19 +446,19 @@ def test_ill_typed_literals(
         ),
         (
             Literal(datetime.time.fromisoformat("04:23:01.000384")),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aminusb",
             Literal("03:23:01.000384", datatype=XSD.time),
         ),
         (
             Literal(datetime.date.fromisoformat("2011-11-04")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aminusb",
             Literal("2011-11-03", datatype=XSD.date),
         ),
         (
             Literal(datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aminusb",
             Literal("2011-11-03T00:05:23.283000+00:00", datatype=XSD.dateTime),
         ),
@@ -578,7 +578,7 @@ def test_ill_typed_literals(
         ),
         *affix_tuples(
             (
-                Literal(isodate.Duration(days=4)),
+                Literal(Duration(days=4)),
                 Literal(datetime.timedelta(days=1)),
             ),
             [
@@ -599,12 +599,12 @@ def test_ill_typed_literals(
         ),
         *affix_tuples(
             (
-                Literal(isodate.Duration(days=4)),
-                Literal(isodate.Duration(days=1)),
+                Literal(Duration(days=4)),
+                Literal(Duration(days=1)),
             ),
             [
-                ("aplusb", Literal(isodate.Duration(days=5))),
-                ("aminusb", Literal(isodate.Duration(days=3))),
+                ("aplusb", Literal(Duration(days=5))),
+                ("aminusb", Literal(Duration(days=3))),
             ],
             None,
         ),
