@@ -71,15 +71,15 @@ import rdflib
 import rdflib.util
 from rdflib.compat import long_type
 
-from .xsd_datetime import (
+from .xsd_datetime import (  # type: ignore[attr-defined]
     Duration,
     duration_isoformat,
+    parse_datetime,
+    parse_time,
     parse_xsd_date,
-    parse_xsd_datetime,
     parse_xsd_duration,
     parse_xsd_gyear,
     parse_xsd_gyearmonth,
-    parse_xsd_time,
 )
 
 if TYPE_CHECKING:
@@ -2031,11 +2031,11 @@ _OriginalSpecificPythonToXSDRules = list(_SpecificPythonToXSDRules)
 
 XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     None: None,  # plain literals map directly to value space
-    URIRef(_XSD_PFX + "time"): parse_xsd_time,
+    URIRef(_XSD_PFX + "time"): parse_time,
     URIRef(_XSD_PFX + "date"): parse_xsd_date,
     URIRef(_XSD_PFX + "gYear"): parse_xsd_gyear,
     URIRef(_XSD_PFX + "gYearMonth"): parse_xsd_gyearmonth,
-    URIRef(_XSD_PFX + "dateTime"): parse_xsd_datetime,
+    URIRef(_XSD_PFX + "dateTime"): parse_datetime,
     URIRef(_XSD_PFX + "duration"): parse_xsd_duration,
     URIRef(_XSD_PFX + "dayTimeDuration"): parse_xsd_duration,
     URIRef(_XSD_PFX + "yearMonthDuration"): parse_xsd_duration,

@@ -46,7 +46,7 @@ from rdflib.term import (
     URIRef,
     Variable,
 )
-from rdflib.xsd_datetime import Duration, parse_xsd_datetime
+from rdflib.xsd_datetime import Duration, parse_datetime  # type: ignore[attr-defined]
 
 
 def Builtin_IRI(expr: Expr, ctx: FrozenBindings) -> URIRef:
@@ -692,7 +692,7 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
         if x.datatype and x.datatype not in (XSD.dateTime, XSD.string):
             raise SPARQLError("Cannot cast %r to XSD:dateTime" % x.datatype)
         try:
-            return Literal(parse_xsd_datetime(x), datatype=e.iri)
+            return Literal(parse_datetime(x), datatype=e.iri)
         except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as datetime" % x)
 

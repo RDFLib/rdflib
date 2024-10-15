@@ -668,21 +668,9 @@ def parse_xsd_gyearmonth(gym_string: str):
 # Parse XSD Datetime is the same as ISO8601 Datetime
 # It uses datetime.fromisoformat for python 3.11 and above
 # or isodate.parse_datetime for older versions
-parse_xsd_datetime = parse_datetime
+# parse_xsd_datetime = parse_datetime
 
 # Parse XSD Time is the same as ISO8601 Time
 # It uses time.fromisoformat for python 3.11 and above
 # or isodate.parse_time for older versions
-parse_xsd_time = parse_time
-
-__all__ = [
-    "Duration",
-    "parse_xsd_duration",
-    "parse_xsd_date",
-    "parse_xsd_datetime",
-    "parse_xsd_time",
-    "parse_xsd_gyear",
-    "parse_xsd_gyearmonth",
-    "xsd_datetime_isoformat",
-    "duration_isoformat",
-]
+# parse_xsd_time = parse_time
