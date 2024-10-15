@@ -649,4 +649,8 @@ __all__ = [
     "parse_xsd_date",
     "parse_xsd_datetime",
     "parse_xsd_time",
+    "parse_xsd_gyear",
+    "parse_xsd_gyearmonth",
+    "xsd_datetime_isoformat",
+    "duration_isoformat"
 ]
