@@ -12,4 +12,6 @@ pyparsing==3.0.9
     # via rdflib
 rdflib==7.0.0
     # via -r docker/latest/requirements.in
-
+# isodate is required to allow the Dockerfile to build on with pre-RDFLib-7.1 releases.
+isodate==0.7.2
+    # via -r docker/latest/requirements.in
