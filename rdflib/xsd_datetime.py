@@ -4,6 +4,7 @@ https://pypi.org/project/isodate/
 Modifications are made to isodate features to allow compatbility with
 XSD dates and durations that are not necessarily valid ISO8601 strings.
 
+Copyright (c) 2024, Ashley Sommer, and RDFLib contributors
 Copyright (c) 2021, Hugo van Kemenade and contributors
 Copyright (c) 2009-2018, Gerhard Weis and contributors
 Copyright (c) 2009, Gerhard Weis
