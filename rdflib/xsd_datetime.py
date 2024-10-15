@@ -129,7 +129,7 @@ class Duration:
             years = Decimal(str(years))
         new_years, months = fquotmod(months, 0, 12)
         self.months = months
-        self.years = Decimal(new_years)
+        self.years = Decimal(years+new_years)
         self.tdelta = timedelta(
             days, seconds, microseconds, milliseconds, minutes, hours, weeks
         )
