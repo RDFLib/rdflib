@@ -495,10 +495,13 @@ def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False):
                 else:
                     ret.append("%d" % seconds)
                 ret.append("S")
-        # at least one component has to be there.
-        return ret and "".join(ret) or "0D"
+        if ret:
+            return "P" + "".join(ret)
+        else:
+            # at least one component has to be there.
+            return "P0D"
     else:
-        return str(abs(tdt.days // 7)) + "W"
+        return f"P{abs(tdt.days // 7)}W"
 
 
 def xsd_datetime_isoformat(dt: datetime):
