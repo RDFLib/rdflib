@@ -67,7 +67,7 @@ def fquotmod(val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]) 
     return int(div), mod
 
 
-def max_days_in_month(year: int, month: int):
+def max_days_in_month(year: int, month: int) -> int:
     """
     Determines the number of days of a specific month in a specific year.
     """
@@ -125,11 +125,16 @@ class Duration:
             months = Decimal(str(months))
         if not isinstance(years, Decimal):
             years = Decimal(str(years))
+        new_years, months = fquotmod(months, 0, 12)
         self.months = months
-        self.years = years
+        self.years = Decimal(new_years)
         self.tdelta = timedelta(
             days, seconds, microseconds, milliseconds, minutes, hours, weeks
         )
+        if self.years < 0 and self.tdelta.days < 0:
+            raise ValueError(
+                "Duration cannot have negative years and negative days"
+            )
 
     def __getstate__(self):
         return self.__dict__
@@ -215,13 +220,14 @@ class Duration:
             newmonth: Decimal = Decimal(other.month) + self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year + int(self.years) + carry
-            maxdays = max_days_in_month(newyear, int(newmonth))
+            maxdays: int = max_days_in_month(newyear, int(newmonth))
+            new_day: Union[int, float]
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
             newdt = other.replace(
-                year=newyear, month=int(newmonth), day=int(newday)
+                year=newyear, month=int(newmonth), day=newday
             )
             # does a timedelta + date/datetime
             return self.tdelta + newdt
@@ -291,13 +297,14 @@ class Duration:
             newmonth: Decimal = Decimal(other.month) - self.months
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year - int(self.years) + carry
-            maxdays = max_days_in_month(newyear, int(newmonth))
+            maxdays: int = max_days_in_month(newyear, int(newmonth))
+            new_day: Union[int, float]
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
             newdt = other.replace(
-                year=newyear, month=int(newmonth), day=int(newday)
+                year=newyear, month=int(newmonth), day=newday
             )
             return newdt - self.tdelta
         except AttributeError:
@@ -398,7 +405,7 @@ def parse_xsd_duration(dur_string: str, as_timedelta_if_possible: bool = True) -
       days set to 0.
     """
     if not isinstance(dur_string, str):
-        raise TypeError("Expecting a string %r" % dur_string)
+        raise TypeError(f"Expecting a string: {dur_string!r}")
     match = ISO8601_PERIOD_REGEX.match(dur_string)
     if not match:
         # try alternative format:
@@ -465,43 +472,67 @@ def parse_xsd_duration(dur_string: str, as_timedelta_if_possible: bool = True) -
     return ret
 
 
-def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False):
+def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) -> str:
     if not in_weeks:
         ret: List[str] = []
+        minus = False
+        has_year_or_month = False
         if isinstance(tdt, Duration):
-            if tdt.years:
-                ret.append(str(abs(tdt.years)) + "Y")
-            if tdt.months:
-                ret.append(str(abs(tdt.months)) + "M")
+            if tdt.years == 0 and tdt.months == 0:
+                pass # don't do anything, we have no year or month
+            else:
+                has_year_or_month = True
+                months = tdt.years * 12 + tdt.months
+                if months < 0:
+                    minus = True
+                    months = abs(months)
+                # We can use divmod instead of fquotmod here because its month_count
+                # not month_index, and we don't have any negative months at this point.
+                new_years, new_months = divmod(months, 12)
+                if new_years:
+                    ret.append(str(new_years) + "Y")
+                if tdt.months:
+                    ret.append(str(new_months) + "M")
             tdt = tdt.tdelta
-        usecs = abs(
-            (tdt.days * 24 * 60 * 60 + tdt.seconds) * 1000000 + tdt.microseconds
-        )
-        seconds, usecs = divmod(usecs, 1000000)
-        minutes, seconds = divmod(seconds, 60)
-        hours, minutes = divmod(minutes, 60)
-        days, hours = divmod(hours, 24)
-        if days:
-            ret.append(str(days) + "D")
-        if hours or minutes or seconds or usecs:
-            ret.append("T")
-            if hours:
-                ret.append(str(hours) + "H")
-            if minutes:
-                ret.append(str(minutes) + "M")
-            if seconds or usecs:
-                if usecs:
-                    ret.append(("%d.%06d" % (seconds, usecs)).rstrip("0"))
-                else:
-                    ret.append("%d" % seconds)
-                ret.append("S")
+        usecs: int = ((tdt.days * 86400) + tdt.seconds) * 1000000 + tdt.microseconds
+        if usecs < 0:
+            if minus:
+                raise ValueError("Duration cannot have negative years and negative days")
+            elif has_year_or_month:
+                raise ValueError("Duration cannot have positive years and months but negative days")
+            minus = True
+            usecs = abs(usecs)
+        if usecs == 0:
+            # No delta parts other than years and months
+            pass
+        else:
+            seconds, usecs = divmod(usecs, 1000000)
+            minutes, seconds = divmod(seconds, 60)
+            hours, minutes = divmod(minutes, 60)
+            days, hours = divmod(hours, 24)
+            if days:
+                ret.append(str(days) + "D")
+            if hours or minutes or seconds or usecs:
+                ret.append("T")
+                if hours:
+                    ret.append(str(hours) + "H")
+                if minutes:
+                    ret.append(str(minutes) + "M")
+                if seconds or usecs:
+                    if usecs:
+                        ret.append(("%d.%06d" % (seconds, usecs)).rstrip("0"))
+                    else:
+                        ret.append("%d" % seconds)
+                    ret.append("S")
         if ret:
-            return "P" + "".join(ret)
+            return ("-P" if minus else "P") + "".join(ret)
         else:
             # at least one component has to be there.
-            return "P0D"
+            return "-P0D" if minus else "P0D"
     else:
-        return f"P{abs(tdt.days // 7)}W"
+        if tdt.days < 0:
+            return f"-P{abs(tdt.days // 7)}W"
+        return f"P{tdt.days // 7}W"
 
 
 def xsd_datetime_isoformat(dt: datetime):
