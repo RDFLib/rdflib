@@ -49,7 +49,9 @@ else:
     parse_time = time.fromisoformat
 
 
-def fquotmod(val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]) -> Tuple[int, Decimal]:
+def fquotmod(
+    val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]
+) -> Tuple[int, Decimal]:
     """
     A divmod function with boundaries.
 
@@ -132,9 +134,7 @@ class Duration:
             days, seconds, microseconds, milliseconds, minutes, hours, weeks
         )
         if self.years < 0 and self.tdelta.days < 0:
-            raise ValueError(
-                "Duration cannot have negative years and negative days"
-            )
+            raise ValueError("Duration cannot have negative years and negative days")
 
     def __getstate__(self):
         return self.__dict__
@@ -221,14 +221,12 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year + int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            new_day: Union[int, float]
+            newday: Union[int, float]
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(
-                year=newyear, month=int(newmonth), day=newday
-            )
+            newdt = other.replace(year=newyear, month=int(newmonth), day=newday)
             # does a timedelta + date/datetime
             return self.tdelta + newdt
         except AttributeError:
@@ -298,14 +296,12 @@ class Duration:
             carry, newmonth = fquotmod(newmonth, 1, 13)
             newyear: int = other.year - int(self.years) + carry
             maxdays: int = max_days_in_month(newyear, int(newmonth))
-            new_day: Union[int, float]
+            newday: Union[int, float]
             if other.day > maxdays:
                 newday = maxdays
             else:
                 newday = other.day
-            newdt = other.replace(
-                year=newyear, month=int(newmonth), day=newday
-            )
+            newdt = other.replace(year=newyear, month=int(newmonth), day=newday)
             return newdt - self.tdelta
         except AttributeError:
             # other probably was not compatible with data/datetime
@@ -376,7 +372,9 @@ ISO8601_PERIOD_REGEX = re.compile(
 # regular expression to parse ISO duration strings.
 
 
-def parse_xsd_duration(dur_string: str, as_timedelta_if_possible: bool = True) -> Union[Duration, timedelta]:
+def parse_xsd_duration(
+    dur_string: str, as_timedelta_if_possible: bool = True
+) -> Union[Duration, timedelta]:
     """
     Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
@@ -448,11 +446,11 @@ def parse_xsd_duration(dur_string: str, as_timedelta_if_possible: bool = True) -
     ret: Union[Duration, timedelta]
     if as_timedelta_if_possible and groups["years"] == 0 and groups["months"] == 0:
         ret = timedelta(
-            days=groups["days"], # type: ignore[arg-type]
-            hours=groups["hours"], # type: ignore[arg-type]
-            minutes=groups["minutes"], # type: ignore[arg-type]
-            seconds=groups["seconds"], # type: ignore[arg-type]
-            weeks=groups["weeks"], # type: ignore[arg-type]
+            days=groups["days"],  # type: ignore[arg-type]
+            hours=groups["hours"],  # type: ignore[arg-type]
+            minutes=groups["minutes"],  # type: ignore[arg-type]
+            seconds=groups["seconds"],  # type: ignore[arg-type]
+            weeks=groups["weeks"],  # type: ignore[arg-type]
         )
         if groups["sign"] == "-":
             ret = timedelta(0) - ret
@@ -460,11 +458,11 @@ def parse_xsd_duration(dur_string: str, as_timedelta_if_possible: bool = True) -
         ret = Duration(
             years=cast(Decimal, groups["years"]),
             months=cast(Decimal, groups["months"]),
-            days=groups["days"], # type: ignore[arg-type]
-            hours=groups["hours"], # type: ignore[arg-type]
-            minutes=groups["minutes"], # type: ignore[arg-type]
-            seconds=groups["seconds"], # type: ignore[arg-type]
-            weeks=groups["weeks"], # type: ignore[arg-type]
+            days=groups["days"],  # type: ignore[arg-type]
+            hours=groups["hours"],  # type: ignore[arg-type]
+            minutes=groups["minutes"],  # type: ignore[arg-type]
+            seconds=groups["seconds"],  # type: ignore[arg-type]
+            weeks=groups["weeks"],  # type: ignore[arg-type]
         )
         if groups["sign"] == "-":
             ret = Duration(0) - ret
@@ -479,7 +477,7 @@ def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) 
         has_year_or_month = False
         if isinstance(tdt, Duration):
             if tdt.years == 0 and tdt.months == 0:
-                pass # don't do anything, we have no year or month
+                pass  # don't do anything, we have no year or month
             else:
                 has_year_or_month = True
                 months = tdt.years * 12 + tdt.months
@@ -497,9 +495,13 @@ def duration_isoformat(tdt: Union[Duration, timedelta], in_weeks: bool = False) 
         usecs: int = ((tdt.days * 86400) + tdt.seconds) * 1000000 + tdt.microseconds
         if usecs < 0:
             if minus:
-                raise ValueError("Duration cannot have negative years and negative days")
+                raise ValueError(
+                    "Duration cannot have negative years and negative days"
+                )
             elif has_year_or_month:
-                raise ValueError("Duration cannot have positive years and months but negative days")
+                raise ValueError(
+                    "Duration cannot have positive years and months but negative days"
+                )
             minus = True
             usecs = abs(usecs)
         if usecs == 0:
@@ -683,5 +685,5 @@ __all__ = [
     "parse_xsd_gyear",
     "parse_xsd_gyearmonth",
     "xsd_datetime_isoformat",
-    "duration_isoformat"
+    "duration_isoformat",
 ]

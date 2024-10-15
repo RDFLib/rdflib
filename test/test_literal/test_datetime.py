@@ -41,9 +41,7 @@ class TestRelativeBase:
         )
 
         assert isinstance(l.toPython(), datetime)
-        assert (
-            xsd_datetime_isoformat(l.toPython()) == dt
-        )
+        assert xsd_datetime_isoformat(l.toPython()) == dt
         assert l.toPython().isoformat() == "2008-12-01T18:02:00.522630+00:00"
 
     def test_timezone_offset(self):
