@@ -1,10 +1,8 @@
-from datetime import datetime
-from datetime import timezone
-
-from rdflib.xsd_datetime import xsd_datetime_isoformat
+from datetime import datetime, timezone
 
 from rdflib.namespace import XSD
 from rdflib.term import Literal, URIRef
+from rdflib.xsd_datetime import xsd_datetime_isoformat
 
 
 class TestRelativeBase:

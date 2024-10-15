@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from rdflib.namespace import XSD
 from rdflib.term import Literal
-from rdflib.xsd_datetime import parse_xsd_duration, Duration
+from rdflib.xsd_datetime import Duration, parse_xsd_duration
 
 
 class TestDuration:
