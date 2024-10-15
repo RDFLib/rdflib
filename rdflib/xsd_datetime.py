@@ -11,14 +11,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the <organization> nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+- Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+- Neither the name of the <organization> nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -96,10 +96,10 @@ class Duration:
 
     A Duration can be used almost like any timedelta object, however there
     are some restrictions:
-      * It is not really possible to compare Durations, because it is unclear,
-        whether a duration of 1 year is bigger than 365 days or not.
-      * Equality is only tested between the two (year, month vs. timedelta)
-        basic components.
+    - It is not really possible to compare Durations, because it is unclear,
+    whether a duration of 1 year is bigger than 365 days or not.
+    - Equality is only tested between the two (year, month vs. timedelta)
+    basic components.
 
     A Duration can also be converted into a datetime object, but this requires
     a start date or an end date.
@@ -129,7 +129,7 @@ class Duration:
             years = Decimal(str(years))
         new_years, months = fquotmod(months, 0, 12)
         self.months = months
-        self.years = Decimal(years+new_years)
+        self.years = Decimal(years + new_years)
         self.tdelta = timedelta(
             days, seconds, microseconds, milliseconds, minutes, hours, weeks
         )
@@ -271,16 +271,16 @@ class Duration:
         """
         It is possible to subtract Duration objects from date, datetime and
         timedelta objects.
-
-        TODO: there is some weird behaviour in date - timedelta ...
-              if timedelta has seconds or microseconds set, then
-              date - timedelta != date + (-timedelta)
-              for now we follow this behaviour to avoid surprises when mixing
-              timedeltas with Durations, but in case this ever changes in
-              the stdlib we can just do:
-                return -self + other
-              instead of all the current code
         """
+        # TODO: there is some weird behaviour in date - timedelta ...
+        #       if timedelta has seconds or microseconds set, then
+        #       date - timedelta != date + (-timedelta)
+        #       for now we follow this behaviour to avoid surprises when mixing
+        #       timedeltas with Durations, but in case this ever changes in
+        #       the stdlib we can just do:
+        #       return -self + other
+        #       instead of all the current code
+
         if isinstance(other, timedelta):
             tmpdur = Duration()
             tmpdur.tdelta = other
@@ -382,25 +382,24 @@ def parse_xsd_duration(
     instance is returned, else a Duration instance is returned.
 
     The following duration formats are supported:
-      -PnnW                  duration in weeks
-      -PnnYnnMnnDTnnHnnMnnS  complete duration specification
-      -PYYYYMMDDThhmmss      basic alternative complete date format
-      -PYYYY-MM-DDThh:mm:ss  extended alternative complete date format
-      -PYYYYDDDThhmmss       basic alternative ordinal date format
-      -PYYYY-DDDThh:mm:ss    extended alternative ordinal date format
+      -``PnnW``                  duration in weeks
+      -``PnnYnnMnnDTnnHnnMnnS``  complete duration specification
+      -``PYYYYMMDDThhmmss``      basic alternative complete date format
+      -``PYYYY-MM-DDThh:mm:ss``  extended alternative complete date format
+      -``PYYYYDDDThhmmss``       basic alternative ordinal date format
+      -``PYYYY-DDDThh:mm:ss``    extended alternative ordinal date format
 
     The '-' is optional.
 
     Limitations:  ISO standard defines some restrictions about where to use
-      fractional numbers and which component and format combinations are
-      allowed. This parser implementation ignores all those restrictions and
-      returns something when it is able to find all necessary components.
-      In detail:
-        it does not check, whether only the last component has fractions.
-        it allows weeks specified with all other combinations
-
-      The alternative format does not support durations with years, months or
-      days set to 0.
+    fractional numbers and which component and format combinations are
+    allowed. This parser implementation ignores all those restrictions and
+    returns something when it is able to find all necessary components.
+    In detail:
+    - it does not check, whether only the last component has fractions.
+    - it allows weeks specified with all other combinations
+    The alternative format does not support durations with years, months or
+    days set to 0.
     """
     if not isinstance(dur_string, str):
         raise TypeError(f"Expecting a string: {dur_string!r}")
