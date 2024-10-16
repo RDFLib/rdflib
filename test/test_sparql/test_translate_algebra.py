@@ -12,7 +12,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
-from rdflib import Graph, Literal, URIRef
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.plugins.sparql.algebra import translateAlgebra
 from test.data import TEST_DATA_DIR
 
@@ -342,7 +342,7 @@ def test_sparql_blank_node_comma():
     } LIMIT 10
     """
 
-    parseResults = parseQuery(query)
+    parseResults = parser.parseQuery(query)
     triples = parseResults[1]['where'].part[0].triples[0]
     s_count = sum(1 for i in range(0, len(triples), 3)
                   if triples[i] == Variable('s'))
