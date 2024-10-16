@@ -1,7 +1,7 @@
 """
-Large parts of this module are taken from the isodate package.
+Large parts of this module are taken from the ``isodate`` package.
 https://pypi.org/project/isodate/
-Modifications are made to isodate features to allow compatbility with
+Modifications are made to isodate features to allow compatibility with
 XSD dates and durations that are not necessarily valid ISO8601 strings.
 
 Copyright (c) 2024, Ashley Sommer, and RDFLib contributors
