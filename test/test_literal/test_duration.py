@@ -1,26 +1,25 @@
 from datetime import timedelta
 
-from isodate import Duration, parse_duration
-
 from rdflib.namespace import XSD
 from rdflib.term import Literal
+from rdflib.xsd_datetime import Duration, parse_xsd_duration
 
 
 class TestDuration:
     def test_to_python_timedelta(self):
         l = Literal("P4DT5H6M7S", datatype=XSD.dayTimeDuration)  # noqa: E741
         assert isinstance(l.toPython(), timedelta)
-        assert l.toPython() == parse_duration("P4DT5H6M7S")
+        assert l.toPython() == parse_xsd_duration("P4DT5H6M7S")
 
     def test_to_python_ym_duration(self):
         l = Literal("P1Y2M", datatype=XSD.yearMonthDuration)  # noqa: E741
         assert isinstance(l.toPython(), Duration)
-        assert l.toPython() == parse_duration("P1Y2M")
+        assert l.toPython() == parse_xsd_duration("P1Y2M")
 
     def test_to_python_ymdhms_duration(self):
         l = Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration)  # noqa: E741
         assert isinstance(l.toPython(), Duration)
-        assert l.toPython() == parse_duration("P1Y2M4DT5H6M7S")
+        assert l.toPython() == parse_xsd_duration("P1Y2M4DT5H6M7S")
 
     def test_equalityself(self):
         x = Literal("P1Y2M3W4DT5H6M7S", datatype=XSD.duration)
