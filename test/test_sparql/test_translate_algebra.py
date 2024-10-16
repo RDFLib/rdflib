@@ -12,7 +12,7 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.plugins.sparql.algebra as algebra
 import rdflib.plugins.sparql.parser as parser
-from rdflib import Graph, Literal, URIRef
+from rdflib import Graph, Literal, URIRef, Variable
 from rdflib.plugins.sparql.algebra import translateAlgebra
 from test.data import TEST_DATA_DIR
 
@@ -329,3 +329,20 @@ def test_sparql_group_concat():
     g = Graph()
     q = dict(g.query(query))
     assert q[URIRef("http://example.org/pred")] == Literal("abc")
+
+
+def test_sparql_blank_node_comma():
+    """Tests if blank nodes separated by commas are correctly parsed"""
+
+    query = """
+    PREFIX : <http://example.org/>
+
+    SELECT ?s WHERE {
+    ?s :hasIngredient [:name "chicken"], [:name "butter"] .
+    } LIMIT 10
+    """
+
+    parse_results = parser.parseQuery(query)
+    triples = parse_results[1]["where"].part[0].triples[0]
+    s_count = sum(1 for i in range(0, len(triples), 3) if triples[i] == Variable("s"))
+    assert s_count == 2, f"Found ?s as subject {s_count} times, expected 2"
