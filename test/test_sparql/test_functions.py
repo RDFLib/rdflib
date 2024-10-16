@@ -167,7 +167,7 @@ def test_function(expression: str, expected_result: Identifier) -> None:
     if isinstance(expected_result, type):
         assert isinstance(actual_result, expected_result)
     else:
-        assert expected_result == actual_result
+        assert actual_result == expected_result
 
 
 @pytest.mark.parametrize(

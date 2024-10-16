@@ -1,4 +1,6 @@
-# This file is used for building a docker image of hte latest rdflib release. It
+# This file is used for building a docker image of the latest rdflib release. It
 # will be updated by dependabot when new releases are made.
 rdflib==7.0.0
-html5lib
+html5lib-modern==1.2.0
+# isodate is required to allow the Dockerfile to build on with pre-RDFLib-7.1 releases.
+isodate==0.7.2
