@@ -343,7 +343,6 @@ def test_sparql_blank_node_comma():
     """
 
     parseResults = parser.parseQuery(query)
-    triples = parseResults[1]['where'].part[0].triples[0]
-    s_count = sum(1 for i in range(0, len(triples), 3)
-                  if triples[i] == Variable('s'))
+    triples = parseResults[1]["where"].part[0].triples[0]
+    s_count = sum(1 for i in range(0, len(triples), 3) if triples[i] == Variable("s"))
     assert s_count == 2, f"Found ?s as subject {s_count} times, expected 2"
