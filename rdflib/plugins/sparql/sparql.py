@@ -19,8 +19,6 @@ from typing import (
     Union,
 )
 
-import isodate
-
 import rdflib.plugins.sparql
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import NamespaceManager
@@ -302,7 +300,7 @@ class QueryContext:
     @property
     def now(self) -> datetime.datetime:
         if self._now is None:
-            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+            self._now = datetime.datetime.now(datetime.timezone.utc)
         return self._now
 
     def clone(
