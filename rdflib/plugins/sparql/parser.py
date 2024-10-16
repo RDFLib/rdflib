@@ -59,6 +59,7 @@ def expandTriples(terms: ParseResults) -> List[Any]:
     Expand ; and , syntax for repeat predicates, subjects
     """
     # import pdb; pdb.set_trace()
+    last_subject, last_predicate = None, None  # Used for ; and ,
     try:
         res: List[Any] = []
         if DEBUG:
@@ -66,11 +67,11 @@ def expandTriples(terms: ParseResults) -> List[Any]:
         l_ = len(terms)
         for i, t in enumerate(terms):
             if t == ",":
-                res.extend([res[-3], res[-2]])
+                res.extend([last_subject, last_predicate])
             elif t == ";":
                 if i + 1 == len(terms) or terms[i + 1] == ";" or terms[i + 1] == ".":
                     continue  # this semicolon is spurious
-                res.append(res[0])
+                res.append(last_subject)
             elif isinstance(t, list):
                 # BlankNodePropertyList
                 # is this bnode the object of previous triples?
@@ -78,14 +79,19 @@ def expandTriples(terms: ParseResults) -> List[Any]:
                     res.append(t[0])
                 # is this a single [] ?
                 if len(t) > 1:
-                    res += t
+                    res += t  # Don't update last_subject/last_predicate
                 # is this bnode the subject of more triples?
                 if i + 1 < l_ and terms[i + 1] not in ".,;":
+                    last_subject, last_predicate = t[0], None
                     res.append(t[0])
             elif isinstance(t, ParseResults):
                 res += t.asList()
             elif t != ".":
                 res.append(t)
+                if (len(res) % 3) == 1:
+                    last_subject = t
+                elif (len(res) % 3) == 2:
+                    last_predicate = t
             if DEBUG:
                 print(len(res), t)
         if DEBUG:
