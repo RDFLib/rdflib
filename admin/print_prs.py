@@ -1,12 +1,25 @@
 """Print all PRs in saved JSON file in Markdown list for CHANGELOG"""
 
+
 import json
 
-with open("prs.json") as f:
-    for pr in sorted(json.load(f), key=lambda k: k["merged_at"], reverse=True):
-        if not pr["title"].startswith("Bump"):
-            id = pr["url"].replace(
-                "https://api.github.com/repos/RDFLib/rdflib/pulls/", ""
-            )
-            u = f"https://github.com/RDFLib/rdflib/pull/{id}"
-            print(f"""* {pr['title']}\n  [PR #{id}]({u})""")
+with open("prs-raw.json") as f:
+    json = json.load(f)
+    prs = json["items"]
+    good_prs = []
+    boring_prs = []
+    for pr in sorted(prs, key=lambda k: k["closed_at"], reverse=True):
+        if "bump" in pr['title']:
+            boring_prs.append(f"""* {pr['closed_at'][:10]} - {pr['title']}\n  [PR #{pr['number']}]({pr['html_url']})""")
+        else:
+            good_prs.append(f"""* {pr['closed_at'][:10]} - {pr['title']}\n  [PR #{pr['number']}]({pr['html_url']})""")
+
+for pr in good_prs:
+    print(pr)
+
+print()
+print()
+
+
+for pr in boring_prs:
+    print(pr)
