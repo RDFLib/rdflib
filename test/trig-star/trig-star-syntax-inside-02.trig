@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+
+:G {
+  :s :p :o1 .
+  :s :p :o2 .
+  ( <<:s :p :o1>> <<:s :p :o2>> )  :q 123 .
+}
