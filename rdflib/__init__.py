@@ -52,7 +52,7 @@ _DISTRIBUTION_METADATA = metadata.metadata("rdflib")
 __docformat__ = "restructuredtext en"
 
 __version__: str = _DISTRIBUTION_METADATA["Version"]
-__date__ = "2023-08-02"
+__date__ = "2024-10-17"
 
 __all__ = [
     "URIRef",

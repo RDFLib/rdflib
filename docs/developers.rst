@@ -451,10 +451,7 @@ Create a release-preparation pull request with the following changes:
 * Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
-* Updated main branch version and current version in the ``README.md`` file. The
-  main branch version should be the next major version with an ``a0`` suffix to
-  indicate it is alpha 0. When releasing 6.3.1, the main branch version in the
-  README should be 6.4.0a0.
+* Updated main branch version and current version in the ``README.md`` file. 
 * Updated version in the ``pyproject.toml`` file.
 * Updated ``__date__`` in the ``rdflib/__init__.py`` file.
 * Accurate ``CHANGELOG.md`` entry for the release.
