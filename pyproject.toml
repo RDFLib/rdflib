@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "7.1.0"
+version = "7.1.1a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -51,6 +51,7 @@ orjson = {version = ">=3.9.14,<4", optional = true}
 black = "24.4.2"
 mypy = "^1.1.0"
 lxml-stubs = ">=0.4,<0.6"
+pip-tools = "^7.4.1"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.1.3,<9.0.0"
@@ -255,11 +256,9 @@ warn_unused_ignores = true
 no_implicit_optional = false
 implicit_reexport = false
 
-
 [[tool.mypy.overrides]]
 module = "rdflib.*"
 check_untyped_defs = true
-
 
 [tool.coverage.run]
 branch = true
