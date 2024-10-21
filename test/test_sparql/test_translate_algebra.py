@@ -106,6 +106,10 @@ algebra_tests = [
         "Test if basic graph patterns are properly translated into the query text.",
     ),
     AlgebraTest(
+        "test_graph_patterns__bnode_subject",
+        "Test if a blank node subject gets properly translated into the query text.",
+    ),
+    AlgebraTest(
         "test_graph_patterns__extend",
         'Test if "extend" (=Bind explicitly or implicitly in projection)'
         "gets properly translated into the query text.",

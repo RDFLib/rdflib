@@ -81,7 +81,7 @@ def expandTriples(terms: ParseResults) -> List[Any]:
                 if len(t) > 1:
                     res += t  # Don't update last_subject/last_predicate
                 # is this bnode the subject of more triples?
-                if i + 1 < l_ and terms[i + 1] not in ".,;":
+                if i + 1 < l_ and not any(terms[i + 1] == token for token in ".,;"):
                     last_subject, last_predicate = t[0], None
                     res.append(t[0])
             elif isinstance(t, ParseResults):
