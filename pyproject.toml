@@ -62,10 +62,16 @@ setuptools = ">=68,<72"
 wheel = ">=0.42,<0.45"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = ">=7.1.2,<8"
+sphinx = [
+    {version = ">=7.1.2,<8", python="<3.9"},
+    {version = ">=7.1.2,<9", python=">=3.9"}
+]
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
-sphinx-autodoc-typehints = ">=1.25.3,<=2.0.1"
+sphinx-autodoc-typehints = [
+    {version = ">=1.25.3,<=2.0.1", python="<3.9"},
+    {version = ">=1.25.3,<2.4", python=">=3.9"}
+]
 typing-extensions = "^4.5.0"
 
 [tool.poetry.group.lint.dependencies]
