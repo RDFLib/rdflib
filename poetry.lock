@@ -339,14 +339,14 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
-name = "html5lib-modern"
+name = "html5rdf"
 version = "1.2"
 description = "HTML parser based on the WHATWG HTML specification"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "html5lib_modern-1.2-py2.py3-none-any.whl", hash = "sha256:3458b6e31525ede4fcaac0ff42d9eeb5efaf755473768103cb56e0275caa8d99"},
-    {file = "html5lib_modern-1.2.tar.gz", hash = "sha256:1fadbfc27ea955431270e4e79a4a4c290ba11c3a3098a95cc22dc73e312a1768"},
+    {file = "html5rdf-1.2-py2.py3-none-any.whl", hash = "sha256:08169aa52a98ee3a6d3456d83feb36211fb5edcbcf3e05f6d19e0136f581638c"},
+    {file = "html5rdf-1.2.tar.gz", hash = "sha256:08378cbbbb63993ba7bb5eb1eac44bf9ca7b1a23dbee3d2afef5376597fb00a5"},
 ]
 
 [package.extras]
@@ -1107,7 +1107,6 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
-    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -1456,6 +1455,7 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 
 [extras]
 berkeleydb = ["berkeleydb"]
+html = ["html5rdf", "lxml"]
 lxml = ["lxml"]
 networkx = ["networkx"]
 orjson = ["orjson"]
@@ -1463,4 +1463,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "b0303e119538a8c1ca41f75206ce1c2fb3016699a00a02039bcafae17da6b03b"
+content-hash = "214d37624612043042464f0e154a4e551ec43177be1aabe4b9aced3ace7182de"

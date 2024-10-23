@@ -1,7 +1,6 @@
 import xml.dom.minidom
 from typing import Callable
 
-import html5lib  # noqa: F401
 import pytest
 
 import rdflib.term
@@ -10,8 +9,13 @@ from rdflib.term import Literal
 from test.utils.literal import LiteralChecker
 from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 
+try:
+    import html5rdf as _  # noqa: F401
+except ImportError:
+    pytest.skip("html5rdf not installed", allow_module_level=True)
 
-def test_has_html5lib() -> None:
+def test_has_html5rdf() -> None:
+    assert rdflib.term._HAS_HTML5RDF is True
     assert RDF.HTML in rdflib.term.XSDToPython
     rule = next(
         (
@@ -29,7 +33,7 @@ def test_has_html5lib() -> None:
     ["factory", "outcome"],
     [
         # Ill-typed literals, these have lexical forms that result in
-        # errors when parsed as HTML by html5lib.
+        # errors when parsed as HTML by html5rdf.
         (
             lambda: Literal("<body><h1>Hello, World!</h1></body>", datatype=RDF.HTML),
             LiteralChecker(

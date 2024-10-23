@@ -6,6 +6,6 @@ pyparsing==2.1.0
 importlib-metadata==4.0.0
 berkeleydb==18.1.2
 networkx==2.0
-html5lib-modern==1.2.0
+html5rdf==1.2.0
 lxml==4.3.0
 orjson==3.9.14

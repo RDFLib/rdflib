@@ -4,7 +4,7 @@
 #
 #    pip-compile docker/latest/requirements.in
 #
-html5lib-modern==1.2
+html5rdf==1.2
     # via
     #   -r docker/latest/requirements.in
     #   rdflib

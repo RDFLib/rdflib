@@ -65,8 +65,6 @@ from typing import (
 from urllib.parse import urldefrag, urljoin, urlparse
 from uuid import uuid4
 
-import html5lib
-
 import rdflib
 import rdflib.util
 from rdflib.compat import long_type
@@ -86,6 +84,14 @@ if TYPE_CHECKING:
     from .namespace import NamespaceManager
     from .paths import AlternativePath, InvPath, NegatedPath, Path, SequencePath
 
+_HAS_HTML5RDF = False
+
+try:
+    import html5rdf
+
+    _HAS_HTML5RDF = True
+except ImportError:
+    html5rdf = None
 
 _SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
 
@@ -1668,19 +1674,19 @@ def _parseXML(xmlstring: str) -> xml.dom.minidom.Document:  # noqa: N802
 def _parse_html(lexical_form: str) -> xml.dom.minidom.DocumentFragment:
     """
     Parse the lexical form of an HTML literal into a document fragment
-    using the ``dom`` from html5lib tree builder.
+    using the ``dom`` from html5rdf tree builder.
 
     :param lexical_form: The lexical form of the HTML literal.
     :return: A document fragment representing the HTML literal.
-    :raises: `html5lib.html5parser.ParseError` if the lexical form is
+    :raises: `html5rdf.html5parser.ParseError` if the lexical form is
         not valid HTML.
     """
-    parser = html5lib.HTMLParser(
-        tree=html5lib.treebuilders.getTreeBuilder("dom"), strict=True
+    parser = html5rdf.HTMLParser(
+        tree=html5rdf.treebuilders.getTreeBuilder("dom"), strict=True
     )
     try:
         result: xml.dom.minidom.DocumentFragment = parser.parseFragment(lexical_form)
-    except html5lib.html5parser.ParseError as e:
+    except html5rdf.html5parser.ParseError as e:
         logger.info(f"Failed to parse HTML: {e}")
         raise e
     result.normalize()
@@ -1695,7 +1701,7 @@ def _write_html(value: xml.dom.minidom.DocumentFragment) -> bytes:
     :param value: A document fragment representing an HTML literal.
     :return: The lexical form of the HTML literal.
     """
-    result = html5lib.serialize(value, tree="dom")
+    result = html5rdf.serialize(value, tree="dom")
     return result
 
 
@@ -2012,13 +2018,20 @@ _GenericPythonToXSDRules: List[
     (Duration, (lambda i: duration_isoformat(i), _XSD_DURATION)),
     (timedelta, (lambda i: duration_isoformat(i), _XSD_DAYTIMEDURATION)),
     (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
-    # This is a bit dirty, by accident the html5lib parser produces
-    # DocumentFragments, and the xml parser Documents, letting this
-    # decide what datatype to use makes roundtripping easier, but it a
-    # bit random.
-    (xml.dom.minidom.DocumentFragment, (_write_html, _RDF_HTMLLITERAL)),
     (Fraction, (None, _OWL_RATIONAL)),
 ]
+
+if html5rdf is not None:
+    # This is a bit dirty, by accident the html5rdf parser produces
+    # DocumentFragments, and the xml parser Documents, letting this
+    # decide what datatype to use makes roundtripping easier, but its a
+    # bit random.
+
+    # This must happen before _GenericPythonToXSDRules is assigned to
+    # _OriginalGenericPythonToXSDRules.
+    _GenericPythonToXSDRules.append(
+        (xml.dom.minidom.DocumentFragment, (_write_html, _RDF_HTMLLITERAL))
+    )
 
 _OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
 
@@ -2069,9 +2082,13 @@ XSDToPython: Dict[Optional[str], Optional[Callable[[str], Any]]] = {
     URIRef(_XSD_PFX + "double"): float,
     URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
-    _RDF_HTMLLITERAL: _parse_html,
     _RDF_XMLLITERAL: _parseXML,
 }
+
+if html5rdf is not None:
+    # It is probably best to keep this close to the definition of
+    # _GenericPythonToXSDRules so nobody misses it.
+    XSDToPython[_RDF_HTMLLITERAL] = _parse_html
 
 _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,
