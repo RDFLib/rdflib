@@ -47,11 +47,11 @@ import logging
 import sys
 from importlib import metadata
 
-#_DISTRIBUTION_METADATA = metadata.metadata("rdflib")
+_DISTRIBUTION_METADATA = metadata.metadata("rdflib")
 
 __docformat__ = "restructuredtext en"
 
-__version__: str = "0.0.0" #_DISTRIBUTION_METADATA["Version"]
+__version__: str = _DISTRIBUTION_METADATA["Version"]
 __date__ = "2024-10-17"
 
 __all__ = [
