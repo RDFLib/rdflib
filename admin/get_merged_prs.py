@@ -1,8 +1,8 @@
 """Get all merged PRs since last release, save them to a JSON file"""
 
 import json
-import urllib.request
 import urllib.parse
+import urllib.request
 
 # https://api.github.com/search/issues?q=repo:rdflib/rdflib+is:pr+merged:%3E=2023-08-02&per_page=300&page=1
 LAST_RELEASE_DATE = "2023-08-02"
