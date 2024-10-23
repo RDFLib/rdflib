@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT ?x ?y WHERE {
+[ :p1 ?x ] :p2 ?y .
+}
