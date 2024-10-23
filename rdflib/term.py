@@ -1107,9 +1107,15 @@ class Literal(Identifier):
         if other is None:
             return True  # Everything is greater than None
         if isinstance(other, Literal):
+            # Fast path for comapring numeric literals
+            # that are not ill-typed and don't have a None value
             if (
-                self.datatype in _NUMERIC_LITERAL_TYPES
-                and other.datatype in _NUMERIC_LITERAL_TYPES
+                (
+                    self.datatype in _NUMERIC_LITERAL_TYPES
+                    and other.datatype in _NUMERIC_LITERAL_TYPES
+                )
+                and ((not self.ill_typed) and (not other.ill_typed))
+                and (self.value is not None and other.value is not None)
             ):
                 return self.value > other.value
 
