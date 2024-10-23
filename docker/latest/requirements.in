@@ -2,5 +2,5 @@
 # will be updated by dependabot when new releases are made.
 rdflib==7.1.0
 html5rdf==1.2.0
-# isodate is required to allow the Dockerfile to build on with pre-RDFLib-7.1 releases.
-isodate==0.7.2
+# html5lib-modern is required to allow the Dockerfile to build on with pre-RDFLib-7.1.1 releases.
+html5lib-modern==1.2.0
