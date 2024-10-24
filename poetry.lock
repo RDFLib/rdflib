@@ -1455,7 +1455,7 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 
 [extras]
 berkeleydb = ["berkeleydb"]
-html = ["html5rdf", "lxml"]
+html = ["html5rdf"]
 lxml = ["lxml"]
 networkx = ["networkx"]
 orjson = ["orjson"]
@@ -1463,4 +1463,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "214d37624612043042464f0e154a4e551ec43177be1aabe4b9aced3ace7182de"
+content-hash = "71704ba175e33528872fab8121cb609041bd97b6a99f8f04022a26904941b27c"

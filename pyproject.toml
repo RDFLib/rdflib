@@ -74,7 +74,9 @@ ruff = ">=0.0.286,<0.8.0"
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
 networkx = ["networkx"]
-html = ["html5rdf", "lxml"]
+# html support is optional, it is used only in tokenizing `rdf:HTML` type Literals
+html = ["html5rdf"]
+# lxml support is optional, it is used only for parsing XML-formatted SPARQL results
 lxml = ["lxml"]
 orjson = ["orjson"]
 
