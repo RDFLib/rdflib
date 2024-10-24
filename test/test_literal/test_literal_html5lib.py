@@ -14,6 +14,7 @@ try:
 except ImportError:
     pytest.skip("html5rdf not installed", allow_module_level=True)
 
+
 def test_has_html5rdf() -> None:
     assert rdflib.term._HAS_HTML5RDF is True
     assert RDF.HTML in rdflib.term.XSDToPython
