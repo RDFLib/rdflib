@@ -1113,7 +1113,7 @@ class Literal(Identifier):
         if other is None:
             return True  # Everything is greater than None
         if isinstance(other, Literal):
-            # Fast path for comapring numeric literals
+            # Fast path for comparing numeric literals
             # that are not ill-typed and don't have a None value
             if (
                 (
@@ -1356,9 +1356,15 @@ class Literal(Identifier):
 
         """
         if isinstance(other, Literal):
+            # Fast path for comparing numeric literals
+            # that are not ill-typed and don't have a None value
             if (
-                self.datatype in _NUMERIC_LITERAL_TYPES
-                and other.datatype in _NUMERIC_LITERAL_TYPES
+                (
+                    self.datatype in _NUMERIC_LITERAL_TYPES
+                    and other.datatype in _NUMERIC_LITERAL_TYPES
+                )
+                and ((not self.ill_typed) and (not other.ill_typed))
+                and (self.value is not None and other.value is not None)
             ):
                 if self.value is not None and other.value is not None:
                     return self.value == other.value
@@ -1380,6 +1386,13 @@ class Literal(Identifier):
                 # string/plain literals, compare on lexical form
                 return str.__eq__(self, other)
 
+            # XML can be compared to HTML, only if html5rdf is enabled
+            if ((dtself in _XML_COMPARABLE and dtother in _XML_COMPARABLE) and
+                # Ill-typed can be none if unknown, but we don't want it to be False.
+                ((self.ill_typed is not False) and (other.ill_typed is not False)) and
+                (self.value is not None and other.value is not None)):
+                return _isEqualXMLNode(self.value, other.value)
+
             if dtself != dtother:
                 if rdflib.DAWG_LITERAL_COLLATION:
                     raise TypeError(
@@ -1393,9 +1406,6 @@ class Literal(Identifier):
             # maybe there are counter examples
 
             if self.value is not None and other.value is not None:
-                if self.datatype in (_RDF_XMLLITERAL, _RDF_HTMLLITERAL):
-                    return _isEqualXMLNode(self.value, other.value)
-
                 return self.value == other.value
             else:
                 if str.__eq__(self, other):
@@ -2089,6 +2099,9 @@ if html5rdf is not None:
     # It is probably best to keep this close to the definition of
     # _GenericPythonToXSDRules so nobody misses it.
     XSDToPython[_RDF_HTMLLITERAL] = _parse_html
+    _XML_COMPARABLE = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
+else:
+    _XML_COMPARABLE = (_RDF_XMLLITERAL,)
 
 _check_well_formed_types: Dict[URIRef, Callable[[Union[str, bytes], Any], bool]] = {
     URIRef(_XSD_PFX + "boolean"): _well_formed_boolean,

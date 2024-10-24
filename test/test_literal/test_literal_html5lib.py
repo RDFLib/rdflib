@@ -52,7 +52,7 @@ def test_has_html5rdf() -> None:
             ),
         ),
         # Well-typed literals, these have lexical forms that parse
-        # without errors with html5lib.
+        # without errors with html5rdf.
         (
             lambda: Literal("<table></table>", datatype=RDF.HTML),
             LiteralChecker(..., None, RDF.HTML, False, "<table></table>"),
