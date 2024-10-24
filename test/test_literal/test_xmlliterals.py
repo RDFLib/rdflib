@@ -126,7 +126,7 @@ def testHTML():  # noqa: N802
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something/>
+                    <something2/>
                     """
                         )
                     ),
@@ -137,7 +137,7 @@ def testHTML():  # noqa: N802
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something />
+                    <something2 />
                     """
                         )
                     ),

@@ -1387,10 +1387,13 @@ class Literal(Identifier):
                 return str.__eq__(self, other)
 
             # XML can be compared to HTML, only if html5rdf is enabled
-            if ((dtself in _XML_COMPARABLE and dtother in _XML_COMPARABLE) and
-                # Ill-typed can be none if unknown, but we don't want it to be False.
-                ((self.ill_typed is not False) and (other.ill_typed is not False)) and
-                (self.value is not None and other.value is not None)):
+            if (
+                (dtself in _XML_COMPARABLE and dtother in _XML_COMPARABLE)
+                and
+                # Ill-typed can be None if unknown, but we don't want it to be True.
+                ((self.ill_typed is not True) and (other.ill_typed is not True))
+                and (self.value is not None and other.value is not None)
+            ):
                 return _isEqualXMLNode(self.value, other.value)
 
             if dtself != dtother:
