@@ -2099,7 +2099,7 @@ if html5rdf is not None:
     # It is probably best to keep this close to the definition of
     # _GenericPythonToXSDRules so nobody misses it.
     XSDToPython[_RDF_HTMLLITERAL] = _parse_html
-    _XML_COMPARABLE = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
+    _XML_COMPARABLE: Tuple[URIRef, ...] = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
 else:
     _XML_COMPARABLE = (_RDF_XMLLITERAL,)
 
