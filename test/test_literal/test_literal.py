@@ -23,11 +23,11 @@ from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitiv
 
 
 try:
-    import html5lib as _  # noqa: F401
+    import html5rdf as _  # noqa: F401
 
-    _HAVE_HTML5LIB = True
+    _HAVE_HTML5RDF = True
 except ImportError:
-    _HAVE_HTML5LIB = False
+    _HAVE_HTML5RDF = False
 
 import pytest
 
@@ -981,7 +981,7 @@ class _UnknownType:
         (
             lambda: Literal("<body>", datatype=RDF.HTML),
             LiteralChecker(
-                ..., None, RDF.HTML, True if _HAVE_HTML5LIB else None, "<body>"
+                ..., None, RDF.HTML, True if _HAVE_HTML5RDF else None, "<body>"
             ),
         ),
         (
@@ -990,7 +990,7 @@ class _UnknownType:
                 ...,
                 None,
                 RDF.HTML,
-                False if _HAVE_HTML5LIB else None,
+                False if _HAVE_HTML5RDF else None,
                 "<table></table>",
             ),
         ),
