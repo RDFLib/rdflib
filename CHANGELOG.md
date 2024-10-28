@@ -1,3 +1,37 @@
+## 2024-10-17 RELEASE 7.1.1
+
+This minor release removes the dependency on some only Python packages, in particular 
+[six](https://pypi.org/project/six/) which is a problem for some Linux distributions that ship RDFLib. 
+
+Other than that, there are a few minor PRs that improve testing and to do with making releases - no
+new RDFLib core work.
+
+Merged PRs:
+
+* 2024-10-28 - Replace html5lib with html5rdf, make it an optional dependency
+  [PR #2951](https://github.com/RDFLib/rdflib/pull/2951)
+* 2024-10-23 - Prevent crash when comparing ill-typed numeric types.
+  [PR #2949](https://github.com/RDFLib/rdflib/pull/2949)
+* 2024-10-23 - Fix parser bug and add test
+  [PR #2943](https://github.com/RDFLib/rdflib/pull/2943)
+* 2024-10-23 - Fix import ordering in get_merged_prs.
+  [PR #2947](https://github.com/RDFLib/rdflib/pull/2947)
+* 2024-10-17 - post 7.1.0 release PR
+  [PR #2934](https://github.com/RDFLib/rdflib/pull/2934)
+* 2024-10-17 - 7.1.0 release
+  [PR #2933](https://github.com/RDFLib/rdflib/pull/2933)
+
+
+* 2024-10-24 - build(deps): bump poetry from 1.8.3 to 1.8.4 in /devtools
+  [PR #2938](https://github.com/RDFLib/rdflib/pull/2938)
+* 2024-10-24 - build(deps-dev): bump poetry from 1.8.3 to 1.8.4
+  [PR #2941](https://github.com/RDFLib/rdflib/pull/2941)
+* 2024-10-24 - build(deps): bump orjson from 3.10.7 to 3.10.10
+  [PR #2950](https://github.com/RDFLib/rdflib/pull/2950)
+* 2024-10-23 - build(deps-dev): bump ruff from 0.6.9 to 0.7.0
+  [PR #2942](https://github.com/RDFLib/rdflib/pull/2942)
+
+
 ## 2024-10-17 RELEASE 7.1.0
 
 This minor release incorporates just over 100 substantive PRs - interesting 

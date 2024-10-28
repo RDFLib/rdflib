@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request
 
 # https://api.github.com/search/issues?q=repo:rdflib/rdflib+is:pr+merged:%3E=2023-08-02&per_page=300&page=1
-LAST_RELEASE_DATE = "2023-08-02"
+LAST_RELEASE_DATE = "2024-10-17"
 ISSUES_URL = "https://api.github.com/search/issues"
 ITEMS = []
 PAGE = 1
@@ -23,17 +23,18 @@ while True:
     print(f"Getting {url}")
     with urllib.request.urlopen(url) as response:
         response_text = response.read()
-        link_headers = response.info()["link"].split(",")
+        link_headers = response.info()["link"].split(",") if response.info()["link"] is not None else None
 
     json_data = json.loads(response_text)
     ITEMS.extend(json_data["items"])
 
     keep_going = False
-    for link in link_headers:
-        if 'rel="next"' in link:
-            # url = link.strip("<").split(">")[0]
-            PAGE += 1
-            keep_going = True
+    if link_headers is not None:
+        for link in link_headers:
+            if 'rel="next"' in link:
+                # url = link.strip("<").split(">")[0]
+                PAGE += 1
+                keep_going = True
 
     if not keep_going:
         break

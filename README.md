@@ -44,7 +44,7 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 ## Versions & Releases
 
 * `main` branch in this repository is the unstable release
-* `7.1.0` current stable release, bugfixes to 7.0.0
+* `7.1.1` current stable release, bugfixes to 7.1.0
 * `7.0.0` previous stable release, supports Python 3.8.1+ only.
     * see [Releases](https://github.com/RDFLib/rdflib/releases)
 * `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
@@ -68,7 +68,7 @@ Some features of RDFLib require optional dependencies which may be installed usi
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 7.1.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 7.1.1, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current main branch (for developers)
 
