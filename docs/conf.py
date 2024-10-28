@@ -300,7 +300,7 @@ def autodoc_skip_member_handler(
     """
     # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#event-autodoc-skip-member
     if (
-        app.env.docname == "apidocs/rdflib"
+        app.env.docname in ["apidocs/rdflib", "apidocs/rdflib.namespace"]
         and what == "module"
         and type(obj).__name__.endswith("DefinedNamespaceMeta")
     ):
