@@ -5,12 +5,8 @@
 #    pip-compile docker/latest/requirements.in
 #
 html5rdf==1.2
-    # via
-    #   -r docker/latest/requirements.in
-    #   rdflib
-html5lib-modern==1.2
     # via -r docker/latest/requirements.in
 pyparsing==3.0.9
     # via rdflib
-rdflib==7.1.0
+rdflib==7.1.1
     # via -r docker/latest/requirements.in
