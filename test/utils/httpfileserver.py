@@ -3,11 +3,12 @@ from __future__ import annotations
 import enum
 import logging
 import posixpath
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Type
+from typing import Optional
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
@@ -180,7 +181,7 @@ class HTTPFileServer(HTTPServer):
         file_info = HTTPFileInfo(file_resource, redirects)
         return file_info
 
-    def make_handler(self) -> Type[BaseHTTPRequestHandler]:
+    def make_handler(self) -> type[BaseHTTPRequestHandler]:
         class Handler(BaseHTTPRequestHandler):
             server: HTTPFileServer
 

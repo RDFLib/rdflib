@@ -3,8 +3,9 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
+from collections.abc import Generator
 from decimal import Decimal
-from typing import Any, Callable, Generator, Optional, Type, Union
+from typing import Any, Callable, Optional, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
@@ -51,8 +52,9 @@ from rdflib.term import (
     bind,
 )
 
+
 # Untyped decorator makes function untyped
-@pytest.fixture() # type: ignore[misc, unused-ignore]
+@pytest.fixture()  # type: ignore[misc, unused-ignore]
 def clear_bindings() -> Generator[None, None, None]:
     try:
         yield
@@ -93,6 +95,7 @@ def test_literal_from_bool() -> None:
     _l = rdflib.Literal(True)
     assert _l.datatype == rdflib.XSD["boolean"]
 
+
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lang, exception_type",
@@ -107,13 +110,14 @@ def test_literal_from_bool() -> None:
 )
 def test_cant_pass_invalid_lang(
     lang: Any,
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
 ) -> None:
     """
     Construction of Literal fails if the language tag is invalid.
     """
     with pytest.raises(exception_type):
         Literal("foo", lang=lang)
+
 
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
@@ -168,6 +172,7 @@ def test_ill_typed_literals(
     if is_ill_typed is False:
         # If the literal is not ill typed it should have a value associated with it.
         assert lit.value is not None
+
 
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
@@ -643,6 +648,7 @@ def test_literal_addsub(
         logging.debug("result = %r", result)
         checker.check(result)
 
+
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a_value, b_value, result_value, datatype",
@@ -830,6 +836,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     assert specific_l.toPython() == s
     assert specific_l.datatype == datatype
 
+
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["lexical", "literal_type", "value_cls"],
@@ -941,6 +948,7 @@ class _UnknownType:
             return True
         return False
 
+
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "outcome"],
@@ -1011,6 +1019,7 @@ def test_literal_construction(
     with checker.context():
         actual_outcome = literal_maker()
         checker.check(actual_outcome)
+
 
 # Untyped decorator makes function untyped
 @pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]

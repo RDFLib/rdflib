@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Callable, Dict
+from typing import Callable
 
 import pytest
 

@@ -1,14 +1,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import (
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    TYPE_CHECKING
-)
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 import pytest
@@ -21,12 +16,13 @@ from test.utils import MarkListType, marks_to_list
 from test.utils.graph import GraphSource, GraphSourceType
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF
-from collections.abc import Iterable, Callable, Collection, Mapping
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     import typing_extensions as te
+
     from rdflib.graph import _PredicateType
-    from collections.abc import  Generator
 
 POFilterType: te.TypeAlias = tuple[Optional[URIRef], Optional[URIRef]]
 POFiltersType: te.TypeAlias = Iterable[POFilterType]
@@ -85,7 +81,7 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: _PredicateType, value_type: Type[IdentifierT]
+        self, predicate: _PredicateType, value_type: type[IdentifierT]
     ) -> Optional[IdentifierT]:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:
@@ -164,7 +160,7 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
     ) -> Generator[ManifestEntryT, None, None]:
@@ -180,7 +176,7 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
         mark_dict: Optional[MarksDictType] = None,
@@ -192,7 +188,7 @@ class Manifest:
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type[ManifestEntryT],
+    entry_type: type[ManifestEntryT],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,
     include: Optional[POFiltersType] = None,

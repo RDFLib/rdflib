@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
 from urllib.parse import urlparse
 
 from rdflib.graph import Graph

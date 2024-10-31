@@ -2,8 +2,8 @@
 Runs the SPARQL 1.1 test suite from.
 """
 
+from collections.abc import Generator
 from contextlib import ExitStack
-from typing import Generator
 
 import pytest
 from pytest import MonkeyPatch

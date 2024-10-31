@@ -4,10 +4,11 @@ import enum
 import http.client
 import itertools
 import logging
+from collections.abc import Iterable
 from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Iterable, Tuple
+from typing import Any
 from urllib.request import HTTPHandler, OpenerDirector, Request
 
 import pytest

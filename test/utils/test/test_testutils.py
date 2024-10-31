@@ -4,7 +4,7 @@ import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from typing import Any, Optional, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 import pytest
 
@@ -107,7 +107,7 @@ def test_paths(
 @dataclass
 class SetsEqualTestCase:
     equal: bool
-    format: str|tuple[str, str]
+    format: str | tuple[str, str]
     bnode_handling: BNodeHandling
     lhs: str
     rhs: str
@@ -380,10 +380,10 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     ],
 )
 def test_prefix_tuples(
-    tuples: list[Tuple[Any, ...]],
+    tuples: list[tuple[Any, ...]],
     prefix: tuple[Any, ...],
     suffix: tuple[Any, ...],
-    expected_result: list[Tuple[Any, ...]],
+    expected_result: list[tuple[Any, ...]],
 ) -> None:
     assert expected_result == list(affix_tuples(prefix, tuples, suffix))
 
@@ -468,11 +468,11 @@ def test_prefix_tuples(
     ],
 )
 def test_assert_cgraph_isomorphic(
-    graph_type: Type[ConjunctiveGraph],
+    graph_type: type[ConjunctiveGraph],
     format: str,
     lhs: str,
     rhs: str,
-    expected_result: Union[None, Type[Exception]],
+    expected_result: Union[None, type[Exception]],
 ) -> None:
     lhs_graph = graph_type()
     lhs_graph.parse(data=lhs, format=format)

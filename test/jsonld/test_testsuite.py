@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from os import chdir, environ, getcwd
 from os import path as p
-from typing import Tuple
 
 import pytest
 

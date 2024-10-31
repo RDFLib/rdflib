@@ -6,10 +6,11 @@ from __future__ import annotations
 import enum
 import logging
 import pprint
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from io import BytesIO, StringIO
-from typing import Dict, Generator, Optional, Set, Tuple, Type, Union, cast
+from typing import Optional, Union, cast
 from urllib.parse import urljoin
 
 import pytest
@@ -55,7 +56,7 @@ class TypeInfo:
     syntax: bool = False
     skipped: bool = False
     negative: bool = False
-    ns: Union[Type[QT], Type[UT], None] = field(init=False, default=None)
+    ns: Union[type[QT], type[UT], None] = field(init=False, default=None)
     query_property: Optional[URIRef] = field(init=False, default=None)
     graph_data_property: Optional[URIRef] = field(init=False, default=None)
     expected_outcome_property: Optional[URIRef] = field(init=False, default=None)
@@ -135,9 +136,9 @@ class SPARQLEntry(ManifestEntry):
     type_info: TypeInfo = field(init=False)
     query: Optional[IdentifiedNode] = field(init=False, default=None)
     action_data: Optional[IdentifiedNode] = field(init=False, default=None)
-    action_graph_data: Optional[Set[GraphData]] = field(init=False, default=None)
+    action_graph_data: Optional[set[GraphData]] = field(init=False, default=None)
     result_data: Optional[IdentifiedNode] = field(init=False, default=None)
-    result_graph_data: Optional[Set[GraphData]] = field(init=False, default=None)
+    result_graph_data: Optional[set[GraphData]] = field(init=False, default=None)
     expected_outcome: Optional[URIRef] = field(init=False, default=None)
 
     def __post_init__(self) -> None:
@@ -192,7 +193,7 @@ class SPARQLEntry(ManifestEntry):
                 self.result_graph_data.add(graph_data)
 
     def load_dataset(
-        self, data: Optional[IdentifiedNode], graph_data_set: Optional[Set[GraphData]]
+        self, data: Optional[IdentifiedNode], graph_data_set: Optional[set[GraphData]]
     ) -> Dataset:
         dataset = Dataset()
         if data is not None:

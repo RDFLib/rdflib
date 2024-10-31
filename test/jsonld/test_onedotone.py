@@ -5,7 +5,6 @@ import os
 import re
 from os import chdir, environ, getcwd
 from os import path as p
-from typing import Tuple
 
 import pytest
 

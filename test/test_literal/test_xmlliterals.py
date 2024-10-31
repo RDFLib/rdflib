@@ -1,7 +1,8 @@
 import logging
 import textwrap
 import xml.dom.minidom
-from typing import Callable, Sequence
+from collections.abc import Sequence
+from typing import Callable
 
 import pytest
 

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from runpy import run_path
-from typing import Any, Optional, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 import rdflib.util
 import test.data
@@ -67,9 +67,9 @@ class GraphSource:
         self,
         graph: Optional[_GraphT] = None,
         public_id: Optional[str] = None,
-        # type error: Incompatible default for argument "graph_type" (default has type "Type[Graph]", argument has type "Type[_GraphT]")
+        # type error: Incompatible default for argument "graph_type" (default has type "type[Graph]", argument has type "tpe[_GraphT]")
         # see https://github.com/python/mypy/issues/3737
-        graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
+        graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
     ) -> _GraphT:
         if graph is None:
             graph = graph_type()
@@ -105,7 +105,7 @@ def load_sources(
     *sources: GraphSourceType,
     graph: Optional[_GraphT] = None,
     public_id: Optional[str] = None,
-    graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
+    graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     if graph is None:
         graph = graph_type()
@@ -118,7 +118,7 @@ def load_sources(
 def cached_graph(
     sources: tuple[Union[GraphSource, Path], ...],
     public_id: Optional[str] = None,
-    graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
+    graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     return load_sources(*sources, public_id=public_id, graph_type=graph_type)
 
@@ -126,7 +126,7 @@ def cached_graph(
 def load_from_python(
     path: Path,
     graph: Optional[_GraphT] = None,
-    graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
+    graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     if graph is None:
         graph = graph_type()

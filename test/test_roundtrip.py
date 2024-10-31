@@ -25,8 +25,9 @@ from __future__ import annotations
 import enum
 import logging
 import os.path
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Callable, Iterable, List, Optional, Set, Tuple, Type, Union
+from typing import Callable, Optional, Union
 from xml.sax import SAXParseException
 
 import pytest
@@ -209,8 +210,8 @@ CONSTRAINED_FORMAT_MAP = {
 
 
 def collect_files(
-    directory: Path, exclude_names: Optional[Set[str]] = None, pattern: str = "**/*"
-) -> list[Tuple[Path, str]]:
+    directory: Path, exclude_names: Optional[set[str]] = None, pattern: str = "**/*"
+) -> list[tuple[Path, str]]:
     result = []
     for path in directory.glob(pattern):
         if not path.is_file():
@@ -234,8 +235,8 @@ def roundtrip(
     infmt: str,
     testfmt: str,
     source: Path,
-    graph_type: Type[Graph] = ConjunctiveGraph,
-    checks: Optional[Set[Check]] = None,
+    graph_type: type[Graph] = ConjunctiveGraph,
+    checks: Optional[set[Check]] = None,
     same_public_id: bool = False,
 ) -> None:
     g1 = graph_type()
@@ -297,10 +298,10 @@ def roundtrip(
         logger.debug("OK")
 
 
-_formats: Optional[Set[str]] = None
+_formats: Optional[set[str]] = None
 
 
-def get_formats() -> Set[str]:
+def get_formats() -> set[str]:
     global _formats
     if not _formats:
         serializers = set(x.name for x in rdflib.plugin.plugins(None, Serializer))
@@ -312,11 +313,11 @@ def get_formats() -> Set[str]:
 
 
 def make_cases(
-    files: Iterable[Tuple[Path, str]],
-    formats: Optional[Set[str]] = None,
+    files: Iterable[tuple[Path, str]],
+    formats: Optional[set[str]] = None,
     hext_okay: bool = False,
-    checks: Optional[Set[Check]] = None,
-    graph_type: Type[Graph] = ConjunctiveGraph,
+    checks: Optional[set[Check]] = None,
+    graph_type: type[Graph] = ConjunctiveGraph,
     same_public_id: bool = False,
 ) -> Iterable[ParameterSet]:
     if formats is None:

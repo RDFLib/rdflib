@@ -5,20 +5,15 @@ import itertools
 import logging
 import re
 import socket
+from collections.abc import Callable, Generator
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
 from typing import (
     IO,
-    Callable,
-    Dict,
-    Generator,
-    List,
     Optional,
-    Set,
     TextIO,
-    Tuple,
     Union,
     cast,
 )
@@ -58,8 +53,8 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
-    quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
+    quad = cast(tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -298,19 +293,19 @@ class GraphFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set[GraphFormat]:
+    def set(cls) -> set[GraphFormat]:
         return set(*cls)
 
 
 @dataclass
 class GraphFormatInfo:
     name: GraphFormat
-    graph_types: Set[GraphType]
-    encodings: Set[str]
-    serializer_list: Optional[List[str]] = field(
+    graph_types: set[GraphType]
+    encodings: set[str]
+    serializer_list: Optional[list[str]] = field(
         default=None, repr=False, hash=False, compare=False
     )
-    deserializer_list: Optional[List[str]] = field(
+    deserializer_list: Optional[list[str]] = field(
         default=None, repr=False, hash=False, compare=False
     )
     serializers: list[str] = field(default_factory=list, init=False)
@@ -339,7 +334,7 @@ class GraphFormatInfo:
         return self.deserializer[0]
 
 
-class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
+class GraphFormatInfoDict(dict[str, GraphFormatInfo]):
     @classmethod
     def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
@@ -347,7 +342,7 @@ class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
             result[item.name] = item
         return result
 
-    def serdes_dict(self) -> tuple[Dict[str, GraphFormat], dict[str, GraphFormat]]:
+    def serdes_dict(self) -> tuple[dict[str, GraphFormat], dict[str, GraphFormat]]:
         serializer_dict: dict[str, GraphFormat] = {}
         deserializer_dict: dict[str, GraphFormat] = {}
         for format in self.values():
@@ -382,7 +377,7 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
         serializer_dict.keys(), DESTINATION_TYPES
     ):
         format = serializer_dict[serializer_name]
-        encodings: Set[Optional[str]] = {*format.info.encodings, None}
+        encodings: set[Optional[str]] = {*format.info.encodings, None}
         for encoding, graph_type in itertools.product(
             encodings, format.info.graph_types
         ):
@@ -600,7 +595,7 @@ def test_serialize_overloads(
 
 
 def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None]:
-    destination_types: Set[DestinationType] = {
+    destination_types: set[DestinationType] = {
         DestinationType.FILE_URI,
         DestinationType.STR_PATH,
     }

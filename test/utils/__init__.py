@@ -9,15 +9,8 @@ from __future__ import annotations
 
 import enum
 import pprint
-from typing import (
-    Any,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-    TYPE_CHECKING
-)
+from collections.abc import Callable, Collection
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -28,12 +21,13 @@ from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
 from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
-from collections.abc import Collection, Callable
 
 if TYPE_CHECKING:
-    import typing_extensions as te
-    from rdflib.graph import _TripleType
     from collections.abc import Generator, Iterable, Sequence
+
+    import typing_extensions as te
+
+    from rdflib.graph import _TripleType
 
 PluginT = TypeVar("PluginT")
 
@@ -42,9 +36,9 @@ __all__ = ["file_uri_to_path"]
 
 
 def get_unique_plugins(
-    type: Type[PluginT],
-) -> dict[Type[PluginT], set[Plugin[PluginT]]]:
-    result: dict[Type[PluginT], set[Plugin[PluginT]]] = {}
+    type: type[PluginT],
+) -> dict[type[PluginT], set[Plugin[PluginT]]]:
+    result: dict[type[PluginT], set[Plugin[PluginT]]] = {}
     for plugin in rdflib.plugin.plugins(None, type):
         cls = plugin.getClass()
         plugins = result.setdefault(cls, set())
@@ -52,7 +46,7 @@ def get_unique_plugins(
     return result
 
 
-def get_unique_plugin_names(type: Type[PluginT]) -> set[str]:
+def get_unique_plugin_names(type: type[PluginT]) -> set[str]:
     result: set[str] = set()
     unique_plugins = get_unique_plugins(type)
     for type, plugin_set in unique_plugins.items():
@@ -85,9 +79,7 @@ class GraphHelper:
     """
 
     @classmethod
-    def add_triples(
-        cls, graph: Graph, triples: Iterable[_TripleType]
-    ) -> Graph:
+    def add_triples(cls, graph: Graph, triples: Iterable[_TripleType]) -> Graph:
         for triple in triples:
             graph.add(triple)
         return graph

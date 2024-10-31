@@ -6,21 +6,14 @@ import json
 import logging
 import os
 import re
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
+from collections.abc import Collection, Iterable
 from dataclasses import dataclass, field
 from pathlib import Path, PurePath
+from re import Pattern
 from typing import (
     ClassVar,
-    Collection,
-    DefaultDict,
-    Dict,
-    Iterable,
-    List,
     Optional,
-    OrderedDict,
-    Pattern,
-    Tuple,
-    Type,
     Union,
     cast,
 )
@@ -55,7 +48,7 @@ class GraphAsserts:
     """
 
     quad_count: Optional[int] = None
-    has_subject_iris: Optional[List[str]] = None
+    has_subject_iris: Optional[list[str]] = None
 
     def check(self, graph: Dataset) -> None:
         """
@@ -135,7 +128,7 @@ class GraphVariants:
         ] = None,
     ) -> ParameterSet:
         if marks is None:
-            marks = cast(Tuple[MarkDecorator], tuple())
+            marks = cast(tuple[MarkDecorator], tuple())
         return pytest.param(self, id=self.key, marks=marks)
 
     @property
@@ -146,7 +139,7 @@ class GraphVariants:
     def preferred_variant(self) -> tuple[str, GraphSource]:
         return self.ordered_variants[0]
 
-    def load(self, variant_key: str, graph_type: Type[_GraphT]) -> _GraphT:
+    def load(self, variant_key: str, graph_type: type[_GraphT]) -> _GraphT:
         variant = self.variants[variant_key]
         return variant.load(public_id=self.public_id, graph_type=graph_type)
 
@@ -167,7 +160,7 @@ class GraphVariants:
     def for_files(
         cls, file_paths: Iterable[Path], basedir: Optional[Path] = None
     ) -> dict[str, GraphVariants]:
-        graph_sources: DefaultDict[str, dict[str, GraphSource]] = defaultdict(dict)
+        graph_sources: defaultdict[str, dict[str, GraphSource]] = defaultdict(dict)
         graph_meta: dict[str, GraphVariantsMeta] = {}
         for file_path in file_paths:
             file_key, variant_key = cls._decompose_path(file_path, basedir)
@@ -215,7 +208,7 @@ GRAPH_VARIANTS_DICT = {
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 
-EXPECTED_FAILURES: dict[Tuple[str, Optional[str]], MarkDecorator] = {
+EXPECTED_FAILURES: dict[tuple[str, Optional[str]], MarkDecorator] = {
     ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,

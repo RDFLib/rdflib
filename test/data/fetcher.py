@@ -11,12 +11,14 @@ import shutil
 import string
 import sys
 import tarfile
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
+from re import Pattern
 from tarfile import TarFile, TarInfo
 from tempfile import TemporaryDirectory, mkdtemp
-from typing import IO, Generator, List, Pattern, Union
+from typing import IO, Union
 from urllib.request import Request, urlopen
 from zipfile import ZipFile, ZipInfo
 
@@ -149,7 +151,7 @@ class ArchiveResource(Resource):
     @classmethod
     def _member_list(
         cls, archive: Union[ZipFile, TarFile]
-    ) -> Union[List[ZipInfo], list[TarInfo]]:
+    ) -> Union[list[ZipInfo], list[TarInfo]]:
         if isinstance(archive, ZipFile):
             return archive.infolist()
         return archive.getmembers()

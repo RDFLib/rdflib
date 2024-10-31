@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Callable, Optional, Set, Tuple
+from typing import Callable, Optional
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -63,8 +63,8 @@ def test_property_namespace_manager() -> None:
     assert ("test", URIRef("example:test:")) in nss
 
 
-def get_store_names() -> Set[Optional[str]]:
-    names: Set[Optional[str]] = {*get_unique_plugin_names(Store)}
+def get_store_names() -> set[Optional[str]]:
+    names: set[Optional[str]] = {*get_unique_plugin_names(Store)}
     names.difference_update(
         {
             "default",
@@ -376,7 +376,7 @@ def test_guess_format_for_parse_http(
     expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
-    headers: tuple[Tuple[str, str], ...] = tuple()
+    headers: tuple[tuple[str, str], ...] = tuple()
     if content_type is not None:
         headers = (("Content-Type", content_type),)
 

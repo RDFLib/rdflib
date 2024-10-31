@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from functools import wraps
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from rdflib.namespace import PROV, XSD, Namespace
 from rdflib.plugins.shared.jsonld import context, errors

@@ -9,14 +9,10 @@ import pytest
 # readibility.
 pytest.register_assert_rewrite("test.utils")
 
+from collections.abc import Collection, Generator, Iterable
 from pathlib import Path
 from typing import (
-    Collection,
-    Dict,
-    Generator,
-    Iterable,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -54,7 +50,10 @@ def _session_function_httpmocks() -> Generator[_ServedBaseHTTPServerMocks, None,
     This fixture is session scoped, but it is reset for each function in
     :func:`function_httpmock`. This should not be used directly.
     """
-    with ServedBaseHTTPServerMock() as httpmock_a, ServedBaseHTTPServerMock() as httpmock_b:
+    with (
+        ServedBaseHTTPServerMock() as httpmock_a,
+        ServedBaseHTTPServerMock() as httpmock_b,
+    ):
         yield httpmock_a, httpmock_b
 
 
@@ -73,7 +72,7 @@ def function_httpmock(
 @pytest.fixture(scope="function")
 def function_httpmocks(
     _session_function_httpmocks: _ServedBaseHTTPServerMocks,
-) -> Generator[Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
+) -> Generator[tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
     """
     Alternative HTTP server mock that is reset for each test function.
 

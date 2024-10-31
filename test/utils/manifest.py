@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterable, List, NamedTuple, Optional, Tuple, Union, cast
+from collections.abc import Iterable
+from typing import NamedTuple, Optional, Union, cast
 
 from rdflib import RDF, RDFS, Graph
 from rdflib.term import Identifier, Node, URIRef
@@ -10,9 +11,9 @@ from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 logger = logging.getLogger(__name__)
 
 ResultType = Union[
-    Identifier, tuple[Optional[Node], list[Tuple[Optional[Node], Optional[Node]]]]
+    Identifier, tuple[Optional[Node], list[tuple[Optional[Node], Optional[Node]]]]
 ]
-GraphDataType = Union[List[Optional[Node]], list[Tuple[Optional[Node], Optional[Node]]]]
+GraphDataType = Union[list[Optional[Node]], list[tuple[Optional[Node], Optional[Node]]]]
 
 
 class RDFTest(NamedTuple):
@@ -26,7 +27,7 @@ class RDFTest(NamedTuple):
     syntax: bool
 
 
-def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFTest]]:
+def read_manifest(f, base=None, legacy=False) -> Iterable[tuple[Node, Node, RDFTest]]:
     """read a manifest file"""
 
     def _str(x):
@@ -92,7 +93,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
                     a = g.value(e, MF.action)
                     query = g.value(a, UT.request)
                     data = g.value(a, UT.data)
-                    graphdata = cast(List[Tuple[Optional[Node], Optional[Node]]], [])
+                    graphdata = cast(list[tuple[Optional[Node], Optional[Node]]], [])
                     for gd in g.objects(a, UT.graphData):
                         graphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))
@@ -100,7 +101,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
 
                     r = g.value(e, MF.result)
                     resdata: Optional[Node] = g.value(r, UT.data)
-                    resgraphdata: list[Tuple[Optional[Node], Optional[Node]]] = []
+                    resgraphdata: list[tuple[Optional[Node], Optional[Node]]] = []
                     for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))

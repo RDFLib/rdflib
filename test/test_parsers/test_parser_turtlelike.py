@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import enum
 import itertools
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Callable, Dict, Iterator, List, Set, Tuple, Union
+from typing import Callable, Union
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -28,7 +29,7 @@ class FormatTrait(enum.Enum):
 @dataclass
 class Format:
     name: str
-    traits: Set[FormatTrait]
+    traits: set[FormatTrait]
 
 
 FORMATS = [

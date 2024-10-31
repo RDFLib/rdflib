@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import itertools
 import logging
-from typing import Dict, Iterable, List, Optional, Set, Tuple
+from collections.abc import Iterable
+from typing import Optional
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -18,7 +19,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
     This only tests with application/rdf+xml as other result formats are not
     supported.
     """
-    graphs: list[Tuple[str, Graph]] = [
+    graphs: list[tuple[str, Graph]] = [
         (
             "basic",
             Graph().parse(
@@ -41,7 +42,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
             ),
         )
     ]
-    response_format_encodings: list[Tuple[str, str, Set[Optional[str]]]] = [
+    response_format_encodings: list[tuple[str, str, set[Optional[str]]]] = [
         (
             "application/rdf+xml",
             "utf-8",

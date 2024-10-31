@@ -6,19 +6,15 @@ from __future__ import annotations
 
 import enum
 import logging
+from collections import OrderedDict
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Dict,
-    Generator,
-    List,
     Optional,
-    OrderedDict,
-    Set,
-    Tuple,
     TypeVar,
     cast,
 )
@@ -61,14 +57,14 @@ class EARLReport:
 
     reporter: EARLReporter
     output_file: Path
-    assertions: list[Tuple[URIRef, Set[_TripleType]]] = field(
+    assertions: list[tuple[URIRef, set[_TripleType]]] = field(
         init=False, default_factory=list, repr=False
     )
 
     def add_test_outcome(
         self, test_id: URIRef, outcome: URIRef, info: Optional[Literal] = None
     ):
-        triples: Set[_TripleType] = set()
+        triples: set[_TripleType] = set()
         assertion = BNode(f"{test_id}")
         triples.add((assertion, RDF.type, EARL.Assertion))
         triples.add((assertion, EARL.test, test_id))
@@ -266,7 +262,7 @@ class EARLReporter:
     assertor_name: Optional[Literal] = None
     assertor_homepage: Optional[URIRef] = None
     add_datetime: bool = True
-    extra_triples: Set[_TripleType] = field(default_factory=set)
+    extra_triples: set[_TripleType] = field(default_factory=set)
     prefix_reports: dict[str, EARLReport] = field(init=True, default_factory=dict)
     report: Optional[EARLReport] = field(init=True, default=None)
 

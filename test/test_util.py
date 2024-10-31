@@ -4,7 +4,7 @@ import logging
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Optional, Type, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import pytest
 
@@ -18,8 +18,9 @@ from test.utils.graph import cached_graph
 from test.utils.namespace import RDFT
 
 if TYPE_CHECKING:
-    from rdflib.graph import _SubjectType, _ObjectType
     from collections.abc import Collection
+
+    from rdflib.graph import _ObjectType, _SubjectType
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -437,8 +438,8 @@ def test__coalesce_typing() -> None:
 def test_find_roots(
     graph_sources: tuple[Path, ...],
     prop: URIRef,
-    roots: Optional[set[_SubjectType|_ObjectType]],
-    expected_result: Union[set[URIRef], Type[Exception]],
+    roots: Optional[set[_SubjectType | _ObjectType]],
+    expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
@@ -563,7 +564,7 @@ def test_get_tree(
     root: IdentifiedNode,
     prop: URIRef,
     dir: str,
-    expected_result: Union[tuple[IdentifiedNode, list[Any]], Type[Exception]],
+    expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 
@@ -663,7 +664,7 @@ def test_get_tree(
         ),
     ],
 )
-def test_iri2uri(iri: str, expected_result: Union[set[str], Type[Exception]]) -> None:
+def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) -> None:
     """
     Tests that
     """

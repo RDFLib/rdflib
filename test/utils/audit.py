@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, DefaultDict, Generator, List, Tuple
+from typing import Any, Callable
 
 AuditHookType = Callable[[str, tuple[Any, ...]], Any]
 
 
 @dataclass
 class AuditHookDispatcher:
-    handlers: DefaultDict[str, list[AuditHookType]] = field(
+    handlers: defaultdict[str, list[AuditHookType]] = field(
         default_factory=lambda: defaultdict(list)
     )
 

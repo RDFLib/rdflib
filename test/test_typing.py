@@ -32,6 +32,7 @@ from rdflib.term import IdentifiedNode, Identifier, Node
 if TYPE_CHECKING:
     from rdflib.query import QueryResultValueType
 
+
 def test_rdflib_query_exercise() -> None:
     """
     The purpose of this test is to exercise a selection of rdflib features under "mypy --strict" review.

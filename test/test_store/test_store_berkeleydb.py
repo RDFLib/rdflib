@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 import tempfile
-from typing import Iterable, Optional, Tuple
+from collections.abc import Iterable
+from typing import Optional
 
 import pytest
 
@@ -19,7 +20,7 @@ pytestmark = pytest.mark.skipif(
 
 
 @pytest.fixture
-def get_graph() -> Iterable[Tuple[str, ConjunctiveGraph]]:
+def get_graph() -> Iterable[tuple[str, ConjunctiveGraph]]:
     path = tempfile.NamedTemporaryFile().name
     g = ConjunctiveGraph("BerkeleyDB")
     rt = g.open(path, create=True)
