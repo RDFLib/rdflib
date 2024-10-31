@@ -210,7 +210,7 @@ CONSTRAINED_FORMAT_MAP = {
 
 def collect_files(
     directory: Path, exclude_names: Optional[Set[str]] = None, pattern: str = "**/*"
-) -> List[Tuple[Path, str]]:
+) -> list[Tuple[Path, str]]:
     result = []
     for path in directory.glob(pattern):
         if not path.is_file():
@@ -246,7 +246,7 @@ def roundtrip(
     else:
         g1.parse(source, format=infmt)
 
-    s = g1.serialize(format=testfmt)
+    g_text = g1.serialize(format=testfmt)
 
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
@@ -254,14 +254,14 @@ def roundtrip(
             infmt,
             testfmt,
             source,
-            s,
+            g_text,
         )
 
     g2 = graph_type()
     if same_public_id:
-        g2.parse(data=s, publicID=input_source.getPublicId(), format=testfmt)
+        g2.parse(data=g_text, publicID=input_source.getPublicId(), format=testfmt)
     else:
-        g2.parse(data=s, format=testfmt)
+        g2.parse(data=g_text, format=testfmt)
 
     if testfmt == "hext" and isinstance(g2, ConjunctiveGraph):
         # HexTuples always sets Literal("abc") -> Literal("abc", datatype=XSD.string)
@@ -270,13 +270,10 @@ def roundtrip(
         #
         # So we have to scrub the literals' string datatype declarations...
         for c in g2.contexts():
-            # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
-            for s, p, o in c.triples((None, None, None)):  # type: ignore[assignment]
+            for s, p, o in c.triples((None, None, None)):
                 if type(o) is rdflib.Literal and o.datatype == XSD.string:
-                    # type error: Argument 1 to "remove" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
-                    c.remove((s, p, o))  # type: ignore[arg-type]
-                    # type error: Argument 1 to "add" of "Graph" has incompatible type "Tuple[str, Node, Literal]"; expected "Tuple[Node, Node, Node]"
-                    c.add((s, p, rdflib.Literal(str(o))))  # type: ignore[arg-type]
+                    c.remove((s, p, o))
+                    c.add((s, p, rdflib.Literal(str(o))))
 
     if logger.isEnabledFor(logging.DEBUG):
         both, first, second = rdflib.compare.graph_diff(g1, g2)
@@ -335,7 +332,7 @@ def make_cases(
                     f"skipping format {testfmt} as it is not in the list of constrained formats for {f} which is {constrained_formats}"
                 )
                 continue
-            marks: List[Union[MarkDecorator, Mark]] = []
+            marks: list[Union[MarkDecorator, Mark]] = []
             xfail = XFAILS.get((testfmt, f.name))
             if xfail is None:
                 xfail = XFAILS.get(
@@ -369,12 +366,12 @@ def test_formats() -> None:
 @pytest.mark.parametrize(
     "checker, args", make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES))
 )
-def test_nt(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+def test_nt(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
 
 @pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
-def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+def test_n3(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     checker(*args)
 
 
@@ -511,7 +508,7 @@ N3_W3C_SUITE_FILES = [
     ),
 )
 def test_n3_suite(
-    checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]
+    checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]
 ):
     checker(*args)
 
@@ -532,7 +529,7 @@ EXTRA_FILES = [
 
 
 @pytest.mark.parametrize("checker, args", make_cases(EXTRA_FILES, hext_okay=True))
-def test_extra(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
+def test_extra(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
     """
     Round tripping works correctly for selected extra files.
     """

@@ -23,10 +23,10 @@ from urllib.parse import ParseResult
 
 from test.utils.wildcard import EQ_WILDCARD
 
-__all__: List[str] = []
+__all__: list[str] = []
 
-HeadersT = Union[Dict[str, List[str]], Iterable[Tuple[str, str]]]
-PathQueryT = Dict[str, List[str]]
+HeadersT = Union[Dict[str, list[str]], Iterable[Tuple[str, str]]]
+PathQueryT = dict[str, list[str]]
 
 
 def header_items(headers: HeadersT) -> Iterable[Tuple[str, str]]:

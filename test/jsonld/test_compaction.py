@@ -14,10 +14,10 @@ from rdflib.serializer import Serializer
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 
 
-cases: List[Tuple[str, Dict[str, Any]]] = []
+cases: list[Tuple[str, dict[str, Any]]] = []
 
 
-def case(source: str, data: Dict[str, Any]):
+def case(source: str, data: dict[str, Any]):
     cases.append((source, data))
 
 

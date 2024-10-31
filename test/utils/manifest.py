@@ -10,9 +10,9 @@ from test.utils.namespace import DAWGT, MF, QT, RDFT, UT
 logger = logging.getLogger(__name__)
 
 ResultType = Union[
-    Identifier, Tuple[Optional[Node], List[Tuple[Optional[Node], Optional[Node]]]]
+    Identifier, tuple[Optional[Node], list[Tuple[Optional[Node], Optional[Node]]]]
 ]
-GraphDataType = Union[List[Optional[Node]], List[Tuple[Optional[Node], Optional[Node]]]]
+GraphDataType = Union[List[Optional[Node]], list[Tuple[Optional[Node], Optional[Node]]]]
 
 
 class RDFTest(NamedTuple):
@@ -100,7 +100,7 @@ def read_manifest(f, base=None, legacy=False) -> Iterable[Tuple[Node, Node, RDFT
 
                     r = g.value(e, MF.result)
                     resdata: Optional[Node] = g.value(r, UT.data)
-                    resgraphdata: List[Tuple[Optional[Node], Optional[Node]]] = []
+                    resgraphdata: list[Tuple[Optional[Node], Optional[Node]]] = []
                     for gd in g.objects(r, UT.graphData):
                         resgraphdata.append(
                             (g.value(gd, UT.graph), g.value(gd, RDFS.label))

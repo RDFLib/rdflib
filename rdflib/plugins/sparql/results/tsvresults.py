@@ -20,6 +20,7 @@ from pyparsing import (
     ZeroOrMore,
 )
 
+from rdflib import IdentifiedNode
 from rdflib.plugins.sparql.parser import (
     BLANK_NODE_LABEL,
     IRIREF,
@@ -32,7 +33,7 @@ from rdflib.plugins.sparql.parser import (
 )
 from rdflib.plugins.sparql.parserutils import Comp, CompValue, Param
 from rdflib.query import Result, ResultParser
-from rdflib.term import BNode, URIRef
+from rdflib.term import BNode, URIRef, Variable
 from rdflib.term import Literal as RDFLiteral
 
 ParserElement.setDefaultWhitespaceChars(" \n")
@@ -86,20 +87,28 @@ class TSVResultParser(ResultParser):
                 continue
 
             row = ROW.parseString(line, parseAll=True)
-            # type error: Generator has incompatible item type "object"; expected "Identifier"
-            r.bindings.append(dict(zip(r.vars, (self.convertTerm(x) for x in row))))  # type: ignore[misc]
-
+            this_row_dict: dict[Variable, IdentifiedNode | RDFLiteral] = {}
+            for var, val_read in zip(r.vars, row):
+                val = self.convertTerm(val_read)
+                if val is None:
+                    # Skip unbound vars
+                    continue
+                this_row_dict[var] = val
+            if len(this_row_dict) > 0:
+                r.bindings.append(this_row_dict)
         return r
 
     def convertTerm(
         self, t: Union[object, RDFLiteral, BNode, CompValue, URIRef]
-    ) -> typing.Optional[Union[object, BNode, URIRef, RDFLiteral]]:
+    ) -> typing.Optional[BNode | URIRef | RDFLiteral]:
         if t is NONE_VALUE:
             return None
-        if isinstance(t, CompValue):
+        elif isinstance(t, CompValue):
             if t.name == "literal":
                 return RDFLiteral(t.string, lang=t.lang, datatype=t.datatype)
             else:
                 raise Exception("I dont know how to handle this: %s" % (t,))
-        else:
+        elif isinstance(t, (RDFLiteral, BNode, URIRef)):
             return t
+        else:
+            raise ValueError(f"Unexpected type {type(t)} found in TSV result")

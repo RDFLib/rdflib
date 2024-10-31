@@ -43,7 +43,7 @@ class GraphSource:
         return cls(path, format, public_id)
 
     @classmethod
-    def from_paths(cls, *paths: Path) -> Tuple[GraphSource, ...]:
+    def from_paths(cls, *paths: Path) -> tuple[GraphSource, ...]:
         result = []
         for path in paths:
             result.append(cls.from_path(path))
@@ -116,7 +116,7 @@ def load_sources(
 
 @lru_cache(maxsize=None)
 def cached_graph(
-    sources: Tuple[Union[GraphSource, Path], ...],
+    sources: tuple[Union[GraphSource, Path], ...],
     public_id: Optional[str] = None,
     graph_type: Type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:

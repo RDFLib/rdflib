@@ -51,8 +51,8 @@ from rdflib.term import (
     bind,
 )
 
-
-@pytest.fixture()
+# Untyped decorator makes function untyped
+@pytest.fixture() # type: ignore[misc, unused-ignore]
 def clear_bindings() -> Generator[None, None, None]:
     try:
         yield
@@ -93,8 +93,8 @@ def test_literal_from_bool() -> None:
     _l = rdflib.Literal(True)
     assert _l.datatype == rdflib.XSD["boolean"]
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lang, exception_type",
     [
         ({}, TypeError),
@@ -115,8 +115,8 @@ def test_cant_pass_invalid_lang(
     with pytest.raises(exception_type):
         Literal("foo", lang=lang)
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lexical, datatype, is_ill_typed",
     [
         ("true", XSD.boolean, False),
@@ -169,8 +169,8 @@ def test_ill_typed_literals(
         # If the literal is not ill typed it should have a value associated with it.
         assert lit.value is not None
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a, b, op, expected_result",
     [
         pytest.param(
@@ -643,8 +643,8 @@ def test_literal_addsub(
         logging.debug("result = %r", result)
         checker.check(result)
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a_value, b_value, result_value, datatype",
     [
         [3, 5, 2, XSD.integer],
@@ -830,8 +830,8 @@ def test_specific_binding(clear_bindings: None) -> None:
     assert specific_l.toPython() == s
     assert specific_l.datatype == datatype
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["lexical", "literal_type", "value_cls"],
     [
         # these literals do not get converted to Python types
@@ -941,8 +941,8 @@ class _UnknownType:
             return True
         return False
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "outcome"],
     [
         (
@@ -1012,8 +1012,8 @@ def test_literal_construction(
         actual_outcome = literal_maker()
         checker.check(actual_outcome)
 
-
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "normalize_literals", "outcome"],
     [
         (

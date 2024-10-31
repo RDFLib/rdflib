@@ -7,7 +7,8 @@ These should be automatically registered with RDFLib
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional, Union
+from collections.abc import Mapping
+from typing import Any, Optional, Union
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate

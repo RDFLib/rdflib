@@ -61,7 +61,7 @@ class EARLReport:
 
     reporter: EARLReporter
     output_file: Path
-    assertions: List[Tuple[URIRef, Set[_TripleType]]] = field(
+    assertions: list[Tuple[URIRef, Set[_TripleType]]] = field(
         init=False, default_factory=list, repr=False
     )
 
@@ -267,7 +267,7 @@ class EARLReporter:
     assertor_homepage: Optional[URIRef] = None
     add_datetime: bool = True
     extra_triples: Set[_TripleType] = field(default_factory=set)
-    prefix_reports: Dict[str, EARLReport] = field(init=True, default_factory=dict)
+    prefix_reports: dict[str, EARLReport] = field(init=True, default_factory=dict)
     report: Optional[EARLReport] = field(init=True, default=None)
 
     def __post_init__(self) -> None:

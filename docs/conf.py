@@ -292,7 +292,7 @@ def autodoc_skip_member_handler(
     name: str,
     obj: Any,
     skip: bool,
-    options: Dict[str, Any],
+    options: dict[str, Any],
 ):
     """
     This function will be called by Sphinx when it is deciding whether to skip a

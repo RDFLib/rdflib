@@ -281,7 +281,7 @@ class InputSourceChecker:
     encoding: Optional[Holder[Optional[str]]]
     public_id: Optional[str]
     system_id: Optional[str]
-    # extra_checks: List[Callable[[InputSource], None]] = field(factory=list)
+    # extra_checks: list[Callable[[InputSource], None]] = field(factory=list)
 
     def check(
         self,
@@ -369,7 +369,7 @@ class InputSourceChecker:
 FileParamTypeCM = ContextManager[FileParamType]
 
 
-CreateInputSourceTestParamsTuple = Tuple[
+CreateInputSourceTestParamsTuple = tuple[
     Path,
     Optional[SourceParam],
     Optional[str],

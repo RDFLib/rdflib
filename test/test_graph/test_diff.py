@@ -102,7 +102,7 @@ class GraphDiffCase:
     format: str
     lhs: str
     rhs: str
-    expected_result: Tuple[
+    expected_result: tuple[
         _ElementSetTypeOrStr, _ElementSetTypeOrStr, _ElementSetTypeOrStr
     ]
     marks: MarkType = field(default_factory=lambda: cast(MarksType, list()))

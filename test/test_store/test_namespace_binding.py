@@ -39,7 +39,7 @@ class StoreInfo:
         return graph
 
 
-def make_store_info_dict(*result_format: StoreInfo) -> Dict[str, StoreInfo]:
+def make_store_info_dict(*result_format: StoreInfo) -> dict[str, StoreInfo]:
     result = {}
     for item in result_format:
         result[item.name] = item
@@ -71,7 +71,7 @@ EGNSSUB_V0 = EGNSSUB["v0"]
 EGNSSUB_V1 = EGNSSUB["v1"]
 EGNSSUB_V2 = EGNSSUB["v2"]
 
-NamespaceBindings = Dict[str, URIRef]
+NamespaceBindings = dict[str, URIRef]
 
 
 def make_graph(tmp_path: Path, store_name: str) -> Graph:

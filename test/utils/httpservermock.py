@@ -29,7 +29,7 @@ from test.utils.http import (
     get_random_ip,
 )
 
-__all__: List[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
+__all__: list[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
 
 if TYPE_CHECKING:
     import typing_extensions as te
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 GenericT = TypeVar("GenericT", bound=Any)
 
 
-def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
+def make_spypair(method: GenericT) -> tuple[GenericT, Mock]:
     m = MagicMock()
 
     def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
@@ -49,19 +49,19 @@ def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
     return cast(GenericT, wrapper), m
 
 
-RequestDict = Dict[MethodName, List[MockHTTPRequest]]
-ResponseDict = Dict[MethodName, List[MockHTTPResponse]]
+RequestDict = dict[MethodName, list[MockHTTPRequest]]
+ResponseDict = dict[MethodName, list[MockHTTPResponse]]
 
 
 class BaseHTTPServerMock:
     def __init__(self) -> None:
-        self.requests: Dict[MethodName, List[MockHTTPRequest]] = defaultdict(
+        self.requests: dict[MethodName, list[MockHTTPRequest]] = defaultdict(
             lambda: list()
         )
-        self.responses: Dict[MethodName, List[MockHTTPResponse]] = defaultdict(
+        self.responses: dict[MethodName, list[MockHTTPResponse]] = defaultdict(
             lambda: list()
         )
-        self.mocks: Dict[MethodName, Mock] = {}
+        self.mocks: dict[MethodName, Mock] = {}
 
         class Handler(BaseHTTPRequestHandler):
             pass

@@ -19,7 +19,7 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
-ResultTypeInfoDict = Dict["ResultType", "ResultTypeInfo"]
+ResultTypeInfoDict = dict["ResultType", "ResultTypeInfo"]
 
 
 class ResultTypeTrait(enum.Enum):
@@ -108,7 +108,7 @@ def comparable_bindings(
 
 def bindings_diff(
     lhs: CBindingsCollectionType, rhs: CBindingsCollectionType
-) -> Tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
+) -> tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
     rhs_only = []
     common = []
     lhs_matched = set()
@@ -180,7 +180,7 @@ def assert_bindings_collections_equal(
         assert (len(common) == len(clhs)) and (len(common) == len(crhs))
 
 
-ResultFormatInfoDict = Dict["ResultFormat", "ResultFormatInfo"]
+ResultFormatInfoDict = dict["ResultFormat", "ResultFormatInfo"]
 
 
 class ResultFormatTrait(enum.Enum):

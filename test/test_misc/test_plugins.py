@@ -21,7 +21,7 @@ TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
 
 
-def del_key(d: Dict[Any, Any], key: Any) -> None:
+def del_key(d: dict[Any, Any], key: Any) -> None:
     del d[key]
 
 
@@ -59,7 +59,7 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
 
 @contextmanager
 def ctx_cleaners() -> Generator[List[Callable[[], None]], None, None]:
-    cleaners: List[Callable[[], None]] = []
+    cleaners: list[Callable[[], None]] = []
     yield cleaners
     for cleaner in cleaners:
         logging.debug("running cleaner %s", cleaner)

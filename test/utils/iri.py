@@ -93,7 +93,7 @@ def rebase_url(old_url: str, old_base: str, new_base: str) -> str:
     return new_url
 
 
-URIMappingTupleType = Tuple[str, str]
+URIMappingTupleType = tuple[str, str]
 
 
 @dataclass(frozen=True)
@@ -118,7 +118,7 @@ class URIMapper:
         logging.debug("local_uri = %s", local_uri)
         return file_uri_to_path(local_uri, Path)
 
-    def to_local(self, remote: str) -> Tuple[str, Path]:
+    def to_local(self, remote: str) -> tuple[str, Path]:
         local_uri = self.to_local_uri(remote)
         local_path = file_uri_to_path(local_uri, Path)
         return (local_uri, local_path)

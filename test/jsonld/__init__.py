@@ -8,4 +8,4 @@ assert plugin
 assert serializer
 assert parser
 
-__all__: List[str] = []
+__all__: list[str] = []

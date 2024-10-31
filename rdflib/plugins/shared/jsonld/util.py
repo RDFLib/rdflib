@@ -5,7 +5,7 @@ import json
 import pathlib
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
-from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Optional, TextIO, Union
 
 if TYPE_CHECKING:
     import json
@@ -46,7 +46,7 @@ def source_to_json(
     ],
     fragment_id: Optional[str] = None,
     extract_all_scripts: Optional[bool] = False,
-) -> Tuple[Union[Dict, List[Dict]], Any]:
+) -> tuple[Union[dict, list[dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -71,7 +71,7 @@ def source_to_json(
         # It's hidden in the BytesIOWrapper 'wrapped' attribute
         b_stream = source.getByteStream()
         original_string: Optional[str] = None
-        json_dict: Union[Dict, List[Dict]]
+        json_dict: Union[dict, list[dict]]
         if isinstance(b_stream, BytesIOWrapper):
             wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
@@ -198,7 +198,7 @@ def source_to_json(
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri: str) -> Tuple[str, Optional[str]]:
+def split_iri(iri: str) -> tuple[str, Optional[str]]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:
@@ -293,7 +293,7 @@ class HTMLJSONParser(HTMLParser):
     ):
         super().__init__()
         self.fragment_id = fragment_id
-        self.json: List[Dict] = []
+        self.json: list[dict] = []
         self.contains_json = False
         self.fragment_id_does_not_match = False
         self.base = None
@@ -348,7 +348,7 @@ class HTMLJSONParser(HTMLParser):
 
             self.script_count += 1
 
-    def get_json(self) -> List[Dict]:
+    def get_json(self) -> list[dict]:
         return self.json
 
     def get_base(self):

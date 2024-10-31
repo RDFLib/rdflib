@@ -376,7 +376,7 @@ def test_guess_format_for_parse_http(
     expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
-    headers: Tuple[Tuple[str, str], ...] = tuple()
+    headers: tuple[Tuple[str, str], ...] = tuple()
     if content_type is not None:
         headers = (("Content-Type", content_type),)
 

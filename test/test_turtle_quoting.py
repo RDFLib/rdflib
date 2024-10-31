@@ -32,7 +32,7 @@ string_escape_map = {
 }
 
 
-def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
+def make_unquote_correctness_pairs() -> list[Tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -95,7 +95,7 @@ def ntriples_unquote(input: str) -> str:
         ntriples.validate = old_validate
 
 
-unquoters: Dict[str, Callable[[str], str]] = {
+unquoters: dict[str, Callable[[str], str]] = {
     "ntriples_unquote": ntriples_unquote,
     "ntriples_unquote_validate": ntriples_unquote_validate,
 }

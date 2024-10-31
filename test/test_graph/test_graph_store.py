@@ -36,7 +36,7 @@ from test.data import SIMPLE_TRIPLE_GRAPH
 if TYPE_CHECKING:
     from _pytest.mark.structures import ParameterSet
 
-NamespaceBindings = Dict[str, URIRef]
+NamespaceBindings = dict[str, URIRef]
 
 
 def check_ns(graph: Graph, expected_bindings: NamespaceBindings) -> None:
@@ -94,7 +94,7 @@ def make_graph_store_bind_cases(
         ops: GraphOperations,
         expected_bindings: NamespaceBindings,
         expected_bindings_overrides: Optional[
-            Dict[Tuple[Type[Graph], Type[Store]], NamespaceBindings]
+            dict[Tuple[Type[Graph], Type[Store]], NamespaceBindings]
         ] = None,
         *,
         id: Optional[str] = None,

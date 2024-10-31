@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 
-__all__: List[str] = [
+__all__: list[str] = [
     "LocationType",
     "ProtoResource",
     "Resource",
@@ -113,7 +113,7 @@ class HTTPFileServer(HTTPServer):
         server_address: tuple[str, int],
         bind_and_activate: bool = True,
     ) -> None:
-        self._resources: Dict[str, Resource] = {}
+        self._resources: dict[str, Resource] = {}
         self.Handler = self.make_handler()
         super().__init__(server_address, self.Handler, bind_and_activate)
 
@@ -152,7 +152,7 @@ class HTTPFileServer(HTTPServer):
         if proto_redirects is None:
             proto_redirects = []
 
-        redirects: List[RedirectResource] = []
+        redirects: list[RedirectResource] = []
         for proto_redirect in reversed(proto_redirects):
             redirect_url_path = f"/redirect/{uuid4().hex}{suffix}"
             if proto_redirect.location_type == LocationType.URL:

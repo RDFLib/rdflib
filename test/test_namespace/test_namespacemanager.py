@@ -133,7 +133,7 @@ NamespaceSet = Set[Tuple[str, URIRef]]
 
 def check_graph_ns(
     graph: Graph,
-    expected_nsmap: Dict[str, Any],
+    expected_nsmap: dict[str, Any],
     check_namespaces: Optional[NamespaceSet] = None,
 ) -> None:
     expected_namespaces = {
@@ -283,7 +283,7 @@ def test_nman_bind_namespaces(
     ],
 )
 def test_bound_namespaces_subset(
-    selector: Optional[Any], expected_bindings: Dict[str, str]
+    selector: Optional[Any], expected_bindings: dict[str, str]
 ) -> None:
     if selector is not None:
         graph = Graph(bind_namespaces=selector)

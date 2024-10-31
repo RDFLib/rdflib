@@ -72,7 +72,7 @@ class TypeInfo:
             self.expected_outcome_property = UT.result
 
     @classmethod
-    def make_dict(cls, *test_types: TypeInfo) -> Dict[Identifier, TypeInfo]:
+    def make_dict(cls, *test_types: TypeInfo) -> dict[Identifier, TypeInfo]:
         return dict((test_type.id, test_type) for test_type in test_types)
 
 
@@ -106,7 +106,7 @@ class GraphData:
         elif isinstance(identifier, BNode):
             po_list = list(graph.predicate_objects(identifier))
             assert len(po_list) == 2
-            po_dict: Dict[Node, Node] = dict(po_list)
+            po_dict: dict[Node, Node] = dict(po_list)
             graph_id = po_dict[UT.graph]
             assert isinstance(graph_id, URIRef)
             label = po_dict[RDFS.label]
@@ -241,7 +241,7 @@ class ResultFileHelper:
     }
 
     @classmethod
-    def load_result(cls, uri_mapper: URIMapper, result_uri: str) -> Tuple[Result, str]:
+    def load_result(cls, uri_mapper: URIMapper, result_uri: str) -> tuple[Result, str]:
         result_path = uri_mapper.to_local_path(result_uri)
         ext = result_path.suffix[1:]
         format = cls.extentions.get(ext)

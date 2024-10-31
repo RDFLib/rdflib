@@ -329,7 +329,7 @@ WHERE {
 )
 def test_with_mock(
     function_httpmock: ServedBaseHTTPServerMock,
-    response_bindings: List[Dict[str, str]],
+    response_bindings: list[Dict[str, str]],
     expected_result: Union[List[Identifier], Type[Exception]],
 ) -> None:
     """

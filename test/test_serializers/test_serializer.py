@@ -59,7 +59,7 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
     quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -313,8 +313,8 @@ class GraphFormatInfo:
     deserializer_list: Optional[List[str]] = field(
         default=None, repr=False, hash=False, compare=False
     )
-    serializers: List[str] = field(default_factory=list, init=False)
-    deserializers: List[str] = field(default_factory=list, init=False)
+    serializers: list[str] = field(default_factory=list, init=False)
+    deserializers: list[str] = field(default_factory=list, init=False)
 
     def __post_init__(self) -> None:
         self.serializers = (
@@ -347,9 +347,9 @@ class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
             result[item.name] = item
         return result
 
-    def serdes_dict(self) -> Tuple[Dict[str, GraphFormat], Dict[str, GraphFormat]]:
-        serializer_dict: Dict[str, GraphFormat] = {}
-        deserializer_dict: Dict[str, GraphFormat] = {}
+    def serdes_dict(self) -> tuple[Dict[str, GraphFormat], dict[str, GraphFormat]]:
+        serializer_dict: dict[str, GraphFormat] = {}
+        deserializer_dict: dict[str, GraphFormat] = {}
         for format in self.values():
             for serializer in format.serializers:
                 serializer_dict[serializer] = format.name
@@ -374,8 +374,8 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
     """
     This function generates test parameters for test_serialize_parse.
     """
-    xfails: Dict[
-        Tuple[str, GraphType, DestinationType, Optional[str]],
+    xfails: dict[
+        tuple[str, GraphType, DestinationType, Optional[str]],
         Union[MarkDecorator, Mark],
     ] = {}
     for serializer_name, destination_type in itertools.product(
@@ -435,7 +435,7 @@ def test_serialize_parse(
     tmp_path: Path,
     simple_graph: Graph,
     simple_dataset: Dataset,
-    args: Tuple[str, GraphType, DestinationType, Optional[str]],
+    args: tuple[str, GraphType, DestinationType, Optional[str]],
 ) -> None:
     """
     Serialization works correctly with the given arguments and generates output
@@ -515,7 +515,7 @@ BytesSerializeFunctionType = Callable[[Graph, SerializeArgs], bytes]
 FileSerializeFunctionType = Callable[[Graph, SerializeArgs], Graph]
 
 
-str_serialize_functions: List[StrSerializeFunctionType] = [
+str_serialize_functions: list[StrSerializeFunctionType] = [
     lambda graph, args: graph.serialize(),
     lambda graph, args: graph.serialize(None),
     lambda graph, args: graph.serialize(None, args.format),
@@ -526,7 +526,7 @@ str_serialize_functions: List[StrSerializeFunctionType] = [
 ]
 
 
-bytes_serialize_functions: List[BytesSerializeFunctionType] = [
+bytes_serialize_functions: list[BytesSerializeFunctionType] = [
     lambda graph, args: graph.serialize(encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, None, "utf-8"),
@@ -536,7 +536,7 @@ bytes_serialize_functions: List[BytesSerializeFunctionType] = [
 ]
 
 
-file_serialize_functions: List[FileSerializeFunctionType] = [
+file_serialize_functions: list[FileSerializeFunctionType] = [
     lambda graph, args: graph.serialize(args.dest_param),
     lambda graph, args: graph.serialize(args.dest_param, encoding=None),
     lambda graph, args: graph.serialize(args.dest_param, encoding="utf-8"),

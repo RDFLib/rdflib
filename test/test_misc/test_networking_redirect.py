@@ -190,7 +190,7 @@ def test_make_redirect_request(
     http_request: Request,
     http_error: HTTPError,
     expected_result: Union[Type[RaisesIdentity], ExceptionChecker, Request],
-    expected_redirect_dict: Dict[str, int],
+    expected_redirect_dict: dict[str, int],
 ) -> None:
     """
     `_make_redirect_request` correctly handles redirects.

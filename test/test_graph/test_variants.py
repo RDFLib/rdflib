@@ -43,7 +43,7 @@ TEST_DIR = Path(__file__).parent.parent.absolute()
 VARIANTS_DIR = TEST_DATA_DIR / "variants"
 
 # Put files from other directories in here.
-EXTRA_FILES: List[Path] = []
+EXTRA_FILES: list[Path] = []
 
 SUFFIX_FORMAT_MAP = {**rdflib.util.SUFFIX_FORMAT_MAP, "hext": "hext"}
 
@@ -90,7 +90,7 @@ class GraphVariantsMeta(GraphAsserts):
     exact_match: bool = False
 
 
-_VARIANT_PREFERENCE: Dict[str, int] = dict(
+_VARIANT_PREFERENCE: dict[str, int] = dict(
     (format, index)
     for index, format in enumerate(
         [
@@ -115,7 +115,7 @@ class GraphVariants:
     """
 
     key: str
-    variants: Dict[str, GraphSource] = field(default_factory=OrderedDict)
+    variants: dict[str, GraphSource] = field(default_factory=OrderedDict)
     meta: GraphVariantsMeta = field(default_factory=GraphVariantsMeta)
 
     _variant_regex: ClassVar[Pattern[str]] = re.compile(
@@ -143,7 +143,7 @@ class GraphVariants:
         return self.meta.public_id or f"example:rdflib:test:data:variant:{self.key}"
 
     @property
-    def preferred_variant(self) -> Tuple[str, GraphSource]:
+    def preferred_variant(self) -> tuple[str, GraphSource]:
         return self.ordered_variants[0]
 
     def load(self, variant_key: str, graph_type: Type[_GraphT]) -> _GraphT:
@@ -166,9 +166,9 @@ class GraphVariants:
     @classmethod
     def for_files(
         cls, file_paths: Iterable[Path], basedir: Optional[Path] = None
-    ) -> Dict[str, GraphVariants]:
-        graph_sources: DefaultDict[str, Dict[str, GraphSource]] = defaultdict(dict)
-        graph_meta: Dict[str, GraphVariantsMeta] = {}
+    ) -> dict[str, GraphVariants]:
+        graph_sources: DefaultDict[str, dict[str, GraphSource]] = defaultdict(dict)
+        graph_meta: dict[str, GraphVariantsMeta] = {}
         for file_path in file_paths:
             file_key, variant_key = cls._decompose_path(file_path, basedir)
             file_graph_sources = graph_sources[file_key]
@@ -199,7 +199,7 @@ class GraphVariants:
     @classmethod
     def for_directory(
         cls, directory: Path, basedir: Optional[Path] = None
-    ) -> Dict[str, GraphVariants]:
+    ) -> dict[str, GraphVariants]:
         file_paths = []
         for file_path in directory.glob("*"):
             if not file_path.is_file():
@@ -215,7 +215,7 @@ GRAPH_VARIANTS_DICT = {
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 
-EXPECTED_FAILURES: Dict[Tuple[str, Optional[str]], MarkDecorator] = {
+EXPECTED_FAILURES: dict[Tuple[str, Optional[str]], MarkDecorator] = {
     ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,
@@ -277,7 +277,7 @@ def tests_found() -> None:
     assert xml_literal.meta.quad_count == 1
 
 
-_PREFERRED_GRAPHS: Dict[str, Dataset] = {}
+_PREFERRED_GRAPHS: dict[str, Dataset] = {}
 
 
 def load_preferred(graph_variants: GraphVariants) -> Dataset:

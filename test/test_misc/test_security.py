@@ -110,7 +110,7 @@ def test_block_file(
 
     if defence == Defence.AUDIT_HOOK and uri_kind == URIKind.FILE:
 
-        def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
+        def audit_hook(name: str, args: tuple[Any, ...]) -> None:
             logging.info("block_file_access: name = %s, args = %s", name, args)
             if name == "open" and args[0] == f"{context_file.absolute()}":
                 raise PermissionError("access blocked")
@@ -119,7 +119,7 @@ def test_block_file(
 
     elif defence == Defence.AUDIT_HOOK and uri_kind == URIKind.RELATIVE:
 
-        def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
+        def audit_hook(name: str, args: tuple[Any, ...]) -> None:
             logging.info("block_file_access: name = %s, args = %s", name, args)
             if name == "open" and args[0] == f"{Path.cwd() / context_file.name}":
                 raise PermissionError("access blocked")
@@ -128,7 +128,7 @@ def test_block_file(
 
     elif defence == Defence.AUDIT_HOOK and uri_kind == URIKind.HTTP:
 
-        def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
+        def audit_hook(name: str, args: tuple[Any, ...]) -> None:
             logging.info("block_file_access: name = %s, args = %s", name, args)
             if name == "urllib.Request" and args[0] == context_file_served.request_url:
                 raise PermissionError("access blocked")

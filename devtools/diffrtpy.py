@@ -79,7 +79,7 @@ class Application:
         parser.add_argument("rhs_file", nargs=1, type=str)
         parser.set_defaults(handler=self.handle)
 
-    def run(self, args: List[str]) -> None:
+    def run(self, args: list[str]) -> None:
         parse_result = self.parser.parse_args(args)
 
         verbosity = parse_result.verbosity

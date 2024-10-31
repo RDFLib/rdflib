@@ -6,7 +6,8 @@ Code for carrying out Update Operations
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator, Mapping, Optional, Sequence
+from collections.abc import Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING, Optional
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart

@@ -12,7 +12,7 @@ from rdflib.term import URIRef
 
 from . import runner
 
-unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
+unsupported_tests: tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
     "error",
     "remote",

@@ -45,7 +45,7 @@ def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
-_ServedBaseHTTPServerMocks = Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
+_ServedBaseHTTPServerMocks = tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
 
 
 @pytest.fixture(scope="session")
@@ -98,8 +98,8 @@ def exit_stack() -> Generator[ExitStack, None, None]:
         yield stack
 
 
-EXTRA_MARKERS: Dict[
-    Tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
+EXTRA_MARKERS: dict[
+    tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
 ] = {
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],

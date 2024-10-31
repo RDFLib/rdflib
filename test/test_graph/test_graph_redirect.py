@@ -11,7 +11,7 @@ from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 def test_graph_redirect_new_host(
-    function_httpmocks: Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
+    function_httpmocks: tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
 ) -> None:
     """
     Redirect to new host results in a request with the right Host header

@@ -2,17 +2,11 @@
 #
 from __future__ import annotations
 
+from collections.abc import Collection, Generator, Iterator, Mapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
-    Dict,
-    Generator,
-    Iterator,
-    Mapping,
     Optional,
-    Set,
-    Tuple,
     Union,
     overload,
 )
@@ -59,22 +53,22 @@ class SimpleMemory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+        self.__spo: dict[_SubjectType, dict[_PredicateType, dict[_ObjectType, int]]] = (
             {}
         )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+        self.__pos: dict[_PredicateType, dict[_ObjectType, dict[_SubjectType, int]]] = (
             {}
         )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+        self.__osp: dict[_ObjectType, dict[_SubjectType, dict[_PredicateType, int]]] = (
             {}
         )
 
-        self.__namespace: Dict[str, URIRef] = {}
-        self.__prefix: Dict[URIRef, str] = {}
+        self.__namespace: dict[str, URIRef] = {}
+        self.__prefix: dict[URIRef, str] = {}
 
     def add(
         self,
@@ -136,7 +130,7 @@ class SimpleMemory(Store):
         self,
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+    ) -> Iterator[tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         """A generator over all the triples matching"""
         subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
@@ -219,11 +213,11 @@ class SimpleMemory(Store):
             self.__prefix[namespace] = prefix
             self.__namespace[prefix] = namespace
         else:
-            # type error: Invalid index type "Optional[URIRef]" for "Dict[URIRef, str]"; expected type "URIRef"
+            # type error: Invalid index type "Optional[URIRef]" for "dict[URIRef, str]"; expected type "URIRef"
             self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index]
                 bound_prefix, default=prefix
             )
-            # type error: Invalid index type "Optional[str]" for "Dict[str, URIRef]"; expected type "str"
+            # type error: Invalid index type "Optional[str]" for "dict[str, URIRef]"; expected type "str"
             self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index]
                 bound_namespace, default=namespace
             )
@@ -234,7 +228,7 @@ class SimpleMemory(Store):
     def prefix(self, namespace: URIRef) -> Optional[str]:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
@@ -290,29 +284,29 @@ class Memory(Store):
         self.identifier = identifier
 
         # indexed by [subject][predicate][object]
-        self.__spo: Dict[_SubjectType, Dict[_PredicateType, Dict[_ObjectType, int]]] = (
+        self.__spo: dict[_SubjectType, dict[_PredicateType, dict[_ObjectType, int]]] = (
             {}
         )
 
         # indexed by [predicate][object][subject]
-        self.__pos: Dict[_PredicateType, Dict[_ObjectType, Dict[_SubjectType, int]]] = (
+        self.__pos: dict[_PredicateType, dict[_ObjectType, dict[_SubjectType, int]]] = (
             {}
         )
 
         # indexed by [predicate][object][subject]
-        self.__osp: Dict[_ObjectType, Dict[_SubjectType, Dict[_PredicateType, int]]] = (
+        self.__osp: dict[_ObjectType, dict[_SubjectType, dict[_PredicateType, int]]] = (
             {}
         )
 
-        self.__namespace: Dict[str, URIRef] = {}
-        self.__prefix: Dict[URIRef, str] = {}
-        self.__context_obj_map: Dict[str, Graph] = {}
-        self.__tripleContexts: Dict[_TripleType, Dict[Optional[str], bool]] = {}
-        self.__contextTriples: Dict[Optional[str], Set[_TripleType]] = {None: set()}
+        self.__namespace: dict[str, URIRef] = {}
+        self.__prefix: dict[URIRef, str] = {}
+        self.__context_obj_map: dict[str, Graph] = {}
+        self.__tripleContexts: dict[_TripleType, dict[Optional[str], bool]] = {}
+        self.__contextTriples: dict[Optional[str], set[_TripleType]] = {None: set()}
         # all contexts used in store (unencoded)
-        self.__all_contexts: Set[Graph] = set()
+        self.__all_contexts: set[Graph] = set()
         # default context information for triples
-        self.__defaultContexts: Optional[Dict[Optional[str], bool]] = None
+        self.__defaultContexts: Optional[dict[Optional[str], bool]] = None
 
     def add(
         self,
@@ -419,7 +413,7 @@ class Memory(Store):
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
     ) -> Generator[
-        Tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
+        tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
         None,
         None,
     ]:
@@ -437,7 +431,7 @@ class Memory(Store):
 
         # optimize "triple in graph" case (all parts given)
         elif subject is not None and predicate is not None and object_ is not None:
-            # type error: Incompatible types in assignment (expression has type "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Identifier]]", variable has type "Tuple[IdentifiedNode, IdentifiedNode, Identifier]")
+            # type error: Incompatible types in assignment (expression has type "tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Identifier]]", variable has type "tuple[IdentifiedNode, IdentifiedNode, Identifier]")
             # NOTE on type error: at this point, all elements of triple_pattern
             # is not None, so it has the same type as triple
             triple = triple_pattern  # type: ignore[assignment]
@@ -538,11 +532,11 @@ class Memory(Store):
             self.__prefix[namespace] = prefix
             self.__namespace[prefix] = namespace
         else:
-            # type error: Invalid index type "Optional[URIRef]" for "Dict[URIRef, str]"; expected type "URIRef"
+            # type error: Invalid index type "Optional[URIRef]" for "dict[URIRef, str]"; expected type "URIRef"
             self.__prefix[_coalesce(bound_namespace, namespace)] = _coalesce(  # type: ignore[index]
                 bound_prefix, default=prefix
             )
-            # type error: Invalid index type "Optional[str]" for "Dict[str, URIRef]"; expected type "str"
+            # type error: Invalid index type "Optional[str]" for "dict[str, URIRef]"; expected type "str"
             # type error: Incompatible types in assignment (expression has type "Optional[URIRef]", target has type "URIRef")
             self.__namespace[_coalesce(bound_prefix, prefix)] = _coalesce(  # type: ignore[index]
                 bound_namespace, default=namespace
@@ -554,7 +548,7 @@ class Memory(Store):
     def prefix(self, namespace: URIRef) -> Optional[str]:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
@@ -611,7 +605,7 @@ class Memory(Store):
             except KeyError:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
-                # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
+                # type error: Item "None" of "Optional[dict[Optional[str], bool]]" has no attribute "copy"
                 triple_context = self.__tripleContexts[triple] = (
                     self.__defaultContexts.copy()  # type: ignore[union-attr]
                 )
@@ -656,20 +650,20 @@ class Memory(Store):
         ctxs = self.__tripleContexts.get(triple, self.__defaultContexts)
 
         if not skipQuoted:
-            # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "keys"
+            # type error: Item "None" of "Optional[dict[Optional[str], bool]]" has no attribute "keys"
             return ctxs.keys()  # type: ignore[union-attr]
 
-        # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "items"
+        # type error: Item "None" of "Optional[dict[Optional[str], bool]]" has no attribute "items"
         return [ctx for ctx, quoted in ctxs.items() if not quoted]  # type: ignore[union-attr]
 
     def __triple_has_context(self, triple: _TripleType, ctx: Optional[str]) -> bool:
         """return True if the triple exists in the given context"""
-        # type error: Unsupported right operand type for in ("Optional[Dict[Optional[str], bool]]")
+        # type error: Unsupported right operand type for in ("Optional[dict[Optional[str], bool]]")
         return ctx in self.__tripleContexts.get(triple, self.__defaultContexts)  # type: ignore[operator]
 
     def __remove_triple_context(self, triple: _TripleType, ctx):
         """remove the context from the triple"""
-        # type error: Item "None" of "Optional[Dict[Optional[str], bool]]" has no attribute "copy"
+        # type error: Item "None" of "Optional[dict[Optional[str], bool]]" has no attribute "copy"
         ctxs = self.__tripleContexts.get(triple, self.__defaultContexts).copy()  # type: ignore[union-attr]
         del ctxs[ctx]
         if ctxs == self.__defaultContexts:
