@@ -14,13 +14,16 @@ from __future__ import annotations
 import collections
 import html
 import sys
-from typing import Any, Dict, TextIO
+from typing import TYPE_CHECKING, Any, TextIO
 
 import rdflib
 import rdflib.extras.cmdlineutils
 from rdflib import XSD
 from rdflib.graph import Graph
-from rdflib.term import Literal, Node, URIRef
+from rdflib.term import Literal, URIRef
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType, _PredicateType, _SubjectType
 
 LABEL_PROPERTIES = [
     rdflib.RDFS.label,
@@ -82,21 +85,21 @@ NODECOLOR = "black"
 ISACOLOR = "black"
 
 
-def rdf2dot(g: Graph, stream: TextIO, opts: Dict[str, Any] = {}):
+def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
     """
     Convert the RDF graph to DOT
     writes the dot output to the stream
     """
 
     fields = collections.defaultdict(set)
-    nodes: Dict[Node, str] = {}
+    nodes: dict[_SubjectType | _PredicateType | _ObjectType, str] = {}
 
-    def node(x: Node) -> str:
+    def node(x: _SubjectType | _PredicateType | _ObjectType) -> str:
         if x not in nodes:
             nodes[x] = "node%d" % len(nodes)
         return nodes[x]
 
-    def label(x: Node, g: Graph):
+    def label(x: _SubjectType, g: Graph):
         for labelProp in LABEL_PROPERTIES:  # noqa: N806
             l_ = g.value(x, labelProp)
             if l_:

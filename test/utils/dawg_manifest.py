@@ -3,16 +3,11 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from typing import (
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
-    Mapping,
     Optional,
-    Tuple,
     Type,
     TypeVar,
     Union,
+    TYPE_CHECKING
 )
 from urllib.parse import urljoin
 
@@ -26,15 +21,21 @@ from test.utils import MarkListType, marks_to_list
 from test.utils.graph import GraphSource, GraphSourceType
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF
+from collections.abc import Iterable, Callable, Collection, Mapping
 
-POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
-POFiltersType = Iterable[POFilterType]
+if TYPE_CHECKING:
+    import typing_extensions as te
+    from rdflib.graph import _PredicateType
+    from collections.abc import  Generator
 
-MarkType = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
-MarksDictType = Mapping[
+POFilterType: te.TypeAlias = tuple[Optional[URIRef], Optional[URIRef]]
+POFiltersType: te.TypeAlias = Iterable[POFilterType]
+
+MarkType: te.TypeAlias = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
+MarksDictType: te.TypeAlias = Mapping[
     str, Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
 ]
-ManifestEntryMarkerType = Callable[["ManifestEntry"], Optional[MarkType]]
+ManifestEntryMarkerType: te.TypeAlias = Callable[["ManifestEntry"], Optional[MarkType]]
 IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 
 
@@ -84,7 +85,7 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: Identifier, value_type: Type[IdentifierT]
+        self, predicate: _PredicateType, value_type: Type[IdentifierT]
     ) -> Optional[IdentifierT]:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:

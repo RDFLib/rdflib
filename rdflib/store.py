@@ -29,23 +29,13 @@ from __future__ import annotations
 
 import pickle
 from io import BytesIO
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Optional
 
 from rdflib.events import Dispatcher, Event
 
 if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable, Iterator, Mapping
+
     from rdflib.graph import (
         Graph,
         _ContextType,
@@ -115,8 +105,8 @@ class TripleRemovedEvent(Event):
 
 class NodePickler:
     def __init__(self) -> None:
-        self._objects: Dict[str, Any] = {}
-        self._ids: Dict[Any, str] = {}
+        self._objects: dict[str, Any] = {}
+        self._ids: dict[Any, str] = {}
         self._get_object = self._objects.__getitem__
 
     def _get_ids(self, key: Any) -> Optional[str]:
@@ -281,14 +271,26 @@ class Store:
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
+        triple: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType],
+                _PredicateType,
+                Optional[_ObjectType],
+            ]
+            | tuple[
+                Optional[_SubjectType],
+                list[_PredicateType] | tuple[_PredicateType],
+                Optional[_ObjectType],
+            ]
+            | tuple[
+                Optional[_SubjectType],
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType],
+            ]
+        ),
         context: Optional[_ContextType] = None,
     ) -> Generator[
-        Tuple[
+        tuple[
             _TripleType,
             Iterator[Optional[_ContextType]],
         ],
@@ -301,10 +303,16 @@ class Store:
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
+        subject: Optional[_SubjectType] | list[_SubjectType] | tuple[_SubjectType]
+        predicate: _PredicateType | list[_PredicateType] | tuple[_PredicateType]
+        object_: Optional[_ObjectType] | list[_ObjectType] | tuple[_ObjectType]
         subject, predicate, object_ = triple
-        if isinstance(object_, list):
-            assert not isinstance(subject, list), "object_ / subject are both lists"
-            assert not isinstance(predicate, list), "object_ / predicate are both lists"
+        if isinstance(object_, (list, tuple)):
+            # MyPy thinks these are unreachable due to the triple pattern signature.
+            if isinstance(subject, (list, tuple)):
+                raise ValueError("object_ / subject are both lists")
+            if isinstance(predicate, (list, tuple)):
+                raise ValueError("object_ / predicate are both lists")
             if object_:
                 for obj in object_:
                     for (s1, p1, o1), cg in self.triples(
@@ -317,8 +325,9 @@ class Store:
                 ):
                     yield (s1, p1, o1), cg
 
-        elif isinstance(subject, list):
-            assert not isinstance(predicate, list), "subject / predicate are both lists"
+        elif isinstance(subject, (list, tuple)):
+            if isinstance(predicate, (list, tuple)):
+                raise ValueError("subject / predicate are both lists")
             if subject:
                 for subj in subject:
                     for (s1, p1, o1), cg in self.triples(
@@ -331,8 +340,7 @@ class Store:
                 ):
                     yield (s1, p1, o1), cg
 
-        elif isinstance(predicate, list):
-            assert not isinstance(subject, list), "predicate / subject are both lists"
+        elif isinstance(predicate, (list, tuple)):
             if predicate:
                 for pred in predicate:
                     for (s1, p1, o1), cg in self.triples(
@@ -348,7 +356,7 @@ class Store:
         self,
         triple_pattern: _TriplePatternType,
         context: Optional[_ContextType] = None,
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+    ) -> Iterator[tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
@@ -390,7 +398,7 @@ class Store:
     # TODO FIXME: the result of query is inconsistent.
     def query(
         self,
-        query: Union[Query, str],
+        query: Query | str,
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
@@ -413,7 +421,7 @@ class Store:
 
     def update(
         self,
-        update: Union[Update, str],
+        update: Update | str,
         initNs: Mapping[str, Any],  # noqa: N803
         initBindings: Mapping[str, Identifier],  # noqa: N803
         queryGraph: str,  # noqa: N803
@@ -448,7 +456,7 @@ class Store:
     def namespace(self, prefix: str) -> Optional[URIRef]:
         """ """
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         """ """
         # This is here so that the function becomes an empty generator.
         # See https://stackoverflow.com/q/13243766 and
