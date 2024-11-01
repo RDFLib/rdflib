@@ -95,8 +95,7 @@ def evalBGP(
             c = ctx
 
         if _s is None:
-            # Incompatible types in assignment (expression has type "Union[IdentifiedNode, Literal, QuotedGraph, Variable, Any]", target has type "str")
-            c[s] = ss  # type: ignore[assignment]
+            c[s] = ss
 
         try:
             if _p is None:
@@ -106,8 +105,7 @@ def evalBGP(
 
         try:
             if _o is None:
-                # Incompatible types in assignment (expression has type "Union[IdentifiedNode, Literal, QuotedGraph, Variable, Any]", target has type "str")
-                c[o] = so  # type: ignore[assignment]
+                c[o] = so
         except AlreadyBound:
             continue
 

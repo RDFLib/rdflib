@@ -51,7 +51,8 @@ class RDFResult(Result):
 
         if type_ == "SELECT":
             self.vars = [
-                Variable(v.identifier if isinstance(v, Graph) else v)
+                # Technically we should check for QuotedGraph here, to make MyPy happy
+                Variable(v.identifier if isinstance(v, Graph) else v)  # type: ignore[unreachable]
                 for v in graph.objects(rs, RS.resultVariable)
             ]
 
@@ -63,8 +64,9 @@ class RDFResult(Result):
                     var_name: Optional[_ObjectType | str] = graph.value(b, RS.variable)
                     if var_name is None:
                         continue
-                    elif isinstance(var_name, Graph):
-                        var_name = var_name.identifier
+                    # Technically we should check for QuotedGraph here, to make MyPy happy
+                    elif isinstance(var_name, Graph):  # type: ignore[unreachable]
+                        var_name = var_name.identifier  # type: ignore[unreachable]
                     var_val = graph.value(b, RS.value)
                     if var_val is None:
                         continue

@@ -270,12 +270,12 @@ from typing import (
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
+import rdflib.collection  # avoid circular dependency
 import rdflib.exceptions as exceptions
 import rdflib.namespace as namespace  # noqa: F401 # This is here because it is used in a docstring.
 import rdflib.plugin as plugin
 import rdflib.query
 import rdflib.util  # avoid circular dependency
-from rdflib.collection import Collection
 from rdflib.exceptions import ParserError
 from rdflib.namespace import RDF, Namespace, NamespaceManager
 from rdflib.parser import InputSource, Parser, create_input_source
@@ -304,9 +304,9 @@ if TYPE_CHECKING:
 
 # RDFLib official stance is Subject can be a Literal
 # If this ever changes, this part will be one of the first lines to modify.
-_SubjectType: te.TypeAlias = Union[IdentifiedNode, Literal, "QuotedGraph", "Variable"]
-_PredicateType: te.TypeAlias = Union[IdentifiedNode, "Variable"]
-_ObjectType: te.TypeAlias = Union[IdentifiedNode, Literal, "QuotedGraph", "Variable"]
+_SubjectType: te.TypeAlias = Union[IdentifiedNode, Literal, Variable]
+_PredicateType: te.TypeAlias = Union[IdentifiedNode, Variable]
+_ObjectType: te.TypeAlias = Union[IdentifiedNode, Literal, Variable]
 _ContextIdentifierType = IdentifiedNode
 
 _TripleType: te.TypeAlias = tuple[_SubjectType, _PredicateType, _ObjectType]
@@ -361,6 +361,7 @@ _TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
 _DatasetT = TypeVar("_DatasetT", bound="Dataset")
+_QuotedGraphT = TypeVar("_QuotedGraphT", bound="QuotedGraph")
 
 _builtin_set_t = set
 
@@ -1767,7 +1768,7 @@ class Graph(Node):
         res.update(self.subjects())
         return res
 
-    def collection(self, identifier: IdentifiedNode) -> Collection:
+    def collection(self, identifier: IdentifiedNode) -> rdflib.collection.Collection:
         """Create a new ``Collection`` instance.
 
         Parameters:
@@ -1779,12 +1780,12 @@ class Graph(Node):
             >>> graph = Graph()
             >>> uri = URIRef("http://example.org/resource")
             >>> collection = graph.collection(uri)
-            >>> assert isinstance(collection, Collection)
+            >>> assert isinstance(collection, rdflib.collection.Collection)
             >>> assert collection.uri is uri
             >>> assert collection.graph is graph
             >>> collection += [ Literal(1), Literal(2) ]
         """
-        return Collection(self, identifier)
+        return rdflib.collection.Collection(self, identifier)
 
     def resource(self, identifier: Node | str) -> Resource:
         """Create a new ``Resource`` instance.
@@ -1869,18 +1870,14 @@ class Graph(Node):
             (s, p, o) = t
 
             if RDFLibGenid._is_rdflib_skolem(s):
-                # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
-                s = RDFLibGenid(s).de_skolemize()  # type: ignore[arg-type]
+                s = RDFLibGenid(s).de_skolemize()
             elif Genid._is_external_skolem(s):
-                # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
-                s = Genid(s).de_skolemize()  # type: ignore[arg-type]
+                s = Genid(s).de_skolemize()
 
             if RDFLibGenid._is_rdflib_skolem(o):
-                # type error: Argument 1 to "RDFLibGenid" has incompatible type "Node"; expected "str"
-                o = RDFLibGenid(o).de_skolemize()  # type: ignore[arg-type]
+                o = RDFLibGenid(o).de_skolemize()
             elif Genid._is_external_skolem(o):
-                # type error: Argument 1 to "Genid" has incompatible type "Node"; expected "str"
-                o = Genid(o).de_skolemize()  # type: ignore[arg-type]
+                o = Genid(o).de_skolemize()
 
             return s, p, o
 
@@ -2656,7 +2653,7 @@ class Dataset(ConjunctiveGraph):
         return self.quads((None, None, None, None))
 
 
-class QuotedGraph(Graph):
+class QuotedGraph(Graph, IdentifiedNode):
     """
     Quoted Graphs are intended to implement Notation 3 formulae. They are
     associated with a required identifier that the N3 parser *must* provide
@@ -2664,14 +2661,17 @@ class QuotedGraph(Graph):
     such as implication and other such processing.
     """
 
-    def __init__(
-        self,
+    def __new__(
+        cls,
         store: Store | str,
         identifier: Optional[_ContextIdentifierType | str],
     ):
+        return str.__new__(cls, identifier)
+
+    def __init__(self, store: Store, identifier: Optional[_ContextIdentifierType]):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self: _GraphT, triple: _TripleType) -> _GraphT:
+    def add(self: _QuotedGraphT, triple: _TripleType) -> _QuotedGraphT:
         """Add a triple with self as context"""
         s, p, o = triple
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
@@ -2681,7 +2681,9 @@ class QuotedGraph(Graph):
         self.store.add((s, p, o), self, quoted=True)
         return self
 
-    def addN(self: _GraphT, quads: Iterable[_QuadType]) -> _GraphT:  # noqa: N802
+    def addN(
+        self: _QuotedGraphT, quads: Iterable[_QuadType]
+    ) -> _QuotedGraphT:  # noqa: N802
         """Add a sequence of triple with context"""
 
         self.store.addN(
@@ -2710,6 +2712,25 @@ class QuotedGraph(Graph):
         self,
     ) -> tuple[type[QuotedGraph], tuple[Store, _ContextIdentifierType]]:
         return QuotedGraph, (self.store, self.identifier)
+
+    def toPython(self: _QuotedGraphT) -> _QuotedGraphT:  # noqa: N802
+        return self
+
+    # Resolve conflicts between multiple inheritance
+    __iter__ = Graph.__iter__  # type: ignore[assignment]
+    __contains__ = Graph.__contains__  # type: ignore[assignment]
+    __ge__ = Graph.__ge__  # type: ignore[assignment]
+    __le__ = Graph.__le__  # type: ignore[assignment]
+    __gt__ = Graph.__gt__
+    __eq__ = Graph.__eq__
+    __iadd__ = Graph.__iadd__
+    __add__ = Graph.__add__  # type: ignore[assignment]
+    __isub__ = Graph.__isub__
+    __sub__ = Graph.__sub__
+    __getitem__ = Graph.__getitem__  # type: ignore[assignment]
+    __len__ = Graph.__len__
+    __hash__ = Graph.__hash__
+    __mul__ = Graph.__mul__  # type: ignore[assignment]
 
 
 # Make sure QuotedGraph is ordered correctly

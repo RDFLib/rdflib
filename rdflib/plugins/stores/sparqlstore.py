@@ -301,7 +301,8 @@ class SPARQLStore(SPARQLConnector, Store):
         elif isinstance(_s, Variable):
             s = _s
             vars.append(s)
-        elif isinstance(_s, Graph):
+        # Technically we should check for QuotedGraph here, to make MyPy happy
+        elif isinstance(_s, Graph):  # type: ignore[unreachable]
             raise ValueError("Cannot use a Graph as subject in SPARQLStore.")
         else:
             s = _s
@@ -318,7 +319,8 @@ class SPARQLStore(SPARQLConnector, Store):
         elif isinstance(_o, Variable):
             o = _o
             vars.append(o)
-        elif isinstance(_o, Graph):
+        # Technically we should check for QuotedGraph here, to make MyPy happy
+        elif isinstance(_o, Graph):  # type: ignore[unreachable]
             raise ValueError("Cannot use a Graph as object in SPARQLStore.")
         else:
             o = _o

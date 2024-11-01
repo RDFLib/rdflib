@@ -1365,10 +1365,8 @@ class Class(AnnotatableTerms):
         if c:
             dc.append(c)
         klasskind = ""
-        label = list(self.graph.objects(self.identifier, RDFS.label))
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "List[Node]")
-        # type error: Unsupported operand types for + ("str" and "Node")
-        label = label and "(" + label[0] + ")" or ""  # type: ignore[assignment, operator]
+        label_list = list(self.graph.objects(self.identifier, RDFS.label))
+        label = "" if len(label_list) < 1 else "(" + label_list[0] + ")"
         if sc:
             if full:
                 scjoin = "\n                "

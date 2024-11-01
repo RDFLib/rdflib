@@ -105,8 +105,7 @@ def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
             if l_:
                 return l_
         try:
-            # type error: Argument 1 to "compute_qname" of "NamespaceManager" has incompatible type "Node"; expected "str"
-            return g.namespace_manager.compute_qname(x)[2]  # type: ignore[arg-type]
+            return g.namespace_manager.compute_qname(x)[2]
         except Exception:
             return x
 
@@ -162,8 +161,7 @@ def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
         )
         stream.write(
             opstr
-            # type error: Value of type variable "AnyStr" of "escape" cannot be "Node"
-            % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f))  # type: ignore[type-var]
+            % (n, NODECOLOR, html.escape(label(u, g)), u, html.escape(u), "".join(f))
         )
 
     stream.write("}\n")

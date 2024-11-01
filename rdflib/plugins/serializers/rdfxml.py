@@ -88,8 +88,7 @@ class XMLSerializer(Serializer):
 
         # write out triples by subject
         for subject in self.store.subjects():
-            # type error: Argument 1 to "subject" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
-            self.subject(subject, 1)  # type: ignore[arg-type]
+            self.subject(subject, 1)
 
         # endRDF
         write("</rdf:RDF>\n")
@@ -117,9 +116,7 @@ class XMLSerializer(Serializer):
                     write(">\n")
 
                     for predicate, object in self.store.predicate_objects(subject):
-                        # type error: Argument 1 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
-                        # type error: Argument 2 to "predicate" of "XMLSerializer" has incompatible type "Node"; expected "Identifier"
-                        self.predicate(predicate, object, depth + 1)  # type: ignore[arg-type]
+                        self.predicate(predicate, object, depth + 1)
                     write("%s</%s>\n" % (indent, element_name))
 
                 else:
@@ -268,8 +265,7 @@ class PrettyXMLSerializer(Serializer):
                 type = None
 
             element = type or RDFVOC.Description
-            # type error: Argument 1 to "push" of "XMLWriter" has incompatible type "Node"; expected "str"
-            writer.push(element)  # type: ignore[arg-type]
+            writer.push(element)
 
             if isinstance(subject, BNode):
 
@@ -293,8 +289,7 @@ class PrettyXMLSerializer(Serializer):
                     if not (predicate == RDF.type and object_ == type):
                         self.predicate(predicate, object_, depth + 1)
 
-            # type error: Argument 1 to "pop" of "XMLWriter" has incompatible type "Node"; expected "Optional[str]"
-            writer.pop(element)  # type: ignore[arg-type]
+            writer.pop(element)
 
         elif subject in self.forceRDFAbout:
             # TODO FIXME?: this looks like a duplicate of first condition
