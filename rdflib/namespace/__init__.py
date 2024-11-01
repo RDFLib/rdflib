@@ -226,6 +226,7 @@ class URIPattern(str):
 # considered part of __dir__ results. These should be all annotations on
 # `DefinedNamespaceMeta`.
 _DFNS_RESERVED_ATTRS: Set[str] = {
+    "__slots__",
     "_NS",
     "_warn",
     "_fail",
