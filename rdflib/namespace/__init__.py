@@ -238,13 +238,13 @@ _DFNS_RESERVED_ATTRS: Set[str] = {
 _IGNORED_ATTR_LOOKUP: Set[str] = {
     "_pytestfixturefunction",  # pytest tries to look this up on Defined namespaces
     "_partialmethod",  # sphinx tries to look this up during autodoc generation
-    "__test__",  # pytest checks for this old nose-test style constant
-    "__signature__",  # inspect.signature returns this, it cannot be used
 }
 
 
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
+
+    __slots__: Tuple[str, ...] = tuple()
 
     _NS: Namespace
     _warn: bool = True
@@ -279,6 +279,8 @@ class DefinedNamespaceMeta(type):
             raise AttributeError(
                 f"DefinedNamespace like object has no attribute {name!r}"
             )
+        elif name.startswith("__"):
+            return super(DefinedNamespaceMeta, cls).__getattribute__(name)
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
@@ -322,7 +324,7 @@ class DefinedNamespaceMeta(type):
         return values
 
     def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
-        """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
+        """Returns this DefinedNamespace as a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
             if issubclass(term, URIRef):
@@ -336,6 +338,8 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     A Namespace with an enumerated list of members.
     Warnings are emitted if unknown members are referenced if _warn is True
     """
+
+    __slots__: Tuple[str, ...] = tuple()
 
     def __init__(self):
         raise TypeError("namespace may not be instantiated")
