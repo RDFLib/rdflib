@@ -299,14 +299,9 @@ def test_repr(dfns: Type[DefinedNamespace]) -> None:
     ns_uri = f"{prefix}{dfns_info.suffix}"
     logging.debug("ns_uri = %s", ns_uri)
 
-    repr_str: Optional[str] = None
-
-    with ExitStack() as xstack:
-        if dfns_info.suffix is None:
-            xstack.enter_context(pytest.raises(AttributeError))
-        repr_str = f"{dfns_info.dfns!r}"
+    repr_str:str = f"{dfns_info.dfns!r}"
     if dfns_info.suffix is None:
-        assert repr_str is None
+        assert "<DefinedNamespace>" in repr_str
     else:
         assert repr_str is not None
         repro = eval(repr_str)
@@ -368,20 +363,15 @@ def test_contains(
     dfns_info = get_dfns_info(dfns)
     if dfns_info.suffix is not None:
         logging.debug("dfns_info = %s", dfns_info)
-    if dfns_info.has_attrs is False:
+    if dfns_info.has_attrs is False or dfns_info.suffix is None:
         is_defined = False
-    does_contain: Optional[bool] = None
-    with ExitStack() as xstack:
-        if dfns_info.suffix is None:
-            xstack.enter_context(pytest.raises(AttributeError))
-        does_contain = attr_name in dfns
-    if dfns_info.suffix is not None:
-        if is_defined:
-            assert does_contain is True
-        else:
-            assert does_contain is False
+
+    does_contain: bool = attr_name in dfns
+
+    if is_defined:
+        assert does_contain is True
     else:
-        assert does_contain is None
+        assert does_contain is False
 
 
 @pytest.mark.parametrize(

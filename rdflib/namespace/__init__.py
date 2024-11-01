@@ -240,6 +240,7 @@ _IGNORED_ATTR_LOOKUP: set[str] = {
     "_pytestfixturefunction",  # pytest tries to look this up on Defined namespaces
     "_partialmethod",  # sphinx tries to look this up during autodoc generation
     "__test__",  # pytest checks for this old nose-test style constant
+    "__signature__",  # inspect.signature returns this, it cannot be used
 }
 
 
