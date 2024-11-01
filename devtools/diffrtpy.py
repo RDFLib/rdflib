@@ -26,7 +26,6 @@ import sys
 from dataclasses import dataclass, field
 from difflib import unified_diff
 from pathlib import Path
-from typing import List
 
 import black
 import python_minifier
