@@ -227,6 +227,7 @@ class URIPattern(str):
 # considered part of __dir__ results. These should be all annotations on
 # `DefinedNamespaceMeta`.
 _DFNS_RESERVED_ATTRS: set[str] = {
+    "__slots__",
     "_NS",
     "_warn",
     "_fail",
@@ -245,6 +246,8 @@ _IGNORED_ATTR_LOOKUP: set[str] = {
 class DefinedNamespaceMeta(type):
     """Utility metaclass for generating URIRefs with a common prefix."""
 
+    __slots__: tuple[str, ...] = tuple()
+
     _NS: Namespace
     _warn: bool = True
     _fail: bool = False  # True means mimic ClosedNamespace
@@ -256,15 +259,11 @@ class DefinedNamespaceMeta(type):
         name = str(name)
 
         if name in _DFNS_RESERVED_ATTRS:
-            raise AttributeError(
-                f"DefinedNamespace like object has no attribute {name!r}"
+            raise KeyError(
+                f"DefinedNamespace like object has no access item named {name!r}"
             )
         elif name in _IGNORED_ATTR_LOOKUP:
             raise KeyError()
-        if str(name).startswith("__"):
-            # NOTE on type ignore: This seems to be a real bug, super() does not
-            # implement this method, it will fail if it is ever reached.
-            return super().__getitem__(name, default)  # type: ignore[misc] # undefined in superclass
         if (cls._warn or cls._fail) and name not in cls:
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
@@ -278,26 +277,39 @@ class DefinedNamespaceMeta(type):
     def __getattr__(cls, name: str):
         if name in _IGNORED_ATTR_LOOKUP:
             raise AttributeError()
+        elif name in _DFNS_RESERVED_ATTRS:
+            raise AttributeError(
+                f"DefinedNamespace like object has no attribute {name!r}"
+            )
+        elif name.startswith("__"):
+            return super(DefinedNamespaceMeta, cls).__getattribute__(name)
         return cls.__getitem__(name)
 
     def __repr__(cls) -> str:
-        return f"Namespace({str(cls._NS)!r})"
+        try:
+            ns_repr = repr(cls._NS)
+        except AttributeError:
+            ns_repr = "<DefinedNamespace>"
+        return f"Namespace({ns_repr})"
 
     def __str__(cls) -> str:
-        return str(cls._NS)
+        try:
+            return str(cls._NS)
+        except AttributeError:
+            return "<DefinedNamespace>"
 
     def __add__(cls, other: str) -> URIRef:
         return cls.__getitem__(other)
 
     def __contains__(cls, item: str) -> bool:
         """Determine whether a URI or an individual item belongs to this namespace"""
+        try:
+            this_ns = cls._NS
+        except AttributeError:
+            return False
         item_str = str(item)
-        if item_str.startswith("__"):
-            # NOTE on type ignore: This seems to be a real bug, super() does not
-            # implement this method, it will fail if it is ever reached.
-            return super().__contains__(item)  # type: ignore[misc] # undefined in superclass
-        if item_str.startswith(str(cls._NS)):
-            item_str = item_str[len(str(cls._NS)) :]
+        if item_str.startswith(str(this_ns)):
+            item_str = item_str[len(str(this_ns)) :]
         return any(
             item_str in c.__annotations__
             or item_str in c._extras
@@ -314,7 +326,7 @@ class DefinedNamespaceMeta(type):
         return values
 
     def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
-        """Returns this DefinedNamespace as a a JSON-LD 'context' object"""
+        """Returns this DefinedNamespace as a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
         for key, term in self.__annotations__.items():
             if issubclass(term, URIRef):
@@ -328,6 +340,8 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     A Namespace with an enumerated list of members.
     Warnings are emitted if unknown members are referenced if _warn is True
     """
+
+    __slots__: tuple[str, ...] = tuple()
 
     def __init__(self):
         raise TypeError("namespace may not be instantiated")
