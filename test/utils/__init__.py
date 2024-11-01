@@ -36,20 +36,20 @@ __all__ = ["file_uri_to_path"]
 
 
 def get_unique_plugins(
-    type: type[PluginT],
+    type_: type[PluginT],
 ) -> dict[type[PluginT], set[Plugin[PluginT]]]:
     result: dict[type[PluginT], set[Plugin[PluginT]]] = {}
-    for plugin in rdflib.plugin.plugins(None, type):
+    for plugin in rdflib.plugin.plugins(None, type_):
         cls = plugin.getClass()
         plugins = result.setdefault(cls, set())
         plugins.add(plugin)
     return result
 
 
-def get_unique_plugin_names(type: type[PluginT]) -> set[str]:
+def get_unique_plugin_names(type_: type[PluginT]) -> set[str]:
     result: set[str] = set()
-    unique_plugins = get_unique_plugins(type)
-    for type, plugin_set in unique_plugins.items():
+    unique_plugins = get_unique_plugins(type_)
+    for type_, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
 

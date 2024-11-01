@@ -2,7 +2,7 @@
 Notation 3 (N3) RDF graph serializer for RDFLib.
 """
 
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
 from rdflib.graph import Graph, QuotedGraph
 from rdflib.namespace import OWL, Namespace

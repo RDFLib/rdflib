@@ -8,7 +8,11 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Optional, Union
 
+from typing_extensions import TypeAlias
+
 from rdflib.term import BNode, Identifier, Literal, Variable
+
+builtin_set: TypeAlias = set
 
 logger = logging.getLogger(__name__)
 
@@ -261,12 +265,12 @@ class ResultFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> set[ResultFormat]:
+    def set(cls) -> builtin_set[ResultFormat]:
         return set(cls)
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_set(cls) -> set[ResultFormatInfo]:
+    def info_set(cls) -> builtin_set[ResultFormatInfo]:
         return {format.info for format in cls.set()}
 
 

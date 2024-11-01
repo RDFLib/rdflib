@@ -143,7 +143,7 @@ class SPARQLEntry(ManifestEntry):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.type_info = type_info_dict[self.type]
+        self.type_info = type_info_dict[self.type_]
 
         if self.type_info.syntax is True:
             assert self.result is None
@@ -430,4 +430,4 @@ def check_entry(
         return check_update(monkeypatch, entry)
     elif entry.type_info.query_type is QueryType.QUERY:
         return check_query(exit_stack, entry)
-    raise ValueError(f"unsupported test {entry.type}")
+    raise ValueError(f"unsupported test {entry.type_}")

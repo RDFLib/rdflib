@@ -271,7 +271,7 @@ class InputSourceChecker:
     :param encoding: Expected encoding of input source. If ``None``, then the encoding is not checked. If it has a value (i.e. an instance of :class:`Holder`), then the encoding is expected to match ``encoding.value``.
     """
 
-    type: type[InputSource]
+    type_: type[InputSource]
     stream_check: StreamCheck
     encoding: Optional[Holder[Optional[str]]]
     public_id: Optional[str]
@@ -288,14 +288,14 @@ class InputSourceChecker:
         Check that ``input_source`` matches expectations.
         """
         logging.debug(
-            "input_source = %s / %s, self.type = %s",
+            "input_source = %s / %s, self.type_ = %s",
             type(input_source),
             input_source,
-            self.type,
+            self.type_,
         )
         assert isinstance(input_source, InputSource)
-        if self.type is not None:
-            assert isinstance(input_source, self.type)
+        if self.type_ is not None:
+            assert isinstance(input_source, self.type_)
 
         if self.stream_check is StreamCheck.BYTE:
             binary_io: BinaryIO = input_source.getByteStream()

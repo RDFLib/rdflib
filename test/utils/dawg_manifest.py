@@ -39,15 +39,15 @@ IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 class ManifestEntry:
     manifest: Manifest
     identifier: URIRef
-    type: IdentifiedNode = field(init=False)
+    type_: IdentifiedNode = field(init=False)
     action: Optional[IdentifiedNode] = field(init=False)
     result: Optional[IdentifiedNode] = field(init=False)
     result_cardinality: Optional[URIRef] = field(init=False)
 
     def __post_init__(self) -> None:
-        type = self.value(RDF.type, IdentifiedNode)
-        assert type is not None
-        self.type = type
+        type_ = self.value(RDF.type, IdentifiedNode)
+        assert type_ is not None
+        self.type_ = type_
 
         self.action = self.value(MF.action, IdentifiedNode)
         self.result = self.value(MF.result, IdentifiedNode)
