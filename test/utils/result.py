@@ -6,11 +6,12 @@ import pprint
 from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Optional, Union
-
-from typing_extensions import TypeAlias
+from typing import TYPE_CHECKING, Optional, Union
 
 from rdflib.term import BNode, Identifier, Literal, Variable
+
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
 
 builtin_set: TypeAlias = set
 

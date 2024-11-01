@@ -17,7 +17,9 @@ from typing import (
 )
 from urllib.parse import urlparse
 from urllib.request import url2pathname
-from rdflib.term import Variable, IdentifiedNode
+
+from rdflib.term import IdentifiedNode, Variable
+
 __all__ = [
     "Processor",
     "UpdateProcessor",

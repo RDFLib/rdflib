@@ -2681,9 +2681,9 @@ class QuotedGraph(Graph, IdentifiedNode):
         self.store.add((s, p, o), self, quoted=True)
         return self
 
-    def addN(
+    def addN(  # noqa: N802
         self: _QuotedGraphT, quads: Iterable[_QuadType]
-    ) -> _QuotedGraphT:  # noqa: N802
+    ) -> _QuotedGraphT:
         """Add a sequence of triple with context"""
 
         self.store.addN(
