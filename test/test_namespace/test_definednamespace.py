@@ -299,7 +299,7 @@ def test_repr(dfns: Type[DefinedNamespace]) -> None:
     ns_uri = f"{prefix}{dfns_info.suffix}"
     logging.debug("ns_uri = %s", ns_uri)
 
-    repr_str:str = f"{dfns_info.dfns!r}"
+    repr_str: str = f"{dfns_info.dfns!r}"
     if dfns_info.suffix is None:
         assert "<DefinedNamespace>" in repr_str
     else:
