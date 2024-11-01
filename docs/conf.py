@@ -87,19 +87,6 @@ copyright = "2009 - 2024, RDFLib Team"
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 
-
-# Find version. We have to do this because we can't import it in Python 3 until
-# its been automatically converted in the setup process.
-# UPDATE: This function is no longer used; once builds are confirmed to succeed, it
-#         can/should be removed. --JCL 2022-12-30
-def find_version(filename):
-    _version_re = re.compile(r'__version__ = "(.*)"')
-    for line in open(filename):
-        version_match = _version_re.match(line)
-        if version_match:
-            return version_match.group(1)
-
-
 # The full version, including alpha/beta/rc tags.
 release = rdflib.__version__
 # The short X.Y version.
@@ -255,7 +242,7 @@ htmlhelp_basename = "rdflibdoc"
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.8", None),
+    "python": ("https://docs.python.org/3.9", None),
 }
 
 html_experimental_html5_writer = True

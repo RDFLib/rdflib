@@ -365,9 +365,8 @@ def test_contains(
         logging.debug("dfns_info = %s", dfns_info)
     if dfns_info.has_attrs is False or dfns_info.suffix is None:
         is_defined = False
-
+    # x in y should never raise an AttributeError
     does_contain: bool = attr_name in dfns
-
     if is_defined:
         assert does_contain is True
     else:
