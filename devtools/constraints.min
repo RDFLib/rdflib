@@ -2,7 +2,7 @@
 # these versions. The file's extension (`.min`) is chosen to evade Dependabot
 # which operates on `*.{txt,in}` files.
 isodate==0.7.2; python_version < "3.11"
-pyparsing==2.1.0
+pyparsing==3.2.0
 importlib-metadata==4.0.0
 berkeleydb==18.1.2
 networkx==2.0
