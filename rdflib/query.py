@@ -17,7 +17,7 @@ from typing import (
 )
 from urllib.parse import urlparse
 from urllib.request import url2pathname
-
+from rdflib.term import Variable, IdentifiedNode
 __all__ = [
     "Processor",
     "UpdateProcessor",
@@ -29,7 +29,6 @@ __all__ = [
     "EncodeOnlyUnicode",
     "QueryResultValueType",
 ]
-
 import rdflib.term
 
 if TYPE_CHECKING:
@@ -37,14 +36,13 @@ if TYPE_CHECKING:
 
     from rdflib.graph import Graph, _TripleType
     from rdflib.plugins.sparql.sparql import Query, Update
-    from rdflib.term import IdentifiedNode, Variable
 
 # These are the kinds of values that can be bound to a variable in the query processor.
-QueryBindingsValueType: te.TypeAlias = Union["IdentifiedNode", rdflib.term.Literal]
+QueryBindingsValueType: te.TypeAlias = Union[IdentifiedNode, rdflib.term.Literal]
 
 # We assert that a QueryResult value is like _ObjectType, except that
 # it can't be a Variable, and can't be a QuotedGraph.
-QueryResultValueType: te.TypeAlias = Union["IdentifiedNode", rdflib.term.Literal]
+QueryResultValueType: te.TypeAlias = Union[IdentifiedNode, rdflib.term.Literal]
 
 
 class Processor:

@@ -270,6 +270,8 @@ nitpick_ignore = [
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
     ("py:class", "pyparsing.core.ParserElement"),
+    ("py:class", "re.Pattern"),
+    ("py:class", "re.Match"),
 ]
 
 
