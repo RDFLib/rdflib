@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import logging
 import subprocess
@@ -6,14 +8,14 @@ import warnings
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import Path
-from test.data import TEST_DATA_DIR
-from typing import Optional, Type
+from typing import Optional
 
 import pytest
 
 from rdflib import RDF, SKOS
 from rdflib.namespace import DefinedNamespace, Namespace
 from rdflib.term import URIRef
+from test.data import TEST_DATA_DIR
 
 
 def test_definednamespace_creator_qb():
@@ -39,9 +41,8 @@ def test_definednamespace_creator_qb():
             "http://purl.org/linked-data/cube#",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 0, "subprocess exited incorrectly"
     assert Path.is_file(Path("_QB.py")), "_QB.py file not created"
@@ -87,9 +88,8 @@ def test_definednamespace_creator_fake():
             "http://purl.org/linked-data/cube#",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
 
@@ -118,9 +118,8 @@ def test_definednamespace_creator_bad_ns():
             "http://purl.org/linked-data/cube",
             "QB",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True,
+        capture_output=True,
+        text=True,
     )
     assert completed.returncode == 1, "subprocess exited incorrectly (failure expected)"
 
@@ -260,7 +259,7 @@ class DFNSWarnFail(DefinedNamespace):
 
 @dataclass
 class DFNSInfo:
-    dfns: Type[DefinedNamespace]
+    dfns: type[DefinedNamespace]
     suffix: Optional[str]
     has_attrs: bool = True
 
@@ -279,7 +278,7 @@ dfns_infos = [
 dfns_list = [item.dfns for item in dfns_infos]
 
 
-def get_dfns_info(dfns: Type[DefinedNamespace]) -> DFNSInfo:
+def get_dfns_info(dfns: type[DefinedNamespace]) -> DFNSInfo:
     for dfns_info in dfns_infos:
         if dfns_info.dfns is dfns:
             return dfns_info
@@ -295,26 +294,21 @@ def dfns(request) -> DFNSInfo:
     return request.param
 
 
-def test_repr(dfns: Type[DefinedNamespace]) -> None:
+def test_repr(dfns: type[DefinedNamespace]) -> None:
     dfns_info = get_dfns_info(dfns)
     ns_uri = f"{prefix}{dfns_info.suffix}"
     logging.debug("ns_uri = %s", ns_uri)
 
-    repr_str: Optional[str] = None
-
-    with ExitStack() as xstack:
-        if dfns_info.suffix is None:
-            xstack.enter_context(pytest.raises(AttributeError))
-        repr_str = f"{dfns_info.dfns!r}"
+    repr_str: str = f"{dfns_info.dfns!r}"
     if dfns_info.suffix is None:
-        assert repr_str is None
+        assert "<DefinedNamespace>" in repr_str
     else:
         assert repr_str is not None
         repro = eval(repr_str)
         assert ns_uri == f"{repro}"
 
 
-def test_inspect(dfns: Type[DefinedNamespace]) -> None:
+def test_inspect(dfns: type[DefinedNamespace]) -> None:
     """
     `inspect.signature` returns. This is here to check that this does not
     trigger infinite recursion.
@@ -331,7 +325,7 @@ def test_inspect(dfns: Type[DefinedNamespace]) -> None:
         ("_notdefined", False),
     ],
 )
-def test_value(dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool) -> None:
+def test_value(dfns: type[DefinedNamespace], attr_name: str, is_defined: bool) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.has_attrs is False:
         is_defined = False
@@ -364,25 +358,19 @@ def test_value(dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool) -
     ],
 )
 def test_contains(
-    dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool
+    dfns: type[DefinedNamespace], attr_name: str, is_defined: bool
 ) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.suffix is not None:
         logging.debug("dfns_info = %s", dfns_info)
-    if dfns_info.has_attrs is False:
+    if dfns_info.has_attrs is False or dfns_info.suffix is None:
         is_defined = False
-    does_contain: Optional[bool] = None
-    with ExitStack() as xstack:
-        if dfns_info.suffix is None:
-            xstack.enter_context(pytest.raises(AttributeError))
-        does_contain = attr_name in dfns
-    if dfns_info.suffix is not None:
-        if is_defined:
-            assert does_contain is True
-        else:
-            assert does_contain is False
+    # x in y should never raise an AttributeError
+    does_contain: bool = attr_name in dfns
+    if is_defined:
+        assert does_contain is True
     else:
-        assert does_contain is None
+        assert does_contain is False
 
 
 @pytest.mark.parametrize(
@@ -395,7 +383,7 @@ def test_contains(
     ],
 )
 def test_hasattr(
-    dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool
+    dfns: type[DefinedNamespace], attr_name: str, is_defined: bool
 ) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.suffix is not None:
@@ -410,7 +398,7 @@ def test_hasattr(
         assert has_attr is False
 
 
-def test_dir(dfns: Type[DefinedNamespace]) -> None:
+def test_dir(dfns: type[DefinedNamespace]) -> None:
     dfns_info = get_dfns_info(dfns)
     does_contain: Optional[bool] = None
     with ExitStack() as xstack:

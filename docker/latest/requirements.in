@@ -1,2 +1,4 @@
-rdflib==6.2.0
-html5lib
+# This file is used for building a docker image of the latest rdflib release. It
+# will be updated by dependabot when new releases are made.
+rdflib==7.1.1
+html5rdf==1.2.1

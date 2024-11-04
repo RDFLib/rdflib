@@ -14,11 +14,18 @@ also return a dict of list of dicts
 
 """
 
-import collections
+from __future__ import annotations
+
 import itertools
-import json as j
 import re
-from typing import Any, Deque, Dict, Generator, Iterable, List, Tuple, Union
+from collections import defaultdict, deque
+from collections.abc import Generator, Iterable, Mapping
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    Union,
+)
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -46,11 +53,24 @@ from rdflib.plugins.sparql.sparql import (
 )
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
-_Triple = Tuple[Identifier, Identifier, Identifier]
+if TYPE_CHECKING:
+    from rdflib.paths import Path
+
+import json
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment, unused-ignore]
+    _HAS_ORJSON = False
+
+_Triple = tuple[Identifier, Identifier, Identifier]
 
 
 def evalBGP(
-    ctx: QueryContext, bgp: List[_Triple]
+    ctx: QueryContext, bgp: list[_Triple]
 ) -> Generator[FrozenBindings, None, None]:
     """
     A basic graph pattern
@@ -67,7 +87,8 @@ def evalBGP(
     _o = ctx[o]
 
     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr]
+    # Argument 1 to "triples" of "Graph" has incompatible type "tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "tuple[Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]], Optional[IdentifiedNode], Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]]]"  [arg-type]
+    for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr, arg-type]
         if None in (_s, _p, _o):
             c = ctx.push()
         else:
@@ -125,7 +146,6 @@ def evalLazyJoin(
 
 
 def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, None]:
-
     # TODO: Deal with dict returned from evalPart from GROUP BY
     # only ever for join.p1
 
@@ -137,7 +157,7 @@ def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, 
         return _join(a, b)
 
 
-def evalUnion(ctx: QueryContext, union: CompValue) -> Iterable[FrozenBindings]:
+def evalUnion(ctx: QueryContext, union: CompValue) -> list[Any]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)
@@ -174,7 +194,6 @@ def evalLeftJoin(
                 _ebv(join.expr, b)
                 for b in evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)
             ):
-
                 yield a
 
 
@@ -193,7 +212,6 @@ def evalFilter(
 def evalGraph(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     if ctx.dataset is None:
         raise Exception(
             "Non-conjunctive-graph doesn't know about "
@@ -201,12 +219,10 @@ def evalGraph(
         )
 
     ctx = ctx.clone()
-    graph = ctx[part.term]
+    graph: Union[str, Path, None, Graph] = ctx[part.term]
     prev_graph = ctx.graph
     if graph is None:
-
         for graph in ctx.dataset.contexts():
-
             # in SPARQL the default graph is NOT a named graph
             if graph == ctx.dataset.default_context:
                 continue
@@ -219,7 +235,10 @@ def evalGraph(
                 yield x
 
     else:
-        c = ctx.pushGraph(ctx.dataset.get_context(graph))
+        if TYPE_CHECKING:
+            assert not isinstance(graph, Graph)
+        # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Union[str, Path]"; expected "Union[Node, str, None]"
+        c = ctx.pushGraph(ctx.dataset.get_context(graph))  # type: ignore[arg-type]
         for x in evalPart(c, part.p):
             x.ctx.graph = prev_graph
             yield x
@@ -241,15 +260,13 @@ def evalValues(
 
 
 def evalMultiset(ctx: QueryContext, part: CompValue):
-
     if part.p.name == "values":
         return evalValues(ctx, part)
 
     return evalPart(ctx, part.p)
 
 
-def evalPart(ctx: QueryContext, part: CompValue):
-
+def evalPart(ctx: QueryContext, part: CompValue) -> Any:
     # try custom evaluation functions
     for name, c in CUSTOM_EVALS.items():
         try:
@@ -307,26 +324,26 @@ def evalPart(ctx: QueryContext, part: CompValue):
 
     elif part.name == "ServiceGraphPattern":
         return evalServiceQuery(ctx, part)
-        # raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == "DescribeQuery":
-        raise Exception("DESCRIBE not implemented")
+        return evalDescribeQuery(ctx, part)
 
     else:
         raise Exception("I dont know: %s" % part.name)
 
 
-def evalServiceQuery(ctx: QueryContext, part):
+def evalServiceQuery(ctx: QueryContext, part: CompValue):
     res = {}
     match = re.match(
         "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
-        part.get("service_string", ""),
+        # type error: Argument 2 to "get" of "CompValue" has incompatible type "str"; expected "bool"  [arg-type]
+        part.get("service_string", ""),  # type: ignore[arg-type]
         re.DOTALL | re.I,
     )
 
     if match:
         service_url = match.group(1)
-        service_query = _buildQueryStringForServiceCall(ctx, match)
+        service_query = _buildQueryStringForServiceCall(ctx, match.group(2))
 
         query_settings = {"query": service_query, "output": "json"}
         headers = {
@@ -347,13 +364,16 @@ def evalServiceQuery(ctx: QueryContext, part):
                 )
             )
         if response.status == 200:
-            json = j.loads(response.read())
-            variables = res["vars_"] = json["head"]["vars"]
+            if _HAS_ORJSON:
+                json_dict = orjson.loads(response.read())
+            else:
+                json_dict = json.loads(response.read())
+            variables = res["vars_"] = json_dict["head"]["vars"]
             # or just return the bindings?
-            res = json["results"]["bindings"]
+            res = json_dict["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
-                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
+                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, dict[str, str]]"
                     for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
                         yield bound
         else:
@@ -370,9 +390,7 @@ def evalServiceQuery(ctx: QueryContext, part):
 """
 
 
-def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
-
-    service_query = match.group(2)
+def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> str:
     try:
         parser.parseQuery(service_query)
     except ParseException:
@@ -382,7 +400,7 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
         for p in ctx.prologue.namespace_manager.store.namespaces():  # type: ignore[union-attr]
             service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
         # re add the base if one was defined
-        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"  [union-attr]
+        # type error: Item "None" of "Optional[Prologue]" has no attribute "base"
         base = ctx.prologue.base  # type: ignore[union-attr]
         if base is not None and len(base) > 0:
             service_query = "BASE <" + base + "> " + service_query
@@ -397,9 +415,9 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, match: re.Match) -> str:
 
 
 def _yieldBindingsFromServiceCallResult(
-    ctx: QueryContext, r: Dict[str, Dict[str, str]], variables: List[str]
+    ctx: QueryContext, r: dict[str, dict[str, str]], variables: list[str]
 ) -> Generator[FrozenBindings, None, None]:
-    res_dict: Dict[Variable, Identifier] = {}
+    res_dict: dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
             var_binding = r[var]
@@ -441,9 +459,7 @@ def evalAggregateJoin(
     # p is always a Group, we always get a dict back
 
     group_expr = agg.p.expr
-    res: Dict[Any, Any] = collections.defaultdict(
-        lambda: Aggregator(aggregations=agg.A)
-    )
+    res: dict[Any, Any] = defaultdict(lambda: Aggregator(aggregations=agg.A))
 
     if group_expr is None:
         # no grouping, just COUNT in SELECT clause
@@ -469,11 +485,9 @@ def evalAggregateJoin(
 def evalOrderBy(
     ctx: QueryContext, part: CompValue
 ) -> Generator[FrozenBindings, None, None]:
-
     res = evalPart(ctx, part.p)
 
     for e in reversed(part.expr):
-
         reverse = bool(e.order and e.order == "DESC")
         res = sorted(
             res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
@@ -515,7 +529,7 @@ def evalReduced(
 
     # mixed data structure: set for lookup, deque for append/pop/remove
     mru_set = set()
-    mru_queue: Deque[Any] = collections.deque()
+    mru_queue: deque[Any] = deque()
 
     for row in evalPart(ctx, part.p):
         if row in mru_set:
@@ -546,21 +560,21 @@ def evalDistinct(
 
 def evalProject(ctx: QueryContext, project: CompValue):
     res = evalPart(ctx, project.p)
-
     return (row.project(project.PV) for row in res)
 
 
-def evalSelectQuery(ctx: QueryContext, query: CompValue):
-
-    res = {}
+def evalSelectQuery(
+    ctx: QueryContext, query: CompValue
+) -> Mapping[str, Union[str, list[Variable], Iterable[FrozenDict]]]:
+    res: dict[str, Union[str, list[Variable], Iterable[FrozenDict]]] = {}
     res["type_"] = "SELECT"
     res["bindings"] = evalPart(ctx, query.p)
     res["vars_"] = query.PV
     return res
 
 
-def evalAskQuery(ctx: QueryContext, query: CompValue):
-    res: Dict[str, Union[bool, str]] = {}
+def evalAskQuery(ctx: QueryContext, query: CompValue) -> Mapping[str, Union[str, bool]]:
+    res: dict[str, Union[bool, str]] = {}
     res["type_"] = "ASK"
     res["askAnswer"] = False
     for x in evalPart(ctx, query.p):
@@ -570,7 +584,9 @@ def evalAskQuery(ctx: QueryContext, query: CompValue):
     return res
 
 
-def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+def evalConstructQuery(
+    ctx: QueryContext, query: CompValue
+) -> Mapping[str, Union[str, Graph]]:
     template = query.template
 
     if not template:
@@ -582,45 +598,77 @@ def evalConstructQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]
     for c in evalPart(ctx, query.p):
         graph += _fillTemplate(template, c)
 
-    res: Dict[str, Union[str, Graph]] = {}
+    res: dict[str, Union[str, Graph]] = {}
     res["type_"] = "CONSTRUCT"
     res["graph"] = graph
 
     return res
 
 
-def evalQuery(graph: Graph, query: Query, initBindings, base=None):
+def evalDescribeQuery(ctx: QueryContext, query) -> dict[str, Union[str, Graph]]:
+    # Create a result graph and bind namespaces from the graph being queried
+    graph = Graph()
+    # type error: Item "None" of "Optional[Graph]" has no attribute "namespaces"
+    for pfx, ns in ctx.graph.namespaces():  # type: ignore[union-attr]
+        graph.bind(pfx, ns)
 
-    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
+    to_describe = set()
 
-    ctx = QueryContext(graph, initBindings=initBindings)
+    # Explicit IRIs may be provided to a DESCRIBE query.
+    # If there is a WHERE clause, explicit IRIs may be provided in
+    # addition to projected variables. Find those explicit IRIs and
+    # prepare to describe them.
+    for iri in query.PV:
+        if isinstance(iri, URIRef):
+            to_describe.add(iri)
 
-    ctx.prologue = query.prologue
+    # If there is a WHERE clause, evaluate it then find the unique set of
+    # resources to describe across all bindings and projected variables
+    if query.p is not None:
+        bindings = evalPart(ctx, query.p)
+        to_describe.update(*(set(binding.values()) for binding in bindings))
+
+    # Get a CBD for all resources identified to describe
+    for resource in to_describe:
+        # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
+        ctx.graph.cbd(resource, target_graph=graph)  # type: ignore[union-attr]
+
+    res: dict[str, Union[str, Graph]] = {}
+    res["type_"] = "DESCRIBE"
+    res["graph"] = graph
+
+    return res
+
+
+def evalQuery(
+    graph: Graph,
+    query: Query,
+    initBindings: Optional[Mapping[str, Identifier]] = None,
+    base: Optional[str] = None,
+) -> Mapping[Any, Any]:
+    """
+
+    .. caution::
+
+        This method can access indirectly requested network endpoints, for
+        example, query processing will attempt to access network endpoints
+        specified in ``SERVICE`` directives.
+
+        When processing untrusted or potentially malicious queries, measures
+        should be taken to restrict network and file access.
+
+        For information on available security measures, see the RDFLib
+        :doc:`Security Considerations </security_considerations>`
+        documentation.
+    """
     main = query.algebra
 
-    if main.datasetClause:
-        if ctx.dataset is None:
-            raise Exception(
-                "Non-conjunctive-graph doesn't know about "
-                + "graphs! Try a query without FROM (NAMED)."
-            )
+    initBindings = dict((Variable(k), v) for k, v in (initBindings or {}).items())
 
-        ctx = ctx.clone()  # or push/pop?
+    ctx = QueryContext(
+        graph, initBindings=initBindings, datasetClause=main.datasetClause
+    )
 
-        firstDefault = False
-        for d in main.datasetClause:
-            if d.default:
-
-                if firstDefault:
-                    # replace current default graph
-                    dg = ctx.dataset.get_context(BNode())
-                    ctx = ctx.pushGraph(dg)
-                    firstDefault = True
-
-                ctx.load(d.default, default=True)
-
-            elif d.named:
-                g = d.named
-                ctx.load(g, default=False)
+    ctx.prologue = query.prologue
 
     return evalPart(ctx, main)

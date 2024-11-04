@@ -15,10 +15,13 @@ Example 2: larger data
 * loads multiple graphs downloaded from GitHub into a BerkeleyDB-baked graph stored in the folder gsq_vocabs.
 * does not delete the DB at the end so you can see it on disk
 """
+
 import os
-from rdflib import ConjunctiveGraph, Namespace, Literal
-from rdflib.store import NO_STORE, VALID_STORE
 import tempfile
+
+from rdflib import ConjunctiveGraph, Literal, Namespace
+from rdflib.plugins.stores.berkeleydb import has_bsddb
+from rdflib.store import NO_STORE, VALID_STORE
 
 
 def example_1():
@@ -44,7 +47,7 @@ def example_1():
     print("(will always be 0 when using temp file for DB)")
 
     # Now we'll add some triples to the graph & commit the changes
-    EG = Namespace("http://example.net/test/")
+    EG = Namespace("http://example.net/test/")  # noqa: N806
     graph.bind("eg", EG)
 
     graph.add((EG["pic:1"], EG.name, Literal("Jane & Bob")))
@@ -98,10 +101,10 @@ def example_2():
         9719
         ...
     """
-    from urllib.request import urlopen, Request
-    from urllib.error import HTTPError
-    import json
     import base64
+    import json
+    from urllib.error import HTTPError
+    from urllib.request import Request, urlopen
 
     g = ConjunctiveGraph("BerkeleyDB")
     g.open("gsg_vocabs", create=True)
@@ -129,5 +132,7 @@ def example_2():
 
 
 if __name__ == "__main__":
-    example_1()
-    example_2()
+    if has_bsddb:
+        # Only run the examples if BerkeleyDB is available
+        example_1()
+        example_2()

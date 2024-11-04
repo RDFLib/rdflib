@@ -145,6 +145,16 @@
       },
       "input": "fromRdf-0019-in.nq",
       "expect": "fromRdf-0019-out.jsonld"
+    }, {
+      "@id": "#t0020",
+      "@type": ["jld:PositiveEvaluationTest", "jld:FromRDFTest"],
+      "name": "Mixed explicit XSD typing",
+      "purpose": "Explicitly XSD-typed Literals in the input are reflected in the JSON-LD output.",
+      "option": {
+        "useNativeTypes": true
+      },
+      "input": "fromRdf-0020-in.nq",
+      "expect": "fromRdf-0020-out.jsonld"
     }
   ]
 }

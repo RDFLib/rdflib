@@ -1,23 +1,23 @@
 import os
-from test.data import TEST_DATA_DIR, bob, cheese, hates, likes, michel, pizza, tarek
 
 from rdflib import Dataset, URIRef
+from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK, TEST_DATA_DIR
 
 timblcardn3 = open(os.path.join(TEST_DATA_DIR, "timbl-card.n3")).read()
 
 
 def add_stuff(graph):
-    graph.add((tarek, likes, pizza))
-    graph.add((tarek, likes, cheese))
-    graph.add((tarek, likes, bob))
-    graph.add((tarek, likes, michel))
-    graph.add((michel, likes, pizza))
-    graph.add((michel, likes, cheese))
-    graph.add((michel, likes, tarek))
-    graph.add((bob, likes, cheese))
-    graph.add((bob, hates, pizza))
-    graph.add((bob, hates, michel))
-    graph.add((bob, likes, tarek))
+    graph.add((TAREK, LIKES, PIZZA))
+    graph.add((TAREK, LIKES, CHEESE))
+    graph.add((TAREK, LIKES, BOB))
+    graph.add((TAREK, LIKES, MICHEL))
+    graph.add((MICHEL, LIKES, PIZZA))
+    graph.add((MICHEL, LIKES, CHEESE))
+    graph.add((MICHEL, LIKES, TAREK))
+    graph.add((BOB, LIKES, CHEESE))
+    graph.add((BOB, HATES, PIZZA))
+    graph.add((BOB, HATES, MICHEL))
+    graph.add((BOB, LIKES, TAREK))
 
 
 def test_unique_subjects():
@@ -69,7 +69,6 @@ no_of_unique_objects = 62
 
 
 def test_parse_berners_lee_card_into_dataset_default():
-
     # Workaround pending completion of identifier-as-context work
     # current W-I-P allows parsing direct to Dataset default context
     # and doesn't require the dubious creation of a graph with the

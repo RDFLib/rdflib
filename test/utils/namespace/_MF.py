@@ -6,7 +6,9 @@ class MF(DefinedNamespace):
     _fail = True
     _NS = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#")
 
-    IllFormedLiterals: URIRef  # Tests that involve lexical forms which are illegal for the datatype
+    IllFormedLiterals: (
+        URIRef  # Tests that involve lexical forms which are illegal for the datatype
+    )
     KnownTypesDefault2Neq: URIRef  # Values in disjoint value spaces are not equal
     LangTagAwareness: URIRef  # Tests that require langauge tag handling in FILTERs
     LaxCardinality: URIRef  # The given mf:result for a test with an mf:resultCardinality of mf:ReducedCardinalityTest  is the results as if the REDUCED keyword were omitted. To pass such a test, an implementation must produce a result set  with each solution in the expected results appearing at least once and  no more than the number of times it appears in the expected results. Of  course, there must also be no results produced that are not in the  expected results.

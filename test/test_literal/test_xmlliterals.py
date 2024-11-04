@@ -1,15 +1,23 @@
 import logging
 import textwrap
 import xml.dom.minidom
-from typing import Callable, Sequence
+from collections.abc import Sequence
+from typing import Callable
 
 import pytest
 
 import rdflib
 from rdflib import RDF, Literal
 
+try:
+    import html5rdf  # noqa: F401
 
-def testPythonRoundtrip():
+    have_html5rdf = True
+except ImportError:
+    have_html5rdf = False
+
+
+def testPythonRoundtrip():  # noqa: N802
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
     assert l1.datatype == RDF.XMLLiteral, "literal must have right datatype"
@@ -35,7 +43,7 @@ def testPythonRoundtrip():
         rdflib.NORMALIZE_LITERALS = True
 
 
-def testRDFXMLParse():
+def testRDFXMLParse():  # noqa: N802
     rdfxml = """\
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -77,14 +85,14 @@ def roundtrip(fmt):
     assert l1.eq(l2)
 
 
-def testRoundtrip():
+def testRoundtrip():  # noqa: N802
     roundtrip("xml")
     roundtrip("n3")
     roundtrip("nt")
 
 
-def testHTML():
-
+@pytest.mark.skipif(not have_html5rdf, reason="requires html5rdf")
+def testHTML():  # noqa: N802
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
     assert l1.datatype == RDF.XMLLiteral, "literal must have right datatype"
@@ -92,6 +100,11 @@ def testHTML():
     l2 = Literal("<msg>hello</msg>", datatype=RDF.HTML)
     assert l2.value is not None, "xml must have been parsed"
     assert l2.datatype == RDF.HTML, "literal must have right datatype"
+
+    l3 = Literal("<invalid", datatype=RDF.HTML)
+    assert l3.value is None, "invalid html must not be parsed"
+    assert l3.datatype == RDF.HTML, "literal must have right datatype"
+    assert str(l3) == "<invalid", "invalid html must not be normalized"
 
     assert l1 != l2
     assert not l1.eq(l2)
@@ -114,7 +127,7 @@ def testHTML():
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something/>
+                    <something2/>
                     """
                         )
                     ),
@@ -125,7 +138,7 @@ def testHTML():
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something />
+                    <something2 />
                     """
                         )
                     ),

@@ -1,17 +1,20 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Triples
 test suite."""
+
+from __future__ import annotations
+
 import logging
 from contextlib import ExitStack
-from test.data import TEST_DATA_DIR
-from test.utils import BNodeHandling, GraphHelper, ensure_suffix
-from test.utils.dawg_manifest import ManifestEntry, params_from_sources
-from test.utils.iri import URIMapper
-from test.utils.namespace import RDFT
 from typing import Optional
 
 import pytest
 
 from rdflib.graph import Graph
+from test.data import TEST_DATA_DIR
+from test.utils import BNodeHandling, GraphHelper, ensure_suffix
+from test.utils.dawg_manifest import ManifestEntry, params_from_sources
+from test.utils.iri import URIMapper
+from test.utils.namespace import RDFT
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +29,7 @@ VALID_TYPES = {RDFT.TestNTriplesPositiveSyntax, RDFT.TestNTriplesNegativeSyntax}
 
 def check_entry(entry: ManifestEntry) -> None:
     assert entry.action is not None
-    assert entry.type in VALID_TYPES
+    assert entry.type_ in VALID_TYPES
     action_path = entry.uri_mapper.to_local_path(entry.action)
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
@@ -35,13 +38,13 @@ def check_entry(entry: ManifestEntry) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
     graph = Graph()
     with ExitStack() as xstack:
-        if entry.type == RDFT.TestNTriplesNegativeSyntax:
+        if entry.type_ == RDFT.TestNTriplesNegativeSyntax:
             catcher = xstack.enter_context(pytest.raises(Exception))
         graph.parse(action_path, publicID=entry.action, format="ntriples")
     if catcher is not None:
         assert catcher.value is not None
 
-    if entry.type == RDFT.TestNTriplesPositiveSyntax:
+    if entry.type_ == RDFT.TestNTriplesPositiveSyntax:
         graph_data = graph.serialize(format="ntriples")
         result_graph = Graph()
         result_graph.parse(data=graph_data, publicID=entry.action, format="ntriples")

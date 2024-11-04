@@ -12,13 +12,13 @@ import os
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
-from test.data import TEST_DATA_DIR
 
 import pytest
 
 from rdflib import Graph
 from rdflib.exceptions import ParserError
 from rdflib.util import guess_format
+from test.data import TEST_DATA_DIR
 
 
 class TestFileParserGuessFormat:
@@ -61,9 +61,9 @@ class TestFileParserGuessFormat:
             g.parse(os.path.join(TEST_DATA_DIR, "example-lots_of_graphs.n3")), Graph
         )
 
-    def test_warning(self) -> None:
+    def test_warning(self, caplog: pytest.LogCaptureFixture) -> None:
         g = Graph()
-        graph_logger = logging.getLogger("rdflib")
+        graph_logger = logging.getLogger("rdflib")  # noqa: F841
 
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
@@ -78,9 +78,17 @@ class TestFileParserGuessFormat:
                 ),
                 str(newpath),
             )
-            with pytest.raises(ParserError, match=r"Could not guess RDF format"):
-                with pytest.warns(
-                    UserWarning,
-                    match="does not look like a valid URI, trying to serialize this will break.",
-                ) as logwarning:
-                    g.parse(str(newpath))
+            with (
+                pytest.raises(ParserError, match=r"Could not guess RDF format"),
+                caplog.at_level("WARNING"),
+            ):
+                g.parse(str(newpath))
+
+            assert any(
+                rec.levelno == logging.WARNING
+                and (
+                    "does not look like a valid URI, trying to serialize this will break."
+                    in rec.message
+                )
+                for rec in caplog.records
+            )

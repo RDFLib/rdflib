@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 import math
 import sys
-from typing import Set, Tuple
 
-from rdflib import Graph, Literal
+from rdflib import Graph, Literal, Variable
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
-from rdflib.term import Node
+from rdflib.term import IdentifiedNode, Node
 
 
-def triple_set(graph: Graph) -> Set[Tuple[Node, Node, Node]]:
+def triple_set(graph: Graph) -> set[tuple[Node, IdentifiedNode | Variable, Node]]:
     return set(graph.triples((None, None, None)))
 
 
@@ -24,8 +25,8 @@ class TestSPARQLParser:
         self.do_insert(200)
 
     def do_insert(self, resource_count: int) -> None:
-        EGV = Namespace("http://example.org/vocab#")
-        EGI = Namespace("http://example.org/instance#")
+        EGV = Namespace("http://example.org/vocab#")  # noqa: N806
+        EGI = Namespace("http://example.org/instance#")  # noqa: N806
         prop0, prop1, prop2 = EGV["prop0"], EGV["prop1"], EGV["prop2"]
         g0 = Graph()
         for index in range(resource_count):

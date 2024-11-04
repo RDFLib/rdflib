@@ -26,6 +26,18 @@ RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_
 
   * both Queries and Updates are supported
 
+.. caution::
+
+   RDFLib is designed to access arbitrary network and file resources, in some
+   cases these are directly requested resources, in other cases they are
+   indirectly referenced resources.
+
+   If you are using RDFLib to process untrusted documents or queries you should
+   take measures to restrict file and network access.
+
+   For information on available security measures, see the RDFLib
+   :doc:`Security Considerations </security_considerations>`
+   documentation.
 
 Getting started
 ---------------
@@ -54,8 +66,11 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
    namespaces_and_bindings
    persistence
    merging
+   changelog
+   upgrade6to7
    upgrade5to6
    upgrade4to5
+   security_considerations
 
 
 Reference
@@ -77,6 +92,16 @@ API reference:
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 
+Versioning
+----------
+RDFLib follows `Semantic Versioning 2.0.0 <https://semver.org/spec/v2.0.0.html>`_, which can be summarized as follows:
+
+    Given a version number ``MAJOR.MINOR.PATCH``, increment the:
+
+    #. ``MAJOR`` version when you make incompatible API changes
+    #. ``MINOR`` version when you add functionality in a backwards-compatible
+        manner
+    #. ``PATCH`` version when you make backwards-compatible bug fixes
 
 For developers
 --------------

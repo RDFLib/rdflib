@@ -10,14 +10,19 @@ See also rdflib.plugin
 
 """
 
-from typing import IO, TYPE_CHECKING, Optional
+from __future__ import annotations
+
+from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
 
 from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
 
+
 __all__ = ["Serializer"]
+
+_StrT = TypeVar("_StrT", bound=str)
 
 
 class Serializer:
@@ -32,12 +37,13 @@ class Serializer:
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         sort: bool = False,
-        **args,
+        **args: Any,
     ) -> None:
         """Abstract method"""
 
-    def relativize(self, uri: str):
+    def relativize(self, uri: _StrT) -> Union[_StrT, URIRef]:
         base = self.base
         if base is not None and uri.startswith(base):
-            uri = URIRef(uri.replace(base, "", 1))
+            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
+            uri = URIRef(uri.replace(base, "", 1))  # type: ignore[assignment]
         return uri

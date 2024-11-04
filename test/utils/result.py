@@ -1,16 +1,31 @@
+from __future__ import annotations
+
 import enum
 import logging
 import pprint
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Collection, Dict, FrozenSet, Mapping, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from rdflib.term import BNode, Identifier, Literal, Variable
 
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
+
+builtin_set: TypeAlias = set
+
 logger = logging.getLogger(__name__)
 
+try:
+    import orjson
 
-ResultTypeInfoDict = Dict["ResultType", "ResultTypeInfo"]
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment, unused-ignore]
+    _HAS_ORJSON = False
+
+ResultTypeInfoDict = dict["ResultType", "ResultTypeInfo"]
 
 
 class ResultTypeTrait(enum.Enum):
@@ -25,7 +40,7 @@ class ResultType(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "ResultTypeInfoDict":
+    def info_dict(cls) -> ResultTypeInfoDict:
         return ResultTypeInfo.make_dict(
             ResultTypeInfo(ResultType.CONSTRUCT, {ResultTypeTrait.GRAPH_RESULT}),
             ResultTypeInfo(ResultType.DESCRIBE, {ResultTypeTrait.GRAPH_RESULT}),
@@ -34,22 +49,22 @@ class ResultType(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "ResultTypeInfo":
+    def info(self) -> ResultTypeInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["ResultType"]:
+    def set(cls) -> set[ResultType]:
         return set(*cls)
 
 
 @dataclass(frozen=True)
 class ResultTypeInfo:
     type: ResultType
-    traits: Set[ResultTypeTrait]
+    traits: set[ResultTypeTrait]
 
     @classmethod
-    def make_dict(cls, *items: "ResultTypeInfo") -> ResultTypeInfoDict:
+    def make_dict(cls, *items: ResultTypeInfo) -> ResultTypeInfoDict:
         return dict((info.type, info) for info in items)
 
 
@@ -59,7 +74,7 @@ CLiteralType = Union["CLiteral", "CLiteral"]
 
 
 CIdentifier = Union[Identifier, CLiteralType]
-CBindingSetType = FrozenSet[Tuple[Variable, CIdentifier]]
+CBindingSetType = frozenset[tuple[Variable, CIdentifier]]
 CBindingsType = Mapping[Variable, Optional[CIdentifier]]
 CBindingsCollectionType = Collection[CBindingsType]
 
@@ -99,7 +114,7 @@ def comparable_bindings(
 
 def bindings_diff(
     lhs: CBindingsCollectionType, rhs: CBindingsCollectionType
-) -> Tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
+) -> tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
     rhs_only = []
     common = []
     lhs_matched = set()
@@ -171,7 +186,7 @@ def assert_bindings_collections_equal(
         assert (len(common) == len(clhs)) and (len(common) == len(crhs))
 
 
-ResultFormatInfoDict = Dict["ResultFormat", "ResultFormatInfo"]
+ResultFormatInfoDict = dict["ResultFormat", "ResultFormatInfo"]
 
 
 class ResultFormatTrait(enum.Enum):
@@ -188,7 +203,7 @@ class ResultFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "ResultFormatInfoDict":
+    def info_dict(cls) -> ResultFormatInfoDict:
         return ResultFormatInfo.make_dict(
             ResultFormatInfo(
                 ResultFormat.CSV,
@@ -220,7 +235,7 @@ class ResultFormat(str, enum.Enum):
                         ResultFormatTrait.HAS_SERIALIZER,
                     }
                 ),
-                frozenset({"utf-8", "utf-16"}),
+                frozenset({"utf-8"} if _HAS_ORJSON else {"utf-8", "utf-16"}),
             ),
             ResultFormatInfo(
                 ResultFormat.XML,
@@ -246,31 +261,31 @@ class ResultFormat(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "ResultFormatInfo":
+    def info(self) -> ResultFormatInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["ResultFormat"]:
+    def set(cls) -> builtin_set[ResultFormat]:
         return set(cls)
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_set(cls) -> Set["ResultFormatInfo"]:
+    def info_set(cls) -> builtin_set[ResultFormatInfo]:
         return {format.info for format in cls.set()}
 
 
 @dataclass(frozen=True)
 class ResultFormatInfo:
     format: ResultFormat
-    supported_types: FrozenSet[ResultType]
-    traits: FrozenSet[ResultFormatTrait]
-    encodings: FrozenSet[str]
+    supported_types: frozenset[ResultType]
+    traits: frozenset[ResultFormatTrait]
+    encodings: frozenset[str]
 
     @classmethod
-    def make_dict(cls, *items: "ResultFormatInfo") -> ResultFormatInfoDict:
+    def make_dict(cls, *items: ResultFormatInfo) -> ResultFormatInfoDict:
         return dict((info.format, info) for info in items)
 
     @property
-    def name(self) -> "str":
+    def name(self) -> str:
         return f"{self.format.value}"

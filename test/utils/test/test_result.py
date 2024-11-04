@@ -1,12 +1,13 @@
+from __future__ import annotations
+
 from contextlib import ExitStack
-from test.utils.result import BindingsCollectionType, assert_bindings_collections_equal
-from typing import Type, Union
+from typing import Optional, Union
 
 import pytest
-from pyparsing import Optional
 
 from rdflib.namespace import XSD
 from rdflib.term import BNode, Literal, URIRef, Variable
+from test.utils.result import BindingsCollectionType, assert_bindings_collections_equal
 
 
 @pytest.mark.parametrize(
@@ -229,7 +230,7 @@ from rdflib.term import BNode, Literal, URIRef, Variable
 def test_bindings_equal(
     lhs: BindingsCollectionType,
     rhs: BindingsCollectionType,
-    expected_result: Union[bool, Type[Exception]],
+    expected_result: Union[bool, type[Exception]],
 ) -> None:
     catcher: Optional[pytest.ExceptionInfo[Exception]] = None
 

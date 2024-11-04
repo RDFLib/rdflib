@@ -8,12 +8,9 @@ This example shows how :meth:`rdflib.term.bind` lets you register new
 mappings between literal datatypes and Python objects
 """
 
-
-from rdflib import Graph, Literal, Namespace, XSD
-from rdflib import term
+from rdflib import XSD, Graph, Literal, Namespace, term
 
 if __name__ == "__main__":
-
     # Complex numbers are not registered by default
     # No custom constructor/serializer needed since
     # complex('(2+3j)') works fine
@@ -22,7 +19,7 @@ if __name__ == "__main__":
     # Create a complex number RDFlib Literal
     EG = Namespace("http://example.com/")
     c = complex(2, 3)
-    l = Literal(c)
+    l = Literal(c)  # noqa: E741
 
     # Add it to a graph
     g = Graph()
@@ -46,4 +43,5 @@ if __name__ == "__main__":
 
     # Compare with the original python complex object (should be True)
     # l2[2] is the object of the triple
+    assert isinstance(l2[2], Literal)
     print(l2[2].value == c)

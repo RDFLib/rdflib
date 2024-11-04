@@ -1,7 +1,15 @@
+from __future__ import annotations
+
 import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
+from typing import Any, Optional, Union
+
+import pytest
+
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib.term import URIRef
 from test.utils import (
     COLLAPSED_BNODE,
     BNodeHandling,
@@ -9,12 +17,6 @@ from test.utils import (
     affix_tuples,
     file_uri_to_path,
 )
-from typing import Any, List, Optional, Tuple, Type, Union
-
-import pytest
-
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
-from rdflib.term import URIRef
 
 
 def check(
@@ -105,7 +107,7 @@ def test_paths(
 @dataclass
 class SetsEqualTestCase:
     equal: bool
-    format: Union[str, Tuple[str, str]]
+    format: str | tuple[str, str]
     bnode_handling: BNodeHandling
     lhs: str
     rhs: str
@@ -288,21 +290,21 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     rhs_graph: Graph = Graph().parse(data=test_case.rhs, format=test_case.rhs_format)
 
     public_id = URIRef("example:graph")
-    lhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    lhs_cgraph.parse(
+    lhs_dataset: Dataset = Dataset()
+    lhs_dataset.parse(
         data=test_case.lhs, format=test_case.lhs_format, publicID=public_id
     )
 
-    rhs_cgraph: ConjunctiveGraph = ConjunctiveGraph()
-    rhs_cgraph.parse(
+    rhs_dataset: Dataset = Dataset()
+    rhs_dataset.parse(
         data=test_case.rhs, format=test_case.rhs_format, publicID=public_id
     )
 
-    assert isinstance(lhs_cgraph, ConjunctiveGraph)
-    assert isinstance(rhs_cgraph, ConjunctiveGraph)
+    assert isinstance(lhs_dataset, Dataset)
+    assert isinstance(rhs_dataset, Dataset)
     graph: Graph
-    cgraph: ConjunctiveGraph
-    for graph, cgraph in ((lhs_graph, lhs_cgraph), (rhs_graph, rhs_cgraph)):
+    cgraph: Dataset
+    for graph, cgraph in ((lhs_graph, lhs_dataset), (rhs_graph, rhs_dataset)):
         GraphHelper.assert_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
         GraphHelper.assert_sets_equals(cgraph, cgraph, BNodeHandling.COLLAPSE)
         GraphHelper.assert_triple_sets_equals(graph, graph, BNodeHandling.COLLAPSE)
@@ -316,7 +318,7 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
@@ -324,23 +326,25 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_triple_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
         with pytest.raises(AssertionError):
             GraphHelper.assert_quad_sets_equals(
-                lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+                lhs_dataset, rhs_dataset, test_case.bnode_handling
             )
     else:
         GraphHelper.assert_sets_equals(lhs_graph, rhs_graph, test_case.bnode_handling)
-        GraphHelper.assert_sets_equals(lhs_cgraph, rhs_cgraph, test_case.bnode_handling)
+        GraphHelper.assert_sets_equals(
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
+        )
         GraphHelper.assert_triple_sets_equals(
             lhs_graph, rhs_graph, test_case.bnode_handling
         )
         GraphHelper.assert_triple_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
         GraphHelper.assert_quad_sets_equals(
-            lhs_cgraph, rhs_cgraph, test_case.bnode_handling
+            lhs_dataset, rhs_dataset, test_case.bnode_handling
         )
 
 
@@ -376,10 +380,10 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     ],
 )
 def test_prefix_tuples(
-    tuples: List[Tuple[Any, ...]],
-    prefix: Tuple[Any, ...],
-    suffix: Tuple[Any, ...],
-    expected_result: List[Tuple[Any, ...]],
+    tuples: list[tuple[Any, ...]],
+    prefix: tuple[Any, ...],
+    suffix: tuple[Any, ...],
+    expected_result: list[tuple[Any, ...]],
 ) -> None:
     assert expected_result == list(affix_tuples(prefix, tuples, suffix))
 
@@ -464,11 +468,11 @@ def test_prefix_tuples(
     ],
 )
 def test_assert_cgraph_isomorphic(
-    graph_type: Type[ConjunctiveGraph],
+    graph_type: type[ConjunctiveGraph],
     format: str,
     lhs: str,
     rhs: str,
-    expected_result: Union[None, Type[Exception]],
+    expected_result: Union[None, type[Exception]],
 ) -> None:
     lhs_graph = graph_type()
     lhs_graph.parse(data=lhs, format=format)

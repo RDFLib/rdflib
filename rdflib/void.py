@@ -1,11 +1,18 @@
-import collections
+from __future__ import annotations
 
-from rdflib import Graph, Literal, URIRef
+from collections import defaultdict
+from typing import Optional
+
+from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 from rdflib.namespace import RDF, VOID
+from rdflib.term import IdentifiedNode, Literal, URIRef
 
 
 def generateVoID(  # noqa: N802
-    g, dataset=None, res=None, distinctForPartitions=True  # noqa: N803
+    g: Graph,
+    dataset: Optional[IdentifiedNode] = None,
+    res: Optional[Graph] = None,
+    distinctForPartitions: bool = True,  # noqa: N803
 ):
     """
     Returns a new graph with a VoID description of the passed dataset
@@ -26,26 +33,25 @@ def generateVoID(  # noqa: N802
 
     """
 
-    typeMap = collections.defaultdict(set)  # noqa: N806
-    classes = collections.defaultdict(set)  # noqa: N806
+    typeMap: dict[_SubjectType, set[_SubjectType]] = defaultdict(set)  # noqa: N806
+    classes: dict[_ObjectType, set[_SubjectType]] = defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)
 
     triples = 0
-    subjects = set()
-    objects = set()
-    properties = set()
-    classCount = collections.defaultdict(int)  # noqa: N806
-    propCount = collections.defaultdict(int)  # noqa: N806
+    subjects: set[_SubjectType] = set()
+    objects: set[_ObjectType] = set()
+    properties: set[_PredicateType] = set()
+    classCount: defaultdict[_SubjectType, int] = defaultdict(int)  # noqa: N806
+    propCount: defaultdict[_PredicateType, int] = defaultdict(int)  # noqa: N806
 
-    classProps = collections.defaultdict(set)  # noqa: N806
-    classObjects = collections.defaultdict(set)  # noqa: N806
-    propSubjects = collections.defaultdict(set)  # noqa: N806
-    propObjects = collections.defaultdict(set)  # noqa: N806
+    classProps = defaultdict(set)  # noqa: N806
+    classObjects = defaultdict(set)  # noqa: N806
+    propSubjects = defaultdict(set)  # noqa: N806
+    propObjects = defaultdict(set)  # noqa: N806
 
     for s, p, o in g:
-
         triples += 1
         subjects.add(s)
         properties.add(p)
@@ -109,7 +115,6 @@ def generateVoID(  # noqa: N802
         res.add((part, VOID.property, p))
 
         if distinctForPartitions:
-
             entities = 0
             propClasses = set()  # noqa: N806
             for s in propSubjects[p]:

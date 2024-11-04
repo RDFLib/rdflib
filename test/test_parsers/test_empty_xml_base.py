@@ -30,8 +30,8 @@ test_data2 = """
 </rdf:RDF>"""
 
 
-baseUri = URIRef("http://example.com/")
-baseUri2 = URIRef("http://example.com/foo/bar")
+baseUri = URIRef("http://example.com/")  # noqa: N816
+baseUri2 = URIRef("http://example.com/foo/bar")  # noqa: N816
 
 
 class TestEmptyBase:
@@ -55,7 +55,7 @@ class TestRelativeBase:
         assert (
             len(self.graph) > 0
         ), "There should be at least one statement in the graph"
-        resolvedBase = URIRef("http://example.com/baz")
+        resolvedBase = URIRef("http://example.com/baz")  # noqa: N806
         assert (
             resolvedBase,
             RDF.type,

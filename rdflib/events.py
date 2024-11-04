@@ -1,4 +1,4 @@
-__doc__ = """
+"""
 Dirt Simple Events
 
 A Dispatcher (or a subclass of Dispatcher) stores event handlers that
@@ -23,10 +23,14 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
+from __future__ import annotations
+
+from typing import Any, Optional
+
 __all__ = ["Event", "Dispatcher"]
 
 
-class Event(object):
+class Event:
     """
     An event is a container for attributes.  The source of an event
     creates this object, or a subclass, gives it any kind of data that
@@ -47,15 +51,15 @@ class Event(object):
         return "<rdflib.events.Event %s>" % ([a for a in attrs],)
 
 
-class Dispatcher(object):
+class Dispatcher:
     """
     An object that can dispatch events to a privately managed group of
     subscribers.
     """
 
-    _dispatch_map = None
+    _dispatch_map: Optional[dict[Any, Any]] = None
 
-    def set_map(self, amap):
+    def set_map(self, amap: dict[Any, Any]):
         self._dispatch_map = amap
         return self
 
@@ -68,12 +72,14 @@ class Dispatcher(object):
         """
         if self._dispatch_map is None:
             self.set_map({})
-        lst = self._dispatch_map.get(event_type, None)
+        # type error: error: Item "None" of "Optional[Dict[Any, Any]]" has no attribute "get"
+        lst = self._dispatch_map.get(event_type, None)  # type: ignore[union-attr]
         if lst is None:
             lst = [handler]
         else:
             lst.append(handler)
-        self._dispatch_map[event_type] = lst
+        # type error: Unsupported target for indexed assignment ("Optional[Dict[Any, Any]]")
+        self._dispatch_map[event_type] = lst  # type: ignore[index]
         return self
 
     def dispatch(self, event):

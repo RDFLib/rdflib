@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import xml.dom.minidom
-from typing import IO, Dict, Optional, Set
+from collections.abc import Generator
+from typing import IO, TYPE_CHECKING, Optional
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
@@ -13,6 +16,9 @@ from rdflib.util import first, more_than
 
 from .xmlwriter import ESCAPE_ENTITIES
 
+if TYPE_CHECKING:
+    pass
+
 __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
 
 
@@ -20,16 +26,16 @@ class XMLSerializer(Serializer):
     def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
-    def __bindings(self):
+    def __bindings(self) -> Generator[tuple[str, URIRef], None, None]:
         store = self.store
         nm = store.namespace_manager
-        bindings = {}
+        bindings: dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
             prefix, namespace, name = nm.compute_qname_strict(predicate)
             bindings[prefix] = URIRef(namespace)
 
-        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")  # noqa: N806
 
         if "rdf" in bindings:
             assert bindings["rdf"] == RDFNS
@@ -45,14 +51,14 @@ class XMLSerializer(Serializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         **args,
-    ):
+    ) -> None:
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
             self.base = base
         elif self.store.base is not None:
             self.base = self.store.base
         self.__stream = stream
-        self.__serialized: Dict[Identifier, int] = {}
+        self.__serialized: dict[Identifier, int] = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
 
@@ -91,7 +97,7 @@ class XMLSerializer(Serializer):
         # self.__serialized = None
         del self.__serialized
 
-    def subject(self, subject, depth=1):
+    def subject(self, subject: Identifier, depth: int = 1) -> None:
         if subject not in self.__serialized:
             self.__serialized[subject] = 1
 
@@ -116,7 +122,9 @@ class XMLSerializer(Serializer):
                 else:
                     write("/>\n")
 
-    def predicate(self, predicate, object, depth=1):
+    def predicate(
+        self, predicate: Identifier, object: Identifier, depth: int = 1
+    ) -> None:
         write = self.write
         indent = "  " * depth
         qname = self.store.namespace_manager.qname_strict(predicate)
@@ -135,7 +143,6 @@ class XMLSerializer(Serializer):
                 % (indent, qname, attributes, escape(object, ESCAPE_ENTITIES), qname)
             )
         else:
-
             if isinstance(object, BNode):
                 write('%s<%s rdf:nodeID="%s"/>\n' % (indent, qname, object))
             else:
@@ -151,7 +158,7 @@ OWL_NS = Namespace("http://www.w3.org/2002/07/owl#")
 
 
 # TODO:
-def fix(val):
+def fix(val: str) -> str:
     "strip off _: from nodeIDs... as they are not valid NCNames"
     if val.startswith("_:"):
         return val[2:]
@@ -162,7 +169,7 @@ def fix(val):
 class PrettyXMLSerializer(Serializer):
     def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.forceRDFAbout: Set[URIRef] = set()
+        self.forceRDFAbout: set[URIRef] = set()
 
     def serialize(
         self,
@@ -170,8 +177,8 @@ class PrettyXMLSerializer(Serializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         **args,
-    ):
-        self.__serialized: Dict[Identifier, int] = {}
+    ) -> None:
+        self.__serialized: dict[IdentifiedNode | Literal, int] = {}
         store = self.store
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -185,7 +192,7 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
         namespaces = {}
 
-        possible: Set[Node] = set(store.predicates()).union(
+        possible: set[Node] = set(store.predicates()).union(
             store.objects(None, RDF.type)
         )
 
@@ -205,7 +212,7 @@ class PrettyXMLSerializer(Serializer):
 
         writer.namespaces(namespaces.items())
 
-        subject: IdentifiedNode
+        subject: IdentifiedNode | Literal
         # Write out subjects that can not be inline
         # type error: Incompatible types in assignment (expression has type "Node", variable has type "IdentifiedNode")
         for subject in store.subjects():  # type: ignore[assignment]
@@ -237,7 +244,7 @@ class PrettyXMLSerializer(Serializer):
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None  # type: ignore[assignment]
 
-    def subject(self, subject: IdentifiedNode, depth: int = 1):
+    def subject(self, subject: IdentifiedNode | Literal, depth: int = 1):
         store = self.store
         writer = self.writer
 
@@ -252,8 +259,9 @@ class PrettyXMLSerializer(Serializer):
             type = first(store.objects(subject, RDF.type))
 
             try:
-                self.nm.qname(type)
-            except:
+                # type error: Argument 1 to "qname" of "NamespaceManager" has incompatible type "Optional[Node]"; expected "str"
+                self.nm.qname(type)  # type: ignore[arg-type]
+            except Exception:
                 type = None
 
             element = type or RDFVOC.Description
@@ -275,9 +283,11 @@ class PrettyXMLSerializer(Serializer):
                 writer.attribute(RDFVOC.about, self.relativize(subject))
 
             if (subject, None, None) in store:
-                for predicate, object in store.predicate_objects(subject):
-                    if not (predicate == RDF.type and object == type):
-                        self.predicate(predicate, object, depth + 1)
+                for _predicate, _object in store.predicate_objects(subject):
+                    object_: IdentifiedNode | Literal = _object  # type: ignore[assignment]
+                    predicate: IdentifiedNode = _predicate  # type: ignore[assignment]
+                    if not (predicate == RDF.type and object_ == type):
+                        self.predicate(predicate, object_, depth + 1)
 
             writer.pop(element)
 
@@ -288,7 +298,12 @@ class PrettyXMLSerializer(Serializer):
             writer.pop(RDFVOC.Description)
             self.forceRDFAbout.remove(subject)  # type: ignore[arg-type]
 
-    def predicate(self, predicate, object, depth=1):
+    def predicate(
+        self,
+        predicate: IdentifiedNode,
+        object: IdentifiedNode | Literal,
+        depth: int = 1,
+    ) -> None:
         writer = self.writer
         store = self.store
         writer.push(predicate)
@@ -308,8 +323,10 @@ class PrettyXMLSerializer(Serializer):
                     writer.attribute(RDFVOC.datatype, object.datatype)
                 writer.text(object)
 
-        elif object in self.__serialized or not (object, None, None) in store:
-
+        elif (
+            object in self.__serialized
+            or not (object, None, None) in store  # noqa: E713
+        ):
             if isinstance(object, BNode):
                 if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDFVOC.nodeID, fix(object))
@@ -337,17 +354,19 @@ class PrettyXMLSerializer(Serializer):
                 col = Collection(store, object)
 
                 for item in col:
-
                     if isinstance(item, URIRef):
                         self.forceRDFAbout.add(item)
-                    self.subject(item)
+                    # type error: Argument 1 to "subject" of "PrettyXMLSerializer" has incompatible type "Node"; expected "Identifier"
+                    self.subject(item)  # type: ignore[arg-type]
 
                     if not isinstance(item, URIRef):
-                        self.__serialized[item] = 1
+                        # type error: Invalid index type "Node" for "Dict[Identifier, int]"; expected type "Identifier"
+                        self.__serialized[item] = 1  # type: ignore[index]
             else:
                 if first(
                     store.triples_choices(
-                        (object, RDF.type, [OWL_NS.Class, RDFS.Class])
+                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+                        (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
                     )
                 ) and isinstance(object, URIRef):
                     writer.attribute(RDFVOC.resource, self.relativize(object))
@@ -356,7 +375,6 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(object, depth + 1)
 
                 elif isinstance(object, BNode):
-
                     if (
                         object not in self.__serialized
                         and (object, None, None) in store

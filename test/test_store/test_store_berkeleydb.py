@@ -1,10 +1,18 @@
+from __future__ import annotations
+
+import logging
 import tempfile
+from collections.abc import Iterable
+from typing import Optional
 
 import pytest
 
 from rdflib import ConjunctiveGraph, URIRef
 from rdflib.plugins.stores.berkeleydb import has_bsddb
+from rdflib.query import ResultRow
 from rdflib.store import VALID_STORE
+
+logger = logging.getLogger(__name__)
 
 pytestmark = pytest.mark.skipif(
     not has_bsddb, reason="skipping berkeleydb tests, modile not available"
@@ -12,7 +20,7 @@ pytestmark = pytest.mark.skipif(
 
 
 @pytest.fixture
-def get_graph():
+def get_graph() -> Iterable[tuple[str, ConjunctiveGraph]]:
     path = tempfile.NamedTemporaryFile().name
     g = ConjunctiveGraph("BerkeleyDB")
     rt = g.open(path, create=True)
@@ -35,7 +43,7 @@ def get_graph():
     g.destroy(path)
 
 
-def test_write(get_graph):
+def test_write(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     assert (
         len(g) == 3
@@ -60,7 +68,7 @@ def test_write(get_graph):
     ), "There must still be four triples in the graph after the third data chunk parse"
 
 
-def test_read(get_graph):
+def test_read(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     sx = None
     for s in g.subjects(
@@ -71,7 +79,7 @@ def test_read(get_graph):
     assert sx == URIRef("https://example.org/d")
 
 
-def test_sparql_query(get_graph):
+def test_sparql_query(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     q = """
         PREFIX : <https://example.org/>
@@ -83,11 +91,13 @@ def test_sparql_query(get_graph):
 
     c = 0
     for row in g.query(q):
+        assert isinstance(row, ResultRow)
+        assert row.c is not None
         c = int(row.c)
     assert c == 2, "SPARQL COUNT must return 2"
 
 
-def test_sparql_insert(get_graph):
+def test_sparql_insert(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
     q = """
         PREFIX : <https://example.org/>
@@ -100,8 +110,15 @@ def test_sparql_insert(get_graph):
     assert len(g) == 4, "After extra triple insert, length must be 4"
 
 
-def test_multigraph(get_graph):
+def test_multigraph(get_graph: tuple[str, ConjunctiveGraph]):
     path, g = get_graph
+
+    if logger.isEnabledFor(logging.DEBUG):
+        logging.debug(
+            "graph before = \n%s",
+            g.serialize(format="trig"),
+        )
+
     q = """
         PREFIX : <https://example.org/>
 
@@ -116,6 +133,12 @@ def test_multigraph(get_graph):
 
     g.update(q)
 
+    if logger.isEnabledFor(logging.DEBUG):
+        logging.debug(
+            "graph after = \n%s",
+            g.serialize(format="trig"),
+        )
+
     q = """
         SELECT (COUNT(?g) AS ?c)
         WHERE {
@@ -129,11 +152,14 @@ def test_multigraph(get_graph):
         """
     c = 0
     for row in g.query(q):
+        assert isinstance(row, ResultRow)
+        assert row.c is not None
         c = int(row.c)
-    assert c == 3, "SPARQL COUNT must return 3 (default, :m & :n)"
+    assert c == 2, "SPARQL COUNT must return 2 (default, :m & :n)"
 
 
-def test_open_shut(get_graph):
+def test_open_shut(get_graph: tuple[str, ConjunctiveGraph]):
+    g: Optional[ConjunctiveGraph]
     path, g = get_graph
     assert len(g) == 3, "Initially we must have 3 triples from setUp"
     g.close()

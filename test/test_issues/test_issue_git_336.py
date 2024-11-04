@@ -27,8 +27,7 @@ import rdflib
 
 
 def test_ns_localname_roundtrip() -> None:
-
-    XNS = rdflib.Namespace("http://example.net/fs")
+    XNS = rdflib.Namespace("http://example.net/fs")  # noqa: N806
 
     g = rdflib.Graph()
     g.bind("xns", str(XNS))

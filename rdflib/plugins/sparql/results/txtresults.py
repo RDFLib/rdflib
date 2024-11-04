@@ -1,4 +1,7 @@
-from typing import IO, List, Optional, Union
+from __future__ import annotations
+
+from io import StringIO
+from typing import IO, Optional, Union
 
 from rdflib.namespace import NamespaceManager
 from rdflib.query import ResultSerializer
@@ -24,16 +27,16 @@ def _termString(
 
 class TXTResultSerializer(ResultSerializer):
     """
-    A write only QueryResult serializer for text/ascii tables
+    A write-only QueryResult serializer for text/ascii tables
     """
 
-    # TODO FIXME: class specific args should be keyword only.
-    # type error: Signature of "serialize" incompatible with supertype "ResultSerializer"
-    def serialize(  # type: ignore[override]
+    def serialize(
         self,
         stream: IO,
-        encoding: str,
+        encoding: str = "utf-8",
+        *,
         namespace_manager: Optional[NamespaceManager] = None,
+        **kwargs,
     ) -> None:
         """
         return a text table of query results
@@ -51,28 +54,33 @@ class TXTResultSerializer(ResultSerializer):
 
         if self.result.type != "SELECT":
             raise Exception("Can only pretty print SELECT results!")
-
+        string_stream = StringIO()
         if not self.result:
-            # type error: No return value expected
-            return "(no results)\n"  # type: ignore[return-value]
+            string_stream.write("(no results)\n")
         else:
-            keys: List[Variable] = self.result.vars  # type: ignore[assignment]
+            keys: list[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
             b = [
-                # type error: Value of type "Union[Tuple[IdentifiedNode, IdentifiedNode, Identifier], bool, ResultRow]" is not indexable
-                # type error: Invalid tuple index type (actual type "Variable", expected type "Union[int, slice]")
-                # error: Argument 1 to "_termString" has incompatible type "Union[Any, Identifier]"; expected "Union[URIRef, Literal, BNode, None]"
+                # type error: Value of type "Union[Tuple[Node, Node, Node], bool, ResultRow]" is not indexable
+                # type error: Argument 1 to "_termString" has incompatible type "Union[Node, Any]"; expected "Union[URIRef, Literal, BNode, None]"  [arg-type]
+                # type error: No overload variant of "__getitem__" of "tuple" matches argument type "Variable"
                 # NOTE on type error: The problem here is that r can be more types than _termString expects because result can be a result of multiple types.
-                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index,misc,arg-type]
+                [_termString(r[k], namespace_manager) for k in keys]  # type: ignore[index, arg-type, call-overload]
                 for r in self.result
             ]
             for r in b:
                 for i in range(len(keys)):
                     maxlen[i] = max(maxlen[i], len(r[i]))
-
-            stream.write("|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-            stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
+            string_stream.write(
+                "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n"
+            )
+            string_stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
             for r in sorted(b):
-                stream.write(
+                string_stream.write(
                     "|".join([t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n"
                 )
+        text_val = string_stream.getvalue()
+        try:
+            stream.write(text_val.encode(encoding))
+        except (TypeError, ValueError):
+            stream.write(text_val)

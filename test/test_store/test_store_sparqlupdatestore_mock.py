@@ -1,14 +1,10 @@
-from test.utils.httpservermock import (
-    MethodName,
-    MockHTTPResponse,
-    ServedBaseHTTPServerMock,
-)
 from typing import ClassVar
 
-from rdflib import Namespace
 from rdflib.graph import ConjunctiveGraph
-
-EG = Namespace("http://example.org/")
+from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
+from test.utils.namespace import EGDO
 
 
 class TestSPARQLConnector:
@@ -39,7 +35,9 @@ class TestSPARQLConnector:
     def test_graph_update(self):
         graph = ConjunctiveGraph("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
-        update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
 
         self.httpmock.responses[MethodName.POST].append(
             MockHTTPResponse(
@@ -62,7 +60,9 @@ class TestSPARQLConnector:
     def test_update_encoding(self):
         graph = ConjunctiveGraph("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
-        update_statement = f"INSERT DATA {{ {EG['subj']} {EG['pred']} {EG['obj']}. }}"
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
 
         self.httpmock.responses[MethodName.POST].append(
             MockHTTPResponse(
@@ -81,3 +81,50 @@ class TestSPARQLConnector:
         req = self.httpmock.requests[MethodName.POST].pop(0)
         assert req.parsed_path.path == self.update_path
         assert "charset=UTF-8" in req.headers.get("content-type")
+
+    def test_content_type(self):
+        store = SPARQLUpdateStore(
+            self.query_endpoint, self.update_endpoint, auth=("admin", "admin")
+        )
+        update_statement = (
+            f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
+        )
+
+        for _ in range(2):
+            # run it twice so we can pick up issues with order both ways.
+            self.httpmock.responses[MethodName.POST].append(
+                MockHTTPResponse(
+                    200,
+                    "OK",
+                    b"Update succeeded",
+                    {"Content-Type": ["text/plain; charset=UTF-8"]},
+                )
+            )
+
+            self.httpmock.responses[MethodName.GET].append(
+                MockHTTPResponse(
+                    200,
+                    "OK",
+                    b"""<?xml version="1.0"?>
+    <sparql xmlns="http://www.w3.org/2005/sparql-results#"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+    <boolean>true</boolean>
+    </sparql>
+    """,
+                    {"Content-Type": ["application/sparql-results+xml"]},
+                )
+            )
+
+            # First make update request and check if Content-Type header is set
+            store.update(update_statement)
+            req = self.httpmock.requests[MethodName.POST].pop(0)
+            assert "application/sparql-update" in req.headers.get("Content-Type")
+
+            # Now make GET request and check that Content-Type header is not "application/sparql-update"
+            query_statement = "ASK { ?s ?p ?o }"
+            store.query(query_statement)
+            req = self.httpmock.requests[MethodName.GET].pop(0)
+            assert "application/sparql-update" not in req.headers.get(
+                "Content-Type", ""
+            )

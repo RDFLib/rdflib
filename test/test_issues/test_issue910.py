@@ -1,66 +1,62 @@
-import unittest
-
 from rdflib import Graph
 
 
-class TestIssue910(unittest.TestCase):
-    def testA(self):
-        g = Graph()
-        q = g.query(
-            """
-			SELECT * {
-			{ BIND ("a" AS ?a) }
-			UNION
-			{ BIND ("a" AS ?a) }
-			}
-			"""
-        )
-        self.assertEqual(len(q) == 2, True)
-
-    def testB(self):
-        g = Graph()
-        q = g.query(
-            """
-			SELECT * {
-				{ BIND ("a" AS ?a) }
-				UNION
-				{ VALUES ?a { "a" } }
-				UNION
-				{ SELECT ("a" AS ?a) {} }
-			}
-			"""
-        )
-        self.assertEqual(len(q) == 3, True)
-
-    def testC(self):
-        g = Graph()
-        q = g.query(
-            """
-			SELECT * {
-				{ BIND ("a" AS ?a) }
-				UNION
-				{ VALUES ?a { "a" } }
-				UNION
-				{ SELECT ("b" AS ?a) {} }
-			}
-			"""
-        )
-        self.assertEqual(len(q) == 3, True)
-
-    def testD(self):
-        g = Graph()
-        q = g.query(
-            """SELECT * {
-				{ BIND ("a" AS ?a) }
-				UNION
-				{ VALUES ?a { "b" } }
-				UNION
-				{ SELECT ("c" AS ?a) {} }
-			}
-			"""
-        )
-        self.assertEqual(len(q) == 3, True)
+def test_a():
+    g = Graph()
+    q = g.query(
+        """
+        SELECT * {
+        { BIND ("a" AS ?a) }
+        UNION
+        { BIND ("a" AS ?a) }
+        }
+        """
+    )
+    assert len(q) == 2
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_b():
+    g = Graph()
+    q = g.query(
+        """
+        SELECT * {
+            { BIND ("a" AS ?a) }
+            UNION
+            { VALUES ?a { "a" } }
+            UNION
+            { SELECT ("a" AS ?a) {} }
+        }
+        """
+    )
+    assert len(q) == 3
+
+
+def test_c():
+    g = Graph()
+    q = g.query(
+        """
+        SELECT * {
+            { BIND ("a" AS ?a) }
+            UNION
+            { VALUES ?a { "a" } }
+            UNION
+            { SELECT ("b" AS ?a) {} }
+        }
+        """
+    )
+    assert len(q) == 3
+
+
+def test_d():
+    g = Graph()
+    q = g.query(
+        """SELECT * {
+            { BIND ("a" AS ?a) }
+            UNION
+            { VALUES ?a { "b" } }
+            UNION
+            { SELECT ("c" AS ?a) {} }
+        }
+        """
+    )
+    assert len(q) == 3

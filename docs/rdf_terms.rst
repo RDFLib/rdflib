@@ -17,68 +17,11 @@ Class hierarchy
 All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class. A class diagram of the various terms is:
 
 .. _term_class_hierarchy:
-.. kroki::
-   :caption: Term Class Hierarchy
-   :type: plantuml
+.. figure:: /_static/term_class_hierarchy.svg
+   :alt: Term Class Hierarchy
 
-    @startuml
-    skinparam shadowing false
-    skinparam monochrome true
-    skinparam packageStyle rectangle
-    skinparam backgroundColor FFFFFE
-    
-    class Node
-    
-    class Identifier {
-        eq(other) -> bool
-        neq(other) -> bool
-        startswith(prefix: str, start, end) -> bool
-    }
-    Identifier -up-|> Node
-    
-    class IdentifiedNode {
-        toPython() -> str
-    }
-    IdentifiedNode -up-|> Identifier
-    
-    class URIRef {
-        n3(namespace_manager) -> str
-        defrag() -> URIRef
-        de_skolemize() -> BNode
-    }
-    URIRef -up-|> IdentifiedNode
-    
-    
-    class Genid
-    Genid -up-|> URIRef
-    
-    class RDFLibGenid
-    RDFLibGenid -up-|> Genid
-    
-    class BNode {
-        n3(namespace_manager) -> str
-        skolemize(authority, basepath) -> RDFLibGenid
-    }
-    BNode -up-|> IdentifiedNode
-    
-    class Literal {
-        datatype: Optional[str]
-        lang: Optional[str]
-        value: Any
-    
-        normalize() -> Literal
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Literal -up-|> Identifier
-    
-    class Variable {
-        n3(namespace_manager) -> str
-        toPython() -> str
-    }
-    Variable -up-|> Identifier
-    
-    @enduml
+   Term Class Hierarchy
+
 
 Nodes are a subset of the Terms that underlying stores actually persist.
 
@@ -207,7 +150,7 @@ Common XSD datatypes
 ^^^^^^^^^^^^^^^^^^^^
 
 Most simple literals such as *string* or *integer* have XML Schema (XSD) datatypes defined for them, see the figure 
-below. Additionally, these XSD datatypes are listed in the :class:`XSD Namespace class <rdflib.XSD>` that 
+below. Additionally, these XSD datatypes are listed in the :class:`XSD Namespace class <rdflib.namespace.XSD>` that 
 ships with RDFLib, so many Python code editors will prompt you with autocomplete for them when using it.
 
 Remember, you don't *have* to use XSD datatypes and can always make up your own, as GeoSPARQL does, as described above.
@@ -264,7 +207,8 @@ rdf:HTML               :class:`xml.dom.minidom.DocumentFragment`
 .. [#f1] plain literals map directly to value space
 
 .. [#f2] Date, time and datetime literals are mapped to Python
-         instances using the `isodate <http://pypi.python.org/pypi/isodate/>`_
+         instances using the RDFlib xsd_datetime module, that is based
+         on the `isodate <http://pypi.python.org/pypi/isodate/>`_
          package).
 
 .. [#f3] this is a bit dirty - by accident the ``html5lib`` parser

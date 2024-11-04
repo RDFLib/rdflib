@@ -1,7 +1,6 @@
 from collections import Counter
 from io import StringIO
-from test.utils import GraphHelper
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -10,6 +9,7 @@ from rdflib import RDF, BNode, ConjunctiveGraph, Graph, Literal, Namespace, URIR
 from rdflib.compare import to_canonical_graph, to_isomorphic
 from rdflib.namespace import FOAF
 from rdflib.plugins.stores.memory import Memory
+from test.utils import GraphHelper
 
 if TYPE_CHECKING:
     from rdflib.graph import _TripleType
@@ -27,55 +27,42 @@ def get_digest_value(rdf, mimetype):
 
 def negative_graph_match_test():
     """Test of FRIR identifiers against tricky RDF graphs with blank nodes."""
-    testInputs = [
+    testInputs = [  # noqa: N806
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ].
-         """
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+         """,
+            """@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ],
          [ :label "Same" ].
-         """
-            ),
+         """,
             False,
         ],
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>.
-         """
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+         """,
+            """@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>,
          <http://example.org/a>.
-         """
-            ),
+         """,
             True,
         ],
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
-                                              [ :related [ :related :linear_two_step_symmatry_end]]."""
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+                                              [ :related [ :related :linear_two_step_symmatry_end]].""",
+            """@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
-                                              [ :related [ :related :linear_two_step_symmatry_end]]."""
-            ),
+                                              [ :related [ :related :linear_two_step_symmatry_end]].""",
             True,
         ],
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -84,10 +71,8 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+          ].""",
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -98,14 +83,12 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
+          ].""",
             False,
         ],
         # This test fails because the algorithm purposefully breaks the symmetry of symetric
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -114,10 +97,8 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+          ].""",
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -126,13 +107,11 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
+          ].""",
             True,
         ],
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :label "foo";
@@ -142,10 +121,8 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+          ].""",
+            """@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -154,13 +131,11 @@ def negative_graph_match_test():
           ];
           ];
           ];
-          ]."""
-            ),
+          ].""",
             False,
         ],
         [
-            str(
-                """@prefix : <http://example.org/ns#> .
+            """@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -171,10 +146,8 @@ def negative_graph_match_test():
      _:0008 :rel _:0004, _:0006, _:0010.
      _:0009 :rel _:0004, _:0005, _:0007.
      _:0010 :rel _:0003, _:0006, _:0008.
-     """
-            ),
-            str(
-                """@prefix : <http://example.org/ns#> .
+     """,
+            """@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -185,8 +158,7 @@ def negative_graph_match_test():
      _:0005 :rel _:0002, _:0007, _:0009.
      _:0006 :rel _:0002, _:0008, _:0010.
      _:0007 :rel _:0003, _:0005, _:0009.
-     """
-            ),
+     """,
             True,
         ],
     ]
@@ -455,7 +427,7 @@ def test_issue725_collapsing_bnodes_2():
     [] a rdf:Statement ;
         rdf:object _:v1 ;
         rdf:predicate [ ] ;
-        rdf:subject <urn:gp_learner:fixed_var:target> ."""
+        rdf:subject <urn:gp_learner:fixed_var:target> ."""  # noqa: F841
 
     # g = Graph()
     # g.parse(data=turtle, format='turtle')
@@ -517,7 +489,7 @@ def test_issue725_collapsing_bnodes_2():
     ), "canonicalization changed node position counts"
 
 
-_TripleSet = Set["_TripleType"]
+_TripleSet = set["_TripleType"]
 
 
 class TestConsistency:

@@ -3,19 +3,21 @@ This module contains tests for the parsing of the turtle family of formats: N3,
 Turtle, NTriples, NQauds and TriG.
 """
 
+from __future__ import annotations
+
 import enum
 import itertools
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Callable, Dict, Iterator, List, Set, Tuple, Union
+from typing import Callable, Union
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
-from rdflib import XSD, Graph, Literal, Namespace
+from rdflib import XSD, Graph, Literal
 from rdflib.term import Identifier
 from rdflib.util import from_n3
-
-EGNS = Namespace("http://example.com/")
+from test.utils.namespace import EGDC
 
 
 class FormatTrait(enum.Enum):
@@ -27,7 +29,7 @@ class FormatTrait(enum.Enum):
 @dataclass
 class Format:
     name: str
-    traits: Set[FormatTrait]
+    traits: set[FormatTrait]
 
 
 FORMATS = [
@@ -65,20 +67,21 @@ FORMATS = [
 def parse_identifier(identifier_string: str, format: str) -> Identifier:
     g = Graph()
     g.parse(
-        data=f"""<{EGNS.subject}> <{EGNS.predicate}> {identifier_string} .""",
+        data=f"""<{EGDC.subject}> <{EGDC.predicate}> {identifier_string} .""",
         format=format,
     )
     triples = list(g.triples((None, None, None)))
     assert len(triples) == 1
     (subj, pred, obj) = triples[0]
-    assert subj == EGNS.subject
-    assert pred == EGNS.predicate
+    assert subj == EGDC.subject
+    assert pred == EGDC.predicate
     assert isinstance(obj, Identifier)
     return obj
 
 
 def parse_n3_identifier(identifier_string: str, format: str) -> Identifier:
-    return from_n3(identifier_string)
+    # type error: Incompatible return value type (got "Union[Node, str, None]", expected "Identifier")
+    return from_n3(identifier_string)  # type: ignore[return-value]
 
 
 ParseFunction = Callable[[str, str], Identifier]
@@ -88,9 +91,9 @@ def make_literal_tests() -> Iterator[ParameterSet]:
     @dataclass
     class Case:
         expected_literal: Literal
-        quoted_strings: List[str]
-        shorthand_strings: List[str] = field(default_factory=list)
-        xquoted_strings: List[str] = field(
+        quoted_strings: list[str]
+        shorthand_strings: list[str] = field(default_factory=list)
+        xquoted_strings: list[str] = field(
             default_factory=list
         )  # strings using extended quoting styles
 
@@ -148,7 +151,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
         ),
     ]
 
-    escapes: Dict[str, str] = {
+    escapes: dict[str, str] = {
         "\t": "\\t",
         "\b": "\\b",
         "\n": "\\n",
@@ -173,8 +176,8 @@ def make_literal_tests() -> Iterator[ParameterSet]:
             )
         )
 
-    xfails: Dict[
-        Tuple[str, Literal, str, Callable[[str, str], Identifier]],
+    xfails: dict[
+        tuple[str, Literal, str, Callable[[str, str], Identifier]],
         Union[MarkDecorator, Mark],
     ] = {
         (
@@ -193,7 +196,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
 
     for case in cases:
         for format in FORMATS:
-            parse_functions: List[ParseFunction] = [parse_identifier]
+            parse_functions: list[ParseFunction] = [parse_identifier]
             literal_strings = [*case.quoted_strings]
             if FormatTrait.shorthand_literals in format.traits:
                 literal_strings.extend(case.shorthand_strings)

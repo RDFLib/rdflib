@@ -41,17 +41,14 @@ RUN \
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-COPY requirements*.txt /var/tmp/
-COPY docs/sphinx-requirements.txt /var/tmp/docs/sphinx-requirements.txt
+COPY devtools/requirements-poetry.in /var/tmp/
 
 RUN \
-    cd /var/tmp/ && \
-    grep -H . requirements*.txt docs/sphinx-requirements.txt && \
     python -m pip install --upgrade \
-        -r requirements.txt \
-        -r requirements.dev.txt \
-        -r requirements.dev-extra.txt \
-        -r docs/sphinx-requirements.txt \
         tox \
+        pre-commit \
+        -r /var/tmp/requirements-poetry.in \
         && \
     true
+
+RUN git config --system --add safe.directory /srv/workspace

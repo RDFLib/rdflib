@@ -1,21 +1,9 @@
+from __future__ import annotations
+
 import logging
+from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass, field
-from test.utils import MarkListType, marks_to_list
-from test.utils.graph import GraphSource, GraphSourceType
-from test.utils.iri import URIMapper
-from test.utils.namespace import MF
-from typing import (
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
-    Mapping,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 import pytest
@@ -24,31 +12,42 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 from rdflib.graph import Graph
 from rdflib.namespace import RDF
 from rdflib.term import IdentifiedNode, Identifier, URIRef
+from test.utils import MarkListType, marks_to_list
+from test.utils.graph import GraphSource, GraphSourceType
+from test.utils.iri import URIMapper
+from test.utils.namespace import MF
 
-POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
-POFiltersType = Iterable[POFilterType]
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
-MarkType = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
-MarksDictType = Mapping[
+    import typing_extensions as te
+
+    from rdflib.graph import _PredicateType
+
+POFilterType: te.TypeAlias = tuple[Optional[URIRef], Optional[URIRef]]
+POFiltersType: te.TypeAlias = Iterable[POFilterType]
+
+MarkType: te.TypeAlias = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
+MarksDictType: te.TypeAlias = Mapping[
     str, Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
 ]
-ManifestEntryMarkerType = Callable[["ManifestEntry"], Optional[MarkType]]
+ManifestEntryMarkerType: te.TypeAlias = Callable[["ManifestEntry"], Optional[MarkType]]
 IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 
 
 @dataclass
 class ManifestEntry:
-    manifest: "Manifest"
+    manifest: Manifest
     identifier: URIRef
-    type: IdentifiedNode = field(init=False)
+    type_: IdentifiedNode = field(init=False)
     action: Optional[IdentifiedNode] = field(init=False)
     result: Optional[IdentifiedNode] = field(init=False)
     result_cardinality: Optional[URIRef] = field(init=False)
 
     def __post_init__(self) -> None:
-        type = self.value(RDF.type, IdentifiedNode)
-        assert type is not None
-        self.type = type
+        type_ = self.value(RDF.type, IdentifiedNode)
+        assert type_ is not None
+        self.type_ = type_
 
         self.action = self.value(MF.action, IdentifiedNode)
         self.result = self.value(MF.result, IdentifiedNode)
@@ -82,7 +81,7 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: Identifier, value_type: Type[IdentifierT]
+        self, predicate: _PredicateType, value_type: type[IdentifierT]
     ) -> Optional[IdentifierT]:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:
@@ -109,7 +108,7 @@ class Manifest:
         uri_mapper: URIMapper,
         graph: Graph,
         report_prefix: Optional[str] = None,
-    ) -> Generator["Manifest", None, None]:
+    ) -> Generator[Manifest, None, None]:
         for identifier in graph.subjects(RDF.type, MF.Manifest):
             assert isinstance(identifier, IdentifiedNode)
             manifest = Manifest(
@@ -127,7 +126,7 @@ class Manifest:
         uri_mapper: URIMapper,
         *sources: GraphSourceType,
         report_prefix: Optional[str] = None,
-    ) -> Generator["Manifest", None, None]:
+    ) -> Generator[Manifest, None, None]:
         for source in sources:
             logging.debug("source(%s) = %r", id(source), source)
             source = GraphSource.from_source(source)
@@ -141,14 +140,14 @@ class Manifest:
                 local_base,
                 public_id,
             )
-            graph = source.load(public_id=public_id)
+            graph: Graph = source.load(public_id=public_id)
             yield from cls.from_graph(
                 uri_mapper,
                 graph,
                 report_prefix,
             )
 
-    def included(self) -> Generator["Manifest", None, None]:
+    def included(self) -> Generator[Manifest, None, None]:
         for includes in self.graph.objects(self.identifier, MF.include):
             for include in self.graph.items(includes):
                 assert isinstance(include, str)
@@ -161,10 +160,10 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type["ManifestEntryT"],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
-    ) -> Generator["ManifestEntryT", None, None]:
+    ) -> Generator[ManifestEntryT, None, None]:
         for entries in self.graph.objects(self.identifier, MF.entries):
             for entry_iri in self.graph.items(entries):
                 assert isinstance(entry_iri, URIRef)
@@ -177,26 +176,26 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type["ManifestEntryT"],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
         mark_dict: Optional[MarksDictType] = None,
         markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
-    ) -> Generator["ParameterSet", None, None]:
+    ) -> Generator[ParameterSet, None, None]:
         for entry in self.entires(entry_type, exclude, include):
             yield entry.param(mark_dict, markers)
 
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type["ManifestEntryT"],
+    entry_type: type[ManifestEntryT],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,
     include: Optional[POFiltersType] = None,
     mark_dict: Optional[MarksDictType] = None,
     markers: Optional[Iterable[ManifestEntryMarkerType]] = None,
     report_prefix: Optional[str] = None,
-) -> Generator["ParameterSet", None, None]:
+) -> Generator[ParameterSet, None, None]:
     for manifest in Manifest.from_sources(
         uri_mapper, *sources, report_prefix=report_prefix
     ):

@@ -3,17 +3,21 @@ Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
+from __future__ import annotations
+
 from typing import IO, TYPE_CHECKING, Optional, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.term import BNode, Node
 
+if TYPE_CHECKING:
+    from rdflib.graph import _ContextType, _SubjectType
+
 __all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
-
     short_name = "trig"
     indentString = 4 * " "
 
@@ -32,10 +36,14 @@ class TrigSerializer(TurtleSerializer):
 
         super(TrigSerializer, self).__init__(store)
 
-    def preprocess(self):
+    def preprocess(self) -> None:
         for context in self.contexts:
+            # do not write unnecessary prefix (ex: for an empty default graph)
+            if len(context) == 0:
+                continue
             self.store = context
-            self.getQName(context.identifier)
+            # Don't generate a new prefix for a graph URI if one already exists
+            self.getQName(context.identifier, False)
             self._subjects = {}
 
             for triple in context:
@@ -46,9 +54,12 @@ class TrigSerializer(TurtleSerializer):
 
             self._contexts[context] = (self.orderSubjects(), self._subjects)
 
-    def reset(self):
+    def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts = {}
+        self._contexts: dict[
+            _ContextType,
+            tuple[list[_SubjectType], dict[_SubjectType, bool]],
+        ] = {}
 
     def serialize(
         self,
@@ -89,7 +100,8 @@ class TrigSerializer(TurtleSerializer):
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
                 else:
-                    iri = self.getQName(store.identifier)
+                    # Show the full graph URI if a prefix for it doesn't already exist
+                    iri = self.getQName(store.identifier, False)
                     if iri is None:
                         iri = store.identifier.n3()
                 self.write(self.indent() + "\n%s {" % iri)

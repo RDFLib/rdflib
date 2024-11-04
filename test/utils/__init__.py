@@ -5,32 +5,12 @@ The tests for test utilities should be placed inside `test.utils.test`
 (``test/utils/tests/``).
 """
 
-from __future__ import print_function
+from __future__ import annotations
 
 import enum
 import pprint
-import random
-from contextlib import contextmanager
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from threading import Thread
-from typing import (
-    Any,
-    Callable,
-    Collection,
-    Dict,
-    FrozenSet,
-    Generator,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from collections.abc import Callable, Collection
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -40,7 +20,14 @@ import rdflib.plugin
 from rdflib import BNode, ConjunctiveGraph, Graph
 from rdflib.graph import Dataset
 from rdflib.plugin import Plugin
-from rdflib.term import Identifier, Literal, Node, URIRef
+from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
+
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable, Sequence
+
+    import typing_extensions as te
+
+    from rdflib.graph import _TripleType
 
 PluginT = TypeVar("PluginT")
 
@@ -49,53 +36,31 @@ __all__ = ["file_uri_to_path"]
 
 
 def get_unique_plugins(
-    type: Type[PluginT],
-) -> Dict[Type[PluginT], Set[Plugin[PluginT]]]:
-    result: Dict[Type[PluginT], Set[Plugin[PluginT]]] = {}
-    for plugin in rdflib.plugin.plugins(None, type):
+    type_: type[PluginT],
+) -> dict[type[PluginT], set[Plugin[PluginT]]]:
+    result: dict[type[PluginT], set[Plugin[PluginT]]] = {}
+    for plugin in rdflib.plugin.plugins(None, type_):
         cls = plugin.getClass()
         plugins = result.setdefault(cls, set())
         plugins.add(plugin)
     return result
 
 
-def get_unique_plugin_names(type: Type[PluginT]) -> Set[str]:
-    result: Set[str] = set()
-    unique_plugins = get_unique_plugins(type)
-    for type, plugin_set in unique_plugins.items():
+def get_unique_plugin_names(type_: type[PluginT]) -> set[str]:
+    result: set[str] = set()
+    unique_plugins = get_unique_plugins(type_)
+    for type_, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
 
 
-def get_random_ip(parts: List[str] = None) -> str:
-    if parts is None:
-        parts = ["127"]
-    for _ in range(4 - len(parts)):
-        parts.append(f"{random.randint(0, 255)}")
-    return ".".join(parts)
-
-
-@contextmanager
-def ctx_http_server(
-    handler: Type[BaseHTTPRequestHandler], host: str = "127.0.0.1"
-) -> Iterator[HTTPServer]:
-    server = HTTPServer((host, 0), handler)
-    server_thread = Thread(target=server.serve_forever)
-    server_thread.daemon = True
-    server_thread.start()
-    yield server
-    server.shutdown()
-    server.socket.close()
-    server_thread.join()
-
-
-GHNode = Union[Identifier, FrozenSet[Tuple[Identifier, Identifier, Identifier]]]
-GHTriple = Tuple[GHNode, GHNode, GHNode]
-GHTripleSet = Set[GHTriple]
-GHTripleFrozenSet = FrozenSet[GHTriple]
-GHQuad = Tuple[GHNode, GHNode, GHNode, Identifier]
-GHQuadSet = Set[GHQuad]
-GHQuadFrozenSet = FrozenSet[GHQuad]
+GHNode = Union[Identifier, frozenset[tuple[Identifier, Identifier, Identifier]]]
+GHTriple = tuple[GHNode, GHNode, GHNode]
+GHTripleSet = set[GHTriple]
+GHTripleFrozenSet = frozenset[GHTriple]
+GHQuad = tuple[GHNode, GHNode, GHNode, Identifier]
+GHQuadSet = set[GHQuad]
+GHQuadFrozenSet = frozenset[GHQuad]
 
 NodeT = TypeVar("NodeT", bound=GHNode)
 
@@ -114,9 +79,7 @@ class GraphHelper:
     """
 
     @classmethod
-    def add_triples(
-        cls, graph: Graph, triples: Iterable[Tuple[Node, Node, Node]]
-    ) -> Graph:
+    def add_triples(cls, graph: Graph, triples: Iterable[_TripleType]) -> Graph:
         for triple in triples:
             graph.add(triple)
         return graph
@@ -137,9 +100,9 @@ class GraphHelper:
     @classmethod
     def nodes(
         cls,
-        nodes: Tuple[Node, ...],
+        nodes: tuple[Node, ...],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
-    ) -> Tuple[GHNode, ...]:
+    ) -> tuple[GHNode, ...]:
         """
         Return the identifiers of the provided nodes.
         """
@@ -149,7 +112,7 @@ class GraphHelper:
         return tuple(result)
 
     @classmethod
-    def _contains_bnodes(cls, nodes: Tuple[GHNode, ...]) -> bool:
+    def _contains_bnodes(cls, nodes: tuple[GHNode, ...]) -> bool:
         """
         Return true if any of the nodes are BNodes.
         """
@@ -159,11 +122,11 @@ class GraphHelper:
         return False
 
     @classmethod
-    def _collapse_bnodes(cls, nodes: Tuple[NodeT, ...]) -> Tuple[NodeT, ...]:
+    def _collapse_bnodes(cls, nodes: tuple[NodeT, ...]) -> tuple[NodeT, ...]:
         """
         Return BNodes as COLLAPSED_BNODE
         """
-        result: List[NodeT] = []
+        result: list[NodeT] = []
         for node in nodes:
             if isinstance(node, BNode):
                 result.append(cast(NodeT, COLLAPSED_BNODE))
@@ -196,11 +159,11 @@ class GraphHelper:
         cls,
         graphs: Iterable[Graph],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
-    ) -> List[GHTripleFrozenSet]:
+    ) -> list[GHTripleFrozenSet]:
         """
         Extracts the set of all triples from the supplied Graph.
         """
-        result: List[GHTripleFrozenSet] = []
+        result: list[GHTripleFrozenSet] = []
         for graph in graphs:
             result.append(cls.triple_set(graph, bnode_handling))
         return result
@@ -218,8 +181,7 @@ class GraphHelper:
         for sn, pn, on, gn in graph.quads((None, None, None, None)):
             gn_id: Identifier
             if isinstance(graph, Dataset):
-                # type error: Subclass of "Graph" and "Identifier" cannot exist: would have incompatible method signatures
-                assert isinstance(gn, Identifier)  # type: ignore[unreachable]
+                assert isinstance(gn, Identifier)
                 gn_id = gn  # type: ignore[unreachable]
             elif isinstance(graph, ConjunctiveGraph):
                 assert isinstance(gn, Graph)
@@ -286,6 +248,23 @@ class GraphHelper:
             assert lhs_set != rhs_set
 
     @classmethod
+    def assert_collection_graphs_equal(
+        cls, lhs: ConjunctiveGraph, rhs: ConjunctiveGraph
+    ) -> None:
+        """
+        Assert that all graphs in the provided collections are equal,
+        comparing named graphs with identically named graphs.
+        """
+        cls.assert_triple_sets_equals(lhs.default_context, rhs.default_context)
+        graph_names = cls.non_default_graph_names(lhs) | cls.non_default_graph_names(
+            rhs
+        )
+        for identifier in graph_names:
+            cls.assert_triple_sets_equals(
+                lhs.get_context(identifier), rhs.get_context(identifier)
+            )
+
+    @classmethod
     def assert_sets_equals(
         cls,
         lhs: Union[Graph, GHTripleSet, GHQuadSet],
@@ -344,6 +323,7 @@ class GraphHelper:
         This asserts that the two graphs are isomorphic, providing a nicely
         formatted error message if they are not.
         """
+
         # TODO FIXME: This should possibly raise an error when used on a ConjunctiveGraph
         def format_report(message: Optional[str] = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)
@@ -367,7 +347,7 @@ class GraphHelper:
         exclude_bnodes: bool,
         message: Optional[str] = None,
     ) -> None:
-        def get_contexts(cgraph: ConjunctiveGraph) -> Dict[URIRef, Graph]:
+        def get_contexts(cgraph: ConjunctiveGraph) -> dict[URIRef, Graph]:
             result = {}
             for context in cgraph.contexts():
                 if isinstance(context.identifier, BNode):
@@ -376,6 +356,10 @@ class GraphHelper:
                     else:
                         raise AssertionError("BNode labelled graphs not supported")
                 elif isinstance(context.identifier, URIRef):
+                    if len(context) == 0:
+                        # If a context has no triples it does not exist in a
+                        # meaningful way.
+                        continue
                     result[context.identifier] = context
                 else:
                     raise AssertionError(
@@ -392,7 +376,7 @@ class GraphHelper:
             cls.assert_isomorphic(lhs_context, rhs_contexts[id], message)
 
     @classmethod
-    def strip_literal_datatypes(cls, graph: Graph, datatypes: Set[URIRef]) -> None:
+    def strip_literal_datatypes(cls, graph: Graph, datatypes: set[URIRef]) -> None:
         """
         Strips datatypes in the provided set from literals in the graph.
         """
@@ -403,6 +387,21 @@ class GraphHelper:
                 continue
             if object.datatype in datatypes:
                 object._datatype = None
+
+    @classmethod
+    def non_default_graph_names(
+        cls, container: ConjunctiveGraph
+    ) -> set[IdentifiedNode]:
+        return set(context.identifier for context in container.contexts()) - {
+            container.default_context.identifier
+        }
+
+    @classmethod
+    def non_default_graphs(cls, container: ConjunctiveGraph) -> Sequence[Graph]:
+        result = []
+        for name in cls.non_default_graph_names(container):
+            result.append(container.get_context(name))
+        return result
 
 
 def eq_(lhs, rhs, msg=None):
@@ -418,11 +417,11 @@ def eq_(lhs, rhs, msg=None):
 
 
 ParamsT = TypeVar("ParamsT", bound=tuple)
-MarksType = Collection[Union[MarkDecorator, Mark]]
-MarkListType = List[Union[MarkDecorator, Mark]]
-MarkType = Union[MarkDecorator, MarksType]
+MarksType: te.TypeAlias = Collection[Union[MarkDecorator, Mark]]
+MarkListType: te.TypeAlias = list[Union[MarkDecorator, Mark]]
+MarkType: te.TypeAlias = Union[MarkDecorator, MarksType]
 
-MarkerType = Callable[..., Optional[MarkType]]
+MarkerType: te.TypeAlias = Callable[..., Optional[MarkType]]
 
 
 def marks_to_list(mark: MarkType) -> MarkListType:
@@ -435,7 +434,7 @@ def marks_to_list(mark: MarkType) -> MarkListType:
 
 def pytest_mark_filter(
     param_sets: Iterable[Union[ParamsT, ParameterSet]],
-    mark_dict: Dict[ParamsT, MarksType],
+    mark_dict: dict[ParamsT, MarksType],
 ) -> Generator[ParameterSet, None, None]:
     """
     Adds marks to test parameters. Useful for adding xfails to test parameters.
@@ -460,10 +459,10 @@ def pytest_mark_filter(
 
 
 def affix_tuples(
-    prefix: Optional[Tuple[Any, ...]],
-    tuples: Iterable[Tuple[Any, ...]],
-    suffix: Optional[Tuple[Any, ...]],
-) -> Generator[Tuple[Any, ...], None, None]:
+    prefix: Optional[tuple[Any, ...]],
+    tuples: Iterable[tuple[Any, ...]],
+    suffix: Optional[tuple[Any, ...]],
+) -> Generator[tuple[Any, ...], None, None]:
     if prefix is None:
         prefix = tuple()
     if suffix is None:
@@ -476,6 +475,26 @@ def ensure_suffix(value: str, suffix: str) -> str:
     if not value.endswith(suffix):
         value = f"{value}{suffix}"
     return value
+
+
+def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[str]]:
+    """
+    Returns an ID function which will try each of the provided ID
+    functions in order.
+
+    :param idfns: The ID functions to try.
+    :return: An ID function which will try each of the provided ID
+        functions.
+    """
+
+    def _idfns(value: Any) -> Optional[str]:
+        for idfn in idfns:
+            result = idfn(value)
+            if result is not None:
+                return result
+        return None
+
+    return _idfns
 
 
 from test.utils.iri import file_uri_to_path  # noqa: E402

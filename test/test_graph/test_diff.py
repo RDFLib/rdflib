@@ -1,4 +1,18 @@
+from __future__ import annotations
+
+from collections.abc import Collection
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Union, cast
+
+import pytest
+from _pytest.mark.structures import ParameterSet
+
+import rdflib
+from rdflib import Graph
+from rdflib.compare import graph_diff
+from rdflib.graph import ConjunctiveGraph, Dataset
+from rdflib.namespace import FOAF, RDF
+from rdflib.term import BNode, Literal
 from test.utils import (
     COLLAPSED_BNODE,
     BNodeHandling,
@@ -8,17 +22,6 @@ from test.utils import (
     MarksType,
     MarkType,
 )
-from typing import TYPE_CHECKING, Collection, Set, Tuple, Type, Union, cast
-
-import pytest
-from _pytest.mark.structures import ParameterSet
-
-import rdflib
-from rdflib import Graph
-from rdflib.compare import graph_diff
-from rdflib.graph import ConjunctiveGraph, Dataset
-from rdflib.namespace import FOAF, RDF, Namespace
-from rdflib.term import BNode, Literal
 
 if TYPE_CHECKING:
     from rdflib.graph import _TripleType
@@ -26,7 +29,7 @@ if TYPE_CHECKING:
 """Test for graph_diff - much more extensive testing
 would certainly be possible"""
 
-_TripleSetType = Set["_TripleType"]
+_TripleSetType = set["_TripleType"]
 
 
 class TestDiff:
@@ -96,11 +99,11 @@ _ElementSetTypeOrStr = Union[_ElementSetType, str]
 
 @dataclass
 class GraphDiffCase:
-    graph_type: Type[Graph]
+    graph_type: type[Graph]
     format: str
     lhs: str
     rhs: str
-    expected_result: Tuple[
+    expected_result: tuple[
         _ElementSetTypeOrStr, _ElementSetTypeOrStr, _ElementSetTypeOrStr
     ]
     marks: MarkType = field(default_factory=lambda: cast(MarksType, list()))
@@ -126,9 +129,6 @@ class GraphDiffCase:
 
     def as_params(self) -> ParameterSet:
         return pytest.param(self, marks=self.marks)
-
-
-EGSCHEME = Namespace("example:")
 
 
 @pytest.mark.parametrize(

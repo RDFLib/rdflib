@@ -1,24 +1,19 @@
+from __future__ import annotations
+
 import enum
 import itertools
 import logging
 import re
 import socket
+from collections.abc import Callable, Generator
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
-from test.utils import GraphHelper, get_unique_plugins
-from test.utils.destination import DestinationType, DestParmType, DestRef
 from typing import (
     IO,
-    Callable,
-    Dict,
-    Generator,
-    List,
     Optional,
-    Set,
     TextIO,
-    Tuple,
     Union,
     cast,
 )
@@ -32,10 +27,9 @@ import rdflib.plugin
 from rdflib import RDF, XSD, Graph, Literal, Namespace, URIRef
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset
 from rdflib.serializer import Serializer
-
-EGSCHEMA = Namespace("example:")
-EGURN = Namespace("urn:example:")
-EGHTTP = Namespace("http://example.com/")
+from test.utils import GraphHelper, get_unique_plugins
+from test.utils.destination import DestinationType, DestParmType, DestRef
+from test.utils.namespace import EGDC, EGSCHEME, EGURN
 
 
 @pytest.mark.parametrize(
@@ -54,13 +48,13 @@ EGHTTP = Namespace("http://example.com/")
     + [("trig", 3, False)],
 )
 def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
-    NS = Namespace("example:")
+    NS = Namespace("example:")  # noqa: N806
     graph = ConjunctiveGraph()
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
-    quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
+    quad = cast(tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -85,18 +79,18 @@ def simple_graph() -> Graph:
     than that it contains no blank nodes.
     """
     graph = Graph()
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
-    graph.add((EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12)))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
+    graph.add((EGSCHEME.subject, EGSCHEME.predicate, Literal(12)))
     graph.add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.add((EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject))
+    graph.add((EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject))
     graph.add(
-        (EGSCHEMA.object, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.object, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
@@ -109,33 +103,31 @@ def simple_dataset() -> Dataset:
     than that it contains no blank nodes.
     """
     graph = Dataset()
-    graph.default_context.add((EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object))
+    graph.default_context.add((EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object))
     graph.default_context.add((EGURN.subject, EGURN.predicate, EGURN.object))
-    graph.default_context.add((EGHTTP.subject, EGHTTP.predicate, Literal("typeless")))
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+    graph.default_context.add((EGDC.subject, EGDC.predicate, Literal("typeless")))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, Literal(12))
+    graph.get_context(EGSCHEME.graph).add(
+        (EGSCHEME.subject, EGSCHEME.predicate, Literal(12))
     )
-    graph.get_context(EGSCHEMA.graph).add(
+    graph.get_context(EGSCHEME.graph).add(
         (
-            EGHTTP.subject,
-            EGHTTP.predicate,
+            EGDC.subject,
+            EGDC.predicate,
             Literal("日本語の表記体系", lang="jpx"),
         )
     )
-    graph.get_context(EGSCHEMA.graph).add(
-        (EGURN.subject, EGSCHEMA.predicate, EGSCHEMA.subject)
+    graph.get_context(EGSCHEME.graph).add(
+        (EGURN.subject, EGSCHEME.predicate, EGSCHEME.subject)
     )
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGSCHEMA.predicate, EGSCHEMA.object)
+        (EGSCHEME.subject, EGSCHEME.predicate, EGSCHEME.object)
     )
+    graph.get_context(EGURN.graph).add((EGSCHEME.subject, EGDC.predicate, EGDC.object))
     graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, EGHTTP.object)
-    )
-    graph.get_context(EGURN.graph).add(
-        (EGSCHEMA.subject, EGHTTP.predicate, Literal("XSD string", datatype=XSD.string))
+        (EGSCHEME.subject, EGDC.predicate, Literal("XSD string", datatype=XSD.string))
     )
     return graph
 
@@ -231,7 +223,7 @@ class GraphFormat(str, enum.Enum):
 
     @classmethod
     @lru_cache(maxsize=None)
-    def info_dict(cls) -> "GraphFormatInfoDict":
+    def info_dict(cls) -> GraphFormatInfoDict:
         return GraphFormatInfoDict.make(
             GraphFormatInfo(
                 GraphFormat.TRIG,
@@ -296,28 +288,28 @@ class GraphFormat(str, enum.Enum):
         )
 
     @property
-    def info(self) -> "GraphFormatInfo":
+    def info(self) -> GraphFormatInfo:
         return self.info_dict()[self]
 
     @classmethod
     @lru_cache(maxsize=None)
-    def set(cls) -> Set["GraphFormat"]:
+    def set(cls) -> set[GraphFormat]:
         return set(*cls)
 
 
 @dataclass
 class GraphFormatInfo:
-    name: "GraphFormat"
-    graph_types: Set[GraphType]
-    encodings: Set[str]
-    serializer_list: Optional[List[str]] = field(
+    name: GraphFormat
+    graph_types: set[GraphType]
+    encodings: set[str]
+    serializer_list: Optional[list[str]] = field(
         default=None, repr=False, hash=False, compare=False
     )
-    deserializer_list: Optional[List[str]] = field(
+    deserializer_list: Optional[list[str]] = field(
         default=None, repr=False, hash=False, compare=False
     )
-    serializers: List[str] = field(default_factory=list, init=False)
-    deserializers: List[str] = field(default_factory=list, init=False)
+    serializers: list[str] = field(default_factory=list, init=False)
+    deserializers: list[str] = field(default_factory=list, init=False)
 
     def __post_init__(self) -> None:
         self.serializers = (
@@ -330,29 +322,29 @@ class GraphFormatInfo:
         )
 
     @property
-    def serializer(self) -> "str":
+    def serializer(self) -> str:
         if not self.serializers:
             raise RuntimeError("no serializers for {self.name}")
         return self.serializers[0]
 
     @property
-    def deserializer(self) -> "str":
+    def deserializer(self) -> str:
         if not self.deserializers:
             raise RuntimeError("no deserializer for {self.name}")
         return self.deserializer[0]
 
 
-class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
+class GraphFormatInfoDict(dict[str, GraphFormatInfo]):
     @classmethod
-    def make(cls, *graph_format: GraphFormatInfo) -> "GraphFormatInfoDict":
+    def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
         for item in graph_format:
             result[item.name] = item
         return result
 
-    def serdes_dict(self) -> Tuple[Dict[str, GraphFormat], Dict[str, GraphFormat]]:
-        serializer_dict: Dict[str, GraphFormat] = {}
-        deserializer_dict: Dict[str, GraphFormat] = {}
+    def serdes_dict(self) -> tuple[dict[str, GraphFormat], dict[str, GraphFormat]]:
+        serializer_dict: dict[str, GraphFormat] = {}
+        deserializer_dict: dict[str, GraphFormat] = {}
         for format in self.values():
             for serializer in format.serializers:
                 serializer_dict[serializer] = format.name
@@ -377,15 +369,15 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
     """
     This function generates test parameters for test_serialize_parse.
     """
-    xfails: Dict[
-        Tuple[str, GraphType, DestinationType, Optional[str]],
+    xfails: dict[
+        tuple[str, GraphType, DestinationType, Optional[str]],
         Union[MarkDecorator, Mark],
     ] = {}
     for serializer_name, destination_type in itertools.product(
         serializer_dict.keys(), DESTINATION_TYPES
     ):
         format = serializer_dict[serializer_name]
-        encodings: Set[Optional[str]] = {*format.info.encodings, None}
+        encodings: set[Optional[str]] = {*format.info.encodings, None}
         for encoding, graph_type in itertools.product(
             encodings, format.info.graph_types
         ):
@@ -438,7 +430,7 @@ def test_serialize_parse(
     tmp_path: Path,
     simple_graph: Graph,
     simple_dataset: Dataset,
-    args: Tuple[str, GraphType, DestinationType, Optional[str]],
+    args: tuple[str, GraphType, DestinationType, Optional[str]],
 ) -> None:
     """
     Serialization works correctly with the given arguments and generates output
@@ -518,7 +510,7 @@ BytesSerializeFunctionType = Callable[[Graph, SerializeArgs], bytes]
 FileSerializeFunctionType = Callable[[Graph, SerializeArgs], Graph]
 
 
-str_serialize_functions: List[StrSerializeFunctionType] = [
+str_serialize_functions: list[StrSerializeFunctionType] = [
     lambda graph, args: graph.serialize(),
     lambda graph, args: graph.serialize(None),
     lambda graph, args: graph.serialize(None, args.format),
@@ -529,7 +521,7 @@ str_serialize_functions: List[StrSerializeFunctionType] = [
 ]
 
 
-bytes_serialize_functions: List[BytesSerializeFunctionType] = [
+bytes_serialize_functions: list[BytesSerializeFunctionType] = [
     lambda graph, args: graph.serialize(encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, encoding="utf-8"),
     lambda graph, args: graph.serialize(None, args.format, None, "utf-8"),
@@ -539,7 +531,7 @@ bytes_serialize_functions: List[BytesSerializeFunctionType] = [
 ]
 
 
-file_serialize_functions: List[FileSerializeFunctionType] = [
+file_serialize_functions: list[FileSerializeFunctionType] = [
     lambda graph, args: graph.serialize(args.dest_param),
     lambda graph, args: graph.serialize(args.dest_param, encoding=None),
     lambda graph, args: graph.serialize(args.dest_param, encoding="utf-8"),
@@ -603,7 +595,7 @@ def test_serialize_overloads(
 
 
 def make_test_serialize_to_strdest_tests() -> Generator[ParameterSet, None, None]:
-    destination_types: Set[DestinationType] = {
+    destination_types: set[DestinationType] = {
         DestinationType.FILE_URI,
         DestinationType.STR_PATH,
     }
@@ -720,4 +712,5 @@ def test_serialize_to_fileuri_with_authortiy(
             format=format.info.serializer,
         )
         assert False  # this should never happen as serialize should always fail
-    assert catcher.value is not None
+    # type error, mypy thinks this line is unreachable, but it works fine
+    assert catcher.value is not None  # type: ignore[unreachable, unused-ignore]

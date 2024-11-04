@@ -9,13 +9,21 @@ You can draw the graph of an RDF file directly:
 
 """
 
+from __future__ import annotations
+
 import collections
 import html
 import sys
+from typing import TYPE_CHECKING, Any, TextIO
 
 import rdflib
 import rdflib.extras.cmdlineutils
 from rdflib import XSD
+from rdflib.graph import Graph
+from rdflib.term import Literal, URIRef
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType, _PredicateType, _SubjectType
 
 LABEL_PROPERTIES = [
     rdflib.RDFS.label,
@@ -77,32 +85,31 @@ NODECOLOR = "black"
 ISACOLOR = "black"
 
 
-def rdf2dot(g, stream, opts={}):
+def rdf2dot(g: Graph, stream: TextIO, opts: dict[str, Any] = {}):
     """
     Convert the RDF graph to DOT
     writes the dot output to the stream
     """
 
     fields = collections.defaultdict(set)
-    nodes = {}
+    nodes: dict[_SubjectType | _PredicateType | _ObjectType, str] = {}
 
-    def node(x):
-
+    def node(x: _SubjectType | _PredicateType | _ObjectType) -> str:
         if x not in nodes:
             nodes[x] = "node%d" % len(nodes)
         return nodes[x]
 
-    def label(x, g):
-        for labelProp in LABEL_PROPERTIES:
+    def label(x: _SubjectType, g: Graph):
+        for labelProp in LABEL_PROPERTIES:  # noqa: N806
             l_ = g.value(x, labelProp)
             if l_:
                 return l_
         try:
             return g.namespace_manager.compute_qname(x)[2]
-        except:
+        except Exception:
             return x
 
-    def formatliteral(l, g):
+    def formatliteral(l: Literal, g):  # noqa: E741
         v = html.escape(l)
         if l.datatype:
             return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
@@ -110,11 +117,11 @@ def rdf2dot(g, stream, opts={}):
             return "&quot;%s&quot;@%s" % (v, l.language)
         return "&quot;%s&quot;" % v
 
-    def qname(x, g):
+    def qname(x: URIRef, g: Graph) -> str:
         try:
             q = g.compute_qname(x)
             return q[0] + ":" + q[2]
-        except:
+        except Exception:
             return x
 
     def color(p):
@@ -132,9 +139,11 @@ def rdf2dot(g, stream, opts={}):
                 "\t%s -> %s [ color=%s, label=< <font point-size='10' "
                 + "color='#336633'>%s</font> > ] ;\n"
             )
-            stream.write(opstr % (sn, on, color(p), qname(p, g)))
+            # type error: Argument 1 to "qname" has incompatible type "Node"; expected "URIRef"
+            stream.write(opstr % (sn, on, color(p), qname(p, g)))  # type: ignore[arg-type]
         else:
-            fields[sn].add((qname(p, g), formatliteral(o, g)))
+            # type error: Argument 1 to "qname" has incompatible type "Node"; expected "URIRef"
+            fields[sn].add((qname(p, g), formatliteral(o, g)))  # type: ignore[arg-type]
 
     for u, n in nodes.items():
         stream.write("# %s %s\n" % (u, n))

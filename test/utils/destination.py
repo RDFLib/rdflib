@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import enum
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePath
-from typing import IO, Callable, Generator, Optional, TextIO, Union
+from typing import IO, Callable, Optional, TextIO, Union
 
 DestParmType = Union[Path, PurePath, str, IO[bytes], TextIO]
 
@@ -27,7 +30,7 @@ class DestinationType(str, enum.Enum):
         self,
         tmp_path: Path,
         encoding: Optional[str] = None,
-        path_factory: Callable[[Path, "DestinationType", Optional[str]], Path] = (
+        path_factory: Callable[[Path, DestinationType, Optional[str]], Path] = (
             lambda tmp_path, type, encoding: tmp_path / f"file-{type.name}-{encoding}"
         ),
     ) -> Generator[Optional[DestRef], None, None]:

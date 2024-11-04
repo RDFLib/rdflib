@@ -1,3 +1,4 @@
+.flakeheaven_cache/
 RDFLib.sublime-project
 /docs/_build/
 RDFLib.sublime-workspace
@@ -138,6 +139,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv39
 env/
 venv/
 ENV/

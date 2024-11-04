@@ -1,9 +1,9 @@
 import os
-from test.data import TEST_DATA_DIR
 
 import pytest
 
 import rdflib
+from test.data import TEST_DATA_DIR
 
 # Recovered from
 # https://github.com/RDFLib/rdflib/tree/6b4607018ebf589da74aea4c25408999f1acf2e2
@@ -33,7 +33,6 @@ def xfail_broken_parse_data(request):
 @pytest.mark.parametrize("testfile", os.listdir(broken_parse_data))
 @pytest.mark.usefixtures("xfail_broken_parse_data")
 def test_n3_serializer_roundtrip(testfile) -> None:
-
     g1 = rdflib.ConjunctiveGraph()
 
     g1.parse(os.path.join(broken_parse_data, testfile), format="n3")

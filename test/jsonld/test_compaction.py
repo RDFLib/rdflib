@@ -1,22 +1,24 @@
-# -*- coding: UTF-8 -*-
+from __future__ import annotations
 
 import itertools
 import json
 import re
+from typing import Any
 
 import pytest
 
 from rdflib import Graph
-from rdflib.plugin import Serializer, register
+from rdflib.plugin import register
+from rdflib.serializer import Serializer
 
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 
 
-cases = []
+cases: list[tuple[str, dict[str, Any]]] = []
 
 
-def case(*args):
-    cases.append(args)
+def case(source: str, data: dict[str, Any]):
+    cases.append((source, data))
 
 
 case(

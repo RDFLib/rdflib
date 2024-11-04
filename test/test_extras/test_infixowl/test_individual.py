@@ -1,9 +1,8 @@
-from test.data import context0, pizza
-
 import pytest
 
 from rdflib import OWL, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import Class, Individual
+from test.data import CONTEXT0, PIZZA
 
 EXNS = Namespace("http://example.org/vocab/")
 
@@ -20,7 +19,6 @@ def graph():
 
 
 def test_infixowl_individual_type(graph):
-
     b = Individual(OWL.Restriction, graph)
     b.type = RDFS.Resource
     assert len(list(b.type)) == 1
@@ -30,7 +28,6 @@ def test_infixowl_individual_type(graph):
 
 
 def test_infixowl_individual_label(graph):
-
     b = Individual(OWL.Restriction, graph)
     b.label = Literal("boo")
 
@@ -41,7 +38,6 @@ def test_infixowl_individual_label(graph):
 
 
 def test_individual_type_settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     b.type = OWL.Restriction
@@ -60,7 +56,7 @@ def test_individual_type_settergetter(graph):
         "\n"
     )
 
-    b.replace(Class(identifier=context0))
+    b.replace(Class(identifier=CONTEXT0))
 
     assert graph.serialize(format="ttl") == (
         "@prefix ns1: <urn:example:> .\n"
@@ -72,16 +68,15 @@ def test_individual_type_settergetter(graph):
 
 
 def test_individual_identity__settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     assert b.identifier == URIRef("http://www.w3.org/2002/07/owl#Restriction")
 
     b.identifier = URIRef("http://www.w3.org/2002/07/owl#Restriction")
 
-    b.identifier = pizza
+    b.identifier = PIZZA
 
-    assert b.identifier == pizza
+    assert b.identifier == PIZZA
 
     b.identifier = URIRef("http://www.w3.org/2002/07/owl#Restriction")
 
@@ -93,17 +88,16 @@ def test_individual_identity__settergetter(graph):
 
 
 def test_individual_sameas__settergetter(graph):
-
     b = Individual(OWL.Restriction, graph)
 
     assert list(b.sameAs) == []
 
-    b.sameAs = pizza
+    b.sameAs = PIZZA
 
-    assert list(b.sameAs) == [pizza]
+    assert list(b.sameAs) == [PIZZA]
 
     bnodeid = BNode("harry")
 
-    b.sameAs = [pizza, bnodeid]
+    b.sameAs = [PIZZA, bnodeid]
 
-    assert list(b.sameAs) == [pizza, bnodeid]
+    assert list(b.sameAs) == [PIZZA, bnodeid]

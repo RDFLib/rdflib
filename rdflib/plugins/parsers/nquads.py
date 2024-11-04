@@ -23,23 +23,36 @@ graphs that can be used and queried. The store that backs the graph
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
 
-from codecs import getreader
+from __future__ import annotations
 
-from rdflib import ConjunctiveGraph
+from codecs import getreader
+from collections.abc import MutableMapping
+from typing import Any, Optional
+
+from rdflib.exceptions import ParserError as ParseError
+from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib.parser import InputSource
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import (
-    ParseError,
-    W3CNTriplesParser,
-    r_tail,
-    r_wspace,
-)
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser, r_tail, r_wspace
+from rdflib.term import BNode
 
 __all__ = ["NQuadsParser"]
 
+_BNodeContextType = MutableMapping[str, BNode]
+
 
 class NQuadsParser(W3CNTriplesParser):
-    def parse(self, inputsource, sink, bnode_context=None, **kwargs):
+
+    # type error: Signature of "parse" incompatible with supertype "W3CNTriplesParser"
+    def parse(  # type: ignore[override]
+        self,
+        inputsource: InputSource,
+        sink: Graph,
+        bnode_context: Optional[_BNodeContextType] = None,
+        skolemize: bool = False,
+        **kwargs: Any,
+    ):
         """
         Parse inputsource as an N-Quads file.
 
@@ -51,10 +64,27 @@ class NQuadsParser(W3CNTriplesParser):
         :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
                               See `.W3CNTriplesParser.parse`
         """
-        assert sink.store.context_aware, (
-            "NQuadsParser must be given" " a context aware store."
-        )
-        self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
+        assert (
+            sink.store.context_aware
+        ), "NQuadsParser must be given a context-aware store."
+        # Set default_union to True to mimic ConjunctiveGraph behavior
+        ds = Dataset(store=sink.store, default_union=True)
+        ds_default = ds.default_context  # the DEFAULT_DATASET_GRAPH_ID
+        new_default_context = None
+        if isinstance(sink, (Dataset, ConjunctiveGraph)):
+            new_default_context = sink.default_context
+        elif sink.identifier is not None:
+            if sink.identifier == ds_default.identifier:
+                new_default_context = sink
+            else:
+                new_default_context = ds.get_context(sink.identifier)
+
+        if new_default_context is not None:
+            ds.default_context = new_default_context
+            ds.remove_graph(ds_default)  # remove the original unused default graph
+        # type error: Incompatible types in assignment (expression has type "ConjunctiveGraph", base class "W3CNTriplesParser" defined the type as "Union[DummySink, NTGraphSink]")
+        self.sink: Dataset = ds  # type: ignore[assignment]
+        self.skolemize = skolemize
 
         source = inputsource.getCharacterStream()
         if not source:
@@ -77,9 +107,9 @@ class NQuadsParser(W3CNTriplesParser):
 
         return self.sink
 
-    def parseline(self, bnode_context=None):
+    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(("#")):
+        if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
 
         subject = self.subject(bnode_context)
@@ -91,11 +121,14 @@ class NQuadsParser(W3CNTriplesParser):
         obj = self.object(bnode_context)
         self.eat(r_wspace)
 
-        context = self.uriref() or self.nodeid(bnode_context) or self.sink.identifier
+        context = self.uriref() or self.nodeid(bnode_context)
         self.eat(r_tail)
 
         if self.line:
             raise ParseError("Trailing garbage")
         # Must have a context aware store - add on a normal Graph
         # discards anything where the ctx != graph.identifier
-        self.sink.get_context(context).add((subject, predicate, obj))
+        if context:
+            self.sink.get_context(context).add((subject, predicate, obj))
+        else:
+            self.sink.default_context.add((subject, predicate, obj))

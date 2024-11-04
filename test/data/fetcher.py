@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import argparse
 import enum
 import logging
@@ -9,12 +11,14 @@ import shutil
 import string
 import sys
 import tarfile
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
+from re import Pattern
 from tarfile import TarFile, TarInfo
 from tempfile import TemporaryDirectory, mkdtemp
-from typing import IO, Generator, List, Pattern, Union
+from typing import IO, Union
 from urllib.request import Request, urlopen
 from zipfile import ZipFile, ZipInfo
 
@@ -147,7 +151,7 @@ class ArchiveResource(Resource):
     @classmethod
     def _member_list(
         cls, archive: Union[ZipFile, TarFile]
-    ) -> Union[List[ZipInfo], List[TarInfo]]:
+    ) -> Union[list[ZipInfo], list[TarInfo]]:
         if isinstance(archive, ZipFile):
             return archive.infolist()
         return archive.getmembers()
@@ -180,7 +184,7 @@ class ArchiveResource(Resource):
             yield opt_io
 
 
-RESOURCES: List[Resource] = [
+RESOURCES: list[Resource] = [
     ArchiveResource(
         remote="https://github.com/w3c/N3/archive/c44d123c5958ca04117e28ca3769e2c0820f72e6.zip",
         local_path=(DATA_PATH / "suites" / "w3c" / "n3"),
@@ -249,6 +253,21 @@ RESOURCES: List[Resource] = [
         local_path=(DATA_PATH / "defined_namespaces/rdfs.ttl"),
     ),
     FileResource(
+        remote=Request(
+            "http://www.w3.org/2000/01/rdf-schema#",
+            headers={"Accept": "application/rdf+xml"},
+        ),
+        local_path=(DATA_PATH / "defined_namespaces/rdfs.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.rdf"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.rdf"),
+    ),
+    FileResource(
+        remote=Request("http://www.w3.org/ns/adms.ttl"),
+        local_path=(DATA_PATH / "defined_namespaces/adms.ttl"),
+    ),
+    FileResource(
         remote=Request("https://www.w3.org/ns/rdftest.ttl"),
         local_path=(DATA_PATH / "defined_namespaces/rdftest.ttl"),
     ),
@@ -267,6 +286,12 @@ RESOURCES: List[Resource] = [
     FileResource(
         remote=Request("https://www.w3.org/2009/sparql/docs/tests/test-update.n3"),
         local_path=(DATA_PATH / "defined_namespaces/ut.n3"),
+    ),
+    FileResource(
+        remote=Request(
+            "https://github.com/web-platform-tests/wpt/raw/9d13065419df90d2ad71f3c6b78cc12e7800dae4/html/syntax/parsing/html5lib_tests1.html"
+        ),
+        local_path=(DATA_PATH / "html5lib_tests1.html"),
     ),
 ]
 
@@ -294,7 +319,7 @@ class Application:
         parser.add_argument("paths", nargs="*", type=str)
         parser.set_defaults(handler=self.handle)
 
-    def run(self, args: List[str]) -> None:
+    def run(self, args: list[str]) -> None:
         parse_result = self.parser.parse_args(args)
 
         verbosity = parse_result.verbosity

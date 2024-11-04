@@ -4,17 +4,17 @@ import logging
 import os
 from contextlib import ExitStack
 from pathlib import Path
-from test.data import TEST_DATA_DIR
-from test.utils import GraphHelper
-from test.utils.graph import cached_graph
-from test.utils.namespace import MF
-from test.utils.path import ctx_chdir
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import pytest
 
 from rdflib import Graph
 from rdflib.tools.chunk_serializer import serialize_in_chunks
+from test.data import TEST_DATA_DIR
+from test.utils import GraphHelper
+from test.utils.graph import cached_graph
+from test.utils.namespace import MF
+from test.utils.path import ctx_chdir
 
 if TYPE_CHECKING:
     from builtins import ellipsis
@@ -91,10 +91,10 @@ def test_chuking(
     max_file_size_kb: Union[ellipsis, int, None],
     write_prefixes: bool,
     set_output_dir: bool,
-    expected_file_count: Optional[Union[int, Tuple[Optional[int], Optional[int]]]],
+    expected_file_count: Optional[Union[int, tuple[Optional[int], Optional[int]]]],
 ) -> None:
     test_graph = cached_graph((test_graph_path,))
-    kwargs: Dict[str, Any] = {"write_prefixes": write_prefixes}
+    kwargs: dict[str, Any] = {"write_prefixes": write_prefixes}
     if max_triples is not ...:
         kwargs["max_triples"] = max_triples
     if max_file_size_kb is not ...:

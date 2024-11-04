@@ -1,6 +1,6 @@
 import pytest
 
-from rdflib import OWL, XSD, BNode, Graph, Literal, Namespace, URIRef
+from rdflib import OWL, RDF, XSD, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.extras.infixowl import Class, Individual, Property, Restriction, some
 
 EXNS = Namespace("http://example.org/vocab/")
@@ -21,12 +21,7 @@ def graph():
 
 
 def test_restriction_str_and_hash(graph):
-
-    r1 = (
-        (Property(EXNS.someProp, baseType=OWL.DatatypeProperty))
-        @ some
-        @ (Class(EXNS.Foo))
-    )
+    r1 = Property(EXNS.someProp, baseType=OWL.DatatypeProperty) @ some @ Class(EXNS.Foo)
 
     assert str(r1) == "( ex:someProp SOME ex:Foo )"
 
@@ -49,7 +44,6 @@ def test_restriction_str_and_hash(graph):
 
 
 def test_restriction_range(graph):
-
     r1 = Restriction(
         onProperty=EXNS.hasParent,
         graph=graph,
@@ -67,7 +61,6 @@ def test_restriction_range(graph):
 
 
 def test_restriction_onproperty(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -80,7 +73,6 @@ def test_restriction_onproperty(graph):
 
 
 def test_restriction_inputs_bnode(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -104,7 +96,6 @@ def test_restriction_inputs_bnode(graph):
 
 
 def test_restriction_inputs_with_identifier(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -128,7 +119,6 @@ def test_restriction_inputs_with_identifier(graph):
 
 
 def test_restriction_allvalues(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -150,7 +140,6 @@ def test_restriction_allvalues(graph):
 
 
 def test_restriction_somevalues(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -176,7 +165,6 @@ def test_restriction_somevalues(graph):
 
 
 def test_restriction_hasvalue(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -200,7 +188,6 @@ def test_restriction_hasvalue(graph):
 
 
 def test_restriction_cardinality(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -221,7 +208,6 @@ def test_restriction_cardinality(graph):
 
 
 def test_restriction_cardinality_value(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -246,61 +232,157 @@ def test_restriction_cardinality_value(graph):
     assert str(r.cardinality) == "Some Class "
 
 
-@pytest.mark.xfail(reason="_set_cardinality fails to handle Literal")
 def test_restriction_cardinality_set_value(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
-        cardinality=OWL.cardinality,
+        cardinality=Literal("0", datatype=XSD.nonNegativeInteger),
+        identifier=URIRef(EXNS.r1),
+    )
+
+    assert str(r) == "( ex:hasChild EQUALS 0 )"
+
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        '    owl:cardinality "0"^^xsd:nonNegativeInteger ;\n'
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
+
+    r.cardinality = Literal("1", datatype=XSD.nonNegativeInteger)
+
+    assert str(r) == "( ex:hasChild EQUALS 1 )"
+
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        '    owl:cardinality "1"^^xsd:nonNegativeInteger ;\n'
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
+
+
+def test_restriction_maxcardinality(graph):
+    r = Restriction(
+        onProperty=EXNS.hasChild,
+        graph=graph,
+        maxCardinality=Literal("0", datatype=XSD.nonNegativeInteger),
+        identifier=URIRef(EXNS.r1),
     )
 
     assert graph.serialize(format="ttl") == (
         "@prefix ex: <http://example.org/vocab/> .\n"
         "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
         "\n"
-        "[] a owl:Restriction ;\n"
-        "    owl:cardinality owl:cardinality ;\n"
+        "ex:r1 a owl:Restriction ;\n"
+        '    owl:maxCardinality "0"^^xsd:nonNegativeInteger ;\n'
         "    owl:onProperty ex:hasChild .\n"
         "\n"
     )
 
-    assert r.cardinality is not None
+    # FIXME: Don't do this, it changes the value!!
+    assert str(r.maxCardinality) == "Some Class "
 
-    assert str(r) == "( ex:hasChild EQUALS http://www.w3.org/2002/07/owl#cardinality )"
-
-    assert str(r.cardinality) == "Class: owl:cardinality "
-
-    r.cardinality = Literal("0", datatype=XSD.nonNegativeInteger)
-
-    assert (
-        str(r) == '( ex:hasChild EQUALS owl:cardinality "0"^^xsd:nonNegativeInteger )'
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        '    owl:maxCardinality "0"^^xsd:nonNegativeInteger ;\n'
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+        "[] a owl:Class .\n"
+        "\n"
     )
-
-
-def test_restriction_maxcardinality(graph):
-
-    r = Restriction(
-        onProperty=EXNS.hasChild,
-        graph=graph,
-        maxCardinality=OWL.maxCardinality,
-    )
-
-    assert str(r.maxCardinality) == "Class: owl:maxCardinality "
 
     r.maxCardinality = OWL.maxCardinality
 
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        "    owl:maxCardinality owl:maxCardinality ;\n"
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+        "[] a owl:Class .\n"
+        "\n"
+    )
+
+    # Ignored
     r.maxCardinality = None
 
-    r.maxCardinality = EXNS.foo
+    assert graph.serialize(format="ttl") != ""
+
+    superfluous_assertion_subject = list(graph.subjects(RDF.type, OWL.Class))[0]
+
+    assert isinstance(superfluous_assertion_subject, BNode)
+
+    graph.remove((superfluous_assertion_subject, RDF.type, OWL.Class))
+
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        "    owl:maxCardinality owl:maxCardinality ;\n"
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
+
+    r.maxCardinality = EXNS.maxkids
+
+    assert str(r) == "( ex:hasChild MAX http://example.org/vocab/maxkids )"
+
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        "    owl:maxCardinality ex:maxkids ;\n"
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
 
     del r.maxCardinality
 
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
+
     assert r.maxCardinality is None
+
+    r.maxCardinality = Literal("2", datatype=XSD.nonNegativeInteger)
+
+    assert str(r) == "( ex:hasChild MAX 2 )"
+
+    assert graph.serialize(format="ttl") == (
+        "@prefix ex: <http://example.org/vocab/> .\n"
+        "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n"
+        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+        "\n"
+        "ex:r1 a owl:Restriction ;\n"
+        '    owl:maxCardinality "2"^^xsd:nonNegativeInteger ;\n'
+        "    owl:onProperty ex:hasChild .\n"
+        "\n"
+    )
 
 
 def test_restriction_mincardinality(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -313,15 +395,18 @@ def test_restriction_mincardinality(graph):
 
     r.minCardinality = None
 
-    r.minCardinality = EXNS.foo
+    r.minCardinality = EXNS.minkids
+
+    assert str(r) == "( ex:hasChild MIN http://example.org/vocab/minkids )"
 
     del r.minCardinality
 
     assert r.minCardinality is None
 
+    r.minCardinality = Literal("0", datatype=XSD.nonNegativeInteger)
+
 
 def test_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -331,7 +416,6 @@ def test_restriction_kind(graph):
 
 
 def test_deleted_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,
@@ -346,7 +430,6 @@ def test_deleted_restriction_kind(graph):
 
 @pytest.mark.xfail(reason="assert len(validRestrProps) fails to handle None")
 def test_omitted_restriction_kind(graph):
-
     r = Restriction(
         onProperty=EXNS.hasChild,
         graph=graph,

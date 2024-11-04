@@ -1,11 +1,10 @@
-from test.data import context1, context2, tarek
-
 import pytest
 
 from rdflib import ConjunctiveGraph, Graph, Literal
-from rdflib.namespace import OWL, Namespace
+from rdflib.namespace import OWL, Namespace, NamespaceManager
 from rdflib.plugins.stores.memory import Memory
 from rdflib.term import URIRef
+from test.data import CONTEXT1, CONTEXT2, TAREK
 
 foaf1_uri = URIRef("http://xmlns.com/foaf/0.1/")
 foaf2_uri = URIRef("http://xmlns.com/foaf/2.0/")
@@ -15,7 +14,6 @@ FOAF2 = Namespace(foaf2_uri)
 
 
 def test_binding_replace():
-
     # The confusion here is in the two arguments “override” and “replace” and
     # how they serve two different purposes --- changing a prefix already bound
     # to a namespace versus changing a namespace already bound to a prefix.
@@ -181,12 +179,11 @@ def test_binding_replace():
 
     s = g.serialize(format="n3")
 
-    for l in expected.split():
+    for l in expected.split():  # noqa: E741
         assert l in s
 
 
 def test_prefix_alias_disallowed():
-
     # CANNOT BIND A PREFIX ALIASED TO AN EXISTING BOUND NAMESPACE
 
     g = Graph(bind_namespaces="none")
@@ -199,7 +196,6 @@ def test_prefix_alias_disallowed():
 
 
 def test_rebind_prefix_succeeds():
-
     # CAN REPLACE A PREFIX-NAMESPACE BINDING
 
     g = Graph(bind_namespaces="none")
@@ -212,7 +208,6 @@ def test_rebind_prefix_succeeds():
 
 
 def test_parse_rebinds_prefix():
-
     # PARSED PREFIX-NAMESPACE BINDINGS REPLACE EXISTING BINDINGS
 
     data = """@prefix friend-of-a-friend: <http://xmlns.com/foaf/0.1/> .
@@ -241,7 +236,6 @@ def test_parse_rebinds_prefix():
     """
 )
 def test_automatic_handling_of_unknown_predicates():
-
     # AUTOMATIC HANDLING OF UNKNOWN PREDICATES
 
     """
@@ -254,16 +248,15 @@ def test_automatic_handling_of_unknown_predicates():
 
     g = Graph(bind_namespaces="none")
 
-    g.add((tarek, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
+    g.add((TAREK, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
 
     assert len(list(g.namespaces())) > 0
 
 
 def test_automatic_handling_of_unknown_predicates_only_effected_after_serialization():
-
     g = Graph(bind_namespaces="none")
 
-    g.add((tarek, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
+    g.add((TAREK, URIRef("http://xmlns.com/foaf/0.1/name"), Literal("Tarek")))
 
     assert "@prefix ns1: <http://xmlns.com/foaf/0.1/> ." in g.serialize(format="n3")
 
@@ -280,17 +273,17 @@ def test_multigraph_bindings():
 
     store = Memory()
 
-    g1 = Graph(store, identifier=context1, bind_namespaces="none")
+    g1 = Graph(store, identifier=CONTEXT1, bind_namespaces="none")
 
     g1.bind("foaf", FOAF1)
     assert list(g1.namespaces()) == [("foaf", foaf1_uri)]
     assert list(store.namespaces()) == [("foaf", foaf1_uri)]
 
-    g1.add((tarek, FOAF1.name, Literal("tarek")))
+    g1.add((TAREK, FOAF1.name, Literal("tarek")))
 
     assert list(store.namespaces()) == [("foaf", foaf1_uri)]
 
-    g2 = Graph(store, identifier=context2, bind_namespaces="none")
+    g2 = Graph(store, identifier=CONTEXT2, bind_namespaces="none")
     g2.parse(data=data, format="n3")
 
     # The parser-caused rebind is in the underlying store and all objects
@@ -300,6 +293,7 @@ def test_multigraph_bindings():
 
     # Including newly-created objects that use the store
     cg = ConjunctiveGraph(store=store)
+    cg.namespace_manager = NamespaceManager(cg, bind_namespaces="core")
 
     assert ("foaf", foaf1_uri) not in list(cg.namespaces())
     assert ("friend-of-a-friend", foaf1_uri) in list(cg.namespaces())
@@ -316,7 +310,7 @@ def test_multigraph_bindings():
         format="n3"
     )
 
-    # In the notation3 format, the statement asserting tarek's name
+    # In the notation3 format, the statement asserting TAREK's name
     # now references the changed prefix:
     assert '<urn:example:tarek> friend-of-a-friend:name "tarek" .' in cg.serialize(
         format="n3"
@@ -398,7 +392,6 @@ def test_new_namespace_override_false():
 
 
 def test_change_namespace_and_prefix():
-
     # A more extensive illustration of attempted rebinds of
     # `foaf` being intercepted and changed to a non-clashing
     # prefix of `foafN` (where N is an incrementing integer) ...
@@ -416,7 +409,7 @@ def test_change_namespace_and_prefix():
     assert list(g.namespaces()) == [("foaf", foaf2_uri), ("foaf1", foaf1_uri)]
 
     foaf3_uri = URIRef("http://xmlns.com/foaf/3.0/")
-    FOAF3 = Namespace("http://xmlns.com/foaf/3.0/")
+    FOAF3 = Namespace("http://xmlns.com/foaf/3.0/")  # noqa: N806
 
     g.bind("foaf", FOAF3)
 
@@ -427,7 +420,7 @@ def test_change_namespace_and_prefix():
     ]
 
     foaf4_uri = URIRef("http://xmlns.com/foaf/4.0/")
-    FOAF4 = Namespace("http://xmlns.com/foaf/4.0/")
+    FOAF4 = Namespace("http://xmlns.com/foaf/4.0/")  # noqa: N806
 
     g.bind("foaf", FOAF4)
 

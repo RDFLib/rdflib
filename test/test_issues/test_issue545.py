@@ -3,8 +3,7 @@ from rdflib.plugins import sparql
 
 
 def test_issue():
-
-    query = sparql.prepareQuery(
+    query = sparql.prepareQuery(  # noqa: F841
         """
             SELECT DISTINCT ?property ?parent
             WHERE{

@@ -10,24 +10,30 @@ namespace:
 
 Nicholas J. Car, Dec, 2021
 """
+
+from __future__ import annotations
+
 import argparse
 import datetime
-import sys
+import keyword
+from collections.abc import Iterable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-sys.path.append(str(Path(__file__).parent.absolute().parent.parent))
-
-from rdflib import Graph
+from rdflib.graph import Graph
 from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
 from rdflib.util import guess_format
 
+if TYPE_CHECKING:
+    from rdflib.query import ResultRow
 
-def validate_namespace(namespace):
+
+def validate_namespace(namespace: str) -> None:
     if not namespace.endswith(("/", "#")):
         raise ValueError("The supplied namespace must end with '/' or '#'")
 
 
-def validate_object_id(object_id):
+def validate_object_id(object_id: str) -> None:
     for c in object_id:
         if not c.isupper():
             raise ValueError("The supplied object_id must be an all-capitals string")
@@ -66,10 +72,12 @@ def validate_object_id(object_id):
 #     return classes
 
 
-def get_target_namespace_elements(g, target_namespace):
+def get_target_namespace_elements(
+    g: Graph, target_namespace: str
+) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
-        SELECT DISTINCT ?s ?def
+        SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
         WHERE {
             # all things in the RDF data (anything RDF.type...)
             ?s a ?o .
@@ -81,29 +89,43 @@ def get_target_namespace_elements(g, target_namespace):
 
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
+            FILTER (STR(?s) != "xxx")
         }
+        GROUP BY ?s
         """.replace(
         "xxx", target_namespace
     )
-    elements = []
+    elements: list[tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
+        if TYPE_CHECKING:
+            assert isinstance(r, ResultRow)
         elements.append((str(r[0]), str(r[1])))
 
     elements.sort(key=lambda tup: tup[0])
 
-    elements_strs = []
+    elements_strs: list[str] = []
+    non_python_elements_strs: list[str] = []
     for e in elements:
+        name = e[0].replace(target_namespace, "")
         desc = e[1].replace("\n", " ")
-        elements_strs.append(
-            f"    {e[0].replace(args.target_namespace, '')}: URIRef  # {desc}\n"
-        )
+        if name.isidentifier() and not keyword.iskeyword(name):
+            elements_strs.append(f"    {name}: URIRef  # {desc}\n")
+        else:
+            non_python_elements_strs.append(f"""        "{name}",  # {desc}\n""")
 
-    return elements, elements_strs
+    return elements, elements_strs, non_python_elements_strs
 
 
-def make_dn_file(output_file_name, target_namespace, elements_strs, object_id, fail):
-    header = f'''from rdflib.term import URIRef
-from rdflib.namespace import DefinedNamespace, Namespace
+def make_dn_file(
+    output_file_name: Path,
+    target_namespace: str,
+    elements_strs: Iterable[str],
+    non_python_elements_strs: list[str],
+    object_id: str,
+    fail: bool,
+) -> None:
+    header = f'''from rdflib.namespace import DefinedNamespace, Namespace
+from rdflib.term import URIRef
 
 
 class {object_id}(DefinedNamespace):
@@ -123,6 +145,16 @@ class {object_id}(DefinedNamespace):
             f.write("    _fail = True")
             f.write("\n\n")
         f.writelines(elements_strs)
+
+        if len(non_python_elements_strs) > 0:
+            f.write("\n")
+            f.write("    # Valid non-python identifiers")
+            f.write("\n")
+            f.write("    _extras = [")
+            f.write("\n")
+            f.writelines(non_python_elements_strs)
+            f.write("    ]")
+            f.write("\n")
 
 
 if __name__ == "__main__":
@@ -182,5 +214,10 @@ if __name__ == "__main__":
     output_file_name = Path().cwd() / f"_{args.object_id}.py"
     print(f"Creating DefinedNamespace Python file {output_file_name}")
     make_dn_file(
-        output_file_name, args.target_namespace, elements[1], args.object_id, args.fail
+        output_file_name,
+        args.target_namespace,
+        elements[1],
+        elements[2],
+        args.object_id,
+        args.fail,
     )

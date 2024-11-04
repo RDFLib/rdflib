@@ -4,8 +4,13 @@ SPARQL 1.1 Parser
 based on pyparsing
 """
 
+from __future__ import annotations  # noqa: I001
+
 import re
 import sys
+from typing import Any, BinaryIO
+from typing import Optional as OptionalType
+from typing import TextIO, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -27,7 +32,7 @@ import rdflib
 from rdflib.compat import decodeUnicodeEscape
 
 from . import operators as op
-from .parserutils import Comp, Param, ParamList
+from .parserutils import Comp, CompValue, Param, ParamList
 
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
@@ -37,35 +42,36 @@ DEBUG = False
 # ---------------- ACTIONS
 
 
-def neg(literal):
+def neg(literal: rdflib.Literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
-def setLanguage(terms):
+def setLanguage(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], lang=terms[1])
 
 
-def setDataType(terms):
+def setDataType(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 
-def expandTriples(terms):
+def expandTriples(terms: ParseResults) -> list[Any]:
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
     # import pdb; pdb.set_trace()
+    last_subject, last_predicate = None, None  # Used for ; and ,
     try:
-        res = []
+        res: list[Any] = []
         if DEBUG:
             print("Terms", terms)
         l_ = len(terms)
         for i, t in enumerate(terms):
             if t == ",":
-                res.extend([res[-3], res[-2]])
+                res.extend([last_subject, last_predicate])
             elif t == ";":
                 if i + 1 == len(terms) or terms[i + 1] == ";" or terms[i + 1] == ".":
                     continue  # this semicolon is spurious
-                res.append(res[0])
+                res.append(last_subject)
             elif isinstance(t, list):
                 # BlankNodePropertyList
                 # is this bnode the object of previous triples?
@@ -73,14 +79,23 @@ def expandTriples(terms):
                     res.append(t[0])
                 # is this a single [] ?
                 if len(t) > 1:
-                    res += t
+                    res += t  # Don't update last_subject/last_predicate
                 # is this bnode the subject of more triples?
-                if i + 1 < l_ and terms[i + 1] not in ".,;":
+                if i + 1 < l_ and terms[i + 1] not in [
+                    ".",
+                    ",",
+                    ";",
+                ]:  # term might not be a string
+                    last_subject, last_predicate = t[0], None
                     res.append(t[0])
             elif isinstance(t, ParseResults):
                 res += t.asList()
             elif t != ".":
                 res.append(t)
+                if (len(res) % 3) == 1:
+                    last_subject = t
+                elif (len(res) % 3) == 2:
+                    last_predicate = t
             if DEBUG:
                 print(len(res), t)
         if DEBUG:
@@ -94,7 +109,7 @@ def expandTriples(terms):
         #       "Length of triple-list is not divisible by 3: %d!"%len(res)
 
         # return [tuple(res[i:i+3]) for i in range(len(res)/3)]
-    except:  # noqa: E722
+    except:
         if DEBUG:
             import traceback
 
@@ -102,7 +117,7 @@ def expandTriples(terms):
         raise
 
 
-def expandBNodeTriples(terms):
+def expandBNodeTriples(terms: ParseResults) -> list[Any]:
     """
     expand [ ?p ?o ] syntax for implicit bnodes
     """
@@ -119,14 +134,14 @@ def expandBNodeTriples(terms):
         raise
 
 
-def expandCollection(terms):
+def expandCollection(terms: ParseResults) -> list[list[Any]]:
     """
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
         print("Collection: ", terms)
 
-    res = []
+    res: list[Any] = []
     other = []
     for x in terms:
         if isinstance(x, list):  # is this a [ .. ] ?
@@ -1479,7 +1494,7 @@ DescribeQuery = Comp(
     "DescribeQuery",
     Keyword("DESCRIBE")
     + (OneOrMore(ParamList("var", VarOrIri)) | "*")
-    + Param("datasetClause", ZeroOrMore(DatasetClause))
+    + ZeroOrMore(ParamList("datasetClause", DatasetClause))
     + Optional(WhereClause)
     + SolutionModifier
     + ValuesClause,
@@ -1508,25 +1523,27 @@ QueryUnit.ignore("#" + restOfLine)
 UpdateUnit.ignore("#" + restOfLine)
 
 
-expandUnicodeEscapes_re = re.compile(r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I)
+expandUnicodeEscapes_re: re.Pattern = re.compile(
+    r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=re.I
+)
 
 
-def expandUnicodeEscapes(q):
+def expandUnicodeEscapes(q: str) -> str:
     r"""
     The syntax of the SPARQL Query Language is expressed over code points in Unicode [UNICODE]. The encoding is always UTF-8 [RFC3629].
     Unicode code points may also be expressed using an \ uXXXX (U+0 to U+FFFF) or \ UXXXXXXXX syntax (for U+10000 onwards) where X is a hexadecimal digit [0-9A-F]
     """
 
-    def expand(m):
+    def expand(m: re.Match) -> str:
         try:
             return chr(int(m.group(1), 16))
-        except:  # noqa: E722
-            raise Exception("Invalid unicode code point: " + m)
+        except (ValueError, OverflowError) as e:
+            raise ValueError("Invalid unicode code point: " + m.group(1)) from e
 
     return expandUnicodeEscapes_re.sub(expand, q)
 
 
-def parseQuery(q):
+def parseQuery(q: Union[str, bytes, TextIO, BinaryIO]) -> ParseResults:
     if hasattr(q, "read"):
         q = q.read()
     if isinstance(q, bytes):
@@ -1536,7 +1553,7 @@ def parseQuery(q):
     return Query.parseString(q, parseAll=True)
 
 
-def parseUpdate(q):
+def parseUpdate(q: Union[str, bytes, TextIO, BinaryIO]) -> CompValue:
     if hasattr(q, "read"):
         q = q.read()
 

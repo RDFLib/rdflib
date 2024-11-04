@@ -1,14 +1,3 @@
-from collections import OrderedDict
-from types import MethodType
-from typing import TYPE_CHECKING, Any
-
-from pyparsing import ParseResults, TokenConverter, originalTextFor
-
-from rdflib import BNode, Variable
-
-if TYPE_CHECKING:
-    from rdflib.plugins.sparql.sparql import FrozenBindings
-
 """
 
 NOTE: PyParsing setResultName/__call__ provides a very similar solution to this
@@ -36,6 +25,26 @@ the resulting CompValue
 
 """
 
+from __future__ import annotations
+
+from collections import OrderedDict
+from collections.abc import Callable, Mapping
+from types import MethodType
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+    TypeVar,
+    Union,
+)
+
+from pyparsing import ParserElement, ParseResults, TokenConverter, originalTextFor
+
+from rdflib.term import BNode, Identifier, Variable
+
+if TYPE_CHECKING:
+    from rdflib.plugins.sparql.sparql import FrozenBindings
+
 
 # This is an alternative
 
@@ -43,11 +52,11 @@ the resulting CompValue
 
 
 def value(
-    ctx: "FrozenBindings",
+    ctx: FrozenBindings,
     val: Any,
     variables: bool = False,
     errors: bool = False,
-):
+) -> Any:
     """
     utility function for evaluating something...
 
@@ -87,14 +96,16 @@ def value(
         return val
 
 
-class ParamValue(object):
+class ParamValue:
     """
     The result of parsing a Param
     This just keeps the name/value
     All cleverness is in the CompValue
     """
 
-    def __init__(self, name, tokenList, isList):
+    def __init__(
+        self, name: str, tokenList: Union[list[Any], ParseResults], isList: bool
+    ):
         self.isList = isList
         self.name = name
         if isinstance(tokenList, (list, ParseResults)) and len(tokenList) == 1:
@@ -102,7 +113,7 @@ class ParamValue(object):
 
         self.tokenList = tokenList
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Param(%s, %s)" % (self.name, self.tokenList)
 
 
@@ -113,13 +124,13 @@ class Param(TokenConverter):
     their values merged in a list
     """
 
-    def __init__(self, name, expr, isList=False):
+    def __init__(self, name: str, expr, isList: bool = False):
         self.isList = isList
         TokenConverter.__init__(self, expr)
         self.setName(name)
         self.addParseAction(self.postParse2)
 
-    def postParse2(self, tokenList):
+    def postParse2(self, tokenList: Union[list[Any], ParseResults]) -> ParamValue:
         return ParamValue(self.name, tokenList, self.isList)
 
 
@@ -128,18 +139,14 @@ class ParamList(Param):
     A shortcut for a Param with isList=True
     """
 
-    def __init__(self, name, expr):
+    def __init__(self, name: str, expr):
         Param.__init__(self, name, expr, True)
 
 
-class plist(list):
-    """this is just a list, but we want our own type to check for"""
-
-    pass
+_ValT = TypeVar("_ValT")
 
 
 class CompValue(OrderedDict):
-
     """
     The result of parsing a Comp
     Any included Params are available as Dict keys
@@ -152,16 +159,18 @@ class CompValue(OrderedDict):
         self.name = name
         self.update(values)
 
-    def clone(self):
+    def clone(self) -> CompValue:
         return CompValue(self.name, **self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name + "_" + OrderedDict.__str__(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name + "_" + dict.__repr__(self)
 
-    def _value(self, val, variables=False, errors=False):
+    def _value(
+        self, val: _ValT, variables: bool = False, errors: bool = False
+    ) -> Union[_ValT, Any]:
         if self.ctx is not None:
             return value(self.ctx, val, variables)
         else:
@@ -170,7 +179,9 @@ class CompValue(OrderedDict):
     def __getitem__(self, a):
         return self._value(OrderedDict.__getitem__(self, a))
 
-    def get(self, a, variables=False, errors=False):
+    # type error: Signature of "get" incompatible with supertype "dict"
+    # type error: Signature of "get" incompatible with supertype "Mapping"  [override]
+    def get(self, a, variables: bool = False, errors: bool = False):  # type: ignore[override]
         return self._value(OrderedDict.get(self, a, a), variables, errors)
 
     def __getattr__(self, a: str) -> Any:
@@ -185,8 +196,7 @@ class CompValue(OrderedDict):
 
     if TYPE_CHECKING:
         # this is here because properties are dynamically set on CompValue
-        def __setattr__(self, __name: str, __value: Any) -> None:
-            ...
+        def __setattr__(self, __name: str, __value: Any) -> None: ...
 
 
 class Expr(CompValue):
@@ -194,17 +204,23 @@ class Expr(CompValue):
     A CompValue that is evaluatable
     """
 
-    def __init__(self, name, evalfn=None, **values):
+    def __init__(
+        self,
+        name: str,
+        evalfn: Optional[Callable[[Any, Any], Any]] = None,
+        **values,
+    ):
         super(Expr, self).__init__(name, **values)
 
         self._evalfn = None
         if evalfn:
             self._evalfn = MethodType(evalfn, self)
 
-    def eval(self, ctx={}):
+    def eval(self, ctx: Any = {}) -> Union[SPARQLError, Any]:
         try:
-            self.ctx = ctx
-            return self._evalfn(ctx)
+            self.ctx: Optional[Union[Mapping, FrozenBindings]] = ctx
+            # type error: "None" not callable
+            return self._evalfn(ctx)  # type: ignore[misc]
         except SPARQLError as e:
             return e
         finally:
@@ -212,7 +228,6 @@ class Expr(CompValue):
 
 
 class Comp(TokenConverter):
-
     """
     A pyparsing token for grouping together things with a label
     Any sub-tokens that are not Params will be ignored.
@@ -220,13 +235,16 @@ class Comp(TokenConverter):
     Returns CompValue / Expr objects - depending on whether evalFn is set.
     """
 
-    def __init__(self, name, expr):
+    def __init__(self, name: str, expr: ParserElement):
         self.expr = expr
         TokenConverter.__init__(self, expr)
         self.setName(name)
-        self.evalfn = None
+        self.evalfn: Optional[Callable[[Any, Any], Any]] = None
 
-    def postParse(self, instring, loc, tokenList):
+    def postParse(
+        self, instring: str, loc: int, tokenList: ParseResults
+    ) -> Union[Expr, CompValue]:
+        res: Union[Expr, CompValue]
         if self.evalfn:
             res = Expr(self.name)
             res._evalfn = MethodType(self.evalfn, res)
@@ -244,7 +262,7 @@ class Comp(TokenConverter):
             if isinstance(t, ParamValue):
                 if t.isList:
                     if t.name not in res:
-                        res[t.name] = plist()
+                        res[t.name] = []
                     res[t.name].append(t.tokenList)
                 else:
                     res[t.name] = t.tokenList
@@ -253,31 +271,39 @@ class Comp(TokenConverter):
             #    res.update(t)
         return res
 
-    def setEvalFn(self, evalfn):
+    def setEvalFn(self, evalfn: Callable[[Any, Any], Any]) -> Comp:
         self.evalfn = evalfn
         return self
 
 
-def prettify_parsetree(t, indent="", depth=0):
-    out = []
-    if isinstance(t, ParseResults):
-        for e in t.asList():
-            out.append(prettify_parsetree(e, indent, depth + 1))
-        for k, v in sorted(t.items()):
-            out.append("%s%s- %s:\n" % (indent, "  " * depth, k))
-            out.append(prettify_parsetree(v, indent, depth + 1))
-    elif isinstance(t, CompValue):
+def prettify_parsetree(t: ParseResults, indent: str = "", depth: int = 0) -> str:
+    out: list[str] = []
+    for e in t.asList():
+        out.append(_prettify_sub_parsetree(e, indent, depth + 1))
+    for k, v in sorted(t.items()):
+        out.append("%s%s- %s:\n" % (indent, "  " * depth, k))
+        out.append(_prettify_sub_parsetree(v, indent, depth + 1))
+    return "".join(out)
+
+
+def _prettify_sub_parsetree(
+    t: Union[Identifier, CompValue, set, list, dict, tuple, bool, None],
+    indent: str = "",
+    depth: int = 0,
+) -> str:
+    out: list[str] = []
+    if isinstance(t, CompValue):
         out.append("%s%s> %s:\n" % (indent, "  " * depth, t.name))
         for k, v in t.items():
             out.append("%s%s- %s:\n" % (indent, "  " * (depth + 1), k))
-            out.append(prettify_parsetree(v, indent, depth + 2))
+            out.append(_prettify_sub_parsetree(v, indent, depth + 2))
     elif isinstance(t, dict):
         for k, v in t.items():
             out.append("%s%s- %s:\n" % (indent, "  " * (depth + 1), k))
-            out.append(prettify_parsetree(v, indent, depth + 2))
+            out.append(_prettify_sub_parsetree(v, indent, depth + 2))
     elif isinstance(t, list):
         for e in t:
-            out.append(prettify_parsetree(e, indent, depth + 1))
+            out.append(_prettify_sub_parsetree(e, indent, depth + 1))
     else:
         out.append("%s%s- %r\n" % (indent, "  " * depth, t))
     return "".join(out)
