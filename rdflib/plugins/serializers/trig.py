@@ -66,6 +66,7 @@ class TrigSerializer(TurtleSerializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
+        *args: Any,
         spacious: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:

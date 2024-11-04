@@ -26,7 +26,7 @@ _StrT = TypeVar("_StrT", bound=str)
 
 
 class Serializer:
-    def __init__(self, store: Graph):
+    def __init__(self, store: Graph) -> None:
         self.store: Graph = store
         self.encoding: str = "utf-8"
         self.base: Optional[str] = None
@@ -36,7 +36,8 @@ class Serializer:
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args: Any,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """Abstract method"""
 

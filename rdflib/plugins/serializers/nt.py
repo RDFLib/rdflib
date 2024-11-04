@@ -33,6 +33,7 @@ class NTSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
+        *args: Any,
         **kwargs: Any,
     ) -> None:
         if base is not None:
