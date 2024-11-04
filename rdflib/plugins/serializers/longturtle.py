@@ -16,6 +16,10 @@ to turtle - the original turtle serializer. It:
 - Nicholas Car, 2023
 """
 
+from __future__ import annotations
+
+from typing import IO, Any, Optional
+
 from rdflib.exceptions import Error
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
@@ -42,7 +46,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
-        self._spacious = _SPACIOUS_OUTPUT
+        self._spacious: bool = _SPACIOUS_OUTPUT
 
     def addNamespace(self, prefix, namespace):
         # Turtle does not support prefixes that start with _
@@ -74,7 +78,14 @@ class LongTurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
+        **kwargs: Any,
+    ) -> None:
         self.reset()
         self.stream = stream
         # if base is given here, use, if not and a base is set for the graph use that

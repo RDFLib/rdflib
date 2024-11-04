@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import xml.dom.minidom
 from collections.abc import Generator
-from typing import IO, TYPE_CHECKING, Optional
+from typing import IO, TYPE_CHECKING, Any, Optional
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
@@ -50,7 +50,7 @@ class XMLSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args,
+        **kwargs: Any,
     ) -> None:
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is not None:
@@ -69,8 +69,8 @@ class XMLSerializer(Serializer):
         write("<rdf:RDF\n")
 
         # If provided, write xml:base attribute for the RDF
-        if "xml_base" in args:
-            write('   xml:base="%s"\n' % args["xml_base"])
+        if "xml_base" in kwargs:
+            write('   xml:base="%s"\n' % kwargs["xml_base"])
         elif self.base:
             write('   xml:base="%s"\n' % self.base)
         # TODO:
@@ -176,7 +176,7 @@ class PrettyXMLSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args,
+        **kwargs: Any,
     ) -> None:
         self.__serialized: dict[IdentifiedNode | Literal, int] = {}
         store = self.store
@@ -185,7 +185,7 @@ class PrettyXMLSerializer(Serializer):
             self.base = base
         elif store.base is not None:
             self.base = store.base
-        self.max_depth = args.get("max_depth", 3)
+        self.max_depth = kwargs.get("max_depth", 3)
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
@@ -205,8 +205,8 @@ class PrettyXMLSerializer(Serializer):
 
         writer.push(RDFVOC.RDF)
 
-        if "xml_base" in args:
-            writer.attribute(XMLBASE, args["xml_base"])
+        if "xml_base" in kwargs:
+            writer.attribute(XMLBASE, kwargs["xml_base"])
         elif self.base:
             writer.attribute(XMLBASE, self.base)
 
