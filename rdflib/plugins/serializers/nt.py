@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import codecs
 import warnings
-from typing import IO, TYPE_CHECKING, Optional, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, Optional
 
 from rdflib.graph import Graph
 from rdflib.serializer import Serializer
@@ -33,7 +33,7 @@ class NTSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
-        **args,
+        **kwargs: Any,
     ) -> None:
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
