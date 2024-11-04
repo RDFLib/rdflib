@@ -32,6 +32,7 @@ class PatchSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
+        *args: Any,
         **kwargs: Any,
     ) -> None:
         """
