@@ -51,7 +51,6 @@ class XMLSerializer(Serializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         *args: Any,
-        sort: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -179,7 +178,6 @@ class PrettyXMLSerializer(Serializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         *args: Any,
-        sort: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:
         self.__serialized: dict[IdentifiedNode | Literal, int] = {}
