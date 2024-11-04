@@ -8,9 +8,10 @@ file, which will be a Turtle file.
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING, BinaryIO, Generator, Optional, Tuple
+from typing import TYPE_CHECKING, BinaryIO, Optional
 
 from rdflib.graph import Graph
 from rdflib.plugins.serializers.nt import _nt_row
@@ -70,7 +71,7 @@ def serialize_in_chunks(
         )
 
     @contextmanager
-    def _start_new_file(file_no: int) -> Generator[Tuple[Path, BinaryIO], None, None]:
+    def _start_new_file(file_no: int) -> Generator[tuple[Path, BinaryIO], None, None]:
         if TYPE_CHECKING:
             # this is here because mypy gets a bit confused
             assert output_dir is not None

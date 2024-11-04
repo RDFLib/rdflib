@@ -23,6 +23,7 @@ Date/time utilities
 from __future__ import annotations
 
 from calendar import timegm
+from collections.abc import Hashable
 from os.path import splitext
 
 # from time import daylight
@@ -30,15 +31,7 @@ from time import altzone, gmtime, localtime, time, timezone
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Hashable,
-    Iterable,
-    Iterator,
-    List,
     Optional,
-    Set,
-    Tuple,
     TypeVar,
     Union,
     overload,
@@ -51,7 +44,9 @@ import rdflib.term
 from rdflib.compat import sign
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
+    from collections.abc import Callable, Generator, Iterable
+
+    from rdflib.graph import Graph, _ObjectType, _SubjectType
 
 
 __all__ = [
@@ -74,7 +69,7 @@ _HashableT = TypeVar("_HashableT", bound=Hashable)
 _AnyT = TypeVar("_AnyT")
 
 
-def list2set(seq: Iterable[_HashableT]) -> List[_HashableT]:
+def list2set(seq: Iterable[_HashableT]) -> list[_HashableT]:
     """
     Return a new list without duplicates.
     Preserves the order, unlike set(seq)
@@ -94,7 +89,7 @@ def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
     return None
 
 
-def uniq(sequence: Iterable[str], strip: int = 0) -> Set[str]:
+def uniq(sequence: Iterable[str], strip: int = 0) -> set[str]:
     """removes duplicate strings from the sequence."""
     if strip:
         return set(s.strip() for s in sequence)
@@ -351,7 +346,7 @@ SUFFIX_FORMAT_MAP = {
 }
 
 
-def guess_format(fpath: str, fmap: Optional[Dict[str, str]] = None) -> Optional[str]:
+def guess_format(fpath: str, fmap: Optional[dict[str, str]] = None) -> Optional[str]:
     """
     Guess RDF serialization based on file suffix. Uses
     ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
@@ -412,8 +407,8 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
 def find_roots(
     graph: Graph,
     prop: rdflib.term.URIRef,
-    roots: Optional[Set[rdflib.term.Node]] = None,
-) -> Set[rdflib.term.Node]:
+    roots: Optional[set[_SubjectType | _ObjectType]] = None,
+) -> set[_SubjectType | _ObjectType]:
     """
     Find the roots in some sort of transitive hierarchy.
 
@@ -425,7 +420,7 @@ def find_roots(
 
     """
 
-    non_roots: Set[rdflib.term.Node] = set()
+    non_roots: set[_SubjectType | _ObjectType] = set()
     if roots is None:
         roots = set()
     for x, y in graph.subject_objects(prop):
@@ -439,13 +434,13 @@ def find_roots(
 
 def get_tree(
     graph: Graph,
-    root: rdflib.term.Node,
+    root: Union[_SubjectType, _ObjectType],
     prop: rdflib.term.URIRef,
     mapper: Callable[[rdflib.term.Node], rdflib.term.Node] = lambda x: x,
     sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[Set[rdflib.term.Node]] = None,
+    done: Optional[set[rdflib.term.Node]] = None,
     dir: str = "down",
-) -> Optional[Tuple[rdflib.term.Node, List[Any]]]:
+) -> Optional[tuple[rdflib.term.Node, list[Any]]]:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -472,7 +467,7 @@ def get_tree(
     done.add(root)
     tree = []
 
-    branches: Iterator[rdflib.term.Node]
+    branches: Generator[_SubjectType] | Generator[_ObjectType]
     if dir == "down":
         branches = graph.subjects(prop, root)
     else:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import codecs
-from typing import IO, TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple
+from collections.abc import Iterable
+from typing import IO, TYPE_CHECKING, Optional
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.term import URIRef
@@ -22,7 +23,7 @@ class XMLWriter:
         namespace_manager: NamespaceManager,
         encoding: Optional[str] = None,
         decl: int = 1,
-        extra_ns: Optional[Dict[str, Namespace]] = None,
+        extra_ns: Optional[dict[str, Namespace]] = None,
     ):
         encoding = encoding or "utf-8"
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
@@ -32,7 +33,7 @@ class XMLWriter:
         if decl:
             # type error: No overload variant of "write" of "IO" matches argument type "str"
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)  # type: ignore[call-overload]
-        self.element_stack: List[str] = []
+        self.element_stack: list[str] = []
         self.nm = namespace_manager
         self.extra_ns = extra_ns or {}
         self.closed = True
@@ -73,7 +74,7 @@ class XMLWriter:
         self.parent = True
 
     def element(
-        self, uri: str, content: str, attributes: Dict[URIRef, str] = {}
+        self, uri: str, content: str, attributes: dict[URIRef, str] = {}
     ) -> None:
         """Utility method for adding a complete simple element"""
         self.push(uri)
@@ -82,7 +83,7 @@ class XMLWriter:
         self.text(content)
         self.pop()
 
-    def namespaces(self, namespaces: Iterable[Tuple[str, str]] = None) -> None:
+    def namespaces(self, namespaces: Iterable[tuple[str, str]] = None) -> None:
         if not namespaces:
             namespaces = self.nm.namespaces()
 

@@ -3,17 +3,18 @@ from __future__ import annotations
 import enum
 import logging
 import posixpath
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Type
+from typing import Optional
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
 from test.utils.http import HeadersT, MethodName, MockHTTPRequest, apply_headers_to
 
-__all__: List[str] = [
+__all__: list[str] = [
     "LocationType",
     "ProtoResource",
     "Resource",
@@ -113,7 +114,7 @@ class HTTPFileServer(HTTPServer):
         server_address: tuple[str, int],
         bind_and_activate: bool = True,
     ) -> None:
-        self._resources: Dict[str, Resource] = {}
+        self._resources: dict[str, Resource] = {}
         self.Handler = self.make_handler()
         super().__init__(server_address, self.Handler, bind_and_activate)
 
@@ -152,7 +153,7 @@ class HTTPFileServer(HTTPServer):
         if proto_redirects is None:
             proto_redirects = []
 
-        redirects: List[RedirectResource] = []
+        redirects: list[RedirectResource] = []
         for proto_redirect in reversed(proto_redirects):
             redirect_url_path = f"/redirect/{uuid4().hex}{suffix}"
             if proto_redirect.location_type == LocationType.URL:
@@ -180,7 +181,7 @@ class HTTPFileServer(HTTPServer):
         file_info = HTTPFileInfo(file_resource, redirects)
         return file_info
 
-    def make_handler(self) -> Type[BaseHTTPRequestHandler]:
+    def make_handler(self) -> type[BaseHTTPRequestHandler]:
         class Handler(BaseHTTPRequestHandler):
             server: HTTPFileServer
 

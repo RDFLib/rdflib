@@ -4,7 +4,7 @@ import base64
 import copy
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING, Optional
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -43,7 +43,7 @@ class SPARQLConnector:
         update_endpoint: Optional[str] = None,
         returnFormat: str = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: Optional[Tuple[str, str]] = None,
+        auth: Optional[tuple[str, str]] = None,
         **kwargs,
     ):
         """

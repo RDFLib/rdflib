@@ -15,12 +15,12 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 from rdflib import Graph
 
 
-def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
+def audit_hook(name: str, args: tuple[Any, ...]) -> None:
     """
     An audit hook that blocks access when an attempt is made to open a
     file or URL that ends with ``blocked.jsonld``.

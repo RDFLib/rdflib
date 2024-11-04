@@ -19,7 +19,7 @@ import re
 import sys
 import time
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 from urllib.parse import quote
 
 import rdflib
@@ -91,7 +91,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 """
 
 # bah - ugly global
-uris: Dict[Any, Tuple[URIRef, Optional[URIRef]]] = {}
+uris: dict[Any, tuple[URIRef, Optional[URIRef]]] = {}
 
 
 def toProperty(label: str):  # noqa: N802
@@ -117,7 +117,7 @@ def toPropertyLabel(label):  # noqa: N802
     return label
 
 
-def index(l_: List[int], i: Tuple[int, ...]) -> Tuple[int, ...]:
+def index(l_: list[int], i: tuple[int, ...]) -> tuple[int, ...]:
     """return a set of indexes from a list
     >>> index([1,2,3],(0,2))
     (1, 3)
@@ -306,7 +306,7 @@ class CSV2RDF:
         self.CLASS = None
         self.BASE = None
         self.PROPBASE = None
-        self.IDENT: Union[Tuple[str, ...], str] = "auto"
+        self.IDENT: Union[tuple[str, ...], str] = "auto"
         self.LABEL = None
         self.DEFINECLASS = False
         self.SKIP = 0
@@ -457,7 +457,7 @@ class CSV2RDF:
 def main():
     csv2rdf = CSV2RDF()
 
-    opts: Union[Dict[str, str], List[Tuple[str, str]]]
+    opts: Union[dict[str, str], list[tuple[str, str]]]
     opts, files = getopt.getopt(
         sys.argv[1:],
         "hc:b:p:i:o:Cf:l:s:d:D:",

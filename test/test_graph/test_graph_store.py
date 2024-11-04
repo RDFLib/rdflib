@@ -6,17 +6,12 @@ from __future__ import annotations
 
 import itertools
 import logging
+from collections.abc import Iterable, Mapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
-    Iterable,
-    Mapping,
     Optional,
-    Sequence,
-    Tuple,
-    Type,
     Union,
 )
 from unittest.mock import patch
@@ -36,7 +31,7 @@ from test.data import SIMPLE_TRIPLE_GRAPH
 if TYPE_CHECKING:
     from _pytest.mark.structures import ParameterSet
 
-NamespaceBindings = Dict[str, URIRef]
+NamespaceBindings = dict[str, URIRef]
 
 
 def check_ns(graph: Graph, expected_bindings: NamespaceBindings) -> None:
@@ -77,9 +72,9 @@ EGNS_V2 = EGNS["v2"]
 
 
 def make_graph_store_bind_cases(
-    store_type: Type[Store] = Memory,
-    graph_type: Type[Graph] = Graph,
-) -> Iterable[Union[Tuple[Any, ...], ParameterSet]]:
+    store_type: type[Store] = Memory,
+    graph_type: type[Graph] = Graph,
+) -> Iterable[Union[tuple[Any, ...], ParameterSet]]:
     """
     Generate test cases for test_graph_store_bind.
     """
@@ -94,7 +89,7 @@ def make_graph_store_bind_cases(
         ops: GraphOperations,
         expected_bindings: NamespaceBindings,
         expected_bindings_overrides: Optional[
-            Dict[Tuple[Type[Graph], Type[Store]], NamespaceBindings]
+            dict[tuple[type[Graph], type[Store]], NamespaceBindings]
         ] = None,
         *,
         id: Optional[str] = None,

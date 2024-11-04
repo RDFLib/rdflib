@@ -28,15 +28,12 @@ the resulting CompValue
 from __future__ import annotations
 
 from collections import OrderedDict
+from collections.abc import Callable, Mapping
 from types import MethodType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    List,
-    Mapping,
     Optional,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -107,7 +104,7 @@ class ParamValue:
     """
 
     def __init__(
-        self, name: str, tokenList: Union[List[Any], ParseResults], isList: bool
+        self, name: str, tokenList: Union[list[Any], ParseResults], isList: bool
     ):
         self.isList = isList
         self.name = name
@@ -133,7 +130,7 @@ class Param(TokenConverter):
         self.setName(name)
         self.addParseAction(self.postParse2)
 
-    def postParse2(self, tokenList: Union[List[Any], ParseResults]) -> ParamValue:
+    def postParse2(self, tokenList: Union[list[Any], ParseResults]) -> ParamValue:
         return ParamValue(self.name, tokenList, self.isList)
 
 
@@ -280,7 +277,7 @@ class Comp(TokenConverter):
 
 
 def prettify_parsetree(t: ParseResults, indent: str = "", depth: int = 0) -> str:
-    out: List[str] = []
+    out: list[str] = []
     for e in t.asList():
         out.append(_prettify_sub_parsetree(e, indent, depth + 1))
     for k, v in sorted(t.items()):
@@ -290,11 +287,11 @@ def prettify_parsetree(t: ParseResults, indent: str = "", depth: int = 0) -> str
 
 
 def _prettify_sub_parsetree(
-    t: Union[Identifier, CompValue, set, list, dict, Tuple, bool, None],
+    t: Union[Identifier, CompValue, set, list, dict, tuple, bool, None],
     indent: str = "",
     depth: int = 0,
 ) -> str:
-    out: List[str] = []
+    out: list[str] = []
     if isinstance(t, CompValue):
         out.append("%s%s> %s:\n" % (indent, "  " * depth, t.name))
         for k, v in t.items():

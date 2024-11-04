@@ -5,7 +5,8 @@ import itertools
 import logging
 import pathlib
 import re
-from contextlib import ExitStack, contextmanager
+from collections.abc import Collection, Generator, Iterable
+from contextlib import AbstractContextManager, ExitStack, contextmanager
 from dataclasses import dataclass
 from io import BytesIO, StringIO, TextIOWrapper
 from pathlib import Path
@@ -13,15 +14,9 @@ from typing import (  # Callable,
     IO,
     TYPE_CHECKING,
     BinaryIO,
-    Collection,
-    ContextManager,
-    Generator,
     Generic,
-    Iterable,
     Optional,
     TextIO,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -276,12 +271,12 @@ class InputSourceChecker:
     :param encoding: Expected encoding of input source. If ``None``, then the encoding is not checked. If it has a value (i.e. an instance of :class:`Holder`), then the encoding is expected to match ``encoding.value``.
     """
 
-    type: Type[InputSource]
+    type_: type[InputSource]
     stream_check: StreamCheck
     encoding: Optional[Holder[Optional[str]]]
     public_id: Optional[str]
     system_id: Optional[str]
-    # extra_checks: List[Callable[[InputSource], None]] = field(factory=list)
+    # extra_checks: list[Callable[[InputSource], None]] = field(factory=list)
 
     def check(
         self,
@@ -293,14 +288,14 @@ class InputSourceChecker:
         Check that ``input_source`` matches expectations.
         """
         logging.debug(
-            "input_source = %s / %s, self.type = %s",
+            "input_source = %s / %s, self.type_ = %s",
             type(input_source),
             input_source,
-            self.type,
+            self.type_,
         )
         assert isinstance(input_source, InputSource)
-        if self.type is not None:
-            assert isinstance(input_source, self.type)
+        if self.type_ is not None:
+            assert isinstance(input_source, self.type_)
 
         if self.stream_check is StreamCheck.BYTE:
             binary_io: BinaryIO = input_source.getByteStream()
@@ -341,7 +336,7 @@ class InputSourceChecker:
     @classmethod
     def type_from_param(
         cls, param: Union[SourceParam, FileParam, DataParam, LocationParam, enum.Enum]
-    ) -> Type[InputSource]:
+    ) -> type[InputSource]:
         """
         Return the type of input source that should be created for the given parameter.
 
@@ -366,10 +361,10 @@ class InputSourceChecker:
         raise ValueError(f"unknown param {param}")
 
 
-FileParamTypeCM = ContextManager[FileParamType]
+FileParamTypeCM = AbstractContextManager[FileParamType]
 
 
-CreateInputSourceTestParamsTuple = Tuple[
+CreateInputSourceTestParamsTuple = tuple[
     Path,
     Optional[SourceParam],
     Optional[str],

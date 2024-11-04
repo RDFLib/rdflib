@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import IO, Any, Callable, List, Optional, Type, Union, cast
+from collections.abc import Callable
+from typing import IO, Any, Optional, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD
@@ -30,7 +31,7 @@ class HextuplesSerializer(Serializer):
     Serializes RDF graphs to NTriples format.
     """
 
-    contexts: List[Union[Graph, IdentifiedNode]]
+    contexts: list[Union[Graph, IdentifiedNode]]
     dumps: Callable
 
     def __new__(cls, store: Union[Graph, Dataset, ConjunctiveGraph]):
@@ -54,7 +55,7 @@ class HextuplesSerializer(Serializer):
 
     def __init__(self, store: Union[Graph, Dataset, ConjunctiveGraph]):
         self.default_context: Optional[Union[Graph, IdentifiedNode]]
-        self.graph_type: Union[Type[Graph], Type[Dataset], Type[ConjunctiveGraph]]
+        self.graph_type: Union[type[Graph], type[Dataset], type[ConjunctiveGraph]]
         if isinstance(store, (Dataset, ConjunctiveGraph)):
             self.graph_type = (
                 Dataset if isinstance(store, Dataset) else ConjunctiveGraph
@@ -163,7 +164,7 @@ class HextuplesSerializer(Serializer):
                 language,
                 context_str,
             ]
-            outline: Union[str, bytes]
+            outline: str | bytes
             if _HAS_ORJSON:
                 outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
             else:

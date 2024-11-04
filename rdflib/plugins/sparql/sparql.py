@@ -4,17 +4,11 @@ import collections
 import datetime
 import itertools
 import typing as t
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Container, Generator, Iterable, Mapping, MutableMapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Container,
-    Dict,
-    Generator,
-    Iterable,
-    List,
     Optional,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -65,7 +59,7 @@ class Bindings(MutableMapping):
     """
 
     def __init__(self, outer: Optional[Bindings] = None, d=[]):
-        self._d: Dict[str, str] = dict(d)
+        self._d: dict[str, str] = dict(d)
         self.outer = outer
 
     def __getitem__(self, key: str) -> str:
@@ -120,7 +114,7 @@ class FrozenDict(Mapping):
     """
 
     def __init__(self, *args: Any, **kwargs: Any):
-        self._d: Dict[Identifier, Identifier] = dict(*args, **kwargs)
+        self._d: dict[Identifier, Identifier] = dict(*args, **kwargs)
         self._hash: Optional[int] = None
 
     def __iter__(self):
@@ -251,7 +245,7 @@ class QueryContext:
     def __init__(
         self,
         graph: Optional[Graph] = None,
-        bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
+        bindings: Optional[Union[Bindings, FrozenBindings, list[Any]]] = None,
         initBindings: Optional[Mapping[str, Identifier]] = None,
         datasetClause=None,
     ):
@@ -304,7 +298,7 @@ class QueryContext:
         return self._now
 
     def clone(
-        self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
+        self, bindings: Optional[Union[FrozenBindings, Bindings, list[Any]]] = None
     ) -> QueryContext:
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
@@ -485,7 +479,7 @@ class Query:
     def __init__(self, prologue: Prologue, algebra: CompValue):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], Optional[str]]
 
 
 class Update:
@@ -493,7 +487,7 @@ class Update:
     A parsed and translated update
     """
 
-    def __init__(self, prologue: Prologue, algebra: List[CompValue]):
+    def __init__(self, prologue: Prologue, algebra: list[CompValue]):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], Optional[str]]

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from codecs import getreader
+from collections.abc import MutableMapping
 from enum import Enum
-from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import Dataset

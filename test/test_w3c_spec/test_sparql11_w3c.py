@@ -2,8 +2,8 @@
 Runs the SPARQL 1.1 test suite from.
 """
 
+from collections.abc import Generator
 from contextlib import ExitStack
-from typing import Generator
 
 import pytest
 from pytest import MonkeyPatch
@@ -257,7 +257,7 @@ def configure_rdflib() -> Generator[None, None, None]:
         markers=(
             lambda entry: (
                 pytest.mark.skip(reason="tester not implemented")
-                if entry.type in SKIP_TYPES
+                if entry.type_ in SKIP_TYPES
                 else None
             ),
         ),

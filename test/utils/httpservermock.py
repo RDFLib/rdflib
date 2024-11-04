@@ -2,19 +2,15 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Callable
+from contextlib import AbstractContextManager
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    ContextManager,
-    Dict,
-    List,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     cast,
 )
@@ -29,7 +25,7 @@ from test.utils.http import (
     get_random_ip,
 )
 
-__all__: List[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
+__all__: list[str] = ["make_spypair", "BaseHTTPServerMock", "ServedBaseHTTPServerMock"]
 
 if TYPE_CHECKING:
     import typing_extensions as te
@@ -38,7 +34,7 @@ if TYPE_CHECKING:
 GenericT = TypeVar("GenericT", bound=Any)
 
 
-def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
+def make_spypair(method: GenericT) -> tuple[GenericT, Mock]:
     m = MagicMock()
 
     def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
@@ -49,19 +45,19 @@ def make_spypair(method: GenericT) -> Tuple[GenericT, Mock]:
     return cast(GenericT, wrapper), m
 
 
-RequestDict = Dict[MethodName, List[MockHTTPRequest]]
-ResponseDict = Dict[MethodName, List[MockHTTPResponse]]
+RequestDict = dict[MethodName, list[MockHTTPRequest]]
+ResponseDict = dict[MethodName, list[MockHTTPResponse]]
 
 
 class BaseHTTPServerMock:
     def __init__(self) -> None:
-        self.requests: Dict[MethodName, List[MockHTTPRequest]] = defaultdict(
+        self.requests: dict[MethodName, list[MockHTTPRequest]] = defaultdict(
             lambda: list()
         )
-        self.responses: Dict[MethodName, List[MockHTTPResponse]] = defaultdict(
+        self.responses: dict[MethodName, list[MockHTTPResponse]] = defaultdict(
             lambda: list()
         )
-        self.mocks: Dict[MethodName, Mock] = {}
+        self.mocks: dict[MethodName, Mock] = {}
 
         class Handler(BaseHTTPRequestHandler):
             pass
@@ -125,7 +121,7 @@ class BaseHTTPServerMock:
 
 
 class ServedBaseHTTPServerMock(
-    BaseHTTPServerMock, ContextManager["ServedBaseHTTPServerMock"]
+    BaseHTTPServerMock, AbstractContextManager["ServedBaseHTTPServerMock"]
 ):
     def __init__(self, host: Optional[str] = "127.0.0.1") -> None:
         super().__init__()
@@ -156,7 +152,7 @@ class ServedBaseHTTPServerMock(
 
     def __exit__(
         self,
-        __exc_type: Optional[Type[BaseException]],
+        __exc_type: Optional[type[BaseException]],
         __exc_value: Optional[BaseException],
         __traceback: Optional[TracebackType],
     ) -> te.Literal[False]:

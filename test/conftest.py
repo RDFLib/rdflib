@@ -9,14 +9,10 @@ import pytest
 # readibility.
 pytest.register_assert_rewrite("test.utils")
 
+from collections.abc import Collection, Generator, Iterable
 from pathlib import Path
 from typing import (
-    Collection,
-    Dict,
-    Generator,
-    Iterable,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -45,7 +41,7 @@ def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
-_ServedBaseHTTPServerMocks = Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
+_ServedBaseHTTPServerMocks = tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
 
 
 @pytest.fixture(scope="session")
@@ -54,7 +50,10 @@ def _session_function_httpmocks() -> Generator[_ServedBaseHTTPServerMocks, None,
     This fixture is session scoped, but it is reset for each function in
     :func:`function_httpmock`. This should not be used directly.
     """
-    with ServedBaseHTTPServerMock() as httpmock_a, ServedBaseHTTPServerMock() as httpmock_b:
+    with (
+        ServedBaseHTTPServerMock() as httpmock_a,
+        ServedBaseHTTPServerMock() as httpmock_b,
+    ):
         yield httpmock_a, httpmock_b
 
 
@@ -73,7 +72,7 @@ def function_httpmock(
 @pytest.fixture(scope="function")
 def function_httpmocks(
     _session_function_httpmocks: _ServedBaseHTTPServerMocks,
-) -> Generator[Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
+) -> Generator[tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
     """
     Alternative HTTP server mock that is reset for each test function.
 
@@ -98,8 +97,8 @@ def exit_stack() -> Generator[ExitStack, None, None]:
         yield stack
 
 
-EXTRA_MARKERS: Dict[
-    Tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
+EXTRA_MARKERS: dict[
+    tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
 ] = {
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],

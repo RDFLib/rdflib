@@ -26,7 +26,8 @@ graphs that can be used and queried. The store that backs the graph
 from __future__ import annotations
 
 from codecs import getreader
-from typing import Any, MutableMapping, Optional
+from collections.abc import MutableMapping
+from typing import Any, Optional
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph

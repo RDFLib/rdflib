@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Set, Tuple
+from typing import TYPE_CHECKING
 
 from rdflib.namespace import Namespace
 from rdflib.parser import Parser
@@ -26,5 +26,5 @@ class ExampleParser(Parser):
     @classmethod
     def constant_output(
         cls,
-    ) -> Set[Tuple[URIRef, URIRef, URIRef]]:
+    ) -> set[tuple[URIRef, URIRef, URIRef]]:
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}

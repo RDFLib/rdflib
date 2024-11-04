@@ -3,20 +3,15 @@ from __future__ import annotations
 import abc
 import contextlib
 import logging
+from collections.abc import Callable, Generator, Iterable, Sequence
 from collections.abc import Iterable as IterableABC
 from dataclasses import dataclass
+from re import Pattern
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Generator,
     Generic,
-    Iterable,
     NoReturn,
     Optional,
-    Pattern,
-    Sequence,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -28,7 +23,7 @@ from pytest import ExceptionInfo
 AnyT = TypeVar("AnyT")
 
 OutcomePrimitive = Union[
-    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", Type[Exception], Exception
+    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", type[Exception], Exception
 ]
 
 OutcomePrimitives = Union[
@@ -93,7 +88,7 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
             AnyT,
             Callable[[AnyT], None],
             OutcomeChecker[AnyT],
-            Type[Exception],
+            type[Exception],
             Exception,
         ],
     ) -> Optional[OutcomeChecker[AnyT]]:
@@ -192,9 +187,9 @@ class ExceptionChecker(OutcomeChecker[AnyT]):
         must have and their expected values.
     """
 
-    type: Type[Exception]
+    type: type[Exception]
     match: Optional[Union[Pattern[str], str]] = None
-    attributes: Optional[Dict[str, Any]] = None
+    attributes: Optional[dict[str, Any]] = None
 
     def check(self, actual: AnyT) -> NoReturn:
         raise RuntimeError("ExceptionResult.check_result should never be called")

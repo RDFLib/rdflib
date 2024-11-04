@@ -50,7 +50,7 @@ The following is an example of a type alias ``Bar``:
 
     from typing import Tuple
 
-    Bar = Tuple[int, str]
+    Bar = tuple[int, str]
 
 RDFLib will provide public type aliases under the ``rdflib.typing`` package, for example, ``rdflib.typing.Triple``, ``rdflib.typing.Quad``. Type aliases in the rest of RDFLib should be private (i.e. being with an underscore).
 

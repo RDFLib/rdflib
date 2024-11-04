@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import warnings
 from io import TextIOWrapper
-from typing import TYPE_CHECKING, Any, BinaryIO, List, Optional, TextIO, Union
+from typing import TYPE_CHECKING, Any, BinaryIO, Optional, TextIO, Union
 
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
 from rdflib.parser import InputSource, Parser
@@ -40,7 +40,7 @@ class HextuplesParser(Parser):
         self.skolemize = False
 
     def _parse_hextuple(
-        self, ds: Union[Dataset, ConjunctiveGraph], tup: List[Union[str, None]]
+        self, ds: Union[Dataset, ConjunctiveGraph], tup: list[Union[str, None]]
     ) -> None:
         # all values check
         # subject, predicate, value, datatype cannot be None
@@ -156,7 +156,7 @@ class HextuplesParser(Parser):
                 use_stream = TextIOWrapper(binary_stream, encoding="utf-8")
             loads = json.loads
 
-        for line in use_stream:  # type: Union[str, bytes]
+        for line in use_stream:  # type: str|bytes
             if len(line) == 0 or line.isspace():
                 # Skipping empty lines because this is what was being done before for the first and last lines, albeit in an rather indirect way.
                 # The result is that we accept input that would otherwise be invalid.
@@ -165,7 +165,7 @@ class HextuplesParser(Parser):
             # this complex handing is because the 'value' component is
             # allowed to be "" but not None
             # all other "" values are treated as None
-            raw_line: List[str] = loads(line)
+            raw_line: list[str] = loads(line)
             hex_tuple_line = [x if x != "" else None for x in raw_line]
             if raw_line[2] == "":
                 hex_tuple_line[2] = ""

@@ -1,19 +1,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import (
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
-    Mapping,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 import pytest
@@ -27,14 +17,21 @@ from test.utils.graph import GraphSource, GraphSourceType
 from test.utils.iri import URIMapper
 from test.utils.namespace import MF
 
-POFilterType = Tuple[Optional[URIRef], Optional[URIRef]]
-POFiltersType = Iterable[POFilterType]
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
-MarkType = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
-MarksDictType = Mapping[
+    import typing_extensions as te
+
+    from rdflib.graph import _PredicateType
+
+POFilterType: te.TypeAlias = tuple[Optional[URIRef], Optional[URIRef]]
+POFiltersType: te.TypeAlias = Iterable[POFilterType]
+
+MarkType: te.TypeAlias = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
+MarksDictType: te.TypeAlias = Mapping[
     str, Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
 ]
-ManifestEntryMarkerType = Callable[["ManifestEntry"], Optional[MarkType]]
+ManifestEntryMarkerType: te.TypeAlias = Callable[["ManifestEntry"], Optional[MarkType]]
 IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 
 
@@ -42,15 +39,15 @@ IdentifierT = TypeVar("IdentifierT", bound=Identifier)
 class ManifestEntry:
     manifest: Manifest
     identifier: URIRef
-    type: IdentifiedNode = field(init=False)
+    type_: IdentifiedNode = field(init=False)
     action: Optional[IdentifiedNode] = field(init=False)
     result: Optional[IdentifiedNode] = field(init=False)
     result_cardinality: Optional[URIRef] = field(init=False)
 
     def __post_init__(self) -> None:
-        type = self.value(RDF.type, IdentifiedNode)
-        assert type is not None
-        self.type = type
+        type_ = self.value(RDF.type, IdentifiedNode)
+        assert type_ is not None
+        self.type_ = type_
 
         self.action = self.value(MF.action, IdentifiedNode)
         self.result = self.value(MF.result, IdentifiedNode)
@@ -84,7 +81,7 @@ class ManifestEntry:
         return pytest.param(self, id=f"{self.identifier}", marks=marks)
 
     def value(
-        self, predicate: Identifier, value_type: Type[IdentifierT]
+        self, predicate: _PredicateType, value_type: type[IdentifierT]
     ) -> Optional[IdentifierT]:
         value = self.graph.value(self.identifier, predicate)
         if value is not None:
@@ -163,7 +160,7 @@ class Manifest:
 
     def entires(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
     ) -> Generator[ManifestEntryT, None, None]:
@@ -179,7 +176,7 @@ class Manifest:
 
     def params(
         self,
-        entry_type: Type[ManifestEntryT],
+        entry_type: type[ManifestEntryT],
         exclude: Optional[POFiltersType] = None,
         include: Optional[POFiltersType] = None,
         mark_dict: Optional[MarksDictType] = None,
@@ -191,7 +188,7 @@ class Manifest:
 
 def params_from_sources(
     uri_mapper: URIMapper,
-    entry_type: Type[ManifestEntryT],
+    entry_type: type[ManifestEntryT],
     *sources: GraphSourceType,
     exclude: Optional[POFiltersType] = None,
     include: Optional[POFiltersType] = None,

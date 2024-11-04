@@ -8,15 +8,14 @@ from __future__ import annotations
 
 import codecs
 import re
+from collections.abc import MutableMapping
 from io import BytesIO, StringIO, TextIOBase
+from re import Match, Pattern
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Match,
-    MutableMapping,
     Optional,
-    Pattern,
     TextIO,
     Union,
 )
