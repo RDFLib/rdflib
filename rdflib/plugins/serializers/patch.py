@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Optional
+from typing import IO, Any, Optional
 from uuid import uuid4
 
 from rdflib import Dataset
@@ -32,8 +32,8 @@ class PatchSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         """
         Serialize the store to the given stream.
         :param stream: The stream to serialize to.
