@@ -1351,7 +1351,7 @@ class Graph(Node):
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        sort: bool = ...,
+        sort: bool = False,
         **args: Any,
     ) -> bytes | str | _GraphT:
         """
