@@ -223,7 +223,7 @@ class TurtleSerializer(RecursiveSerializer):
         base: Optional[str] = None,
         encoding: Optional[str] = None,
         spacious: Optional[bool] = None,
-        **args: Any,
+        **kwargs: Any,
     ) -> None:
         self.reset()
         self.stream = stream

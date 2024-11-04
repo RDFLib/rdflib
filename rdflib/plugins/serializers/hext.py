@@ -78,8 +78,8 @@ class HextuplesSerializer(Serializer):
         stream: IO[bytes],
         base: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         if base is not None:
             warnings.warn(
                 "base has no meaning for Hextuples serialization. "
