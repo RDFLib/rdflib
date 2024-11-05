@@ -57,7 +57,7 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
 
     @contextlib.contextmanager
     @abc.abstractmethod
-    def context(self) -> Generator[Optional[ExceptionInfo[Exception]], None, None]:
+    def context(self) -> Generator[ExceptionInfo[Exception] | None, None, None]:
         """
         The context in which the test code should run.
 
@@ -91,7 +91,7 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
             type[Exception],
             Exception,
         ],
-    ) -> Optional[OutcomeChecker[AnyT]]:
+    ) -> OutcomeChecker[AnyT] | None:
         if isinstance(primitive, OutcomeChecker):
             return primitive
         if isinstance(primitive, type) and issubclass(primitive, Exception):
@@ -188,8 +188,8 @@ class ExceptionChecker(OutcomeChecker[AnyT]):
     """
 
     type: type[Exception]
-    match: Optional[Union[Pattern[str], str]] = None
-    attributes: Optional[dict[str, Any]] = None
+    match: Pattern[str] | str | None = None
+    attributes: dict[str, Any] | None = None
 
     def check(self, actual: AnyT) -> NoReturn:
         raise RuntimeError("ExceptionResult.check_result should never be called")

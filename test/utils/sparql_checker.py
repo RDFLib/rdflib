@@ -52,14 +52,14 @@ class QueryType(enum.Enum):
 @dataclass
 class TypeInfo:
     id: Identifier
-    query_type: Optional[QueryType]
+    query_type: QueryType | None
     syntax: bool = False
     skipped: bool = False
     negative: bool = False
     ns: Union[type[QT], type[UT], None] = field(init=False, default=None)
-    query_property: Optional[URIRef] = field(init=False, default=None)
-    graph_data_property: Optional[URIRef] = field(init=False, default=None)
-    expected_outcome_property: Optional[URIRef] = field(init=False, default=None)
+    query_property: URIRef | None = field(init=False, default=None)
+    graph_data_property: URIRef | None = field(init=False, default=None)
+    expected_outcome_property: URIRef | None = field(init=False, default=None)
 
     def __post_init__(self) -> None:
         if self.query_type is QueryType.QUERY:
@@ -98,7 +98,7 @@ type_info_dict = TypeInfo.make_dict(
 @dataclass(frozen=True)
 class GraphData:
     graph_id: URIRef
-    label: Optional[Literal] = None
+    label: Literal | None = None
 
     @classmethod
     def from_graph(cls, graph: Graph, identifier: Identifier) -> GraphData:
@@ -134,12 +134,12 @@ class GraphData:
 @dataclass
 class SPARQLEntry(ManifestEntry):
     type_info: TypeInfo = field(init=False)
-    query: Optional[IdentifiedNode] = field(init=False, default=None)
-    action_data: Optional[IdentifiedNode] = field(init=False, default=None)
-    action_graph_data: Optional[set[GraphData]] = field(init=False, default=None)
-    result_data: Optional[IdentifiedNode] = field(init=False, default=None)
-    result_graph_data: Optional[set[GraphData]] = field(init=False, default=None)
-    expected_outcome: Optional[URIRef] = field(init=False, default=None)
+    query: IdentifiedNode | None = field(init=False, default=None)
+    action_data: IdentifiedNode | None = field(init=False, default=None)
+    action_graph_data: set[GraphData] | None = field(init=False, default=None)
+    result_data: IdentifiedNode | None = field(init=False, default=None)
+    result_graph_data: set[GraphData] | None = field(init=False, default=None)
+    expected_outcome: URIRef | None = field(init=False, default=None)
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -193,7 +193,7 @@ class SPARQLEntry(ManifestEntry):
                 self.result_graph_data.add(graph_data)
 
     def load_dataset(
-        self, data: Optional[IdentifiedNode], graph_data_set: Optional[set[GraphData]]
+        self, data: IdentifiedNode | None, graph_data_set: set[GraphData] | None
     ) -> Dataset:
         dataset = Dataset()
         if data is not None:
@@ -289,7 +289,7 @@ def check_syntax(monkeypatch: MonkeyPatch, entry: SPARQLEntry) -> None:
     assert entry.query is not None
     assert entry.type_info.query_type is not None
     query_text = entry.query_text()
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     with ExitStack() as xstack:
         if entry.type_info.negative:
             catcher = xstack.enter_context(pytest.raises(Exception))

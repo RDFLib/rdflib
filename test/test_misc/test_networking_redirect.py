@@ -196,8 +196,8 @@ def test_make_redirect_request(
     """
     `_make_redirect_request` correctly handles redirects.
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
-    result: Optional[Request] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
+    result: Request | None = None
     with ExitStack() as stack:
         if isinstance(expected_result, ExceptionChecker):
             catcher = stack.enter_context(expected_result.context())

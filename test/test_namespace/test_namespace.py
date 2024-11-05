@@ -316,7 +316,7 @@ class TestNamespacePrefix:
 
         checker = OutcomeChecker.from_primitive(expected_result)
 
-        result: Optional[URIRef] = None
+        result: URIRef | None = None
         with checker.context():
             result = g.namespace_manager.expand_curie(curie)
             checker.check(result)

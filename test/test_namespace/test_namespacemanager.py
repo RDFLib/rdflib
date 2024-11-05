@@ -135,7 +135,7 @@ NamespaceSet = set[tuple[str, URIRef]]
 def check_graph_ns(
     graph: Graph,
     expected_nsmap: dict[str, Any],
-    check_namespaces: Optional[NamespaceSet] = None,
+    check_namespaces: NamespaceSet | None = None,
 ) -> None:
     expected_namespaces = {
         (prefix, URIRef(f"{uri}")) for prefix, uri in expected_nsmap.items()
@@ -164,7 +164,7 @@ def test_graph_bind_namespaces(
     selector: Any,
     expected_result: Union[dict[str, Any], type[Exception]],
 ) -> None:
-    namespaces: Optional[NamespaceSet] = None
+    namespaces: NamespaceSet | None = None
     with ExitStack() as xstack:
         if not isinstance(expected_result, dict):
             xstack.enter_context(pytest.raises(expected_result))
@@ -284,7 +284,7 @@ def test_nman_bind_namespaces(
     ],
 )
 def test_bound_namespaces_subset(
-    selector: Optional[Any], expected_bindings: dict[str, str]
+    selector: Any | None, expected_bindings: dict[str, str]
 ) -> None:
     if selector is not None:
         graph = Graph(bind_namespaces=selector)
@@ -366,9 +366,9 @@ def test_compute_qname(
     uri: str,
     generate: bool,
     bind_namespaces: _NamespaceSetString,
-    manager_prefixes: Optional[Mapping[str, Namespace]],
-    graph_prefixes: Optional[Mapping[str, Namespace]],
-    store_prefixes: Optional[Mapping[str, Namespace]],
+    manager_prefixes: Mapping[str, Namespace] | None,
+    graph_prefixes: Mapping[str, Namespace] | None,
+    store_prefixes: Mapping[str, Namespace] | None,
     expected_result: OutcomePrimitive[tuple[str, URIRef, str]],
 ) -> None:
     """
@@ -434,7 +434,7 @@ def test_compute_qname_strict(
     uri: str,
     generate: bool,
     bind_namespaces: _NamespaceSetString,
-    additional_prefixes: Optional[Mapping[str, Namespace]],
+    additional_prefixes: Mapping[str, Namespace] | None,
     expected_result: OutcomePrimitive[tuple[str, str, str]],
 ) -> None:
     graph = Graph(bind_namespaces=bind_namespaces)
@@ -545,7 +545,7 @@ def test_expand_curie(
 def test_generate_curie(
     test_nsm_function: NamespaceManager,
     uri: str,
-    generate: Optional[bool],
+    generate: bool | None,
     expected_result: OutcomePrimitive[str],
 ) -> None:
     """

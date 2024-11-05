@@ -54,7 +54,7 @@ def test_file_uri_to_path(
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):
@@ -107,7 +107,7 @@ def test_rebase_url(
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):

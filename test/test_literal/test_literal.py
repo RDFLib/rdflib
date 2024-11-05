@@ -161,8 +161,8 @@ def test_cant_pass_invalid_lang(
 )
 def test_ill_typed_literals(
     lexical: Union[bytes, str],
-    datatype: Optional[URIRef],
-    is_ill_typed: Optional[bool],
+    datatype: URIRef | None,
+    is_ill_typed: bool | None,
 ) -> None:
     """
     ill_typed has the correct value.
@@ -898,7 +898,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     ],
 )
 def test_literal_construction_value_class(
-    lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    lexical: str, literal_type: URIRef, value_cls: type | None
 ) -> None:
     literal = Literal(lexical, datatype=literal_type)
     if value_cls is not None:

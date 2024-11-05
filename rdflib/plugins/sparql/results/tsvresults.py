@@ -7,7 +7,6 @@ It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 from __future__ import annotations
 
 import codecs
-import typing
 from typing import IO, Union
 
 from pyparsing import (
@@ -66,7 +65,7 @@ HEADER.parseWithTabs()
 
 class TSVResultParser(ResultParser):
     # type error: Signature of "parse" incompatible with supertype "ResultParser"  [override]
-    def parse(self, source: IO, content_type: typing.Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
             # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
@@ -100,7 +99,7 @@ class TSVResultParser(ResultParser):
 
     def convertTerm(
         self, t: Union[object, RDFLiteral, BNode, CompValue, URIRef]
-    ) -> typing.Optional[BNode | URIRef | RDFLiteral]:
+    ) -> BNode | URIRef | RDFLiteral | None:
         if t is NONE_VALUE:
             return None
         elif isinstance(t, CompValue):

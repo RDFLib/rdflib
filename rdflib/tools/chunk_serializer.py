@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import TYPE_CHECKING, BinaryIO, Optional
+from typing import TYPE_CHECKING, BinaryIO
 
 from rdflib.graph import Graph
 from rdflib.plugins.serializers.nt import _nt_row
@@ -27,9 +27,9 @@ __all__ = ["serialize_in_chunks"]
 def serialize_in_chunks(
     g: Graph,
     max_triples: int = 10000,
-    max_file_size_kb: Optional[int] = None,
+    max_file_size_kb: int | None = None,
     file_name_stem: str = "chunk",
-    output_dir: Optional[Path] = None,
+    output_dir: Path | None = None,
     write_prefixes: bool = False,
 ) -> None:
     """

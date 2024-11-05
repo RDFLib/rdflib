@@ -4,7 +4,7 @@ Utility functions for supporting the XML Schema Datatypes hierarchy
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from rdflib.namespace import XSD
 
@@ -86,7 +86,7 @@ _typePromotionMap: dict[URIRef, dict[URIRef, URIRef]] = {
 }
 
 
-def type_promotion(t1: URIRef, t2: Optional[URIRef]) -> URIRef:
+def type_promotion(t1: URIRef, t2: URIRef | None) -> URIRef:
     if t2 is None:
         return t1
     t1 = _super_types.get(t1, t1)

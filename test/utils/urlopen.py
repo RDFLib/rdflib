@@ -9,7 +9,7 @@ from urllib.request import OpenerDirector, install_opener
 
 @contextmanager
 def context_urlopener(opener: OpenerDirector) -> Generator[OpenerDirector, None, None]:
-    old_opener: Optional[OpenerDirector] = urllib.request._opener  # type: ignore[attr-defined]
+    old_opener: OpenerDirector | None = urllib.request._opener  # type: ignore[attr-defined]
     try:
         install_opener(opener)
         yield opener

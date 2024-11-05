@@ -302,10 +302,10 @@ class GraphFormatInfo:
     name: GraphFormat
     graph_types: set[GraphType]
     encodings: set[str]
-    serializer_list: Optional[list[str]] = field(
+    serializer_list: list[str] | None = field(
         default=None, repr=False, hash=False, compare=False
     )
-    deserializer_list: Optional[list[str]] = field(
+    deserializer_list: list[str] | None = field(
         default=None, repr=False, hash=False, compare=False
     )
     serializers: list[str] = field(default_factory=list, init=False)
@@ -370,14 +370,14 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
     This function generates test parameters for test_serialize_parse.
     """
     xfails: dict[
-        tuple[str, GraphType, DestinationType, Optional[str]],
+        tuple[str, GraphType, DestinationType, str | None],
         Union[MarkDecorator, Mark],
     ] = {}
     for serializer_name, destination_type in itertools.product(
         serializer_dict.keys(), DESTINATION_TYPES
     ):
         format = serializer_dict[serializer_name]
-        encodings: set[Optional[str]] = {*format.info.encodings, None}
+        encodings: set[str | None] = {*format.info.encodings, None}
         for encoding, graph_type in itertools.product(
             encodings, format.info.graph_types
         ):
@@ -430,7 +430,7 @@ def test_serialize_parse(
     tmp_path: Path,
     simple_graph: Graph,
     simple_dataset: Dataset,
-    args: tuple[str, GraphType, DestinationType, Optional[str]],
+    args: tuple[str, GraphType, DestinationType, str | None],
 ) -> None:
     """
     Serialization works correctly with the given arguments and generates output
@@ -489,7 +489,7 @@ def check_serialized(format: GraphFormat, graph: Graph, data: str) -> None:
 @dataclass
 class SerializeArgs:
     format: str
-    opt_dest_ref: Optional[DestRef]
+    opt_dest_ref: DestRef | None
 
     @property
     def dest_ref(self) -> DestRef:
@@ -645,7 +645,7 @@ def test_serialize_to_strdest(
     encoding = "utf-8"
 
     def path_factory(
-        tmp_path: Path, type: DestinationType, encoding: Optional[str]
+        tmp_path: Path, type: DestinationType, encoding: str | None
     ) -> Path:
         return tmp_path / f"{name_prefix}file-{type.name}-{encoding}"
 

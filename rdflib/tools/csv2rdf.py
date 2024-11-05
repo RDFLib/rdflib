@@ -19,7 +19,7 @@ import re
 import sys
 import time
 import warnings
-from typing import Any, Optional, Union
+from typing import Any, Union
 from urllib.parse import quote
 
 import rdflib
@@ -91,7 +91,7 @@ col4=date("%Y-%b-%d %H:%M:%S")
 """
 
 # bah - ugly global
-uris: dict[Any, tuple[URIRef, Optional[URIRef]]] = {}
+uris: dict[Any, tuple[URIRef, URIRef | None]] = {}
 
 
 def toProperty(label: str):  # noqa: N802
@@ -131,7 +131,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
         yield row
 
 
-def prefixuri(x, prefix, class_: Optional[URIRef] = None):
+def prefixuri(x, prefix, class_: URIRef | None = None):
     if prefix:
         r = rdflib.URIRef(prefix + quote(x.encode("utf8").replace(" ", "_"), safe=""))
     else:
@@ -153,7 +153,7 @@ class NodeMaker:
 
 class NodeUri(NodeMaker):
     def __init__(self, prefix, class_):
-        self.class_: Optional[URIRef] = None
+        self.class_: URIRef | None = None
         self.prefix = prefix
         if class_:
             self.class_ = rdflib.URIRef(class_)

@@ -42,7 +42,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
             ),
         )
     ]
-    response_format_encodings: list[tuple[str, str, set[Optional[str]]]] = [
+    response_format_encodings: list[tuple[str, str, set[str | None]]] = [
         (
             "application/rdf+xml",
             "utf-8",

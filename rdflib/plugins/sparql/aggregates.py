@@ -8,7 +8,6 @@ from collections.abc import Callable, Iterable, Mapping, MutableMapping
 from decimal import Decimal
 from typing import (
     Any,
-    Optional,
     TypeVar,
     overload,
 )
@@ -26,7 +25,7 @@ class Accumulator:
     """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation: CompValue):
-        self.get_value: Callable[[], Optional[Literal]]
+        self.get_value: Callable[[], Literal | None]
         self.update: Callable[[FrozenBindings, Aggregator], None]
         self.var = aggregation.res
         self.expr = aggregation.vars
@@ -110,7 +109,7 @@ class Sum(Accumulator):
     def __init__(self, aggregation: CompValue):
         super(Sum, self).__init__(aggregation)
         self.value = 0
-        self.datatype: Optional[str] = None
+        self.datatype: str | None = None
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:
@@ -138,7 +137,7 @@ class Average(Accumulator):
         super(Average, self).__init__(aggregation)
         self.counter = 0
         self.sum = 0
-        self.datatype: Optional[str] = None
+        self.datatype: str | None = None
 
     def update(self, row: FrozenBindings, aggregator: Aggregator) -> None:
         try:

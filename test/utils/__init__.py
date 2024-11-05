@@ -317,7 +317,7 @@ class GraphHelper:
 
     @classmethod
     def assert_isomorphic(
-        cls, lhs: Graph, rhs: Graph, message: Optional[str] = None
+        cls, lhs: Graph, rhs: Graph, message: str | None = None
     ) -> None:
         """
         This asserts that the two graphs are isomorphic, providing a nicely
@@ -325,7 +325,7 @@ class GraphHelper:
         """
 
         # TODO FIXME: This should possibly raise an error when used on a ConjunctiveGraph
-        def format_report(message: Optional[str] = None) -> str:
+        def format_report(message: str | None = None) -> str:
             in_both, in_lhs, in_rhs = rdflib.compare.graph_diff(lhs, rhs)
             preamle = "" if message is None else f"{message}\n"
             return (
@@ -345,7 +345,7 @@ class GraphHelper:
         lhs: ConjunctiveGraph,
         rhs: ConjunctiveGraph,
         exclude_bnodes: bool,
-        message: Optional[str] = None,
+        message: str | None = None,
     ) -> None:
         def get_contexts(cgraph: ConjunctiveGraph) -> dict[URIRef, Graph]:
             result = {}
@@ -459,9 +459,9 @@ def pytest_mark_filter(
 
 
 def affix_tuples(
-    prefix: Optional[tuple[Any, ...]],
+    prefix: tuple[Any, ...] | None,
     tuples: Iterable[tuple[Any, ...]],
-    suffix: Optional[tuple[Any, ...]],
+    suffix: tuple[Any, ...] | None,
 ) -> Generator[tuple[Any, ...], None, None]:
     if prefix is None:
         prefix = tuple()
@@ -477,7 +477,7 @@ def ensure_suffix(value: str, suffix: str) -> str:
     return value
 
 
-def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[str]]:
+def idfns(*idfns: Callable[[Any], str | None]) -> Callable[[Any], str | None]:
     """
     Returns an ID function which will try each of the provided ID
     functions in order.
@@ -487,7 +487,7 @@ def idfns(*idfns: Callable[[Any], Optional[str]]) -> Callable[[Any], Optional[st
         functions.
     """
 
-    def _idfns(value: Any) -> Optional[str]:
+    def _idfns(value: Any) -> str | None:
         for idfn in idfns:
             result = idfn(value)
             if result is not None:

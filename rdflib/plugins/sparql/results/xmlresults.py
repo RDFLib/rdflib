@@ -19,7 +19,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    Optional,
     TextIO,
     Union,
     cast,
@@ -47,13 +46,13 @@ log = logging.getLogger(__name__)
 
 class XMLResultParser(ResultParser):
     # TODO FIXME: content_type should be a keyword only arg.
-    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         return XMLResult(source)
 
 
 class XMLResult(Result):
-    def __init__(self, source: IO, content_type: Optional[str] = None):
-        parser_encoding: Optional[str] = None
+    def __init__(self, source: IO, content_type: str | None = None):
+        parser_encoding: str | None = None
         if hasattr(source, "encoding"):
             if TYPE_CHECKING:
                 assert isinstance(source, TextIO)
@@ -241,10 +240,10 @@ class SPARQLXMLWriter:
     def write_binding(self, name: Variable, val: Identifier) -> None:
         assert self._resultStarted
 
-        attr_vals: dict[tuple[Optional[str], str], str] = {
+        attr_vals: dict[tuple[str | None, str], str] = {
             (None, "name"): str(name),
         }
-        attr_qnames: dict[tuple[Optional[str], str], str] = {
+        attr_qnames: dict[tuple[str | None, str], str] = {
             (None, "name"): "name",
         }
         self.writer.startElementNS(

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, MutableSequence
-from typing import IO, TYPE_CHECKING, Any, Optional
+from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
 from rdflib.term import BNode, Literal, URIRef, Variable
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 class JSONResultParser(ResultParser):
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
-    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         inp = source.read()
         if _HAS_ORJSON:
             try:
@@ -151,8 +151,8 @@ def parseJsonTerm(d: dict[str, str]) -> IdentifiedNode | Literal:
 
 
 def termToJSON(
-    self: JSONResultSerializer, term: Optional[IdentifiedNode | Literal]
-) -> Optional[dict[str, str]]:
+    self: JSONResultSerializer, term: IdentifiedNode | Literal | None
+) -> dict[str, str] | None:
     if isinstance(term, URIRef):
         return {"type": "uri", "value": str(term)}
     elif isinstance(term, Literal):

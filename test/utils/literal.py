@@ -46,7 +46,7 @@ class LiteralChecker(NoExceptionChecker[Literal]):
             assert self.datatype == actual.datatype, "Literal datatype does not match"
 
 
-def literal_idfn(value: Any) -> Optional[str]:
+def literal_idfn(value: Any) -> str | None:
     if callable(value):
         try:
             literal = value()

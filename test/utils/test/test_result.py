@@ -232,7 +232,7 @@ def test_bindings_equal(
     rhs: BindingsCollectionType,
     expected_result: Union[bool, type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):
