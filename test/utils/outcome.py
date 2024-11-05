@@ -11,7 +11,6 @@ from typing import (
     Any,
     Generic,
     NoReturn,
-    Optional,
     TypeVar,
     Union,
     cast,

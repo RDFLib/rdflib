@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from contextlib import ExitStack
-from typing import Any, NoReturn, Optional, Union, cast
+from typing import Any, NoReturn, Union, cast
 
 import pytest
 

@@ -4,7 +4,7 @@ import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import pytest
 

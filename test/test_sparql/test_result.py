@@ -15,7 +15,6 @@ from typing import (
     IO,
     TYPE_CHECKING,
     BinaryIO,
-    Optional,
     TextIO,
     Union,
 )

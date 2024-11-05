@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from contextlib import ExitStack
 from copy import deepcopy
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, TypeVar, Union
 from urllib.error import HTTPError
 from urllib.request import HTTPRedirectHandler, Request
 

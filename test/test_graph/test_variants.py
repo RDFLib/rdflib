@@ -13,7 +13,6 @@ from pathlib import Path, PurePath
 from re import Pattern
 from typing import (
     ClassVar,
-    Optional,
     cast,
 )
 
@@ -299,9 +298,7 @@ def make_variant_source_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.parametrize(["graph_variants", "variant_key"], make_variant_source_cases())
-def test_variant_source(
-    graph_variants: GraphVariants, variant_key: str | None
-) -> None:
+def test_variant_source(graph_variants: GraphVariants, variant_key: str | None) -> None:
     """
     All variants of a graph are isomorphic with the preferred variant,
     and thus eachother.

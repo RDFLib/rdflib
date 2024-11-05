@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import IO
+from typing import IO, Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
@@ -28,7 +28,7 @@ class TriXSerializer(Serializer):
         stream: IO[bytes],
         base: str | None = None,
         encoding: str | None = None,
-        **args,
+        **kwargs: Any,
     ):
         nm = self.store.namespace_manager
 

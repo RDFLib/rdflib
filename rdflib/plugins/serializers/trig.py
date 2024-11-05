@@ -5,7 +5,7 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Union
+from typing import IO, TYPE_CHECKING, Any, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -67,7 +67,7 @@ class TrigSerializer(TurtleSerializer):
         base: str | None = None,
         encoding: str | None = None,
         spacious: bool | None = None,
-        **args,
+        **kwargs: Any,
     ):
         self.reset()
         self.stream = stream

@@ -10,7 +10,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from typing import (
     NamedTuple,
-    Optional,
     TypeVar,
     Union,
 )

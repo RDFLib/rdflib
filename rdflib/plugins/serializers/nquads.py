@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO
+from typing import IO, Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.nt import _quoteLiteral
@@ -26,8 +26,8 @@ class NQuadsSerializer(Serializer):
         stream: IO[bytes],
         base: str | None = None,
         encoding: str | None = None,
-        **args,
-    ):
+        **kwargs: Any,
+    ) -> None:
         if base is not None:
             warnings.warn("NQuadsSerializer does not support base.")
         if encoding is not None and encoding.lower() != self.encoding.lower():

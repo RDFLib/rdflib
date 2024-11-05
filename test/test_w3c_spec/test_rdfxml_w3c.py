@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 

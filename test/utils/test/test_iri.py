@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from contextlib import ExitStack
 from pathlib import PurePath, PurePosixPath, PureWindowsPath
-from typing import Optional, Union
+from typing import Union
 
 import pytest
 

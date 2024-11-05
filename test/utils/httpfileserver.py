@@ -8,7 +8,6 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Optional
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 

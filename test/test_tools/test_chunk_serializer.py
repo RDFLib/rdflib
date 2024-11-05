@@ -4,7 +4,7 @@ import logging
 import os
 from contextlib import ExitStack
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 

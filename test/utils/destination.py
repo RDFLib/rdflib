@@ -5,7 +5,7 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePath
-from typing import IO, Callable, Optional, TextIO, Union
+from typing import IO, Callable, TextIO, Union
 
 DestParmType = Union[Path, PurePath, str, IO[bytes], TextIO]
 

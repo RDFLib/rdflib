@@ -10,7 +10,6 @@ from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     TypeVar,
     cast,
 )

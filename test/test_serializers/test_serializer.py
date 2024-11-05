@@ -12,7 +12,6 @@ from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
 from typing import (
     IO,
-    Optional,
     TextIO,
     Union,
     cast,

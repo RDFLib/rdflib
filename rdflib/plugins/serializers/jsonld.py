@@ -70,8 +70,8 @@ class JsonLDSerializer(Serializer):
         stream: IO[bytes],
         base: str | None = None,
         encoding: str | None = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         # TODO: docstring w. args and return value
         encoding = encoding or "utf-8"
         if encoding not in ("utf-8", "utf-16"):

@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import tempfile
 from collections.abc import Iterable
-from typing import Optional
 
 import pytest
 

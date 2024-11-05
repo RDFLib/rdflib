@@ -3,7 +3,6 @@ from __future__ import annotations
 import urllib.request
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Optional
 from urllib.request import OpenerDirector, install_opener
 
 

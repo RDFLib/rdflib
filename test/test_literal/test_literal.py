@@ -5,7 +5,7 @@ import datetime
 import logging
 from collections.abc import Generator
 from decimal import Decimal
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Union
 
 from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples

@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Optional,
     TypeVar,
     cast,
 )
