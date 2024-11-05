@@ -93,11 +93,11 @@ class Collection:
         """
         return "( %s )" % (" ".join([i.n3() for i in self]))
 
-    def _get_container(self, index: int) -> Optional[IdentifiedNode]:
+    def _get_container(self, index: int) -> IdentifiedNode | None:
         """Gets the first, rest holding node at index."""
         assert isinstance(index, int)
         graph = self.graph
-        container: Optional[IdentifiedNode] = self.uri
+        container: IdentifiedNode | None = self.uri
         i = 0
         while i < index and container is not None:
             i += 1
@@ -274,7 +274,7 @@ class Collection:
         return self
 
     def clear(self):
-        container: Optional[IdentifiedNode] = self.uri
+        container: IdentifiedNode | None = self.uri
         graph = self.graph
         while container is not None:
             rest = graph.value(container, RDF.rest)

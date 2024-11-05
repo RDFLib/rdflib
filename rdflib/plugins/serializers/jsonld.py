@@ -38,7 +38,7 @@ Example usage::
 from __future__ import annotations
 
 import warnings
-from typing import IO, TYPE_CHECKING, Any, Optional, Union, cast
+from typing import IO, TYPE_CHECKING, Any, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
 from rdflib.namespace import RDF, XSD
@@ -68,8 +68,8 @@ class JsonLDSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs,
     ):
         # TODO: docstring w. args and return value
@@ -276,7 +276,7 @@ class Converter:
         nodemap,
     ):
         context = self.context
-        term: Optional[Term] = None
+        term: Term | None = None
         if isinstance(o, Literal):
             _datatype = str(o.datatype) if o.datatype else None
             language = o.language
@@ -292,7 +292,7 @@ class Converter:
                     break
             language = None if term is None else term.language
 
-        node: Optional[str | list[Any] | dict[str, Any]] = None
+        node: str | list[Any] | dict[str, Any] | None = None
         use_set = not context.active
 
         if term is not None:
@@ -368,7 +368,7 @@ class Converter:
 
     def type_coerce(
         self, o: IdentifiedNode | Literal, coerce_type: str
-    ) -> Optional[str | IdentifiedNode | Literal]:
+    ) -> str | IdentifiedNode | Literal | None:
         if coerce_type == ID:
             if isinstance(o, URIRef):
                 return self.context.shrink_iri(o)
@@ -392,7 +392,7 @@ class Converter:
     ):
         context = self.context
         if isinstance(o, (URIRef, BNode)):
-            coll: Optional[list[Any]] = self.to_collection(graph, o)
+            coll: list[Any] | None = self.to_collection(graph, o)
         else:
             coll = None
         if coll is not None:
@@ -436,12 +436,12 @@ class Converter:
 
     def to_collection(
         self, graph: Graph, l_: JSONLDSubjectType
-    ) -> Optional[list[_ObjectType]]:
+    ) -> list[_ObjectType] | None:
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
         list_nodes: list[_ObjectType] = []
         chain: set[_ObjectType] = set([l_])
-        list_head: Optional[_ObjectType] = l_
+        list_head: _ObjectType | None = l_
         while list_head:
             if list_head == RDF.nil:
                 # The only way to return a real result is to reach

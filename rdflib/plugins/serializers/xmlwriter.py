@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import codecs
 from collections.abc import Iterable
-from typing import IO, TYPE_CHECKING, Optional
+from typing import IO, TYPE_CHECKING
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.term import URIRef
@@ -21,9 +21,9 @@ class XMLWriter:
         self,
         stream: IO[bytes],
         namespace_manager: NamespaceManager,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         decl: int = 1,
-        extra_ns: Optional[dict[str, Namespace]] = None,
+        extra_ns: dict[str, Namespace] | None = None,
     ):
         encoding = encoding or "utf-8"
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
@@ -58,7 +58,7 @@ class XMLWriter:
         self.closed = False
         self.parent = False
 
-    def pop(self, uri: Optional[str] = None) -> None:
+    def pop(self, uri: str | None = None) -> None:
         top = self.element_stack.pop()
         if uri:
             assert uri == top

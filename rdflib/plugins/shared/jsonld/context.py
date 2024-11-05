@@ -79,33 +79,33 @@ class Context:
     def __init__(
         self,
         source: _ContextSourceType = None,
-        base: Optional[str] = None,
-        version: Optional[float] = 1.1,
+        base: str | None = None,
+        version: float | None = 1.1,
     ):
         self.version: float = version or 1.1
         self.language = None
-        self.vocab: Optional[str] = None
-        self._base: Optional[str]
+        self.vocab: str | None = None
+        self._base: str | None
         self.base = base
         self.doc_base = base
         self.terms: dict[str, Any] = {}
         # _alias maps NODE_KEY to list of aliases
         self._alias: dict[str, list[str]] = {}
-        self._lookup: dict[tuple[str, Any, Union[Defined, str], bool], Term] = {}
+        self._lookup: dict[tuple[str, Any, Defined | str, bool], Term] = {}
         self._prefixes: dict[str, Any] = {}
         self.active = False
-        self.parent: Optional[Context] = None
+        self.parent: Context | None = None
         self.propagate = True
         self._context_cache: dict[str, Any] = {}
         if source:
             self.load(source)
 
     @property
-    def base(self) -> Optional[str]:
+    def base(self) -> str | None:
         return self._base
 
     @base.setter
-    def base(self, base: Optional[str]):
+    def base(self, base: str | None):
         if base:
             hash_index = base.find("#")
             if hash_index > -1:
@@ -149,12 +149,12 @@ class Context:
         self.active = False
         self.propagate = True
 
-    def get_context_for_term(self, term: Optional[Term]) -> Context:
+    def get_context_for_term(self, term: Term | None) -> Context:
         if term and term.context is not UNDEF:
             return self._subcontext(term.context, propagate=True)
         return self
 
-    def get_context_for_type(self, node: Any) -> Optional[Context]:
+    def get_context_for_type(self, node: Any) -> Context | None:
         if self.version >= 1.1:
             rtype = self.get_type(node) if isinstance(node, dict) else None
             if not isinstance(rtype, list):
@@ -230,13 +230,13 @@ class Context:
         self,
         name: str,
         idref: str,
-        coercion: Union[Defined, str] = UNDEF,
-        container: Union[Collection[Any], str, Defined] = UNDEF,
-        index: Optional[Union[str, Defined]] = None,
-        language: Optional[Union[str, Defined]] = UNDEF,
+        coercion: Defined | str = UNDEF,
+        container: Collection[Any] | str | Defined = UNDEF,
+        index: str | Defined | None = None,
+        language: str | Defined | None = UNDEF,
         reverse: bool = False,
         context: Any = UNDEF,
-        prefix: Optional[bool] = None,
+        prefix: bool | None = None,
         protected: bool = False,
     ):
         if self.version < 1.1 or prefix is None:
@@ -272,7 +272,7 @@ class Context:
 
         self.terms[name] = term
 
-        container_key: Union[Defined, str]
+        container_key: Defined | str
         for container_key in (LIST, LANG, SET):  # , INDEX, ID, GRAPH):
             if container_key in container:
                 break
@@ -287,11 +287,11 @@ class Context:
     def find_term(
         self,
         idref: str,
-        coercion: Optional[str | Defined] = None,
-        container: Optional[Defined | str] = UNDEF,
-        language: Optional[str] = None,
+        coercion: str | Defined | None = None,
+        container: Defined | str | None = UNDEF,
+        language: str | None = None,
         reverse: bool = False,
-    ) -> Optional[Term]:
+    ) -> Term | None:
         lu = self._lookup
 
         if coercion is None:
@@ -383,9 +383,9 @@ class Context:
                 return iri[len(self._basedomain) :]  # type: ignore[arg-type]
         return iri
 
-    def to_symbol(self, iri: str) -> Optional[str]:
+    def to_symbol(self, iri: str) -> str | None:
         iri = str(iri)
-        term: Optional[Term] = self.find_term(iri)
+        term: Term | None = self.find_term(iri)
         if term is not None:
             return term.name
         ns, name = split_iri(iri)
@@ -400,11 +400,11 @@ class Context:
     def load(
         self,
         source: _ContextSourceType,
-        base: Optional[str] = None,
+        base: str | None = None,
         referenced_contexts: set[Any] = None,
     ):
         self.active = True
-        sources: list[tuple[Optional[str], Union[dict[str, Any], str, None]]] = []
+        sources: list[tuple[str | None, dict[str, Any] | str | None]] = []
         # "Union[List[Union[Dict[str, Any], str]], list[Dict[str, Any]], list[str]]" : expression
         # "Union[List[Dict[str, Any]], dict[str, Any], list[str], str]" : variable
         source = source if isinstance(source, list) else [source]
@@ -427,11 +427,11 @@ class Context:
 
     def _prep_sources(
         self,
-        base: Optional[str],
-        inputs: Union[list[Union[dict[str, Any], str, None]], list[str]],
-        sources: list[tuple[Optional[str], Union[dict[str, Any], str, None]]],
+        base: str | None,
+        inputs: list[dict[str, Any] | str | None] | list[str],
+        sources: list[tuple[str | None, dict[str, Any] | str | None]],
         referenced_contexts: set[str],
-        in_source_url: Optional[str] = None,
+        in_source_url: str | None = None,
     ):
         for source in inputs:
             source_url = in_source_url
@@ -468,7 +468,7 @@ class Context:
                 sources.append((source_url, source))
 
     def _fetch_context(
-        self, source: str, base: Optional[str], referenced_contexts: set[str]
+        self, source: str, base: str | None, referenced_contexts: set[str]
     ):
         # type error: Value of type variable "AnyStr" of "urljoin" cannot be "Optional[str]"
         source_url = urljoin(base, source)  # type: ignore[type-var]
@@ -495,8 +495,8 @@ class Context:
     def _read_source(
         self,
         source: dict[str, Any],
-        source_url: Optional[str] = None,
-        referenced_contexts: Optional[set[str]] = None,
+        source_url: str | None = None,
+        referenced_contexts: set[str] | None = None,
     ):
         imports = source.get(IMPORT)
         if imports:
@@ -534,7 +534,7 @@ class Context:
         self,
         source: dict[str, Any],
         name: str,
-        dfn: Union[dict[str, Any], str],
+        dfn: dict[str, Any] | str,
         protected: bool = False,
     ) -> None:
         idref = None
@@ -589,12 +589,12 @@ class Context:
                     v.remove(name)
 
     def _rec_expand(
-        self, source: dict[str, Any], expr: Optional[str], prev: Optional[str] = None
-    ) -> Optional[str]:
+        self, source: dict[str, Any], expr: str | None, prev: str | None = None
+    ) -> str | None:
         if expr == prev or expr in NODE_KEYS:
             return expr
 
-        nxt: Optional[str]
+        nxt: str | None
         # type error: Argument 1 to "_prep_expand" of "Context" has incompatible type "Optional[str]"; expected "str"
         is_term, pfx, nxt = self._prep_expand(expr)  # type: ignore[arg-type]
         if pfx:
@@ -618,7 +618,7 @@ class Context:
 
         return self._rec_expand(source, nxt, expr)
 
-    def _prep_expand(self, expr: str) -> tuple[bool, Optional[str], str]:
+    def _prep_expand(self, expr: str) -> tuple[bool, str | None, str]:
         if ":" not in expr:
             return True, None, expr
         pfx, local = expr.split(":", 1)
@@ -627,7 +627,7 @@ class Context:
         else:
             return False, None, expr
 
-    def _get_source_id(self, source: dict[str, Any], key: str) -> Optional[str]:
+    def _get_source_id(self, source: dict[str, Any], key: str) -> str | None:
         # .. from source dict or if already defined
         term = source.get(key)
         if term is None:
@@ -638,7 +638,7 @@ class Context:
             term = term.get(ID)
         return term
 
-    def _term_dict(self, term: Term) -> Union[dict[str, Any], str]:
+    def _term_dict(self, term: Term) -> dict[str, Any] | str:
         tdict: dict[str, Any] = {}
         if term.type != UNDEF:
             tdict[TYPE] = self.shrink_iri(term.type)

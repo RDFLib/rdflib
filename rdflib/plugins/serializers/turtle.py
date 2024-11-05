@@ -11,7 +11,6 @@ from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 from rdflib.exceptions import Error
@@ -35,7 +34,7 @@ class RecursiveSerializer(Serializer):
 
     def __init__(self, store: Graph):
         super(RecursiveSerializer, self).__init__(store)
-        self.stream: Optional[IO[bytes]] = None
+        self.stream: IO[bytes] | None = None
         self.reset()
 
     def addNamespace(self, prefix: str, uri: URIRef) -> None:
@@ -220,9 +219,9 @@ class TurtleSerializer(RecursiveSerializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        spacious: Optional[bool] = None,
+        base: str | None = None,
+        encoding: str | None = None,
+        spacious: bool | None = None,
         **args: Any,
     ) -> None:
         self.reset()
@@ -270,7 +269,7 @@ class TurtleSerializer(RecursiveSerializer):
             self._references[p] += 1
 
     # TODO: Rename to get_pname
-    def getQName(self, uri: Node, gen_prefix: bool = True) -> Optional[str]:
+    def getQName(self, uri: Node, gen_prefix: bool = True) -> str | None:
         if not isinstance(uri, URIRef):
             return None
 

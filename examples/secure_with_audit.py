@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from typing import Any, Optional
+from typing import Any
 
 from rdflib import Graph
 
@@ -70,7 +70,7 @@ def main() -> None:
 
     # Attempt to parse a JSON-LD document that will result in the blocked URL
     # being accessed.
-    error: Optional[PermissionError] = None
+    error: PermissionError | None = None
     try:
         graph.parse(
             data=r"""{

@@ -22,7 +22,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    Optional,
     TextIO,
     Union,
     cast,
@@ -89,13 +88,13 @@ class BytesIOWrapper(BufferedIOBase):
         self.wrapped = wrapped
         self.encoding = encoding
         self.encoder = codecs.getencoder(self.encoding)
-        self.enc_str: Optional[Union[BytesIO, BufferedIOBase]] = None
-        self.text_str: Optional[Union[StringIO, TextIOBase]] = None
-        self.has_read1: Optional[bool] = None
-        self.has_seek: Optional[bool] = None
-        self._name: Optional[str] = None
-        self._fileno: Optional[Union[int, BaseException]] = None
-        self._isatty: Optional[Union[bool, BaseException]] = None
+        self.enc_str: Union[BytesIO, BufferedIOBase] | None = None
+        self.text_str: Union[StringIO, TextIOBase] | None = None
+        self.has_read1: bool | None = None
+        self.has_seek: bool | None = None
+        self._name: str | None = None
+        self._fileno: Union[int, BaseException] | None = None
+        self._isatty: Union[bool, BaseException] | None = None
         self._leftover: bytes = b""
         self._text_bytes_offset: int = 0
         norm_encoding = encoding.lower().replace("_", "-")
@@ -123,7 +122,7 @@ class BytesIOWrapper(BufferedIOBase):
             self._bytes_per_char = 2
 
     def _init(self):
-        name: Optional[str] = None
+        name: str | None = None
         if isinstance(self.wrapped, str):
             b, blen = self.encoder(self.wrapped)
             self.enc_str = BytesIO(b)
@@ -200,7 +199,7 @@ class BytesIOWrapper(BufferedIOBase):
     def closed(self) -> bool:
         if self.enc_str is None and self.text_str is None:
             return False
-        closed: Optional[bool] = None
+        closed: bool | None = None
         if self.enc_str is not None:
             try:
                 closed = self.enc_str.closed
@@ -219,7 +218,7 @@ class BytesIOWrapper(BufferedIOBase):
     def writable(self) -> bool:
         return False
 
-    def truncate(self, size: Optional[int] = None) -> int:
+    def truncate(self, size: int | None = None) -> int:
         raise NotImplementedError("Cannot truncate on BytesIOWrapper")
 
     def isatty(self) -> bool:
@@ -255,7 +254,7 @@ class BytesIOWrapper(BufferedIOBase):
     def flush(self):
         return  # Does nothing on read-only streams
 
-    def _read_bytes_from_text_stream(self, size: Optional[int] = -1, /) -> bytes:
+    def _read_bytes_from_text_stream(self, size: int | None = -1, /) -> bytes:
         if TYPE_CHECKING:
             assert self.text_str is not None
         if size is None or size < 0:
@@ -298,7 +297,7 @@ class BytesIOWrapper(BufferedIOBase):
         self._text_bytes_offset += len(ret_bytes)
         return ret_bytes
 
-    def read(self, size: Optional[int] = -1, /) -> bytes:
+    def read(self, size: int | None = -1, /) -> bytes:
         """
         Read at most size bytes, returned as a bytes object.
 
@@ -315,7 +314,7 @@ class BytesIOWrapper(BufferedIOBase):
             ret_bytes = self._read_bytes_from_text_stream(size)
         return ret_bytes
 
-    def read1(self, size: Optional[int] = -1, /) -> bytes:
+    def read1(self, size: int | None = -1, /) -> bytes:
         """
         Read at most size bytes, with at most one call to the underlying raw stream’s
         read() or readinto() method. Returned as a bytes object.
@@ -421,9 +420,9 @@ class InputSource(xmlreader.InputSource):
     TODO:
     """
 
-    def __init__(self, system_id: Optional[str] = None):
+    def __init__(self, system_id: str | None = None):
         xmlreader.InputSource.__init__(self, system_id=system_id)
-        self.content_type: Optional[str] = None
+        self.content_type: str | None = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
 
     def close(self) -> None:
@@ -457,23 +456,23 @@ class PythonInputSource(InputSource):
     True
     """
 
-    def __init__(self, data: Any, system_id: Optional[str] = None):
+    def __init__(self, data: Any, system_id: str | None = None):
         self.content_type = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
-        self.public_id: Optional[str] = None
-        self.system_id: Optional[str] = system_id
+        self.public_id: str | None = None
+        self.system_id: str | None = system_id
         self.data = data
 
-    def getPublicId(self) -> Optional[str]:  # noqa: N802
+    def getPublicId(self) -> str | None:  # noqa: N802
         return self.public_id
 
-    def setPublicId(self, public_id: Optional[str]) -> None:  # noqa: N802
+    def setPublicId(self, public_id: str | None) -> None:  # noqa: N802
         self.public_id = public_id
 
-    def getSystemId(self) -> Optional[str]:  # noqa: N802
+    def getSystemId(self) -> str | None:  # noqa: N802
         return self.system_id
 
-    def setSystemId(self, system_id: Optional[str]) -> None:  # noqa: N802
+    def setSystemId(self, system_id: str | None) -> None:  # noqa: N802
         self.system_id = system_id
 
     def close(self) -> None:
@@ -489,7 +488,7 @@ class StringInputSource(InputSource):
         self,
         value: str | bytes,
         encoding: str = "utf-8",
-        system_id: Optional[str] = None,
+        system_id: str | None = None,
     ):
         super(StringInputSource, self).__init__(system_id)
         stream: Union[BinaryIO, TextIO]
@@ -537,8 +536,8 @@ class URLInputSource(InputSource):
                 retarray.append(link)
         return retarray
 
-    def get_alternates(self, type_: Optional[str] = None) -> list[str]:
-        typestr: Optional[str] = f'type="{type_}"' if type_ else None
+    def get_alternates(self, type_: str | None = None) -> list[str]:
+        typestr: str | None = f'type="{type_}"' if type_ else None
         relstr = 'rel="alternate"'
         alts = []
         for link in self.links:
@@ -552,7 +551,7 @@ class URLInputSource(InputSource):
                 alts.append(parts[0].strip("<>"))
         return alts
 
-    def __init__(self, system_id: Optional[str] = None, format: Optional[str] = None):
+    def __init__(self, system_id: str | None = None, format: str | None = None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
 
@@ -620,7 +619,7 @@ class FileInputSource(InputSource):
         self,
         file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase],
         /,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
     ):
         base = pathlib.Path.cwd().as_uri()
         system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
@@ -651,14 +650,14 @@ class FileInputSource(InputSource):
 
 
 def create_input_source(
-    source: Optional[
-        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
-    ] = None,
-    publicID: Optional[str] = None,  # noqa: N803
-    location: Optional[str] = None,
-    file: Optional[Union[BinaryIO, TextIO]] = None,
-    data: Optional[Union[str, bytes, dict]] = None,
-    format: Optional[str] = None,
+    source: (
+        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath] | None
+    ) = None,
+    publicID: str | None = None,  # noqa: N803
+    location: str | None = None,
+    file: BinaryIO | TextIO | None = None,
+    data: str | bytes | dict | None = None,
+    format: str | None = None,
 ) -> InputSource:
     """
     Return an appropriate InputSource instance for the given
@@ -771,11 +770,11 @@ def create_input_source(
 
 
 def _create_input_source_from_location(
-    file: Optional[Union[BinaryIO, TextIO]],
-    format: Optional[str],
-    input_source: Optional[InputSource],
+    file: BinaryIO | TextIO | None,
+    format: str | None,
+    input_source: InputSource | None,
     location: str,
-) -> tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
+) -> tuple[URIRef, bool, BinaryIO | TextIO | None, InputSource | None]:
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a
