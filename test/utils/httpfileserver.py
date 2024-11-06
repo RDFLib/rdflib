@@ -8,7 +8,6 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
-from typing import Optional
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
@@ -129,7 +128,7 @@ class HTTPFileServer(HTTPServer):
     def add_file_with_caching(
         self,
         proto_file: ProtoFileResource,
-        proto_redirects: Optional[Sequence[ProtoRedirectResource]] = None,
+        proto_redirects: Sequence[ProtoRedirectResource] | None = None,
         suffix: str = "",
     ) -> HTTPFileInfo:
         return self.add_file(proto_file, proto_redirects, suffix)
@@ -137,7 +136,7 @@ class HTTPFileServer(HTTPServer):
     def add_file(
         self,
         proto_file: ProtoFileResource,
-        proto_redirects: Optional[Sequence[ProtoRedirectResource]] = None,
+        proto_redirects: Sequence[ProtoRedirectResource] | None = None,
         suffix: str = "",
     ) -> HTTPFileInfo:
         url_path = f"/file/{uuid4().hex}{suffix}"

@@ -117,7 +117,7 @@ from __future__ import annotations
 
 import itertools
 import logging
-from typing import TYPE_CHECKING, Optional, Union, cast
+from typing import TYPE_CHECKING, Union, cast
 
 from rdflib.collection import Collection
 from rdflib.graph import Graph, _ObjectType
@@ -380,13 +380,13 @@ class Individual:
     # Instance typing
     graph: Graph
     __identifier: IdentifiedNode
-    qname: Optional[str]
+    qname: str | None
 
     def serialize(self, graph):
         for fact in self.factoryGraph.triples((self.identifier, None, None)):
             graph.add(fact)
 
-    def __init__(self, identifier: Optional[IdentifiedNode] = None, graph=None):
+    def __init__(self, identifier: IdentifiedNode | None = None, graph=None):
         self.__identifier = identifier is not None and identifier or BNode()
         if graph is None:
             self.graph = self.factoryGraph
@@ -605,7 +605,7 @@ class AnnotatableTerms(Individual):
 
     def __init__(
         self,
-        identifier: Optional[IdentifiedNode],
+        identifier: IdentifiedNode | None,
         graph=None,
         nameAnnotation=None,  # noqa: N803
         nameIsLabel=False,  # noqa: N803
@@ -663,7 +663,7 @@ class AnnotatableTerms(Individual):
 
     def _set_comment(
         self,
-        comment: Optional[IdentifiedNode | Literal | list[IdentifiedNode | Literal]],
+        comment: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None,
     ):
         if not comment:
             return
@@ -702,7 +702,7 @@ class AnnotatableTerms(Individual):
             yield label
 
     def _set_label(
-        self, label: Optional[IdentifiedNode | Literal | list[IdentifiedNode | Literal]]
+        self, label: IdentifiedNode | Literal | list[IdentifiedNode | Literal] | None
     ):
         if not label:
             return
@@ -1058,7 +1058,7 @@ class Class(AnnotatableTerms):
 
     def __init__(
         self,
-        identifier: Optional[IdentifiedNode] = None,
+        identifier: IdentifiedNode | None = None,
         subClassOf=None,  # noqa: N803
         equivalentClass=None,  # noqa: N803
         disjointWith=None,  # noqa: N803
@@ -1762,22 +1762,22 @@ class Restriction(Class):
     def __init__(
         self,
         onProperty,  # noqa: N803
-        graph: Optional[Graph] = None,
-        allValuesFrom: Optional[  # noqa: N803
-            IdentifiedNode | Literal | Class | bool
-        ] = None,
-        someValuesFrom: Optional[  # noqa: N803
-            IdentifiedNode | Literal | Class | bool
-        ] = None,
-        value: Optional[IdentifiedNode | Literal | Class | bool] = None,
-        cardinality: Optional[IdentifiedNode | Literal | Class | bool] = None,
-        maxCardinality: Optional[  # noqa: N803
-            IdentifiedNode | Literal | Class | bool
-        ] = None,
-        minCardinality: Optional[  # noqa: N803
-            IdentifiedNode | Literal | Class | bool
-        ] = None,
-        identifier: Optional[IdentifiedNode] = None,
+        graph: Graph | None = None,
+        allValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        someValuesFrom: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        value: IdentifiedNode | Literal | Class | bool | None = None,
+        cardinality: IdentifiedNode | Literal | Class | bool | None = None,
+        maxCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        minCardinality: (  # noqa: N803
+            IdentifiedNode | Literal | Class | bool | None
+        ) = None,
+        identifier: IdentifiedNode | None = None,
     ):
         graph = Graph() if graph is None else graph
         super(Restriction, self).__init__(

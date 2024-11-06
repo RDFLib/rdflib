@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -35,7 +34,7 @@ def check_entry(entry: ManifestEntry) -> None:
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     graph = Graph()
     with ExitStack() as xstack:
         if entry.type_ == RDFT.TestNTriplesNegativeSyntax:

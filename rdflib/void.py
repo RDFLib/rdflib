@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Optional
 
 from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 from rdflib.namespace import RDF, VOID
@@ -10,8 +9,8 @@ from rdflib.term import IdentifiedNode, Literal, URIRef
 
 def generateVoID(  # noqa: N802
     g: Graph,
-    dataset: Optional[IdentifiedNode] = None,
-    res: Optional[Graph] = None,
+    dataset: IdentifiedNode | None = None,
+    res: Graph | None = None,
     distinctForPartitions: bool = True,  # noqa: N803
 ):
     """

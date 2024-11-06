@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from runpy import run_path
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import rdflib.util
 import test.data
@@ -21,11 +21,11 @@ SUFFIX_FORMAT_MAP = {**rdflib.util.SUFFIX_FORMAT_MAP, "hext": "hext"}
 class GraphSource:
     path: Path
     format: str
-    public_id: Optional[str] = None
+    public_id: str | None = None
 
     @classmethod
-    def guess_format(cls, path: Path) -> Optional[str]:
-        format: Optional[str]
+    def guess_format(cls, path: Path) -> str | None:
+        format: str | None
         if path.suffix == ".py":
             format = "python"
         else:
@@ -34,7 +34,7 @@ class GraphSource:
 
     @classmethod
     def from_path(
-        cls, path: Path, public_id: Optional[str] = None, format: Optional[str] = None
+        cls, path: Path, public_id: str | None = None, format: str | None = None
     ) -> GraphSource:
         if format is None:
             format = cls.guess_format(path)
@@ -51,7 +51,7 @@ class GraphSource:
 
     @classmethod
     def from_source(
-        cls, source: GraphSourceType, public_id: Optional[str] = None
+        cls, source: GraphSourceType, public_id: str | None = None
     ) -> GraphSource:
         logging.debug("source(%s) = %r", id(source), source)
         if isinstance(source, Path):
@@ -65,8 +65,8 @@ class GraphSource:
 
     def load(
         self,
-        graph: Optional[_GraphT] = None,
-        public_id: Optional[str] = None,
+        graph: _GraphT | None = None,
+        public_id: str | None = None,
         # type error: Incompatible default for argument "graph_type" (default has type "type[Graph]", argument has type "tpe[_GraphT]")
         # see https://github.com/python/mypy/issues/3737
         graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
@@ -84,7 +84,7 @@ class GraphSource:
         return graph
 
     @classmethod
-    def idfn(cls, val: Any) -> Optional[str]:
+    def idfn(cls, val: Any) -> str | None:
         """
         ID function for GraphSource objects.
 
@@ -103,8 +103,8 @@ class GraphSource:
 
 def load_sources(
     *sources: GraphSourceType,
-    graph: Optional[_GraphT] = None,
-    public_id: Optional[str] = None,
+    graph: _GraphT | None = None,
+    public_id: str | None = None,
     graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     if graph is None:
@@ -117,7 +117,7 @@ def load_sources(
 @lru_cache(maxsize=None)
 def cached_graph(
     sources: tuple[Union[GraphSource, Path], ...],
-    public_id: Optional[str] = None,
+    public_id: str | None = None,
     graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     return load_sources(*sources, public_id=public_id, graph_type=graph_type)
@@ -125,7 +125,7 @@ def cached_graph(
 
 def load_from_python(
     path: Path,
-    graph: Optional[_GraphT] = None,
+    graph: _GraphT | None = None,
     graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:
     if graph is None:

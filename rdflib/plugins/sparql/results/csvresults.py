@@ -12,7 +12,7 @@ from __future__ import annotations
 import codecs
 import csv
 from io import BufferedIOBase, TextIOBase
-from typing import IO, Optional, Union, cast
+from typing import IO, Union, cast
 
 from rdflib.plugins.sparql.processor import SPARQLResult
 from rdflib.query import Result, ResultParser, ResultSerializer
@@ -24,7 +24,7 @@ class CSVResultParser(ResultParser):
         self.delim = ","
 
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
-    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         r = Result("SELECT")
 
         # type error: Incompatible types in assignment (expression has type "StreamReader", variable has type "IO[Any]")
@@ -51,7 +51,7 @@ class CSVResultParser(ResultParser):
             if val is not None
         )
 
-    def convertTerm(self, t: str) -> Optional[Union[BNode, URIRef, Literal]]:
+    def convertTerm(self, t: str) -> BNode | URIRef | Literal | None:
         if t == "":
             return None
         if t.startswith("_:"):
@@ -94,7 +94,7 @@ class CSVResultSerializer(ResultSerializer):
             )
 
     def serializeTerm(
-        self, term: Optional[Identifier], encoding: str
+        self, term: Identifier | None, encoding: str
     ) -> Union[str, Identifier]:
         if term is None:
             return ""

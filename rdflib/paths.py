@@ -185,7 +185,7 @@ from __future__ import annotations
 import warnings
 from abc import ABC, abstractmethod
 from functools import total_ordering
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from rdflib.term import Node, URIRef
 
@@ -210,9 +210,7 @@ OneOrMore = "+"
 ZeroOrOne = "?"
 
 
-def _n3(
-    arg: URIRef | Path, namespace_manager: Optional[NamespaceManager] = None
-) -> str:
+def _n3(arg: URIRef | Path, namespace_manager: NamespaceManager | None = None) -> str:
     if isinstance(arg, (SequencePath, AlternativePath)) and len(arg.args) > 1:
         return "(%s)" % arg.n3(namespace_manager)
     return arg.n3(namespace_manager)
@@ -230,12 +228,12 @@ class Path(ABC):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[SubjectType] = None,
-        obj: Optional[ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
     ) -> Iterator[tuple[SubjectType, ObjectType]]: ...
 
     @abstractmethod
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str: ...
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
 
     def __hash__(self):
         return hash(repr(self))
@@ -258,8 +256,8 @@ class InvPath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[SubjectType] = None,
-        obj: Optional[ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
     ) -> Generator[tuple[ObjectType, SubjectType], None, None]:
         for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
@@ -267,7 +265,7 @@ class InvPath(Path):
     def __repr__(self) -> str:
         return "Path(~%s)" % (self.arg,)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "^%s" % _n3(self.arg, namespace_manager)
 
 
@@ -283,13 +281,13 @@ class SequencePath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[SubjectType] = None,
-        obj: Optional[ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
     ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         def _eval_seq(
             paths: list[Path | URIRef],
-            subj: Optional[SubjectType],
-            obj: Optional[ObjectType],
+            subj: SubjectType | None,
+            obj: ObjectType | None,
         ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
             if paths[1:]:
                 for s, o in eval_path(graph, (subj, paths[0], None)):
@@ -302,7 +300,7 @@ class SequencePath(Path):
 
         def _eval_seq_bw(
             paths: list[Path | URIRef],
-            subj: Optional[SubjectType],
+            subj: SubjectType | None,
             obj: ObjectType,
         ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
             if paths[:-1]:
@@ -324,7 +322,7 @@ class SequencePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "/".join(_n3(a, namespace_manager) for a in self.args)
 
 
@@ -340,8 +338,8 @@ class AlternativePath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[SubjectType] = None,
-        obj: Optional[ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
     ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         for x in self.args:
             for y in eval_path(graph, (subj, x, obj)):
@@ -350,7 +348,7 @@ class AlternativePath(Path):
     def __repr__(self) -> str:
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "|".join(_n3(a, namespace_manager) for a in self.args)
 
 
@@ -374,8 +372,8 @@ class MulPath(Path):
     def eval(
         self,
         graph: Graph,
-        subj: Optional[SubjectType] = None,
-        obj: Optional[ObjectType] = None,
+        subj: SubjectType | None = None,
+        obj: ObjectType | None = None,
         first: bool = True,
     ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
         if self.zero and first:
@@ -389,7 +387,7 @@ class MulPath(Path):
 
         def _fwd(
             subj: SubjectType,
-            obj: Optional[ObjectType],
+            obj: ObjectType | None,
             seen: set[SubjectType],
         ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
             seen.add(subj)
@@ -404,7 +402,7 @@ class MulPath(Path):
                         yield s, o2
 
         def _bwd(
-            subj: Optional[SubjectType],
+            subj: SubjectType | None,
             obj: ObjectType,
             seen: set[ObjectType],
         ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
@@ -468,7 +466,7 @@ class MulPath(Path):
     def __repr__(self) -> str:
         return "Path(%s%s)" % (self.path, self.mod)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "%s%s" % (_n3(self.path, namespace_manager), self.mod)
 
 
@@ -502,7 +500,7 @@ class NegatedPath(Path):
     def __repr__(self) -> str:
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
-    def n3(self, namespace_manager: Optional[NamespaceManager] = None) -> str:
+    def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "!(%s)" % ("|".join(_n3(arg, namespace_manager) for arg in self.args))
 
 
@@ -531,9 +529,9 @@ def path_sequence(self: URIRef | Path, other: URIRef | Path):
 def evalPath(  # noqa: N802
     graph: Graph,
     t: tuple[
-        Optional[SubjectType],
-        Optional[Path | PredicateType],
-        Optional[ObjectType],
+        SubjectType | None,
+        Path | PredicateType | None,
+        ObjectType | None,
     ],
 ) -> Iterator[tuple[SubjectType, ObjectType]]:
     warnings.warn(
@@ -549,9 +547,9 @@ def evalPath(  # noqa: N802
 def eval_path(
     graph: Graph,
     t: tuple[
-        Optional[SubjectType],
-        Optional[Path | PredicateType],
-        Optional[ObjectType],
+        SubjectType | None,
+        Path | PredicateType | None,
+        ObjectType | None,
     ],
 ) -> Iterator[tuple[SubjectType, ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))

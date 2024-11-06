@@ -11,7 +11,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
     Union,
 )
 from unittest.mock import patch
@@ -88,11 +87,11 @@ def make_graph_store_bind_cases(
         graph_factory: GraphFactory,
         ops: GraphOperations,
         expected_bindings: NamespaceBindings,
-        expected_bindings_overrides: Optional[
-            dict[tuple[type[Graph], type[Store]], NamespaceBindings]
+        expected_bindings_overrides: dict[
+            tuple[type[Graph], type[Store]], NamespaceBindings
         ] = None,
         *,
-        id: Optional[str] = None,
+        id: str | None = None,
     ):
         if expected_bindings_overrides is not None:
             expected_bindings = expected_bindings_overrides.get(

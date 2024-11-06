@@ -1795,7 +1795,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:failed ] ;
+            earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-bnodes-03> .
 
@@ -1859,7 +1859,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:failed ] ;
+            earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-forms-01> .
 
@@ -1907,7 +1907,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:failed ] ;
+            earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql1/manifest#syntax-lists-01> .
 
@@ -2787,7 +2787,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:failed ] ;
+            earl:outcome earl:passed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql2/manifest#syntax-lists-04> .
 

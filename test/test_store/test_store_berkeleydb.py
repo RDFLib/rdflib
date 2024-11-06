@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import tempfile
 from collections.abc import Iterable
-from typing import Optional
 
 import pytest
 
@@ -159,7 +158,7 @@ def test_multigraph(get_graph: tuple[str, ConjunctiveGraph]):
 
 
 def test_open_shut(get_graph: tuple[str, ConjunctiveGraph]):
-    g: Optional[ConjunctiveGraph]
+    g: ConjunctiveGraph | None
     path, g = get_graph
     assert len(g) == 3, "Initially we must have 3 triples from setUp"
     g.close()

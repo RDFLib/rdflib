@@ -12,7 +12,7 @@ See also rdflib.plugin
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Any, Optional, TypeVar, Union
+from typing import IO, TYPE_CHECKING, Any, TypeVar, Union
 
 from rdflib.term import URIRef
 
@@ -29,13 +29,13 @@ class Serializer:
     def __init__(self, store: Graph):
         self.store: Graph = store
         self.encoding: str = "utf-8"
-        self.base: Optional[str] = None
+        self.base: str | None = None
 
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **args: Any,
     ) -> None:
         """Abstract method"""

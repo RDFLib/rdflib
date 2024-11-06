@@ -10,7 +10,6 @@ from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     TypeVar,
     cast,
 )
@@ -123,7 +122,7 @@ class BaseHTTPServerMock:
 class ServedBaseHTTPServerMock(
     BaseHTTPServerMock, AbstractContextManager["ServedBaseHTTPServerMock"]
 ):
-    def __init__(self, host: Optional[str] = "127.0.0.1") -> None:
+    def __init__(self, host: str | None = "127.0.0.1") -> None:
         super().__init__()
         host = get_random_ip() if host is None else host
         self.server = HTTPServer((host, 0), self.Handler)
@@ -152,9 +151,9 @@ class ServedBaseHTTPServerMock(
 
     def __exit__(
         self,
-        __exc_type: Optional[type[BaseException]],
-        __exc_value: Optional[BaseException],
-        __traceback: Optional[TracebackType],
+        __exc_type: type[BaseException] | None,
+        __exc_value: BaseException | None,
+        __traceback: TracebackType | None,
     ) -> te.Literal[False]:
         self.stop()
         return False

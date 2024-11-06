@@ -11,10 +11,6 @@ pytest.register_assert_rewrite("test.utils")
 
 from collections.abc import Collection, Generator, Iterable
 from pathlib import Path
-from typing import (
-    Optional,
-    Union,
-)
 
 from rdflib import Graph
 from test.utils.audit import AuditHookDispatcher
@@ -97,9 +93,7 @@ def exit_stack() -> Generator[ExitStack, None, None]:
         yield stack
 
 
-EXTRA_MARKERS: dict[
-    tuple[Optional[str], str], Collection[Union[pytest.MarkDecorator, str]]
-] = {
+EXTRA_MARKERS: dict[tuple[str | None, str], Collection[pytest.MarkDecorator | str]] = {
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],
     ("rdflib/extras/infixowl.py", "rdflib.extras.infixowl"): [pytest.mark.webtest],

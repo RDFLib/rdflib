@@ -4,7 +4,7 @@ An RDF/XML parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NoReturn, Optional
+from typing import TYPE_CHECKING, Any, NoReturn
 from urllib.parse import urldefrag, urljoin
 from xml.sax import handler, make_parser, xmlreader
 from xml.sax.handler import ErrorHandler
@@ -146,16 +146,16 @@ class RDFXMLHandler(handler.ContentHandler):
         document_element = ElementHandler()
         document_element.start = self.document_element_start
         document_element.end = lambda name, qname: None
-        self.stack: list[Optional[ElementHandler]] = [
+        self.stack: list[ElementHandler | None] = [
             None,
             document_element,
         ]
         self.ids: dict[str, int] = {}  # remember IDs we have already seen
         self.bnode: dict[str, IdentifiedNode] = {}
-        self._ns_contexts: list[dict[str, Optional[str]]] = [
+        self._ns_contexts: list[dict[str, str | None]] = [
             {}
         ]  # contains uri -> prefix dicts
-        self._current_context: dict[str, Optional[str]] = self._ns_contexts[-1]
+        self._current_context: dict[str, str | None] = self._ns_contexts[-1]
 
     # ContentHandler methods
 
@@ -165,17 +165,17 @@ class RDFXMLHandler(handler.ContentHandler):
     def startDocument(self) -> None:
         pass
 
-    def startPrefixMapping(self, prefix: Optional[str], namespace: str) -> None:
+    def startPrefixMapping(self, prefix: str | None, namespace: str) -> None:
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
         self.store.bind(prefix, namespace or "", override=False)
 
-    def endPrefixMapping(self, prefix: Optional[str]) -> None:
+    def endPrefixMapping(self, prefix: str | None) -> None:
         self._current_context = self._ns_contexts[-1]
         del self._ns_contexts[-1]
 
     def startElementNS(
-        self, name: tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
@@ -207,7 +207,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.language = language
         current.start(name, qname, attrs)
 
-    def endElementNS(self, name: tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
         self.current.end(name, qname)
         self.stack.pop()
 
@@ -238,21 +238,21 @@ class RDFXMLHandler(handler.ContentHandler):
         )
         raise ParserError(info + message)
 
-    def get_current(self) -> Optional[ElementHandler]:
+    def get_current(self) -> ElementHandler | None:
         return self.stack[-2]
 
     # Create a read only property called current so that self.current
     # give the current element handler.
     current = property(get_current)
 
-    def get_next(self) -> Optional[ElementHandler]:
+    def get_next(self) -> ElementHandler | None:
         return self.stack[-1]
 
     # Create a read only property that gives the element handler to be
     # used for the next element.
     next = property(get_next)
 
-    def get_parent(self) -> Optional[ElementHandler]:
+    def get_parent(self) -> ElementHandler | None:
         return self.stack[-3]
 
     # Create a read only property that gives the current parent
@@ -267,7 +267,7 @@ class RDFXMLHandler(handler.ContentHandler):
         return URIRef(result)
 
     def convert(
-        self, name: tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> tuple[URIRef, dict[URIRef, str]]:
         if name[0] is None:
             # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
@@ -412,7 +412,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         # Cheap hack so 2to3 doesn't turn it into __next__
         next = getattr(self, "next")
-        object: Optional[_ObjectType] = None
+        object: _ObjectType | None = None
         current.data = None
         current.list = None
 

@@ -4,7 +4,7 @@ import logging
 import os
 from contextlib import ExitStack
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
@@ -91,7 +91,7 @@ def test_chuking(
     max_file_size_kb: Union[ellipsis, int, None],
     write_prefixes: bool,
     set_output_dir: bool,
-    expected_file_count: Optional[Union[int, tuple[Optional[int], Optional[int]]]],
+    expected_file_count: int | tuple[int | None, int | None] | None,
 ) -> None:
     test_graph = cached_graph((test_graph_path,))
     kwargs: dict[str, Any] = {"write_prefixes": write_prefixes}

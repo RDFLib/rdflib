@@ -13,8 +13,6 @@ from pathlib import Path, PurePath
 from re import Pattern
 from typing import (
     ClassVar,
-    Optional,
-    Union,
     cast,
 )
 
@@ -47,8 +45,8 @@ class GraphAsserts:
     A specification of asserts that must be checked against a graph.
     """
 
-    quad_count: Optional[int] = None
-    has_subject_iris: Optional[list[str]] = None
+    quad_count: int | None = None
+    has_subject_iris: list[str] | None = None
 
     def check(self, graph: Dataset) -> None:
         """
@@ -79,7 +77,7 @@ class GraphVariantsMeta(GraphAsserts):
     Meta information about a set of variants.
     """
 
-    public_id: Optional[str] = None
+    public_id: str | None = None
     exact_match: bool = False
 
 
@@ -123,9 +121,7 @@ class GraphVariants:
 
     def pytest_param(
         self,
-        marks: Optional[
-            Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]
-        ] = None,
+        marks: MarkDecorator | Collection[MarkDecorator | Mark] | None = None,
     ) -> ParameterSet:
         if marks is None:
             marks = cast(tuple[MarkDecorator], tuple())
@@ -144,7 +140,7 @@ class GraphVariants:
         return variant.load(public_id=self.public_id, graph_type=graph_type)
 
     @classmethod
-    def _decompose_path(cls, file_path: Path, basedir: Optional[Path]):
+    def _decompose_path(cls, file_path: Path, basedir: Path | None):
         if basedir:
             file_path = file_path.absolute().resolve().relative_to(basedir)
         name_noext, ext = os.path.splitext(file_path)
@@ -158,7 +154,7 @@ class GraphVariants:
 
     @classmethod
     def for_files(
-        cls, file_paths: Iterable[Path], basedir: Optional[Path] = None
+        cls, file_paths: Iterable[Path], basedir: Path | None = None
     ) -> dict[str, GraphVariants]:
         graph_sources: defaultdict[str, dict[str, GraphSource]] = defaultdict(dict)
         graph_meta: dict[str, GraphVariantsMeta] = {}
@@ -191,7 +187,7 @@ class GraphVariants:
 
     @classmethod
     def for_directory(
-        cls, directory: Path, basedir: Optional[Path] = None
+        cls, directory: Path, basedir: Path | None = None
     ) -> dict[str, GraphVariants]:
         file_paths = []
         for file_path in directory.glob("*"):
@@ -208,7 +204,7 @@ GRAPH_VARIANTS_DICT = {
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 
-EXPECTED_FAILURES: dict[tuple[str, Optional[str]], MarkDecorator] = {
+EXPECTED_FAILURES: dict[tuple[str, str | None], MarkDecorator] = {
     ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,
@@ -302,9 +298,7 @@ def make_variant_source_cases() -> Iterable[ParameterSet]:
 
 
 @pytest.mark.parametrize(["graph_variants", "variant_key"], make_variant_source_cases())
-def test_variant_source(
-    graph_variants: GraphVariants, variant_key: Optional[str]
-) -> None:
+def test_variant_source(graph_variants: GraphVariants, variant_key: str | None) -> None:
     """
     All variants of a graph are isomorphic with the preferred variant,
     and thus eachother.

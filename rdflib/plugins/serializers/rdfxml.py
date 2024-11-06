@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import xml.dom.minidom
 from collections.abc import Generator
-from typing import IO, TYPE_CHECKING, Any, Optional
+from typing import IO, TYPE_CHECKING, Any
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
@@ -48,8 +48,8 @@ class XMLSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -174,8 +174,8 @@ class PrettyXMLSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
+        base: str | None = None,
+        encoding: str | None = None,
         **kwargs: Any,
     ) -> None:
         self.__serialized: dict[IdentifiedNode | Literal, int] = {}

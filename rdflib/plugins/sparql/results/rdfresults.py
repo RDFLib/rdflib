@@ -38,7 +38,7 @@ class RDFResult(Result):
             # use a new graph
             g = Graph()
             g += graph
-            askAnswer: Optional[Literal] = None
+            askAnswer: Literal | None = None
         else:
             askAnswer = cast(Optional[Literal], graph.value(rs, RS.boolean))
 
@@ -61,7 +61,7 @@ class RDFResult(Result):
             for s in graph.objects(rs, RS.solution):
                 sol: dict[Variable, IdentifiedNode | Literal] = {}
                 for b in graph.objects(s, RS.binding):
-                    var_name: Optional[_ObjectType | str] = graph.value(b, RS.variable)
+                    var_name: _ObjectType | str | None = graph.value(b, RS.variable)
                     if var_name is None:
                         continue
                     # Technically we should check for QuotedGraph here, to make MyPy happy

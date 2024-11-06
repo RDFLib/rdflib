@@ -192,12 +192,12 @@ class ResultRow(tuple[QueryResultValueType, ...]):
 
     @overload
     def get(
-        self, name: str, default: Optional[QueryResultValueType] = ...
-    ) -> Optional[QueryResultValueType]: ...
+        self, name: str, default: QueryResultValueType | None = ...
+    ) -> QueryResultValueType | None: ...
 
     def get(
         self, name: str, default: Optional[QueryResultValueType] = None
-    ) -> Optional[QueryResultValueType]:
+    ) -> QueryResultValueType | None:
         try:
             return self[name]
         except KeyError:
@@ -232,13 +232,13 @@ class Result:
 
         self.type = type_
         #: variables contained in the result.
-        self.vars: Optional[list[Variable]] = None
+        self.vars: list[Variable] | None = None
         self._bindings: MutableSequence[Mapping[Variable, QueryResultValueType]] = None  # type: ignore[assignment]
-        self._genbindings: Optional[
-            Iterator[Mapping[Variable, QueryResultValueType]]
-        ] = None
-        self.askAnswer: Optional[bool] = None
-        self.graph: Optional[Graph] = None
+        self._genbindings: Iterator[Mapping[Variable, QueryResultValueType]] | None = (
+            None
+        )
+        self.askAnswer: bool | None = None
+        self.graph: Graph | None = None
 
     @property
     def bindings(self) -> MutableSequence[Mapping[Variable, QueryResultValueType]]:
@@ -268,9 +268,9 @@ class Result:
 
     @staticmethod
     def parse(
-        source: Optional[IO] = None,
-        format: Optional[str] = None,
-        content_type: Optional[str] = None,
+        source: IO | None = None,
+        format: str | None = None,
+        content_type: str | None = None,
         **kwargs: Any,
     ) -> Result:
         from rdflib import plugin
@@ -291,11 +291,11 @@ class Result:
 
     def serialize(
         self,
-        destination: Optional[Union[str, IO]] = None,
+        destination: str | IO | None = None,
         encoding: str = "utf-8",
         format: str = "xml",
         **args: Any,
-    ) -> Optional[bytes]:
+    ) -> bytes | None:
         """
         Serialize the query result.
 

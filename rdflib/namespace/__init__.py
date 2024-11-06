@@ -77,7 +77,7 @@ import warnings
 from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 from unicodedata import category
 from urllib.parse import urldefrag, urljoin
 
@@ -580,7 +580,7 @@ class NamespaceManager:
             return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
-        prefix: Optional[str]
+        prefix: str | None
         if uri not in self.__cache:
             if not _is_valid_uri(uri):
                 raise ValueError(
@@ -631,7 +631,7 @@ class NamespaceManager:
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
         namespace: str
-        prefix: Optional[str]
+        prefix: str | None
         prefix, namespace, name = self.compute_qname(uri, generate)
         if is_ncname(str(name)):
             return prefix, namespace, name
@@ -730,7 +730,7 @@ class NamespaceManager:
 
     def bind(
         self,
-        prefix: Optional[str],
+        prefix: str | None,
         namespace: Any,
         override: bool = True,
         replace: bool = False,
@@ -930,7 +930,7 @@ def insert_strie(strie: dict[str, Any], trie: dict[str, Any], value: str) -> Non
         strie[value] = insert_trie(trie, value)
 
 
-def get_longest_namespace(trie: dict[str, Any], value: str) -> Optional[str]:
+def get_longest_namespace(trie: dict[str, Any], value: str) -> str | None:
     for key in trie:
         if value.startswith(key):
             out = get_longest_namespace(trie[key], value)

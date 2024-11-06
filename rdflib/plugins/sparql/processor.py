@@ -8,7 +8,7 @@ These should be automatically registered with RDFLib
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from rdflib.graph import Graph
 from rdflib.plugins.sparql.algebra import translateQuery, translateUpdate
@@ -22,8 +22,8 @@ from rdflib.term import Identifier
 
 def prepareQuery(
     queryString: str,
-    initNs: Optional[Mapping[str, Any]] = None,
-    base: Optional[str] = None,
+    initNs: Mapping[str, Any] | None = None,
+    base: str | None = None,
 ) -> Query:
     """
     Parse and translate a SPARQL Query
@@ -37,8 +37,8 @@ def prepareQuery(
 
 def prepareUpdate(
     updateString: str,
-    initNs: Optional[Mapping[str, Any]] = None,
-    base: Optional[str] = None,
+    initNs: Mapping[str, Any] | None = None,
+    base: str | None = None,
 ) -> Update:
     """
     Parse and translate a SPARQL Update
@@ -53,9 +53,9 @@ def prepareUpdate(
 def processUpdate(
     graph: Graph,
     updateString: str,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
-    initNs: Optional[Mapping[str, Any]] = None,
-    base: Optional[str] = None,
+    initBindings: Mapping[str, Identifier] | None = None,
+    initNs: Mapping[str, Any] | None = None,
+    base: str | None = None,
 ) -> None:
     """
     Process a SPARQL Update Request
@@ -82,9 +82,9 @@ class SPARQLUpdateProcessor(UpdateProcessor):
 
     def update(
         self,
-        strOrQuery: Union[str, Update],
-        initBindings: Optional[Mapping[str, Identifier]] = None,
-        initNs: Optional[Mapping[str, Any]] = None,
+        strOrQuery: str | Update,
+        initBindings: Mapping[str, Identifier] | None = None,
+        initNs: Mapping[str, Any] | None = None,
     ) -> None:
         """
         .. caution::
@@ -118,9 +118,9 @@ class SPARQLProcessor(Processor):
     def query(  # type: ignore[override]
         self,
         strOrQuery: Union[str, Query],
-        initBindings: Optional[Mapping[str, Identifier]] = None,
-        initNs: Optional[Mapping[str, Any]] = None,
-        base: Optional[str] = None,
+        initBindings: Mapping[str, Identifier] | None = None,
+        initNs: Mapping[str, Any] | None = None,
+        base: str | None = None,
         DEBUG: bool = False,
     ) -> Mapping[str, Any]:
         """

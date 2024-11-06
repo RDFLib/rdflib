@@ -31,7 +31,6 @@ from time import altzone, gmtime, localtime, time, timezone
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     TypeVar,
     Union,
     overload,
@@ -79,7 +78,7 @@ def list2set(seq: Iterable[_HashableT]) -> list[_HashableT]:
     return [x for x in seq if x not in seen and not seen.add(x)]  # type: ignore[func-returns-value]
 
 
-def first(seq: Iterable[_AnyT]) -> Optional[_AnyT]:
+def first(seq: Iterable[_AnyT]) -> _AnyT | None:
     """
     return the first element in a python sequence
     for graphs, use graph.value instead
@@ -108,8 +107,8 @@ def more_than(sequence: Iterable[Any], number: int) -> int:
 
 
 def to_term(
-    s: Optional[str], default: Optional[rdflib.term.Identifier] = None
-) -> Optional[rdflib.term.Identifier]:
+    s: str | None, default: rdflib.term.Identifier | None = None
+) -> rdflib.term.Identifier | None:
     """
     Creates and returns an Identifier of type corresponding
     to the pattern of the given positional argument string ``s``:
@@ -138,10 +137,10 @@ def to_term(
 
 def from_n3(
     s: str,
-    default: Optional[str] = None,
-    backend: Optional[str] = None,
-    nsm: Optional[rdflib.namespace.NamespaceManager] = None,
-) -> Optional[Union[rdflib.term.Node, str]]:
+    default: str | None = None,
+    backend: str | None = None,
+    nsm: rdflib.namespace.NamespaceManager | None = None,
+) -> Union[rdflib.term.Node, str] | None:
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
@@ -346,7 +345,7 @@ SUFFIX_FORMAT_MAP = {
 }
 
 
-def guess_format(fpath: str, fmap: Optional[dict[str, str]] = None) -> Optional[str]:
+def guess_format(fpath: str, fmap: dict[str, str] | None = None) -> str | None:
     """
     Guess RDF serialization based on file suffix. Uses
     ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
@@ -407,7 +406,7 @@ def _get_ext(fpath: str, lower: bool = True) -> str:
 def find_roots(
     graph: Graph,
     prop: rdflib.term.URIRef,
-    roots: Optional[set[_SubjectType | _ObjectType]] = None,
+    roots: set[_SubjectType | _ObjectType] | None = None,
 ) -> set[_SubjectType | _ObjectType]:
     """
     Find the roots in some sort of transitive hierarchy.
@@ -437,10 +436,10 @@ def get_tree(
     root: Union[_SubjectType, _ObjectType],
     prop: rdflib.term.URIRef,
     mapper: Callable[[rdflib.term.Node], rdflib.term.Node] = lambda x: x,
-    sortkey: Optional[Callable[[Any], Any]] = None,
-    done: Optional[set[rdflib.term.Node]] = None,
+    sortkey: Callable[[Any], Any] | None = None,
+    done: set[rdflib.term.Node] | None = None,
     dir: str = "down",
-) -> Optional[tuple[rdflib.term.Node, list[Any]]]:
+) -> tuple[rdflib.term.Node, list[Any]] | None:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -482,18 +481,14 @@ def get_tree(
 
 
 @overload
-def _coalesce(*args: Optional[_AnyT], default: _AnyT) -> _AnyT: ...
+def _coalesce(*args: _AnyT | None, default: _AnyT) -> _AnyT: ...
 
 
 @overload
-def _coalesce(
-    *args: Optional[_AnyT], default: Optional[_AnyT] = ...
-) -> Optional[_AnyT]: ...
+def _coalesce(*args: _AnyT | None, default: _AnyT | None = ...) -> _AnyT | None: ...
 
 
-def _coalesce(
-    *args: Optional[_AnyT], default: Optional[_AnyT] = None
-) -> Optional[_AnyT]:
+def _coalesce(*args: _AnyT | None, default: _AnyT | None = None) -> _AnyT | None:
     """
     This is a null coalescing function, it will return the first non-`None`
     argument passed to it, otherwise it will return ``default`` which is `None`

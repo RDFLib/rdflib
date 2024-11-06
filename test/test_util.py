@@ -4,7 +4,7 @@ import logging
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
@@ -385,7 +385,7 @@ def test__coalesce_typing() -> None:
     type checking for _coalesce behaves as expected.
     """
     str_value: str
-    optional_str_value: Optional[str]
+    optional_str_value: str | None
 
     optional_str_value = _coalesce(None, "a", None)
     assert optional_str_value == "a"
@@ -438,10 +438,10 @@ def test__coalesce_typing() -> None:
 def test_find_roots(
     graph_sources: tuple[Path, ...],
     prop: URIRef,
-    roots: Optional[set[_SubjectType | _ObjectType]],
+    roots: set[_SubjectType | _ObjectType] | None,
     expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -566,7 +566,7 @@ def test_get_tree(
     dir: str,
     expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -668,7 +668,7 @@ def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) ->
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):

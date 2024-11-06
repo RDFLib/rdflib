@@ -4,7 +4,7 @@ Utilities for interacting with SHACL Shapes Graphs more easily.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from rdflib import Graph, Literal, URIRef, paths
 from rdflib.namespace import RDF, SH
@@ -33,7 +33,7 @@ def parse_shacl_path(
     :param path_identifier: A :class:`~rdflib.term.Node` of the path
     :return: A :class:`~rdflib.term.URIRef` or a :class:`~rdflib.paths.Path`
     """
-    path: Optional[URIRef | Path] = None
+    path: URIRef | Path | None = None
 
     # Literals are not allowed.
     if isinstance(path_identifier, Literal):
