@@ -69,7 +69,7 @@ wheel = ">=0.42,<0.45"
 sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
-sphinx-autodoc-typehints = ">=1.25.3,<=2.0.1"
+sphinx-autodoc-typehints = ">=1.25.3,<=2.3.0"
 typing-extensions = "^4.11.0"
 
 [tool.poetry.group.lint.dependencies]
