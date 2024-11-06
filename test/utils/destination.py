@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import enum
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePath
-from typing import IO, Callable, Generator, Optional, TextIO, Union
+from typing import IO, Callable, TextIO, Union
 
 DestParmType = Union[Path, PurePath, str, IO[bytes], TextIO]
 
@@ -28,11 +29,11 @@ class DestinationType(str, enum.Enum):
     def make_ref(
         self,
         tmp_path: Path,
-        encoding: Optional[str] = None,
-        path_factory: Callable[[Path, DestinationType, Optional[str]], Path] = (
+        encoding: str | None = None,
+        path_factory: Callable[[Path, DestinationType, str | None], Path] = (
             lambda tmp_path, type, encoding: tmp_path / f"file-{type.name}-{encoding}"
         ),
-    ) -> Generator[Optional[DestRef], None, None]:
+    ) -> Generator[DestRef | None, None, None]:
         path = path_factory(tmp_path, self, encoding)
         # path = tmp_path / f"file-{self.name}"
         if self is DestinationType.RETURN:

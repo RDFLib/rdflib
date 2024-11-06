@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import string
 import sys
-from typing import Dict
 from urllib.error import HTTPError
 from urllib.parse import quote as urlquote
 from urllib.parse import urljoin, urlsplit
@@ -68,7 +67,7 @@ def _make_redirect_request(request: Request, http_error: HTTPError) -> Request:
         unverifiable=True,
     )
 
-    visited: Dict[str, int]
+    visited: dict[str, int]
     if hasattr(request, "redirect_dict"):
         visited = request.redirect_dict
         if (

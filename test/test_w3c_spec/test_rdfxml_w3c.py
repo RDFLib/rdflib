@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -26,23 +25,23 @@ VALID_TYPES = {RDFT.TestXMLNegativeSyntax, RDFT.TestXMLEval}
 
 def check_entry(entry: ManifestEntry) -> None:
     assert entry.action is not None
-    assert entry.type in VALID_TYPES
+    assert entry.type_ in VALID_TYPES
     action_path = entry.uri_mapper.to_local_path(entry.action)
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     graph = Graph()
     with ExitStack() as xstack:
-        if entry.type == RDFT.TestXMLNegativeSyntax:
+        if entry.type_ == RDFT.TestXMLNegativeSyntax:
             catcher = xstack.enter_context(pytest.raises(Exception))
         graph.parse(action_path, publicID=entry.action, format="xml")
 
     if catcher is not None:
         assert catcher.value is not None
 
-    if entry.type == RDFT.TestXMLEval:
+    if entry.type_ == RDFT.TestXMLEval:
         assert entry.result is not None
         result_source = entry.uri_mapper.to_local_path(entry.result)
         result_graph = Graph()

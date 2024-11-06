@@ -4,18 +4,12 @@ import collections
 import email.message
 import enum
 import random
+from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from typing import (
-    Dict,
-    Iterable,
-    Iterator,
-    List,
     NamedTuple,
-    Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -23,13 +17,13 @@ from urllib.parse import ParseResult
 
 from test.utils.wildcard import EQ_WILDCARD
 
-__all__: List[str] = []
+__all__: list[str] = []
 
-HeadersT = Union[Dict[str, List[str]], Iterable[Tuple[str, str]]]
-PathQueryT = Dict[str, List[str]]
+HeadersT = Union[dict[str, list[str]], Iterable[tuple[str, str]]]
+PathQueryT = dict[str, list[str]]
 
 
-def header_items(headers: HeadersT) -> Iterable[Tuple[str, str]]:
+def header_items(headers: HeadersT) -> Iterable[tuple[str, str]]:
     if isinstance(headers, collections.abc.Mapping):
         for header, value in headers.items():
             if isinstance(value, list):
@@ -63,7 +57,7 @@ class MockHTTPRequest(NamedTuple):
     parsed_path: ParseResult
     path_query: PathQueryT
     headers: email.message.Message
-    body: Optional[bytes]
+    body: bytes | None
 
 
 MOCK_HTTP_REQUEST_WILDCARD = MockHTTPRequest(
@@ -81,7 +75,7 @@ class MockHTTPResponse(NamedTuple):
     headers: HeadersT
 
 
-def get_random_ip(ip_prefix: Optional[List[str]] = None) -> str:
+def get_random_ip(ip_prefix: list[str] | None = None) -> str:
     if ip_prefix is None:
         parts = ["127"]
     for _ in range(4 - len(parts)):
@@ -91,7 +85,7 @@ def get_random_ip(ip_prefix: Optional[List[str]] = None) -> str:
 
 @contextmanager
 def ctx_http_handler(
-    handler: Type[BaseHTTPRequestHandler], host: Optional[str] = "127.0.0.1"
+    handler: type[BaseHTTPRequestHandler], host: str | None = "127.0.0.1"
 ) -> Iterator[HTTPServer]:
     host = get_random_ip() if host is None else host
     server = HTTPServer((host, 0), handler)

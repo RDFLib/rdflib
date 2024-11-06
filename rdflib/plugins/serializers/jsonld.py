@@ -38,16 +38,22 @@ Example usage::
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any, Dict, List, Optional
+from typing import IO, TYPE_CHECKING, Any, Union, cast
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph, _ObjectType
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 
 from ..shared.jsonld.context import UNDEF, Context
 from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
+
+if TYPE_CHECKING:
+    from rdflib.graph import _ObjectType
+
+    # In JSON-LD, a Literal cannot be Subject. So define a new type
+    from ..shared.jsonld.context import JSONLDSubjectType, Term
 
 __all__ = ["JsonLDSerializer", "from_rdf"]
 
@@ -62,10 +68,10 @@ class JsonLDSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = None,
-        **kwargs,
-    ):
+        base: str | None = None,
+        encoding: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         # TODO: docstring w. args and return value
         encoding = encoding or "utf-8"
         if encoding not in ("utf-8", "utf-16"):
@@ -188,7 +194,7 @@ class Converter:
 
         context = self.context
 
-        objs: List[Any] = []
+        objs: list[Any] = []
         for g in graphs:
             obj = {}
             graphname = None
@@ -223,7 +229,7 @@ class Converter:
         return objs
 
     def from_graph(self, graph: Graph):
-        nodemap: Dict[Any, Any] = {}
+        nodemap: dict[Any, Any] = {}
 
         for s in set(graph.subjects()):
             ## only iri:s and unreferenced (rest will be promoted to top if needed)
@@ -252,9 +258,11 @@ class Converter:
         nodemap[node_id] = node
 
         for p, o in graph.predicate_objects(s):
-            # type error: Argument 3 to "add_to_node" of "Converter" has incompatible type "Node"; expected "IdentifiedNode"
-            # type error: Argument 4 to "add_to_node" of "Converter" has incompatible type "Node"; expected "Identifier"
-            self.add_to_node(graph, s, p, o, node, nodemap)  # type: ignore[arg-type]
+            # predicate_objects can return a lot of different types,
+            # but we only need to consider it to be a JSON-compatible type.
+            object_val = cast(Union[IdentifiedNode, Literal], o)
+            pred_val = cast(IdentifiedNode, p)
+            self.add_to_node(graph, s, pred_val, object_val, node, nodemap)
 
         return node
 
@@ -263,49 +271,62 @@ class Converter:
         graph: Graph,
         s: IdentifiedNode,
         p: IdentifiedNode,
-        o: Identifier,
-        s_node: Dict[str, Any],
+        o: IdentifiedNode | Literal,
+        s_node: dict[str, Any],
         nodemap,
     ):
         context = self.context
-
+        term: Term | None = None
         if isinstance(o, Literal):
-            datatype = str(o.datatype) if o.datatype else None
+            _datatype = str(o.datatype) if o.datatype else None
             language = o.language
-            term = context.find_term(str(p), datatype, language=language)
+            term = context.find_term(str(p), _datatype, language=language)
         else:
             containers = [LIST, None] if graph.value(o, RDF.first) else [None]
             for container in containers:
                 for coercion in (ID, VOCAB, UNDEF):
-                    # type error: Argument 2 to "find_term" of "Context" has incompatible type "object"; expected "Union[str, Defined, None]"
-                    # type error: Argument 3 to "find_term" of "Context" has incompatible type "Optional[str]"; expected "Union[Defined, str]"
-                    term = context.find_term(str(p), coercion, container)  # type: ignore[arg-type]
+                    term = context.find_term(str(p), coercion, container)
                     if term:
                         break
                 if term:
                     break
+            language = None if term is None else term.language
 
-        node = None
+        node: str | list[Any] | dict[str, Any] | None = None
         use_set = not context.active
 
-        if term:
+        if term is not None:
             p_key = term.name
 
             if term.type:
                 node = self.type_coerce(o, term.type)
-            # type error: "Identifier" has no attribute "language"
-            elif term.language and o.language == term.language:  # type: ignore[attr-defined]
+            elif (
+                term.language and isinstance(o, Literal) and o.language == term.language
+            ):
                 node = str(o)
-            # type error: Right operand of "and" is never evaluated
-            elif context.language and (term.language is None and o.language is None):  # type: ignore[unreachable]
-                node = str(o)  # type: ignore[unreachable]
+            elif context.language:
+                # TODO: MyPy thinks this is unreachable?
+                if isinstance(o, Literal) and (  # type: ignore[unreachable]
+                    term.language is None and o.language is None
+                ):
+                    node = str(o)
 
             if LIST in term.container:
-                node = [
-                    self.type_coerce(v, term.type)
-                    or self.to_raw_value(graph, s, v, nodemap)
-                    for v in self.to_collection(graph, o)
-                ]
+                assert isinstance(
+                    o, IdentifiedNode
+                ), "Subject of a @list container must an a URI or BNode"
+                _col = self.to_collection(graph, o)
+                if _col is not None:
+                    node = []
+                    for v in _col:
+                        if isinstance(v, (IdentifiedNode, Literal)):
+                            coerced = self.type_coerce(v, term.type)
+                        else:
+                            coerced = None
+                        if coerced is not None:
+                            node.append(coerced)
+                        else:
+                            node.append(self.to_raw_value(graph, s, v, nodemap))
             elif LANG in term.container and language:
                 value = s_node.setdefault(p_key, {})
                 values = value.get(language)
@@ -345,7 +366,9 @@ class Converter:
             value = node
         s_node[p_key] = value
 
-    def type_coerce(self, o: Identifier, coerce_type: str):
+    def type_coerce(
+        self, o: IdentifiedNode | Literal, coerce_type: str
+    ) -> str | IdentifiedNode | Literal | None:
         if coerce_type == ID:
             if isinstance(o, URIRef):
                 return self.context.shrink_iri(o)
@@ -361,15 +384,19 @@ class Converter:
             return None
 
     def to_raw_value(
-        self, graph: Graph, s: IdentifiedNode, o: Identifier, nodemap: Dict[str, Any]
+        self,
+        graph: Graph,
+        s: JSONLDSubjectType,
+        o: _ObjectType,
+        nodemap: dict[str, Any],
     ):
         context = self.context
-        coll = self.to_collection(graph, o)
+        if isinstance(o, (URIRef, BNode)):
+            coll: list[Any] | None = self.to_collection(graph, o)
+        else:
+            coll = None
         if coll is not None:
-            coll = [
-                self.to_raw_value(graph, s, lo, nodemap)
-                for lo in self.to_collection(graph, o)
-            ]
+            coll = [self.to_raw_value(graph, s, lo, nodemap) for lo in coll]
             return {context.list_key: coll}
         elif isinstance(o, BNode):
             embed = (
@@ -407,27 +434,36 @@ class Converter:
             else:
                 return v
 
-    def to_collection(self, graph: Graph, l_: Identifier):
+    def to_collection(
+        self, graph: Graph, l_: JSONLDSubjectType
+    ) -> list[_ObjectType] | None:
         if l_ != RDF.nil and not graph.value(l_, RDF.first):
             return None
-        list_nodes: List[Optional[_ObjectType]] = []
-        chain = set([l_])
-        while l_:
-            if l_ == RDF.nil:
+        list_nodes: list[_ObjectType] = []
+        chain: set[_ObjectType] = set([l_])
+        list_head: _ObjectType | None = l_
+        while list_head:
+            if list_head == RDF.nil:
+                # The only way to return a real result is to reach
+                # a rdf:nil node at the end of a rdf list.
                 return list_nodes
-            if isinstance(l_, URIRef):
+            if isinstance(list_head, URIRef):
                 return None
             first, rest = None, None
-            for p, o in graph.predicate_objects(l_):
+            for p, o in graph.predicate_objects(list_head):
                 if not first and p == RDF.first:
                     first = o
                 elif not rest and p == RDF.rest:
                     rest = o
                 elif p != RDF.type or o != RDF.List:
                     return None
-            list_nodes.append(first)
-            # type error: Incompatible types in assignment (expression has type "Optional[Node]", variable has type "Identifier")
-            l_ = rest  # type: ignore[assignment]
-            if l_ in chain:
+            if first is not None:
+                list_nodes.append(first)
+            if rest is None:
+                # TODO: If no rdf:rest is found, should we return the current list_nodes?
                 return None
-            chain.add(l_)
+            list_head = rest
+            if list_head in chain:
+                return None  # TODO: Should this just return the current list_nodes?
+            chain.add(list_head)
+        return None

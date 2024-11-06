@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Mapping, Sequence, Type
+from collections.abc import Callable, Mapping, Sequence
+from typing import Any
 
 import pytest
 from pytest import MonkeyPatch
@@ -413,7 +414,7 @@ def test_custom_eval() -> None:
     ],
 )
 def test_custom_eval_exception(
-    result_consumer: Callable[[Result], None], exception_type: Type[Exception]
+    result_consumer: Callable[[Result], None], exception_type: type[Exception]
 ) -> None:
     """
     Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
@@ -481,7 +482,7 @@ def test_custom_eval_exception(
 )
 def test_operator_exception(
     result_consumer: Callable[[Result], None],
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
     monkeypatch: MonkeyPatch,
 ) -> None:
     """

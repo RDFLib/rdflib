@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import IO, Any, Callable, List, Optional, Type, Union, cast
+from collections.abc import Callable
+from typing import IO, Any, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD
@@ -30,18 +31,18 @@ class HextuplesSerializer(Serializer):
     Serializes RDF graphs to NTriples format.
     """
 
-    contexts: List[Union[Graph, IdentifiedNode]]
+    contexts: list[Graph | IdentifiedNode]
     dumps: Callable
 
-    def __new__(cls, store: Union[Graph, Dataset, ConjunctiveGraph]):
+    def __new__(cls, store: Graph | Dataset | ConjunctiveGraph):
         if _HAS_ORJSON:
-            cls.str_local_id: Union[str, Any] = orjson.Fragment(b'"localId"')
-            cls.str_global_id: Union[str, Any] = orjson.Fragment(b'"globalId"')
-            cls.empty: Union[str, Any] = orjson.Fragment(b'""')
-            cls.lang_str: Union[str, Any] = orjson.Fragment(
+            cls.str_local_id: str | Any = orjson.Fragment(b'"localId"')
+            cls.str_global_id: str | Any = orjson.Fragment(b'"globalId"')
+            cls.empty: str | Any = orjson.Fragment(b'""')
+            cls.lang_str: str | Any = orjson.Fragment(
                 b'"' + RDF.langString.encode("utf-8") + b'"'
             )
-            cls.xsd_string: Union[str, Any] = orjson.Fragment(
+            cls.xsd_string: str | Any = orjson.Fragment(
                 b'"' + XSD.string.encode("utf-8") + b'"'
             )
         else:
@@ -52,9 +53,9 @@ class HextuplesSerializer(Serializer):
             cls.xsd_string = f"{XSD.string}"
         return super(cls, cls).__new__(cls)
 
-    def __init__(self, store: Union[Graph, Dataset, ConjunctiveGraph]):
-        self.default_context: Optional[Union[Graph, IdentifiedNode]]
-        self.graph_type: Union[Type[Graph], Type[Dataset], Type[ConjunctiveGraph]]
+    def __init__(self, store: Graph | Dataset | ConjunctiveGraph):
+        self.default_context: Graph | IdentifiedNode | None
+        self.graph_type: type[Graph] | type[Dataset] | type[ConjunctiveGraph]
         if isinstance(store, (Dataset, ConjunctiveGraph)):
             self.graph_type = (
                 Dataset if isinstance(store, Dataset) else ConjunctiveGraph
@@ -75,10 +76,10 @@ class HextuplesSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = "utf-8",
-        **kwargs,
-    ):
+        base: str | None = None,
+        encoding: str | None = "utf-8",
+        **kwargs: Any,
+    ) -> None:
         if base is not None:
             warnings.warn(
                 "base has no meaning for Hextuples serialization. "
@@ -96,8 +97,8 @@ class HextuplesSerializer(Serializer):
             raise Exception(
                 "Hextuple serialization can't (yet) handle formula-aware stores"
             )
-        context: Union[Graph, IdentifiedNode]
-        context_str: Union[bytes, str]
+        context: Graph | IdentifiedNode
+        context_str: bytes | str
         for context in self.contexts:
             for triple in context:
                 # Generate context string just once, because it doesn't change
@@ -118,7 +119,7 @@ class HextuplesSerializer(Serializer):
                 if hl is not None:
                     stream.write(hl if _HAS_ORJSON else hl.encode())
 
-    def _hex_line(self, triple, context_str: Union[bytes, str]):
+    def _hex_line(self, triple, context_str: bytes | str):
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects
@@ -163,7 +164,7 @@ class HextuplesSerializer(Serializer):
                 language,
                 context_str,
             ]
-            outline: Union[str, bytes]
+            outline: str | bytes
             if _HAS_ORJSON:
                 outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
             else:
@@ -180,7 +181,7 @@ class HextuplesSerializer(Serializer):
         else:
             return None
 
-    def _context_str(self, context: Union[Graph, IdentifiedNode]) -> str:
+    def _context_str(self, context: Graph | IdentifiedNode) -> str:
         context_identifier: IdentifiedNode = (
             context.identifier if isinstance(context, Graph) else context
         )

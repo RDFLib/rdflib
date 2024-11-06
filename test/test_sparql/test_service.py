@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
-from typing import Dict, FrozenSet, List, Mapping, Sequence, Tuple, Type, Union
+from typing import Union
 
 import pytest
 
@@ -214,7 +215,7 @@ def test_service_with_implicit_select_and_allcaps():
 
 def freeze_bindings(
     bindings: Sequence[Mapping[Variable, Identifier]]
-) -> FrozenSet[FrozenSet[Tuple[Variable, Identifier]]]:
+) -> frozenset[frozenset[tuple[Variable, Identifier]]]:
     result = []
     for binding in bindings:
         result.append(frozenset(((key, value)) for key, value in binding.items()))
@@ -329,8 +330,8 @@ WHERE {
 )
 def test_with_mock(
     function_httpmock: ServedBaseHTTPServerMock,
-    response_bindings: List[Dict[str, str]],
-    expected_result: Union[List[Identifier], Type[Exception]],
+    response_bindings: list[dict[str, str]],
+    expected_result: Union[list[Identifier], type[Exception]],
 ) -> None:
     """
     This tests that bindings for a variable named var
@@ -363,7 +364,7 @@ def test_with_mock(
 
     checker = OutcomeChecker[Sequence[Mapping[Variable, Identifier]]].from_primitive(
         [{Variable("var"): item} for item in expected_result]
-        if isinstance(expected_result, List)
+        if isinstance(expected_result, list)
         else expected_result
     )
     with checker.context():

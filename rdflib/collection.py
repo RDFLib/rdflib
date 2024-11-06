@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, Iterator, List, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from rdflib.namespace import RDF
-from rdflib.term import BNode, Node
+from rdflib.term import BNode, IdentifiedNode
 
 if TYPE_CHECKING:
-    from rdflib.graph import Graph
+    from collections.abc import Iterable, Iterator
+
+    from rdflib.graph import Graph, _ObjectType
 
 __all__ = ["Collection"]
 
@@ -54,7 +56,10 @@ class Collection:
     (``http://www.w3.org/1999/02/22-rdf-syntax-ns#nil``).
     """
 
-    def __init__(self, graph: Graph, uri: Node, seq: List[Node] = []):
+    uri: IdentifiedNode
+    graph: Graph
+
+    def __init__(self, graph: Graph, uri: IdentifiedNode, seq: list[_ObjectType] = []):
         self.graph = graph
         self.uri = uri or BNode()
         if seq:
@@ -88,24 +93,26 @@ class Collection:
         """
         return "( %s )" % (" ".join([i.n3() for i in self]))
 
-    def _get_container(self, index: int) -> Optional[Node]:
+    def _get_container(self, index: int) -> IdentifiedNode | None:
         """Gets the first, rest holding node at index."""
         assert isinstance(index, int)
         graph = self.graph
-        container: Optional[Node] = self.uri
+        container: IdentifiedNode | None = self.uri
         i = 0
-        while i < index:
+        while i < index and container is not None:
             i += 1
-            container = graph.value(container, RDF.rest)
-            if container is None:
-                break
+            ret = graph.value(container, RDF.rest)
+            if ret is not None:
+                container = cast(IdentifiedNode, ret)
+            else:
+                container = None
         return container
 
     def __len__(self) -> int:
         """length of items in collection."""
         return len(list(self.graph.items(self.uri)))
 
-    def index(self, item: Node) -> int:
+    def index(self, item: _ObjectType) -> int:
         """
         Returns the 0-based numerical index of the item in the list
         """
@@ -123,9 +130,9 @@ class Collection:
                     raise Exception("Malformed RDF Collection: %s" % self.uri)
                 else:
                     assert len(newlink) == 1, "Malformed RDF Collection: %s" % self.uri
-                    listname = newlink[0]
+                    listname = cast(IdentifiedNode, newlink[0])
 
-    def __getitem__(self, key: int) -> Node:
+    def __getitem__(self, key: int) -> _ObjectType:
         """TODO"""
         c = self._get_container(key)
         if c:
@@ -137,7 +144,7 @@ class Collection:
         else:
             raise IndexError(key)
 
-    def __setitem__(self, key: int, value: Node) -> None:
+    def __setitem__(self, key: int, value: _ObjectType) -> None:
         """TODO"""
         c = self._get_container(key)
         if c:
@@ -207,21 +214,21 @@ class Collection:
             graph.remove((current, None, None))
             graph.set((prior, RDF.rest, next))
 
-    def __iter__(self) -> Iterator[Node]:
+    def __iter__(self) -> Iterator[_ObjectType]:
         """Iterator over items in Collections"""
         return self.graph.items(self.uri)
 
-    def _end(self) -> Node:
+    def _end(self) -> IdentifiedNode:
         # find end of list
-        container = self.uri
+        container: IdentifiedNode = self.uri
         while True:
             rest = self.graph.value(container, RDF.rest)
             if rest is None or rest == RDF.nil:
                 return container
             else:
-                container = rest
+                container = cast(IdentifiedNode, rest)
 
-    def append(self, item: Node) -> Collection:
+    def append(self, item: _ObjectType) -> Collection:
         """
         >>> from rdflib.term import Literal
         >>> from rdflib.graph import Graph
@@ -249,7 +256,7 @@ class Collection:
         self.graph.add((end, RDF.rest, RDF.nil))
         return self
 
-    def __iadd__(self, other: Iterable[Node]):
+    def __iadd__(self, other: Iterable[_ObjectType]):
         end = self._end()
         if end == RDF.nil:
             raise ValueError("Cannot append to empty list")
@@ -267,11 +274,11 @@ class Collection:
         return self
 
     def clear(self):
-        container: Optional[Node] = self.uri
+        container: IdentifiedNode | None = self.uri
         graph = self.graph
-        while container:
+        while container is not None:
             rest = graph.value(container, RDF.rest)
             graph.remove((container, RDF.first, None))
             graph.remove((container, RDF.rest, None))
-            container = rest
+            container = cast(Optional[IdentifiedNode], rest)
         return self
