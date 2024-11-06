@@ -8,15 +8,13 @@ from __future__ import annotations
 
 import codecs
 import re
+from collections.abc import MutableMapping
 from io import BytesIO, StringIO, TextIOBase
+from re import Match, Pattern
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Match,
-    MutableMapping,
-    Optional,
-    Pattern,
     TextIO,
     Union,
 )
@@ -142,8 +140,8 @@ class W3CNTriplesParser:
 
     def __init__(
         self,
-        sink: Optional[Union[DummySink, NTGraphSink]] = None,
-        bnode_context: Optional[_BNodeContextType] = None,
+        sink: DummySink | NTGraphSink | None = None,
+        bnode_context: _BNodeContextType | None = None,
     ):
         self.skolemize = False
 
@@ -158,16 +156,16 @@ class W3CNTriplesParser:
         else:
             self.sink = DummySink()
 
-        self.buffer: Optional[str] = None
-        self.file: Optional[Union[TextIO, codecs.StreamReader]] = None
-        self.line: Optional[str] = ""
+        self.buffer: str | None = None
+        self.file: TextIO | codecs.StreamReader | None = None
+        self.line: str | None = ""
 
     def parse(
         self,
-        f: Union[TextIO, IO[bytes], codecs.StreamReader],
-        bnode_context: Optional[_BNodeContextType] = None,
+        f: TextIO | IO[bytes] | codecs.StreamReader,
+        bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
-    ) -> Union[DummySink, NTGraphSink]:
+    ) -> DummySink | NTGraphSink:
         """
         Parse f as an N-Triples file.
 
@@ -211,7 +209,7 @@ class W3CNTriplesParser:
             f = StringIO(s)
         self.parse(f, **kwargs)
 
-    def readline(self) -> Optional[str]:
+    def readline(self) -> str | None:
         """Read an N-Triples line from buffered input."""
         # N-Triples lines end in either CRLF, CR, or LF
         # Therefore, we can't just use f.readline()
@@ -237,7 +235,7 @@ class W3CNTriplesParser:
                     return None
                 self.buffer += buffer
 
-    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parseline(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
@@ -281,7 +279,7 @@ class W3CNTriplesParser:
         return pred
 
     def object(
-        self, bnode_context: Optional[_BNodeContextType] = None
+        self, bnode_context: _BNodeContextType | None = None
     ) -> Union[URI, bNode, Literal]:
         objt = self.uriref() or self.nodeid(bnode_context) or self.literal()
         if objt is False:
@@ -297,7 +295,7 @@ class W3CNTriplesParser:
         return False
 
     def nodeid(
-        self, bnode_context: Optional[_BNodeContextType] = None
+        self, bnode_context: _BNodeContextType | None = None
     ) -> Union[te.Literal[False], bNode, URI]:
         if self.peek("_"):
             if self.skolemize:

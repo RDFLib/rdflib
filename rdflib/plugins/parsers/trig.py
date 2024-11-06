@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, MutableSequence
+from collections.abc import MutableSequence
+from typing import Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.parser import InputSource, Parser

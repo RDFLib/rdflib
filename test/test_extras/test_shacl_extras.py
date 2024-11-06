@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Union, cast
 
 import pytest
 
@@ -211,8 +211,9 @@ def test_parse_shacl_path(
 ):
     path_root = path_source_data.value(resource, SH.path)
 
-    if isinstance(expected, type):
-        with pytest.raises(expected):  # type: ignore[arg-type]
+    if isinstance(expected, type) and issubclass(expected, BaseException):
+        exception_type: type[BaseException] = cast(type[BaseException], expected)
+        with pytest.raises(exception_type):
             parse_shacl_path(path_source_data, path_root)  # type: ignore[arg-type]
     else:
         assert parse_shacl_path(path_source_data, path_root) == expected  # type: ignore[arg-type]

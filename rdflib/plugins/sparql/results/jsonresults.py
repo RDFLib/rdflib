@@ -12,10 +12,11 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 from __future__ import annotations
 
 import json
-from typing import IO, Any, Dict, Mapping, MutableSequence, Optional
+from collections.abc import Mapping, MutableSequence
+from typing import IO, TYPE_CHECKING, Any
 
 from rdflib.query import Result, ResultException, ResultParser, ResultSerializer
-from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
+from rdflib.term import BNode, Literal, URIRef, Variable
 
 try:
     import orjson
@@ -25,10 +26,14 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
+if TYPE_CHECKING:
+    from rdflib.query import QueryResultValueType
+    from rdflib.term import IdentifiedNode
+
 
 class JSONResultParser(ResultParser):
     # type error: Signature of "parse" incompatible with supertype "ResultParser"
-    def parse(self, source: IO, content_type: Optional[str] = None) -> Result:  # type: ignore[override]
+    def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         inp = source.read()
         if _HAS_ORJSON:
             try:
@@ -48,7 +53,7 @@ class JSONResultSerializer(ResultSerializer):
 
     # type error: Signature of "serialize" incompatible with supertype "ResultSerializer"
     def serialize(self, stream: IO, encoding: str = None) -> None:  # type: ignore[override]
-        res: Dict[str, Any] = {}
+        res: dict[str, Any] = {}
         if self.result.type == "ASK":
             res["head"] = {}
             res["boolean"] = self.result.askAnswer
@@ -84,17 +89,20 @@ class JSONResultSerializer(ResultSerializer):
             else:
                 stream.write(r_str)
 
-    def _bindingToJSON(self, b: Mapping[Variable, Identifier]) -> Dict[Variable, Any]:
+    def _bindingToJSON(
+        self, b: Mapping[Variable, QueryResultValueType]
+    ) -> dict[Variable, Any]:
         res = {}
         for var in b:
             j = termToJSON(self, b[var])
             if j is not None:
+                # TODO: Why is this not simply `res[var] = j`?
                 res[var] = termToJSON(self, b[var])
         return res
 
 
 class JSONResult(Result):
-    def __init__(self, json: Dict[str, Any]):
+    def __init__(self, json: dict[str, Any]):
         self.json = json
         if "boolean" in json:
             type_ = "ASK"
@@ -111,17 +119,17 @@ class JSONResult(Result):
             self.bindings = self._get_bindings()
             self.vars = [Variable(x) for x in json["head"]["vars"]]
 
-    def _get_bindings(self) -> MutableSequence[Mapping[Variable, Identifier]]:
-        ret: MutableSequence[Mapping[Variable, Identifier]] = []
+    def _get_bindings(self) -> MutableSequence[Mapping[Variable, QueryResultValueType]]:
+        ret: MutableSequence[Mapping[Variable, QueryResultValueType]] = []
         for row in self.json["results"]["bindings"]:
-            outRow: Dict[Variable, Identifier] = {}
+            outRow: dict[Variable, QueryResultValueType] = {}
             for k, v in row.items():
                 outRow[Variable(k)] = parseJsonTerm(v)
             ret.append(outRow)
         return ret
 
 
-def parseJsonTerm(d: Dict[str, str]) -> Identifier:
+def parseJsonTerm(d: dict[str, str]) -> IdentifiedNode | Literal:
     """rdflib object (Literal, URIRef, BNode) for the given json-format dict.
 
     input is like:
@@ -143,8 +151,8 @@ def parseJsonTerm(d: Dict[str, str]) -> Identifier:
 
 
 def termToJSON(
-    self: JSONResultSerializer, term: Optional[Identifier]
-) -> Optional[Dict[str, str]]:
+    self: JSONResultSerializer, term: IdentifiedNode | Literal | None
+) -> dict[str, str] | None:
     if isinstance(term, URIRef):
         return {"type": "uri", "value": str(term)}
     elif isinstance(term, Literal):

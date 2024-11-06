@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Callable, Dict
+from typing import Callable
 
 import pytest
 
@@ -63,7 +63,7 @@ def n3(test: RDFTest):
             raise
 
 
-testers: Dict[Node, Callable[[RDFTest], None]] = {
+testers: dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTurtlePositiveSyntax: n3,
     RDFT.TestTurtleNegativeSyntax: n3,
     RDFT.TestTurtleEval: n3,
@@ -114,7 +114,7 @@ turtle_positive_syntax_skipped = [
     "turtle-syntax-string-11",
 ]
 
-EXPECTED_FAILURES: Dict[str, str] = {}
+EXPECTED_FAILURES: dict[str, str] = {}
 
 if os.name == "nt":
     for test in ["turtle-subm-15", "turtle-subm-16"]:

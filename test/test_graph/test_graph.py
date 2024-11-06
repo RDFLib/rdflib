@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Callable, Optional, Set, Tuple
+from typing import Callable
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -63,8 +63,8 @@ def test_property_namespace_manager() -> None:
     assert ("test", URIRef("example:test:")) in nss
 
 
-def get_store_names() -> Set[Optional[str]]:
-    names: Set[Optional[str]] = {*get_unique_plugin_names(Store)}
+def get_store_names() -> set[str | None]:
+    names: set[str | None] = {*get_unique_plugin_names(Store)}
     names.difference_update(
         {
             "default",
@@ -87,7 +87,7 @@ GraphFactory = Callable[[], Graph]
 
 @pytest.fixture(scope="function", params=get_store_names())
 def make_graph(tmp_path: Path, request) -> GraphFactory:
-    store_name: Optional[str] = request.param
+    store_name: str | None = request.param
 
     def make_graph() -> Graph:
         if store_name is None:
@@ -372,11 +372,11 @@ def test_guess_format_for_parse_http(
     make_graph: GraphFactory,
     http_file_server: HTTPFileServer,
     file: Path,
-    content_type: Optional[str],
+    content_type: str | None,
     expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
-    headers: Tuple[Tuple[str, str], ...] = tuple()
+    headers: tuple[tuple[str, str], ...] = tuple()
     if content_type is not None:
         headers = (("Content-Type", content_type),)
 

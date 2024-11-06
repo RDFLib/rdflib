@@ -5,7 +5,7 @@ import json
 import pathlib
 from html.parser import HTMLParser
 from io import StringIO, TextIOBase, TextIOWrapper
-from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Tuple, Union
+from typing import IO, TYPE_CHECKING, Any, TextIO, Union
 
 if TYPE_CHECKING:
     import json
@@ -41,12 +41,10 @@ from rdflib.parser import (
 
 
 def source_to_json(
-    source: Optional[
-        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
-    ],
-    fragment_id: Optional[str] = None,
-    extract_all_scripts: Optional[bool] = False,
-) -> Tuple[Union[Dict, List[Dict]], Any]:
+    source: IO[bytes] | TextIO | InputSource | str | bytes | pathlib.PurePath | None,
+    fragment_id: str | None = None,
+    extract_all_scripts: bool | None = False,
+) -> tuple[Union[dict, list[dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -70,8 +68,8 @@ def source_to_json(
         # We can get the original string from the StringInputSource
         # It's hidden in the BytesIOWrapper 'wrapped' attribute
         b_stream = source.getByteStream()
-        original_string: Optional[str] = None
-        json_dict: Union[Dict, List[Dict]]
+        original_string: str | None = None
+        json_dict: dict | list[dict]
         if isinstance(b_stream, BytesIOWrapper):
             wrapped_inner = cast(Union[str, StringIO, TextIOBase], b_stream.wrapped)
             if isinstance(wrapped_inner, str):
@@ -108,7 +106,7 @@ def source_to_json(
         "application/xhtml+xml",
     )
     if is_html:
-        html_docparser: Optional[HTMLJSONParser] = HTMLJSONParser(
+        html_docparser: HTMLJSONParser | None = HTMLJSONParser(
             fragment_id=fragment_id, extract_all_scripts=extract_all_scripts
         )
     else:
@@ -126,10 +124,10 @@ def source_to_json(
             f"Source does not have a character stream or a byte stream and cannot be used {type(source)}"
         )
     try:
-        b_encoding: Optional[str] = None if b_stream is None else source.getEncoding()
+        b_encoding: str | None = None if b_stream is None else source.getEncoding()
     except (AttributeError, LookupError):
         b_encoding = None
-    underlying_string: Optional[str] = None
+    underlying_string: str | None = None
     if b_stream is not None and isinstance(b_stream, BytesIOWrapper):
         # Try to find an underlying wrapped Unicode string to use?
         wrapped_inner = b_stream.wrapped
@@ -198,7 +196,7 @@ def source_to_json(
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri: str) -> Tuple[str, Optional[str]]:
+def split_iri(iri: str) -> tuple[str, str | None]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:
@@ -251,7 +249,7 @@ def norm_url(base: str, url: str) -> str:
 
 
 # type error: Missing return statement
-def context_from_urlinputsource(source: URLInputSource) -> Optional[str]:  # type: ignore[return]
+def context_from_urlinputsource(source: URLInputSource) -> str | None:  # type: ignore[return]
     """
     Please note that JSON-LD documents served with the application/ld+json media type
     MUST have all context information, including references to external contexts,
@@ -288,12 +286,12 @@ __all__ = [
 class HTMLJSONParser(HTMLParser):
     def __init__(
         self,
-        fragment_id: Optional[str] = None,
-        extract_all_scripts: Optional[bool] = False,
+        fragment_id: str | None = None,
+        extract_all_scripts: bool | None = False,
     ):
         super().__init__()
         self.fragment_id = fragment_id
-        self.json: List[Dict] = []
+        self.json: list[dict] = []
         self.contains_json = False
         self.fragment_id_does_not_match = False
         self.base = None
@@ -348,7 +346,7 @@ class HTMLJSONParser(HTMLParser):
 
             self.script_count += 1
 
-    def get_json(self) -> List[Dict]:
+    def get_json(self) -> list[dict]:
         return self.json
 
     def get_base(self):

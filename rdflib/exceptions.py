@@ -11,13 +11,13 @@ __all__ = [
 ]
 
 
-from typing import Any, Optional
+from typing import Any
 
 
 class Error(Exception):
     """Base class for rdflib exceptions."""
 
-    def __init__(self, msg: Optional[str] = None):
+    def __init__(self, msg: str | None = None):
         Exception.__init__(self, msg)
         self.msg = msg
 

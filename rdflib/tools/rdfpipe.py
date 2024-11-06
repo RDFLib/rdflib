@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import sys
 from optparse import OptionParser
-from typing import BinaryIO, Optional
+from typing import BinaryIO
 
 import rdflib
 from rdflib import plugin
@@ -191,7 +191,7 @@ def main():
             pfx, uri = ns_kw.split("=")
             ns_bindings[pfx] = uri
 
-    outfile: Optional[BinaryIO] = sys.stdout.buffer
+    outfile: BinaryIO | None = sys.stdout.buffer
 
     if opts.no_out:
         outfile = None

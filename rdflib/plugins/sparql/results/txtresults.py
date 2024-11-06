@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from io import StringIO
-from typing import IO, List, Optional, Union
+from typing import IO
 
 from rdflib.namespace import NamespaceManager
 from rdflib.query import ResultSerializer
@@ -9,8 +9,8 @@ from rdflib.term import BNode, Literal, URIRef, Variable
 
 
 def _termString(
-    t: Optional[Union[URIRef, Literal, BNode]],
-    namespace_manager: Optional[NamespaceManager],
+    t: URIRef | Literal | BNode | None,
+    namespace_manager: NamespaceManager | None,
 ) -> str:
     if t is None:
         return "-"
@@ -35,7 +35,7 @@ class TXTResultSerializer(ResultSerializer):
         stream: IO,
         encoding: str = "utf-8",
         *,
-        namespace_manager: Optional[NamespaceManager] = None,
+        namespace_manager: NamespaceManager | None = None,
         **kwargs,
     ) -> None:
         """
@@ -58,7 +58,7 @@ class TXTResultSerializer(ResultSerializer):
         if not self.result:
             string_stream.write("(no results)\n")
         else:
-            keys: List[Variable] = self.result.vars  # type: ignore[assignment]
+            keys: list[Variable] = self.result.vars  # type: ignore[assignment]
             maxlen = [0] * len(keys)
             b = [
                 # type error: Value of type "Union[Tuple[Node, Node, Node], bool, ResultRow]" is not indexable

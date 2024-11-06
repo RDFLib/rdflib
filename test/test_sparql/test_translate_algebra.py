@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from io import StringIO
 from pathlib import Path
-from typing import Collection, Tuple, Union, cast
+from typing import Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -27,7 +28,7 @@ class AlgebraTest:
     id: str
     description: str
     marks: Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]] = field(
-        default_factory=lambda: cast(Tuple[MarkDecorator], tuple())
+        default_factory=lambda: cast(tuple[MarkDecorator], tuple())
     )
 
     @property
@@ -104,6 +105,10 @@ algebra_tests = [
     AlgebraTest(
         "test_graph_patterns__bgp",
         "Test if basic graph patterns are properly translated into the query text.",
+    ),
+    AlgebraTest(
+        "test_graph_patterns__bnode_subject",
+        "Test if a blank node subject gets properly translated into the query text.",
     ),
     AlgebraTest(
         "test_graph_patterns__extend",

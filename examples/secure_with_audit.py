@@ -15,12 +15,12 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from typing import Any, Optional, Tuple
+from typing import Any
 
 from rdflib import Graph
 
 
-def audit_hook(name: str, args: Tuple[Any, ...]) -> None:
+def audit_hook(name: str, args: tuple[Any, ...]) -> None:
     """
     An audit hook that blocks access when an attempt is made to open a
     file or URL that ends with ``blocked.jsonld``.
@@ -70,7 +70,7 @@ def main() -> None:
 
     # Attempt to parse a JSON-LD document that will result in the blocked URL
     # being accessed.
-    error: Optional[PermissionError] = None
+    error: PermissionError | None = None
     try:
         graph.parse(
             data=r"""{

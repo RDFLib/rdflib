@@ -11,7 +11,7 @@ import mimetypes
 from dataclasses import dataclass
 from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import Callable, Optional, Set, Tuple, Type, TypeVar, Union
+from typing import Callable, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
@@ -23,8 +23,8 @@ PurePathT = TypeVar("PurePathT", bound=PurePath)
 
 def file_uri_to_path(
     file_uri: str,
-    path_class: Type[PurePathT] = PurePath,  # type: ignore[assignment]
-    url2pathname: Optional[Callable[[str], str]] = None,
+    path_class: type[PurePathT] = PurePath,  # type: ignore[assignment]
+    url2pathname: Callable[[str], str] | None = None,
 ) -> PurePathT:
     """
     This function returns a pathlib.PurePath object for the supplied file URI.
@@ -93,7 +93,7 @@ def rebase_url(old_url: str, old_base: str, new_base: str) -> str:
     return new_url
 
 
-URIMappingTupleType = Tuple[str, str]
+URIMappingTupleType = tuple[str, str]
 
 
 @dataclass(frozen=True)
@@ -108,7 +108,7 @@ class URIMapping:
 
 @dataclass
 class URIMapper:
-    mappings: Set[URIMapping]
+    mappings: set[URIMapping]
 
     def to_local_uri(self, remote: str) -> str:
         return self._map(remote, to_local=True)
@@ -118,7 +118,7 @@ class URIMapper:
         logging.debug("local_uri = %s", local_uri)
         return file_uri_to_path(local_uri, Path)
 
-    def to_local(self, remote: str) -> Tuple[str, Path]:
+    def to_local(self, remote: str) -> tuple[str, Path]:
         local_uri = self.to_local_uri(remote)
         local_path = file_uri_to_path(local_uri, Path)
         return (local_uri, local_path)
@@ -127,7 +127,7 @@ class URIMapper:
         return self._map(local, to_local=False)
 
     def _map(self, value: Union[str, PurePath], to_local: bool = True) -> str:
-        error: Optional[ValueError] = None
+        error: ValueError | None = None
         mapping: URIMapping
         uri = value.as_uri() if isinstance(value, PurePath) else value
         for mapping in self.mappings:

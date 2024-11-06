@@ -18,7 +18,7 @@ import uuid
 import warnings
 from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
-from typing import Any, Callable, Dict, NoReturn, Optional, Tuple, Union, overload
+from typing import Any, Callable, NoReturn, Union, overload
 from urllib.parse import quote
 
 from pyparsing import ParseResults
@@ -550,7 +550,7 @@ def Builtin_LANG(e: Expr, ctx) -> Literal:
     return Literal(l_.language or "")
 
 
-def Builtin_DATATYPE(e: Expr, ctx) -> Optional[str]:
+def Builtin_DATATYPE(e: Expr, ctx) -> str | None:
     l_ = e.arg
     if not isinstance(l_, Literal):
         raise SPARQLError("Can only get datatype of literal: %r" % l_)
@@ -592,7 +592,7 @@ def Builtin_EXISTS(e: Expr, ctx: FrozenBindings) -> Literal:
 
 _CustomFunction = Callable[[Expr, FrozenBindings], Node]
 
-_CUSTOM_FUNCTIONS: Dict[URIRef, Tuple[_CustomFunction, bool]] = {}
+_CUSTOM_FUNCTIONS: dict[URIRef, tuple[_CustomFunction, bool]] = {}
 
 
 def register_custom_function(
@@ -626,7 +626,7 @@ def custom_function(
 
 
 def unregister_custom_function(
-    uri: URIRef, func: Optional[Callable[..., Any]] = None
+    uri: URIRef, func: Callable[..., Any] | None = None
 ) -> None:
     """
     The 'func' argument is included for compatibility with existing code.
@@ -993,7 +993,9 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    if not isinstance(expr, CompValue):
+    # I don't know why MyPy thinks this is unreachable
+    # Something to do with the Any type and the isinstance calls above.
+    if not isinstance(expr, CompValue):  # type: ignore[unreachable, unused-ignore]
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:

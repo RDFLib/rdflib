@@ -3,7 +3,7 @@ test suite."""
 
 from __future__ import annotations
 
-from typing import Callable, Dict
+from typing import Callable
 
 import pytest
 
@@ -64,7 +64,7 @@ def trix(test: RDFTest):
             raise
 
 
-testers: Dict[Node, Callable[[RDFTest], None]] = {
+testers: dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTrixPositiveSyntax: trix,
     RDFT.TestTrixNegativeSyntax: trix,
     RDFT.TestTrixEval: trix,
@@ -105,7 +105,7 @@ positive_syntax_skipped = [
 ]
 
 
-EXPECTED_FAILURES: Dict[str, str] = {}
+EXPECTED_FAILURES: dict[str, str] = {}
 
 for test in star_skipped:
     EXPECTED_FAILURES[test] = "TriX Star NYI"
