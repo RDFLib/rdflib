@@ -307,56 +307,61 @@ if TYPE_CHECKING:
 _SubjectType: te.TypeAlias = Union[IdentifiedNode, Literal, Variable]
 _PredicateType: te.TypeAlias = Union[IdentifiedNode, Variable]
 _ObjectType: te.TypeAlias = Union[IdentifiedNode, Literal, Variable]
-_ContextIdentifierType = IdentifiedNode
+_ContextIdentifierType: te.TypeAlias = Union[IdentifiedNode]
 
 _TripleType: te.TypeAlias = tuple[_SubjectType, _PredicateType, _ObjectType]
+_TriplePathType: te.TypeAlias = tuple[_SubjectType, Path, _ObjectType]
+_TripleOrTriplePathType: te.TypeAlias = Union[_TripleType, _TriplePathType]
+
 _QuadType: te.TypeAlias = tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"
+    _SubjectType, _PredicateType, _ObjectType, "_ContextType"
 ]
-_OptionalQuadType = tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
+_OptionalQuadType: te.TypeAlias = tuple[
+    _SubjectType, _PredicateType, _ObjectType, Optional["_ContextType"]
 ]
-_TripleOrOptionalQuadType = Union["_TripleType", "_OptionalQuadType"]
-_OptionalQuadQuotedType: te.TypeAlias = Union[_OptionalQuadType, "QuotedGraph"]
-_OptionalIdentifiedQuadType = tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
+_TripleOrOptionalQuadType: te.TypeAlias = Union[_TripleType, _OptionalQuadType]
+_OptionalIdentifiedQuadType: te.TypeAlias = tuple[
+    _SubjectType, _PredicateType, _ObjectType, Optional[_ContextIdentifierType]
 ]
-_TriplePatternType = tuple[
-    Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
+_TriplePatternType: te.TypeAlias = tuple[
+    Optional[_SubjectType], Optional[_PredicateType], Optional[_ObjectType]
 ]
-_TriplePathPatternType = tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]]
-_QuadPatternType = tuple[
-    Optional["_SubjectType"],
-    Optional["_PredicateType"],
-    Optional["_ObjectType"],
+_TriplePathPatternType: te.TypeAlias = tuple[
+    Optional[_SubjectType], Path, Optional[_ObjectType]
+]
+_QuadPatternType: te.TypeAlias = tuple[
+    Optional[_SubjectType],
+    Optional[_PredicateType],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_QuadPathPatternType = tuple[
-    Optional["_SubjectType"],
+_QuadPathPatternType: te.TypeAlias = tuple[
+    Optional[_SubjectType],
     Path,
-    Optional["_ObjectType"],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_TripleOrQuadPatternType = Union["_TriplePatternType", "_QuadPatternType"]
-_TripleOrQuadPathPatternType = Union["_TriplePathPatternType", "_QuadPathPatternType"]
+_TripleOrQuadPatternType: te.TypeAlias = Union[_TriplePatternType, _QuadPatternType]
+_TripleOrQuadPathPatternType: te.TypeAlias = Union[
+    _TriplePathPatternType, _QuadPathPatternType
+]
 
 # The difference between TriplePattern and TripleSelector is that
 # TripleSelector can have a Optional[Path] as the predicate, and Subject/Object
-# can be a QuaotedGraph
-_TripleSelectorType = tuple[
-    Optional["_SubjectType"],
-    Optional[Union[Path, "_PredicateType"]],
-    Optional["_ObjectType"],
+# can be a QuotedGraph
+_TripleSelectorType: te.TypeAlias = tuple[
+    Optional[_SubjectType],
+    Optional[Union[Path, _PredicateType]],
+    Optional[_ObjectType],
 ]
-_QuadSelectorType = tuple[
-    Optional["_SubjectType"],
-    Optional[Union[Path, "_PredicateType"]],
-    Optional["_ObjectType"],
+_QuadSelectorType: te.TypeAlias = tuple[
+    Optional[_SubjectType],
+    Optional[Union[Path, _PredicateType]],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
-_TriplePathType = tuple["_SubjectType", Path, "_ObjectType"]
-_TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
+_TripleOrQuadSelectorType: te.TypeAlias = Union[_TripleSelectorType, _QuadSelectorType]
+
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
@@ -1951,7 +1956,7 @@ class Graph(Node):
         return subgraph
 
 
-_ContextType = Graph
+_ContextType: te.TypeAlias = Union[Graph]
 
 
 class ConjunctiveGraph(Graph):
