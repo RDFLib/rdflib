@@ -309,52 +309,60 @@ if TYPE_CHECKING:
     import rdflib.query
     from rdflib.plugins.sparql.sparql import Query, Update
 
-_SubjectType = Node
-_PredicateType = Node
-_ObjectType = Node
-_ContextIdentifierType = IdentifiedNode
+_SubjectType: te.TypeAlias = Node
+_PredicateType: te.TypeAlias = Node
+_ObjectType: te.TypeAlias = Node
+_ContextIdentifierType: te.TypeAlias = IdentifiedNode
 
-_TripleType = Tuple["_SubjectType", "_PredicateType", "_ObjectType"]
-_QuadType = Tuple["_SubjectType", "_PredicateType", "_ObjectType", "_ContextType"]
-_OptionalQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextType"]
+_TripleType: te.TypeAlias = Tuple[_SubjectType, _PredicateType, _ObjectType]
+_TriplePathType: te.TypeAlias = Tuple[_SubjectType, Path, _ObjectType]
+_TripleOrTriplePathType: te.TypeAlias = Union[_TripleType, _TriplePathType]
+
+_QuadType: te.TypeAlias = Tuple[
+    _SubjectType, _PredicateType, _ObjectType, "_ContextType"
 ]
-_TripleOrOptionalQuadType = Union["_TripleType", "_OptionalQuadType"]
-_OptionalIdentifiedQuadType = Tuple[
-    "_SubjectType", "_PredicateType", "_ObjectType", Optional["_ContextIdentifierType"]
+_OptionalQuadType: te.TypeAlias = Tuple[
+    _SubjectType, _PredicateType, _ObjectType, Optional["_ContextType"]
 ]
-_TriplePatternType = Tuple[
-    Optional["_SubjectType"], Optional["_PredicateType"], Optional["_ObjectType"]
+_TripleOrOptionalQuadType: te.TypeAlias = Union[_TripleType, _OptionalQuadType]
+_OptionalIdentifiedQuadType: te.TypeAlias = Tuple[
+    _SubjectType, _PredicateType, _ObjectType, Optional[_ContextIdentifierType]
 ]
-_TriplePathPatternType = Tuple[Optional["_SubjectType"], Path, Optional["_ObjectType"]]
-_QuadPatternType = Tuple[
-    Optional["_SubjectType"],
-    Optional["_PredicateType"],
-    Optional["_ObjectType"],
+_TriplePatternType: te.TypeAlias = Tuple[
+    Optional[_SubjectType], Optional[_PredicateType], Optional[_ObjectType]
+]
+_TriplePathPatternType: te.TypeAlias = Tuple[
+    Optional[_SubjectType], Path, Optional[_ObjectType]
+]
+_QuadPatternType: te.TypeAlias = Tuple[
+    Optional[_SubjectType],
+    Optional[_PredicateType],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_QuadPathPatternType = Tuple[
-    Optional["_SubjectType"],
+_QuadPathPatternType: te.TypeAlias = Tuple[
+    Optional[_SubjectType],
     Path,
-    Optional["_ObjectType"],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_TripleOrQuadPatternType = Union["_TriplePatternType", "_QuadPatternType"]
-_TripleOrQuadPathPatternType = Union["_TriplePathPatternType", "_QuadPathPatternType"]
-_TripleSelectorType = Tuple[
-    Optional["_SubjectType"],
-    Optional[Union["Path", "_PredicateType"]],
-    Optional["_ObjectType"],
+_TripleOrQuadPatternType: te.TypeAlias = Union[_TriplePatternType, _QuadPatternType]
+_TripleOrQuadPathPatternType: te.TypeAlias = Union[
+    _TriplePathPatternType, _QuadPathPatternType
 ]
-_QuadSelectorType = Tuple[
-    Optional["_SubjectType"],
-    Optional[Union["Path", "_PredicateType"]],
-    Optional["_ObjectType"],
+_TripleSelectorType: te.TypeAlias = Tuple[
+    Optional[_SubjectType],
+    Optional[Union[Path, _PredicateType]],
+    Optional[_ObjectType],
+]
+_QuadSelectorType: te.TypeAlias = Tuple[
+    Optional[_SubjectType],
+    Optional[Union[Path, _PredicateType]],
+    Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_TripleOrQuadSelectorType = Union["_TripleSelectorType", "_QuadSelectorType"]
-_TriplePathType = Tuple["_SubjectType", Path, "_ObjectType"]
-_TripleOrTriplePathType = Union["_TripleType", "_TriplePathType"]
+_TripleOrQuadSelectorType: te.TypeAlias = Union[_TripleSelectorType, _QuadSelectorType]
+
 
 _GraphT = TypeVar("_GraphT", bound="Graph")
 _ConjunctiveGraphT = TypeVar("_ConjunctiveGraphT", bound="ConjunctiveGraph")
@@ -1896,7 +1904,7 @@ class Graph(Node):
         return subgraph
 
 
-_ContextType = Graph
+_ContextType: te.TypeAlias = Graph
 
 
 class ConjunctiveGraph(Graph):
