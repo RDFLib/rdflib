@@ -73,7 +73,7 @@ sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
 typing-extensions = "^4.11.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = ">=0.7.1,<0.8.0"
+ruff = ">=0.7.2,<1"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
