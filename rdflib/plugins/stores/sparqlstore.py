@@ -408,19 +408,19 @@ class SPARQLStore(SPARQLConnector, Store):
         self,
         _: (
             tuple[
-                list[_SubjectType] | tuple[_SubjectType],
+                list[_SubjectType] | tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
             | tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType],
+                list[_PredicateType] | tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
             | tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType],
+                list[_ObjectType] | tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,

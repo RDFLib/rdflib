@@ -271,19 +271,19 @@ class Store:
         self,
         triple: (
             tuple[
-                list[_SubjectType] | tuple[_SubjectType],
+                list[_SubjectType] | tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
             | tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType],
+                list[_PredicateType] | tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
             | tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType],
+                list[_ObjectType] | tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,
@@ -301,9 +301,9 @@ class Store:
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
-        subject: _SubjectType | list[_SubjectType] | tuple[_SubjectType] | None
-        predicate: _PredicateType | list[_PredicateType] | tuple[_PredicateType]
-        object_: _ObjectType | list[_ObjectType] | tuple[_ObjectType] | None
+        subject: _SubjectType | list[_SubjectType] | tuple[_SubjectType, ...] | None
+        predicate: _PredicateType | list[_PredicateType] | tuple[_PredicateType, ...]
+        object_: _ObjectType | list[_ObjectType] | tuple[_ObjectType, ...] | None
         subject, predicate, object_ = triple
         if isinstance(object_, (list, tuple)):
             # MyPy thinks these are unreachable due to the triple pattern signature.
