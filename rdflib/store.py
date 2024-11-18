@@ -281,12 +281,24 @@ class Store:
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
-        context: Optional[_ContextType] = None,
+        triple: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType, ...],
+                _PredicateType,
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                list[_PredicateType] | tuple[_PredicateType, ...],
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType, ...],
+            ]
+        ),
+        context: _ContextType | None = None,
     ) -> Generator[
         Tuple[
             _TripleType,
@@ -301,6 +313,9 @@ class Store:
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
+        subject: _SubjectType | list[_SubjectType] | tuple[_SubjectType, ...] | None
+        predicate: _PredicateType | list[_PredicateType] | tuple[_PredicateType, ...]
+        object_: _ObjectType | list[_ObjectType] | tuple[_ObjectType, ...] | None
         subject, predicate, object_ = triple
         if isinstance(object_, list):
             assert not isinstance(subject, list), "object_ / subject are both lists"

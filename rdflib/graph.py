@@ -943,12 +943,24 @@ class Graph(Node):
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
-        context: Optional[_ContextType] = None,
+        triple: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType, ...],
+                _PredicateType,
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                list[_PredicateType] | tuple[_PredicateType, ...],
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType, ...],
+            ]
+        ),
+        context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
         # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "Tuple[Union[List[Node], Node], Union[Node, List[Node]], Union[Node, List[Node]]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, List[Node], Node], Tuple[Node, Node, List[Node]]]"
@@ -2145,12 +2157,24 @@ class ConjunctiveGraph(Graph):
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
-        context: Optional[_ContextType] = None,
+        triple: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType, ...],
+                _PredicateType,
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                list[_PredicateType] | tuple[_PredicateType, ...],
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType, ...],
+            ]
+        ),
+        context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         """Iterate over all the triples in the entire conjunctive graph"""
         s, p, o = triple
@@ -2864,12 +2888,24 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
-        context: Optional[_ContextType] = None,
+        triple: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType, ...],
+                _PredicateType,
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                list[_PredicateType] | tuple[_PredicateType, ...],
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType, ...],
+            ]
+        ),
+        context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
         for graph in self.graphs:

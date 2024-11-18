@@ -367,12 +367,24 @@ class SPARQLStore(SPARQLConnector, Store):
 
     def triples_choices(
         self,
-        _: Tuple[
-            Union[_SubjectType, List[_SubjectType]],
-            Union[_PredicateType, List[_PredicateType]],
-            Union[_ObjectType, List[_ObjectType]],
-        ],
-        context: Optional[_ContextType] = None,
+        _: (
+            tuple[
+                list[_SubjectType] | tuple[_SubjectType, ...],
+                _PredicateType,
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                list[_PredicateType] | tuple[_PredicateType, ...],
+                _ObjectType | None,
+            ]
+            | tuple[
+                _SubjectType | None,
+                _PredicateType,
+                list[_ObjectType] | tuple[_ObjectType, ...],
+            ]
+        ),
+        context: _ContextType | None = None,
     ) -> Generator[
         Tuple[
             Tuple[_SubjectType, _PredicateType, _ObjectType],
