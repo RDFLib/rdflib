@@ -82,3 +82,13 @@ def test_from_and_from_named():
         (None, URIRef("urn:s1"), URIRef("urn:p1"), URIRef("urn:o1")),
         (URIRef("urn:g2"), URIRef("urn:s2"), URIRef("urn:p2"), URIRef("urn:o2")),
     ]
+
+
+def test_ask_from():
+    query = """
+        ASK
+        FROM <urn:g1>
+        WHERE {?s ?p ?o}
+    """
+    results = bool(dataset.query(query))
+    assert results
