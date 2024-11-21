@@ -109,7 +109,32 @@ def path_source_data():
                 ) ;
             ] ;
         .
-        ex:TestPropShape10
+        ex:TestPropShape10a
+            sh:path (
+                [
+                    sh:zeroOrMorePath [
+                        sh:inversePath ex:pred1 ;
+                    ] ;
+                ]
+                [
+                    sh:alternativePath (
+                        [
+                            sh:zeroOrMorePath [
+                                sh:inversePath ex:pred1 ;
+                            ] ;
+                        ]
+                        ex:pred1
+                        [
+                            sh:oneOrMorePath ex:pred2 ;
+                        ]
+                        [
+                            sh:zeroOrMorePath ex:pred3 ;
+                        ]
+                    ) ;
+                ]
+            ) ;
+        .
+        ex:TestPropShape10b
             sh:path (
                 [
                     sh:zeroOrMorePath [
@@ -192,7 +217,13 @@ def path_source_data():
             ~EX.pred1 | EX.pred1 / EX.pred2 | EX.pred1 | EX.pred2 | EX.pred3,
         ),
         (
-            EX.TestPropShape10,
+            EX.TestPropShape10a,
+            ~EX.pred1
+            * "*"
+            / (~EX.pred1 * "*" | EX.pred1 | EX.pred2 * "+" | EX.pred3 * "*"),  # type: ignore[operator]
+        ),
+        (
+            EX.TestPropShape10b,
             ~EX.pred1
             * "*"
             / (~EX.pred1 * "*" | EX.pred1 | EX.pred2 * "+" | EX.pred3 * "*"),  # type: ignore[operator]
