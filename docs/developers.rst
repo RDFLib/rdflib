@@ -231,20 +231,17 @@ our black.toml config file:
 
     poetry run black .
 
-Check style and conventions with `flake8 <https://flake8.pycqa.org/en/latest/>`_:
+Check style and conventions with `ruff <https://docs.astral.sh/ruff/linter/>`_:
 
 .. code-block:: bash
 
-    poetry run flake8 rdflib
+    poetry run ruff check
 
-We also provide a `flakeheaven <https://pypi.org/project/flakeheaven/>`_
-baseline that ignores existing flake8 errors and only reports on newly
-introduced flake8 errors:
+Any issues that are found can potentially be fixed automatically using:
 
 .. code-block:: bash
 
-    poetry run flakeheaven
-
+   poetry run ruff check --fix
 
 Check types with `mypy <http://mypy-lang.org/>`_:
 
