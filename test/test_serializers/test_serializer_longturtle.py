@@ -182,22 +182,22 @@ def test_longturtle():
         a sdo:Person ;
         sdo:age 41 ;
         sdo:alternateName
+            "N.J. Car" ,
+            "Nick Car" ,
             [
                 sdo:name "Dr N.J. Car" ;
-            ] ,
-            "N.J. Car" ,
-            "Nick Car" ;
+            ] ;
         sdo:name
             [
                 a cn:CompoundName ;
                 sdo:hasPart
                     [
                         a cn:CompoundName ;
-                        rdf:value "Nicholas" ;
+                        rdf:value "John" ;
                     ] ,
                     [
                         a cn:CompoundName ;
-                        rdf:value "John" ;
+                        rdf:value "Nicholas" ;
                     ] ,
                     [
                         a cn:CompoundName ;
