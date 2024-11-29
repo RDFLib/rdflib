@@ -1,5 +1,5 @@
 import difflib
-from textwrap import dedent
+from pathlib import Path
 
 from rdflib import Graph, Namespace
 from rdflib.namespace import GEO, SDO
@@ -170,83 +170,11 @@ def test_longturtle():
     output = g.serialize(format="longturtle")
 
     # fix the target
-    target = dedent(
-        """    PREFIX cn: <https://linked.data.gov.au/def/cn/>
-    PREFIX ex: <http://example.com/>
-    PREFIX geo: <http://www.opengis.net/ont/geosparql#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX sdo: <https://schema.org/>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    current_dir = Path.cwd()  # Get the current directory
+    target_file_path = current_dir / "test/data/longturtle" / "longturtle-target.ttl"
 
-    ex:nicholas
-        a sdo:Person ;
-        sdo:age 41 ;
-        sdo:alternateName
-            [
-                sdo:name "Dr N.J. Car" ;
-            ] ,
-            "N.J. Car" ,
-            "Nick Car" ;
-        sdo:name
-            [
-                a cn:CompoundName ;
-                sdo:hasPart
-                    [
-                        a cn:CompoundName ;
-                        rdf:value "Nicholas" ;
-                    ] ,
-                    [
-                        a cn:CompoundName ;
-                        rdf:value "John" ;
-                    ] ,
-                    [
-                        a cn:CompoundName ;
-                        sdo:hasPart
-                            [
-                                a cn:CompoundName ;
-                                rdf:value "Car" ;
-                            ] ,
-                            [
-                                a cn:CompoundName ;
-                                rdf:value "Maxov" ;
-                            ] ;
-                    ] ;
-            ] ;
-        sdo:worksFor <https://kurrawong.ai> ;
-    .
-
-    <https://kurrawong.ai>
-        a sdo:Organization ;
-        sdo:location <https://kurrawong.ai/hq> ;
-    .
-
-    <https://kurrawong.ai/hq>
-        a sdo:Place ;
-        sdo:address
-            [
-                a sdo:PostalAddress ;
-                sdo:addressCountry
-                    [
-                        sdo:identifier "au" ;
-                        sdo:name "Australia" ;
-                    ] ;
-                sdo:addressLocality "Shorncliffe" ;
-                sdo:addressRegion "QLD" ;
-                sdo:postalCode 4017 ;
-                sdo:streetAddress (
-                    72
-                    "Yundah"
-                    "Street"
-                ) ;
-            ] ;
-        sdo:geo
-            [
-                sdo:polygon "POLYGON((153.082403 -27.325801, 153.08241 -27.32582, 153.082943 -27.325612, 153.083010 -27.325742, 153.083543 -27.325521, 153.083456 -27.325365, 153.082403 -27.325801))"^^geo:wktLiteral ;
-            ] ;
-        sdo:name "KurrawongAI HQ" ;
-    .
-    """
-    )
+    with open(target_file_path, encoding="utf-8") as file:
+        target = file.read()
 
     # compare output to target
     # - any differences will produce output
