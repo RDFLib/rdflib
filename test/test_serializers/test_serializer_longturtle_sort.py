@@ -84,31 +84,31 @@ ns1:B
 []    ns1:has
         [
             rdfs:seeAlso ns1:A ;
-        ] ; ;
+        ] ;
 .
 
-[]    rdfs:seeAlso ns1:B ; ;
+[]    rdfs:seeAlso ns1:B ;
 .
 
 []    ns1:has
         [
             rdfs:seeAlso ns1:C ;
-        ] ; ;
+        ] ;
 .
 
-[]    rdfs:seeAlso ns1:A ; ;
+[]    rdfs:seeAlso ns1:A ;
 .
 
-[]    rdfs:seeAlso ns1:C ; ;
+[]    rdfs:seeAlso ns1:C ;
 .
 
-[]    rdfs:seeAlso ns1:B ; ;
+[]    rdfs:seeAlso ns1:B ;
 .
 
 []    ns1:has
         [
             rdfs:seeAlso ns1:B ;
-        ] ; ;
+        ] ;
 .
 
 """

@@ -197,7 +197,7 @@ class LongTurtleSerializer(RecursiveSerializer):
             return False
         self.write("\n" + self.indent() + "[]")
         self.predicateList(subject, newline=False)
-        self.write(" ;\n.")
+        self.write("\n.")
         return True
 
     def path(self, node, position, newline=False):
