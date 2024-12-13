@@ -49,7 +49,9 @@ class LongTurtleSerializer(RecursiveSerializer):
         lines = content.split("\n")
         lines.sort()
         graph = Graph()
-        graph.parse(data="\n".join(lines), format="application/n-triples", skolemize=True)
+        graph.parse(
+            data="\n".join(lines), format="application/n-triples", skolemize=True
+        )
         graph = graph.de_skolemize()
         super(LongTurtleSerializer, self).__init__(graph)
         self.keywords = {RDF.type: "a"}
