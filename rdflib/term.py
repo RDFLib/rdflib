@@ -388,9 +388,9 @@ class _Deskolemizer:
     __slots__ = "_skolems"
 
     def __init__(self) -> None:
-        self._skolems: Dict[str, BNode] = {}
+        self._skolems: dict[str, BNode] = {}
 
-    def __call__(self, uri: URIRef) -> Union[URIRef, BNode]:
+    def __call__(self, uri: URIRef) -> URIRef | BNode:
         parsed_uri = urlsplit(uri)
         if parsed_uri.query != "" or parsed_uri.fragment != "":
             # Behaviour is undefined for skolem URIs with query or fragment, so just return the URI
