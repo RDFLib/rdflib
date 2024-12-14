@@ -13,6 +13,15 @@ updates:
         versions:
           - 3.4.3
           - 3.5.2
+      # We only use setuptools for a couple of things in the test suite
+      # There is no need to keep it bleeding-edge. There are too frequent
+      # updates to setuptools, requires too much maintenance to keep it up to date.
+      - dependency-name: setuptools
+        versions:
+          - ">=72.0"
+      - dependency-name: types-setuptools
+        versions:
+          - ">=72.0"
       # Ignore all black updates, because we use a pinned version we don't want to change
       - dependency-name: black
       # Ignore types-setuptools patch-level updates, because they issue too many!

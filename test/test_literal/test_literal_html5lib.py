@@ -10,13 +10,13 @@ from test.utils.literal import LiteralChecker
 from test.utils.outcome import OutcomeChecker, OutcomePrimitives
 
 try:
-    import html5lib as _  # noqa: F401
+    import html5rdf as _  # noqa: F401
 except ImportError:
-    pytest.skip("html5lib not installed", allow_module_level=True)
+    pytest.skip("html5rdf not installed", allow_module_level=True)
 
 
-def test_has_html5lib() -> None:
-    assert rdflib.term._HAS_HTML5LIB is True
+def test_has_html5rdf() -> None:
+    assert rdflib.term._HAS_HTML5RDF is True
     assert RDF.HTML in rdflib.term.XSDToPython
     rule = next(
         (
@@ -34,7 +34,7 @@ def test_has_html5lib() -> None:
     ["factory", "outcome"],
     [
         # Ill-typed literals, these have lexical forms that result in
-        # errors when parsed as HTML by html5lib.
+        # errors when parsed as HTML by html5rdf.
         (
             lambda: Literal("<body><h1>Hello, World!</h1></body>", datatype=RDF.HTML),
             LiteralChecker(
@@ -52,7 +52,7 @@ def test_has_html5lib() -> None:
             ),
         ),
         # Well-typed literals, these have lexical forms that parse
-        # without errors with html5lib.
+        # without errors with html5rdf.
         (
             lambda: Literal("<table></table>", datatype=RDF.HTML),
             LiteralChecker(..., None, RDF.HTML, False, "<table></table>"),

@@ -3,20 +3,14 @@ from __future__ import annotations
 import abc
 import contextlib
 import logging
+from collections.abc import Callable, Generator, Iterable, Sequence
 from collections.abc import Iterable as IterableABC
 from dataclasses import dataclass
+from re import Pattern
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Generator,
     Generic,
-    Iterable,
     NoReturn,
-    Optional,
-    Pattern,
-    Sequence,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -28,7 +22,7 @@ from pytest import ExceptionInfo
 AnyT = TypeVar("AnyT")
 
 OutcomePrimitive = Union[
-    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", Type[Exception], Exception
+    AnyT, Callable[[AnyT], None], "OutcomeChecker[AnyT]", type[Exception], Exception
 ]
 
 OutcomePrimitives = Union[
@@ -62,7 +56,7 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
 
     @contextlib.contextmanager
     @abc.abstractmethod
-    def context(self) -> Generator[Optional[ExceptionInfo[Exception]], None, None]:
+    def context(self) -> Generator[ExceptionInfo[Exception] | None, None, None]:
         """
         The context in which the test code should run.
 
@@ -93,10 +87,10 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
             AnyT,
             Callable[[AnyT], None],
             OutcomeChecker[AnyT],
-            Type[Exception],
+            type[Exception],
             Exception,
         ],
-    ) -> Optional[OutcomeChecker[AnyT]]:
+    ) -> OutcomeChecker[AnyT] | None:
         if isinstance(primitive, OutcomeChecker):
             return primitive
         if isinstance(primitive, type) and issubclass(primitive, Exception):
@@ -192,9 +186,9 @@ class ExceptionChecker(OutcomeChecker[AnyT]):
         must have and their expected values.
     """
 
-    type: Type[Exception]
-    match: Optional[Union[Pattern[str], str]] = None
-    attributes: Optional[Dict[str, Any]] = None
+    type: type[Exception]
+    match: Pattern[str] | str | None = None
+    attributes: dict[str, Any] | None = None
 
     def check(self, actual: AnyT) -> NoReturn:
         raise RuntimeError("ExceptionResult.check_result should never be called")

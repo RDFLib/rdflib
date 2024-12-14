@@ -8,7 +8,6 @@ import http.client
 import logging
 import os
 import sys
-from typing import Optional
 from urllib.request import HTTPHandler, OpenerDirector, Request, install_opener
 
 from rdflib import Graph
@@ -61,7 +60,7 @@ def main() -> None:
 
     # Attempt to parse a JSON-LD document that will result in the blocked URL
     # being accessed.
-    error: Optional[PermissionError] = None
+    error: PermissionError | None = None
     try:
         graph.parse(
             data=r"""{

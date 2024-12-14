@@ -24,6 +24,7 @@ json-ld   :class:`~rdflib.plugins.parsers.jsonld.JsonLDParser`
 hext      :class:`~rdflib.plugins.parsers.hext.HextuplesParser`
 n3        :class:`~rdflib.plugins.parsers.notation3.N3Parser`
 nquads    :class:`~rdflib.plugins.parsers.nquads.NQuadsParser`
+patch     :class:`~rdflib.plugins.parsers.patch.RDFPatchParser`
 nt        :class:`~rdflib.plugins.parsers.ntriples.NTParser`
 trix      :class:`~rdflib.plugins.parsers.trix.TriXParser`
 turtle    :class:`~rdflib.plugins.parsers.notation3.TurtleParser`

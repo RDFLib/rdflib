@@ -207,7 +207,8 @@ rdf:HTML               :class:`xml.dom.minidom.DocumentFragment`
 .. [#f1] plain literals map directly to value space
 
 .. [#f2] Date, time and datetime literals are mapped to Python
-         instances using the `isodate <http://pypi.python.org/pypi/isodate/>`_
+         instances using the RDFlib xsd_datetime module, that is based
+         on the `isodate <http://pypi.python.org/pypi/isodate/>`_
          package).
 
 .. [#f3] this is a bit dirty - by accident the ``html5lib`` parser

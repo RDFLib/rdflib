@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Generator
 from os import mkdir
 from os.path import abspath, exists
 from threading import Thread
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional
 from urllib.request import pathname2url
 
 from rdflib.store import NO_STORE, VALID_STORE, Store
@@ -49,14 +50,14 @@ __all__ = [
 ]
 
 
-_ToKeyFunc = Callable[[Tuple[bytes, bytes, bytes], bytes], bytes]
-_FromKeyFunc = Callable[[bytes], Tuple[bytes, bytes, bytes, bytes]]
+_ToKeyFunc = Callable[[tuple[bytes, bytes, bytes], bytes], bytes]
+_FromKeyFunc = Callable[[bytes], tuple[bytes, bytes, bytes, bytes]]
 _GetPrefixFunc = Callable[
-    [Tuple[str, str, str], Optional[str]], Generator[str, None, None]
+    [tuple[str, str, str], Optional[str]], Generator[str, None, None]
 ]
 _ResultsFromKeyFunc = Callable[
     [bytes, Optional[Node], Optional[Node], Optional[Node], bytes],
-    Tuple[Tuple[Node, Node, Node], Generator[Node, None, None]],
+    tuple[tuple[Node, Node, Node], Generator[Node, None, None]],
 ]
 
 
@@ -90,8 +91,8 @@ class BerkeleyDB(Store):
 
     def __init__(
         self,
-        configuration: Optional[str] = None,
-        identifier: Optional[Identifier] = None,
+        configuration: str | None = None,
+        identifier: Identifier | None = None,
     ):
         if not has_bsddb:
             raise ImportError("Unable to import berkeleydb, store is unusable.")
@@ -100,9 +101,9 @@ class BerkeleyDB(Store):
         super(BerkeleyDB, self).__init__(configuration)
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
-        self.__indicies_info: List[Tuple[Any, _ToKeyFunc, _FromKeyFunc]]
+        self.__indicies_info: list[tuple[Any, _ToKeyFunc, _FromKeyFunc]]
 
-    def __get_identifier(self) -> Optional[Identifier]:
+    def __get_identifier(self) -> Identifier | None:
         return self.__identifier
 
     identifier = property(__get_identifier)
@@ -127,7 +128,7 @@ class BerkeleyDB(Store):
     def is_open(self) -> bool:
         return self.__open
 
-    def open(self, path: str, create: bool = True) -> Optional[int]:
+    def open(self, path: str, create: bool = True) -> int | None:
         if not has_bsddb:
             return NO_STORE
         homeDir = path  # noqa: N806
@@ -157,12 +158,12 @@ class BerkeleyDB(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies: List[db.DB] = [
+        self.__indicies: list[db.DB] = [
             None,
         ] * 3
         # NOTE on type ingore: this is because type checker does not like this
         # way of initializing, using a temporary variable will solve it.
-        # type error: error: List item 0 has incompatible type "None"; expected "Tuple[Any, Callable[[Tuple[bytes, bytes, bytes], bytes], bytes], Callable[[bytes], Tuple[bytes, bytes, bytes, bytes]]]"
+        # type error: error: List item 0 has incompatible type "None"; expected "tuple[Any, Callable[[tuple[bytes, bytes, bytes], bytes], bytes], Callable[[bytes], tuple[bytes, bytes, bytes, bytes]]]"
         self.__indicies_info = [
             None,  # type: ignore[list-item]
         ] * 3
@@ -177,11 +178,11 @@ class BerkeleyDB(Store):
             self.__indicies[i] = index
             self.__indicies_info[i] = (index, to_key_func(i), from_key_func(i))
 
-        lookup: Dict[
-            int, Tuple[db.DB, _GetPrefixFunc, _FromKeyFunc, _ResultsFromKeyFunc]
+        lookup: dict[
+            int, tuple[db.DB, _GetPrefixFunc, _FromKeyFunc, _ResultsFromKeyFunc]
         ] = {}
         for i in range(0, 8):
-            results: List[Tuple[Tuple[int, int], int, int]] = []
+            results: list[tuple[tuple[int, int], int, int]] = []
             for start in range(0, 3):
                 score = 1
                 len = 0
@@ -197,12 +198,12 @@ class BerkeleyDB(Store):
             results.sort()
             # NOTE on type error: this is because the variable `score` is
             # reused with different type
-            # type error: Incompatible types in assignment (expression has type "Tuple[int, int]", variable has type "int")
+            # type error: Incompatible types in assignment (expression has type "tuple[int, int]", variable has type "int")
             score, start, len = results[-1]  # type: ignore[assignment]
 
             def get_prefix_func(start: int, end: int) -> _GetPrefixFunc:
                 def get_prefix(
-                    triple: Tuple[str, str, str], context: Optional[str]
+                    triple: tuple[str, str, str], context: str | None
                 ) -> Generator[str, None, None]:
                     if context is None:
                         yield ""
@@ -303,7 +304,7 @@ class BerkeleyDB(Store):
         triple: _TripleType,
         context: _ContextType,
         quoted: bool = False,
-        txn: Optional[Any] = None,
+        txn: Any | None = None,
     ) -> None:
         """\
         Add a triple to the store of triples.
@@ -346,10 +347,10 @@ class BerkeleyDB(Store):
 
     def __remove(
         self,
-        spo: Tuple[bytes, bytes, bytes],
+        spo: tuple[bytes, bytes, bytes],
         c: bytes,
         quoted: bool = False,
-        txn: Optional[Any] = None,
+        txn: Any | None = None,
     ) -> None:
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
@@ -383,8 +384,8 @@ class BerkeleyDB(Store):
     def remove(  # type: ignore[override]
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType],
-        txn: Optional[Any] = None,
+        context: _ContextType | None,
+        txn: Any | None = None,
     ) -> None:
         subject, predicate, object = spo
         assert self.__open, "The Store must be open."
@@ -448,11 +449,11 @@ class BerkeleyDB(Store):
                             for i, _to_key, _ in self.__indicies_info:
                                 # NOTE on type error: variables are being
                                 # reused with a different type
-                                # type error: Argument 1 has incompatible type "Tuple[str, str, str]"; expected "Tuple[bytes, bytes, bytes]"
+                                # type error: Argument 1 has incompatible type "tuple[str, str, str]"; expected "tuple[bytes, bytes, bytes]"
                                 # type error: Argument 2 has incompatible type "str"; expected "bytes"
                                 i.delete(_to_key((s, p, o), c), txn=txn)  # type: ignore[arg-type]
                     else:
-                        # type error: Argument 1 to "__remove" of "BerkeleyDB" has incompatible type "Tuple[str, str, str]"; expected "Tuple[bytes, bytes, bytes]"
+                        # type error: Argument 1 to "__remove" of "BerkeleyDB" has incompatible type "tuple[str, str, str]"; expected "tuple[bytes, bytes, bytes]"
                         # type error: Argument 2 to "__remove" of "BerkeleyDB" has incompatible type "str"; expected "bytes"
                         self.__remove((s, p, o), c, txn=txn)  # type: ignore[arg-type]
                 else:
@@ -474,10 +475,10 @@ class BerkeleyDB(Store):
     def triples(
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType] = None,
-        txn: Optional[Any] = None,
+        context: _ContextType | None = None,
+        txn: Any | None = None,
     ) -> Generator[
-        Tuple[_TripleType, Generator[Optional[_ContextType], None, None]],
+        tuple[_TripleType, Generator[_ContextType | None, None, None]],
         None,
         None,
     ]:
@@ -513,14 +514,14 @@ class BerkeleyDB(Store):
             cursor.close()
             if key and key.startswith(prefix):
                 contexts_value = index.get(key, txn=txn)
-                # type error: Incompatible types in "yield" (actual type "Tuple[Tuple[Node, Node, Node], Generator[Node, None, None]]", expected type "Tuple[Tuple[IdentifiedNode, URIRef, Identifier], Iterator[Optional[Graph]]]")
+                # type error: Incompatible types in "yield" (actual type "tuple[tuple[Node, Node, Node], Generator[Node, None, None]]", expected type "tuple[tuple[IdentifiedNode, URIRef, Identifier], Iterator[Optional[Graph]]]")
                 # NOTE on type ignore: this is needed because some context is
                 # lost in the process of extracting triples from the database.
                 yield results_from_key(key, subject, predicate, object, contexts_value)  # type: ignore[misc]
             else:
                 break
 
-    def __len__(self, context: Optional[_ContextType] = None) -> int:
+    def __len__(self, context: _ContextType | None = None) -> int:
         assert self.__open, "The Store must be open."
         if context is not None:
             if context == self:
@@ -566,7 +567,7 @@ class BerkeleyDB(Store):
             self.__prefix[bound_namespace or namespace] = bound_prefix or prefix
             self.__namespace[bound_prefix or prefix] = bound_namespace or namespace
 
-    def namespace(self, prefix: str) -> Optional[URIRef]:
+    def namespace(self, prefix: str) -> URIRef | None:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "str")
@@ -576,7 +577,7 @@ class BerkeleyDB(Store):
             return URIRef(ns.decode("utf-8"))
         return None
 
-    def prefix(self, namespace: URIRef) -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> str | None:
         # NOTE on type error: this is because the variable is reused with
         # another type.
         # type error: Incompatible types in assignment (expression has type "bytes", variable has type "URIRef")
@@ -586,7 +587,7 @@ class BerkeleyDB(Store):
             return prefix.decode("utf-8")
         return None
 
-    def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
+    def namespaces(self) -> Generator[tuple[str, URIRef], None, None]:
         cursor = self.__namespace.cursor()
         results = []
         current = cursor.first()
@@ -600,7 +601,7 @@ class BerkeleyDB(Store):
             yield prefix, URIRef(namespace)
 
     def contexts(
-        self, triple: Optional[_TripleType] = None
+        self, triple: _TripleType | None = None
     ) -> Generator[_ContextType, None, None]:
         _from_string = self._from_string
         _to_string = self._to_string
@@ -610,14 +611,10 @@ class BerkeleyDB(Store):
             s: str
             p: str
             o: str
-            # type error: Incompatible types in assignment (expression has type "Node", variable has type "str")
-            s, p, o = triple  # type: ignore[assignment]
-            # type error: Argument 1 has incompatible type "str"; expected "Node"
-            s = _to_string(s)  # type: ignore[arg-type]
-            # type error: Argument 1 has incompatible type "str"; expected "Node"
-            p = _to_string(p)  # type: ignore[arg-type]
-            # type error: Argument 1 has incompatible type "str"; expected "Node"
-            o = _to_string(o)  # type: ignore[arg-type]
+            _s, _p, _o = triple
+            s = _to_string(_s)
+            p = _to_string(_p)
+            o = _to_string(_o)
             contexts = self.__indicies[0].get(bb("%s^%s^%s^%s^" % ("", s, p, o)))
             if contexts:
                 for c in contexts.split("^".encode("latin-1")):
@@ -653,7 +650,7 @@ class BerkeleyDB(Store):
         k = self.__i2k.get(int(i))
         return self._loads(k)
 
-    def _to_string(self, term: Node, txn: Optional[Any] = None) -> str:
+    def _to_string(self, term: Node, txn: Any | None = None) -> str:
         k = self._dumps(term)
         i = self.__k2i.get(k, txn=txn)
         if i is None:
@@ -672,39 +669,44 @@ class BerkeleyDB(Store):
     def __lookup(
         self,
         spo: _TriplePatternType,
-        context: Optional[_ContextType],
-        txn: Optional[Any] = None,
-    ) -> Tuple[db.DB, bytes, _FromKeyFunc, _ResultsFromKeyFunc]:
-        subject, predicate, object = spo
+        context: _ContextType | None,
+        txn: Any | None = None,
+    ) -> tuple[db.DB, bytes, _FromKeyFunc, _ResultsFromKeyFunc]:
+        subject, predicate, object_ = spo
         _to_string = self._to_string
-        # NOTE on type errors: this is because the same variable is used with different types.
-        if context is not None:
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Optional[Graph]")
-            context = _to_string(context, txn=txn)  # type: ignore[assignment]
+        context_str: str | None = (
+            None if context is None else _to_string(context, txn=txn)
+        )
         i = 0
+        subject_str: str | None
+        predicate_str: str | None
+        object_str: str | None
         if subject is not None:
             i += 1
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-            subject = _to_string(subject, txn=txn)  # type: ignore[assignment]
+            subject_str = _to_string(subject, txn=txn)
+        else:
+            subject_str = None
         if predicate is not None:
             i += 2
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-            predicate = _to_string(predicate, txn=txn)  # type: ignore[assignment]
-        if object is not None:
+            predicate_str = _to_string(predicate, txn=txn)
+        else:
+            predicate_str = None
+        if object_ is not None:
             i += 4
-            # type error: Incompatible types in assignment (expression has type "str", variable has type "Node")
-            object = _to_string(object, txn=txn)  # type: ignore[assignment]
+            object_str = _to_string(object_, txn=txn)
+        else:
+            object_str = None
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
         # print (subject, predicate, object), context, prefix_func, index
         # #DEBUG
-        # type error: Argument 1 has incompatible type "Tuple[Node, Node, Node]"; expected "Tuple[str, str, str]"
+        # type error: Argument 1 has incompatible type "tuple[Node, Node, Node]"; expected "tuple[str, str, str]"
         # type error: Argument 2 has incompatible type "Optional[Graph]"; expected "Optional[str]"
-        prefix = bb("^".join(prefix_func((subject, predicate, object), context)))  # type: ignore[arg-type]
+        prefix = bb("^".join(prefix_func((subject_str, predicate_str, object_str), context_str)))  # type: ignore[arg-type]
         return index, prefix, from_key, results_from_key
 
 
 def to_key_func(i: int) -> _ToKeyFunc:
-    def to_key(triple: Tuple[bytes, bytes, bytes], context: bytes) -> bytes:
+    def to_key(triple: tuple[bytes, bytes, bytes], context: bytes) -> bytes:
         "Takes a string; returns key"
         return "^".encode("latin-1").join(
             (
@@ -720,7 +722,7 @@ def to_key_func(i: int) -> _ToKeyFunc:
 
 
 def from_key_func(i: int) -> _FromKeyFunc:
-    def from_key(key: bytes) -> Tuple[bytes, bytes, bytes, bytes]:
+    def from_key(key: bytes) -> tuple[bytes, bytes, bytes, bytes]:
         "Takes a key; returns string"
         parts = key.split("^".encode("latin-1"))
         return (
@@ -738,11 +740,11 @@ def results_from_key_func(
 ) -> _ResultsFromKeyFunc:
     def from_key(
         key: bytes,
-        subject: Optional[Node],
-        predicate: Optional[Node],
-        object: Optional[Node],
+        subject: Node | None,
+        predicate: Node | None,
+        object: Node | None,
         contexts_value: bytes,
-    ) -> Tuple[Tuple[Node, Node, Node], Generator[Node, None, None]]:
+    ) -> tuple[tuple[Node, Node, Node], Generator[Node, None, None]]:
         "Takes a key and subject, predicate, object; returns tuple for yield"
         parts = key.split("^".encode("latin-1"))
         if subject is None:

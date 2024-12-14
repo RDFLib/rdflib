@@ -12,7 +12,7 @@ see ../../test/test_extras_external_graph_libs.py for conditional tests
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -76,7 +76,7 @@ def _rdflib_to_networkx_graph(
 def rdflib_to_networkx_multidigraph(
     graph: Graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
 ):
-    """Converts the given graph into a networkx.MultiDiGraph.
+    r"""Converts the given graph into a networkx.MultiDiGraph.
 
     The subjects and objects are the later nodes of the MultiDiGraph.
     The predicates are used as edge keys (to identify multi-edges).
@@ -119,7 +119,7 @@ def rdflib_to_networkx_multidigraph(
     True
     >>> mdg.has_edge(a, b, key=1)
     True
-    """  # noqa: W605
+    """
     import networkx as nx
 
     mdg = nx.MultiDiGraph()
@@ -133,7 +133,7 @@ def rdflib_to_networkx_digraph(
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
-    """Converts the given graph into a networkx.DiGraph.
+    r"""Converts the given graph into a networkx.DiGraph.
 
     As an rdflib.Graph() can contain multiple edges between nodes, by default
     adds the a 'triples' attribute to the single DiGraph edge with a list of
@@ -182,7 +182,7 @@ def rdflib_to_networkx_digraph(
     >>> 'triples' in dg[a][b]
     False
 
-    """  # noqa: W605
+    """
     import networkx as nx
 
     dg = nx.DiGraph()
@@ -196,7 +196,7 @@ def rdflib_to_networkx_graph(
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
     **kwds,
 ):
-    """Converts the given graph into a networkx.Graph.
+    r"""Converts the given graph into a networkx.Graph.
 
     As an rdflib.Graph() can contain multiple directed edges between nodes, by
     default adds the a 'triples' attribute to the single DiGraph edge with a
@@ -245,7 +245,7 @@ def rdflib_to_networkx_graph(
     False
     >>> 'triples' in ug[a][b]
     False
-    """  # noqa: W605
+    """
     import networkx as nx
 
     g = nx.Graph()
@@ -255,8 +255,8 @@ def rdflib_to_networkx_graph(
 
 def rdflib_to_graphtool(
     graph: Graph,
-    v_prop_names: List[str] = ["term"],
-    e_prop_names: List[str] = ["term"],
+    v_prop_names: list[str] = ["term"],
+    e_prop_names: list[str] = ["term"],
     transform_s=lambda s, p, o: {"term": s},
     transform_p=lambda s, p, o: {"term": p},
     transform_o=lambda s, p, o: {"term": o},
@@ -328,7 +328,7 @@ def rdflib_to_graphtool(
     eprops = [(epn, g.new_edge_property("object")) for epn in e_prop_names]
     for epn, eprop in eprops:
         g.edge_properties[epn] = eprop
-    node_to_vertex: Dict[Any, Any] = {}
+    node_to_vertex: dict[Any, Any] = {}
     for s, p, o in graph:
         sv = node_to_vertex.get(s)
         if sv is None:

@@ -15,7 +15,7 @@ import logging
 import os
 import re
 import sys
-from typing import Any, Dict
+from typing import Any
 
 import sphinx
 import sphinx.application
@@ -81,24 +81,11 @@ master_doc = "index"
 
 # General information about the project.
 project = "rdflib"
-copyright = "2009 - 2023, RDFLib Team"
+copyright = "2009 - 2024, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-
-
-# Find version. We have to do this because we can't import it in Python 3 until
-# its been automatically converted in the setup process.
-# UPDATE: This function is no longer used; once builds are confirmed to succeed, it
-#         can/should be removed. --JCL 2022-12-30
-def find_version(filename):
-    _version_re = re.compile(r'__version__ = "(.*)"')
-    for line in open(filename):
-        version_match = _version_re.match(line)
-        if version_match:
-            return version_match.group(1)
-
 
 # The full version, including alpha/beta/rc tags.
 release = rdflib.__version__
@@ -255,7 +242,7 @@ htmlhelp_basename = "rdflibdoc"
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.8", None),
+    "python": ("https://docs.python.org/3.9", None),
 }
 
 html_experimental_html5_writer = True
@@ -283,6 +270,8 @@ nitpick_ignore = [
     ("py:class", "pyparsing.core.TokenConverter"),
     ("py:class", "pyparsing.results.ParseResults"),
     ("py:class", "pyparsing.core.ParserElement"),
+    ("py:class", "re.Pattern"),
+    ("py:class", "re.Match"),
 ]
 
 
@@ -292,7 +281,7 @@ def autodoc_skip_member_handler(
     name: str,
     obj: Any,
     skip: bool,
-    options: Dict[str, Any],
+    options: dict[str, Any],
 ):
     """
     This function will be called by Sphinx when it is deciding whether to skip a

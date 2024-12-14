@@ -7,12 +7,21 @@ from __future__ import annotations
 
 import json
 import warnings
-from typing import IO, Optional, Type, Union
+from collections.abc import Callable
+from typing import IO, Any, Union, cast
 
-from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Graph
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD
 from rdflib.serializer import Serializer
-from rdflib.term import BNode, Literal, Node, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
+
+try:
+    import orjson
+
+    _HAS_ORJSON = True
+except ImportError:
+    orjson = None  # type: ignore[assignment, unused-ignore]
+    _HAS_ORJSON = False
 
 __all__ = ["HextuplesSerializer"]
 
@@ -22,11 +31,35 @@ class HextuplesSerializer(Serializer):
     Serializes RDF graphs to NTriples format.
     """
 
-    def __init__(self, store: Union[Graph, ConjunctiveGraph]):
-        self.default_context: Optional[Node]
-        self.graph_type: Type[Graph]
-        if isinstance(store, ConjunctiveGraph):
-            self.graph_type = ConjunctiveGraph
+    contexts: list[Graph | IdentifiedNode]
+    dumps: Callable
+
+    def __new__(cls, store: Graph | Dataset | ConjunctiveGraph):
+        if _HAS_ORJSON:
+            cls.str_local_id: str | Any = orjson.Fragment(b'"localId"')
+            cls.str_global_id: str | Any = orjson.Fragment(b'"globalId"')
+            cls.empty: str | Any = orjson.Fragment(b'""')
+            cls.lang_str: str | Any = orjson.Fragment(
+                b'"' + RDF.langString.encode("utf-8") + b'"'
+            )
+            cls.xsd_string: str | Any = orjson.Fragment(
+                b'"' + XSD.string.encode("utf-8") + b'"'
+            )
+        else:
+            cls.str_local_id = "localId"
+            cls.str_global_id = "globalId"
+            cls.empty = ""
+            cls.lang_str = f"{RDF.langString}"
+            cls.xsd_string = f"{XSD.string}"
+        return super(cls, cls).__new__(cls)
+
+    def __init__(self, store: Graph | Dataset | ConjunctiveGraph):
+        self.default_context: Graph | IdentifiedNode | None
+        self.graph_type: type[Graph] | type[Dataset] | type[ConjunctiveGraph]
+        if isinstance(store, (Dataset, ConjunctiveGraph)):
+            self.graph_type = (
+                Dataset if isinstance(store, Dataset) else ConjunctiveGraph
+            )
             self.contexts = list(store.contexts())
             if store.default_context:
                 self.default_context = store.default_context
@@ -43,10 +76,10 @@ class HextuplesSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: Optional[str] = None,
-        encoding: Optional[str] = "utf-8",
-        **kwargs,
-    ):
+        base: str | None = None,
+        encoding: str | None = "utf-8",
+        **kwargs: Any,
+    ) -> None:
         if base is not None:
             warnings.warn(
                 "base has no meaning for Hextuples serialization. "
@@ -64,14 +97,29 @@ class HextuplesSerializer(Serializer):
             raise Exception(
                 "Hextuple serialization can't (yet) handle formula-aware stores"
             )
-
+        context: Graph | IdentifiedNode
+        context_str: bytes | str
         for context in self.contexts:
             for triple in context:
-                hl = self._hex_line(triple, context)
+                # Generate context string just once, because it doesn't change
+                # for every triple in this context
+                context_str = cast(
+                    Union[str, bytes],
+                    (
+                        self.empty
+                        if self.graph_type is Graph
+                        else (
+                            orjson.Fragment('"' + self._context_str(context) + '"')
+                            if _HAS_ORJSON
+                            else self._context_str(context)
+                        )
+                    ),
+                )
+                hl = self._hex_line(triple, context_str)
                 if hl is not None:
-                    stream.write(hl.encode())
+                    stream.write(hl if _HAS_ORJSON else hl.encode())
 
-    def _hex_line(self, triple, context):
+    def _hex_line(self, triple, context_str: bytes | str):
         if isinstance(
             triple[0], (URIRef, BNode)
         ):  # exclude QuotedGraph and other objects
@@ -85,18 +133,18 @@ class HextuplesSerializer(Serializer):
             # datatype
             if isinstance(triple[2], URIRef):
                 # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#namedNode"
-                datatype = "globalId"
+                datatype = self.str_global_id
             elif isinstance(triple[2], BNode):
                 # datatype = "http://www.w3.org/1999/02/22-rdf-syntax-ns#blankNode"
-                datatype = "localId"
+                datatype = self.str_local_id
             elif isinstance(triple[2], Literal):
                 if triple[2].datatype is not None:
                     datatype = f"{triple[2].datatype}"
                 else:
                     if triple[2].language is not None:  # language
-                        datatype = RDF.langString
+                        datatype = self.lang_str
                     else:
-                        datatype = XSD.string
+                        datatype = self.xsd_string
             else:
                 return None  # can't handle non URI, BN or Literal Object (QuotedGraph)
 
@@ -105,23 +153,23 @@ class HextuplesSerializer(Serializer):
                 if triple[2].language is not None:
                     language = f"{triple[2].language}"
                 else:
-                    language = ""
+                    language = self.empty
             else:
-                language = ""
-
-            return (
-                json.dumps(
-                    [
-                        self._iri_or_bn(triple[0]),
-                        triple[1],
-                        value,
-                        datatype,
-                        language,
-                        self._context(context),
-                    ]
-                )
-                + "\n"
-            )
+                language = self.empty
+            line_list = [
+                self._iri_or_bn(triple[0]),
+                triple[1],
+                value,
+                datatype,
+                language,
+                context_str,
+            ]
+            outline: str | bytes
+            if _HAS_ORJSON:
+                outline = orjson.dumps(line_list, option=orjson.OPT_APPEND_NEWLINE)
+            else:
+                outline = json.dumps(line_list) + "\n"
+            return outline
         else:  # do not return anything for non-IRIs or BNs, e.g. QuotedGraph, Subjects
             return None
 
@@ -133,17 +181,28 @@ class HextuplesSerializer(Serializer):
         else:
             return None
 
-    def _context(self, context):
-        if self.graph_type == Graph:
+    def _context_str(self, context: Graph | IdentifiedNode) -> str:
+        context_identifier: IdentifiedNode = (
+            context.identifier if isinstance(context, Graph) else context
+        )
+        if context_identifier == DATASET_DEFAULT_GRAPH_ID:
             return ""
-        if context.identifier == DATASET_DEFAULT_GRAPH_ID:
-            return ""
-        elif context is not None and self.default_context is not None:
-            # type error: "Node" has no attribute "identifier"
-            if context.identifier == self.default_context.identifier:  # type: ignore[attr-defined]
+        if self.default_context is not None:
+            if (
+                isinstance(self.default_context, IdentifiedNode)
+                and context_identifier == self.default_context
+            ):
                 return ""
+            elif (
+                isinstance(self.default_context, Graph)
+                and context_identifier == self.default_context.identifier
+            ):
+                return ""
+        if self.graph_type is Graph:
+            # Only emit a context name when serializing a Dataset or ConjunctiveGraph
+            return ""
         return (
-            context.identifier
-            if isinstance(context.identifier, URIRef)
-            else context.identifier.n3()
+            f"{context_identifier}"
+            if isinstance(context_identifier, URIRef)
+            else context_identifier.n3()
         )

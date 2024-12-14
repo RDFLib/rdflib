@@ -16,6 +16,10 @@ to turtle - the original turtle serializer. It:
 - Nicholas Car, 2023
 """
 
+from __future__ import annotations
+
+from typing import IO, Any, Optional
+
 from rdflib.exceptions import Error
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
@@ -42,7 +46,7 @@ class LongTurtleSerializer(RecursiveSerializer):
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
-        self._spacious = _SPACIOUS_OUTPUT
+        self._spacious: bool = _SPACIOUS_OUTPUT
 
     def addNamespace(self, prefix, namespace):
         # Turtle does not support prefixes that start with _
@@ -74,7 +78,14 @@ class LongTurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
+        **kwargs: Any,
+    ) -> None:
         self.reset()
         self.stream = stream
         # if base is given here, use, if not and a base is set for the graph use that
@@ -282,7 +293,34 @@ class LongTurtleSerializer(RecursiveSerializer):
     def verb(self, node, newline=False):
         self.path(node, VERB, newline)
 
+    def sortObjects(
+        self, values: list[URIRef | BNode | Literal]
+    ) -> list[URIRef | BNode | Literal]:
+        """
+        Perform a sort on the values where each value is a blank node. Grab the CBD of the
+        blank node and sort it by its longturtle serialization value.
+
+        Identified nodes come first and the sorted blank nodes are tacked on after.
+        """
+        bnode_map: dict[BNode, list[str]] = {}
+        objects = []
+        for value in values:
+            if isinstance(value, BNode):
+                bnode_map[value] = []
+            else:
+                objects.append(value)
+
+        for bnode in bnode_map:
+            cbd = self.store.cbd(bnode).serialize(format="longturtle")
+            bnode_map[bnode].append(cbd)
+
+        sorted_bnodes = sorted(
+            [(k, v) for k, v in bnode_map.items()], key=lambda x: x[1]
+        )
+        return objects + [x[0] for x in sorted_bnodes]
+
     def objectList(self, objects):
+        objects = self.sortObjects(objects)
         count = len(objects)
         if count == 0:
             return
@@ -292,6 +330,8 @@ class LongTurtleSerializer(RecursiveSerializer):
         if count > 1:
             if not isinstance(objects[0], BNode):
                 self.write("\n" + self.indent(1))
+            else:
+                self.write(" ")
             first_nl = True
         self.path(objects[0], OBJECT, newline=first_nl)
         for obj in objects[1:]:

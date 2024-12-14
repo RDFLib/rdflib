@@ -4,18 +4,23 @@ import logging
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
 from rdflib import XSD, util
 from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
 from rdflib.namespace import RDF, RDFS
-from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
 from test.data import TEST_DATA_DIR
 from test.utils.graph import cached_graph
 from test.utils.namespace import RDFT
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
+
+    from rdflib.graph import _ObjectType, _SubjectType
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -195,22 +200,26 @@ class TestUtilTermConvert:
     def test_util_from_n3_expecturiref(self):
         s = "<http://example.org/schema>"
         res = util.from_n3(s, default=None, backend=None)
+        assert res is not None
         assert isinstance(res, URIRef)
 
     def test_util_from_n3_expectliteralandlang(self):
         s = '"michel"@fr'
         res = util.from_n3(s, default=None, backend=None)
+        assert res is not None
         assert isinstance(res, Literal)
 
     def test_util_from_n3_expectliteralandlangdtype(self):
         s = '"michel"@fr^^xsd:fr'
         res = util.from_n3(s, default=None, backend=None)
         assert isinstance(res, Literal)
+        assert res is not None
         assert res == Literal("michel", datatype=XSD["fr"])
 
     def test_util_from_n3_expectliteralanddtype(self):
         s = '"true"^^xsd:boolean'
         res = util.from_n3(s, default=None, backend=None)
+        assert res is not None
         assert res.eq(Literal("true", datatype=XSD["boolean"]))
 
     def test_util_from_n3_expectliteralwithdatatypefromint(self):
@@ -376,7 +385,7 @@ def test__coalesce_typing() -> None:
     type checking for _coalesce behaves as expected.
     """
     str_value: str
-    optional_str_value: Optional[str]
+    optional_str_value: str | None
 
     optional_str_value = _coalesce(None, "a", None)
     assert optional_str_value == "a"
@@ -427,12 +436,12 @@ def test__coalesce_typing() -> None:
     ],
 )
 def test_find_roots(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     prop: URIRef,
-    roots: Optional[Set[Node]],
-    expected_result: Union[Set[URIRef], Type[Exception]],
+    roots: set[_SubjectType | _ObjectType] | None,
+    expected_result: Union[set[URIRef], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -551,13 +560,13 @@ def test_find_roots(
     ],
 )
 def test_get_tree(
-    graph_sources: Tuple[Path, ...],
+    graph_sources: tuple[Path, ...],
     root: IdentifiedNode,
     prop: URIRef,
     dir: str,
-    expected_result: Union[Tuple[IdentifiedNode, List[Any]], Type[Exception]],
+    expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     graph = cached_graph(graph_sources)
 
@@ -655,11 +664,11 @@ def test_get_tree(
         ),
     ],
 )
-def test_iri2uri(iri: str, expected_result: Union[Set[str], Type[Exception]]) -> None:
+def test_iri2uri(iri: str, expected_result: Union[set[str], type[Exception]]) -> None:
     """
     Tests that
     """
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
 
     with ExitStack() as xstack:
         if isinstance(expected_result, type) and issubclass(expected_result, Exception):

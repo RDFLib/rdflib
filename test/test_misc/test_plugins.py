@@ -6,9 +6,10 @@ import shutil
 import subprocess
 import sys
 import warnings
+from collections.abc import Callable, Generator
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, cast
+from typing import Any, cast
 
 import rdflib.plugin
 import rdflib.plugins.sparql
@@ -21,7 +22,7 @@ TEST_DIR = Path(__file__).parent.parent
 TEST_PLUGINS_DIR = TEST_DIR / "plugins"
 
 
-def del_key(d: Dict[Any, Any], key: Any) -> None:
+def del_key(d: dict[Any, Any], key: Any) -> None:
     del d[key]
 
 
@@ -58,8 +59,8 @@ def ctx_plugin(tmp_path: Path, plugin_src: Path) -> Generator[None, None, None]:
 
 
 @contextmanager
-def ctx_cleaners() -> Generator[List[Callable[[], None]], None, None]:
-    cleaners: List[Callable[[], None]] = []
+def ctx_cleaners() -> Generator[list[Callable[[], None]], None, None]:
+    cleaners: list[Callable[[], None]] = []
     yield cleaners
     for cleaner in cleaners:
         logging.debug("running cleaner %s", cleaner)
@@ -95,7 +96,7 @@ def test_sparqleval(tmp_path: Path, no_cover: None) -> None:
         logging.debug("query_string = %s", query_string)
         result = graph.query(query_string)
         assert result.type == "SELECT"
-        rows = cast(List[ResultRow], list(result))
+        rows = cast(list[ResultRow], list(result))
         logging.debug("rows = %s", rows)
         assert len(rows) == 1
         assert len(rows[0]) == 1
