@@ -27,12 +27,12 @@ dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 
 [[package]]
 name = "berkeleydb"
-version = "18.1.11"
+version = "18.1.12"
 description = "Python bindings for Oracle Berkeley DB"
 optional = true
 python-versions = "*"
 files = [
-    {file = "berkeleydb-18.1.11.tar.gz", hash = "sha256:7454f560d2d1a0e5d0d5630a437f19926b68bc794eb161edea2cdc4b267cf574"},
+    {file = "berkeleydb-18.1.12.tar.gz", hash = "sha256:495a8179c6a36b22d0fa2f6881fa783cf752214a285760529605f608101deb28"},
 ]
 
 [[package]]
