@@ -26,10 +26,10 @@ from rdflib import Dataset, Literal, Namespace, URIRef
 # Create an empty Dataset
 d = Dataset()
 # Add a namespace prefix to it, just like for Graph
-d.bind("ex", Namespace("http://example.com/"))
+d.bind("ex", "http://example.com/")
 
 # Declare a Graph URI to be used to identify a Graph
-graph_1 = URIRef("http://example.com/graph-1")
+graph_1 = "http://example.com/graph-1"
 
 # Add an empty Graph, identified by graph_1, to the Dataset
 d.graph(identifier=graph_1)
@@ -43,6 +43,7 @@ d.add(
         graph_1,
     )
 )
+
 d.add(
     (
         URIRef("http://example.com/subject-z"),
@@ -59,13 +60,13 @@ d.add(
         URIRef("http://example.com/subject-y"),
         URIRef("http://example.com/predicate-y"),
         Literal("Triple Y"),
-        URIRef("http://example.com/graph-2"),
+        "http://example.com/graph-2",
     )
 )
 
-# printing the Dataset like this: print(d.serialize(format="trig"))
-# produces a result like this:
-"""
+
+print("Printing the Dataset like this: print(d.serialize(format=\"trig\")) produces a result like this:")
+print("""
 @prefix ex: <http://example.com/> .
 
 ex:graph-1 {
@@ -77,10 +78,11 @@ ex:graph-1 {
 ex:graph-2 {
     ex:subject-y ex:predicate-y "Triple Y" .
 }
-"""
+""")
+print()
 print("Printing Serialised Dataset:")
 print("---")
-print(d.serialize(format="trig"))
+print(d.serialize(format="trig").strip())
 print("---")
 print()
 print()
@@ -89,11 +91,8 @@ print()
 #   Use & Query
 #
 
-# print the length of the Dataset, i.e. the count of all triples in all Graphs
-# we should get
-"""
-3
-"""
+print("Print the length of the Dataset, i.e. the count of all triples in all Graph, we should get 3:")
+print()
 print("Printing Dataset Length:")
 print("---")
 print(len(d))
@@ -101,39 +100,36 @@ print("---")
 print()
 print()
 
-# Query one graph in the Dataset for all its triples
-# we should get
-"""
-(rdflib.term.URIRef('http://example.com/subject-z'), rdflib.term.URIRef('http://example.com/predicate-z'), rdflib.term.Literal('Triple Z'))
-(rdflib.term.URIRef('http://example.com/subject-x'), rdflib.term.URIRef('http://example.com/predicate-x'), rdflib.term.Literal('Triple X'))
-"""
+print("Print out one graph in the Dataset, ex:graph-1, using a loop, we should get:")
+print("""
+http://example.com/subject-z, http://example.com/predicate-z, Triple Z
+http://example.com/subject-x, http://example.com/predicate-x, Triple X
+""")
+
 print("Printing all triple from one Graph in the Dataset:")
 print("---")
-for triple in d.triples((None, None, None, graph_1)):  # type: ignore[arg-type]
-    print(triple)
+for s, p, o in d.triples((None, None, None, graph_1)):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}")
 print("---")
 print()
 print()
 
-# Query the union of all graphs in the dataset for all triples
-# we should get nothing:
-"""
-"""
-# A Dataset's default union graph does not exist by default (default_union property is False)
+print("Print out all the triples in all graphs in the Dataset using a loop. We should get nothing,")
+print("since a Dataset's default union graph does not exist by default (default_union property is False)")
 print("Attempt #1 to print all triples in the Dataset:")
 print("---")
-for triple in d.triples((None, None, None, None)):
-    print(triple)
+for s, p, o in d.triples((None, None, None, None)):
+    print(f"{s}, {p}, {o}")
 print("---")
 print()
 print()
 
-# Set the Dataset's default_union property to True and re-query
+print("Set the Dataset's default_union property to True and retry, we should get 3 triples:")
 d.default_union = True
 print("Attempt #2 to print all triples in the Dataset:")
 print("---")
-for triple in d.triples((None, None, None, None)):
-    print(triple)
+for s, p, o in d.triples((None, None, None, None)):
+    print(f"{s}, {p}, {o}")
 print("---")
 print()
 print()
@@ -143,17 +139,17 @@ print()
 #   Remove
 #
 
-# Remove Graph graph_1 from the Dataset
+print("Remove Graph graph_1 from the Dataset, d.remove_graph(graph_1)")
+
 d.remove_graph(graph_1)
-
-# printing the Dataset like this: print(d.serialize(format="trig"))
-# now produces a result like this:
-
-"""
+print()
+print("Printing the Dataset like this: print(d.serialize(format=\"trig\")) will now produces a ")
+print("result containing ex:graph-2 only, like this:")
+print("""
 ex:graph-2 {
     ex:subject-y ex:predicate-y "Triple Y" .
 }
-"""
+""")
 print("Printing Serialised Dataset after graph_1 removal:")
 print("---")
 print(d.serialize(format="trig").strip())
