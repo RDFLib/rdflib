@@ -34,6 +34,7 @@ Example usage::
 # we should consider streaming the input to deal with arbitrarily large graphs.
 from __future__ import annotations
 
+import secrets
 import warnings
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Union
@@ -215,6 +216,7 @@ class Parser:
             if allow_lists_of_lists is not None
             else ALLOW_LISTS_OF_LISTS
         )
+        self.invalid_uri_to_bnode: dict[str, BNode] = {}
 
     def parse(self, data: Any, context: Context, dataset: Graph) -> Graph:
         topcontext = False
@@ -623,7 +625,12 @@ class Parser:
             uri = context.resolve(id_val)
             if not self.generalized_rdf and ":" not in uri:
                 return None
-            return URIRef(uri)
+            node: IdentifiedNode = URIRef(uri)
+            if not str(node):
+                if id_val not in self.invalid_uri_to_bnode:
+                    self.invalid_uri_to_bnode[id_val] = BNode(secrets.token_urlsafe(20))
+                node = self.invalid_uri_to_bnode[id_val]
+            return node
 
     def _get_bnodeid(self, ref: str) -> str | None:
         if not ref.startswith("_:"):
