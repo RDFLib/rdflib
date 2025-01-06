@@ -432,24 +432,24 @@ class Graph(Node):
     The basic use is to create a Graph and iterate through or query its content, e.g.:
 
     >>> g = Graph()
-    ...
-    ... g.add((
+    >>>
+    >>> g.add((
     ...     URIRef("http://example.com/s1"),   # subject
     ...     URIRef("http://example.com/p1"),   # predicate
     ...     URIRef("http://example.com/o1"),   # object
     ... ))
-    ...
-    ... g.add((
+    >>>
+    >>> g.add((
     ...     URIRef("http://example.com/s2"),   # subject
     ...     URIRef("http://example.com/p2"),   # predicate
     ...     URIRef("http://example.com/o2"),   # object
     ... ))
-    ...
-    ... for triple in g.triples():  # simple looping
+    >>>
+    >>> for triple in g.triples():  # simple looping
     ...     print(triple)
-    ...
-    ... # get the object of the triple with subject s1 and predicate p1
-    ... o = g.value(
+    >>>
+    >>> # get the object of the triple with subject s1 and predicate p1
+    >>> o = g.value(
     ...     subject=URIRef("http://example.com/s1"),
     ...     predicate=URIRef("http://example.com/p1")
     ... )
