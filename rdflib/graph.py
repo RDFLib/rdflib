@@ -1354,7 +1354,7 @@ class Graph(Node):
                 else:
                     os_path = location
             with open(os_path, "wb") as stream:
-                serializer.serialize(stream, encoding=encoding, **args)
+                serializer.serialize(stream, base=base, encoding=encoding, **args)
         return self
 
     def print(
