@@ -431,23 +431,28 @@ class Graph(Node):
 
     The basic use is to create a Graph and iterate through or query its content, e.g.:
 
+    >>> from rdflib import Graph, URIRef
     >>> g = Graph()
-    >>>
+
     >>> g.add((
     ...     URIRef("http://example.com/s1"),   # subject
     ...     URIRef("http://example.com/p1"),   # predicate
     ...     URIRef("http://example.com/o1"),   # object
     ... ))
-    >>>
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+
     >>> g.add((
     ...     URIRef("http://example.com/s2"),   # subject
     ...     URIRef("http://example.com/p2"),   # predicate
     ...     URIRef("http://example.com/o2"),   # object
     ... ))
-    >>>
-    >>> for triple in g.triples():  # simple looping
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+
+    >>> for triple in g:  # simple looping
     ...     print(triple)
-    >>>
+    (rdflib.term.URIRef('http://example.com/s2'), rdflib.term.URIRef('http://example.com/p2'), rdflib.term.URIRef('http://example.com/o2'))
+    (rdflib.term.URIRef('http://example.com/s1'), rdflib.term.URIRef('http://example.com/p1'), rdflib.term.URIRef('http://example.com/o1'))
+
     >>> # get the object of the triple with subject s1 and predicate p1
     >>> o = g.value(
     ...     subject=URIRef("http://example.com/s1"),
@@ -1188,10 +1193,10 @@ class Graph(Node):
         function against the graph
 
         >>> from rdflib.collection import Collection
-        >>> g=Graph()
-        >>> a=BNode("foo")
-        >>> b=BNode("bar")
-        >>> c=BNode("baz")
+        >>> g = Graph()
+        >>> a = BNode("foo")
+        >>> b = BNode("bar")
+        >>> c = BNode("baz")
         >>> g.add((a,RDF.first,RDF.type)) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> g.add((a,RDF.rest,b)) # doctest: +ELLIPSIS
