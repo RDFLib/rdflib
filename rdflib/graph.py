@@ -448,10 +448,10 @@ class Graph(Node):
     ... )) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 
-    >>> for triple in g:  # simple looping
+    >>> for triple in sorted(g):  # simple looping
     ...     print(triple)
-    (rdflib.term.URIRef('http://example.com/s2'), rdflib.term.URIRef('http://example.com/p2'), rdflib.term.URIRef('http://example.com/o2'))
     (rdflib.term.URIRef('http://example.com/s1'), rdflib.term.URIRef('http://example.com/p1'), rdflib.term.URIRef('http://example.com/o1'))
+    (rdflib.term.URIRef('http://example.com/s2'), rdflib.term.URIRef('http://example.com/p2'), rdflib.term.URIRef('http://example.com/o2'))
 
     >>> # get the object of the triple with subject s1 and predicate p1
     >>> o = g.value(
