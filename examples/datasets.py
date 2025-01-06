@@ -17,7 +17,7 @@ Sections in this file:
 3. Manipulating Graphs
 """
 
-from rdflib import Dataset, Graph, Literal, URIRef, Namespace
+from rdflib import Dataset, Graph, Literal, URIRef
 
 # Note regarding `mypy: ignore_errors=true`:
 #

@@ -5,12 +5,10 @@ import warnings
 
 import pytest
 
-from rdflib import URIRef, plugin, Namespace, BNode
+from rdflib import BNode, Namespace, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
 from test.data import CONTEXT1, LIKES, PIZZA, TAREK
-
-EX = Namespace("http://example.com/")
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -262,8 +260,9 @@ def test_graph_without_identifier() -> None:
         is None
     )
 
+    ex = Namespace("http://example.com/")
     g1: Graph = d.graph()
-    g1.add((EX.subject, EX.predicate, EX.object))
+    g1.add((ex.subject, ex.predicate, ex.object))
 
     namespaces = set(nman.namespaces())
     assert next(
@@ -275,7 +274,7 @@ def test_graph_without_identifier() -> None:
     # now add a preexisting graph with no identifier
     # i.e. not one created within this Dataset object
     g2 = Graph()
-    g2.add((EX.subject, EX.predicate, EX.object))
+    g2.add((ex.subject, ex.predicate, ex.object))
     d.add_graph(g2)
 
     iris = 0
