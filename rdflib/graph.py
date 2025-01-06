@@ -438,14 +438,14 @@ class Graph(Node):
     ...     URIRef("http://example.com/s1"),   # subject
     ...     URIRef("http://example.com/p1"),   # predicate
     ...     URIRef("http://example.com/o1"),   # object
-    ... ))
+    ... )) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 
     >>> g.add((
     ...     URIRef("http://example.com/s2"),   # subject
     ...     URIRef("http://example.com/p2"),   # predicate
     ...     URIRef("http://example.com/o2"),   # object
-    ... ))
+    ... )) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 
     >>> for triple in g:  # simple looping
