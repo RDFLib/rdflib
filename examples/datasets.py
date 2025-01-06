@@ -1,16 +1,20 @@
 """
 This file contains a number of common tasks using the RDFLib Dataset class.
 
-An RDFLib Dataset is an object that stores multiple Named Graphs - instances of RDFLib Graph identified by IRI - within
-it and allows whol-of-dataset or single Graph use.
+An RDFLib Dataset is an object that stores multiple Named Graphs - instances of RDFLib
+Graph identified by IRI - within it and allows whole-of-dataset or single Graph use.
 
-Dataset extends Graph's Subject, Predicate, Object structure to include Graph - archaically called Context - producing
-quads of s, p, o, g.
+Dataset extends Graph's Subject, Predicate, Object structure to include Graph -
+archaically called Context - producing quads of s, p, o, g.
 
-There is an older implementation of a Dataset-like class in RDFLib < 7.x called ConjunctiveGraph that is now deprecated.
+There is an older implementation of a Dataset-like class in RDFLib < 7.x called
+ConjunctiveGraph that is now deprecated.
+
+Sections in this file:
 
 1. Creating & Adding
 2. Looping & Counting
+3. Manipulating Graphs
 """
 
 from rdflib import Dataset, Graph, Literal, URIRef, Namespace
@@ -25,9 +29,9 @@ from rdflib import Dataset, Graph, Literal, URIRef, Namespace
 
 # mypy: ignore_errors=true
 
-#
+#######################################################################################
 #   1. Creating & Adding
-#
+#######################################################################################
 
 # Create an empty Dataset
 d = Dataset()
@@ -111,9 +115,9 @@ ex:subject-y
 """
 
 
-#
+#######################################################################################
 #   2. Looping & Counting
-#
+#######################################################################################
 
 # Loop through all quads in the dataset
 for s, p, o, g in d.quads((None, None, None, None)):  # type: ignore[arg-type]
@@ -149,7 +153,8 @@ http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 # Looping through triples across the whole Dataset will produce nothing
 # unless we set the Default Union Graph to True, since each triple is in a Named Graph
 
-# Setting the Default Union Graph to True essentially presents all triples in all Graphs as a single Graph
+# Setting the Default Union Graph to True essentially presents all triples in all
+# Graphs as a single Graph
 d.default_union = True
 for s, p, o in d.triples((None, None, None)):
     print(f"{s}, {p}, {o}")
@@ -172,7 +177,8 @@ http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://e
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
 """
 
-# Adding a triple in graph-1 to graph-2 increases the distinct of quads in the Dataset
+# Adding a triple in graph-1 to graph-2 increases the number of distinct of quads in
+# the Dataset
 d.add(
     (
         URIRef("http://example.com/subject-z"),
@@ -208,9 +214,9 @@ http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y
 """
 
-#
-#   4. Manipulating Graphs
-#
+#######################################################################################
+#   3. Manipulating Graphs
+#######################################################################################
 
 # List all the Graphs in the Dataset
 for x in d.graphs():
