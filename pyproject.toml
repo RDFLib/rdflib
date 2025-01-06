@@ -63,7 +63,7 @@ pytest-cov = ">=4,<7"
 coverage = {version = "^7.0.1", extras = ["toml"]}
 types-setuptools = ">=68.0.0.3,<72.0.0.0"
 setuptools = ">=68,<72"
-wheel = ">=0.42,<0.45"
+wheel = ">=0.42,<0.46"
 
 [tool.poetry.group.docs.dependencies]
 sphinx = ">=7.1.2,<8"
@@ -73,7 +73,7 @@ sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
 typing-extensions = "^4.11.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = ">=0.7.1,<0.8.0"
+ruff = ">=0.7.2,<1"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
