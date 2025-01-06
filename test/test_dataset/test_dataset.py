@@ -81,11 +81,13 @@ def get_dataset(request):
     if store == "SPARQLUpdateStore":
         try:
             d.graph()
-            d.add((
-                URIRef("http://example.com/s"),
-                URIRef("http://example.com/p"),
-                URIRef("http://example.com/o"),
-            ))
+            d.add(
+                (
+                    URIRef("http://example.com/s"),
+                    URIRef("http://example.com/p"),
+                    URIRef("http://example.com/o"),
+                )
+            )
             d.store.update("CLEAR ALL")
         except Exception as e:
             if "SPARQLStore does not support BNodes! " in str(e):

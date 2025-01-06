@@ -241,11 +241,13 @@ http://example.com/graph-1
 """
 
 # To add to the default Graph, just add a triple, not a quad, to the Dataset directly
-d.add((
-    URIRef("http://example.com/subject-n"),
-    URIRef("http://example.com/predicate-n"),
-    Literal("Triple N"),
-))
+d.add(
+    (
+        URIRef("http://example.com/subject-n"),
+        URIRef("http://example.com/predicate-n"),
+        Literal("Triple N"),
+    )
+)
 for s, p, o, g in d.quads((None, None, None, None)):
     print(f"{s}, {p}, {o}, {g}")
 
@@ -314,11 +316,13 @@ g_with_id.bind("ex", "http://example.com/")
 
 # Add a distinct triple to the exiting Graph, using Namepspace IRI shortcuts
 # g_with_id.bind("ex", "http://example.com/")
-g_with_id.add((
-    URIRef("http://example.com/subject-k"),
-    URIRef("http://example.com/predicate-k"),
-    Literal("Triple K"),
-))
+g_with_id.add(
+    (
+        URIRef("http://example.com/subject-k"),
+        URIRef("http://example.com/predicate-k"),
+        Literal("Triple K"),
+    )
+)
 d.add_graph(g_with_id)
 print(d.serialize(format="trig"))
 
@@ -341,11 +345,13 @@ ex:graph-2 {
 g_no_id = Graph()
 g_no_id.bind("ex", "http://example.com/")
 
-g_no_id.add((
-    URIRef("http://example.com/subject-l"),
-    URIRef("http://example.com/predicate-l"),
-    Literal("Triple L"),
-))
+g_no_id.add(
+    (
+        URIRef("http://example.com/subject-l"),
+        URIRef("http://example.com/predicate-l"),
+        Literal("Triple L"),
+    )
+)
 d.add_graph(g_no_id)
 
 # now when we print it, we will see a Graph with a Blank Node id:
