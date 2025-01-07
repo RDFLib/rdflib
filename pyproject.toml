@@ -289,3 +289,6 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if __name__==.__main__.:"
 ]
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8.0"
