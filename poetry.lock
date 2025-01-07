@@ -34,6 +34,7 @@ description = "Python bindings for Oracle Berkeley DB"
 optional = true
 python-versions = "*"
 groups = ["main"]
+markers = "extra == \"berkeleydb\""
 files = [
     {file = "berkeleydb-18.1.12.tar.gz", hash = "sha256:495a8179c6a36b22d0fa2f6881fa783cf752214a285760529605f608101deb28"},
 ]
@@ -379,6 +380,7 @@ description = "HTML parser based on the WHATWG HTML specification"
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
+markers = "extra == \"html\""
 files = [
     {file = "html5rdf-1.2.1-py2.py3-none-any.whl", hash = "sha256:1f519121bc366af3e485310dc8041d2e86e5173c1a320fac3dc9d2604069b83e"},
     {file = "html5rdf-1.2.1.tar.gz", hash = "sha256:ace9b420ce52995bb4f05e7425eedf19e433c981dfe7a831ab391e2fa2e1a195"},
@@ -446,6 +448,19 @@ groups = ["tests"]
 files = [
     {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
     {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
+]
+
+[[package]]
+name = "isodate"
+version = "0.7.2"
+description = "An ISO 8601 date/time/duration parser and formatter"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+markers = "python_version < \"3.11\""
+files = [
+    {file = "isodate-0.7.2-py3-none-any.whl", hash = "sha256:28009937d8031054830160fce6d409ed342816b543597cece116d966c6d99e15"},
+    {file = "isodate-0.7.2.tar.gz", hash = "sha256:4cd1aa0f43ca76f4a6c6c0292a85f40b35ec2e43e315b59f06e6d32171a953e6"},
 ]
 
 [[package]]
@@ -865,6 +880,7 @@ description = "Python package for creating and manipulating graphs and networks"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
+markers = "extra == \"networkx\""
 files = [
     {file = "networkx-3.2.1-py3-none-any.whl", hash = "sha256:f18c69adc97877c42332c170849c96cefa91881c99a7cb3e95b7c659ebdc1ec2"},
     {file = "networkx-3.2.1.tar.gz", hash = "sha256:9f1bb5cf3409bf324e0a722c20bdb4c20ee39bf1c30ce8ae499c8502b0b5e0c6"},
@@ -884,6 +900,7 @@ description = "Fast, correct Python JSON library supporting dataclasses, datetim
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
+markers = "extra == \"orjson\""
 files = [
     {file = "orjson-3.10.13-cp310-cp310-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:1232c5e873a4d1638ef957c5564b4b0d6f2a6ab9e207a9b3de9de05a09d1d920"},
     {file = "orjson-3.10.13-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d26a0eca3035619fa366cbaf49af704c7cb1d4a0e6c79eced9f6a3f2437964b6"},
@@ -1082,6 +1099,21 @@ files = [
 
 [package.extras]
 windows-terminal = ["colorama (>=0.4.6)"]
+
+[[package]]
+name = "pyparsing"
+version = "3.2.1"
+description = "pyparsing module - Classes and methods to define and execute parsing grammars"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pyparsing-3.2.1-py3-none-any.whl", hash = "sha256:506ff4f4386c4cec0590ec19e6302d3aedb992fdc02c761e90416f158dacf8e1"},
+    {file = "pyparsing-3.2.1.tar.gz", hash = "sha256:61980854fd66de3a90028d679a954d5f2623e83144b5afe5ee86f43d762e5f0a"},
+]
+
+[package.extras]
+diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pyproject-hooks"
@@ -1546,11 +1578,11 @@ type = ["pytest-mypy"]
 [extras]
 berkeleydb = ["berkeleydb"]
 html = ["html5rdf"]
-lxml = ["lxml"]
+lxml = ["lxml", "lxml"]
 networkx = ["networkx"]
 orjson = ["orjson"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4"
-content-hash = "530e6d6898232d87add02b03a1861179d8cd9250c50808a18054ba5ea9c7c74f"
+content-hash = "5004c44cd863830134030100249b20cc499dffada48232c313cbc4f2e07f9abf"
