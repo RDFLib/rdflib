@@ -26,3 +26,4 @@ repos:
     - id: poetry-check
     - id: poetry-lock
       # sadly `--no-update` does not work on pre-commit.ci
+      args: ["--check"]
