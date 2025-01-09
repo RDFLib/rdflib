@@ -10,7 +10,7 @@ itself acts as a transaction.
 Calls to commit or rollback, flush the list of reverse operations This
 provides thread-safe atomicity and isolation (assuming concurrent operations
 occur with different store instances), but no durability (transactions are
-persisted in memory and wont  be available to reverse operations after the
+persisted in memory and won't be available to reverse operations after the
 system fails): A and I out of ACID.
 
 """
