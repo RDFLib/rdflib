@@ -2417,17 +2417,19 @@ class Dataset(ConjunctiveGraph):
     RDFLib's Dataset class is based on the `RDF 1.2. 'Dataset' definition
     <https://www.w3.org/TR/rdf12-datasets/>`_:
 
+    ..
+
         An RDF dataset is a collection of RDF graphs, and comprises:
 
-        * Exactly one default graph, being an RDF graph. The default graph does not
-        have a name and MAY be empty.
+        - Exactly one default graph, being an RDF graph. The default graph does not
+            have a name and MAY be empty.
+        - Zero or more named graphs. Each named graph is a pair consisting of an IRI or
+            a blank node (the graph name), and an RDF graph. Graph names are unique
+            within an RDF dataset.
 
-        * Zero or more named graphs. Each named graph is a pair consisting of an IRI or
-        a blank node (the graph name), and an RDF graph. Graph names are unique within
-        an RDF dataset.
-
-    Accordingly, a Dataset allows for `Graph` objects to be added to it with `URIRef` or
-    `BNode` identifiers and always creats a default graph with the `URIRef` identifier
+    Accordingly, a Dataset allows for `Graph` objects to be added to it with
+    :class:`rdflib.term.URIRef` or :class:`rdflib.term.BNode` identifiers and always
+    creats a default graph with the :class:`rdflib.term.URIRef` identifier
     :code:`urn:x-rdflib:default`.
 
     Dataset extends Graph's Subject, Predicate, Object (s, p, o) 'triple'
