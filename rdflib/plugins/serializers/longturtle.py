@@ -20,7 +20,9 @@ from __future__ import annotations
 
 from typing import IO, Any, Optional
 
+from rdflib.compare import to_canonical_graph
 from rdflib.exceptions import Error
+from rdflib.graph import Graph
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
 
@@ -42,7 +44,16 @@ class LongTurtleSerializer(RecursiveSerializer):
 
     def __init__(self, store):
         self._ns_rewrite = {}
-        super(LongTurtleSerializer, self).__init__(store)
+        store = to_canonical_graph(store)
+        content = store.serialize(format="application/n-triples")
+        lines = content.split("\n")
+        lines.sort()
+        graph = Graph()
+        graph.parse(
+            data="\n".join(lines), format="application/n-triples", skolemize=True
+        )
+        graph = graph.de_skolemize()
+        super(LongTurtleSerializer, self).__init__(graph)
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
@@ -186,7 +197,7 @@ class LongTurtleSerializer(RecursiveSerializer):
             return False
         self.write("\n" + self.indent() + "[]")
         self.predicateList(subject, newline=False)
-        self.write(" ;\n.")
+        self.write("\n.")
         return True
 
     def path(self, node, position, newline=False):
@@ -293,34 +304,7 @@ class LongTurtleSerializer(RecursiveSerializer):
     def verb(self, node, newline=False):
         self.path(node, VERB, newline)
 
-    def sortObjects(
-        self, values: list[URIRef | BNode | Literal]
-    ) -> list[URIRef | BNode | Literal]:
-        """
-        Perform a sort on the values where each value is a blank node. Grab the CBD of the
-        blank node and sort it by its longturtle serialization value.
-
-        Identified nodes come first and the sorted blank nodes are tacked on after.
-        """
-        bnode_map: dict[BNode, list[str]] = {}
-        objects = []
-        for value in values:
-            if isinstance(value, BNode):
-                bnode_map[value] = []
-            else:
-                objects.append(value)
-
-        for bnode in bnode_map:
-            cbd = self.store.cbd(bnode).serialize(format="longturtle")
-            bnode_map[bnode].append(cbd)
-
-        sorted_bnodes = sorted(
-            [(k, v) for k, v in bnode_map.items()], key=lambda x: x[1]
-        )
-        return objects + [x[0] for x in sorted_bnodes]
-
     def objectList(self, objects):
-        objects = self.sortObjects(objects)
         count = len(objects)
         if count == 0:
             return

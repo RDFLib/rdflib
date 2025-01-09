@@ -27,6 +27,17 @@
       "purpose": "Multiple @id aliases.  Issue #2164",
       "input": "toRdf-twoimports-in.jsonld",
       "expect": "toRdf-twoimports-out.nq"
+    },
+    {
+      "@id": "#toRdf-two-invalid-ids",
+      "@type": ["jld:PositiveEvaluationTest", "jld:ToRDFTest"],
+      "name": "Two invalid identifiers",
+      "purpose": "Multiple nodes with invalid @ids are not merged together.",
+      "option": {
+        "produceGeneralizedRdf": true
+      },
+      "input": "toRdf-twoinvalidids-in.jsonld",
+      "expect": "toRdf-twoinvalidids-out.nq"
     }
   ]
 }
