@@ -6,7 +6,7 @@ This test runner uses pytest for test discovery and running. It uses the argumen
 spec of pytest, but with some options pre-set. To begin with, make sure you have
 pytest installed, e.g.:
 
-    $ pip install pytest
+    $ poetry add pytest
 
 To run the tests, use:
 
