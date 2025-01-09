@@ -423,11 +423,50 @@ _TCArgT = TypeVar("_TCArgT")
 # Graph is a node because technically a formula-aware graph
 # take a Graph as subject or object, but we usually use QuotedGraph for that.
 class Graph(Node):
-    """An RDF Graph
+    """An RDF Graph: a Python object containing nodes and relations between them as
+    RDF 'triples'.
 
-    The constructor accepts one argument, the "store"
-    that will be used to store the graph data (see the "store"
-    package for stores currently shipped with rdflib).
+    This is the central RDFLib object class and Graph objects are almost always present
+    it all uses of RDFLib.
+
+    The basic use is to create a Graph and iterate through or query its content, e.g.:
+
+    >>> from rdflib import Graph, URIRef
+    >>> g = Graph()
+
+    >>> g.add((
+    ...     URIRef("http://example.com/s1"),   # subject
+    ...     URIRef("http://example.com/p1"),   # predicate
+    ...     URIRef("http://example.com/o1"),   # object
+    ... )) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+
+    >>> g.add((
+    ...     URIRef("http://example.com/s2"),   # subject
+    ...     URIRef("http://example.com/p2"),   # predicate
+    ...     URIRef("http://example.com/o2"),   # object
+    ... )) # doctest: +ELLIPSIS
+    <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
+
+    >>> for triple in sorted(g):  # simple looping
+    ...     print(triple)
+    (rdflib.term.URIRef('http://example.com/s1'), rdflib.term.URIRef('http://example.com/p1'), rdflib.term.URIRef('http://example.com/o1'))
+    (rdflib.term.URIRef('http://example.com/s2'), rdflib.term.URIRef('http://example.com/p2'), rdflib.term.URIRef('http://example.com/o2'))
+
+    >>> # get the object of the triple with subject s1 and predicate p1
+    >>> o = g.value(
+    ...     subject=URIRef("http://example.com/s1"),
+    ...     predicate=URIRef("http://example.com/p1")
+    ... )
+
+
+    The constructor accepts one argument, the "store" that will be used to store the
+    graph data with the default being the `Memory <rdflib.plugins.stores.memory.Memory>`
+    (in memory) Store. Other Stores that persist content to disk using various file
+    databases or Stores that use remote servers (SPARQL systems) are supported. See
+    the :doc:`rdflib.plugins.stores` package for Stores currently shipped with RDFLib.
+    Other Stores not shipped with RDFLib can be added, such as
+    `HDT <https://github.com/rdflib/rdflib-hdt/>`_.
 
     Stores can be context-aware or unaware.  Unaware stores take up
     (some) less space but cannot support features that require
@@ -435,14 +474,15 @@ class Graph(Node):
     provenance.
 
     Even if used with a context-aware store, Graph will only expose the quads which
-    belong to the default graph. To access the rest of the data, `ConjunctiveGraph` or
-    `Dataset` classes can be used instead.
+    belong to the default graph. To access the rest of the data the
+    `Dataset` class can be used instead.
 
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for its
     identifier.
 
-    For more on named graphs, see: http://www.w3.org/2004/03/trix/
+    For more on Named Graphs, see the RDFLib `Dataset` class and the TriG Specification,
+    https://www.w3.org/TR/trig/.
     """
 
     context_aware: bool
@@ -1153,10 +1193,10 @@ class Graph(Node):
         function against the graph
 
         >>> from rdflib.collection import Collection
-        >>> g=Graph()
-        >>> a=BNode("foo")
-        >>> b=BNode("bar")
-        >>> c=BNode("baz")
+        >>> g = Graph()
+        >>> a = BNode("foo")
+        >>> b = BNode("bar")
+        >>> c = BNode("baz")
         >>> g.add((a,RDF.first,RDF.type)) # doctest: +ELLIPSIS
         <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
         >>> g.add((a,RDF.rest,b)) # doctest: +ELLIPSIS
@@ -1417,7 +1457,7 @@ class Graph(Node):
                 else:
                     os_path = location
             with open(os_path, "wb") as stream:
-                serializer.serialize(stream, encoding=encoding, **args)
+                serializer.serialize(stream, base=base, encoding=encoding, **args)
         return self
 
     def print(
@@ -2370,21 +2410,49 @@ DATASET_DEFAULT_GRAPH_ID = URIRef("urn:x-rdflib:default")
 
 class Dataset(ConjunctiveGraph):
     """
-    RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
-    - the primary term is graphs in the datasets and not contexts with quads,
-    so there is a separate method to set/retrieve a graph in a dataset and
-    operate with graphs
-    - graphs cannot be identified with blank nodes
-    - added a method to directly add a single quad
+    An RDFLib Dataset is an object that stores multiple Named Graphs - instances of
+    RDFLib Graph identified by IRI - within it and allows whole-of-dataset or single
+    Graph use.
 
-    Examples of usage:
+    RDFLib's Dataset class is based on the `RDF 1.2. 'Dataset' definition
+    <https://www.w3.org/TR/rdf12-datasets/>`_:
+
+    ..
+
+        An RDF dataset is a collection of RDF graphs, and comprises:
+
+        - Exactly one default graph, being an RDF graph. The default graph does not
+            have a name and MAY be empty.
+        - Zero or more named graphs. Each named graph is a pair consisting of an IRI or
+            a blank node (the graph name), and an RDF graph. Graph names are unique
+            within an RDF dataset.
+
+    Accordingly, a Dataset allows for `Graph` objects to be added to it with
+    :class:`rdflib.term.URIRef` or :class:`rdflib.term.BNode` identifiers and always
+    creats a default graph with the :class:`rdflib.term.URIRef` identifier
+    :code:`urn:x-rdflib:default`.
+
+    Dataset extends Graph's Subject, Predicate, Object (s, p, o) 'triple'
+    structure to include a graph identifier - archaically called Context - producing
+    'quads' of s, p, o, g.
+
+    Triples, or quads, can be added to a Dataset. Triples, or quads with the graph
+    identifer :code:`urn:x-rdflib:default` go into the default graph.
+
+    .. note:: Dataset builds on the `ConjunctiveGraph` class but that class's direct
+        use is now deprecated (since RDFLib 7.x) and it should not be used.
+        `ConjunctiveGraph` will be removed from future RDFLib versions.
+
+    Examples of usage and see also the examples/datast.py file:
 
     >>> # Create a new Dataset
     >>> ds = Dataset()
     >>> # simple triples goes to default graph
-    >>> ds.add((URIRef("http://example.org/a"),
-    ...    URIRef("http://www.example.org/b"),
-    ...    Literal("foo")))  # doctest: +ELLIPSIS
+    >>> ds.add((
+    ...     URIRef("http://example.org/a"),
+    ...     URIRef("http://www.example.org/b"),
+    ...     Literal("foo")
+    ... ))  # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # Create a graph in the dataset, if the graph name has already been
@@ -2393,16 +2461,19 @@ class Dataset(ConjunctiveGraph):
     >>> g = ds.graph(URIRef("http://www.example.com/gr"))
     >>>
     >>> # add triples to the new graph as usual
-    >>> g.add(
-    ...     (URIRef("http://example.org/x"),
+    >>> g.add((
+    ...     URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/y"),
-    ...     Literal("bar")) ) # doctest: +ELLIPSIS
+    ...     Literal("bar")
+    ... )) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
     >>> # alternatively: add a quad to the dataset -> goes to the graph
-    >>> ds.add(
-    ...     (URIRef("http://example.org/x"),
+    >>> ds.add((
+    ...     URIRef("http://example.org/x"),
     ...     URIRef("http://example.org/z"),
-    ...     Literal("foo-bar"),g) ) # doctest: +ELLIPSIS
+    ...     Literal("foo-bar"),
+    ...     g
+    ... )) # doctest: +ELLIPSIS
     <Graph identifier=... (<class 'rdflib.graph.Dataset'>)>
     >>>
     >>> # querying triples return them all regardless of the graph
@@ -2468,8 +2539,8 @@ class Dataset(ConjunctiveGraph):
     >>>
     >>> # graph names in the dataset can be queried:
     >>> for c in ds.graphs():  # doctest: +SKIP
-    ...     print(c)  # doctest:
-    DEFAULT
+    ...     print(c.identifier)  # doctest:
+    urn:x-rdflib:default
     http://www.example.com/gr
     >>> # A graph can be created without specifying a name; a skolemized genid
     >>> # is created on the fly
@@ -2488,7 +2559,7 @@ class Dataset(ConjunctiveGraph):
     >>>
     >>> # a graph can also be removed from a dataset via ds.remove_graph(g)
 
-    .. versionadded:: 4.0
+    ... versionadded:: 4.0
     """
 
     def __init__(
