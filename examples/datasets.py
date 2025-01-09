@@ -83,7 +83,9 @@ d.add(
 assert len(d) == 3
 
 
-# You can print the Dataset like you do a Graph but you must specify a quads format like 'trig' or 'trix', not 'turtle'
+# You can print the Dataset like you do a Graph but you must specify a quads format like
+# 'trig' or 'trix', not 'turtle', unless the default_union parameter is set to True, and
+# then you can print the entire Dataset in triples.
 # print(d.serialize(format="trig").strip())
 
 # you should see something like this:
@@ -151,9 +153,9 @@ http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 """
 
 # Looping through triples across the whole Dataset will produce nothing
-# unless we set the Default Union Graph to True, since each triple is in a Named Graph
+# unless we set the default_union parameter to True, since each triple is in a Named Graph
 
-# Setting the Default Union Graph to True essentially presents all triples in all
+# Setting the default_union parameter to True essentially presents all triples in all
 # Graphs as a single Graph
 d.default_union = True
 for s, p, o in d.triples((None, None, None)):
@@ -166,7 +168,7 @@ http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y
 """
 
-# You can still loop through all quads now with the Default Union Graph to True
+# You can still loop through all quads now with the default_union parameter to True
 for s, p, o, g in d.quads((None, None, None)):
     print(f"{s}, {p}, {o}, {g}")
 
@@ -278,7 +280,7 @@ http://example.com/graph-2
 	http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 """
 
-# The Default Union Graph includes all triples in the Named Graphs and the Default Graph
+# The default_union parameter includes all triples in the Named Graphs and the Default Graph
 for s, p, o in d.triples((None, None, None)):
     print(f"{s}, {p}, {o}")
 

@@ -2414,17 +2414,28 @@ class Dataset(ConjunctiveGraph):
     RDFLib Graph identified by IRI - within it and allows whole-of-dataset or single
     Graph use.
 
-    RDFLib's Dataset class is based on the `RDF 1.1. 'Dataset' definition
-    <https://www.w3.org/TR/rdf11-datasets/>`_ and focusses on the "Quad Semantics" way
-    of implementing. As per Sec. 3.6 in the above:
+    RDFLib's Dataset class is based on the `RDF 1.2. 'Dataset' definition
+    <https://www.w3.org/TR/rdf12-datasets/>`_:
 
-        This approach consists in considering named graph as sets of quadruples,
-        having the subject, predicate and object of the triples as first three
-        components, and the graph IRI as the fourth element. ...
+        An RDF dataset is a collection of RDF graphs, and comprises:
 
-    Accordingly, Dataset extends Graph's Subject, Predicate, Object (s, p, o) 'triple'
-    structure to include Graph - archaically called Context - producing 'quads' of
-    s, p, o, g.
+        * Exactly one default graph, being an RDF graph. The default graph does not
+        have a name and MAY be empty.
+
+        * Zero or more named graphs. Each named graph is a pair consisting of an IRI or
+        a blank node (the graph name), and an RDF graph. Graph names are unique within
+        an RDF dataset.
+
+    Accordingly, a Dataset allows for `Graph` objects to be added to it with `URIRef` or
+    `BNode` identifiers and always creats a default graph with the `URIRef` identifier
+    :code:`urn:x-rdflib:default`.
+
+    Dataset extends Graph's Subject, Predicate, Object (s, p, o) 'triple'
+    structure to include a graph identifier - archaically called Context - producing
+    'quads' of s, p, o, g.
+
+    Triples, or quads, can be added to a Dataset. Triples, or quads with the graph
+    identifer :code:`urn:x-rdflib:default` go into the default graph.
 
     .. note:: Dataset builds on the `ConjunctiveGraph` class but that class's direct
         use is now deprecated (since RDFLib 7.x) and it should not be used.
