@@ -33,8 +33,8 @@ from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 import rdflib.compare
 import rdflib.plugin
-from rdflib import BNode, ConjunctiveGraph, Graph
-from rdflib.graph import Dataset
+from rdflib import BNode, Graph
+from rdflib.dataset import Dataset
 from rdflib.plugin import Plugin
 from rdflib.term import IdentifiedNode, Identifier, Literal, Node, URIRef
 

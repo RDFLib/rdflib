@@ -166,7 +166,8 @@ Literal work, eq, __neq__, __lt__, etc.
 """
 
 
-from rdflib.graph import ConjunctiveGraph, Dataset, Graph
+from rdflib.graph import Graph
+from rdflib.dataset import Dataset
 from rdflib.namespace import (
     BRICK,
     CSVW,
