@@ -3,10 +3,18 @@ examples Package
 
 These examples all live in ``./examples`` in the source-distribution of RDFLib.
 
-:mod:`~examples.conjunctive_graphs` Module
-------------------------------------------
+:mod:`~examples.datasets` Module
+--------------------------------
 
-.. automodule:: examples.conjunctive_graphs
+.. automodule:: examples.datasets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`~examples.jsonld_serialization` Module
+--------------------------------------------
+
+.. automodule:: examples.jsonld_serialization
     :members:
     :undoc-members:
     :show-inheritance:
