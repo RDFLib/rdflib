@@ -661,10 +661,11 @@ class Graph(Node):
 
     def __getitem__(self, item):
         """
-        A graph can be "sliced" as a shortcut for the triples method
-        The python slice syntax is (ab)used for specifying triples.
-        A generator over matches is returned,
-        the returned tuples include only the parts not given
+        A graph can be "sliced" as a shortcut for the triples method.
+        The Python slice syntax is (ab)used for specifying triples.
+
+        A generator over matches is returned, the returned tuples include only the
+        parts not given.
 
         >>> import rdflib
         >>> g = rdflib.Graph()
@@ -703,6 +704,10 @@ class Graph(Node):
 
         if isinstance(item, slice):
             s, p, o = item.start, item.stop, item.step
+            s: _SubjectType
+            p: _PredicateType
+            o: _ObjectType
+            
             if s is None and p is None and o is None:
                 return self.triples((s, p, o))
             elif s is None and p is None:
