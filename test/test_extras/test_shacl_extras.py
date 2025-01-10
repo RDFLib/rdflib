@@ -4,8 +4,9 @@ from typing import Union, cast
 
 import pytest
 
-from rdflib import Graph, URIRef
-from rdflib.extras.shacl import SHACLPathError, parse_shacl_path
+from rdflib import Graph, Literal, URIRef, paths
+from rdflib.compare import graph_diff
+from rdflib.extras.shacl import SHACLPathError, build_shacl_path, parse_shacl_path
 from rdflib.namespace import SH, Namespace
 from rdflib.paths import Path
 
@@ -109,7 +110,32 @@ def path_source_data():
                 ) ;
             ] ;
         .
-        ex:TestPropShape10
+        ex:TestPropShape10a
+            sh:path (
+                [
+                    sh:zeroOrMorePath [
+                        sh:inversePath ex:pred1 ;
+                    ] ;
+                ]
+                [
+                    sh:alternativePath (
+                        [
+                            sh:zeroOrMorePath [
+                                sh:inversePath ex:pred1 ;
+                            ] ;
+                        ]
+                        ex:pred1
+                        [
+                            sh:oneOrMorePath ex:pred2 ;
+                        ]
+                        [
+                            sh:zeroOrMorePath ex:pred3 ;
+                        ]
+                    ) ;
+                ]
+            ) ;
+        .
+        ex:TestPropShape10b
             sh:path (
                 [
                     sh:zeroOrMorePath [
@@ -192,7 +218,13 @@ def path_source_data():
             ~EX.pred1 | EX.pred1 / EX.pred2 | EX.pred1 | EX.pred2 | EX.pred3,
         ),
         (
-            EX.TestPropShape10,
+            EX.TestPropShape10a,
+            ~EX.pred1
+            * "*"
+            / (~EX.pred1 * "*" | EX.pred1 | EX.pred2 * "+" | EX.pred3 * "*"),  # type: ignore[operator]
+        ),
+        (
+            EX.TestPropShape10b,
             ~EX.pred1
             * "*"
             / (~EX.pred1 * "*" | EX.pred1 | EX.pred2 * "+" | EX.pred3 * "*"),  # type: ignore[operator]
@@ -217,3 +249,49 @@ def test_parse_shacl_path(
             parse_shacl_path(path_source_data, path_root)  # type: ignore[arg-type]
     else:
         assert parse_shacl_path(path_source_data, path_root) == expected  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize(
+    ("resource", "path"),
+    (
+        # Single SHACL Path
+        (EX.TestPropShape1, EX.pred1),
+        (EX.TestPropShape2a, EX.pred1 / EX.pred2 / EX.pred3),
+        (EX.TestPropShape3, ~EX.pred1),
+        (EX.TestPropShape4a, EX.pred1 | EX.pred2 | EX.pred3),
+        (EX.TestPropShape5, EX.pred1 * "*"),  # type: ignore[operator]
+        (EX.TestPropShape6, EX.pred1 * "+"),  # type: ignore[operator]
+        (EX.TestPropShape7, EX.pred1 * "?"),  # type: ignore[operator]
+        # SHACL Path Combinations
+        (EX.TestPropShape8, ~EX.pred1 * "*"),
+        (
+            EX.TestPropShape10a,
+            ~EX.pred1
+            * "*"
+            / (~EX.pred1 * "*" | EX.pred1 | EX.pred2 * "+" | EX.pred3 * "*"),  # type: ignore[operator]
+        ),
+        (TypeError, Literal("Not a valid path")),
+        (SHACLPathError, paths.SequencePath(SH.targetClass)),
+        (SHACLPathError, paths.AlternativePath(SH.targetClass)),
+    ),
+)
+def test_build_shacl_path(
+    path_source_data: Graph, resource: URIRef | type, path: Union[URIRef, Path]
+):
+    if isinstance(resource, type):
+        with pytest.raises(resource):
+            build_shacl_path(path)
+    else:
+        expected_path_root = path_source_data.value(resource, SH.path)
+        actual_path_root, actual_path_graph = build_shacl_path(path)
+        if isinstance(expected_path_root, URIRef):
+            assert actual_path_root == expected_path_root
+            assert actual_path_graph is None
+        else:
+            assert isinstance(actual_path_graph, Graph)
+            expected_path_graph = path_source_data.cbd(expected_path_root)  # type: ignore[arg-type]
+            in_both, in_first, in_second = graph_diff(
+                expected_path_graph, actual_path_graph
+            )
+            assert len(in_first) == 0
+            assert len(in_second) == 0
