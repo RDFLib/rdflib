@@ -1,18 +1,21 @@
-from rdflib import Graph
+from rdflib import Graph, Literal, Namespace, URIRef
+from rdflib.namespace import RDFS
 from test.data import BOB, CHEESE, HATES, LIKES, MICHEL, PIZZA, TAREK
+
+EX = Namespace("http://example.org/")
 
 
 class TestGraphSlice:
     def test_slice(self):
         """
-        We pervert the slice object,
-        and use start, stop, step as subject, predicate, object
+        We pervert the slice object, and use start, stop, step as subject, predicate,
+        object
 
-        all operations return generators over full triples
+        All operations return generators over full triples
         """
 
-        def sl(x, y):
-            return len(list(x)) == y
+        def sl(x):
+            return len(list(x))
 
         def soe(x, y):
             return set([a[2] for a in x]) == set(y)  # equals objects
@@ -30,25 +33,73 @@ class TestGraphSlice:
 
         # single index slices by subject, i.e. return triples((x,None,None))
         # tell me everything about "TAREK"
-        sl(g[TAREK], 2)
+        assert sl(g[TAREK]) == 2
 
         # single slice slices by s,p,o, with : used to split
         # tell me everything about "TAREK" (same as above)
-        sl(g[TAREK::], 2)
+        assert sl(g[TAREK::]) == 2
 
         # give me every "LIKES" relationship
-        sl(g[:LIKES:], 5)
+        assert sl(g[:LIKES:]) == 5
 
         # give me every relationship to PIZZA
-        sl(g[::PIZZA], 3)
+        assert sl(g[::PIZZA]) == 3
 
         # give me everyone who LIKES PIZZA
-        sl(g[:LIKES:PIZZA], 2)
+        assert sl(g[:LIKES:PIZZA]) == 2
 
         # does TAREK like PIZZA?
-        assert g[TAREK:LIKES:PIZZA] is True
+        assert sorted(next(g[TAREK:LIKES:PIZZA])) == sorted(
+            (
+                URIRef("urn:example:tarek"),
+                URIRef("urn:example:likes"),
+                URIRef("urn:example:pizza"),
+            )
+        )
 
         # More intesting is using paths
 
         # everything hated or liked
-        sl(g[: HATES | LIKES], 7)
+        assert sl(g[: HATES | LIKES]) == 7
+
+
+def test_graph_slice_eg():
+    g = Graph()
+    g.add((URIRef("urn:bob"), RDFS.label, Literal("Bob")))
+    assert sorted(list(g[URIRef("urn:bob")])) == sorted(
+        [(URIRef("http://www.w3.org/2000/01/rdf-schema#label"), Literal("Bob"))]
+    )
+
+    assert sorted(list(g[: RDFS.label])) == sorted(
+        [(URIRef("urn:bob"), Literal("Bob"))]
+    )
+
+    assert sorted(list(g[:: Literal("Bob")])) == sorted(
+        [(URIRef("urn:bob"), URIRef("http://www.w3.org/2000/01/rdf-schema#label"))]
+    )
+
+
+def test_graph_slice_all():
+    g = Graph()
+    g.parse(
+        data="""
+        PREFIX ex: <http://example.org/>
+
+        ex:a ex:b ex:c .
+        ex:a ex:d ex:e .
+        ex:f ex:b ex:c .
+        ex:g ex:b ex:h .
+        """
+    )
+
+    assert len(list(g[EX.a])) == 2
+
+    assert len(list(g[EX.f])) == 1
+
+    assert len(list(g[: EX.b])) == 3
+
+    assert len(list(g[:: EX.c])) == 2
+
+    assert len(list(g[EX.a : EX.b : EX.c])) == 1
+
+    assert sorted(list(g[EX.a])) == sorted(list(g.predicate_objects(EX.a)))
