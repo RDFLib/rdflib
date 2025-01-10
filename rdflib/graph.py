@@ -708,7 +708,7 @@ class Graph(Node):
             s, p, o = item.start, item.stop, item.step
             # type narrowing since we cannot use typing within a slice()
             assert isinstance(s, IdentifiedNode) or isinstance(s, Variable) or s is None
-            assert isinstance(p, IdentifiedNode) or isinstance(p, Variable) or p is None
+            assert isinstance(p, IdentifiedNode) or isinstance(p, Path) or isinstance(p, Variable) or p is None
             assert isinstance(o, Node) or isinstance(o, Variable) or o is None
 
             if s is None and p is None and o is None:
