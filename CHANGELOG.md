@@ -1,3 +1,26 @@
+## 2025-01-10 RELEASE 7.1.2
+
+A minor release that bumped up a few dev dependencies and achieved a few small but notable improvements, particularly with longturtle sorting:
+
+Feature PRs:
+
+* [PR #2963](https://github.com/RDFLib/rdflib/pull/2963) Big typing updates
+* [PR #2964](https://github.com/RDFLib/rdflib/pull/2964) Defined Namesapce warnings fix
+* [PR #2971](https://github.com/RDFLib/rdflib/pull/2971) convert uses of Optional and some Union usage to union operator |
+* [PR #2989](https://github.com/RDFLib/rdflib/pull/2989) Fixed incorrect ASK behaviour for dataset with one element
+* [PR #2997](https://github.com/RDFLib/rdflib/pull/2997) sort longturtle blank nodes
+* [PR #3008](https://github.com/RDFLib/rdflib/pull/3008) deterministic longturtle serialisation using RDF canonicalization + n-triples sort
+* [PR #3012](https://github.com/RDFLib/rdflib/pull/3012) Dataset documentation improvements
+
+Dependency bumps:
+
+* ruff from 0.71 -> 0.8.6
+* orjson  3.10.10 -> 
+* pytest-cov to 6.0.0
+* coverage to 7.6.10
+* pytest to 8.3.4
+* poetry to 2.0.0
+
 ## 2024-10-17 RELEASE 7.1.1
 
 This minor release removes the dependency on some only Python packages, in particular 
