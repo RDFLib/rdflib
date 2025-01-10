@@ -703,10 +703,10 @@ class Graph(Node):
         """
 
         if isinstance(item, slice):
-            s, p, o = item.start, item.stop, item.step
             s: _SubjectType
             p: _PredicateType
             o: _ObjectType
+            s, p, o = item.start, item.stop, item.step
             
             if s is None and p is None and o is None:
                 return self.triples((s, p, o))
