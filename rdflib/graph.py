@@ -661,10 +661,11 @@ class Graph(Node):
 
     def __getitem__(self, item):
         """
-        A graph can be "sliced" as a shortcut for the triples method
-        The python slice syntax is (ab)used for specifying triples.
-        A generator over matches is returned,
-        the returned tuples include only the parts not given
+        A graph can be "sliced" as a shortcut for the triples method.
+        The Python slice syntax is (ab)used for specifying triples.
+
+        A generator over matches is returned, the returned tuples include only the
+        parts not given.
 
         >>> import rdflib
         >>> g = rdflib.Graph()
@@ -701,30 +702,37 @@ class Graph(Node):
 
         """
 
-        if isinstance(item, slice):
+        if isinstance(item, IdentifiedNode):
+            yield from self.predicate_objects(item)
+        elif isinstance(item, slice):
             s, p, o = item.start, item.stop, item.step
+            # type narrowing since we cannot use typing within a slice()
+            assert isinstance(s, IdentifiedNode) or isinstance(s, Variable) or s is None
+            assert (
+                isinstance(p, IdentifiedNode)
+                or isinstance(p, Path)
+                or isinstance(p, Variable)
+                or p is None
+            )
+            assert isinstance(o, Node) or isinstance(o, Variable) or o is None
+
             if s is None and p is None and o is None:
-                return self.triples((s, p, o))
+                yield from self.triples((s, p, o))
             elif s is None and p is None:
-                return self.subject_predicates(o)
+                yield from self.subject_predicates(o)  # type: ignore[arg-type]
             elif s is None and o is None:
-                return self.subject_objects(p)
+                yield from self.subject_objects(p)
             elif p is None and o is None:
-                return self.predicate_objects(s)
+                yield from self.predicate_objects(s)
             elif s is None:
-                return self.subjects(p, o)
+                yield from self.subjects(p, o)  # type: ignore[arg-type]
             elif p is None:
-                return self.predicates(s, o)
+                yield from self.predicates(s, o)  # type: ignore[arg-type]
             elif o is None:
-                return self.objects(s, p)
+                yield from self.objects(s, p)
             else:
                 # all given
-                return (s, p, o) in self
-
-        elif isinstance(item, (Path, Node)):
-            # type error: Argument 1 to "predicate_objects" of "Graph" has incompatible type "Union[Path, Node]"; expected "Optional[Node]"
-            return self.predicate_objects(item)  # type: ignore[arg-type]
-
+                yield s, p, o
         else:
             raise TypeError(
                 "You can only index a graph by a single rdflib term or path, or a slice of rdflib terms."
