@@ -1,7 +1,7 @@
 ---
 # https://docs.readthedocs.io/en/stable/config-file/v2.html
 version: 2
-# NOTE: not builing epub because epub does not know how to handle .ico files
+# NOTE: not building epub because epub does not know how to handle .ico files
 # which results in a warning which causes the build to fail due to
 # `sphinx.fail_on_warning`
 # https://github.com/sphinx-doc/sphinx/issues/10350
