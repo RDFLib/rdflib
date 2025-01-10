@@ -49,7 +49,13 @@ class TestGraphSlice:
         assert sl(g[:LIKES:PIZZA]) == 2
 
         # does TAREK like PIZZA?
-        assert sorted(next(g[TAREK:LIKES:PIZZA])) == sorted((URIRef('urn:example:tarek'), URIRef('urn:example:likes'), URIRef('urn:example:pizza')))
+        assert sorted(next(g[TAREK:LIKES:PIZZA])) == sorted(
+            (
+                URIRef("urn:example:tarek"),
+                URIRef("urn:example:likes"),
+                URIRef("urn:example:pizza"),
+            )
+        )
 
         # More intesting is using paths
 
