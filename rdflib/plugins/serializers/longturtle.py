@@ -18,8 +18,6 @@ to turtle - the original turtle serializer. It:
 
 from __future__ import annotations
 
-from typing import IO, Any, Optional
-
 from rdflib.compare import to_canonical_graph
 from rdflib.exceptions import Error
 from rdflib.graph import Graph

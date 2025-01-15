@@ -301,6 +301,7 @@ from rdflib.term import (
     Node,
     RDFLibGenid,
     URIRef,
+    Variable,
 )
 
 if TYPE_CHECKING:

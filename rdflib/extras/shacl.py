@@ -4,15 +4,14 @@ Utilities for interacting with SHACL Shapes Graphs more easily.
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from rdflib import BNode, Graph, Literal, URIRef, paths
+from rdflib import BNode, Graph, Literal, Node, URIRef, paths
 from rdflib.collection import Collection
 from rdflib.namespace import RDF, SH
 from rdflib.paths import Path
 
 if TYPE_CHECKING:
-    from rdflib.graph import _ObjectType
     from rdflib.term import IdentifiedNode
 
 

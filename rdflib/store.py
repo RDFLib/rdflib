@@ -36,7 +36,6 @@ from typing import (
     Generator,
     Iterable,
     Iterator,
-    List,
     Mapping,
     Optional,
     Tuple,
