@@ -1445,13 +1445,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "wheel"
-version = "0.45.1"
+version = "0.44.0"
 description = "A built-package format for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248"},
-    {file = "wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729"},
+    {file = "wheel-0.44.0-py3-none-any.whl", hash = "sha256:2376a90c98cc337d18623527a97c31797bd02bad0033d41547043a1cbfbe448f"},
+    {file = "wheel-0.44.0.tar.gz", hash = "sha256:a29c3f2817e95ab89aa4660681ad547c0e9547f20e75b0562fe7723c9a2a9d49"},
 ]
 
 [package.extras]
@@ -1482,4 +1482,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "71704ba175e33528872fab8121cb609041bd97b6a99f8f04022a26904941b27c"
+content-hash = "3d9605c7f277f69e5c732d2edf25ed10fde6af31b791bb787229eb92be962af6"
