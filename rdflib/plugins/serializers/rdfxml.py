@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import xml.dom.minidom
-from typing import IO, Dict, Generator, Any, Optional, Set, Tuple
+from typing import IO, Any, Dict, Generator, Optional, Set, Tuple
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.collection import Collection
