@@ -1,5 +1,6 @@
 .tox
 .venv
+.venv39
 .mypy_cache
 .pytest_cache
 .git

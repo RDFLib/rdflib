@@ -272,7 +272,7 @@ tasks:
 
   pip-compile:
     cmds:
-      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking {{.CLI_ARGS}}"
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --no-strip-extras --resolver=backtracking {{.CLI_ARGS}}"
 
   docker:prepare:
     cmds:

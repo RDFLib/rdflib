@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import collections
-from typing import DefaultDict, Dict, Optional, Set
+from collections import defaultdict
 
 from rdflib.graph import Graph, _ObjectType, _PredicateType, _SubjectType
 from rdflib.namespace import RDF, VOID
@@ -10,8 +9,8 @@ from rdflib.term import IdentifiedNode, Literal, URIRef
 
 def generateVoID(  # noqa: N802
     g: Graph,
-    dataset: Optional[IdentifiedNode] = None,
-    res: Optional[Graph] = None,
+    dataset: IdentifiedNode | None = None,
+    res: Graph | None = None,
     distinctForPartitions: bool = True,  # noqa: N803
 ):
     """
@@ -33,29 +32,23 @@ def generateVoID(  # noqa: N802
 
     """
 
-    typeMap: Dict[_SubjectType, Set[_SubjectType]] = (  # noqa: N806
-        collections.defaultdict(set)
-    )
-    classes: Dict[_ObjectType, Set[_SubjectType]] = collections.defaultdict(set)
+    typeMap: dict[_SubjectType, set[_SubjectType]] = defaultdict(set)  # noqa: N806
+    classes: dict[_ObjectType, set[_SubjectType]] = defaultdict(set)
     for e, c in g.subject_objects(RDF.type):
         classes[c].add(e)
         typeMap[e].add(c)
 
     triples = 0
-    subjects: Set[_SubjectType] = set()
-    objects: Set[_ObjectType] = set()
-    properties: Set[_PredicateType] = set()
-    classCount: DefaultDict[_SubjectType, int] = collections.defaultdict(  # noqa: N806
-        int
-    )
-    propCount: DefaultDict[_PredicateType, int] = collections.defaultdict(  # noqa: N806
-        int
-    )
+    subjects: set[_SubjectType] = set()
+    objects: set[_ObjectType] = set()
+    properties: set[_PredicateType] = set()
+    classCount: defaultdict[_SubjectType, int] = defaultdict(int)  # noqa: N806
+    propCount: defaultdict[_PredicateType, int] = defaultdict(int)  # noqa: N806
 
-    classProps = collections.defaultdict(set)  # noqa: N806
-    classObjects = collections.defaultdict(set)  # noqa: N806
-    propSubjects = collections.defaultdict(set)  # noqa: N806
-    propObjects = collections.defaultdict(set)  # noqa: N806
+    classProps = defaultdict(set)  # noqa: N806
+    classObjects = defaultdict(set)  # noqa: N806
+    propSubjects = defaultdict(set)  # noqa: N806
+    propObjects = defaultdict(set)  # noqa: N806
 
     for s, p, o in g:
         triples += 1

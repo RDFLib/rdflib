@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from contextlib import ExitStack
-from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional, Set, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
@@ -128,13 +129,13 @@ def test_invalid_selector() -> None:
         NamespaceManager(graph, bind_namespaces="invalid")  # type: ignore[arg-type]
 
 
-NamespaceSet = Set[Tuple[str, URIRef]]
+NamespaceSet = set[tuple[str, URIRef]]
 
 
 def check_graph_ns(
     graph: Graph,
-    expected_nsmap: Dict[str, Any],
-    check_namespaces: Optional[NamespaceSet] = None,
+    expected_nsmap: dict[str, Any],
+    check_namespaces: NamespaceSet | None = None,
 ) -> None:
     expected_namespaces = {
         (prefix, URIRef(f"{uri}")) for prefix, uri in expected_nsmap.items()
@@ -161,9 +162,9 @@ def check_graph_ns(
 )
 def test_graph_bind_namespaces(
     selector: Any,
-    expected_result: Union[Dict[str, Any], Type[Exception]],
+    expected_result: Union[dict[str, Any], type[Exception]],
 ) -> None:
-    namespaces: Optional[NamespaceSet] = None
+    namespaces: NamespaceSet | None = None
     with ExitStack() as xstack:
         if not isinstance(expected_result, dict):
             xstack.enter_context(pytest.raises(expected_result))
@@ -188,7 +189,7 @@ def test_graph_bind_namespaces(
 )
 def test_nman_bind_namespaces(
     selector: Any,
-    expected_result: Union[Dict[str, Any], Type[Exception]],
+    expected_result: Union[dict[str, Any], type[Exception]],
 ) -> None:
     with ExitStack() as xstack:
         if not isinstance(expected_result, dict):
@@ -283,7 +284,7 @@ def test_nman_bind_namespaces(
     ],
 )
 def test_bound_namespaces_subset(
-    selector: Optional[Any], expected_bindings: Dict[str, str]
+    selector: Any | None, expected_bindings: dict[str, str]
 ) -> None:
     if selector is not None:
         graph = Graph(bind_namespaces=selector)
@@ -365,10 +366,10 @@ def test_compute_qname(
     uri: str,
     generate: bool,
     bind_namespaces: _NamespaceSetString,
-    manager_prefixes: Optional[Mapping[str, Namespace]],
-    graph_prefixes: Optional[Mapping[str, Namespace]],
-    store_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: OutcomePrimitive[Tuple[str, URIRef, str]],
+    manager_prefixes: Mapping[str, Namespace] | None,
+    graph_prefixes: Mapping[str, Namespace] | None,
+    store_prefixes: Mapping[str, Namespace] | None,
+    expected_result: OutcomePrimitive[tuple[str, URIRef, str]],
 ) -> None:
     """
     :param uri: argument to compute_qname()
@@ -397,7 +398,7 @@ def test_compute_qname(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        checker = OutcomeChecker[Tuple[str, URIRef, str]].from_primitive(
+        checker = OutcomeChecker[tuple[str, URIRef, str]].from_primitive(
             expected_result
         )
         with checker.context():
@@ -433,8 +434,8 @@ def test_compute_qname_strict(
     uri: str,
     generate: bool,
     bind_namespaces: _NamespaceSetString,
-    additional_prefixes: Optional[Mapping[str, Namespace]],
-    expected_result: OutcomePrimitive[Tuple[str, str, str]],
+    additional_prefixes: Mapping[str, Namespace] | None,
+    expected_result: OutcomePrimitive[tuple[str, str, str]],
 ) -> None:
     graph = Graph(bind_namespaces=bind_namespaces)
     nm = graph.namespace_manager
@@ -444,7 +445,7 @@ def test_compute_qname_strict(
             nm.bind(prefix, ns)
 
     def check() -> None:
-        checker = OutcomeChecker[Tuple[str, str, str]].from_primitive(expected_result)
+        checker = OutcomeChecker[tuple[str, str, str]].from_primitive(expected_result)
         with checker.context():
             actual_result = nm.compute_qname_strict(uri, generate)
             logging.debug("actual_result = %s", actual_result)
@@ -544,7 +545,7 @@ def test_expand_curie(
 def test_generate_curie(
     test_nsm_function: NamespaceManager,
     uri: str,
-    generate: Optional[bool],
+    generate: bool | None,
     expected_result: OutcomePrimitive[str],
 ) -> None:
     """

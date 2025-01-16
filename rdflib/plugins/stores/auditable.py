@@ -18,7 +18,8 @@ system fails): A and I out of ACID.
 from __future__ import annotations
 
 import threading
-from typing import TYPE_CHECKING, Any, Generator, Iterator, List, Optional, Tuple
+from collections.abc import Generator, Iterator
+from typing import TYPE_CHECKING, Any
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.store import Store
@@ -51,18 +52,18 @@ class AuditableStore(Store):
         # info to reverse the removal of a quoted statement
         self.formula_aware = False  # store.formula_aware
         self.transaction_aware = True  # This is only half true
-        self.reverseOps: List[
-            Tuple[
-                Optional[_SubjectType],
-                Optional[_PredicateType],
-                Optional[_ObjectType],
-                Optional[_ContextIdentifierType],
+        self.reverseOps: list[
+            tuple[
+                _SubjectType | None,
+                _PredicateType | None,
+                _ObjectType | None,
+                _ContextIdentifierType | None,
                 str,
             ]
         ] = []
         self.rollbackLock = threading.RLock()
 
-    def open(self, configuration: str, create: bool = True) -> Optional[int]:
+    def open(self, configuration: str, create: bool = True) -> int | None:
         return self.store.open(configuration, create)
 
     def close(self, commit_pending_transaction: bool = False) -> None:
@@ -97,7 +98,7 @@ class AuditableStore(Store):
             self.store.add((s, p, o), context, quoted)
 
     def remove(
-        self, spo: _TriplePatternType, context: Optional[_ContextType] = None
+        self, spo: _TriplePatternType, context: _ContextType | None = None
     ) -> None:
         subject, predicate, object_ = spo
         lock = destructiveOpLocks["remove"]
@@ -141,8 +142,8 @@ class AuditableStore(Store):
             self.store.remove((subject, predicate, object_), context)
 
     def triples(
-        self, triple: _TriplePatternType, context: Optional[_ContextType] = None
-    ) -> Iterator[Tuple[_TripleType, Iterator[Optional[_ContextType]]]]:
+        self, triple: _TriplePatternType, context: _ContextType | None = None
+    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
         (su, pr, ob) = triple
         context = (
             context.__class__(self.store, context.identifier)
@@ -152,7 +153,7 @@ class AuditableStore(Store):
         for (s, p, o), cg in self.store.triples((su, pr, ob), context):
             yield (s, p, o), cg
 
-    def __len__(self, context: Optional[_ContextType] = None):
+    def __len__(self, context: _ContextType | None = None):
         context = (
             context.__class__(self.store, context.identifier)
             if context is not None
@@ -161,7 +162,7 @@ class AuditableStore(Store):
         return self.store.__len__(context)
 
     def contexts(
-        self, triple: Optional[_TripleType] = None
+        self, triple: _TripleType | None = None
     ) -> Generator[_ContextType, None, None]:
         for ctx in self.store.contexts(triple):
             yield ctx
@@ -169,13 +170,13 @@ class AuditableStore(Store):
     def bind(self, prefix: str, namespace: URIRef, override: bool = True) -> None:
         self.store.bind(prefix, namespace, override=override)
 
-    def prefix(self, namespace: URIRef) -> Optional[str]:
+    def prefix(self, namespace: URIRef) -> str | None:
         return self.store.prefix(namespace)
 
-    def namespace(self, prefix: str) -> Optional[URIRef]:
+    def namespace(self, prefix: str) -> URIRef | None:
         return self.store.namespace(prefix)
 
-    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
         return self.store.namespaces()
 
     def commit(self) -> None:
