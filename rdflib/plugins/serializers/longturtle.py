@@ -16,7 +16,13 @@ to turtle - the original turtle serializer. It:
 - Nicholas Car, 2023
 """
 
+from __future__ import annotations
+
+from typing import IO, Any, Optional
+
+from rdflib.compare import to_canonical_graph
 from rdflib.exceptions import Error
+from rdflib.graph import Graph
 from rdflib.namespace import RDF
 from rdflib.term import BNode, Literal, URIRef
 
@@ -38,11 +44,20 @@ class LongTurtleSerializer(RecursiveSerializer):
 
     def __init__(self, store):
         self._ns_rewrite = {}
-        super(LongTurtleSerializer, self).__init__(store)
+        store = to_canonical_graph(store)
+        content = store.serialize(format="application/n-triples")
+        lines = content.split("\n")
+        lines.sort()
+        graph = Graph()
+        graph.parse(
+            data="\n".join(lines), format="application/n-triples", skolemize=True
+        )
+        graph = graph.de_skolemize()
+        super(LongTurtleSerializer, self).__init__(graph)
         self.keywords = {RDF.type: "a"}
         self.reset()
         self.stream = None
-        self._spacious = _SPACIOUS_OUTPUT
+        self._spacious: bool = _SPACIOUS_OUTPUT
 
     def addNamespace(self, prefix, namespace):
         # Turtle does not support prefixes that start with _
@@ -74,7 +89,14 @@ class LongTurtleSerializer(RecursiveSerializer):
         self._started = False
         self._ns_rewrite = {}
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(
+        self,
+        stream: IO[bytes],
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
+        **kwargs: Any,
+    ) -> None:
         self.reset()
         self.stream = stream
         # if base is given here, use, if not and a base is set for the graph use that
@@ -175,7 +197,7 @@ class LongTurtleSerializer(RecursiveSerializer):
             return False
         self.write("\n" + self.indent() + "[]")
         self.predicateList(subject, newline=False)
-        self.write(" ;\n.")
+        self.write("\n.")
         return True
 
     def path(self, node, position, newline=False):
@@ -292,6 +314,8 @@ class LongTurtleSerializer(RecursiveSerializer):
         if count > 1:
             if not isinstance(objects[0], BNode):
                 self.write("\n" + self.indent(1))
+            else:
+                self.write(" ")
             first_nl = True
         self.path(objects[0], OBJECT, newline=first_nl)
         for obj in objects[1:]:

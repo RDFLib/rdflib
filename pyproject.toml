@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rdflib"
-version = "7.1.1"
+version = "7.1.3a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
@@ -69,7 +69,7 @@ sphinx-autodoc-typehints = ">=1.25.3,<=2.0.1"
 typing-extensions = "^4.5.0"
 
 [tool.poetry.group.lint.dependencies]
-ruff = ">=0.0.286,<0.8.0"
+ruff = ">=0.0.286,<0.10.0"
 
 [tool.poetry.extras]
 berkeleydb = ["berkeleydb"]
@@ -166,7 +166,7 @@ ignore = [
 ]
 
 [tool.black]
-line-length = "88"
+line-length = 88
 target-version = ['py38']
 required-version = "24.4.2"
 include = '\.pyi?$'

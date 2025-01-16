@@ -23,7 +23,11 @@ while True:
     print(f"Getting {url}")
     with urllib.request.urlopen(url) as response:
         response_text = response.read()
-        link_headers = response.info()["link"].split(",") if response.info()["link"] is not None else None
+        link_headers = (
+            response.info()["link"].split(",")
+            if response.info()["link"] is not None
+            else None
+        )
 
     json_data = json.loads(response_text)
     ITEMS.extend(json_data["items"])

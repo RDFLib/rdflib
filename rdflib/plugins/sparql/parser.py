@@ -1483,7 +1483,7 @@ ConstructQuery = Comp(
 AskQuery = Comp(
     "AskQuery",
     Keyword("ASK")
-    + Param("datasetClause", ZeroOrMore(DatasetClause))
+    + ZeroOrMore(ParamList("datasetClause", DatasetClause))
     + WhereClause
     + SolutionModifier
     + ValuesClause,
