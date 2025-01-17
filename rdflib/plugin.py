@@ -34,6 +34,7 @@ from typing import (
     Any,
     Generic,
     TypeVar,
+    Tuple,
     overload,
 )
 
@@ -71,7 +72,7 @@ rdflib_entry_points = {
     "rdf.plugins.updateprocessor": UpdateProcessor,
 }
 
-_plugins: dict[tuple[str, type[Any]], Plugin] = {}
+_plugins: dict[Tuple[str, type[Any]], Plugin] = {}
 
 
 class PluginException(Error):  # noqa: N818

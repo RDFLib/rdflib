@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _TripleType
 
+    from typing import Tuple
+
 _ContextType: TypeAlias = Union[FrozenBindings, QueryContext]
 _FrozenDictT = TypeVar("_FrozenDictT", bound=FrozenDict)
 
@@ -143,7 +145,7 @@ def _filter(
 
 
 def _fillTemplate(
-    template: Iterable[tuple[Identifier, Identifier, Identifier]],
+    template: Iterable[Tuple[Identifier, Identifier, Identifier]],
     solution: _ContextType,
 ) -> Generator[_TripleType, None, None]:
     """
@@ -172,7 +174,7 @@ def _fillTemplate(
 _ValueT = TypeVar("_ValueT", Variable, BNode, URIRef, Literal)
 
 
-def _val(v: _ValueT) -> tuple[int, _ValueT]:
+def _val(v: _ValueT) -> Tuple[int, _ValueT]:
     """utilitity for ordering things"""
     if isinstance(v, Variable):
         return (0, v)

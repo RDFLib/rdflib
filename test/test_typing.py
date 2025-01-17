@@ -31,6 +31,7 @@ from rdflib.term import IdentifiedNode, Identifier, Node
 
 if TYPE_CHECKING:
     from rdflib.query import QueryResultValueType
+    from typing import Tuple
 
 
 def test_rdflib_query_exercise() -> None:
@@ -99,11 +100,11 @@ WHERE {
 }
 """
 
-    expected_two_usage: set[tuple[QueryResultValueType, ...]] = {
+    expected_two_usage: set[Tuple[QueryResultValueType, ...]] = {
         (kb_https_uriref, predicate_p),
         (kb_https_uriref, predicate_q),
     }
-    computed_two_usage: set[tuple[QueryResultValueType, ...]] = set()
+    computed_two_usage: set[Tuple[QueryResultValueType, ...]] = set()
     for two_usage_result in graph.query(two_usage_query):
         assert isinstance(two_usage_result, ResultRow)
         computed_two_usage.add(two_usage_result)

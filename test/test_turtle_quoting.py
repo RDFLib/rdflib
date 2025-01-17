@@ -9,7 +9,7 @@ import itertools
 import logging
 import re
 from collections.abc import Iterable
-from typing import Callable
+from typing import Callable, Tuple
 
 import pytest
 
@@ -33,7 +33,7 @@ string_escape_map = {
 }
 
 
-def make_unquote_correctness_pairs() -> list[tuple[str, str]]:
+def make_unquote_correctness_pairs() -> list[Tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -104,7 +104,7 @@ unquoters: dict[str, Callable[[str], str]] = {
 
 def make_unquote_correctness_tests(
     selectors: Iterable[str],
-) -> Iterable[tuple[str, str, str]]:
+) -> Iterable[Tuple[str, str, str]]:
     """
     This function creates a cartesian product of the selectors and
     `CORRECTNESS_PAIRS` that is suitable for use as pytest parameters.

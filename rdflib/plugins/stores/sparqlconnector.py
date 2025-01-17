@@ -16,6 +16,7 @@ log = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     import typing_extensions as te
+    from typing import Tuple
 
 
 class SPARQLConnectorException(Exception):  # noqa: N818
@@ -43,7 +44,7 @@ class SPARQLConnector:
         update_endpoint: str | None = None,
         returnFormat: str = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: tuple[str, str] | None = None,
+        auth: Tuple[str, str] | None = None,
         **kwargs,
     ):
         """

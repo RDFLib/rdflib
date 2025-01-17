@@ -8,6 +8,7 @@ from collections.abc import Container, Generator, Iterable, Mapping, MutableMapp
 from typing import (
     TYPE_CHECKING,
     Any,
+    Tuple,
     TypeVar,
     Union,
 )
@@ -476,7 +477,7 @@ class Query:
     def __init__(self, prologue: Prologue, algebra: CompValue):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: tuple[str, Mapping[str, str], str | None]
+        self._original_args: Tuple[str, Mapping[str, str], str | None]
 
 
 class Update:
@@ -487,4 +488,4 @@ class Update:
     def __init__(self, prologue: Prologue, algebra: list[CompValue]):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: tuple[str, Mapping[str, str], str | None]
+        self._original_args: Tuple[str, Mapping[str, str], str | None]

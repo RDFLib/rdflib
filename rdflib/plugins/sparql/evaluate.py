@@ -54,6 +54,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 if TYPE_CHECKING:
     from rdflib.paths import Path
+    from typing import Tuple
 
 import json
 
@@ -65,7 +66,7 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
-_Triple = tuple[Identifier, Identifier, Identifier]
+_Triple = Tuple[Identifier, Identifier, Identifier]
 
 
 def evalBGP(
@@ -86,7 +87,7 @@ def evalBGP(
     _o = ctx[o]
 
     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-    # Argument 1 to "triples" of "Graph" has incompatible type "tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "tuple[Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]], Optional[IdentifiedNode], Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]]]"  [arg-type]
+    # Argument 1 to "triples" of "Graph" has incompatible type "Tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "Tuple[Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]], Optional[IdentifiedNode], Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]]]"  [arg-type]
     for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr, arg-type]
         if None in (_s, _p, _o):
             c = ctx.push()

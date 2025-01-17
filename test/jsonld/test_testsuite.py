@@ -5,13 +5,14 @@ from os import chdir, environ, getcwd
 from os import path as p
 
 import pytest
+from typing import Tuple
 
 import rdflib
 from rdflib.term import URIRef
 
 from . import runner
 
-unsupported_tests: tuple[str, ...] = ("frame", "normalize")
+unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
     "error",
     "remote",

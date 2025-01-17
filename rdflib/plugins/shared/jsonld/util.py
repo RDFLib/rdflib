@@ -9,6 +9,7 @@ from typing import IO, TYPE_CHECKING, Any, TextIO, Union
 
 if TYPE_CHECKING:
     import json
+    from typing import Tuple
 else:
     try:
         import json
@@ -44,7 +45,7 @@ def source_to_json(
     source: IO[bytes] | TextIO | InputSource | str | bytes | pathlib.PurePath | None,
     fragment_id: str | None = None,
     extract_all_scripts: bool | None = False,
-) -> tuple[Union[dict, list[dict]], Any]:
+) -> Tuple[Union[dict, list[dict]], Any]:
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
@@ -196,7 +197,7 @@ def source_to_json(
 VOCAB_DELIMS = ("#", "/", ":")
 
 
-def split_iri(iri: str) -> tuple[str, str | None]:
+def split_iri(iri: str) -> Tuple[str, str | None]:
     for delim in VOCAB_DELIMS:
         at = iri.rfind(delim)
         if at > -1:

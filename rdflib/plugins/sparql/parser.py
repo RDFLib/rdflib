@@ -9,8 +9,7 @@ from __future__ import annotations  # noqa: I001
 import re
 import sys
 from typing import Any, BinaryIO
-from typing import Optional as OptionalType
-from typing import TextIO, Union
+from typing import Optional as OptionalType, Tuple, TextIO, Union
 
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from pyparsing import (
@@ -46,11 +45,11 @@ def neg(literal: rdflib.Literal) -> rdflib.Literal:
     return rdflib.Literal(-literal, datatype=literal.datatype)
 
 
-def setLanguage(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
+def setLanguage(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], lang=terms[1])
 
 
-def setDataType(terms: tuple[Any, OptionalType[str]]) -> rdflib.Literal:
+def setDataType(terms: Tuple[Any, OptionalType[str]]) -> rdflib.Literal:
     return rdflib.Literal(terms[0], datatype=terms[1])
 
 

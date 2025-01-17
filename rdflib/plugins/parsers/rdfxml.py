@@ -23,6 +23,8 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _ObjectType, _SubjectType, _TripleType
 
+    from typing import Tuple
+
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 
 RDFNS = RDFVOC
@@ -175,7 +177,7 @@ class RDFXMLHandler(handler.ContentHandler):
         del self._ns_contexts[-1]
 
     def startElementNS(
-        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
@@ -207,7 +209,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.language = language
         current.start(name, qname, attrs)
 
-    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
+    def endElementNS(self, name: Tuple[str | None, str], qname) -> None:
         self.current.end(name, qname)
         self.stack.pop()
 
@@ -267,8 +269,8 @@ class RDFXMLHandler(handler.ContentHandler):
         return URIRef(result)
 
     def convert(
-        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
-    ) -> tuple[URIRef, dict[URIRef, str]]:
+        self, name: Tuple[str | None, str], qname, attrs: AttributesImpl
+    ) -> Tuple[URIRef, dict[URIRef, str]]:
         if name[0] is None:
             # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
             name = URIRef(name[1])  # type: ignore[assignment]
@@ -295,7 +297,7 @@ class RDFXMLHandler(handler.ContentHandler):
         return name, atts  # type: ignore[return-value]
 
     def document_element_start(
-        self, name: tuple[str, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
             # Cheap hack so 2to3 doesn't turn it into __next__
@@ -309,7 +311,7 @@ class RDFXMLHandler(handler.ContentHandler):
             # another element will cause error
 
     def node_element_start(
-        self, name: tuple[str, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
@@ -391,7 +393,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         current.subject = subject
 
-    def node_element_end(self, name: tuple[str, str], qname) -> None:
+    def node_element_end(self, name: Tuple[str, str], qname) -> None:
         # repeat node-elements are only allowed
         # at at top-level
 
@@ -403,7 +405,7 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object = self.current.subject
 
     def property_element_start(
-        self, name: tuple[str, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
@@ -533,7 +535,7 @@ class RDFXMLHandler(handler.ContentHandler):
         if current.data is not None:
             current.data += data
 
-    def property_element_end(self, name: tuple[str, str], qname) -> None:
+    def property_element_end(self, name: Tuple[str, str], qname) -> None:
         current = self.current
         if current.data is not None and current.object is None:
             literalLang = current.language
@@ -552,7 +554,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 )
         current.subject = None
 
-    def list_node_element_end(self, name: tuple[str, str], qname) -> None:
+    def list_node_element_end(self, name: Tuple[str, str], qname) -> None:
         current = self.current
         if self.parent.list == RDF.nil:
             list = BNode()
@@ -571,7 +573,7 @@ class RDFXMLHandler(handler.ContentHandler):
             self.parent.list = list
 
     def literal_element_start(
-        self, name: tuple[str, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         current = self.current
         self.next.start = self.literal_element_start
@@ -607,7 +609,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def literal_element_char(self, data: str) -> None:
         self.current.object += escape(data)
 
-    def literal_element_end(self, name: tuple[str, str], qname) -> None:
+    def literal_element_end(self, name: Tuple[str, str], qname) -> None:
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:

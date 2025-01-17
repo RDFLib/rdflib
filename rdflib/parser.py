@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from io import BufferedReader
     from urllib.response import addinfourl
 
-    from typing_extensions import Buffer
+    from typing_extensions import Buffer, Tuple
 
     from rdflib.graph import Graph
 
@@ -774,7 +774,7 @@ def _create_input_source_from_location(
     format: str | None,
     input_source: InputSource | None,
     location: str,
-) -> tuple[URIRef, bool, BinaryIO | TextIO | None, InputSource | None]:
+) -> Tuple[URIRef, bool, BinaryIO | TextIO | None, InputSource | None]:
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a

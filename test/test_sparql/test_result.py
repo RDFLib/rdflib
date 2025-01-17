@@ -38,6 +38,7 @@ from test.utils.result import (
 
 if TYPE_CHECKING:
     from rdflib.graph import _ObjectType
+    from typing import Dict, Tuple
 
 BindingsType = Sequence[Mapping[Variable, Identifier]]
 ParseOutcomeType = Union[BindingsType, type[Exception]]
@@ -178,7 +179,7 @@ def narrow_dest_param(param: DestParmType) -> ResultDestParamType:
 
 
 def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
-    xfails: dict[tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {}
+    xfails: Dict[Tuple[str, DestinationType, str], Union[MarkDecorator, Mark]] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
@@ -205,7 +206,7 @@ def make_select_result_serialize_parse_tests() -> Iterator[ParameterSet]:
 def test_select_result_serialize_parse(
     tmp_path: Path,
     select_result: Result,
-    test_args: tuple[ResultFormatInfo, DestinationType, str],
+    test_args: Tuple[ResultFormatInfo, DestinationType, str],
 ) -> None:
     """
     Round tripping of a select query through the serializer and parser of a
@@ -250,7 +251,7 @@ def serialize_select(select_result: Result, format: str, encoding: str) -> bytes
 
 
 def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
-    xfails: dict[tuple[str, SourceType | None, str], MarkDecorator | Mark] = {}
+    xfails: Dict[Tuple[str, SourceType | None, str], MarkDecorator | Mark] = {}
     format_infos = [
         format_info
         for format_info in ResultFormat.info_set()
@@ -285,7 +286,7 @@ def make_select_result_parse_serialized_tests() -> Iterator[ParameterSet]:
 def test_select_result_parse_serialized(
     tmp_path: Path,
     select_result: Result,
-    test_args: tuple[ResultFormatInfo, SourceType, str],
+    test_args: Tuple[ResultFormatInfo, SourceType, str],
 ) -> None:
     """
     Parsing a serialized result produces the expected result object.

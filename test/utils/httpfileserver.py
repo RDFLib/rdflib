@@ -7,6 +7,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Tuple
 from pathlib import Path
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
@@ -110,7 +111,7 @@ class HTTPFileInfo:
 class HTTPFileServer(HTTPServer):
     def __init__(
         self,
-        server_address: tuple[str, int],
+        server_address: Tuple[str, int],
         bind_and_activate: bool = True,
     ) -> None:
         self._resources: dict[str, Resource] = {}

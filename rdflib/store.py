@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import pickle
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Tuple
 
 from rdflib.events import Dispatcher, Event
 
@@ -270,25 +270,25 @@ class Store:
     def triples_choices(
         self,
         triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
+            Tuple[
+                list[_SubjectType] | Tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
+                list[_PredicateType] | Tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
+                list[_ObjectType] | Tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,
     ) -> Generator[
-        tuple[
+        Tuple[
             _TripleType,
             Iterator[_ContextType | None],
         ],
@@ -301,9 +301,9 @@ class Store:
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
-        subject: _SubjectType | list[_SubjectType] | tuple[_SubjectType, ...] | None
-        predicate: _PredicateType | list[_PredicateType] | tuple[_PredicateType, ...]
-        object_: _ObjectType | list[_ObjectType] | tuple[_ObjectType, ...] | None
+        subject: _SubjectType | list[_SubjectType] | Tuple[_SubjectType, ...] | None
+        predicate: _PredicateType | list[_PredicateType] | Tuple[_PredicateType, ...]
+        object_: _ObjectType | list[_ObjectType] | Tuple[_ObjectType, ...] | None
         subject, predicate, object_ = triple
         if isinstance(object_, (list, tuple)):
             # MyPy thinks these are unreachable due to the triple pattern signature.
@@ -354,7 +354,7 @@ class Store:
         self,
         triple_pattern: _TriplePatternType,
         context: _ContextType | None = None,
-    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
+    ) -> Iterator[Tuple[_TripleType, Iterator[_ContextType | None]]]:
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store,
@@ -454,7 +454,7 @@ class Store:
     def namespace(self, prefix: str) -> URIRef | None:
         """ """
 
-    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         """ """
         # This is here so that the function becomes an empty generator.
         # See https://stackoverflow.com/q/13243766 and

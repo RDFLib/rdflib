@@ -12,6 +12,7 @@ from rdflib.term import BNode, Identifier, Literal, Variable
 
 if TYPE_CHECKING:
     from typing_extensions import TypeAlias
+    from typing import Dict, Tuple, FrozenSet
 
 builtin_set: TypeAlias = set
 
@@ -25,7 +26,7 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
-ResultTypeInfoDict = dict["ResultType", "ResultTypeInfo"]
+ResultTypeInfoDict = Dict["ResultType", "ResultTypeInfo"]
 
 
 class ResultTypeTrait(enum.Enum):
@@ -74,7 +75,7 @@ CLiteralType = Union["CLiteral", "CLiteral"]
 
 
 CIdentifier = Union[Identifier, CLiteralType]
-CBindingSetType = frozenset[tuple[Variable, CIdentifier]]
+CBindingSetType = FrozenSet[Tuple[Variable, CIdentifier]]
 CBindingsType = Mapping[Variable, Optional[CIdentifier]]
 CBindingsCollectionType = Collection[CBindingsType]
 
@@ -114,7 +115,7 @@ def comparable_bindings(
 
 def bindings_diff(
     lhs: CBindingsCollectionType, rhs: CBindingsCollectionType
-) -> tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
+) -> Tuple[CBindingsCollectionType, CBindingsCollectionType, CBindingsCollectionType]:
     rhs_only = []
     common = []
     lhs_matched = set()
@@ -186,7 +187,7 @@ def assert_bindings_collections_equal(
         assert (len(common) == len(clhs)) and (len(common) == len(crhs))
 
 
-ResultFormatInfoDict = dict["ResultFormat", "ResultFormatInfo"]
+ResultFormatInfoDict = Dict["ResultFormat", "ResultFormatInfo"]
 
 
 class ResultFormatTrait(enum.Enum):

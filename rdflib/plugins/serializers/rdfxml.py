@@ -11,6 +11,7 @@ from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.serializer import Serializer
 from rdflib.term import BNode, IdentifiedNode, Identifier, Literal, Node, URIRef
+from typing import TYPE_CHECKING
 from rdflib.util import first, more_than
 
 from .xmlwriter import ESCAPE_ENTITIES
@@ -25,10 +26,10 @@ class XMLSerializer(Serializer):
     def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
-    def __bindings(self) -> Generator[tuple[str, URIRef], None, None]:
+    def __bindings(self) -> Generator[Tuple[str, URIRef], None, None]:
         store = self.store
         nm = store.namespace_manager
-        bindings: dict[str, URIRef] = {}
+        bindings: Dict[str, URIRef] = {}
 
         for predicate in set(store.predicates()):
             prefix, namespace, name = nm.compute_qname_strict(predicate)
@@ -364,7 +365,7 @@ class PrettyXMLSerializer(Serializer):
             else:
                 if first(
                     store.triples_choices(
-                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+                        # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Identifier, URIRef, list[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
                         (object, RDF.type, [OWL_NS.Class, RDFS.Class])  # type: ignore[arg-type]
                     )
                 ) and isinstance(object, URIRef):

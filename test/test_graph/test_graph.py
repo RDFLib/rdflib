@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Tuple
 from urllib.error import HTTPError, URLError
 
 import pytest
@@ -376,7 +376,7 @@ def test_guess_format_for_parse_http(
     expected_result: OutcomePrimitive[int],
 ) -> None:
     graph = make_graph()
-    headers: tuple[tuple[str, str], ...] = tuple()
+    headers: Tuple[Tuple[str, str], ...] = tuple()
     if content_type is not None:
         headers = (("Content-Type", content_type),)
 

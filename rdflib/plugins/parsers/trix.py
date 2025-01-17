@@ -18,6 +18,7 @@ from rdflib.term import BNode, Identifier, Literal, URIRef
 if TYPE_CHECKING:
     # from xml.sax.expatreader import ExpatLocator
     from xml.sax.xmlreader import AttributesImpl, Locator, XMLReader
+    from typing import Tuple
 
 __all__ = ["create_parser", "TriXHandler", "TriXParser"]
 
@@ -60,7 +61,7 @@ class TriXHandler(handler.ContentHandler):
         pass
 
     def startElementNS(
-        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
+        self, name: Tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] != str(TRIXNS):
             self.error(
@@ -150,7 +151,7 @@ class TriXHandler(handler.ContentHandler):
 
         self.chars = ""
 
-    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
+    def endElementNS(self, name: Tuple[str | None, str], qname) -> None:
         if TYPE_CHECKING:
             assert self.triple is not None
         if name[0] != str(TRIXNS):

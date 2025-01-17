@@ -1326,7 +1326,7 @@ class Class(AnnotatableTerms):
         # sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -1356,7 +1356,7 @@ class Class(AnnotatableTerms):
         sc = list(self.subClassOf)
         ec = list(self.equivalentClass)
         for _boolclass, p, rdf_list in self.graph.triples_choices(
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, list[URIRef], None]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
             (self.identifier, [OWL.intersectionOf, OWL.unionOf], None)  # type: ignore[arg-type]
         ):
             ec.append(manchesterSyntax(rdf_list, self.graph, boolean=p))
@@ -2211,7 +2211,7 @@ class Property(AnnotatableTerms):
                     )
                 )
             for _s, _p, roletype in self.graph.triples_choices(
-                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, list[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+                # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Any, URIRef, list[URIRef]]"; expected "Union[Tuple[List[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
                 (  # type: ignore[arg-type]
                     self.identifier,
                     RDF.type,

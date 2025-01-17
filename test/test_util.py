@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _ObjectType, _SubjectType
 
+    from typing import Tuple
+
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -436,7 +438,7 @@ def test__coalesce_typing() -> None:
     ],
 )
 def test_find_roots(
-    graph_sources: tuple[Path, ...],
+    graph_sources: Tuple[Path, ...],
     prop: URIRef,
     roots: set[_SubjectType | _ObjectType] | None,
     expected_result: Union[set[URIRef], type[Exception]],
@@ -560,11 +562,11 @@ def test_find_roots(
     ],
 )
 def test_get_tree(
-    graph_sources: tuple[Path, ...],
+    graph_sources: Tuple[Path, ...],
     root: IdentifiedNode,
     prop: URIRef,
     dir: str,
-    expected_result: Union[tuple[IdentifiedNode, list[Any]], type[Exception]],
+    expected_result: Union[Tuple[IdentifiedNode, list[Any]], type[Exception]],
 ) -> None:
     catcher: pytest.ExceptionInfo[Exception] | None = None
 

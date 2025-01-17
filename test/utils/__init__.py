@@ -29,6 +29,8 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _TripleType
 
+    from typing import Dict, List, Set, FrozenSet, Tuple
+
 PluginT = TypeVar("PluginT")
 
 
@@ -37,8 +39,8 @@ __all__ = ["file_uri_to_path"]
 
 def get_unique_plugins(
     type_: type[PluginT],
-) -> dict[type[PluginT], set[Plugin[PluginT]]]:
-    result: dict[type[PluginT], set[Plugin[PluginT]]] = {}
+) -> Dict[type[PluginT], Set[Plugin[PluginT]]]:
+    result: Dict[type[PluginT], Set[Plugin[PluginT]]] = {}
     for plugin in rdflib.plugin.plugins(None, type_):
         cls = plugin.getClass()
         plugins = result.setdefault(cls, set())
@@ -46,21 +48,21 @@ def get_unique_plugins(
     return result
 
 
-def get_unique_plugin_names(type_: type[PluginT]) -> set[str]:
-    result: set[str] = set()
+def get_unique_plugin_names(type_: type[PluginT]) -> Set[str]:
+    result: Set[str] = set()
     unique_plugins = get_unique_plugins(type_)
     for type_, plugin_set in unique_plugins.items():
         result.add(next(iter(plugin_set)).name)
     return result
 
 
-GHNode = Union[Identifier, frozenset[tuple[Identifier, Identifier, Identifier]]]
-GHTriple = tuple[GHNode, GHNode, GHNode]
-GHTripleSet = set[GHTriple]
-GHTripleFrozenSet = frozenset[GHTriple]
-GHQuad = tuple[GHNode, GHNode, GHNode, Identifier]
-GHQuadSet = set[GHQuad]
-GHQuadFrozenSet = frozenset[GHQuad]
+GHNode = Union[Identifier, FrozenSet[Tuple[Identifier, Identifier, Identifier]]]
+GHTriple = Tuple[GHNode, GHNode, GHNode]
+GHTripleSet = Set[GHTriple]
+GHTripleFrozenSet = FrozenSet[GHTriple]
+GHQuad = Tuple[GHNode, GHNode, GHNode, Identifier]
+GHQuadSet = Set[GHQuad]
+GHQuadFrozenSet = FrozenSet[GHQuad]
 
 NodeT = TypeVar("NodeT", bound=GHNode)
 
@@ -100,9 +102,9 @@ class GraphHelper:
     @classmethod
     def nodes(
         cls,
-        nodes: tuple[Node, ...],
+        nodes: Tuple[Node, ...],
         bnode_handling: BNodeHandling = BNodeHandling.COMPARE,
-    ) -> tuple[GHNode, ...]:
+    ) -> Tuple[GHNode, ...]:
         """
         Return the identifiers of the provided nodes.
         """
@@ -112,7 +114,7 @@ class GraphHelper:
         return tuple(result)
 
     @classmethod
-    def _contains_bnodes(cls, nodes: tuple[GHNode, ...]) -> bool:
+    def _contains_bnodes(cls, nodes: Tuple[GHNode, ...]) -> bool:
         """
         Return true if any of the nodes are BNodes.
         """
@@ -122,7 +124,7 @@ class GraphHelper:
         return False
 
     @classmethod
-    def _collapse_bnodes(cls, nodes: tuple[NodeT, ...]) -> tuple[NodeT, ...]:
+    def _collapse_bnodes(cls, nodes: Tuple[NodeT, ...]) -> Tuple[NodeT, ...]:
         """
         Return BNodes as COLLAPSED_BNODE
         """
@@ -347,7 +349,7 @@ class GraphHelper:
         exclude_bnodes: bool,
         message: str | None = None,
     ) -> None:
-        def get_contexts(cgraph: ConjunctiveGraph) -> dict[URIRef, Graph]:
+        def get_contexts(cgraph: ConjunctiveGraph) -> Dict[URIRef, Graph]:
             result = {}
             for context in cgraph.contexts():
                 if isinstance(context.identifier, BNode):
@@ -376,7 +378,7 @@ class GraphHelper:
             cls.assert_isomorphic(lhs_context, rhs_contexts[id], message)
 
     @classmethod
-    def strip_literal_datatypes(cls, graph: Graph, datatypes: set[URIRef]) -> None:
+    def strip_literal_datatypes(cls, graph: Graph, datatypes: Set[URIRef]) -> None:
         """
         Strips datatypes in the provided set from literals in the graph.
         """
@@ -391,7 +393,7 @@ class GraphHelper:
     @classmethod
     def non_default_graph_names(
         cls, container: ConjunctiveGraph
-    ) -> set[IdentifiedNode]:
+    ) -> Set[IdentifiedNode]:
         return set(context.identifier for context in container.contexts()) - {
             container.default_context.identifier
         }
@@ -418,7 +420,7 @@ def eq_(lhs, rhs, msg=None):
 
 ParamsT = TypeVar("ParamsT", bound=tuple)
 MarksType: te.TypeAlias = Collection[Union[MarkDecorator, Mark]]
-MarkListType: te.TypeAlias = list[Union[MarkDecorator, Mark]]
+MarkListType: te.TypeAlias = List[Union[MarkDecorator, Mark]]
 MarkType: te.TypeAlias = Union[MarkDecorator, MarksType]
 
 MarkerType: te.TypeAlias = Callable[..., Optional[MarkType]]
@@ -434,7 +436,7 @@ def marks_to_list(mark: MarkType) -> MarkListType:
 
 def pytest_mark_filter(
     param_sets: Iterable[Union[ParamsT, ParameterSet]],
-    mark_dict: dict[ParamsT, MarksType],
+    mark_dict: Dict[ParamsT, MarksType],
 ) -> Generator[ParameterSet, None, None]:
     """
     Adds marks to test parameters. Useful for adding xfails to test parameters.
@@ -459,10 +461,10 @@ def pytest_mark_filter(
 
 
 def affix_tuples(
-    prefix: tuple[Any, ...] | None,
-    tuples: Iterable[tuple[Any, ...]],
-    suffix: tuple[Any, ...] | None,
-) -> Generator[tuple[Any, ...], None, None]:
+    prefix: Tuple[Any, ...] | None,
+    tuples: Iterable[Tuple[Any, ...]],
+    suffix: Tuple[Any, ...] | None,
+) -> Generator[Tuple[Any, ...], None, None]:
     if prefix is None:
         prefix = tuple()
     if suffix is None:

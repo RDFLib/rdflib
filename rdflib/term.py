@@ -52,6 +52,7 @@ from types import GeneratorType
 from typing import (
     TYPE_CHECKING,
     Any,
+    Tuple,
     TypeVar,
     overload,
 )
@@ -144,7 +145,7 @@ class Node(metaclass=ABCMeta):
     def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
 
     @abstractmethod
-    def __getnewargs__(self) -> tuple[Any, ...]: ...
+    def __getnewargs__(self) -> Tuple[Any, ...]: ...
 
 
 class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
@@ -240,7 +241,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
 
     def startswith(
         self,
-        prefix: str | tuple[str, ...] | Any,
+        prefix: str | Tuple[str, ...] | Any,
         start: Any | None = None,
         end: Any | None = None,
     ) -> bool:
@@ -255,7 +256,7 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     # clash __eq__ is still the fallback and very quick in those cases.
     __hash__ = str.__hash__
 
-    def __getnewargs__(self) -> tuple[Any, ...]:
+    def __getnewargs__(self) -> Tuple[Any, ...]:
         return (str(self),)
 
     def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
@@ -363,7 +364,7 @@ class URIRef(IdentifiedNode):
         """
         return urlparse(self).fragment
 
-    def __reduce__(self) -> tuple[type[URIRef], tuple[str]]:
+    def __reduce__(self) -> Tuple[type[URIRef], Tuple[str]]:
         return URIRef, (str(self),)
 
     def __repr__(self) -> str:
@@ -515,7 +516,7 @@ class BNode(IdentifiedNode):
         # note - for two strings, concat with + is faster than f"{x}{y}"
         return "_:" + self
 
-    def __reduce__(self) -> tuple[type[BNode], tuple[str]]:
+    def __reduce__(self) -> Tuple[type[BNode], Tuple[str]]:
         return BNode, (str(self),)
 
     def __repr__(self) -> str:
@@ -773,13 +774,13 @@ class Literal(Identifier):
 
     def __reduce__(
         self,
-    ) -> tuple[type[Literal], tuple[str, str | None, str | None]]:
+    ) -> Tuple[type[Literal], Tuple[str, str | None, str | None]]:
         return Literal, (str(self), self.language, self.datatype)
 
-    def __getstate__(self) -> tuple[None, dict[str, str | None]]:
+    def __getstate__(self) -> Tuple[None, dict[str, str | None]]:
         return None, dict(language=self.language, datatype=self.datatype)
 
-    def __setstate__(self, arg: tuple[Any, dict[str, Any]]) -> None:
+    def __setstate__(self, arg: Tuple[Any, dict[str, Any]]) -> None:
         _, d = arg
         self._language = d["language"]
         self._datatype = d["datatype"]
@@ -1911,7 +1912,7 @@ _XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
 _XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
 # TODO: gMonthDay, gDay, gMonth
 
-_NUMERIC_LITERAL_TYPES: tuple[URIRef, ...] = (
+_NUMERIC_LITERAL_TYPES: Tuple[URIRef, ...] = (
     _XSD_INTEGER,
     _XSD_DECIMAL,
     _XSD_DOUBLE,
@@ -1931,7 +1932,7 @@ _NUMERIC_LITERAL_TYPES: tuple[URIRef, ...] = (
 )
 
 # these have "native" syntax in N3/SPARQL
-_PLAIN_LITERAL_TYPES: tuple[URIRef, ...] = (
+_PLAIN_LITERAL_TYPES: Tuple[URIRef, ...] = (
     _XSD_INTEGER,
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
@@ -1940,14 +1941,14 @@ _PLAIN_LITERAL_TYPES: tuple[URIRef, ...] = (
 )
 
 # these have special INF and NaN XSD representations
-_NUMERIC_INF_NAN_LITERAL_TYPES: tuple[URIRef, ...] = (
+_NUMERIC_INF_NAN_LITERAL_TYPES: Tuple[URIRef, ...] = (
     URIRef(_XSD_PFX + "float"),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
 
 # these need dedicated operators
-_DATE_AND_TIME_TYPES: tuple[URIRef, ...] = (
+_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = (
     _XSD_DATETIME,
     _XSD_DATE,
     _XSD_TIME,
@@ -1956,12 +1957,12 @@ _DATE_AND_TIME_TYPES: tuple[URIRef, ...] = (
 # These are recognized datatype IRIs
 # (https://www.w3.org/TR/rdf11-concepts/#dfn-recognized-datatype-iris) that
 # represents durations.
-_TIME_DELTA_TYPES: tuple[URIRef, ...] = (
+_TIME_DELTA_TYPES: Tuple[URIRef, ...] = (
     _XSD_DURATION,
     _XSD_DAYTIMEDURATION,
 )
 
-_ALL_DATE_AND_TIME_TYPES: tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
+_ALL_DATE_AND_TIME_TYPES: Tuple[URIRef, ...] = _DATE_AND_TIME_TYPES + _TIME_DELTA_TYPES
 
 # the following types need special treatment for reasonable sorting because
 # certain instances can't be compared to each other. We treat this by
@@ -1981,7 +1982,7 @@ _TOTAL_ORDER_CASTERS: dict[type[Any], Callable[[Any], Any]] = {
 }
 
 
-_STRING_LITERAL_TYPES: tuple[URIRef, ...] = (
+_STRING_LITERAL_TYPES: Tuple[URIRef, ...] = (
     _XSD_STRING,
     _RDF_XMLLITERAL,
     _RDF_HTMLLITERAL,
@@ -1997,7 +1998,7 @@ def _py2literal(
     pType: Any,  # noqa: N803
     castFunc: Callable[[Any], Any] | None,  # noqa: N803
     dType: _StrT | None,  # noqa: N803
-) -> tuple[Any, _StrT | None]:
+) -> Tuple[Any, _StrT | None]:
     if castFunc is not None:
         return castFunc(obj), dType
     elif dType is not None:
@@ -2008,7 +2009,7 @@ def _py2literal(
 
 def _castPythonToLiteral(  # noqa: N802
     obj: Any, datatype: str | None
-) -> tuple[Any, str | None]:
+) -> Tuple[Any, str | None]:
     """
     Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
@@ -2037,7 +2038,7 @@ def _castPythonToLiteral(  # noqa: N802
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
 _GenericPythonToXSDRules: list[
-    tuple[type[Any], tuple[Callable[[Any], str | bytes] | None, str | None]]
+    Tuple[type[Any], Tuple[Callable[[Any], str | bytes] | None, str | None]]
 ] = [
     (str, (None, None)),
     (float, (None, _XSD_DOUBLE)),
@@ -2069,7 +2070,7 @@ if html5rdf is not None:
 _OriginalGenericPythonToXSDRules = list(_GenericPythonToXSDRules)
 
 _SpecificPythonToXSDRules: list[
-    tuple[tuple[type[Any], str], Callable[[Any], str | bytes] | None]
+    Tuple[Tuple[type[Any], str], Callable[[Any], str | bytes] | None]
 ] = [
     ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
     ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
@@ -2122,7 +2123,7 @@ if html5rdf is not None:
     # It is probably best to keep this close to the definition of
     # _GenericPythonToXSDRules so nobody misses it.
     XSDToPython[_RDF_HTMLLITERAL] = _parse_html
-    _XML_COMPARABLE: tuple[URIRef, ...] = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
+    _XML_COMPARABLE: Tuple[URIRef, ...] = (_RDF_XMLLITERAL, _RDF_HTMLLITERAL)
 else:
     _XML_COMPARABLE = (_RDF_XMLLITERAL,)
 
@@ -2287,7 +2288,7 @@ class Variable(Identifier):
     def n3(self, namespace_manager: NamespaceManager | None = None) -> str:
         return "?" + self
 
-    def __reduce__(self) -> tuple[type[Variable], tuple[str]]:
+    def __reduce__(self) -> Tuple[type[Variable], Tuple[str]]:
         return Variable, (str(self),)
 
 

@@ -11,6 +11,7 @@ from typing import (
     Any,
     BinaryIO,
     Optional,
+    Tuple,
     Union,
     cast,
     overload,
@@ -121,7 +122,7 @@ class EncodeOnlyUnicode:
         return getattr(self.__stream, name)
 
 
-class ResultRow(tuple[QueryResultValueType, ...]):
+class ResultRow(Tuple[QueryResultValueType, ...]):
     """
     a single result row
     allows accessing bindings as attributes or with []

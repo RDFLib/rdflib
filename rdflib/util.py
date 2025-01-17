@@ -31,6 +31,7 @@ from time import altzone, gmtime, localtime, time, timezone
 from typing import (
     TYPE_CHECKING,
     Any,
+    Tuple,
     TypeVar,
     Union,
     overload,
@@ -439,7 +440,7 @@ def get_tree(
     sortkey: Callable[[Any], Any] | None = None,
     done: set[rdflib.term.Node] | None = None,
     dir: str = "down",
-) -> tuple[rdflib.term.Node, list[Any]] | None:
+) -> Tuple[rdflib.term.Node, list[Any]] | None:
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given

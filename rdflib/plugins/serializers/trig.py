@@ -58,7 +58,7 @@ class TrigSerializer(TurtleSerializer):
         super(TrigSerializer, self).reset()
         self._contexts: dict[
             _ContextType,
-            tuple[list[_SubjectType], dict[_SubjectType, bool]],
+            Tuple[list[_SubjectType], dict[_SubjectType, bool]],
         ] = {}
 
     def serialize(

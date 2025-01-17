@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import warnings
 from collections.abc import Callable
-from typing import IO, Any, Union, cast
+from typing import IO, Any, Optional, Union, cast
 
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, ConjunctiveGraph, Dataset, Graph
 from rdflib.namespace import RDF, XSD

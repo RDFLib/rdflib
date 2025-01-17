@@ -11,14 +11,14 @@ from rdflib.graph import Graph
 from test.utils import GraphHelper
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
-
+from typing import Tuple
 
 def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
     """
     This only tests with application/rdf+xml as other result formats are not
     supported.
     """
-    graphs: list[tuple[str, Graph]] = [
+    graphs: list[Tuple[str, Graph]] = [
         (
             "basic",
             Graph().parse(
@@ -41,7 +41,7 @@ def make_test_query_construct_format_cases() -> Iterable[ParameterSet]:
             ),
         )
     ]
-    response_format_encodings: list[tuple[str, str, set[str | None]]] = [
+    response_format_encodings: list[Tuple[str, str, set[str | None]]] = [
         (
             "application/rdf+xml",
             "utf-8",

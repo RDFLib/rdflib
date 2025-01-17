@@ -9,7 +9,7 @@ import enum
 import itertools
 from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Callable, Union
+from typing import Callable, Tuple, Union
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -177,7 +177,7 @@ def make_literal_tests() -> Iterator[ParameterSet]:
         )
 
     xfails: dict[
-        tuple[str, Literal, str, Callable[[str, str], Identifier]],
+        Tuple[str, Literal, str, Callable[[str, str], Identifier]],
         Union[MarkDecorator, Mark],
     ] = {
         (

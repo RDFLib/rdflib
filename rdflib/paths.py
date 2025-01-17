@@ -185,7 +185,7 @@ from __future__ import annotations
 import warnings
 from abc import ABC, abstractmethod
 from functools import total_ordering
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Tuple
 
 from rdflib.term import Node, URIRef
 
@@ -230,7 +230,7 @@ class Path(ABC):
         graph: Graph,
         subj: SubjectType | None = None,
         obj: ObjectType | None = None,
-    ) -> Iterator[tuple[SubjectType, ObjectType]]: ...
+    ) -> Iterator[Tuple[SubjectType, ObjectType]]: ...
 
     @abstractmethod
     def n3(self, namespace_manager: NamespaceManager | None = None) -> str: ...
@@ -258,7 +258,7 @@ class InvPath(Path):
         graph: Graph,
         subj: SubjectType | None = None,
         obj: ObjectType | None = None,
-    ) -> Generator[tuple[ObjectType, SubjectType], None, None]:
+    ) -> Generator[Tuple[ObjectType, SubjectType], None, None]:
         for s, o in eval_path(graph, (obj, self.arg, subj)):
             yield o, s
 
@@ -283,12 +283,12 @@ class SequencePath(Path):
         graph: Graph,
         subj: SubjectType | None = None,
         obj: ObjectType | None = None,
-    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+    ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
         def _eval_seq(
             paths: list[Path | URIRef],
             subj: SubjectType | None,
             obj: ObjectType | None,
-        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+        ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
             if paths[1:]:
                 for s, o in eval_path(graph, (subj, paths[0], None)):
                     for r in _eval_seq(paths[1:], o, obj):
@@ -302,7 +302,7 @@ class SequencePath(Path):
             paths: list[Path | URIRef],
             subj: SubjectType | None,
             obj: ObjectType,
-        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+        ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
             if paths[:-1]:
                 for s, o in eval_path(graph, (None, paths[-1], obj)):
                     for r in _eval_seq(paths[:-1], subj, s):
@@ -340,7 +340,7 @@ class AlternativePath(Path):
         graph: Graph,
         subj: SubjectType | None = None,
         obj: ObjectType | None = None,
-    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+    ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
         for x in self.args:
             for y in eval_path(graph, (subj, x, obj)):
                 yield y
@@ -375,7 +375,7 @@ class MulPath(Path):
         subj: SubjectType | None = None,
         obj: ObjectType | None = None,
         first: bool = True,
-    ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+    ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
@@ -389,7 +389,7 @@ class MulPath(Path):
             subj: SubjectType,
             obj: ObjectType | None,
             seen: set[SubjectType],
-        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+        ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
             seen.add(subj)
 
             for s, o in eval_path(graph, (subj, self.path, None)):
@@ -405,7 +405,7 @@ class MulPath(Path):
             subj: SubjectType | None,
             obj: ObjectType,
             seen: set[ObjectType],
-        ) -> Generator[tuple[SubjectType, ObjectType], None, None]:
+        ) -> Generator[Tuple[SubjectType, ObjectType], None, None]:
             seen.add(obj)
 
             for s, o in eval_path(graph, (None, self.path, obj)):
@@ -418,7 +418,7 @@ class MulPath(Path):
                     for s2, o2 in _bwd(None, s, seen):
                         yield s2, o
 
-        def _all_fwd_paths() -> Generator[tuple[SubjectType, ObjectType], None, None]:
+        def _all_fwd_paths() -> Generator[Tuple[SubjectType, ObjectType], None, None]:
             if self.zero:
                 seen1 = set()
                 # According to the spec, ALL nodes are possible solutions
@@ -528,12 +528,12 @@ def path_sequence(self: URIRef | Path, other: URIRef | Path):
 
 def evalPath(  # noqa: N802
     graph: Graph,
-    t: tuple[
+    t: Tuple[
         SubjectType | None,
         Path | PredicateType | None,
         ObjectType | None,
     ],
-) -> Iterator[tuple[SubjectType, ObjectType]]:
+) -> Iterator[Tuple[SubjectType, ObjectType]]:
     warnings.warn(
         DeprecationWarning(
             "rdflib.path.evalPath() is deprecated, use the (snake-cased) eval_path(). "
@@ -546,12 +546,12 @@ def evalPath(  # noqa: N802
 
 def eval_path(
     graph: Graph,
-    t: tuple[
+    t: Tuple[
         SubjectType | None,
         Path | PredicateType | None,
         ObjectType | None,
     ],
-) -> Iterator[tuple[SubjectType, ObjectType]]:
+) -> Iterator[Tuple[SubjectType, ObjectType]]:
     return ((s, o) for s, p, o in graph.triples(t))
 
 

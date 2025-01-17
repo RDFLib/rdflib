@@ -21,6 +21,7 @@ from rdflib.term import BNode, Literal, Node, URIRef
 
 if TYPE_CHECKING:
     from rdflib.graph import _ObjectType, _PredicateType, _SubjectType, _TripleType
+    from typing import Optional, Tuple
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -30,7 +31,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = "  "
-    roundtrip_prefixes: tuple[Any, ...] = ()
+    roundtrip_prefixes: Tuple[Any, ...] = ()
 
     def __init__(self, store: Graph):
         super(RecursiveSerializer, self).__init__(store)

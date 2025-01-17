@@ -93,13 +93,14 @@ from collections import defaultdict
 from collections.abc import Callable, Iterator
 from datetime import datetime
 from hashlib import sha256
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
     from _hashlib import HASH
+    from typing import Dict
 
 
 def _total_seconds(td):
@@ -193,10 +194,10 @@ class IsomorphicGraph(ConjunctiveGraph):
 
 
 HashFunc = Callable[[str], int]
-ColorItem = tuple[Union[int, str], URIRef, Union[int, str]]
-ColorItemTuple = tuple[ColorItem, ...]
-HashCache = Optional[dict[ColorItemTuple, str]]
-Stats = dict[str, Union[int, str]]
+ColorItem = Tuple[Union[int, str], URIRef, Union[int, str]]
+ColorItemTuple = Tuple[ColorItem, ...]
+HashCache = Optional[Dict[ColorItemTuple, str]]
+Stats = Dict[str, Union[int, str]]
 
 
 class Color:
@@ -222,7 +223,7 @@ class Color:
     def key(self):
         return (len(self.nodes), self.hash_color())
 
-    def hash_color(self, color: tuple[ColorItem, ...] | None = None) -> str:
+    def hash_color(self, color: Tuple[ColorItem, ...] | None = None) -> str:
         if color is None:
             color = self.color
         if color in self._hash_cache:
@@ -244,9 +245,9 @@ class Color:
         return val
 
     def distinguish(self, W: Color, graph: Graph):  # noqa: N803
-        colors: dict[str, Color] = {}
+        colors: Dict[str, Color] = {}
         for n in self.nodes:
-            new_color: tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
+            new_color: Tuple[ColorItem, ...] = list(self.color)  # type: ignore[assignment]
             for node in W.nodes:
                 new_color += [  # type: ignore[operator]
                     (1, p, W.hash_color()) for s, p, o in graph.triples((n, None, node))
@@ -334,7 +335,7 @@ class _TripleCanonicalizer:
         )
         return c
 
-    def _get_candidates(self, coloring: list[Color]) -> Iterator[tuple[Node, Color]]:
+    def _get_candidates(self, coloring: list[Color]) -> Iterator[Tuple[Node, Color]]:
         for c in [c for c in coloring if not c.discrete()]:
             for node in c.nodes:
                 yield node, c
@@ -359,7 +360,7 @@ class _TripleCanonicalizer:
                     except ValueError:
                         sequence = colors[1:] + sequence
         combined_colors: list[Color] = []
-        combined_color_map: dict[str, Color] = dict()
+        combined_color_map: Dict[str, Color] = dict()
         for color in coloring:
             color_hash = color.hash_color()
             # This is a hash collision, and be combined into a single color for individuation.
@@ -392,8 +393,8 @@ class _TripleCanonicalizer:
     def _create_generator(
         self,
         colorings: list[list[Color]],
-        groupings: dict[Node, set[Node]] | None = None,
-    ) -> dict[Node, set[Node]]:
+        groupings: Dict[Node, set[Node]] | None = None,
+    ) -> Dict[Node, set[Node]]:
         if not groupings:
             groupings = defaultdict(set)
         for group in zip(*colorings):
@@ -419,7 +420,7 @@ class _TripleCanonicalizer:
         best_score = None
         best_experimental_score = None
         last_coloring = None
-        generator: dict[Node, set[Node]] = defaultdict(set)
+        generator: Dict[Node, set[Node]] = defaultdict(set)
         visited: set[Node] = set()
         for candidate, color in candidates:
             if candidate in generator:
@@ -500,7 +501,7 @@ class _TripleCanonicalizer:
         if stats is not None:
             stats["color_count"] = len(coloring)
 
-        bnode_labels: dict[Node, str] = dict(
+        bnode_labels: Dict[Node, str] = dict(
             [(c.nodes[0], c.hash_color()) for c in coloring]
         )
         if stats is not None:
@@ -514,7 +515,7 @@ class _TripleCanonicalizer:
     def _canonicalize_bnodes(
         self,
         triple: _TripleType,
-        labels: dict[Node, str],
+        labels: Dict[Node, str],
     ):
         for term in triple:
             if isinstance(term, BNode):
@@ -580,7 +581,7 @@ def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> ReadOnlyGraphAg
     return ReadOnlyGraphAggregate([graph])
 
 
-def graph_diff(g1: Graph, g2: Graph) -> tuple[Graph, Graph, Graph]:
+def graph_diff(g1: Graph, g2: Graph) -> Tuple[Graph, Graph, Graph]:
     """Returns three sets of triples: "in both", "in first" and "in second"."""
     # bnodes have deterministic values in canonical graphs:
     cg1 = to_canonical_graph(g1)

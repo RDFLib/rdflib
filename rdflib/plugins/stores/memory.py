@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result
     from rdflib.term import Identifier, URIRef
+    from typing import Tuple
 
 __all__ = ["SimpleMemory", "Memory"]
 
@@ -129,7 +130,7 @@ class SimpleMemory(Store):
         self,
         triple_pattern: _TriplePatternType,
         context: _ContextType | None = None,
-    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
+    ) -> Iterator[Tuple[_TripleType, Iterator[_ContextType | None]]]:
         """A generator over all the triples matching"""
         subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
@@ -227,7 +228,7 @@ class SimpleMemory(Store):
     def prefix(self, namespace: URIRef) -> str | None:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
@@ -412,7 +413,7 @@ class Memory(Store):
         triple_pattern: _TriplePatternType,
         context: _ContextType | None = None,
     ) -> Generator[
-        tuple[_TripleType, Generator[_ContextType | None, None, None]],
+        Tuple[_TripleType, Generator[_ContextType | None, None, None]],
         None,
         None,
     ]:
@@ -430,7 +431,7 @@ class Memory(Store):
 
         # optimize "triple in graph" case (all parts given)
         elif subject is not None and predicate is not None and object_ is not None:
-            # type error: Incompatible types in assignment (expression has type "tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Identifier]]", variable has type "tuple[IdentifiedNode, IdentifiedNode, Identifier]")
+            # type error: Incompatible types in assignment (expression has type "Tuple[Optional[IdentifiedNode], Optional[IdentifiedNode], Optional[Identifier]]", variable has type "Tuple[IdentifiedNode, IdentifiedNode, Identifier]")
             # NOTE on type error: at this point, all elements of triple_pattern
             # is not None, so it has the same type as triple
             triple = triple_pattern  # type: ignore[assignment]
@@ -547,7 +548,7 @@ class Memory(Store):
     def prefix(self, namespace: URIRef) -> str | None:
         return self.__prefix.get(namespace, None)
 
-    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 

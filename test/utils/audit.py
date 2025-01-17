@@ -4,9 +4,9 @@ from collections import defaultdict
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, Tuple
 
-AuditHookType = Callable[[str, tuple[Any, ...]], Any]
+AuditHookType = Callable[[str, Tuple[Any, ...]], Any]
 
 
 @dataclass
@@ -15,7 +15,7 @@ class AuditHookDispatcher:
         default_factory=lambda: defaultdict(list)
     )
 
-    def audit(self, name: str, args: tuple[Any, ...]) -> Any:
+    def audit(self, name: str, args: Tuple[Any, ...]) -> Any:
         handlers = self.handlers[name]
         for handler in handlers:
             handler(name, args)

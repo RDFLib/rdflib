@@ -26,6 +26,7 @@ from rdflib.util import guess_format
 
 if TYPE_CHECKING:
     from rdflib.query import ResultRow
+    from typing import Tuple
 
 
 def validate_namespace(namespace: str) -> None:
@@ -74,7 +75,7 @@ def validate_object_id(object_id: str) -> None:
 
 def get_target_namespace_elements(
     g: Graph, target_namespace: str
-) -> tuple[list[tuple[str, str]], list[str], list[str]]:
+) -> Tuple[list[Tuple[str, str]], list[str], list[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
         SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
@@ -95,7 +96,7 @@ def get_target_namespace_elements(
         """.replace(
         "xxx", target_namespace
     )
-    elements: list[tuple[str, str]] = []
+    elements: list[Tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
         if TYPE_CHECKING:
             assert isinstance(r, ResultRow)

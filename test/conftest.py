@@ -11,6 +11,7 @@ pytest.register_assert_rewrite("test.utils")
 
 from collections.abc import Collection, Generator, Iterable
 from pathlib import Path
+from typing import Tuple
 
 from rdflib import Graph
 from test.utils.audit import AuditHookDispatcher
@@ -37,7 +38,7 @@ def rdfs_graph() -> Graph:
     return Graph().parse(TEST_DATA_DIR / "defined_namespaces/rdfs.ttl", format="turtle")
 
 
-_ServedBaseHTTPServerMocks = tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
+_ServedBaseHTTPServerMocks = Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock]
 
 
 @pytest.fixture(scope="session")
@@ -46,11 +47,9 @@ def _session_function_httpmocks() -> Generator[_ServedBaseHTTPServerMocks, None,
     This fixture is session scoped, but it is reset for each function in
     :func:`function_httpmock`. This should not be used directly.
     """
-    with (
-        ServedBaseHTTPServerMock() as httpmock_a,
-        ServedBaseHTTPServerMock() as httpmock_b,
-    ):
-        yield httpmock_a, httpmock_b
+    with ServedBaseHTTPServerMock() as httpmock_a:
+        with ServedBaseHTTPServerMock() as httpmock_b:
+            yield httpmock_a, httpmock_b
 
 
 @pytest.fixture(scope="function")
@@ -68,7 +67,7 @@ def function_httpmock(
 @pytest.fixture(scope="function")
 def function_httpmocks(
     _session_function_httpmocks: _ServedBaseHTTPServerMocks,
-) -> Generator[tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
+) -> Generator[Tuple[ServedBaseHTTPServerMock, ServedBaseHTTPServerMock], None, None]:
     """
     Alternative HTTP server mock that is reset for each test function.
 
@@ -93,7 +92,7 @@ def exit_stack() -> Generator[ExitStack, None, None]:
         yield stack
 
 
-EXTRA_MARKERS: dict[tuple[str | None, str], Collection[pytest.MarkDecorator | str]] = {
+EXTRA_MARKERS: dict[Tuple[str | None, str], Collection[pytest.MarkDecorator | str]] = {
     ("rdflib/__init__.py", "rdflib"): [pytest.mark.webtest],
     ("rdflib/term.py", "rdflib.term.Literal.normalize"): [pytest.mark.webtest],
     ("rdflib/extras/infixowl.py", "rdflib.extras.infixowl"): [pytest.mark.webtest],

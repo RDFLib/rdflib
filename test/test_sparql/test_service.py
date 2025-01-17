@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping, Sequence
 from http.client import IncompleteRead, RemoteDisconnected
-from typing import Union
+from typing import Tuple, Union
 
 import pytest
 
@@ -215,7 +215,7 @@ def test_service_with_implicit_select_and_allcaps():
 
 def freeze_bindings(
     bindings: Sequence[Mapping[Variable, Identifier]]
-) -> frozenset[frozenset[tuple[Variable, Identifier]]]:
+) -> frozenset[frozenset[Tuple[Variable, Identifier]]]:
     result = []
     for binding in bindings:
         result.append(frozenset(((key, value)) for key, value in binding.items()))

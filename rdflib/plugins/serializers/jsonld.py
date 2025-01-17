@@ -50,6 +50,7 @@ from ..shared.jsonld.keys import CONTEXT, GRAPH, ID, LANG, LIST, SET, VOCAB
 from ..shared.jsonld.util import _HAS_ORJSON, json, orjson
 
 if TYPE_CHECKING:
+    from typing import Optional
     from rdflib.graph import _ObjectType
 
     # In JSON-LD, a Literal cannot be Subject. So define a new type

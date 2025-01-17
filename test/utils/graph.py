@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from runpy import run_path
-from typing import Any, Union
+from typing import Any, Tuple, Union
 
 import rdflib.util
 import test.data
@@ -43,7 +43,7 @@ class GraphSource:
         return cls(path, format, public_id)
 
     @classmethod
-    def from_paths(cls, *paths: Path) -> tuple[GraphSource, ...]:
+    def from_paths(cls, *paths: Path) -> Tuple[GraphSource, ...]:
         result = []
         for path in paths:
             result.append(cls.from_path(path))
@@ -116,7 +116,7 @@ def load_sources(
 
 @lru_cache(maxsize=None)
 def cached_graph(
-    sources: tuple[Union[GraphSource, Path], ...],
+    sources: Tuple[Union[GraphSource, Path], ...],
     public_id: str | None = None,
     graph_type: type[_GraphT] = Graph,  # type: ignore[assignment]
 ) -> _GraphT:

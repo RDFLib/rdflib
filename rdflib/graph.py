@@ -262,6 +262,7 @@ from typing import (
     NoReturn,
     Optional,
     TextIO,
+    Tuple,
     TypeVar,
     Union,
     cast,
@@ -309,33 +310,33 @@ _PredicateType: te.TypeAlias = Union[IdentifiedNode, Variable]
 _ObjectType: te.TypeAlias = Union[IdentifiedNode, Literal, Variable]
 _ContextIdentifierType: te.TypeAlias = Union[IdentifiedNode]
 
-_TripleType: te.TypeAlias = tuple[_SubjectType, _PredicateType, _ObjectType]
-_TriplePathType: te.TypeAlias = tuple[_SubjectType, Path, _ObjectType]
+_TripleType: te.TypeAlias = Tuple[_SubjectType, _PredicateType, _ObjectType]
+_TriplePathType: te.TypeAlias = Tuple[_SubjectType, Path, _ObjectType]
 _TripleOrTriplePathType: te.TypeAlias = Union[_TripleType, _TriplePathType]
 
-_QuadType: te.TypeAlias = tuple[
+_QuadType: te.TypeAlias = Tuple[
     _SubjectType, _PredicateType, _ObjectType, "_ContextType"
 ]
-_OptionalQuadType: te.TypeAlias = tuple[
+_OptionalQuadType: te.TypeAlias = Tuple[
     _SubjectType, _PredicateType, _ObjectType, Optional["_ContextType"]
 ]
 _TripleOrOptionalQuadType: te.TypeAlias = Union[_TripleType, _OptionalQuadType]
-_OptionalIdentifiedQuadType: te.TypeAlias = tuple[
+_OptionalIdentifiedQuadType: te.TypeAlias = Tuple[
     _SubjectType, _PredicateType, _ObjectType, Optional[_ContextIdentifierType]
 ]
-_TriplePatternType: te.TypeAlias = tuple[
+_TriplePatternType: te.TypeAlias = Tuple[
     Optional[_SubjectType], Optional[_PredicateType], Optional[_ObjectType]
 ]
-_TriplePathPatternType: te.TypeAlias = tuple[
+_TriplePathPatternType: te.TypeAlias = Tuple[
     Optional[_SubjectType], Path, Optional[_ObjectType]
 ]
-_QuadPatternType: te.TypeAlias = tuple[
+_QuadPatternType: te.TypeAlias = Tuple[
     Optional[_SubjectType],
     Optional[_PredicateType],
     Optional[_ObjectType],
     Optional["_ContextType"],
 ]
-_QuadPathPatternType: te.TypeAlias = tuple[
+_QuadPathPatternType: te.TypeAlias = Tuple[
     Optional[_SubjectType],
     Path,
     Optional[_ObjectType],
@@ -349,12 +350,12 @@ _TripleOrQuadPathPatternType: te.TypeAlias = Union[
 # The difference between TriplePattern and TripleSelector is that
 # TripleSelector can have a Optional[Path] as the predicate, and Subject/Object
 # can be a QuotedGraph
-_TripleSelectorType: te.TypeAlias = tuple[
+_TripleSelectorType: te.TypeAlias = Tuple[
     Optional[_SubjectType],
     Optional[Union[Path, _PredicateType]],
     Optional[_ObjectType],
 ]
-_QuadSelectorType: te.TypeAlias = tuple[
+_QuadSelectorType: te.TypeAlias = Tuple[
     Optional[_SubjectType],
     Optional[Union[Path, _PredicateType]],
     Optional[_ObjectType],
@@ -516,7 +517,7 @@ class Graph(Node):
         self.formula_aware = False
         self.default_union = False
 
-    def __getnewargs__(self) -> tuple[Any, ...]:
+    def __getnewargs__(self) -> Tuple[Any, ...]:
         return (
             self.store,
             self.__identifier,
@@ -855,7 +856,7 @@ class Graph(Node):
     # Conv. methods
 
     def set(
-        self: _GraphT, triple: tuple[_SubjectType, _PredicateType, _ObjectType]
+        self: _GraphT, triple: Tuple[_SubjectType, _PredicateType, _ObjectType]
     ) -> _GraphT:
         """Convenience method to update the value of object
 
@@ -947,7 +948,7 @@ class Graph(Node):
 
     def subject_predicates(
         self, object: _ObjectType | None = None, unique: bool = False
-    ) -> Generator[tuple[_SubjectType, _PredicateType], None, None]:
+    ) -> Generator[Tuple[_SubjectType, _PredicateType], None, None]:
         """A generator of (optionally unique) (subject, predicate) tuples
         for the given object"""
         if not unique:
@@ -970,7 +971,7 @@ class Graph(Node):
         self,
         predicate: Path | _PredicateType | None = None,
         unique: bool = False,
-    ) -> Generator[tuple[_SubjectType, _ObjectType], None, None]:
+    ) -> Generator[Tuple[_SubjectType, _ObjectType], None, None]:
         """A generator of (optionally unique) (subject, object) tuples
         for the given predicate"""
         if not unique:
@@ -991,7 +992,7 @@ class Graph(Node):
 
     def predicate_objects(
         self, subject: _SubjectType | None = None, unique: bool = False
-    ) -> Generator[tuple[_PredicateType, _ObjectType], None, None]:
+    ) -> Generator[Tuple[_PredicateType, _ObjectType], None, None]:
         """A generator of (optionally unique) (predicate, object) tuples
         for the given subject"""
         if not unique:
@@ -1013,26 +1014,26 @@ class Graph(Node):
     def triples_choices(
         self,
         triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
+            Tuple[
+                list[_SubjectType] | Tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
+                list[_PredicateType] | Tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
+                list[_ObjectType] | Tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
-        # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+        # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "Tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[Tuple[list[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
         # type error note: unpacking discards type info
         for (s, p, o), cg in self.store.triples_choices(
             (subject, predicate, object_), context=self  # type: ignore[arg-type]
@@ -1297,7 +1298,7 @@ class Graph(Node):
     def qname(self, uri: str) -> str:
         return self.namespace_manager.qname(uri)
 
-    def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
+    def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
         return self.namespace_manager.compute_qname(uri, generate)
 
     def bind(
@@ -1328,7 +1329,7 @@ class Graph(Node):
             prefix, namespace, override=override, replace=replace
         )
 
-    def namespaces(self) -> Generator[tuple[str, URIRef], None, None]:
+    def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
         """Generator over all the prefix, namespace tuples"""
         for prefix, namespace in self.namespace_manager.namespaces():  # noqa: F402
             yield prefix, namespace
@@ -1749,7 +1750,7 @@ class Graph(Node):
         """Return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3(namespace_manager=namespace_manager)
 
-    def __reduce__(self) -> tuple[type[Graph], tuple[Store, _ContextIdentifierType]]:
+    def __reduce__(self) -> Tuple[type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return (
             Graph,
             (
@@ -2050,7 +2051,7 @@ class ConjunctiveGraph(Graph):
             store=self.store, identifier=identifier or BNode(), base=default_graph_base
         )
 
-    def __getnewargs__(self) -> tuple[Any, ...]:
+    def __getnewargs__(self) -> Tuple[Any, ...]:
         return (self.store, self.__identifier, self.default_context.base)
 
     def __str__(self) -> str:
@@ -2079,7 +2080,7 @@ class ConjunctiveGraph(Graph):
         self,
         triple_or_quad: None,
         default: bool = False,
-    ) -> tuple[None, None, None, Graph | None]: ...
+    ) -> Tuple[None, None, None, Graph | None]: ...
 
     @overload
     def _spoc(
@@ -2172,7 +2173,7 @@ class ConjunctiveGraph(Graph):
         )
         return self
 
-    # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "tuple[Optional[Node], Optional[Node], Optional[Node]]"
+    # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
     def remove(self: _ConjunctiveGraphT, triple_or_quad: _TripleOrOptionalQuadType) -> _ConjunctiveGraphT:  # type: ignore[override]
         """
         Removes a triple or quads
@@ -2255,20 +2256,20 @@ class ConjunctiveGraph(Graph):
     def triples_choices(
         self,
         triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
+            Tuple[
+                list[_SubjectType] | Tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
+                list[_PredicateType] | Tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
+                list[_ObjectType] | Tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,
@@ -2280,7 +2281,7 @@ class ConjunctiveGraph(Graph):
                 context = self.default_context
         else:
             context = self._graph(context)
-        # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+        # type error: Argument 1 to "triples_choices" of "Store" has incompatible type "Tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[Tuple[list[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
         # type error note: unpacking discards type info
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=context):  # type: ignore[arg-type]
             yield s1, p1, o1
@@ -2409,7 +2410,7 @@ class ConjunctiveGraph(Graph):
         # TODO: FIXME: This should not return context, but self.
         return context
 
-    def __reduce__(self) -> tuple[type[Graph], tuple[Store, _ContextIdentifierType]]:
+    def __reduce__(self) -> Tuple[type[Graph], Tuple[Store, _ContextIdentifierType]]:
         return ConjunctiveGraph, (self.store, self.identifier)
 
 
@@ -2588,7 +2589,7 @@ class Dataset(ConjunctiveGraph):
 
         self.default_union = default_union
 
-    def __getnewargs__(self) -> tuple[Any, ...]:
+    def __getnewargs__(self) -> Tuple[Any, ...]:
         return (self.store, self.default_union, self.default_context.base)
 
     def __str__(self) -> str:
@@ -2597,16 +2598,16 @@ class Dataset(ConjunctiveGraph):
         )
         return pattern % self.store.__class__.__name__
 
-    # type error: Return type "tuple[Type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[Type[Graph], tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
-    # type error: Return type "tuple[Type[Dataset], tuple[Store, bool]]" of "__reduce__" incompatible with return type "tuple[Type[Graph], tuple[Store, IdentifiedNode]]" in supertype "Graph"
-    def __reduce__(self) -> tuple[type[Dataset], tuple[Store, bool]]:  # type: ignore[override]
+    # type error: Return type "Tuple[Type[Dataset], Tuple[Store, bool]]" of "__reduce__" incompatible with return type "Tuple[Type[Graph], Tuple[Store, IdentifiedNode]]" in supertype "ConjunctiveGraph"
+    # type error: Return type "Tuple[Type[Dataset], Tuple[Store, bool]]" of "__reduce__" incompatible with return type "Tuple[Type[Graph], Tuple[Store, IdentifiedNode]]" in supertype "Graph"
+    def __reduce__(self) -> Tuple[type[Dataset], Tuple[Store, bool]]:  # type: ignore[override]
         return type(self), (self.store, self.default_union)
 
-    def __getstate__(self) -> tuple[Store, _ContextIdentifierType, _ContextType, bool]:
+    def __getstate__(self) -> Tuple[Store, _ContextIdentifierType, _ContextType, bool]:
         return self.store, self.identifier, self.default_context, self.default_union
 
     def __setstate__(
-        self, state: tuple[Store, _ContextIdentifierType, _ContextType, bool]
+        self, state: Tuple[Store, _ContextIdentifierType, _ContextType, bool]
     ) -> None:
         # type error: Property "store" defined in "Graph" is read-only
         # type error: Property "identifier" defined in "Graph" is read-only
@@ -2713,7 +2714,7 @@ class Dataset(ConjunctiveGraph):
 
     graphs = contexts
 
-    # type error: Return type "Generator[tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
+    # type error: Return type "Generator[Tuple[Node, Node, Node, Optional[Node]], None, None]" of "quads" incompatible with return type "Generator[Tuple[Node, Node, Node, Optional[Graph]], None, None]" in supertype "ConjunctiveGraph"
     def quads(  # type: ignore[override]
         self, quad: _TripleOrQuadPatternType | None = None
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
@@ -2725,7 +2726,7 @@ class Dataset(ConjunctiveGraph):
                 # type error: Item "None" of "Optional[Graph]" has no attribute "identifier"  [union-attr]
                 yield s, p, o, c.identifier  # type: ignore[union-attr]
 
-    # type error: Return type "Generator[tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]" of "__iter__" incompatible with return type "Generator[tuple[IdentifiedNode, IdentifiedNode, Union[IdentifiedNode, Literal]], None, None]" in supertype "Graph"
+    # type error: Return type "Generator[Tuple[Node, URIRef, Node, Optional[IdentifiedNode]], None, None]" of "__iter__" incompatible with return type "Generator[Tuple[IdentifiedNode, IdentifiedNode, Union[IdentifiedNode, Literal]], None, None]" in supertype "Graph"
     def __iter__(  # type: ignore[override]
         self,
     ) -> Generator[_OptionalIdentifiedQuadType, None, None]:
@@ -2790,7 +2791,7 @@ class QuotedGraph(Graph, IdentifiedNode):
 
     def __reduce__(
         self,
-    ) -> tuple[type[QuotedGraph], tuple[Store, _ContextIdentifierType]]:
+    ) -> Tuple[type[QuotedGraph], Tuple[Store, _ContextIdentifierType]]:
         return QuotedGraph, (self.store, self.identifier)
 
     def toPython(self: _QuotedGraphT) -> _QuotedGraphT:  # noqa: N802
@@ -2841,7 +2842,7 @@ class Seq:
             creates this instance!
         """
 
-        self._list: list[tuple[int, _ObjectType]]
+        self._list: list[Tuple[int, _ObjectType]]
         _list = self._list = list()
         LI_INDEX = URIRef(str(RDF) + "_")  # noqa: N806
         for p, o in graph.predicate_objects(subject):
@@ -2942,7 +2943,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def addN(self, quads: Iterable[_QuadType]) -> NoReturn:  # noqa: N802
         raise ModificationException()
 
-    # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "tuple[Optional[Node], Optional[Node], Optional[Node]]"
+    # type error: Argument 1 of "remove" is incompatible with supertype "Graph"; supertype defines the argument type as "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
     def remove(self, triple: _TripleOrOptionalQuadType) -> NoReturn:  # type: ignore[override]
         raise ModificationException()
 
@@ -2993,7 +2994,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def quads(  # type: ignore[override]
         self, triple_or_quad: _TripleOrQuadSelectorType
     ) -> Generator[
-        tuple[_SubjectType, Path | _PredicateType, _ObjectType, _ContextType],
+        Tuple[_SubjectType, Path | _PredicateType, _ObjectType, _ContextType],
         None,
         None,
     ]:
@@ -3040,27 +3041,27 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def triples_choices(
         self,
         triple: (
-            tuple[
-                list[_SubjectType] | tuple[_SubjectType, ...],
+            Tuple[
+                list[_SubjectType] | Tuple[_SubjectType, ...],
                 _PredicateType,
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
-                list[_PredicateType] | tuple[_PredicateType, ...],
+                list[_PredicateType] | Tuple[_PredicateType, ...],
                 _ObjectType | None,
             ]
-            | tuple[
+            | Tuple[
                 _SubjectType | None,
                 _PredicateType,
-                list[_ObjectType] | tuple[_ObjectType, ...],
+                list[_ObjectType] | Tuple[_ObjectType, ...],
             ]
         ),
         context: _ContextType | None = None,
     ) -> Generator[_TripleType, None, None]:
         subject, predicate, object_ = triple
         for graph in self.graphs:
-            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[tuple[list[Node], Node, Node], tuple[Node, list[Node], Node], tuple[Node, Node, list[Node]]]"
+            # type error: Argument 1 to "triples_choices" of "Graph" has incompatible type "Tuple[Union[list[Node], Node], Union[Node, list[Node]], Union[Node, list[Node]]]"; expected "Union[Tuple[list[Node], Node, Node], Tuple[Node, list[Node], Node], Tuple[Node, Node, list[Node]]]"
             # type error note: unpacking discards type info
             choices = graph.triples_choices((subject, predicate, object_))  # type: ignore[arg-type]
             for s, p, o in choices:
@@ -3071,7 +3072,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             return self.namespace_manager.qname(uri)
         raise UnSupportedAggregateOperation()
 
-    def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
+    def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
         if hasattr(self, "namespace_manager") and self.namespace_manager:
             return self.namespace_manager.compute_qname(uri, generate)
         raise UnSupportedAggregateOperation()
@@ -3082,7 +3083,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     ) -> NoReturn:
         raise UnSupportedAggregateOperation()
 
-    def namespaces(self) -> Generator[tuple[str, URIRef], None, None]:
+    def namespaces(self) -> Generator[Tuple[str, URIRef], None, None]:
         if hasattr(self, "namespace_manager"):
             for prefix, namespace in self.namespace_manager.namespaces():
                 yield prefix, namespace
@@ -3174,10 +3175,10 @@ class BatchAddGraph:
             self.batch = []
         self.count += 1
         if len(triple_or_quad) == 3:
-            # type error: Argument 1 to "append" of "list" has incompatible type "tuple[Node, ...]"; expected "tuple[Node, Node, Node, Graph]"
+            # type error: Argument 1 to "append" of "list" has incompatible type "Tuple[Node, ...]"; expected "Tuple[Node, Node, Node, Graph]"
             self.batch.append(triple_or_quad + self.__graph_tuple)  # type: ignore[arg-type, unused-ignore]
         else:
-            # type error: Argument 1 to "append" of "list" has incompatible type "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Graph]]"; expected "tuple[Node, Node, Node, Graph]"
+            # type error: Argument 1 to "append" of "list" has incompatible type "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Graph]]"; expected "Tuple[Node, Node, Node, Graph]"
             self.batch.append(triple_or_quad)  # type: ignore[arg-type, unused-ignore]
         return self
 

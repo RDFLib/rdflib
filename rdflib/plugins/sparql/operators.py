@@ -18,7 +18,7 @@ import uuid
 import warnings
 from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
-from typing import Any, Callable, NoReturn, Union, overload
+from typing import Any, Dict, Callable, NoReturn, Tuple, Union, overload
 from urllib.parse import quote
 
 from pyparsing import ParseResults
@@ -592,7 +592,7 @@ def Builtin_EXISTS(e: Expr, ctx: FrozenBindings) -> Literal:
 
 _CustomFunction = Callable[[Expr, FrozenBindings], Node]
 
-_CUSTOM_FUNCTIONS: dict[URIRef, tuple[_CustomFunction, bool]] = {}
+_CUSTOM_FUNCTIONS: Dict[URIRef, Tuple[_CustomFunction, bool]] = {}
 
 
 def register_custom_function(

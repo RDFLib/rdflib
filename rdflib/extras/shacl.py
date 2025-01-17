@@ -4,7 +4,7 @@ Utilities for interacting with SHACL Shapes Graphs more easily.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Tuple, Union
 
 from rdflib import BNode, Graph, Literal, URIRef, paths
 from rdflib.collection import Collection
@@ -13,9 +13,6 @@ from rdflib.paths import Path
 
 if TYPE_CHECKING:
     from rdflib.graph import _ObjectType
-    from rdflib.term import IdentifiedNode
-
-if TYPE_CHECKING:
     from rdflib.term import IdentifiedNode
 
 
@@ -181,8 +178,8 @@ def _build_path_component(
 
 
 def build_shacl_path(
-    path: URIRef | Path, target_graph: Graph | None = None
-) -> tuple[IdentifiedNode, Graph | None]:
+    path: Union[URIRef, Path], target_graph: Graph | None = None
+) -> Tuple[IdentifiedNode, Graph | None]:
     """
     Build the SHACL Path triples for a path given by a :class:`~rdflib.term.URIRef` for
     simple paths or a :class:`~rdflib.paths.Path` for complex paths.

@@ -15,6 +15,7 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     TypeVar,
+    Tuple,
     cast,
 )
 
@@ -56,7 +57,7 @@ class EARLReport:
 
     reporter: EARLReporter
     output_file: Path
-    assertions: list[tuple[URIRef, set[_TripleType]]] = field(
+    assertions: list[Tuple[URIRef, set[_TripleType]]] = field(
         init=False, default_factory=list, repr=False
     )
 

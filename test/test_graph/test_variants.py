@@ -13,6 +13,7 @@ from pathlib import Path, PurePath
 from re import Pattern
 from typing import (
     ClassVar,
+    Tuple,
     cast,
 )
 
@@ -124,7 +125,7 @@ class GraphVariants:
         marks: MarkDecorator | Collection[MarkDecorator | Mark] | None = None,
     ) -> ParameterSet:
         if marks is None:
-            marks = cast(tuple[MarkDecorator], tuple())
+            marks = cast(Tuple[MarkDecorator], tuple())
         return pytest.param(self, id=self.key, marks=marks)
 
     @property
@@ -132,7 +133,7 @@ class GraphVariants:
         return self.meta.public_id or f"example:rdflib:test:data:variant:{self.key}"
 
     @property
-    def preferred_variant(self) -> tuple[str, GraphSource]:
+    def preferred_variant(self) -> Tuple[str, GraphSource]:
         return self.ordered_variants[0]
 
     def load(self, variant_key: str, graph_type: type[_GraphT]) -> _GraphT:
@@ -204,7 +205,7 @@ GRAPH_VARIANTS_DICT = {
     **GraphVariants.for_files(EXTRA_FILES, TEST_DIR),
 }
 
-EXPECTED_FAILURES: dict[tuple[str, str | None], MarkDecorator] = {
+EXPECTED_FAILURES: dict[Tuple[str, str | None], MarkDecorator] = {
     ("variants/schema_only_base", ".ttl"): pytest.mark.xfail(
         reason="Some issue with handling base URI that does not end with a slash",
         raises=ValueError,

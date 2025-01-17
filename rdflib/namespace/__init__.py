@@ -86,6 +86,7 @@ from rdflib.term import URIRef, Variable, _is_valid_uri
 if TYPE_CHECKING:
     from rdflib.graph import Graph
     from rdflib.store import Store
+    from typing import Tuple, Set
 
 
 __all__ = [
@@ -458,8 +459,8 @@ class NamespaceManager:
 
     def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
         self.graph = graph
-        self.__cache: dict[str, tuple[str, URIRef, str]] = {}
-        self.__cache_strict: dict[str, tuple[str, URIRef, str]] = {}
+        self.__cache: dict[str, Tuple[str, URIRef, str]] = {}
+        self.__cache_strict: dict[str, Tuple[str, URIRef, str]] = {}
         self.__log = None
         self.__strie: dict[str, Any] = {}
         self.__trie: dict[str, Any] = {}
@@ -579,7 +580,7 @@ class NamespaceManager:
             qNameParts = self.compute_qname(rdfTerm)  # noqa: N806
             return ":".join([qNameParts[0], qNameParts[-1]])
 
-    def compute_qname(self, uri: str, generate: bool = True) -> tuple[str, URIRef, str]:
+    def compute_qname(self, uri: str, generate: bool = True) -> Tuple[str, URIRef, str]:
         prefix: str | None
         if uri not in self.__cache:
             if not _is_valid_uri(uri):
@@ -626,7 +627,7 @@ class NamespaceManager:
 
     def compute_qname_strict(
         self, uri: str, generate: bool = True
-    ) -> tuple[str, str, str]:
+    ) -> Tuple[str, str, str]:
         # code repeated to avoid branching on strict every time
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
@@ -795,7 +796,7 @@ class NamespaceManager:
 
         insert_trie(self.__trie, str(namespace))
 
-    def namespaces(self) -> Iterable[tuple[str, URIRef]]:
+    def namespaces(self) -> Iterable[Tuple[str, URIRef]]:
         for prefix, namespace in self.store.namespaces():
             namespace = URIRef(namespace)
             yield prefix, namespace
@@ -879,7 +880,7 @@ def is_ncname(name: str) -> int:
 
 def split_uri(
     uri: str, split_start: list[str] = SPLIT_START_CATEGORIES
-) -> tuple[str, str]:
+) -> Tuple[str, str]:
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)

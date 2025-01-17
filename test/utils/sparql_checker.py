@@ -10,7 +10,7 @@ from collections.abc import Generator
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass, field
 from io import BytesIO, StringIO
-from typing import Optional, Union, cast
+from typing import Optional, Tuple, Union, cast
 from urllib.parse import urljoin
 
 import pytest
@@ -242,7 +242,7 @@ class ResultFileHelper:
     }
 
     @classmethod
-    def load_result(cls, uri_mapper: URIMapper, result_uri: str) -> tuple[Result, str]:
+    def load_result(cls, uri_mapper: URIMapper, result_uri: str) -> Tuple[Result, str]:
         result_path = uri_mapper.to_local_path(result_uri)
         ext = result_path.suffix[1:]
         format = cls.extentions.get(ext)

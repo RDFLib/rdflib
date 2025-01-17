@@ -1,6 +1,6 @@
 from collections import Counter
 from io import StringIO
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set
 
 import pytest
 
@@ -489,7 +489,7 @@ def test_issue725_collapsing_bnodes_2():
     ), "canonicalization changed node position counts"
 
 
-_TripleSet = set["_TripleType"]
+_TripleSet = Set["_TripleType"]
 
 
 class TestConsistency:

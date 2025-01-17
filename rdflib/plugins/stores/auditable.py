@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     )
     from rdflib.query import Result
     from rdflib.term import URIRef
+    from typing import Tuple
 
 
 destructiveOpLocks = {  # noqa: N816
@@ -53,7 +54,7 @@ class AuditableStore(Store):
         self.formula_aware = False  # store.formula_aware
         self.transaction_aware = True  # This is only half true
         self.reverseOps: list[
-            tuple[
+            Tuple[
                 _SubjectType | None,
                 _PredicateType | None,
                 _ObjectType | None,
@@ -143,7 +144,7 @@ class AuditableStore(Store):
 
     def triples(
         self, triple: _TriplePatternType, context: _ContextType | None = None
-    ) -> Iterator[tuple[_TripleType, Iterator[_ContextType | None]]]:
+    ) -> Iterator[Tuple[_TripleType, Iterator[_ContextType | None]]]:
         (su, pr, ob) = triple
         context = (
             context.__class__(self.store, context.identifier)
@@ -176,7 +177,7 @@ class AuditableStore(Store):
     def namespace(self, prefix: str) -> URIRef | None:
         return self.store.namespace(prefix)
 
-    def namespaces(self) -> Iterator[tuple[str, URIRef]]:
+    def namespaces(self) -> Iterator[Tuple[str, URIRef]]:
         return self.store.namespaces()
 
     def commit(self) -> None:

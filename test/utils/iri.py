@@ -11,7 +11,7 @@ import mimetypes
 from dataclasses import dataclass
 from nturl2path import url2pathname as nt_url2pathname
 from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
-from typing import Callable, TypeVar, Union
+from typing import Callable, Tuple, TypeVar, Union
 from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import BaseHandler, OpenerDirector, Request
 from urllib.response import addinfourl
@@ -93,7 +93,7 @@ def rebase_url(old_url: str, old_base: str, new_base: str) -> str:
     return new_url
 
 
-URIMappingTupleType = tuple[str, str]
+URIMappingTupleType = Tuple[str, str]
 
 
 @dataclass(frozen=True)
@@ -118,7 +118,7 @@ class URIMapper:
         logging.debug("local_uri = %s", local_uri)
         return file_uri_to_path(local_uri, Path)
 
-    def to_local(self, remote: str) -> tuple[str, Path]:
+    def to_local(self, remote: str) -> Tuple[str, Path]:
         local_uri = self.to_local_uri(remote)
         local_path = file_uri_to_path(local_uri, Path)
         return (local_uri, local_path)

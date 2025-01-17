@@ -11,8 +11,10 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path, PosixPath, PurePath
 from typing import (
+    Dict,
     IO,
     TextIO,
+    Tuple,
     Union,
     cast,
 )
@@ -52,8 +54,8 @@ def test_rdf_type(format: str, tuple_index: int, is_keyword: bool) -> None:
     graph.bind("eg", NS)
     nodes = [NS.subj, NS.pred, NS.obj, NS.graph]
     nodes[tuple_index] = RDF.type
-    quad = cast(tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
-    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[tuple[Node, Node, Node], tuple[Node, Node, Node, Optional[Graph]]]"
+    quad = cast(Tuple[URIRef, URIRef, URIRef, URIRef], tuple(nodes))
+    # type error: Argument 1 to "add" of "ConjunctiveGraph" has incompatible type "Tuple[URIRef, URIRef, URIRef, URIRef]"; expected "Union[Tuple[Node, Node, Node], Tuple[Node, Node, Node, Optional[Graph]]]"
     graph.add(quad)  # type: ignore[arg-type]
     data = graph.serialize(format=format)
     logging.info("data = %s", data)
@@ -333,7 +335,7 @@ class GraphFormatInfo:
         return self.deserializer[0]
 
 
-class GraphFormatInfoDict(dict[str, GraphFormatInfo]):
+class GraphFormatInfoDict(Dict[str, GraphFormatInfo]):
     @classmethod
     def make(cls, *graph_format: GraphFormatInfo) -> GraphFormatInfoDict:
         result = cls()
@@ -341,9 +343,9 @@ class GraphFormatInfoDict(dict[str, GraphFormatInfo]):
             result[item.name] = item
         return result
 
-    def serdes_dict(self) -> tuple[dict[str, GraphFormat], dict[str, GraphFormat]]:
-        serializer_dict: dict[str, GraphFormat] = {}
-        deserializer_dict: dict[str, GraphFormat] = {}
+    def serdes_dict(self) -> Tuple[Dict[str, GraphFormat], Dict[str, GraphFormat]]:
+        serializer_dict: Dict[str, GraphFormat] = {}
+        deserializer_dict: Dict[str, GraphFormat] = {}
         for format in self.values():
             for serializer in format.serializers:
                 serializer_dict[serializer] = format.name
@@ -368,8 +370,8 @@ def make_serialize_parse_tests() -> Generator[ParameterSet, None, None]:
     """
     This function generates test parameters for test_serialize_parse.
     """
-    xfails: dict[
-        tuple[str, GraphType, DestinationType, str | None],
+    xfails: Dict[
+        Tuple[str, GraphType, DestinationType, str | None],
         Union[MarkDecorator, Mark],
     ] = {}
     for serializer_name, destination_type in itertools.product(
@@ -429,7 +431,7 @@ def test_serialize_parse(
     tmp_path: Path,
     simple_graph: Graph,
     simple_dataset: Dataset,
-    args: tuple[str, GraphType, DestinationType, str | None],
+    args: Tuple[str, GraphType, DestinationType, str | None],
 ) -> None:
     """
     Serialization works correctly with the given arguments and generates output

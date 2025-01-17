@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from rdflib.graph import Graph
     from rdflib.parser import InputSource
     from rdflib.term import URIRef
+    from typing import Tuple
 
 
 class ExampleParser(Parser):
@@ -26,5 +27,5 @@ class ExampleParser(Parser):
     @classmethod
     def constant_output(
         cls,
-    ) -> set[tuple[URIRef, URIRef, URIRef]]:
+    ) -> set[Tuple[URIRef, URIRef, URIRef]]:
         return {(cls.namespace().subj, cls.namespace().pred, cls.namespace().obj)}

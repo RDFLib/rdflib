@@ -39,7 +39,7 @@ import re
 import sys
 from datetime import date, datetime, time, timedelta
 from decimal import ROUND_FLOOR, Decimal
-from typing import cast
+from typing import cast, Tuple, Union
 
 if sys.version_info[:3] < (3, 11, 0):
     from isodate import parse_date, parse_datetime, parse_time
@@ -51,8 +51,8 @@ else:
 
 
 def fquotmod(
-    val: Decimal, low: Decimal | int, high: Decimal | int
-) -> tuple[int, Decimal]:
+    val: Decimal, low: Union[Decimal, int], high: Union[Decimal, int]
+) -> Tuple[int, Decimal]:
     """
     A divmod function with boundaries.
 
@@ -61,7 +61,7 @@ def fquotmod(
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
     a: Decimal = val - low
-    b: Decimal | int = high - low
+    b: Union[Decimal, int] = high - low
     div: Decimal = (a / b).to_integral(ROUND_FLOOR)
     mod: Decimal = a - div * b
     # if we were not using Decimal, it would look like this.

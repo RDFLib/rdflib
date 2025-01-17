@@ -39,6 +39,7 @@ from typing import (
     IO,
     TYPE_CHECKING,
     Any,
+    List,
     NoReturn,
     TypeVar,
     Union,
@@ -85,11 +86,12 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _ObjectType, _PredicateType, _SubjectType
     from rdflib.parser import InputSource
+    from typing import Tuple
 
 _AnyT = TypeVar("_AnyT")
 
 
-def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
+def splitFragP(uriref: str, punc: int = 0) -> Tuple[str, str]:
     """split a URI reference before the fragment
 
     Punctuation is kept.
@@ -627,7 +629,7 @@ class SinkParser:
 
         j = self.tok("prefix", argstr, i, colon=True)  # no implied "#"
         if j >= 0:
-            t: list[Union[Identifier, tuple[str, str]]] = []
+            t: List[Union[Identifier, Tuple[str, str]]] = []
             i = self.qname(argstr, j, t)
             if i < 0:
                 self.BadSyntax(argstr, j, "expected qname after @prefix")
@@ -1368,7 +1370,7 @@ class SinkParser:
         self,
         argstr: str,
         i: int,
-        res: MutableSequence[Union[Identifier, tuple[str, str]]],
+        res: MutableSequence[Union[Identifier, Tuple[str, str]]],
     ) -> int:
         """
         xyz:def -> ('xyz', 'def')
@@ -1573,13 +1575,13 @@ class SinkParser:
             else:
                 return -1
 
-    def uriOf(self, sym: Union[Identifier, tuple[str, str]]) -> str:
+    def uriOf(self, sym: Union[Identifier, Tuple[str, str]]) -> str:
         if isinstance(sym, tuple):
             return sym[1]  # old system for --pipe
         # return sym.uriref()  # cwm api
         return sym
 
-    def strconst(self, argstr: str, i: int, delim: str) -> tuple[int, str]:
+    def strconst(self, argstr: str, i: int, delim: str) -> Tuple[int, str]:
         """parse an N3 string constant delimited by delim.
         return index, val
         """
@@ -1698,7 +1700,7 @@ class SinkParser:
         reg: Pattern[str],
         n: int,
         prefix: str,
-    ) -> tuple[int, str]:
+    ) -> Tuple[int, str]:
         if len(argstr) < i + n:
             raise BadSyntax(
                 self._thisDoc, startline, argstr, i, "unterminated string literal(3)"
@@ -1714,10 +1716,10 @@ class SinkParser:
                 "bad string literal hex escape: " + argstr[i : i + n],
             )
 
-    def uEscape(self, argstr: str, i: int, startline: int) -> tuple[int, str]:
+    def uEscape(self, argstr: str, i: int, startline: int) -> Tuple[int, str]:
         return self._unicodeEscape(argstr, i, startline, unicodeEscape4, 4, "u")
 
-    def UEscape(self, argstr: str, i: int, startline: int) -> tuple[int, str]:
+    def UEscape(self, argstr: str, i: int, startline: int) -> Tuple[int, str]:
         return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8, "U")
 
     def BadSyntax(self, argstr: str, i: int, msg: str) -> NoReturn:
@@ -1876,7 +1878,7 @@ class RDFSink:
 
     def makeStatement(
         self,
-        quadruple: tuple[Formula | Graph | None, Node, Node, Node],
+        quadruple: Tuple[Formula | Graph | None, Node, Node, Node],
         why: Any | None = None,
     ) -> None:
         f, p, s, o = quadruple
@@ -1901,7 +1903,7 @@ class RDFSink:
         # return str(quadruple)
 
     @overload
-    def normalise(self, f: Formula | Graph | None, n: tuple[int, str]) -> URIRef: ...
+    def normalise(self, f: Formula | Graph | None, n: Tuple[int, str]) -> URIRef: ...
 
     @overload
     def normalise(self, f: Formula | Graph | None, n: bool) -> Literal: ...
@@ -1921,7 +1923,7 @@ class RDFSink:
     def normalise(
         self,
         f: Formula | Graph | None,
-        n: Union[tuple[int, str], bool, int, Decimal, float, Node, _AnyT],
+        n: Union[Tuple[int, str], bool, int, Decimal, float, Node, _AnyT],
     ) -> Union[URIRef, Literal, BNode, Node, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))

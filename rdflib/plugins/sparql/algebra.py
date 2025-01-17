@@ -15,6 +15,8 @@ from collections.abc import Callable, Iterable, Mapping
 from functools import reduce
 from typing import (
     Any,
+    List,
+    Tuple,
     overload,
 )
 
@@ -38,7 +40,7 @@ from rdflib.plugins.sparql.sparql import Prologue, Query, Update
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
-def OrderBy(p: CompValue, expr: list[CompValue]) -> CompValue:
+def OrderBy(p: CompValue, expr: List[CompValue]) -> CompValue:
     return CompValue("OrderBy", p=p, expr=expr)
 
 
@@ -63,7 +65,7 @@ def Graph(term: Identifier, graph: CompValue) -> CompValue:
 
 
 def BGP(
-    triples: list[tuple[Identifier, Identifier, Identifier]] | None = None
+    triples: List[Tuple[Identifier, Identifier, Identifier]] | None = None
 ) -> CompValue:
     return CompValue("BGP", triples=triples or [])
 
@@ -82,23 +84,23 @@ def Extend(
     return CompValue("Extend", p=p, expr=expr, var=var)
 
 
-def Values(res: list[dict[Variable, str]]) -> CompValue:
+def Values(res: List[dict[Variable, str]]) -> CompValue:
     return CompValue("values", res=res)
 
 
-def Project(p: CompValue, PV: list[Variable]) -> CompValue:
+def Project(p: CompValue, PV: List[Variable]) -> CompValue:
     return CompValue("Project", p=p, PV=PV)
 
 
-def Group(p: CompValue, expr: list[Variable] | None = None) -> CompValue:
+def Group(p: CompValue, expr: List[Variable] | None = None) -> CompValue:
     return CompValue("Group", p=p, expr=expr)
 
 
 def _knownTerms(
-    triple: tuple[Identifier, Identifier, Identifier],
+    triple: Tuple[Identifier, Identifier, Identifier],
     varsknown: set[typing.Union[BNode, Variable]],
     varscount: dict[Identifier, int],
-) -> tuple[int, int, bool]:
+) -> Tuple[int, int, bool]:
     return (
         len(
             [
@@ -113,8 +115,8 @@ def _knownTerms(
 
 
 def reorderTriples(
-    l_: Iterable[tuple[Identifier, Identifier, Identifier]]
-) -> list[tuple[Identifier, Identifier, Identifier]]:
+    l_: Iterable[Tuple[Identifier, Identifier, Identifier]]
+) -> List[Tuple[Identifier, Identifier, Identifier]]:
     """
     Reorder triple patterns so that we execute the
     ones with most bindings first
@@ -127,7 +129,7 @@ def reorderTriples(
     # NOTE on type errors: most of these are because the same variable is used
     # for different types.
 
-    # type error: List comprehension has incompatible type list[tuple[None, tuple[Identifier, Identifier, Identifier]]]; expected list[tuple[Identifier, Identifier, Identifier]]
+    # type error: List comprehension has incompatible type List[Tuple[None, Tuple[Identifier, Identifier, Identifier]]]; expected List[Tuple[Identifier, Identifier, Identifier]]
     l_ = [(None, x) for x in l_]  # type: ignore[misc]
     varsknown: set[typing.Union[BNode, Variable]] = set()
     varscount: dict[Identifier, int] = defaultdict(int)
@@ -145,10 +147,10 @@ def reorderTriples(
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
     while i < len(l_):
-        # type error: Generator has incompatible item type "tuple[Any, Identifier]"; expected "tuple[Identifier, Identifier, Identifier]"
-        # type error: Argument 1 to "_knownTerms" has incompatible type "Identifier"; expected "tuple[Identifier, Identifier, Identifier]"
+        # type error: Generator has incompatible item type "Tuple[Any, Identifier]"; expected "Tuple[Identifier, Identifier, Identifier]"
+        # type error: Argument 1 to "_knownTerms" has incompatible type "Identifier"; expected "Tuple[Identifier, Identifier, Identifier]"
         l_[i:] = sorted((_knownTerms(x[1], varsknown, varscount), x[1]) for x in l_[i:])  # type: ignore[misc,arg-type]
-        # type error: Incompatible types in assignment (expression has type "str", variable has type "tuple[Identifier, Identifier, Identifier]")
+        # type error: Incompatible types in assignment (expression has type "str", variable has type "Tuple[Identifier, Identifier, Identifier]")
         t = l_[i][0][0]  # type: ignore[assignment] # top block has this many terms bound
         j = 0
         while i + j < len(l_) and l_[i + j][0][0] == t:
@@ -157,15 +159,15 @@ def reorderTriples(
             j += 1
         i += 1
 
-    # type error: List comprehension has incompatible type list[Identifier]; expected list[tuple[Identifier, Identifier, Identifier]]
+    # type error: List comprehension has incompatible type List[Identifier]; expected List[Tuple[Identifier, Identifier, Identifier]]
     return [x[1] for x in l_]  # type: ignore[misc]
 
 
 def triples(
     l: typing.Union[  # noqa: E741
-        list[list[Identifier]], list[tuple[Identifier, Identifier, Identifier]]
+        List[list[Identifier]], List[Tuple[Identifier, Identifier, Identifier]]
     ]
-) -> list[tuple[Identifier, Identifier, Identifier]]:
+) -> List[Tuple[Identifier, Identifier, Identifier]]:
     _l = reduce(lambda x, y: x + y, l)
     if (len(_l) % 3) != 0:
         raise Exception("these aint triples")
@@ -268,7 +270,7 @@ def translateExists(
     return e
 
 
-def collectAndRemoveFilters(parts: list[CompValue]) -> Expr | None:
+def collectAndRemoveFilters(parts: List[CompValue]) -> Expr | None:
     """
 
     FILTER expressions apply to the whole group graph pattern in which
@@ -337,7 +339,7 @@ def translateGroupGraphPattern(graphPattern: CompValue) -> CompValue:
 
     filters = collectAndRemoveFilters(graphPattern.part)
 
-    g: list[CompValue] = []
+    g: List[CompValue] = []
     for p in graphPattern.part:
         if p.name == "TriplesBlock":
             # merge adjacent TripleBlocks
@@ -513,7 +515,7 @@ def _findVars(x, res: set[Variable]) -> CompValue | None:  # type: ignore[return
             return x
 
 
-def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
+def _addVars(x, children: List[set[Variable]]) -> set[Variable]:
     """
     find which variables may be bound by this part of the query
     """
@@ -547,7 +549,7 @@ def _addVars(x, children: list[set[Variable]]) -> set[Variable]:
 
 
 # type error: Missing return statement
-def _sample(e: typing.Union[CompValue, list[Expr], Expr, list[str], Variable], v: Variable | None = None) -> CompValue | None:  # type: ignore[return]
+def _sample(e: typing.Union[CompValue, List[Expr], Expr, List[str], Variable], v: Variable | None = None) -> CompValue | None:  # type: ignore[return]
     """
     For each unaggregated variable V in expr
     Replace V with Sample(V)
@@ -565,9 +567,9 @@ def _simplifyFilters(e: Any) -> Any:
 
 def translateAggregates(
     q: CompValue, M: CompValue
-) -> tuple[CompValue, list[tuple[Variable, Variable]]]:
-    E: list[tuple[Variable, Variable]] = []
-    A: list[CompValue] = []
+) -> Tuple[CompValue, List[Tuple[Variable, Variable]]]:
+    E: List[Tuple[Variable, Variable]] = []
+    A: List[CompValue] = []
 
     # collect/replace aggs in :
     #    select expr as ?var
@@ -605,7 +607,7 @@ def translateValues(
     # if len(v.var)!=len(v.value):
     #     raise Exception("Unmatched vars and values in ValueClause: "+str(v))
 
-    res: list[dict[Variable, str]] = []
+    res: List[dict[Variable, str]] = []
     if not v.var:
         return res
     if not v.value:
@@ -620,7 +622,7 @@ def translateValues(
     return Values(res)
 
 
-def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
+def translate(q: CompValue) -> Tuple[CompValue | None, List[Variable]]:
     """
     http://www.w3.org/TR/sparql11-query/#convertSolMod
 
@@ -835,16 +837,16 @@ def translatePrologue(
 
 def translateQuads(
     quads: CompValue,
-) -> tuple[
-    list[tuple[Identifier, Identifier, Identifier]],
-    defaultdict[str, list[tuple[Identifier, Identifier, Identifier]]],
+) -> Tuple[
+    List[Tuple[Identifier, Identifier, Identifier]],
+    defaultdict[str, List[Tuple[Identifier, Identifier, Identifier]]],
 ]:
     if quads.triples:
         alltriples = triples(quads.triples)
     else:
         alltriples = []
 
-    allquads: defaultdict[str, list[tuple[Identifier, Identifier, Identifier]]] = (
+    allquads: defaultdict[str, List[Tuple[Identifier, Identifier, Identifier]]] = (
         defaultdict(list)
     )
 
@@ -889,7 +891,7 @@ def translateUpdate(
     Returns a list of SPARQL Update Algebra expressions
     """
 
-    res: list[CompValue] = []
+    res: List[CompValue] = []
     prologue = None
     if not q.request:
         # type error: Incompatible return value type (got "list[CompValue]", expected "Update")
@@ -969,7 +971,7 @@ class _AlgebraTranslator:
 
     def __init__(self, query_algebra: Query):
         self.query_algebra = query_algebra
-        self.aggr_vars: defaultdict[Identifier, list[Identifier]] = defaultdict(list)
+        self.aggr_vars: defaultdict[Identifier, List[Identifier]] = defaultdict(list)
         self._alg_translation: str = ""
 
     def _replace(

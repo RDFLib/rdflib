@@ -27,7 +27,7 @@ import logging
 import os.path
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Callable, Union
+from typing import Callable, Tuple, Union
 from xml.sax import SAXParseException
 
 import pytest
@@ -211,7 +211,7 @@ CONSTRAINED_FORMAT_MAP = {
 
 def collect_files(
     directory: Path, exclude_names: set[str] | None = None, pattern: str = "**/*"
-) -> list[tuple[Path, str]]:
+) -> list[Tuple[Path, str]]:
     result = []
     for path in directory.glob(pattern):
         if not path.is_file():
@@ -313,7 +313,7 @@ def get_formats() -> set[str]:
 
 
 def make_cases(
-    files: Iterable[tuple[Path, str]],
+    files: Iterable[Tuple[Path, str]],
     formats: set[str] | None = None,
     hext_okay: bool = False,
     checks: set[Check] | None = None,
@@ -367,12 +367,12 @@ def test_formats() -> None:
 @pytest.mark.parametrize(
     "checker, args", make_cases(collect_files(NT_DATA_DIR, INVALID_NT_FILES))
 )
-def test_nt(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
+def test_nt(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
     checker(*args)
 
 
 @pytest.mark.parametrize("checker, args", make_cases(collect_files(N3_DATA_DIR)))
-def test_n3(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
+def test_n3(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
     checker(*args)
 
 
@@ -509,7 +509,7 @@ N3_W3C_SUITE_FILES = [
     ),
 )
 def test_n3_suite(
-    checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]
+    checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]
 ):
     checker(*args)
 
@@ -530,7 +530,7 @@ EXTRA_FILES = [
 
 
 @pytest.mark.parametrize("checker, args", make_cases(EXTRA_FILES, hext_okay=True))
-def test_extra(checker: Callable[[str, str, Path], None], args: tuple[str, str, Path]):
+def test_extra(checker: Callable[[str, str, Path], None], args: Tuple[str, str, Path]):
     """
     Round tripping works correctly for selected extra files.
     """

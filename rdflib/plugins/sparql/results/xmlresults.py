@@ -20,6 +20,7 @@ from typing import (
     Any,
     BinaryIO,
     TextIO,
+    Tuple,
     Union,
     cast,
 )
@@ -206,8 +207,8 @@ class SPARQLXMLWriter:
             self.writer.startElementNS(
                 (SPARQL_XML_NAMESPACE, "variable"),
                 "variable",
-                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[tuple[None, str], str]"; expected "Mapping[tuple[str, str], str]"
-                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[tuple[None, str], str]"; expected "Mapping[tuple[str, str], str]"  [arg-type]
+                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
+                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"  [arg-type]
                 AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type]
             )
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, "variable"), "variable")
@@ -240,17 +241,17 @@ class SPARQLXMLWriter:
     def write_binding(self, name: Variable, val: Identifier) -> None:
         assert self._resultStarted
 
-        attr_vals: dict[tuple[str | None, str], str] = {
+        attr_vals: dict[Tuple[str | None, str], str] = {
             (None, "name"): str(name),
         }
-        attr_qnames: dict[tuple[str | None, str], str] = {
+        attr_qnames: dict[Tuple[str | None, str], str] = {
             (None, "name"): "name",
         }
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, "binding"),
             "binding",
-            # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[tuple[None, str], str]"; expected "Mapping[tuple[str, str], str]"
-            # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[tuple[None, str], str]"; expected "Mapping[tuple[str, str], str]"
+            # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
+            # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[None, str], str]"; expected "Mapping[Tuple[str, str], str]"
             AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type, unused-ignore]
         )
 
@@ -279,8 +280,8 @@ class SPARQLXMLWriter:
             self.writer.startElementNS(
                 (SPARQL_XML_NAMESPACE, "literal"),
                 "literal",
-                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[tuple[Optional[str], str], str]"; expected "Mapping[tuple[str, str], str]"
-                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[tuple[Optional[str], str], str]"; expected "Mapping[tuple[str, str], str]"
+                # type error: Argument 1 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
+                # type error: Argument 2 to "AttributesNSImpl" has incompatible type "Dict[Tuple[Optional[str], str], str]"; expected "Mapping[Tuple[str, str], str]"
                 AttributesNSImpl(attr_vals, attr_qnames),  # type: ignore[arg-type, unused-ignore]
             )
             self.writer.characters(val)

@@ -78,11 +78,9 @@ class TestFileParserGuessFormat:
                 ),
                 str(newpath),
             )
-            with (
-                pytest.raises(ParserError, match=r"Could not guess RDF format"),
-                caplog.at_level("WARNING"),
-            ):
-                g.parse(str(newpath))
+            with pytest.raises(ParserError, match=r"Could not guess RDF format"):
+                with caplog.at_level("WARNING"):
+                    g.parse(str(newpath))
 
             assert any(
                 rec.levelno == logging.WARNING

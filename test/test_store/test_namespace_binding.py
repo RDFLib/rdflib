@@ -6,7 +6,7 @@ import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 import pytest
 
@@ -72,7 +72,7 @@ EGNSSUB_V0 = EGNSSUB["v0"]
 EGNSSUB_V1 = EGNSSUB["v1"]
 EGNSSUB_V2 = EGNSSUB["v2"]
 
-NamespaceBindings = dict[str, URIRef]
+NamespaceBindings = Dict[str, URIRef]
 
 
 def make_graph(tmp_path: Path, store_name: str) -> Graph:

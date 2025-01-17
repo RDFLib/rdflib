@@ -6,7 +6,7 @@ from collections.abc import Collection
 from dataclasses import dataclass, field
 from io import StringIO
 from pathlib import Path
-from typing import Union, cast
+from typing import Tuple, Union, cast
 
 import pytest
 from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
@@ -28,7 +28,7 @@ class AlgebraTest:
     id: str
     description: str
     marks: Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]] = field(
-        default_factory=lambda: cast(tuple[MarkDecorator], tuple())
+        default_factory=lambda: cast(Tuple[MarkDecorator], tuple())
     )
 
     @property

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Collection
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Union, cast
+from typing import TYPE_CHECKING, Set, Tuple, Union, cast
 
 import pytest
 from _pytest.mark.structures import ParameterSet
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 """Test for graph_diff - much more extensive testing
 would certainly be possible"""
 
-_TripleSetType = set["_TripleType"]
+_TripleSetType = Set["_TripleType"]
 
 
 class TestDiff:
@@ -103,7 +103,7 @@ class GraphDiffCase:
     format: str
     lhs: str
     rhs: str
-    expected_result: tuple[
+    expected_result: Tuple[
         _ElementSetTypeOrStr, _ElementSetTypeOrStr, _ElementSetTypeOrStr
     ]
     marks: MarkType = field(default_factory=lambda: cast(MarksType, list()))

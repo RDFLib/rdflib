@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, Tuple, TypeVar, Union
 from urllib.parse import urljoin
 
 import pytest
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
     from rdflib.graph import _PredicateType
 
-POFilterType: te.TypeAlias = tuple[Optional[URIRef], Optional[URIRef]]
+POFilterType: te.TypeAlias = Tuple[Optional[URIRef], Optional[URIRef]]
 POFiltersType: te.TypeAlias = Iterable[POFilterType]
 
 MarkType: te.TypeAlias = Union[MarkDecorator, Collection[Union[MarkDecorator, Mark]]]

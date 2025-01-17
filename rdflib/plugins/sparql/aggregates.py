@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Mapping, MutableMapping
 from decimal import Decimal
 from typing import (
     Any,
+    Tuple,
     TypeVar,
     overload,
 )
@@ -88,11 +89,11 @@ class Counter(Accumulator):
 
 
 @overload
-def type_safe_numbers(*args: int) -> tuple[int]: ...
+def type_safe_numbers(*args: int) -> Tuple[int]: ...
 
 
 @overload
-def type_safe_numbers(*args: Decimal | float | int) -> tuple[float | int, ...]: ...
+def type_safe_numbers(*args: Decimal | float | int) -> Tuple[float | int, ...]: ...
 
 
 def type_safe_numbers(*args: Decimal | float | int) -> Iterable[float | int]:

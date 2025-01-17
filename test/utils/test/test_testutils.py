@@ -4,7 +4,7 @@ import os
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
-from typing import Any, Union
+from typing import Any, Tuple, Union
 
 import pytest
 
@@ -107,7 +107,7 @@ def test_paths(
 @dataclass
 class SetsEqualTestCase:
     equal: bool
-    format: str | tuple[str, str]
+    format: str | Tuple[str, str]
     bnode_handling: BNodeHandling
     lhs: str
     rhs: str
@@ -380,10 +380,10 @@ def test_assert_sets_equal(test_case: SetsEqualTestCase):
     ],
 )
 def test_prefix_tuples(
-    tuples: list[tuple[Any, ...]],
-    prefix: tuple[Any, ...],
-    suffix: tuple[Any, ...],
-    expected_result: list[tuple[Any, ...]],
+    tuples: list[Tuple[Any, ...]],
+    prefix: Tuple[Any, ...],
+    suffix: Tuple[Any, ...],
+    expected_result: list[Tuple[Any, ...]],
 ) -> None:
     assert expected_result == list(affix_tuples(prefix, tuples, suffix))
 

@@ -7,9 +7,10 @@ from rdflib import Graph, Literal, Variable
 from rdflib.namespace import Namespace
 from rdflib.plugins.sparql.processor import processUpdate
 from rdflib.term import IdentifiedNode, Node
+from typing import Tuple
 
 
-def triple_set(graph: Graph) -> set[tuple[Node, IdentifiedNode | Variable, Node]]:
+def triple_set(graph: Graph) -> set[Tuple[Node, IdentifiedNode | Variable, Node]]:
     return set(graph.triples((None, None, None)))
 
 

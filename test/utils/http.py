@@ -10,6 +10,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from typing import (
     NamedTuple,
+    Dict,
+    List,
+    Tuple,
     TypeVar,
     Union,
 )
@@ -17,13 +20,13 @@ from urllib.parse import ParseResult
 
 from test.utils.wildcard import EQ_WILDCARD
 
-__all__: list[str] = []
+__all__: List[str] = []
 
-HeadersT = Union[dict[str, list[str]], Iterable[tuple[str, str]]]
-PathQueryT = dict[str, list[str]]
+HeadersT = Union[Dict[str, List[str]], Iterable[Tuple[str, str]]]
+PathQueryT = Dict[str, List[str]]
 
 
-def header_items(headers: HeadersT) -> Iterable[tuple[str, str]]:
+def header_items(headers: HeadersT) -> Iterable[Tuple[str, str]]:
     if isinstance(headers, collections.abc.Mapping):
         for header, value in headers.items():
             if isinstance(value, list):
@@ -75,7 +78,7 @@ class MockHTTPResponse(NamedTuple):
     headers: HeadersT
 
 
-def get_random_ip(ip_prefix: list[str] | None = None) -> str:
+def get_random_ip(ip_prefix: List[str] | None = None) -> str:
     if ip_prefix is None:
         parts = ["127"]
     for _ in range(4 - len(parts)):

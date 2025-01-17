@@ -9,6 +9,7 @@ from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from rdflib.namespace import Namespace, NamespaceManager
+    from typing import Tuple
 
 
 __all__ = ["XMLWriter"]
@@ -83,7 +84,7 @@ class XMLWriter:
         self.text(content)
         self.pop()
 
-    def namespaces(self, namespaces: Iterable[tuple[str, str]] = None) -> None:
+    def namespaces(self, namespaces: Iterable[Tuple[str, str]] = None) -> None:
         if not namespaces:
             namespaces = self.nm.namespaces()
 

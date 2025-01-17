@@ -17,6 +17,7 @@ from typing import (  # Callable,
     Generic,
     Optional,
     TextIO,
+    Tuple,
     TypeVar,
     Union,
 )
@@ -364,7 +365,7 @@ class InputSourceChecker:
 FileParamTypeCM = AbstractContextManager[FileParamType]
 
 
-CreateInputSourceTestParamsTuple = tuple[
+CreateInputSourceTestParamsTuple = Tuple[
     Path,
     Optional[SourceParam],
     Optional[str],
