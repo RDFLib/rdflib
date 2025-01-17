@@ -1,16 +1,17 @@
-[project]
+[tool.poetry]
 name = "rdflib"
 version = "7.1.3"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
-authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
-maintainers = [{ name = "RDFLib Team", email = "rdflib-dev@googlegroups.com" }]
+authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>"]
+maintainers = ["RDFLib Team <rdflib-dev@googlegroups.com>"]
 repository = "https://github.com/RDFLib/rdflib"
 documentation = "https://rdflib.readthedocs.org/"
 license = "BSD-3-Clause"
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -21,7 +22,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Natural Language :: English"
 ]
-requires-python = ">=3.8,<4"
 readme = "README.md"
 packages = [
     { include = "rdflib" },
@@ -31,11 +31,16 @@ include = [
     { path = "docs", format = "sdist" },
     { path = "examples", format = "sdist" },
 ]
-dynamic = [ "dependencies" ]
-dependencies = [
-    'isodate >=0.7.2,<1.0.0; python_version < "3.11"',
-    'pyparsing >=3.0.0,<4'
-]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+isodate = {version=">=0.7.2,<1.0.0", python = "<3.11"}
+pyparsing = ">=2.1.0,<4"
+berkeleydb = {version = "^18.1.0", optional = true}
+networkx = {version = ">=2,<4", optional = true}
+html5rdf = {version = ">=1.2,<2", optional = true}
+lxml = {version = ">=4.3,<6.0", optional = true}
+orjson = {version = ">=3.9.14,<4", optional = true}
 
 [project.scripts]
 rdfpipe = 'rdflib.tools.rdfpipe:main'
@@ -80,7 +85,7 @@ lxml = [
 orjson = ["orjson >=3.9.14,<4"]
 
 [build-system]
-requires = ["poetry-core>=2.0.0"]
+requires = ["poetry-core>=1.8.5"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
@@ -283,9 +288,6 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if __name__==.__main__.:"
 ]
-
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8.0"
 
 [[tool.poetry.source]]
 name = "pypi-public"
