@@ -31,7 +31,7 @@ jobs:
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.9"
+          - python-version: "3.8"
             os: ubuntu-latest
             extensive-tests: true
             TOXENV_SUFFIX: "-docs"
@@ -125,7 +125,7 @@ jobs:
       matrix:
         include:
           - task: "gha:lint"
-            python-version: 3.9
+            python-version: 3.8
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME

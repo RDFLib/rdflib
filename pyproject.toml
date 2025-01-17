@@ -21,7 +21,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Natural Language :: English"
 ]
-requires-python = ">=3.9,<4"
+requires-python = ">=3.8,<4"
 readme = "README.md"
 packages = [
     { include = "rdflib" },
@@ -34,7 +34,7 @@ include = [
 dynamic = [ "dependencies" ]
 dependencies = [
     'isodate >=0.7.2,<1.0.0; python_version < "3.11"',
-    'pyparsing >=3.2.0,<4'
+    'pyparsing >=3.0.0,<4'
 ]
 
 [project.scripts]
@@ -45,7 +45,7 @@ rdfs2dot = 'rdflib.tools.rdfs2dot:main'
 rdfgraphisomorphism = 'rdflib.tools.graphisomorphism:main'
 
 [tool.poetry.group.dev.dependencies]
-black = "24.10.0"
+black = "24.4.2"
 mypy = "^1.13.0"
 lxml-stubs = ">=0.4,<0.6"
 pip-tools = "^7.4.1"
@@ -62,7 +62,6 @@ wheel = ">=0.42,<0.46"
 sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
-sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
 typing-extensions = "^4.11.0"
 
 [tool.poetry.group.lint.dependencies]
@@ -250,7 +249,7 @@ skip = [
 
 [tool.mypy]
 files = ['rdflib', 'test', 'devtools', 'examples']
-python_version = "3.9"
+python_version = "3.8"
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_subclassing_any = false
@@ -287,3 +286,7 @@ exclude_lines = [
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.8.0"
+
+[[tool.poetry.source]]
+name = "pypi-public"
+url = "https://pypi.org/simple/"
