@@ -70,8 +70,6 @@ Some features of RDFLib require optional dependencies which may be installed usi
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 7.1.3, see the ``CHANGELOG.md`` file for what's new in this release.
-
 ### Installation of the current main branch (for developers)
 
 With *pip* you can also install rdflib from the git repository with one of the following options:
