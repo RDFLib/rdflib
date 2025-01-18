@@ -5,7 +5,7 @@ import re
 import socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
-from typing import Callable, ClassVar, Type
+from typing import Callable, ClassVar
 from unittest.mock import patch
 
 import pytest
@@ -38,7 +38,7 @@ class TestSPARQLStoreGraph:
         ],
     )
     def test_graph_modify_fails(
-        self, call: Callable[[Graph], None], exception_type: Type[Exception]
+        self, call: Callable[[Graph], None], exception_type: type[Exception]
     ) -> None:
         """
         Methods that modify the Graph fail.

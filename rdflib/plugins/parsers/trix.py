@@ -4,7 +4,7 @@ A TriX parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn
 from xml.sax import handler, make_parser
 from xml.sax.handler import ErrorHandler
 
@@ -29,8 +29,8 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 class TriXHandler(handler.ContentHandler):
     """An Sax Handler for TriX. See http://sw.nokia.com/trix/"""
 
-    lang: Optional[str]
-    datatype: Optional[str]
+    lang: str | None
+    datatype: str | None
 
     def __init__(self, store: Store):
         self.store = store
@@ -38,9 +38,9 @@ class TriXHandler(handler.ContentHandler):
         self.reset()
 
     def reset(self) -> None:
-        self.bnode: Dict[str, BNode] = {}
-        self.graph: Optional[Graph] = None
-        self.triple: Optional[List[Identifier]] = None
+        self.bnode: dict[str, BNode] = {}
+        self.graph: Graph | None = None
+        self.triple: list[Identifier] | None = None
         self.state = 0
         self.lang = None
         self.datatype = None
@@ -53,14 +53,14 @@ class TriXHandler(handler.ContentHandler):
     def startDocument(self) -> None:
         pass
 
-    def startPrefixMapping(self, prefix: Optional[str], namespace: str) -> None:
+    def startPrefixMapping(self, prefix: str | None, namespace: str) -> None:
         pass
 
-    def endPrefixMapping(self, prefix: Optional[str]) -> None:
+    def endPrefixMapping(self, prefix: str | None) -> None:
         pass
 
     def startElementNS(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] != str(TRIXNS):
             self.error(
@@ -150,7 +150,7 @@ class TriXHandler(handler.ContentHandler):
 
         self.chars = ""
 
-    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
         if TYPE_CHECKING:
             assert self.triple is not None
         if name[0] != str(TRIXNS):

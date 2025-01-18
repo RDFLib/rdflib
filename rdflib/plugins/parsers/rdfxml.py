@@ -4,7 +4,7 @@ An RDF/XML parser for RDFLib
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn
 from urllib.parse import urldefrag, urljoin
 from xml.sax import handler, make_parser, xmlreader
 from xml.sax.handler import ErrorHandler
@@ -15,7 +15,7 @@ from rdflib.graph import Graph
 from rdflib.namespace import RDF, is_ncname
 from rdflib.parser import InputSource, Parser
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
-from rdflib.term import BNode, Identifier, Literal, URIRef
+from rdflib.term import BNode, IdentifiedNode, Literal, URIRef
 
 if TYPE_CHECKING:
     # from xml.sax.expatreader import ExpatLocator
@@ -146,16 +146,16 @@ class RDFXMLHandler(handler.ContentHandler):
         document_element = ElementHandler()
         document_element.start = self.document_element_start
         document_element.end = lambda name, qname: None
-        self.stack: List[Optional[ElementHandler]] = [
+        self.stack: list[ElementHandler | None] = [
             None,
             document_element,
         ]
-        self.ids: Dict[str, int] = {}  # remember IDs we have already seen
-        self.bnode: Dict[str, Identifier] = {}
-        self._ns_contexts: List[Dict[str, Optional[str]]] = [
+        self.ids: dict[str, int] = {}  # remember IDs we have already seen
+        self.bnode: dict[str, IdentifiedNode] = {}
+        self._ns_contexts: list[dict[str, str | None]] = [
             {}
         ]  # contains uri -> prefix dicts
-        self._current_context: Dict[str, Optional[str]] = self._ns_contexts[-1]
+        self._current_context: dict[str, str | None] = self._ns_contexts[-1]
 
     # ContentHandler methods
 
@@ -165,17 +165,17 @@ class RDFXMLHandler(handler.ContentHandler):
     def startDocument(self) -> None:
         pass
 
-    def startPrefixMapping(self, prefix: Optional[str], namespace: str) -> None:
+    def startPrefixMapping(self, prefix: str | None, namespace: str) -> None:
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
         self.store.bind(prefix, namespace or "", override=False)
 
-    def endPrefixMapping(self, prefix: Optional[str]) -> None:
+    def endPrefixMapping(self, prefix: str | None) -> None:
         self._current_context = self._ns_contexts[-1]
         del self._ns_contexts[-1]
 
     def startElementNS(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
     ) -> None:
         stack = self.stack
         stack.append(ElementHandler())
@@ -207,7 +207,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.language = language
         current.start(name, qname, attrs)
 
-    def endElementNS(self, name: Tuple[Optional[str], str], qname) -> None:
+    def endElementNS(self, name: tuple[str | None, str], qname) -> None:
         self.current.end(name, qname)
         self.stack.pop()
 
@@ -222,7 +222,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def processingInstruction(self, target, data) -> None:
         pass
 
-    def add_reified(self, sid: Identifier, spo: _TripleType):
+    def add_reified(self, sid: IdentifiedNode, spo: _TripleType):
         s, p, o = spo
         self.store.add((sid, RDF.type, RDF.Statement))
         self.store.add((sid, RDF.subject, s))
@@ -238,21 +238,21 @@ class RDFXMLHandler(handler.ContentHandler):
         )
         raise ParserError(info + message)
 
-    def get_current(self) -> Optional[ElementHandler]:
+    def get_current(self) -> ElementHandler | None:
         return self.stack[-2]
 
     # Create a read only property called current so that self.current
     # give the current element handler.
     current = property(get_current)
 
-    def get_next(self) -> Optional[ElementHandler]:
+    def get_next(self) -> ElementHandler | None:
         return self.stack[-1]
 
     # Create a read only property that gives the element handler to be
     # used for the next element.
     next = property(get_next)
 
-    def get_parent(self) -> Optional[ElementHandler]:
+    def get_parent(self) -> ElementHandler | None:
         return self.stack[-3]
 
     # Create a read only property that gives the current parent
@@ -267,8 +267,8 @@ class RDFXMLHandler(handler.ContentHandler):
         return URIRef(result)
 
     def convert(
-        self, name: Tuple[Optional[str], str], qname, attrs: AttributesImpl
-    ) -> Tuple[URIRef, Dict[URIRef, str]]:
+        self, name: tuple[str | None, str], qname, attrs: AttributesImpl
+    ) -> tuple[URIRef, dict[URIRef, str]]:
         if name[0] is None:
             # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[Optional[str], str]")
             name = URIRef(name[1])  # type: ignore[assignment]
@@ -291,11 +291,11 @@ class RDFXMLHandler(handler.ContentHandler):
                 atts[RDFNS[att]] = v  # type: ignore[misc, valid-type]
             else:
                 atts[URIRef(att)] = v
-        # type error: Incompatible return value type (got "Tuple[Tuple[Optional[str], str], Dict[Any, Any]]", expected "Tuple[URIRef, Dict[URIRef, str]]")
+        # type error: Incompatible return value type (got "Tuple[Tuple[Optional[str], str], dict[Any, Any]]", expected "Tuple[URIRef, dict[URIRef, str]]")
         return name, atts  # type: ignore[return-value]
 
     def document_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
             # Cheap hack so 2to3 doesn't turn it into __next__
@@ -309,7 +309,7 @@ class RDFXMLHandler(handler.ContentHandler):
             # another element will cause error
 
     def node_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
@@ -391,7 +391,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         current.subject = subject
 
-    def node_element_end(self, name: Tuple[str, str], qname) -> None:
+    def node_element_end(self, name: tuple[str, str], qname) -> None:
         # repeat node-elements are only allowed
         # at at top-level
 
@@ -403,7 +403,7 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object = self.current.subject
 
     def property_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         # type error: Incompatible types in assignment (expression has type "URIRef", variable has type "Tuple[str, str]")
         name, atts = self.convert(name, qname, attrs)  # type: ignore[assignment]
@@ -412,7 +412,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         # Cheap hack so 2to3 doesn't turn it into __next__
         next = getattr(self, "next")
-        object: Optional[_ObjectType] = None
+        object: _ObjectType | None = None
         current.data = None
         current.list = None
 
@@ -533,7 +533,7 @@ class RDFXMLHandler(handler.ContentHandler):
         if current.data is not None:
             current.data += data
 
-    def property_element_end(self, name: Tuple[str, str], qname) -> None:
+    def property_element_end(self, name: tuple[str, str], qname) -> None:
         current = self.current
         if current.data is not None and current.object is None:
             literalLang = current.language
@@ -552,7 +552,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 )
         current.subject = None
 
-    def list_node_element_end(self, name: Tuple[str, str], qname) -> None:
+    def list_node_element_end(self, name: tuple[str, str], qname) -> None:
         current = self.current
         if self.parent.list == RDF.nil:
             list = BNode()
@@ -571,7 +571,7 @@ class RDFXMLHandler(handler.ContentHandler):
             self.parent.list = list
 
     def literal_element_start(
-        self, name: Tuple[str, str], qname, attrs: AttributesImpl
+        self, name: tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         current = self.current
         self.next.start = self.literal_element_start
@@ -607,7 +607,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def literal_element_char(self, data: str) -> None:
         self.current.object += escape(data)
 
-    def literal_element_end(self, name: Tuple[str, str], qname) -> None:
+    def literal_element_end(self, name: tuple[str, str], qname) -> None:
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:

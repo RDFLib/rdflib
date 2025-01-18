@@ -8,7 +8,7 @@ from __future__ import annotations
 import codecs
 import re
 import warnings
-from typing import Match
+from re import Match
 
 
 def cast_bytes(s, enc="utf-8"):

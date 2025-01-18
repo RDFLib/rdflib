@@ -94,7 +94,7 @@ def _quote_encode(l_: str) -> str:
 
 def _nt_unicode_error_resolver(
     err: UnicodeError,
-) -> Tuple[Union[str, bytes], int]:
+) -> tuple[str | bytes, int]:
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
     """
