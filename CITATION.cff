@@ -69,7 +69,7 @@ authors:
 - family-names: "Stuart"
   given-names: "Veyndan"
 title: "RDFLib"
-version: 7.1.1
-date-released: 2024-10-28
+version: 7.1.3
+date-released: 2024-01-18
 url: "https://github.com/RDFLib/rdflib"
 doi: 10.5281/zenodo.6845245
