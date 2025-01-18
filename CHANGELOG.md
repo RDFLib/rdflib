@@ -4,7 +4,7 @@ A fix-up release that re-adds support for Python 3.8 after it was accidentally
 removed in Release 7.1.2.
 
 This release cherrypicks many additions to 7.1.2 added to 7.1.1 but leaves out 
-typing changes that are not compatable
+typing changes that are not compatible
 with Python 3.8.
 
 Also not carried over from 7.1.2 is the change from Poetry 1.x to 2.0.
