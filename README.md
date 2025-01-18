@@ -18,9 +18,10 @@ RDFLib
 
 RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). RDFLib contains most things you need to work with RDF, including:
 
-* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, Trig and JSON-LD
+* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, Trig, JSON-LD and even HexTuples
 * a Graph interface which can be backed by any one of a number of Store implementations
-* store implementations for in-memory, persistent on disk (Berkeley DB) and remote SPARQL endpoints
+* Store implementations for in-memory, persistent on disk (Berkeley DB) and remote SPARQL endpoints
+    * additional Stores can be supplied via plugins 
 * a SPARQL 1.1 implementation - supporting SPARQL 1.1 Queries and Update statements
 * SPARQL function extension mechanisms
 
@@ -29,10 +30,8 @@ The RDFlib community maintains many RDF-related Python code repositories with di
 
 * [rdflib](https://github.com/RDFLib/rdflib) - the RDFLib core
 * [sparqlwrapper](https://github.com/RDFLib/sparqlwrapper) - a simple Python wrapper around a SPARQL service to remotely execute your queries
-* [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE.
-* [pyrdfa3](https://github.com/RDFLib/pyrdfa3) - RDFa 1.1 distiller/parser library: can extract RDFa 1.1/1.0 from (X)HTML, SVG, or XML in general.
-* [pymicrodata](https://github.com/RDFLib/pymicrodata) - A module to extract RDF from an HTML5 page annotated with microdata. 
-* [pySHACL](https://github.com/RDFLib/pySHACL) - A pure Python module which allows for the validation of RDF graphs against SHACL graphs.
+* [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE
+* [pySHACL](https://github.com/RDFLib/pySHACL) - A pure Python module which allows for the validation of RDF graphs against SHACL graphs
 * [OWL-RL](https://github.com/RDFLib/OWL-RL) - A simple implementation of the OWL2 RL Profile which expands the graph with all possible triples that OWL RL defines.
 
 Please see the list for all packages/repositories here:
