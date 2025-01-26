@@ -380,6 +380,10 @@ interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r"[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*")
 
 
+class sfloat(str):
+    """ don't normalize raw XSD.double string representation """
+
+
 class SinkParser:
     def __init__(
         self,
@@ -1528,7 +1532,7 @@ class SinkParser:
                 m = exponent_syntax.match(argstr, i)
                 if m:
                     j = m.end()
-                    res.append(float(argstr[i:j]))
+                    res.append(sfloat(argstr[i:j]))
                     return j
 
                 m = decimal_syntax.match(argstr, i)
@@ -1911,7 +1915,7 @@ class RDFSink:
     def normalise(
         self,
         f: Optional[Formula],
-        n: Union[Tuple[int, str], bool, int, Decimal, float, _AnyT],
+        n: Union[Tuple[int, str], bool, int, Decimal, sfloat, _AnyT],
     ) -> Union[URIRef, Literal, BNode, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))
@@ -1931,7 +1935,7 @@ class RDFSink:
             s = Literal(value, datatype=DECIMAL_DATATYPE)
             return s
 
-        if isinstance(n, float):
+        if isinstance(n, sfloat):
             s = Literal(str(n), datatype=DOUBLE_DATATYPE)
             return s
 
