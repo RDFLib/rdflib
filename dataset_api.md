@@ -1,10 +1,10 @@
 Incorporate the changes proposed from Martynas, with the exception of graphs(), which would now return a dictionary of graph names (URIRef or BNode) to Graph objects (as the graph's identifier would be removed).
 
 ```
-add add_named_graph(uri: IdentifiedNode, graph: Graph) method
-add has_named_graph(uri: IdentifiedNode) method
-add remove_named_graph(uri: IdentifiedNode) method
-add replace_named_graph(uri: IdentifiedNode, graph: Graph)) method
+add add_named_graph(name: IdentifiedNode, graph: Graph) method
+add has_named_graph(name: IdentifiedNode) method
+add remove_named_graph(name: IdentifiedNode) method
+add replace_named_graph(name: IdentifiedNode, graph: Graph)) method
 add graphs() method as an alias for contexts()
 add default_graph property as an alias for default_context
 add get_named_graph as an alias for get_graph
@@ -47,7 +47,10 @@ g1.add(
         Literal("Triple A")
     )
 )
-d.add_graph(g1)
+# merge with the default graph
+d.default_graph += g1
+# or set the default graph
+d.default_graph = g1
 
 # Add a Graph to a Named Graph in the Dataset.
 g2 = Graph()
@@ -58,7 +61,7 @@ g2.add(
         Literal("Triple B")
     )
 )
-d.add_named_graph(uri=URIRef("http://example.com/graph-B"), g2)
+d.add_named_graph(name=URIRef("http://example.com/graph-B"), g2)
 
 # ============================================
 # Iterate over the entire Dataset returning triples

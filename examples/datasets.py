@@ -317,7 +317,7 @@ http://example.com/graph-2
 """
 
 # To remove a graph
-d.remove_named_graph(graph_1_id)
+d.remove_named_graph(name=graph_1_id)
 
 # print what's left - one named graph, graph-2, and the default graph:
 print(d.serialize(format="trig"))
@@ -352,7 +352,7 @@ g.add(
 )
 
 # Add the new Graph to the Dataset
-d.replace_named_graph(g, graph_1_id)
+d.replace_named_graph(graph=g, name=graph_1_id)
 
 # print the updated Dataset
 print(d.serialize(format="trig"))
@@ -386,7 +386,7 @@ g_no_id.add(
         Literal("Triple L"),
     )
 )
-d.add_named_graph(g_no_id)
+d.add_named_graph(graph=g_no_id)
 
 # now when we print it, we will see a Graph with a Blank Node id:
 print(d.serialize(format="trig"))

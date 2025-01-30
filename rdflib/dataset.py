@@ -83,10 +83,10 @@ class Dataset():
     def add_named_graph(
         self,
         graph: Graph,
-        identifier: IdentifiedNode | str,
+        name: Optional[IdentifiedNode | str] = None,
         base: str | None = None,
     ) -> Dataset:
-        if identifier is None:
+        if name is None:
             from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
 
             self.bind(
@@ -94,23 +94,23 @@ class Dataset():
                 _SKOLEM_DEFAULT_AUTHORITY + rdflib_skolem_genid,
                 override=False,
             )
-            identifier = BNode().skolemize()
+            name = BNode().skolemize()
 
         graph.base = base
 
-        self.store.add_graph(graph, identifier)
+        self.store.add_graph(graph, name)
         return self
 
-    def has_named_graph(self, identifier: IdentifiedNode) -> bool:
+    def has_named_graph(self, name: IdentifiedNode) -> bool:
         raise NotImplementedError
 
-    def remove_named_graph(self, identifier: IdentifiedNode) -> Dataset:
+    def remove_named_graph(self, name: IdentifiedNode) -> Dataset:
         raise NotImplementedError
 
-    def get_named_graph(self, identifier: IdentifiedNode) -> Graph:
+    def get_named_graph(self, name: IdentifiedNode) -> Graph:
         raise NotImplementedError
 
-    def replace_named_graph(self, identifier: IdentifiedNode, graph: Graph) -> Dataset:
+    def replace_named_graph(self, graph: Graph, name: IdentifiedNode) -> Dataset:
         raise NotImplementedError
 
     def parse(
