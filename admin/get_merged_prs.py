@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request
 
 # https://api.github.com/search/issues?q=repo:rdflib/rdflib+is:pr+merged:%3E=2023-08-02&per_page=300&page=1
-LAST_RELEASE_DATE = "2024-10-17"
+LAST_RELEASE_DATE = "2024-10-29"
 ISSUES_URL = "https://api.github.com/search/issues"
 ITEMS = []
 PAGE = 1

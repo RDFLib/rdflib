@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import logging
 from contextlib import ExitStack
-from typing import Optional
 
 import pytest
 
@@ -29,22 +28,22 @@ VALID_TYPES = {RDFT.TestNQuadsPositiveSyntax, RDFT.TestNQuadsNegativeSyntax}
 
 def check_entry(entry: ManifestEntry) -> None:
     assert entry.action is not None
-    assert entry.type in VALID_TYPES
+    assert entry.type_ in VALID_TYPES
     action_path = entry.uri_mapper.to_local_path(entry.action)
     if logger.isEnabledFor(logging.DEBUG):
         logger.debug(
             "action = %s\n%s", action_path, action_path.read_text(encoding=ENCODING)
         )
-    catcher: Optional[pytest.ExceptionInfo[Exception]] = None
+    catcher: pytest.ExceptionInfo[Exception] | None = None
     dataset = Dataset()
     with ExitStack() as xstack:
-        if entry.type == RDFT.TestNQuadsNegativeSyntax:
+        if entry.type_ == RDFT.TestNQuadsNegativeSyntax:
             catcher = xstack.enter_context(pytest.raises(Exception))
         dataset.parse(action_path, publicID=entry.action, format="nquads")
     if catcher is not None:
         assert catcher.value is not None
 
-    if entry.type == RDFT.TestNQuadsPositiveSyntax:
+    if entry.type_ == RDFT.TestNQuadsPositiveSyntax:
         graph_data = dataset.serialize(format="nquads")
         result_dataset = Dataset()
         result_dataset.parse(data=graph_data, publicID=entry.action, format="nquads")

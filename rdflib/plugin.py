@@ -27,16 +27,12 @@ information.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from importlib.metadata import EntryPoint, entry_points
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Generic,
-    Iterator,
-    Optional,
-    Tuple,
-    Type,
     TypeVar,
     overload,
 )
@@ -75,7 +71,7 @@ rdflib_entry_points = {
     "rdf.plugins.updateprocessor": UpdateProcessor,
 }
 
-_plugins: Dict[Tuple[str, Type[Any]], Plugin] = {}
+_plugins: dict[tuple[str, type[Any]], Plugin] = {}
 
 
 class PluginException(Error):  # noqa: N818
@@ -88,15 +84,15 @@ PluginT = TypeVar("PluginT")
 
 class Plugin(Generic[PluginT]):
     def __init__(
-        self, name: str, kind: Type[PluginT], module_path: str, class_name: str
+        self, name: str, kind: type[PluginT], module_path: str, class_name: str
     ):
         self.name = name
         self.kind = kind
         self.module_path = module_path
         self.class_name = class_name
-        self._class: Optional[Type[PluginT]] = None
+        self._class: type[PluginT] | None = None
 
-    def getClass(self) -> Type[PluginT]:  # noqa: N802
+    def getClass(self) -> type[PluginT]:  # noqa: N802
         if self._class is None:
             module = __import__(self.module_path, globals(), locals(), [""])
             self._class = getattr(module, self.class_name)
@@ -104,19 +100,19 @@ class Plugin(Generic[PluginT]):
 
 
 class PKGPlugin(Plugin[PluginT]):
-    def __init__(self, name: str, kind: Type[PluginT], ep: EntryPoint):
+    def __init__(self, name: str, kind: type[PluginT], ep: EntryPoint):
         self.name = name
         self.kind = kind
         self.ep = ep
-        self._class: Optional[Type[PluginT]] = None
+        self._class: type[PluginT] | None = None
 
-    def getClass(self) -> Type[PluginT]:  # noqa: N802
+    def getClass(self) -> type[PluginT]:  # noqa: N802
         if self._class is None:
             self._class = self.ep.load()
         return self._class
 
 
-def register(name: str, kind: Type[Any], module_path, class_name):
+def register(name: str, kind: type[Any], module_path, class_name):
     """
     Register the plugin for (name, kind). The module_path and
     class_name should be the path to a plugin class.
@@ -125,7 +121,7 @@ def register(name: str, kind: Type[Any], module_path, class_name):
     _plugins[(name, kind)] = p
 
 
-def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
+def get(name: str, kind: type[PluginT]) -> type[PluginT]:
     """
     Return the class for the specified (name, kind). Raises a
     PluginException if unable to do so.
@@ -153,16 +149,16 @@ else:
 
 @overload
 def plugins(
-    name: Optional[str] = ..., kind: Type[PluginT] = ...
+    name: str | None = ..., kind: type[PluginT] = ...
 ) -> Iterator[Plugin[PluginT]]: ...
 
 
 @overload
-def plugins(name: Optional[str] = ..., kind: None = ...) -> Iterator[Plugin]: ...
+def plugins(name: str | None = ..., kind: None = ...) -> Iterator[Plugin]: ...
 
 
 def plugins(
-    name: Optional[str] = None, kind: Optional[Type[PluginT]] = None
+    name: str | None = None, kind: type[PluginT] | None = None
 ) -> Iterator[Plugin[PluginT]]:
     """
     A generator of the plugins.

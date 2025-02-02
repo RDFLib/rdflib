@@ -26,7 +26,8 @@ graphs that can be used and queried. The store that backs the graph
 from __future__ import annotations
 
 from codecs import getreader
-from typing import Any, MutableMapping, Optional
+from collections.abc import MutableMapping
+from typing import Any
 
 from rdflib.exceptions import ParserError as ParseError
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
@@ -48,7 +49,7 @@ class NQuadsParser(W3CNTriplesParser):
         self,
         inputsource: InputSource,
         sink: Graph,
-        bnode_context: Optional[_BNodeContextType] = None,
+        bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
         **kwargs: Any,
     ):
@@ -106,7 +107,7 @@ class NQuadsParser(W3CNTriplesParser):
 
         return self.sink
 
-    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parseline(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
