@@ -1,8 +1,9 @@
 """
-This file contains a number of common tasks using the RDFLib Dataset class.
+This module contains a number of common tasks using the RDFLib Dataset class.
 
-An RDFLib Dataset is an object that stores multiple Named Graphs - instances of RDFLib
-Graph identified by IRI - within it and allows whole-of-dataset or single Graph use.
+An RDFLib Dataset is an object that stores one Default Graph and zero or more Named
+Graphs - all instances of RDFLib Graph identified by IRI - within it and allows
+whole-of-dataset or single Graph use.
 
 Dataset extends Graph's Subject, Predicate, Object structure to include Graph -
 archaically called Context - producing quads of s, p, o, g.
@@ -10,11 +11,11 @@ archaically called Context - producing quads of s, p, o, g.
 There is an older implementation of a Dataset-like class in RDFLib < 7.x called
 ConjunctiveGraph that is now deprecated.
 
-Sections in this file:
+Sections in this module:
 
-1. Creating & Adding
-2. Looping & Counting
-3. Manipulating Graphs
+1. Creating & Growing Datasets
+2. Looping & Counting triples/quads in Datasets
+3. Manipulating Graphs with Datasets
 """
 
 from rdflib import Dataset, Graph, Literal, URIRef
@@ -30,7 +31,7 @@ from rdflib import Dataset, Graph, Literal, URIRef
 # mypy: ignore_errors=true
 
 #######################################################################################
-#   1. Creating & Adding
+#   1. Creating & Growing
 #######################################################################################
 
 # Create an empty Dataset
@@ -42,9 +43,6 @@ d.bind("ex", "http://example.com/")
 # Declare a Graph identifier to be used to identify a Graph
 # A string or a URIRef may be used, but safer to always use a URIRef for usage consistency
 graph_1_id = URIRef("http://example.com/graph-1")
-
-# Add an empty Graph, identified by graph_1_id, to the Dataset
-d.graph(identifier=graph_1_id)
 
 # Add two quads to the Dataset which are triples + graph ID
 # These insert the triple into the GRaph specified by the ID
@@ -69,8 +67,7 @@ d.add(
 # We now have 2 distinct quads in the Dataset to the Dataset has a length of 2
 assert len(d) == 2
 
-# Add another quad to the Dataset specifying a non-existent Graph.
-# The Graph is created automatically
+# Add another quad to the Dataset.
 d.add(
     (
         URIRef("http://example.com/subject-y"),
@@ -82,10 +79,22 @@ d.add(
 
 assert len(d) == 3
 
+# Triples can be added to the Default Graph by not specifying a graph, or specifying the
+# graph as None
+d.add(
+    (
+        URIRef("http://example.com/subject-dg"),
+        URIRef("http://example.com/predicate-dg"),
+        Literal("Triple DG"),
+    )
+)
 
-# You can print the Dataset like you do a Graph but you must specify a quads format like
-# 'trig' or 'trix', not 'turtle', unless the default_union parameter is set to True, and
-# then you can print the entire Dataset in triples.
+# Triples in the Default Graph contribute to the size/length of the Dataset
+assert len(d) == 4
+
+# You can print the Dataset like you do a Graph, in both "triples" and "quads" RDF
+# mediatypes.
+# Using trig, a "quads" or "graph aware" format:
 # print(d.serialize(format="trig").strip())
 
 # you should see something like this:
@@ -101,11 +110,27 @@ ex:graph-1 {
 ex:graph-2 {
     ex:subject-y ex:predicate-y "Triple Y" .
 }
+
+{
+    ex:subject-dg ex:predicate-dg "Triple DG" .
+}
+"""
+# Using turtle, a "triples" format:
+# print(d.serialize(format="turtle").strip())
+
+# you should see something like this:
+"""
+@prefix ex: <http://example.com/> .
+
+ex:subject-x ex:predicate-x "Triple X" .
+ex:subject-z ex:predicate-z "Triple Z" .
+ex:subject-y ex:predicate-y "Triple Y" .
+ex:subject-dg ex:predicate-dg "Triple DG" .
 """
 
 
 # Print out one graph in the Dataset, using a standard Graph serialization format - longturtle
-print(d.get_graph(URIRef("http://example.com/graph-2")).serialize(format="longturtle"))
+print(d.get_named_graph(URIRef("http://example.com/graph-2")).serialize(format="longturtle"))
 
 # you should see something like this:
 """
@@ -122,7 +147,7 @@ ex:subject-y
 #######################################################################################
 
 # Loop through all quads in the dataset
-for s, p, o, g in d.quads((None, None, None, None)):  # type: ignore[arg-type]
+for s, p, o, g in d.quads():  # type: ignore[arg-type]
     print(f"{s}, {p}, {o}, {g}")
 
 # you should see something like this:
@@ -130,6 +155,7 @@ for s, p, o, g in d.quads((None, None, None, None)):  # type: ignore[arg-type]
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
 http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://example.com/graph-1
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG", None
 """
 
 # Loop through all the quads in one Graph - just constrain the Graph field
@@ -142,6 +168,47 @@ http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://e
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
 """
 
+# Or equivalently, use the "graph" parameter, similar to SPARQL Dataset clauses (FROM,
+# FROM NAMED), to restrict the graphs.
+for s, p, o, g in d.quads(graph=graph_1_id):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}, {g}")
+# (Produces the same result as above)
+
+# To iterate through only the union of Named Graphs, you can use the special enum
+# "named" with the graph parameter
+for s, p, o, g in d.quads(graph=GraphEnum.named):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}, {g}")
+
+# you should see something like this:
+"""
+http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
+http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://example.com/graph-1
+http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
+"""
+
+# To iterate through the Default Graph, you can use the special enum "default" with
+# the graph parameter
+for s, p, o, g in d.quads(graph=GraphEnum.default):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}, {g}")
+
+# you should see something like this:
+"""
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG"
+"""
+
+# To iterate through multiple graphs, you can pass a list composed of Named Graph URIs
+# and the special enums "named" and "default", for example to iterate through the
+# default graph and a specified named graph:
+for s, p, o, g in d.quads(graph=[graph_1_id, GraphEnum.default]):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}, {g}")
+
+# you should see something like this:
+"""
+http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://example.com/graph-1
+http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG", None
+"""
+
 # Looping through triples in one Graph still works too
 for s, p, o in d.triples((None, None, None, graph_1_id)):  # type: ignore[arg-type]
     print(f"{s}, {p}, {o}")
@@ -152,12 +219,13 @@ http://example.com/subject-x, http://example.com/predicate-x, Triple X
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 """
 
-# Looping through triples across the whole Dataset will produce nothing
-# unless we set the default_union parameter to True, since each triple is in a Named Graph
+# Again, the "graph" parameter can be used
+for s, p, o in d.triples(graph=graph_1_id):  # type: ignore[arg-type]
+    print(f"{s}, {p}, {o}")
 
-# Setting the default_union parameter to True essentially presents all triples in all
-# Graphs as a single Graph
-d.default_union = True
+# As the Dataset is inclusive, looping through triples across the whole Dataset will
+# yield all triples in both the Default Graph and all Named Graphs.
+
 for s, p, o in d.triples((None, None, None)):
     print(f"{s}, {p}, {o}")
 
@@ -166,17 +234,7 @@ for s, p, o in d.triples((None, None, None)):
 http://example.com/subject-x, http://example.com/predicate-x, Triple X
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y
-"""
-
-# You can still loop through all quads now with the default_union parameter to True
-for s, p, o, g in d.quads((None, None, None)):
-    print(f"{s}, {p}, {o}, {g}")
-
-# you should see something like this:
-"""
-http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
-http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://example.com/graph-1
-http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG"
 """
 
 # Adding a triple in graph-1 to graph-2 increases the number of distinct of quads in
@@ -199,11 +257,11 @@ http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://e
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-2
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG", None
 """
 
-# but the 'length' of the Dataset is still only 3 as only distinct triples are counted
-assert len(d) == 3
-
+# The 'length' of the Dataset is now five as triples and quads count towards the size/length of a Dataset.
+assert len(d) == 5
 
 # Looping through triples sees the 'Z' triple only once
 for s, p, o in d.triples((None, None, None)):
@@ -214,64 +272,42 @@ for s, p, o in d.triples((None, None, None)):
 http://example.com/subject-x, http://example.com/predicate-x, Triple X
 http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 http://example.com/subject-y, http://example.com/predicate-y, Triple Y
+http://example.com/subject-dg, http://example.com/predicate-dg, "Triple DG"
 """
 
 #######################################################################################
 #   3. Manipulating Graphs
 #######################################################################################
 
-# List all the Graphs in the Dataset
-for x in d.graphs():
-    print(x)
+# List all the Graphs in the Dataset, as the Dataset's Named Graphs are a mapping from
+# URIRefs to Graphs
+for g_name, g_object in d.graphs().items():
+    print(g_name, g_object)
 
 # this returns the graphs, something like:
 """
-<http://example.com/graph-1> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
-<urn:x-rdflib:default> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
-<http://example.com/graph-2> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
+<http://example.com/graph-1>, <http://example.com/graph-1> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
+<http://example.com/graph-2>, <http://example.com/graph-2> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory'].
 """
 
 # So try this
-for x in d.graphs():
-    print(x.identifier)
+for g_name in d.graphs():
+    print(g_name)
 
-# you should see something like this, noting the default, currently empty, graph:
+# you should see something like this:
 """
-urn:x-rdflib:default
 http://example.com/graph-2
 http://example.com/graph-1
 """
 
-# To add to the default Graph, just add a triple, not a quad, to the Dataset directly
-d.add(
-    (
-        URIRef("http://example.com/subject-n"),
-        URIRef("http://example.com/predicate-n"),
-        Literal("Triple N"),
-    )
-)
-for s, p, o, g in d.quads((None, None, None, None)):
-    print(f"{s}, {p}, {o}, {g}")
-
-# you should see something like this, noting the triple in the default Graph:
-"""
-http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-1
-http://example.com/subject-z, http://example.com/predicate-z, Triple Z, http://example.com/graph-2
-http://example.com/subject-x, http://example.com/predicate-x, Triple X, http://example.com/graph-1
-http://example.com/subject-y, http://example.com/predicate-y, Triple Y, http://example.com/graph-2
-http://example.com/subject-n, http://example.com/predicate-n, Triple N, urn:x-rdflib:default
-"""
-
 # Loop through triples per graph
-for x in d.graphs():
-    print(x.identifier)
-    for s, p, o in x.triples((None, None, None)):
+for g_name, g_object in d.graphs():
+    print(g_name)
+    for s, p, o in g_object:
         print(f"\t{s}, {p}, {o}")
 
 # you should see something like this:
 """
-urn:x-rdflib:default
-	http://example.com/subject-n, http://example.com/predicate-n, Triple N
 http://example.com/graph-1
 	http://example.com/subject-x, http://example.com/predicate-x, Triple X
 	http://example.com/subject-z, http://example.com/predicate-z, Triple Z
@@ -280,25 +316,10 @@ http://example.com/graph-2
 	http://example.com/subject-z, http://example.com/predicate-z, Triple Z
 """
 
-# The default_union parameter includes all triples in the Named Graphs and the Default Graph
-for s, p, o in d.triples((None, None, None)):
-    print(f"{s}, {p}, {o}")
-
-# you should see something like this:
-"""
-http://example.com/subject-x, http://example.com/predicate-x, Triple X
-http://example.com/subject-n, http://example.com/predicate-n, Triple N
-http://example.com/subject-z, http://example.com/predicate-z, Triple Z
-http://example.com/subject-y, http://example.com/predicate-y, Triple Y
-"""
-
 # To remove a graph
-d.remove_graph(graph_1_id)
+d.remove_named_graph(name=graph_1_id)
 
-# To remove the default graph
-d.remove_graph(URIRef("urn:x-rdflib:default"))
-
-# print what's left - one graph, graph-2
+# print what's left - one named graph, graph-2, and the default graph:
 print(d.serialize(format="trig"))
 
 # you should see something like this:
@@ -310,30 +331,39 @@ ex:graph-2 {
 
     ex:subject-z ex:predicate-z "Triple Z" .
 }
+
+{
+    ex:subject-dg ex:predicate-dg "Triple DG" .
+}
 """
 
-# To add a Graph that already exists, you must give it an Identifier or else it will be assigned a Blank Node ID
-g_with_id = Graph(identifier=URIRef("http://example.com/graph-3"))
-g_with_id.bind("ex", "http://example.com/")
+# To replace a Graph that already exists, you can use the replace_named_graph method
 
-# Add a distinct triple to the exiting Graph, using Namepspace IRI shortcuts
-# g_with_id.bind("ex", "http://example.com/")
-g_with_id.add(
+# Create a new Graph
+g = Graph()
+
+# Add a triple to the new Graph
+g.add(
     (
         URIRef("http://example.com/subject-k"),
         URIRef("http://example.com/predicate-k"),
         Literal("Triple K"),
     )
 )
-d.add_graph(g_with_id)
+
+# Add the new Graph to the Dataset
+d.replace_named_graph(graph=g, name=graph_1_id)
+
+# print the updated Dataset
 print(d.serialize(format="trig"))
 
 # you should see something like this:
 """
+
 @prefix ex: <http://example.com/> .
 
-ex:graph-3 {
-    ex:subject_k ex:predicate_k "Triple K" .
+ex:graph-1 {
+    ex:subject-k ex:predicate-k "Triple K" .
 }
 
 ex:graph-2 {
@@ -341,12 +371,14 @@ ex:graph-2 {
 
     ex:subject-z ex:predicate-z "Triple Z" .
 }
+
+{
+    ex:subject-dg ex:predicate-dg "Triple DG" .
+}
 """
 
 # If you add a Graph with no specified identifier...
 g_no_id = Graph()
-g_no_id.bind("ex", "http://example.com/")
-
 g_no_id.add(
     (
         URIRef("http://example.com/subject-l"),
@@ -354,7 +386,7 @@ g_no_id.add(
         Literal("Triple L"),
     )
 )
-d.add_graph(g_no_id)
+d.add_named_graph(graph=g_no_id)
 
 # now when we print it, we will see a Graph with a Blank Node id:
 print(d.serialize(format="trig"))
@@ -363,7 +395,7 @@ print(d.serialize(format="trig"))
 """
 @prefix ex: <http://example.com/> .
 
-ex:graph-3 {
+ex:graph-1 {
     ex:subject-k ex:predicate-k "Triple K" .
 }
 
@@ -376,4 +408,23 @@ ex:graph-2 {
 _:N9cc8b54c91724e31896da5ce41e0c937 {
     ex:subject-l ex:predicate-l "Triple L" .
 }
+
+{
+    ex:subject-dg ex:predicate-dg "Triple DG" .
+}
+"""
+
+# triples, quads, subjects, predicates, objects, subject_predicates, predicate_objects,
+# subject_objects methods support passing a list of values for their parameters, for
+# example:
+
+# "Slice" the dataset on specified predicates.
+filter_preds = [URIRef("http://example.com/predicate-k"),
+                URIRef("http://example.com/predicate-y")]
+for s, o in d.subject_objects(filter_preds):
+    print(f"{s}, {o}")
+# you should see something like this:
+"""
+http://example.com/subject-k, Triple K
+http://example.com/subject-y, Triple Y
 """

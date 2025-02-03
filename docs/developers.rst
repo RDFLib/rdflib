@@ -434,6 +434,8 @@ flag them as expecting to fail.
 Compatibility
 -------------
 
+RDFLib 8.x is likely to support only the Python versions in bugfix status at the time of its release, so perhaps 3.12+.
+
 RDFlib 7.0.0 release and later only support Python 3.8.1 and newer.
 
 RDFlib 6.0.0 release and later only support Python 3.7 and newer.
@@ -443,22 +445,46 @@ RDFLib 5.0.0 maintained compatibility with Python versions 2.7, 3.4, 3.5, 3.6, 3
 Releasing
 ---------
 
+These are the major steps for releasing new versions of RDFLib:
+
+#. Create a pre-release PR
+
+   * that updates all the version numbers
+   * merge it with all tests passing
+
+#. Do the PyPI release
+#. Do the GitHub release
+#. Create a post-release PR 
+
+   * that updates all version numbers to next (alpha) release
+   * merge it with all tests passing
+
+#. Let the world know
+
+
+1. Create a pre-release PR
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Create a release-preparation pull request with the following changes:
 
-* Updated version and date in ``CITATION.cff``.
-* Updated copyright year in the ``LICENSE`` file.
-* Updated copyright year in the ``docs/conf.py`` file.
-* Updated main branch version and current version in the ``README.md`` file. 
-* Updated version in the ``pyproject.toml`` file.
-* Updated ``__date__`` in the ``rdflib/__init__.py`` file.
-* Accurate ``CHANGELOG.md`` entry for the release.
+#. In ``pyproject.toml``, update the version number
+#. In ``README.md``, update the *Versions & Releases* section
+#. In ``rdflib/__init__.py``, update the ``__date__`` value
+#. In ``docs/conf.py``, update copyright year
+#. In ``CITATION.cff``, update the version and date
+#. In ``LICENSE``, update the copyright year
+#. In ``CHANGELOG.md``, write an entry for this release
+   #. You can use the tool ``admin/get_merged_prs.py`` to assist with compiling a log of PRs and commits since last release
 
-Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
+2. Do the PyPI release
+~~~~~~~~~~~~~~~~~~~~~~
+
+Once the pre-release PR is merged, switch to the main branch, build the release and upload it to PyPI:
 
 .. code-block:: bash
     
     # Clean up any previous builds
-    \rm -vf dist/*
+    rm -vf dist/*
 
     # Build artifacts
     poetry build
@@ -487,24 +513,54 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     ## poetry publish -u __token__ -p pypi-<REDACTED>
     
 
-Once this is done, create a release tag from `GitHub releases
-<https://github.com/RDFLib/rdflib/releases/new>`_. For a release of version
-6.3.1 the tag should be ``6.3.1`` (without a "v" prefix), and the release title
-should be "RDFLib 6.3.1". The release notes for the latest version be added to
-the release description. The artifacts built with ``poetry build`` should be
-uploaded to the release as release artifacts.
+3. Do the GitHub release
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once the PyPI release is done, tag the main branch with the version number of the release. For a release of version
+6.3.1 the tag should be ``6.3.1`` (without a "v" prefix):
+
+.. code-block:: bash
+
+    git tag 6.3.1
+
+
+Push this tag to GitHub:
+
+.. code-block:: bash
+
+    git push --tags
+
+
+Make a release from this tag at https://github.com/RDFLib/rdflib/releases/new
+
+The release title should be "{DATE} RELEASE {VERSION}". See previous releases at https://github.com/RDFLib/rdflib/releases
+
+The release notes should be just the same as the release info in ``CHANGELOG.md``, as authored in the first major step in this release process.
 
 The resulting release will be available at https://github.com/RDFLib/rdflib/releases/tag/6.3.1
 
-Once this is done, announce the release at the following locations:
-
-* Twitter: Just make a tweet from your own account linking to the latest release.
-* RDFLib mailing list.
-* RDFLib Gitter / matrix.org chat room.
+4. Create a post-release PR 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once this is all done, create another post-release pull request with the following changes:
 
-* Set the just released version in ``docker/latest/requirements.in`` and run
-  ``task docker:prepare`` to update the ``docker/latest/requirements.txt`` file.
-* Set the version in the ``pyproject.toml`` file to the next minor release with
-  a ``a0`` suffix to indicate alpha 0.
+#. In ``pyproject.toml``, update to the next minor release alpha
+
+   *  so a 6.3.1 release would have 6.1.4a0 as the next release alpha
+
+#. In ``docker/latest/requirements.in`` set the version to the just released version
+#. Use ``task docker:prepare`` to update ``docker/latest/requirements.txt``
+
+
+
+5. Let the world know
+~~~~~~~~~~~~~~~~~~~~~
+
+Announce the release at the following locations:
+
+* RDFLib mailing list
+* RDFLib Gitter / matrix.org chat room
+* Twitter: Just make a tweet from your own account linking to the latest release
+* related mailing lists
+   * Jena: users@jena.apache.org
+   * W3C (currently RDF-Star WG): public-rdf-star@w3.org
