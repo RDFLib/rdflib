@@ -340,20 +340,14 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "html5rdf"
-version = "1.2"
+version = "1.2.1"
 description = "HTML parser based on the WHATWG HTML specification"
 optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "html5rdf-1.2-py2.py3-none-any.whl", hash = "sha256:08169aa52a98ee3a6d3456d83feb36211fb5edcbcf3e05f6d19e0136f581638c"},
-    {file = "html5rdf-1.2.tar.gz", hash = "sha256:08378cbbbb63993ba7bb5eb1eac44bf9ca7b1a23dbee3d2afef5376597fb00a5"},
+    {file = "html5rdf-1.2.1-py2.py3-none-any.whl", hash = "sha256:1f519121bc366af3e485310dc8041d2e86e5173c1a320fac3dc9d2604069b83e"},
+    {file = "html5rdf-1.2.1.tar.gz", hash = "sha256:ace9b420ce52995bb4f05e7425eedf19e433c981dfe7a831ab391e2fa2e1a195"},
 ]
-
-[package.extras]
-all = ["chardet (>=2.2.1)", "genshi (>=0.7.1)", "lxml (>=3.4.0)"]
-chardet = ["chardet (>=2.2.1)"]
-genshi = ["genshi (>=0.7.1)"]
-lxml = ["lxml (>=3.4.0)"]
 
 [[package]]
 name = "idna"
@@ -1449,13 +1443,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "wheel"
-version = "0.44.0"
+version = "0.45.1"
 description = "A built-package format for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wheel-0.44.0-py3-none-any.whl", hash = "sha256:2376a90c98cc337d18623527a97c31797bd02bad0033d41547043a1cbfbe448f"},
-    {file = "wheel-0.44.0.tar.gz", hash = "sha256:a29c3f2817e95ab89aa4660681ad547c0e9547f20e75b0562fe7723c9a2a9d49"},
+    {file = "wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248"},
+    {file = "wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729"},
 ]
 
 [package.extras]
@@ -1486,4 +1480,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "3d9605c7f277f69e5c732d2edf25ed10fde6af31b791bb787229eb92be962af6"
+content-hash = "01e3ca79b8228cd40cbbc60cbb6690bbe0f6207ca070eee0a44259778c797172"
