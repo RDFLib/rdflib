@@ -4,11 +4,11 @@
 #
 #    pip-compile docker/latest/requirements.in
 #
-html5rdf==1.2
-    # via -r docker/latest/requirements.in
+html5rdf==1.2.1
+    # via -r requirements.in
 isodate==0.7.2
     # via rdflib
 pyparsing==3.0.9
     # via rdflib
 rdflib==7.1.3
-    # via -r docker/latest/requirements.in
+    # via -r requirements.in
