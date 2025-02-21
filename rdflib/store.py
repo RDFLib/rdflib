@@ -53,6 +53,7 @@ if TYPE_CHECKING:
         _PredicateType,
         _QuadType,
         _SubjectType,
+        _TripleChoiceType,
         _TriplePatternType,
         _TripleType,
     )
@@ -281,11 +282,7 @@ class Store:
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
+        triple: _TripleChoiceType,
         context: Optional[_ContextType] = None,
     ) -> Generator[
         Tuple[
