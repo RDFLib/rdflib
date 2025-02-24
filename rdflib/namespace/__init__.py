@@ -718,7 +718,7 @@ class NamespaceManager:
             return self.store.bind(prefix, namespace, override=override)
         except TypeError as error:
             if "override" in str(error):
-                logger.warning(
+                logger.debug(
                     "caught a TypeError, "
                     "retrying call to %s.bind without override, "
                     "see https://github.com/RDFLib/rdflib/issues/1880 for more info",
