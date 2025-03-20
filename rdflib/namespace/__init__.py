@@ -75,6 +75,22 @@ from __future__ import annotations
 import logging
 import warnings
 from collections.abc import Iterable
+
+try:
+    # Python >= 3.14
+    from annotationlib import (
+        get_annotations,  # type: ignore[attr-defined,unused-ignore]
+    )
+except ImportError:  # pragma: no cover
+    try:
+        # Python >= 3.10
+        from inspect import get_annotations  # type: ignore[attr-defined,unused-ignore]
+    except ImportError:
+
+        def get_annotations(thing: Any) -> dict:
+            return thing.__annotations__
+
+
 from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -311,7 +327,7 @@ class DefinedNamespaceMeta(type):
         if item_str.startswith(str(this_ns)):
             item_str = item_str[len(str(this_ns)) :]
         return any(
-            item_str in c.__annotations__
+            item_str in get_annotations(c)
             or item_str in c._extras
             or (cls._underscore_num and item_str[0] == "_" and item_str[1:].isdigit())
             for c in cls.mro()
@@ -319,7 +335,7 @@ class DefinedNamespaceMeta(type):
         )
 
     def __dir__(cls) -> Iterable[str]:
-        attrs = {str(x) for x in cls.__annotations__}
+        attrs = {str(x) for x in get_annotations(cls)}
         # Removing these as they should not be considered part of the namespace.
         attrs.difference_update(_DFNS_RESERVED_ATTRS)
         values = {cls[str(x)] for x in attrs}
@@ -328,7 +344,7 @@ class DefinedNamespaceMeta(type):
     def as_jsonld_context(self, pfx: str) -> dict:  # noqa: N804
         """Returns this DefinedNamespace as a JSON-LD 'context' object"""
         terms = {pfx: str(self._NS)}
-        for key, term in self.__annotations__.items():
+        for key, term in get_annotations(self).items():
             if issubclass(term, URIRef):
                 terms[key] = f"{pfx}:{key}"
 
