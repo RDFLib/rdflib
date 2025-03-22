@@ -691,7 +691,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv01> .
 
@@ -699,7 +699,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv02> .
 
@@ -707,7 +707,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv03> .
 
@@ -715,7 +715,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv01> .
 
@@ -723,7 +723,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv02> .
 
@@ -731,7 +731,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv03> .
 
@@ -1939,7 +1939,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-1> .
 
@@ -1947,7 +1947,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-2> .
 
@@ -2251,7 +2251,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres01> .
 
@@ -2259,7 +2259,7 @@
     earl:assertedBy <https://github.com/RDFLib/rdflib> ;
     earl:mode earl:automatic ;
     earl:result [ a earl:TestResult ;
-            earl:outcome earl:passed ] ;
+            earl:outcome earl:failed ] ;
     earl:subject <https://github.com/RDFLib/rdflib> ;
     earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres02> .
 
