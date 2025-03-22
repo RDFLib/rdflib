@@ -27,4 +27,5 @@ build:
     - python -c "from rdflib import Graph; print(Graph)"
 
 sphinx:
+  configuration: docs/conf.py
   fail_on_warning: true
