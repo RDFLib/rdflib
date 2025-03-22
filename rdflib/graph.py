@@ -847,26 +847,32 @@ class Graph(Node):
     def subjects(
         self,
         predicate: Union[None, Path, _PredicateType] = None,
-        object: Optional[_ObjectType] = None,
+        object: Optional[Union[_ObjectType, List[_ObjectType]]] = None,
         unique: bool = False,
     ) -> Generator[_SubjectType, None, None]:
         """A generator of (optionally unique) subjects with the given
-        predicate and object"""
-        if not unique:
-            for s, p, o in self.triples((None, predicate, object)):
-                yield s
-        else:
-            subs = set()
-            for s, p, o in self.triples((None, predicate, object)):
-                if s not in subs:
+        predicate and object(s)"""
+        # if the object is a list of Nodes, yield results from subject() call for each
+        if isinstance(object, list):
+            for obj in object:
+                for s in self.subjects(predicate, obj, unique):
                     yield s
-                    try:
-                        subs.add(s)
-                    except MemoryError as e:
-                        logger.error(
-                            f"{e}. Consider not setting parameter 'unique' to True"
-                        )
-                        raise
+        else:
+            if not unique:
+                for s, p, o in self.triples((None, predicate, object)):
+                    yield s
+            else:
+                subs = set()
+                for s, p, o in self.triples((None, predicate, object)):
+                    if s not in subs:
+                        yield s
+                        try:
+                            subs.add(s)
+                        except MemoryError as e:
+                            logger.error(
+                                f"{e}. Consider not setting parameter 'unique' to True"
+                            )
+                            raise
 
     def predicates(
         self,
