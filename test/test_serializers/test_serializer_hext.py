@@ -90,7 +90,7 @@ def test_hext_graph():
 
 def test_hext_cg():
     """Tests ConjunctiveGraph data"""
-    d = ConjunctiveGraph()
+    d = Dataset()
     trig_data = """
             PREFIX ex: <http://example.com/>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>

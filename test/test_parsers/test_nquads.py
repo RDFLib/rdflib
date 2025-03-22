@@ -1,6 +1,7 @@
 import os
 
-from rdflib import ConjunctiveGraph, Namespace, URIRef
+from rdflib import Dataset, Namespace, URIRef, Literal
+from rdflib.namespace import FOAF
 from test.data import TEST_DATA_DIR
 
 TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
@@ -8,7 +9,7 @@ TEST_BASE = os.path.join(TEST_DATA_DIR, "nquads.rdflib")
 
 class TestNQuadsParser:
     def _load_example(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         nq_path = os.path.relpath(
             os.path.join(TEST_DATA_DIR, "nquads.rdflib/example.nquads"), os.curdir
         )
@@ -21,9 +22,9 @@ class TestNQuadsParser:
         assert len(g.store) == 449
 
     def test_02_contexts(self):
-        # There should be 16 separate contexts
+        # There should be 17 separate contexts - 16 Named + default
         g = self._load_example()
-        assert len([x for x in g.store.contexts()]) == 16
+        assert len([x for x in g.store.contexts()]) == 17
 
     def test_03_get_value(self):
         # is the name of entity E10009 "Arco Publications"?
@@ -36,11 +37,11 @@ class TestNQuadsParser:
 
         g = self._load_example()
         s = URIRef("http://bibliographica.org/entity/E10009")
-        FOAF = Namespace("http://xmlns.com/foaf/0.1/")  # noqa: N806
-        assert g.value(s, FOAF.name).eq("Arco Publications")
+        for s, p, o, c in list(g.quads((s, FOAF.name, None, None))):
+            assert o == Literal("Arco Publications")
 
     def test_context_is_optional(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         nq_path = os.path.relpath(
             os.path.join(TEST_DATA_DIR, "nquads.rdflib/test6.nq"), os.curdir
         )
@@ -49,7 +50,7 @@ class TestNQuadsParser:
         assert len(g) > 0
 
     def test_serialize(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         uri1 = URIRef("http://example.org/mygraph1")
         uri2 = URIRef("http://example.org/mygraph2")
 
@@ -63,7 +64,7 @@ class TestNQuadsParser:
         s = g.serialize(format="nquads", encoding="utf-8")
         assert len([x for x in s.split(b"\n") if x.strip()]) == 2
 
-        g2 = ConjunctiveGraph()
+        g2 = Dataset()
         g2.parse(data=s, format="nquads")
 
         assert len(g) == len(g2)
@@ -89,8 +90,8 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_context(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
         self.data.seek(0)
         h.parse(self.data, format="nquads", bnode_context=bnode_ctx)
@@ -98,7 +99,7 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_context_same_graph(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(self.data_obnodes, format="nquads", bnode_context=bnode_ctx)
         o1 = set(g.objects())
         self.data_obnodes.seek(0)
@@ -107,27 +108,27 @@ class TestBnodeContext:
         assert o1 == o2
 
     def test_parse_distinct_bnode_context(self):
-        g = ConjunctiveGraph()
+        g = Dataset()
         g.parse(self.data, format="nquads", bnode_context=dict())
-        s1 = set(g.subjects())
+        s1 = set([x for x, p, o, c in list(g.quads((None, None, None, None)))])
         self.data.seek(0)
         g.parse(self.data, format="nquads", bnode_context=dict())
-        s2 = set(g.subjects())
+        s2 = set([x for x, p, o, c in list(g.quads((None, None, None, None)))])
         assert set() != (s2 - s1)
 
     def test_parse_distinct_bnode_contexts_between_graphs(self):
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads")
-        s1 = set(g.subjects())
+        s1 = sorted(set([x for x, p, o, c in list(g.quads((None, None, None, None)))]))
         self.data.seek(0)
         h.parse(self.data, format="nquads")
-        s2 = set(h.subjects())
+        s2 = sorted(set([x for x, p, o, c in list(h.quads((None, None, None, None)))]))
         assert s1 != s2
 
     def test_parse_distinct_bnode_contexts_named_graphs(self):
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
+        g = Dataset()
+        h = Dataset()
         g.parse(self.data, format="nquads")
         self.data.seek(0)
         h.parse(self.data, format="nquads")
@@ -135,9 +136,9 @@ class TestBnodeContext:
 
     def test_parse_shared_bnode_contexts_named_graphs(self):
         bnode_ctx = dict()
-        g = ConjunctiveGraph()
-        h = ConjunctiveGraph()
-        g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        g = Dataset()
+        h = Dataset()
+        g.parse(TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads", format="nquads", bnode_context=bnode_ctx)
         self.data.seek(0)
-        h.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        h.parse(TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads", format="nquads", bnode_context=bnode_ctx)
         assert set(h.contexts()) == set(g.contexts())

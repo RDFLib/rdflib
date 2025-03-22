@@ -140,7 +140,7 @@ def test_small_file_multigraph():
 
 
 def test_small_file_multigraph_cg():
-    d = ConjunctiveGraph()
+    d = Dataset()
     assert len(d) == 0
     d.parse(
         Path(__file__).parent.parent / "data/test_parser_hext_multigraph.ndjson",

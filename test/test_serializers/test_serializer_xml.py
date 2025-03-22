@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset, Graph
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef
@@ -10,7 +10,7 @@ class SerializerTestBase:
     repeats = 8
 
     def setup_method(self):
-        graph = ConjunctiveGraph()
+        graph = Dataset(default_union=True)
         graph.parse(data=self.test_content, format=self.test_content_format)
         self.source_graph = graph
 
@@ -40,13 +40,13 @@ _blank = BNode()
 
 
 def _mangled_copy(g):
-    "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
-    gcopy = ConjunctiveGraph()
+    """Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."""
+    gcopy = Dataset()
 
     def isbnode(v):
         return isinstance(v, BNode)
 
-    for s, p, o in g:
+    for s, p, o, c in g:
         if isbnode(s):
             s = _blank
         if isbnode(p):
@@ -67,8 +67,8 @@ def serialize(source_graph, make_serializer, get_value=True, extra_args={}):
 def serialize_and_load(source_graph, make_serializer):
     stream = serialize(source_graph, make_serializer, False)
     stream.seek(0)
-    reparsed_graph = ConjunctiveGraph()
-    reparsed_graph.parse(stream, publicID=None, format="xml")
+    reparsed_graph = Dataset(default_union=True)
+    reparsed_graph.parse(stream, format="xml")
     return reparsed_graph
 
 
@@ -173,7 +173,7 @@ class TestXMLSerializer(SerializerTestBase):
             '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdf_xml
         ), "expected one identified bnode in serialized graph"
 
-    def test_subslass_of_objects(self):
+    def test_subclass_of_objects(self):
         reparsed_graph = serialize_and_load(self.source_graph, self.serializer)
         _assert_expected_object_types_for_predicates(
             reparsed_graph, [RDFS.seeAlso, RDFS.subClassOf], [URIRef, BNode]
@@ -181,7 +181,7 @@ class TestXMLSerializer(SerializerTestBase):
 
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
-    for s, p, o in graph:
+    for s, p, o, c in graph:
         if p in predicates:
             some_true = [isinstance(o, t) for t in types]
             assert (
