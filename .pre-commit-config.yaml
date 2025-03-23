@@ -8,7 +8,7 @@ ci:
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # WARNING: Ruff version should be the same as in `pyproject.toml`
-    rev: v0.5.4
+    rev: v0.11.0
     hooks:
       - id: ruff
         args: ["--fix"]
@@ -21,9 +21,8 @@ repos:
       require_serial: true
       args: ["."]
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.8.3
+    rev: 2.1.1
     hooks:
     - id: poetry-check
-    - id: poetry-lock
       # sadly `--no-update` does not work on pre-commit.ci
-      args: ["--check"]
+      args: ["--lock"]
