@@ -3,13 +3,13 @@ from __future__ import annotations
 import json
 import logging
 import pprint
-from test.utils.namespace import EGDO
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 import pytest
 
 from rdflib import Graph
 from rdflib.plugins.shared.jsonld.context import Context
+from test.utils.namespace import EGDO
 
 
 @pytest.mark.parametrize(
@@ -25,7 +25,7 @@ from rdflib.plugins.shared.jsonld.context import Context
         ({"eg": f"{EGDO}"},),
     ],
 )
-def test_serialize_context(input: Union[Dict[str, Any], Context]) -> None:
+def test_serialize_context(input: Union[dict[str, Any], Context]) -> None:
     """
     The JSON-LD serializer accepts and correctly serializes the context argument to the output.
     """

@@ -15,8 +15,10 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import keyword
+from collections.abc import Iterable
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, List, Tuple
+from typing import TYPE_CHECKING
 
 from rdflib.graph import Graph
 from rdflib.namespace import DCTERMS, OWL, RDFS, SKOS
@@ -72,7 +74,7 @@ def validate_object_id(object_id: str) -> None:
 
 def get_target_namespace_elements(
     g: Graph, target_namespace: str
-) -> Tuple[List[Tuple[str, str]], List[str]]:
+) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     namespaces = {"dcterms": DCTERMS, "owl": OWL, "rdfs": RDFS, "skos": SKOS}
     q = """
         SELECT ?s (GROUP_CONCAT(DISTINCT STR(?def)) AS ?defs)
@@ -87,12 +89,13 @@ def get_target_namespace_elements(
 
             # only get results for the target namespace (supplied by user)
             FILTER STRSTARTS(STR(?s), "xxx")
+            FILTER (STR(?s) != "xxx")
         }
         GROUP BY ?s
         """.replace(
         "xxx", target_namespace
     )
-    elements: List[Tuple[str, str]] = []
+    elements: list[tuple[str, str]] = []
     for r in g.query(q, initNs=namespaces):
         if TYPE_CHECKING:
             assert isinstance(r, ResultRow)
@@ -100,25 +103,29 @@ def get_target_namespace_elements(
 
     elements.sort(key=lambda tup: tup[0])
 
-    elements_strs: List[str] = []
+    elements_strs: list[str] = []
+    non_python_elements_strs: list[str] = []
     for e in elements:
+        name = e[0].replace(target_namespace, "")
         desc = e[1].replace("\n", " ")
-        elements_strs.append(
-            f"    {e[0].replace(target_namespace, '')}: URIRef  # {desc}\n"
-        )
+        if name.isidentifier() and not keyword.iskeyword(name):
+            elements_strs.append(f"    {name}: URIRef  # {desc}\n")
+        else:
+            non_python_elements_strs.append(f"""        "{name}",  # {desc}\n""")
 
-    return elements, elements_strs
+    return elements, elements_strs, non_python_elements_strs
 
 
 def make_dn_file(
     output_file_name: Path,
     target_namespace: str,
     elements_strs: Iterable[str],
+    non_python_elements_strs: list[str],
     object_id: str,
     fail: bool,
 ) -> None:
-    header = f'''from rdflib.term import URIRef
-from rdflib.namespace import DefinedNamespace, Namespace
+    header = f'''from rdflib.namespace import DefinedNamespace, Namespace
+from rdflib.term import URIRef
 
 
 class {object_id}(DefinedNamespace):
@@ -138,6 +145,16 @@ class {object_id}(DefinedNamespace):
             f.write("    _fail = True")
             f.write("\n\n")
         f.writelines(elements_strs)
+
+        if len(non_python_elements_strs) > 0:
+            f.write("\n")
+            f.write("    # Valid non-python identifiers")
+            f.write("\n")
+            f.write("    _extras = [")
+            f.write("\n")
+            f.writelines(non_python_elements_strs)
+            f.write("    ]")
+            f.write("\n")
 
 
 if __name__ == "__main__":
@@ -197,5 +214,10 @@ if __name__ == "__main__":
     output_file_name = Path().cwd() / f"_{args.object_id}.py"
     print(f"Creating DefinedNamespace Python file {output_file_name}")
     make_dn_file(
-        output_file_name, args.target_namespace, elements[1], args.object_id, args.fail
+        output_file_name,
+        args.target_namespace,
+        elements[1],
+        elements[2],
+        args.object_id,
+        args.fail,
     )

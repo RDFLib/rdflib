@@ -18,10 +18,9 @@ import uuid
 import warnings
 from decimal import ROUND_HALF_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from functools import reduce
-from typing import Any, Callable, Dict, NoReturn, Optional, Tuple, Union, overload
+from typing import Any, Callable, NoReturn, Union, overload
 from urllib.parse import quote
 
-import isodate
 from pyparsing import ParseResults
 
 from rdflib.namespace import RDF, XSD
@@ -47,6 +46,7 @@ from rdflib.term import (
     URIRef,
     Variable,
 )
+from rdflib.xsd_datetime import Duration, parse_datetime  # type: ignore[attr-defined]
 
 
 def Builtin_IRI(expr: Expr, ctx: FrozenBindings) -> URIRef:
@@ -521,8 +521,13 @@ def Builtin_TZ(e: Expr, ctx) -> Literal:
     if not d.tzinfo:
         return Literal("")
     n = d.tzinfo.tzname(d)
-    if n == "UTC":
+    if n is None:
+        n = ""
+    elif n == "UTC":
         n = "Z"
+    elif n.startswith("UTC"):
+        # Replace tzname like "UTC-05:00" with simply "-05:00" to match Jena tz fn
+        n = n[3:]
     return Literal(n)
 
 
@@ -545,7 +550,7 @@ def Builtin_LANG(e: Expr, ctx) -> Literal:
     return Literal(l_.language or "")
 
 
-def Builtin_DATATYPE(e: Expr, ctx) -> Optional[str]:
+def Builtin_DATATYPE(e: Expr, ctx) -> str | None:
     l_ = e.arg
     if not isinstance(l_, Literal):
         raise SPARQLError("Can only get datatype of literal: %r" % l_)
@@ -587,7 +592,7 @@ def Builtin_EXISTS(e: Expr, ctx: FrozenBindings) -> Literal:
 
 _CustomFunction = Callable[[Expr, FrozenBindings], Node]
 
-_CUSTOM_FUNCTIONS: Dict[URIRef, Tuple[_CustomFunction, bool]] = {}
+_CUSTOM_FUNCTIONS: dict[URIRef, tuple[_CustomFunction, bool]] = {}
 
 
 def register_custom_function(
@@ -621,7 +626,7 @@ def custom_function(
 
 
 def unregister_custom_function(
-    uri: URIRef, func: Optional[Callable[..., Any]] = None
+    uri: URIRef, func: Callable[..., Any] | None = None
 ) -> None:
     """
     The 'func' argument is included for compatibility with existing code.
@@ -687,7 +692,7 @@ def default_cast(e: Expr, ctx: FrozenBindings) -> Literal:  # type: ignore[retur
         if x.datatype and x.datatype not in (XSD.dateTime, XSD.string):
             raise SPARQLError("Cannot cast %r to XSD:dateTime" % x.datatype)
         try:
-            return Literal(isodate.parse_datetime(x), datatype=e.iri)
+            return Literal(parse_datetime(x), datatype=e.iri)
         except:  # noqa: E722
             raise SPARQLError("Cannot interpret '%r' as datetime" % x)
 
@@ -988,7 +993,9 @@ def simplify(expr: Any) -> Any:
 
     if isinstance(expr, (list, ParseResults)):
         return list(map(simplify, expr))
-    if not isinstance(expr, CompValue):
+    # I don't know why MyPy thinks this is unreachable
+    # Something to do with the Any type and the isinstance calls above.
+    if not isinstance(expr, CompValue):  # type: ignore[unreachable, unused-ignore]
         return expr
     if expr.name.endswith("Expression"):
         if expr.other is None:
@@ -1085,7 +1092,7 @@ def dateTimeObjects(expr: Literal) -> Any:
 def isCompatibleDateTimeDatatype(  # type: ignore[return]
     obj1: Union[py_datetime.date, py_datetime.datetime],
     dt1: URIRef,
-    obj2: Union[isodate.Duration, py_datetime.timedelta],
+    obj2: Union[Duration, py_datetime.timedelta],
     dt2: URIRef,
 ) -> bool:
     """
@@ -1098,7 +1105,7 @@ def isCompatibleDateTimeDatatype(  # type: ignore[return]
             return True
         elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Time Component
-            # else it wont be compatible with Date Literal
+            # else it won't be compatible with Date Literal
             if "T" in str(obj2):
                 return False
             else:
@@ -1110,7 +1117,7 @@ def isCompatibleDateTimeDatatype(  # type: ignore[return]
         elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Date Component
             # (by checking if the format is "PT...." )
-            # else it wont be compatible with Time Literal
+            # else it won't be compatible with Time Literal
             if "T" == str(obj2)[1]:
                 return True
             else:
@@ -1139,7 +1146,7 @@ def calculateDuration(
 def calculateFinalDateTime(
     obj1: Union[py_datetime.date, py_datetime.datetime],
     dt1: URIRef,
-    obj2: Union[isodate.Duration, py_datetime.timedelta],
+    obj2: Union[Duration, py_datetime.timedelta],
     dt2: URIRef,
     operation: str,
 ) -> Literal:

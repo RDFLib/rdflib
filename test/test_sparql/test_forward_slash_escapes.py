@@ -18,16 +18,14 @@ prefixed concepts, e.g. "application/json" somehow being
 """
 from __future__ import annotations
 
-from test.data import TEST_DATA_DIR
-from test.utils.graph import cached_graph
-from typing import Set
-
 import pytest
 
 from rdflib import Graph
 from rdflib.plugins.sparql.processor import prepareQuery
 from rdflib.plugins.sparql.sparql import Query
 from rdflib.query import ResultRow
+from test.data import TEST_DATA_DIR
+from test.utils.graph import cached_graph
 
 query_string_expanded = r"""
 SELECT ?nIndividual
@@ -99,10 +97,10 @@ def _test_escapes_and_query(
     failure.  This parameterized test is more for demonstrating that
     searching can work without prefixes.
     """
-    expected: Set[str] = {
+    expected: set[str] = {
         "http://example.org/kb/individual-b",
     }
-    computed: Set[str] = set()
+    computed: set[str] = set()
 
     query_compiled: bool = False
     try:

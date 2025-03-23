@@ -2,7 +2,12 @@
 Runs the SPARQL 1.1 test suite from.
 """
 
+from collections.abc import Generator
 from contextlib import ExitStack
+
+import pytest
+from pytest import MonkeyPatch
+
 from test.data import TEST_DATA_DIR
 from test.utils import ensure_suffix
 from test.utils.dawg_manifest import MarksDictType, params_from_sources
@@ -13,10 +18,6 @@ from test.utils.sparql_checker import (
     check_entry,
     ctx_configure_rdflib,
 )
-from typing import Generator
-
-import pytest
-from pytest import MonkeyPatch
 
 REMOTE_BASE_IRI = "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/"
 LOCAL_BASE_DIR = TEST_DATA_DIR / "suites/w3c/sparql11/"
@@ -256,7 +257,7 @@ def configure_rdflib() -> Generator[None, None, None]:
         markers=(
             lambda entry: (
                 pytest.mark.skip(reason="tester not implemented")
-                if entry.type in SKIP_TYPES
+                if entry.type_ in SKIP_TYPES
                 else None
             ),
         ),

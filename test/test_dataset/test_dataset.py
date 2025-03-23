@@ -7,9 +7,10 @@ from test.utils.namespace import EGSCHEME
 
 import pytest
 
-from rdflib import URIRef, plugin
+from rdflib import BNode, Namespace, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID, Dataset, Graph
 from rdflib.store import Store
+from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 
 # Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
 # available. This assumes SPARQL1.1 query/update endpoints running locally at
@@ -61,9 +62,9 @@ def get_dataset(request):
     except ImportError:
         pytest.skip("Dependencies for store '%s' not available!" % store)
 
-    graph = Dataset(store=store)
+    d = Dataset(store=store)
 
-    if not graph.store.graph_aware:
+    if not d.store.graph_aware:
         return
 
     if store in ["SQLiteLSM", "LevelDB"]:
@@ -78,31 +79,39 @@ def get_dataset(request):
     else:
         path = tempfile.mkdtemp()
 
-    graph.open(path, create=True if store != "SPARQLUpdateStore" else False)
+    d.open(path, create=True if store != "SPARQLUpdateStore" else False)
 
     if store == "SPARQLUpdateStore":
         try:
-            graph.store.update("CLEAR ALL")
+            d.graph()
+            d.add(
+                (
+                    URIRef("http://example.com/s"),
+                    URIRef("http://example.com/p"),
+                    URIRef("http://example.com/o"),
+                )
+            )
+            d.store.update("CLEAR ALL")
         except Exception as e:
             if "SPARQLStore does not support BNodes! " in str(e):
                 pass
             else:
                 raise Exception(e)
 
-    yield store, graph
+    yield store, d
 
     if store == "SPARQLUpdateStore":
         try:
-            graph.store.update("CLEAR ALL")
+            d.update("CLEAR ALL")
         except Exception as e:
             if "SPARQLStore does not support BNodes! " in str(e):
                 pass
             else:
                 raise Exception(e)
-        graph.close()
+        d.close()
     else:
-        graph.close()
-        graph.destroy(path)
+        d.close()
+        d.destroy(path)
         if os.path.isdir(path):
             shutil.rmtree(path)
         else:
@@ -124,7 +133,7 @@ def test_graph_aware(get_dataset):
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # added graph exists
-        assert set(x.identifier for x in dataset.contexts()) == set(
+        assert set(x.identifier for x in dataset.graphs()) == set(
             [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
@@ -134,7 +143,7 @@ def test_graph_aware(get_dataset):
     g1.add((TAREK, LIKES, PIZZA))
 
     # added graph still exists
-    assert set(x.identifier for x in dataset.contexts()) == set(
+    assert set(x.identifier for x in dataset.graphs()) == set(
         [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
     )
 
@@ -150,14 +159,14 @@ def test_graph_aware(get_dataset):
     # empty named graphs
     if store != "SPARQLUpdateStore":
         # graph still exists, although empty
-        assert set(x.identifier for x in dataset.contexts()) == set(
+        assert set(x.identifier for x in dataset.graphs()) == set(
             [CONTEXT1, DATASET_DEFAULT_GRAPH_ID]
         )
 
     dataset.remove_graph(CONTEXT1)
 
     # graph is gone
-    assert set(x.identifier for x in dataset.contexts()) == set(
+    assert set(x.identifier for x in dataset.graphs()) == set(
         [DATASET_DEFAULT_GRAPH_ID]
     )
 
@@ -176,7 +185,7 @@ def test_default_graph(get_dataset):
     dataset.add((TAREK, LIKES, PIZZA))
     assert len(dataset) == 1
     # only default exists
-    assert list(dataset.contexts()) == [dataset.default_context]
+    assert list(dataset.graphs()) == [dataset.default_context]
 
     # removing default graph removes triples but not actual graph
     dataset.remove_graph(DATASET_DEFAULT_GRAPH_ID)
@@ -184,7 +193,7 @@ def test_default_graph(get_dataset):
     assert len(dataset) == 0
 
     # default still exists
-    assert set(dataset.contexts()) == set([dataset.default_context])
+    assert set(dataset.graphs()) == set([dataset.default_context])
 
 
 def test_not_union(get_dataset):
@@ -196,11 +205,11 @@ def test_not_union(get_dataset):
             "its default graph as the union of the named graphs"
         )
 
-    subgraph1 = dataset.graph(CONTEXT1)
-    subgraph1.add((TAREK, LIKES, PIZZA))
+    g1 = dataset.graph(CONTEXT1)
+    g1.add((TAREK, LIKES, PIZZA))
 
     assert list(dataset.objects(TAREK, None)) == []
-    assert list(subgraph1.objects(TAREK, None)) == [PIZZA]
+    assert list(g1.objects(TAREK, None)) == [PIZZA]
 
 
 def test_iter(get_dataset):
@@ -211,16 +220,16 @@ def test_iter(get_dataset):
     uri_c = URIRef("https://example.com/c")
     uri_d = URIRef("https://example.com/d")
 
-    d.graph(URIRef("https://example.com/subgraph1"))
-    d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/subgraph1")))
+    d.graph(URIRef("https://example.com/g1"))
+    d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g1")))
 
     d.add(
-        (uri_a, uri_b, uri_c, URIRef("https://example.com/subgraph1"))
+        (uri_a, uri_b, uri_c, URIRef("https://example.com/g1"))
     )  # pointless addition: duplicates above
 
     d.graph(URIRef("https://example.com/g2"))
     d.add((uri_a, uri_b, uri_c, URIRef("https://example.com/g2")))
-    d.add((uri_a, uri_b, uri_d, URIRef("https://example.com/subgraph1")))
+    d.add((uri_a, uri_b, uri_d, URIRef("https://example.com/g1")))
 
     # traditional iterator
     i_trad = 0
@@ -235,7 +244,7 @@ def test_iter(get_dataset):
     assert i_new == i_trad  # both should be 3
 
 
-def test_subgraph_without_identifier() -> None:
+def test_graph_without_identifier() -> None:
     """
     Graphs with no identifies assigned are identified by Skolem IRIs with a
     prefix that is bound to `genid`.
@@ -244,9 +253,9 @@ def test_subgraph_without_identifier() -> None:
     reviewed at some point.
     """
 
-    dataset = Dataset()
+    d = Dataset()
 
-    nman = dataset.namespace_manager
+    nman = d.namespace_manager
 
     genid_prefix = URIRef("https://rdflib.github.io/.well-known/genid/rdflib/")
 
@@ -256,14 +265,16 @@ def test_subgraph_without_identifier() -> None:
         is None
     )
 
-    subgraph: Graph = dataset.graph()
-    subgraph.add((EGSCHEME["subject"], EGSCHEME["predicate"], EGSCHEME["object"]))
+    ex = Namespace("http://example.com/")
+    g1: Graph = d.graph()
+    g1.add((ex.subject, ex.predicate, ex.object))
 
     namespaces = set(nman.namespaces())
     assert next(
         (namespace for namespace in namespaces if namespace[0] == "genid"), None
     ) == ("genid", genid_prefix)
 
+    assert f"{g1.identifier}".startswith(genid_prefix)
     assert f"{subgraph.identifier}".startswith(genid_prefix)
 
 
@@ -283,3 +294,34 @@ def test_parse_return_type():
     g = Dataset()
     g = g.parse(source=StringIO(DATA), format="turtle")
     assert type(g) is Dataset
+
+    # now add a preexisting graph with no identifier
+    # i.e. not one created within this Dataset object
+    g2 = Graph()
+    g2.add((ex.subject, ex.predicate, ex.object))
+    d.add_graph(g2)
+
+    iris = 0
+    bns = 0
+    others = 0
+    for g in d.graphs():
+        if type(g.identifier) is URIRef:
+            iris += 1
+        elif type(g.identifier) is BNode:
+            bns += 1
+        else:
+            others += 1
+    assert iris == 2
+    assert bns == 1
+    assert others == 0
+
+
+def test_not_deprecated():
+    """
+    Ensure Dataset does not trigger the deprecation warning
+    from the ConjunctiveGraph superclass.
+    """
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        Dataset()

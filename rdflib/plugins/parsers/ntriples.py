@@ -8,15 +8,13 @@ from __future__ import annotations
 
 import codecs
 import re
+from collections.abc import MutableMapping
 from io import BytesIO, StringIO, TextIOBase
+from re import Match, Pattern
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Match,
-    MutableMapping,
-    Optional,
-    Pattern,
     TextIO,
     Union,
 )
@@ -138,13 +136,15 @@ class W3CNTriplesParser:
     `W3CNTriplesParser`.
     """
 
-    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line")
+    __slots__ = ("_bnode_ids", "sink", "buffer", "file", "line", "skolemize")
 
     def __init__(
         self,
-        sink: Optional[Union[DummySink, NTGraphSink]] = None,
-        bnode_context: Optional[_BNodeContextType] = None,
+        sink: DummySink | NTGraphSink | None = None,
+        bnode_context: _BNodeContextType | None = None,
     ):
+        self.skolemize = False
+
         if bnode_context is not None:
             self._bnode_ids = bnode_context
         else:
@@ -156,15 +156,16 @@ class W3CNTriplesParser:
         else:
             self.sink = DummySink()
 
-        self.buffer: Optional[str] = None
-        self.file: Optional[Union[TextIO, codecs.StreamReader]] = None
-        self.line: Optional[str] = ""
+        self.buffer: str | None = None
+        self.file: TextIO | codecs.StreamReader | None = None
+        self.line: str | None = ""
 
     def parse(
         self,
-        f: Union[TextIO, IO[bytes], codecs.StreamReader],
-        bnode_context: Optional[_BNodeContextType] = None,
-    ) -> Union[DummySink, NTGraphSink]:
+        f: TextIO | IO[bytes] | codecs.StreamReader,
+        bnode_context: _BNodeContextType | None = None,
+        skolemize: bool = False,
+    ) -> DummySink | NTGraphSink:
         """
         Parse f as an N-Triples file.
 
@@ -184,6 +185,7 @@ class W3CNTriplesParser:
             # someone still using a bytestream here?
             f = codecs.getreader("utf-8")(f)
 
+        self.skolemize = skolemize
         self.file = f  # type: ignore[assignment]
         self.buffer = ""
         while True:
@@ -207,7 +209,7 @@ class W3CNTriplesParser:
             f = StringIO(s)
         self.parse(f, **kwargs)
 
-    def readline(self) -> Optional[str]:
+    def readline(self) -> str | None:
         """Read an N-Triples line from buffered input."""
         # N-Triples lines end in either CRLF, CR, or LF
         # Therefore, we can't just use f.readline()
@@ -233,7 +235,7 @@ class W3CNTriplesParser:
                     return None
                 self.buffer += buffer
 
-    def parseline(self, bnode_context: Optional[_BNodeContextType] = None) -> None:
+    def parseline(self, bnode_context: _BNodeContextType | None = None) -> None:
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
@@ -270,14 +272,14 @@ class W3CNTriplesParser:
             raise ParseError("Subject must be uriref or nodeID")
         return subj
 
-    def predicate(self) -> URIRef:
+    def predicate(self) -> Union[bNode, URIRef]:
         pred = self.uriref()
         if not pred:
             raise ParseError("Predicate must be uriref")
         return pred
 
     def object(
-        self, bnode_context: Optional[_BNodeContextType] = None
+        self, bnode_context: _BNodeContextType | None = None
     ) -> Union[URI, bNode, Literal]:
         objt = self.uriref() or self.nodeid(bnode_context) or self.literal()
         if objt is False:
@@ -293,23 +295,28 @@ class W3CNTriplesParser:
         return False
 
     def nodeid(
-        self, bnode_context: Optional[_BNodeContextType] = None
-    ) -> Union[te.Literal[False], bNode]:
+        self, bnode_context: _BNodeContextType | None = None
+    ) -> Union[te.Literal[False], bNode, URI]:
         if self.peek("_"):
-            # Fix for https://github.com/RDFLib/rdflib/issues/204
-            if bnode_context is None:
-                bnode_context = self._bnode_ids
-            bnode_id = self.eat(r_nodeid).group(1)
-            new_id = bnode_context.get(bnode_id, None)
-            if new_id is not None:
-                # Re-map to id specific to this doc
-                return bNode(new_id)
+            if self.skolemize:
+                bnode_id = self.eat(r_nodeid).group(1)
+                return bNode(bnode_id).skolemize()
+
             else:
-                # Replace with freshly-generated document-specific BNode id
-                bnode = bNode()
-                # Store the mapping
-                bnode_context[bnode_id] = bnode
-                return bnode
+                # Fix for https://github.com/RDFLib/rdflib/issues/204
+                if bnode_context is None:
+                    bnode_context = self._bnode_ids
+                bnode_id = self.eat(r_nodeid).group(1)
+                new_id = bnode_context.get(bnode_id, None)
+                if new_id is not None:
+                    # Re-map to id specific to this doc
+                    return bNode(new_id)
+                else:
+                    # Replace with freshly-generated document-specific BNode id
+                    bnode = bNode()
+                    # Store the mapping
+                    bnode_context[bnode_id] = bnode
+                    return bnode
         return False
 
     def literal(self) -> Union[te.Literal[False], Literal]:

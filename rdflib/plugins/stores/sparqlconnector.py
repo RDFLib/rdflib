@@ -4,7 +4,7 @@ import base64
 import copy
 import logging
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -39,11 +39,11 @@ class SPARQLConnector:
 
     def __init__(
         self,
-        query_endpoint: Optional[str] = None,
-        update_endpoint: Optional[str] = None,
+        query_endpoint: str | None = None,
+        update_endpoint: str | None = None,
         returnFormat: str = "xml",  # noqa: N803
         method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
-        auth: Optional[Tuple[str, str]] = None,
+        auth: tuple[str, str] | None = None,
         **kwargs,
     ):
         """
@@ -58,7 +58,7 @@ class SPARQLConnector:
         self.kwargs = kwargs
         self.method = method
         if auth is not None:
-            if type(auth) != tuple:
+            if type(auth) is not tuple:
                 raise SPARQLConnectorException("auth must be a tuple")
             if len(auth) != 2:
                 raise SPARQLConnectorException("auth must be a tuple (user, password)")
@@ -84,15 +84,15 @@ class SPARQLConnector:
     def query(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> Result:
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {}
         # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
-        if default_graph is not None and type(default_graph) != BNode:
+        if default_graph is not None and type(default_graph) is not BNode:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
@@ -155,8 +155,8 @@ class SPARQLConnector:
     def update(
         self,
         query: str,
-        default_graph: Optional[str] = None,
-        named_graph: Optional[str] = None,
+        default_graph: str | None = None,
+        named_graph: str | None = None,
     ) -> None:
         if not self.update_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")

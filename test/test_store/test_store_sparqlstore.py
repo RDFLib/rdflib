@@ -4,11 +4,8 @@ import logging
 import re
 import socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from test.utils import helper
-from test.utils.http import MethodName, MockHTTPResponse
-from test.utils.httpservermock import ServedBaseHTTPServerMock
 from threading import Thread
-from typing import Callable, ClassVar, Type
+from typing import Callable, ClassVar
 from unittest.mock import patch
 
 import pytest
@@ -16,6 +13,9 @@ import pytest
 from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS, XMLNS, XSD
 from rdflib.plugins.stores.sparqlconnector import SPARQLConnector
+from test.utils import helper
+from test.utils.http import MethodName, MockHTTPResponse
+from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 class TestSPARQLStoreGraph:
@@ -38,7 +38,7 @@ class TestSPARQLStoreGraph:
         ],
     )
     def test_graph_modify_fails(
-        self, call: Callable[[Graph], None], exception_type: Type[Exception]
+        self, call: Callable[[Graph], None], exception_type: type[Exception]
     ) -> None:
         """
         Methods that modify the Graph fail.
@@ -107,7 +107,7 @@ class TestSPARQLStoreFakeDBPedia:
             count = 0
             for i in res:
                 count += 1
-                assert type(i[0]) == URIRef, i[0].n3()
+                assert type(i[0]) is URIRef, i[0].n3()
             assert count > 0
             mock.assert_called_once()
             args, kwargs = mock.call_args
@@ -177,7 +177,7 @@ class TestSPARQLStoreFakeDBPedia:
             query, initNs={"xyzzy": "http://www.w3.org/2004/02/skos/core#"}
         )
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
 
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
@@ -263,7 +263,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert re.match(r"^/sparql", req.path)
@@ -325,7 +325,7 @@ SELECT ?label WHERE { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10""
         )
         res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
-            assert type(i[0]) == Literal, i[0].n3()
+            assert type(i[0]) is Literal, i[0].n3()
         assert self.httpmock.mocks[MethodName.GET].call_count == 1
         req = self.httpmock.requests[MethodName.GET].pop(0)
         assert re.match(r"^/sparql", req.path)

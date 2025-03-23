@@ -8,14 +8,15 @@ from __future__ import annotations
 import itertools
 import logging
 import re
-from test.utils.namespace import EGDC
-from typing import Callable, Dict, Iterable, List, Tuple
+from collections.abc import Iterable
+from typing import Callable
 
 import pytest
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
+from test.utils.namespace import EGDC
 
 from .utils import GraphHelper
 
@@ -32,7 +33,7 @@ string_escape_map = {
 }
 
 
-def make_unquote_correctness_pairs() -> List[Tuple[str, str]]:
+def make_unquote_correctness_pairs() -> list[tuple[str, str]]:
     """
     Creates pairs of quoted and unquoted strings.
     """
@@ -95,7 +96,7 @@ def ntriples_unquote(input: str) -> str:
         ntriples.validate = old_validate
 
 
-unquoters: Dict[str, Callable[[str], str]] = {
+unquoters: dict[str, Callable[[str], str]] = {
     "ntriples_unquote": ntriples_unquote,
     "ntriples_unquote_validate": ntriples_unquote_validate,
 }
@@ -103,7 +104,7 @@ unquoters: Dict[str, Callable[[str], str]] = {
 
 def make_unquote_correctness_tests(
     selectors: Iterable[str],
-) -> Iterable[Tuple[str, str, str]]:
+) -> Iterable[tuple[str, str, str]]:
     """
     This function creates a cartesian product of the selectors and
     `CORRECTNESS_PAIRS` that is suitable for use as pytest parameters.

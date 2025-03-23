@@ -31,7 +31,7 @@ def test_skolem_de_skolem_roundtrip():
 
     # Check the BNode is now a URIRef after skolemization.
     skolem_bnode = skolemized_graph.value(**query)
-    assert type(skolem_bnode) == URIRef
+    assert type(skolem_bnode) is URIRef
 
     # Check that the original bnode id exists somewhere in the uri.
     assert bnode_id in skolem_bnode

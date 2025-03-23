@@ -1,8 +1,8 @@
 import io
-from test.utils import eq_
 
 import rdflib
 from rdflib import Graph
+from test.utils import eq_
 
 
 def test_datetime_datetime_subs_issue():
@@ -94,8 +94,8 @@ def test_datetime_duration_subs():
     SELECT (?d - ?duration AS ?next_year)
     WHERE {
         VALUES (?duration ?d) {
-            ("P1Y"^^xsd:yearMonthDuration"2019-05-28T12:14:45Z"^^xsd:dateTime)
-            ("P1Y"^^xsd:yearMonthDuration"2019-05-28"^^xsd:date)
+            ("P1Y"^^xsd:yearMonthDuration "2019-05-28T12:14:45Z"^^xsd:dateTime)
+            ("P1Y"^^xsd:yearMonthDuration "2019-05-28"^^xsd:date)
         }
     }
     """

@@ -22,11 +22,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     BinaryIO,
-    List,
-    Optional,
     TextIO,
-    Tuple,
     Union,
+    cast,
 )
 from urllib.parse import urljoin
 from urllib.request import Request, url2pathname
@@ -40,9 +38,13 @@ from rdflib.term import URIRef
 
 if TYPE_CHECKING:
     from email.message import Message
+    from io import BufferedReader
     from urllib.response import addinfourl
 
+    from typing_extensions import Buffer
+
     from rdflib.graph import Graph
+
 
 __all__ = [
     "Parser",
@@ -65,35 +67,352 @@ class Parser:
 
 
 class BytesIOWrapper(BufferedIOBase):
-    __slots__ = ("wrapped", "encoded", "encoding")
+    __slots__ = (
+        "wrapped",
+        "enc_str",
+        "text_str",
+        "encoding",
+        "encoder",
+        "has_read1",
+        "has_seek",
+        "_name",
+        "_fileno",
+        "_isatty",
+        "_leftover",
+        "_bytes_per_char",
+        "_text_bytes_offset",
+    )
 
-    def __init__(self, wrapped: str, encoding="utf-8"):
+    def __init__(self, wrapped: Union[str, StringIO, TextIOBase], encoding="utf-8"):
         super(BytesIOWrapper, self).__init__()
         self.wrapped = wrapped
         self.encoding = encoding
-        self.encoded: Optional[BytesIO] = None
+        self.encoder = codecs.getencoder(self.encoding)
+        self.enc_str: Union[BytesIO, BufferedIOBase] | None = None
+        self.text_str: Union[StringIO, TextIOBase] | None = None
+        self.has_read1: bool | None = None
+        self.has_seek: bool | None = None
+        self._name: str | None = None
+        self._fileno: Union[int, BaseException] | None = None
+        self._isatty: Union[bool, BaseException] | None = None
+        self._leftover: bytes = b""
+        self._text_bytes_offset: int = 0
+        norm_encoding = encoding.lower().replace("_", "-")
+        if norm_encoding in ("utf-8", "utf8", "u8", "cp65001"):
+            # utf-8 has a variable number of bytes per character, 1-4
+            self._bytes_per_char: int = 1  # assume average of 1 byte per character
+        elif norm_encoding in (
+            "latin1",
+            "latin-1",
+            "iso-8859-1",
+            "iso8859-1",
+            "ascii",
+            "us-ascii",
+        ):
+            # these are all 1-byte-per-character encodings
+            self._bytes_per_char = 1
+        elif norm_encoding.startswith("utf-16") or norm_encoding.startswith("utf16"):
+            # utf-16 has a variable number of bytes per character, 2-3
+            self._bytes_per_char = 2  # assume average of 2 bytes per character
+        elif norm_encoding.startswith("utf-32") or norm_encoding.startswith("utf32"):
+            # utf-32 is fixed length with 4 bytes per character
+            self._bytes_per_char = 4
+        else:
+            # not sure, just assume it is 2 bytes per character
+            self._bytes_per_char = 2
 
-    def read(self, *args, **kwargs):
-        if self.encoded is None:
-            b, blen = codecs.getencoder(self.encoding)(self.wrapped)
-            self.encoded = BytesIO(b)
-        return self.encoded.read(*args, **kwargs)
+    def _init(self):
+        name: str | None = None
+        if isinstance(self.wrapped, str):
+            b, blen = self.encoder(self.wrapped)
+            self.enc_str = BytesIO(b)
+            name = "string"
+        elif isinstance(self.wrapped, TextIOWrapper):
+            inner = self.wrapped.buffer
+            # type error: TextIOWrapper.buffer cannot be a BytesIOWrapper
+            if isinstance(inner, BytesIOWrapper):  # type: ignore[unreachable, unused-ignore]
+                raise Exception(
+                    "BytesIOWrapper cannot be wrapped in TextIOWrapper, "
+                    "then wrapped in another BytesIOWrapper"
+                )
+            else:
+                self.enc_str = cast(BufferedIOBase, inner)
+        elif isinstance(self.wrapped, (TextIOBase, StringIO)):
+            self.text_str = self.wrapped
+        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        if self.enc_str is not None:
+            use_stream = self.enc_str
+        elif self.text_str is not None:
+            use_stream = self.text_str
+        else:
+            raise Exception("No stream to read from")
+        if name is None:
+            try:
+                name = use_stream.name  # type: ignore[union-attr]
+            except AttributeError:
+                name = "stream"
+        self.has_read1 = hasattr(use_stream, "read1")
+        try:
+            self.has_seek = use_stream.seekable()
+        except AttributeError:
+            self.has_seek = hasattr(use_stream, "seek")
 
-    def read1(self, *args, **kwargs):
-        if self.encoded is None:
-            b = codecs.getencoder(self.encoding)(self.wrapped)
-            # type error: Argument 1 to "BytesIO" has incompatible type "Tuple[bytes, int]"; expected "Buffer"
-            self.encoded = BytesIO(b)  # type: ignore[arg-type]
-        return self.encoded.read1(*args, **kwargs)
+        self._name = name
 
-    def readinto(self, *args, **kwargs):
-        raise NotImplementedError()
+    def _check_fileno(self):
+        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            use_stream = self.enc_str
+        elif self.text_str is not None:
+            use_stream = self.text_str
+        try:
+            self._fileno = use_stream.fileno()
+        except OSError as e:
+            self._fileno = e
+        except AttributeError:
+            self._fileno = -1
 
-    def readinto1(self, *args, **kwargs):
-        raise NotImplementedError()
+    def _check_isatty(self):
+        use_stream: Union[BytesIO, StringIO, BufferedIOBase, TextIOBase]
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            use_stream = self.enc_str
+        elif self.text_str is not None:
+            use_stream = self.text_str
+        try:
+            self._isatty = use_stream.isatty()
+        except OSError as e:
+            self._isatty = e
+        except AttributeError:
+            self._isatty = False
 
-    def write(self, *args, **kwargs):
-        raise NotImplementedError()
+    @property
+    def name(self) -> Any:
+        if self._name is None:
+            self._init()
+        return self._name
+
+    @property
+    def closed(self) -> bool:
+        if self.enc_str is None and self.text_str is None:
+            return False
+        closed: bool | None = None
+        if self.enc_str is not None:
+            try:
+                closed = self.enc_str.closed
+            except AttributeError:
+                closed = None
+        elif self.text_str is not None:
+            try:
+                closed = self.text_str.closed
+            except AttributeError:
+                closed = None
+        return False if closed is None else closed
+
+    def readable(self) -> bool:
+        return True
+
+    def writable(self) -> bool:
+        return False
+
+    def truncate(self, size: int | None = None) -> int:
+        raise NotImplementedError("Cannot truncate on BytesIOWrapper")
+
+    def isatty(self) -> bool:
+        if self._isatty is None:
+            self._check_isatty()
+        if isinstance(self._isatty, BaseException):
+            raise self._isatty
+        else:
+            return bool(self._isatty)
+
+    def fileno(self) -> int:
+        if self._fileno is None:
+            self._check_fileno()
+        if isinstance(self._fileno, BaseException):
+            raise self._fileno
+        else:
+            return -1 if self._fileno is None else self._fileno
+
+    def close(self):
+        if self.enc_str is None and self.text_str is None:
+            return
+        if self.enc_str is not None:
+            try:
+                self.enc_str.close()
+            except AttributeError:
+                pass
+        elif self.text_str is not None:
+            try:
+                self.text_str.close()
+            except AttributeError:
+                pass
+
+    def flush(self):
+        return  # Does nothing on read-only streams
+
+    def _read_bytes_from_text_stream(self, size: int | None = -1, /) -> bytes:
+        if TYPE_CHECKING:
+            assert self.text_str is not None
+        if size is None or size < 0:
+            try:
+                ret_str: str = self.text_str.read()
+            except EOFError:
+                ret_str = ""
+            ret_encoded, enc_len = self.encoder(ret_str)
+            if self._leftover:
+                ret_bytes = self._leftover + ret_encoded
+                self._leftover = b""
+            else:
+                ret_bytes = ret_encoded
+        elif size == len(self._leftover):
+            ret_bytes = self._leftover
+            self._leftover = b""
+        elif size < len(self._leftover):
+            ret_bytes = self._leftover[:size]
+            self._leftover = self._leftover[size:]
+        else:
+            d, m = divmod(size, self._bytes_per_char)
+            get_per_loop = int(d) + (1 if m > 0 else 0)
+            got_bytes: bytes = self._leftover
+            while len(got_bytes) < size:
+                try:
+                    got_str: str = self.text_str.read(get_per_loop)
+                except EOFError:
+                    got_str = ""
+                if len(got_str) < 1:
+                    break
+                ret_encoded, enc_len = self.encoder(got_str)
+                got_bytes += ret_encoded
+            if len(got_bytes) == size:
+                self._leftover = b""
+                ret_bytes = got_bytes
+            else:
+                ret_bytes = got_bytes[:size]
+                self._leftover = got_bytes[size:]
+                del got_bytes
+        self._text_bytes_offset += len(ret_bytes)
+        return ret_bytes
+
+    def read(self, size: int | None = -1, /) -> bytes:
+        """
+        Read at most size bytes, returned as a bytes object.
+
+        If the size argument is negative or omitted read until EOF is reached.
+        Return an empty bytes object if already at EOF.
+        """
+        if size is not None and size == 0:
+            return b""
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            ret_bytes = self.enc_str.read(size)
+        else:
+            ret_bytes = self._read_bytes_from_text_stream(size)
+        return ret_bytes
+
+    def read1(self, size: int | None = -1, /) -> bytes:
+        """
+        Read at most size bytes, with at most one call to the underlying raw stream’s
+        read() or readinto() method. Returned as a bytes object.
+
+        If the size argument is negative or omitted, read until EOF is reached.
+        Return an empty bytes object at EOF.
+        """
+        if (self.enc_str is None and self.text_str is None) or self.has_read1 is None:
+            self._init()
+        if not self.has_read1:
+            raise NotImplementedError()
+        if self.enc_str is not None:
+            if size is None or size < 0:
+                return self.enc_str.read1()
+            return self.enc_str.read1(size)
+        raise NotImplementedError("read1() not supported for TextIO in BytesIOWrapper")
+
+    def readinto(self, b: Buffer, /) -> int:
+        """
+        Read len(b) bytes into buffer b.
+
+        Returns number of bytes read (0 for EOF), or error if the object
+        is set not to block and has no data to read.
+        """
+        if TYPE_CHECKING:
+            assert isinstance(b, (memoryview, bytearray))
+        if len(b) == 0:
+            return 0
+        if self.enc_str is None and self.text_str is None:
+            self._init()
+        if self.enc_str is not None:
+            return self.enc_str.readinto(b)
+        else:
+            size = len(b)
+            read_data: bytes = self._read_bytes_from_text_stream(size)
+            read_len = len(read_data)
+            if read_len == 0:
+                return 0
+            b[:read_len] = read_data
+            return read_len
+
+    def readinto1(self, b: Buffer, /) -> int:
+        """
+        Read len(b) bytes into buffer b, with at most one call to the underlying raw
+        stream's read() or readinto() method.
+
+        Returns number of bytes read (0 for EOF), or error if the object
+        is set not to block and has no data to read.
+        """
+        if TYPE_CHECKING:
+            assert isinstance(b, (memoryview, bytearray))
+        if (self.enc_str is None and self.text_str is None) or self.has_read1 is None:
+            self._init()
+        if not self.has_read1:
+            raise NotImplementedError()
+        if self.enc_str is not None:
+            return self.enc_str.readinto1(b)
+        raise NotImplementedError(
+            "readinto1() not supported for TextIO in BytesIOWrapper"
+        )
+
+    def seek(self, offset: int, whence: int = 0, /) -> int:
+        if self.has_seek is not None and not self.has_seek:
+            raise NotImplementedError()
+        if (self.enc_str is None and self.text_str is None) or self.has_seek is None:
+            self._init()
+
+        if not whence == 0:
+            raise NotImplementedError("Only SEEK_SET is supported on BytesIOWrapper")
+        if offset != 0:
+            raise NotImplementedError(
+                "Only seeking to zero is supported on BytesIOWrapper"
+            )
+        if self.enc_str is not None:
+            self.enc_str.seek(offset, whence)
+        elif self.text_str is not None:
+            self.text_str.seek(offset, whence)
+        self._text_bytes_offset = 0
+        self._leftover = b""
+        return 0
+
+    def seekable(self):
+        if (self.enc_str is None and self.text_str is None) or self.has_seek is None:
+            self._init()
+        return self.has_seek
+
+    def tell(self) -> int:
+        if self.has_seek is not None and not self.has_seek:
+            raise NotImplementedError("Cannot tell() pos because file is not seekable.")
+        if self.enc_str is not None:
+            try:
+                self._text_bytes_offset = self.enc_str.tell()
+            except AttributeError:
+                pass
+        return self._text_bytes_offset
+
+    def write(self, b, /):
+        raise NotImplementedError("Cannot write to a BytesIOWrapper")
 
 
 class InputSource(xmlreader.InputSource):
@@ -101,9 +420,9 @@ class InputSource(xmlreader.InputSource):
     TODO:
     """
 
-    def __init__(self, system_id: Optional[str] = None):
+    def __init__(self, system_id: str | None = None):
         xmlreader.InputSource.__init__(self, system_id=system_id)
-        self.content_type: Optional[str] = None
+        self.content_type: str | None = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
 
     def close(self) -> None:
@@ -137,23 +456,23 @@ class PythonInputSource(InputSource):
     True
     """
 
-    def __init__(self, data: Any, system_id: Optional[str] = None):
+    def __init__(self, data: Any, system_id: str | None = None):
         self.content_type = None
         self.auto_close = False  # see Graph.parse(), true if opened by us
-        self.public_id: Optional[str] = None
-        self.system_id: Optional[str] = system_id
+        self.public_id: str | None = None
+        self.system_id: str | None = system_id
         self.data = data
 
-    def getPublicId(self) -> Optional[str]:  # noqa: N802
+    def getPublicId(self) -> str | None:  # noqa: N802
         return self.public_id
 
-    def setPublicId(self, public_id: Optional[str]) -> None:  # noqa: N802
+    def setPublicId(self, public_id: str | None) -> None:  # noqa: N802
         self.public_id = public_id
 
-    def getSystemId(self) -> Optional[str]:  # noqa: N802
+    def getSystemId(self) -> str | None:  # noqa: N802
         return self.system_id
 
-    def setSystemId(self, system_id: Optional[str]) -> None:  # noqa: N802
+    def setSystemId(self, system_id: str | None) -> None:  # noqa: N802
         self.system_id = system_id
 
     def close(self) -> None:
@@ -167,9 +486,9 @@ class StringInputSource(InputSource):
 
     def __init__(
         self,
-        value: Union[str, bytes],
+        value: str | bytes,
         encoding: str = "utf-8",
-        system_id: Optional[str] = None,
+        system_id: str | None = None,
     ):
         super(StringInputSource, self).__init__(system_id)
         stream: Union[BinaryIO, TextIO]
@@ -198,27 +517,27 @@ class URLInputSource(InputSource):
     Constructs an RDFLib Parser InputSource from a URL to read it from the Web.
     """
 
-    links: List[str]
+    links: list[str]
 
     @classmethod
-    def getallmatchingheaders(cls, message: Message, name) -> List[str]:
+    def getallmatchingheaders(cls, message: Message, name) -> list[str]:
         # This is reimplemented here, because the method
         # getallmatchingheaders from HTTPMessage is broken since Python 3.0
         name = name.lower()
         return [val for key, val in message.items() if key.lower() == name]
 
     @classmethod
-    def get_links(cls, response: addinfourl) -> List[str]:
+    def get_links(cls, response: addinfourl) -> list[str]:
         linkslines = cls.getallmatchingheaders(response.headers, "Link")
-        retarray: List[str] = []
+        retarray: list[str] = []
         for linksline in linkslines:
             links = [linkstr.strip() for linkstr in linksline.split(",")]
             for link in links:
                 retarray.append(link)
         return retarray
 
-    def get_alternates(self, type_: Optional[str] = None) -> List[str]:
-        typestr: Optional[str] = f'type="{type_}"' if type_ else None
+    def get_alternates(self, type_: str | None = None) -> list[str]:
+        typestr: str | None = f'type="{type_}"' if type_ else None
         relstr = 'rel="alternate"'
         alts = []
         for link in self.links:
@@ -232,7 +551,7 @@ class URLInputSource(InputSource):
                 alts.append(parts[0].strip("<>"))
         return alts
 
-    def __init__(self, system_id: Optional[str] = None, format: Optional[str] = None):
+    def __init__(self, system_id: str | None = None, format: str | None = None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
 
@@ -297,7 +616,10 @@ class URLInputSource(InputSource):
 
 class FileInputSource(InputSource):
     def __init__(
-        self, file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase]
+        self,
+        file: Union[BinaryIO, TextIO, TextIOBase, RawIOBase, BufferedIOBase],
+        /,
+        encoding: str | None = None,
     ):
         base = pathlib.Path.cwd().as_uri()
         system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)  # type: ignore[union-attr]
@@ -310,25 +632,32 @@ class FileInputSource(InputSource):
                 b = file.buffer  # type: ignore[attr-defined]
                 self.setByteStream(b)
             except (AttributeError, LookupError):
-                self.setByteStream(file)
+                self.setByteStream(BytesIOWrapper(file, encoding=file.encoding))
         else:
+            if TYPE_CHECKING:
+                assert isinstance(file, BufferedReader)
             self.setByteStream(file)
-            # We cannot set characterStream here because
-            # we do not know the Raw Bytes File encoding.
+            if encoding is not None:
+                self.setEncoding(encoding)
+                self.setCharacterStream(TextIOWrapper(file, encoding=encoding))
+            else:
+                # We cannot set characterStream here because
+                # we do not know the Raw Bytes File encoding.
+                pass
 
     def __repr__(self) -> str:
         return repr(self.file)
 
 
 def create_input_source(
-    source: Optional[
-        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath]
-    ] = None,
-    publicID: Optional[str] = None,  # noqa: N803
-    location: Optional[str] = None,
-    file: Optional[Union[BinaryIO, TextIO]] = None,
-    data: Optional[Union[str, bytes, dict]] = None,
-    format: Optional[str] = None,
+    source: (
+        Union[IO[bytes], TextIO, InputSource, str, bytes, pathlib.PurePath] | None
+    ) = None,
+    publicID: str | None = None,  # noqa: N803
+    location: str | None = None,
+    file: BinaryIO | TextIO | None = None,
+    data: str | bytes | dict | None = None,
+    format: str | None = None,
 ) -> InputSource:
     """
     Return an appropriate InputSource instance for the given
@@ -441,11 +770,11 @@ def create_input_source(
 
 
 def _create_input_source_from_location(
-    file: Optional[Union[BinaryIO, TextIO]],
-    format: Optional[str],
-    input_source: Optional[InputSource],
+    file: BinaryIO | TextIO | None,
+    format: str | None,
+    input_source: InputSource | None,
     location: str,
-) -> Tuple[URIRef, bool, Optional[Union[BinaryIO, TextIO]], Optional[InputSource]]:
+) -> tuple[URIRef, bool, BinaryIO | TextIO | None, InputSource | None]:
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145 and
     # https://github.com/RDFLib/rdflib/issues/1430
     # NOTE: using pathlib.Path.exists on a URL fails on windows as it is not a

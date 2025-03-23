@@ -1,13 +1,39 @@
 from pathlib import Path
 
-from rdflib import ConjunctiveGraph, Dataset, Literal
+from rdflib import BNode, ConjunctiveGraph, Dataset, Literal, URIRef
+from rdflib.compare import isomorphic
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.namespace import XSD
+
+
+def test_named_and_anonymous_graph_roundtrip():
+    s = """
+        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", "https://example.com/graph/1"]
+        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "_:graph-2"]
+        ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+    """
+    d = Dataset()
+    d.parse(data=s, format="hext")
+
+    new_s = d.serialize(format="hext")
+    new_d = Dataset()
+    new_d.parse(data=new_s, format="hext")
+
+    named_graph = URIRef("https://example.com/graph/1")
+    assert isomorphic(d.graph(named_graph), new_d.graph(named_graph))
+
+    anonymous_graph = BNode("graph-2")
+    assert isomorphic(d.graph(anonymous_graph), new_d.graph(anonymous_graph))
+
+    assert isomorphic(
+        d.graph(DATASET_DEFAULT_GRAPH_ID), new_d.graph(DATASET_DEFAULT_GRAPH_ID)
+    )
 
 
 def test_small_string():
     s = """
-        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", ""]
-        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", ""]
+        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", "https://example.com/graph/1"]
+        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "_:graph-2"]
         ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
         ["http://example.com/s01", "http://example.com/creationDate", "2021-12-01", "http://www.w3.org/2001/XMLSchema#date", "", ""]
         ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13:00", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
@@ -17,14 +43,51 @@ def test_small_string():
         ["http://example.com/s01", "http://example.com/op1", "http://example.com/o2", "globalId", "", ""]
         ["http://example.com/s01", "http://example.com/op2", "http://example.com/o3", "globalId", "", ""]
         """
-    d = Dataset().parse(data=s, format="hext")
+    d = Dataset()
+    d.parse(data=s, format="hext")
+
+    expected_graph_names = (
+        URIRef(DATASET_DEFAULT_GRAPH_ID),
+        URIRef("https://example.com/graph/1"),
+        BNode("graph-2"),
+    )
+    for graph in d.contexts():
+        assert graph.identifier in expected_graph_names
+
+    assert len(d) == 10
+
+
+def test_small_bytes_string():
+    s = b"""\
+        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", "https://example.com/graph/1"]
+        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "_:graph-2"]
+        ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
+        ["http://example.com/s01", "http://example.com/creationDate", "2021-12-01", "http://www.w3.org/2001/XMLSchema#date", "", ""]
+        ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13:00", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
+        ["http://example.com/s01", "http://example.com/age", "42", "http://www.w3.org/2001/XMLSchema#integer", "", ""]
+        ["http://example.com/s01", "http://example.com/trueFalse", "false", ",http://www.w3.org/2001/XMLSchema#boolean", "", ""]
+        ["http://example.com/s01", "http://example.com/op1", "http://example.com/o1", "globalId", "", ""]
+        ["http://example.com/s01", "http://example.com/op1", "http://example.com/o2", "globalId", "", ""]
+        ["http://example.com/s01", "http://example.com/op2", "http://example.com/o3", "globalId", "", ""]
+        """
+    d = Dataset()
+    d.parse(data=s, format="hext")
+
+    expected_graph_names = (
+        URIRef(DATASET_DEFAULT_GRAPH_ID),
+        URIRef("https://example.com/graph/1"),
+        BNode("graph-2"),
+    )
+    for graph in d.contexts():
+        assert graph.identifier in expected_graph_names
+
     assert len(d) == 10
 
 
 def test_small_string_cg():
     s = """
-        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", ""]
-        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", ""]
+        ["http://example.com/s01", "http://example.com/a", "http://example.com/Type1", "globalId", "", "https://example.com/graph/1"]
+        ["http://example.com/s01", "http://example.com/label", "This is a Label", "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString", "en", "_:graph-2"]
         ["http://example.com/s01", "http://example.com/comment", "This is a comment", "http://www.w3.org/2001/XMLSchema#string", "", ""]
         ["http://example.com/s01", "http://example.com/creationDate", "2021-12-01", "http://www.w3.org/2001/XMLSchema#date", "", ""]
         ["http://example.com/s01", "http://example.com/creationTime", "2021-12-01T12:13:00", "http://www.w3.org/2001/XMLSchema#dateTime", "", ""]
@@ -34,7 +97,17 @@ def test_small_string_cg():
         ["http://example.com/s01", "http://example.com/op1", "http://example.com/o2", "globalId", "", ""]
         ["http://example.com/s01", "http://example.com/op2", "http://example.com/o3", "globalId", "", ""]
         """
-    d = ConjunctiveGraph().parse(data=s, format="hext")
+    d = ConjunctiveGraph(identifier=DATASET_DEFAULT_GRAPH_ID)
+    d.parse(data=s, format="hext")
+
+    expected_graph_names = (
+        URIRef(DATASET_DEFAULT_GRAPH_ID),
+        URIRef("https://example.com/graph/1"),
+        BNode("graph-2"),
+    )
+    for graph in d.contexts():
+        assert graph.identifier in expected_graph_names
+
     assert len(d) == 10
 
 
@@ -128,7 +201,7 @@ def test_roundtrip():
                 if cg2.context_aware:
                     for context in cg2.contexts():
                         for triple in context.triples((None, None, None)):
-                            if type(triple[2]) == Literal:
+                            if type(triple[2]) is Literal:
                                 if triple[2].datatype == XSD.string:
                                     context.remove((triple[0], triple[1], triple[2]))
                                     context.add(
@@ -136,7 +209,7 @@ def test_roundtrip():
                                     )
                 else:
                     for triple in cg2.triples((None, None, None)):
-                        if type(triple[2]) == Literal:
+                        if type(triple[2]) is Literal:
                             if triple[2].datatype == XSD.string:
                                 cg2.remove((triple[0], triple[1], triple[2]))
                                 cg2.add((triple[0], triple[1], Literal(str(triple[2]))))

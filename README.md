@@ -43,17 +43,19 @@ Help with maintenance of all of the RDFLib family of packages is always welcome 
 
 ## Versions & Releases
 
-* `7.1.0a0` current `main` branch.
-* `7.x.y` current release, supports Python 3.8.1+ only.
-    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+* `main` branch in this repository is the unstable release
+* `7.1.2` current stable release, small improvements on to 7.1.1
+* `7.1.1` previous stable release
+    * see <https://github.com/RDFLib/rdflib/releases/tag/7.1.1>
 * `6.x.y` supports Python 3.7+ only. Many improvements over 5.0.0
-    * see [Releases](https://github.com/RDFLib/rdflib/releases)
+    * see <https://github.com/RDFLib/rdflib/releases/tag/6.3.2>
 * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
+  * * see <https://github.com/RDFLib/rdflib/releases/tag/5.0.0>
 
-See <https://rdflib.dev> for the release overview.
+See <https://github.com/RDFLib/rdflib/releases/> for the release details.
 
 ## Documentation
-See <https://rdflib.readthedocs.io> for our documentation built from the code. Note that there are `latest`, `stable` `5.0.0` and `4.2.2` documentation versions, matching releases.
+See <https://rdflib.readthedocs.io> for our documentation built from the code. Note that there are `latest`, `stable` and versioned builds, such as `5.0.0`, matching releases.
 
 ## Installation
 The stable release of RDFLib may be installed with Python's package management tool *pip*:
@@ -62,12 +64,12 @@ The stable release of RDFLib may be installed with Python's package management t
 
 Some features of RDFLib require optional dependencies which may be installed using *pip* extras:
 
-    $ pip install rdflib[berkeleydb,networkx,html,lxml]
+    $ pip install rdflib[berkeleydb,networkx,html,lxml,orjson]
 
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 7.0.0, see the ``CHANGELOG.md`` file for what's new in this release.
+The current version of RDFLib is 7.1.2, see the ``CHANGELOG.md`` file for what's new in this release.
 
 ### Installation of the current main branch (for developers)
 

@@ -3,11 +3,11 @@ from __future__ import annotations
 import builtins
 import logging
 from dataclasses import dataclass
-from test.utils.outcome import NoExceptionChecker
-from typing import Any, Optional, Union
+from typing import Any, Union
 from xml.dom.minidom import DocumentFragment
 
 from rdflib.term import Literal, URIRef
+from test.utils.outcome import NoExceptionChecker
 
 
 @dataclass(frozen=True)
@@ -46,7 +46,7 @@ class LiteralChecker(NoExceptionChecker[Literal]):
             assert self.datatype == actual.datatype, "Literal datatype does not match"
 
 
-def literal_idfn(value: Any) -> Optional[str]:
+def literal_idfn(value: Any) -> str | None:
     if callable(value):
         try:
             literal = value()

@@ -139,14 +139,14 @@ tasks:
     desc: Fix auto-fixable linting errors
     cmds:
       - task: ruff
-        vars: { FIX: true }
+        vars: { FIX: "true" }
       - task: black
 
   lint:
     desc: Perform linting
     cmds:
       - task: black
-        vars: { CHECK: true }
+        vars: { CHECK: "true" }
       - task: ruff
 
   validate:static:
@@ -250,7 +250,7 @@ tasks:
       - task: install:system-deps
       - task: install:tox
         vars:
-          WITH_GITHUB_ACTIONS: true
+          WITH_GITHUB_ACTIONS: "true"
       - cmd: "{{.PYTHON}} -m pip install coveralls"
       - task: tox
         vars:
@@ -272,7 +272,7 @@ tasks:
 
   pip-compile:
     cmds:
-      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --resolver=backtracking {{.CLI_ARGS}}"
+      - cmd: "{{.PIP_COMPILE}} --quiet --annotate --emit-options --no-strip-extras --resolver=backtracking {{.CLI_ARGS}}"
 
   docker:prepare:
     cmds:

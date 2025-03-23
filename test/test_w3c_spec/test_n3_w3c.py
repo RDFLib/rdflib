@@ -5,10 +5,7 @@ from __future__ import annotations
 
 import itertools
 import os
-from test.data import TEST_DATA_DIR
-from test.utils.manifest import RDFTest, read_manifest
-from test.utils.namespace import RDFT
-from typing import Callable, Dict
+from typing import Callable
 
 import pytest
 
@@ -16,6 +13,9 @@ from rdflib import Graph
 from rdflib.compare import graph_diff, isomorphic
 from rdflib.namespace import split_uri
 from rdflib.term import Node, URIRef
+from test.data import TEST_DATA_DIR
+from test.utils.manifest import RDFTest, read_manifest
+from test.utils.namespace import RDFT
 
 verbose = False
 
@@ -63,7 +63,7 @@ def n3(test: RDFTest):
             raise
 
 
-testers: Dict[Node, Callable[[RDFTest], None]] = {
+testers: dict[Node, Callable[[RDFTest], None]] = {
     RDFT.TestTurtlePositiveSyntax: n3,
     RDFT.TestTurtleNegativeSyntax: n3,
     RDFT.TestTurtleEval: n3,
@@ -114,7 +114,7 @@ turtle_positive_syntax_skipped = [
     "turtle-syntax-string-11",
 ]
 
-EXPECTED_FAILURES: Dict[str, str] = {}
+EXPECTED_FAILURES: dict[str, str] = {}
 
 if os.name == "nt":
     for test in ["turtle-subm-15", "turtle-subm-16"]:
