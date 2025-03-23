@@ -5,7 +5,7 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Any, Union
+from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.plugins.serializers.turtle import TurtleSerializer
@@ -22,7 +22,7 @@ class TrigSerializer(TurtleSerializer):
     indentString = 4 * " "
 
     def __init__(self, store: Union[Graph, ConjunctiveGraph]):
-        self.default_context: Node | None
+        self.default_context: Optional[Node]
         if store.context_aware:
             if TYPE_CHECKING:
                 assert isinstance(store, ConjunctiveGraph)
@@ -56,19 +56,19 @@ class TrigSerializer(TurtleSerializer):
 
     def reset(self) -> None:
         super(TrigSerializer, self).reset()
-        self._contexts: dict[
+        self._contexts: Dict[
             _ContextType,
-            tuple[list[_SubjectType], dict[_SubjectType, bool]],
+            Tuple[List[_SubjectType], Dict[_SubjectType, bool]],
         ] = {}
 
     def serialize(
         self,
         stream: IO[bytes],
-        base: str | None = None,
-        encoding: str | None = None,
-        spacious: bool | None = None,
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        spacious: Optional[bool] = None,
         **kwargs: Any,
-    ):
+    ) -> None:
         self.reset()
         self.stream = stream
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -96,7 +96,7 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier == self.default_context:
                 self.write(self.indent() + "\n{")
             else:
-                iri: str | None
+                iri: Optional[str]
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
                 else:

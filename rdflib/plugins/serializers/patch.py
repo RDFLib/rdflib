@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import IO, Any
+from typing import IO, Any, Optional
 from uuid import uuid4
 
 from rdflib import Dataset
@@ -30,8 +30,8 @@ class PatchSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: str | None = None,
-        encoding: str | None = None,
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """

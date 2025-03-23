@@ -49,7 +49,7 @@ from uuid import uuid4
 
 from rdflib.compat import long_type
 from rdflib.exceptions import ParserError
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.graph import Dataset, Graph, QuotedGraph
 from rdflib.term import (
     _XSD_PFX,
     BNode,
@@ -2057,7 +2057,7 @@ class N3Parser(TurtleParser):
         elif not fa:
             raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
+        conj_graph = Dataset(store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
         # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink

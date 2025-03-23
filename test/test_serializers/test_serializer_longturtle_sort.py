@@ -14,8 +14,11 @@
 #
 # We would appreciate acknowledgement if the software is used.
 
+from __future__ import annotations
+
 import random
 from collections import defaultdict
+from typing import DefaultDict, List
 
 from rdflib import RDFS, BNode, Graph, Literal, Namespace, URIRef
 
@@ -28,7 +31,7 @@ def test_sort_semiblank_graph() -> None:
     consistent when involving repeated generates with blank nodes.
     """
 
-    serialization_counter: defaultdict[str, int] = defaultdict(int)
+    serialization_counter: DefaultDict[str, int] = defaultdict(int)
 
     first_graph_text: str = ""
 
@@ -44,13 +47,13 @@ def test_sort_semiblank_graph() -> None:
         graph.add((EX.B, RDFS.comment, Literal("Thing B")))
         graph.add((EX.C, RDFS.comment, Literal("Thing C")))
 
-        nodes: list[URIRef] = [EX.A, EX.B, EX.C, EX.B]
+        nodes: List[URIRef] = [EX.A, EX.B, EX.C, EX.B]
         nonrandom_shuffler.shuffle(nodes)
         for node in nodes:
             # Instantiate one bnode per URIRef node.
             graph.add((BNode(), RDFS.seeAlso, node))
 
-        nesteds: list[URIRef] = [EX.A, EX.B, EX.C]
+        nesteds: List[URIRef] = [EX.A, EX.B, EX.C]
         nonrandom_shuffler.shuffle(nesteds)
         for nested in nesteds:
             # Instantiate a nested node reference.

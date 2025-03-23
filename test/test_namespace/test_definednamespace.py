@@ -8,6 +8,7 @@ import warnings
 from contextlib import ExitStack
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional, Type
 
 import pytest
 
@@ -258,8 +259,8 @@ class DFNSWarnFail(DefinedNamespace):
 
 @dataclass
 class DFNSInfo:
-    dfns: type[DefinedNamespace]
-    suffix: str | None
+    dfns: Type[DefinedNamespace]
+    suffix: Optional[str]
     has_attrs: bool = True
 
 
@@ -277,7 +278,7 @@ dfns_infos = [
 dfns_list = [item.dfns for item in dfns_infos]
 
 
-def get_dfns_info(dfns: type[DefinedNamespace]) -> DFNSInfo:
+def get_dfns_info(dfns: Type[DefinedNamespace]) -> DFNSInfo:
     for dfns_info in dfns_infos:
         if dfns_info.dfns is dfns:
             return dfns_info
@@ -293,7 +294,7 @@ def dfns(request) -> DFNSInfo:
     return request.param
 
 
-def test_repr(dfns: type[DefinedNamespace]) -> None:
+def test_repr(dfns: Type[DefinedNamespace]) -> None:
     dfns_info = get_dfns_info(dfns)
     ns_uri = f"{prefix}{dfns_info.suffix}"
     logging.debug("ns_uri = %s", ns_uri)
@@ -307,7 +308,7 @@ def test_repr(dfns: type[DefinedNamespace]) -> None:
         assert ns_uri == f"{repro}"
 
 
-def test_inspect(dfns: type[DefinedNamespace]) -> None:
+def test_inspect(dfns: Type[DefinedNamespace]) -> None:
     """
     `inspect.signature` returns. This is here to check that this does not
     trigger infinite recursion.
@@ -324,11 +325,11 @@ def test_inspect(dfns: type[DefinedNamespace]) -> None:
         ("_notdefined", False),
     ],
 )
-def test_value(dfns: type[DefinedNamespace], attr_name: str, is_defined: bool) -> None:
+def test_value(dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.has_attrs is False:
         is_defined = False
-    resolved: str | None = None
+    resolved: Optional[str] = None
     with ExitStack() as xstack:
         warnings_record = xstack.enter_context(warnings.catch_warnings(record=True))
         if dfns_info.suffix is None or (not is_defined and dfns._fail is True):
@@ -357,15 +358,16 @@ def test_value(dfns: type[DefinedNamespace], attr_name: str, is_defined: bool) -
     ],
 )
 def test_contains(
-    dfns: type[DefinedNamespace], attr_name: str, is_defined: bool
+    dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool
 ) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.suffix is not None:
         logging.debug("dfns_info = %s", dfns_info)
     if dfns_info.has_attrs is False or dfns_info.suffix is None:
         is_defined = False
-    # x in y should never raise an AttributeError
+
     does_contain: bool = attr_name in dfns
+
     if is_defined:
         assert does_contain is True
     else:
@@ -382,14 +384,14 @@ def test_contains(
     ],
 )
 def test_hasattr(
-    dfns: type[DefinedNamespace], attr_name: str, is_defined: bool
+    dfns: Type[DefinedNamespace], attr_name: str, is_defined: bool
 ) -> None:
     dfns_info = get_dfns_info(dfns)
     if dfns_info.suffix is not None:
         logging.debug("dfns_info = %s", dfns_info)
     if dfns_info.has_attrs is False:
         is_defined = False
-    has_attr: bool | None = None
+    has_attr: Optional[bool] = None
     has_attr = hasattr(dfns, attr_name)
     if dfns_info.suffix is not None and (is_defined or dfns._fail is False):
         assert has_attr is True
@@ -397,9 +399,9 @@ def test_hasattr(
         assert has_attr is False
 
 
-def test_dir(dfns: type[DefinedNamespace]) -> None:
+def test_dir(dfns: Type[DefinedNamespace]) -> None:
     dfns_info = get_dfns_info(dfns)
-    does_contain: bool | None = None
+    does_contain: Optional[bool] = None
     with ExitStack() as xstack:
         # dir should work for DefinedNamespace as this is called by sphinx to
         # document it.
