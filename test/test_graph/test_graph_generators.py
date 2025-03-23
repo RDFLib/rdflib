@@ -82,7 +82,7 @@ def test_subjects_multi():
     add_stuff(graph)
     assert len([subj for subj in graph.subjects(LIKES, [CHEESE, PIZZA])]) == 5
     assert len([subj for subj in graph.subjects(LIKES, [])]) == 0
-    assert len([subj for subj in graph.subjects(LIKES|HATES, [CHEESE, PIZZA])]) == 6
+    assert len([subj for subj in graph.subjects(LIKES | HATES, [CHEESE, PIZZA])]) == 6
 
 
 def test_objects_multi():
@@ -90,4 +90,4 @@ def test_objects_multi():
     add_stuff(graph)
     assert len([obj for obj in graph.objects([TAREK, BOB], LIKES)]) == 6
     assert len([obj for obj in graph.objects([], LIKES)]) == 0
-    assert len([obj for obj in graph.objects([TAREK, BOB], LIKES|HATES)]) == 8
+    assert len([obj for obj in graph.objects([TAREK, BOB], LIKES | HATES)]) == 8
