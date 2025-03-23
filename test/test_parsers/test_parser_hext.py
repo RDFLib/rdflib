@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from rdflib import BNode, ConjunctiveGraph, Dataset, Literal, URIRef
+from rdflib import BNode, Dataset, Literal, URIRef
 from rdflib.compare import isomorphic
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.namespace import XSD
@@ -97,7 +97,7 @@ def test_small_string_cg():
         ["http://example.com/s01", "http://example.com/op1", "http://example.com/o2", "globalId", "", ""]
         ["http://example.com/s01", "http://example.com/op2", "http://example.com/o3", "globalId", "", ""]
         """
-    d = ConjunctiveGraph(identifier=DATASET_DEFAULT_GRAPH_ID)
+    d = Dataset()
     d.parse(data=s, format="hext")
 
     expected_graph_names = (
@@ -185,14 +185,14 @@ def test_roundtrip():
         print(f"Test {tests}: {f}")
         if f.name not in files_to_skip.keys():
             try:
-                cg = ConjunctiveGraph().parse(f, format="nt")
+                cg = Dataset().parse(f, format="nt")
                 # print(cg.serialize(format="n3"))
             except Exception:
                 print("Skipping: could not NT parse")
                 skipped += 1
                 skip = True
             if not skip:
-                cg2 = ConjunctiveGraph()
+                cg2 = Dataset()
                 cg2.parse(
                     data=cg.serialize(format="hext"),
                     format="hext",
