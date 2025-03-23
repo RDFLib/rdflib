@@ -1,18 +1,7 @@
 from __future__ import annotations
 
-import collections
-from typing import (
-    Any,
-    DefaultDict,
-    Generator,
-    Iterable,
-    Mapping,
-    Set,
-    Tuple,
-    TypeVar,
-    Union,
-    overload,
-)
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any, TypeVar, Union, overload
 
 from rdflib.plugins.sparql.operators import EBV
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
@@ -25,13 +14,20 @@ from rdflib.plugins.sparql.sparql import (
 )
 from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
-_ContextType = Union[FrozenBindings, QueryContext]
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable, Mapping
+
+    from typing_extensions import TypeAlias
+
+    from rdflib.graph import _TripleType
+
+_ContextType: TypeAlias = Union[FrozenBindings, QueryContext]
 _FrozenDictT = TypeVar("_FrozenDictT", bound=FrozenDict)
 
 
 def _diff(
     a: Iterable[_FrozenDictT], b: Iterable[_FrozenDictT], expr
-) -> Set[_FrozenDictT]:
+) -> set[_FrozenDictT]:
     res = set()
 
     for x in a:
@@ -70,7 +66,7 @@ def _join(
                 yield x.merge(y)
 
 
-def _ebv(expr: Union[Literal, Variable, Expr], ctx: FrozenDict) -> bool:
+def _ebv(expr: Literal | Variable | Expr, ctx: FrozenDict) -> bool:
     """
     Return true/false for the given expr
     Either the expr is itself true/false
@@ -101,22 +97,22 @@ def _ebv(expr: Union[Literal, Variable, Expr], ctx: FrozenDict) -> bool:
 
 @overload
 def _eval(
-    expr: Union[Literal, URIRef],
+    expr: Literal | URIRef,
     ctx: FrozenBindings,
     raise_not_bound_error: bool = ...,
-) -> Union[Literal, URIRef]: ...
+) -> Literal | URIRef: ...
 
 
 @overload
 def _eval(
-    expr: Union[Variable, Expr],
+    expr: Variable | Expr,
     ctx: FrozenBindings,
     raise_not_bound_error: bool = ...,
-) -> Union[Any, SPARQLError]: ...
+) -> Any | SPARQLError: ...
 
 
 def _eval(
-    expr: Union[Literal, URIRef, Variable, Expr],
+    expr: Literal | URIRef | Variable | Expr,
     ctx: FrozenBindings,
     raise_not_bound_error: bool = True,
 ) -> Any:
@@ -139,7 +135,7 @@ def _eval(
 
 
 def _filter(
-    a: Iterable[FrozenDict], expr: Union[Literal, Variable, Expr]
+    a: Iterable[FrozenDict], expr: Literal | Variable | Expr
 ) -> Generator[FrozenDict, None, None]:
     for c in a:
         if _ebv(expr, c):
@@ -147,16 +143,16 @@ def _filter(
 
 
 def _fillTemplate(
-    template: Iterable[Tuple[Identifier, Identifier, Identifier]],
+    template: Iterable[tuple[Identifier, Identifier, Identifier]],
     solution: _ContextType,
-) -> Generator[Tuple[Identifier, Identifier, Identifier], None, None]:
+) -> Generator[_TripleType, None, None]:
     """
     For construct/deleteWhere and friends
 
     Fill a triple template with instantiated variables
     """
 
-    bnodeMap: DefaultDict[BNode, BNode] = collections.defaultdict(BNode)
+    bnodeMap: defaultdict[BNode, BNode] = defaultdict(BNode)
     for t in template:
         s, p, o = t
 
@@ -176,7 +172,7 @@ def _fillTemplate(
 _ValueT = TypeVar("_ValueT", Variable, BNode, URIRef, Literal)
 
 
-def _val(v: _ValueT) -> Tuple[int, _ValueT]:
+def _val(v: _ValueT) -> tuple[int, _ValueT]:
     """utilitity for ordering things"""
     if isinstance(v, Variable):
         return (0, v)

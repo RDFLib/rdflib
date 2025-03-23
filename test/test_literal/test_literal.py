@@ -3,9 +3,11 @@ from __future__ import annotations
 import builtins
 import datetime
 import logging
+from collections.abc import Generator
 from decimal import Decimal
-from typing import Any, Callable, Generator, Optional, Type, Union
+from typing import Any, Callable, Union
 
+from rdflib.xsd_datetime import Duration
 from test.utils import affix_tuples
 from test.utils.literal import LiteralChecker, literal_idfn
 from test.utils.namespace import EGDC
@@ -22,13 +24,12 @@ from test.utils.outcome import OutcomeChecker, OutcomePrimitive, OutcomePrimitiv
 
 
 try:
-    import html5lib as _  # noqa: F401
+    import html5rdf as _  # noqa: F401
 
-    _HAVE_HTML5LIB = True
+    _HAVE_HTML5RDF = True
 except ImportError:
-    _HAVE_HTML5LIB = False
+    _HAVE_HTML5RDF = False
 
-import isodate
 import pytest
 
 import rdflib  # needed for eval(repr(...)) below
@@ -52,7 +53,8 @@ from rdflib.term import (
 )
 
 
-@pytest.fixture()
+# Untyped decorator makes function untyped
+@pytest.fixture()  # type: ignore[misc, unused-ignore]
 def clear_bindings() -> Generator[None, None, None]:
     try:
         yield
@@ -94,7 +96,8 @@ def test_literal_from_bool() -> None:
     assert _l.datatype == rdflib.XSD["boolean"]
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lang, exception_type",
     [
         ({}, TypeError),
@@ -107,7 +110,7 @@ def test_literal_from_bool() -> None:
 )
 def test_cant_pass_invalid_lang(
     lang: Any,
-    exception_type: Type[Exception],
+    exception_type: type[Exception],
 ) -> None:
     """
     Construction of Literal fails if the language tag is invalid.
@@ -116,7 +119,8 @@ def test_cant_pass_invalid_lang(
         Literal("foo", lang=lang)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "lexical, datatype, is_ill_typed",
     [
         ("true", XSD.boolean, False),
@@ -157,8 +161,8 @@ def test_cant_pass_invalid_lang(
 )
 def test_ill_typed_literals(
     lexical: Union[bytes, str],
-    datatype: Optional[URIRef],
-    is_ill_typed: Optional[bool],
+    datatype: URIRef | None,
+    is_ill_typed: bool | None,
 ) -> None:
     """
     ill_typed has the correct value.
@@ -170,7 +174,8 @@ def test_ill_typed_literals(
         assert lit.value is not None
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a, b, op, expected_result",
     [
         pytest.param(
@@ -397,10 +402,10 @@ def test_ill_typed_literals(
             Literal("3.2", datatype=_XSD_DOUBLE),
         ),
         (
-            Literal(isodate.Duration(hours=1)),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aplusb",
-            Literal(isodate.Duration(hours=2)),
+            Literal(Duration(hours=2)),
         ),
         (
             Literal(datetime.timedelta(days=1)),
@@ -410,19 +415,19 @@ def test_ill_typed_literals(
         ),
         (
             Literal(datetime.time.fromisoformat("04:23:01.000384")),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aplusb",
             Literal("05:23:01.000384", datatype=XSD.time),
         ),
         (
             Literal(datetime.date.fromisoformat("2011-11-04")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aplusb",
             Literal("2011-11-05", datatype=XSD.date),
         ),
         (
             Literal(datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aplusb",
             Literal("2011-11-05T00:05:23.283000+00:00", datatype=XSD.dateTime),
         ),
@@ -446,19 +451,19 @@ def test_ill_typed_literals(
         ),
         (
             Literal(datetime.time.fromisoformat("04:23:01.000384")),
-            Literal(isodate.Duration(hours=1)),
+            Literal(Duration(hours=1)),
             "aminusb",
             Literal("03:23:01.000384", datatype=XSD.time),
         ),
         (
             Literal(datetime.date.fromisoformat("2011-11-04")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aminusb",
             Literal("2011-11-03", datatype=XSD.date),
         ),
         (
             Literal(datetime.datetime.fromisoformat("2011-11-04 00:05:23.283+00:00")),
-            Literal(isodate.Duration(days=1)),
+            Literal(Duration(days=1)),
             "aminusb",
             Literal("2011-11-03T00:05:23.283000+00:00", datatype=XSD.dateTime),
         ),
@@ -578,7 +583,7 @@ def test_ill_typed_literals(
         ),
         *affix_tuples(
             (
-                Literal(isodate.Duration(days=4)),
+                Literal(Duration(days=4)),
                 Literal(datetime.timedelta(days=1)),
             ),
             [
@@ -599,12 +604,12 @@ def test_ill_typed_literals(
         ),
         *affix_tuples(
             (
-                Literal(isodate.Duration(days=4)),
-                Literal(isodate.Duration(days=1)),
+                Literal(Duration(days=4)),
+                Literal(Duration(days=1)),
             ),
             [
-                ("aplusb", Literal(isodate.Duration(days=5))),
-                ("aminusb", Literal(isodate.Duration(days=3))),
+                ("aplusb", Literal(Duration(days=5))),
+                ("aminusb", Literal(Duration(days=3))),
             ],
             None,
         ),
@@ -644,7 +649,8 @@ def test_literal_addsub(
         checker.check(result)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     "a_value, b_value, result_value, datatype",
     [
         [3, 5, 2, XSD.integer],
@@ -831,7 +837,8 @@ def test_specific_binding(clear_bindings: None) -> None:
     assert specific_l.datatype == datatype
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["lexical", "literal_type", "value_cls"],
     [
         # these literals do not get converted to Python types
@@ -891,7 +898,7 @@ def test_specific_binding(clear_bindings: None) -> None:
     ],
 )
 def test_literal_construction_value_class(
-    lexical: str, literal_type: URIRef, value_cls: Optional[type]
+    lexical: str, literal_type: URIRef, value_cls: type | None
 ) -> None:
     literal = Literal(lexical, datatype=literal_type)
     if value_cls is not None:
@@ -942,7 +949,8 @@ class _UnknownType:
         return False
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "outcome"],
     [
         (
@@ -981,7 +989,7 @@ class _UnknownType:
         (
             lambda: Literal("<body>", datatype=RDF.HTML),
             LiteralChecker(
-                ..., None, RDF.HTML, True if _HAVE_HTML5LIB else None, "<body>"
+                ..., None, RDF.HTML, True if _HAVE_HTML5RDF else None, "<body>"
             ),
         ),
         (
@@ -990,7 +998,7 @@ class _UnknownType:
                 ...,
                 None,
                 RDF.HTML,
-                False if _HAVE_HTML5LIB else None,
+                False if _HAVE_HTML5RDF else None,
                 "<table></table>",
             ),
         ),
@@ -1013,7 +1021,8 @@ def test_literal_construction(
         checker.check(actual_outcome)
 
 
-@pytest.mark.parametrize(
+# Untyped decorator makes function untyped
+@pytest.mark.parametrize(  # type: ignore[misc, unused-ignore]
     ["literal_maker", "normalize_literals", "outcome"],
     [
         (

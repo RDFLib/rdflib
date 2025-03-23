@@ -16,20 +16,13 @@ also return a dict of list of dicts
 
 from __future__ import annotations
 
-import collections
 import itertools
 import re
+from collections import defaultdict, deque
+from collections.abc import Generator, Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Deque,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
     Union,
 )
 from urllib.parse import urlencode
@@ -72,11 +65,11 @@ except ImportError:
     orjson = None  # type: ignore[assignment, unused-ignore]
     _HAS_ORJSON = False
 
-_Triple = Tuple[Identifier, Identifier, Identifier]
+_Triple = tuple[Identifier, Identifier, Identifier]
 
 
 def evalBGP(
-    ctx: QueryContext, bgp: List[_Triple]
+    ctx: QueryContext, bgp: list[_Triple]
 ) -> Generator[FrozenBindings, None, None]:
     """
     A basic graph pattern
@@ -93,7 +86,7 @@ def evalBGP(
     _o = ctx[o]
 
     # type error: Item "None" of "Optional[Graph]" has no attribute "triples"
-    # type Argument 1 to "triples" of "Graph" has incompatible type "Tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "Tuple[Optional[Node], Optional[Node], Optional[Node]]"
+    # Argument 1 to "triples" of "Graph" has incompatible type "tuple[Union[str, Path, None], Union[str, Path, None], Union[str, Path, None]]"; expected "tuple[Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]], Optional[IdentifiedNode], Optional[Union[IdentifiedNode, Literal, QuotedGraph, Variable]]]"  [arg-type]
     for ss, sp, so in ctx.graph.triples((_s, _p, _o)):  # type: ignore[union-attr, arg-type]
         if None in (_s, _p, _o):
             c = ctx.push()
@@ -101,20 +94,17 @@ def evalBGP(
             c = ctx
 
         if _s is None:
-            # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
-            c[s] = ss  # type: ignore[assignment]
+            c[s] = ss
 
         try:
             if _p is None:
-                # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
-                c[p] = sp  # type: ignore[assignment]
+                c[p] = sp
         except AlreadyBound:
             continue
 
         try:
             if _o is None:
-                # type error: Incompatible types in assignment (expression has type "Union[Node, Any]", target has type "Identifier")
-                c[o] = so  # type: ignore[assignment]
+                c[o] = so
         except AlreadyBound:
             continue
 
@@ -166,7 +156,7 @@ def evalJoin(ctx: QueryContext, join: CompValue) -> Generator[FrozenDict, None, 
         return _join(a, b)
 
 
-def evalUnion(ctx: QueryContext, union: CompValue) -> List[Any]:
+def evalUnion(ctx: QueryContext, union: CompValue) -> list[Any]:
     branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
         branch1_branch2.append(x)
@@ -382,7 +372,7 @@ def evalServiceQuery(ctx: QueryContext, part: CompValue):
             res = json_dict["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
-                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, Dict[str, str]]"
+                    # type error: Argument 2 to "_yieldBindingsFromServiceCallResult" has incompatible type "str"; expected "Dict[str, dict[str, str]]"
                     for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):  # type: ignore[arg-type]
                         yield bound
         else:
@@ -424,9 +414,9 @@ def _buildQueryStringForServiceCall(ctx: QueryContext, service_query: str) -> st
 
 
 def _yieldBindingsFromServiceCallResult(
-    ctx: QueryContext, r: Dict[str, Dict[str, str]], variables: List[str]
+    ctx: QueryContext, r: dict[str, dict[str, str]], variables: list[str]
 ) -> Generator[FrozenBindings, None, None]:
-    res_dict: Dict[Variable, Identifier] = {}
+    res_dict: dict[Variable, Identifier] = {}
     for var in variables:
         if var in r and r[var]:
             var_binding = r[var]
@@ -468,9 +458,7 @@ def evalAggregateJoin(
     # p is always a Group, we always get a dict back
 
     group_expr = agg.p.expr
-    res: Dict[Any, Any] = collections.defaultdict(
-        lambda: Aggregator(aggregations=agg.A)
-    )
+    res: dict[Any, Any] = defaultdict(lambda: Aggregator(aggregations=agg.A))
 
     if group_expr is None:
         # no grouping, just COUNT in SELECT clause
@@ -540,7 +528,7 @@ def evalReduced(
 
     # mixed data structure: set for lookup, deque for append/pop/remove
     mru_set = set()
-    mru_queue: Deque[Any] = collections.deque()
+    mru_queue: deque[Any] = deque()
 
     for row in evalPart(ctx, part.p):
         if row in mru_set:
@@ -576,8 +564,8 @@ def evalProject(ctx: QueryContext, project: CompValue):
 
 def evalSelectQuery(
     ctx: QueryContext, query: CompValue
-) -> Mapping[str, Union[str, List[Variable], Iterable[FrozenDict]]]:
-    res: Dict[str, Union[str, List[Variable], Iterable[FrozenDict]]] = {}
+) -> Mapping[str, Union[str, list[Variable], Iterable[FrozenDict]]]:
+    res: dict[str, Union[str, list[Variable], Iterable[FrozenDict]]] = {}
     res["type_"] = "SELECT"
     res["bindings"] = evalPart(ctx, query.p)
     res["vars_"] = query.PV
@@ -585,7 +573,7 @@ def evalSelectQuery(
 
 
 def evalAskQuery(ctx: QueryContext, query: CompValue) -> Mapping[str, Union[str, bool]]:
-    res: Dict[str, Union[bool, str]] = {}
+    res: dict[str, Union[bool, str]] = {}
     res["type_"] = "ASK"
     res["askAnswer"] = False
     for x in evalPart(ctx, query.p):
@@ -609,14 +597,14 @@ def evalConstructQuery(
     for c in evalPart(ctx, query.p):
         graph += _fillTemplate(template, c)
 
-    res: Dict[str, Union[str, Graph]] = {}
+    res: dict[str, Union[str, Graph]] = {}
     res["type_"] = "CONSTRUCT"
     res["graph"] = graph
 
     return res
 
 
-def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
+def evalDescribeQuery(ctx: QueryContext, query) -> dict[str, Union[str, Graph]]:
     # Create a result graph and bind namespaces from the graph being queried
     graph = Graph()
     # type error: Item "None" of "Optional[Graph]" has no attribute "namespaces"
@@ -644,7 +632,7 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
         # type error: Item "None" of "Optional[Graph]" has no attribute "cbd"
         ctx.graph.cbd(resource, target_graph=graph)  # type: ignore[union-attr]
 
-    res: Dict[str, Union[str, Graph]] = {}
+    res: dict[str, Union[str, Graph]] = {}
     res["type_"] = "DESCRIBE"
     res["graph"] = graph
 
@@ -654,8 +642,8 @@ def evalDescribeQuery(ctx: QueryContext, query) -> Dict[str, Union[str, Graph]]:
 def evalQuery(
     graph: Graph,
     query: Query,
-    initBindings: Optional[Mapping[str, Identifier]] = None,
-    base: Optional[str] = None,
+    initBindings: Mapping[str, Identifier] | None = None,
+    base: str | None = None,
 ) -> Mapping[Any, Any]:
     """
 

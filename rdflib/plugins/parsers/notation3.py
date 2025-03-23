@@ -33,25 +33,17 @@ import codecs
 import os
 import re
 import sys
-
-# importing typing for `typing.List` because `List`` is used for something else
-import typing
 from decimal import Decimal
+from re import Pattern
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Match,
-    MutableSequence,
     NoReturn,
-    Optional,
-    Pattern,
-    Set,
-    Tuple,
     TypeVar,
     Union,
+    cast,
+    overload,
 )
 from uuid import uuid4
 
@@ -88,12 +80,16 @@ __all__ = [
 from rdflib.parser import Parser
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, MutableSequence
+    from re import Match  # Replaces typing.Match in Python 3.9+
+
+    from rdflib.graph import _ObjectType, _PredicateType, _SubjectType
     from rdflib.parser import InputSource
 
 _AnyT = TypeVar("_AnyT")
 
 
-def splitFragP(uriref: str, punc: int = 0) -> Tuple[str, str]:
+def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
     """split a URI reference before the fragment
 
     Punctuation is kept.
@@ -276,7 +272,7 @@ N3_List = (SYMBOL, List_NS + "List")
 N3_Empty = (SYMBOL, List_NS + "Empty")
 
 
-runNamespaceValue: Optional[str] = None
+runNamespaceValue: str | None = None
 
 
 def runNamespace() -> str:
@@ -384,11 +380,11 @@ class SinkParser:
     def __init__(
         self,
         store: RDFSink,
-        openFormula: Optional[Formula] = None,
+        openFormula: Formula | None = None,
         thisDoc: str = "",
-        baseURI: Optional[str] = None,
+        baseURI: str | None = None,
         genPrefix: str = "",
-        why: Optional[Callable[[], None]] = None,
+        why: Callable[[], None] | None = None,
         turtle: bool = False,
     ):
         """note: namespace names should *not* end in  # ;
@@ -410,10 +406,10 @@ class SinkParser:
         self._genPrefix = genPrefix
         self.keywords = ["a", "this", "bind", "has", "is", "of", "true", "false"]
         self.keywordsSet = 0  # Then only can others be considered qnames
-        self._anonymousNodes: Dict[str, BNode] = {}
+        self._anonymousNodes: dict[str, BNode] = {}
         # Dict of anon nodes already declared ln: Term
-        self._variables: Dict[str, Variable] = {}
-        self._parentVariables: Dict[str, Variable] = {}
+        self._variables: dict[str, Variable] = {}
+        self._parentVariables: dict[str, Variable] = {}
         self._reason = why  # Why the parser was asked to parse this
 
         self.turtle = turtle  # raise exception when encountering N3 extensions
@@ -421,7 +417,7 @@ class SinkParser:
         # only allows double quotes.
         self.string_delimiters = ('"', "'") if turtle else ('"',)
 
-        self._reason2: Optional[Callable[..., None]] = None  # Why these triples
+        self._reason2: Callable[..., None] | None = None  # Why these triples
         # was: diag.tracking
         if tracking:
             # type error: "BecauseOfData" does not return a value
@@ -429,7 +425,7 @@ class SinkParser:
                 store.newSymbol(thisDoc), because=self._reason
             )
 
-        self._baseURI: Optional[str]
+        self._baseURI: str | None
         if baseURI:
             self._baseURI = baseURI
         else:
@@ -446,7 +442,7 @@ class SinkParser:
             else:
                 self._genPrefix = uniqueURI()
 
-        self._formula: Optional[Formula]
+        self._formula: Formula | None
         if openFormula is None and not turtle:
             if self._thisDoc:
                 # TODO FIXME: store.newFormula does not take any arguments
@@ -456,8 +452,8 @@ class SinkParser:
         else:
             self._formula = openFormula
 
-        self._context: Optional[Formula] = self._formula
-        self._parentContext: Optional[Formula] = None
+        self._context: Formula | None = self._formula
+        self._parentContext: Formula | None = None
 
     def here(self, i: int) -> str:
         """String generated from position in file
@@ -472,20 +468,20 @@ class SinkParser:
 
         return "%s_L%iC%i" % (self._genPrefix, self.lines, i - self.startOfLine + 1)
 
-    def formula(self) -> Optional[Formula]:
+    def formula(self) -> Formula | None:
         return self._formula
 
-    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Optional[Formula]:
+    def loadStream(self, stream: Union[IO[str], IO[bytes]]) -> Formula | None:
         return self.loadBuf(stream.read())  # Not ideal
 
-    def loadBuf(self, buf: Union[str, bytes]) -> Optional[Formula]:
+    def loadBuf(self, buf: str | bytes) -> Formula | None:
         """Parses a buffer and returns its top level formula"""
         self.startDoc()
 
         self.feed(buf)
         return self.endDoc()  # self._formula
 
-    def feed(self, octets: Union[str, bytes]) -> None:
+    def feed(self, octets: str | bytes) -> None:
         """Feed an octet stream to the parser
 
         if BadSyntax is raised, the string
@@ -582,7 +578,7 @@ class SinkParser:
         j = self.skipSpace(argstr, i)
         if j < 0:
             return j  # eof
-        res: typing.List[str] = []
+        res: list[str] = []
 
         j = self.tok("bind", argstr, i)  # implied "#". Obsolete.
         if j > 0:
@@ -631,7 +627,7 @@ class SinkParser:
 
         j = self.tok("prefix", argstr, i, colon=True)  # no implied "#"
         if j >= 0:
-            t: typing.List[Union[Identifier, Tuple[str, str]]] = []
+            t: list[Union[Identifier, tuple[str, str]]] = []
             i = self.qname(argstr, j, t)
             if i < 0:
                 self.BadSyntax(argstr, j, "expected qname after @prefix")
@@ -690,7 +686,7 @@ class SinkParser:
 
         j = self.sparqlTok("PREFIX", argstr, i)
         if j >= 0:
-            t: typing.List[Any] = []
+            t: list[Any] = []
             i = self.qname(argstr, j, t)
             if i < 0:
                 self.BadSyntax(argstr, j, "expected qname after @prefix")
@@ -747,7 +743,7 @@ class SinkParser:
         else:
             self._store.bind(qn, uri)
 
-    def setKeywords(self, k: Optional[typing.List[str]]) -> None:
+    def setKeywords(self, k: list[str] | None) -> None:
         """Takes a list of strings"""
         if k is None:
             self.keywordsSet = 0
@@ -759,7 +755,7 @@ class SinkParser:
         # was: self._store.startDoc()
         self._store.startDoc(self._formula)
 
-    def endDoc(self) -> Optional[Formula]:
+    def endDoc(self) -> Formula | None:
         """Signal end of document and stop parsing. returns formula"""
         self._store.endDoc(self._formula)  # don't canonicalize yet
         return self._formula
@@ -770,7 +766,7 @@ class SinkParser:
         self._store.makeStatement(quadruple, why=self._reason2)
 
     def statement(self, argstr: str, i: int) -> int:
-        r: typing.List[Any] = []
+        r: list[Any] = []
         i = self.object(argstr, i, r)  # Allow literal for subject - extends RDF
         if i < 0:
             return i
@@ -798,7 +794,7 @@ class SinkParser:
         if j < 0:
             return j  # eof
 
-        r: typing.List[Any] = []
+        r: list[Any] = []
 
         j = self.tok("has", argstr, i)
         if j >= 0:
@@ -876,7 +872,7 @@ class SinkParser:
     def item(self, argstr: str, i, res: MutableSequence[Any]) -> int:
         return self.path(argstr, i, res)
 
-    def blankNode(self, uri: Optional[str] = None) -> BNode:
+    def blankNode(self, uri: str | None = None) -> BNode:
         return self._store.newBlankNode(self._context, uri, why=self._reason2)
 
     def path(self, argstr: str, i: int, res: MutableSequence[Any]) -> int:
@@ -914,13 +910,13 @@ class SinkParser:
         argstr: str,
         i: int,
         res: MutableSequence[Any],
-        subjectAlready: Optional[Node] = None,
+        subjectAlready: Node | None = None,
     ) -> int:
         """Parse the <node> production.
         Space is now skipped once at the beginning
         instead of in multiple calls to self.skipSpace().
         """
-        subj: Optional[Node] = subjectAlready
+        subj: Node | None = subjectAlready
 
         j = self.skipSpace(argstr, i)
         if j < 0:
@@ -940,7 +936,7 @@ class SinkParser:
                         argstr, j, "Found '[=' or '[ =' when in turtle mode."
                     )
                 i = j + 1
-                objs: typing.List[Node] = []
+                objs: list[Node] = []
                 j = self.objectList(argstr, i, objs)
                 if j >= 0:
                     subj = objs[0]
@@ -1001,7 +997,7 @@ class SinkParser:
                     else:
                         first_run = False
 
-                    item: typing.List[Any] = []
+                    item: list[Any] = []
                     j = self.item(argstr, i, item)  # @@@@@ should be path, was object
                     if j < 0:
                         self.BadSyntax(argstr, i, "expected item in set or '$}'")
@@ -1052,9 +1048,7 @@ class SinkParser:
                 return j
 
         if ch == "(":
-            thing_type: Callable[
-                [typing.List[Any], Optional[Formula]], Union[Set[Any], IdentifiedNode]
-            ]
+            thing_type: Callable[[list[Any], Formula | None], set[Any] | IdentifiedNode]
             thing_type = self._store.newList
             ch2 = argstr[i + 1]
             if ch2 == "$":
@@ -1124,19 +1118,19 @@ class SinkParser:
                 if self.turtle:
                     self.BadSyntax(argstr, j, "Found in ':-' in Turtle mode")
                 i = j + 2
-                res: typing.List[Any] = []
+                res: list[Any] = []
                 j = self.node(argstr, i, res, subj)
                 if j < 0:
                     self.BadSyntax(argstr, i, "bad {} or () or [] node after :- ")
                 i = j
                 continue
             i = j
-            v: typing.List[Any] = []
+            v: list[Any] = []
             j = self.verb(argstr, i, v)
             if j <= 0:
                 return i  # void but valid
 
-            objs: typing.List[Any] = []
+            objs: list[Any] = []
             i = self.objectList(argstr, j, objs)
             if i < 0:
                 self.BadSyntax(argstr, j, "objectList expected")
@@ -1220,7 +1214,7 @@ class SinkParser:
         NS and local name is now used though I prefer inserting a '#'
         to make the namesapces look more like what XML folks expect.
         """
-        qn: typing.List[Any] = []
+        qn: list[Any] = []
         j = self.qname(argstr, i, qn)
         if j >= 0:
             pfx, ln = qn[0]
@@ -1247,7 +1241,7 @@ class SinkParser:
             return -1
 
         if argstr[i] == "?":
-            v: typing.List[Any] = []
+            v: list[Any] = []
             j = self.variable(argstr, i, v)
             if j > 0:  # Forget variables as a class, only in context.
                 res.append(v[0])
@@ -1374,7 +1368,7 @@ class SinkParser:
         self,
         argstr: str,
         i: int,
-        res: MutableSequence[Union[Identifier, Tuple[str, str]]],
+        res: MutableSequence[Union[Identifier, tuple[str, str]]],
     ) -> int:
         """
         xyz:def -> ('xyz', 'def')
@@ -1571,7 +1565,7 @@ class SinkParser:
                     lang = argstr[j + 1 : i]
                     j = i
                 if argstr[j : j + 2] == "^^":
-                    res2: typing.List[Any] = []
+                    res2: list[Any] = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
                     dt = res2[0]
                 res.append(self._store.newLiteral(s, dt, lang))
@@ -1579,13 +1573,13 @@ class SinkParser:
             else:
                 return -1
 
-    def uriOf(self, sym: Union[Identifier, Tuple[str, str]]) -> str:
+    def uriOf(self, sym: Union[Identifier, tuple[str, str]]) -> str:
         if isinstance(sym, tuple):
             return sym[1]  # old system for --pipe
         # return sym.uriref()  # cwm api
         return sym
 
-    def strconst(self, argstr: str, i: int, delim: str) -> Tuple[int, str]:
+    def strconst(self, argstr: str, i: int, delim: str) -> tuple[int, str]:
         """parse an N3 string constant delimited by delim.
         return index, val
         """
@@ -1704,7 +1698,7 @@ class SinkParser:
         reg: Pattern[str],
         n: int,
         prefix: str,
-    ) -> Tuple[int, str]:
+    ) -> tuple[int, str]:
         if len(argstr) < i + n:
             raise BadSyntax(
                 self._thisDoc, startline, argstr, i, "unterminated string literal(3)"
@@ -1720,10 +1714,10 @@ class SinkParser:
                 "bad string literal hex escape: " + argstr[i : i + n],
             )
 
-    def uEscape(self, argstr: str, i: int, startline: int) -> Tuple[int, str]:
+    def uEscape(self, argstr: str, i: int, startline: int) -> tuple[int, str]:
         return self._unicodeEscape(argstr, i, startline, unicodeEscape4, 4, "u")
 
-    def UEscape(self, argstr: str, i: int, startline: int) -> Tuple[int, str]:
+    def UEscape(self, argstr: str, i: int, startline: int) -> tuple[int, str]:
         return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8, "U")
 
     def BadSyntax(self, argstr: str, i: int, msg: str) -> NoReturn:
@@ -1781,8 +1775,8 @@ class Formula:
         self.counter = 0
         Formula.number += 1
         self.number = Formula.number
-        self.existentials: Dict[str, BNode] = {}
-        self.universals: Dict[str, BNode] = {}
+        self.existentials: dict[str, BNode] = {}
+        self.universals: dict[str, BNode] = {}
 
         self.quotedgraph = QuotedGraph(store=parent.store, identifier=self.id())
 
@@ -1792,9 +1786,7 @@ class Formula:
     def id(self) -> BNode:
         return BNode("_:Formula%s" % self.number)
 
-    def newBlankNode(
-        self, uri: Optional[str] = None, why: Optional[Any] = None
-    ) -> BNode:
+    def newBlankNode(self, uri: str | None = None, why: Any | None = None) -> BNode:
         if uri is None:
             self.counter += 1
             bn = BNode("f%sb%s" % (self.uuid, self.counter))
@@ -1802,7 +1794,7 @@ class Formula:
             bn = BNode(uri.split("#").pop().replace("_", "b"))
         return bn
 
-    def newUniversal(self, uri: str, why: Optional[Any] = None) -> Variable:
+    def newUniversal(self, uri: str, why: Any | None = None) -> Variable:
         return Variable(uri.split("#").pop())
 
     def declareExistential(self, x: str) -> None:
@@ -1817,7 +1809,7 @@ r_hibyte = re.compile(r"([\x80-\xff])")
 
 class RDFSink:
     def __init__(self, graph: Graph):
-        self.rootFormula: Optional[Formula] = None
+        self.rootFormula: Formula | None = None
         self.uuid = uuid4().hex
         self.counter = 0
         self.graph = graph
@@ -1839,9 +1831,9 @@ class RDFSink:
 
     def newBlankNode(
         self,
-        arg: Optional[Union[Formula, Graph, Any]] = None,
-        uri: Optional[str] = None,
-        why: Optional[Callable[[], None]] = None,
+        arg: Formula | Graph | Any | None = None,
+        uri: str | None = None,
+        why: Callable[[], None] | None = None,
     ) -> BNode:
         if isinstance(arg, Formula):
             return arg.newBlankNode(uri)
@@ -1852,13 +1844,13 @@ class RDFSink:
             bn = BNode(str(arg[0]).split("#").pop().replace("_", "b"))
         return bn
 
-    def newLiteral(self, s: str, dt: Optional[URIRef], lang: Optional[str]) -> Literal:
+    def newLiteral(self, s: str, dt: URIRef | None, lang: str | None) -> Literal:
         if dt:
             return Literal(s, datatype=dt)
         else:
             return Literal(s, lang=lang)
 
-    def newList(self, n: typing.List[Any], f: Optional[Formula]) -> IdentifiedNode:
+    def newList(self, n: list[Any], f: Formula | None) -> IdentifiedNode:
         nil = self.newSymbol("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil")
         if not n:
             return nil
@@ -1876,7 +1868,7 @@ class RDFSink:
         self.makeStatement((f, rest, a, nil))
         return af
 
-    def newSet(self, *args: _AnyT) -> Set[_AnyT]:
+    def newSet(self, *args: _AnyT) -> set[_AnyT]:
         return set(args)
 
     def setDefaultNamespace(self, *args: bytes) -> str:
@@ -1884,8 +1876,8 @@ class RDFSink:
 
     def makeStatement(
         self,
-        quadruple: Tuple[Optional[Union[Formula, Graph]], Node, Node, Node],
-        why: Optional[Any] = None,
+        quadruple: tuple[Formula | Graph | None, Node, Node, Node],
+        why: Any | None = None,
     ) -> None:
         f, p, s, o = quadruple
 
@@ -1893,26 +1885,44 @@ class RDFSink:
             raise ParserError("Formula used as predicate")
 
         # type error: Argument 1 to "normalise" of "RDFSink" has incompatible type "Union[Formula, Graph, None]"; expected "Optional[Formula]"
-        s = self.normalise(f, s)  # type: ignore[arg-type]
-        p = self.normalise(f, p)  # type: ignore[arg-type]
-        o = self.normalise(f, o)  # type: ignore[arg-type]
+        s_normal: _SubjectType = cast("_SubjectType", self.normalise(f, s))
+        p_normal: _PredicateType = cast("_PredicateType", self.normalise(f, p))
+        o_normal: _ObjectType = cast("_ObjectType", self.normalise(f, o))
 
         if f == self.rootFormula:
             # print s, p, o, '.'
-            self.graph.add((s, p, o))
+            self.graph.add((s_normal, p_normal, o_normal))
         elif isinstance(f, Formula):
-            f.quotedgraph.add((s, p, o))
+            f.quotedgraph.add((s_normal, p_normal, o_normal))
         else:
             # type error: Item "None" of "Optional[Graph]" has no attribute "add"
-            f.add((s, p, o))  # type: ignore[union-attr]
+            f.add((s_normal, p_normal, o_normal))  # type: ignore[union-attr]
 
         # return str(quadruple)
 
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: tuple[int, str]) -> URIRef: ...
+
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: bool) -> Literal: ...
+
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: int) -> Literal: ...
+
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: Decimal) -> Literal: ...
+
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: float) -> Literal: ...
+
+    @overload
+    def normalise(self, f: Formula | Graph | None, n: Node) -> Node: ...
+
     def normalise(
         self,
-        f: Optional[Formula],
-        n: Union[Tuple[int, str], bool, int, Decimal, float, _AnyT],
-    ) -> Union[URIRef, Literal, BNode, _AnyT]:
+        f: Formula | Graph | None,
+        n: Union[tuple[int, str], bool, int, Decimal, float, Node, _AnyT],
+    ) -> Union[URIRef, Literal, BNode, Node, _AnyT]:
         if isinstance(n, tuple):
             return URIRef(str(n[1]))
 
@@ -1955,10 +1965,10 @@ class RDFSink:
     def bind(self, pfx, uri) -> None:
         pass  # print pfx, ':', uri
 
-    def startDoc(self, formula: Optional[Formula]) -> None:
+    def startDoc(self, formula: Formula | None) -> None:
         self.rootFormula = formula
 
-    def endDoc(self, formula: Optional[Formula]) -> None:
+    def endDoc(self, formula: Formula | None) -> None:
         pass
 
 
@@ -2001,7 +2011,7 @@ class TurtleParser(Parser):
         self,
         source: InputSource,
         graph: Graph,
-        encoding: Optional[str] = "utf-8",
+        encoding: str | None = "utf-8",
         turtle: bool = True,
     ) -> None:
         if encoding not in [None, "utf-8"]:
@@ -2036,7 +2046,7 @@ class N3Parser(TurtleParser):
 
     # type error: Signature of "parse" incompatible with supertype "TurtleParser"
     def parse(  # type: ignore[override]
-        self, source: InputSource, graph: Graph, encoding: Optional[str] = "utf-8"
+        self, source: InputSource, graph: Graph, encoding: str | None = "utf-8"
     ) -> None:
         # we're currently being handed a Graph, not a ConjunctiveGraph
         # context-aware is this implied by formula_aware

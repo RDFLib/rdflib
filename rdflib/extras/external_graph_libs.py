@@ -12,7 +12,7 @@ see ../../test/test_extras_external_graph_libs.py for conditional tests
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from rdflib.graph import Graph
@@ -255,8 +255,8 @@ def rdflib_to_networkx_graph(
 
 def rdflib_to_graphtool(
     graph: Graph,
-    v_prop_names: List[str] = ["term"],
-    e_prop_names: List[str] = ["term"],
+    v_prop_names: list[str] = ["term"],
+    e_prop_names: list[str] = ["term"],
     transform_s=lambda s, p, o: {"term": s},
     transform_p=lambda s, p, o: {"term": p},
     transform_o=lambda s, p, o: {"term": o},
@@ -328,7 +328,7 @@ def rdflib_to_graphtool(
     eprops = [(epn, g.new_edge_property("object")) for epn in e_prop_names]
     for epn, eprop in eprops:
         g.edge_properties[epn] = eprop
-    node_to_vertex: Dict[Any, Any] = {}
+    node_to_vertex: dict[Any, Any] = {}
     for s, p, o in graph:
         sv = node_to_vertex.get(s)
         if sv is None:

@@ -5,7 +5,6 @@ import os
 import re
 from os import chdir, environ, getcwd
 from os import path as p
-from typing import Tuple
 
 import pytest
 
@@ -18,7 +17,7 @@ TC_BASE = "https://w3c.github.io/json-ld-api/tests/toRdf/"
 
 testsuite_dir = p.join(p.abspath(p.dirname(__file__)), "1.1")
 
-unsupported_tests: Tuple[str, ...] = ("frame", "normalize")
+unsupported_tests: tuple[str, ...] = ("frame", "normalize")
 unsupported_tests += (
     "error",
     "remote",
@@ -26,7 +25,7 @@ unsupported_tests += (
 unsupported_tests += ("flatten", "compact", "expand")
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
 
-known_bugs: Tuple[str, ...] = (
+known_bugs: tuple[str, ...] = (
     # TODO: Literal doesn't preserve representations
     "fromRdf/0002-in",
     # RDflib does not print Integer with scientific notation

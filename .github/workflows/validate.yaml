@@ -25,26 +25,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         # This is used for injecting additional tests for a specific python
         # version and OS.
         suffix: [""]
         include:
-          - python-version: "3.8"
+          - python-version: "3.9"
             os: ubuntu-latest
             extensive-tests: true
             TOXENV_SUFFIX: "-docs"
-          - python-version: "3.8"
+          - python-version: "3.9"
             os: ubuntu-latest
             extensive-tests: true
             PREPARATION: "sudo apt-get install -y libxml2-dev libxslt-dev"
             suffix: "-min"
             TOXENV_SUFFIX: "-min"
-          - python-version: "3.9"
+          - python-version: "3.10"
             os: ubuntu-latest
             TOXENV_SUFFIX: "-docs"
-          - python-version: "3.10"
+          - python-version: "3.11"
             os: ubuntu-latest
             TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
             TOXENV_SUFFIX: "-lxml"
@@ -55,6 +55,10 @@ jobs:
             extensive-tests: true
             TOX_TEST_HARNESS: "firejail --net=none --"
             TOX_PYTEST_EXTRA_ARGS: "-m 'not webtest'"
+          - python-version: "3.12"
+            os: ubuntu-latest
+            TOX_EXTRA_COMMAND: "- black --check --diff ./rdflib"
+            TOXENV_SUFFIX: "-lxml"
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME
@@ -121,7 +125,7 @@ jobs:
       matrix:
         include:
           - task: "gha:lint"
-            python-version: 3.8
+            python-version: 3.9
     steps:
       - uses: actions/checkout@v4
       - name: Cache XDG_CACHE_HOME

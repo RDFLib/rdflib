@@ -25,7 +25,7 @@ fired:
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 __all__ = ["Event", "Dispatcher"]
 
@@ -57,9 +57,9 @@ class Dispatcher:
     subscribers.
     """
 
-    _dispatch_map: Optional[Dict[Any, Any]] = None
+    _dispatch_map: dict[Any, Any] | None = None
 
-    def set_map(self, amap: Dict[Any, Any]):
+    def set_map(self, amap: dict[Any, Any]):
         self._dispatch_map = amap
         return self
 

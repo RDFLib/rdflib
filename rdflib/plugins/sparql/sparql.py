@@ -4,22 +4,13 @@ import collections
 import datetime
 import itertools
 import typing as t
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Container, Generator, Iterable, Mapping, MutableMapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Container,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
     TypeVar,
     Union,
 )
-
-import isodate
 
 import rdflib.plugins.sparql
 from rdflib.graph import ConjunctiveGraph, Dataset, Graph
@@ -35,12 +26,12 @@ _AnyT = TypeVar("_AnyT")
 
 
 class SPARQLError(Exception):
-    def __init__(self, msg: Optional[str] = None):
+    def __init__(self, msg: str | None = None):
         Exception.__init__(self, msg)
 
 
 class NotBoundError(SPARQLError):
-    def __init__(self, msg: Optional[str] = None):
+    def __init__(self, msg: str | None = None):
         SPARQLError.__init__(self, msg)
 
 
@@ -52,7 +43,7 @@ class AlreadyBound(SPARQLError):  # noqa: N818
 
 
 class SPARQLTypeError(SPARQLError):
-    def __init__(self, msg: Optional[str]):
+    def __init__(self, msg: str | None):
         SPARQLError.__init__(self, msg)
 
 
@@ -66,8 +57,8 @@ class Bindings(MutableMapping):
     In python 3.3 this could be a collections.ChainMap
     """
 
-    def __init__(self, outer: Optional[Bindings] = None, d=[]):
-        self._d: Dict[str, str] = dict(d)
+    def __init__(self, outer: Bindings | None = None, d=[]):
+        self._d: dict[str, str] = dict(d)
         self.outer = outer
 
     def __getitem__(self, key: str) -> str:
@@ -93,14 +84,14 @@ class Bindings(MutableMapping):
 
     def __len__(self) -> int:
         i = 0
-        d: Optional[Bindings] = self
+        d: Bindings | None = self
         while d is not None:
             i += len(d._d)
             d = d.outer
         return i
 
     def __iter__(self) -> Generator[str, None, None]:
-        d: Optional[Bindings] = self
+        d: Bindings | None = self
         while d is not None:
             yield from d._d
             d = d.outer
@@ -122,8 +113,8 @@ class FrozenDict(Mapping):
     """
 
     def __init__(self, *args: Any, **kwargs: Any):
-        self._d: Dict[Identifier, Identifier] = dict(*args, **kwargs)
-        self._hash: Optional[int] = None
+        self._d: dict[Identifier, Identifier] = dict(*args, **kwargs)
+        self._hash: int | None = None
 
     def __iter__(self):
         return iter(self._d)
@@ -210,11 +201,11 @@ class FrozenBindings(FrozenDict):
         return self.ctx.bnodes
 
     @property
-    def prologue(self) -> Optional[Prologue]:
+    def prologue(self) -> Prologue | None:
         return self.ctx.prologue
 
     def forget(
-        self, before: QueryContext, _except: Optional[Container[Variable]] = None
+        self, before: QueryContext, _except: Container[Variable] | None = None
     ) -> FrozenBindings:
         """
         return a frozen dict only of bindings made in self
@@ -252,9 +243,9 @@ class QueryContext:
 
     def __init__(
         self,
-        graph: Optional[Graph] = None,
-        bindings: Optional[Union[Bindings, FrozenBindings, List[Any]]] = None,
-        initBindings: Optional[Mapping[str, Identifier]] = None,
+        graph: Graph | None = None,
+        bindings: Bindings | FrozenBindings | list[Any] | None = None,
+        initBindings: Mapping[str, Identifier] | None = None,
         datasetClause=None,
     ):
         self.initBindings = initBindings
@@ -262,8 +253,8 @@ class QueryContext:
         if initBindings:
             self.bindings.update(initBindings)
 
-        self.graph: Optional[Graph]
-        self._dataset: Optional[Union[Dataset, ConjunctiveGraph]]
+        self.graph: Graph | None
+        self._dataset: Dataset | ConjunctiveGraph | None
         if isinstance(graph, (Dataset, ConjunctiveGraph)):
             if datasetClause:
                 self._dataset = Dataset()
@@ -292,8 +283,8 @@ class QueryContext:
             self._dataset = None
             self.graph = graph
 
-        self.prologue: Optional[Prologue] = None
-        self._now: Optional[datetime.datetime] = None
+        self.prologue: Prologue | None = None
+        self._now: datetime.datetime | None = None
 
         self.bnodes: t.MutableMapping[Identifier, BNode] = collections.defaultdict(
             BNode
@@ -302,11 +293,11 @@ class QueryContext:
     @property
     def now(self) -> datetime.datetime:
         if self._now is None:
-            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+            self._now = datetime.datetime.now(datetime.timezone.utc)
         return self._now
 
     def clone(
-        self, bindings: Optional[Union[FrozenBindings, Bindings, List[Any]]] = None
+        self, bindings: FrozenBindings | Bindings | list[Any] | None = None
     ) -> QueryContext:
         r = QueryContext(
             self._dataset if self._dataset is not None else self.graph,
@@ -333,7 +324,7 @@ class QueryContext:
         self,
         source: URIRef,
         default: bool = False,
-        into: Optional[Identifier] = None,
+        into: Identifier | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -384,7 +375,7 @@ class QueryContext:
                     into = source
                 _load(self.dataset.get_context(into), source)
 
-    def __getitem__(self, key: Union[str, Path]) -> Optional[Union[str, Path]]:
+    def __getitem__(self, key: str | Path) -> str | Path | None:
         # in SPARQL BNodes are just labels
         if not isinstance(key, (BNode, Variable)):
             return key
@@ -393,13 +384,13 @@ class QueryContext:
         except KeyError:
             return None
 
-    def get(self, key: str, default: Optional[Any] = None) -> Any:
+    def get(self, key: str, default: Any | None = None) -> Any:
         try:
             return self[key]
         except KeyError:
             return default
 
-    def solution(self, vars: Optional[Iterable[Variable]] = None) -> FrozenBindings:
+    def solution(self, vars: Iterable[Variable] | None = None) -> FrozenBindings:
         """
         Return a static copy of the current variable bindings as dict
         """
@@ -416,7 +407,7 @@ class QueryContext:
 
         self.bindings[key] = value
 
-    def pushGraph(self, graph: Optional[Graph]) -> QueryContext:
+    def pushGraph(self, graph: Graph | None) -> QueryContext:
         r = self.clone()
         r.graph = graph
         return r
@@ -443,21 +434,19 @@ class Prologue:
     """
 
     def __init__(self) -> None:
-        self.base: Optional[str] = None
+        self.base: str | None = None
         self.namespace_manager = NamespaceManager(Graph())  # ns man needs a store
 
-    def resolvePName(self, prefix: Optional[str], localname: Optional[str]) -> URIRef:
+    def resolvePName(self, prefix: str | None, localname: str | None) -> URIRef:
         ns = self.namespace_manager.store.namespace(prefix or "")
         if ns is None:
             raise Exception("Unknown namespace prefix : %s" % prefix)
         return URIRef(ns + (localname or ""))
 
-    def bind(self, prefix: Optional[str], uri: Any) -> None:
+    def bind(self, prefix: str | None, uri: Any) -> None:
         self.namespace_manager.bind(prefix, uri, replace=True)
 
-    def absolutize(
-        self, iri: Optional[Union[CompValue, str]]
-    ) -> Optional[Union[CompValue, str]]:
+    def absolutize(self, iri: CompValue | str | None) -> CompValue | str | None:
         """
         Apply BASE / PREFIXes to URIs
         (and to datatypes in Literals)
@@ -487,7 +476,7 @@ class Query:
     def __init__(self, prologue: Prologue, algebra: CompValue):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], str | None]
 
 
 class Update:
@@ -495,7 +484,7 @@ class Update:
     A parsed and translated update
     """
 
-    def __init__(self, prologue: Prologue, algebra: List[CompValue]):
+    def __init__(self, prologue: Prologue, algebra: list[CompValue]):
         self.prologue = prologue
         self.algebra = algebra
-        self._original_args: Tuple[str, Mapping[str, str], Optional[str]]
+        self._original_args: tuple[str, Mapping[str, str], str | None]

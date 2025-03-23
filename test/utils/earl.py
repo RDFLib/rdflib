@@ -6,19 +6,14 @@ from __future__ import annotations
 
 import enum
 import logging
+from collections import OrderedDict
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Dict,
-    Generator,
-    List,
-    Optional,
-    OrderedDict,
-    Set,
-    Tuple,
     TypeVar,
     cast,
 )
@@ -61,14 +56,14 @@ class EARLReport:
 
     reporter: EARLReporter
     output_file: Path
-    assertions: List[Tuple[URIRef, Set[_TripleType]]] = field(
+    assertions: list[tuple[URIRef, set[_TripleType]]] = field(
         init=False, default_factory=list, repr=False
     )
 
     def add_test_outcome(
-        self, test_id: URIRef, outcome: URIRef, info: Optional[Literal] = None
+        self, test_id: URIRef, outcome: URIRef, info: Literal | None = None
     ):
-        triples: Set[_TripleType] = set()
+        triples: set[_TripleType] = set()
         assertion = BNode(f"{test_id}")
         triples.add((assertion, RDF.type, EARL.Assertion))
         triples.add((assertion, EARL.test, test_id))
@@ -178,8 +173,8 @@ ToT = TypeVar("ToT")
 
 
 def convert_optional(
-    optional: Optional[FromT], converter: Callable[[FromT], ToT]
-) -> Optional[ToT]:
+    optional: FromT | None, converter: Callable[[FromT], ToT]
+) -> ToT | None:
     if optional is not None:
         return converter(optional)
     return None
@@ -209,7 +204,7 @@ def pytest_configure(config: pytest.Config):
 
 
 def pytest_unconfigure(config: pytest.Config):
-    earl_reporter: Optional[EARLReporter] = config.pluginmanager.get_plugin(
+    earl_reporter: EARLReporter | None = config.pluginmanager.get_plugin(
         PYTEST_PLUGIN_NAME
     )
     logger.debug("earl_reporter = %s", earl_reporter)
@@ -229,7 +224,7 @@ class TestResult(enum.Enum):
 
 class TestReportHelper:
     @classmethod
-    def get_rdf_test_uri(cls, report: TestReport) -> Optional[URIRef]:
+    def get_rdf_test_uri(cls, report: TestReport) -> URIRef | None:
         return next(
             (
                 cast(URIRef, item[1])
@@ -240,7 +235,7 @@ class TestReportHelper:
         )
 
     @classmethod
-    def get_manifest_entry(cls, report: TestReport) -> Optional[ManifestEntry]:
+    def get_manifest_entry(cls, report: TestReport) -> ManifestEntry | None:
         return next(
             (
                 cast(ManifestEntry, item[1])
@@ -262,13 +257,13 @@ class EARLReporter:
     assertor_iri: URIRef
     output_dir: Path
     output_suffix: str
-    output_file: Optional[Path] = None
-    assertor_name: Optional[Literal] = None
-    assertor_homepage: Optional[URIRef] = None
+    output_file: Path | None = None
+    assertor_name: Literal | None = None
+    assertor_homepage: URIRef | None = None
     add_datetime: bool = True
-    extra_triples: Set[_TripleType] = field(default_factory=set)
-    prefix_reports: Dict[str, EARLReport] = field(init=True, default_factory=dict)
-    report: Optional[EARLReport] = field(init=True, default=None)
+    extra_triples: set[_TripleType] = field(default_factory=set)
+    prefix_reports: dict[str, EARLReport] = field(init=True, default_factory=dict)
+    report: EARLReport | None = field(init=True, default=None)
 
     def __post_init__(self) -> None:
         if self.assertor_homepage is not None:
@@ -324,7 +319,7 @@ class EARLReporter:
         output_file = self.output_dir / f"{report_prefix}{self.output_suffix}.ttl"
         return EARLReport(self, output_file)
 
-    def get_report_for(self, entry: Optional[ManifestEntry]) -> Optional[EARLReport]:
+    def get_report_for(self, entry: ManifestEntry | None) -> EARLReport | None:
         if self.report:
             return self.report
         if entry is None:
@@ -368,8 +363,8 @@ class EARLReporter:
 
     @classmethod
     def get_rdf_test_uri(
-        cls, rdf_test_uri: Optional[URIRef], manifest_entry: Optional[ManifestEntry]
-    ) -> Optional[URIRef]:
+        cls, rdf_test_uri: URIRef | None, manifest_entry: ManifestEntry | None
+    ) -> URIRef | None:
         if rdf_test_uri is not None:
             return rdf_test_uri
         if manifest_entry is not None:

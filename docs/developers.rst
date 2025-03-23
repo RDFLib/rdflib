@@ -231,20 +231,17 @@ our black.toml config file:
 
     poetry run black .
 
-Check style and conventions with `flake8 <https://flake8.pycqa.org/en/latest/>`_:
+Check style and conventions with `ruff <https://docs.astral.sh/ruff/linter/>`_:
 
 .. code-block:: bash
 
-    poetry run flake8 rdflib
+    poetry run ruff check
 
-We also provide a `flakeheaven <https://pypi.org/project/flakeheaven/>`_
-baseline that ignores existing flake8 errors and only reports on newly
-introduced flake8 errors:
+Any issues that are found can potentially be fixed automatically using:
 
 .. code-block:: bash
 
-    poetry run flakeheaven
-
+   poetry run ruff check --fix
 
 Check types with `mypy <http://mypy-lang.org/>`_:
 
@@ -313,13 +310,13 @@ makes it easier to run validation on all supported python versions.
     tox -a
 
     # Run a specific environment.
-    tox -e py38 # default environment with py37
-    tox -e py39-extra # extra tests with py39
+    tox -e py39 # default environment with py39
+    tox -e py311-extra # extra tests with py311
 
     # Override the test command.
     # the below command will run `pytest test/test_translate_algebra.py`
     # instead of the default pytest command.
-    tox -e py38,py39 -- pytest test/test_translate_algebra.py
+    tox -e py39,py311 -- pytest test/test_translate_algebra.py
 
 
 ``go-task`` and ``Taskfile.yml``
@@ -451,10 +448,7 @@ Create a release-preparation pull request with the following changes:
 * Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
-* Updated main branch version and current version in the ``README.md`` file. The
-  main branch version should be the next major version with an ``a0`` suffix to
-  indicate it is alpha 0. When releasing 6.3.1, the main branch version in the
-  README should be 6.4.0a0.
+* Updated main branch version and current version in the ``README.md`` file. 
 * Updated version in the ``pyproject.toml`` file.
 * Updated ``__date__`` in the ``rdflib/__init__.py`` file.
 * Accurate ``CHANGELOG.md`` entry for the release.
@@ -474,6 +468,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     bsdtar -xvf dist/rdflib-*.tar.gz -O '*/PKG-INFO' | view -
 
     # Check that the built wheel and sdist works correctly:
+    ## Ensure pipx is installed but not within RDFLib's environment 
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --version
@@ -484,10 +479,12 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     poetry publish --dry-run
 
     # Publish to TestPyPI
+    ## ensure you are authed as per https://pypi.org/help/#apitoken and https://github.com/python-poetry/poetry/issues/6320
     poetry publish --repository=testpypi
 
     # Publish to PyPI
     poetry publish
+    ## poetry publish -u __token__ -p pypi-<REDACTED>
     
 
 Once this is done, create a release tag from `GitHub releases

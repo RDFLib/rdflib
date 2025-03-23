@@ -1,7 +1,8 @@
 import logging
 import textwrap
 import xml.dom.minidom
-from typing import Callable, Sequence
+from collections.abc import Sequence
+from typing import Callable
 
 import pytest
 
@@ -9,11 +10,11 @@ import rdflib
 from rdflib import RDF, Literal
 
 try:
-    import html5lib  # noqa: F401
+    import html5rdf  # noqa: F401
 
-    have_html5lib = True
+    have_html5rdf = True
 except ImportError:
-    have_html5lib = False
+    have_html5rdf = False
 
 
 def testPythonRoundtrip():  # noqa: N802
@@ -90,7 +91,7 @@ def testRoundtrip():  # noqa: N802
     roundtrip("nt")
 
 
-@pytest.mark.skipif(not have_html5lib, reason="requires html5lib")
+@pytest.mark.skipif(not have_html5rdf, reason="requires html5rdf")
 def testHTML():  # noqa: N802
     l1 = Literal("<msg>hello</msg>", datatype=RDF.XMLLiteral)
     assert l1.value is not None, "xml must have been parsed"
@@ -126,7 +127,7 @@ def testHTML():  # noqa: N802
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something/>
+                    <something2/>
                     """
                         )
                     ),
@@ -137,7 +138,7 @@ def testHTML():  # noqa: N802
                         textwrap.dedent(
                             """\
                     <!DOCTYPE example>
-                    <something />
+                    <something2 />
                     """
                         )
                     ),

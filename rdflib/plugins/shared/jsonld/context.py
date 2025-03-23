@@ -9,16 +9,11 @@ Implementation of the JSON-LD Context structure. See:
 from __future__ import annotations
 
 from collections import namedtuple
+from collections.abc import Collection, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
-    Dict,
-    Generator,
-    List,
     Optional,
-    Set,
-    Tuple,
     Union,
 )
 from urllib.parse import urljoin, urlsplit
@@ -56,6 +51,13 @@ from .keys import (
 )
 from .util import norm_url, source_to_json, split_iri
 
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
+
+    from rdflib.term import IdentifiedNode
+
+    JSONLDSubjectType: TypeAlias = IdentifiedNode
+
 NODE_KEYS = {GRAPH, ID, INCLUDED, JSON, LIST, NEST, NONE, REV, SET, TYPE, VALUE, LANG}
 
 
@@ -69,7 +71,7 @@ UNDEF = Defined(0)
 URI_GEN_DELIMS = (":", "/", "?", "#", "[", "]", "@")
 
 _ContextSourceType = Union[
-    List[Union[Dict[str, Any], str, None]], Dict[str, Any], str, None
+    list[Union[dict[str, Any], str, None]], dict[str, Any], str, None
 ]
 
 
@@ -77,33 +79,33 @@ class Context:
     def __init__(
         self,
         source: _ContextSourceType = None,
-        base: Optional[str] = None,
-        version: Optional[float] = 1.1,
+        base: str | None = None,
+        version: float | None = 1.1,
     ):
         self.version: float = version or 1.1
         self.language = None
-        self.vocab: Optional[str] = None
-        self._base: Optional[str]
+        self.vocab: str | None = None
+        self._base: str | None
         self.base = base
         self.doc_base = base
-        self.terms: Dict[str, Any] = {}
+        self.terms: dict[str, Any] = {}
         # _alias maps NODE_KEY to list of aliases
-        self._alias: Dict[str, List[str]] = {}
-        self._lookup: Dict[Tuple[str, Any, Union[Defined, str], bool], Term] = {}
-        self._prefixes: Dict[str, Any] = {}
+        self._alias: dict[str, list[str]] = {}
+        self._lookup: dict[tuple[str, Any, Defined | str, bool], Term] = {}
+        self._prefixes: dict[str, Any] = {}
         self.active = False
-        self.parent: Optional[Context] = None
+        self.parent: Context | None = None
         self.propagate = True
-        self._context_cache: Dict[str, Any] = {}
+        self._context_cache: dict[str, Any] = {}
         if source:
             self.load(source)
 
     @property
-    def base(self) -> Optional[str]:
+    def base(self) -> str | None:
         return self._base
 
     @base.setter
-    def base(self, base: Optional[str]):
+    def base(self, base: str | None):
         if base:
             hash_index = base.find("#")
             if hash_index > -1:
@@ -147,12 +149,12 @@ class Context:
         self.active = False
         self.propagate = True
 
-    def get_context_for_term(self, term: Optional[Term]) -> Context:
+    def get_context_for_term(self, term: Term | None) -> Context:
         if term and term.context is not UNDEF:
             return self._subcontext(term.context, propagate=True)
         return self
 
-    def get_context_for_type(self, node: Any) -> Optional[Context]:
+    def get_context_for_type(self, node: Any) -> Context | None:
         if self.version >= 1.1:
             rtype = self.get_type(node) if isinstance(node, dict) else None
             if not isinstance(rtype, list):
@@ -175,31 +177,31 @@ class Context:
 
         return self.parent if self.propagate is False else self
 
-    def get_id(self, obj: Dict[str, Any]) -> Any:
+    def get_id(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, ID)
 
-    def get_type(self, obj: Dict[str, Any]) -> Any:
+    def get_type(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, TYPE)
 
-    def get_language(self, obj: Dict[str, Any]) -> Any:
+    def get_language(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, LANG)
 
-    def get_value(self, obj: Dict[str, Any]) -> Any:
+    def get_value(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, VALUE)
 
-    def get_graph(self, obj: Dict[str, Any]) -> Any:
+    def get_graph(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, GRAPH)
 
-    def get_list(self, obj: Dict[str, Any]) -> Any:
+    def get_list(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, LIST)
 
-    def get_set(self, obj: Dict[str, Any]) -> Any:
+    def get_set(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, SET)
 
-    def get_rev(self, obj: Dict[str, Any]) -> Any:
+    def get_rev(self, obj: dict[str, Any]) -> Any:
         return self._get(obj, REV)
 
-    def _get(self, obj: Dict[str, Any], key: str) -> Any:
+    def _get(self, obj: dict[str, Any], key: str) -> Any:
         for alias in self._alias.get(key, []):
             if alias in obj:
                 return obj.get(alias)
@@ -228,13 +230,13 @@ class Context:
         self,
         name: str,
         idref: str,
-        coercion: Union[Defined, str] = UNDEF,
-        container: Union[Collection[Any], str, Defined] = UNDEF,
-        index: Optional[Union[str, Defined]] = None,
-        language: Optional[Union[str, Defined]] = UNDEF,
+        coercion: Defined | str = UNDEF,
+        container: Collection[Any] | str | Defined = UNDEF,
+        index: str | Defined | None = None,
+        language: str | Defined | None = UNDEF,
         reverse: bool = False,
         context: Any = UNDEF,
-        prefix: Optional[bool] = None,
+        prefix: bool | None = None,
         protected: bool = False,
     ):
         if self.version < 1.1 or prefix is None:
@@ -270,7 +272,7 @@ class Context:
 
         self.terms[name] = term
 
-        container_key: Union[Defined, str]
+        container_key: Defined | str
         for container_key in (LIST, LANG, SET):  # , INDEX, ID, GRAPH):
             if container_key in container:
                 break
@@ -285,11 +287,11 @@ class Context:
     def find_term(
         self,
         idref: str,
-        coercion: Optional[Union[str, Defined]] = None,
-        container: Union[Defined, str] = UNDEF,
-        language: Optional[str] = None,
+        coercion: str | Defined | None = None,
+        container: Defined | str | None = UNDEF,
+        language: str | None = None,
         reverse: bool = False,
-    ):
+    ) -> Term | None:
         lu = self._lookup
 
         if coercion is None:
@@ -375,16 +377,16 @@ class Context:
         elif self._base:
             if str(iri) == self._base:
                 return ""
-            # type error: Argument 1 to "startswith" of "str" has incompatible type "Optional[str]"; expected "Union[str, Tuple[str, ...]]"
+            # type error: Argument 1 to "startswith" of "str" has incompatible type "Optional[str]"; expected "Union[str, tuple[str, ...]]"
             elif iri.startswith(self._basedomain):  # type: ignore[arg-type]
                 # type error: Argument 1 to "len" has incompatible type "Optional[str]"; expected "Sized"
                 return iri[len(self._basedomain) :]  # type: ignore[arg-type]
         return iri
 
-    def to_symbol(self, iri: str) -> Optional[str]:
+    def to_symbol(self, iri: str) -> str | None:
         iri = str(iri)
-        term = self.find_term(iri)
-        if term:
+        term: Term | None = self.find_term(iri)
+        if term is not None:
             return term.name
         ns, name = split_iri(iri)
         if ns == self.vocab:
@@ -398,13 +400,13 @@ class Context:
     def load(
         self,
         source: _ContextSourceType,
-        base: Optional[str] = None,
-        referenced_contexts: Set[Any] = None,
+        base: str | None = None,
+        referenced_contexts: set[Any] = None,
     ):
         self.active = True
-        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]] = []
-        # "Union[List[Union[Dict[str, Any], str]], List[Dict[str, Any]], List[str]]" : expression
-        # "Union[List[Dict[str, Any]], Dict[str, Any], List[str], str]" : variable
+        sources: list[tuple[str | None, dict[str, Any] | str | None]] = []
+        # "Union[List[Union[Dict[str, Any], str]], list[Dict[str, Any]], list[str]]" : expression
+        # "Union[List[Dict[str, Any]], dict[str, Any], list[str], str]" : variable
         source = source if isinstance(source, list) else [source]
         referenced_contexts = referenced_contexts or set()
         self._prep_sources(base, source, sources, referenced_contexts)
@@ -425,11 +427,11 @@ class Context:
 
     def _prep_sources(
         self,
-        base: Optional[str],
-        inputs: Union[List[Union[Dict[str, Any], str, None]], List[str]],
-        sources: List[Tuple[Optional[str], Union[Dict[str, Any], str, None]]],
-        referenced_contexts: Set[str],
-        in_source_url: Optional[str] = None,
+        base: str | None,
+        inputs: list[dict[str, Any] | str | None] | list[str],
+        sources: list[tuple[str | None, dict[str, Any] | str | None]],
+        referenced_contexts: set[str],
+        in_source_url: str | None = None,
     ):
         for source in inputs:
             source_url = in_source_url
@@ -466,7 +468,7 @@ class Context:
                 sources.append((source_url, source))
 
     def _fetch_context(
-        self, source: str, base: Optional[str], referenced_contexts: Set[str]
+        self, source: str, base: str | None, referenced_contexts: set[str]
     ):
         # type error: Value of type variable "AnyStr" of "urljoin" cannot be "Optional[str]"
         source_url = urljoin(base, source)  # type: ignore[type-var]
@@ -492,9 +494,9 @@ class Context:
 
     def _read_source(
         self,
-        source: Dict[str, Any],
-        source_url: Optional[str] = None,
-        referenced_contexts: Optional[Set[str]] = None,
+        source: dict[str, Any],
+        source_url: str | None = None,
+        referenced_contexts: set[str] | None = None,
     ):
         imports = source.get(IMPORT)
         if imports:
@@ -530,9 +532,9 @@ class Context:
 
     def _read_term(
         self,
-        source: Dict[str, Any],
+        source: dict[str, Any],
         name: str,
-        dfn: Union[Dict[str, Any], str],
+        dfn: dict[str, Any] | str,
         protected: bool = False,
     ) -> None:
         idref = None
@@ -580,14 +582,19 @@ class Context:
 
         if idref in NODE_KEYS:
             self._alias.setdefault(idref, []).append(name)
+        else:
+            # undo aliases that may have been inherited from parent context
+            for v in self._alias.values():
+                if name in v:
+                    v.remove(name)
 
     def _rec_expand(
-        self, source: Dict[str, Any], expr: Optional[str], prev: Optional[str] = None
-    ) -> Optional[str]:
+        self, source: dict[str, Any], expr: str | None, prev: str | None = None
+    ) -> str | None:
         if expr == prev or expr in NODE_KEYS:
             return expr
 
-        nxt: Optional[str]
+        nxt: str | None
         # type error: Argument 1 to "_prep_expand" of "Context" has incompatible type "Optional[str]"; expected "str"
         is_term, pfx, nxt = self._prep_expand(expr)  # type: ignore[arg-type]
         if pfx:
@@ -611,7 +618,7 @@ class Context:
 
         return self._rec_expand(source, nxt, expr)
 
-    def _prep_expand(self, expr: str) -> Tuple[bool, Optional[str], str]:
+    def _prep_expand(self, expr: str) -> tuple[bool, str | None, str]:
         if ":" not in expr:
             return True, None, expr
         pfx, local = expr.split(":", 1)
@@ -620,7 +627,7 @@ class Context:
         else:
             return False, None, expr
 
-    def _get_source_id(self, source: Dict[str, Any], key: str) -> Optional[str]:
+    def _get_source_id(self, source: dict[str, Any], key: str) -> str | None:
         # .. from source dict or if already defined
         term = source.get(key)
         if term is None:
@@ -631,8 +638,8 @@ class Context:
             term = term.get(ID)
         return term
 
-    def _term_dict(self, term: Term) -> Union[Dict[str, Any], str]:
-        tdict: Dict[str, Any] = {}
+    def _term_dict(self, term: Term) -> dict[str, Any] | str:
+        tdict: dict[str, Any] = {}
         if term.type != UNDEF:
             tdict[TYPE] = self.shrink_iri(term.type)
         if term.container:
@@ -647,7 +654,7 @@ class Context:
             return tdict[ID]
         return tdict
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Returns a dictionary representation of the context that can be
         serialized to JSON.

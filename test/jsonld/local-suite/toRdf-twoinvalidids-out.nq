@@ -1,0 +1,10 @@
+
+<https://example.org/root-object> <https://schema.org/author> _:b1.
+<https://example.org/root-object> <https://schema.org/author> _:b2.
+
+_:b1 <https://schema.org/name> "Jane Doe".
+_:b1 <https://schema.org/givenName> "Jane".
+_:b1 <https://schema.org/familyName> "Doe".
+_:b2 <https://schema.org/name> "John Doe".
+_:b2 <https://schema.org/givenName> "John".
+_:b2 <https://schema.org/familyName> "Doe".
