@@ -12,7 +12,7 @@ from typing import Callable, Dict, Iterable, List, Tuple
 
 import pytest
 
-from rdflib.graph import ConjunctiveGraph, Graph
+from rdflib.graph import Dataset, Graph
 from rdflib.plugins.parsers import ntriples
 from rdflib.term import Literal, URIRef
 from test.utils.namespace import EGDC
@@ -147,7 +147,7 @@ def test_parse_correctness(
         data = f'<example:Subject> <example:Predicate> "{quoted}" <example:Graph>.'
     else:
         data = f'<example:Subject> <example:Predicate> "{quoted}".'
-    graph = ConjunctiveGraph()
+    graph = Dataset(default_union=True)
     graph.parse(data=data, format=format)
     objs = list(graph.objects())
     assert len(objs) == 1
