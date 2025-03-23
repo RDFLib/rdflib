@@ -290,71 +290,63 @@ class ContextTestCase(unittest.TestCase):
 
         for c in [graph, self.graph.get_context(c1)]:
             # unbound subjects
-            asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
-            asserte(set(c.subjects(hates, pizza)), set((bob,)))
-            asserte(set(c.subjects(likes, cheese)), set([tarek, bob, michel]))
+            asserte(set(c.subjects(likes, pizza)), {michel, tarek})
+            asserte(set(c.subjects(hates, pizza)), {bob})
+            asserte(set(c.subjects(likes, cheese)), {tarek, bob, michel})
             asserte(set(c.subjects(hates, cheese)), set())
 
             # unbound objects
-            asserte(set(c.objects(michel, likes)), set([cheese, pizza]))
-            asserte(set(c.objects(tarek, likes)), set([cheese, pizza]))
-            asserte(set(c.objects(bob, hates)), set([michel, pizza]))
-            asserte(set(c.objects(bob, likes)), set([cheese]))
+            asserte(set(c.objects(michel, likes)), {cheese, pizza})
+            asserte(set(c.objects(tarek, likes)), {cheese, pizza})
+            asserte(set(c.objects(bob, hates)), {michel, pizza})
+            asserte(set(c.objects(bob, likes)), {cheese})
 
             # unbound predicates
-            asserte(set(c.predicates(michel, cheese)), set([likes]))
-            asserte(set(c.predicates(tarek, cheese)), set([likes]))
-            asserte(set(c.predicates(bob, pizza)), set([hates]))
-            asserte(set(c.predicates(bob, michel)), set([hates]))
+            asserte(set(c.predicates(michel, cheese)), {likes})
+            asserte(set(c.predicates(tarek, cheese)), {likes})
+            asserte(set(c.predicates(bob, pizza)), {hates})
+            asserte(set(c.predicates(bob, michel)), {hates})
 
-            asserte(set(c.subject_objects(hates)), set([(bob, pizza), (bob, michel)]))
+            asserte(set(c.subject_objects(hates)), {(bob, pizza), (bob, michel)})
             asserte(
                 set(c.subject_objects(likes)),
-                set(
-                    [
-                        (tarek, cheese),
-                        (michel, cheese),
-                        (michel, pizza),
-                        (bob, cheese),
-                        (tarek, pizza),
-                    ]
-                ),
+                {
+                    (tarek, cheese),
+                    (michel, cheese),
+                    (michel, pizza),
+                    (bob, cheese),
+                    (tarek, pizza),
+                },
             )
 
-            asserte(
-                set(c.predicate_objects(michel)), set([(likes, cheese), (likes, pizza)])
-            )
+            asserte(set(c.predicate_objects(michel)), {(likes, cheese), (likes, pizza)})
             asserte(
                 set(c.predicate_objects(bob)),
-                set([(likes, cheese), (hates, pizza), (hates, michel)]),
+                {(likes, cheese), (hates, pizza), (hates, michel)},
             )
-            asserte(
-                set(c.predicate_objects(tarek)), set([(likes, cheese), (likes, pizza)])
-            )
+            asserte(set(c.predicate_objects(tarek)), {(likes, cheese), (likes, pizza)})
 
             asserte(
                 set(c.subject_predicates(pizza)),
-                set([(bob, hates), (tarek, likes), (michel, likes)]),
+                {(bob, hates), (tarek, likes), (michel, likes)},
             )
             asserte(
                 set(c.subject_predicates(cheese)),
-                set([(bob, likes), (tarek, likes), (michel, likes)]),
+                {(bob, likes), (tarek, likes), (michel, likes)},
             )
-            asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
+            asserte(set(c.subject_predicates(michel)), {(bob, hates)})
 
             asserte(
                 set(c),
-                set(
-                    [
-                        (bob, hates, michel),
-                        (bob, likes, cheese),
-                        (tarek, likes, pizza),
-                        (michel, likes, pizza),
-                        (michel, likes, cheese),
-                        (bob, hates, pizza),
-                        (tarek, likes, cheese),
-                    ]
-                ),
+                {
+                    (bob, hates, michel),
+                    (bob, likes, cheese),
+                    (tarek, likes, pizza),
+                    (michel, likes, pizza),
+                    (michel, likes, cheese),
+                    (bob, hates, pizza),
+                    (tarek, likes, cheese),
+                },
             )
 
         # remove stuff and make sure the graph is empty again

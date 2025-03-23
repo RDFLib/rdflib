@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import IO, Any
+from typing import IO, Any, Optional
 
 from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.namespace import Namespace
@@ -26,10 +26,10 @@ class TriXSerializer(Serializer):
     def serialize(
         self,
         stream: IO[bytes],
-        base: str | None = None,
-        encoding: str | None = None,
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
         **kwargs: Any,
-    ):
+    ) -> None:
         nm = self.store.namespace_manager
 
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})

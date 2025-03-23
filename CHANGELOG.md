@@ -1,3 +1,30 @@
+## 2025-01-17 RELEASE 7.1.3
+
+A fix-up release that re-adds support for Python 3.8 after it was accidentally 
+removed in Release 7.1.2.
+
+This release cherrypicks many additions to 7.1.2 added to 7.1.1 but leaves out 
+typing changes that are not compatible
+with Python 3.8.
+
+Also not carried over from 7.1.2 is the change from Poetry 1.x to 2.0.
+
+Included are PRs such as _Defined Namespace warnings fix_, _sort longturtle 
+blank nodes_, _deterministic longturtle serialisation_ and _Dataset documentation 
+improvements_.
+
+For the full list of included PRs, see the preparatory PR: 
+<https://github.com/RDFLib/rdflib/pull/3036>.
+
+## 2025-01-10 RELEASE 7.1.2
+
+A minor release that inadvertently removed support for Python 3.8. This release 
+how now been deleted.
+
+All the improved features initially made available in this release that were 
+compatible with Python 3.8 have been preserved in the 7.1.3 release. The main 
+additions to 7.1.2 not preserved in 7.1.3 are updated type hints.
+
 ## 2024-10-17 RELEASE 7.1.1
 
 This minor release removes the dependency on some only Python packages, in particular 
@@ -30,7 +57,6 @@ Merged PRs:
   [PR #2950](https://github.com/RDFLib/rdflib/pull/2950)
 * 2024-10-23 - build(deps-dev): bump ruff from 0.6.9 to 0.7.0
   [PR #2942](https://github.com/RDFLib/rdflib/pull/2942)
-
 
 ## 2024-10-17 RELEASE 7.1.0
 

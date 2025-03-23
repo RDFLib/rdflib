@@ -84,7 +84,7 @@ def test_chunk_by_size(tmp_path: Path):
         (TEST_DATA_DIR / "defined_namespaces/mf.ttl", 100, ..., False, True, 1),
     ],
 )
-def test_chuking(
+def test_chunking(
     tmp_path: Path,
     test_graph_path: Path,
     max_triples: Union[ellipsis, int],
