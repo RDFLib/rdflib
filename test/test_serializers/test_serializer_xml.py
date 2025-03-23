@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from rdflib.graph import Dataset, Graph
+from rdflib.graph import Dataset
 from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 from rdflib.term import BNode, URIRef

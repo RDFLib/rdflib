@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from rdflib import ConjunctiveGraph, Dataset, Graph
+from rdflib import Dataset, Graph
 
 
 def test_hext_graph():

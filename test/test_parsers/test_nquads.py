@@ -1,6 +1,6 @@
 import os
 
-from rdflib import Dataset, Namespace, URIRef, Literal
+from rdflib import Dataset, Literal, URIRef
 from rdflib.namespace import FOAF
 from test.data import TEST_DATA_DIR
 
@@ -138,7 +138,15 @@ class TestBnodeContext:
         bnode_ctx = dict()
         g = Dataset()
         h = Dataset()
-        g.parse(TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads", format="nquads", bnode_context=bnode_ctx)
+        g.parse(
+            TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads",
+            format="nquads",
+            bnode_context=bnode_ctx,
+        )
         self.data.seek(0)
-        h.parse(TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads", format="nquads", bnode_context=bnode_ctx)
+        h.parse(
+            TEST_DATA_DIR / "nquads.rdflib/bnode_context.nquads",
+            format="nquads",
+            bnode_context=bnode_ctx,
+        )
         assert set(h.contexts()) == set(g.contexts())

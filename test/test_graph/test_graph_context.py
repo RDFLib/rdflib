@@ -311,20 +311,21 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.subject_objects(hates)), {(bob, pizza), (bob, michel)})
             asserte(
                 set(c.subject_objects(likes)),
-                {(tarek, cheese), (michel, cheese), (michel, pizza), (bob, cheese),
-                 (tarek, pizza)},
+                {
+                    (tarek, cheese),
+                    (michel, cheese),
+                    (michel, pizza),
+                    (bob, cheese),
+                    (tarek, pizza),
+                },
             )
 
-            asserte(
-                set(c.predicate_objects(michel)), {(likes, cheese), (likes, pizza)}
-            )
+            asserte(set(c.predicate_objects(michel)), {(likes, cheese), (likes, pizza)})
             asserte(
                 set(c.predicate_objects(bob)),
                 {(likes, cheese), (hates, pizza), (hates, michel)},
             )
-            asserte(
-                set(c.predicate_objects(tarek)), {(likes, cheese), (likes, pizza)}
-            )
+            asserte(set(c.predicate_objects(tarek)), {(likes, cheese), (likes, pizza)})
 
             asserte(
                 set(c.subject_predicates(pizza)),
@@ -345,7 +346,7 @@ class ContextTestCase(unittest.TestCase):
                     (michel, likes, pizza),
                     (michel, likes, cheese),
                     (bob, hates, pizza),
-                    (tarek, likes, cheese)
+                    (tarek, likes, cheese),
                 },
             )
 
