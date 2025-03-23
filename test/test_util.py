@@ -9,7 +9,7 @@ from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
 import pytest
 
 from rdflib import XSD, util
-from rdflib.graph import Graph, QuotedGraph, Dataset
+from rdflib.graph import Dataset, Graph, QuotedGraph
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
