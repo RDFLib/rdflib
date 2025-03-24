@@ -1,7 +1,7 @@
 from io import StringIO
 
-from rdflib import logger, plugin, Dataset
-from rdflib.graph import Dataset, Graph, ReadOnlyGraphAggregate
+from rdflib import Dataset, Graph, logger, plugin
+from rdflib.graph import ReadOnlyGraphAggregate
 from rdflib.namespace import RDF, RDFS
 from rdflib.store import Store
 from rdflib.term import URIRef
