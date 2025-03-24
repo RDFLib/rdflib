@@ -9,7 +9,7 @@ from typing import Optional
 
 import pytest
 
-from rdflib import BNode, ConjunctiveGraph, Graph, URIRef, plugin
+from rdflib import BNode, Dataset, Graph, URIRef, plugin
 from rdflib.store import Store
 
 
@@ -20,7 +20,7 @@ class ContextTestCase(unittest.TestCase):
 
     def setUp(self):
         try:
-            self.graph = ConjunctiveGraph(store=self.store)
+            self.graph = Dataset(store=self.store, default_union=True)
         except ImportError:
             pytest.skip("Dependencies for store '%s' not available!" % self.store)
         if self.store == "SQLite":
@@ -337,8 +337,11 @@ class ContextTestCase(unittest.TestCase):
             )
             asserte(set(c.subject_predicates(michel)), {(bob, hates)})
 
+            d = set()
+            for x in c:
+                d.add(x[0:3])
             asserte(
-                set(c),
+                set(d),
                 {
                     (bob, hates, michel),
                     (bob, likes, cheese),
