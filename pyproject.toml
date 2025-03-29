@@ -1,6 +1,6 @@
 [project]
 name = "rdflib"
-version = "7.1.3a0"
+version = "8.0.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
