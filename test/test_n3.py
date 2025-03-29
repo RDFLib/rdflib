@@ -251,6 +251,32 @@ foo-bar:Ex foo-bar:name "Test" . """
             g2
         ), "Document with declared empty prefix must match default #"
 
+    def test_float_no_norm(self):
+        import rdflib
+        _ps = rdflib.NORMALIZE_LITERALS
+        try:
+            bads = []
+            for norm_lit in (True, False):
+                rdflib.NORMALIZE_LITERALS = norm_lit
+                g1 = Graph()
+                g1.parse(data=":a :b 1e10, 1e0 .", format="n3")
+                strep = [str(o) for o in g1.objects()]
+                if norm_lit:
+                    if '1e10' not in strep and '1e0' not in strep:
+                        pass
+                    else:
+                        bads.append(('NOT normalized when should have been', strep))
+                else:
+                    if '1e10' in strep and '1e0' in strep:
+                        pass
+                    else:
+                        bads.append(('normalized when it should NOT have been', strep))
+
+        finally:
+            rdflib.NORMALIZE_LITERALS = _ps
+
+        assert not bads, bads
+
 
 class TestRegularExpressions:
     def test_exponents(self):
