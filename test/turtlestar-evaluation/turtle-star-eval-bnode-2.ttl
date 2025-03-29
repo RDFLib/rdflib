@@ -1,0 +1,4 @@
+PREFIX : <http://example/>
+
+_:a :p1 _:a .
+<<_:a :p1 _:a >> :q <<_:a :p2 :o>> .
