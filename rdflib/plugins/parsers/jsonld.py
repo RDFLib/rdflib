@@ -663,7 +663,7 @@ class Parser:
 
             if rest:
                 # type error: Statement is unreachable
-                graph.add((subj, RDF.rest, rest))  # type: ignore[unreachable]
+                graph.add((subj, RDF.rest, rest))
                 subj = rest
 
             obj = self._to_object(dataset, graph, context, term, node, inlist=True)
