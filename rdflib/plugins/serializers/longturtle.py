@@ -44,6 +44,7 @@ class LongTurtleSerializer(RecursiveSerializer):
 
     def __init__(self, store):
         self._ns_rewrite = {}
+        namespace_manager = store.namespace_manager
         store = to_canonical_graph(store)
         content = store.serialize(format="application/n-triples")
         lines = content.split("\n")
@@ -53,6 +54,7 @@ class LongTurtleSerializer(RecursiveSerializer):
             data="\n".join(lines), format="application/n-triples", skolemize=True
         )
         graph = graph.de_skolemize()
+        graph.namespace_manager = namespace_manager
         super(LongTurtleSerializer, self).__init__(graph)
         self.keywords = {RDF.type: "a"}
         self.reset()
