@@ -196,8 +196,8 @@ Custom Evaluation Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For experts, it is possible to override how bits of SPARQL algebra are
-evaluated. By using the `setuptools entry-point
-<http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_
+evaluated. By using the `entry point
+<https://packaging.python.org/guides/creating-and-discovering-plugins/>`_
 ``rdf.plugins.sparqleval``, or simply adding to an entry to
 :data:`rdflib.plugins.sparql.CUSTOM_EVALS`, a custom function can be
 registered. The function will be called for each algebra component and

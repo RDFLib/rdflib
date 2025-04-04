@@ -6,14 +6,7 @@ A custom function is added that adds ``rdfs:subClassOf`` "inference" when
 asking for ``rdf:type`` triples.
 
 Here the custom eval function is added manually, normally you would use
-setuptools and entry_points to do it:
-i.e. in your setup.py::
-
-    entry_points = {
-        'rdf.plugins.sparqleval': [
-            'myfunc = mypackage:MyFunction',
-            ],
-    }
+entry points to do it. See :doc:`/plugins` for more information.
 """
 
 from pathlib import Path
