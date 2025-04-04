@@ -17,7 +17,7 @@ Plugins
 RDFLib uses Python **entry points** to automatically discover plugins.  
 This approach allows you to extend RDFLib's functionality by adding custom parsers, serializers, stores, query processors, and result handlers.
 
-Plugins can also be registered manually using :func:`rdf.plugin.register`.
+Plugins can also be registered manually using :func:`rdflib.plugin.register`.
 
 Supported entry point groups
 ----------------------------
