@@ -68,6 +68,7 @@ mkdocs = ">=1.6.1"
 mkdocs-material = ">=9.6.12"
 mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
 mkdocs-gen-files = "^0.5.0"
+pytest-markdown-docs = "^0.9.0"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.8.6"
@@ -201,13 +202,18 @@ exclude = '''
 
 [tool.pytest.ini_options]
 addopts = [
-   "--doctest-modules",
-   "--ignore=admin",
-   "--ignore=devtools",
-   "--ignore=rdflib/extras/external_graph_libs.py",
-   "--ignore-glob=docs/*.py",
-   "--doctest-glob=docs/*.rst",
-   "--strict-markers",
+    "--doctest-modules",
+    "--ignore=admin",
+    "--ignore=devtools",
+    "--ignore=rdflib/extras/external_graph_libs.py",
+    "--ignore-glob=docs/*.py",
+    "--doctest-glob=docs/*.rst",
+    "--strict-markers",
+    "--ignore-glob=CHANGELOG.md",
+    "--ignore-glob=test/plugins/*/setup.py",
+    # Ignore setup.py files in plugins test that are not valid pyproject.toml files
+    # ERROR test/plugins/sparqleval/setup.py - ValueError: invalid pyproject.toml config: project.license.
+    # "--markdown-docs",
 ]
 filterwarnings = [
     # The below warning is a consequence of how pytest doctest detects mocks and how DefinedNamespace behaves when an undefined attribute is being accessed.

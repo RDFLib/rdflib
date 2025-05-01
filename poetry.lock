@@ -370,7 +370,7 @@ version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
 optional = false
 python-versions = ">=3.7"
-groups = ["tests"]
+groups = ["docs", "tests"]
 markers = "python_version < \"3.11\""
 files = [
     {file = "exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b"},
@@ -484,7 +484,7 @@ version = "2.1.0"
 description = "brain-dead simple config-ini parsing"
 optional = false
 python-versions = ">=3.8"
-groups = ["tests"]
+groups = ["docs", "tests"]
 files = [
     {file = "iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760"},
     {file = "iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7"},
@@ -1327,7 +1327,7 @@ version = "1.5.0"
 description = "plugin and hook calling mechanisms for python"
 optional = false
 python-versions = ">=3.8"
-groups = ["tests"]
+groups = ["docs", "tests"]
 files = [
     {file = "pluggy-1.5.0-py3-none-any.whl", hash = "sha256:44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669"},
     {file = "pluggy-1.5.0.tar.gz", hash = "sha256:2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1"},
@@ -1404,7 +1404,7 @@ version = "8.3.5"
 description = "pytest: simple powerful testing with Python"
 optional = false
 python-versions = ">=3.8"
-groups = ["tests"]
+groups = ["docs", "tests"]
 files = [
     {file = "pytest-8.3.5-py3-none-any.whl", hash = "sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820"},
     {file = "pytest-8.3.5.tar.gz", hash = "sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845"},
@@ -1439,6 +1439,22 @@ pytest = ">=4.6"
 
 [package.extras]
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
+
+[[package]]
+name = "pytest-markdown-docs"
+version = "0.9.0"
+description = "Run markdown code fences through pytest"
+optional = false
+python-versions = ">=3.9"
+groups = ["docs"]
+files = [
+    {file = "pytest_markdown_docs-0.9.0-py3-none-any.whl", hash = "sha256:24d5665147199c2155b5763ea69be8dac6b4c4bc3ad136203981214af783c4b5"},
+    {file = "pytest_markdown_docs-0.9.0.tar.gz", hash = "sha256:ba7aebe1d289e70d5ab346dd95d798d129547fd1bf13610cf723dffdd1225397"},
+]
+
+[package.dependencies]
+markdown-it-py = ">=2.2.0,<4.0"
+pytest = ">=7.0.0"
 
 [[package]]
 name = "python-dateutil"
@@ -1971,4 +1987,4 @@ orjson = ["orjson"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4"
-content-hash = "7e13867012011b33b0f2e17e10ee4a42602ff9c3f1eb9801ce4c19af03717892"
+content-hash = "f265abe5fefc679dc0cd86f8db2c0a2ee09eda12369854fe4ceafe64259ee166"
