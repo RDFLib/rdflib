@@ -1927,10 +1927,11 @@ class Graph(Node):
             elif Genid._is_external_skolem(s):
                 s = Genid(s).de_skolemize()
 
-            if RDFLibGenid._is_rdflib_skolem(o):
-                o = RDFLibGenid(o).de_skolemize()
-            elif Genid._is_external_skolem(o):
-                o = Genid(o).de_skolemize()
+            if isinstance(o, URIRef):
+                if RDFLibGenid._is_rdflib_skolem(o):
+                    o = RDFLibGenid(o).de_skolemize()
+                elif Genid._is_external_skolem(o):
+                    o = Genid(o).de_skolemize()
 
             return s, p, o
 
