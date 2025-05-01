@@ -34,7 +34,7 @@ include = [
 dynamic = [ "dependencies" ]
 dependencies = [
     'isodate >=0.7.2,<1.0.0; python_version < "3.11"',
-    'pyparsing >=3.2.0,<4'
+    'pyparsing >=3.2.0,<4',
 ]
 
 [project.scripts]
@@ -64,6 +64,10 @@ myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
 sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
 typing-extensions = "^4.11.0"
+mkdocs = ">=1.6.1"
+mkdocs-material = ">=9.6.12"
+mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
+mkdocs-gen-files = "^0.5.0"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.8.6"

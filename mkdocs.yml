@@ -1,0 +1,140 @@
+site_name: RDFLib
+site_description: Python library for working with RDF, a simple yet powerful language for representing information.
+site_author: RDFLib Team
+site_url: https://rdflib.readthedocs.org
+repo_name: RDFLib/rdflib
+repo_url: https://github.com/RDFLib/rdflib
+edit_uri: "edit/main/docs/"
+copyright: Copyright &copy; 2002 - 2025, RDFLib Team.
+
+# poetry run mkdocs serve -a localhost:8000
+
+nav:
+  - Usage:
+    - Introduction: index.md
+    - Getting started: gettingstarted.md
+
+  - Examples:
+    - SPARQL update: examples/sparql_update.md
+
+  - API Reference:
+    - Graph: apidocs/rdflib.graph.md
+    - Namespace: apidocs/rdflib.namespace.md
+    - Term: apidocs/rdflib.term.md
+    - Tools: apidocs/rdflib.tools.md
+    - Extras: apidocs/rdflib.extras.md
+    - Plugins:
+      - Parsers: apidocs/rdflib.plugins.parsers.md
+      - Serializers: apidocs/rdflib.plugins.serializers.md
+      - Stores: apidocs/rdflib.plugins.stores.md
+      - SPARQL: apidocs/rdflib.plugins.sparql.md
+
+  - Development:
+    - Contributing: developers.md
+
+
+theme:
+  name: "material"
+  favicon: _static/RDFlib.png
+  logo: _static/RDFlib.png
+  language: en
+  # Choose color: https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#primary-color
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+    - content.code.select
+    - content.tabs.link # Group tabs switch
+    - content.action.edit
+    - content.action.view
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - content.tooltips
+    # - header.autohide
+    # - navigation.tabs.sticky
+    # - navigation.expand
+    # - navigation.instant
+
+
+plugins:
+- search
+- autorefs
+- gen-files:
+    scripts:
+    - docs/gen_ref_pages.py
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        options:
+          show_source: true
+          show_bases: true
+          heading_level: 2
+          members_order: source
+          show_category_heading: true
+          show_if_no_docstring: true
+          # show_submodules: true
+          # docstring_style: sphinx
+          # docstring_style: google
+# - literate-nav:
+#     nav_file: SUMMARY.md
+#     implicit_index: true
+
+watch:
+  - rdflib
+  - docs
+
+
+# Supported admonititions: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.extra
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - smarty
+  - abbr
+  - pymdownx.snippets:
+      auto_append:
+        - docs/includes/abbreviations.md
+
+
+# extra_css:
+#   - _static/custom.css
+# extra_javascript:
+#   - _static/fontawesome.min.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/rdflib
+    - icon: fontawesome/brands/github
+      link: https://github.com/RDFLib
