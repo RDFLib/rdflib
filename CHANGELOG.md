@@ -54,7 +54,6 @@ Merged PRs:
 * 2024-10-23 - build(deps-dev): bump ruff from 0.6.9 to 0.7.0
   [PR #2942](https://github.com/RDFLib/rdflib/pull/2942)
 
-
 ## 2024-10-17 RELEASE 7.1.0
 
 This minor release incorporates just over 100 substantive PRs - interesting 

@@ -95,7 +95,7 @@ from datetime import datetime
 from hashlib import sha256
 from typing import TYPE_CHECKING, Optional, Union
 
-from rdflib.graph import ConjunctiveGraph, Graph, ReadOnlyGraphAggregate, _TripleType
+from rdflib.graph import Graph, _TripleType
 from rdflib.term import BNode, IdentifiedNode, Node, URIRef
 
 if TYPE_CHECKING:
@@ -147,7 +147,7 @@ class _call_count:  # noqa: N801
         return wrapped_f
 
 
-class IsomorphicGraph(ConjunctiveGraph):
+class IsomorphicGraph(Graph):
     """An implementation of the RGDA1 graph digest algorithm.
 
     An implementation of RGDA1 (publication below),
@@ -569,7 +569,7 @@ def isomorphic(graph1: Graph, graph2: Graph) -> bool:
     return gd1 == gd2
 
 
-def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> ReadOnlyGraphAggregate:
+def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> Graph:
     """Creates a canonical, read-only graph.
 
     Creates a canonical, read-only graph where all bnode id:s are based on
@@ -577,7 +577,7 @@ def to_canonical_graph(g1: Graph, stats: Stats | None = None) -> ReadOnlyGraphAg
     """
     graph = Graph()
     graph += _TripleCanonicalizer(g1).canonical_triples(stats=stats)
-    return ReadOnlyGraphAggregate([graph])
+    return graph
 
 
 def graph_diff(g1: Graph, g2: Graph) -> tuple[Graph, Graph, Graph]:
