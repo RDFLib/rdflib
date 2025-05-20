@@ -17,6 +17,9 @@ log = logging.getLogger(__name__)
 if TYPE_CHECKING:
     import typing_extensions as te
 
+    SUPPORTED_METHODS = te.Literal["GET", "POST", "POST_FORM"]
+    SUPPORTED_FORMATS = te.Literal["xml", "json", "csv", "tsv", "application/rdf+xml"]
+
 
 class SPARQLConnectorException(Exception):  # noqa: N818
     pass
@@ -41,8 +44,8 @@ class SPARQLConnector:
         self,
         query_endpoint: str | None = None,
         update_endpoint: str | None = None,
-        returnFormat: str = "xml",  # noqa: N803
-        method: te.Literal["GET", "POST", "POST_FORM"] = "GET",
+        returnFormat: SUPPORTED_FORMATS = "xml",  # noqa: N803
+        method: SUPPORTED_METHODS = "GET",
         auth: tuple[str, str] | None = None,
         **kwargs,
     ):
