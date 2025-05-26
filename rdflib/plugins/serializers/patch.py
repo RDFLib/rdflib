@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import warnings
 from typing import IO, Any
-from uuid import uuid4
 
 from rdflib import Dataset
 from rdflib.plugins.serializers.nquads import _nq_row
