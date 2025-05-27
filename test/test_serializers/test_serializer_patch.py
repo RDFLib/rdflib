@@ -177,6 +177,7 @@ def test_prev_header():
     result = ds.serialize(format="patch", operation="add", header_prev="uuid:123")
     assert """H prev <uuid:123>""" in result
 
+
 def test_no_headers():
     ds = Dataset()
     ds.add(
