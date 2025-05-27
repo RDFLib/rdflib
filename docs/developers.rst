@@ -93,7 +93,7 @@ solely on the basis that it was not discussed upfront.
 RDFLib follows `semantic versioning <https://semver.org/spec/v2.0.0.html>`_ and `trunk-based development
 <https://trunkbaseddevelopment.com/>`_, so if any breaking changes were
 introduced into the main branch since the last release, then the next release
-will be a major release with an incremented major version. 
+will be a major release with an incremented major version.
 
 Releases of RDFLib will not as a rule be conditioned on specific features, so
 there may be new major releases that contain very few breaking changes, and
@@ -200,6 +200,15 @@ executing the tests.
 
    $ poetry install --all-extras
    $ poetry run pytest
+
+By default tests of the ``SPARQLStore`` against remote public endpoints are skipped, to enable them add the flag:
+
+.. code-block:: console
+
+   $ poetry run pytest --public-endpoints
+   $ # Or exclusively run the SPARQLStore tests:
+   $ poetry run pytest test/test_store/test_store_sparqlstore_public.py --public-endpoints
+
 
 Writing tests
 ~~~~~~~~~~~~~
@@ -406,7 +415,7 @@ container:
 
     # Inside the repository base directory
     cd ./rdflib/
-    
+
     # Build the development container.
     devcontainer build .
 
@@ -448,7 +457,7 @@ Create a release-preparation pull request with the following changes:
 * Updated version and date in ``CITATION.cff``.
 * Updated copyright year in the ``LICENSE`` file.
 * Updated copyright year in the ``docs/conf.py`` file.
-* Updated main branch version and current version in the ``README.md`` file. 
+* Updated main branch version and current version in the ``README.md`` file.
 * Updated version in the ``pyproject.toml`` file.
 * Updated ``__date__`` in the ``rdflib/__init__.py`` file.
 * Accurate ``CHANGELOG.md`` entry for the release.
@@ -456,7 +465,7 @@ Create a release-preparation pull request with the following changes:
 Once the PR is merged, switch to the main branch, build the release and upload it to PyPI:
 
 .. code-block:: bash
-    
+
     # Clean up any previous builds
     \rm -vf dist/*
 
@@ -468,7 +477,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     bsdtar -xvf dist/rdflib-*.tar.gz -O '*/PKG-INFO' | view -
 
     # Check that the built wheel and sdist works correctly:
-    ## Ensure pipx is installed but not within RDFLib's environment 
+    ## Ensure pipx is installed but not within RDFLib's environment
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe --version
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.whl)" rdfpipe https://github.com/RDFLib/rdflib/raw/main/test/data/defined_namespaces/rdfs.ttl
     pipx run --no-cache --spec "$(readlink -f dist/rdflib*.tar.gz)" rdfpipe --version
@@ -485,7 +494,7 @@ Once the PR is merged, switch to the main branch, build the release and upload i
     # Publish to PyPI
     poetry publish
     ## poetry publish -u __token__ -p pypi-<REDACTED>
-    
+
 
 Once this is done, create a release tag from `GitHub releases
 <https://github.com/RDFLib/rdflib/releases/new>`_. For a release of version
