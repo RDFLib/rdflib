@@ -285,14 +285,13 @@ from rdflib.serializer import Serializer
 from rdflib.store import Store
 from rdflib.term import (
     BNode,
-    Genid,
     IdentifiedNode,
     Identifier,
     Literal,
     Node,
-    RDFLibGenid,
     URIRef,
     Variable,
+    _Deskolemizer,
 )
 
 if TYPE_CHECKING:
@@ -515,6 +514,7 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
+        self._deskolemizer = _Deskolemizer()
 
     def __getnewargs__(self) -> tuple[Any, ...]:
         return (
@@ -1907,38 +1907,38 @@ class Graph(Node):
     def de_skolemize(
         self, new_graph: Graph | None = None, uriref: URIRef | None = None
     ) -> Graph:
+        """
+        Return a new graph with skolem IRIs replaced with their blank node mappings.
+
+        :param new_graph: An optional target graph where the de-skolemization results
+            will be stored. If not provided, a new graph is created.
+        :param uriref: The skolem IRI to be de-skolemized. If not provided,
+            de-skolemization is applied to all skolem IRIs in the graph.
+        """
+
         def do_de_skolemize(uriref: URIRef, t: _TripleType) -> _TripleType:
             (s, p, o) = t
             if s == uriref:
                 if TYPE_CHECKING:
                     assert isinstance(s, URIRef)
-                s = s.de_skolemize()
+                s = self._deskolemizer(s)
             if o == uriref:
                 if TYPE_CHECKING:
                     assert isinstance(o, URIRef)
-                o = o.de_skolemize()
+                o = self._deskolemizer(o)
             return s, p, o
 
         def do_de_skolemize2(t: _TripleType) -> _TripleType:
             (s, p, o) = t
-
-            if RDFLibGenid._is_rdflib_skolem(s):
-                s = RDFLibGenid(s).de_skolemize()
-            elif Genid._is_external_skolem(s):
-                s = Genid(s).de_skolemize()
-
-            if RDFLibGenid._is_rdflib_skolem(o):
-                o = RDFLibGenid(o).de_skolemize()
-            elif Genid._is_external_skolem(o):
-                o = Genid(o).de_skolemize()
-
-            return s, p, o
+            if TYPE_CHECKING:
+                assert isinstance(s, URIRef) and isinstance(o, URIRef)
+            return self._deskolemizer(s), p, self._deskolemizer(o)
 
         retval = Graph() if new_graph is None else new_graph
 
         if uriref is None:
             self._process_skolem_tuples(retval, do_de_skolemize2)
-        elif isinstance(uriref, Genid):
+        else:
             # type error: Argument 1 to "do_de_skolemize" has incompatible type "Optional[URIRef]"; expected "URIRef"
             self._process_skolem_tuples(retval, lambda t: do_de_skolemize(uriref, t))  # type: ignore[arg-type, unused-ignore]
 
@@ -2618,11 +2618,11 @@ class Dataset(ConjunctiveGraph):
         base: str | None = None,
     ) -> Graph:
         if identifier is None:
-            from rdflib.term import _SKOLEM_DEFAULT_AUTHORITY, rdflib_skolem_genid
+            from rdflib.term import _RDFLIB_GENID_PATH, _SKOLEM_DEFAULT_AUTHORITY
 
             self.bind(
                 "genid",
-                _SKOLEM_DEFAULT_AUTHORITY + rdflib_skolem_genid,
+                _SKOLEM_DEFAULT_AUTHORITY + _RDFLIB_GENID_PATH,
                 override=False,
             )
             identifier = BNode().skolemize()

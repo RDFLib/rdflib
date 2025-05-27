@@ -1,5 +1,5 @@
 from rdflib import Graph
-from rdflib.term import BNode, URIRef, rdflib_skolem_genid
+from rdflib.term import _RDFLIB_GENID_PATH, BNode, URIRef
 
 
 def test():
@@ -15,7 +15,7 @@ def test():
 
     gs = g.skolemize()
     for s, p, o in gs:
-        assert isinstance(s, URIRef) and s.__contains__(rdflib_skolem_genid)
+        assert isinstance(s, URIRef) and _RDFLIB_GENID_PATH in s
 
     query_with_iri = "select ?p ?o {{ <{}> ?p ?o }}".format(s)
     query_for_all = "select ?s ?p ?o { ?s ?p ?o }"

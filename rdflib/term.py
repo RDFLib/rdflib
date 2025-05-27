@@ -55,7 +55,7 @@ from typing import (
     TypeVar,
     overload,
 )
-from urllib.parse import urldefrag, urljoin, urlparse
+from urllib.parse import urldefrag, urljoin, urlparse, urlsplit
 from uuid import uuid4
 
 import rdflib
@@ -93,9 +93,9 @@ except ImportError:
 _SKOLEM_DEFAULT_AUTHORITY = "https://rdflib.github.io"
 
 logger = logging.getLogger(__name__)
-skolem_genid = "/.well-known/genid/"
-rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems: dict[str, BNode] = {}
+_WELL_KNOWN_GENID = "/.well-known/genid/"
+_RDFLIB_GENID_SUFFIX = "rdflib/"
+_RDFLIB_GENID_PATH = "/.well-known/genid/" + _RDFLIB_GENID_SUFFIX
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
@@ -383,61 +383,30 @@ class URIRef(IdentifiedNode):
     def __mod__(self, other) -> URIRef:
         return self.__class__(str(self) % other)
 
-    def de_skolemize(self) -> BNode:
-        """Create a Blank Node from a skolem URI, in accordance
-        with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
-        This function accepts only rdflib type skolemization, to provide
-        a round-tripping within the system.
 
-        .. versionadded:: 4.0
-        """
-        if isinstance(self, RDFLibGenid):
-            parsed_uri = urlparse(f"{self}")
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
-        elif isinstance(self, Genid):
-            bnode_id = f"{self}"
-            if bnode_id in skolems:
-                return skolems[bnode_id]
+class _Deskolemizer:
+    __slots__ = "_skolems"
+
+    def __init__(self) -> None:
+        self._skolems: dict[str, BNode] = {}
+
+    def __call__(self, uri: URIRef) -> URIRef | BNode:
+        parsed_uri = urlsplit(uri)
+        if parsed_uri.query != "" or parsed_uri.fragment != "":
+            # Behaviour is undefined for skolem URIs with query or fragment, so just return the URI
+            return uri
+        if parsed_uri.path.startswith(_WELL_KNOWN_GENID):
+            genid_suffix = parsed_uri.path[len(_WELL_KNOWN_GENID) :]
+            if genid_suffix.startswith(_RDFLIB_GENID_SUFFIX):
+                return BNode(value=parsed_uri.path[len(_RDFLIB_GENID_PATH) :])
             else:
+                if uri in self._skolems:
+                    return self._skolems[uri]
+
                 retval = BNode()
-                skolems[bnode_id] = retval
+                self._skolems[uri] = retval
                 return retval
-        else:
-            raise Exception(f"<{self}> is not a skolem URI")
-
-
-class Genid(URIRef):
-    __slots__ = ()
-
-    @staticmethod
-    def _is_external_skolem(uri: Any) -> bool:
-        if not isinstance(uri, str):
-            uri = str(uri)
-        parsed_uri = urlparse(uri)
-        gen_id = parsed_uri.path.rfind(skolem_genid)
-        if gen_id != 0:
-            return False
-        return True
-
-
-class RDFLibGenid(Genid):
-    __slots__ = ()
-
-    @staticmethod
-    def _is_rdflib_skolem(uri: Any) -> bool:
-        if not isinstance(uri, str):
-            uri = str(uri)
-        parsed_uri = urlparse(uri)
-        if (
-            parsed_uri.params != ""
-            or parsed_uri.query != ""
-            or parsed_uri.fragment != ""
-        ):
-            return False
-        gen_id = parsed_uri.path.rfind(rdflib_skolem_genid)
-        if gen_id != 0:
-            return False
-        return True
+        return uri
 
 
 def _unique_id() -> str:
@@ -536,8 +505,8 @@ class BNode(IdentifiedNode):
         if authority is None:
             authority = _SKOLEM_DEFAULT_AUTHORITY
         if basepath is None:
-            basepath = rdflib_skolem_genid
-        skolem = basepath + str(self)
+            basepath = _RDFLIB_GENID_PATH
+        skolem = "%s%s" % (basepath, str(self))
         return URIRef(urljoin(authority, skolem))
 
 
