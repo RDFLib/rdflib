@@ -1,7 +1,9 @@
 import os
 import shutil
 import tempfile
-import warnings
+from io import StringIO
+from test.data import CONTEXT1, LIKES, PIZZA, TAREK
+from test.utils.namespace import EGSCHEME
 
 import pytest
 
@@ -24,6 +26,9 @@ from test.data import CONTEXT1, LIKES, PIZZA, TAREK
 
 HOST = "http://localhost:3030"
 DB = "/db/"
+DATA = """
+<http://example.org/record/1> a <http://xmlns.com/foaf/0.1/Document> .
+"""
 
 pluginstores = []
 
@@ -270,6 +275,25 @@ def test_graph_without_identifier() -> None:
     ) == ("genid", genid_prefix)
 
     assert f"{g1.identifier}".startswith(genid_prefix)
+    assert f"{subgraph.identifier}".startswith(genid_prefix)
+
+
+def test_parse_return_type():
+    g = Dataset()
+    g.parse(data=DATA, format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g = g.parse(data=DATA, format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g.parse(source=StringIO(DATA), format="turtle")
+    assert type(g) is Dataset
+
+    g = Dataset()
+    g = g.parse(source=StringIO(DATA), format="turtle")
+    assert type(g) is Dataset
 
     # now add a preexisting graph with no identifier
     # i.e. not one created within this Dataset object
