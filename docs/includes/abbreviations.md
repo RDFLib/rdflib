@@ -1,5 +1,6 @@
 *[HTML]: Hyper Text Markup Language
 *[HTTP]: HyperText Transfer Protocol
+*[HTTPS]: HyperText Transfer Protocol Secure
 *[API]: Application Programming Interface
 *[UI]: User Interface
 *[CLI]: Command-Line Interface
@@ -10,6 +11,7 @@
 *[RDF]: Resource Description Framework
 *[N3]: Notation 3, an assertion and logic language which is a superset of RDF
 *[TriX]: Triples in XML
+*[TriG]: Triples in Graphs
 *[RDFa]: Resource Description Framework in Attributes
 *[JSON-LD]: JavaScript Object Notation - Linked Data
 *[JSON]: JavaScript Object Notation

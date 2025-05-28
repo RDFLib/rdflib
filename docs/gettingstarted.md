@@ -18,7 +18,7 @@ pip install git+https://github.com/RDFLib/rdflib.git@main#egg=rdflib
 
 ## Support
 
-Usage support is available via questions tagged with `[rdflib]` on [StackOverflow](https://stackoverflow.com/questions/tagged/rdflib) and development support, notifications and detailed discussion through the rdflib-dev group (mailing list): http://groups.google.com/group/rdflib-dev
+Usage support is available via questions tagged with `[rdflib]` on [StackOverflow](https://stackoverflow.com/questions/tagged/rdflib) and development support, notifications and detailed discussion through the rdflib-dev group (mailing list): [http://groups.google.com/group/rdflib-dev](http://groups.google.com/group/rdflib-dev)
 
 If you notice a bug or want to request an enhancement, please do so via our Issue Tracker in Github: [http://github.com/RDFLib/rdflib/issues](http://github.com/RDFLib/rdflib/issues)
 

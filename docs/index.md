@@ -3,7 +3,7 @@
 RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). It contains:
 
 * **Parsers & Serializers**
-    * for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, JSON-LD, HexTuples, RDFa and Microdata
+    * for RDF/XML, N3, NTriples, N-Quads, Turtle, TriG, TriX, JSON-LD, HexTuples, RDFa and Microdata
 
 * **Store implementations**
     * memory stores
@@ -17,7 +17,7 @@ RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). 
 * **SPARQL 1.1 implementation**
     * both Queries and Updates are supported
 
-!!! warning
+!!! warning "Security considerations"
     RDFLib is designed to access arbitrary network and file resources, in some
     cases these are directly requested resources, in other cases they are
     indirectly referenced resources.
@@ -67,13 +67,13 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 
 ## For developers
 
-* [Developers Guide](developers.md)
+* [Developers guide](developers.md)
+* [Documentation guide](docs.md)
+* [Contributing guide](CONTRIBUTING.md)
 * [Code of Conduct](CODE_OF_CONDUCT.md)
-* [Documentation](docs.md)
 * [Persisting N3 Terms](persisting_n3_terms.md)
 * [Type Hints](type_hints.md)
-* [Contributing](CONTRIBUTING.md)
-* [Decisions](decisions/index.md)
+* [Decisions](decisions.md)
 
 ## Source Code
 

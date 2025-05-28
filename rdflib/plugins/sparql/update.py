@@ -1,7 +1,5 @@
 """
-
 Code for carrying out Update Operations
-
 """
 
 from __future__ import annotations
@@ -286,9 +284,7 @@ def evalUpdate(
     update: Update,
     initBindings: Mapping[str, Identifier] | None = None,
 ) -> None:
-    """
-
-    http://www.w3.org/TR/sparql11-update/#updateLanguage
+    """http://www.w3.org/TR/sparql11-update/#updateLanguage
 
     'A request is a sequence of operations [...] Implementations MUST
     ensure that operations of a single request are executed in a
@@ -303,17 +299,17 @@ def evalUpdate(
 
     This will return None on success and raise Exceptions on error
 
-    .. caution::
+    !!! warning "Security Considerations"
 
         This method can access indirectly requested network endpoints, for
         example, query processing will attempt to access network endpoints
-        specified in ``SERVICE`` directives.
+        specified in `SERVICE` directives.
 
         When processing untrusted or potentially malicious queries, measures
         should be taken to restrict network and file access.
 
         For information on available security measures, see the RDFLib
-        :doc:`Security Considerations </security_considerations>`
+        [Security Considerations](../security_considerations.md)
         documentation.
 
     """

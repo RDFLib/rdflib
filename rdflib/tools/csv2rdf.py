@@ -3,8 +3,7 @@ A commandline tool for semi-automatically converting CSV to RDF.
 
 See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 
-try: ``csv2rdf --help``
-
+try: `csv2rdf --help`
 """
 
 from __future__ import annotations

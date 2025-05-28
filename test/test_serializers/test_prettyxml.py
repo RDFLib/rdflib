@@ -19,7 +19,7 @@ class SerializerTestBase:
         _assert_equal_graphs(self.source_graph, reparsed_graph)
 
     def test_multiple(self):
-        """Repeats ``test_serialize`` ``self.repeats`` times, to reduce sucess based on in-memory ordering."""
+        """Repeats `test_serialize` `self.repeats` times, to reduce sucess based on in-memory ordering."""
         for i in range(self.repeats):
             self.test_serialize_and_reparse()
 
@@ -40,7 +40,7 @@ _blank = BNode()
 
 
 def _mangled_copy(g):
-    "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
+    "Makes a copy of the graph, replacing all bnodes with the bnode `_blank`."
     gcopy = ConjunctiveGraph()
 
     def isbnode(v):

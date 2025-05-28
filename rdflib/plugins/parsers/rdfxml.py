@@ -635,6 +635,8 @@ def create_parser(target: InputSource, store: Graph) -> xmlreader.XMLReader:
 
 
 class RDFXMLParser(Parser):
+    """An RDF/XML parser."""
+
     def __init__(self):
         pass
 

@@ -10,23 +10,27 @@ from urllib.response import addinfourl
 
 
 def _make_redirect_request(request: Request, http_error: HTTPError) -> Request:
-    """
-    Create a new request object for a redirected request.
+    """Create a new request object for a redirected request.
 
-    The logic is based on `urllib.request.HTTPRedirectHandler` from `this commit <https://github.com/python/cpython/blob/b58bc8c2a9a316891a5ea1a0487aebfc86c2793a/Lib/urllib/request.py#L641-L751>_`.
+    The logic is based on [HTTPRedirectHandler](https://github.com/python/cpython/blob/b58bc8c2a9a316891a5ea1a0487aebfc86c2793a/Lib/urllib/request.py#L641-L751) from urllib.request.
 
-    :param request: The original request that resulted in the redirect.
-    :param http_error: The response to the original request that indicates a
-        redirect should occur and contains the new location.
-    :return: A new request object to the location indicated by the response.
-    :raises HTTPError: the supplied ``http_error`` if the redirect request
-        cannot be created.
-    :raises ValueError: If the response code is `None`.
-    :raises ValueError: If the response does not contain a ``Location`` header
-        or the ``Location`` header is not a string.
-    :raises HTTPError: If the scheme of the new location is not ``http``,
-        ``https``, or ``ftp``.
-    :raises HTTPError: If there are too many redirects or a redirect loop.
+    Args:
+        request: The original request that resulted in the redirect.
+        http_error: The response to the original request that indicates a
+            redirect should occur and contains the new location.
+
+    Returns:
+        A new request object to the location indicated by the response.
+
+    Raises:
+        HTTPError: the supplied `http_error` if the redirect request
+            cannot be created.
+        ValueError: If the response code is None.
+        ValueError: If the response does not contain a `Location` header
+            or the `Location` header is not a string.
+        HTTPError: If the scheme of the new location is not `http`,
+            `https`, or `ftp`.
+        HTTPError: If there are too many redirects or a redirect loop.
     """
     new_url = http_error.headers.get("Location")
     if new_url is None:
@@ -91,15 +95,17 @@ def _make_redirect_request(request: Request, http_error: HTTPError) -> Request:
 
 
 def _urlopen(request: Request) -> addinfourl:
-    """
-    This is a shim for `urlopen` that handles HTTP redirects with status code
+    """This is a shim for `urlopen` that handles HTTP redirects with status code
     308 (Permanent Redirect).
 
     This function should be removed once all supported versions of Python
     handles the 308 HTTP status code.
 
-    :param request: The request to open.
-    :return: The response to the request.
+    Args:
+        request: The request to open.
+
+    Returns:
+        The response to the request.
     """
     try:
         return urlopen(request)
