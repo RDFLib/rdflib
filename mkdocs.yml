@@ -34,7 +34,6 @@ nav:
       - Upgrading v4 to 5: upgrade4to5.md
 
   - API Reference:
-    # - apidocs/index.md
     - Examples: apidocs/examples.md
     - Graph: apidocs/rdflib.graph.md
     - Term: apidocs/rdflib.term.md

@@ -54,7 +54,7 @@ def generate_module_docs(module_path, output_path, nav, indent=0):
 nav = None
 
 # Generate all docs
-generate_module_docs("rdflib", Path("apidocs/index.md"), nav)
+generate_module_docs("rdflib", Path("apidocs/_index.md"), nav)
 generate_module_docs("examples", Path("apidocs/examples.md"), nav)
 
 # # Write the navigation file for the literate-nav plugin
