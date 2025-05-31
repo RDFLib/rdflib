@@ -22,7 +22,7 @@ def test_namespaces_via_manager() -> None:
 
 def test_propery_node_pickler() -> None:
     """
-    The ``node_pickler`` property of a `rdflib.store.Store` works correctly.
+    The `node_pickler` property of a `rdflib.store.Store` works correctly.
     """
     store = Store()
     assert isinstance(store.node_pickler, NodePickler)

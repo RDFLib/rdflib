@@ -71,12 +71,13 @@ class HTTPFileInfo:
     """
     Information about a file served by the HTTPFileServerRequestHandler.
 
-    :param request_url: The URL that should be requested to get the file.
-    :param effective_url: The URL that the file will be served from after
-        redirects.
-    :param redirects: A sequence of redirects that will be given to the client
-        if it uses the ``request_url``. This sequence will terminate in the
-        ``effective_url``.
+    Args:
+        request_url: The URL that should be requested to get the file.
+        effective_url: The URL that the file will be served from after
+            redirects.
+        redirects: A sequence of redirects that will be given to the client
+            if it uses the `request_url`. This sequence will terminate in the
+            `effective_url`.
     """
 
     # request_url: str

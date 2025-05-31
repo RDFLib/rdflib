@@ -1,8 +1,8 @@
 """
-The :class:`~rdflib.resource.Resource` class wraps a
-:class:`~rdflib.graph.Graph`
-and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
-:class:`rdflib.term.BNode`) to support a resource-oriented way of
+The [`Resource`][rdflib.resource.Resource] class wraps a
+[`Graph`][rdflib.graph.Graph]
+and a resource reference (i.e. a [`URIRef`][rdflib.term.URIRef] or
+[`BNode`][rdflib.term.BNode]) to support a resource-oriented way of
 working with a graph.
 
 It contains methods directly corresponding to those methods of the Graph
@@ -12,278 +12,342 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(:class:`rdflib.term.URIRef` and :class:`rdflib.term.BNode`) are in turn
+([`URIRef`][rdflib.term.URIRef] and [`BNode`][rdflib.term.BNode]) are in turn
 wrapped as Resources. (Note that this behaviour differs from the corresponding
-methods in :class:`~rdflib.graph.Graph`, where no such conversion takes place.)
+methods in [`Graph`][rdflib.graph.Graph], where no such conversion takes place.)
 
 
-Basic Usage Scenario
---------------------
+## Basic Usage Scenario
 
-Start by importing things we need and define some namespaces::
+Start by importing things we need and define some namespaces:
 
-    >>> from rdflib import *
-    >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-    >>> CV = Namespace("http://purl.org/captsolo/resume-rdf/0.2/cv#")
+```python
+>>> from rdflib import *
+>>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+>>> CV = Namespace("http://purl.org/captsolo/resume-rdf/0.2/cv#")
 
-Load some RDF data::
+```
 
-    >>> graph = Graph().parse(format='n3', data='''
-    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    ... @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-    ... @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-    ... @prefix cv: <http://purl.org/captsolo/resume-rdf/0.2/cv#> .
-    ...
-    ... @base <http://example.org/> .
-    ...
-    ... </person/some1#self> a foaf:Person;
-    ...     rdfs:comment "Just a Python & RDF hacker."@en;
-    ...     foaf:depiction </images/person/some1.jpg>;
-    ...     foaf:homepage <http://example.net/>;
-    ...     foaf:name "Some Body" .
-    ...
-    ... </images/person/some1.jpg> a foaf:Image;
-    ...     rdfs:label "some 1"@en;
-    ...     rdfs:comment "Just an image"@en;
-    ...     foaf:thumbnail </images/person/some1-thumb.jpg> .
-    ...
-    ... </images/person/some1-thumb.jpg> a foaf:Image .
-    ...
-    ... [] a cv:CV;
-    ...     cv:aboutPerson </person/some1#self>;
-    ...     cv:hasWorkHistory [ cv:employedIn </#company>;
-    ...             cv:startDate "2009-09-04"^^xsd:date ] .
-    ... ''')
+Load some RDF data:
 
-Create a Resource::
+```python
+>>> graph = Graph().parse(format='n3', data='''
+... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+... @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+... @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+... @prefix cv: <http://purl.org/captsolo/resume-rdf/0.2/cv#> .
+...
+... @base <http://example.org/> .
+...
+... </person/some1#self> a foaf:Person;
+...     rdfs:comment "Just a Python & RDF hacker."@en;
+...     foaf:depiction </images/person/some1.jpg>;
+...     foaf:homepage <http://example.net/>;
+...     foaf:name "Some Body" .
+...
+... </images/person/some1.jpg> a foaf:Image;
+...     rdfs:label "some 1"@en;
+...     rdfs:comment "Just an image"@en;
+...     foaf:thumbnail </images/person/some1-thumb.jpg> .
+...
+... </images/person/some1-thumb.jpg> a foaf:Image .
+...
+... [] a cv:CV;
+...     cv:aboutPerson </person/some1#self>;
+...     cv:hasWorkHistory [ cv:employedIn </#company>;
+...             cv:startDate "2009-09-04"^^xsd:date ] .
+... ''')
 
-    >>> person = Resource(
-    ...     graph, URIRef("http://example.org/person/some1#self"))
+```
 
-Retrieve some basic facts::
+Create a Resource:
 
-    >>> person.identifier
-    rdflib.term.URIRef('http://example.org/person/some1#self')
+```python
+>>> person = Resource(
+...     graph, URIRef("http://example.org/person/some1#self"))
 
-    >>> person.value(FOAF.name)
-    rdflib.term.Literal('Some Body')
+```
 
-    >>> person.value(RDFS.comment)
-    rdflib.term.Literal('Just a Python & RDF hacker.', lang='en')
+Retrieve some basic facts:
 
-Resources can be sliced (like graphs, but the subject is fixed)::
+```python
+>>> person.identifier
+rdflib.term.URIRef('http://example.org/person/some1#self')
 
-    >>> for name in person[FOAF.name]:
-    ...     print(name)
-    Some Body
-    >>> person[FOAF.name : Literal("Some Body")]
-    True
+>>> person.value(FOAF.name)
+rdflib.term.Literal('Some Body')
 
-Resources as unicode are represented by their identifiers as unicode::
+>>> person.value(RDFS.comment)
+rdflib.term.Literal('Just a Python & RDF hacker.', lang='en')
 
-    >>> %(unicode)s(person)  #doctest: +SKIP
-    'Resource(http://example.org/person/some1#self'
+```
+
+Resources can be sliced (like graphs, but the subject is fixed):
+
+```python
+>>> for name in person[FOAF.name]:
+...     print(name)
+Some Body
+>>> person[FOAF.name : Literal("Some Body")]
+True
+
+```
+
+Resources as unicode are represented by their identifiers as unicode:
+
+```python
+>>> %(unicode)s(person)  #doctest: +SKIP
+'Resource(http://example.org/person/some1#self'
+
+```
 
 Resource references are also Resources, so you can easily get e.g. a qname
-for the type of a resource, like::
+for the type of a resource, like:
 
-    >>> person.value(RDF.type).qname()
-    'foaf:Person'
+```python
+>>> person.value(RDF.type).qname()
+'foaf:Person'
 
-Or for the predicates of a resource::
+```
 
-    >>> sorted(
-    ...     p.qname() for p in person.predicates()
-    ... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
-    ['foaf:depiction', 'foaf:homepage',
-     'foaf:name', 'rdf:type', 'rdfs:comment']
+Or for the predicates of a resource:
 
-Follow relations and get more data from their Resources as well::
+```python
+>>> sorted(
+...     p.qname() for p in person.predicates()
+... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
+['foaf:depiction', 'foaf:homepage',
+ 'foaf:name', 'rdf:type', 'rdfs:comment']
 
-    >>> for pic in person.objects(FOAF.depiction):
-    ...     print(pic.identifier)
-    ...     print(pic.value(RDF.type).qname())
-    ...     print(pic.value(FOAF.thumbnail).identifier)
-    http://example.org/images/person/some1.jpg
-    foaf:Image
-    http://example.org/images/person/some1-thumb.jpg
+```
 
-    >>> for cv in person.subjects(CV.aboutPerson):
-    ...     work = list(cv.objects(CV.hasWorkHistory))[0]
-    ...     print(work.value(CV.employedIn).identifier)
-    ...     print(work.value(CV.startDate))
-    http://example.org/#company
-    2009-09-04
+Follow relations and get more data from their Resources as well:
 
-It's just as easy to work with the predicates of a resource::
+```python
+>>> for pic in person.objects(FOAF.depiction):
+...     print(pic.identifier)
+...     print(pic.value(RDF.type).qname())
+...     print(pic.value(FOAF.thumbnail).identifier)
+http://example.org/images/person/some1.jpg
+foaf:Image
+http://example.org/images/person/some1-thumb.jpg
 
-    >>> for s, p in person.subject_predicates():
-    ...     print(s.value(RDF.type).qname())
-    ...     print(p.qname())
-    ...     for s, o in p.subject_objects():
-    ...         print(s.value(RDF.type).qname())
-    ...         print(o.value(RDF.type).qname())
-    cv:CV
-    cv:aboutPerson
-    cv:CV
-    foaf:Person
+```
 
-This is useful for e.g. inspection::
+```python
+>>> for cv in person.subjects(CV.aboutPerson):
+...     work = list(cv.objects(CV.hasWorkHistory))[0]
+...     print(work.value(CV.employedIn).identifier)
+...     print(work.value(CV.startDate))
+http://example.org/#company
+2009-09-04
 
-    >>> thumb_ref = URIRef("http://example.org/images/person/some1-thumb.jpg")
-    >>> thumb = Resource(graph, thumb_ref)
-    >>> for p, o in thumb.predicate_objects():
-    ...     print(p.qname())
-    ...     print(o.qname())
-    rdf:type
-    foaf:Image
+```
 
+It's just as easy to work with the predicates of a resource:
 
-Schema Example
---------------
+```python
+>>> for s, p in person.subject_predicates():
+...     print(s.value(RDF.type).qname())
+...     print(p.qname())
+...     for s, o in p.subject_objects():
+...         print(s.value(RDF.type).qname())
+...         print(o.value(RDF.type).qname())
+cv:CV
+cv:aboutPerson
+cv:CV
+foaf:Person
 
-With this artificial schema data::
+```
 
-    >>> graph = Graph().parse(format='n3', data='''
-    ... @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    ... @prefix owl: <http://www.w3.org/2002/07/owl#> .
-    ... @prefix v: <http://example.org/def/v#> .
-    ...
-    ... v:Artifact a owl:Class .
-    ...
-    ... v:Document a owl:Class;
-    ...     rdfs:subClassOf v:Artifact .
-    ...
-    ... v:Paper a owl:Class;
-    ...     rdfs:subClassOf v:Document .
-    ...
-    ... v:Choice owl:oneOf (v:One v:Other) .
-    ...
-    ... v:Stuff a rdf:Seq; rdf:_1 v:One; rdf:_2 v:Other .
-    ...
-    ... ''')
+This is useful for e.g. inspection:
 
-From this class::
+```python
+>>> thumb_ref = URIRef("http://example.org/images/person/some1-thumb.jpg")
+>>> thumb = Resource(graph, thumb_ref)
+>>> for p, o in thumb.predicate_objects():
+...     print(p.qname())
+...     print(o.qname())
+rdf:type
+foaf:Image
 
-    >>> artifact = Resource(graph, URIRef("http://example.org/def/v#Artifact"))
+```
 
-we can get at subclasses::
+## Schema Example
 
-    >>> subclasses = list(artifact.transitive_subjects(RDFS.subClassOf))
-    >>> [c.qname() for c in subclasses]
-    ['v:Artifact', 'v:Document', 'v:Paper']
+With this artificial schema data:
 
-and superclasses from the last subclass::
+```python
+>>> graph = Graph().parse(format='n3', data='''
+... @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+... @prefix owl: <http://www.w3.org/2002/07/owl#> .
+... @prefix v: <http://example.org/def/v#> .
+...
+... v:Artifact a owl:Class .
+...
+... v:Document a owl:Class;
+...     rdfs:subClassOf v:Artifact .
+...
+... v:Paper a owl:Class;
+...     rdfs:subClassOf v:Document .
+...
+... v:Choice owl:oneOf (v:One v:Other) .
+...
+... v:Stuff a rdf:Seq; rdf:_1 v:One; rdf:_2 v:Other .
+...
+... ''')
 
-    >>> [c.qname() for c in subclasses[-1].transitive_objects(RDFS.subClassOf)]
-    ['v:Paper', 'v:Document', 'v:Artifact']
+```
 
-Get items from the Choice::
+From this class:
 
-    >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
-    >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    ['v:One', 'v:Other']
+```python
+>>> artifact = Resource(graph, URIRef("http://example.org/def/v#Artifact"))
+
+```
+
+we can get at subclasses:
+
+```python
+>>> subclasses = list(artifact.transitive_subjects(RDFS.subClassOf))
+>>> [c.qname() for c in subclasses]
+['v:Artifact', 'v:Document', 'v:Paper']
+
+```
+
+and superclasses from the last subclass:
+
+```python
+>>> [c.qname() for c in subclasses[-1].transitive_objects(RDFS.subClassOf)]
+['v:Paper', 'v:Document', 'v:Artifact']
+
+```
+
+Get items from the Choice:
+
+```python
+>>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
+>>> [it.qname() for it in choice.value(OWL.oneOf).items()]
+['v:One', 'v:Other']
+
+```
 
 On add, other resources are auto-unboxed:
-    >>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))
-    >>> paper.add(RDFS.subClassOf, artifact)
-    >>> artifact in paper.objects(RDFS.subClassOf) # checks Resource instance
-    True
-    >>> (paper._identifier, RDFS.subClassOf, artifact._identifier) in graph
-    True
 
+```python
+>>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))
+>>> paper.add(RDFS.subClassOf, artifact)
+>>> artifact in paper.objects(RDFS.subClassOf) # checks Resource instance
+True
+>>> (paper._identifier, RDFS.subClassOf, artifact._identifier) in graph
+True
 
-Technical Details
------------------
+```
 
-Comparison is based on graph and identifier::
+## Technical Details
 
-    >>> g1 = Graph()
-    >>> t1 = Resource(g1, URIRef("http://example.org/thing"))
-    >>> t2 = Resource(g1, URIRef("http://example.org/thing"))
-    >>> t3 = Resource(g1, URIRef("http://example.org/other"))
-    >>> t4 = Resource(Graph(), URIRef("http://example.org/other"))
+Comparison is based on graph and identifier:
 
-    >>> t1 is t2
-    False
+```python
+>>> g1 = Graph()
+>>> t1 = Resource(g1, URIRef("http://example.org/thing"))
+>>> t2 = Resource(g1, URIRef("http://example.org/thing"))
+>>> t3 = Resource(g1, URIRef("http://example.org/other"))
+>>> t4 = Resource(Graph(), URIRef("http://example.org/other"))
 
-    >>> t1 == t2
-    True
-    >>> t1 != t2
-    False
+>>> t1 is t2
+False
 
-    >>> t1 == t3
-    False
-    >>> t1 != t3
-    True
+>>> t1 == t2
+True
+>>> t1 != t2
+False
 
-    >>> t3 != t4
-    True
+>>> t1 == t3
+False
+>>> t1 != t3
+True
 
-    >>> t3 < t1 and t1 > t3
-    True
-    >>> t1 >= t1 and t1 >= t3
-    True
-    >>> t1 <= t1 and t3 <= t1
-    True
+>>> t3 != t4
+True
 
-    >>> t1 < t1 or t1 < t3 or t3 > t1 or t3 > t3
-    False
+>>> t3 < t1 and t1 > t3
+True
+>>> t1 >= t1 and t1 >= t3
+True
+>>> t1 <= t1 and t3 <= t1
+True
 
-Hash is computed from graph and identifier::
+>>> t1 < t1 or t1 < t3 or t3 > t1 or t3 > t3
+False
 
-    >>> g1 = Graph()
-    >>> t1 = Resource(g1, URIRef("http://example.org/thing"))
+```
 
-    >>> hash(t1) == hash(Resource(g1, URIRef("http://example.org/thing")))
-    True
+Hash is computed from graph and identifier:
 
-    >>> hash(t1) == hash(Resource(Graph(), t1.identifier))
-    False
-    >>> hash(t1) == hash(Resource(Graph(), URIRef("http://example.org/thing")))
-    False
+```python
+>>> g1 = Graph()
+>>> t1 = Resource(g1, URIRef("http://example.org/thing"))
+
+>>> hash(t1) == hash(Resource(g1, URIRef("http://example.org/thing")))
+True
+
+>>> hash(t1) == hash(Resource(Graph(), t1.identifier))
+False
+>>> hash(t1) == hash(Resource(Graph(), URIRef("http://example.org/thing")))
+False
+
+```
 
 The Resource class is suitable as a base class for mapper toolkits. For
 example, consider this utility for accessing RDF properties via qname-like
-attributes::
+attributes:
 
-    >>> class Item(Resource):
-    ...
-    ...     def __getattr__(self, p):
-    ...         return list(self.objects(self._to_ref(*p.split('_', 1))))
-    ...
-    ...     def _to_ref(self, pfx, name):
-    ...         return URIRef(self._graph.store.namespace(pfx) + name)
+```python
+>>> class Item(Resource):
+...
+...     def __getattr__(self, p):
+...         return list(self.objects(self._to_ref(*p.split('_', 1))))
+...
+...     def _to_ref(self, pfx, name):
+...         return URIRef(self._graph.store.namespace(pfx) + name)
 
-It works as follows::
+```
 
-    >>> graph = Graph().parse(format='n3', data='''
-    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    ... @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-    ...
-    ... @base <http://example.org/> .
-    ... </person/some1#self>
-    ...     foaf:name "Some Body";
-    ...     foaf:depiction </images/person/some1.jpg> .
-    ... </images/person/some1.jpg> rdfs:comment "Just an image"@en .
-    ... ''')
+It works as follows:
 
-    >>> person = Item(graph, URIRef("http://example.org/person/some1#self"))
+```python
+>>> graph = Graph().parse(format='n3', data='''
+... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+... @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+...
+... @base <http://example.org/> .
+... </person/some1#self>
+...     foaf:name "Some Body";
+...     foaf:depiction </images/person/some1.jpg> .
+... </images/person/some1.jpg> rdfs:comment "Just an image"@en .
+... ''')
 
-    >>> print(person.foaf_name[0])
-    Some Body
+>>> person = Item(graph, URIRef("http://example.org/person/some1#self"))
+
+>>> print(person.foaf_name[0])
+Some Body
+
+```
 
 The mechanism for wrapping references as resources cooperates with subclasses.
-Therefore, accessing referenced resources automatically creates new ``Item``
-objects::
+Therefore, accessing referenced resources automatically creates new `Item`
+objects:
 
-    >>> isinstance(person.foaf_depiction[0], Item)
-    True
+```python
+>>> isinstance(person.foaf_depiction[0], Item)
+True
 
-    >>> print(person.foaf_depiction[0].rdfs_comment[0])
-    Just an image
+>>> print(person.foaf_depiction[0].rdfs_comment[0])
+Just an image
 
+```
 """
 
 from rdflib.namespace import RDF
@@ -294,6 +358,8 @@ __all__ = ["Resource"]
 
 
 class Resource:
+    """A Resource is a wrapper for a graph and a resource identifier."""
+
     def __init__(self, graph, subject):
         self._graph = graph
         self._identifier = subject

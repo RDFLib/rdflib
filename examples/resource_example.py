@@ -1,10 +1,10 @@
 """
-RDFLib has a :class:`~rdflib.resource.Resource` class, for a resource-centric API.
-The :class:`~rdflib.Graph` class also has a ``resource`` function that can be used
+RDFLib has a [`Resource`][rdflib.resource.Resource] class, for a resource-centric API.
+The [`Graph`][rdflib.Graph] class also has a `resource` function that can be used
 to create resources and manipulate them by quickly adding or querying for triples
 where this resource is the subject.
 
-This example shows g.resource() in action.
+This example shows `g.resource()` in action.
 """
 
 from rdflib import RDF, RDFS, Graph, Literal

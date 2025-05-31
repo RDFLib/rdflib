@@ -1,5 +1,4 @@
-"""
-Parser plugin interface.
+"""Parser plugin interface.
 
 This module defines the parser plugin interface and contains other
 related parser support code.
@@ -7,7 +6,6 @@ related parser support code.
 The module is mainly useful for those wanting to write a parser that
 can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
-
 """
 
 from __future__ import annotations
@@ -697,15 +695,15 @@ def create_input_source(
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
-                    input_source.setCharacterStream(source)
+                    input_source.setCharacterStream(source)  # type: ignore[arg-type]
                     input_source.setEncoding(source.encoding)
                     try:
                         b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
-                        input_source.setByteStream(source)
+                        input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
-                    input_source.setByteStream(f)
+                    input_source.setByteStream(f)  # type: ignore[arg-type]
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif hasattr(f, "name"):

@@ -1,7 +1,5 @@
 """
-
 Code for carrying out Update Operations
-
 """
 
 from __future__ import annotations
@@ -98,7 +96,7 @@ def evalInsertData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
+        cg = ctx.dataset.get_context(g)
         cg += u.quads[g]
 
 
@@ -114,7 +112,7 @@ def evalDeleteData(ctx: QueryContext, u: CompValue) -> None:
     # u.quads is a dict of graphURI=>[triples]
     for g in u.quads:
         # type error: Argument 1 to "get_context" of "ConjunctiveGraph" has incompatible type "Optional[Graph]"; expected "Union[IdentifiedNode, str, None]"
-        cg = ctx.dataset.get_context(g)  # type: ignore[arg-type]
+        cg = ctx.dataset.get_context(g)
         cg -= u.quads[g]
 
 
@@ -132,7 +130,7 @@ def evalDeleteWhere(ctx: QueryContext, u: CompValue) -> None:
     # type error: Incompatible types in assignment (expression has type "FrozenBindings", variable has type "QueryContext")
     for c in res:  # type: ignore[assignment]
         g = ctx.graph
-        g -= _fillTemplate(u.triples, c)
+        g -= _fillTemplate(u.triples, c)  # type: ignore[operator]
 
         for g in u.quads:
             cg = ctx.dataset.get_context(c.get(g))
@@ -286,9 +284,7 @@ def evalUpdate(
     update: Update,
     initBindings: Mapping[str, Identifier] | None = None,
 ) -> None:
-    """
-
-    http://www.w3.org/TR/sparql11-update/#updateLanguage
+    """http://www.w3.org/TR/sparql11-update/#updateLanguage
 
     'A request is a sequence of operations [...] Implementations MUST
     ensure that operations of a single request are executed in a
@@ -303,17 +299,17 @@ def evalUpdate(
 
     This will return None on success and raise Exceptions on error
 
-    .. caution::
+    !!! warning "Security Considerations"
 
         This method can access indirectly requested network endpoints, for
         example, query processing will attempt to access network endpoints
-        specified in ``SERVICE`` directives.
+        specified in `SERVICE` directives.
 
         When processing untrusted or potentially malicious queries, measures
         should be taken to restrict network and file access.
 
         For information on available security measures, see the RDFLib
-        :doc:`Security Considerations </security_considerations>`
+        [Security Considerations](../security_considerations.md)
         documentation.
 
     """

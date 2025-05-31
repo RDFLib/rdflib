@@ -238,12 +238,10 @@ def test_parse_rebinds_prefix():
 def test_automatic_handling_of_unknown_predicates():
     # AUTOMATIC HANDLING OF UNKNOWN PREDICATES
 
-    """
-    Automatic handling of unknown predicates
-    -----------------------------------------
+    """Automatic handling of unknown predicates
 
     As a programming convenience, a namespace binding is automatically
-    created when :class:`rdflib.term.URIRef` predicates are added to the graph.
+    created when [`URIRef`][rdflib.term.URIRef] predicates are added to the graph.
     """
 
     g = Graph(bind_namespaces="none")

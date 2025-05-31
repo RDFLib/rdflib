@@ -1,5 +1,5 @@
 """
-Large parts of this module are taken from the ``isodate`` package.
+Large parts of this module are taken from the `isodate` package.
 https://pypi.org/project/isodate/
 Modifications are made to isodate features to allow compatibility with
 XSD dates and durations that are not necessarily valid ISO8601 strings.
@@ -53,10 +53,7 @@ else:
 def fquotmod(
     val: Decimal, low: Decimal | int, high: Decimal | int
 ) -> tuple[int, Decimal]:
-    """
-    A divmod function with boundaries.
-
-    """
+    """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
@@ -87,8 +84,7 @@ def max_days_in_month(year: int, month: int) -> int:
 
 
 class Duration:
-    """
-    A class which represents a duration.
+    """A class which represents a duration.
 
     The difference to datetime.timedelta is, that this class handles also
     differences given in years and months.
@@ -186,8 +182,7 @@ class Duration:
         return hash((self.tdelta, self.months, self.years))
 
     def __neg__(self):
-        """
-        A simple unary minus.
+        """A simple unary minus.
 
         Returns a new Duration instance with all it's negated.
         """
@@ -344,8 +339,7 @@ class Duration:
         return True
 
     def totimedelta(self, start=None, end=None):
-        """
-        Convert this duration into a timedelta object.
+        """Convert this duration into a timedelta object.
 
         This method requires a start datetime or end datetime, but raises
         an exception if both are given.
@@ -376,19 +370,19 @@ ISO8601_PERIOD_REGEX = re.compile(
 def parse_xsd_duration(
     dur_string: str, as_timedelta_if_possible: bool = True
 ) -> Duration | timedelta:
-    """
-    Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
+    """Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
     If the ISO date string does not contain years or months, a timedelta
     instance is returned, else a Duration instance is returned.
 
     The following duration formats are supported:
-      -``PnnW``                  duration in weeks
-      -``PnnYnnMnnDTnnHnnMnnS``  complete duration specification
-      -``PYYYYMMDDThhmmss``      basic alternative complete date format
-      -``PYYYY-MM-DDThh:mm:ss``  extended alternative complete date format
-      -``PYYYYDDDThhmmss``       basic alternative ordinal date format
-      -``PYYYY-DDDThh:mm:ss``    extended alternative ordinal date format
+
+    -`PnnW`                  duration in weeks
+    -`PnnYnnMnnDTnnHnnMnnS`  complete duration specification
+    -`PYYYYMMDDThhmmss`      basic alternative complete date format
+    -`PYYYY-MM-DDThh:mm:ss`  extended alternative complete date format
+    -`PYYYYDDDThhmmss`       basic alternative ordinal date format
+    -`PYYYY-DDDThh:mm:ss`    extended alternative ordinal date format
 
     The '-' is optional.
 

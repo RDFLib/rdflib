@@ -1,6 +1,5 @@
 .flakeheaven_cache/
 RDFLib.sublime-project
-/docs/_build/
 RDFLib.sublime-workspace
 coverage/
 cov.xml
@@ -8,6 +7,8 @@ cov.xml
 /.hgignore
 build/
 /docs/draft/
+/docs/apidocs/
+/docs/_build/
 *~
 test_reports/*latest.ttl
 # PyCharm

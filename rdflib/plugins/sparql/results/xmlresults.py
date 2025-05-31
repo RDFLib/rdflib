@@ -45,6 +45,8 @@ log = logging.getLogger(__name__)
 
 
 class XMLResultParser(ResultParser):
+    """A Parser for SPARQL results in XML."""
+
     # TODO FIXME: content_type should be a keyword only arg.
     def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         return XMLResult(source)
@@ -71,7 +73,7 @@ class XMLResult(Result):
             )
         else:
             xml_parser = xml_etree.XMLParser(encoding=parser_encoding)
-            tree = xml_etree.parse(source, parser=xml_parser)
+            tree = xml_etree.parse(source, parser=xml_parser)  # type: ignore[assignment]
 
         boolean = tree.find(RESULTS_NS_ET + "boolean")
         results = tree.find(RESULTS_NS_ET + "results")
@@ -150,6 +152,8 @@ def parseTerm(element: xml_etree.Element) -> Union[URIRef, Literal, BNode]:
 
 
 class XMLResultSerializer(ResultSerializer):
+    """Serializes SPARQL results into XML format."""
+
     def __init__(self, result: Result):
         ResultSerializer.__init__(self, result)
 

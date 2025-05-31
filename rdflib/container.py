@@ -8,50 +8,53 @@ __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
 
 class Container:
-    """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers
+    """A class for constructing RDF containers, as per <https://www.w3.org/TR/rdf11-mt/#rdf-containers>
 
-    Basic usage, creating a ``Bag`` and adding to it::
+    Basic usage, creating a `Bag` and adding to it:
 
-        >>> from rdflib import Graph, BNode, Literal, Bag
-        >>> g = Graph()
-        >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-        >>> print(g.serialize(format="turtle"))
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        <BLANKLINE>
-        [] a rdf:Bag ;
-            rdf:_1 "One" ;
-            rdf:_2 "Two" ;
-            rdf:_3 "Three" .
-        <BLANKLINE>
-        <BLANKLINE>
+    ```python
+    >>> from rdflib import Graph, BNode, Literal, Bag
+    >>> g = Graph()
+    >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
+    >>> print(g.serialize(format="turtle"))
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    <BLANKLINE>
+    [] a rdf:Bag ;
+        rdf:_1 "One" ;
+        rdf:_2 "Two" ;
+        rdf:_3 "Three" .
+    <BLANKLINE>
+    <BLANKLINE>
 
-        >>> # print out an item using an index reference
-        >>> print(b[2])
-        Two
+    >>> # print out an item using an index reference
+    >>> print(b[2])
+    Two
 
-        >>> # add a new item
-        >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
-        <rdflib.container.Bag object at ...>
-        >>> print(g.serialize(format="turtle"))
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        <BLANKLINE>
-        [] a rdf:Bag ;
-            rdf:_1 "One" ;
-            rdf:_2 "Two" ;
-            rdf:_3 "Three" ;
-            rdf:_4 "Hello" .
-        <BLANKLINE>
-        <BLANKLINE>
+    >>> # add a new item
+    >>> b.append(Literal("Hello")) # doctest: +ELLIPSIS
+    <rdflib.container.Bag object at ...>
+    >>> print(g.serialize(format="turtle"))
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    <BLANKLINE>
+    [] a rdf:Bag ;
+        rdf:_1 "One" ;
+        rdf:_2 "Two" ;
+        rdf:_3 "Three" ;
+        rdf:_4 "Hello" .
+    <BLANKLINE>
+    <BLANKLINE>
 
+    ```
     """
 
     def __init__(self, graph, uri, seq=[], rtype="Bag"):
         """Creates a Container
 
-        :param graph: a Graph instance
-        :param uri: URI or Blank Node of the Container
-        :param seq: the elements of the Container
-        :param rtype: the type of Container, one of "Bag", "Seq" or "Alt"
+        Args:
+            graph: a Graph instance
+            uri: URI or Blank Node of the Container
+            seq: the elements of the Container
+            rtype: the type of Container, one of "Bag", "Seq" or "Alt"
         """
 
         self.graph = graph

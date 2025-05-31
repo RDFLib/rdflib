@@ -2,7 +2,6 @@
 Code for tying SPARQL Engine into RDFLib
 
 These should be automatically registered with RDFLib
-
 """
 
 from __future__ import annotations
@@ -87,18 +86,18 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         initNs: Mapping[str, Any] | None = None,
     ) -> None:
         """
-        .. caution::
+        !!! warning "Caution"
 
-           This method can access indirectly requested network endpoints, for
-           example, query processing will attempt to access network endpoints
-           specified in ``SERVICE`` directives.
+            This method can access indirectly requested network endpoints, for
+            example, query processing will attempt to access network endpoints
+            specified in `SERVICE` directives.
 
-           When processing untrusted or potentially malicious queries, measures
-           should be taken to restrict network and file access.
+            When processing untrusted or potentially malicious queries, measures
+            should be taken to restrict network and file access.
 
-           For information on available security measures, see the RDFLib
-           :doc:`Security Considerations </security_considerations>`
-           documentation.
+            For information on available security measures, see the RDFLib
+            [Security Considerations](../security_considerations.md)
+            documentation.
         """
 
         if isinstance(strOrQuery, str):
@@ -128,18 +127,18 @@ class SPARQLProcessor(Processor):
         namespaces. The given base is used to resolve relative URIs in
         the query and will be overridden by any BASE given in the query.
 
-        .. caution::
+        !!! warning "Caution"
 
-           This method can access indirectly requested network endpoints, for
-           example, query processing will attempt to access network endpoints
-           specified in ``SERVICE`` directives.
+            This method can access indirectly requested network endpoints, for
+            example, query processing will attempt to access network endpoints
+            specified in `SERVICE` directives.
 
-           When processing untrusted or potentially malicious queries, measures
-           should be taken to restrict network and file access.
+            When processing untrusted or potentially malicious queries, measures
+            should be taken to restrict network and file access.
 
-           For information on available security measures, see the RDFLib
-           :doc:`Security Considerations </security_considerations>`
-           documentation.
+            For information on available security measures, see the RDFLib
+            [Security Considerations](../security_considerations.md)
+            documentation.
         """
 
         if isinstance(strOrQuery, str):

@@ -17,6 +17,8 @@ ESCAPE_ENTITIES = {"\r": "&#13;"}
 
 
 class XMLWriter:
+    """A simple XML writer that writes to a stream."""
+
     def __init__(
         self,
         stream: IO[bytes],

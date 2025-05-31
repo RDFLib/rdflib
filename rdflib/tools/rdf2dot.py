@@ -3,10 +3,9 @@ A commandline tool for drawing RDF graphs in Graphviz DOT format
 
 You can draw the graph of an RDF file directly:
 
-.. code-block: bash
-
-   rdf2dot my_rdf_file.rdf | dot -Tpng | display
-
+```bash
+rdf2dot my_rdf_file.rdf | dot -Tpng | display
+```
 """
 
 from __future__ import annotations

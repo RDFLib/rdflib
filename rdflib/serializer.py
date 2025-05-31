@@ -1,13 +1,11 @@
-"""
-Serializer plugin interface.
+"""Serializer plugin interface.
 
 This module is useful for those wanting to write a serializer that can
 plugin to rdflib. If you are wanting to invoke a serializer you likely
 want to do so through the Graph class serialize method.
 
 TODO: info for how to write a serializer that can plugin to rdflib.
-See also rdflib.plugin
-
+See also [`rdflib.plugin`][rdflib.plugin]
 """
 
 from __future__ import annotations

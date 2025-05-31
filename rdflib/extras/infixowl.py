@@ -1,58 +1,75 @@
 """RDFLib Python binding for OWL Abstract Syntax
 
-OWL Constructor     DL Syntax       Manchester OWL Syntax   Example
-====================================================================================
-intersectionOf      C ∩ D              C AND D             Human AND Male
-unionOf             C ∪ D              C OR D              Man OR Woman
-complementOf         ¬ C               NOT C               NOT Male
-oneOf             {a} ∪ {b}...        {a b ...}            {England Italy Spain}
-someValuesFrom      ∃ R C              R SOME C            hasColleague SOME Professor
-allValuesFrom       ∀ R C              R ONLY C            hasColleague ONLY Professor
-minCardinality      ≥ N R              R MIN 3             hasColleague MIN 3
-maxCardinality      ≤ N R              R MAX 3             hasColleague MAX 3
-cardinality         = N R              R EXACTLY 3         hasColleague EXACTLY 3
-hasValue             ∃ R               {a} R VALUE a       hasColleague VALUE Matthew
+| OWL Constructor   | DL Syntax     | Manchester OWL Syntax | Example                          |
+|------------------|---------------|------------------------|----------------------------------|
+| `intersectionOf` | C ∩ D         | C AND D                | Human AND Male                   |
+| `unionOf`        | C ∪ D         | C OR D                 | Man OR Woman                     |
+| `complementOf`   | ¬C            | NOT C                  | NOT Male                         |
+| `oneOf`          | {a} ∪ {b}...  | {a b ...}              | {England Italy Spain}           |
+| `someValuesFrom` | ∃ R C         | R SOME C               | hasColleague SOME Professor      |
+| `allValuesFrom`  | ∀ R C         | R ONLY C               | hasColleague ONLY Professor      |
+| `minCardinality` | ≥ N R         | R MIN 3                | hasColleague MIN 3               |
+| `maxCardinality` | ≤ N R         | R MAX 3                | hasColleague MAX 3               |
+| `cardinality`    | = N R         | R EXACTLY 3            | hasColleague EXACTLY 3           |
+| `hasValue`       | ∃ R.{a}       | R VALUE a              | hasColleague VALUE Matthew       |
 
-see: http://www.w3.org/TR/owl-semantics/syntax.html
-     http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf
+See:
+- http://www.w3.org/TR/owl-semantics/syntax.html
+- http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf
 
 3.2.3 Axioms for complete classes without using owl:equivalentClass
 
 Named class description of type 2 (with owl:oneOf) or type 4-6
 (with owl:intersectionOf, owl:unionOf or owl:complementOf
 
-Uses Manchester Syntax for __repr__
+Uses Manchester Syntax for `__repr__`
 
+```python
 >>> exNs = Namespace("http://example.com/")
 >>> g = Graph()
 >>> g.bind("ex", exNs, override=False)
 
+```
+
 Now we have an empty graph, we can construct OWL classes in it
 using the Python classes defined in this module
 
+```python
 >>> a = Class(exNs.Opera, graph=g)
+
+```
 
 Now we can assert rdfs:subClassOf and owl:equivalentClass relationships
 (in the underlying graph) with other classes using the 'subClassOf'
 and 'equivalentClass' descriptors which can be set to a list
 of objects for the corresponding predicates.
 
+```python
 >>> a.subClassOf = [exNs.MusicalWork]
+
+```
 
 We can then access the rdfs:subClassOf relationships
 
+```python
 >>> print(list(a.subClassOf))
 [Class: ex:MusicalWork ]
 
+```
+
 This can also be used against already populated graphs:
 
+```python
 >>> owlGraph = Graph().parse(str(OWL))
 >>> list(Class(OWL.Class, graph=owlGraph).subClassOf)
 [Class: rdfs:Class ]
 
+```
+
 Operators are also available. For instance we can add ex:Opera to the extension
 of the ex:CreativeWork class via the '+=' operator
 
+```python
 >>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
 >>> b = Class(exNs.CreativeWork, graph=g)
@@ -60,29 +77,41 @@ Class: ex:Opera SubClassOf: ex:MusicalWork
 >>> print(sorted(a.subClassOf, key=lambda c:c.identifier))
 [Class: ex:CreativeWork , Class: ex:MusicalWork ]
 
+```
+
 And we can then remove it from the extension as well
 
+```python
 >>> b -= a
 >>> a
 Class: ex:Opera SubClassOf: ex:MusicalWork
+
+```
 
 Boolean class constructions can also  be created with Python operators.
 For example, The | operator can be used to construct a class consisting of a
 owl:unionOf the operands:
 
+```python
 >>> c =  a | b | Class(exNs.Work, graph=g)
 >>> c
 ( ex:Opera OR ex:CreativeWork OR ex:Work )
 
+```
+
 Boolean class expressions can also be operated as lists (using python list
 operators)
 
+```python
 >>> del c[c.index(Class(exNs.Work, graph=g))]
 >>> c
 ( ex:Opera OR ex:CreativeWork )
 
+```
+
 The '&' operator can be used to construct class intersection:
 
+```python
 >>> woman = Class(exNs.Female, graph=g) & Class(exNs.Human, graph=g)
 >>> woman.identifier = exNs.Woman
 >>> woman
@@ -90,27 +119,34 @@ The '&' operator can be used to construct class intersection:
 >>> len(woman)
 2
 
+```
+
 Enumerated classes can also be manipulated
 
+```python
 >>> contList = [Class(exNs.Africa, graph=g), Class(exNs.NorthAmerica, graph=g)]
 >>> EnumeratedClass(members=contList, graph=g)
 { ex:Africa ex:NorthAmerica }
 
+```
+
 owl:Restrictions can also be instantiated:
 
+```python
 >>> Restriction(exNs.hasParent, graph=g, allValuesFrom=exNs.Human)
 ( ex:hasParent ONLY ex:Human )
 
-Restrictions can also be created using Manchester OWL syntax in 'colloquial'
-Python
+```
+
+Restrictions can also be created using Manchester OWL syntax in 'colloquial' Python
+
+```python
 >>> exNs.hasParent @ some @ Class(exNs.Physician, graph=g)
 ( ex:hasParent SOME ex:Physician )
-
 >>> Property(exNs.hasParent, graph=g) @ max @ Literal(1)
 ( ex:hasParent MAX 1 )
-
 >>> print(g.serialize(format='pretty-xml'))  # doctest: +SKIP
-
+```
 """
 
 from __future__ import annotations
@@ -137,7 +173,6 @@ From: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/384122
 Python has the wonderful "in" operator and it would be nice to have additional
 infix operator like this. This recipe shows how (almost) arbitrary infix
 operators can be defined.
-
 """
 
 __all__ = [
@@ -371,7 +406,6 @@ class TermDeletionHelper:
 class Individual:
     """
     A typed individual, the base class of the InfixOWL classes.
-
     """
 
     # Class variable
@@ -431,6 +465,7 @@ class Individual:
         causing all triples that refer to it to be changed and then
         delete the individual.
 
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction, g)
         >>> b.type = RDFS.Resource
@@ -439,6 +474,8 @@ class Individual:
         >>> del b.type
         >>> len(list(b.type))
         0
+
+        ```
         """
         for s, p, _o in self.graph.triples((None, None, self.identifier)):
             self.graph.add((s, p, classOrIdentifier(other)))
@@ -461,6 +498,7 @@ class Individual:
     @TermDeletionHelper(RDF.type)
     def _delete_type(self):
         """
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction, g)
         >>> b.type = RDFS.Resource
@@ -469,6 +507,8 @@ class Individual:
         >>> del b.type
         >>> len(list(b.type))
         0
+
+        ```
         """
         pass  # pragma: no cover
 
@@ -530,15 +570,13 @@ ACE_NS = Namespace("http://attempto.ifi.uzh.ch/ace_lexicon#")
 
 
 class AnnotatableTerms(Individual):
-    """
-    Terms in an OWL ontology with rdfs:label and rdfs:comment
+    """Terms in an OWL ontology with rdfs:label and rdfs:comment
 
+    Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
 
-    ## Interface with ATTEMPTO (http://attempto.ifi.uzh.ch/site)
+    ## Verbalisation of OWL entity IRIS
 
-    ### Verbalisation of OWL entity IRIS
-
-    #### How are OWL entity IRIs verbalized?
+    ### How are OWL entity IRIs verbalized?
 
     The OWL verbalizer maps OWL entity IRIs to ACE content words such
     that
@@ -573,34 +611,33 @@ class AnnotatableTerms(Individual):
     It is possible to specify the mapping of IRIs to surface forms using
     the following annotation properties:
 
-    .. code-block:: none
-
-        http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
-        http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+    ```
+    http://attempto.ifi.uzh.ch/ace_lexicon#PN_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#CN_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+    http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
+    ```
 
     For example, the following axioms state that if the IRI "#man" is used
     as a plural common noun, then the wordform men must be used by the
     verbalizer. If, however, it is used as a singular transitive verb,
     then mans must be used.
 
-    .. code-block:: none
+    ```xml
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
+        <IRI>#man</IRI>
+        <Literal datatypeIRI="&xsd;string">men</Literal>
+    </AnnotationAssertion>
 
-        <AnnotationAssertion>
-            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#CN_pl"/>
-            <IRI>#man</IRI>
-            <Literal datatypeIRI="&xsd;string">men</Literal>
-        </AnnotationAssertion>
-
-        <AnnotationAssertion>
-            <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
-            <IRI>#man</IRI>
-            <Literal datatypeIRI="&xsd;string">mans</Literal>
-        </AnnotationAssertion>
-
+    <AnnotationAssertion>
+        <AnnotationProperty IRI="http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg"/>
+        <IRI>#man</IRI>
+        <Literal datatypeIRI="&xsd;string">mans</Literal>
+    </AnnotationAssertion>
+    ```
     """
 
     def __init__(
@@ -715,6 +752,7 @@ class AnnotatableTerms(Individual):
     @TermDeletionHelper(RDFS.label)
     def _delete_label(self):
         """
+        ```python
         >>> g = Graph()
         >>> b = Individual(OWL.Restriction,g)
         >>> b.label = Literal('boo')
@@ -723,6 +761,8 @@ class AnnotatableTerms(Individual):
         >>> del b.label
         >>> len(list(b.label))
         0
+
+        ```
         """
         pass  # pragma: no cover
 
@@ -882,6 +922,7 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     Recursively clear the given class, continuing
     where any related class is an anonymous class
 
+    ```python
     >>> EX = Namespace("http://example.com/")
     >>> g = Graph()
     >>> g.bind("ex", EX, override=False)
@@ -918,6 +959,8 @@ def DeepClassClear(class_to_prune):  # noqa: N802
     >>> otherClass.delete()
     >>> list(g.triples((otherClass.identifier, None, None)))
     []
+
+    ```
     """
 
     def deepClearIfBNode(_class):  # noqa: N802
@@ -946,8 +989,8 @@ def DeepClassClear(class_to_prune):  # noqa: N802
 
 class MalformedClass(ValueError):  # noqa: N818
     """
-    .. deprecated:: TODO-NEXT-VERSION
-       This class will be removed in version ``7.0.0``.
+    !!! warning "Deprecated"
+        This class will be removed in version `7.0.0`.
     """
 
     pass
@@ -996,19 +1039,20 @@ def CastClass(c, graph=None):  # noqa: N802
 
 
 class Class(AnnotatableTerms):
-    """
-    'General form' for classes:
+    """'General form' for classes:
 
     The Manchester Syntax (supported in Protege) is used as the basis for the
     form of this class
 
     See: http://owl-workshop.man.ac.uk/acceptedLong/submission_9.pdf:
 
+    ```
     [Annotation]
     ‘Class:’ classID {Annotation
     ( (‘SubClassOf:’ ClassExpression)
     | (‘EquivalentTo’ ClassExpression)
     | (’DisjointWith’ ClassExpression)) }
+    ```
 
     Appropriate excerpts from OWL Reference:
 
@@ -1022,7 +1066,6 @@ class Class(AnnotatableTerms):
 
     "..An owl:complementOf property links a class to precisely one class
       description."
-
     """
 
     def _serialize(self, graph):
@@ -1165,6 +1208,7 @@ class Class(AnnotatableTerms):
 
         Chaining 3 intersections
 
+        ```python
         >>> exNs = Namespace("http://example.com/")
         >>> g = Graph()
         >>> g.bind("ex", exNs, override=False)
@@ -1178,6 +1222,8 @@ class Class(AnnotatableTerms):
         True
         >>> isinstance(youngWoman.identifier, BNode)
         True
+
+        ```
         """
         return BooleanClass(
             operator=OWL.intersectionOf, members=[self, other], graph=self.graph
@@ -1277,6 +1323,7 @@ class Class(AnnotatableTerms):
         computed attributes that returns a generator over taxonomic 'parents'
         by disjunction, conjunction, and subsumption
 
+        ```python
         >>> from rdflib.util import first
         >>> exNs = Namespace('http://example.com/')
         >>> g = Graph()
@@ -1297,6 +1344,7 @@ class Class(AnnotatableTerms):
         >>> list(father.parents)
         [Class: ex:Parent , Class: ex:Male ]
 
+        ```
         """
         for parent in itertools.chain(self.subClassOf, self.equivalentClass):
             yield parent
@@ -1508,14 +1556,14 @@ class OWLRDFListProxy:
 
 
 class EnumeratedClass(OWLRDFListProxy, Class):
-    """
-    Class for owl:oneOf forms:
+    """Class for owl:oneOf forms:
 
     OWL Abstract Syntax is used
 
     axiom ::= 'EnumeratedClass('
         classID ['Deprecated'] { annotation } { individualID } ')'
 
+    ```python
     >>> exNs = Namespace("http://example.com/")
     >>> g = Graph()
     >>> g.bind("ex", exNs, override=False)
@@ -1539,6 +1587,8 @@ class EnumeratedClass(OWLRDFListProxy, Class):
         owl:oneOf ( ex:chime ex:uche ex:ejike ) .
     <BLANKLINE>
     <BLANKLINE>
+
+    ```
     """
 
     _operator = OWL.oneOf
@@ -1578,6 +1628,7 @@ BooleanPredicates = [OWL.intersectionOf, OWL.unionOf]
 
 class BooleanClassExtentHelper:
     """
+    ```python
     >>> testGraph = Graph()
     >>> Individual.factoryGraph = testGraph
     >>> EX = Namespace("http://example.com/")
@@ -1593,6 +1644,8 @@ class BooleanClassExtentHelper:
     >>> for c in BooleanClass.getUnions():
     ...     print(c) #doctest: +SKIP
     ( ex:Fire OR ex:Water )
+
+    ```
     """
 
     def __init__(self, operator):
@@ -1619,7 +1672,6 @@ class BooleanClass(OWLRDFListProxy, Class):
     See: http://www.w3.org/TR/owl-ref/#Boolean
 
     owl:complementOf is an attribute of Class, however
-
     """
 
     @BooleanClassExtentHelper(OWL.intersectionOf)
@@ -1686,6 +1738,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         Converts a unionOf / intersectionOf class expression into one
         that instead uses the given operator
 
+        ```python
         >>> testGraph = Graph()
         >>> Individual.factoryGraph = testGraph
         >>> EX = Namespace("http://example.com/")
@@ -1704,6 +1757,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         ...     print(e)  # doctest: +SKIP
         The new operator is already being used!
 
+        ```
         """
         assert newOperator != self._operator, "The new operator is already being used!"
         self.graph.remove((self.identifier, self._operator, self._rdfList.uri))
@@ -1734,20 +1788,20 @@ def AllDifferent(members):  # noqa: N802
     TODO: implement this function
 
     DisjointClasses(' description description { description } ')'
-
     """
     pass  # pragma: no cover
 
 
 class Restriction(Class):
     """
+    ```
     restriction ::= 'restriction('
     datavaluedPropertyID dataRestrictionComponent
     { dataRestrictionComponent } ')'
     | 'restriction(' individualvaluedPropertyID
     individualRestrictionComponent
     { individualRestrictionComponent } ')'
-
+    ```
     """
 
     restrictionKinds = [  # noqa: N815
@@ -1831,6 +1885,7 @@ class Restriction(Class):
 
     def serialize(self, graph):
         """
+        ```python
         >>> g1 = Graph()
         >>> g2 = Graph()
         >>> EX = Namespace("http://example.com/")
@@ -1850,6 +1905,8 @@ class Restriction(Class):
         ... ) #doctest: +NORMALIZE_WHITESPACE +SKIP
         [rdflib.term.URIRef(
             'http://www.w3.org/2002/07/owl#DatatypeProperty')]
+
+        ```
         """
         Property(self.onProperty, graph=self.graph, baseType=None).serialize(graph)
         for s, p, o in self.graph.triples((self.identifier, None, None)):
@@ -2082,6 +2139,7 @@ PropertyAbstractSyntax = """
 
 class Property(AnnotatableTerms):
     """
+    ```
     axiom ::= 'DatatypeProperty(' datavaluedPropertyID ['Deprecated']
                 { annotation }
                 { 'super(' datavaluedPropertyID ')'} ['Functional']
@@ -2094,25 +2152,21 @@ class Property(AnnotatableTerms):
                 'Functional' 'InverseFunctional' |
                 'Transitive' ]
                 { 'domain(' description ')' } { 'range(' description ')' } ')
-
+    ```
     """
 
     def setupVerbAnnotations(self, verb_annotations):  # noqa: N802
-        """
-
-        OWL properties map to ACE transitive verbs (TV)
+        """OWL properties map to ACE transitive verbs (TV)
 
         There are 6 morphological categories that determine the surface form
         of an IRI:
 
-            singular form of a transitive verb (e.g. mans)
-            plural form of a transitive verb (e.g. man)
-            past participle form a transitive verb (e.g. manned)
-
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
-            http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
-
+        - singular form of a transitive verb (e.g. mans)
+        - plural form of a transitive verb (e.g. man)
+        - past participle form a transitive verb (e.g. manned)
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_sg
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_pl
+        - http://attempto.ifi.uzh.ch/ace_lexicon#TV_vbg
         """
 
         if isinstance(verb_annotations, tuple):

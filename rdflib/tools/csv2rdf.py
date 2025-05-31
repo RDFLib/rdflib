@@ -3,8 +3,7 @@ A commandline tool for semi-automatically converting CSV to RDF.
 
 See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 
-try: ``csv2rdf --help``
-
+try: `csv2rdf --help`
 """
 
 from __future__ import annotations
@@ -400,7 +399,7 @@ class CSV2RDF:
 
                 for i, x in enumerate(l_):
                     # type error: "int" has no attribute "strip"
-                    x = x.strip()  # type: ignore[attr-defined]
+                    x = x.strip()
                     if x != "":
                         if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                             continue

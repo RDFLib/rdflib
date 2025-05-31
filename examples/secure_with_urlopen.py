@@ -22,9 +22,14 @@ class SecuredHTTPHandler(HTTPHandler):
         """
         Block access to URLs that end with "blocked.jsonld".
 
-        :param req: The request to open.
-        :return: The response.
-        :raises PermissionError: If the URL ends with "blocked.jsonld".
+        Args:
+            req: The request to open.
+
+        Returns:
+            The response.
+
+        Raises:
+            PermissionError: If the URL ends with "blocked.jsonld".
         """
         if req.get_full_url().endswith("blocked.jsonld"):
             raise PermissionError("Permission denied for URL")
