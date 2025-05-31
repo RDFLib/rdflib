@@ -442,24 +442,24 @@ class _TripleCanonicalizer:
             experimental = self._experimental_path(coloring_copy)
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
-                generator = self._create_generator(  # type: ignore[unreachable]
+                generator = self._create_generator(
                     [last_coloring, experimental], generator
                 )
             last_coloring = experimental
-            if best_score is None or best_score < color_score:  # type: ignore[unreachable]
+            if best_score is None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
                 best_experimental_score = experimental_score
-            elif best_score > color_score:  # type: ignore[unreachable]
+            elif best_score > color_score:
                 # prune this branch.
                 if stats is not None:
-                    stats["prunings"] += 1
+                    stats["prunings"] += 1  # type: ignore[operator]
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
             else:
                 # prune this branch.
                 if stats is not None:
-                    stats["prunings"] += 1
+                    stats["prunings"] += 1  # type: ignore[operator]
         discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             best_score = None
@@ -468,7 +468,7 @@ class _TripleCanonicalizer:
                 d = [depth[0]]
                 new_color = self._traces(coloring, stats=stats, depth=d)
                 color_score = tuple([c.key() for c in refined_coloring])
-                if best_score is None or color_score > best_score:  # type: ignore[unreachable]
+                if best_score is None or color_score > best_score:
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]
