@@ -68,8 +68,6 @@ from .xsd_datetime import (  # type: ignore[attr-defined]
     parse_time,
     parse_xsd_date,
     parse_xsd_duration,
-    parse_xsd_gyear,
-    parse_xsd_gyearmonth,
 )
 
 if TYPE_CHECKING:
@@ -2189,8 +2187,6 @@ XSDToPython: dict[str | None, Callable[[str], Any] | None] = {
     None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + "time"): parse_time,
     URIRef(_XSD_PFX + "date"): parse_xsd_date,
-    URIRef(_XSD_PFX + "gYear"): parse_xsd_gyear,
-    URIRef(_XSD_PFX + "gYearMonth"): parse_xsd_gyearmonth,
     URIRef(_XSD_PFX + "dateTime"): parse_datetime,
     URIRef(_XSD_PFX + "duration"): parse_xsd_duration,
     URIRef(_XSD_PFX + "dayTimeDuration"): parse_xsd_duration,
