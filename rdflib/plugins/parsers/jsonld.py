@@ -141,7 +141,7 @@ class JsonLDParser(rdflib.parser.Parser):
 
         # Get the optional fragment identifier
         try:
-            fragment_id = URIRef(source.getSystemId()).fragment
+            fragment_id = URIRef(source.getSystemId()).fragment  # type: ignore[arg-type]
         except Exception:
             fragment_id = None
 

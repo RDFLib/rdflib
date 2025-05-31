@@ -525,7 +525,7 @@ class Graph(Node):
         self.__identifier: _ContextIdentifierType
         self.__identifier = identifier or BNode()  # type: ignore[assignment]
         if not isinstance(self.__identifier, IdentifiedNode):
-            self.__identifier = URIRef(self.__identifier)  # type: ignore[unreachable]
+            self.__identifier = URIRef(self.__identifier)
         self.__store: Store
         if not isinstance(store, Store):
             # TODO: error handling
@@ -2929,7 +2929,7 @@ class QuotedGraph(Graph, IdentifiedNode):
     __add__ = Graph.__add__  # type: ignore[assignment]
     __isub__ = Graph.__isub__
     __sub__ = Graph.__sub__
-    __getitem__ = Graph.__getitem__  # type: ignore[assignment]
+    __getitem__ = Graph.__getitem__
     __len__ = Graph.__len__
     __hash__ = Graph.__hash__
     __mul__ = Graph.__mul__  # type: ignore[assignment]

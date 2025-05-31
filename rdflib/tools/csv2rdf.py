@@ -399,7 +399,7 @@ class CSV2RDF:
 
                 for i, x in enumerate(l_):
                     # type error: "int" has no attribute "strip"
-                    x = x.strip()  # type: ignore[attr-defined]
+                    x = x.strip()
                     if x != "":
                         if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                             continue

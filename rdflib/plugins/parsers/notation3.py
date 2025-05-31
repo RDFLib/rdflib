@@ -2035,8 +2035,8 @@ class TurtleParser(Parser):
         # N3 parser prefers str stream
         stream = source.getCharacterStream()
         if not stream:
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             graph.bind(prefix, namespace)

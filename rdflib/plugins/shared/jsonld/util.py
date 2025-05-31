@@ -82,16 +82,16 @@ def source_to_json(
             elif isinstance(b_stream, BytesIOWrapper):
                 # use the CharacterStream instead
                 c_stream = source.getCharacterStream()
-                json_dict = orjson.loads(c_stream.read())
+                json_dict = orjson.loads(c_stream.read())  # type: ignore[union-attr]
             else:
                 # orjson assumes its in utf-8 encoding so
                 # don't bother to check the source.getEncoding()
-                json_dict = orjson.loads(b_stream.read())
+                json_dict = orjson.loads(b_stream.read())  # type: ignore[union-attr]
         else:
             if original_string is not None:
                 json_dict = json.loads(original_string)
             else:
-                json_dict = json.load(source.getCharacterStream())
+                json_dict = json.load(source.getCharacterStream())  # type: ignore[arg-type]
         return json_dict, html_base
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
@@ -147,7 +147,7 @@ def source_to_json(
                     assert b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()
+                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()  # type: ignore[type-var]
             html_docparser.feed(html_string)
             json_dict, html_base = html_docparser.get_json(), html_docparser.get_base()
         elif _HAS_ORJSON:
@@ -177,7 +177,7 @@ def source_to_json(
                 # b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)
+                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)  # type: ignore[type-var]
             json_dict = json.load(use_stream)
         return json_dict, html_base
     finally:

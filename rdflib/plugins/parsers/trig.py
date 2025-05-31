@@ -169,8 +169,8 @@ class TrigParser(Parser):
         stream = source.getCharacterStream()  # try to get str stream first
         if not stream:
             # fallback to get the bytes stream
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)

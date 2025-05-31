@@ -458,7 +458,7 @@ class Context:
 
             if isinstance(source, list):
                 # type error: Statement is unreachable
-                self._prep_sources(  # type: ignore[unreachable]
+                self._prep_sources(
                     new_base, source, sources, referenced_contexts, source_url
                 )
             else:
@@ -559,7 +559,7 @@ class Context:
 
             self.add_term(
                 name,
-                idref,
+                idref,  # type: ignore[arg-type]
                 coercion,
                 dfn.get(CONTAINER, UNDEF),
                 dfn.get(INDEX, UNDEF),
@@ -664,7 +664,7 @@ class Context:
         if self.base:
             r[BASE] = self.base
         if self.language:
-            r[LANG] = self.language
+            r[LANG] = self.language  # type: ignore[unreachable]
         return r
 
 

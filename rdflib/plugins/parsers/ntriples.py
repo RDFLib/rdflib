@@ -372,16 +372,16 @@ class NTParser(Parser):
             **kwargs: Additional arguments to pass to `W3CNTriplesParser.parse`
         """
         f: Union[TextIO, IO[bytes], codecs.StreamReader]
-        f = source.getCharacterStream()
+        f = source.getCharacterStream()  # type: ignore[assignment]
         if not f:
             b = source.getByteStream()
             # TextIOBase includes: StringIO and TextIOWrapper
             if isinstance(b, TextIOBase):
                 # f is not really a ByteStream, but a CharacterStream
-                f = b  # type: ignore[assignment]
+                f = b  # type: ignore[unreachable]
             else:
                 # since N-Triples 1.1 files can and should be utf-8 encoded
-                f = codecs.getreader("utf-8")(b)
+                f = codecs.getreader("utf-8")(b)  # type: ignore[arg-type]
         parser = W3CNTriplesParser(NTGraphSink(sink))
         parser.parse(f, **kwargs)
         f.close()

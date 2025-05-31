@@ -695,15 +695,15 @@ def create_input_source(
                 f = source
                 input_source = InputSource()
                 if hasattr(source, "encoding"):
-                    input_source.setCharacterStream(source)
+                    input_source.setCharacterStream(source)  # type: ignore[arg-type]
                     input_source.setEncoding(source.encoding)
                     try:
                         b = source.buffer  # type: ignore[union-attr]
                         input_source.setByteStream(b)
                     except (AttributeError, LookupError):
-                        input_source.setByteStream(source)
+                        input_source.setByteStream(source)  # type: ignore[arg-type]
                 else:
-                    input_source.setByteStream(f)
+                    input_source.setByteStream(f)  # type: ignore[arg-type]
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif hasattr(f, "name"):
