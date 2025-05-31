@@ -662,6 +662,7 @@ class Parser:
                 continue
 
             if rest:
+                # type error: Statement is unreachable
                 graph.add((subj, RDF.rest, rest))
                 subj = rest
 

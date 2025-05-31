@@ -453,13 +453,13 @@ class _TripleCanonicalizer:
             elif best_score > color_score:
                 # prune this branch.
                 if stats is not None:
-                    stats["prunings"] += 1  # type: ignore[operator]
+                    stats["prunings"] = int(stats.get("prunings", 0)) + 1
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
             else:
                 # prune this branch.
                 if stats is not None:
-                    stats["prunings"] += 1  # type: ignore[operator]
+                    stats["prunings"] = int(stats.get("prunings", 0)) + 1
         discrete: list[list[Color]] = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             best_score = None
