@@ -61,7 +61,7 @@ wheel = ">=0.42,<0.46"
 [tool.poetry.group.docs.dependencies]
 sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
-sphinxcontrib-apidoc = ">=0.3,<0.6"
+sphinxcontrib-apidoc = ">=0.3,<0.7"
 sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
 typing-extensions = "^4.13.2"
 
