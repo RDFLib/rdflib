@@ -1,3 +1,28 @@
+## 2025-03-29 RELEASE 7.1.4
+
+A tidy-up release with no major updates over 7.1.3. This may be the last 7.x 
+release as we move to a version 8 with breaking changes to Dataset and a few
+APIs.
+
+Interesting PRs merged:
+
+* 2025-03-24 - remove old hacks against 2to3
+  [PR #3095](https://github.com/RDFLib/rdflib/pull/3095)
+* 2025-03-24 - Allow multi subjects & objects in graph funcs
+  [PR #3086](https://github.com/RDFLib/rdflib/pull/3086)
+* 2025-03-24 - Reduce test warnings
+  [PR #3085](https://github.com/RDFLib/rdflib/pull/3085)
+* 2025-03-22 - Downgrade log message about plugin
+  [PR #3063](https://github.com/RDFLib/rdflib/pull/3063)
+* 2025-03-22 - remove old hacks against 2to3
+  [PR #3076](https://github.com/RDFLib/rdflib/pull/3076)
+* 2025-03-22 - Cope with Namespace annotations in Python 3.14
+  [PR #3084](https://github.com/RDFLib/rdflib/pull/3084)
+* 2025-01-18 - small docco update
+  [PR #3053](https://github.com/RDFLib/rdflib/pull/3053)
+
+... and lots of boring dependency bump PRs merged!
+
 ## 2025-01-17 RELEASE 7.1.3
 
 A fix-up release that re-adds support for Python 3.8 after it was accidentally 
