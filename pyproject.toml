@@ -63,7 +63,7 @@ sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
 sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
-typing-extensions = "^4.11.0"
+typing-extensions = "^4.13.2"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.8.6"

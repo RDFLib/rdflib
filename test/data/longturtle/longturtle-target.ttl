@@ -1,72 +1,74 @@
+PREFIX cn: <https://linked.data.gov.au/def/cn/>
+PREFIX ex: <http://example.com/>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX schema: <https://schema.org/>
+PREFIX sdo: <https://schema.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-<http://example.com/nicholas>
-    a schema:Person ;
-    schema:age 41 ;
-    schema:alternateName 
+ex:nicholas
+    a sdo:Person ;
+    sdo:age 41 ;
+    sdo:alternateName 
         [
-            schema:name "Dr N.J. Car" ;
+            sdo:name "Dr N.J. Car" ;
         ] ,
         "N.J. Car" ,
         "Nick Car" ;
-    schema:name
+    sdo:name
         [
-            a <https://linked.data.gov.au/def/cn/CompoundName> ;
-            schema:hasPart 
+            a cn:CompoundName ;
+            sdo:hasPart 
                 [
-                    a <https://linked.data.gov.au/def/cn/CompoundName> ;
-                    schema:hasPart 
+                    a cn:CompoundName ;
+                    sdo:hasPart 
                         [
-                            a <https://linked.data.gov.au/def/cn/CompoundName> ;
+                            a cn:CompoundName ;
                             rdf:value "Car" ;
                         ] ,
                         [
-                            a <https://linked.data.gov.au/def/cn/CompoundName> ;
+                            a cn:CompoundName ;
                             rdf:value "Maxov" ;
                         ] ;
                 ] ,
                 [
-                    a <https://linked.data.gov.au/def/cn/CompoundName> ;
+                    a cn:CompoundName ;
                     rdf:value "Nicholas" ;
                 ] ,
                 [
-                    a <https://linked.data.gov.au/def/cn/CompoundName> ;
+                    a cn:CompoundName ;
                     rdf:value "John" ;
                 ] ;
         ] ;
-    schema:worksFor <https://kurrawong.ai> ;
+    sdo:worksFor <https://kurrawong.ai> ;
 .
 
 <https://kurrawong.ai>
-    a schema:Organization ;
-    schema:location <https://kurrawong.ai/hq> ;
+    a sdo:Organization ;
+    sdo:location <https://kurrawong.ai/hq> ;
 .
 
 <https://kurrawong.ai/hq>
-    a schema:Place ;
-    schema:address
+    a sdo:Place ;
+    sdo:address
         [
-            a schema:PostalAddress ;
-            schema:addressCountry
+            a sdo:PostalAddress ;
+            sdo:addressCountry
                 [
-                    schema:identifier "au" ;
-                    schema:name "Australia" ;
+                    sdo:identifier "au" ;
+                    sdo:name "Australia" ;
                 ] ;
-            schema:addressLocality "Shorncliffe" ;
-            schema:addressRegion "QLD" ;
-            schema:postalCode 4017 ;
-            schema:streetAddress (
+            sdo:addressLocality "Shorncliffe" ;
+            sdo:addressRegion "QLD" ;
+            sdo:postalCode 4017 ;
+            sdo:streetAddress (
                 72
                 "Yundah"
                 "Street"
             ) ;
         ] ;
-    schema:geo
+    sdo:geo
         [
-            schema:polygon "POLYGON((153.082403 -27.325801, 153.08241 -27.32582, 153.082943 -27.325612, 153.083010 -27.325742, 153.083543 -27.325521, 153.083456 -27.325365, 153.082403 -27.325801))"^^geo:wktLiteral ;
+            sdo:polygon "POLYGON((153.082403 -27.325801, 153.08241 -27.32582, 153.082943 -27.325612, 153.083010 -27.325742, 153.083543 -27.325521, 153.083456 -27.325365, 153.082403 -27.325801))"^^geo:wktLiteral ;
         ] ;
-    schema:name "KurrawongAI HQ" ;
+    sdo:name "KurrawongAI HQ" ;
 .
