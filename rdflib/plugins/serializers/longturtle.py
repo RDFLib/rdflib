@@ -1,6 +1,6 @@
 """
 LongTurtle RDF graph serializer for RDFLib.
-See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
+See http://www.w3.org/TeamSubmission/turtle/ for syntax specification.
 
 This variant, longturtle as opposed to just turtle, makes some small format changes
 to turtle - the original turtle serializer. It:
@@ -39,6 +39,8 @@ _SPACIOUS_OUTPUT = False
 
 
 class LongTurtleSerializer(RecursiveSerializer):
+    """LongTurtle RDF graph serializer."""
+
     short_name = "longturtle"
     indentString = "    "
 

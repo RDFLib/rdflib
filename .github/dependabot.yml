@@ -9,10 +9,6 @@ updates:
     # see https://github.com/dependabot/dependabot-core/pull/10194
     versioning-strategy: auto
     ignore:
-      - dependency-name: sphinx
-        versions:
-          - 3.4.3
-          - 3.5.2
       # We only use setuptools for a couple of things in the test suite
       # There is no need to keep it bleeding-edge. There are too frequent
       # updates to setuptools, requires too much maintenance to keep it up to date.

@@ -14,6 +14,8 @@ SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
 
 class N3Serializer(TurtleSerializer):
+    """Notation 3 (N3) RDF graph serializer."""
+
     short_name = "n3"
 
     def __init__(self, store: Graph, parent=None):

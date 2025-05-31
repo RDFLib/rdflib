@@ -2,7 +2,6 @@
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
 http://www.w3.org/TR/sparql11-query/#sparqlQuery
-
 """
 
 from __future__ import annotations
@@ -269,9 +268,7 @@ def translateExists(
 
 
 def collectAndRemoveFilters(parts: list[CompValue]) -> Expr | None:
-    """
-
-    FILTER expressions apply to the whole group graph pattern in which
+    """FILTER expressions apply to the whole group graph pattern in which
     they appear.
 
     http://www.w3.org/TR/sparql11-query/#sparqlCollectFilters
@@ -397,8 +394,7 @@ def _traverse(
     visitPre: Callable[[Any], Any] = lambda n: None,
     visitPost: Callable[[Any], Any] = lambda n: None,
 ):
-    """
-    Traverse a parse-tree, visit each node
+    """Traverse a parse-tree, visit each node
 
     if visit functions return a value, replace current node
     """
@@ -623,7 +619,6 @@ def translateValues(
 def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
     """
     http://www.w3.org/TR/sparql11-query/#convertSolMod
-
     """
 
     _traverse(q, _simplifyFilters)
@@ -763,7 +758,7 @@ def translate(q: CompValue) -> tuple[CompValue | None, list[Variable]]:
 def _find_first_child_projections(M: CompValue) -> Iterable[CompValue]:
     """
     Recursively find the first child instance of a Projection operation in each of
-      the branches of the query execution plan/tree.
+    the branches of the query execution plan/tree.
     """
 
     for child_op in M.values():
@@ -950,17 +945,16 @@ class ExpressionNotCoveredException(Exception):  # noqa: N818
 
 
 class _AlgebraTranslator:
-    """
-    Translator of a Query's algebra to its equivalent SPARQL (string).
+    """Translator of a Query's algebra to its equivalent SPARQL (string).
 
     Coded as a class to support storage of state during the translation process,
     without use of a file.
 
     Anticipated Usage:
 
-    .. code-block:: python
-
-        translated_query = _AlgebraTranslator(query).translateAlgebra()
+    ```python
+    translated_query = _AlgebraTranslator(query).translateAlgebra()
+    ```
 
     An external convenience function which wraps the above call,
     `translateAlgebra`, is supplied, so this class does not need to be
@@ -1016,12 +1010,7 @@ class _AlgebraTranslator:
             )
 
     def sparql_query_text(self, node):
-        """
-         https://www.w3.org/TR/sparql11-query/#sparqlSyntax
-
-        :param node:
-        :return:
-        """
+        """<https://www.w3.org/TR/sparql11-query/#sparqlSyntax>"""
 
         if isinstance(node, CompValue):
             # 18.2 Query Forms
@@ -1648,9 +1637,12 @@ def translateAlgebra(query_algebra: Query) -> str:
     """
     Translates a SPARQL 1.1 algebra tree into the corresponding query string.
 
-    :param query_algebra: An algebra returned by `translateQuery`.
-    :return: The query form generated from the SPARQL 1.1 algebra tree for
-        SELECT queries.
+    Args:
+        query_algebra: An algebra returned by `translateQuery`.
+
+    Returns:
+        The query form generated from the SPARQL 1.1 algebra tree for
+            SELECT queries.
     """
     query_from_algebra = _AlgebraTranslator(
         query_algebra=query_algebra

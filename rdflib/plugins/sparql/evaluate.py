@@ -6,12 +6,11 @@ return the SPARQLResult object
 
 evalPart is called on each level and will delegate to the right method
 
-A rdflib.plugins.sparql.sparql.QueryContext is passed along, keeping
+A `rdflib.plugins.sparql.sparql.QueryContext` is passed along, keeping
 information needed for evaluation
 
 A list of dicts (solution mappings) is returned, apart from GroupBy which may
 also return a dict of list of dicts
-
 """
 
 from __future__ import annotations
@@ -645,19 +644,19 @@ def evalQuery(
     initBindings: Mapping[str, Identifier] | None = None,
     base: str | None = None,
 ) -> Mapping[Any, Any]:
-    """
+    """Evaluate a SPARQL query against a graph.
 
-    .. caution::
+    !!! warning "Caution"
 
         This method can access indirectly requested network endpoints, for
         example, query processing will attempt to access network endpoints
-        specified in ``SERVICE`` directives.
+        specified in `SERVICE` directives.
 
         When processing untrusted or potentially malicious queries, measures
         should be taken to restrict network and file access.
 
         For information on available security measures, see the RDFLib
-        :doc:`Security Considerations </security_considerations>`
+        [Security Considerations](../security_considerations.md)
         documentation.
     """
     main = query.algebra

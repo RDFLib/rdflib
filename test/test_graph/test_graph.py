@@ -22,7 +22,7 @@ from test.utils.outcome import ExceptionChecker, OutcomeChecker, OutcomePrimitiv
 
 def test_property_store() -> None:
     """
-    The ``store`` property works correctly.
+    The `store` property works correctly.
     """
     graph = Graph()
     assert isinstance(graph.store, Store)
@@ -38,7 +38,7 @@ def test_property_identifier_default() -> None:
 
 def test_property_identifier() -> None:
     """
-    The ``identifier`` property works correctly.
+    The `identifier` property works correctly.
     """
     id = URIRef("example:a")
     graph = Graph(identifier=id)
@@ -47,7 +47,7 @@ def test_property_identifier() -> None:
 
 def test_property_namespace_manager() -> None:
     """
-    The ``namespace_manager`` property works correctly.
+    The `namespace_manager` property works correctly.
     """
     graph = Graph()
     # check repeats as property is a signleton

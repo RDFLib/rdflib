@@ -9,12 +9,11 @@ formats:
   - htmlzip
   - pdf
 
+# https://docs.readthedocs.com/platform/stable/intro/mkdocs.html
 build:
-  os: ubuntu-20.04
+  os: "ubuntu-24.04"
   tools:
-    # Using 3.9 as earlier versions have trouble generating documentation for
-    # `@typing.overload`` with type aliases.
-    python: "3.9"
+    python: "3"
   jobs:
     post_create_environment:
     # Using requirements-poetry.in as requirements-poetry.txt has conflicts with
@@ -24,8 +23,6 @@ build:
     - poetry export --only=main --only=docs --without-hashes -o requirements.txt
     - pip install --no-cache-dir -r requirements.txt
     - pip install .
-    - python -c "from rdflib import Graph; print(Graph)"
 
-sphinx:
-  configuration: docs/conf.py
-  fail_on_warning: true
+mkdocs:
+  configuration: mkdocs.yml

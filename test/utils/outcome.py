@@ -46,11 +46,11 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
 
         This should run inside the checker's context.
 
-        :param outcome: The actual outcome of the test.
-        :raises AssertionError: If the outcome does not match the
-            expectation.
-        :raises RuntimeError: If this method is called when no outcome
-            is expected.
+        Raises:
+            AssertionError: If the outcome does not match the
+                expectation.
+            RuntimeError: If this method is called when no outcome
+                is expected.
         """
         ...
 
@@ -62,11 +62,13 @@ class OutcomeChecker(abc.ABC, Generic[AnyT]):
 
         This is necessary for checking exception outcomes.
 
-        :return: A context manager that yields the exception info for
-            any exceptions that were raised in this context.
-        :raises AssertionError: If the test does not raise an exception
-            when one is expected, or if the exception does not match the
-            expectation.
+        Returns:
+            A context manager that yields the exception info for
+                any exceptions that were raised in this context.
+        Raises:
+            AssertionError: If the test does not raise an exception
+                when one is expected, or if the exception does not match the
+                expectation.
         """
         ...
 
@@ -150,7 +152,8 @@ class ValueChecker(NoExceptionChecker[AnyT]):
     """
     Validates that the outcome is a specific value.
 
-    :param value: The expected value.
+    Args:
+        value: The expected value.
     """
 
     expected: AnyT
@@ -164,8 +167,9 @@ class CallableChecker(NoExceptionChecker[AnyT]):
     """
     Validates the outcome with a callable.
 
-    :param callable: The callable that will be called with the outcome
-        to validate it.
+    Args:
+        callable: The callable that will be called with the outcome
+            to validate it.
     """
 
     callable: Callable[[AnyT], None]
@@ -179,11 +183,12 @@ class ExceptionChecker(OutcomeChecker[AnyT]):
     """
     Validates that the outcome is a specific exception.
 
-    :param type: The expected exception type.
-    :param match: A regular expression or string that the exception
-        message must match.
-    :param attributes: A dictionary of attributes that the exception
-        must have and their expected values.
+    Args:
+        type: The expected exception type.
+        match: A regular expression or string that the exception
+            message must match.
+        attributes: A dictionary of attributes that the exception
+            must have and their expected values.
     """
 
     type: type[Exception]

@@ -1,10 +1,8 @@
 """
-
 This module implements a parser and serializer for the CSV SPARQL result
 formats
 
 http://www.w3.org/TR/sparql11-results-csv-tsv/
-
 """
 
 from __future__ import annotations
@@ -20,6 +18,8 @@ from rdflib.term import BNode, Identifier, Literal, URIRef, Variable
 
 
 class CSVResultParser(ResultParser):
+    """Parses SPARQL CSV results into a Result object."""
+
     def __init__(self):
         self.delim = ","
 
@@ -62,6 +62,8 @@ class CSVResultParser(ResultParser):
 
 
 class CSVResultSerializer(ResultSerializer):
+    """Serializes SPARQL results into CSV format."""
+
     def __init__(self, result: SPARQLResult):
         ResultSerializer.__init__(self, result)
 

@@ -330,15 +330,16 @@ class QueryContext:
         """
         Load data from the source into the query context's.
 
-        :param source: The source to load from.
-        :param default: If `True`, triples from the source will be added
-            to the default graph, otherwise it will be loaded into a
-            graph with ``source`` URI as its name.
-        :param into: The name of the graph to load the data into. If
-            `None`, the source URI will be used as as the name of the
-            graph.
-        :param kwargs: Keyword arguments to pass to
-            :meth:`rdflib.graph.Graph.parse`.
+        Args:
+            source: The source to load from.
+            default: If `True`, triples from the source will be added
+                to the default graph, otherwise it will be loaded into a
+                graph with `source` URI as its name.
+            into: The name of the graph to load the data into. If
+                `None`, the source URI will be used as as the name of the
+                graph.
+            **kwargs: Keyword arguments to pass to
+                [`parse`][rdflib.graph.Graph.parse].
         """
 
         def _load(graph, source):

@@ -1,14 +1,14 @@
 """
-SPARQL Query using :meth:`rdflib.graph.Graph.query`
+SPARQL Query using [`Graph.query`][rdflib.graph.Graph.query]
 
-The method returns a :class:`~rdflib.query.Result`, iterating over
-this yields :class:`~rdflib.query.ResultRow` objects
+The method returns a [`Result`][rdflib.query.Result], iterating over
+this yields [`ResultRow`][rdflib.query.ResultRow] objects
 
 The variable bindings can be accessed as attributes of the row objects
 For variable names that are not valid python identifiers, dict access
-(i.e. with ``row[var] / __getitem__``) is also possible.
+(i.e. with `row[var] / __getitem__`) is also possible.
 
-:attr:`~rdflib.query.Result.vars` contains the variables
+[`Result.vars`][rdflib.query.Result.vars] contains the variables
 """
 
 import logging

@@ -21,9 +21,7 @@ __all__ = ["NTSerializer"]
 
 
 class NTSerializer(Serializer):
-    """
-    Serializes RDF graphs to NTriples format.
-    """
+    """Serializes RDF graphs to NTriples format."""
 
     def __init__(self, store: Graph):
         Serializer.__init__(self, store)
@@ -48,8 +46,7 @@ class NTSerializer(Serializer):
 
 
 class NT11Serializer(NTSerializer):
-    """
-    Serializes RDF graphs to RDF 1.1 NTriples format.
+    """Serializes RDF graphs to RDF 1.1 NTriples format.
 
     Exactly like nt - only utf8 encoded.
     """
@@ -70,9 +67,7 @@ def _nt_row(triple: _TripleType) -> str:
 
 
 def _quoteLiteral(l_: Literal) -> str:  # noqa: N802
-    """
-    a simpler version of term.Literal.n3()
-    """
+    """A simpler version of term.Literal.n3()"""
 
     encoded = _quote_encode(l_)
 

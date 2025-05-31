@@ -26,7 +26,7 @@ def test_load_into_default(
     graph_factory: Callable[[], Graph], source: GraphSource
 ) -> None:
     """
-    Evaluation of ``LOAD <source>`` into default graph works correctly.
+    Evaluation of `LOAD <source>` into default graph works correctly.
     """
 
     expected_graph = graph_factory()
@@ -68,7 +68,7 @@ def test_load_into_named(
     graph_factory: Callable[[], ConjunctiveGraph], source: GraphSource
 ) -> None:
     """
-    Evaluation of ``LOAD <source> INTO GRAPH <name>`` works correctly.
+    Evaluation of `LOAD <source> INTO GRAPH <name>` works correctly.
     """
 
     expected_graph = graph_factory()

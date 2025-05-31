@@ -282,7 +282,7 @@ def test_txtresult():
 
 def test_property_bindings(rdfs_graph: Graph) -> None:
     """
-    The ``bindings`` property of a `rdflib.query.Result` result works as expected.
+    The `bindings` property of a `rdflib.query.Result` result works as expected.
     """
     result = rdfs_graph.query(
         """
@@ -417,7 +417,7 @@ def test_custom_eval_exception(
     result_consumer: Callable[[Result], None], exception_type: type[Exception]
 ) -> None:
     """
-    Exception raised from a ``CUSTOM_EVALS`` function during the execution of a
+    Exception raised from a `CUSTOM_EVALS` function during the execution of a
     query propagates to the caller.
     """
     custom_function_uri = EGDC["function"]

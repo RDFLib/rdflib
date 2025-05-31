@@ -19,12 +19,11 @@ from test.utils.httpservermock import ServedBaseHTTPServerMock
 
 
 class TestSPARQLStoreGraph:
-    """
-    Tests for ``rdflib.Graph(store="SPARQLStore")``.
+    """SPARQLStore Graph Tests
 
-    .. note::
-        This is a pytest based test class to be used for new tests instead of
-        the older `unittest.TestCase` based classes.
+    !!! info "New Test Framework"
+        This is a pytest based test class that replaces the older
+        `unittest.TestCase` based classes for testing SPARQLStore functionality.
     """
 
     @pytest.mark.parametrize(

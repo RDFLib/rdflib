@@ -26,6 +26,8 @@ __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
 
 class RecursiveSerializer(Serializer):
+    """Base class for recursive serializers."""
+
     topClasses = [RDFS.Class]
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
@@ -173,6 +175,8 @@ _SPACIOUS_OUTPUT = False
 
 
 class TurtleSerializer(RecursiveSerializer):
+    """Turtle RDF graph serializer."""
+
     short_name = "turtle"
     indentString = "    "
 
