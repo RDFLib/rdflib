@@ -1,6 +1,6 @@
 [project]
 name = "rdflib"
-version = "7.1.3a0"
+version = "8.0.0a0"
 description = """RDFLib is a Python library for working with RDF, \
 a simple yet powerful language for representing information."""
 authors = [{ name = "Daniel 'eikeon' Krech", email = "eikeon@eikeon.com" }]
@@ -63,7 +63,7 @@ sphinx = ">=7.1.2,<8"
 myst-parser = ">=2,<4"
 sphinxcontrib-apidoc = ">=0.3,<0.6"
 sphinx-autodoc-typehints = ">=2.3.0,<2.4.0"
-typing-extensions = "^4.11.0"
+typing-extensions = "^4.13.2"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.8.6"
