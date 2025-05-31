@@ -868,7 +868,6 @@ def test_specific_binding(clear_bindings: None) -> None:
         ("9999", XSD.gYear, None),
         ("1982", XSD.gYear, None),
         ("2002", XSD.gYear, None),
-
         # these literals get converted to python types
         ("1921-05-01", XSD.date, datetime.date),
         ("1921-05-01T00:00:00", XSD.dateTime, datetime.datetime),
