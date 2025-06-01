@@ -1,8 +1,5 @@
 """
-Implementation of the JSON-LD Context structure. See:
-
-    http://json-ld.org/
-
+Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 """
 
 # https://github.com/RDFLib/rdflib-jsonld/blob/feature/json-ld-1.1/rdflib_jsonld/context.py
@@ -459,7 +456,7 @@ class Context:
 
             if isinstance(source, list):
                 # type error: Statement is unreachable
-                self._prep_sources(  # type: ignore[unreachable]
+                self._prep_sources(
                     new_base, source, sources, referenced_contexts, source_url
                 )
             else:
@@ -560,7 +557,7 @@ class Context:
 
             self.add_term(
                 name,
-                idref,
+                idref,  # type: ignore[arg-type]
                 coercion,
                 dfn.get(CONTAINER, UNDEF),
                 dfn.get(INDEX, UNDEF),
@@ -657,14 +654,15 @@ class Context:
         Returns a dictionary representation of the context that can be
         serialized to JSON.
 
-        :return: a dictionary representation of the context.
+        Returns:
+            a dictionary representation of the context.
         """
         r = {v: k for (k, v) in self._prefixes.items()}
         r.update({term.name: self._term_dict(term) for term in self._lookup.values()})
         if self.base:
             r[BASE] = self.base
         if self.language:
-            r[LANG] = self.language
+            r[LANG] = self.language  # type: ignore[unreachable]
         return r
 
 

@@ -18,6 +18,8 @@ __all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
+    """TriG RDF graph serializer."""
+
     short_name = "trig"
     indentString = 4 * " "
 

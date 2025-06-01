@@ -12,10 +12,9 @@ __all__ = ["Collection"]
 
 
 class Collection:
-    """
-    See "Emulating container types":
-    https://docs.python.org/reference/datamodel.html#emulating-container-types
+    """See "Emulating container types": <https://docs.python.org/reference/datamodel.html#emulating-container-types>
 
+    ```python
     >>> from rdflib.term import Literal
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
@@ -40,7 +39,6 @@ class Collection:
     ['"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
      '"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
      '"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
-
     >>> Literal(1) in c
     True
     >>> len(c)
@@ -50,8 +48,9 @@ class Collection:
     >>> c.index(Literal(2)) == 1
     True
 
-    The collection is immutable if ``uri`` is the empty list
-    (``http://www.w3.org/1999/02/22-rdf-syntax-ns#nil``).
+    ```
+
+    The collection is immutable if `uri` is the empty list (`http://www.w3.org/1999/02/22-rdf-syntax-ns#nil`).
     """
 
     def __init__(self, graph: Graph, uri: Node, seq: List[Node] = []):
@@ -62,6 +61,7 @@ class Collection:
 
     def n3(self) -> str:
         """
+        ```python
         >>> from rdflib.term import Literal
         >>> from rdflib.graph import Graph
         >>> listname = BNode()
@@ -83,8 +83,10 @@ class Collection:
         >>> c = Collection(g, listname)
         >>> print(c.n3()) #doctest: +NORMALIZE_WHITESPACE
         ( "1"^^<http://www.w3.org/2001/XMLSchema#integer>
-          "2"^^<http://www.w3.org/2001/XMLSchema#integer>
-          "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
+            "2"^^<http://www.w3.org/2001/XMLSchema#integer>
+            "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
+
+        ```
         """
         return "( %s )" % (" ".join([i.n3() for i in self]))
 
@@ -147,6 +149,7 @@ class Collection:
 
     def __delitem__(self, key: int) -> None:
         """
+        ```python
         >>> from rdflib.namespace import RDF, RDFS
         >>> from rdflib import Graph
         >>> from pprint import pformat
@@ -187,6 +190,7 @@ class Collection:
         >>> len(g)
         4
 
+        ```
         """
         self[key]  # to raise any potential key exceptions
         graph = self.graph
@@ -223,6 +227,7 @@ class Collection:
 
     def append(self, item: Node) -> Collection:
         """
+        ```python
         >>> from rdflib.term import Literal
         >>> from rdflib.graph import Graph
         >>> listname = BNode()
@@ -233,8 +238,8 @@ class Collection:
         >>> len([i for i in links if (i, RDF.rest, RDF.nil) in g])
         1
 
+        ```
         """
-
         end = self._end()
         if end == RDF.nil:
             raise ValueError("Cannot append to empty list")

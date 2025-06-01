@@ -49,7 +49,6 @@ class Processor:
     This module is useful for those wanting to write a query processor
     that can plugin to rdf. If you are wanting to execute a query you
     likely want to do so through the Graph class query method.
-
     """
 
     def __init__(self, graph: Graph):
@@ -67,16 +66,14 @@ class Processor:
 
 
 class UpdateProcessor:
-    """
-    Update plugin interface.
+    """Update plugin interface.
 
     This module is useful for those wanting to write an update
     processor that can plugin to rdflib. If you are wanting to execute
     an update statement you likely want to do so through the Graph
     class update method.
 
-    .. versionadded:: 4.0
-
+    !!! example "New in version 4.0"
     """
 
     def __init__(self, graph: Graph):
@@ -96,12 +93,7 @@ class ResultException(Exception):  # noqa: N818
 
 
 class EncodeOnlyUnicode:
-    """
-    This is a crappy work-around for
-    http://bugs.python.org/issue11649
-
-
-    """
+    """This is a crappy work-around for http://bugs.python.org/issue11649"""
 
     def __init__(self, stream: BinaryIO):
         self.__stream = stream
@@ -117,10 +109,9 @@ class EncodeOnlyUnicode:
 
 
 class ResultRow(Tuple[rdflib.term.Identifier, ...]):
-    """
-    a single result row
-    allows accessing bindings as attributes or with []
+    """A single result row allows accessing bindings as attributes or with []
 
+    ```python
     >>> from rdflib import URIRef, Variable
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
@@ -148,8 +139,9 @@ class ResultRow(Tuple[rdflib.term.Identifier, ...]):
     >>> rr[Variable('a')]
     rdflib.term.URIRef('urn:cake')
 
-    .. versionadded:: 4.0
+    ```
 
+    !!! example "New in version 4.0"
     """
 
     labels: Mapping[str, int]
@@ -215,8 +207,7 @@ class Result:
     If the type is "CONSTRUCT" or "DESCRIBE" iterating will yield the
     triples.
 
-    len(result) also works.
-
+    `len(result)` also works.
     """
 
     def __init__(self, type_: str):
@@ -226,6 +217,7 @@ class Result:
         self.type = type_
         #: variables contained in the result.
         self.vars: Optional[List[Variable]] = None
+        """a list of variables contained in the result"""
         self._bindings: MutableSequence[Mapping[Variable, Identifier]] = None  # type: ignore[assignment]
         self._genbindings: Optional[Iterator[Mapping[Variable, Identifier]]] = None
         self.askAnswer: Optional[bool] = None
@@ -264,6 +256,7 @@ class Result:
         content_type: Optional[str] = None,
         **kwargs: Any,
     ) -> Result:
+        """Parse a query result from a source."""
         from rdflib import plugin
 
         if format:
@@ -290,18 +283,20 @@ class Result:
         """
         Serialize the query result.
 
-        The :code:`format` argument determines the Serializer class to use.
+        The `format` argument determines the Serializer class to use.
 
-        - csv: :class:`~rdflib.plugins.sparql.results.csvresults.CSVResultSerializer`
-        - json: :class:`~rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer`
-        - txt: :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
-        - xml: :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
+        - csv: [`CSVResultSerializer`][rdflib.plugins.sparql.results.csvresults.CSVResultSerializer]
+        - json: [`JSONResultSerializer`][rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer]
+        - txt: [`TXTResultSerializer`][rdflib.plugins.sparql.results.txtresults.TXTResultSerializer]
+        - xml: [`XMLResultSerializer`][rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer]
 
-        :param destination: Path of file output or BufferedIOBase object to write the output to.
-        :param encoding: Encoding of output.
-        :param format: One of ['csv', 'json', 'txt', xml']
-        :param args:
-        :return: bytes
+        Args:
+            destination: Path of file output or BufferedIOBase object to write the output to.
+            encoding: Encoding of output.
+            format: One of ['csv', 'json', 'txt', xml']
+
+        Returns:
+            bytes
         """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             # type error: Item "None" of "Optional[Graph]" has no attribute "serialize"

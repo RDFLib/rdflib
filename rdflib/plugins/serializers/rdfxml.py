@@ -19,6 +19,8 @@ __all__ = ["fix", "XMLSerializer", "PrettyXMLSerializer"]
 
 
 class XMLSerializer(Serializer):
+    """RDF/XML RDF graph serializer."""
+
     def __init__(self, store: Graph):
         super(XMLSerializer, self).__init__(store)
 
@@ -167,6 +169,8 @@ def fix(val: str) -> str:
 
 
 class PrettyXMLSerializer(Serializer):
+    """Pretty RDF/XML RDF graph serializer."""
+
     def __init__(self, store: Graph, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
         self.forceRDFAbout: Set[URIRef] = set()

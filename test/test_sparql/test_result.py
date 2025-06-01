@@ -356,7 +356,7 @@ def test_serialize_to_strdest(
     name_prefix: str,
 ) -> None:
     """
-    Various ways of specifying the destination argument of ``Result.serialize``
+    Various ways of specifying the destination argument of `Result.serialize`
     as a string works correctly.
     """
     format_info = ResultFormat.JSON.info

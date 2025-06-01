@@ -268,7 +268,7 @@ def create_parser(store: Store) -> XMLReader:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
     trix = TriXHandler(store)
-    parser.setContentHandler(trix)
+    parser.setContentHandler(trix)  # type: ignore[arg-type]
     parser.setErrorHandler(ErrorHandler())
     return parser
 

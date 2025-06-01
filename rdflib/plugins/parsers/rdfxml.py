@@ -632,12 +632,14 @@ def create_parser(target: InputSource, store: Graph) -> xmlreader.XMLReader:
     # type error: Argument 1 to "setDocumentLocator" of "RDFXMLHandler" has incompatible type "InputSource"; expected "Locator"
     rdfxml.setDocumentLocator(target)  # type: ignore[arg-type]
     # rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
-    parser.setContentHandler(rdfxml)
+    parser.setContentHandler(rdfxml)  # type: ignore[arg-type]
     parser.setErrorHandler(ErrorHandler())
     return parser
 
 
 class RDFXMLParser(Parser):
+    """An RDF/XML parser."""
+
     def __init__(self):
         pass
 

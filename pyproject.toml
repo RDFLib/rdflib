@@ -15,6 +15,8 @@ classifiers=[
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: BSD License",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
@@ -62,11 +64,12 @@ setuptools = ">=68,<72"
 wheel = ">=0.42,<0.46"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = ">=7.1.2,<8"
-myst-parser = ">=2,<4"
-sphinxcontrib-apidoc = ">=0.3,<0.6"
-sphinx-autodoc-typehints = ">=1.25.3,<=2.0.1"
-typing-extensions = "^4.5.0"
+typing-extensions = "^4.11.0"
+mkdocs = ">=1.6.1"
+mkdocs-material = ">=9.6.12"
+mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
+mkdocs-gen-files = "^0.5.0"
+mkdocs-include-markdown-plugin = "^7.1.5"
 
 [tool.poetry.group.lint.dependencies]
 ruff = ">=0.0.286,<0.10.0"
@@ -182,7 +185,7 @@ exclude = '''
     | \.venv
     | \.var
     | \.github
-    | _build
+    | site
     | htmlcov
     | benchmarks
     | test_reports
@@ -197,13 +200,13 @@ exclude = '''
 
 [tool.pytest.ini_options]
 addopts = [
-   "--doctest-modules",
-   "--ignore=admin",
-   "--ignore=devtools",
-   "--ignore=rdflib/extras/external_graph_libs.py",
-   "--ignore-glob=docs/*.py",
-   "--doctest-glob=docs/*.rst",
-   "--strict-markers",
+    "--doctest-modules",
+    "--ignore=admin",
+    "--ignore=devtools",
+    "--ignore=rdflib/extras/external_graph_libs.py",
+    "--ignore-glob=docs/*.py",
+    "--ignore-glob=site/*",
+    "--strict-markers",
 ]
 filterwarnings = [
     # The below warning is a consequence of how pytest doctest detects mocks and how DefinedNamespace behaves when an undefined attribute is being accessed.
@@ -237,7 +240,7 @@ skip = [
     '.venv',
     '.var',
     '.github',
-    '_build',
+    'site',
     'htmlcov',
     'benchmarks',
     'test_reports',

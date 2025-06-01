@@ -1,37 +1,34 @@
 """
-===================
-Namespace Utilities
-===================
+# Namespace Utilities
 
 RDFLib provides mechanisms for managing Namespaces.
 
-In particular, there is a :class:`~rdflib.namespace.Namespace` class
+In particular, there is a [`Namespace`][rdflib.namespace.Namespace] class
 that takes as its argument the base URI of the namespace.
 
-.. code-block:: pycon
+```python
+>>> from rdflib.namespace import Namespace
+>>> RDFS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
-    >>> from rdflib.namespace import Namespace
-    >>> RDFS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+```
 
 Fully qualified URIs in the namespace can be constructed either by attribute
 or by dictionary access on Namespace instances:
 
-.. code-block:: pycon
+```python
+>>> RDFS.seeAlso
+rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
+>>> RDFS['seeAlso']
+rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
 
-    >>> RDFS.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
-    >>> RDFS['seeAlso']
-    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
+```
 
-
-Automatic handling of unknown predicates
------------------------------------------
+## Automatic handling of unknown predicates
 
 As a programming convenience, a namespace binding is automatically
-created when :class:`rdflib.term.URIRef` predicates are added to the graph.
+created when [`URIRef`][rdflib.term.URIRef] predicates are added to the graph.
 
-Importable namespaces
------------------------
+## Importable namespaces
 
 The following namespaces are available by directly importing from rdflib:
 
@@ -63,11 +60,12 @@ The following namespaces are available by directly importing from rdflib:
 * WGS
 * XSD
 
-.. code-block:: pycon
+```python
+>>> from rdflib.namespace import RDFS
+>>> RDFS.seeAlso
+rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 
-    >>> from rdflib.namespace import RDFS
-    >>> RDFS.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
+```
 """
 
 from __future__ import annotations
@@ -144,9 +142,9 @@ logger = logging.getLogger(__name__)
 
 
 class Namespace(str):
-    """
-    Utility class for quickly generating URIRefs with a common prefix
+    """Utility class for quickly generating URIRefs with a common prefix.
 
+    ```python
     >>> from rdflib.namespace import Namespace
     >>> n = Namespace("http://example.org/")
     >>> n.Person # as attribute
@@ -158,6 +156,8 @@ class Namespace(str):
     >>> n2 = Namespace("http://example2.org/")
     >>> n.Person in n2
     False
+
+    ```
     """
 
     def __new__(cls, value: Union[str, bytes]) -> Namespace:
@@ -191,6 +191,7 @@ class Namespace(str):
     def __contains__(self, ref: str) -> bool:  # type: ignore[override]
         """Allows to check if a URI is within (starts with) this Namespace.
 
+        ```python
         >>> from rdflib import URIRef
         >>> namespace = Namespace('http://example.org/')
         >>> uri = URIRef('http://example.org/foo')
@@ -202,20 +203,24 @@ class Namespace(str):
         >>> obj = URIRef('http://not.example.org/bar')
         >>> obj in namespace
         False
+
+        ```
         """
         return ref.startswith(self)  # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
-    """
-    Utility class for creating URIs according to some pattern
-    This supports either new style formatting with .format
-    or old-style with % operator
+    """Utility class for creating URIs according to some pattern.
 
+    This supports either new style formatting with .format
+    or old-style with % operator.
+
+    ```python
     >>> u=URIPattern("http://example.org/%s/%d/resource")
     >>> u%('books', 12345)
     rdflib.term.URIRef('http://example.org/books/12345/resource')
 
+    ```
     """
 
     def __new__(cls, value: Union[str, bytes]) -> URIPattern:
@@ -351,9 +356,9 @@ class DefinedNamespaceMeta(type):
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
-    """
-    A Namespace with an enumerated list of members.
-    Warnings are emitted if unknown members are referenced if _warn is True
+    """A Namespace with an enumerated list of members.
+
+    Warnings are emitted if unknown members are referenced if _warn is True.
     """
 
     __slots__: Tuple[str, ...] = tuple()
@@ -445,30 +450,29 @@ class NamespaceManager:
         * using prefix bindings from prefix.cc which is a online prefixes database
         * not implemented yet - this is aspirational
 
-    .. attention::
+    !!! warning "Breaking changes"
 
-        The namespaces bound for specific values of ``bind_namespaces``
+        The namespaces bound for specific values of `bind_namespaces`
         constitute part of RDFLib's public interface, so changes to them should
         only be additive within the same minor version. Removing values, or
         removing namespaces that are bound by default, constitutes a breaking
         change.
 
-    See the
-    Sample usage
+    See the sample usage
 
-    .. code-block:: pycon
+    ```python
+    >>> import rdflib
+    >>> from rdflib import Graph
+    >>> from rdflib.namespace import Namespace, NamespaceManager
+    >>> EX = Namespace('http://example.com/')
+    >>> namespace_manager = NamespaceManager(Graph())
+    >>> namespace_manager.bind('ex', EX, override=False)
+    >>> g = Graph()
+    >>> g.namespace_manager = namespace_manager
+    >>> all_ns = [n for n in g.namespace_manager.namespaces()]
+    >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
 
-        >>> import rdflib
-        >>> from rdflib import Graph
-        >>> from rdflib.namespace import Namespace, NamespaceManager
-        >>> EX = Namespace('http://example.com/')
-        >>> namespace_manager = NamespaceManager(Graph())
-        >>> namespace_manager.bind('ex', EX, override=False)
-        >>> g = Graph()
-        >>> g.namespace_manager = namespace_manager
-        >>> all_ns = [n for n in g.namespace_manager.namespaces()]
-        >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
-        >>>
+    ```
     """
 
     def __init__(self, graph: Graph, bind_namespaces: _NamespaceSetString = "rdflib"):
@@ -540,24 +544,28 @@ class NamespaceManager:
         Result is guaranteed to contain a colon separating the prefix from the
         name, even if the prefix is an empty string.
 
-        .. warning::
-
-            When ``generate`` is `True` (which is the default) and there is no
+        !!! warning "Side-effect"
+            When `generate` is `True` (which is the default) and there is no
             matching namespace for the URI in the namespace manager then a new
-            namespace will be added with prefix ``ns{index}``.
+            namespace will be added with prefix `ns{index}`.
 
-            Thus, when ``generate`` is `True`, this function is not a pure
+            Thus, when `generate` is `True`, this function is not a pure
             function because of this side-effect.
 
             This default behaviour is chosen so that this function operates
             similarly to `NamespaceManager.qname`.
 
-        :param uri: URI to generate CURIE for.
-        :param generate: Whether to add a prefix for the namespace if one doesn't
-            already exist.  Default: `True`.
-        :return: CURIE for the URI.
-        :raises KeyError: If generate is `False` and the namespace doesn't already have
-            a prefix.
+        Args:
+            uri: URI to generate CURIE for.
+            generate: Whether to add a prefix for the namespace if one doesn't
+                already exist.  Default: `True`.
+
+        Returns:
+            CURIE for the URI
+
+        Raises:
+            KeyError: If generate is `False` and the namespace doesn't already have
+                a prefix.
         """
         prefix, namespace, name = self.compute_qname(uri, generate=generate)
         return ":".join((prefix, name))
@@ -756,7 +764,6 @@ class NamespaceManager:
         bound to another prefix.
 
         If replace, replace any existing prefix with the new namespace
-
         """
 
         namespace = URIRef(str(namespace))
