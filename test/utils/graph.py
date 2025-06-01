@@ -85,12 +85,14 @@ class GraphSource:
 
     @classmethod
     def idfn(cls, val: Any) -> str | None:
-        """
-        ID function for GraphSource objects.
+        """ID function for GraphSource objects.
 
-        :param val: The value to try to generate and identifier for.
-        :return: A string identifying the given value if the value is a
-            `GraphSource`, otherwise return `None`.
+        Args:
+            val: The value to try to generate and identifier for.
+
+        Returns:
+            A string identifying the given value if the value is a
+                `GraphSource`, otherwise return `None`.
         """
         if isinstance(val, cls):
             try:

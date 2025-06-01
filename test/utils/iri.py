@@ -29,12 +29,14 @@ def file_uri_to_path(
     """
     This function returns a pathlib.PurePath object for the supplied file URI.
 
-    :param str file_uri: The file URI ...
-    :param class path_class: The type of path in the file_uri. By default it uses
-        the system specific path pathlib.PurePath, to force a specific type of path
-        pass pathlib.PureWindowsPath or pathlib.PurePosixPath
-    :returns: the pathlib.PurePath object
-    :rtype: pathlib.PurePath
+    Args:
+        file_uri: The file URI ...
+        path_class: The type of path in the file_uri. By default it uses
+            the system specific path pathlib.PurePath, to force a specific type of path
+            pass pathlib.PureWindowsPath or pathlib.PurePosixPath
+
+    Returns:
+        The pathlib.PurePath object
     """
     is_windows_path = isinstance(path_class(), PureWindowsPath)
     file_uri_parsed = urlparse(file_uri)
