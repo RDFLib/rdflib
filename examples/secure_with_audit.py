@@ -1,10 +1,9 @@
 """
-This example demonstrates how to use `Python audit hooks
-<https://docs.python.org/3/library/sys.html#sys.addaudithook>`_ to block access
+This example demonstrates how to use [Python audit hooks](https://docs.python.org/3/library/sys.html#sys.addaudithook) to block access
 to files and URLs.
 
-It installs a audit hook with `sys.addaudithook <https://docs.python.org/3/library/sys.html#sys.addaudithook>`_ that blocks access to files and
-URLs that end with ``blocked.jsonld``.
+It installs a audit hook with [sys.addaudithook](https://docs.python.org/3/library/sys.html#sys.addaudithook) that blocks access to files and
+URLs that end with `blocked.jsonld`.
 
 The code in the example then verifies that the audit hook is blocking access to
 URLs and files as expected.
@@ -23,15 +22,20 @@ from rdflib import Graph
 def audit_hook(name: str, args: tuple[Any, ...]) -> None:
     """
     An audit hook that blocks access when an attempt is made to open a
-    file or URL that ends with ``blocked.jsonld``.
+    file or URL that ends with `blocked.jsonld`.
 
-    Details of the audit events can be seen in the `audit events
-    table <https://docs.python.org/3/library/audit_events.html>`_.
+    Details of the audit events can be seen in the
+    [audit events table](https://docs.python.org/3/library/audit_events.html).
 
-    :param name: The name of the audit event.
-    :param args: The arguments of the audit event.
-    :return: `None` if the audit hook does not block access.
-    :raises PermissionError: If the file or URL being accessed ends with ``blocked.jsonld``.
+    Args:
+        name: The name of the audit event.
+        args: The arguments of the audit event.
+
+    Returns:
+        `None` if the audit hook does not block access.
+
+    Raises:
+        PermissionError: If the file or URL being accessed ends with `blocked.jsonld`.
     """
     if name == "urllib.Request" and args[0].endswith("blocked.jsonld"):
         raise PermissionError("Permission denied for URL")

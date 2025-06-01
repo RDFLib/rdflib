@@ -46,7 +46,7 @@ Some ways in which you can contribute to RDFLib are:
 ## Pull Requests
 
 Contributions that involve changes to the RDFLib repository have to be made with
-pull requests and should follow the [RDFLib developers guide](./developers.rst).
+pull requests and should follow the [RDFLib developers guide](./developers.md).
 
 For changes that add features or affect the public API of RDFLib, it is
 recommended to first open an issue to discuss the change before starting to work
@@ -55,5 +55,5 @@ spending time on it.
 
 ## Code of Conduct
 
-All contributions to the project should be consistent with the [code of
-conduct](./CODE_OF_CONDUCT.md) adopted by RDFLib.
+All contributions to the project should be consistent with the
+[code of conduct](./CODE_OF_CONDUCT.md) adopted by RDFLib.

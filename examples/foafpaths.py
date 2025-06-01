@@ -5,23 +5,20 @@ in triple-patterns.
 We overload some Python operators on URIRefs to allow creating path
 operators directly in Python.
 
-============ =========================================
-Operator     Path
-============ =========================================
-``p1 / p2``  Path sequence
-``p1 | p2``  Path alternative
-``p1 * '*'`` chain of 0 or more p's
-``p1 * '+'`` chain of 1 or more p's
-``p1 * '?'`` 0 or 1 p
-``~p1``      p1 inverted, i.e. (s p1 o) <=> (o ~p1 s)
-``-p1``      NOT p1, i.e. any property but p1
-============ =========================================
+| Operator    | Path                                               |
+|-------------|----------------------------------------------------|
+| `p1 / p2`   | Path sequence                                       |
+| `p1 | p2`  | Path alternative                                    |
+| `p1 * '*'`  | Chain of 0 or more p's                              |
+| `p1 * '+'`  | Chain of 1 or more p's                              |
+| `p1 * '?'`  | 0 or 1 p                                            |
+| `~p1`       | p1 inverted, i.e. `(s p1 o)` ⇔ `(o ~p1 s)`          |
+| `-p1`       | NOT p1, i.e. any property but p1                   |
 
-
-These can then be used in property position for ``s,p,o`` triple queries
+These can then be used in property position for `s,p,o` triple queries
 for any graph method.
 
-See the docs for :mod:`rdflib.paths` for the details.
+See the docs for [`paths`][rdflib.paths] for the details.
 
 This example shows how to get the name of friends (i.e values two steps away x knows y, y name z) with a single query.
 """

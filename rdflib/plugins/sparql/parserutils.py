@@ -21,8 +21,6 @@ baseDecl.iri
 
 Comp lets you set an evalFn that is bound to the eval method of
 the resulting CompValue
-
-
 """
 
 from __future__ import annotations
@@ -56,8 +54,7 @@ def value(
     variables: bool = False,
     errors: bool = False,
 ) -> Any:
-    """
-    utility function for evaluating something...
+    """Utility function for evaluating something...
 
     Variables will be looked up in the context
     Normally, non-bound vars is an error,
@@ -65,7 +62,6 @@ def value(
 
     Normally, an error raises the error,
     set errors=True to return error
-
     """
 
     if isinstance(val, Expr):
@@ -150,7 +146,6 @@ class CompValue(OrderedDict):
     The result of parsing a Comp
     Any included Params are available as Dict keys
     or as attributes
-
     """
 
     def __init__(self, name: str, **values):

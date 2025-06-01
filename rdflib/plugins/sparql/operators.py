@@ -3,7 +3,6 @@ This contains evaluation functions for expressions
 
 They get bound as instances-methods to the CompValue objects from parserutils
 using setEvalFn
-
 """
 
 from __future__ import annotations
@@ -481,8 +480,11 @@ def Builtin_TIMEZONE(e: Expr, ctx) -> Literal:
     """
     http://www.w3.org/TR/sparql11-query/#func-timezone
 
-    :returns: the timezone part of arg as an xsd:dayTimeDuration.
-    :raises: an error if there is no timezone.
+    Returns:
+        The timezone part of arg as an xsd:dayTimeDuration.
+
+    Raises:
+        An error if there is no timezone.
     """
     dt = datetime(e.arg)
     if not dt.tzinfo:
@@ -538,8 +540,7 @@ def Builtin_UCASE(e: Expr, ctx) -> Literal:
 
 
 def Builtin_LANG(e: Expr, ctx) -> Literal:
-    """
-    http://www.w3.org/TR/sparql11-query/#func-lang
+    """http://www.w3.org/TR/sparql11-query/#func-lang
 
     Returns the language tag of ltrl, if it has one. It returns "" if ltrl has
     no language tag. Note that the RDF data model does not include literals
@@ -598,8 +599,7 @@ _CUSTOM_FUNCTIONS: dict[URIRef, tuple[_CustomFunction, bool]] = {}
 def register_custom_function(
     uri: URIRef, func: _CustomFunction, override: bool = False, raw: bool = False
 ) -> None:
-    """
-    Register a custom SPARQL function.
+    """Register a custom SPARQL function.
 
     By default, the function will be passed the RDF terms in the argument list.
     If raw is True, the function will be passed an Expression and a Context.
@@ -1083,7 +1083,6 @@ def numeric(expr: Literal) -> Any:
 def dateTimeObjects(expr: Literal) -> Any:
     """
     return a dataTime/date/time/duration/dayTimeDuration/yearMonthDuration python objects from a literal
-
     """
     return expr.toPython()
 
@@ -1098,7 +1097,6 @@ def isCompatibleDateTimeDatatype(  # type: ignore[return]
     """
     Returns a boolean indicating if first object is compatible
     with operation(+/-) over second object.
-
     """
     if dt1 == XSD.date:
         if dt2 == XSD.yearMonthDuration:
@@ -1134,7 +1132,6 @@ def calculateDuration(
 ) -> Literal:
     """
     returns the duration Literal between two datetime
-
     """
     date1 = obj1
     date2 = obj2
@@ -1182,8 +1179,7 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> Union[bool, NoReturn]: ...
 
 
 def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
-    """
-    Effective Boolean Value (EBV)
+    """Effective Boolean Value (EBV)
 
     * If the argument is a typed literal with a datatype of xsd:boolean,
       the EBV is the value of that argument.
@@ -1194,7 +1190,6 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
       derived from a numeric type, the EBV is false if the operand value is
       NaN or is numerically equal to zero; otherwise the EBV is true.
     * All other arguments, including unbound arguments, produce a type error.
-
     """
 
     if isinstance(rt, Literal):
@@ -1228,28 +1223,27 @@ def EBV(rt: Union[Identifier, SPARQLError, Expr]) -> bool:
 def _lang_range_check(range: Literal, lang: Literal) -> bool:
     """
     Implementation of the extended filtering algorithm, as defined in point
-    3.3.2, of U{RFC 4647<http://www.rfc-editor.org/rfc/rfc4647.txt>}, on
+    3.3.2, of [RFC 4647](http://www.rfc-editor.org/rfc/rfc4647.txt), on
     matching language ranges and language tags.
-    Needed to handle the C{rdf:PlainLiteral} datatype.
-    @param range: language range
-    @param lang: language tag
-    @rtype: boolean
+    Needed to handle the `rdf:PlainLiteral` datatype.
 
-        @author: U{Ivan Herman<a href="http://www.w3.org/People/Ivan/">}
+    Args:
+        range: language range
+        lang: language tag
 
-        Taken from `RDFClosure/RestrictedDatatype.py`__
+    Author: [Ivan Herman](http://www.w3.org/People/Ivan/)
 
-    .. __:http://dev.w3.org/2004/PythonLib-IH/RDFClosure/RestrictedDatatype.py
-
+    Taken from [`RDFClosure/RestrictedDatatype.py`](http://dev.w3.org/2004/PythonLib-IH/RDFClosure/RestrictedDatatype.py)
     """
 
     def _match(r: str, l_: str) -> bool:
         """
         Matching of a range and language item: either range is a wildcard
         or the two are equal
-        @param r: language range item
-        @param l_: language tag item
-        @rtype: boolean
+
+        Args:
+            r: language range item
+            l_: language tag item
         """
         return r == "*" or r == l_
 
