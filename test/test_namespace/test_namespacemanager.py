@@ -371,16 +371,16 @@ def test_compute_qname(
     store_prefixes: Mapping[str, Namespace] | None,
     expected_result: OutcomePrimitive[tuple[str, URIRef, str]],
 ) -> None:
-    """
-    :param uri: argument to compute_qname()
-    :param generate: argument to compute_qname()
-    :param bind_namespaces: argument to Graph()
+    """Test the compute_qname method of NamespaceManager.
 
-    :param manager_prefixes: additional namespaces to bind on NamespaceManager.
-    :param graph_prefixes: additional namespaces to bind on Graph.
-    :param store_prefixes: additional namespaces to bind on Store.
-
-    :param expected_result: Expected result tuple or exception.
+    Args:
+        uri: argument to compute_qname()
+        generate: argument to compute_qname()
+        bind_namespaces: argument to Graph()
+        manager_prefixes: additional namespaces to bind on NamespaceManager.
+        graph_prefixes: additional namespaces to bind on Graph.
+        store_prefixes: additional namespaces to bind on Store.
+        expected_result: Expected result tuple or exception.
     """
     graph = Graph(bind_namespaces=bind_namespaces)
     if graph_prefixes is not None:
@@ -549,10 +549,10 @@ def test_generate_curie(
     expected_result: OutcomePrimitive[str],
 ) -> None:
     """
-    .. note::
+    !!! warning "Side effects"
 
-        This is using the function scoped nsm fixture because curie has side
-        effects and will modify the namespace manager.
+        This test uses a function-scoped fixture because the curie() method
+        has side effects that modify the namespace manager state.
     """
     nsm = test_nsm_function
     checker = OutcomeChecker[str].from_primitive(expected_result)

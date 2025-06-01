@@ -1,4 +1,4 @@
-"""\
+"""
 N-Triples Parser
 License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
@@ -124,14 +124,17 @@ _BNodeContextType = MutableMapping[str, bNode]
 
 class W3CNTriplesParser:
     """An N-Triples Parser.
-    This is a legacy-style Triples parser for NTriples provided by W3C
-    Usage::
 
-          p = W3CNTriplesParser(sink=MySink())
-          sink = p.parse(f) # file; use parsestring for a string
+    This is a legacy-style Triples parser for NTriples provided by W3C
+
+    Example:
+        ```python
+        p = W3CNTriplesParser(sink=MySink())
+        sink = p.parse(f) # file; use parsestring for a string
+        ```
 
     To define a context in which blank node identifiers refer to the same blank node
-    across instances of NTriplesParser, pass the same dict as ``bnode_context`` to each
+    across instances of NTriplesParser, pass the same dict as `bnode_context` to each
     instance. By default, a new blank node context is created for each instance of
     `W3CNTriplesParser`.
     """
@@ -166,16 +169,18 @@ class W3CNTriplesParser:
         bnode_context: _BNodeContextType | None = None,
         skolemize: bool = False,
     ) -> DummySink | NTGraphSink:
-        """
-        Parse f as an N-Triples file.
+        """Parse f as an N-Triples file.
 
-        :type f: :term:`file object`
-        :param f: the N-Triples source
-        :type bnode_context: `dict`, optional
-        :param bnode_context: a dict mapping blank node identifiers (e.g., ``a`` in ``_:a``)
-                              to `~rdflib.term.BNode` instances. An empty dict can be
-                              passed in to define a distinct context for a given call to
-                              `parse`.
+        Args:
+            f: The N-Triples source
+            bnode_context: A dict mapping blank node identifiers (e.g., `a` in `_:a`)
+                to [`BNode`][rdflib.term.BNode] instances. An empty dict can be
+                passed in to define a distinct context for a given call to
+                `parse`.
+            skolemize: Whether to skolemize blank nodes
+
+        Returns:
+            The sink containing the parsed triples
         """
 
         if not hasattr(f, "read"):
@@ -350,34 +355,33 @@ class NTGraphSink:
 
 
 class NTParser(Parser):
-    """parser for the ntriples format, often stored with the .nt extension
+    """Parser for the N-Triples format, often stored with the .nt extension.
 
-    See http://www.w3.org/TR/rdf-testcases/#ntriples"""
+    See http://www.w3.org/TR/rdf-testcases/#ntriples
+    """
 
     __slots__ = ()
 
     @classmethod
     def parse(cls, source: InputSource, sink: Graph, **kwargs: Any) -> None:
-        """
-        Parse the NT format
+        """Parse the NT format.
 
-        :type source: `rdflib.parser.InputSource`
-        :param source: the source of NT-formatted data
-        :type sink: `rdflib.graph.Graph`
-        :param sink: where to send parsed triples
-        :param kwargs: Additional arguments to pass to `.W3CNTriplesParser.parse`
+        Args:
+            source: The source of NT-formatted data
+            sink: Where to send parsed triples
+            **kwargs: Additional arguments to pass to `W3CNTriplesParser.parse`
         """
         f: Union[TextIO, IO[bytes], codecs.StreamReader]
-        f = source.getCharacterStream()
+        f = source.getCharacterStream()  # type: ignore[assignment]
         if not f:
             b = source.getByteStream()
             # TextIOBase includes: StringIO and TextIOWrapper
             if isinstance(b, TextIOBase):
                 # f is not really a ByteStream, but a CharacterStream
-                f = b  # type: ignore[assignment]
+                f = b  # type: ignore[unreachable]
             else:
                 # since N-Triples 1.1 files can and should be utf-8 encoded
-                f = codecs.getreader("utf-8")(b)
+                f = codecs.getreader("utf-8")(b)  # type: ignore[arg-type]
         parser = W3CNTriplesParser(NTGraphSink(sink))
         parser.parse(f, **kwargs)
         f.close()

@@ -1,7 +1,4 @@
-"""
-SPARQL implementation for RDFLib
-
-.. versionadded:: 4.0
+"""SPARQL implementation for RDFLib
 """
 
 from importlib.metadata import entry_points

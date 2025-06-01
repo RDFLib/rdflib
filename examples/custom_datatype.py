@@ -4,7 +4,7 @@ RDFLib can map between RDF data-typed literals and Python objects.
 Mapping for integers, floats, dateTimes, etc. are already added, but
 you can also add your own.
 
-This example shows how :meth:`rdflib.term.bind` lets you register new
+This example shows how [`bind`][rdflib.term.bind] lets you register new
 mappings between literal datatypes and Python objects
 """
 

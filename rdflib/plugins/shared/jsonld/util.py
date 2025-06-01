@@ -48,15 +48,15 @@ def source_to_json(
     """Extract JSON from a source document.
 
     The source document can be JSON or HTML with embedded JSON script elements (type attribute = "application/ld+json").
-    To process as HTML ``source.content_type`` must be set to "text/html" or "application/xhtml+xml".
+    To process as HTML `source.content_type` must be set to "text/html" or "application/xhtml+xml".
 
-    :param source: the input source document (JSON or HTML)
+    Args:
+        source: the input source document (JSON or HTML)
+        fragment_id: if source is an HTML document then extract only the script element with matching id attribute, defaults to None
+        extract_all_scripts: if source is an HTML document then extract all script elements (unless fragment_id is provided), defaults to False (extract only the first script element)
 
-    :param fragment_id: if source is an HTML document then extract only the script element with matching id attribute, defaults to None
-
-    :param extract_all_scripts: if source is an HTML document then extract all script elements (unless fragment_id is provided), defaults to False (extract only the first script element)
-
-    :return: Tuple with the extracted JSON document and value of the HTML base element
+    Returns:
+        Tuple with the extracted JSON document and value of the HTML base element
     """
 
     if isinstance(source, PythonInputSource):
@@ -82,16 +82,16 @@ def source_to_json(
             elif isinstance(b_stream, BytesIOWrapper):
                 # use the CharacterStream instead
                 c_stream = source.getCharacterStream()
-                json_dict = orjson.loads(c_stream.read())
+                json_dict = orjson.loads(c_stream.read())  # type: ignore[union-attr]
             else:
                 # orjson assumes its in utf-8 encoding so
                 # don't bother to check the source.getEncoding()
-                json_dict = orjson.loads(b_stream.read())
+                json_dict = orjson.loads(b_stream.read())  # type: ignore[union-attr]
         else:
             if original_string is not None:
                 json_dict = json.loads(original_string)
             else:
-                json_dict = json.load(source.getCharacterStream())
+                json_dict = json.load(source.getCharacterStream())  # type: ignore[arg-type]
         return json_dict, html_base
 
     # TODO: conneg for JSON (fix support in rdflib's URLInputSource!)
@@ -147,7 +147,7 @@ def source_to_json(
                     assert b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()
+                html_string = TextIOWrapper(b_stream, encoding=b_encoding).read()  # type: ignore[type-var]
             html_docparser.feed(html_string)
             json_dict, html_base = html_docparser.get_json(), html_docparser.get_base()
         elif _HAS_ORJSON:
@@ -177,7 +177,7 @@ def source_to_json(
                 # b_stream is not None
                 if b_encoding is None:
                     b_encoding = "utf-8"
-                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)
+                use_stream = TextIOWrapper(b_stream, encoding=b_encoding)  # type: ignore[type-var]
             json_dict = json.load(use_stream)
         return json_dict, html_base
     finally:
@@ -206,6 +206,7 @@ def split_iri(iri: str) -> tuple[str, str | None]:
 
 def norm_url(base: str, url: str) -> str:
     """
+    ```python
     >>> norm_url('http://example.org/', '/one')
     'http://example.org/one'
     >>> norm_url('http://example.org/', '/one#')
@@ -218,6 +219,8 @@ def norm_url(base: str, url: str) -> str:
     'http://example.net/one'
     >>> norm_url('http://example.org/', 'http://example.org//one')
     'http://example.org//one'
+
+    ```
     """
     if "://" in url:
         return url
@@ -251,7 +254,7 @@ def norm_url(base: str, url: str) -> str:
 # type error: Missing return statement
 def context_from_urlinputsource(source: URLInputSource) -> str | None:  # type: ignore[return]
     """
-    Please note that JSON-LD documents served with the application/ld+json media type
+    Please note that JSON-LD documents served with the `application/ld+json` media type
     MUST have all context information, including references to external contexts,
     within the body of the document. Contexts linked via a
     http://www.w3.org/ns/json-ld#context HTTP Link Header MUST be
