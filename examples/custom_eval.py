@@ -6,7 +6,7 @@ A custom function is added that adds `rdfs:subClassOf` "inference" when
 asking for `rdf:type` triples.
 
 Here the custom eval function is added manually, normally you would use
-entry points to do it. See the [Plugins Usage Documentation](/plugins/).
+entry points to do it. See the [Plugins Usage Documentation](../plugins.md).
 """
 
 from pathlib import Path
