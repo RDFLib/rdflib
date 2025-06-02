@@ -104,8 +104,15 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_collection_modifyitems(items: Iterable[pytest.Item]):
+def pytest_collection_modifyitems(config: pytest.Config, items: Iterable[pytest.Item]):
     for item in items:
+        if config and not config.getoption("--public-endpoints", False):
+            # Skip tests marked with public_endpoints if the option is not provided
+            if "public_endpoints" in item.keywords:
+                item.add_marker(
+                    pytest.mark.skip(reason="need --public-endpoints option to run")
+                )
+
         parent_name = (
             str(Path(item.parent.module.__file__).relative_to(PROJECT_ROOT))
             if item.parent is not None
@@ -117,3 +124,19 @@ def pytest_collection_modifyitems(items: Iterable[pytest.Item]):
             extra_markers = EXTRA_MARKERS[(parent_name, item.name)]
             for extra_marker in extra_markers:
                 item.add_marker(extra_marker)
+
+
+def pytest_addoption(parser):
+    """Add optional pytest markers to run tests on public endpoints"""
+    parser.addoption(
+        "--public-endpoints",
+        action="store_true",
+        default=False,
+        help="run tests that require public SPARQL endpoints",
+    )
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "public_endpoints: mark tests that require public SPARQL endpoints"
+    )
