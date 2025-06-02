@@ -128,6 +128,18 @@ poetry install --all-extras
 poetry run pytest
 ```
 
+By default, tests of the `SPARQLStore` against remote public endpoints are skipped, to enable them add the flag:
+
+```bash
+poetry run pytest --public-endpoints
+```
+
+Or exclusively run the SPARQLStore tests:
+
+```bash
+poetry run pytest test/test_store/test_store_sparqlstore_public.py --public-endpoints
+```
+
 ### Writing tests
 
 New tests should be written for [pytest](https://docs.pytest.org/en/latest/) instead of for python's built-in `unittest` module as pytest provides advanced features such as parameterization and more flexibility in writing expected failure tests than `unittest`.

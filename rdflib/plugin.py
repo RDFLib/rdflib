@@ -3,7 +3,7 @@ store, query processor, and query result. Plugins can be registered
 either automatically through entry points or by calling
 rdf.plugin.register directly.
 
-For more details, see the [Plugins Usage Documentation](/plugins/).
+For more details, see the [Plugins Usage Documentation](../plugins.md).
 """
 
 from __future__ import annotations
