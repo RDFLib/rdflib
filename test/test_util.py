@@ -9,7 +9,7 @@ from typing import Any, Collection, List, Optional, Set, Tuple, Type, Union
 import pytest
 
 from rdflib import XSD, util
-from rdflib.graph import ConjunctiveGraph, Graph, QuotedGraph
+from rdflib.graph import Dataset, Graph, QuotedGraph
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import BNode, IdentifiedNode, Literal, Node, URIRef
 from rdflib.util import _coalesce, _iri2uri, find_roots, get_tree
@@ -262,7 +262,7 @@ class TestUtilTermConvert:
                 "@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
                 "<urn:no_use> <urn:no_use> %s.\n" % term_n3
             )
-            g = ConjunctiveGraph()
+            g = Dataset(default_union=True)
             g.parse(data=prepstr, format="n3")
             return [t for t in g.triples((None, None, None))][0][2]
 

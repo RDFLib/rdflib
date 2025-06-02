@@ -11,14 +11,14 @@ jobs:
       checks: write
       statuses: write
     steps:
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: /(.*)-mypy-junit-xml$/
           name: mypy report
           path: "*.xml"
           reporter: java-junit
           fail-on-error: "false"
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: /(.*)-pytest-junit-xml$/
           name: pytest report

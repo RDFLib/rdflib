@@ -4,7 +4,7 @@ from tempfile import mkdtemp, mkstemp
 import pytest
 
 from rdflib import RDF, RDFS, BNode, URIRef, Variable, plugin
-from rdflib.graph import ConjunctiveGraph, QuotedGraph
+from rdflib.graph import Dataset, QuotedGraph
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
 testN3 = """
@@ -21,7 +21,7 @@ _:foo a rdfs:Class.
 
 def checkFormulaStore(store="default", configString=None):  # noqa: N802, N803
     try:
-        g = ConjunctiveGraph(store=store)
+        g = Dataset(store=store)
     except ImportError:
         pytest.skip("Dependencies for store '%s' not available!" % store)
 
@@ -48,7 +48,7 @@ def checkFormulaStore(store="default", configString=None):  # noqa: N802, N803
         d = URIRef("http://test/d")
         v = Variable("y")
 
-        universe = ConjunctiveGraph(g.store)
+        universe = Dataset(g.store)
 
         # test formula as terms
         assert len(list(universe.triples((formulaA, implies, formulaB)))) == 1

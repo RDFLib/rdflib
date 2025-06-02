@@ -9,7 +9,7 @@ from _pytest.mark.structures import ParameterSet
 import rdflib
 from rdflib import Graph
 from rdflib.compare import graph_diff
-from rdflib.graph import ConjunctiveGraph, Dataset
+from rdflib.graph import Dataset
 from rdflib.namespace import FOAF, RDF
 from rdflib.term import BNode, Literal
 from test.utils import (
@@ -111,7 +111,7 @@ class GraphDiffCase:
         if isinstance(value, str):
             graph = self.graph_type()
             graph.parse(data=value, format=self.format)
-            if isinstance(graph, ConjunctiveGraph):
+            if isinstance(graph, Dataset):
                 return GraphHelper.quad_set(graph, BNodeHandling.COLLAPSE)
             else:
                 return GraphHelper.triple_set(graph, BNodeHandling.COLLAPSE)

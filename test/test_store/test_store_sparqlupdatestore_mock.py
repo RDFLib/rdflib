@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from rdflib.graph import ConjunctiveGraph
+from rdflib.graph import Dataset
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from test.utils.http import MethodName, MockHTTPResponse
 from test.utils.httpservermock import ServedBaseHTTPServerMock
@@ -33,7 +33,7 @@ class TestSPARQLConnector:
         pass
 
     def test_graph_update(self):
-        graph = ConjunctiveGraph("SPARQLUpdateStore")
+        graph = Dataset("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
         update_statement = (
             f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
@@ -58,7 +58,7 @@ class TestSPARQLConnector:
         assert "application/sparql-update" in req.headers.get("content-type")
 
     def test_update_encoding(self):
-        graph = ConjunctiveGraph("SPARQLUpdateStore")
+        graph = Dataset("SPARQLUpdateStore")
         graph.open((self.query_endpoint, self.update_endpoint))
         update_statement = (
             f"INSERT DATA {{ {EGDO['subj']} {EGDO['pred']} {EGDO['obj']}. }}"
