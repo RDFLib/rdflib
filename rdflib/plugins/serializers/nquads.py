@@ -12,6 +12,8 @@ __all__ = ["NQuadsSerializer"]
 
 
 class NQuadsSerializer(Serializer):
+    """NQuads RDF graph serializer."""
+
     def __init__(self, store: Graph):
         if not store.context_aware:
             raise Exception(

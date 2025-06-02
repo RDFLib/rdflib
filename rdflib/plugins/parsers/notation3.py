@@ -90,18 +90,18 @@ _AnyT = TypeVar("_AnyT")
 
 
 def splitFragP(uriref: str, punc: int = 0) -> tuple[str, str]:
-    """split a URI reference before the fragment
+    """Split a URI reference before the fragment
 
-    Punctuation is kept.
+    Punctuation is kept. e.g.
 
-    e.g.
-
+    ```python
     >>> splitFragP("abc#def")
     ('abc', '#def')
 
     >>> splitFragP("abcdef")
     ('abcdef', '')
 
+    ```
     """
 
     i = uriref.rfind("#")
@@ -119,15 +119,19 @@ def join(here: str, there: str) -> str:
     (non-ascii characters are supported/doctested;
     haven't checked the details of the IRI spec though)
 
-    ``here`` is assumed to be absolute.
-    ``there`` is URI reference.
+    `here` is assumed to be absolute.
+    `there` is URI reference.
 
+    ```python
     >>> join('http://example/x/y/z', '../abc')
     'http://example/x/abc'
+
+    ```
 
     Raise ValueError if there uses relative path
     syntax but here has no hierarchical path.
 
+    ```python
     >>> join('mid:foo@example', '../foo') # doctest: +NORMALIZE_WHITESPACE
     Traceback (most recent call last):
         raise ValueError(here)
@@ -140,13 +144,18 @@ def join(here: str, there: str) -> str:
     >>> join('mid:foo@example', '#foo')
     'mid:foo@example#foo'
 
+    ```
+
     We grok IRIs
 
+    ```python
     >>> len('Andr\\xe9')
     5
 
     >>> join('http://example.org/', '#Andr\\xe9')
     'http://example.org/#Andr\\xe9'
+
+    ```
     """
 
     #    assert(here.find("#") < 0), \
@@ -219,7 +228,6 @@ def base() -> str:
     this yield the URI of the file.
     If we had a reliable way of getting a computer name,
     we should put it in the hostname just to prevent ambiguity
-
     """
     # return "file://" + hostname + os.getcwd() + "/"
     return "file://" + _fixslash(os.getcwd()) + "/"
@@ -537,7 +545,7 @@ class SinkParser:
         we must not be at end of file.
 
         if colon, then keyword followed by colon is ok
-        (@prefix:<blah> is ok, rdf:type shortcut a must be followed by ws)
+        (`@prefix:<blah>` is ok, rdf:type shortcut a must be followed by ws)
         """
 
         assert tok[0] not in _notNameChars  # not for punctuation
@@ -1982,9 +1990,11 @@ def hexify(ustr: str) -> bytes:
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
 
+    ```python
     >>> hexify("http://example/a b")
     b'http://example/a%20b'
 
+    ```
     """
     # s1=ustr.encode('utf-8')
     s = ""
@@ -1998,8 +2008,7 @@ def hexify(ustr: str) -> bytes:
 
 
 class TurtleParser(Parser):
-    """
-    An RDFLib parser for Turtle
+    """An RDFLib parser for Turtle
 
     See http://www.w3.org/TR/turtle/
     """
@@ -2026,19 +2035,17 @@ class TurtleParser(Parser):
         # N3 parser prefers str stream
         stream = source.getCharacterStream()
         if not stream:
-            stream = source.getByteStream()
-        p.loadStream(stream)
+            stream = source.getByteStream()  # type: ignore[assignment]
+        p.loadStream(stream)  # type: ignore[arg-type]
 
         for prefix, namespace in p._bindings.items():
             graph.bind(prefix, namespace)
 
 
 class N3Parser(TurtleParser):
-    """
-    An RDFLib parser for Notation3
+    """An RDFLib parser for Notation3
 
     See http://www.w3.org/DesignIssues/Notation3.html
-
     """
 
     def __init__(self):

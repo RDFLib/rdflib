@@ -64,6 +64,8 @@ HEADER.parseWithTabs()
 
 
 class TSVResultParser(ResultParser):
+    """Parses SPARQL TSV results into a Result object."""
+
     # type error: Signature of "parse" incompatible with supertype "ResultParser"  [override]
     def parse(self, source: IO, content_type: str | None = None) -> Result:  # type: ignore[override]
         if isinstance(source.read(0), bytes):

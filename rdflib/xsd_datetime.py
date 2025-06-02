@@ -1,5 +1,5 @@
 """
-Large parts of this module are taken from the ``isodate`` package.
+Large parts of this module are taken from the `isodate` package.
 https://pypi.org/project/isodate/
 Modifications are made to isodate features to allow compatibility with
 XSD dates and durations that are not necessarily valid ISO8601 strings.
@@ -53,10 +53,7 @@ else:
 def fquotmod(
     val: Decimal, low: Decimal | int, high: Decimal | int
 ) -> tuple[int, Decimal]:
-    """
-    A divmod function with boundaries.
-
-    """
+    """A divmod function with boundaries."""
     # assumes that all the maths is done with Decimals.
     # divmod for Decimal uses truncate instead of floor as builtin
     # divmod, so we have to do it manually here.
@@ -87,8 +84,7 @@ def max_days_in_month(year: int, month: int) -> int:
 
 
 class Duration:
-    """
-    A class which represents a duration.
+    """A class which represents a duration.
 
     The difference to datetime.timedelta is, that this class handles also
     differences given in years and months.
@@ -186,8 +182,7 @@ class Duration:
         return hash((self.tdelta, self.months, self.years))
 
     def __neg__(self):
-        """
-        A simple unary minus.
+        """A simple unary minus.
 
         Returns a new Duration instance with all it's negated.
         """
@@ -344,8 +339,7 @@ class Duration:
         return True
 
     def totimedelta(self, start=None, end=None):
-        """
-        Convert this duration into a timedelta object.
+        """Convert this duration into a timedelta object.
 
         This method requires a start datetime or end datetime, but raises
         an exception if both are given.
@@ -376,19 +370,19 @@ ISO8601_PERIOD_REGEX = re.compile(
 def parse_xsd_duration(
     dur_string: str, as_timedelta_if_possible: bool = True
 ) -> Duration | timedelta:
-    """
-    Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
+    """Parses an ISO 8601 durations into datetime.timedelta or Duration objects.
 
     If the ISO date string does not contain years or months, a timedelta
     instance is returned, else a Duration instance is returned.
 
     The following duration formats are supported:
-      -``PnnW``                  duration in weeks
-      -``PnnYnnMnnDTnnHnnMnnS``  complete duration specification
-      -``PYYYYMMDDThhmmss``      basic alternative complete date format
-      -``PYYYY-MM-DDThh:mm:ss``  extended alternative complete date format
-      -``PYYYYDDDThhmmss``       basic alternative ordinal date format
-      -``PYYYY-DDDThh:mm:ss``    extended alternative ordinal date format
+
+    -`PnnW`                  duration in weeks
+    -`PnnYnnMnnDTnnHnnMnnS`  complete duration specification
+    -`PYYYYMMDDThhmmss`      basic alternative complete date format
+    -`PYYYY-MM-DDThh:mm:ss`  extended alternative complete date format
+    -`PYYYYDDDThhmmss`       basic alternative ordinal date format
+    -`PYYYY-DDDThh:mm:ss`    extended alternative ordinal date format
 
     The '-' is optional.
 
@@ -591,79 +585,6 @@ def parse_xsd_date(date_string: str):
     if "-" not in date_string:
         raise ValueError("XSD Date string must contain at least two dashes")
     return parse_date(date_string if not minus else ("-" + date_string))
-
-
-def parse_xsd_gyear(gyear_string: str):
-    """
-    XSD gYear has more features than ISO8601 dates, specifically
-    XSD allows timezones on a gYear, that must be stripped off.
-    """
-    if gyear_string.endswith("Z") or gyear_string.endswith("z"):
-        gyear_string = gyear_string[:-1]
-    if gyear_string.startswith("-"):
-        gyear_string = gyear_string[1:]
-        minus = True
-    else:
-        minus = False
-    has_plus = gyear_string.rfind("+")
-    if has_plus > 0:
-        # Drop the +07:00 timezone part
-        gyear_string = gyear_string[:has_plus]
-    else:
-        split_parts = gyear_string.rsplit("-", 1)
-        if len(split_parts) > 1 and ":" in split_parts[-1]:
-            # Drop the -09:00 timezone part
-            gyear_string = split_parts[0]
-    if len(gyear_string) < 4:
-        raise ValueError("gYear string must be at least 4 numerals in length")
-    gyear_string = gyear_string.lstrip("0")  # strip all leading zeros
-    try:
-        y = int(gyear_string if not minus else ("-" + gyear_string))
-    except ValueError:
-        raise ValueError("gYear string must be a valid integer")
-    return date(y, 1, 1)
-
-
-def parse_xsd_gyearmonth(gym_string: str):
-    """
-    XSD gYearMonth has more features than ISO8601 dates, specifically
-    XSD allows timezones on a gYearMonth, that must be stripped off.
-    """
-    if gym_string.endswith("Z") or gym_string.endswith("z"):
-        gym_string = gym_string[:-1]
-    if gym_string.startswith("-"):
-        gym_string = gym_string[1:]
-        minus = True
-    else:
-        minus = False
-    has_plus = gym_string.rfind("+")
-    if has_plus > 0:
-        # Drop the +07:00 timezone part
-        gym_string = gym_string[:has_plus]
-    else:
-        split_parts = gym_string.rsplit("-", 1)
-        if len(split_parts) > 1 and ":" in split_parts[-1]:
-            # Drop the -09:00 timezone part
-            gym_string = split_parts[0]
-    year_month_parts = gym_string.split("-", 1)
-    if len(year_month_parts) < 2:
-        raise ValueError("XSD gYearMonth string must contain one dash")
-
-    if len(year_month_parts[0]) < 4:
-        raise ValueError("gYearMonth Year part must be at least 4 numerals in length")
-    elif len(year_month_parts[1]) < 2:
-        raise ValueError("gYearMonth Month part must be exactly 2 numerals in length")
-    year_string = year_month_parts[0].lstrip("0")  # strip all leading zeros
-    month_string = year_month_parts[1].lstrip("0")  # strip all leading zeros
-    try:
-        y = int(year_string if not minus else ("-" + year_string))
-    except ValueError:
-        raise ValueError("gYearMonth Year part must be a valid integer")
-    try:
-        m = int(month_string)
-    except ValueError:
-        raise ValueError("gYearMonth Month part must be a valid integer")
-    return date(y, m, 1)
 
 
 # Parse XSD Datetime is the same as ISO8601 Datetime
