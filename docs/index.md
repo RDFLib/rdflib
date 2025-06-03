@@ -1,3 +1,5 @@
+![RDFLib logo](_static/RDFlib.png)
+
 # RDFLib
 
 RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). It contains:

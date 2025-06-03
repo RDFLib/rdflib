@@ -44,6 +44,7 @@ if TYPE_CHECKING:
     )
     from rdflib.plugins.sparql.sparql import Query, Update
     from rdflib.query import Result, ResultRow
+    from .sparqlconnector import SUPPORTED_FORMATS, SUPPORTED_METHODS
 
 from .sparqlconnector import SPARQLConnector
 
@@ -67,10 +68,36 @@ def _node_to_sparql(node: Node) -> str:
 
 
 class SPARQLStore(SPARQLConnector, Store):
-    """An RDFLib store around a SPARQL endpoint
+    """An RDFLib store around a SPARQL endpoint.
 
     This is context-aware and should work as expected
     when a context is specified.
+
+    ### Usage example
+
+    ```python
+    >>> from rdflib import Dataset
+    >>> from rdflib.plugins.stores.sparqlstore import SPARQLStore
+    >>>
+    >>> g = Dataset(
+    ...    SPARQLStore("https://query.wikidata.org/sparql", returnFormat="xml"),
+    ...    default_union=True
+    ... )
+    >>>
+    >>> res = g.query("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5")
+    >>>
+    >>> # Iterate the results
+    >>> for row in res:
+    ...     pass  # but really you'd do something like: print(row)
+    >>>
+    >>> # Or serialize the results
+    >>> # something like: print(res.serialize(format="json").decode())
+    ```
+
+    !!! warning "Not all SPARQL endpoints support the same features"
+
+        Checkout the `test suite on public endpoints <https://github.com/RDFLib/rdflib/blob/main/test/test_store/test_store_sparqlstore_public.py>`_
+        for more details on how to successfully query different types of endpoints.
 
     For ConjunctiveGraphs, reading is done from the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
@@ -83,7 +110,7 @@ class SPARQLStore(SPARQLConnector, Store):
 
     !!! warning "Blank nodes
 
-        By default the SPARQL Store does not support blank-nodes!
+        By default, the SPARQL Store does not support blank-nodes!
 
         As blank-nodes act as variables in SPARQL queries,
         there is no way to query for a particular blank node without
@@ -96,13 +123,15 @@ class SPARQLStore(SPARQLConnector, Store):
     "<bnode:b0001>", you can use a function like this:
 
     ```python
-    >>> def my_bnode_ext(node):
-    ...    if isinstance(node, BNode):
-    ...        return '<bnode:b%s>' % node
-    ...    return _node_to_sparql(node)
-    >>> store = SPARQLStore('http://dbpedia.org/sparql',
-    ...                     node_to_sparql=my_bnode_ext)
-
+    >> def my_bnode_ext(node):
+    ...     if isinstance(node, BNode):
+    ...         return f"<bnode:b{node}>"
+    ...     return _node_to_sparql(node)
+    ...
+    >> store = SPARQLStore(
+    ...     "http://dbpedia.org/sparql",
+    ...     node_to_sparql=my_bnode_ext
+    ... )
     ```
 
     You can request a particular result serialization with the
@@ -115,14 +144,11 @@ class SPARQLStore(SPARQLConnector, Store):
     urllib when doing HTTP calls. I.e. you have full control of
     cookies/auth/headers.
 
-    Form example:
+    HTTP basic auth is available with:
 
     ```python
-    >>> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
-
+    >> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
     ```
-
-    will use HTTP basic auth.
     """
 
     formula_aware = False
@@ -136,13 +162,15 @@ class SPARQLStore(SPARQLConnector, Store):
         sparql11: bool = True,
         context_aware: bool = True,
         node_to_sparql: _NodeToSparql = _node_to_sparql,
-        returnFormat: str = "xml",  # noqa: N803
+        returnFormat: SUPPORTED_FORMATS = "xml",  # noqa: N803
+        method: SUPPORTED_METHODS = "GET",
         auth: tuple[str, str] | None = None,
         **sparqlconnector_kwargs,
     ):
         super(SPARQLStore, self).__init__(
             query_endpoint=query_endpoint,
             returnFormat=returnFormat,
+            method=method,
             auth=auth,
             **sparqlconnector_kwargs,
         )
