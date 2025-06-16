@@ -59,7 +59,7 @@ setuptools = ">=68,<72"
 wheel = ">=0.42,<0.46"
 
 [tool.poetry.group.docs.dependencies]
-typing-extensions = "^4.11.0"
+typing-extensions = "^4.14.0"
 mkdocs = ">=1.6.1"
 mkdocs-material = ">=9.6.12"
 mkdocstrings = {version = ">=0.29.1", extras = ["python"]}
