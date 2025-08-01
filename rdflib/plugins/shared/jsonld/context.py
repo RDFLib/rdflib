@@ -6,13 +6,7 @@ Implementation of the JSON-LD Context structure. See: http://json-ld.org/
 from __future__ import annotations
 
 from collections.abc import Collection, Generator
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Optional,
-    Union,
-    NamedTuple
-)
+from typing import TYPE_CHECKING, Any, NamedTuple, Optional, Union
 from urllib.parse import urljoin, urlsplit
 
 from rdflib.namespace import RDF
@@ -76,6 +70,7 @@ class Context:
     """
     A JSON-LD context, which contains term definitions
     """
+
     _base: str | None
     _alias: dict[str, list[str]]
     _lookup: dict[tuple[str, Any, Defined | str, bool], Term]
@@ -689,6 +684,7 @@ class Term(NamedTuple):
     """
     Describes how a JSON key should be interpreted when parsed as RDF
     """
+
     #: The IRI or CURIE of the term.
     id: str
     #: The name of the term, ie an alias for the id.
