@@ -52,10 +52,10 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
 * [Persistence](persistence.md)
 * [Merging](merging.md)
 * [Changelog](changelog.md)
+* [Security Considerations](security_considerations.md)
 * [Upgrade 6 to 7](upgrade6to7.md)
 * [Upgrade 5 to 6](upgrade5to6.md)
 * [Upgrade 4 to 5](upgrade4to5.md)
-* [Security Considerations](security_considerations.md)
 
 ## Versioning
 
@@ -67,14 +67,12 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 2. `MINOR` version when you add functionality in a backwards-compatible manner
 3. `PATCH` version when you make backwards-compatible bug fixes
 
-## For developers
+## Contributing
 
-* [Developers guide](developers.md)
-* [Documentation guide](docs.md)
 * [Contributing guide](CONTRIBUTING.md)
+    * [Developers guide](developers.md)
+    * [Documentation guide](docs.md)
 * [Code of Conduct](CODE_OF_CONDUCT.md)
-* [Persisting N3 Terms](persisting_n3_terms.md)
-* [Type Hints](type_hints.md)
 * [Decisions](decisions.md)
 
 ## Source Code
