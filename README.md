@@ -170,7 +170,6 @@ abstracts = list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language
 
 See also [./examples](./examples)
 
-
 ## Features
 The library contains parsers and serializers for RDF/XML, N3,
 NTriples, N-Quads, Turtle, TriX, JSON-LD, RDFa and Microdata.
