@@ -69,7 +69,7 @@ Given a version number `MAJOR.MINOR.PATCH`, increment the:
 
 ## Contributing
 
-* [Contributing guide](CONTRIBUTING.md)
+* [Contribution guide and charter](CONTRIBUTING.md)
     * [Developers guide](developers.md)
     * [Documentation guide](docs.md)
 * [Code of Conduct](CODE_OF_CONDUCT.md)

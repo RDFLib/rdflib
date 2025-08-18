@@ -357,8 +357,6 @@ In the function `foo`, the input variable `a` is indicated to be of type `int` a
 The following is an example of a type alias `Bar`:
 
 ```python
-from typing import Tuple
-
 Bar = tuple[int, str]
 ```
 
