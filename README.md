@@ -215,7 +215,7 @@ python -m http.server --directory=htmlcov
 ## Contributing
 
 RDFLib survives and grows via user contributions!
-Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING.html) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers.html) to get started.
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/latest/CONTRIBUTING/) and [developers guide](https://rdflib.readthedocs.io/en/latest/developers.html) to get started.
 Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>
