@@ -76,7 +76,7 @@ jobs:
       - name: Install poetry
         run: |
           pip install -r devtools/requirements-poetry.in
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         if: ${{ matrix.extensive-tests }}
         with:
           distribution: "temurin"
