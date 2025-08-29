@@ -399,7 +399,7 @@ def test_guess_format_for_parse_http_text_plain():
     assert len(graph) > 0
 
     # A url that returns content-type text/html.
-    url = "https://github.com/RDFLib/rdflib/issues/2734"
+    url = "https://www.w3.org/TR/REC-rdf-syntax/"
     with pytest.raises(PluginException):
         graph = Graph().parse(url)
 
