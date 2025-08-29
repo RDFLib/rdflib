@@ -36,7 +36,6 @@ from typing import (
     Generator,
     Iterable,
     Iterator,
-    List,
     Mapping,
     Optional,
     Tuple,
@@ -49,10 +48,7 @@ if TYPE_CHECKING:
     from rdflib.graph import (
         Graph,
         _ContextType,
-        _ObjectType,
-        _PredicateType,
         _QuadType,
-        _SubjectType,
         _TripleChoiceType,
         _TriplePatternType,
         _TripleType,
