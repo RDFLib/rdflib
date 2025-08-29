@@ -298,7 +298,8 @@ class RDFXMLHandler(handler.ContentHandler):
         self, name: Tuple[str, str], qname, attrs: AttributesImpl
     ) -> None:
         if name[0] and URIRef("".join(name)) == RDFVOC.RDF:
-            next = self.next
+            # Cheap hack so 2to3 doesn't turn it into __next__
+            next = getattr(self, "next")
             next.start = self.node_element_start
             next.end = self.node_element_end
         else:
@@ -315,7 +316,8 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         absolutize = self.absolutize
 
-        next = self.next
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, "next")
         next.start = self.property_element_start
         next.end = self.property_element_end
 
@@ -408,7 +410,8 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         absolutize = self.absolutize
 
-        next = self.next
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, "next")
         object: Optional[_ObjectType] = None
         current.data = None
         current.list = None
