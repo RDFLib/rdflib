@@ -36,7 +36,6 @@ from typing import (
     Generator,
     Iterable,
     Iterator,
-    List,
     Mapping,
     Optional,
     Tuple,
@@ -49,10 +48,8 @@ if TYPE_CHECKING:
     from rdflib.graph import (
         Graph,
         _ContextType,
-        _ObjectType,
-        _PredicateType,
         _QuadType,
-        _SubjectType,
+        _TripleChoiceType,
         _TriplePatternType,
         _TripleType,
     )
@@ -281,11 +278,7 @@ class Store:
 
     def triples_choices(
         self,
-        triple: Union[
-            Tuple[List[_SubjectType], _PredicateType, _ObjectType],
-            Tuple[_SubjectType, List[_PredicateType], _ObjectType],
-            Tuple[_SubjectType, _PredicateType, List[_ObjectType]],
-        ],
+        triple: _TripleChoiceType,
         context: Optional[_ContextType] = None,
     ) -> Generator[
         Tuple[
